@@ -12,3 +12,20 @@
 
 ## 원칙
 공개 자료만. 전화번호·대표자 등 연락처는 원본에 있어도 저장하지 않음. 종사자 수는 사이트에 구간으로만 표시.
+
+## ca-extra.pem
+
+대구테크노파크(www.ttp.org)가 TLS 중간 인증서를 보내지 않아 requests 가
+`CERTIFICATE_VERIFY_FAILED` 로 죽는다. 브라우저는 누락분을 알아서 받아오지만 requests 는 못 한다.
+그래서 발급기관의 중간 인증서(Sectigo Public Server Authentication CA DV R36, 2036-03-21 만료)를
+여기 두고 certifi 번들과 합쳐 `verify=` 로 넘긴다.
+
+```python
+import certifi, tempfile
+from pathlib import Path
+bundle = Path(tempfile.gettempdir()) / "dalgubul-ca.pem"
+bundle.write_text(Path(certifi.where()).read_text() + "\n" + Path("scripts/data/ca-extra.pem").read_text())
+requests.get(url, verify=str(bundle))
+```
+
+ttp.org 가 서버 설정을 고치면 이 파일은 필요 없어진다.

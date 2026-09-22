@@ -26,6 +26,13 @@ import feedparser
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
+# Windows 콘솔(cp949)에서 로그의 유니코드 문자로 죽지 않게 한다
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, OSError):
+    pass
+
 ROOT = Path(__file__).resolve().parent.parent
 POSTS = ROOT / "src" / "content" / "posts"
 STATE = ROOT / "scripts" / "state" / "seen.json"

@@ -2,7 +2,14 @@
 
 ## 주간 기관 공고 수집 — 매주 월요일 06:00
 CLAUDE.md를 읽고 원칙을 지킨다. scripts/data/institutions.yml 의 institutions 를 순회한다.
+blocked / unverified 항목은 건드리지 않는다. blocked 는 제공기관이 robots.txt 로 막았거나
+서비스를 거둬들인 곳이므로 우회하지 않는다.
 board_url 이 비어 있으면 home 에서 '사업공고/공지/모집' 게시판을 찾아 board_url 을 채우고 파일을 갱신한다.
+새로 찾은 주소는 읽기 전에 그 호스트의 robots.txt 를 확인한다. 차단 경로면 수집하지 말고
+institutions.yml 의 blocked 로 옮기고 reason 을 적는다.
+각 기관 note 의 수집 방식 주의사항(JS 렌더링, POST 조회, javascript: 링크 등)을 먼저 읽는다.
+대구테크노파크는 TLS 중간 인증서가 누락돼 있어 requests 로 받을 때 verify 에
+scripts/data/ca-extra.pem 을 certifi 번들과 합쳐 넘겨야 한다.
 각 게시판에서 지난 7일 새 공고를 읽어 scripts/inbox/weekly-YYYYMMDD.json 에 저장한다
 (title, url, source=기관명, category, deadline(YYYY-MM-DD, 없으면 null), body=본문 300자 요약).
 첨부 PDF/HWP/HWPX 가 있으면 열어 대상·규모·기간을 body 에 포함한다.

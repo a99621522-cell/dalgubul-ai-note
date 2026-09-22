@@ -436,6 +436,7 @@ def main() -> None:
         it["_key"] = k
         new.append(it)
     print(f"신규 {len(new)}건 (전체 {len(items)}건)")
+    n_new_total = len(new)  # 상한 적용 전 신규 건수 — 요약에는 이 값을 쓴다
     limit = cfg.get("max_per_run", 8)
     if len(new) > limit:
         print(f"1회 상한 {limit}건으로 잘라냄")
@@ -468,14 +469,14 @@ def main() -> None:
     if not DRY_RUN:
         save_state(seen)
     print(f"완료: 초안 {len(written)}건. 승인은 `python3 scripts/approve.py`")
-    report_run(len(items), len(new), len(written), skipped)
+    report_run(len(items), n_new_total, len(new), len(written), skipped)
 
 
-def report_run(n_items: int, n_new: int, n_written: int, n_skipped: int) -> None:
+def report_run(n_items: int, n_new: int, n_proc: int, n_written: int, n_skipped: int) -> None:
     """실행 요약. GitHub Actions 안이면 결과 화면(Job Summary)과 주석(annotation)에도 띄운다.
     '후보는 있었는데 한 건도 못 썼다'는 상황이 초록 체크 뒤에 숨지 않게 하는 게 목적이다.
     CLAUDE.md 원칙대로 외부 API 실패로 프로세스를 죽이지는 않는다(종료코드 0 유지)."""
-    lines = [f"수집 {n_items}건 · 신규 {n_new}건 · 저장 {n_written}건 · 요약실패 건너뜀 {n_skipped}건"]
+    lines = [f"수집 {n_items}건 · 신규 {n_new}건 · 이번 처리 {n_proc}건(상한) · 저장 {n_written}건 · 요약실패 건너뜀 {n_skipped}건"]
     if FAILURES:
         seen_msgs: list[str] = []
         for f in FAILURES:
@@ -488,15 +489,16 @@ def report_run(n_items: int, n_new: int, n_written: int, n_skipped: int) -> None
         return
     md = ["## 수집 결과", "", "| 항목 | 건수 |", "|---|---|",
           f"| 소스에서 받은 항목 | {n_items} |", f"| 그중 신규(seen 제외) | {n_new} |",
+          f"| 이번 실행 처리 대상(max_per_run 상한) | {n_proc} |",
           f"| 초안 저장 | {n_written} |", f"| 요약 실패로 건너뜀 | {n_skipped} |", ""]
     if FAILURES:
         md += ["**실패 사유**", ""] + [f"- {f}" for f in dict.fromkeys(FAILURES)] + [""]
     if n_items == 0:
         md.append("> 소스에서 아무것도 받지 못했다. API 키·네트워크·IP 차단을 의심할 것.")
         print("::error title=수집 0건::소스에서 항목을 하나도 받지 못함 — 위 실패 사유 확인")
-    elif n_new > 0 and n_written == 0 and not DRY_RUN:
-        md.append("> 신규 후보는 있었지만 한 건도 저장하지 못했다. 요약(Gemini) 단계 실패를 의심할 것.")
-        print(f"::error title=초안 0건::신규 {n_new}건 중 0건 저장 — 요약 단계 실패 의심")
+    elif n_proc > 0 and n_written == 0 and not DRY_RUN:
+        md.append("> 처리 대상은 있었지만 한 건도 저장하지 못했다. 요약(Gemini) 단계 실패를 의심할 것.")
+        print(f"::error title=초안 0건::처리 대상 {n_proc}건 중 0건 저장 — 요약 단계 실패 의심")
     with open(summary_path, "a", encoding="utf-8") as fh:
         fh.write(chr(10).join(md) + chr(10))
 

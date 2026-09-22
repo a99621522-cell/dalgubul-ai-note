@@ -6,6 +6,13 @@
 import re, sys
 from pathlib import Path
 
+# Windows 콘솔(cp949)에서 한글 제목이 깨지지 않게 (collect.py 와 같은 처리)
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stdin.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, OSError):
+    pass
+
 POSTS = Path(__file__).resolve().parent.parent / "src" / "content" / "posts"
 
 def drafts():

@@ -5,10 +5,15 @@ max_per_run: 8        # 1회 실행당 Gemini 호출 상한 (비용·검수 부�
 # 이유: 기관 게시판 목록이 대부분 JS 렌더링/POST 조회라 requests+BeautifulSoup 로는 0건이다.
 # 기관 목록·게시판 주소·robots 판정은 scripts/data/institutions.yml 참고.
 
+# 기업마당 지원사업정보 API. 공고마다 지역 해시태그가 붙어 있어 그걸로 거른다.
+#   region   — 이 지역 태그가 없는 공고(타 지역 전용)는 버린다
+#   keywords — '전국' 공고(16개 지역 태그가 전부 붙은 것)는 이 산업 키워드가 걸릴 때만 받는다.
+#              대구 한정 공고는 키워드와 무관하게 전부 받는다
 bizinfo:
   endpoint: https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do
   count: 100
-  keywords: [대구, 달성, 경북, 로봇, 인공지능, AI, 스마트공장, 모빌리티, 의료기기, 섬유]
+  region: 대구
+  keywords: [로봇, 인공지능, AI, 스마트공장, 모빌리티, 의료기기, 섬유, 자동차부품, 뿌리산업, 소재부품]
 
 # RSS 소스 없음.
 # 정책브리핑(korea.kr)은 2026-07-01 RSS 서비스를 중단했다(사유: 콘텐츠 저작권 등 권리 보호).

@@ -38,6 +38,16 @@ POSTS = ROOT / "src" / "content" / "posts"
 STATE = ROOT / "scripts" / "state" / "seen.json"
 CONFIG = ROOT / "scripts" / "sources.yml"
 
+# 로컬 실행 편의: 프로젝트 루트에 .env 가 있으면 읽는다. 이미 있는 환경변수는 덮지 않는다.
+# GitHub Actions 에서는 secrets 가 환경변수로 오므로 .env 없이 그대로 동작한다.
+_ENV_FILE = ROOT / ".env"
+if _ENV_FILE.exists():
+    for _line in _ENV_FILE.read_text(encoding="utf-8").splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _v = _line.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 BIZINFO_KEY = os.environ.get("BIZINFO_KEY", "")
 GEMINI_KEY = os.environ.get("GEMINI_KEY", "")
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
@@ -75,6 +85,11 @@ def yaml_str(s: str) -> str:
 
 
 # ---------------------------------------------------------------- 소스 1: 기업마당
+# 기업마당이 hashtags 에 붙이는 지역 태그. 전국 공고에는 이 16개가 전부 붙고, 지역 한정 공고에는 해당 지역만 붙는다.
+BIZINFO_REGIONS = ["서울", "부산", "대구", "인천", "전남광주", "대전", "울산", "세종",
+                   "경기", "강원", "충북", "충남", "전북", "경북", "경남", "제주"]
+
+
 def fetch_bizinfo(cfg: dict) -> list[dict]:
     """기업마당 지원사업정보 API (인증키는 기업마당에서 직접 발급).
     중앙부처·지자체·유관기관 지원사업 공고를 한 창구로 모아 준다.
@@ -99,11 +114,19 @@ def fetch_bizinfo(cfg: dict) -> list[dict]:
         link = it.get("pblancUrl", "")
         if link and link.startswith("/"):
             link = "https://www.bizinfo.go.kr" + link
-        hay = " ".join(str(it.get(f, "")) for f in ("pblancNm", "jrsdInsttNm", "excInsttNm", "hashtags", "bsnsSumryCn", "trgetNm"))
-        if not matches(hay, cfg["keywords"]):
+        # 1차: 지역 태그. region(기본 대구)이 없으면 타 지역 전용 공고라 버린다.
+        #      전국 공고는 16개 지역이 전부 붙어 있으므로 태그 수로 '대구 한정'과 '전국'을 가른다.
+        regions = [r for r in BIZINFO_REGIONS if r in str(it.get("hashtags", ""))]
+        if cfg.get("region", "대구") not in regions:
             continue
-        # 명세상 신청기간 필드는 reqstDt("20220727 ~ 20220930"). 과거 응답의 reqstBeginEndDe 도 함께 본다
-        period = it.get("reqstDt") or it.get("reqstBeginEndDe") or ""
+        local = len(regions) < len(BIZINFO_REGIONS) - 2
+        # 2차: 전국 공고는 산업 키워드가 걸릴 때만. 대구 한정 공고는 키워드 없이 전부 받는다.
+        hay = " ".join(str(it.get(f, "")) for f in ("pblancNm", "jrsdInsttNm", "excInsttNm", "hashtags", "bsnsSumryCn", "trgetNm"))
+        if not local and not matches(hay, cfg["keywords"]):
+            continue
+        # 실제 응답 필드는 reqstBeginEndDe("2026-09-21 ~ 2026-10-09" 또는 "예산 소진시까지").
+        # 명세 문서(apiList.do)는 reqstDt 라 적혀 있어 둘 다 본다
+        period = it.get("reqstBeginEndDe") or it.get("reqstDt") or ""
         deadline = None
         m = re.findall(r"(\d{4})[-.](\d{2})[-.](\d{2})", period) or [(d[:4], d[4:6], d[6:]) for d in re.findall(r"(\d{8})", period)]
         if m:
@@ -117,12 +140,15 @@ def fetch_bizinfo(cfg: dict) -> list[dict]:
             "url": link,
             "source": it.get("jrsdInsttNm") or it.get("excInsttNm") or "기업마당",
             "deadline": deadline,
-            "raw": f"사업명: {title}\n소관기관: {it.get('jrsdInsttNm','')}\n수행기관: {it.get('excInsttNm','')}\n"
+            "local": local,
+            "raw": f"사업명: {title}\n공고범위: {'대구 한정' if local else '전국'}\n소관기관: {it.get('jrsdInsttNm','')}\n수행기관: {it.get('excInsttNm','')}\n"
                    f"신청기간: {period}\n지원대상: {it.get('trgetNm','')}\n분야: {it.get('pldirSportRealmLclasCodeNm','')}\n"
                    f"세부분야: {it.get('pldirSportRealmMlsfcCodeNm','')}\n접수방법: {it.get('reqstMthPapersCn','')}\n"
                    f"문의처: {it.get('refrncNm','')}\n해시태그: {it.get('hashtags','')}\n요약: {summary_txt[:2500]}",
         })
-    print(f"[bizinfo] {len(items)}건 중 {len(out)}건 선별")
+    out.sort(key=lambda x: not x.pop("local"))  # 대구 한정 공고를 앞에 — max_per_run 에 잘려도 먼저 살아남게
+    n_local = sum(1 for x in out if "공고범위: 대구 한정" in x["raw"])
+    print(f"[bizinfo] {len(items)}건 중 {len(out)}건 선별 (대구 한정 {n_local} + 전국 {len(out) - n_local})")
     return out
 
 

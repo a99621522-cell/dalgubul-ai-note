@@ -7,7 +7,7 @@
 필요 환경변수
   BIZINFO_KEY   기업마당 지원사업 API 인증키 (공공데이터포털)
   GEMINI_KEY    Google AI Studio API 키
-  GEMINI_MODEL  (선택) 기본 gemini-2.5-flash
+  GEMINI_MODEL  (선택) 기본 gemini-3.5-flash-lite
 """
 from __future__ import annotations
 
@@ -50,7 +50,16 @@ if _ENV_FILE.exists():
 
 BIZINFO_KEY = os.environ.get("BIZINFO_KEY", "")
 GEMINI_KEY = os.environ.get("GEMINI_KEY", "")
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+# 기본 모델은 사고(thinking) 토큰을 쓰지 않는 lite 계열로 둔다. 상위 flash 는 호출마다 사고 토큰 ~1000개를
+# 먼저 쓰기 때문에 maxOutputTokens 에 잘리거나 비용이 몇 배가 된다. gemini-2.5-flash 는 신규 키에 막혀 404.
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
+GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+GEMINI_HEADERS = {"x-goog-api-key": GEMINI_KEY}  # 키는 URL 이 아니라 헤더로 — 오류 로그에 URL 이 찍혀도 키가 안 샌다
+
+
+def redact(e: object) -> str:
+    """예외 문자열에서 API 키를 지운다. requests 오류 메시지에는 요청 URL 이 통째로 들어간다."""
+    return re.sub(r"AQ\.[\w\-]+|AIza[\w\-]+|key=[^&\s]+", "***", str(e))
 DRY_RUN = "--dry-run" in sys.argv
 UA = {"User-Agent": "dalgubul-ai-note/0.1 (+personal blog collector)"}
 
@@ -287,35 +296,40 @@ PROMPTS = {
 }
 
 
-def gemini(prompt: str, text: str) -> tuple[str, str]:
-    """(요약 한 줄, 본문 Markdown) 반환. 키가 없으면 원문 일부로 대체."""
+def gemini(prompt: str, text: str) -> tuple[str, str] | None:
+    """(요약 한 줄, 본문 Markdown) 반환. 키가 없으면 원문 일부로 대체.
+    API 호출이 끝내 실패하면 None — 호출한 쪽이 글을 저장하지 않고 seen 에도 넣지 않아 다음 실행에 다시 시도한다."""
     if not GEMINI_KEY:
         return ("(요약 생성 안 됨 — GEMINI_KEY 필요)", text[:1500])
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_KEY}"
     body = {
         "contents": [{"parts": [{"text": f"{prompt}\n\n마지막 줄에 'SUMMARY: ' 뒤에 60자 이내 한 줄 요약을 따로 써라.\n\n[자료]\n{text}"}]}],
         "generationConfig": {"temperature": 0.3, "maxOutputTokens": 1500},
     }
     for attempt in range(3):
         try:
-            r = requests.post(url, json=body, timeout=60)
+            r = requests.post(GEMINI_URL, json=body, headers=GEMINI_HEADERS, timeout=60)
             r.raise_for_status()
             out = r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
             m = re.search(r"SUMMARY:\s*(.+)$", out, flags=re.M)
             summary = m.group(1).strip() if m else out.splitlines()[0][:60]
             md = re.sub(r"\n?SUMMARY:.*$", "", out, flags=re.M).strip()
             return (summary, md)
-        except Exception as e:  # noqa: BLE001
-            print(f"[gemini] {attempt+1}차 실패: {e}")
+        except requests.HTTPError as e:
+            code = e.response.status_code if e.response is not None else 0
+            print(f"[gemini] {attempt+1}차 실패: HTTP {code} {redact(e)}")
+            if code in (400, 401, 403, 404):  # 키·모델·요청 형식 문제는 다시 보내도 같다
+                break
             time.sleep(3 * (attempt + 1))
-    return ("(요약 실패)", text[:1500])
+        except Exception as e:  # noqa: BLE001
+            print(f"[gemini] {attempt+1}차 실패: {redact(e)}")
+            time.sleep(3 * (attempt + 1))
+    return None
 
 
 def seo_meta(title: str, summary: str, md: str, category: str) -> dict:
     """검색용 제목·메타 설명·태그 5개. 실패하면 빈 dict (글 저장은 계속)."""
     if not GEMINI_KEY:
         return {}
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_KEY}"
     prompt = (
         "아래 블로그 글의 검색·AI답변 최적화 정보를 JSON 하나로만 출력하라. 다른 문장 금지.\n"
         '형식: {"seoTitle": "...", "description": "...", "tags": ["...","...","...","...","..."], '
@@ -329,7 +343,7 @@ def seo_meta(title: str, summary: str, md: str, category: str) -> dict:
     body = {"contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"temperature": 0.2, "maxOutputTokens": 700, "responseMimeType": "application/json"}}
     try:
-        r = requests.post(url, json=body, timeout=40)
+        r = requests.post(GEMINI_URL, json=body, headers=GEMINI_HEADERS, timeout=40)
         r.raise_for_status()
         out = r.json()["candidates"][0]["content"]["parts"][0]["text"]
         out = re.sub(r"^```(json)?|```$", "", out.strip(), flags=re.M).strip()
@@ -338,7 +352,7 @@ def seo_meta(title: str, summary: str, md: str, category: str) -> dict:
         faq = [{"q": str(x.get("q","")).strip(), "a": str(x.get("a","")).strip()} for x in d.get("faq", []) if x.get("q") and x.get("a")][:3]
         return {"seoTitle": str(d.get("seoTitle", ""))[:60], "description": str(d.get("description", ""))[:160], "tags": tags, "faq": faq}
     except Exception as e:  # noqa: BLE001
-        print(f"[seo] 실패(건너뜀): {e}")
+        print(f"[seo] 실패(건너뜀): {redact(e)}")
         return {}
 
 
@@ -433,7 +447,11 @@ def main() -> None:
         if DRY_RUN:
             print("  · [dry-run]", it["category"], it["title"])
             continue
-        summary, md = gemini(PROMPTS[it["category"]], text)
+        res = gemini(PROMPTS[it["category"]], text)
+        if res is None:
+            print("  · 건너뜀(요약 실패, 다음 실행에 재시도):", it["title"][:50])
+            continue
+        summary, md = res
         seo = seo_meta(it["title"], summary, md, it["category"])
         p = write_post(it, summary, md, it["_key"], seo)
         seen.add(it["_key"])

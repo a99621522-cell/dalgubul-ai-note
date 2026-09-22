@@ -54,7 +54,50 @@ python3 scripts/approve.py            # 초안 승인
 - Astro: 컴포넌트는 `src/components/`. Tailwind 등 CSS 프레임워크 추가하지 않음. `global.css` 의 CSS 변수 사용
 - 새 카테고리는 `src/categories.ts` 와 `content.config.ts` 의 enum, `collect.py` 의 `PROMPTS` 세 곳을 함께 수정
 
-## 로드맵
+## 로드맵 (2026-09-22 기준)
 
-- 2주차: 예산서 파서(programs.csv), 기관 공고 루틴, 네이버 뉴스·DART 연결, 뉴스레터 모듈
-- 3주차: 네이버 뉴스 API, DART 대구 상장사 공시, 대구시 보도자료 RSS, 워드프레스 복제 발행(선택)
+브랜드: 다잇다(daitda.co.kr = 앱, note.daitda.co.kr = 블로그). 대구광역시 전체. 공개 자료만, 평가·순위 없음, 비영리.
+
+### 완료
+- 블로그 뼈대(Astro): 기업 사전 11,174곳 / 기업 동향 / 공모·지원사업 / 산업 정책
+- 기업 DB: 팩토리온 월간 엑셀 → scripts/import_factoryon.py → dalseong_companies.csv(대구 전체)·dalseong_complexes.csv(단지 22)
+- 협업 후보 찾기(규칙판): src/lib/partners.ts — 공정 단계 추정 → 공급/수요/동종 후보
+- 수집기 collect.py: 기업마당 API·RSS·게시판 스크랩·inbox JSON → Gemini 요약·SEO·FAQ → draft 초안. GitHub Actions 매일 05:30
+- 문서: docs/DESIGN.md, docs/ROUTINE_PROMPT.md, scripts/data/institutions.yml
+
+### 1단계 — 배포·가동 (이번 주)
+1. Cloudflare Pages 배포, 커스텀 도메인 note.daitda.co.kr, daitda.co.kr → 블로그 리다이렉트(앱 전까지)
+2. GitHub Secrets: BIZINFO_KEY, GEMINI_KEY → Actions 첫 실행 확인
+3. Claude Code 루틴 등록: 주간 기관 공고 수집, 월간 팩토리온 갱신 (docs/ROUTINE_PROMPT.md)
+
+### 2단계 — 사업 DB (다잇다 본체 재료)
+4. 예산서 파서 scripts/parse_budget.py: 부처 사업설명자료(산업부 확보, 중기부·과기부·국토부 추가 예정) + 대구시 세출예산 명세서(경제국·미래혁신성장실 확보) → scripts/data/programs.csv (layer, ministry, code, name, executor, budget_2025/2026, funding, target, conditions, schedule, source_url, matched_city_item)
+5. 신규·증액 사업 목록 페이지 "올해 공고 예정 사업"
+6. 통합 창구 게시판 소스 추가: IRIS, K-Startup, 소상공인24, 고용24 (sources.yml boards)
+7. 뉴스레터: scripts/newsletter.py(지난 2주 승인 글 + 공모 마감표 → 이메일 HTML), /newsletter/ 아카이브, 스티비 구독 폼, 개인정보처리방침 페이지
+
+### 3단계 — 다잇다 앱 MVP
+8. 회사명(자동완성) 또는 업종·규모·필요 입력 → 규칙 필터 → 임베딩 검색 → Gemini 요약(원문 링크·마감 필수, "가능성 있음 — 공고 ○항 확인" 표현) → 사업 5개
+9. 스택: Cloudflare Pages(화면) + Render(중계, Gemini 키·일일 상한) + programs.csv/companies.csv
+10. 이후 모의심사 앱과 연결(찾기 → 심사 → 수정 → 발표 PPT)
+
+### 4단계 — 기업 신호·연결 기능
+11. 확장 신호 수집기: DART 신규시설투자 공시, 네이버 뉴스(증설·MOU·이전), 팩토리온 신규입주계약, 고용24 채용 급증, 벤처투자 공시, KIPRIS 특허 → 기업 타임라인 + "확장 신호 감지 목록"(신호만, 평가 없음)
+12. 선정 기업 아카이브: 보도자료 선정기업 명단 → 기업 사전 지원사업 이력
+13. 협업 후보 정밀화: Gemini 공정 분류 + 한국은행 산업연관표(KSIC→IO 부문 매핑)
+14. 공급망 지도: 대구 클러스터별 공정 분포·빈 고리 → 전국 팩토리온 파일에서 보완 후보 업종·기업(조건 명시, 전수 나열)
+15. 입찰 알림: 나라장터 API, 기업 업종·생산품 매칭
+16. 정책·규제 변화 알림: 법령·고시·조례 RSS → 기업 언어 요약
+
+### 5단계 — 인력·기술·입지
+17. 인력 매칭 앞단: 고용24 채용 공고 + 대구RISE센터·대학 인력양성 과정 → 기업 페이지 배지·상자
+18. 기업–교수 기술 연계: NTIS 과제 + KIPRIS 대학 특허 → 연구자 카드(공개 실적만, 산학협력단 창구 안내) → 임베딩 매칭
+19. 산단 입지 정보: 팩토리온 분양·처분 공고, 산단공·도시공사 공고 → 단지별
+
+### 별도(이 저장소 아님)
+- AI 활용 진단(AEO): 모의심사 앱에 탭으로
+- 공무원 AI·AI 동향 글: 별도 사이트(초안 docs/archive-ai-notes)
+- 기업 애로·규제개선 접수: 군 공식 AI 정부 실험실 과제
+
+### 필요한 키 (사용자 발급)
+BIZINFO_KEY(있음), GEMINI_KEY(있음), NAVER_CLIENT_ID/SECRET, DART_KEY, WORK24_KEY(고용24), G2B_KEY(나라장터, data.go.kr), KIPRIS_KEY, NTIS_KEY

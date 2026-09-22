@@ -23,6 +23,8 @@ from pathlib import Path
 import requests
 import yaml
 import feedparser
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 ROOT = Path(__file__).resolve().parent.parent
 POSTS = ROOT / "src" / "content" / "posts"
@@ -154,6 +156,84 @@ def fetch_article_text(url: str) -> str:
         return ""
 
 
+# ---------------------------------------------------------------- 소스 3: RSS 없는 게시판 (대구시·달성군·대구TP 등)
+def fetch_board(b: dict) -> list[dict]:
+    """게시판 목록 페이지에서 제목 링크를 뽑는다.
+    sources.yml 의 item_selector(CSS)로 링크 요소를 고르고, 없으면 href 에 link_pattern 이 들어간 <a> 전체를 본다."""
+    try:
+        r = requests.get(b["url"], headers=UA, timeout=30)
+        r.raise_for_status()
+        r.encoding = r.apparent_encoding or "utf-8"
+        soup = BeautifulSoup(r.text, "html.parser")
+    except Exception as e:  # noqa: BLE001
+        print(f"[board:{b['name']}] 실패: {e}")
+        return []
+    if b.get("item_selector"):
+        anchors = soup.select(b["item_selector"])
+    else:
+        pat = b.get("link_pattern", "")
+        anchors = [a for a in soup.find_all("a", href=True) if pat in a["href"] and len(a.get_text(strip=True)) >= 8]
+    out, seen_local = [], set()
+    for a in anchors[: b.get("limit", 40)]:
+        title = a.get_text(" ", strip=True)
+        href = a.get("href", "")
+        if not title or not href or href.startswith("javascript"):
+            continue
+        link = urljoin(b["url"], href)
+        if link in seen_local:
+            continue
+        seen_local.add(link)
+        if b.get("keywords") and not matches(title, b["keywords"]):
+            continue
+        out.append({
+            "category": b["category"],
+            "title": title,
+            "url": link,
+            "source": b["name"],
+            "deadline": None,
+            "raw": f"제목: {title}\n발표기관: {b['name']}\n(본문은 원문 페이지에서 가져옴)",
+        })
+    print(f"[board:{b['name']}] 링크 {len(anchors)}개 중 {len(out)}건 선별")
+    return out
+
+
+# ---------------------------------------------------------------- 소스 4: 외부 크롤러 결과 받기 (scripts/inbox/*.json)
+INBOX = ROOT / "scripts" / "inbox"
+
+def fetch_inbox() -> list[dict]:
+    """Claude Code 웹 크롤러 에이전트 등이 떨어뜨린 JSON을 읽는다.
+    형식: [{"title","url","source","category","body"?,"deadline"?}, ...]  처리한 파일은 inbox/done/ 으로 이동."""
+    if not INBOX.exists():
+        return []
+    out = []
+    done = INBOX / "done"; done.mkdir(exist_ok=True)
+    for f in sorted(INBOX.glob("*.json")):
+        try:
+            rows = json.loads(f.read_text(encoding="utf-8"))
+            if isinstance(rows, dict):
+                rows = rows.get("items", [])
+            for r in rows:
+                if not r.get("title") or not r.get("url"):
+                    continue
+                cat = r.get("category", "economy")
+                if cat not in PROMPTS:
+                    cat = "policy"
+                out.append({
+                    "category": cat,
+                    "title": r["title"].strip(),
+                    "url": r["url"],
+                    "source": r.get("source", f.stem),
+                    "deadline": r.get("deadline"),
+                    "raw": f"제목: {r['title']}\n발표기관: {r.get('source','')}\n본문: {str(r.get('body',''))[:6000]}",
+                })
+            if not DRY_RUN:
+                f.rename(done / f.name)
+        except Exception as e:  # noqa: BLE001
+            print(f"[inbox:{f.name}] 읽기 실패: {e}")
+    print(f"[inbox] {len(out)}건")
+    return out
+
+
 # ---------------------------------------------------------------- Gemini
 PROMPTS = {
     "grants": """다음 지원사업 공고를 대구·달성 지역 소상공인과 기업 지원 담당 공무원이 바로 판단할 수 있게 정리하라.
@@ -163,12 +243,9 @@ PROMPTS = {
     "economy": """다음 보도자료를 대구 경제 관점에서 정리하라. Markdown 형식.
 1) 핵심 3줄 요약(각 한 문장)  2) 대구·달성 기업에 미치는 영향 또는 연결되는 지원사업(2~3문장)  3) 확인해야 할 후속 일정이 있으면 한 줄.
 규칙: 원문에 없는 수치·날짜를 만들지 말 것. 원문 문장을 그대로 옮기지 말고 완전히 다시 쓸 것. 정책에 대한 평가·비판은 하지 말 것.""",
-    "ai-trends": """다음 자료를 AI·로봇 산업 동향 관점에서 정리하라. Markdown 형식.
-1) 핵심 3줄 요약  2) 대구 로봇·모빌리티·의료기기·섬유 산업과의 접점(2~3문장)  3) 관련 공모·지원사업이 언급됐으면 한 줄.
-규칙: 원문에 없는 수치·날짜를 만들지 말 것. 원문 문장을 그대로 옮기지 말 것. 평가·비판 금지.""",
-    "gov-ai": """다음 자료를 지방자치단체 공무원의 AI 활용 관점에서 정리하라. Markdown 형식.
-1) 핵심 3줄 요약  2) 지자체 현장에서 바로 써먹을 수 있는 점(2~3문장)  3) 신청·교육·일정이 있으면 한 줄.
-규칙: 원문에 없는 수치·날짜를 만들지 말 것. 원문 문장을 그대로 옮기지 말 것. 평가·비판 금지.""",
+    "policy": """다음 자료를 대구 기업에 영향을 주는 산업 정책·예산·규제 변화 관점에서 정리하라. Markdown 형식.
+1) 핵심 3줄 요약  2) 대구 기업·산단에 미치는 영향 또는 연결되는 지원사업(2~3문장)  3) 시행·공고·마감 등 후속 일정이 있으면 한 줄.
+규칙: 원문에 없는 수치·날짜를 만들지 말 것. 원문 문장을 그대로 옮기지 말 것. 정책 평가·비판은 하지 말 것.""",
 }
 
 
@@ -202,14 +279,17 @@ def seo_meta(title: str, summary: str, md: str, category: str) -> dict:
         return {}
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_KEY}"
     prompt = (
-        "아래 블로그 글의 검색 최적화 정보를 JSON 하나로만 출력하라. 다른 문장 금지.\n"
-        '형식: {"seoTitle": "...", "description": "...", "tags": ["...", "...", "...", "...", "..."]}\n'
+        "아래 블로그 글의 검색·AI답변 최적화 정보를 JSON 하나로만 출력하라. 다른 문장 금지.\n"
+        '형식: {"seoTitle": "...", "description": "...", "tags": ["...","...","...","...","..."], '
+        '"faq": [{"q": "...", "a": "..."}, {"q": "...", "a": "..."}, {"q": "...", "a": "..."}]}\n'
         "규칙: seoTitle 은 40자 이내, 대구/달성 같은 지역어와 핵심어를 앞에 둘 것. "
-        "description 은 90~120자, 낚시성 표현 금지. tags 는 5개, 짧은 명사구, 검색어로 쓸 법한 것.\n\n"
+        "description 은 90~120자의 '핵심 문장' — 결론을 먼저, 수식어 없이 기관명·수치·기간 같은 사실로 쓸 것. "
+        "tags 는 5개, 짧은 명사구. faq 는 독자가 AI에게 물을 법한 질문 3개와 본문 근거만으로 쓴 답(각 답 1~2문장, 두괄식). "
+        "본문에 없는 사실은 답에 넣지 말고 '원문 확인 필요'라고 쓸 것.\n\n"
         f"[분류] {category}\n[제목] {title}\n[요약] {summary}\n[본문]\n{md[:2500]}"
     )
     body = {"contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0.2, "maxOutputTokens": 300, "responseMimeType": "application/json"}}
+            "generationConfig": {"temperature": 0.2, "maxOutputTokens": 700, "responseMimeType": "application/json"}}
     try:
         r = requests.post(url, json=body, timeout=40)
         r.raise_for_status()
@@ -217,7 +297,8 @@ def seo_meta(title: str, summary: str, md: str, category: str) -> dict:
         out = re.sub(r"^```(json)?|```$", "", out.strip(), flags=re.M).strip()
         d = json.loads(out)
         tags = [str(t).strip() for t in d.get("tags", [])][:5]
-        return {"seoTitle": str(d.get("seoTitle", ""))[:60], "description": str(d.get("description", ""))[:160], "tags": tags}
+        faq = [{"q": str(x.get("q","")).strip(), "a": str(x.get("a","")).strip()} for x in d.get("faq", []) if x.get("q") and x.get("a")][:3]
+        return {"seoTitle": str(d.get("seoTitle", ""))[:60], "description": str(d.get("description", ""))[:160], "tags": tags, "faq": faq}
     except Exception as e:  # noqa: BLE001
         print(f"[seo] 실패(건너뜀): {e}")
         return {}
@@ -247,19 +328,49 @@ def write_post(item: dict, summary: str, md: str, k: str, seo: dict | None = Non
         fm.append(f"description: {yaml_str(seo['description'])}")
     if seo.get("tags"):
         fm.append("tags: [" + ", ".join(yaml_str(t) for t in seo["tags"]) + "]")
+    if seo.get("faq"):
+        fm.append("faq:")
+        for x in seo["faq"]:
+            fm.append(f"  - q: {yaml_str(x['q'])}")
+            fm.append(f"    a: {yaml_str(x['a'])}")
     fm += ["draft: true", "auto: true", "---", ""]
     path.write_text("\n".join(fm) + md + "\n", encoding="utf-8")
     return path
 
 
 # ---------------------------------------------------------------- 메인
+def company_keywords() -> list[str]:
+    """scripts/data/dalseong_companies.csv 의 기업명을 대구 경제 키워드에 자동 추가."""
+    f = ROOT / "scripts" / "data" / "dalseong_companies.csv"
+    if not f.exists():
+        return []
+    import csv
+    names = []
+    with f.open(encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            n = (row.get("name") or "").strip()
+            n = re.sub(r"^\(주\)|^주식회사\s*|\(주\)$|^㈜|^\(유\)|^\(사\)|^\(재\)", "", n).strip()
+            if len(n) >= 3 and not n.startswith("(예시)"):
+                names.append(n)
+    return sorted(set(names))
+
+
 def main() -> None:
     cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+    extra = company_keywords()
+    if extra:
+        for feed in cfg.get("rss", []) + cfg.get("boards", []):
+            if feed.get("category") == "economy":
+                feed["keywords"] = list(feed.get("keywords", [])) + extra
+        print(f"[data] 기업명 키워드 {len(extra)}개 추가")
     seen = load_state()
     items: list[dict] = []
     items += fetch_bizinfo(cfg["bizinfo"])
-    for feed in cfg["rss"]:
+    for feed in cfg.get("rss", []):
         items += fetch_rss(feed)
+    for b in cfg.get("boards", []):
+        items += fetch_board(b)
+    items += fetch_inbox()
 
     new = []
     for it in items:

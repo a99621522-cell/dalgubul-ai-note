@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+import IndustrialCard from '../../components/IndustrialCard.astro';
+import { companies, shortComplex } from '../../lib/csv';
+const list = companies();
+const complexesList = [...new Set(list.map(c => c.complex))];
+const groups = [...new Set(list.map(c => c.sector_group))].filter(Boolean).sort();
+const dists = [...new Set(list.map(c => c.district))].filter(Boolean).sort();
+const asOf = list[0]?.as_of ?? '';
+---
+<Base title="대구 기업 사전" description={`대구 공장등록 기업 ${list.length.toLocaleString('ko-KR')}곳 — 구·군·단지·업종·생산품·종사자 규모. 팩토리온 공개 자료 ${asOf} 기준`} current="companies">
+  <div class="section-head"><h1>대구 기업 사전</h1><span class="meta">{list.length.toLocaleString('ko-KR')}곳 · {asOf} 기준</span></div>
+  <p class="lede">대구에 공장을 둔 기업 {list.length.toLocaleString('ko-KR')}곳을 같은 형식으로 정리했습니다. 산업단지 21곳과 개별입지, 9개 구·군을 모두 포함하며, 평가나 순위는 하지 않습니다.</p>
+  <IndustrialCard />
+  <div class="tools">
+    <input id="q" type="search" placeholder="회사명·업종·생산품 검색" aria-label="검색" />
+    <select id="cx" aria-label="단지"><option value="">모든 단지</option>{complexesList.map(x => <option value={x}>{x}</option>)}</select>
+    <select id="sg" aria-label="업종"><option value="">모든 업종</option>{groups.map(x => <option value={x}>{x}</option>)}</select>
+    <select id="em" aria-label="구군"><option value="">모든 구·군</option>{dists.map(x => <option value={x}>{x}</option>)}</select>
+    <span id="count" class="meta"></span>
+  </div>
+  <ul class="co-list" id="list">
+    {list.map(c => (
+      <li data-complex={c.complex} data-group={c.sector_group} data-eup={c.district} data-text={`${c.name} ${c.sector} ${c.product}`.toLowerCase()}>
+        <a href={`/companies/${c.id}/`}>{c.name}</a>
+        <span class="co-meta">{c.district}{c.eupmyeon && ` ${c.eupmyeon}`} · {shortComplex(c.complex)} · {c.sector.replace(/ 외 \d+ 종/, '')}{c.workers_band && ` · ${c.workers_band}`}</span>
+      </li>
+    ))}
+  </ul>
+  <script>
+    const q = document.getElementById('q') as HTMLInputElement;
+    const sel = ['cx','sg','em'].map(id => document.getElementById(id) as HTMLSelectElement);
+    const items = Array.from(document.querySelectorAll<HTMLLIElement>('#list li'));
+    const count = document.getElementById('count')!;
+    const sp = new URLSearchParams(location.search); const ic = sp.get('complex'); if (ic) sel[0].value = ic; const idn = sp.get('district'); if (idn) sel[2].value = idn;
+    function apply() {
+      const t = q.value.trim().toLowerCase(); const [c, g, e] = sel.map(s => s.value); let n = 0;
+      for (const li of items) {
+        const ok = (!c || li.dataset.complex === c) && (!g || li.dataset.group === g) && (!e || li.dataset.eup === e) && (!t || (li.dataset.text ?? '').includes(t));
+        li.hidden = !ok; if (ok) n++;
+      }
+      count.textContent = `${n.toLocaleString('ko-KR')}곳`;
+    }
+    q.addEventListener('input', apply); sel.forEach(s => s.addEventListener('change', apply)); apply();
+  </script>
+</Base>
+<style>
+  .tools { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1.25rem 0 0.5rem; }
+  .tools input, .tools select { font: inherit; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); max-width: 100%; }
+  .tools input { flex: 1 1 14rem; }
+  .co-list { list-style: none; padding: 0; margin: 0; }
+  .co-list li { padding: 0.55rem 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.1rem; }
+  .co-list a { color: var(--ink); text-decoration: none; font-weight: 600; }
+  .co-list a:hover { text-decoration: underline; }
+  .co-meta { font-size: 0.82rem; color: var(--ink-soft); }
+</style>

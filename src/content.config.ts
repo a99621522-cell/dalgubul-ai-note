@@ -6,7 +6,7 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    category: z.enum(['economy', 'grants', 'ai-trends', 'gov-ai']),
+    category: z.enum(['economy', 'grants', 'policy']),
     summary: z.string(),
     source: z.string().optional(),        // 원문 기관명
     sourceUrl: z.string().url().optional(),
@@ -15,7 +15,8 @@ const posts = defineCollection({
     auto: z.boolean().default(false),     // AI 자동 초안 여부
     tags: z.array(z.string()).default([]),
     seoTitle: z.string().optional(),      // 검색용 제목(없으면 title 사용)
-    description: z.string().optional(),   // 메타 설명(없으면 summary 사용)
+    description: z.string().optional(),   // 메타 설명 = 핵심 문장(없으면 summary 사용)
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]), // AI 답변용 Q&A
   }),
 });
 

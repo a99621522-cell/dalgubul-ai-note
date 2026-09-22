@@ -1,0 +1,79 @@
+:root {
+  --paper: #ffffff;
+  --ink: #1b2430;
+  --ink-soft: #55616f;
+  --line: #dfe3e8;
+  --pine: #1e6b52;
+  --pine-deep: #144a39;
+  --dawn: #fff3c4;
+  --dawn-ink: #7a5a00;
+  --font-head: "Gowun Batang", "Noto Serif KR", serif;
+  --font-body: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+  --measure: 40rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --paper:#121619; --ink:#e8ebee; --ink-soft:#a3adb8; --line:#2a3138; --pine:#5fbf9a; --pine-deep:#8fd6bb; --dawn:#3a3000; --dawn-ink:#ffe08a; }
+}
+* { box-sizing: border-box; }
+html { font-family: var(--font-body); color: var(--ink); background: var(--paper); line-height: 1.7; -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+a { color: var(--pine); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--pine-deep); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--pine); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--font-head); font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; margin: 0; }
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+p { margin: 0 0 1em; }
+.wrap { max-width: var(--measure); margin: 0 auto; padding: 0 1.25rem; }
+
+.site-head { padding: 1.5rem 0 0.75rem; border-bottom: 1px solid var(--line); }
+.site-head .brand { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--ink); text-decoration: none; }
+.site-head .tagline { color: var(--ink-soft); font-size: 0.9rem; margin: 0.15rem 0 0.75rem; }
+.nav { display: flex; gap: 1.1rem; overflow-x: auto; scrollbar-width: none; }
+.nav a { white-space: nowrap; color: var(--ink-soft); text-decoration: none; padding: 0.4rem 0; border-bottom: 2px solid transparent; }
+.nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--pine); }
+
+.deadline-strip { margin: 1.25rem 0 0; padding: 0.9rem 1rem; background: var(--dawn); color: var(--dawn-ink); border-radius: 6px; }
+.deadline-strip h2 { font-size: 0.95rem; font-family: var(--font-body); font-weight: 600; margin-bottom: 0.4rem; }
+.deadline-strip ol { margin: 0; padding: 0; list-style: none; }
+.deadline-strip li { display: flex; gap: 0.75rem; align-items: baseline; padding: 0.2rem 0; }
+.deadline-strip .dday { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 3.2rem; }
+.deadline-strip a { color: inherit; }
+
+.post-list { list-style: none; padding: 0; margin: 1.25rem 0 0; }
+.post-list li { padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.post-list h3 a { color: var(--ink); text-decoration: none; }
+.post-list h3 a:hover { text-decoration: underline; }
+.meta { font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.3rem; }
+.meta .cat { color: var(--pine); }
+.meta .auto { border: 1px solid var(--line); border-radius: 3px; padding: 0 0.35rem; margin-left: 0.4rem; }
+.summary { margin: 0.35rem 0 0; color: var(--ink); }
+
+article.post { padding-top: 1.75rem; }
+article.post header h1 { margin-bottom: 0.5rem; }
+article.post .body { margin-top: 1.5rem; }
+article.post .body h2 { margin: 1.75rem 0 0.5rem; }
+article.post .body ul, article.post .body ol { padding-left: 1.3rem; }
+article.post .body table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+article.post .body th, article.post .body td { border: 1px solid var(--line); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+article.post .body blockquote { margin: 1rem 0; padding: 0.2rem 0 0.2rem 1rem; border-left: 3px solid var(--pine); color: var(--ink-soft); }
+.source-box { margin-top: 2rem; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 6px; font-size: 0.9rem; color: var(--ink-soft); }
+.source-box strong { color: var(--ink); }
+.tags { margin-top: 1.5rem; font-size: 0.85rem; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+.site-foot { margin: 3rem 0 2rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--ink-soft); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-top: 2rem; }
+.section-head a { font-size: 0.88rem; }
+.empty { color: var(--ink-soft); padding: 1.5rem 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* 핵심 문장(두괄식)과 FAQ */
+.lede { margin: 0.9rem 0 0; font-size: 1.05rem; font-weight: 600; line-height: 1.6; }
+.faq { margin-top: 2rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+.faq h2 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+.faq details { border-bottom: 1px solid var(--line); padding: 0.5rem 0; }
+.faq summary { cursor: pointer; font-weight: 600; }
+.faq p { margin: 0.4rem 0 0.2rem; color: var(--ink); }
+article.post .body img { max-width: 100%; height: auto; }
+article.post .body figcaption { font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.3rem; }

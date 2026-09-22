@@ -1,0 +1,61 @@
+# 주간 루틴이 순회하는 대구 지역 수행기관. board_url 이 비어 있으면 루틴이 홈페이지에서 '사업공고' 게시판을 찾아 채운다.
+# 원칙: 공공기관 사이트만, 주 1회, 개인정보 없는 글만. 결과는 scripts/inbox/weekly-YYYYMMDD.json
+institutions:
+  - name: 대구테크노파크
+    home: https://www.ttp.org
+    board_url: ""
+    category: grants
+  - name: 대구디지털혁신진흥원
+    home: https://www.dip.or.kr
+    board_url: ""
+    category: grants
+  - name: 대구기계부품연구원
+    home: https://www.dmi.re.kr
+    board_url: ""
+    category: grants
+  - name: 한국로봇산업진흥원
+    home: https://www.kiria.org
+    board_url: ""
+    category: grants
+  - name: 대구창조경제혁신센터
+    home: https://ccei.creativekorea.or.kr/daegu
+    board_url: ""
+    category: grants
+  - name: 대구경북첨단의료산업진흥재단
+    home: https://www.dgmif.re.kr
+    board_url: ""
+    category: grants
+  - name: 대구경북디자인진흥원
+    home: https://www.dgdp.or.kr
+    board_url: ""
+    category: grants
+  - name: 대구경북지방중소벤처기업청
+    home: https://www.mss.go.kr
+    board_url: ""
+    category: grants
+  - name: 한국산업단지공단 대경지역본부
+    home: https://www.kicox.or.kr
+    board_url: ""
+    category: economy
+  - name: 대구RISE센터
+    home: ""
+    board_url: ""
+    category: grants
+    note: 대구시 RISE 사업 공고 페이지 주소 확인 필요
+  - name: 대구상공회의소
+    home: https://www.dcci.or.kr
+    board_url: ""
+    category: economy
+  - name: 소상공인시장진흥공단 대구경북본부
+    home: https://www.semas.or.kr
+    board_url: ""
+    category: grants
+
+# 전국 통합 창구 — collect.py 의 boards: 로 매일 수집 (여기는 참고용 목록)
+aggregators:
+  - {name: 기업마당, url: https://www.bizinfo.go.kr, method: api}
+  - {name: IRIS 범부처통합연구지원, url: https://www.iris.go.kr, method: board}
+  - {name: K-Startup, url: https://www.k-startup.go.kr, method: board}
+  - {name: 소상공인24, url: https://www.sbiz24.kr, method: board}
+  - {name: 고용24, url: https://www.work24.go.kr, method: board}
+  - {name: 나라장터, url: https://www.g2b.go.kr, method: api(data.go.kr 조달청)}

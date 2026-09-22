@@ -76,8 +76,10 @@ def yaml_str(s: str) -> str:
 
 # ---------------------------------------------------------------- 소스 1: 기업마당
 def fetch_bizinfo(cfg: dict) -> list[dict]:
-    """공공데이터포털 '중소벤처기업부_기업마당 지원사업 정보'.
-    응답 필드명은 포털 문서 기준이며 버전에 따라 다를 수 있어 .get 으로 방어한다."""
+    """기업마당 지원사업정보 API (인증키는 기업마당에서 직접 발급).
+    중앙부처·지자체·유관기관 지원사업 공고를 한 창구로 모아 준다.
+    명세: https://www.bizinfo.go.kr/apiList.do
+    응답 필드명은 버전에 따라 다를 수 있어 .get 으로 방어한다."""
     if not BIZINFO_KEY:
         print("[bizinfo] BIZINFO_KEY 없음 — 건너뜀")
         return []
@@ -100,7 +102,8 @@ def fetch_bizinfo(cfg: dict) -> list[dict]:
         hay = " ".join(str(it.get(f, "")) for f in ("pblancNm", "jrsdInsttNm", "excInsttNm", "hashtags", "bsnsSumryCn", "trgetNm"))
         if not matches(hay, cfg["keywords"]):
             continue
-        period = it.get("reqstBeginEndDe", "")  # 실제 응답: "2026-09-14 ~ 2026-09-23" 또는 "모집 완료시까지"
+        # 명세상 신청기간 필드는 reqstDt("20220727 ~ 20220930"). 과거 응답의 reqstBeginEndDe 도 함께 본다
+        period = it.get("reqstDt") or it.get("reqstBeginEndDe") or ""
         deadline = None
         m = re.findall(r"(\d{4})[-.](\d{2})[-.](\d{2})", period) or [(d[:4], d[4:6], d[6:]) for d in re.findall(r"(\d{8})", period)]
         if m:

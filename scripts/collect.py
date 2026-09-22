@@ -120,10 +120,12 @@ def fetch_bizinfo(cfg: dict) -> list[dict]:
         if cfg.get("region", "대구") not in regions:
             continue
         local = len(regions) < len(BIZINFO_REGIONS) - 2
-        # 2차: 전국 공고는 산업 키워드가 걸릴 때만. 대구 한정 공고는 키워드 없이 전부 받는다.
-        hay = " ".join(str(it.get(f, "")) for f in ("pblancNm", "jrsdInsttNm", "excInsttNm", "hashtags", "bsnsSumryCn", "trgetNm"))
-        if not local and not matches(hay, cfg["keywords"]):
-            continue
+        # 2차(선택): keywords 가 비어 있으면 대구 한정·전국 공고를 전부 받는다(기본).
+        #           keywords 를 채우면 전국 공고만 그 산업 키워드로 한 번 더 거른다. 대구 한정은 항상 전부.
+        if cfg.get("keywords") and not local:
+            hay = " ".join(str(it.get(f, "")) for f in ("pblancNm", "jrsdInsttNm", "excInsttNm", "hashtags", "bsnsSumryCn", "trgetNm"))
+            if not matches(hay, cfg["keywords"]):
+                continue
         # 실제 응답 필드는 reqstBeginEndDe("2026-09-21 ~ 2026-10-09" 또는 "예산 소진시까지").
         # 명세 문서(apiList.do)는 reqstDt 라 적혀 있어 둘 다 본다
         period = it.get("reqstBeginEndDe") or it.get("reqstDt") or ""

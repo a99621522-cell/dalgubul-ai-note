@@ -8,7 +8,7 @@
 | 층 | 소스 | 주기 | 방식 |
 |---|---|---|---|
 | 1 국비 | 부처 사업설명자료(산업·중기·과기·국토·고용·행안), 열린재정 | 연 1회 | PDF 파서 `scripts/parse_budget.py`, 열린재정 API |
-| 1 공고 | 기업마당 API, IRIS, K-Startup, 소상공인24, 고용24, 정책브리핑 RSS, 나라장터 API | 매일 | `collect.py` (Actions) |
+| 1 공고 | 기업마당 API(가동 중), IRIS, K-Startup, 소상공인24, 고용24, 나라장터 API(예정) — 정책브리핑 RSS 는 2026-07-01 중단돼 제외 | 매일 | `collect.py` (Actions) |
 | 2 시·군 | 대구시 예산서, 대구시·달성군 보도자료·고시공고, 시의회 | 연 1회 / 매일 | PDF 파서 / 게시판 스크랩 |
 | 3 수행기관 | 대구 지역 기관 12곳 공고 게시판, 연 1회 통합안내서 | 주 1회 | Claude Code 루틴 → `scripts/inbox/*.json` |
 | 4 기업 | 팩토리온(월), 벤처확인(월), DART·네이버뉴스(일), KIPRIS(월) | 월/일 | `import_factoryon.py`, `collect.py` |

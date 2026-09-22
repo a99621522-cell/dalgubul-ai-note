@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import DeadlineStrip from '../components/DeadlineStrip.astro';
+import IndustrialCard from '../components/IndustrialCard.astro';
+import { getCollection } from 'astro:content';
+import { CATEGORIES } from '../categories';
+const all = (await getCollection('posts', p => !p.data.draft)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const latest = all.slice(0, 8);
+---
+<Base>
+  <DeadlineStrip posts={all} />
+  <IndustrialCard compact={true} />
+  <div class="section-head"><h2>최근 글</h2></div>
+  <PostList posts={latest} />
+  {Object.entries(CATEGORIES).map(([key, c]) => {
+    const ps = all.filter(p => p.data.category === key).slice(0, 3);
+    return ps.length > 0 && (
+      <>
+        <div class="section-head"><h2>{c.name}</h2><a href={`/category/${key}/`}>더 보기</a></div>
+        <PostList posts={ps} />
+      </>
+    );
+  })}
+</Base>

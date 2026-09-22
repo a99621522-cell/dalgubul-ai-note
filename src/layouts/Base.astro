@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import { CATEGORIES } from '../categories';
+interface Props { title?: string; seoTitle?: string; description?: string; current?: string; tags?: string[]; jsonld?: object[]; }
+const { title, seoTitle, description = '예산부터 공고까지, 대구 기업을 위한 지원사업 연결 기록', current = '', tags = [], jsonld = [] } = Astro.props;
+const fullTitle = (seoTitle || title) ? `${seoTitle || title} — 다잇다 노트` : '다잇다 노트';
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  {tags.length > 0 && <meta name="keywords" content={tags.join(', ')} />}
+  {canonical && <link rel="canonical" href={canonical} />}
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="다잇다 노트" />
+  <meta property="og:locale" content="ko_KR" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="alternate" type="application/rss+xml" title="다잇다 노트" href="/rss.xml" />
+  {jsonld.map(obj => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
+</head>
+<body>
+  <header class="site-head">
+    <div class="wrap">
+      <a class="brand" href="/">다잇다 노트</a>
+      <p class="tagline">예산부터 공고까지, 대구 기업을 위한 지원사업 연결 기록</p>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a href="/companies/" aria-current={current === 'companies' ? 'page' : undefined}>기업 사전</a>
+        {Object.entries(CATEGORIES).map(([key, c]) => (
+          <a href={`/category/${key}/`} aria-current={current === key ? 'page' : undefined}>{c.name}</a>
+        ))}
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <slot />
+  </main>
+  <footer class="site-foot">
+    <div class="wrap">
+      <p>보도자료 요약은 원문 기관의 공공누리 조건에 따라 출처를 표시합니다. "AI 초안" 표시가 있는 글은 자동 생성 후 사람이 검토했습니다. 정책 해석은 개인 의견이며 소속 기관의 입장이 아닙니다.</p>
+    </div>
+  </footer>
+</body>
+</html>

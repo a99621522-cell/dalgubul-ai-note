@@ -1,0 +1,53 @@
+---
+import { complexes, byDistrict, shortComplex } from '../lib/csv';
+const rows = complexes();
+const dists = byDistrict();
+const num = (v: string | number) => v ? Number(v).toLocaleString('ko-KR') : '—';
+const total = (k: string) => { const s = rows.reduce((a,r)=>a + (Number(r[k])||0), 0); return s ? s.toLocaleString('ko-KR') : '—'; };
+const asOf = rows.map(r=>r.as_of).filter(Boolean).sort().pop();
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+const shown = compact ? rows.filter(r => r.name !== '개별입지').slice(0, 8) : rows;
+---
+{rows.length > 0 && (
+<section class="ind-card" aria-label="대구 공장 현황">
+  <div class="ind-head">
+    <h2>대구 공장등록 기업 현황</h2>
+    <span class="meta">기업 {total('firms')} · 공장 {total('sites')} · 종사자 {total('workers')}명{asOf && ` · ${asOf} 기준`}</span>
+  </div>
+  <div class="ind-grid">
+    <div class="ind-scroll">
+      <table>
+        <thead><tr><th>구·군</th><th>기업</th><th>종사자</th></tr></thead>
+        <tbody>{dists.map(d => (<tr><td><a href={`/companies/?district=${encodeURIComponent(d.name)}`}>{d.name}</a></td><td class="n">{num(d.firms)}</td><td class="n">{num(d.workers)}</td></tr>))}</tbody>
+      </table>
+    </div>
+    <div class="ind-scroll">
+      <table>
+        <thead><tr><th>단지</th>{!compact && <th>소재지</th>}<th>기업</th><th>종사자</th>{!compact && <th>주요 업종</th>}</tr></thead>
+        <tbody>
+          {shown.map(r => (
+            <tr><td><a href={`/companies/?complex=${encodeURIComponent(r.name)}`}>{compact ? shortComplex(r.name) : r.name}</a></td>
+              {!compact && <td>{r.location}</td>}
+              <td class="n">{num(r.firms)}</td><td class="n">{num(r.workers)}</td>
+              {!compact && <td>{r.main_sectors || '—'}</td>}</tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="meta">출처: 한국산업단지공단 팩토리온 전국(개별·계획) 입주업체현황 {asOf}. 공장 주소가 대구인 사업장 기준, 종사자 수는 공장등록 신고값. {compact && <a href="/companies/">전체 단지·기업 사전 보기</a>}</p>
+</section>
+)}
+<style>
+  .ind-card { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--line); border-radius: 6px; }
+  .ind-head { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline; margin-bottom: 0.6rem; }
+  .ind-head h2 { font-size: 1.05rem; }
+  .ind-grid { display: grid; grid-template-columns: minmax(10rem, 1fr) 2fr; gap: 1rem; }
+  @media (max-width: 40rem) { .ind-grid { grid-template-columns: 1fr; } }
+  .ind-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.88rem; white-space: nowrap; }
+  th, td { border-bottom: 1px solid var(--line); padding: 0.4rem 0.5rem; text-align: left; }
+  th { color: var(--ink-soft); font-weight: 600; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; }
+</style>

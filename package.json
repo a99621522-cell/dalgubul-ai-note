@@ -1,0 +1,18 @@
+{
+  "name": "dalgubul-ai-note",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "collect": "python3 scripts/collect.py",
+    "deploy": "astro build && wrangler pages deploy"
+  },
+  "dependencies": {
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.136.1"
+  }
+}

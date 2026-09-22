@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import { CATEGORIES } from '../../categories';
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', p => !p.data.draft);
+  return posts.map(p => ({ params: { id: p.id }, props: { post: p } }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const fmt = (x: Date) => x.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : Astro.url.pathname;
+const jsonld: object[] = [{
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: d.seoTitle || d.title, description: d.description || d.summary,
+  datePublished: d.date.toISOString(), articleSection: CATEGORIES[d.category].name,
+  keywords: d.tags.join(', '), mainEntityOfPage: pageUrl,
+  author: { '@type': 'Person', name: '다잇다 노트' },
+  publisher: { '@type': 'Organization', name: '다잇다 노트' },
+  ...(d.sourceUrl ? { citation: d.sourceUrl } : {}),
+}];
+if (d.faq.length > 0) jsonld.push({
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: d.faq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+});
+---
+<Base title={d.title} seoTitle={d.seoTitle} description={d.description || d.summary} current={d.category} tags={d.tags} jsonld={jsonld}>
+  <article class="post">
+    <header>
+      <h1>{d.title}</h1>
+      <div class="meta">
+        <span class="cat">{CATEGORIES[d.category].name}</span>{' · '}{fmt(d.date)}
+        {d.deadline && <>{' · '}마감 {fmt(d.deadline)}</>}
+        {d.auto && <span class="auto">AI 초안</span>}
+      </div>
+    </header>
+    {d.description && <p class="lede">{d.description}</p>}
+    <div class="body"><Content /></div>
+    {d.faq.length > 0 && (
+      <section class="faq" aria-label="자주 묻는 질문">
+        <h2>자주 묻는 질문</h2>
+        {d.faq.map(f => (<details><summary>{f.q}</summary><p>{f.a}</p></details>))}
+      </section>
+    )}
+    {d.tags.length > 0 && <p class="tags">{d.tags.map(t => <span>#{t}</span>)}</p>}
+    {(d.source || d.sourceUrl) && (
+      <aside class="source-box">
+        <strong>출처</strong>{' '}{d.source}
+        {d.sourceUrl && <> — <a href={d.sourceUrl} rel="noopener">원문 보기</a></>}
+        <br />요약은 원문을 바탕으로 작성했으며 수치·날짜는 원문 확인을 권합니다.
+      </aside>
+    )}
+  </article>
+</Base>

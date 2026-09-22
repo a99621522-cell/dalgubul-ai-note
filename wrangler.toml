@@ -1,0 +1,5 @@
+# Cloudflare Pages 설정 (직접 업로드 / CI 공용)
+# 배포: npm run build && npx wrangler pages deploy
+name = "dalgubul-ai-note"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-09-22"

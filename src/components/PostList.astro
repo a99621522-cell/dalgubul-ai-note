@@ -1,0 +1,22 @@
+---
+import { CATEGORIES } from '../categories';
+import type { CollectionEntry } from 'astro:content';
+interface Props { posts: CollectionEntry<'posts'>[]; }
+const { posts } = Astro.props;
+const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+{posts.length === 0 ? <p class="empty">아직 글이 없습니다. 수집 스크립트가 실행되면 여기에 초안이 쌓입니다.</p> :
+<ul class="post-list">
+  {posts.map(p => (
+    <li>
+      <h3><a href={`/posts/${p.id}/`}>{p.data.title}</a></h3>
+      <div class="meta">
+        <span class="cat">{CATEGORIES[p.data.category].name}</span>
+        {' · '}{fmt(p.data.date)}
+        {p.data.source && <>{' · '}{p.data.source}</>}
+        {p.data.auto && <span class="auto">AI 초안</span>}
+      </div>
+      <p class="summary">{p.data.summary}</p>
+    </li>
+  ))}
+</ul>}

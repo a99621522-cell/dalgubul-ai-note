@@ -61,6 +61,7 @@ def redact(e: object) -> str:
     """예외 문자열에서 API 키를 지운다. requests 오류 메시지에는 요청 URL 이 통째로 들어간다."""
     return re.sub(r"AQ\.[\w\-]+|AIza[\w\-]+|key=[^&\s]+", "***", str(e))
 DRY_RUN = "--dry-run" in sys.argv
+FAILURES: list[str] = []  # 소스·요약 실패 사유. 실행 끝에 요약으로 출력하고 Actions 결과 화면에도 띄운다
 UA = {"User-Agent": "dalgubul-ai-note/0.1 (+personal blog collector)"}
 
 
@@ -115,6 +116,7 @@ def fetch_bizinfo(cfg: dict) -> list[dict]:
         data = r.json()
     except Exception as e:  # noqa: BLE001
         print(f"[bizinfo] 실패: {e}")
+        FAILURES.append(f"기업마당 API 호출 실패: {str(e)[:200]}")
         return []
     items = data.get("jsonArray") or data.get("items") or []
     out = []
@@ -318,11 +320,13 @@ def gemini(prompt: str, text: str) -> tuple[str, str] | None:
             code = e.response.status_code if e.response is not None else 0
             print(f"[gemini] {attempt+1}차 실패: HTTP {code} {redact(e)}")
             if code in (400, 401, 403, 404):  # 키·모델·요청 형식 문제는 다시 보내도 같다
+                FAILURES.append(f"Gemini HTTP {code}: {redact(e)[:200]}")
                 break
             time.sleep(3 * (attempt + 1))
         except Exception as e:  # noqa: BLE001
             print(f"[gemini] {attempt+1}차 실패: {redact(e)}")
             time.sleep(3 * (attempt + 1))
+    FAILURES.append(f"Gemini 요약 실패(3회): {redact(e)[:200]}")
     return None
 
 
@@ -438,6 +442,7 @@ def main() -> None:
         new = new[:limit]
 
     written = []
+    skipped = 0
     for it in new:
         text = it["raw"]
         if it["category"] != "grants" and it.get("url"):
@@ -449,6 +454,7 @@ def main() -> None:
             continue
         res = gemini(PROMPTS[it["category"]], text)
         if res is None:
+            skipped += 1
             print("  · 건너뜀(요약 실패, 다음 실행에 재시도):", it["title"][:50])
             continue
         summary, md = res
@@ -462,6 +468,37 @@ def main() -> None:
     if not DRY_RUN:
         save_state(seen)
     print(f"완료: 초안 {len(written)}건. 승인은 `python3 scripts/approve.py`")
+    report_run(len(items), len(new), len(written), skipped)
+
+
+def report_run(n_items: int, n_new: int, n_written: int, n_skipped: int) -> None:
+    """실행 요약. GitHub Actions 안이면 결과 화면(Job Summary)과 주석(annotation)에도 띄운다.
+    '후보는 있었는데 한 건도 못 썼다'는 상황이 초록 체크 뒤에 숨지 않게 하는 게 목적이다.
+    CLAUDE.md 원칙대로 외부 API 실패로 프로세스를 죽이지는 않는다(종료코드 0 유지)."""
+    lines = [f"수집 {n_items}건 · 신규 {n_new}건 · 저장 {n_written}건 · 요약실패 건너뜀 {n_skipped}건"]
+    if FAILURES:
+        seen_msgs: list[str] = []
+        for f in FAILURES:
+            if f not in seen_msgs:
+                seen_msgs.append(f)
+        lines.append("실패 사유: " + " | ".join(seen_msgs[:5]))
+    print("[요약] " + " / ".join(lines))
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not summary_path:
+        return
+    md = ["## 수집 결과", "", "| 항목 | 건수 |", "|---|---|",
+          f"| 소스에서 받은 항목 | {n_items} |", f"| 그중 신규(seen 제외) | {n_new} |",
+          f"| 초안 저장 | {n_written} |", f"| 요약 실패로 건너뜀 | {n_skipped} |", ""]
+    if FAILURES:
+        md += ["**실패 사유**", ""] + [f"- {f}" for f in dict.fromkeys(FAILURES)] + [""]
+    if n_items == 0:
+        md.append("> 소스에서 아무것도 받지 못했다. API 키·네트워크·IP 차단을 의심할 것.")
+        print("::error title=수집 0건::소스에서 항목을 하나도 받지 못함 — 위 실패 사유 확인")
+    elif n_new > 0 and n_written == 0 and not DRY_RUN:
+        md.append("> 신규 후보는 있었지만 한 건도 저장하지 못했다. 요약(Gemini) 단계 실패를 의심할 것.")
+        print(f"::error title=초안 0건::신규 {n_new}건 중 0건 저장 — 요약 단계 실패 의심")
+    with open(summary_path, "a", encoding="utf-8") as fh:
+        fh.write(chr(10).join(md) + chr(10))
 
 
 if __name__ == "__main__":

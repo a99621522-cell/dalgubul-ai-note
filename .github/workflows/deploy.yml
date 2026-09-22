@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_call:          # collect.yml 이 수집 후 호출
 
 # 동시 배포 방지 (수집 커밋이 연달아 들어와도 마지막 것만 배포)
 concurrency:

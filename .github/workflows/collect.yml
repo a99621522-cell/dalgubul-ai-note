@@ -29,3 +29,9 @@ jobs:
           git add src/content/posts scripts/state
           git diff --cached --quiet && echo "새 초안 없음" || git commit -m "chore: 자동 초안 $(date -u +%Y-%m-%d)"
           git push
+
+  # GITHUB_TOKEN 푸시는 다른 워크플로를 트리거하지 않으므로 직접 호출한다
+  deploy:
+    needs: collect
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

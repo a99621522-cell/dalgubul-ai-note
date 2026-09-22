@@ -48,18 +48,19 @@ if _ENV_FILE.exists():
             _k, _v = _line.split("=", 1)
             os.environ.setdefault(_k.strip(), _v.strip())
 
-BIZINFO_KEY = os.environ.get("BIZINFO_KEY", "")
-GEMINI_KEY = os.environ.get("GEMINI_KEY", "")
+# .strip(): GitHub Secret 에 붙여넣을 때 끝에 줄바꿈이 딸려 오면 URL 에 %0A 로 실려 API 가 500 을 낸다 (2026-09-22 실제 발생)
+BIZINFO_KEY = os.environ.get("BIZINFO_KEY", "").strip()
+GEMINI_KEY = os.environ.get("GEMINI_KEY", "").strip()
 # 기본 모델은 사고(thinking) 토큰을 쓰지 않는 lite 계열로 둔다. 상위 flash 는 호출마다 사고 토큰 ~1000개를
 # 먼저 쓰기 때문에 maxOutputTokens 에 잘리거나 비용이 몇 배가 된다. gemini-2.5-flash 는 신규 키에 막혀 404.
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite").strip()
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 GEMINI_HEADERS = {"x-goog-api-key": GEMINI_KEY}  # 키는 URL 이 아니라 헤더로 — 오류 로그에 URL 이 찍혀도 키가 안 샌다
 
 
 def redact(e: object) -> str:
     """예외 문자열에서 API 키를 지운다. requests 오류 메시지에는 요청 URL 이 통째로 들어간다."""
-    return re.sub(r"AQ\.[\w\-]+|AIza[\w\-]+|key=[^&\s]+", "***", str(e))
+    return re.sub(r"AQ\.[\w\-]+|AIza[\w\-]+|key=[^&\s]+", "***", str(e), flags=re.I)
 DRY_RUN = "--dry-run" in sys.argv
 FAILURES: list[str] = []  # 소스·요약 실패 사유. 실행 끝에 요약으로 출력하고 Actions 결과 화면에도 띄운다
 UA = {"User-Agent": "dalgubul-ai-note/0.1 (+personal blog collector)"}

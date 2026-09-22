@@ -63,4 +63,3 @@ BIZINFO_KEY=... GEMINI_KEY=... python3 scripts/collect.py --dry-run   # 어떤 �
 - 기업마당 API 응답 필드명은 2026-09-15 실제 응답으로 확인·반영했습니다(`pblancNm`, `reqstBeginEndDe`="YYYY-MM-DD ~ YYYY-MM-DD", `bsnsSumryCn`은 HTML).
 - korea.kr RSS 주소가 바뀌면 사이트 하단 RSS 메뉴에서 새 주소를 확인하세요.
 - 보도자료는 공공누리 조건에 따라 출처를 표시합니다. 원문 문장 그대로 싣지 않도록 프롬프트에 고정돼 있습니다.
-- 예시 글(`2026-09-13-example-grant.md`)은 첫 수집 후 삭제하세요.

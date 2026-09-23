@@ -206,7 +206,7 @@ def build_items(rows: list[dict], c: dict) -> list[dict]:
             f"접수일: {dt_h}",
             f"제출인: {r.get('flr_nm', '')}",
             f"원문: https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rc}",
-            (f"기업 사전: /companies/{cid}/" if cid else "기업 사전: (미등재 또는 이름 불일치)"),
+            *( [f"기업 사전: /companies/{cid}/"] if cid else [] ),   # 공장등록이 없는 상장사(건설 등)는 사전에 없다 — 그때는 줄 자체를 뺀다
             "※ 이 자료는 공시 목록(제목·일자)만 담고 있다. 금액·규모·일정 등 세부 수치는 공시 원문에서 확인해야 하며, "
             "요약에 원문에 없는 수치를 쓰지 말 것.",
         ])

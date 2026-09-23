@@ -300,6 +300,18 @@ PROMPTS = {
 규칙: 원문에 없는 수치·날짜를 만들지 말 것. 원문 문장을 그대로 옮기지 말 것. 정책 평가·비판은 하지 말 것.""",
 }
 
+# 출처별 프롬프트 재정의. 자료가 얇은 소스(DART 공시 목록)는 일반 economy 프롬프트의 '영향' 항목이 추측을 부르므로
+# 사실만 쓰는 전용 프롬프트를 쓴다. 키는 항목의 source 값과 정확히 같아야 한다.
+PROMPT_BY_SOURCE = {
+    "금융감독원 전자공시(DART)": """다음은 금융감독원 전자공시(DART)의 공시 '목록' 정보다. 공시 본문이 아니라 제목·회사·접수일·원문 링크뿐이다.
+이 자료에 있는 사실만으로 짧게 정리하라. Markdown 형식.
+1) 공시 사실(개조식 3줄 이내): 회사명·시장 구분·본사 소재지(자료에 적힌 대로)·공시 종류·접수일
+2) 원문에서 확인할 항목(개조식): 금액·규모·일정·상대방 등 이 자료에 없는 것을 '원문 확인 필요' 항목으로 나열
+3) 기업 사전 링크가 자료에 있으면 한 줄로 안내
+금지: 회사의 업종·규모·평판 등 자료에 없는 설명, 영향·전망·기대·권고("~할 수 있다", "~할 필요가 있다", "긍정적", "도움") 문장,
+정책·기업에 대한 평가. 자료에 없는 수치·날짜를 만들지 말 것. 존댓말 대신 개조식·평서문.""",
+}
+
 
 def gemini(prompt: str, text: str) -> tuple[str, str] | None:
     """(요약 한 줄, 본문 Markdown) 반환. 키가 없으면 원문 일부로 대체.
@@ -466,7 +478,7 @@ def main() -> None:
             print("  · [dry-run]", it["category"], it["title"])
             if pm: print(f"      예산 대조: {pm['ministry']} {pm['name']} ({pm['code']}, 유사도 {pm['score']})")
             continue
-        res = gemini(PROMPTS[it["category"]], text)
+        res = gemini(PROMPT_BY_SOURCE.get(it.get("source", ""), PROMPTS[it["category"]]), text)
         if res is None:
             skipped += 1
             print("  · 건너뜀(요약 실패, 다음 실행에 재시도):", it["title"][:50])

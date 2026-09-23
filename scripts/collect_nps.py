@@ -11,6 +11,7 @@ scripts/data/sources/nps_YYYYMMDD.json 으로 저장한다(최근 2개월치만 
   name, address(읍면동까지만 제공됨), sector_code, sector, product(없음 → ""), source="nps", collected,
   bizr6(사업자등록번호 앞 6자리 — 파일이 6자리까지만 제공), corp_type(법인/개인), status(등록/탈퇴),
   district(구·군), emd(읍면동), bjd_code(법정동코드), subscribers(가입자수), applied(적용일자), withdrawn(탈퇴일자),
+  new_month/lost_month(그달 신규취득·상실 인원 — 월별 파일을 쌓으면 고용 추이가 됨),
   zone_hint(알파시티·첨복단지·테크노폴리스·성서특구 — 해당 '동' 소재라는 뜻이지 단지 입주 확인이 아님)
 
 포함 범위: 파일 자체가 가입자 3인 이상 법인 / 10인 이상 개인사업장만 담는다. 기본은 '등록' 상태만 남긴다.
@@ -118,6 +119,7 @@ def main() -> None:
         "bjd": col(hdr, "고객법정동주소코드"), "sido": col(hdr, "광역시도코드"), "ctype": col(hdr, "형태구분"),
         "ind_code": col(hdr, "업종코드"), "ind": col(hdr, "업종코드명"), "applied": col(hdr, "적용일자"),
         "withdrawn": col(hdr, "탈퇴일자"), "subs": col(hdr, "가입자수"),
+        "new": col(hdr, "신규취득자수"), "lost": col(hdr, "상실가입자수"),   # 그달의 고용 흐름 — 현황판 전월 대비·12개월 합계 재료
     }
     today = date.today().isoformat()
     rows: list[dict] = []
@@ -148,6 +150,8 @@ def main() -> None:
             "status": status,
             "subscribers": int(r[i["subs"]] or 0) if (r[i["subs"]] or "").strip().isdigit() else None,
             "applied": r[i["applied"]].strip(), "withdrawn": r[i["withdrawn"]].strip(),
+            "new_month": int(r[i["new"]]) if (r[i["new"]] or "").strip().isdigit() else None,
+            "lost_month": int(r[i["lost"]]) if (r[i["lost"]] or "").strip().isdigit() else None,
             "zone_hint": zone,
             "source": "nps", "collected": today,
         })

@@ -6,7 +6,7 @@ import difflib, re, subprocess, sys
 from pathlib import Path
 import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent; DATA = ROOT / "scripts" / "data"
-def norm(s): return re.sub(r"\(R&D\)|\(정보화\)|\(국가직접지원\)|\(국가직접지|원\)|\(자율\)|\(1단계전환\)|\(2단계전환\)|\s|[·ㆍ‧,()/]", "", s)
+from programs import norm  # 정규화 규칙은 programs.py 한 곳에만 둔다
 def load_programs():
     fr = []
     for f in sorted(DATA.glob("programs_*.csv")):

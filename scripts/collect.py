@@ -25,6 +25,7 @@ import yaml
 import feedparser
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from programs import match_program  # 공고 ↔ 부처 예산 사업 대조 (scripts/programs.py, 표준 라이브러리)
 
 # Windows 콘솔(cp949)에서 로그의 유니코드 문자로 죽지 않게 한다
 try:
@@ -153,6 +154,7 @@ def fetch_bizinfo(cfg: dict) -> list[dict]:
             "title": title,
             "url": link,
             "source": it.get("jrsdInsttNm") or it.get("excInsttNm") or "기업마당",
+            "ministry": it.get("jrsdInsttNm", ""),   # 예산 대조 때 부처 필터로 쓴다
             "deadline": deadline,
             "local": local,
             "raw": f"사업명: {title}\n공고범위: {'대구 한정' if local else '전국'}\n소관기관: {it.get('jrsdInsttNm','')}\n수행기관: {it.get('excInsttNm','')}\n"
@@ -362,7 +364,7 @@ def seo_meta(title: str, summary: str, md: str, category: str) -> dict:
 
 
 # ---------------------------------------------------------------- 저장
-def write_post(item: dict, summary: str, md: str, k: str, seo: dict | None = None) -> Path:
+def write_post(item: dict, summary: str, md: str, k: str, seo: dict | None = None, program: dict | None = None) -> Path:
     today = date.today().isoformat()
     slug = slugify(item["title"], k)
     path = POSTS / f"{today}-{slug}.md"
@@ -390,6 +392,14 @@ def write_post(item: dict, summary: str, md: str, k: str, seo: dict | None = Non
         for x in seo["faq"]:
             fm.append(f"  - q: {yaml_str(x['q'])}")
             fm.append(f"    a: {yaml_str(x['a'])}")
+    if program:  # 예산 원천(자동 대조). 글 페이지의 BudgetSource 상자와 /programs/ 의 '공고 중' 배지가 이 값을 쓴다
+        fm += [
+            f"program_code: {yaml_str(program['code'])}",
+            f"program_name: {yaml_str(program['name'])}",
+            f"program_ministry: {yaml_str(program['ministry'])}",
+            f"program_budget_2026: {yaml_str(program['budget_2026'])}",
+            f"program_score: {program['score']}",
+        ]
     fm += ["draft: true", "auto: true", "---", ""]
     path.write_text("\n".join(fm) + md + "\n", encoding="utf-8")
     return path
@@ -451,8 +461,10 @@ def main() -> None:
             body = fetch_article_text(it["url"])
             if len(body) > 500:
                 text += "\n\n[원문 본문]\n" + body
+        pm = match_program(it["title"], it.get("ministry") or it.get("source", "")) if it["category"] == "grants" else None
         if DRY_RUN:
             print("  · [dry-run]", it["category"], it["title"])
+            if pm: print(f"      예산 대조: {pm['ministry']} {pm['name']} ({pm['code']}, 유사도 {pm['score']})")
             continue
         res = gemini(PROMPTS[it["category"]], text)
         if res is None:
@@ -461,7 +473,8 @@ def main() -> None:
             continue
         summary, md = res
         seo = seo_meta(it["title"], summary, md, it["category"])
-        p = write_post(it, summary, md, it["_key"], seo)
+        if pm: print(f"  · 예산 대조: {pm['ministry']} {pm['name']} ({pm['code']}, 유사도 {pm['score']})")
+        p = write_post(it, summary, md, it["_key"], seo, pm)
         seen.add(it["_key"])
         written.append(p)
         print("  · 저장:", p.name)

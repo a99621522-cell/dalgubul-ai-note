@@ -34,6 +34,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString(
       <p class="tagline">예산부터 공고까지, 대구 기업을 위한 지원사업 연결 기록</p>
       <nav class="nav" aria-label="주요 메뉴">
         <a href="/companies/" aria-current={current === 'companies' ? 'page' : undefined}>기업 사전</a>
+        <a href="/programs/" aria-current={current === 'programs' ? 'page' : undefined}>사업 예산</a>
         {Object.entries(CATEGORIES).map(([key, c]) => (
           <a href={`/category/${key}/`} aria-current={current === key ? 'page' : undefined}>{c.name}</a>
         ))}

@@ -1,0 +1,102 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { programs, fmtEok } from '../../lib/csv';
+/** /programs/ — 부처 사업설명자료에서 뽑은 예산 사업 DB 가운데 수혜자에 기업이 포함된 사업.
+ *  부처·신규 여부·2026 예산으로 거른다. 발행 글 가운데 program_code 가 같은 공고가 있으면 '공고 중' 배지와 링크.
+ *  평가·순위는 하지 않는다. 숫자는 사업설명자료의 값 그대로(백만 원 → 억 원 환산만). */
+const all = programs();
+const list = all.filter(p => p.corp).sort((a, b) => b.b26 - a.b26);
+const ministries = [...list.reduce((m, p) => m.set(p.ministry, (m.get(p.ministry) ?? 0) + 1), new Map<string, number>())]
+  .sort((a, b) => b[1] - a[1]);
+const posts = await getCollection('posts', p => !p.data.draft && !!p.data.program_code);
+const live = new Map<string, { id: string; title: string; deadline?: Date }[]>();
+for (const p of posts) {
+  const k = p.data.program_code!;
+  live.set(k, [...(live.get(k) ?? []), { id: p.id, title: p.data.title, deadline: p.data.deadline }]);
+}
+const sources = [...new Set(all.map(p => p.source))].filter(Boolean);
+const fmtDate = (x: Date) => x.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+---
+<Base title="사업 예산" description={`부처 사업설명자료에서 수혜자에 기업이 포함된 예산 사업 ${list.length}건 — 부처·신규 여부·2026년 예산으로 찾고, 공고가 나온 사업은 글로 연결`} current="programs">
+  <div class="section-head"><h1>사업 예산</h1><span class="meta">기업 수혜 사업 {list.length}건 · 전체 {all.length}건</span></div>
+  <p class="lede">부처가 국회에 낸 사업설명자료에서 수혜자에 기업이 들어 있는 사업만 모았습니다. 예산 숫자는 자료의 값 그대로이며(백만 원 → 억 원 환산), 평가나 순위는 하지 않습니다. 공고가 나온 사업에는 <span class="badge">공고 중</span> 표시와 글 링크가 붙습니다.</p>
+  <div class="tools">
+    <input id="q" type="search" placeholder="사업명·수행기관 검색" aria-label="검색" />
+    <select id="mi" aria-label="부처"><option value="">모든 부처</option>{ministries.map(([m, n]) => <option value={m}>{m} ({n})</option>)}</select>
+    <select id="bg" aria-label="2026년 예산">
+      <option value="0">모든 예산</option><option value="1000">10억 원 이상</option><option value="10000">100억 원 이상</option><option value="100000">1,000억 원 이상</option>
+    </select>
+    <label class="chk"><input id="nw" type="checkbox" /> 신규만</label>
+    <label class="chk"><input id="lv" type="checkbox" /> 공고 중만</label>
+    <span id="count" class="meta">{list.length}건</span>
+  </div>
+  <ul class="pg-list" id="list">
+    {list.map(p => {
+      const posts = live.get(p.code) ?? [];
+      return (
+        <li id={`p-${p.code}`} data-mi={p.ministry} data-b26={p.b26} data-new={p.isNew ? '1' : ''} data-live={posts.length ? '1' : ''}
+            data-text={`${p.name} ${p.executor} ${p.bureau}`.toLowerCase()}>
+          <div class="row1">
+            <span class="name">{p.name}</span>
+            {p.isNew && <span class="tag">{p.newDerived ? '신규(추정)' : '신규'}</span>}
+            {posts.length > 0 && <span class="badge">공고 중</span>}
+          </div>
+          <div class="row2">
+            {p.ministry}{p.bureau && ` ${p.bureau}`} · <span class="code">{p.code}</span>
+            {p.executor && <> · 수행 {p.executor}</>}
+          </div>
+          <div class="row3">
+            2026년 {fmtEok(p.b26) ?? '—'}{p.b25 > 0 && <span class="prev"> (2025년 {fmtEok(p.b25)})</span>}
+            {p.beneficiary && <> · 수혜 {p.beneficiary}</>}
+          </div>
+          {posts.length > 0 && (
+            <ul class="posts">{posts.map(x => <li><a href={`/posts/${x.id}/`}>{x.title}</a>{x.deadline && <span class="meta"> · 마감 {fmtDate(x.deadline)}</span>}</li>)}</ul>
+          )}
+        </li>
+      );
+    })}
+  </ul>
+  <p class="meta src">출처: {sources.join(' · ')}. 신규(추정)은 자료에 신규 표기가 없지만 2025년 예산이 0이고 2026년 예산이 있는 사업입니다.</p>
+  <script>
+    const q = document.getElementById('q') as HTMLInputElement;
+    const mi = document.getElementById('mi') as HTMLSelectElement;
+    const bg = document.getElementById('bg') as HTMLSelectElement;
+    const nw = document.getElementById('nw') as HTMLInputElement;
+    const lv = document.getElementById('lv') as HTMLInputElement;
+    const count = document.getElementById('count')!;
+    const items = Array.from(document.querySelectorAll<HTMLLIElement>('#list > li'));
+    function apply() {
+      const t = q.value.trim().toLowerCase(); const m = mi.value; const b = Number(bg.value); let n = 0;
+      for (const li of items) {
+        const ok = (!m || li.dataset.mi === m) && Number(li.dataset.b26) >= b && (!nw.checked || li.dataset.new === '1')
+          && (!lv.checked || li.dataset.live === '1') && (!t || (li.dataset.text ?? '').includes(t));
+        li.hidden = !ok; if (ok) n++;
+      }
+      count.textContent = `${n.toLocaleString('ko-KR')}건`;
+    }
+    q.addEventListener('input', apply); [mi, bg].forEach(s => s.addEventListener('change', apply)); [nw, lv].forEach(c => c.addEventListener('change', apply));
+    const sp = new URLSearchParams(location.search); const im = sp.get('ministry'); if (im) mi.value = im;
+    if (location.hash) { const el = document.querySelector(location.hash); if (el) el.classList.add('hit'); }
+    apply();
+  </script>
+</Base>
+<style>
+  .tools { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1.25rem 0 0.5rem; }
+  .tools input[type=search], .tools select { font: inherit; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); max-width: 100%; }
+  .tools input[type=search] { flex: 1 1 14rem; }
+  .chk { display: inline-flex; gap: 0.3rem; align-items: center; font-size: 0.9rem; }
+  .pg-list { list-style: none; padding: 0; margin: 0; }
+  .pg-list > li { padding: 0.7rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: 4rem; }
+  .pg-list > li.hit { background: var(--dawn); }
+  .row1 { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: baseline; }
+  .name { font-weight: 600; }
+  .row2, .row3 { font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.15rem; }
+  .code { font-family: ui-monospace, monospace; }
+  .prev { color: var(--ink-soft); }
+  .tag { font-size: 0.75rem; padding: 0.05rem 0.4rem; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-soft); }
+  .badge { font-size: 0.75rem; padding: 0.05rem 0.45rem; border-radius: 999px; background: var(--pine); color: #fff; }
+  .posts { list-style: none; padding: 0.35rem 0 0 0; margin: 0; font-size: 0.88rem; }
+  .posts a { color: var(--pine-deep); }
+  .src { margin-top: 1.25rem; }
+</style>

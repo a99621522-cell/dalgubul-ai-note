@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
 import { CATEGORIES } from '../../categories';
+import BudgetSource from '../../components/BudgetSource.astro';
 export async function getStaticPaths() {
   const posts = await getCollection('posts', p => !p.data.draft);
   return posts.map(p => ({ params: { id: p.id }, props: { post: p } }));
@@ -36,6 +37,7 @@ if (d.faq.length > 0) jsonld.push({
       </div>
     </header>
     {d.description && <p class="lede">{d.description}</p>}
+    {d.program_code && d.program_name && <BudgetSource code={d.program_code} name={d.program_name} ministry={d.program_ministry} budget2026={d.program_budget_2026} score={d.program_score} />}
     <div class="body"><Content /></div>
     {d.faq.length > 0 && (
       <section class="faq" aria-label="자주 묻는 질문">

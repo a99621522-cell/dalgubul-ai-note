@@ -1,0 +1,30 @@
+---
+/** 공고 글 상단의 "예산 원천" 상자.
+ *  collect.py 가 기업마당 공고 제목·소관부처를 부처 사업설명자료 DB(programs_*.csv)와 대조해
+ *  유사도 0.85 이상일 때만 프론트매터에 program_* 를 넣는다. 자동 대조이므로 유사도를 함께 보여 주고
+ *  실제 재원은 원문 확인이 필요하다고 적는다(CLAUDE.md 글 작성 원칙 1). 평가·해석은 넣지 않는다. */
+import { fmtEok } from '../lib/csv';
+interface Props { code: string; name: string; ministry?: string; budget2026?: string; score?: number }
+const { code, name, ministry = '', budget2026 = '', score } = Astro.props;
+const eok = fmtEok(budget2026);
+---
+<aside class="budget-box" aria-label="예산 원천">
+  <div class="head"><strong>예산 원천</strong><span class="how">부처 사업설명자료와 자동 대조{typeof score === 'number' && ` · 유사도 ${score.toFixed(2)}`}</span></div>
+  <dl>
+    <div><dt>사업</dt><dd><a href={`/programs/#p-${code}`}>{name}</a> <span class="code">{code}</span></dd></div>
+    {ministry && <div><dt>소관</dt><dd>{ministry}</dd></div>}
+    <div><dt>2026년 예산</dt><dd>{eok ?? '원문 확인 필요'}{eok && budget2026 && <span class="raw"> ({Number(budget2026).toLocaleString('ko-KR')}백만 원)</span>}</dd></div>
+  </dl>
+  <p class="note">공고 제목과 사업명이 비슷해 찾은 결과입니다. 이 공고가 해당 사업 예산으로 집행되는지는 공고 원문에서 확인해 주세요.</p>
+</aside>
+<style>
+  .budget-box { margin: 1rem 0 1.5rem; padding: 0.85rem 1rem; border: 1px solid var(--line); border-left: 4px solid var(--pine); border-radius: 6px; background: var(--paper); font-size: 0.92rem; }
+  .head { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: baseline; margin-bottom: 0.4rem; }
+  .how { color: var(--ink-soft); font-size: 0.8rem; }
+  dl { margin: 0; display: grid; gap: 0.2rem; }
+  dl div { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  dt { color: var(--ink-soft); flex: 0 0 5.5rem; }
+  dd { margin: 0; }
+  .code, .raw { color: var(--ink-soft); font-size: 0.82rem; }
+  .note { margin: 0.5rem 0 0; color: var(--ink-soft); font-size: 0.8rem; }
+</style>

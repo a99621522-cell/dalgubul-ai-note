@@ -48,6 +48,35 @@ export const companies = () => {
 };
 export const complexes = () => readCsv('scripts/data/dalseong_complexes.csv');
 
+/** 부처 사업설명자료 DB(scripts/data/programs_*.csv). 예산 단위는 백만 원(자료 그대로). */
+export type Program = Record<string, string> & { src: string; b26: number; b25: number; isNew: boolean; newDerived: boolean; corp: boolean };
+const PROGRAM_FILES = ['programs_motie.csv', 'programs_smba.csv', 'programs_ai.csv'];
+const num = (s: string) => { const n = Number((s || '').replace(/,/g, '')); return Number.isFinite(n) ? n : 0; };
+let _programs: Program[] | null = null;
+export const programs = () => {
+  if (_programs) return _programs;
+  const out: Program[] = []; const seen = new Set<string>(); let dup = 0;
+  for (const f of PROGRAM_FILES) for (const r of readCsv('scripts/data/' + f)) {
+    if (!r.name) continue;
+    const key = `${r.ministry}|${r.code}|${r.name}`;
+    if (seen.has(key)) { dup++; continue; }   // 같은 사업이 두 자료에 다 실린 경우
+    seen.add(key);
+    const b26 = num(r.budget_2026), b25 = num(r.budget_2025);
+    const flagged = (r.new_or_continue || '').includes('신규');
+    const newDerived = !flagged && b25 === 0 && b26 > 0;   // 자료에 신규 표기가 거의 없어 예산으로 추정
+    out.push({ ...r, src: f.replace('programs_', '').replace('.csv', ''), b26, b25, isNew: flagged || newDerived, newDerived,
+      corp: /기업|사업자|소상공인|스타트업|창업/.test(r.beneficiary || '') });
+  }
+  _programs = out;
+  console.log(`[programs] 사업 ${out.length}건 (기업 수혜 ${out.filter(p => p.corp).length}, 중복 제거 ${dup})`);
+  return out;
+};
+/** 백만 원 → '1,234.5억 원'. 값이 없거나 0이면 null. */
+export const fmtEok = (mil: string | number) => {
+  const n = typeof mil === 'number' ? mil : num(mil);
+  return n > 0 ? `${(n / 100).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원` : null;
+};
+
 /** 구·군별 집계 (기업 수·종사자) */
 export function byDistrict() {
   const m = new Map<string, { firms: number; workers: number }>();

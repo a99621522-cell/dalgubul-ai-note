@@ -41,20 +41,14 @@ CONFIG = ROOT / "scripts" / "sources.yml"
 
 # 로컬 실행 편의: 프로젝트 루트에 .env 가 있으면 읽는다. 이미 있는 환경변수는 덮지 않는다.
 # GitHub Actions 에서는 secrets 가 환경변수로 오므로 .env 없이 그대로 동작한다.
-_ENV_FILE = ROOT / ".env"
-if _ENV_FILE.exists():
-    for _line in _ENV_FILE.read_text(encoding="utf-8").splitlines():
-        _line = _line.strip()
-        if _line and not _line.startswith("#") and "=" in _line:
-            _k, _v = _line.split("=", 1)
-            os.environ.setdefault(_k.strip(), _v.strip())
+from env import get as _env_get, missing as _env_missing  # 공용 .env 로더 (scripts/env.py). 없는 키는 해당 소스만 건너뛴다
 
 # .strip(): GitHub Secret 에 붙여넣을 때 끝에 줄바꿈이 딸려 오면 URL 에 %0A 로 실려 API 가 500 을 낸다 (2026-09-22 실제 발생)
-BIZINFO_KEY = os.environ.get("BIZINFO_KEY", "").strip()
-GEMINI_KEY = os.environ.get("GEMINI_KEY", "").strip()
+BIZINFO_KEY = _env_get("BIZINFO_KEY")
+GEMINI_KEY = _env_get("GEMINI_KEY")
 # 기본 모델은 사고(thinking) 토큰을 쓰지 않는 lite 계열로 둔다. 상위 flash 는 호출마다 사고 토큰 ~1000개를
 # 먼저 쓰기 때문에 maxOutputTokens 에 잘리거나 비용이 몇 배가 된다. gemini-2.5-flash 는 신규 키에 막혀 404.
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite").strip()
+GEMINI_MODEL = _env_get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 GEMINI_HEADERS = {"x-goog-api-key": GEMINI_KEY}  # 키는 URL 이 아니라 헤더로 — 오류 로그에 URL 이 찍혀도 키가 안 샌다
 
@@ -435,6 +429,8 @@ def company_keywords() -> list[str]:
 
 
 def main() -> None:
+    if _env_missing("BIZINFO_KEY", "GEMINI_KEY"):
+        print("[env] 비어 있는 키:", ", ".join(_env_missing("BIZINFO_KEY", "GEMINI_KEY")), "— 해당 단계는 건너뜀")
     cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
     extra = company_keywords()
     if extra:

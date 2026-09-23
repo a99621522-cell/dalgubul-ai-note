@@ -35,14 +35,8 @@ FIN = DART_DIR / "financials.json"
 API = "https://opendart.fss.or.kr/api"
 UA = {"User-Agent": "dalgubul-ai-note/0.1 (+personal blog collector)"}
 
-_ENV = ROOT / ".env"
-if _ENV.exists():
-    for _line in _ENV.read_text(encoding="utf-8").splitlines():
-        _line = _line.strip()
-        if _line and not _line.startswith("#") and "=" in _line:
-            _k, _v = _line.split("=", 1)
-            os.environ.setdefault(_k.strip(), _v.strip())
-DART_KEY = os.environ.get("DART_KEY", "").strip()
+from env import get as _env_get, missing as _env_missing, require as _env_require  # 공용 .env 로더 (scripts/env.py)
+DART_KEY = _env_get("DART_KEY")
 
 
 def arg(name: str, default):
@@ -137,9 +131,7 @@ def parse(rows: list[dict], bsns_year: int) -> dict[str, dict]:
 
 
 def main() -> None:
-    if not DART_KEY:
-        print("[dart] DART_KEY 없음 — 종료")
-        return
+    _env_require("DART_KEY")
     if not MATCH.exists():
         print("[dart] match.json 없음 — dart_match.py 먼저")
         return

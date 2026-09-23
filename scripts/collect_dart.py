@@ -46,15 +46,9 @@ UA = {"User-Agent": "dalgubul-ai-note/0.1 (+personal blog collector)"}
 API = "https://opendart.fss.or.kr/api"
 
 # 로컬 실행 편의: .env (collect.py 와 같은 방식, 기존 환경변수 우선)
-_ENV = ROOT / ".env"
-if _ENV.exists():
-    for _line in _ENV.read_text(encoding="utf-8").splitlines():
-        _line = _line.strip()
-        if _line and not _line.startswith("#") and "=" in _line:
-            _k, _v = _line.split("=", 1)
-            os.environ.setdefault(_k.strip(), _v.strip())
 
-DART_KEY = os.environ.get("DART_KEY", "").strip()
+from env import get as _env_get, missing as _env_missing, require as _env_require  # 공용 .env 로더 (scripts/env.py)
+DART_KEY = _env_get("DART_KEY")
 CORP_CLS = {"Y": "유가증권", "K": "코스닥", "N": "코넥스", "E": "비상장"}
 FAILURES: list[str] = []
 
@@ -242,8 +236,8 @@ def summary(n_list: int, n_items: int, path: Path | None) -> None:
 
 
 def main() -> None:
-    if not DART_KEY:
-        print("[dart] DART_KEY 없음 — 건너뜀")
+    if _env_missing("DART_KEY"):
+        print("[env] 비어 있는 키: DART_KEY — DART 수집 건너뜀")
         return
     c = cfg()
     rows = fetch_list(c)

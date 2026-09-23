@@ -18,6 +18,7 @@
 사용: python3 scripts/dart_match.py                 # 전체
       python3 scripts/dart_match.py --sample 100    # 후보가 있는 기업 100곳만 (결과 표 출력, match.json 은 쓰지 않음)
       python3 scripts/dart_match.py --budget 3000   # 이번 실행 API 호출 상한
+      python3 scripts/dart_match.py --workers 4     # 기업개황 동시 조회 수(기본 4)
 환경: DART_KEY (.env 또는 secrets)
 """
 import csv
@@ -33,6 +34,8 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 import requests
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -49,14 +52,8 @@ CORP_INFO = ROOT / "scripts" / "state" / "dart_corp.json"   # collect_dart.py �
 API = "https://opendart.fss.or.kr/api"
 UA = {"User-Agent": "dalgubul-ai-note/0.1 (+personal blog collector)"}
 
-_ENV = ROOT / ".env"
-if _ENV.exists():
-    for _line in _ENV.read_text(encoding="utf-8").splitlines():
-        _line = _line.strip()
-        if _line and not _line.startswith("#") and "=" in _line:
-            _k, _v = _line.split("=", 1)
-            os.environ.setdefault(_k.strip(), _v.strip())
-DART_KEY = os.environ.get("DART_KEY", "").strip()
+from env import get as _env_get, missing as _env_missing, require as _env_require  # 공용 .env 로더 (scripts/env.py)
+DART_KEY = _env_get("DART_KEY")
 
 
 def arg(name: str, default):
@@ -68,7 +65,9 @@ def arg(name: str, default):
 
 SAMPLE = arg("--sample", 0)
 BUDGET = arg("--budget", 9000)
+WORKERS = arg("--workers", 4)      # company.json 동시 조회 수. 일 한도만 있고 초당 제한은 문서에 없어 4로 보수적으로
 CALLS = 0
+LOCK = threading.Lock()
 FAILURES: list[str] = []
 
 
@@ -83,7 +82,8 @@ def get(path: str, **params):
     params["crtfc_key"] = DART_KEY
     for attempt in range(3):
         try:
-            CALLS += 1
+            with LOCK:
+                CALLS += 1
             r = requests.get(f"{API}/{path}", params=params, headers=UA, timeout=60)
             if r.status_code == 429:
                 raise requests.HTTPError("429 Too Many Requests")
@@ -167,7 +167,8 @@ def company_info(corp: dict, info: dict) -> dict | None:
         "daegu": adres.startswith("대구"),
         "checked": date.today().isoformat(),
     }
-    info[corp["corp_code"]] = rec
+    with LOCK:
+        info[corp["corp_code"]] = rec
     return rec
 
 
@@ -188,9 +189,7 @@ def decide(company: dict, cands: list[tuple[dict, dict]]) -> tuple[str, dict | N
 
 
 def main() -> None:
-    if not DART_KEY:
-        print("[dart] DART_KEY 없음 — 종료")
-        return
+    _env_require("DART_KEY")
     corps = load_corp_codes()
     if not corps:
         print("[dart] corpCode 없음 — 종료")
@@ -201,6 +200,35 @@ def main() -> None:
     with COMPANIES.open(encoding="utf-8-sig", newline="") as fh:
         companies = list(csv.DictReader(fh))
     info = load_info()
+    # --- 1) 필요한 법인(후보) 목록을 모아 기업개황을 병렬로 미리 채운다. 60초마다 캐시를 저장해 중단돼도 이어간다
+    need: dict[str, dict] = {}
+    seen_ids = 0
+    for co in companies:
+        cands_c = by.get(norm(co["name"]), [])
+        if not cands_c:
+            continue
+        if SAMPLE and seen_ids >= SAMPLE:
+            break
+        seen_ids += 1
+        for c in cands_c[:8]:
+            if not (info.get(c["corp_code"]) and "bizr_no" in info[c["corp_code"]]):
+                need[c["corp_code"]] = c
+    print(f"[dart] 기업개황 조회 필요 {len(need):,}개 법인 (캐시 {len(info):,}개 보유) · 동시 {WORKERS}")
+    last_save = [time.time()]
+    def fetch(c: dict) -> None:
+        if CALLS >= BUDGET:
+            return
+        company_info(c, info)
+        if time.time() - last_save[0] > 60:
+            with LOCK:
+                if time.time() - last_save[0] > 60:
+                    save_info(info); last_save[0] = time.time()
+    if need:
+        with ThreadPoolExecutor(max_workers=max(1, WORKERS)) as ex:
+            list(ex.map(fetch, list(need.values())))
+        save_info(info)
+        print(f"[dart] 기업개황 조회 끝 · 호출 {CALLS:,} · 캐시 {len(info):,}개")
+    # --- 2) 판정 (여기서부터는 캐시만 읽으므로 빠르다)
     prev = json.loads(MATCH.read_text(encoding="utf-8")) if MATCH.exists() else {"companies": {}}
     result: dict[str, dict] = dict(prev.get("companies", {})) if not SAMPLE else {}
     unmatched: list[dict] = []

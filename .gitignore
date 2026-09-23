@@ -7,3 +7,5 @@ __pycache__/
 # 수집기가 만드는 inbox JSON 은 그 실행에서 소비된다. 저장소에는 README 와 done/.gitkeep 만 둔다
 scripts/inbox/*.json
 scripts/inbox/done/*.json
+# DART 법인 목록 캐시(9MB, 매 실행 새로 받음)
+scripts/data/dart/corp_codes.json

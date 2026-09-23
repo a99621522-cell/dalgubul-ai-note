@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { companies, shortComplex } from '../../lib/csv';
 import { partners } from '../../lib/partners';
+import Financials from '../../components/Financials.astro';
 import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   return companies().map(c => ({ params: { id: c.id }, props: { c } }));
@@ -35,6 +36,7 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
         <tr><th>공장 주소{Number(c.sites) > 1 && ` (${c.sites}곳)`}</th><td>{c.address.split(' / ').map(a => <div>{a}</div>)}</td></tr>
       </tbody>
     </table>
+    <Financials id={c.id} />
     <section class="partners" aria-label="협업 후보">
       <div class="section-head"><h2>협업 후보 찾기</h2><span class="meta">공정 단계: {pt.stage}</span></div>
       <p class="meta">업종 분류와 생산품으로 추정한 후보입니다. 거래 관계가 아니라 같은 단지·구군 안의 탐색용 목록이며, 확인은 기업이 직접 합니다. 순서는 같은 단지 → 같은 구·군 → 규모 순.</p>

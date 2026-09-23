@@ -1,0 +1,60 @@
+---
+/** 기업 카드의 재무 섹션 (OpenDART 사업보고서 주요계정).
+ *  scripts/dart_match.py 가 기업 id → 법인(corp_code)을 잇고, scripts/dart_financials.py 가 법인별 최근 5개년을 모은다.
+ *  숫자는 공시 값 그대로(원 → 억 원 환산만). 평가·해석 없음. 대표자 등 개인정보는 애초에 저장하지 않는다. */
+import { dartMatch, dartFinancials, fmtEokWon, type FinYear } from '../lib/csv';
+interface Props { id: string }
+const { id } = Astro.props;
+const m = dartMatch()[id];
+const fin = m?.corp_code ? dartFinancials()[m.corp_code] : undefined;
+const years = fin?.years ? Object.entries(fin.years).sort((a, b) => b[0].localeCompare(a[0])) : [];
+const fsLabel = (fs: string) => (fs === 'CFS' ? '연결' : '개별');
+const fsKinds = [...new Set(years.map(([, y]) => y.fs))];
+const latest = years[0]?.[1] as FinYear | undefined;
+---
+<section class="fin" aria-label="재무 정보">
+  <div class="section-head"><h2>재무 (공시 기준)</h2>{m?.stock_code && <span class="meta">상장 · 종목코드 {m.stock_code}</span>}</div>
+  {!m && <p class="empty">재무 비공개 — 외부감사 대상이 아니거나 DART에 등록되지 않은 회사입니다.</p>}
+  {m && !m.corp_code && (
+    <p class="empty">재무 미연결 — {m.status === 'ambiguous' ? '같은 이름의 대구 법인이 여럿이라 확정하지 못했습니다.' : '같은 이름의 법인은 있으나 본사가 대구 밖이라 연결하지 않았습니다.'}</p>
+  )}
+  {m?.corp_code && years.length === 0 && (
+    <p class="empty">DART 등록 법인({m.corp_name})이지만 최근 5년 사업보고서 주요계정이 조회되지 않습니다.</p>
+  )}
+  {years.length > 0 && (
+    <>
+      <div class="table-wrap">
+        <table class="fin-table">
+          <thead><tr><th>연도</th><th>매출액</th><th>영업이익</th><th>당기순이익</th><th>자산총계</th><th>구분</th></tr></thead>
+          <tbody>
+            {years.map(([yr, y]) => (
+              <tr>
+                <td>{yr}</td>
+                <td>{fmtEokWon(y.revenue) ?? '—'}</td>
+                <td class={y.op_income != null && y.op_income < 0 ? 'neg' : ''}>{fmtEokWon(y.op_income) ?? '—'}</td>
+                <td class={y.net_income != null && y.net_income < 0 ? 'neg' : ''}>{fmtEokWon(y.net_income) ?? '—'}</td>
+                <td>{fmtEokWon(y.assets) ?? '—'}</td>
+                <td class="meta">{fsLabel(y.fs)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {latest && (latest.liabilities != null || latest.equity != null) && (
+        <p class="meta">{years[0][0]}년 부채총계 {fmtEokWon(latest.liabilities) ?? '—'} · 자본총계 {fmtEokWon(latest.equity) ?? '—'}</p>
+      )}
+      <p class="meta src">출처: 금융감독원 전자공시(DART), 사업보고서 기준 · {fsKinds.map(fsLabel).join('·')}재무제표 · 법인 {m.corp_name} · 조회 {fin?.checked}. 억 원 단위 반올림(소수 1자리), 음수는 손실.</p>
+    </>
+  )}
+</section>
+<style>
+  .fin { margin: 1.5rem 0; }
+  .empty { color: var(--ink-soft); font-size: 0.92rem; }
+  .table-wrap { overflow-x: auto; }
+  .fin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .fin-table th, .fin-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  .fin-table th:first-child, .fin-table td:first-child { text-align: left; }
+  .fin-table thead th { color: var(--ink-soft); font-weight: 600; }
+  .neg { color: #9a3b2e; }
+  .src { margin-top: 0.4rem; font-size: 0.8rem; }
+</style>

@@ -48,6 +48,24 @@ export const companies = () => {
 };
 export const complexes = () => readCsv('scripts/data/dalseong_complexes.csv');
 
+/** OpenDART 연결 데이터 (scripts/dart_match.py, scripts/dart_financials.py 산출물). 파일이 없으면 빈 객체 — 빌드는 계속된다. */
+export type DartMatch = { corp_code?: string; corp_name?: string; stock_code?: string; bizr_no?: string; jurir_no?: string; induty_code?: string; region?: string; method?: string; status?: string; reason?: string; checked?: string };
+export type FinYear = { fs: string; report: string; revenue?: number; op_income?: number; net_income?: number; assets?: number; liabilities?: number; equity?: number };
+export type Financial = { corp_name: string; years: Record<string, FinYear>; status: string; checked: string };
+const readJson = (rel: string) => { const p = path.resolve(rel); return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf-8')) : null; };
+let _dm: Record<string, DartMatch> | null = null;
+let _fin: Record<string, Financial> | null = null;
+export const dartMatch = (): Record<string, DartMatch> => {
+  if (!_dm) { _dm = readJson('scripts/data/dart/match.json')?.companies ?? {}; console.log(`[dart] 매칭 ${Object.values(_dm!).filter(m => m.corp_code).length}개 법인 연결`); }
+  return _dm!;
+};
+export const dartFinancials = (): Record<string, Financial> => {
+  if (!_fin) { _fin = readJson('scripts/data/dart/financials.json') ?? {}; console.log(`[dart] 재무 ${Object.values(_fin!).filter(f => f.years && Object.keys(f.years).length).length}개 법인`); }
+  return _fin!;
+};
+/** 원 → '1,234.5억 원'. 값이 없으면 null(0은 0억 원). */
+export const fmtEokWon = (won?: number | null) => won == null ? null : `${(won / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원`;
+
 /** 부처 사업설명자료 DB(scripts/data/programs_*.csv). 예산 단위는 백만 원(자료 그대로). */
 export type Program = Record<string, string> & { src: string; b26: number; b25: number; isNew: boolean; newDerived: boolean; corp: boolean };
 const PROGRAM_FILES = ['programs_motie.csv', 'programs_smba.csv', 'programs_ai.csv'];

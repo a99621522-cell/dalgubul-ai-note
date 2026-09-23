@@ -1,0 +1,44 @@
+name: DART 재무 갱신 (매월)
+
+on:
+  schedule:
+    - cron: "0 18 14 * *"   # UTC 14일 18:00 = 한국 15일 03:00. 사업보고서는 3~4월에 몰리므로 4월 실행분에서 전년도가 채워진다
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      - name: 법인 매칭 (기업 사전 ↔ DART)
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+        run: python3 scripts/dart_match.py --budget 4500
+      - name: 재무 수집 (사업보고서 주요계정, 최근 5개년)
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+        run: python3 scripts/dart_financials.py --budget 4500
+      - name: 변경분 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add scripts/data/dart/match.json scripts/data/dart/financials.json scripts/data/dart/unmatched.csv scripts/state/dart_corp.json
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: DART 재무 갱신 $(date -u +%Y-%m-%d)"
+          git push
+
+  # 데이터가 바뀌면 기업 카드가 바뀌므로 배포까지 이어 준다 (collect.yml 과 같은 방식)
+  deploy:
+    needs: update
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

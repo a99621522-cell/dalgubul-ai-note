@@ -1,0 +1,46 @@
+name: 기업 사전 출처 갱신 (분기)
+
+on:
+  schedule:
+    - cron: "0 18 4 1,4,7,10 *"   # UTC 4일 18:00 = 한국 1·4·7·10월 5일 03:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sources-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      # 모두 공공데이터포털 파일 수집 — 키 불필요. 한 출처가 실패해도 나머지는 진행한다
+      - name: 국민연금 사업장 (월간 파일)
+        run: python3 scripts/collect_nps.py || echo "::warning::국민연금 수집 실패 — 이전 파일로 병합"
+      - name: 벤처확인기업
+        run: python3 scripts/collect_venture.py || echo "::warning::벤처 수집 실패"
+      - name: 대구연구개발특구 (입주기업·연구소기업)
+        run: python3 scripts/collect_innopolis.py || echo "::warning::특구 수집 실패"
+      - name: 첨복단지 입주기업
+        run: python3 scripts/collect_dgmif.py || echo "::warning::첨복 수집 실패"
+      - name: 출처 병합 → companies_registry.json
+        run: python3 scripts/merge_sources.py | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 변경분 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add scripts/data/sources scripts/data/companies_registry.json
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 기업 사전 출처 갱신 $(date -u +%Y-%m-%d)"
+          git push
+
+  deploy:
+    needs: update
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

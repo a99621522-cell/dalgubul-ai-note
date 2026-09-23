@@ -99,10 +99,11 @@ const head = list.slice(0, FIRST);
   .tools input, .tools select { font: inherit; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); max-width: 100%; }
   .tools input { flex: 1 1 14rem; }
   .co-list { list-style: none; padding: 0; margin: 0; }
-  .co-list li { padding: 0.55rem 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.1rem; }
-  .co-list a { color: var(--ink); text-decoration: none; font-weight: 600; }
-  .co-list a:hover { text-decoration: underline; }
-  .co-meta { font-size: 0.82rem; color: var(--ink-soft); }
+  /* 결과 행은 스크립트가 만들어 넣으므로 Astro 스코프 속성이 없다 → :global 로 자식에 적용 */
+  .co-list :global(li) { padding: 0.55rem 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.1rem; }
+  .co-list :global(a) { color: var(--ink); text-decoration: none; font-weight: 600; }
+  .co-list :global(a:hover) { text-decoration: underline; }
+  .co-list :global(.co-meta) { font-size: 0.82rem; color: var(--ink-soft); }
   .more-wrap { text-align: center; margin: 1rem 0; }
   .more { font: inherit; padding: 0.5rem 1rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); cursor: pointer; }
   .more:hover { text-decoration: underline; }

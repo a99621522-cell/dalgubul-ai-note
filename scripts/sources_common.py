@@ -99,6 +99,19 @@ def district_of(addr: str) -> str:
     return m.group(1) if m else ""
 
 
+# 개인 성명으로 보이는 이름 제외 규칙 — src/lib/csv.ts looksLikePersonName 과 같은 취지(보수적). 기업 사전·선정기업 목록 공통
+SURNAMES = set("김이박최정강조윤장임한오서신권황안송전홍유고문양손배백허남심노하곽성차주우구민류나진지엄채원천방공현함변염여추도소석선설마길연위표명기반라왕금옥육인맹제모탁국어은편용예봉사부")
+LOAN = set("스카캠밀드프텍코컴넷폴랩센젠맥팩플크트북팜닷샵몰링잉엔앤니벤토룩엘벡온샘디홈들촌람")
+SUFFIX = ["산업", "공업", "기업", "테크", "정밀", "섬유", "식품", "상사", "상회", "공장", "제작소", "기계", "화학", "전자", "금속", "물산", "건설", "시스템", "코리아", "개발", "스틸", "패션", "인쇄", "유통", "에너지", "가공", "제조", "공사", "공방", "기공", "직물", "부동산", "유니온"]
+
+
+def looks_like_person(name: str) -> bool:
+    n = name.strip()
+    if any(s in n for s in SUFFIX) or n.endswith("사"):
+        return False
+    return bool(re.fullmatch(r"[가-힣]{3}", n)) and n[0] in SURNAMES and not (set(n[1:]) & LOAN)
+
+
 def write_source(src: str, rows: list[dict], meta: dict) -> Path:
     SOURCES.mkdir(parents=True, exist_ok=True)
     today = date.today()

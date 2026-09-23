@@ -1,0 +1,42 @@
+{
+"https://www.kiapi.or.kr/pages/board/view.php?board_sid=1&data_sid=8958&page_num=8&skey=&sval=": {
+"title": "< D-Jobs 아카데미 프로젝트 3기 > 최종 합격자 발표",
+"url": "https://www.kiapi.or.kr/pages/board/view.php?board_sid=1&data_sid=8958&page_num=8&skey=&sval=",
+"date": "2024-07-16",
+"org": "지능형자동차부품진흥원",
+"abbr": "KIAPI",
+"field": "자동차부품",
+"extracted": {
+"program": "D-Jobs 아카데미 프로젝트 3기",
+"org": "지능형자동차부품진흥원",
+"year": 2024,
+"selected": [],
+"amount": "",
+"confidence": 0.8,
+"is_selection_notice": true,
+"dropped_person_names": 0
+},
+"skipped_attachments": [],
+"processed": "2026-09-23"
+},
+"https://www.kiapi.or.kr/pages/board/view.php?board_sid=1&data_sid=745&page_num=12&skey=&sval=": {
+"title": "2023 대구모형전기자율주행차 경진대회 참가자 선발 결과 안내",
+"url": "https://www.kiapi.or.kr/pages/board/view.php?board_sid=1&data_sid=745&page_num=12&skey=&sval=",
+"date": "2023-07-28",
+"org": "지능형자동차부품진흥원",
+"abbr": "KIAPI",
+"field": "자동차부품",
+"extracted": {
+"program": "2023 대구모형전기자율주행차 경진대회",
+"org": "지능형자동차부품진흥원",
+"year": 2023,
+"selected": [],
+"amount": "",
+"confidence": 0.95,
+"is_selection_notice": false,
+"dropped_person_names": 0
+},
+"skipped_attachments": [],
+"processed": "2026-09-23"
+}
+}

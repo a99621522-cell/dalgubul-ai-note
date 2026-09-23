@@ -24,7 +24,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from sources_common import latest_source, norm
+from sources_common import latest_source, looks_like_person, norm
 
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -49,18 +49,6 @@ SAMPLE = arg("--sample", 0)
 SAMPLE_SRC = arg("--source", "")
 KEEP_PLANTS = "--keep-plants" in sys.argv
 PLANT = re.compile(r"태양광|발전소|발전\s*협동조합|호\s*발전|풍력|연료전지")   # 특구 입주 명단의 발전 SPV — 기업 사전 대상이 아니다
-
-SURNAMES = set("김이박최정강조윤장임한오서신권황안송전홍유고문양손배백허남심노하곽성차주우구민류나진지엄채원천방공현함변염여추도소석선설마길연위표명기반라왕금옥육인맹제모탁국어은편용예봉사부")
-LOAN = set("스카캠밀드프텍코컴넷폴랩센젠맥팩플크트북팜닷샵몰링잉엔앤니벤토룩엘벡온샘디홈들촌람")
-SUFFIX = ["산업", "공업", "기업", "테크", "정밀", "섬유", "식품", "상사", "상회", "공장", "제작소", "기계", "화학", "전자", "금속", "물산", "건설", "시스템", "코리아", "개발", "스틸", "패션", "인쇄", "유통", "에너지", "가공", "제조", "공사", "공방", "기공", "직물", "부동산", "유니온"]
-
-
-def looks_like_person(name: str) -> bool:
-    n = name.strip()
-    if any(s in n for s in SUFFIX) or n.endswith("사"):
-        return False
-    return bool(re.fullmatch(r"[가-힣]{3}", n)) and n[0] in SURNAMES and not (set(n[1:]) & LOAN)
-
 
 _QUAL = re.compile(r"\(([^)]*)\)")
 
@@ -212,6 +200,26 @@ def main() -> None:
             c[method] += 1
             if SAMPLE and SAMPLE_SRC == src and len(samples.setdefault(src, [])) < SAMPLE:
                 samples[src].append((r["name"], r.get("district", ""), method, target))
+    # 과제 이력(선정 공고) 붙이기 — awards.json 의 선정기업명을 정규화 이름으로 대조. 유일할 때만, 아니면 건너뜀(인구 출처가 아니라 속성)
+    aw_path = DATA / "awards" / "awards.json"
+    aw_stats = Counter()
+    if aw_path.exists():
+        awards = json.loads(aw_path.read_text(encoding="utf-8"))
+        for url, a in awards.items():
+            e = a.get("extracted") or {}
+            if not e.get("is_selection_notice"):
+                continue
+            for firm in e.get("selected", []):
+                ks = R.by_name.get(norm(firm), set())
+                if len(ks) != 1:
+                    aw_stats["미확정" if ks else "미등재"] += 1
+                    continue
+                rec = R.reg[next(iter(ks))]
+                item = {"program": e.get("program", ""), "org": a.get("abbr") or e.get("org", ""), "year": e.get("year"), "url": url, "date": a.get("date", "")}
+                if item not in rec.setdefault("awards", []):
+                    rec["awards"].append(item)
+                    aw_stats["붙음"] += 1
+        print("[merge] 과제 이력: " + (" · ".join(f"{k} {v}" for k, v in aw_stats.most_common()) or "선정 공고 없음"))
     # 요약
     both = sum(1 for v in R.reg.values() if "factoryon" in v["source"] and "nps" in v["source"])
     print(f"[merge] 팩토리온 {n_fac:,}행 → {n_fac_keys:,}개(성명 제외 {skipped}) · 국민연금 {n_nps:,}건(신규 {new_nps:,}, 팩토리온과 겹침 {both:,})")

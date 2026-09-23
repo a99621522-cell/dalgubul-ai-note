@@ -21,6 +21,7 @@ scripts/state/       중복 방지용 seen.json (자동 생성)
 
 1. **키 발급 (2개)**
    - 기업마당: 공공데이터포털이 아니라 **기업마당에서 직접 발급**합니다. https://www.bizinfo.go.kr/apiList.do → 통합회원 로그인 → "지원사업정보 API" 의 `사용신청` → 인증키가 화면 하단과 이메일로 옵니다. 붙여넣을 때 끝에 줄바꿈이 딸려 가지 않게 주의(코드에서 strip 하지만).
+   - DART: https://opendart.fss.or.kr → 인증키 신청/관리 → 발급된 40자 키를 `DART_KEY` 로. 회사 주소 조회(company.json)를 회사당 1회 하므로 일 한도(1만 건) 안에서 넉넉합니다.
    - Gemini: aistudio.google.com → Get API key
 2. **GitHub 저장소**에 올리기 — 웹 업로드는 폴더 구조가 깨지므로 **GitHub Desktop** 사용
    - GitHub Desktop 설치·로그인 → File → Clone repository → 내 저장소 선택 → Clone

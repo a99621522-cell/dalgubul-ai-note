@@ -17,6 +17,10 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r scripts/requirements.txt
+      - name: DART 공시 수집 (대구 확장신호 → inbox)
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+        run: python3 scripts/collect_dart.py
       - name: 수집 및 초안 생성
         env:
           BIZINFO_KEY: ${{ secrets.BIZINFO_KEY }}

@@ -11,6 +11,7 @@
 - `src/categories.ts` — 카테고리 3개: `economy` 기업 동향 / `grants` 공모·지원사업 / `policy` 산업 정책. AI 동향·공무원 AI 글은 이 사이트에서 다루지 않는다(별도 사이트 예정, 초안은 docs/archive-ai-notes)
 - `scripts/collect.py` — 수집(기업마당 API · RSS · 게시판 스크랩 · inbox JSON) → 선별 → 중복제거 → Gemini 요약 → SEO 메타 → 초안 저장
 - `scripts/inbox/` — 외부 크롤러 에이전트 결과 JSON 투입구. 형식은 그 안의 README
+- `scripts/collect_dart.py` — OpenDART 공시 중 대구 기업(본사 주소로 판정, `scripts/state/dart_corp.json` 캐시)의 확장 신호(신규시설투자·유상증자·공급계약 등)를 inbox JSON 으로. 공시 사실과 원문 링크만, 평가 없음. 설정은 `sources.yml` 의 `dart:`. 키는 `DART_KEY`
 - `src/pages/companies/` — 기업 사전(목록 + 기업별 페이지 /companies/<id>/). 데이터는 `src/lib/csv.ts`가 빌드 때 CSV에서 읽음
 - `src/pages/companies-index.json.ts` — 기업 사전 검색용 경량 색인(/companies-index.json). 목록 페이지는 처음 200곳만 HTML로 내보내고 검색·필터 때 이 색인을 받아 클라이언트에서 거른다. 필드를 바꾸면 `companies/index.astro`의 스크립트도 같이 고칠 것
 - `src/lib/partners.ts` — 협업 후보(공급/수요/동종) 규칙 엔진: 업종코드+생산품으로 공정 단계 추정 → 단계 간 공급 관계표 → 같은 단지·구군 우선. '후보'라고만 표기, 거래 관계 단정 금지. 이후 Gemini 공정 분류·산업연관표로 정밀화
@@ -26,6 +27,7 @@
 npm run dev / npm run build           # Astro
 pip install -r scripts/requirements.txt
 python3 scripts/collect.py --dry-run  # 어떤 항목이 잡히는지만 (Gemini 호출 없음)
+python3 scripts/collect_dart.py --dry-run  # DART 대구 확장신호 후보만 (DART_KEY 필요)
 python3 scripts/collect.py            # 실제 초안 생성 (BIZINFO_KEY, GEMINI_KEY 필요)
 python3 scripts/approve.py            # 초안 승인
 ```

@@ -4,3 +4,6 @@ dist/
 .env
 __pycache__/
 .wrangler/
+# 수집기가 만드는 inbox JSON 은 그 실행에서 소비된다. 저장소에는 README 와 done/.gitkeep 만 둔다
+scripts/inbox/*.json
+scripts/inbox/done/*.json

@@ -33,3 +33,17 @@ rss: []
 #   달성군 고시공고     — eminwon 목록이 POST 조회 전용. 주간 루틴이 담당
 #   대구테크노파크      — 목록이 JS 렌더링. 주간 루틴이 담당
 boards: []
+
+# OpenDART 공시 → 대구 기업 '확장 신호' (scripts/collect_dart.py 가 매일 읽어 inbox JSON 으로 떨군다)
+#   types        B 주요사항보고(신규시설투자·유상증자·타법인주식취득·영업양수·합병) / I 거래소공시(단일판매공급계약·자율공시)
+#   keywords     보고서명에 하나라도 들어가면 후보. exclude 가 들어가면 제외(철회·취소)
+#   region_words company.json 의 본사 주소에 이 낱말이 있으면 대구 기업으로 판정(회사당 1회 조회 후 state/dart_corp.json 캐시)
+#   max_items    하루 inbox 에 넣는 상한 — 이 뒤 Gemini 요약은 max_per_run(위) 이 다시 자른다
+dart:
+  days_back: 3
+  types: [B, I]
+  keywords: [신규시설투자, 유상증자, 타법인주식, 단일판매, 공급계약, 영업양수, 합병, 자산양수, 유형자산, 투자판단, 공장]
+  exclude: [철회, 취소]
+  region_words: [대구광역시, 대구시]
+  max_items: 20
+  max_company_lookups: 300

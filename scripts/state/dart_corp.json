@@ -5,6 +5,28 @@
 "name": "강원에너지",
 "region": "전라북도 군산시"
 },
+"00100957": {
+"bizr_no": "1148100481",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19771107",
+"induty_code": "4111",
+"jurir_no": "1101110221202",
+"name": "(주)건영",
+"region": "서울특별시 서초구",
+"stock_code": "012720"
+},
+"00101655": {
+"bizr_no": "1248116850",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19910726",
+"induty_code": "52101",
+"jurir_no": "",
+"name": "주식회사 경보",
+"region": "경기도 화성군",
+"stock_code": ""
+},
 "00102858": {
 "checked": "2026-09-23",
 "daegu": false,
@@ -41,11 +63,33 @@
 "name": "금호전기",
 "region": "서울특별시 구로구"
 },
+"00109356": {
+"bizr_no": "5028107774",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19850617",
+"induty_code": "23322",
+"jurir_no": "1701110021189",
+"name": "주식회사 에이치씨대동레미콘",
+"region": "대구광역시 동구",
+"stock_code": ""
+},
 "00109806": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "삼일씨엔에스",
 "region": "경기도 화성시"
+},
+"00111290": {
+"bizr_no": "2018106853",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19781014",
+"induty_code": "13109",
+"jurir_no": "1101110238950",
+"name": "(주)대영",
+"region": "서울특별시 중구",
+"stock_code": ""
 },
 "00111704": {
 "checked": "2026-09-23",
@@ -113,6 +157,28 @@
 "name": "승일",
 "region": "충청남도 천안시"
 },
+"00135704": {
+"bizr_no": "3128106279",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19890330",
+"induty_code": "28410",
+"jurir_no": "1648110002705",
+"name": "신광전기주식회사",
+"region": "충청남도 아산시",
+"stock_code": ""
+},
+"00139108": {
+"bizr_no": "5148104557",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19850704",
+"induty_code": "1721",
+"jurir_no": "1741110000775",
+"name": "(주)아진피앤피",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
 "00139834": {
 "checked": "2026-09-23",
 "daegu": false,
@@ -130,6 +196,17 @@
 "daegu": false,
 "name": "우진아이엔에스",
 "region": "서울특별시 서초구"
+},
+"00143794": {
+"bizr_no": "1198101618",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19681028",
+"induty_code": "13225",
+"jurir_no": "1101110095152",
+"name": "(주)원림",
+"region": "서울특별시 서초구",
+"stock_code": "005820"
 },
 "00145437": {
 "checked": "2026-09-23",
@@ -185,11 +262,33 @@
 "name": "시공테크",
 "region": "서울특별시 강남구"
 },
+"00172529": {
+"bizr_no": "1348103731",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19860312",
+"induty_code": "15110",
+"jurir_no": "1301110011302",
+"name": "주식회사 대영",
+"region": "경기도 안산시",
+"stock_code": ""
+},
 "00173591": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "세원물산",
 "region": "경상북도 영천시"
+},
+"00173740": {
+"bizr_no": "1168108311",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19680228",
+"induty_code": "41121",
+"jurir_no": "1101110087018",
+"name": "(주)신한",
+"region": "경기도 성남시",
+"stock_code": "005450"
 },
 "00173944": {
 "checked": "2026-09-23",
@@ -215,6 +314,17 @@
 "name": "태양",
 "region": "충청남도 천안시"
 },
+"00192550": {
+"bizr_no": "5068100749",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19760115",
+"induty_code": "34019",
+"jurir_no": "1746110001202",
+"name": "동방산업(주)",
+"region": "경상북도 포항시",
+"stock_code": ""
+},
 "00194947": {
 "checked": "2026-09-23",
 "daegu": false,
@@ -233,11 +343,66 @@
 "name": "미래산업",
 "region": "충청남도 천안시"
 },
+"00199003": {
+"bizr_no": "1138122347",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19821007",
+"induty_code": "42",
+"jurir_no": "1101110332778",
+"name": "주식회사 우원",
+"region": "서울특별시 구로구",
+"stock_code": ""
+},
+"00200354": {
+"bizr_no": "1248116850",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19910726",
+"induty_code": "52101",
+"jurir_no": "1301110017532",
+"name": "주식회사 경보",
+"region": "경기도 화성시",
+"stock_code": ""
+},
 "00219848": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "서희건설",
 "region": "경기도 하남시"
+},
+"00220330": {
+"bizr_no": "1258112750",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19820527",
+"induty_code": "2629",
+"jurir_no": "1341110010730",
+"name": "주식회사 세스트",
+"region": "경상북도 구미시",
+"stock_code": ""
+},
+"00224585": {
+"bizr_no": "3128120441",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19920304",
+"induty_code": "41112",
+"jurir_no": "1101110839899",
+"name": "주식회사 신한",
+"region": "충청남도 천안시",
+"stock_code": ""
+},
+"00228129": {
+"bizr_no": "5058103909",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19880912",
+"induty_code": "68112",
+"jurir_no": "1712110003390",
+"name": "(주) 대영",
+"region": "경상북도 경주",
+"stock_code": ""
 },
 "00231044": {
 "checked": "2026-09-23",
@@ -262,6 +427,83 @@
 "daegu": false,
 "name": "희림",
 "region": "서울특별시 강동구"
+},
+"00238409": {
+"bizr_no": "1338122832",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19980216",
+"induty_code": "13402",
+"jurir_no": "1350110072830",
+"name": "주식회사 동영",
+"region": "경기도 시흥시",
+"stock_code": ""
+},
+"00240705": {
+"bizr_no": "1168108140",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19790720",
+"induty_code": "72121",
+"jurir_no": "1101110257116",
+"name": "벽산엔지니어링 주식회사",
+"region": "경기도 성남시",
+"stock_code": ""
+},
+"00240723": {
+"bizr_no": "3128102384",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19811026",
+"induty_code": "2629",
+"jurir_no": "1615110001324",
+"name": "삼화기업(주)",
+"region": "세종특별자치시 전동면",
+"stock_code": ""
+},
+"00240981": {
+"bizr_no": "1208160446",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19960329",
+"induty_code": "68122",
+"jurir_no": "1101111255804",
+"name": "우영엔지니어링",
+"region": "서울특별시 강남구",
+"stock_code": ""
+},
+"00252108": {
+"bizr_no": "3158119472",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19950905",
+"induty_code": "41112",
+"jurir_no": "",
+"name": "주식회사 대영",
+"region": "충청북도 청주시",
+"stock_code": ""
+},
+"00261993": {
+"bizr_no": "3018135435",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19990127",
+"induty_code": "2599",
+"jurir_no": "1501110037172",
+"name": "(주)명성테크",
+"region": "충청북도 청원군",
+"stock_code": ""
+},
+"00264529": {
+"bizr_no": "2208156354",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19981030",
+"induty_code": "58221",
+"jurir_no": "1101111601750",
+"name": "(주)엔플렉스",
+"region": "서울특별시 강남구",
+"stock_code": "040130"
 },
 "00287812": {
 "checked": "2026-09-23",
@@ -293,6 +535,17 @@
 "name": "현대로템",
 "region": "경상남도 창원시"
 },
+"00303484": {
+"bizr_no": "1398142438",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19840328",
+"induty_code": "29299",
+"jurir_no": "1201110201442",
+"name": "(주) 에이에프티",
+"region": "인천광역시 남동구",
+"stock_code": ""
+},
 "00306162": {
 "checked": "2026-09-23",
 "daegu": false,
@@ -323,11 +576,55 @@
 "name": "나래나노텍",
 "region": "경기도 용인시"
 },
+"00363972": {
+"bizr_no": "5048108726",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19890629",
+"induty_code": "20501",
+"jurir_no": "1701110038861",
+"name": "덕영섬유(주)",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
+"00366535": {
+"bizr_no": "1398135349",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19980207",
+"induty_code": "28519",
+"jurir_no": "1201110165599",
+"name": "(주)두원테크",
+"region": "인천광역시 남동구",
+"stock_code": ""
+},
 "00367844": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "자이에스앤디",
 "region": "서울특별시 중구"
+},
+"00368560": {
+"bizr_no": "1188109577",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19940317",
+"induty_code": "30",
+"jurir_no": "1101111020009",
+"name": "(주)세명테크",
+"region": "경기도 광명시",
+"stock_code": ""
+},
+"00372314": {
+"bizr_no": "5148134371",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19990916",
+"induty_code": "22199",
+"jurir_no": "1701110160846",
+"name": "(주)부성리싸이클링",
+"region": "대구광역시 논공읍",
+"stock_code": ""
 },
 "00389998": {
 "checked": "2026-09-23",
@@ -335,11 +632,44 @@
 "name": "한성크린텍",
 "region": "서울특별시 강남구"
 },
+"00397322": {
+"bizr_no": "4038115171",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19970609",
+"induty_code": "1011",
+"jurir_no": "2149110010000",
+"name": "주식회사 신명",
+"region": "전라북도 정읍시",
+"stock_code": ""
+},
+"00406143": {
+"bizr_no": "6098121306",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19941229",
+"induty_code": "28123",
+"jurir_no": "1942110018011",
+"name": "주식회사 디케이",
+"region": "경상남도 창원시",
+"stock_code": ""
+},
 "00406329": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "루멘스바이오스",
 "region": "경기도 용인시"
+},
+"00409247": {
+"bizr_no": "2268102370",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19850116",
+"induty_code": "46713",
+"jurir_no": "1450110000178",
+"name": "동방산업(주)",
+"region": "강원도 평창군",
+"stock_code": ""
 },
 "00409788": {
 "checked": "2026-09-23",
@@ -353,6 +683,39 @@
 "name": "셀트리온",
 "region": "인천광역시 연수구"
 },
+"00420602": {
+"bizr_no": "5158119373",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20010331",
+"induty_code": "29229",
+"jurir_no": "1748110025943",
+"name": "(주)디에스피",
+"region": "경상북도 경산시",
+"stock_code": ""
+},
+"00430371": {
+"bizr_no": "1358119177",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19880428",
+"induty_code": "24222",
+"jurir_no": "1349110002863",
+"name": "(주)알텍",
+"region": "경기도 용인시",
+"stock_code": ""
+},
+"00439831": {
+"bizr_no": "6158110916",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19991217",
+"induty_code": "2224",
+"jurir_no": "1846110036752",
+"name": "(주) 세운",
+"region": "경상남도 김해시",
+"stock_code": ""
+},
 "00442631": {
 "checked": "2026-09-23",
 "daegu": false,
@@ -365,11 +728,66 @@
 "name": "제이앤티씨",
 "region": "경기도 화성시"
 },
+"00452407": {
+"bizr_no": "5158121942",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20020513",
+"induty_code": "2511",
+"jurir_no": "1748110029656",
+"name": "(주)디에스피",
+"region": "경상북도 경산시",
+"stock_code": ""
+},
+"00454502": {
+"bizr_no": "6128120827",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19930908",
+"induty_code": "31114",
+"jurir_no": "1949110002284",
+"name": "(주)대기공업",
+"region": "경상남도 거제시",
+"stock_code": ""
+},
+"00456616": {
+"bizr_no": "1358152782",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20020307",
+"induty_code": "68112",
+"jurir_no": "1345110059011",
+"name": "서우(주)",
+"region": "경기도 용인시",
+"stock_code": ""
+},
+"00472906": {
+"bizr_no": "1328126306",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19970812",
+"induty_code": "4112",
+"jurir_no": "1152110026093",
+"name": "주식회사 동영",
+"region": "경기도 구리시",
+"stock_code": ""
+},
 "00474588": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "한중엔시에스",
 "region": "경상북도 영천시"
+},
+"00479121": {
+"bizr_no": "4108135632",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19960808",
+"induty_code": "291",
+"jurir_no": "2001110067334",
+"name": "디케이 주식회사",
+"region": "광주광역시 광산구",
+"stock_code": ""
 },
 "00479787": {
 "checked": "2026-09-23",
@@ -377,17 +795,149 @@
 "name": "인텍플러스",
 "region": "대전광역시 유성구"
 },
+"00482930": {
+"bizr_no": "6088139822",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20001120",
+"induty_code": "2922",
+"jurir_no": "1901110039956",
+"name": "광진정밀(주)",
+"region": "경상남도 창원시",
+"stock_code": ""
+},
+"00482976": {
+"bizr_no": "1218155271",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20020412",
+"induty_code": "41112",
+"jurir_no": "1246110283587",
+"name": "(주)나프",
+"region": "인천광역시 남구",
+"stock_code": ""
+},
+"00492131": {
+"bizr_no": "5048123523",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19971220",
+"induty_code": "28519",
+"jurir_no": "1701110115411",
+"name": "주식회사 엔유씨전자",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
 "00493185": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "제이스로보틱스",
 "region": "충청남도 아산시"
 },
+"00496872": {
+"bizr_no": "6088129227",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19970719",
+"induty_code": "25112",
+"jurir_no": "1943110005511",
+"name": "성보산업주식회사",
+"region": "경상남도 창녕군",
+"stock_code": ""
+},
+"00506708": {
+"bizr_no": "1338126255",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19960701",
+"induty_code": "13402",
+"jurir_no": "1350110073797",
+"name": "(주)성보산업",
+"region": "경기도 안산시",
+"stock_code": ""
+},
+"00522706": {
+"bizr_no": "1348152265",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20000226",
+"induty_code": "2622",
+"jurir_no": "1355110104435",
+"name": "(주)에이티씨",
+"region": "경기도 시흥시",
+"stock_code": ""
+},
+"00527288": {
+"bizr_no": "6088141600",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20010312",
+"induty_code": "25112",
+"jurir_no": "1901110041563",
+"name": "(주)디에스피",
+"region": "경상남도 창녕군",
+"stock_code": ""
+},
+"00527774": {
+"bizr_no": "5038136990",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19980525",
+"induty_code": "25112",
+"jurir_no": "1701110135609",
+"name": "(주)벽진피앤티(P&T)",
+"region": "대구광역시 달서구",
+"stock_code": ""
+},
+"00528481": {
+"bizr_no": "1258145663",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20021210",
+"induty_code": "26421",
+"jurir_no": "1313110045455",
+"name": "보성테크(주)",
+"region": "경기도 평택시",
+"stock_code": ""
+},
+"00529763": {
+"bizr_no": "6098134631",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19981101",
+"induty_code": "2612",
+"jurir_no": "1942110032813",
+"name": "주식회사 신한",
+"region": "경상남도 창원시",
+"stock_code": ""
+},
+"00529949": {
+"bizr_no": "1198101544",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19890829",
+"induty_code": "28123",
+"jurir_no": "1101110646012",
+"name": "(주)베스텍",
+"region": "경기도 포천시",
+"stock_code": ""
+},
 "00530413": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "더코디",
 "region": "충청남도 천안시"
+},
+"00535904": {
+"bizr_no": "1298166700",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20031010",
+"induty_code": "68121",
+"jurir_no": "1311110103752",
+"name": "아이앤지건설 주식회사",
+"region": "경기도 용인시",
+"stock_code": ""
 },
 "00547927": {
 "checked": "2026-09-23",
@@ -401,17 +951,83 @@
 "name": "캔버스엔",
 "region": "서울특별시 마포구"
 },
+"00556961": {
+"bizr_no": "5058142713",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20051101",
+"induty_code": "30",
+"jurir_no": "1712110039725",
+"name": "(주)디케이",
+"region": "경상북도 경주시",
+"stock_code": ""
+},
+"00565288": {
+"bizr_no": "1198153455",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20020110",
+"induty_code": "4521",
+"jurir_no": "1101112418625",
+"name": "(주)씨에이치테크",
+"region": "경기도 안양시",
+"stock_code": ""
+},
+"00568036": {
+"bizr_no": "6068147379",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19891001",
+"induty_code": "292",
+"jurir_no": "1941110001620",
+"name": "(주)고려금속",
+"region": "경상남도 양산시",
+"stock_code": ""
+},
 "00587925": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "모아라이프플러스",
 "region": "경기도 용인시"
 },
+"00595304": {
+"bizr_no": "5028105572",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19821224",
+"induty_code": "23322",
+"jurir_no": "1701110017104",
+"name": "(주)대왕레미콘",
+"region": "대구광역시 수성구",
+"stock_code": ""
+},
+"00605337": {
+"bizr_no": "5088110466",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20010215",
+"induty_code": "1012",
+"jurir_no": "1711110007766",
+"name": "주식회사민속한우",
+"region": "경상북도 군위군",
+"stock_code": ""
+},
 "00605522": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "아리바이오홀딩스",
 "region": "충청남도 공주시"
+},
+"00614928": {
+"bizr_no": "1398137236",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19980731",
+"induty_code": "32029",
+"jurir_no": "1201110174293",
+"name": "주식회사 세계로",
+"region": "인천광역시 남동구",
+"stock_code": ""
 },
 "00616962": {
 "checked": "2026-09-23",
@@ -424,6 +1040,28 @@
 "daegu": false,
 "name": "KS인더스트리",
 "region": "경상남도 함안군"
+},
+"00618775": {
+"bizr_no": "5138104817",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19870501",
+"induty_code": "30",
+"jurir_no": "1760110005535",
+"name": "(주)성보산업",
+"region": "경상북도 구미시",
+"stock_code": ""
+},
+"00627366": {
+"bizr_no": "6088109032",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19890113",
+"induty_code": "24290",
+"jurir_no": "1901110012978",
+"name": "(주)고려금속",
+"region": "경상남도 마산시",
+"stock_code": ""
 },
 "00633835": {
 "checked": "2026-09-23",
@@ -449,6 +1087,39 @@
 "name": "천안기업",
 "region": "충청남도 천안시"
 },
+"00667045": {
+"bizr_no": "1238179925",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20020706",
+"induty_code": "1519",
+"jurir_no": "1341110098124",
+"name": "(주)에스엘씨",
+"region": "경기도 안양시",
+"stock_code": ""
+},
+"00673356": {
+"bizr_no": "1248603520",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20030101",
+"induty_code": "91121",
+"jurir_no": "1348110073510",
+"name": "주식회사 리더스",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"00693262": {
+"bizr_no": "6228112853",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19960401",
+"induty_code": "25932",
+"jurir_no": "1846110017823",
+"name": "(주)디에스피",
+"region": "경상남도 김해시",
+"stock_code": ""
+},
 "00768900": {
 "checked": "2026-09-23",
 "daegu": false,
@@ -461,11 +1132,132 @@
 "name": "한덕철광산업",
 "region": "강원도 정선군"
 },
+"00808402": {
+"bizr_no": "6098178037",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20070514",
+"induty_code": "259",
+"jurir_no": "1942110086018",
+"name": "에스에이에스(주)",
+"region": "경상남도 창원시",
+"stock_code": ""
+},
+"00813422": {
+"bizr_no": "5038181291",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20080828",
+"induty_code": "27191",
+"jurir_no": "1701110362286",
+"name": "주식회사 세신정밀",
+"region": "대구광역시 달서구",
+"stock_code": ""
+},
+"00831808": {
+"bizr_no": "5148164220",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20080222",
+"induty_code": "2323",
+"jurir_no": "1701110349820",
+"name": "(주)선일로에스",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
+"00831978": {
+"bizr_no": "1318156656",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20000622",
+"induty_code": "38220",
+"jurir_no": "1201110225064",
+"name": "(주)세명테크",
+"region": "충청남도 아산시",
+"stock_code": ""
+},
+"00834106": {
+"bizr_no": "5148153650",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20041229",
+"induty_code": "30",
+"jurir_no": "1701110278730",
+"name": "주식회사 디에이치테크",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
+"00841443": {
+"bizr_no": "5148107286",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19880413",
+"induty_code": "104",
+"jurir_no": "1741110003141",
+"name": "영남우유",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
+"00868033": {
+"bizr_no": "1278121842",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19970501",
+"induty_code": "38230",
+"jurir_no": "1158110004005",
+"name": "(주)신명",
+"region": "경기도 동두천시",
+"stock_code": ""
+},
+"00873558": {
+"bizr_no": "1258124692",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19971202",
+"induty_code": "07121",
+"jurir_no": "1346110010053",
+"name": "(주)세계로",
+"region": "경기도 안성시",
+"stock_code": ""
+},
+"00895833": {
+"bizr_no": "1178118582",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19970101",
+"induty_code": "291",
+"jurir_no": "1101111367360",
+"name": "베스텍주식회사",
+"region": "경기도 시흥시",
+"stock_code": ""
+},
+"00919957": {
+"bizr_no": "6038132616",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19970623",
+"induty_code": "74100",
+"jurir_no": "1801110234011",
+"name": "(주)디엠에스",
+"region": "부산광역시 강서구",
+"stock_code": ""
+},
 "00920731": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "케이앤에스아이앤씨",
 "region": "대전광역시 유성구"
+},
+"00921350": {
+"bizr_no": "1368120319",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19960729",
+"induty_code": "22299",
+"jurir_no": "1244110025149",
+"name": "(주)삼화기업",
+"region": "충청북도 충주시",
+"stock_code": ""
 },
 "00923826": {
 "checked": "2026-09-23",
@@ -473,17 +1265,138 @@
 "name": "일월지엠엘",
 "region": "서울특별시 강동구"
 },
+"00923835": {
+"bizr_no": "1238161949",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20001101",
+"induty_code": "2629",
+"jurir_no": "1341110078655",
+"name": "(주)세광하이테크",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"00932587": {
+"bizr_no": "5038145387",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20000517",
+"induty_code": "14419",
+"jurir_no": "1701110173344",
+"name": "(주)동화인더스트리",
+"region": "경상북도 경산시",
+"stock_code": ""
+},
+"00962339": {
+"bizr_no": "5138170001",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20120605",
+"induty_code": "25929",
+"jurir_no": "1760110077039",
+"name": "비씨엠주식회사",
+"region": "경상북도 구미시",
+"stock_code": ""
+},
+"00962870": {
+"bizr_no": "5048139137",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20010510",
+"induty_code": "30",
+"jurir_no": "1701110196586",
+"name": "주식회사 세광하이테크",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
+"00967361": {
+"bizr_no": "6158123973",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20020114",
+"induty_code": "30",
+"jurir_no": "1955110052905",
+"name": "(주)에스디에스",
+"region": "경상남도 김해시",
+"stock_code": ""
+},
+"00973131": {
+"bizr_no": "6068104142",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19600520",
+"induty_code": "68121",
+"jurir_no": "1801110001379",
+"name": "(주)신명",
+"region": "부산광역시 해운대구",
+"stock_code": ""
+},
+"00976590": {
+"bizr_no": "6208143952",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20120518",
+"induty_code": "68112",
+"jurir_no": "2301110192010",
+"name": "주식회사 대영",
+"region": "울산광역시 남구",
+"stock_code": ""
+},
 "00980043": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "비큐AI",
 "region": "서울특별시 중구"
 },
+"01014000": {
+"bizr_no": "5038152078",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20011005",
+"induty_code": "13402",
+"jurir_no": "1701110206492",
+"name": "(주)앤디아이",
+"region": "대구광역시 서구",
+"stock_code": ""
+},
+"01018972": {
+"bizr_no": "1358170591",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20041014",
+"induty_code": "68112",
+"jurir_no": "1345110080553",
+"name": "주식회사 삼일이엔씨",
+"region": "경기도 용인시",
+"stock_code": ""
+},
+"01021648": {
+"bizr_no": "5038171570",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20060701",
+"induty_code": "29293",
+"jurir_no": "1701110305765",
+"name": "(주)광진정밀 ",
+"region": "대구광역시 서구",
+"stock_code": ""
+},
 "01021949": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "덱스터",
 "region": "서울특별시 마포구"
+},
+"01023187": {
+"bizr_no": "6038137585",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19990219",
+"induty_code": "29172",
+"jurir_no": "1801110279174",
+"name": "디에이치테크주식회사",
+"region": "부산광역시 강서구",
+"stock_code": ""
 },
 "01028322": {
 "checked": "2026-09-23",
@@ -515,6 +1428,83 @@
 "name": "젠큐릭스",
 "region": "서울특별시 구로구"
 },
+"01074598": {
+"bizr_no": "5158117550",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20000701",
+"induty_code": "30",
+"jurir_no": "1748110024169",
+"name": "주식회사 세운",
+"region": "경상북도 경산시",
+"stock_code": ""
+},
+"01077230": {
+"bizr_no": "1278655764",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20140601",
+"induty_code": "68112",
+"jurir_no": "2802110136313",
+"name": "(주)디케이",
+"region": "경기도 양주시",
+"stock_code": ""
+},
+"01082904": {
+"bizr_no": "4108140756",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19970701",
+"induty_code": "29293",
+"jurir_no": "2001110077010",
+"name": "고려정밀(주)",
+"region": "광주광역시 광산구",
+"stock_code": ""
+},
+"01085327": {
+"bizr_no": "5048159448",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20041115",
+"induty_code": "25922",
+"jurir_no": "1701110276156",
+"name": "주식회사 백광테크",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
+"01087556": {
+"bizr_no": "5038178874",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20080107",
+"induty_code": "25111",
+"jurir_no": "1701110347006",
+"name": "주식회사동광명품도어",
+"region": "대구광역시 서구",
+"stock_code": ""
+},
+"01101379": {
+"bizr_no": "1248174243",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20000628",
+"induty_code": "6811",
+"jurir_no": "1301110061943",
+"name": "고려정밀(주)",
+"region": "경기도 수원시",
+"stock_code": ""
+},
+"01101476": {
+"bizr_no": "3078145528",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20140527",
+"induty_code": "68",
+"jurir_no": "1647110043709",
+"name": "주식회사 대영",
+"region": "세종특별자치시 나리로",
+"stock_code": ""
+},
 "01114230": {
 "checked": "2026-09-23",
 "daegu": false,
@@ -527,17 +1517,149 @@
 "name": "씨제이라이브시티",
 "region": "서울특별시 중구"
 },
+"01140925": {
+"bizr_no": "5128118021",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20101206",
+"induty_code": "24290",
+"jurir_no": "1755110005768",
+"name": "주식회사 대영",
+"region": "경상북도 예천군",
+"stock_code": ""
+},
 "01142075": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "핑거",
 "region": "서울특별시 영등포구"
 },
+"01143755": {
+"bizr_no": "5158134544",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20080501",
+"induty_code": "28421",
+"jurir_no": "1748110047905",
+"name": "(주)알텍",
+"region": "경상북도 영천시",
+"stock_code": ""
+},
+"01144277": {
+"bizr_no": "6118115355",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20060926",
+"induty_code": "3831",
+"jurir_no": "1953110006097",
+"name": "주식회사 디케이",
+"region": "경상남도 합천군",
+"stock_code": ""
+},
 "01160512": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "헝셩그룹",
 "region": "ROOM 6,"
+},
+"01169814": {
+"bizr_no": "6138173555",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20131223",
+"induty_code": "68122",
+"jurir_no": "1911110060413",
+"name": "주식회사 신한",
+"region": "경상남도 진주시",
+"stock_code": ""
+},
+"01212994": {
+"bizr_no": "4188800043",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20150327",
+"induty_code": "6822",
+"jurir_no": "2055110042987",
+"name": "주식회사 리더스",
+"region": "전라남도 나주시",
+"stock_code": ""
+},
+"01213762": {
+"bizr_no": "1258137969",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20010701",
+"induty_code": "10603",
+"jurir_no": "1313110037270",
+"name": "(주)신우테크",
+"region": "세종특별자치시 전의면",
+"stock_code": ""
+},
+"01218864": {
+"bizr_no": "5068138513",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20001201",
+"induty_code": "23322",
+"jurir_no": "1717110044203",
+"name": "(주)대왕레미콘",
+"region": "경기도 안성시",
+"stock_code": ""
+},
+"01219702": {
+"bizr_no": "4098190784",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20060414",
+"induty_code": "94990",
+"jurir_no": "2053110004155",
+"name": "(주)아이앤지건설",
+"region": "광주광역시 서구",
+"stock_code": ""
+},
+"01223769": {
+"bizr_no": "1188700355",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20160315",
+"induty_code": "68121",
+"jurir_no": "1348110362989",
+"name": "주식회사 삼일이엔씨",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"01225387": {
+"bizr_no": "1248182817",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20010327",
+"induty_code": "29221",
+"jurir_no": "1348110058520",
+"name": "(주)베스텍",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"01227084": {
+"bizr_no": "1378160842",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20040520",
+"induty_code": "29293",
+"jurir_no": "1246110274974",
+"name": "(주)디에스피",
+"region": "인천광역시 서구",
+"stock_code": ""
+},
+"01229897": {
+"bizr_no": "8408600417",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20160715",
+"induty_code": "31114",
+"jurir_no": "1949110040804",
+"name": "디케이주식회사",
+"region": "경상남도 거제시",
+"stock_code": ""
 },
 "01235296": {
 "checked": "2026-09-23",
@@ -551,6 +1673,138 @@
 "name": "프레스티지바이오로직스",
 "region": "충청북도 청주시"
 },
+"01258446": {
+"bizr_no": "6948600075",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20150401",
+"induty_code": "68",
+"jurir_no": "2013110042711",
+"name": "주식회사 신한",
+"region": "전라남도 순천시",
+"stock_code": ""
+},
+"01258835": {
+"bizr_no": "6218171733",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20070620",
+"induty_code": "30399",
+"jurir_no": "2341110045538",
+"name": "(주)대동테크",
+"region": "울산광역시 울주군",
+"stock_code": ""
+},
+"01260335": {
+"bizr_no": "5028124962",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "19931216",
+"induty_code": "22211",
+"jurir_no": "1701110072009",
+"name": "(주)야성",
+"region": "대구광역시 동구",
+"stock_code": ""
+},
+"01283886": {
+"bizr_no": "5148158669",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20060718",
+"induty_code": "27216",
+"jurir_no": "1701110313586",
+"name": "(주)벽산엔지니어링",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
+"01285893": {
+"bizr_no": "5148184361",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20121101",
+"induty_code": "25924",
+"jurir_no": "1701110475625",
+"name": "(주)고려정밀",
+"region": "경상북도 칠곡군",
+"stock_code": ""
+},
+"01287095": {
+"bizr_no": "8038600081",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20130906",
+"induty_code": "68121",
+"jurir_no": "2845110015020",
+"name": "(주)그림같은집",
+"region": "서울특별시 은평구",
+"stock_code": ""
+},
+"01294077": {
+"bizr_no": "1348152149",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20000301",
+"induty_code": "29171",
+"jurir_no": "1355110104013",
+"name": "그린테크(주)",
+"region": "광주광역시 광산구",
+"stock_code": ""
+},
+"01294545": {
+"bizr_no": "3168700492",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20160822",
+"induty_code": "68",
+"jurir_no": "1345110298817",
+"name": "주식회사 리더스",
+"region": "경기도 용인시",
+"stock_code": ""
+},
+"01297126": {
+"bizr_no": "6158112189",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20000303",
+"induty_code": "41121",
+"jurir_no": "1846110038279",
+"name": "(주)경보",
+"region": "경상남도 김해시",
+"stock_code": ""
+},
+"01300448": {
+"bizr_no": "6068642874",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20121129",
+"induty_code": "30310",
+"jurir_no": "1801110836156",
+"name": "(주)에스비이엔지",
+"region": "부산광역시 강서구",
+"stock_code": ""
+},
+"01305799": {
+"bizr_no": "5048186270",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20100318",
+"induty_code": "42131",
+"jurir_no": "1701110399833",
+"name": "(주)디에스피이엔지",
+"region": "대구광역시 동구",
+"stock_code": ""
+},
+"01306956": {
+"bizr_no": "4618100164",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20150701",
+"induty_code": "20423",
+"jurir_no": "1701110570772",
+"name": "주식회사에스엘씨",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
 "01310269": {
 "checked": "2026-09-23",
 "daegu": false,
@@ -563,11 +1817,66 @@
 "name": "아이엘",
 "region": "충청남도 천안시"
 },
+"01335772": {
+"bizr_no": "8948100947",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20180701",
+"induty_code": "26224",
+"jurir_no": "1341110499413",
+"name": "비케이전자 주식회사",
+"region": "경기도 안양시",
+"stock_code": ""
+},
 "01336762": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "스피어",
 "region": "서울특별시 영등포구"
+},
+"01374771": {
+"bizr_no": "1238136095",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19940915",
+"induty_code": "29150",
+"jurir_no": "1351110040330",
+"name": "(주)신명",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"01376380": {
+"bizr_no": "3018633413",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20150205",
+"induty_code": "68112",
+"jurir_no": "1501110198966",
+"name": "(주)대종",
+"region": "충청북도 청주시",
+"stock_code": ""
+},
+"01381799": {
+"bizr_no": "5028623686",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20130403",
+"induty_code": "21309",
+"jurir_no": "1701110489064",
+"name": "주식회사 엔도비전",
+"region": "대구광역시 동구",
+"stock_code": ""
+},
+"01385449": {
+"bizr_no": "1288660028",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20110421",
+"induty_code": "33910",
+"jurir_no": "2850110195508",
+"name": "주식회사 에이티씨 ( ATC , LTD)",
+"region": "경기도 고양시",
+"stock_code": ""
 },
 "01390344": {
 "checked": "2026-09-23",
@@ -581,11 +1890,77 @@
 "name": "두산로지스틱스솔루션",
 "region": "경기도 용인시"
 },
+"01397727": {
+"bizr_no": "5678100818",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20180403",
+"induty_code": "411",
+"jurir_no": "1615110230444",
+"name": "에스비이엔지(주)",
+"region": "충청남도 천안시",
+"stock_code": ""
+},
 "01397903": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "엔젠바이오",
 "region": "서울특별시 구로구"
+},
+"01398869": {
+"bizr_no": "5168601492",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20190820",
+"induty_code": "71531",
+"jurir_no": "1101117207867",
+"name": "아피스주식회사",
+"region": "서울특별시 구로구",
+"stock_code": ""
+},
+"01401330": {
+"bizr_no": "8728100137",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20150730",
+"induty_code": "46721",
+"jurir_no": "1701110574295",
+"name": "(주)디와이특강",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
+"01401376": {
+"bizr_no": "4088605275",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20131023",
+"induty_code": "68212",
+"jurir_no": "2001110381255",
+"name": "주식회사 세명",
+"region": "전라남도 나주시",
+"stock_code": ""
+},
+"01406681": {
+"bizr_no": "3148121636",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19980501",
+"induty_code": "75",
+"jurir_no": "1601110069909",
+"name": "주식회사 와이앤피",
+"region": "대전광역시 서구",
+"stock_code": ""
+},
+"01412309": {
+"bizr_no": "5148180138",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20120109",
+"induty_code": "68122",
+"jurir_no": "1701110448565",
+"name": "(주)애플테크",
+"region": "대구광역시 달서구",
+"stock_code": ""
 },
 "01423837": {
 "checked": "2026-09-23",
@@ -593,11 +1968,110 @@
 "name": "모아데이타",
 "region": "경기도 성남시"
 },
+"01447970": {
+"bizr_no": "8438800083",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20150508",
+"induty_code": "55101",
+"jurir_no": "1244110162678",
+"name": "주식회사 에이엠씨글로벌",
+"region": "경기도 김포시",
+"stock_code": ""
+},
+"01451441": {
+"bizr_no": "6098199920",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20110701",
+"induty_code": "25924",
+"jurir_no": "1942110187890",
+"name": "주식회사 베스텍",
+"region": "경상남도 밀양시",
+"stock_code": ""
+},
+"01454749": {
+"bizr_no": "1288133375",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19980401",
+"induty_code": "42500",
+"jurir_no": "1159110018517",
+"name": "보성테크 주식회사",
+"region": "경기도 파주시",
+"stock_code": ""
+},
+"01457542": {
+"bizr_no": "5048193164",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20110610",
+"induty_code": "14192",
+"jurir_no": "1701110430405",
+"name": "주식회사 굿유니폼",
+"region": "대구광역시 서구",
+"stock_code": ""
+},
+"01457816": {
+"bizr_no": "4098645168",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20140418",
+"induty_code": "29299",
+"jurir_no": "2001110413397",
+"name": "주식회사 디에스피",
+"region": "광주광역시 광산구",
+"stock_code": ""
+},
+"01467239": {
+"bizr_no": "7148600137",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20150701",
+"induty_code": "33301",
+"jurir_no": "1701110574881",
+"name": "(주)렉스코",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
+"01468788": {
+"bizr_no": "1218130848",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19990701",
+"induty_code": "10899",
+"jurir_no": "1201110194952",
+"name": "주식회사 대영",
+"region": "인천광역시 중구",
+"stock_code": ""
+},
 "01468919": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "아시아에스테이트",
 "region": "경기도 용인시"
+},
+"01477254": {
+"bizr_no": "4108642588",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20100907",
+"induty_code": "30310",
+"jurir_no": "2001110303829",
+"name": "알텍주식회사",
+"region": "광주광역시 광산구",
+"stock_code": ""
+},
+"01477625": {
+"bizr_no": "6668700631",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20170401",
+"induty_code": "25913",
+"jurir_no": "1701110643040",
+"name": "주식회사 삼주테크",
+"region": "대구광역시 달성군",
+"stock_code": ""
 },
 "01488320": {
 "checked": "2026-09-23",
@@ -605,17 +2079,215 @@
 "name": "필에너지",
 "region": "경기도 오산시"
 },
+"01544352": {
+"bizr_no": "6468801026",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20180419",
+"induty_code": "31114",
+"jurir_no": "1949110046662",
+"name": "명성테크 주식회사",
+"region": "경상남도 거제시",
+"stock_code": ""
+},
+"01550627": {
+"bizr_no": "1278625921",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20100719",
+"induty_code": "24222",
+"jurir_no": "2844110058866",
+"name": "(주)디에스시스템",
+"region": "경기도 포천시",
+"stock_code": ""
+},
+"01552652": {
+"bizr_no": "1138636230",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20100204",
+"induty_code": "29299",
+"jurir_no": "1101114276253",
+"name": "주식회사 미디어테크",
+"region": "서울특별시 구로구",
+"stock_code": ""
+},
 "01573284": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "코닉오토메이션",
 "region": "경기도 화성시"
 },
+"01585395": {
+"bizr_no": "5048141711",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20010915",
+"induty_code": "10121",
+"jurir_no": "1701110205014",
+"name": "(주)G.M식품",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
+"01625611": {
+"bizr_no": "5148145785",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20021018",
+"induty_code": "24311",
+"jurir_no": "1701110234493",
+"name": "(주)동방금속",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
+"01631092": {
+"bizr_no": "1438115890",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20131022",
+"induty_code": "22232",
+"jurir_no": "1348110282773",
+"name": "주식회사 엘케이에스",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"01631490": {
+"bizr_no": "1358196378",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20080318",
+"induty_code": "46721",
+"jurir_no": "1358110150151",
+"name": "주식회사 우리철강",
+"region": "경기도 수원시",
+"stock_code": ""
+},
+"01632329": {
+"bizr_no": "5048154327",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20031107",
+"induty_code": "423",
+"jurir_no": "1701110256877",
+"name": "(주)얼라이드시스템",
+"region": "대구광역시 수성구",
+"stock_code": ""
+},
+"01636246": {
+"bizr_no": "3038134811",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20021108",
+"induty_code": "259",
+"jurir_no": "1545110024268",
+"name": "주식회사 영상",
+"region": "충청북도 음성군",
+"stock_code": ""
+},
 "01688896": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "삼성FN리츠",
 "region": "서울특별시 서초구"
+},
+"01689488": {
+"bizr_no": "3978101839",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20201021",
+"induty_code": "6812",
+"jurir_no": "1313110244263",
+"name": "주식회사 서우",
+"region": "경기도 평택시",
+"stock_code": ""
+},
+"01695726": {
+"bizr_no": "5028165094",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20020612",
+"induty_code": "68112",
+"jurir_no": "1701110226432",
+"name": "주식회사 세운",
+"region": "대구광역시 동구",
+"stock_code": ""
+},
+"01727478": {
+"bizr_no": "1388103505",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19931109",
+"induty_code": "42110",
+"jurir_no": "1341110041404",
+"name": "동방산업(주)",
+"region": "경기도 안양시",
+"stock_code": ""
+},
+"01730065": {
+"bizr_no": "5158137027",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20090701",
+"induty_code": "25999",
+"jurir_no": "1748110051625",
+"name": "주식회사디엠에스",
+"region": "경상북도 경산시",
+"stock_code": ""
+},
+"01737341": {
+"bizr_no": "1268606445",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20071001",
+"induty_code": "26222",
+"jurir_no": "1344110036144",
+"name": "(주)디엠에스",
+"region": "경기도 여주시",
+"stock_code": ""
+},
+"01745997": {
+"bizr_no": "5048601499",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20120901",
+"induty_code": "3020",
+"jurir_no": "1701110470641",
+"name": "(주)성보산업",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
+"01752207": {
+"bizr_no": "5148126890",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19970310",
+"induty_code": "41",
+"jurir_no": "1701110116732",
+"name": "(주) 신행건설",
+"region": "서울특별시 강남구",
+"stock_code": ""
+},
+"01755204": {
+"bizr_no": "3098106083",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20160722",
+"induty_code": "29299",
+"jurir_no": "1314110371246",
+"name": "(주)세운",
+"region": "경기도 안산시",
+"stock_code": ""
+},
+"01778463": {
+"bizr_no": "3118147374",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20140201",
+"induty_code": "24132",
+"jurir_no": "1650110044453",
+"name": "주식회사 신우테크",
+"region": "충청남도 당진시",
+"stock_code": ""
 },
 "01781999": {
 "checked": "2026-09-23",
@@ -635,11 +2307,286 @@
 "name": "한화로보틱스",
 "region": "경기도 성남시"
 },
+"01824355": {
+"bizr_no": "1248671085",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20080904",
+"induty_code": "29271",
+"jurir_no": "1348110162701",
+"name": "(주)디이에스",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"01837997": {
+"bizr_no": "5038174432",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20061206",
+"induty_code": "20501",
+"jurir_no": "1701110321406",
+"name": "주식회사 나프",
+"region": "대구광역시 군위군",
+"stock_code": ""
+},
+"01839959": {
+"bizr_no": "5048164053",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20051007",
+"induty_code": "471",
+"jurir_no": "1701110296609",
+"name": "주식회사 동양테크툴",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
+"01843961": {
+"bizr_no": "5108129352",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20120703",
+"induty_code": "30399",
+"jurir_no": "1752110033153",
+"name": "주식회사 대림산업",
+"region": "경상북도 성주군",
+"stock_code": ""
+},
+"01844863": {
+"bizr_no": "8468800817",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20170811",
+"induty_code": "46",
+"jurir_no": "1357110122673",
+"name": "에이치에스컴퍼니",
+"region": "경기도 여주시",
+"stock_code": ""
+},
+"01845446": {
+"bizr_no": "1388165836",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20110228",
+"induty_code": "23322",
+"jurir_no": "1341110202551",
+"name": "주식회사 대왕레미콘",
+"region": "부산광역시 북구",
+"stock_code": ""
+},
+"01862382": {
+"bizr_no": "7808102665",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20230321",
+"induty_code": "68",
+"jurir_no": "2001110692222",
+"name": "주식회사 영상",
+"region": "광주광역시 광산구",
+"stock_code": ""
+},
+"01863372": {
+"bizr_no": "5048140968",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20010716",
+"induty_code": "10213",
+"jurir_no": "1701110201517",
+"name": "(주)바다마을",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
 "01869710": {
 "checked": "2026-09-23",
 "daegu": false,
 "name": "인벤테라",
 "region": "서울특별시 서초구"
+},
+"01889644": {
+"bizr_no": "1478802436",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20221012",
+"induty_code": "91111",
+"jurir_no": "1314110542160",
+"name": "주식회사 라움이엔씨",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"01912915": {
+"bizr_no": "2598601833",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20200506",
+"induty_code": "27213",
+"jurir_no": "1647110098267",
+"name": "주식회사 보다",
+"region": "충청북도 청주시",
+"stock_code": ""
+},
+"01918821": {
+"bizr_no": "2548602948",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20230724",
+"induty_code": "29293",
+"jurir_no": "1314110561813",
+"name": "주식회사 신우테크",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"01918876": {
+"bizr_no": "5088110020",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20000119",
+"induty_code": "4231",
+"jurir_no": "1711110007584",
+"name": "주식회사 예성전기통신",
+"region": "대구광역시 북구",
+"stock_code": ""
+},
+"01920552": {
+"bizr_no": "1388123781",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20041004",
+"induty_code": "16299",
+"jurir_no": "1341110122270",
+"name": "(주)수양",
+"region": "경기도 의왕시",
+"stock_code": ""
+},
+"01925548": {
+"bizr_no": "5038190709",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20100902",
+"induty_code": "29150",
+"jurir_no": "1701110411091",
+"name": "(주)구오기업",
+"region": "대구광역시 서구",
+"stock_code": ""
+},
+"01928916": {
+"bizr_no": "6068700100",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20150701",
+"induty_code": "27211",
+"jurir_no": "1201110767402",
+"name": "주식회사 동방금속",
+"region": "인천광역시 서구",
+"stock_code": ""
+},
+"01929809": {
+"bizr_no": "4108147837",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19981201",
+"induty_code": "29293",
+"jurir_no": "2001110092357",
+"name": "(주)베스텍",
+"region": "광주광역시 북구",
+"stock_code": ""
+},
+"01956715": {
+"bizr_no": "4118192408",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20200623",
+"induty_code": "10122",
+"jurir_no": "1801111296888",
+"name": "주식회사 우원",
+"region": "부산광역시 금정구",
+"stock_code": ""
+},
+"02000110": {
+"bizr_no": "6728101477",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20190520",
+"induty_code": "68",
+"jurir_no": "2001110564017",
+"name": "에스엘씨 주식회사",
+"region": "광주광역시 광산구",
+"stock_code": ""
+},
+"02004091": {
+"bizr_no": "7028100920",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20180223",
+"induty_code": "4213",
+"jurir_no": "1643110021480",
+"name": "신한주식회사",
+"region": "경기도 남양주시",
+"stock_code": ""
+},
+"02006187": {
+"bizr_no": "4038172468",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20130404",
+"induty_code": "17904",
+"jurir_no": "2149110040213",
+"name": "(주)세계로",
+"region": "전북특별자치도 익산시",
+"stock_code": ""
+},
+"02008422": {
+"bizr_no": "5308602202",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20210422",
+"induty_code": "26129",
+"jurir_no": "1348110616295",
+"name": "(주)에스비이엔지",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"02014168": {
+"bizr_no": "5028173478",
+"checked": "2026-09-23",
+"daegu": true,
+"est_dt": "20040119",
+"induty_code": "10601",
+"jurir_no": "1701110260860",
+"name": "(주)궁전방",
+"region": "대구광역시 달성군",
+"stock_code": ""
+},
+"02024156": {
+"bizr_no": "1248171440",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20000401",
+"induty_code": "25914",
+"jurir_no": "1348110048836",
+"name": "(주)동광테크",
+"region": "경기도 화성시",
+"stock_code": ""
+},
+"02026172": {
+"bizr_no": "3018121800",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "19941001",
+"induty_code": "10832",
+"jurir_no": "1501110019063",
+"name": "성보산업(주)",
+"region": "충청북도 증평군",
+"stock_code": ""
+},
+"02039264": {
+"bizr_no": "5038612334",
+"checked": "2026-09-23",
+"daegu": false,
+"est_dt": "20140328",
+"induty_code": "141",
+"jurir_no": "1701110523606",
+"name": "주식회사서우",
+"region": "경상북도 칠곡군",
+"stock_code": ""
 },
 "02040446": {
 "checked": "2026-09-23",

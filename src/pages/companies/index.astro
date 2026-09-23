@@ -7,41 +7,91 @@ const complexesList = [...new Set(list.map(c => c.complex))];
 const groups = [...new Set(list.map(c => c.sector_group))].filter(Boolean).sort();
 const dists = [...new Set(list.map(c => c.district))].filter(Boolean).sort();
 const asOf = list[0]?.as_of ?? '';
+// 처음 200곳만 HTML 로 내보낸다. 전체(11,000곳)를 다 넣으면 4.5MB 라 휴대폰에서 느렸다.
+// 검색·필터를 쓰면 /companies-index.json(빌드 때 생성되는 경량 색인)을 한 번 받아 클라이언트에서 거른다.
+const FIRST = 200;
+const head = list.slice(0, FIRST);
 ---
 <Base title="대구 기업 사전" description={`대구 공장등록 기업 ${list.length.toLocaleString('ko-KR')}곳 — 구·군·단지·업종·생산품·종사자 규모. 팩토리온 공개 자료 ${asOf} 기준`} current="companies">
   <div class="section-head"><h1>대구 기업 사전</h1><span class="meta">{list.length.toLocaleString('ko-KR')}곳 · {asOf} 기준</span></div>
   <p class="lede">대구에 공장을 둔 기업 {list.length.toLocaleString('ko-KR')}곳을 같은 형식으로 정리했습니다. 산업단지 21곳과 개별입지, 9개 구·군을 모두 포함하며, 평가나 순위는 하지 않습니다.</p>
   <IndustrialCard />
   <div class="tools">
-    <input id="q" type="search" placeholder="회사명·업종·생산품 검색" aria-label="검색" />
+    <input id="q" type="search" placeholder="회사명·업종 검색" aria-label="검색" />
     <select id="cx" aria-label="단지"><option value="">모든 단지</option>{complexesList.map(x => <option value={x}>{x}</option>)}</select>
     <select id="sg" aria-label="업종"><option value="">모든 업종</option>{groups.map(x => <option value={x}>{x}</option>)}</select>
     <select id="em" aria-label="구군"><option value="">모든 구·군</option>{dists.map(x => <option value={x}>{x}</option>)}</select>
-    <span id="count" class="meta"></span>
+    <span id="count" class="meta">{list.length.toLocaleString('ko-KR')}곳</span>
   </div>
+  <p id="note" class="meta">가나다순 처음 {FIRST}곳입니다. 검색하거나 단지·업종·구·군을 고르면 전체 {list.length.toLocaleString('ko-KR')}곳에서 찾습니다.</p>
   <ul class="co-list" id="list">
-    {list.map(c => (
-      <li data-complex={c.complex} data-group={c.sector_group} data-eup={c.district} data-text={`${c.name} ${c.sector} ${c.product}`.toLowerCase()}>
+    {head.map(c => (
+      <li>
         <a href={`/companies/${c.id}/`}>{c.name}</a>
         <span class="co-meta">{c.district}{c.eupmyeon && ` ${c.eupmyeon}`} · {shortComplex(c.complex)} · {c.sector.replace(/ 외 \d+ 종/, '')}{c.workers_band && ` · ${c.workers_band}`}</span>
       </li>
     ))}
   </ul>
-  <script>
-    const q = document.getElementById('q') as HTMLInputElement;
-    const sel = ['cx','sg','em'].map(id => document.getElementById(id) as HTMLSelectElement);
-    const items = Array.from(document.querySelectorAll<HTMLLIElement>('#list li'));
-    const count = document.getElementById('count')!;
-    const sp = new URLSearchParams(location.search); const ic = sp.get('complex'); if (ic) sel[0].value = ic; const idn = sp.get('district'); if (idn) sel[2].value = idn;
-    function apply() {
-      const t = q.value.trim().toLowerCase(); const [c, g, e] = sel.map(s => s.value); let n = 0;
-      for (const li of items) {
-        const ok = (!c || li.dataset.complex === c) && (!g || li.dataset.group === g) && (!e || li.dataset.eup === e) && (!t || (li.dataset.text ?? '').includes(t));
-        li.hidden = !ok; if (ok) n++;
+  <div class="more-wrap"><button id="more" type="button" class="more" hidden>더 보기</button></div>
+  <script define:vars={{ total: list.length, FIRST }}>
+    // 색인 행: i=id n=회사명 d=구군 e=읍면동 c=단지 g=업종군 s=업종 w=규모  (companies-index.json.ts 와 맞출 것)
+    const q = document.getElementById('q');
+    const sel = ['cx', 'sg', 'em'].map(id => document.getElementById(id));
+    const list = document.getElementById('list');
+    const count = document.getElementById('count');
+    const note = document.getElementById('note');
+    const more = document.getElementById('more');
+    const PAGE = 300;                     // 한 번에 그리는 결과 수. 그 뒤는 '더 보기'
+    let rows = null, loading = null;      // 색인은 처음 필터를 쓸 때 한 번만 받는다
+    let matched = [], shown = 0;
+
+    const nf = new Intl.NumberFormat('ko-KR');
+    function load() {
+      if (rows) return Promise.resolve(rows);
+      if (!loading) {
+        count.textContent = '불러오는 중…';
+        loading = fetch('/companies-index.json').then(r => r.json()).then(j => (rows = j.rows)).catch(() => {
+          count.textContent = '목록을 불러오지 못했습니다. 새로고침해 주세요.'; loading = null; return null;
+        });
       }
-      count.textContent = `${n.toLocaleString('ko-KR')}곳`;
+      return loading;
     }
-    q.addEventListener('input', apply); sel.forEach(s => s.addEventListener('change', apply)); apply();
+    function el(tag, text, cls) { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; }
+    function render(from) {
+      const frag = document.createDocumentFragment();
+      for (const r of matched.slice(from, from + PAGE)) {
+        const li = el('li');
+        const a = el('a', r.n); a.href = `/companies/${r.i}/`;
+        const meta = [r.d + (r.e ? ` ${r.e}` : ''), r.c, r.s].filter(Boolean).join(' · ') + (r.w ? ` · ${r.w}` : '');
+        li.append(a, el('span', meta, 'co-meta')); frag.append(li);
+      }
+      if (from === 0) list.replaceChildren(frag); else list.append(frag);
+      shown = Math.min(matched.length, from + PAGE);
+      more.hidden = shown >= matched.length;
+      more.textContent = `더 보기 (${nf.format(matched.length - shown)}곳 남음)`;
+    }
+    async function apply() {
+      const t = q.value.trim().toLowerCase(); const [c, g, e] = sel.map(s => s.value);
+      if (!t && !c && !g && !e) {            // 조건 없음 → 처음 상태(서버가 그려 둔 200곳)로
+        if (rows) { matched = rows; render(0); }
+        count.textContent = `${nf.format(total)}곳`; note.hidden = !!rows; return;
+      }
+      const data = await load(); if (!data) return;
+      matched = data.filter(r => (!c || r.c === c || r.c === shortComplex(c)) && (!g || r.g === g) && (!e || r.d === e)
+        && (!t || (r.n + ' ' + r.s + ' ' + r.g).toLowerCase().includes(t)));
+      note.hidden = true;
+      count.textContent = `${nf.format(matched.length)}곳`;
+      render(0);
+    }
+    // 단지 <option> 은 정식 명칭, 색인의 c 는 약칭이라 같은 방식으로 줄여서 비교한다
+    function shortComplex(s) { return s.replace('일반산업단지', '산단').replace('첨단산업단지', '산단').replace('산업단지', '산단').replace('지방산단', '산단'); }
+    let timer; q.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(apply, 150); });
+    sel.forEach(s => s.addEventListener('change', apply));
+    more.addEventListener('click', () => render(shown));
+    const sp = new URLSearchParams(location.search);
+    const ic = sp.get('complex'); if (ic) sel[0].value = ic;
+    const idn = sp.get('district'); if (idn) sel[2].value = idn;
+    if (ic || idn) apply();
   </script>
 </Base>
 <style>
@@ -53,4 +103,7 @@ const asOf = list[0]?.as_of ?? '';
   .co-list a { color: var(--ink); text-decoration: none; font-weight: 600; }
   .co-list a:hover { text-decoration: underline; }
   .co-meta { font-size: 0.82rem; color: var(--ink-soft); }
+  .more-wrap { text-align: center; margin: 1rem 0; }
+  .more { font: inherit; padding: 0.5rem 1rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); cursor: pointer; }
+  .more:hover { text-decoration: underline; }
 </style>

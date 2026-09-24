@@ -64,34 +64,12 @@ NPS_COLS = {
     "withdraw_date": ["탈퇴일자", "사업장탈퇴일"],
 }
 
-# ---------------------------------------------------------------- 개인 성명 공장 제외 (src/lib/csv.ts looksLikePersonName 과 같은 규칙)
-BIZ_SUFFIXES = ['산업', '공업', '기업', '테크', '정밀', '섬유', '식품', '상사', '상회', '공장', '제작소', '기계', '화학', '전자', '금속', '물산', '건설', '시스템', '코리아', '개발', '스틸', '패션', '인쇄', '유통', '에너지', '가공', '제조', '공사', '공방', '기공', '직물', '부동산', '유니온']
-SURNAMES = set('강고공곽구국권금기길김나남노도라류마맹명모문민박반방배백변봉부사서석선설성소손송신심안양어엄여연염예오옥왕용우원위유육윤은이인임장전정제조주지진차채천최추탁편표하한함허현홍황')
-SURNAMES2 = ['남궁', '황보', '제갈', '선우', '독고', '사공', '서문', '동방']
-LOAN = set('넷니닷드들디람랩룩링맥몰밀벡벤북샘샵센스앤엔엘온잉젠촌카캠컴코크텍토트팜팩폴프플홈')
-NOT_PERSON = {'고운들', '고운홈', '신일신', '어울림', '오우이', '원일키', '위니아', '이지유', '인벤토', '지구촌', '한사람'}
-_HANGUL = re.compile(r"^[가-힣]+$")
-
-
-def looks_like_person_name(raw: str) -> bool:
-    n = raw.strip()
-    if n in NOT_PERSON or any(s in n for s in BIZ_SUFFIXES) or n.endswith("사"):
-        return False
-    has_loan = lambda t: any(ch in LOAN for ch in t)  # noqa: E731
-    if len(n) == 3 and _HANGUL.match(n):
-        return n[0] in SURNAMES and not has_loan(n[1:])
-    if len(n) == 4 and _HANGUL.match(n):
-        return any(n.startswith(s) for s in SURNAMES2) and not has_loan(n[2:])
-    return False
-
-
 # ---------------------------------------------------------------- 입력
 def load_companies() -> list[dict]:
     rows = list(csv.DictReader(open(COMPANIES, encoding="utf-8")))
+    # 전수 원칙: 팩토리온의 모든 기업을 센다. 개인 성명으로 보이는 공장명을 감추는 규칙은 목록·페이지 표시(src/lib/csv.ts)에만 둔다
     out = []
     for r in rows:
-        if looks_like_person_name(r["name"]):
-            continue
         r["group"] = classify(r["sector_code"], r["sector"], r["product"])
         w = r["workers"].strip()
         r["fo_workers"] = int(w) if w.isdigit() else None

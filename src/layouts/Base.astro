@@ -1,10 +1,13 @@
 ---
 import '../styles/global.css';
-import { CATEGORIES } from '../categories';
-interface Props { title?: string; seoTitle?: string; description?: string; current?: string; tags?: string[]; jsonld?: object[]; }
-const { title, seoTitle, description = '예산부터 공고까지, 대구 기업을 위한 지원사업 연결 기록', current = '', tags = [], jsonld = [] } = Astro.props;
-const fullTitle = (seoTitle || title) ? `${seoTitle || title} — 다잇다 노트` : '다잇다 노트';
+import { NAV } from '../nav';
+import { latestMonth, monthLabel } from '../lib/stats';
+interface Props { title?: string; seoTitle?: string; description?: string; current?: string; tags?: string[]; jsonld?: object[]; ogType?: string }
+const { title, seoTitle, description = '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고', current = '', tags = [], jsonld = [], ogType = 'website' } = Astro.props;
+const fullTitle = (seoTitle || title) ? `${seoTitle || title} — 다잇다 노트` : '다잇다 노트 — 대구 산업·기업 현황';
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
+const lm = latestMonth();
+const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 <!doctype html>
 <html lang="ko">
@@ -17,36 +20,35 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString(
   {canonical && <link rel="canonical" href={canonical} />}
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
-  <meta property="og:type" content="article" />
+  <meta property="og:type" content={ogType} />
   <meta property="og:site_name" content="다잇다 노트" />
   <meta property="og:locale" content="ko_KR" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="/fonts/pretendard/pretendard.css" />
   <link rel="alternate" type="application/rss+xml" title="다잇다 노트" href="/rss.xml" />
   {jsonld.map(obj => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
 </head>
 <body>
+  <a class="skip" href="#main">본문으로 건너뛰기</a>
   <header class="site-head">
-    <div class="wrap">
+    <div class="wrap row">
       <a class="brand" href="/">다잇다 노트</a>
-      <p class="tagline">예산부터 공고까지, 대구 기업을 위한 지원사업 연결 기록</p>
       <nav class="nav" aria-label="주요 메뉴">
-        <a href="/companies/" aria-current={current === 'companies' ? 'page' : undefined}>기업 사전</a>
-        <a href="/programs/" aria-current={current === 'programs' ? 'page' : undefined}>사업 예산</a>
-        {Object.entries(CATEGORIES).map(([key, c]) => (
-          <a href={`/category/${key}/`} aria-current={current === key ? 'page' : undefined}>{c.name}</a>
-        ))}
+        {NAV.map(n => <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.name}</a>)}
       </nav>
     </div>
   </header>
-  <main class="wrap">
+  <main id="main" class="wrap">
     <slot />
   </main>
   <footer class="site-foot">
     <div class="wrap">
-      <p>보도자료 요약은 원문 기관의 공공누리 조건에 따라 출처를 표시합니다. "AI 초안" 표시가 있는 글은 자동 생성 후 사람이 검토했습니다. 정책 해석은 개인 의견이며 소속 기관의 입장이 아닙니다.</p>
+      <ul aria-label="출처와 안내">
+        <li><a href="/posts/2026-09-13-about/">이 사이트에 대하여</a></li>
+        <li><a href="/posts/2026-09-13-about/">정정 요청</a></li>
+        <li><a href="/rss.xml">RSS</a></li>
+      </ul>
+      <p>출처: 한국산업단지공단 팩토리온 입주업체현황{lm && ` (${monthLabel(lm)} 기준)`}, 기업마당·부처 사업설명자료·보도자료(공공누리 조건에 따라 출처 표시). 공개 자료를 같은 형식으로 옮긴 것이며 평가·순위·추천을 하지 않습니다.</p>
+      <p>"AI 초안" 표시가 있는 글은 자동 생성 후 사람이 검토했습니다. 개인 의견은 소속 기관의 입장이 아닙니다. 사이트 갱신일 {built}.</p>
     </div>
   </footer>
 </body>

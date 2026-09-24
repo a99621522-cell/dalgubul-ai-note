@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 266" width="100%" role="img" aria-label="군위효령농공단지 산업별 고용 인원. 기계·금속 106명, 섬유·패션 72명, 기타 제조 19명, 전기·전자 10명, 식품 0명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 310" width="100%" role="img" aria-label="군위효령농공단지 산업별 고용 인원. 기계·금속 106명, 섬유·패션 72명, 기타 제조 19명, 전기·전자 10명, 식품 0명, 기타 서비스 0명" style="max-width:360px;height:auto;font-size:14px">
 <title>군위효령농공단지 산업별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">기계·금속</text>
@@ -15,4 +15,7 @@
 <text x="42.9" y="200.0" fill="#1a1a1a">10명</text>
 <text x="8" y="224.0" fill="#1a1a1a">식품</text>
 <rect x="8" y="230" width="0.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="14.0" y="244.0" fill="#1a1a1a">0명</text></svg>
+<text x="14.0" y="244.0" fill="#1a1a1a">0명</text>
+<text x="8" y="268.0" fill="#1a1a1a">기타 서비스</text>
+<rect x="8" y="274" width="0.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="14.0" y="288.0" fill="#1a1a1a">0명</text></svg>

@@ -1,25 +1,66 @@
 ---
+/** 첫 화면: 큰 숫자 4개 → 산업별 현황 표 → 전체 고용 추이 그래프 → 기업 검색 → 최신 글 5개 */
 import Base from '../layouts/Base.astro';
+import StatTiles, { type Tile } from '../components/StatTiles.astro';
+import IndustryTable from '../components/IndustryTable.astro';
+import Chart from '../components/Chart.astro';
 import PostList from '../components/PostList.astro';
-import DeadlineStrip from '../components/DeadlineStrip.astro';
-import IndustrialCard from '../components/IndustrialCard.astro';
 import { getCollection } from 'astro:content';
-import { CATEGORIES } from '../categories';
+import { monthly, monthLabel } from '../lib/stats';
+
 const all = (await getCollection('posts', p => !p.data.draft)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const latest = all.slice(0, 8);
+const latest = all.slice(0, 5);
+const today = new Date(); today.setHours(0, 0, 0, 0);
+const openPrograms = all.filter(p => p.data.deadline && p.data.deadline >= today).length;
+
+const m = monthly();
+const ym = m ? monthLabel(m.month) : '';
+const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : '—');
+const tiles: Tile[] = m ? [
+  { label: '등록 기업', value: m.total.firms, unit: '곳', sub: `${ym} 기준 · 팩토리온 공장등록`, href: '/companies/' },
+  { label: '고용 인원', value: m.total.employment, unit: '명', delta: m.total.mom?.employment ?? null,
+    sub: `${ym} 기준 · ${m.basis_label} · 집계 대상 ${m.total.covered.toLocaleString('ko-KR')}곳(${pct(m.total.covered, m.total.firms)})` },
+  { label: '이달 신규 등록 기업', value: m.total.new_firms, unit: '곳', sub: m.total.new_firms === null ? `${ym} 기준 · 전월 자료가 쌓이면 표시` : `${ym} 기준 · 전월 대비 새로 등록` },
+  { label: '진행 중 지원사업 공고', value: openPrograms, unit: '건', sub: `오늘 기준 마감 전 공고 · 기업마당·기관 공고`, href: '/support/' },
+] : [];
+const description = m
+  ? `대구 공장등록 기업 ${m.total.firms.toLocaleString('ko-KR')}곳, 고용 인원 ${m.total.employment.toLocaleString('ko-KR')}명(${ym}, ${m.basis_label}). 산업별 기업 수·고용과 24개월 추이, 기업 사전, 지원사업 공고.`
+  : '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고';
 ---
-<Base>
-  <DeadlineStrip posts={all} />
-  <IndustrialCard compact={true} />
-  <div class="section-head"><h2>최근 글</h2></div>
-  <PostList posts={latest} />
-  {Object.entries(CATEGORIES).map(([key, c]) => {
-    const ps = all.filter(p => p.data.category === key).slice(0, 3);
-    return ps.length > 0 && (
-      <>
-        <div class="section-head"><h2>{c.name}</h2><a href={`/category/${key}/`}>더 보기</a></div>
-        <PostList posts={ps} />
-      </>
-    );
-  })}
+<Base description={description}>
+  <h1 class="visually-hidden">대구 산단·기업 현황</h1>
+  {m ? (
+    <>
+      <section aria-labelledby="h-now">
+        <div class="section-head"><h2 id="h-now">대구 산단·기업 현황</h2><span class="meta">{ym} 기준</span></div>
+        <StatTiles tiles={tiles} />
+      </section>
+      <section aria-labelledby="h-ind">
+        <div class="section-head"><h2 id="h-ind">산업별 현황</h2><a href="/industry/">산업별 자세히</a></div>
+        <IndustryTable compact={true} />
+        <p class="meta">고용 인원은 {m.basis_label}. 집계 대상은 고용 값이 있는 기업 {m.total.covered.toLocaleString('ko-KR')}곳 / 전체 {m.total.firms.toLocaleString('ko-KR')}곳. 산업 그룹은 표준산업분류(KSIC) 코드로 나눴습니다.</p>
+      </section>
+      <section aria-labelledby="h-trend">
+        <div class="section-head"><h2 id="h-trend">고용 인원 추이</h2><a href={`/stats/${m.month}/`}>이달 통계표</a></div>
+        <Chart kind="total" name="employment" caption="대구 전체 고용 인원, 최근 24개월" />
+      </section>
+    </>
+  ) : <p class="empty">통계가 아직 없습니다. scripts/build_stats.py 를 먼저 실행하세요.</p>}
+  <section aria-labelledby="h-search" class="section">
+    <div class="section-head"><h2 id="h-search">기업 찾기</h2><a href="/companies/">기업 사전</a></div>
+    <form class="search" action="/companies/" method="get" role="search">
+      <label for="q" class="visually-hidden">회사명·업종·생산품</label>
+      <input id="q" name="q" type="search" class="field" placeholder="회사명·업종·생산품" />
+      <button type="submit" class="btn">검색</button>
+    </form>
+  </section>
+  <section aria-labelledby="h-posts" class="section">
+    <div class="section-head"><h2 id="h-posts">최신 글</h2><a href="/posts/">전체 글</a></div>
+    <PostList posts={latest} />
+  </section>
 </Base>
+<style>
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .search { display: flex; gap: var(--s1); max-width: 560px; }
+  .search input { flex: 1 1 auto; min-width: 0; }
+</style>

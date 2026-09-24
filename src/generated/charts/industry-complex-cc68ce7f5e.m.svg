@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="기계·금속 산단별 고용 인원. 성서산단 17,062명, 대구테크노폴리스산단 9,225명, 개별입지 8,174명, 대구제3산단 4,788명, 달성산단 3,837명, 성서5차산단 2,663명, 달성2차산단 2,411명, 북구검단산단 2,133명, 대구국가산단 1,821명, 서대구산단 1,759명, 그 밖의 단지 2,052명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="기계·금속 산단별 고용 인원. 성서산단 17,062명, 대구테크노폴리스산단 9,225명, 개별입지 8,184명, 대구제3산단 4,788명, 달성산단 3,837명, 성서5차산단 2,663명, 달성2차산단 2,411명, 북구검단산단 2,133명, 대구국가산단 1,821명, 서대구산단 1,769명, 그 밖의 단지 2,052명" style="max-width:360px;height:auto;font-size:14px">
 <title>기계·금속 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">성서산단</text>
@@ -8,8 +8,8 @@
 <rect x="8" y="98" width="152.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="166.5" y="112.0" fill="#1a1a1a">9,225명</text>
 <text x="8" y="136.0" fill="#1a1a1a">개별입지</text>
-<rect x="8" y="142" width="135.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="149.1" y="156.0" fill="#1a1a1a">8,174명</text>
+<rect x="8" y="142" width="135.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="149.3" y="156.0" fill="#1a1a1a">8,184명</text>
 <text x="8" y="180.0" fill="#1a1a1a">대구제3산단</text>
 <rect x="8" y="186" width="79.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="93.1" y="200.0" fill="#1a1a1a">4,788명</text>
@@ -29,8 +29,8 @@
 <rect x="8" y="406" width="30.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="44.1" y="420.0" fill="#1a1a1a">1,821명</text>
 <text x="8" y="444.0" fill="#1a1a1a">서대구산단</text>
-<rect x="8" y="450" width="29.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="43.1" y="464.0" fill="#1a1a1a">1,759명</text>
+<rect x="8" y="450" width="29.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="43.2" y="464.0" fill="#1a1a1a">1,769명</text>
 <text x="8" y="488.0" fill="#1a1a1a">그 밖의 단지</text>
 <rect x="8" y="494" width="33.9" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
 <text x="47.9" y="508.0" fill="#1a1a1a">2,052명</text></svg>

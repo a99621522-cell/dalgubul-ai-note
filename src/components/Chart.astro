@@ -1,0 +1,28 @@
+---
+/** 빌드 시 생성된 인라인 SVG 그래프(render_charts.py). 넓은 판·좁은 판을 함께 넣고 CSS 로 하나만 보인다.
+ *  아래에 같은 데이터의 표를 접힌 상태로 둔다(접근성·복사용). 브라우저 JS 없음. */
+import { chart, fmt } from '../lib/stats';
+interface Props { kind: string; name: string; caption?: string; id?: string }
+const { kind, name, caption, id } = Astro.props;
+const c = chart(kind, name);
+const cols = c?.table?.columns ?? [];
+const unit = c?.table?.unit ?? '';
+---
+{c ? (
+  <figure class="chart" id={id}>
+    <div class="chart-wide" set:html={c.wide} />
+    <div class="chart-narrow" set:html={c.narrow} />
+    <figcaption>{caption ?? c.table?.title}{c.table?.note && ` · ${c.table.note}`}</figcaption>
+    {c.table && c.table.rows.length > 0 && (
+      <details>
+        <summary>표로 보기</summary>
+        <div class="scroll-x">
+          <table>
+            <thead><tr>{cols.map((h, i) => <th class={i ? 'n' : ''}>{h}{i && unit ? `(${unit})` : ''}</th>)}</tr></thead>
+            <tbody>{c.table.rows.map(r => <tr>{r.map((v, i) => <td class={i ? 'n' : ''}>{i === 0 ? v : fmt(v as number | null)}</td>)}</tr>)}</tbody>
+          </table>
+        </div>
+      </details>
+    )}
+  </figure>
+) : <p class="empty">그래프 자료가 아직 없습니다.</p>}

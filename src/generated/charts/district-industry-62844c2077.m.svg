@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 398" width="100%" role="img" aria-label="군위군 산업별 고용 인원. 식품 428명, 섬유·패션 421명, 기계·금속 391명, 화학·에너지 260명, 기타 제조 236명, 자동차·부품 141명, 전기·전자 128명, 의료·바이오 16명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 398" width="100%" role="img" aria-label="군위군 산업별 고용 인원. 식품 428명, 섬유·패션 421명, 기계·금속 401명, 화학·에너지 260명, 기타 제조 236명, 자동차·부품 141명, 전기·전자 128명, 의료·바이오 16명" style="max-width:360px;height:auto;font-size:14px">
 <title>군위군 산업별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">식품</text>
@@ -8,8 +8,8 @@
 <rect x="8" y="98" width="301.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="315.0" y="112.0" fill="#1a1a1a">421명</text>
 <text x="8" y="136.0" fill="#1a1a1a">기계·금속</text>
-<rect x="8" y="142" width="279.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="293.5" y="156.0" fill="#1a1a1a">391명</text>
+<rect x="8" y="142" width="286.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="300.7" y="156.0" fill="#1a1a1a">401명</text>
 <text x="8" y="180.0" fill="#1a1a1a">화학·에너지</text>
 <rect x="8" y="186" width="185.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="199.9" y="200.0" fill="#1a1a1a">260명</text>

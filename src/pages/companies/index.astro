@@ -91,7 +91,8 @@ const head = list.slice(0, FIRST);
     const sp = new URLSearchParams(location.search);
     const ic = sp.get('complex'); if (ic) sel[0].value = ic;
     const idn = sp.get('district'); if (idn) sel[2].value = idn;
-    if (ic || idn) apply();
+    const iq = sp.get('q'); if (iq) q.value = iq;          // 첫 화면 검색창(/?q=)에서 넘어온 검색어
+    if (ic || idn || iq) apply();
   </script>
 </Base>
 <style>

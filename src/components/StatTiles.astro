@@ -1,0 +1,22 @@
+---
+/** 큰 숫자 타일. 각 숫자 아래 기준월·출처·집계 대상 비율을 작은 글씨로. */
+import Delta from './Delta.astro';
+import type { Delta as D } from '../lib/stats';
+export type Tile = { label: string; value: number | null; unit?: string; delta?: D; deltaLabel?: string; sub: string; href?: string };
+interface Props { tiles: Tile[]; label?: string }
+const { tiles, label = '핵심 숫자' } = Astro.props;
+const num = (v: number | null) => (v === null ? '자료 없음' : v.toLocaleString('ko-KR'));
+---
+<ul class="tiles" aria-label={label}>
+  {tiles.map(t => (
+    <li class="tile">
+      <p class="label">{t.label}</p>
+      <p class="num">{t.value === null ? <span class="unit">자료 없음</span> : <>{num(t.value)}<span class="unit">{t.unit ?? ''}</span></>}</p>
+      {t.delta !== undefined && <span class="delta-row">{t.deltaLabel ?? '전월 대비'} <Delta d={t.delta} unit={t.unit} label={t.deltaLabel ?? '전월 대비'} /></span>}
+      <p class="sub">{t.sub}{t.href && <> · <a href={t.href}>자세히</a></>}</p>
+    </li>
+  ))}
+</ul>
+<style>
+  .delta-row { display: block; font-size: var(--small); color: var(--muted); margin-top: 2px; }
+</style>

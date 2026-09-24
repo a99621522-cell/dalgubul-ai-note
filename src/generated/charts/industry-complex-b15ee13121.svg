@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="기타 서비스 산단별 고용 인원. 서대구산단 5,020명, 대구국가산단 2,297명, 성서산단 1,250명, 대구제3산단 382명, 대구염색산단 218명, 대구이시아폴리스산단 213명, 경자구역 수성의료지구 121명, 대구인쇄출판밸리 55명, 달성산단 50명, 북구검단산단 36명, 그 밖의 단지 98명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="기타 서비스 산단별 고용 인원. 서대구산단 5,022명, 대구국가산단 2,297명, 성서산단 1,250명, 대구제3산단 382명, 대구염색산단 218명, 대구이시아폴리스산단 213명, 경자구역 수성의료지구 121명, 대구인쇄출판밸리 55명, 달성산단 51명, 북구검단산단 36명, 그 밖의 단지 98명" style="max-width:720px;height:auto;font-size:14px">
 <title>기타 서비스 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text>
 <text x="146" y="56.0" text-anchor="end" fill="#1a1a1a">서대구산단</text>
 <rect x="156" y="40" width="502.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="666.0" y="56.0" fill="#1a1a1a">5,020명</text>
+<text x="666.0" y="56.0" fill="#1a1a1a">5,022명</text>
 <text x="146" y="90.0" text-anchor="end" fill="#1a1a1a">대구국가산단</text>
-<rect x="156" y="74" width="229.7" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="393.7" y="90.0" fill="#1a1a1a">2,297명</text>
+<rect x="156" y="74" width="229.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="393.6" y="90.0" fill="#1a1a1a">2,297명</text>
 <text x="146" y="124.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
 <rect x="156" y="108" width="125.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="289.0" y="124.0" fill="#1a1a1a">1,250명</text>
@@ -26,8 +26,8 @@
 <rect x="156" y="278" width="5.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="169.5" y="294.0" fill="#1a1a1a">55명</text>
 <text x="146" y="328.0" text-anchor="end" fill="#1a1a1a">달성산단</text>
-<rect x="156" y="312" width="5.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="169.0" y="328.0" fill="#1a1a1a">50명</text>
+<rect x="156" y="312" width="5.1" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="169.1" y="328.0" fill="#1a1a1a">51명</text>
 <text x="146" y="362.0" text-anchor="end" fill="#1a1a1a">북구검단산단</text>
 <rect x="156" y="346" width="3.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="167.6" y="362.0" fill="#1a1a1a">36명</text>

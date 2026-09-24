@@ -23,6 +23,7 @@ types:
     name: 지식산업센터
     complexes: []
     address: ["지식산업센터"]
+    buildings_file: scripts/data/kic_buildings.csv   # 건물 도로명주소 목록(구군 + 도로명 건물번호). 주소가 일치하면 건물명이 없어도 이 유형
   - key: complex
     name: 산업단지
     rule: in_complex        # complex 가 '개별입지'·빈칸이 아니면

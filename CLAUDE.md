@@ -18,6 +18,7 @@
 - `scripts/import_factoryon.py` — 팩토리온 월간 엑셀(전국 입주업체현황 + 선택: 산단공 리스트) → 기업·단지 CSV 갱신(id 유지). 사용법은 scripts/data/README.md
 - `config/industry_groups.yml` — 산업 그룹 11개 규칙(KSIC 접두어+키워드). `scripts/industry.py`·`src/lib/industry.ts`가 읽음. 규칙은 파일에만
 - `config/site_types.yml` — 입지 유형(수성알파시티·연구개발특구·지식산업센터·산업단지·개별입지)과 태그(창업·창경센터·연구소기업·벤처·이노비즈) 규칙. `scripts/sites.py`·`src/lib/sites.ts`
+- `scripts/data/kic_buildings.csv` + `scripts/import_kic.py` — 대구 지식산업센터 건물 도로명주소 목록. 주소가 일치하면 건물명이 없어도 입지 유형이 지식산업센터. 전국지식산업센터현황(산단공) 파일을 넣으면 갱신
 - `scripts/import_extra.py` — 산단 외 기업 목록(`scripts/data/extra/*.csv`, 형식은 그 README) → `extra_companies.csv`(id x0001~) + `company_tags.csv`. 팩토리온과 같은 기업이면 태그만
 - `scripts/collect_nps.py` — 공공데이터포털 국민연금 가입 사업장 내역(오픈API 또는 내려받은 파일) → `data/nps/YYYYMM.csv` 대구만. 키 `DATA_GO_KR_KEY`, 주소는 `sources.yml` `nps:`. 이 세션 환경은 포털 접속 차단이라 `.github/workflows/nps.yml`(매월 6일)이나 로컬에서 실행
 - `scripts/build_stats.py` — 월간 집계(팩토리온+산단 외 기업+국민연금 파일 있으면) → `data/stats/`. 전수 기준. 자료 없는 지표는 null

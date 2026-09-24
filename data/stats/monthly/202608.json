@@ -1,6 +1,6 @@
 {
  "month": "2026-08",
- "generated": "2026-09-24 23:23",
+ "generated": "2026-09-24 23:29",
  "basis": "factoryon",
  "basis_label": "공장등록 신고값(팩토리온)",
  "sources": {
@@ -967,13 +967,13 @@
    "yoy": null
   },
   "지식산업센터": {
-   "firms": 43,
-   "employment": 254,
-   "covered": 41,
-   "avg_employment": 6.2,
+   "firms": 158,
+   "employment": 772,
+   "covered": 147,
+   "avg_employment": 5.3,
    "size_bands": {
-    "1~9": 35,
-    "10~49": 6,
+    "1~9": 128,
+    "10~49": 19,
     "50~299": 0,
     "300+": 0
    },
@@ -988,13 +988,13 @@
    "yoy": null
   },
   "산업단지": {
-   "firms": 8271,
-   "employment": 145489,
-   "covered": 7288,
-   "avg_employment": 20.0,
+   "firms": 8156,
+   "employment": 144971,
+   "covered": 7182,
+   "avg_employment": 20.2,
    "size_bands": {
-    "1~9": 4308,
-    "10~49": 2480,
+    "1~9": 4215,
+    "10~49": 2467,
     "50~299": 465,
     "300+": 35
    },
@@ -1927,14 +1927,14 @@
     "covered": 2
    },
    "지식산업센터": {
-    "firms": 2,
-    "employment": 18,
-    "covered": 2
+    "firms": 11,
+    "employment": 62,
+    "covered": 11
    },
    "산업단지": {
-    "firms": 72,
-    "employment": 1141,
-    "covered": 67
+    "firms": 63,
+    "employment": 1097,
+    "covered": 58
    },
    "개별입지": {
     "firms": 11,
@@ -1954,14 +1954,14 @@
     "covered": 6
    },
    "지식산업센터": {
-    "firms": 2,
-    "employment": 6,
-    "covered": 2
+    "firms": 9,
+    "employment": 41,
+    "covered": 9
    },
    "산업단지": {
-    "firms": 675,
-    "employment": 26741,
-    "covered": 645
+    "firms": 668,
+    "employment": 26706,
+    "covered": 638
    },
    "개별입지": {
     "firms": 108,
@@ -1980,10 +1980,15 @@
     "employment": 1778,
     "covered": 33
    },
+   "지식산업센터": {
+    "firms": 3,
+    "employment": 28,
+    "covered": 3
+   },
    "산업단지": {
-    "firms": 169,
-    "employment": 2823,
-    "covered": 157
+    "firms": 166,
+    "employment": 2795,
+    "covered": 154
    },
    "개별입지": {
     "firms": 111,
@@ -2003,14 +2008,14 @@
     "covered": 4
    },
    "지식산업센터": {
-    "firms": 1,
-    "employment": 18,
-    "covered": 1
+    "firms": 2,
+    "employment": 20,
+    "covered": 2
    },
    "산업단지": {
-    "firms": 102,
-    "employment": 1359,
-    "covered": 85
+    "firms": 101,
+    "employment": 1357,
+    "covered": 84
    },
    "개별입지": {
     "firms": 1,
@@ -2025,14 +2030,14 @@
     "covered": 4
    },
    "지식산업센터": {
-    "firms": 8,
-    "employment": 30,
-    "covered": 7
+    "firms": 10,
+    "employment": 37,
+    "covered": 9
    },
    "산업단지": {
-    "firms": 1116,
-    "employment": 18680,
-    "covered": 1043
+    "firms": 1114,
+    "employment": 18673,
+    "covered": 1041
    },
    "개별입지": {
     "firms": 405,
@@ -2052,14 +2057,14 @@
     "covered": 30
    },
    "지식산업센터": {
-    "firms": 5,
-    "employment": 27,
-    "covered": 5
+    "firms": 34,
+    "employment": 231,
+    "covered": 33
    },
    "산업단지": {
-    "firms": 773,
-    "employment": 18462,
-    "covered": 742
+    "firms": 744,
+    "employment": 18258,
+    "covered": 714
    },
    "개별입지": {
     "firms": 372,
@@ -2079,14 +2084,14 @@
     "covered": 5
    },
    "지식산업센터": {
-    "firms": 1,
-    "employment": 6,
-    "covered": 1
+    "firms": 5,
+    "employment": 18,
+    "covered": 4
    },
    "산업단지": {
-    "firms": 492,
-    "employment": 9260,
-    "covered": 431
+    "firms": 488,
+    "employment": 9248,
+    "covered": 428
    },
    "개별입지": {
     "firms": 186,
@@ -2101,14 +2106,14 @@
     "covered": 1
    },
    "지식산업센터": {
-    "firms": 2,
-    "employment": 37,
-    "covered": 2
+    "firms": 3,
+    "employment": 41,
+    "covered": 3
    },
    "산업단지": {
-    "firms": 175,
-    "employment": 4009,
-    "covered": 171
+    "firms": 174,
+    "employment": 4005,
+    "covered": 170
    },
    "개별입지": {
     "firms": 197,
@@ -2123,14 +2128,14 @@
     "covered": 29
    },
    "지식산업센터": {
-    "firms": 20,
-    "employment": 109,
-    "covered": 19
+    "firms": 71,
+    "employment": 266,
+    "covered": 66
    },
    "산업단지": {
-    "firms": 2957,
-    "employment": 46463,
-    "covered": 2847
+    "firms": 2906,
+    "employment": 46306,
+    "covered": 2800
    },
    "개별입지": {
     "firms": 899,
@@ -2140,14 +2145,14 @@
   },
   "기타 제조": {
    "지식산업센터": {
-    "firms": 1,
-    "employment": 2,
-    "covered": 1
+    "firms": 4,
+    "employment": 5,
+    "covered": 3
    },
    "산업단지": {
-    "firms": 549,
-    "employment": 6980,
-    "covered": 509
+    "firms": 546,
+    "employment": 6977,
+    "covered": 507
    },
    "개별입지": {
     "firms": 390,
@@ -2167,14 +2172,14 @@
     "covered": 1
    },
    "지식산업센터": {
-    "firms": 1,
-    "employment": 1,
-    "covered": 1
+    "firms": 6,
+    "employment": 23,
+    "covered": 4
    },
    "산업단지": {
-    "firms": 1191,
-    "employment": 9571,
-    "covered": 591
+    "firms": 1186,
+    "employment": 9549,
+    "covered": 588
    },
    "개별입지": {
     "firms": 2,

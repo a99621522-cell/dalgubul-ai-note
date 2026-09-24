@@ -37,6 +37,25 @@ def site_types() -> list[dict]:
     return [{"key": t["key"], "name": t["name"]} for t in config()["types"]]
 
 
+_buildings: dict[str, list[re.Pattern]] = {}
+
+
+def buildings(t: dict) -> list[re.Pattern]:
+    """유형별 건물 주소 패턴: '구군 + 도로명 건물번호'(공백 제거) 뒤에 숫자·'-'가 오지 않아야 한다 (46-17 ≠ 46)."""
+    f = t.get("buildings_file")
+    if not f:
+        return []
+    if f not in _buildings:
+        pats = []
+        p = ROOT / f
+        if p.exists():
+            for r in csv.DictReader(open(p, encoding="utf-8")):
+                key = re.escape((r["district"] + r["road_address"]).replace(" ", ""))
+                pats.append(re.compile(key + r"(?![\d\-])"))
+        _buildings[f] = pats
+    return _buildings[f]
+
+
 def site_type(complex_: str, address: str) -> str:
     cx = (complex_ or "").strip()
     addr = (address or "").replace(" ", "")
@@ -44,6 +63,8 @@ def site_type(complex_: str, address: str) -> str:
         if cx and cx in t.get("complexes", []):
             return t["name"]
         if any(p.replace(" ", "") in addr for p in t.get("address", [])):
+            return t["name"]
+        if any(b.search(addr) for b in buildings(t)):
             return t["name"]
         if t.get("rule") == "in_complex" and cx and cx not in ("개별입지", config()["outside_complex"]):
             return t["name"]

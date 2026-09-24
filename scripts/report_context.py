@@ -56,13 +56,14 @@ def num(s: str) -> float:
         return 0.0
 
 
-def companies_block(groups: list[str], sub_counts: dict | None = None) -> dict | None:
-    if not groups:
+def companies_block(groups: list[str], sub_counts: dict | None = None, tags: list[str] | None = None, site_types: list[str] | None = None) -> dict | None:
+    """분야 기업 = 산업 그룹 ∪ 태그 ∪ 입지 유형 가운데 지정된 것. 아무것도 없으면 None (사업 DB·예산 숫자만 쓴다)."""
+    if not (groups or tags or site_types):
         return None
     rows = load_all_companies()
     for r in rows:
         r["group"] = classify(r["sector_code"], r["sector"], r["product"])
-    sel = [r for r in rows if r["group"] in groups]
+    sel = [r for r in rows if (groups and r["group"] in groups) or (tags and r["tags"] & set(tags)) or (site_types and r["site_type"] in site_types)]
     w = lambda rs: sum(int(r["workers"]) for r in rs if (r.get("workers") or "").isdigit())  # noqa: E731
     bands = Counter()
     for r in sel:
@@ -85,7 +86,9 @@ def companies_block(groups: list[str], sub_counts: dict | None = None) -> dict |
         "sub_sectors": Counter((r["sector_code"], r["sector"].split(" 외")[0]) for r in sel).most_common(10),
         "sub_counts": {name: _sub_count(sel, spec, w) for name, spec in (sub_counts or {}).items()},
         "as_of": sel[0]["as_of"] if sel else "",
-        "condition": f"config/industry_groups.yml 그룹 {groups} (팩토리온 + 산단 외 목록, 종사자는 공장등록 신고값)",
+        "condition": " ∪ ".join(x for x in [f"산업 그룹 {groups}" if groups else "", f"태그 {tags}" if tags else "", f"입지 유형 {site_types}" if site_types else ""] if x)
+                     + " (팩토리온 + 산단 외 목록, 종사자는 공장등록 신고값)",
+        "tag_data_note": None if any(r["tags"] for r in rows) else "태그 자료 없음 — scripts/data/extra/ 목록·company_tags.csv 가 들어오면 채워짐",
     }
 
 
@@ -93,8 +96,12 @@ def _sub_count(sel: list[dict], spec: dict, w) -> dict:
     """분야 안에서 따로 세는 업종: ksic 접두어 목록 또는 업종명·생산품 키워드."""
     pre = tuple(str(x) for x in spec.get("ksic", []))
     kws = spec.get("keywords", [])
-    hit = [r for r in sel if (pre and r["sector_code"].startswith(pre)) or (kws and any(k in f"{r['sector']} {r['product']}" for k in kws))]
-    return {"firms": len(hit), "employment": w(hit), "condition": (f"KSIC {list(pre)}" if pre else "") + (f" 키워드 {kws}" if kws else "")}
+    tg = set(spec.get("tags", []))
+    st = set(spec.get("site_types", []))
+    hit = [r for r in sel if (pre and r["sector_code"].startswith(pre)) or (kws and any(k in f"{r['sector']} {r['product']}" for k in kws))
+           or (tg and r["tags"] & tg) or (st and r["site_type"] in st)]
+    cond = " ".join(x for x in [f"KSIC {list(pre)}" if pre else "", f"키워드 {kws}" if kws else "", f"태그 {sorted(tg)}" if tg else "", f"입지 {sorted(st)}" if st else ""] if x)
+    return {"firms": len(hit), "employment": w(hit), "condition": cond}
 
 
 def kw_pattern(keywords: list[str]) -> re.Pattern:
@@ -167,7 +174,7 @@ def main(argv: list[str]) -> int:
     area, week = pick_area(c, a.week, a.area)
     ctx = {
         "pledge_of": c.get("pledge_of", ""), "source_url": c.get("source_url", ""), "week": week, "area": area,
-        "companies": companies_block(area.get("industry_groups", []), area.get("sub_counts")),
+        "companies": companies_block(area.get("industry_groups", []), area.get("sub_counts"), area.get("tags"), area.get("site_types")),
         "programs": programs_block(area.get("keywords", [])),
         "city_match": city_match_block(area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
@@ -187,8 +194,10 @@ def main(argv: list[str]) -> int:
         for name, v in cb["sub_counts"].items():
             print(f"  ▸ {name}: {v['firms']:,}곳 · {v['employment']:,}명 ({v['condition']})")
         print(f"  조건: {cb['condition']}")
+        if cb.get("tag_data_note"):
+            print(f"  ※ {cb['tag_data_note']}")
     else:
-        print("\n[기업 사전] 연결 산업 그룹 없음 → 사업 DB·예산·공고 숫자만 사용")
+        print("\n[기업 사전] 연결 산업 그룹·태그·입지 유형 없음 → 사업 DB·예산·공고 숫자만 사용")
     print(f"\n[사업 DB] 키워드 {area.get('keywords')} 일치 {len(ctx['programs'])}건 (2026 예산 순, 백만 원)")
     for p in ctx["programs"][:15]:
         print(f"  {p['ministry']} {p['code']} {p['name'][:40]} | 2025 {p['budget_2025']} → 2026 {p['budget_2026']} {p['new']} {p['scope']}")

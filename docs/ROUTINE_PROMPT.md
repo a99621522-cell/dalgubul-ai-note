@@ -26,7 +26,7 @@ https://www.factoryon.go.kr/bbs/frtblRecsroomBbsList.do 에서 최신 월 "전�
 CLAUDE.md 원칙 준수(정책 평가·비판, 기관 입장으로 읽힐 표현, 비공개 자료 인용 금지. 공약 이행 여부를 점수화·평가하지 않고 발표·예산·공고 사실만 적는다).
 1. `python3 scripts/report_context.py` 를 실행해 이번 주 분야(config/pledge_areas.yml, ISO 주 번호로 순환)와 코드로 센 숫자를 받는다.
    기업 사전(연결 산업 그룹의 기업 수·고용·규모·단지·입지 유형), 사업 DB(키워드 일치 국비 사업·2026 예산·신규), 대구시 매칭, 최근 8주 글이 나온다.
-   분야에 산업 그룹이 없으면(교통·복지 등) 기업 사전 숫자 대신 사업 DB·예산·공고 숫자만 쓴다.
+   분야에 산업 그룹이 없으면 태그·입지 유형(창업: 설립 7년 이내·창경센터 보육·벤처 태그)으로 세고, 그것도 없으면 사업 DB·예산·공고 숫자만 쓴다.
 2. config/pledge_areas.yml 의 pledges(공약 항목 원문)와 pledge_of·source_url 을 읽는다. 비어 있으면 리포트 첫머리에 "공약 항목 미입력"이라 적고 분야 이름만으로 쓴다.
 3. docs/strategy/ 의 전략 문서와 지난 회차 같은 분야 리포트(src/content/posts/*-pledge-<key>.md)를 읽고 "그때 제안 중 무엇이 진행됐나"를 사실만으로 첫 절에 쓴다(첫 회차는 생략).
 
@@ -47,4 +47,4 @@ tags: [정책제안, <분야>], summary, description(핵심 문장), faq 3개(�
 
 저장: src/content/posts/YYYY-MM-DD-pledge-<key>.md (draft:true), docs/strategy/proposals/<key>-YYYY-MM-DD.md 에 7절만.
 커밋 "report: 정책제안 <분야> YYYY-MM-DD" 후 푸시. 완료 후 제목·제안 3줄·출처 수 출력.
-분야 8개(config/pledge_areas.yml): mobility / robot-physical-ai / semiconductor / textile / machinery-root / manufacturing-ax / healthcare / ai-sw-startup
+분야 9개(config/pledge_areas.yml): mobility / robot-physical-ai / semiconductor / textile / machinery-root / manufacturing-ax / healthcare / ai-sw / startup

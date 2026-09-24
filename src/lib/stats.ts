@@ -14,6 +14,8 @@ export type Monthly = {
   month: string; generated: string; basis: 'nps' | 'factoryon'; basis_label: string;
   sources: { factoryon: { as_of: string; companies: number }; nps: { file: string; rows: number; matched: number } | null; dart: { corps_daegu: number; note: string } };
   total: Metrics; by_industry: Record<string, Metrics>; by_complex: Record<string, Metrics>; by_district: Record<string, Metrics>;
+  by_site: Record<string, Metrics>; by_tag: Record<string, Metrics>; cross_site: Record<string, Record<string, { firms: number; employment: number; covered: number }>>;
+  sources_extra: { outside_companies: number; note: string };
   cross: Record<string, Record<string, { firms: number; employment: number; covered: number }>>;
   open_programs: number;
 };
@@ -23,9 +25,10 @@ export type Timeseries = {
   by_industry: Record<string, { employment: (number | null)[]; firms: (number | null)[]; covered: (number | null)[] }>;
   by_complex: Record<string, { employment: (number | null)[]; firms: (number | null)[]; covered: (number | null)[] }>;
   by_district: Record<string, { employment: (number | null)[]; firms: (number | null)[]; covered: (number | null)[] }>;
+  by_site: Record<string, { employment: (number | null)[]; firms: (number | null)[]; covered: (number | null)[] }>;
 };
 export type ChartIndex = { months: string[]; latest: string; basis: string; compare_default: string[] } & Record<string, any>;
-export type CompanyStat = { g: string; e: number | null; b: 'nps' | 'factoryon'; s?: (number | null)[] };
+export type CompanyStat = { g: string; t: string; k?: string[]; e: number | null; b: 'nps' | 'factoryon'; s?: (number | null)[] };
 
 const STATS = 'data/stats';
 const CHARTS = 'src/generated/charts';

@@ -1,6 +1,6 @@
 {
  "month": "2026-08",
- "generated": "2026-09-24 22:33",
+ "generated": "2026-09-24 22:51",
  "basis": "factoryon",
  "basis_label": "공장등록 신고값(팩토리온)",
  "sources": {
@@ -923,6 +923,118 @@
    "yoy": null
   }
  },
+ "by_site": {
+  "수성알파시티": {
+   "firms": 48,
+   "employment": 2240,
+   "covered": 40,
+   "avg_employment": 56.0,
+   "size_bands": {
+    "1~9": 1,
+    "10~49": 20,
+    "50~299": 18,
+    "300+": 1
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "연구개발특구": {
+   "firms": 130,
+   "employment": 4413,
+   "covered": 115,
+   "avg_employment": 38.4,
+   "size_bands": {
+    "1~9": 33,
+    "10~49": 56,
+    "50~299": 24,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "지식산업센터": {
+   "firms": 43,
+   "employment": 254,
+   "covered": 41,
+   "avg_employment": 6.2,
+   "size_bands": {
+    "1~9": 35,
+    "10~49": 6,
+    "50~299": 0,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "산업단지": {
+   "firms": 8271,
+   "employment": 145489,
+   "covered": 7288,
+   "avg_employment": 20.0,
+   "size_bands": {
+    "1~9": 4308,
+    "10~49": 2480,
+    "50~299": 465,
+    "300+": 35
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "개별입지": {
+   "firms": 2682,
+   "employment": 25273,
+   "covered": 2550,
+   "avg_employment": 9.9,
+   "size_bands": {
+    "1~9": 1858,
+    "10~49": 648,
+    "50~299": 42,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  }
+ },
+ "by_tag": {},
+ "sources_extra": {
+  "outside_companies": 0,
+  "note": "산단 외 기업 목록(scripts/data/extra_companies.csv). 없으면 0"
+ },
  "cross": {
   "로봇": {
    "성서지방산업단지": {
@@ -1804,6 +1916,270 @@
     "firms": 5,
     "employment": 0,
     "covered": 0
+   }
+  }
+ },
+ "cross_site": {
+  "로봇": {
+   "연구개발특구": {
+    "firms": 2,
+    "employment": 11,
+    "covered": 2
+   },
+   "지식산업센터": {
+    "firms": 2,
+    "employment": 18,
+    "covered": 2
+   },
+   "산업단지": {
+    "firms": 72,
+    "employment": 1141,
+    "covered": 67
+   },
+   "개별입지": {
+    "firms": 11,
+    "employment": 87,
+    "covered": 8
+   }
+  },
+  "자동차·부품": {
+   "수성알파시티": {
+    "firms": 1,
+    "employment": 30,
+    "covered": 1
+   },
+   "연구개발특구": {
+    "firms": 6,
+    "employment": 264,
+    "covered": 6
+   },
+   "지식산업센터": {
+    "firms": 2,
+    "employment": 6,
+    "covered": 2
+   },
+   "산업단지": {
+    "firms": 675,
+    "employment": 26741,
+    "covered": 645
+   },
+   "개별입지": {
+    "firms": 108,
+    "employment": 1177,
+    "covered": 104
+   }
+  },
+  "의료·바이오": {
+   "수성알파시티": {
+    "firms": 1,
+    "employment": 80,
+    "covered": 1
+   },
+   "연구개발특구": {
+    "firms": 43,
+    "employment": 1778,
+    "covered": 33
+   },
+   "산업단지": {
+    "firms": 169,
+    "employment": 2823,
+    "covered": 157
+   },
+   "개별입지": {
+    "firms": 111,
+    "employment": 949,
+    "covered": 98
+   }
+  },
+  "소프트웨어·IT": {
+   "수성알파시티": {
+    "firms": 39,
+    "employment": 1873,
+    "covered": 32
+   },
+   "연구개발특구": {
+    "firms": 5,
+    "employment": 37,
+    "covered": 4
+   },
+   "지식산업센터": {
+    "firms": 1,
+    "employment": 18,
+    "covered": 1
+   },
+   "산업단지": {
+    "firms": 102,
+    "employment": 1359,
+    "covered": 85
+   },
+   "개별입지": {
+    "firms": 1,
+    "employment": 26,
+    "covered": 1
+   }
+  },
+  "섬유·패션": {
+   "연구개발특구": {
+    "firms": 4,
+    "employment": 62,
+    "covered": 4
+   },
+   "지식산업센터": {
+    "firms": 8,
+    "employment": 30,
+    "covered": 7
+   },
+   "산업단지": {
+    "firms": 1116,
+    "employment": 18680,
+    "covered": 1043
+   },
+   "개별입지": {
+    "firms": 405,
+    "employment": 4284,
+    "covered": 386
+   }
+  },
+  "전기·전자": {
+   "수성알파시티": {
+    "firms": 2,
+    "employment": 59,
+    "covered": 2
+   },
+   "연구개발특구": {
+    "firms": 33,
+    "employment": 961,
+    "covered": 30
+   },
+   "지식산업센터": {
+    "firms": 5,
+    "employment": 27,
+    "covered": 5
+   },
+   "산업단지": {
+    "firms": 773,
+    "employment": 18462,
+    "covered": 742
+   },
+   "개별입지": {
+    "firms": 372,
+    "employment": 2931,
+    "covered": 353
+   }
+  },
+  "화학·에너지": {
+   "수성알파시티": {
+    "firms": 1,
+    "employment": 77,
+    "covered": 1
+   },
+   "연구개발특구": {
+    "firms": 6,
+    "employment": 78,
+    "covered": 5
+   },
+   "지식산업센터": {
+    "firms": 1,
+    "employment": 6,
+    "covered": 1
+   },
+   "산업단지": {
+    "firms": 492,
+    "employment": 9260,
+    "covered": 431
+   },
+   "개별입지": {
+    "firms": 186,
+    "employment": 1464,
+    "covered": 179
+   }
+  },
+  "식품": {
+   "연구개발특구": {
+    "firms": 1,
+    "employment": 2,
+    "covered": 1
+   },
+   "지식산업센터": {
+    "firms": 2,
+    "employment": 37,
+    "covered": 2
+   },
+   "산업단지": {
+    "firms": 175,
+    "employment": 4009,
+    "covered": 171
+   },
+   "개별입지": {
+    "firms": 197,
+    "employment": 2419,
+    "covered": 192
+   }
+  },
+  "기계·금속": {
+   "연구개발특구": {
+    "firms": 29,
+    "employment": 1189,
+    "covered": 29
+   },
+   "지식산업센터": {
+    "firms": 20,
+    "employment": 109,
+    "covered": 19
+   },
+   "산업단지": {
+    "firms": 2957,
+    "employment": 46463,
+    "covered": 2847
+   },
+   "개별입지": {
+    "firms": 899,
+    "employment": 8184,
+    "covered": 851
+   }
+  },
+  "기타 제조": {
+   "지식산업센터": {
+    "firms": 1,
+    "employment": 2,
+    "covered": 1
+   },
+   "산업단지": {
+    "firms": 549,
+    "employment": 6980,
+    "covered": 509
+   },
+   "개별입지": {
+    "firms": 390,
+    "employment": 3733,
+    "covered": 376
+   }
+  },
+  "기타 서비스": {
+   "수성알파시티": {
+    "firms": 4,
+    "employment": 121,
+    "covered": 3
+   },
+   "연구개발특구": {
+    "firms": 1,
+    "employment": 31,
+    "covered": 1
+   },
+   "지식산업센터": {
+    "firms": 1,
+    "employment": 1,
+    "covered": 1
+   },
+   "산업단지": {
+    "firms": 1191,
+    "employment": 9571,
+    "covered": 591
+   },
+   "개별입지": {
+    "firms": 2,
+    "employment": 19,
+    "covered": 2
    }
   }
  },

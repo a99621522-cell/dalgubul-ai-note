@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="산업단지 산업별 고용 인원. 기계·금속 46,463명, 자동차·부품 26,741명, 섬유·패션 18,680명, 전기·전자 18,462명, 기타 서비스 9,571명, 화학·에너지 9,260명, 기타 제조 6,980명, 식품 4,009명, 의료·바이오 2,823명, 소프트웨어·IT 1,359명, 로봇 1,141명" style="max-width:360px;height:auto;font-size:14px">
+<title>산업단지 산업별 고용 인원</title>
+<text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text>
+<text x="8" y="48.0" fill="#1a1a1a">기계·금속</text>
+<rect x="8" y="54" width="282.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="296.0" y="68.0" fill="#1a1a1a">46,463명</text>
+<text x="8" y="92.0" fill="#1a1a1a">자동차·부품</text>
+<rect x="8" y="98" width="162.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="176.3" y="112.0" fill="#1a1a1a">26,741명</text>
+<text x="8" y="136.0" fill="#1a1a1a">섬유·패션</text>
+<rect x="8" y="142" width="113.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="127.4" y="156.0" fill="#1a1a1a">18,680명</text>
+<text x="8" y="180.0" fill="#1a1a1a">전기·전자</text>
+<rect x="8" y="186" width="112.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="126.1" y="200.0" fill="#1a1a1a">18,462명</text>
+<text x="8" y="224.0" fill="#1a1a1a">기타 서비스</text>
+<rect x="8" y="230" width="58.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="72.1" y="244.0" fill="#1a1a1a">9,571명</text>
+<text x="8" y="268.0" fill="#1a1a1a">화학·에너지</text>
+<rect x="8" y="274" width="56.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="70.2" y="288.0" fill="#1a1a1a">9,260명</text>
+<text x="8" y="312.0" fill="#1a1a1a">기타 제조</text>
+<rect x="8" y="318" width="42.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="56.4" y="332.0" fill="#1a1a1a">6,980명</text>
+<text x="8" y="356.0" fill="#1a1a1a">식품</text>
+<rect x="8" y="362" width="24.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="38.3" y="376.0" fill="#1a1a1a">4,009명</text>
+<text x="8" y="400.0" fill="#1a1a1a">의료·바이오</text>
+<rect x="8" y="406" width="17.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="31.1" y="420.0" fill="#1a1a1a">2,823명</text>
+<text x="8" y="444.0" fill="#1a1a1a">소프트웨어·IT</text>
+<rect x="8" y="450" width="8.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="22.2" y="464.0" fill="#1a1a1a">1,359명</text>
+<text x="8" y="488.0" fill="#1a1a1a">로봇</text>
+<rect x="8" y="494" width="6.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="20.9" y="508.0" fill="#1a1a1a">1,141명</text></svg>

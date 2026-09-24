@@ -8,6 +8,7 @@
 
 입력
   scripts/data/dalseong_companies.csv   팩토리온 기업 DB (id, complex, district, sector_code, workers, as_of …)
+  scripts/data/extra_companies.csv      산단 외 기업(알파시티·특구·창경센터·지식산업센터·창업기업, import_extra.py) + company_tags.csv
   data/nps/YYYYMM.csv                   국민연금 사업장 가입현황 대구분 (선택). 열 이름은 NPS_COLS 의 후보 가운데 하나면 된다
   config/industry_groups.yml            산업 그룹 규칙 (scripts/industry.py 가 읽음)
   scripts/state/dart_corp.json          DART 대구 기업 캐시 (공시 기업 수 계산용, 매출은 자료 없음 → null)
@@ -40,6 +41,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from industry import classify, config as industry_config  # noqa: E402
+from sites import load_all_companies, site_types, tag_name  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 COMPANIES = ROOT / "scripts" / "data" / "dalseong_companies.csv"
@@ -66,15 +68,15 @@ NPS_COLS = {
 
 # ---------------------------------------------------------------- 입력
 def load_companies() -> list[dict]:
-    rows = list(csv.DictReader(open(COMPANIES, encoding="utf-8")))
-    # 전수 원칙: 팩토리온의 모든 기업을 센다. 개인 성명으로 보이는 공장명을 감추는 규칙은 목록·페이지 표시(src/lib/csv.ts)에만 둔다
-    out = []
+    """팩토리온 기업 전부 + 산단 외 기업 목록(extra_companies.csv). 전수 원칙: 어느 기업도 빼지 않는다.
+    개인 성명으로 보이는 공장명을 감추는 규칙은 목록·페이지 표시(src/lib/csv.ts)에만 둔다."""
+    rows = load_all_companies()
     for r in rows:
         r["group"] = classify(r["sector_code"], r["sector"], r["product"])
-        w = r["workers"].strip()
+        w = (r.get("workers") or "").strip()
         r["fo_workers"] = int(w) if w.isdigit() else None
-        out.append(r)
-    return out
+        r["complex"] = r.get("complex") or "개별입지"
+    return rows
 
 
 def norm_name(s: str) -> str:
@@ -277,7 +279,7 @@ def load_month(month: str) -> dict | None:
 
 def attach_deltas(doc: dict, month: str) -> None:
     prev, prev_y = load_month(shift_month(month, 1)), load_month(shift_month(month, 12))
-    for axis in ("total", "by_industry", "by_complex", "by_district"):
+    for axis in ("total", "by_industry", "by_complex", "by_district", "by_site", "by_tag"):
         if axis == "total":
             doc["total"]["mom"] = delta(doc["total"], prev["total"] if prev else None)
             doc["total"]["yoy"] = delta(doc["total"], prev_y["total"] if prev_y else None)
@@ -285,6 +287,7 @@ def attach_deltas(doc: dict, month: str) -> None:
         for k, m in doc[axis].items():
             m["mom"] = delta(m, (prev or {}).get(axis, {}).get(k))
             m["yoy"] = delta(m, (prev_y or {}).get(axis, {}).get(k))
+    doc.setdefault("by_site", {}); doc.setdefault("by_tag", {})
 
 
 def build_month(month: str, companies: list[dict], dart: set[str], as_of: date) -> dict:
@@ -297,9 +300,15 @@ def build_month(month: str, companies: list[dict], dart: set[str], as_of: date) 
     by_ind = {g: cs for g, cs in by_ind.items() if cs}
     by_cx: dict[str, list] = defaultdict(list)
     by_di: dict[str, list] = defaultdict(list)
+    by_site: dict[str, list] = defaultdict(list)
+    by_tag: dict[str, list] = defaultdict(list)
     for c in companies:
         by_cx[c["complex"] or "개별입지"].append(c)
         by_di[c["district"] or "기타"].append(c)
+        by_site[c["site_type"]].append(c)
+        for t in c["tags"]:
+            by_tag[tag_name(t)].append(c)
+    site_order = [t["name"] for t in site_types()]
 
     doc = {
         "month": f"{month[:4]}-{month[4:]}",
@@ -315,7 +324,12 @@ def build_month(month: str, companies: list[dict], dart: set[str], as_of: date) 
         "by_industry": {g: metrics(cs, nps, prev, month, dart, 0, g) for g, cs in by_ind.items()},
         "by_complex": {k: metrics(cs, nps, prev, month, dart, 1, k) for k, cs in sorted(by_cx.items(), key=lambda kv: -len(kv[1]))},
         "by_district": {k: metrics(cs, nps, prev, month, dart, 2, k) for k, cs in sorted(by_di.items(), key=lambda kv: -len(kv[1]))},
+        "by_site": {k: metrics(by_site[k], nps, None, month, dart) for k in site_order if by_site.get(k)},
+        "by_tag": {k: metrics(cs, nps, None, month, dart) for k, cs in sorted(by_tag.items(), key=lambda kv: -len(kv[1]))},
+        "sources_extra": {"outside_companies": sum(1 for c in companies if c["id"].startswith("x")),
+                          "note": "산단 외 기업 목록(scripts/data/extra_companies.csv). 없으면 0"},
         "cross": {},
+        "cross_site": {},
         "open_programs": count_open_programs(as_of),
     }
     # 산업 × 산단 교차표 (기업 수, 고용, 집계 대상)
@@ -329,6 +343,16 @@ def build_month(month: str, companies: list[dict], dart: set[str], as_of: date) 
                 row[cx]["employment"] += e
                 row[cx]["covered"] += 1
         doc["cross"][g] = dict(sorted(row.items(), key=lambda kv: -kv[1]["employment"]))
+    # 산업 × 입지 유형 교차표 (산단 외 기업이 어느 산업인지)
+    for g, cs in by_ind.items():
+        row2: dict[str, dict] = defaultdict(lambda: {"firms": 0, "employment": 0, "covered": 0})
+        for c in cs:
+            e = nps[c["id"]]["employment"] if nps is not None and c["id"] in nps else (None if nps is not None else c["fo_workers"])
+            row2[c["site_type"]]["firms"] += 1
+            if e is not None:
+                row2[c["site_type"]]["employment"] += e
+                row2[c["site_type"]]["covered"] += 1
+        doc["cross_site"][g] = {k: row2[k] for k in site_order if k in row2}
     attach_deltas(doc, month)
 
     MONTHLY.mkdir(parents=True, exist_ok=True)
@@ -375,18 +399,18 @@ def rebuild_timeseries(companies: list[dict]) -> dict:
     months = sorted(p.stem for p in MONTHLY.glob("??????.json"))
     docs = {m: load_month(m) for m in months}
     ts = {"months": [f"{m[:4]}-{m[4:]}" for m in months], "basis": [docs[m]["basis"] for m in months],
-          "total": {"employment": [], "firms": [], "covered": []}, "by_industry": {}, "by_complex": {}, "by_district": {}}
+          "total": {"employment": [], "firms": [], "covered": []}, "by_industry": {}, "by_complex": {}, "by_district": {}, "by_site": {}}
     for m in months:
         d = docs[m]
         for k in ("employment", "firms", "covered"):
             ts["total"][k].append(d["total"][k])
-        for axis in ("by_industry", "by_complex", "by_district"):
-            for name in d[axis]:
+        for axis in ("by_industry", "by_complex", "by_district", "by_site"):
+            for name in d.get(axis, {}):
                 ts[axis].setdefault(name, {"employment": [], "firms": [], "covered": []})
-    for axis in ("by_industry", "by_complex", "by_district"):
+    for axis in ("by_industry", "by_complex", "by_district", "by_site"):
         for name, series in ts[axis].items():
             for m in months:
-                v = docs[m][axis].get(name)
+                v = docs[m].get(axis, {}).get(name)
                 for k in ("employment", "firms", "covered"):
                     series[k].append(v[k] if v else None)
     ts["note"] = f"월 {len(months)}개 보관 (최소 {MIN_MONTHS}개월). basis: nps=국민연금 가입자수, factoryon=공장등록 신고값"
@@ -405,11 +429,13 @@ def rebuild_companies_json(companies: list[dict]) -> None:
         any_nps = any_nps or rows is not None
         for c in companies:
             series[c["id"]].append(matched.get(c["id"], {}).get("employment"))
-    out = {"months": [f"{m[:4]}-{m[4:]}" for m in months], "basis_note": "e: 최신 달 고용 인원(국민연금 매칭 시 가입자수, 아니면 공장등록 신고값 f). s: 최근 12개월 국민연금 가입자수(매칭 기업만)", "companies": {}}
+    out = {"months": [f"{m[:4]}-{m[4:]}" for m in months], "basis_note": "g 산업 그룹, t 입지 유형, k 태그, e 최신 달 고용 인원(국민연금 매칭 시 가입자수, 아니면 공장등록 신고값), s 최근 12개월 국민연금 가입자수(매칭 기업만)", "companies": {}}
     for c in companies:
         s = series[c["id"]]
         latest = next((v for v in reversed(s) if v is not None), None)
-        entry = {"g": c["group"], "e": latest if latest is not None else c["fo_workers"], "b": "nps" if latest is not None else "factoryon"}
+        entry = {"g": c["group"], "t": c["site_type"], "e": latest if latest is not None else c["fo_workers"], "b": "nps" if latest is not None else "factoryon"}
+        if c["tags"]:
+            entry["k"] = sorted(c["tags"])
         if any_nps and any(v is not None for v in s):
             entry["s"] = s
         out["companies"][c["id"]] = entry
@@ -450,6 +476,9 @@ def main(argv: list[str]) -> int:
             mom_s = f"{mom['diff']:+,}" if mom and mom.get("diff") is not None else "—"
             print(f"   {g:<10}{mtr['firms']:>8,}{mtr['covered']:>8,}{mtr['employment']:>10,}{(mtr['avg_employment'] or 0):>7.1f}{mom_s:>10}")
         print(f"   → data/stats/monthly/{m}_industry.csv")
+        print("   입지 유형: " + " · ".join(f"{k} {v['firms']:,}곳/{v['employment']:,}명" for k, v in doc["by_site"].items()))
+        if doc["by_tag"]:
+            print("   태그: " + " · ".join(f"{k} {v['firms']:,}곳" for k, v in doc["by_tag"].items()))
     ts = rebuild_timeseries(companies)
     write_industry_timeseries(ts)
     rebuild_companies_json(companies)

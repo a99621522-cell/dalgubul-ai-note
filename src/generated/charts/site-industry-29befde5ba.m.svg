@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 486" width="100%" role="img" aria-label="지식산업센터 산업별 고용 인원. 기계·금속 109명, 식품 37명, 섬유·패션 30명, 전기·전자 27명, 로봇 18명, 소프트웨어·IT 18명, 자동차·부품 6명, 화학·에너지 6명, 기타 제조 2명, 기타 서비스 1명" style="max-width:360px;height:auto;font-size:14px">
+<title>지식산업센터 산업별 고용 인원</title>
+<text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text>
+<text x="8" y="48.0" fill="#1a1a1a">기계·금속</text>
+<rect x="8" y="54" width="306.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="320.0" y="68.0" fill="#1a1a1a">109명</text>
+<text x="8" y="92.0" fill="#1a1a1a">식품</text>
+<rect x="8" y="98" width="103.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="117.9" y="112.0" fill="#1a1a1a">37명</text>
+<text x="8" y="136.0" fill="#1a1a1a">섬유·패션</text>
+<rect x="8" y="142" width="84.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="98.2" y="156.0" fill="#1a1a1a">30명</text>
+<text x="8" y="180.0" fill="#1a1a1a">전기·전자</text>
+<rect x="8" y="186" width="75.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="89.8" y="200.0" fill="#1a1a1a">27명</text>
+<text x="8" y="224.0" fill="#1a1a1a">로봇</text>
+<rect x="8" y="230" width="50.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="64.5" y="244.0" fill="#1a1a1a">18명</text>
+<text x="8" y="268.0" fill="#1a1a1a">소프트웨어·IT</text>
+<rect x="8" y="274" width="50.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="64.5" y="288.0" fill="#1a1a1a">18명</text>
+<text x="8" y="312.0" fill="#1a1a1a">자동차·부품</text>
+<rect x="8" y="318" width="16.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="30.8" y="332.0" fill="#1a1a1a">6명</text>
+<text x="8" y="356.0" fill="#1a1a1a">화학·에너지</text>
+<rect x="8" y="362" width="16.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="30.8" y="376.0" fill="#1a1a1a">6명</text>
+<text x="8" y="400.0" fill="#1a1a1a">기타 제조</text>
+<rect x="8" y="406" width="5.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="19.6" y="420.0" fill="#1a1a1a">2명</text>
+<text x="8" y="444.0" fill="#1a1a1a">기타 서비스</text>
+<rect x="8" y="450" width="2.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="16.8" y="464.0" fill="#1a1a1a">1명</text></svg>

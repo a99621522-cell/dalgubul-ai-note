@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="개별입지 고용 인원 추이. 2026-08부터 2026-08까지 1개월. 개별입지 최근 25,273명" style="max-width:360px;height:auto;font-size:14px">
+<title>개별입지 고용 인원 추이</title>
+<line x1="60" x2="284" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">24,000</text>
+<line x1="60" x2="284" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="153.0" text-anchor="end" fill="#767676">25,000</text>
+<line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">26,000</text>
+<text x="172.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
+<line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
+<circle cx="172.0" cy="118.5" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="172.0" cy="118.5" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="180.0" y="123.5" fill="#1a1a1a" font-weight="600">25,273명</text>
+<text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text></svg>

@@ -61,6 +61,14 @@ src/generated/charts/*.json          같은 데이터의 표 (접힌 표용)
 
 버림: `IndustrialCard.astro`(→ StatTiles + 현황판), Gowun Batang 링크, 다크모드 CSS, `DeadlineStrip.astro`(→ /support/ 표와 첫 화면 숫자로 흡수).
 
+## 4-1. 산단 외 기업 (2026-09-25 추가 요청)
+수성알파시티·연구개발특구·창조경제혁신센터 보육기업·지식산업센터 입주기업·창업기업 등 공장등록 밖 기업도 DB 에 넣는다.
+- 규칙: `config/site_types.yml` (입지 유형 하나 + 태그 여러 개). 주소·단지명으로 자동 판정. 팩토리온 안에서도 알파시티 48·특구 130·지식산업센터 43곳이 바로 잡힘
+- 투입: `scripts/data/extra/*.csv` → `import_extra.py` → `extra_companies.csv`(id x…) + `company_tags.csv`. 공개 목록 출처는 extra/README.md
+- 통계: `by_site`(입지 유형별)·`by_tag`·`cross_site`(산업×입지) 축 추가, 그래프 `site-*`. 기업 사전 색인에 t(유형)·k(태그)
+- 막힘: 이 환경은 공공 포털 접속이 차단돼 목록을 받지 못함. 사용자가 내려받아 두거나 네트워크 허용 루틴이 받는다
+- 산단 밖 '모든' 고용 사업장의 바탕은 국민연금 사업장 파일(3절)이다
+
 ## 5. 진행 순서와 확인 지점
 
 1. 현황·계획(이 문서) ✔

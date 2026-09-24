@@ -267,6 +267,16 @@ def main() -> int:
             comp.sort(key=lambda kv: -kv[1])
             write(f"{kind}-industry", name, bar_chart, f"{shorten(name)} 산업별 고용 인원", comp, "명", basis_note, index=index)
 
+    # 입지 유형(산단 안팎): 고용 막대 + 유형별 추이 + 유형별 산업 구성
+    sites = latest.get("by_site", {})
+    if sites:
+        write("site-bar", "employment", bar_chart, "입지 유형별 고용 인원", [(k, v["employment"]) for k, v in sorted(sites.items(), key=lambda kv: -kv[1]["employment"])], "명", basis_note, index=index)
+        write("site-bar", "firms", bar_chart, "입지 유형별 기업 수", [(k, v["firms"]) for k, v in sorted(sites.items(), key=lambda kv: -kv[1]["firms"])], "곳", index=index)
+        for name, s in ts.get("by_site", {}).items():
+            write("site-employment", name, line_chart, f"{name} 고용 인원 추이", months, [(name, s["employment"])], "명", basis_note, index=index)
+            comp = sorted(((g, latest["cross_site"].get(g, {}).get(name, {}).get("employment", 0)) for g in groups if latest["cross_site"].get(g, {}).get(name)), key=lambda kv: -kv[1])
+            if comp:
+                write("site-industry", name, bar_chart, f"{name} 산업별 고용 인원", comp, "명", basis_note, index=index)
     (OUT / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
     n = len(list(OUT.glob("*.svg")))
     print(f"그래프 {n}개 → {OUT.relative_to(ROOT)} (최신 {months[-1]}, {basis_note})")

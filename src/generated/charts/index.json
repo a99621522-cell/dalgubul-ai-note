@@ -144,5 +144,23 @@
   "중구": "district-industry-8a2919abe0",
   "수성구": "district-industry-2b413bcefd",
   "남구": "district-industry-dceae17167"
+ },
+ "site-bar": {
+  "employment": "site-bar-4ce09bfd10",
+  "firms": "site-bar-66f6a8f155"
+ },
+ "site-employment": {
+  "수성알파시티": "site-employment-d4e2b140dc",
+  "연구개발특구": "site-employment-af466e44ad",
+  "지식산업센터": "site-employment-29befde5ba",
+  "산업단지": "site-employment-73175ed0a3",
+  "개별입지": "site-employment-61fa24ec59"
+ },
+ "site-industry": {
+  "수성알파시티": "site-industry-d4e2b140dc",
+  "연구개발특구": "site-industry-af466e44ad",
+  "지식산업센터": "site-industry-29befde5ba",
+  "산업단지": "site-industry-73175ed0a3",
+  "개별입지": "site-industry-61fa24ec59"
  }
 }

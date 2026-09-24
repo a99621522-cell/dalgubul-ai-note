@@ -15,6 +15,8 @@
 
 출력
   data/stats/monthly/YYYYMM.json        그 달 집계: 전체 / 산업 / 산단 / 구·군 × 지표, 산업×산단 교차표, 집계 대상 비율
+  data/stats/monthly/YYYYMM_industry.csv 산업별 고용 표 (별도 산출물: 기업 수·집계 대상·고용·평균·규모 구간·증감)
+  data/stats/industry_timeseries.csv    월 × 산업 고용·기업 수
   data/stats/monthly/YYYYMM.ids.csv     그 달 기업 id → [산업, 단지, 구군] (다음 달 신규·소멸 계산용)
   data/stats/timeseries.json            월별 시계열 (모든 달 보관, 최소 24개월)
   data/stats/companies.json             기업별: 산업 그룹, 고용 인원, 최근 12개월 고용 (국민연금 매칭 기업만 시계열)
@@ -354,7 +356,41 @@ def build_month(month: str, companies: list[dict], dart: set[str], as_of: date) 
     MONTHLY.mkdir(parents=True, exist_ok=True)
     (MONTHLY / f"{month}.json").write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8")
     save_ids(month, companies)
+    write_industry_table(doc, month)
     return doc
+
+
+def write_industry_table(doc: dict, month: str) -> Path:
+    """산업별 고용 표를 별도 CSV 로 (data/stats/monthly/YYYYMM_industry.csv). 화면·월보·엑셀 공용."""
+    out = MONTHLY / f"{month}_industry.csv"
+    cols = ["산업", "기업 수", "집계 대상 기업 수", "고용 인원", "평균 고용", "1~9인", "10~49인", "50~299인", "300인 이상",
+            "전월 대비 고용", "전월 대비 %", "전년 동월 대비 고용", "전년 동월 대비 %", "신규 등록 기업", "폐업·탈퇴 기업", "신규취득", "상실"]
+    d = lambda m, k, f: (m.get(k) or {}).get("employment", {}) or {}  # noqa: E731
+    with open(out, "w", encoding="utf-8-sig", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(cols)
+        rows = list(doc["by_industry"].items()) + [("전체", doc["total"])]
+        for name, m in rows:
+            mom, yoy = d(m, "mom", 0), d(m, "yoy", 0)
+            b = m["size_bands"]
+            w.writerow([name, m["firms"], m["covered"], m["employment"], m["avg_employment"], b["1~9"], b["10~49"], b["50~299"], b["300+"],
+                        mom.get("diff"), mom.get("pct"), yoy.get("diff"), yoy.get("pct"), m["new_firms"], m["closed_firms"], m["nps_gain"], m["nps_loss"]])
+        w.writerow([])
+        w.writerow([f"기준 {doc['month']} · 고용 인원 = {doc['basis_label']} · 집계 대상 = 고용 값이 있는 기업 · 빈칸 = 자료 없음"])
+    return out
+
+
+def write_industry_timeseries(ts: dict) -> Path:
+    """월 × 산업 고용·기업 수 (data/stats/industry_timeseries.csv)."""
+    out = OUT / "industry_timeseries.csv"
+    names = list(ts["by_industry"].keys())
+    with open(out, "w", encoding="utf-8-sig", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["월", "고용 근거", "전체 고용", "전체 기업 수"] + [f"{n} 고용" for n in names] + [f"{n} 기업 수" for n in names])
+        for i, m in enumerate(ts["months"]):
+            w.writerow([m, ts["basis"][i], ts["total"]["employment"][i], ts["total"]["firms"][i]]
+                       + [ts["by_industry"][n]["employment"][i] for n in names] + [ts["by_industry"][n]["firms"][i] for n in names])
+    return out
 
 
 def rebuild_timeseries(companies: list[dict]) -> dict:
@@ -430,11 +466,16 @@ def main(argv: list[str]) -> int:
         print(f"[{doc['month']}] 기업 {t['firms']:,} · 고용 {t['employment']:,}명 ({doc['basis_label']}, 집계 대상 {t['covered']:,}/{t['firms']:,})"
               + (f" · 국민연금 {src['rows']:,}행 중 매칭 {src['matched']:,}곳" if src else " · 국민연금 파일 없음")
               + f" · 진행 중 공고 {doc['open_programs']}건")
-        for g, mtr in doc["by_industry"].items():
-            print(f"   {g:<10} 기업 {mtr['firms']:>6,}  고용 {mtr['employment']:>8,}  대상 {mtr['covered']:>6,}")
+        print(f"   {'산업':<10}{'기업 수':>8}{'집계 대상':>8}{'고용 인원':>10}{'평균':>7}{'전월 대비':>10}")
+        for g, mtr in list(doc["by_industry"].items()) + [("전체", t)]:
+            mom = (mtr.get("mom") or {}).get("employment")
+            mom_s = f"{mom['diff']:+,}" if mom and mom.get("diff") is not None else "—"
+            print(f"   {g:<10}{mtr['firms']:>8,}{mtr['covered']:>8,}{mtr['employment']:>10,}{(mtr['avg_employment'] or 0):>7.1f}{mom_s:>10}")
+        print(f"   → data/stats/monthly/{m}_industry.csv")
     ts = rebuild_timeseries(companies)
+    write_industry_timeseries(ts)
     rebuild_companies_json(companies)
-    print(f"시계열 {len(ts['months'])}개월 → data/stats/timeseries.json, companies.json")
+    print(f"시계열 {len(ts['months'])}개월 → data/stats/timeseries.json, industry_timeseries.csv, companies.json")
     if len(ts["months"]) < MIN_MONTHS:
         print(f"(과거 국민연금 월별 파일을 data/nps/ 에 넣고 --backfill 하면 {MIN_MONTHS}개월까지 소급됩니다)")
     return 0

@@ -7,6 +7,7 @@ __pycache__/
 # 수집기가 만드는 inbox JSON 은 그 실행에서 소비된다. 저장소에는 README 와 done/.gitkeep 만 둔다
 scripts/inbox/*.json
 scripts/inbox/done/*.json
-# 팩토리온 원본 엑셀과 repair_factoryon.py 정리본은 저장소에 두지 않는다
-data/
+# 팩토리온 원본 엑셀과 repair_factoryon.py 정리본은 저장소에 두지 않는다 (data/stats 집계 결과는 둔다)
+data/*.xls
+data/*.xlsx
 *_정리.xlsx

@@ -1,0 +1,1806 @@
+{
+ "month": "2026-08",
+ "generated": "2026-09-24 22:22",
+ "basis": "factoryon",
+ "basis_label": "공장등록 신고값(팩토리온)",
+ "sources": {
+  "factoryon": {
+   "as_of": "2026-08",
+   "companies": 11131
+  },
+  "nps": null,
+  "dart": {
+   "corps_daegu": 2,
+   "note": "collect_dart.py 가 확인한 대구 본사 공시 기업만. 재무(매출)는 미연결"
+  }
+ },
+ "total": {
+  "firms": 11131,
+  "employment": 177620,
+  "covered": 10028,
+  "avg_employment": 17.7,
+  "size_bands": {
+   "1~9": 6232,
+   "10~49": 3207,
+   "50~299": 549,
+   "300+": 40
+  },
+  "nps_gain": null,
+  "nps_loss": null,
+  "new_firms": null,
+  "closed_firms": null,
+  "dart_firms": 0,
+  "dart_revenue": null,
+  "projects_12m": null,
+  "mom": null,
+  "yoy": null
+ },
+ "by_industry": {
+  "로봇": {
+   "firms": 87,
+   "employment": 1257,
+   "covered": 79,
+   "avg_employment": 15.9,
+   "size_bands": {
+    "1~9": 43,
+    "10~49": 31,
+    "50~299": 5,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "자동차·부품": {
+   "firms": 791,
+   "employment": 28218,
+   "covered": 758,
+   "avg_employment": 37.2,
+   "size_bands": {
+    "1~9": 310,
+    "10~49": 311,
+    "50~299": 125,
+    "300+": 12
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "의료·바이오": {
+   "firms": 324,
+   "employment": 5630,
+   "covered": 289,
+   "avg_employment": 19.5,
+   "size_bands": {
+    "1~9": 170,
+    "10~49": 96,
+    "50~299": 20,
+    "300+": 3
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "소프트웨어·IT": {
+   "firms": 147,
+   "employment": 3313,
+   "covered": 123,
+   "avg_employment": 26.9,
+   "size_bands": {
+    "1~9": 56,
+    "10~49": 48,
+    "50~299": 17,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "섬유·패션": {
+   "firms": 1532,
+   "employment": 23030,
+   "covered": 1439,
+   "avg_employment": 16.0,
+   "size_bands": {
+    "1~9": 745,
+    "10~49": 610,
+    "50~299": 84,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "전기·전자": {
+   "firms": 1185,
+   "employment": 22440,
+   "covered": 1132,
+   "avg_employment": 19.8,
+   "size_bands": {
+    "1~9": 744,
+    "10~49": 319,
+    "50~299": 60,
+    "300+": 9
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "화학·에너지": {
+   "firms": 686,
+   "employment": 10885,
+   "covered": 617,
+   "avg_employment": 17.6,
+   "size_bands": {
+    "1~9": 410,
+    "10~49": 185,
+    "50~299": 19,
+    "300+": 3
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "식품": {
+   "firms": 375,
+   "employment": 6467,
+   "covered": 366,
+   "avg_employment": 17.7,
+   "size_bands": {
+    "1~9": 201,
+    "10~49": 140,
+    "50~299": 23,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "기계·금속": {
+   "firms": 3903,
+   "employment": 55925,
+   "covered": 3744,
+   "avg_employment": 14.9,
+   "size_bands": {
+    "1~9": 2540,
+    "10~49": 1063,
+    "50~299": 134,
+    "300+": 7
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "기타 제조": {
+   "firms": 940,
+   "employment": 10715,
+   "covered": 886,
+   "avg_employment": 12.1,
+   "size_bands": {
+    "1~9": 592,
+    "10~49": 259,
+    "50~299": 35,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "기타 서비스": {
+   "firms": 1161,
+   "employment": 9740,
+   "covered": 595,
+   "avg_employment": 16.4,
+   "size_bands": {
+    "1~9": 421,
+    "10~49": 145,
+    "50~299": 27,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  }
+ },
+ "by_complex": {
+  "성서지방산업단지": {
+   "firms": 3260,
+   "employment": 53488,
+   "covered": 3061,
+   "avg_employment": 17.5,
+   "size_bands": {
+    "1~9": 1756,
+    "10~49": 1108,
+    "50~299": 187,
+    "300+": 10
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "개별입지": {
+   "firms": 2687,
+   "employment": 25321,
+   "covered": 2555,
+   "avg_employment": 9.9,
+   "size_bands": {
+    "1~9": 1863,
+    "10~49": 648,
+    "50~299": 42,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "서대구일반산업단지": {
+   "firms": 1570,
+   "employment": 13644,
+   "covered": 1116,
+   "avg_employment": 12.2,
+   "size_bands": {
+    "1~9": 786,
+    "10~49": 288,
+    "50~299": 40,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구제3일반산업단지": {
+   "firms": 1188,
+   "employment": 8077,
+   "covered": 1058,
+   "avg_employment": 7.6,
+   "size_bands": {
+    "1~9": 817,
+    "10~49": 232,
+    "50~299": 9,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "북구검단일반산업단지": {
+   "firms": 577,
+   "employment": 5784,
+   "covered": 537,
+   "avg_employment": 10.8,
+   "size_bands": {
+    "1~9": 373,
+    "10~49": 155,
+    "50~299": 8,
+    "300+": 1
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "달성일반산업단지": {
+   "firms": 314,
+   "employment": 16802,
+   "covered": 298,
+   "avg_employment": 56.4,
+   "size_bands": {
+    "1~9": 95,
+    "10~49": 140,
+    "50~299": 52,
+    "300+": 11
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "달성2차일반산업단지": {
+   "firms": 303,
+   "employment": 5232,
+   "covered": 282,
+   "avg_employment": 18.6,
+   "size_bands": {
+    "1~9": 156,
+    "10~49": 99,
+    "50~299": 27,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구국가산업단지": {
+   "firms": 267,
+   "employment": 11534,
+   "covered": 242,
+   "avg_employment": 47.7,
+   "size_bands": {
+    "1~9": 95,
+    "10~49": 109,
+    "50~299": 34,
+    "300+": 4
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구염색일반산업단지": {
+   "firms": 157,
+   "employment": 5825,
+   "covered": 143,
+   "avg_employment": 40.7,
+   "size_bands": {
+    "1~9": 19,
+    "10~49": 83,
+    "50~299": 41,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구인쇄출판밸리": {
+   "firms": 136,
+   "employment": 968,
+   "covered": 118,
+   "avg_employment": 8.2,
+   "size_bands": {
+    "1~9": 91,
+    "10~49": 26,
+    "50~299": 1,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구연구개발특구": {
+   "firms": 130,
+   "employment": 4413,
+   "covered": 115,
+   "avg_employment": 38.4,
+   "size_bands": {
+    "1~9": 33,
+    "10~49": 56,
+    "50~299": 24,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구테크노폴리스일반산업단지": {
+   "firms": 125,
+   "employment": 14961,
+   "covered": 117,
+   "avg_employment": 127.9,
+   "size_bands": {
+    "1~9": 22,
+    "10~49": 53,
+    "50~299": 38,
+    "300+": 4
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "성서5차첨단산업단지": {
+   "firms": 113,
+   "employment": 4873,
+   "covered": 113,
+   "avg_employment": 43.1,
+   "size_bands": {
+    "1~9": 27,
+    "10~49": 66,
+    "50~299": 18,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구옥포농공단지": {
+   "firms": 62,
+   "employment": 600,
+   "covered": 53,
+   "avg_employment": 11.3,
+   "size_bands": {
+    "1~9": 32,
+    "10~49": 20,
+    "50~299": 1,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "군위농공단지": {
+   "firms": 54,
+   "employment": 765,
+   "covered": 45,
+   "avg_employment": 17.0,
+   "size_bands": {
+    "1~9": 21,
+    "10~49": 22,
+    "50~299": 2,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구이시아폴리스일반산업단지": {
+   "firms": 54,
+   "employment": 1656,
+   "covered": 54,
+   "avg_employment": 30.7,
+   "size_bands": {
+    "1~9": 16,
+    "10~49": 33,
+    "50~299": 4,
+    "300+": 1
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구경북경제자유구역수성의료지구": {
+   "firms": 47,
+   "employment": 2204,
+   "covered": 39,
+   "avg_employment": 56.5,
+   "size_bands": {
+    "1~9": 1,
+    "10~49": 19,
+    "50~299": 18,
+    "300+": 1
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구금호워터폴리스일반산업단지": {
+   "firms": 36,
+   "employment": 557,
+   "covered": 36,
+   "avg_employment": 15.5,
+   "size_bands": {
+    "1~9": 12,
+    "10~49": 24,
+    "50~299": 0,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구구지농공단지": {
+   "firms": 27,
+   "employment": 546,
+   "covered": 25,
+   "avg_employment": 21.8,
+   "size_bands": {
+    "1~9": 11,
+    "10~49": 12,
+    "50~299": 2,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "군위효령농공단지": {
+   "firms": 14,
+   "employment": 207,
+   "covered": 11,
+   "avg_employment": 18.8,
+   "size_bands": {
+    "1~9": 3,
+    "10~49": 7,
+    "50~299": 1,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "달성외국인투자지역": {
+   "firms": 6,
+   "employment": 139,
+   "covered": 6,
+   "avg_employment": 23.2,
+   "size_bands": {
+    "1~9": 0,
+    "10~49": 6,
+    "50~299": 0,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "대구경북첨단의료복합단지도시첨단산업단지": {
+   "firms": 4,
+   "employment": 24,
+   "covered": 4,
+   "avg_employment": 6.0,
+   "size_bands": {
+    "1~9": 3,
+    "10~49": 1,
+    "50~299": 0,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  }
+ },
+ "by_district": {
+  "달서구": {
+   "firms": 3506,
+   "employment": 55516,
+   "covered": 3283,
+   "avg_employment": 16.9,
+   "size_bands": {
+    "1~9": 1928,
+    "10~49": 1156,
+    "50~299": 188,
+    "300+": 11
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "북구": {
+   "firms": 2529,
+   "employment": 20079,
+   "covered": 2300,
+   "avg_employment": 8.7,
+   "size_bands": {
+    "1~9": 1707,
+    "10~49": 567,
+    "50~299": 25,
+    "300+": 1
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "달성군": {
+   "firms": 2229,
+   "employment": 66124,
+   "covered": 2111,
+   "avg_employment": 31.3,
+   "size_bands": {
+    "1~9": 1137,
+    "10~49": 754,
+    "50~299": 198,
+    "300+": 22
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "서구": {
+   "firms": 1987,
+   "employment": 22078,
+   "covered": 1515,
+   "avg_employment": 14.6,
+   "size_bands": {
+    "1~9": 976,
+    "10~49": 453,
+    "50~299": 84,
+    "300+": 2
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "동구": {
+   "firms": 407,
+   "employment": 7246,
+   "covered": 383,
+   "avg_employment": 18.9,
+   "size_bands": {
+    "1~9": 211,
+    "10~49": 145,
+    "50~299": 24,
+    "300+": 3
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "군위군": {
+   "firms": 163,
+   "employment": 2021,
+   "covered": 144,
+   "avg_employment": 14.0,
+   "size_bands": {
+    "1~9": 83,
+    "10~49": 54,
+    "50~299": 7,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "중구": {
+   "firms": 153,
+   "employment": 1462,
+   "covered": 148,
+   "avg_employment": 9.9,
+   "size_bands": {
+    "1~9": 105,
+    "10~49": 40,
+    "50~299": 3,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "수성구": {
+   "firms": 108,
+   "employment": 2805,
+   "covered": 99,
+   "avg_employment": 28.3,
+   "size_bands": {
+    "1~9": 48,
+    "10~49": 30,
+    "50~299": 20,
+    "300+": 1
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  },
+  "남구": {
+   "firms": 49,
+   "employment": 289,
+   "covered": 45,
+   "avg_employment": 6.4,
+   "size_bands": {
+    "1~9": 37,
+    "10~49": 8,
+    "50~299": 0,
+    "300+": 0
+   },
+   "nps_gain": null,
+   "nps_loss": null,
+   "new_firms": null,
+   "closed_firms": null,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "mom": null,
+   "yoy": null
+  }
+ },
+ "cross": {
+  "로봇": {
+   "성서지방산업단지": {
+    "firms": 34,
+    "employment": 420,
+    "covered": 31
+   },
+   "성서5차첨단산업단지": {
+    "firms": 7,
+    "employment": 285,
+    "covered": 7
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 5,
+    "employment": 106,
+    "covered": 5
+   },
+   "개별입지": {
+    "firms": 11,
+    "employment": 87,
+    "covered": 8
+   },
+   "대구국가산업단지": {
+    "firms": 3,
+    "employment": 78,
+    "covered": 3
+   },
+   "대구제3일반산업단지": {
+    "firms": 10,
+    "employment": 65,
+    "covered": 10
+   },
+   "서대구일반산업단지": {
+    "firms": 6,
+    "employment": 65,
+    "covered": 4
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 3,
+    "employment": 63,
+    "covered": 3
+   },
+   "대구금호워터폴리스일반산업단지": {
+    "firms": 2,
+    "employment": 43,
+    "covered": 2
+   },
+   "북구검단일반산업단지": {
+    "firms": 3,
+    "employment": 30,
+    "covered": 3
+   },
+   "대구연구개발특구": {
+    "firms": 2,
+    "employment": 11,
+    "covered": 2
+   },
+   "달성2차일반산업단지": {
+    "firms": 1,
+    "employment": 4,
+    "covered": 1
+   }
+  },
+  "자동차·부품": {
+   "성서지방산업단지": {
+    "firms": 265,
+    "employment": 9947,
+    "covered": 258
+   },
+   "달성일반산업단지": {
+    "firms": 55,
+    "employment": 4745,
+    "covered": 50
+   },
+   "대구국가산업단지": {
+    "firms": 83,
+    "employment": 3686,
+    "covered": 79
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 23,
+    "employment": 2805,
+    "covered": 21
+   },
+   "달성2차일반산업단지": {
+    "firms": 61,
+    "employment": 1709,
+    "covered": 56
+   },
+   "북구검단일반산업단지": {
+    "firms": 65,
+    "employment": 1197,
+    "covered": 64
+   },
+   "개별입지": {
+    "firms": 107,
+    "employment": 1177,
+    "covered": 104
+   },
+   "대구제3일반산업단지": {
+    "firms": 69,
+    "employment": 951,
+    "covered": 67
+   },
+   "서대구일반산업단지": {
+    "firms": 39,
+    "employment": 929,
+    "covered": 36
+   },
+   "성서5차첨단산업단지": {
+    "firms": 3,
+    "employment": 369,
+    "covered": 3
+   },
+   "대구연구개발특구": {
+    "firms": 6,
+    "employment": 264,
+    "covered": 6
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 6,
+    "employment": 164,
+    "covered": 6
+   },
+   "군위농공단지": {
+    "firms": 3,
+    "employment": 131,
+    "covered": 2
+   },
+   "대구금호워터폴리스일반산업단지": {
+    "firms": 3,
+    "employment": 77,
+    "covered": 3
+   },
+   "대구경북경제자유구역수성의료지구": {
+    "firms": 1,
+    "employment": 30,
+    "covered": 1
+   },
+   "대구옥포농공단지": {
+    "firms": 1,
+    "employment": 21,
+    "covered": 1
+   },
+   "달성외국인투자지역": {
+    "firms": 1,
+    "employment": 16,
+    "covered": 1
+   }
+  },
+  "의료·바이오": {
+   "대구연구개발특구": {
+    "firms": 43,
+    "employment": 1778,
+    "covered": 33
+   },
+   "성서지방산업단지": {
+    "firms": 47,
+    "employment": 959,
+    "covered": 46
+   },
+   "개별입지": {
+    "firms": 111,
+    "employment": 949,
+    "covered": 98
+   },
+   "성서5차첨단산업단지": {
+    "firms": 2,
+    "employment": 683,
+    "covered": 2
+   },
+   "대구제3일반산업단지": {
+    "firms": 77,
+    "employment": 421,
+    "covered": 68
+   },
+   "서대구일반산업단지": {
+    "firms": 16,
+    "employment": 352,
+    "covered": 14
+   },
+   "달성일반산업단지": {
+    "firms": 1,
+    "employment": 118,
+    "covered": 1
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 4,
+    "employment": 83,
+    "covered": 4
+   },
+   "대구경북경제자유구역수성의료지구": {
+    "firms": 1,
+    "employment": 80,
+    "covered": 1
+   },
+   "대구금호워터폴리스일반산업단지": {
+    "firms": 2,
+    "employment": 50,
+    "covered": 2
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 2,
+    "employment": 43,
+    "covered": 2
+   },
+   "북구검단일반산업단지": {
+    "firms": 7,
+    "employment": 36,
+    "covered": 7
+   },
+   "달성2차일반산업단지": {
+    "firms": 4,
+    "employment": 32,
+    "covered": 4
+   },
+   "대구경북첨단의료복합단지도시첨단산업단지": {
+    "firms": 4,
+    "employment": 24,
+    "covered": 4
+   },
+   "대구국가산업단지": {
+    "firms": 2,
+    "employment": 19,
+    "covered": 2
+   },
+   "대구구지농공단지": {
+    "firms": 1,
+    "employment": 3,
+    "covered": 1
+   }
+  },
+  "소프트웨어·IT": {
+   "대구경북경제자유구역수성의료지구": {
+    "firms": 39,
+    "employment": 1873,
+    "covered": 32
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 1,
+    "employment": 500,
+    "covered": 1
+   },
+   "성서지방산업단지": {
+    "firms": 39,
+    "employment": 430,
+    "covered": 36
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 5,
+    "employment": 165,
+    "covered": 5
+   },
+   "서대구일반산업단지": {
+    "firms": 30,
+    "employment": 164,
+    "covered": 22
+   },
+   "대구인쇄출판밸리": {
+    "firms": 25,
+    "employment": 106,
+    "covered": 20
+   },
+   "대구연구개발특구": {
+    "firms": 5,
+    "employment": 37,
+    "covered": 4
+   },
+   "개별입지": {
+    "firms": 1,
+    "employment": 26,
+    "covered": 1
+   },
+   "대구국가산업단지": {
+    "firms": 2,
+    "employment": 12,
+    "covered": 2
+   }
+  },
+  "섬유·패션": {
+   "성서지방산업단지": {
+    "firms": 454,
+    "employment": 6524,
+    "covered": 439
+   },
+   "대구염색일반산업단지": {
+    "firms": 152,
+    "employment": 5583,
+    "covered": 138
+   },
+   "개별입지": {
+    "firms": 411,
+    "employment": 4306,
+    "covered": 391
+   },
+   "서대구일반산업단지": {
+    "firms": 289,
+    "employment": 3159,
+    "covered": 258
+   },
+   "달성일반산업단지": {
+    "firms": 68,
+    "employment": 1264,
+    "covered": 66
+   },
+   "대구제3일반산업단지": {
+    "firms": 38,
+    "employment": 378,
+    "covered": 36
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 14,
+    "employment": 348,
+    "covered": 14
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 10,
+    "employment": 334,
+    "covered": 10
+   },
+   "대구옥포농공단지": {
+    "firms": 28,
+    "employment": 282,
+    "covered": 22
+   },
+   "달성2차일반산업단지": {
+    "firms": 14,
+    "employment": 277,
+    "covered": 14
+   },
+   "군위농공단지": {
+    "firms": 14,
+    "employment": 208,
+    "covered": 12
+   },
+   "북구검단일반산업단지": {
+    "firms": 26,
+    "employment": 196,
+    "covered": 26
+   },
+   "군위효령농공단지": {
+    "firms": 6,
+    "employment": 72,
+    "covered": 6
+   },
+   "대구연구개발특구": {
+    "firms": 4,
+    "employment": 62,
+    "covered": 4
+   },
+   "대구구지농공단지": {
+    "firms": 3,
+    "employment": 32,
+    "covered": 2
+   },
+   "성서5차첨단산업단지": {
+    "firms": 1,
+    "employment": 5,
+    "covered": 1
+   }
+  },
+  "전기·전자": {
+   "성서지방산업단지": {
+    "firms": 335,
+    "employment": 8504,
+    "covered": 328
+   },
+   "달성일반산업단지": {
+    "firms": 25,
+    "employment": 2985,
+    "covered": 24
+   },
+   "개별입지": {
+    "firms": 373,
+    "employment": 2967,
+    "covered": 354
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 24,
+    "employment": 2068,
+    "covered": 23
+   },
+   "북구검단일반산업단지": {
+    "firms": 118,
+    "employment": 1465,
+    "covered": 117
+   },
+   "대구연구개발특구": {
+    "firms": 33,
+    "employment": 961,
+    "covered": 30
+   },
+   "성서5차첨단산업단지": {
+    "firms": 27,
+    "employment": 835,
+    "covered": 27
+   },
+   "대구국가산업단지": {
+    "firms": 39,
+    "employment": 687,
+    "covered": 34
+   },
+   "서대구일반산업단지": {
+    "firms": 83,
+    "employment": 678,
+    "covered": 75
+   },
+   "대구제3일반산업단지": {
+    "firms": 64,
+    "employment": 436,
+    "covered": 61
+   },
+   "달성2차일반산업단지": {
+    "firms": 17,
+    "employment": 278,
+    "covered": 16
+   },
+   "대구금호워터폴리스일반산업단지": {
+    "firms": 12,
+    "employment": 188,
+    "covered": 12
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 10,
+    "employment": 146,
+    "covered": 10
+   },
+   "군위농공단지": {
+    "firms": 11,
+    "employment": 103,
+    "covered": 9
+   },
+   "대구구지농공단지": {
+    "firms": 2,
+    "employment": 38,
+    "covered": 2
+   },
+   "대구옥포농공단지": {
+    "firms": 4,
+    "employment": 34,
+    "covered": 4
+   },
+   "달성외국인투자지역": {
+    "firms": 1,
+    "employment": 23,
+    "covered": 1
+   },
+   "대구경북경제자유구역수성의료지구": {
+    "firms": 1,
+    "employment": 23,
+    "covered": 1
+   },
+   "대구인쇄출판밸리": {
+    "firms": 3,
+    "employment": 11,
+    "covered": 3
+   },
+   "군위효령농공단지": {
+    "firms": 3,
+    "employment": 10,
+    "covered": 1
+   }
+  },
+  "화학·에너지": {
+   "성서지방산업단지": {
+    "firms": 264,
+    "employment": 3083,
+    "covered": 249
+   },
+   "대구국가산업단지": {
+    "firms": 22,
+    "employment": 2824,
+    "covered": 9
+   },
+   "달성일반산업단지": {
+    "firms": 48,
+    "employment": 2242,
+    "covered": 47
+   },
+   "개별입지": {
+    "firms": 186,
+    "employment": 1464,
+    "covered": 179
+   },
+   "서대구일반산업단지": {
+    "firms": 55,
+    "employment": 372,
+    "covered": 36
+   },
+   "대구제3일반산업단지": {
+    "firms": 37,
+    "employment": 186,
+    "covered": 32
+   },
+   "달성2차일반산업단지": {
+    "firms": 25,
+    "employment": 151,
+    "covered": 18
+   },
+   "북구검단일반산업단지": {
+    "firms": 12,
+    "employment": 146,
+    "covered": 12
+   },
+   "대구옥포농공단지": {
+    "firms": 11,
+    "employment": 96,
+    "covered": 11
+   },
+   "대구연구개발특구": {
+    "firms": 6,
+    "employment": 78,
+    "covered": 5
+   },
+   "대구경북경제자유구역수성의료지구": {
+    "firms": 1,
+    "employment": 77,
+    "covered": 1
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 6,
+    "employment": 67,
+    "covered": 6
+   },
+   "군위농공단지": {
+    "firms": 8,
+    "employment": 64,
+    "covered": 7
+   },
+   "대구염색일반산업단지": {
+    "firms": 1,
+    "employment": 24,
+    "covered": 1
+   },
+   "대구구지농공단지": {
+    "firms": 3,
+    "employment": 10,
+    "covered": 3
+   },
+   "대구금호워터폴리스일반산업단지": {
+    "firms": 1,
+    "employment": 1,
+    "covered": 1
+   }
+  },
+  "식품": {
+   "개별입지": {
+    "firms": 197,
+    "employment": 2419,
+    "covered": 192
+   },
+   "성서지방산업단지": {
+    "firms": 72,
+    "employment": 1979,
+    "covered": 72
+   },
+   "달성일반산업단지": {
+    "firms": 17,
+    "employment": 958,
+    "covered": 17
+   },
+   "서대구일반산업단지": {
+    "firms": 49,
+    "employment": 557,
+    "covered": 46
+   },
+   "대구제3일반산업단지": {
+    "firms": 15,
+    "employment": 173,
+    "covered": 15
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 2,
+    "employment": 94,
+    "covered": 2
+   },
+   "달성2차일반산업단지": {
+    "firms": 8,
+    "employment": 79,
+    "covered": 8
+   },
+   "북구검단일반산업단지": {
+    "firms": 3,
+    "employment": 71,
+    "covered": 3
+   },
+   "대구옥포농공단지": {
+    "firms": 3,
+    "employment": 44,
+    "covered": 3
+   },
+   "대구구지농공단지": {
+    "firms": 4,
+    "employment": 34,
+    "covered": 4
+   },
+   "달성외국인투자지역": {
+    "firms": 1,
+    "employment": 31,
+    "covered": 1
+   },
+   "군위농공단지": {
+    "firms": 2,
+    "employment": 26,
+    "covered": 2
+   },
+   "대구연구개발특구": {
+    "firms": 1,
+    "employment": 2,
+    "covered": 1
+   },
+   "군위효령농공단지": {
+    "firms": 1,
+    "employment": 0,
+    "covered": 0
+   }
+  },
+  "기계·금속": {
+   "성서지방산업단지": {
+    "firms": 1310,
+    "employment": 17062,
+    "covered": 1266
+   },
+   "대구테크노폴리스일반산업단지": {
+    "firms": 42,
+    "employment": 9225,
+    "covered": 37
+   },
+   "개별입지": {
+    "firms": 898,
+    "employment": 8174,
+    "covered": 850
+   },
+   "대구제3일반산업단지": {
+    "firms": 750,
+    "employment": 4788,
+    "covered": 708
+   },
+   "달성일반산업단지": {
+    "firms": 68,
+    "employment": 3837,
+    "covered": 66
+   },
+   "성서5차첨단산업단지": {
+    "firms": 71,
+    "employment": 2663,
+    "covered": 71
+   },
+   "달성2차일반산업단지": {
+    "firms": 141,
+    "employment": 2411,
+    "covered": 139
+   },
+   "북구검단일반산업단지": {
+    "firms": 245,
+    "employment": 2133,
+    "covered": 245
+   },
+   "대구국가산업단지": {
+    "firms": 85,
+    "employment": 1821,
+    "covered": 83
+   },
+   "서대구일반산업단지": {
+    "firms": 215,
+    "employment": 1759,
+    "covered": 202
+   },
+   "대구연구개발특구": {
+    "firms": 29,
+    "employment": 1189,
+    "covered": 29
+   },
+   "대구금호워터폴리스일반산업단지": {
+    "firms": 15,
+    "employment": 190,
+    "covered": 15
+   },
+   "대구구지농공단지": {
+    "firms": 3,
+    "employment": 177,
+    "covered": 3
+   },
+   "군위농공단지": {
+    "firms": 13,
+    "employment": 152,
+    "covered": 12
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 7,
+    "employment": 150,
+    "covered": 7
+   },
+   "군위효령농공단지": {
+    "firms": 3,
+    "employment": 106,
+    "covered": 3
+   },
+   "대구옥포농공단지": {
+    "firms": 7,
+    "employment": 60,
+    "covered": 7
+   },
+   "달성외국인투자지역": {
+    "firms": 1,
+    "employment": 28,
+    "covered": 1
+   }
+  },
+  "기타 제조": {
+   "개별입지": {
+    "firms": 390,
+    "employment": 3733,
+    "covered": 376
+   },
+   "성서지방산업단지": {
+    "firms": 219,
+    "employment": 3330,
+    "covered": 208
+   },
+   "대구인쇄출판밸리": {
+    "firms": 97,
+    "employment": 796,
+    "covered": 86
+   },
+   "달성일반산업단지": {
+    "firms": 24,
+    "employment": 603,
+    "covered": 22
+   },
+   "서대구일반산업단지": {
+    "firms": 81,
+    "employment": 589,
+    "covered": 70
+   },
+   "북구검단일반산업단지": {
+    "firms": 48,
+    "employment": 474,
+    "covered": 46
+   },
+   "대구제3일반산업단지": {
+    "firms": 35,
+    "employment": 297,
+    "covered": 33
+   },
+   "달성2차일반산업단지": {
+    "firms": 17,
+    "employment": 276,
+    "covered": 17
+   },
+   "대구구지농공단지": {
+    "firms": 10,
+    "employment": 252,
+    "covered": 10
+   },
+   "대구국가산업단지": {
+    "firms": 4,
+    "employment": 110,
+    "covered": 4
+   },
+   "군위농공단지": {
+    "firms": 2,
+    "employment": 81,
+    "covered": 1
+   },
+   "대구옥포농공단지": {
+    "firms": 5,
+    "employment": 63,
+    "covered": 5
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 4,
+    "employment": 43,
+    "covered": 4
+   },
+   "달성외국인투자지역": {
+    "firms": 2,
+    "employment": 41,
+    "covered": 2
+   },
+   "군위효령농공단지": {
+    "firms": 1,
+    "employment": 19,
+    "covered": 1
+   },
+   "대구금호워터폴리스일반산업단지": {
+    "firms": 1,
+    "employment": 8,
+    "covered": 1
+   }
+  },
+  "기타 서비스": {
+   "서대구일반산업단지": {
+    "firms": 707,
+    "employment": 5020,
+    "covered": 353
+   },
+   "대구국가산업단지": {
+    "firms": 27,
+    "employment": 2297,
+    "covered": 26
+   },
+   "성서지방산업단지": {
+    "firms": 221,
+    "employment": 1250,
+    "covered": 128
+   },
+   "대구제3일반산업단지": {
+    "firms": 93,
+    "employment": 382,
+    "covered": 28
+   },
+   "대구염색일반산업단지": {
+    "firms": 4,
+    "employment": 218,
+    "covered": 4
+   },
+   "대구이시아폴리스일반산업단지": {
+    "firms": 11,
+    "employment": 213,
+    "covered": 11
+   },
+   "대구경북경제자유구역수성의료지구": {
+    "firms": 4,
+    "employment": 121,
+    "covered": 3
+   },
+   "대구인쇄출판밸리": {
+    "firms": 11,
+    "employment": 55,
+    "covered": 9
+   },
+   "달성일반산업단지": {
+    "firms": 8,
+    "employment": 50,
+    "covered": 5
+   },
+   "북구검단일반산업단지": {
+    "firms": 50,
+    "employment": 36,
+    "covered": 14
+   },
+   "성서5차첨단산업단지": {
+    "firms": 2,
+    "employment": 33,
+    "covered": 2
+   },
+   "대구연구개발특구": {
+    "firms": 1,
+    "employment": 31,
+    "covered": 1
+   },
+   "개별입지": {
+    "firms": 2,
+    "employment": 19,
+    "covered": 2
+   },
+   "달성2차일반산업단지": {
+    "firms": 15,
+    "employment": 15,
+    "covered": 9
+   },
+   "군위농공단지": {
+    "firms": 1,
+    "employment": 0,
+    "covered": 0
+   },
+   "대구구지농공단지": {
+    "firms": 1,
+    "employment": 0,
+    "covered": 0
+   },
+   "대구옥포농공단지": {
+    "firms": 3,
+    "employment": 0,
+    "covered": 0
+   }
+  }
+ },
+ "open_programs": 25
+}

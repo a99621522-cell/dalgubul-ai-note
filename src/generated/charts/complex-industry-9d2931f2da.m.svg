@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 442" width="100%" role="img" aria-label="대구국가산단 산업별 고용 인원. 자동차·부품 3,686명, 화학·에너지 2,824명, 기타 서비스 2,297명, 기계·금속 1,821명, 전기·전자 687명, 기타 제조 110명, 로봇 78명, 의료·바이오 19명, 소프트웨어·IT 12명" style="max-width:360px;height:auto;font-size:14px">
+<title>대구국가산단 산업별 고용 인원</title>
+<text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text>
+<text x="8" y="48.0" fill="#1a1a1a">자동차·부품</text>
+<rect x="8" y="54" width="290.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="304.0" y="68.0" fill="#1a1a1a">3,686명</text>
+<text x="8" y="92.0" fill="#1a1a1a">화학·에너지</text>
+<rect x="8" y="98" width="222.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="236.2" y="112.0" fill="#1a1a1a">2,824명</text>
+<text x="8" y="136.0" fill="#1a1a1a">기타 서비스</text>
+<rect x="8" y="142" width="180.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="194.7" y="156.0" fill="#1a1a1a">2,297명</text>
+<text x="8" y="180.0" fill="#1a1a1a">기계·금속</text>
+<rect x="8" y="186" width="143.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="157.3" y="200.0" fill="#1a1a1a">1,821명</text>
+<text x="8" y="224.0" fill="#1a1a1a">전기·전자</text>
+<rect x="8" y="230" width="54.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="68.1" y="244.0" fill="#1a1a1a">687명</text>
+<text x="8" y="268.0" fill="#1a1a1a">기타 제조</text>
+<rect x="8" y="274" width="8.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="22.7" y="288.0" fill="#1a1a1a">110명</text>
+<text x="8" y="312.0" fill="#1a1a1a">로봇</text>
+<rect x="8" y="318" width="6.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="20.1" y="332.0" fill="#1a1a1a">78명</text>
+<text x="8" y="356.0" fill="#1a1a1a">의료·바이오</text>
+<rect x="8" y="362" width="1.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="15.5" y="376.0" fill="#1a1a1a">19명</text>
+<text x="8" y="400.0" fill="#1a1a1a">소프트웨어·IT</text>
+<rect x="8" y="406" width="0.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="14.9" y="420.0" fill="#1a1a1a">12명</text></svg>

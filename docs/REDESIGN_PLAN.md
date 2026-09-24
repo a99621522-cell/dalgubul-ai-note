@@ -65,7 +65,7 @@ src/generated/charts/*.json          같은 데이터의 표 (접힌 표용)
 
 1. 현황·계획(이 문서) ✔
 2. `industry_groups.yml` + 분포 보고 ✔ → **확인 대기**
-3. `build_stats.py` + `render_charts.py` → 전체 고용 추이 SVG 1개 → 확인
+3. `build_stats.py` + `render_charts.py` → 전체 고용 추이 SVG ✔ → **확인 대기** (그래프는 넓은 판 .svg + 휴대폰 판 .m.svg 두 개씩, 표 .json)
 4. `tokens.css` + 공용 레이아웃 + 메인 → 390/1280 스크린샷 → 확인
 5. 산업별 → 현황판 → 기업 사전 → 카드 → 지원사업 → 통계 → 글 (페이지마다 두 폭 스크린샷)
 6. `stats.yml` 워크플로 연결

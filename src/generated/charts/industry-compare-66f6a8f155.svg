@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="주력 산업 기업 수 추이. 2026-08부터 2026-08까지 1개월. 기계·금속 최근 3,903곳; 자동차·부품 최근 791곳; 섬유·패션 최근 1,532곳; 전기·전자 최근 1,185곳; 화학·에너지 최근 686곳" style="max-width:720px;height:auto;font-size:14px">
+<title>주력 산업 기업 수 추이</title>
+<line x1="72" x2="580" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
+<line x1="72" x2="580" y1="158.0" y2="158.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="163.0" text-anchor="end" fill="#767676">2,000</text>
+<line x1="72" x2="580" y1="20.0" y2="20.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="25.0" text-anchor="end" fill="#767676">4,000</text>
+<text x="326.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<line x1="72" x2="580" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
+<circle cx="326.0" cy="26.7" r="4" style="fill:var(--chart-1,#1B4F9B)"/>
+<circle cx="326.0" cy="26.7" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="334.0" y="32.0" fill="#1a1a1a" font-weight="600">3,903곳 기계·금속</text>
+<circle cx="326.0" cy="241.4" r="4" style="fill:var(--chart-2,#E69F00)"/>
+<circle cx="326.0" cy="241.4" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="334.0" y="246.4" fill="#1a1a1a" font-weight="600">791곳 자동차·부품</text>
+<circle cx="326.0" cy="190.3" r="4" style="fill:var(--chart-3,#009E73)"/>
+<circle cx="326.0" cy="190.3" r="3.5" style="fill:var(--chart-3,#009E73)"/>
+<text x="334.0" y="195.3" fill="#1a1a1a" font-weight="600">1,532곳 섬유·패션</text>
+<circle cx="326.0" cy="214.2" r="4" style="fill:var(--chart-4,#D55E00)"/>
+<circle cx="326.0" cy="214.2" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
+<text x="334.0" y="219.2" fill="#1a1a1a" font-weight="600">1,185곳 전기·전자</text>
+<circle cx="326.0" cy="248.7" r="4" style="fill:var(--chart-5,#CC79A7)"/>
+<circle cx="326.0" cy="248.7" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
+<text x="334.0" y="262.4" fill="#1a1a1a" font-weight="600">686곳 화학·에너지</text></svg>

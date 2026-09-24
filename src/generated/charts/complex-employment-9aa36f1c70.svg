@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구옥포농공단지 고용 인원 추이. 2026-08부터 2026-08까지 1개월. 대구옥포농공단지 최근 600명" style="max-width:720px;height:auto;font-size:14px">
+<title>대구옥포농공단지 고용 인원 추이</title>
+<line x1="72" x2="668" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="301.0" text-anchor="end" fill="#767676">560</text>
+<line x1="72" x2="668" y1="210.7" y2="210.7" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="215.7" text-anchor="end" fill="#767676">580</text>
+<line x1="72" x2="668" y1="125.3" y2="125.3" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="130.3" text-anchor="end" fill="#767676">600</text>
+<line x1="72" x2="668" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">620</text>
+<text x="370.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<line x1="72" x2="668" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
+<circle cx="370.0" cy="125.3" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="370.0" cy="125.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="378.0" y="130.3" fill="#1a1a1a" font-weight="600">600명</text>
+<text x="72" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text></svg>

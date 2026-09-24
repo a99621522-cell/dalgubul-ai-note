@@ -47,3 +47,4 @@ tags: [정책제안, <분야>], summary, description(핵심 문장), faq 3개(�
 
 저장: src/content/posts/YYYY-MM-DD-pledge-<key>.md (draft:true), docs/strategy/proposals/<key>-YYYY-MM-DD.md 에 7절만.
 커밋 "report: 정책제안 <분야> YYYY-MM-DD" 후 푸시. 완료 후 제목·제안 3줄·출처 수 출력.
+분야 8개(config/pledge_areas.yml): mobility / robot-physical-ai / semiconductor / textile / machinery-root / manufacturing-ax / healthcare / ai-sw-startup

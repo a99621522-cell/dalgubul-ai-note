@@ -56,7 +56,7 @@ def num(s: str) -> float:
         return 0.0
 
 
-def companies_block(groups: list[str]) -> dict | None:
+def companies_block(groups: list[str], sub_counts: dict | None = None) -> dict | None:
     if not groups:
         return None
     rows = load_all_companies()
@@ -83,13 +83,31 @@ def companies_block(groups: list[str]) -> dict | None:
         "districts": Counter(r["district"] for r in sel).most_common(),
         "site_types": Counter(r["site_type"] for r in sel).most_common(),
         "sub_sectors": Counter((r["sector_code"], r["sector"].split(" 외")[0]) for r in sel).most_common(10),
+        "sub_counts": {name: _sub_count(sel, spec, w) for name, spec in (sub_counts or {}).items()},
         "as_of": sel[0]["as_of"] if sel else "",
         "condition": f"config/industry_groups.yml 그룹 {groups} (팩토리온 + 산단 외 목록, 종사자는 공장등록 신고값)",
     }
 
 
+def _sub_count(sel: list[dict], spec: dict, w) -> dict:
+    """분야 안에서 따로 세는 업종: ksic 접두어 목록 또는 업종명·생산품 키워드."""
+    pre = tuple(str(x) for x in spec.get("ksic", []))
+    kws = spec.get("keywords", [])
+    hit = [r for r in sel if (pre and r["sector_code"].startswith(pre)) or (kws and any(k in f"{r['sector']} {r['product']}" for k in kws))]
+    return {"firms": len(hit), "employment": w(hit), "condition": (f"KSIC {list(pre)}" if pre else "") + (f" 키워드 {kws}" if kws else "")}
+
+
+def kw_pattern(keywords: list[str]) -> re.Pattern:
+    """영문·숫자만인 키워드(AI, SDV, ABB)는 단어 단위·대소문자 그대로, 한글 키워드는 부분 일치."""
+    parts = []
+    for k in keywords:
+        e = re.escape(k)
+        parts.append(rf"(?<![A-Za-z0-9]){e}(?![A-Za-z0-9])" if re.fullmatch(r"[A-Za-z0-9 .\-]+", k) else e)
+    return re.compile("|".join(parts))
+
+
 def programs_block(keywords: list[str]) -> list[dict]:
-    pat = re.compile("|".join(map(re.escape, keywords)), re.I)
+    pat = kw_pattern(keywords)
     out, seen = [], set()
     for f in PROGRAM_FILES:
         p = DATA / f
@@ -106,7 +124,7 @@ def programs_block(keywords: list[str]) -> list[dict]:
 
 
 def city_match_block(keywords: list[str]) -> list[dict]:
-    pat = re.compile("|".join(map(re.escape, keywords)), re.I)
+    pat = kw_pattern(keywords)
     out = []
     for f in ("match_daegu_national.csv", "match_daegu_motie.csv"):
         p = DATA / f
@@ -119,7 +137,7 @@ def city_match_block(keywords: list[str]) -> list[dict]:
 
 
 def posts_block(keywords: list[str], weeks: int = 8) -> list[dict]:
-    pat = re.compile("|".join(map(re.escape, keywords)), re.I)
+    pat = kw_pattern(keywords)
     since = date.today() - timedelta(weeks=weeks)
     out = []
     for p in sorted(POSTS.glob("*.md")):
@@ -131,7 +149,7 @@ def posts_block(keywords: list[str], weeks: int = 8) -> list[dict]:
         m = re.search(r"^date:\s*(\d{4}-\d{2}-\d{2})", fm, re.M)
         if not m or date.fromisoformat(m.group(1)) < since:
             continue
-        if not pat.search(text):
+        if not pat.search(text.replace("AI 초안", "")):
             continue
         g = lambda k: (re.search(rf"^{k}:\s*\"?(.*?)\"?\s*$", fm, re.M) or [None, ""])[1]  # noqa: E731
         out.append({"file": p.name, "date": m.group(1), "title": g("title"), "category": g("category"), "source": g("source"),
@@ -149,7 +167,7 @@ def main(argv: list[str]) -> int:
     area, week = pick_area(c, a.week, a.area)
     ctx = {
         "pledge_of": c.get("pledge_of", ""), "source_url": c.get("source_url", ""), "week": week, "area": area,
-        "companies": companies_block(area.get("industry_groups", [])),
+        "companies": companies_block(area.get("industry_groups", []), area.get("sub_counts")),
         "programs": programs_block(area.get("keywords", [])),
         "city_match": city_match_block(area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
@@ -166,6 +184,8 @@ def main(argv: list[str]) -> int:
         print("  단지 " + ", ".join(f"{k} {v}" for k, v in cb["complexes"]))
         print("  입지 유형 " + ", ".join(f"{k} {v}" for k, v in cb["site_types"]))
         print("  세분류 " + ", ".join(f"{k[0]} {k[1][:18]} {v}" for k, v in cb["sub_sectors"][:6]))
+        for name, v in cb["sub_counts"].items():
+            print(f"  ▸ {name}: {v['firms']:,}곳 · {v['employment']:,}명 ({v['condition']})")
         print(f"  조건: {cb['condition']}")
     else:
         print("\n[기업 사전] 연결 산업 그룹 없음 → 사업 DB·예산·공고 숫자만 사용")

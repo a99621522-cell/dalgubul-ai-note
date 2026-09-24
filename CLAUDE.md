@@ -16,6 +16,7 @@
 - `src/pages/companies-index.json.ts` — 기업 사전 검색용 경량 색인(/companies-index.json). 목록 페이지는 처음 200곳만 HTML로 내보내고 검색·필터 때 이 색인을 받아 클라이언트에서 거른다. 필드를 바꾸면 `companies/index.astro`의 스크립트도 같이 고칠 것
 - `src/lib/partners.ts` — 협업 후보(공급/수요/동종) 규칙 엔진: 업종코드+생산품으로 공정 단계 추정 → 단계 간 공급 관계표 → 같은 단지·구군 우선. '후보'라고만 표기, 거래 관계 단정 금지. 이후 Gemini 공정 분류·산업연관표로 정밀화
 - `scripts/import_factoryon.py` — 팩토리온 월간 엑셀(전국 입주업체현황 + 선택: 산단공 리스트) → 기업·단지 CSV 갱신(id 유지). 사용법은 scripts/data/README.md
+- `scripts/repair_factoryon.py` — 팩토리온 내려받기 파일이 엑셀에서 안 열릴 때. 첫 바이트로 실제 형식(진짜 xls·HTML 표·CSV·SpreadsheetML) 판정 → 옆에 `_정리.xlsx`(시트 1개, 헤더 고정, 자동 필터, 종사자 숫자·등록일 날짜). 원본은 건드리지 않음
 - `scripts/data/` — 달성 산단·기업 기초 CSV. `dalseong_complexes.csv`는 첫 화면·대구 경제 페이지의 산단 카드(`IndustrialCard.astro`)가 빌드 때 읽고, `dalseong_companies.csv`의 기업명은 collect.py가 경제 키워드로 자동 추가
 - `scripts/sources.yml` — 소스·키워드. 소스 추가는 코드가 아니라 여기서
 - `scripts/approve.py` — 초안 승인. `scripts/state/seen.json` — 중복 방지

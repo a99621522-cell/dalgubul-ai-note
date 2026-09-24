@@ -19,6 +19,7 @@
 - `config/industry_groups.yml` — 산업 그룹 11개 규칙(KSIC 접두어+키워드). `scripts/industry.py`·`src/lib/industry.ts`가 읽음. 규칙은 파일에만
 - `config/site_types.yml` — 입지 유형(수성알파시티·연구개발특구·지식산업센터·산업단지·개별입지)과 태그(창업·창경센터·연구소기업·벤처·이노비즈) 규칙. `scripts/sites.py`·`src/lib/sites.ts`
 - `scripts/import_extra.py` — 산단 외 기업 목록(`scripts/data/extra/*.csv`, 형식은 그 README) → `extra_companies.csv`(id x0001~) + `company_tags.csv`. 팩토리온과 같은 기업이면 태그만
+- `scripts/collect_nps.py` — 공공데이터포털 국민연금 가입 사업장 내역(오픈API 또는 내려받은 파일) → `data/nps/YYYYMM.csv` 대구만. 키 `DATA_GO_KR_KEY`, 주소는 `sources.yml` `nps:`. 이 세션 환경은 포털 접속 차단이라 `.github/workflows/nps.yml`(매월 6일)이나 로컬에서 실행
 - `scripts/build_stats.py` — 월간 집계(팩토리온+산단 외 기업+국민연금 파일 있으면) → `data/stats/`. 전수 기준. 자료 없는 지표는 null
 - `scripts/render_charts.py` — `data/stats` → `src/generated/charts/` 인라인 SVG(넓은 판·좁은 판)+표 JSON. `Chart.astro`가 읽음
 - `config/pledge_areas.yml` + `scripts/report_context.py` — 매주 공약 분야별 정책제안 리포트 루틴(docs/ROUTINE_PROMPT.md)의 분야 순환표와 근거 계산(기업 사전·사업 DB·대구시 매칭·최근 글). 리포트는 `draft: true`, 공약 이행 평가·점수화 금지

@@ -47,3 +47,16 @@ dart:
   region_words: [대구광역시, 대구시]
   max_items: 20
   max_company_lookups: 300
+
+# 국민연금 가입 사업장 내역 (공공데이터포털 데이터셋 15083277) → scripts/collect_nps.py → data/nps/YYYYMM.csv (대구만)
+#   api          이번 달 오픈API 주소. 포털 데이터셋 페이지 "오픈API" 탭의 uddi 가 파일마다 다르므로 매달 갱신하거나
+#                Actions 실행 때 api_url 입력으로 넘긴다. 예: https://api.odcloud.kr/api/15083277/v1/uddi:xxxxxxxx-...
+#   filter       서버 쪽 조건(odcloud cond). 법정동주소광역시도코드 27 = 대구. 열 이름이 다르면 주소 LIKE 로 바꾼다
+#   region_words 파일 방식(--file)이나 코드 열이 없을 때 주소로 거르는 낱말
+#   키는 환경변수 DATA_GO_KR_KEY. 이 세션 환경은 포털 접속이 막혀 있어 GitHub Actions(nps.yml)나 로컬에서 실행
+nps:
+  api: ""
+  per_page: 1000
+  max_pages: 500
+  filter: { column: 법정동주소광역시도코드, op: EQ, value: "27" }
+  region_words: [대구광역시, "대구 "]

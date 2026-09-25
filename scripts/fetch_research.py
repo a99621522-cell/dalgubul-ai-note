@@ -37,6 +37,7 @@ OUT = ROOT / "data" / "research"
 TODAY = date.today()
 MAX_DAYS = 70
 MAX_ITEMS = 40
+FUTURE = (date.today() + timedelta(days=3)).isoformat()   # 이보다 뒤 날짜는 발간일로 보지 않는다
 RSS_CANDIDATES = ["/rss", "/feed", "/rss.xml", "/feed.xml", "/index.xml", "/rss/", "/feed/", "/atom.xml"]
 DATE_RE = re.compile(r"(20\d{2})[.\-/년年]\s?(\d{1,2})[.\-/월月]\s?(\d{1,2})")
 MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
@@ -118,7 +119,7 @@ def from_feed(feed_url: str, sess: requests.Session) -> list[dict]:
     return [i for i in items if i["title"] and recent(i["date"])][:MAX_ITEMS]
 
 
-def from_list(page_url: str, html: str, item_pat: str | None) -> list[dict]:
+def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple = ()) -> list[dict]:
     """목록 페이지: 링크 글자 + 그 주변 텍스트에서 날짜를 찾는다."""
     soup = BeautifulSoup(html, "html.parser")
     for t in soup(["script", "style", "nav", "header", "footer"]):
@@ -129,9 +130,14 @@ def from_list(page_url: str, html: str, item_pat: str | None) -> list[dict]:
         title = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
         href = urljoin(page_url, a["href"])
         is_js = href.startswith("javascript") or a["href"].strip() in ("#", "")
+        if JUNK.search(title) and re.search(r"fileView|fileDown|download|\.pdf", href, re.I) and not is_js:
+            # 첨부 링크만 있고 제목은 글자로만 있는 목록(KDB 등): 같은 칸의 글에서 제목을 뽑는다
+            title = block_title(a)
+            if not title:
+                continue
         if is_js:
             href = page_url + "#" + re.sub(r"\W+", "-", title)[:40]   # 목록이 스크립트로 열리는 사이트: 목록 페이지 주소로 연결
-        if len(title) < 8 or href in seen or (not is_js and "#" in href.split("/")[-1]) or JUNK.search(title):
+        if len(title) < 8 or href in seen or (not is_js and "#" in href.split("/")[-1]) or JUNK.search(title) or title in org_names:
             continue
         if pat and not pat.search(href + " " + title):
             continue
@@ -148,12 +154,31 @@ def from_list(page_url: str, html: str, item_pat: str | None) -> list[dict]:
                 break
             node = par
         d = d or parse_date(ctx)
-        if not d:
+        if not d or d > FUTURE:   # 행사 예정일 같은 미래 날짜는 발간일이 아니다
             continue
         seen.add(href)
+        prev = items[-1] if items else None
+        if prev and is_js and prev["url"].split("#")[0] == href.split("#")[0] and prev["date"] == d and len(title) > 60 and not prev["summary"]:
+            prev["summary"] = title[:300]   # 같은 칸의 긴 문장은 앞 항목의 요약(KITA 카드형 목록)
+            continue
         items.append({"title": title[:160], "url": href, "date": d, "summary": ""})
     items.sort(key=lambda i: i["date"], reverse=True)
     return [i for i in items if recent(i["date"])][:MAX_ITEMS]
+
+
+def block_title(a) -> str:
+    """첨부 링크가 든 칸(tr·li·div)에서 제목으로 보이는 글자: 날짜·정크 링크 글자를 뺀 가장 긴 조각."""
+    node = a
+    for _ in range(3):
+        node = node.parent
+        if node is None:
+            return ""
+        txt = node.get_text("\n", strip=True)
+        if DATE_RE.search(txt) or node.name in ("tr", "li", "article"):
+            break
+    pieces = [re.sub(r"\s+", " ", x).strip() for x in txt.split("\n")]
+    pieces = [x for x in pieces if len(x) >= 8 and not JUNK.search(x) and not DATE_RE.fullmatch(x) and not re.fullmatch(r"[\d.\-/ ]+", x)]
+    return max(pieces, key=len)[:160] if pieces else ""
 
 
 def render_html(url: str) -> str:
@@ -298,7 +323,7 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                 failed += 1
                 continue
             html = r.text
-            if org.get("render") and not from_list(page, html, org.get("item_pattern")):
+            if org.get("render") and not from_list(page, html, org.get("item_pattern"), (org["name"], org["name"].split("(")[0].strip())):
                 rendered = render_html(page)
                 if rendered:
                     html = rendered
@@ -307,6 +332,8 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                 res["sample_links"] = [(re.sub(r"\s+", " ", a.get_text(" ", strip=True))[:60], urljoin(page, a["href"])[:120])
                                        for a in soup.find_all("a", href=True) if len(a.get_text(strip=True)) >= 10][:40]
                 res["page_chars"] = len(html)
+                text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+                res["sample_dates"] = [text[max(0, m.start() - 90):m.end() + 20] for m in list(DATE_RE.finditer(text))[:6]]   # 날짜 주변 글(제목이 링크가 아닌 목록 진단)
             for feed in discover_rss(page, html)[:2]:
                 if reqs >= 5:
                     break
@@ -318,13 +345,13 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
             if res["items"]:
                 break
             if page != org.get("home") or not org.get("list"):
-                items = from_list(page, html, org.get("item_pattern"))
+                items = from_list(page, html, org.get("item_pattern"), (org["name"], org["name"].split("(")[0].strip()))
                 if items:
                     res["items"], res["method"] = items, "목록 페이지"
                     break
     res["status"] = "OK" if res["items"] else ("차단" if res["note"] else ("접속 실패" if failed else "항목 없음"))
     if res["items"]:
-        res.pop("sample_links", None); res.pop("page_chars", None)
+        res.pop("sample_links", None); res.pop("page_chars", None); res.pop("sample_dates", None)
     print(f"  → {res['status']} · {res['method']} · {len(res['items'])}건" + (f" · 최신 {res['items'][0]['date']} {res['items'][0]['title'][:40]}" if res["items"] else ""))
     return res
 

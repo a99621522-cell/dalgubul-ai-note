@@ -5,7 +5,7 @@ version: 2026-09-25
 sources:
   # ── 국내 연구기관 ──
   - { key: kiet,   group: 국내 연구, name: 산업연구원(KIET),            home: "https://www.kiet.re.kr", list: "https://www.kiet.re.kr/communicate/medataList?medata_no=982", render: true, lists: ["https://www.kiet.re.kr/research/issueList", "https://www.kiet.re.kr/trends/indbriefList", "https://www.kiet.re.kr/trends/insbriefList"] }
-  - { key: kdi,    group: 국내 연구, name: 한국개발연구원(KDI),         home: "https://www.kdi.re.kr", list: "https://www.kdi.re.kr/research/reportList", render: true, lists: ["https://www.kdi.re.kr/research/reportList", "https://www.kdi.re.kr/research/focusList"] }
+  - { key: kdi,    group: 국내 연구, name: 한국개발연구원(KDI), rss_candidates: ["https://www.kdi.re.kr/rss/report.xml", "https://www.kdi.re.kr/research/rss", "https://www.kdi.re.kr/share/rss"],         home: "https://www.kdi.re.kr", list: "https://www.kdi.re.kr/research/reportList", render: true, lists: ["https://www.kdi.re.kr/research/reportList", "https://www.kdi.re.kr/research/focusList"] }
   - { key: kdi-eiec, group: 국내 연구, name: KDI 경제정보센터(정책자료), home: "https://eiec.kdi.re.kr", list: "https://eiec.kdi.re.kr/policy/materialList.do", render: true }
   - { key: kistep, group: 국내 연구, name: 한국과학기술기획평가원(KISTEP), home: "https://www.kistep.re.kr", list: "https://www.kistep.re.kr/board.es?mid=a10306040000&bid=0031", render: true }
   - { key: stepi,  group: 국내 연구, name: 과학기술정책연구원(STEPI),    home: "https://www.stepi.re.kr", list: "https://www.stepi.re.kr/site/stepiko/report/List.do?reIdx=3" }
@@ -21,7 +21,7 @@ sources:
   - { key: kiat,   group: 기업지원기관, name: 한국산업기술진흥원(KIAT),  home: "https://www.kiat.or.kr", list: "https://www.kiat.or.kr/front/board/boardContentsListPage.do?board_id=71&MenuId=878cb9b6d5ec41bf914ad5c0f590ed14", render: true, datago: "15104286" }
   - { key: iitp,   group: 기업지원기관, name: 정보통신기획평가원(IITP) ICT Brief, home: "https://www.iitp.kr", list: "https://www.iitp.kr/kr/1/knowledge/periodicalViewA.it" }
   - { key: nipa,   group: 기업지원기관, name: 정보통신산업진흥원(NIPA), home: "https://www.nipa.kr", list: "https://www.nipa.kr/home/2-1" }
-  - { key: nia,    group: 기업지원기관, name: 한국지능정보사회진흥원(NIA), home: "https://www.nia.or.kr", list: "https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=25932", render: true }
+  - { key: nia,    group: 기업지원기관, name: 한국지능정보사회진흥원(NIA), home: "https://www.nia.or.kr", list: "https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=25932", lists: ["https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=99984", "https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=25932&pageIndex=1"], render: true }
   - { key: kisti,  group: 기업지원기관, name: 한국과학기술정보연구원(KISTI), home: "https://www.kisti.re.kr", list: "https://www.kisti.re.kr/post/kisti-issue-brief", render: true }
   - { key: kiria,  group: 기업지원기관, name: 한국로봇산업진흥원(KIRIA), home: "https://www.kiria.org", list: "https://www.kiria.org/portal/policysut/portalPlcyReports.do", render: true }
   - { key: kosmes, group: 기업지원기관, name: 중소벤처기업진흥공단,       home: "https://www.kosmes.or.kr", list: "https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do", render: true }

@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464" width="100%" role="img" aria-label="식품 산단별 기업 수. 개별입지 197곳, 산단 외 97곳, 성서산단 72곳, 서대구산단 49곳, 달성산단 17곳, 대구제3산단 15곳, 달성2차산단 8곳, 대구구지농공단지 4곳, 대구옥포농공단지 3곳, 북구검단산단 3곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464" width="100%" role="img" aria-label="식품 산단별 기업 수. 개별입지 197곳, 산단 외 105곳, 성서산단 72곳, 서대구산단 49곳, 달성산단 17곳, 대구제3산단 15곳, 달성2차산단 8곳, 대구구지농공단지 4곳, 대구옥포농공단지 3곳, 북구검단산단 3곳" style="max-width:360px;height:auto;font-size:14px">
 <title>식품 산단별 기업 수</title>
 <text x="8" y="26.0" fill="#1a1a1a">개별입지</text>
 <rect x="8" y="32" width="306.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="320.0" y="46.0" fill="#1a1a1a">197곳</text>
 <text x="8" y="70.0" fill="#1a1a1a">산단 외</text>
-<rect x="8" y="76" width="150.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="164.7" y="90.0" fill="#1a1a1a">97곳</text>
+<rect x="8" y="76" width="163.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="177.1" y="90.0" fill="#1a1a1a">105곳</text>
 <text x="8" y="114.0" fill="#1a1a1a">성서산단</text>
 <rect x="8" y="120" width="111.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="125.8" y="134.0" fill="#1a1a1a">72곳</text>

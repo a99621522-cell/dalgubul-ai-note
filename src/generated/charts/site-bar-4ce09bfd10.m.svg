@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 266" width="100%" role="img" aria-label="입지 유형별 고용 인원. 산업단지 96,090명, 개별입지 44,727명, 지식산업센터 6,545명, 연구개발특구 3,200명, 수성알파시티 2,671명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 266" width="100%" role="img" aria-label="입지 유형별 고용 인원. 산업단지 96,090명, 개별입지 47,320명, 지식산업센터 6,545명, 연구개발특구 3,200명, 수성알파시티 2,671명" style="max-width:360px;height:auto;font-size:14px">
 <title>입지 유형별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">산업단지</text>
 <rect x="8" y="54" width="282.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="296.0" y="68.0" fill="#1a1a1a">96,090명</text>
 <text x="8" y="92.0" fill="#1a1a1a">개별입지</text>
-<rect x="8" y="98" width="131.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="145.3" y="112.0" fill="#1a1a1a">44,727명</text>
+<rect x="8" y="98" width="138.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="152.9" y="112.0" fill="#1a1a1a">47,320명</text>
 <text x="8" y="136.0" fill="#1a1a1a">지식산업센터</text>
 <rect x="8" y="142" width="19.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="33.2" y="156.0" fill="#1a1a1a">6,545명</text>

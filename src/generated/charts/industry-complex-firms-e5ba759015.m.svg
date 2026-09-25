@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464" width="100%" role="img" aria-label="의료·바이오 산단별 기업 수. 개별입지 111곳, 대구제3산단 77곳, 성서산단 47곳, 산단 외 46곳, 대구연구개발특구 43곳, 서대구산단 16곳, 북구검단산단 7곳, 달성2차산단 4곳, 대구테크노폴리스산단 4곳, 대구경북첨단의료복합단지도시산단 4곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464" width="100%" role="img" aria-label="의료·바이오 산단별 기업 수. 개별입지 111곳, 대구제3산단 77곳, 산단 외 65곳, 성서산단 47곳, 대구연구개발특구 43곳, 서대구산단 16곳, 북구검단산단 7곳, 달성2차산단 4곳, 대구테크노폴리스산단 4곳, 대구경북첨단의료복합단지도시산단 4곳" style="max-width:360px;height:auto;font-size:14px">
 <title>의료·바이오 산단별 기업 수</title>
 <text x="8" y="26.0" fill="#1a1a1a">개별입지</text>
 <rect x="8" y="32" width="306.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
@@ -6,12 +6,12 @@
 <text x="8" y="70.0" fill="#1a1a1a">대구제3산단</text>
 <rect x="8" y="76" width="212.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="226.3" y="90.0" fill="#1a1a1a">77곳</text>
-<text x="8" y="114.0" fill="#1a1a1a">성서산단</text>
-<rect x="8" y="120" width="129.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="143.6" y="134.0" fill="#1a1a1a">47곳</text>
-<text x="8" y="158.0" fill="#1a1a1a">산단 외</text>
-<rect x="8" y="164" width="126.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="140.8" y="178.0" fill="#1a1a1a">46곳</text>
+<text x="8" y="114.0" fill="#1a1a1a">산단 외</text>
+<rect x="8" y="120" width="179.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="193.2" y="134.0" fill="#1a1a1a">65곳</text>
+<text x="8" y="158.0" fill="#1a1a1a">성서산단</text>
+<rect x="8" y="164" width="129.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="143.6" y="178.0" fill="#1a1a1a">47곳</text>
 <text x="8" y="202.0" fill="#1a1a1a">대구연구개발특구</text>
 <rect x="8" y="208" width="118.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="132.5" y="222.0" fill="#1a1a1a">43곳</text>

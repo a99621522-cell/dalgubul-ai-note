@@ -4,7 +4,13 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  workflow_call:          # collect.yml 이 수집 후 호출
+  workflow_call:          # collect.yml·review_reports.yml·publish_reports.yml 이 호출
+    inputs:
+      ref:
+        description: "체크아웃·배포할 브랜치 (비우면 호출한 ref)"
+        required: false
+        type: string
+        default: ""
 
 # 동시 배포 방지 (수집 커밋이 연달아 들어와도 마지막 것만 배포)
 concurrency:
@@ -16,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -26,4 +34,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler pages deploy --branch "${GITHUB_REF_NAME}"   # main 이면 운영, 다른 브랜치면 미리보기 주소(<브랜치>.dalgubul-ai-note.pages.dev)
+        env:
+          DEPLOY_BRANCH: ${{ inputs.ref || github.ref_name }}
+        run: npx wrangler pages deploy --branch "${DEPLOY_BRANCH}"   # main 이면 운영, 다른 브랜치면 미리보기 주소(<브랜치>.dalgubul-ai-note.pages.dev)

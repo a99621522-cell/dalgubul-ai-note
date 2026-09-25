@@ -4,8 +4,249 @@
  "group": "해외 컨설팅",
  "home": "https://www.mckinsey.com",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "rss(/insights/rss)",
+ "items": [
+  {
+   "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
+   "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
+   "date": "2026-09-24",
+   "summary": "Our new analysis reveals the odds of reaching $1 billion in sales—and how the paths to that milestone differ by category and ownership."
+  },
+  {
+   "title": "Democratized superintelligence is coming: The world needs to get ready",
+   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
+   "date": "2026-09-24",
+   "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
+  },
+  {
+   "title": "The new growth mandate: A conversation with LinkedIn CMO Jessica Jensen",
+   "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/the-new-growth-mandate-a-conversation-with-linkedin-cmo-jessica-jensen",
+   "date": "2026-09-24",
+   "summary": "At Cannes Lions 2026, LinkedIn CMO Jessica Jensen and McKinsey senior partner Dianne Esber discussed what it takes to turn AI from experimentation into a catalyst for growth."
+  },
+  {
+   "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
+   "date": "2026-09-23",
+   "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
+  },
+  {
+   "title": "Harnessing AI to make mining safer",
+   "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/harnessing-ai-to-make-mining-safer",
+   "date": "2026-09-23",
+   "summary": "AI could improve both safety and productivity by anticipating problems before they arise, detecting worker fatigue, and automating dangerous tasks."
+  },
+  {
+   "title": "Author Talks: The business of owning a sports team",
+   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-the-business-of-owning-a-sports-team",
+   "date": "2026-09-23",
+   "summary": "How does business ownership compare with owning a sports team? Baltimore Orioles owner David M. Rubenstein explains the leadership mindset, culture building, and long-term thinking that team ownership requires."
+  },
+  {
+   "title": "India’s new insurance track: The marathon becomes an AI-led decathlon",
+   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/indias-new-insurance-track-the-marathon-becomes-an-ai-led-decathlon",
+   "date": "2026-09-23",
+   "summary": "As India’s economy continues to ramp up, insurers have an opportunity to capture value by improving productivity, modernizing operating models, and scaling technology and AI across the enterprise."
+  },
+  {
+   "title": "Rewiring procurement in resources: Making judgment an enduring asset",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/rewiring-procurement-in-resources-making-judgment-an-enduring-asset",
+   "date": "2026-09-23",
+   "summary": "For procurement leaders in the resources sector, using AI to codify the function’s category expertise does not just capture more value—it turns hard-won judgment into a compounded, durable advantage."
+  },
+  {
+   "title": "Powering through uncertainty: A talk with former US Energy Secretary Ernest Moniz",
+   "url": "https://www.mckinsey.com/industries/electric-power-and-natural-gas/our-insights/powering-through-uncertainty-a-talk-with-former-us-energy-secretary-ernest-moniz",
+   "date": "2026-09-22",
+   "summary": "The physicist and policymaker says the coming decade will be defined by a race for electrons—and that nuclear power, grid investment, and new public–private models will be part of the picture."
+  },
+  {
+   "title": "Winning hearts in an age of infinite travel choices",
+   "url": "https://www.mckinsey.com/industries/travel/our-insights/winning-hearts-in-an-age-of-infinite-travel-choices",
+   "date": "2026-09-22",
+   "summary": "Travelers’ discovery and booking journeys have been reshaped. How can travel players show up at every turn on the path from search to certainty?"
+  },
+  {
+   "title": "The future of healthy living: A $16.4 trillion opportunity",
+   "url": "https://www.mckinsey.com/mhi/our-insights/the-future-of-healthy-living-a-16-4-trillion-opportunity",
+   "date": "2026-09-22",
+   "summary": "New McKinsey Health Institute analysis finds that addressing modifiable risk factors could add 12 years to healthy life expectancy at birth and add nearly 9 percent to the global economy by 2050."
+  },
+  {
+   "title": "Value is the compass. Consumers set the pace.",
+   "url": "https://www.mckinsey.com/cn/our-insights/our-insights/value-is-the-compass-consumers-set-the-pace",
+   "date": "2026-09-22",
+   "summary": "In the 10th edition of McKinsey’s automotive consumer survey, China’s car buyers reveal where value is heading—and why the road ahead is exciting for consumers everywhere."
+  },
+  {
+   "title": "Ready to ramp? How US manufacturers can scale at pace",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/ready-to-ramp-how-us-manufacturers-can-scale-at-pace",
+   "date": "2026-09-22",
+   "summary": "US manufacturers have a once-in-a-generation opportunity to reshore the production of critical and at-risk goods, but to do so, they will need to aggressively ramp up production from today’s levels."
+  },
+  {
+   "title": "The economics of AI",
+   "url": "https://www.mckinsey.com/quarterly/the-five-fifty/five-fifty-the-economics-of-ai",
+   "date": "2026-09-21",
+   "summary": "AI is getting more expensive for companies. As rising token usage and workflow complexity make costs harder to predict, leaders need new ways to manage AI economics."
+  },
+  {
+   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
+   "date": "2026-09-21",
+   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
+  },
+  {
+   "title": "WIRED: The AI playbook top companies use",
+   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/wired-the-ai-playbook-top-companies-use",
+   "date": "2026-09-21",
+   "summary": "WIRED’s Katie Drummond talks with McKinsey’s Dan Swan about why capturing AI’s full potential requires companies to move beyond experimentation and fundamentally rewire their businesses."
+  },
+  {
+   "title": "AI drug discovery: Focusing on what matters most",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/ai-drug-discovery-focusing-on-what-matters-most",
+   "date": "2026-09-21",
+   "summary": "AI is accelerating drug discovery, but investment has concentrated in molecule design—the stage with the best data and clearest tools. The industry’s real constraint lies elsewhere: identifying and validating the right disease mechanism."
+  },
+  {
+   "title": "Social care referral networks: Improving health in rural communities",
+   "url": "https://www.mckinsey.com/industries/public-sector/our-insights/social-care-referral-networks-improving-health-in-rural-communities",
+   "date": "2026-09-18",
+   "summary": "Six design dimensions can help states stand up social care referral networks that meaningfully improve health outcomes for Medicaid members in rural and underserved communities."
+  },
+  {
+   "title": "Author Talks: How to turn hope into action",
+   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-how-to-turn-hope-into-action",
+   "date": "2026-09-18",
+   "summary": "What compels us to act when we see a problem? Draper Richards Kaplan Foundation CEO Jim Bildner reflects on social entrepreneurship, personal loss, and how hope can move us to act."
+  },
+  {
+   "title": "The transformer supercycle: Why demand is outrunning supply",
+   "url": "https://www.mckinsey.com/industries/electric-power-and-natural-gas/our-insights/the-transformer-supercycle-why-demand-is-outrunning-supply",
+   "date": "2026-09-18",
+   "summary": "A new era of increased demand and constrained supply is fundamentally changing the global transformer market and reshaping decision-making across the value chain."
+  },
+  {
+   "title": "The $2.3 trillion horizon: How AI is rewriting the semiconductor story",
+   "url": "https://www.mckinsey.com/industries/semiconductors/our-insights/the-2-point-3-trillion-dollar-horizon-how-ai-is-rewriting-the-semiconductor-story",
+   "date": "2026-09-18",
+   "summary": "AI is fueling unprecedented semiconductor growth while upending long-standing industry dynamics and shifting the sources of value."
+  },
+  {
+   "title": "Cutting the ‘coordination tax’: How agentic AI can reshape workflows",
+   "url": "https://www.mckinsey.com/industries/industrials/our-insights/cutting-the-coordination-tax-how-agentic-ai-can-reshape-workflows",
+   "date": "2026-09-18",
+   "summary": "Organizations must redesign workflows to realize value from AI, but the challenge is where to begin. An opportunity lies between workflow steps, where work passes between teams and systems."
+  },
+  {
+   "title": "The CMO as impact driver: A conversation with Genentech CMO Zoë Lazarre",
+   "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/the-cmo-as-impact-driver-a-conversation-with-genentech-cmo-zoe-lazarre",
+   "date": "2026-09-17",
+   "summary": "Genentech’s chief marketing officer discusses AI, the future of marketing, patient trust, and why growth depends as much on culture as technology."
+  },
+  {
+   "title": "Why transformations stall—and where only CEOs make the difference",
+   "url": "https://www.mckinsey.com/capabilities/transformation/our-insights/why-transformations-stall-and-where-only-ceos-make-the-difference",
+   "date": "2026-09-17",
+   "summary": "Five common behavioral patterns can cause change efforts to falter. Know the warning signs—and what to do about them."
+  },
+  {
+   "title": "Europe’s new AI edge? The emerging application layer opportunity",
+   "url": "https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/europes-new-ai-edge-the-emerging-application-layer-opportunity",
+   "date": "2026-09-17",
+   "summary": "As enterprises shift from experimenting with models to redesigning workflows, new research suggests Europe could be well-positioned for this new AI application era."
+  },
+  {
+   "title": "Aftershocks: Energy security beyond the Strait of Hormuz crisis",
+   "url": "https://www.mckinsey.com/mgi/our-research/aftershocks-energy-security-beyond-the-strait-of-hormuz-crisis",
+   "date": "2026-09-17",
+   "summary": "The energy system has proven surprisingly resilient, but shock absorbers are thinning. Energy security has no easy exits but room to maneuver."
+  },
+  {
+   "title": "Here’s why some US industrial companies achieve higher multiples",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/heres-why-some-us-industrial-companies-achieve-higher-multiples",
+   "date": "2026-09-17",
+   "summary": "Not every industrial company in a high-growth market earns a higher valuation. The biggest winners consistently combine four management actions."
+  },
+  {
+   "title": "The agentic transformation office: Redefining the economics of change",
+   "url": "https://www.mckinsey.com/capabilities/transformation/our-insights/the-agentic-transformation-office-redefining-the-economics-of-change",
+   "date": "2026-09-16",
+   "summary": "Successful transformations no longer require an army of people at the center."
+  },
+  {
+   "title": "Anchor or drift: What it takes to capture wallet share in 2026",
+   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/anchor-or-drift-what-it-takes-to-capture-wallet-share-in-2026",
+   "date": "2026-09-16",
+   "summary": "Client loyalty evolves quickly. Leading banks are reclaiming the 12 to 25 percent of wallet share that changes hands every year instead of letting it drift."
+  },
+  {
+   "title": "The decade to redefine UK banking",
+   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/the-decade-to-redefine-uk-banking",
+   "date": "2026-09-16",
+   "summary": "UK banks have never been more profitable—but have rarely been more exposed. Success depends on securing customers and deposits, winning the commercial transaction layer, and rebuilding the cost base."
+  },
+  {
+   "title": "The strategic new arenas reshaping insurance",
+   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/the-strategic-new-arenas-reshaping-insurance",
+   "date": "2026-09-15",
+   "summary": "AI is not the only significant driver of change for insurers: 18 high-growth industries present major new opportunities even as they reconfigure industry economics."
+  },
+  {
+   "title": "Backbones and networks: A blueprint for the biopharma plant of the future",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/backbones-and-networks-a-blueprint-for-the-biopharma-plant-of-the-future",
+   "date": "2026-09-15",
+   "summary": "As their portfolios become more complex and productivity gains slow, biopharma manufacturers are investing heavily to keep pace with rising demand. But capacity alone will not solve the problem."
+  },
+  {
+   "title": "Author Talks: Read the room before you lead it",
+   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-read-the-room-before-you-lead-it",
+   "date": "2026-09-15",
+   "summary": "Are the signals that shape power, trust, and influence hiding in plain sight? Calibrate CEO Pamela Meyer says spotting them can help leaders avoid missteps and make better decisions."
+  },
+  {
+   "title": "McKinsey Technology Trends Outlook 2026",
+   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-top-trends-in-tech",
+   "date": "2026-09-15",
+   "summary": "Which frontier technologies matter most for companies in 2026? Our annual report highlights the latest technology innovations, developments, and talent trends and their potential impact on business and society."
+  },
+  {
+   "title": "Andrew McAfee on AI, jobs, and ‘permissionless innovation’",
+   "url": "https://www.mckinsey.com/mgi/our-research/a-century-of-plenty/podcast/andrew-mcafee-on-ai-jobs-and-permissionless-innovation",
+   "date": "2026-09-15",
+   "summary": "What if the biggest risk isn’t too much technological progress—but too little?"
+  },
+  {
+   "title": "Stacking the odds: A blueprint for successfully scaling agentic AI",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/stacking-the-odds-a-blueprint-for-successfully-scaling-agentic-ai",
+   "date": "2026-09-14",
+   "summary": "Many enterprises are scaling AI agents faster than they are redesigning the work underneath. A detailed blueprint supports the rollout and lays the groundwork for lasting value creation."
+  },
+  {
+   "title": "Australia’s next century of plenty",
+   "url": "https://www.mckinsey.com/au/our-insights/australias-next-century-of-plenty",
+   "date": "2026-09-14",
+   "summary": "Australia’s prosperity has been built through deliberate choices, investment, and reinvention. After a lost decade of growth, the nation can draw on its strengths to choose another century of plenty."
+  },
+  {
+   "title": "Strategy in the age of arenas",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/strategy-in-the-age-of-arenas",
+   "date": "2026-09-11",
+   "summary": "A group of fast-growing industries is reshaping the competitive landscape. Their rise requires business leaders to rethink strategy in two important ways."
+  },
+  {
+   "title": "Capturing life cycle value in Europe’s trucking industry",
+   "url": "https://www.mckinsey.com/industries/automotive-and-assembly/our-insights/capturing-life-cycle-value-in-europes-trucking-industry",
+   "date": "2026-09-11",
+   "summary": "The vast majority of Europe’s truck-related revenue flows after a vehicle is sold. Capturing that value presents a major growth opportunity."
+  },
+  {
+   "title": "Zero-emission trucks: Accelerating Europe’s transition",
+   "url": "https://www.mckinsey.com/industries/automotive-and-assembly/our-insights/zero-emission-trucks-accelerating-europes-transition",
+   "date": "2026-09-11",
+   "summary": "Challenges across the ecosystem delay the transition to zero-emission trucks, resulting in rising pressure on European OEMs due to potential CO2 penalties and growing competition."
+  }
+ ],
  "note": ""
 }

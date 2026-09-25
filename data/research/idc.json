@@ -4,8 +4,69 @@
  "group": "해외 컨설팅",
  "home": "https://www.idc.com",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "rss(/feed)",
+ "items": [
+  {
+   "title": "Two People. 100,000 Employees. One AI Platform to Close the Gap.",
+   "url": "https://www.idc.com/resource-center/blog/two-people-100000-employees-one-ai-platform-to-close-the-gap/",
+   "date": "2026-09-24",
+   "summary": "Imagine being responsible for making sure market intelligence reaches the right decision-maker before a call gets made without it, at a global technology company that manufactures, delivers services, and funds serious R&#38;D all at once. Now imagine doing it with a team of two. For years, that&#821"
+  },
+  {
+   "title": "Snapdragon Summit 2026: Qualcomm’s Bid to Be the Silicon Behind Every Agent on Every Device",
+   "url": "https://www.idc.com/resource-center/blog/snapdragon-summit-2026-qualcomms-bid-to-be-the-silicon-behind-every-agent-on-every-device/",
+   "date": "2026-09-24",
+   "summary": "Qualcomm flew members of the IDC team to Maui for this year&#8217;s Snapdragon Summit, and the theme of the week has been agentic AI. CEO Cristiano Amon used the day-one keynote to argue that the smartphone is moving from an app-centric model, where the user starts every task, to an agent-centric on"
+  },
+  {
+   "title": "Industrial AI and the Orchestration Problem",
+   "url": "https://www.idc.com/resource-center/blog/industrial-ai-and-the-orchestration-problem/",
+   "date": "2026-09-24",
+   "summary": "A couple of months ago I was at Siemens Realize LIVE in Amsterdam, and over dinner at the media and analyst reception, a conversation with Tony Hemmelgarn, CEO of Siemens Digital Industries, took a turn I did not expect. From industrial AI to why a Delhi intersection, and a UK roundabout arrive at t"
+  },
+  {
+   "title": "FutureScape 2027: The Great Rewrite – Winning in the Agentic Economy",
+   "url": "https://www.idc.com/resource-center/blog/futurescape-2027-the-great-rewrite-winning-in-the-agentic-economy/",
+   "date": "2026-09-24",
+   "summary": "IDC FutureScape 2027 delivers evidence-backed 2027–2031 predictions on AI infrastructure, agents, and IT strategy. Register for 13 Nov in Singapore. The post FutureScape 2027: The Great Rewrite – Winning in the Agentic Economy appeared first on IDC ."
+  },
+  {
+   "title": "SaaSpocalypse: Catchy Title, Flawed Premise",
+   "url": "https://www.idc.com/resource-center/blog/saaspocalypse-catchy-title-flawed-premise/",
+   "date": "2026-09-23",
+   "summary": "The worldwide enterprise application market is approaching $700 billion, and blended growth has held near 13% through the first half of 2026, the third consecutive year of double-digit expansion. Yet, none of that has stopped the industry from convincing itself that the ground beneath it is about to"
+  },
+  {
+   "title": "IDC On the Ground: At IFA 2026, AI Set the Design Agenda for Every Device Category",
+   "url": "https://www.idc.com/resource-center/blog/idc-on-the-ground-at-ifa-2026-ai-set-the-design-agenda-for-every-device-category/",
+   "date": "2026-09-22",
+   "summary": "Berlin once again became the European center of consumer technology from September 4 to 8, 2026. According to IFA 2026 organizers, the event brought together approximately 240,000 attendees from 155 countries, more than 2,000 exhibitors, and over 5,200 media representatives. As IDC walked the show f"
+  },
+  {
+   "title": "Defending a Security Budget on Evidence, Not Faith",
+   "url": "https://www.idc.com/resource-center/blog/defending-a-security-budget-on-evidence-not-faith/",
+   "date": "2026-09-21",
+   "summary": "You know the investment is right. You&#8217;ve watched the threat shift, you&#8217;ve read the incident reports. But conviction isn&#8217;t a line item. When you ask for budget, the board isn&#8217;t asking whether you&#8217;re right. They&#8217;re asking how you know, and whether anyone outside you"
+  },
+  {
+   "title": "What META services buyers really want from their partners in 2026",
+   "url": "https://www.idc.com/resource-center/blog/what-meta-services-buyers-really-want-from-their-partners-in-2026/",
+   "date": "2026-09-21",
+   "summary": "IT services buyers across the Middle East, Turkey and Africa (META region) are making big decisions right now about their technology partners. Their business models are under pressure to transform, their technology budgets are flowing toward AI and automation, and IT services vendor partnerships are"
+  },
+  {
+   "title": "Your Buyer Has Moved. Has Your GTM? What IDC’s 2026 Data Means for Your Sales Funnel",
+   "url": "https://www.idc.com/resource-center/blog/your-buyer-has-moved-has-your-gtm-what-idcs-2026-data-means-for-your-sales-funnel/",
+   "date": "2026-09-18",
+   "summary": "If it feels like buyers are bypassing your branded content, you&#8217;d be right. Until recently, technology company websites were key stops for buyers on the information superhighway. That stopped being true the moment AI tools became buyers&#8217; default starting point. Your traffic is being rero"
+  },
+  {
+   "title": "From 28 Stakeholders to a Shortlist: Narrowing the Vendor Field Without Losing Momentum",
+   "url": "https://www.idc.com/resource-center/blog/from-28-stakeholders-to-a-shortlist-narrowing-the-vendor-field-without-losing-momentum/",
+   "date": "2026-09-18",
+   "summary": "Six months. Twenty-eight stakeholders. That&#8217;s the average enterprise sourcing cycle right now, according to IDC&#8217;s Effective Agent Cost Management: A Practitioner&#8217;s Framework. If that number sounds high, sit with it a second longer: 28 people means 28 opinions on what &#8220;good&#8"
+  }
+ ],
  "note": ""
 }

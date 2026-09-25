@@ -4,8 +4,93 @@
  "group": "해외 컨설팅",
  "home": "https://www.bcg.com",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "Technology Industry",
+   "url": "https://www.bcg.com/industries/technology-media-telecommunications/technology-industry",
+   "date": "2026-09-25",
+   "summary": ""
+  },
+  {
+   "title": "Why AI Sales Can’t Stop at the Close",
+   "url": "https://www.bcg.com/publications/2026/ai-products-need-a-new-commercial-model",
+   "date": "2026-09-25",
+   "summary": ""
+  },
+  {
+   "title": "Corporate Finance and Strategy",
+   "url": "https://www.bcg.com/capabilities/corporate-finance-strategy/overview",
+   "date": "2026-09-25",
+   "summary": ""
+  },
+  {
+   "title": "What Sets the Best CFOs Apart",
+   "url": "https://www.bcg.com/publications/2026/how-cfos-shift-from-reporting-to-value",
+   "date": "2026-09-25",
+   "summary": ""
+  },
+  {
+   "title": "Customer Insights",
+   "url": "https://www.bcg.com/capabilities/customer-insights/overview",
+   "date": "2026-09-25",
+   "summary": ""
+  },
+  {
+   "title": "AI Is Rewriting the Rules of the Consumer Journey",
+   "url": "https://www.bcg.com/publications/2026/llm-search-shapes-asian-consumer-buying",
+   "date": "2026-09-25",
+   "summary": ""
+  },
+  {
+   "title": "Frontline Ops AI by BCG",
+   "url": "https://www.bcg.com/x/product-library/frontline-ops-ai",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Regaining the Human Advantage",
+   "url": "https://www.bcg.com/publications/2026/leaders-preserve-human-advantage-ai-era",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Climate Change and Sustainability",
+   "url": "https://www.bcg.com/capabilities/climate-change-sustainability/overview",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "What 300 Buyers Tell Us About Today’s Carbon Market",
+   "url": "https://www.bcg.com/publications/2026/carbon-credit-target-prices-tripled",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Business Transformation",
+   "url": "https://www.bcg.com/capabilities/business-transformation/overview",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Midmarket’s AI Opportunity: Move Fast, Out-Execute",
+   "url": "https://www.bcg.com/publications/2026/midmarket-firms-get-value-from-ai",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Artificial Intelligence",
+   "url": "https://www.bcg.com/capabilities/artificial-intelligence",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Five Ways That AI Front-Runners Change How Work Gets Done",
+   "url": "https://www.bcg.com/publications/2026/companies-use-ai-to-redesign-work",
+   "date": "2026-09-24",
+   "summary": ""
+  }
+ ],
  "note": ""
 }

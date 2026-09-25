@@ -4,8 +4,69 @@
  "group": "해외 정부",
  "home": "https://ec.europa.eu",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "rss(/commission/presscorner/api/rss?language)",
+ "items": [
+  {
+   "title": "Speech by Commissioner Lahbib on Haiti during the UN General Assembly",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1975",
+   "date": "2026-09-24",
+   "summary": "European Commission Speech New York, 24 Sep 2026 In Haiti today, childhood is being stolen. Children are being recruited by gangs. Families are trapped behind walls of violence. Humanitarian workers risk their..."
+  },
+  {
+   "title": "Speech by Commissioner Lahbib at the G20 High Level Independent Panel on Financing Pandemic Preparedness and Response",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1973",
+   "date": "2026-09-24",
+   "summary": "European Commission Speech New York, 24 Sep 2026 In June, I was in Bunia, at the epicentre of the Ebola outbreak. I met nurses, doctors, and local health workers fighting the virus on the front line. They knew..."
+  },
+  {
+   "title": "EU Powering Global Health Resilience",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1972",
+   "date": "2026-09-24",
+   "summary": "European Commission Speech New York, 24 Sep 2026 Excellencies, Distinguished guests, It's a pleasure to welcome you this morning. Since we assembled here in New York last year, global challenges have deepened..."
+  },
+  {
+   "title": "Opening remarks by Commissioner Hansen at the “EU AgRI 2040” Agricultural Research and Innovation Conference",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1968",
+   "date": "2026-09-24",
+   "summary": "European Commission Speech Brussels, 24 Sep 2026 Commissioner Zaharieva, dear Ekaterina, Distinguished speakers and panellists, Dear participants, It is a real pleasure to open with you all, the fourth EU Agri..."
+  },
+  {
+   "title": "Daily News 24 / 09 / 2026",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/mex_26_1966",
+   "date": "2026-09-24",
+   "summary": "European Commission Daily news Brussels, 24 Sep 2026 EU launches new initiative to boost women's employment in the Mediterranean Today, the European Commission launched a new initiative to boost women's employment..."
+  },
+  {
+   "title": "EU advances Global Health Resilience Initiative with new Global Gateway investments in Africa and Latin America",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1965",
+   "date": "2026-09-24",
+   "summary": "European Commission Press release New York, 24 Sep 2026 In the context of the United Nations General Assembly High-Level Week, the European Commission has announced three new Global Gateway investments that put the EU Global Health Resilience Initiative into action in partner countries."
+  },
+  {
+   "title": "Joint Communiqué: Seventh Trilateral Meeting of the European Union, the African Union, and the United Nations",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_1962",
+   "date": "2026-09-24",
+   "summary": "European Commission Statement New York, 24 Sep 2026 The European Union, the African Union, and the United Nations convened for their Seventh Trilateral Meeting, reaffirming their shared commitment to ef..."
+  },
+  {
+   "title": "Commissioner Šuica addresses the 2nd Ministerial Meeting of the Coalition of Rome for Fertiliser Access and Food Security",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1976",
+   "date": "2026-09-23",
+   "summary": "European Commission Speech New York, 25 Sep 2026 Excellencies, Dear colleagues, The world is on the verge of a serious food supply crisis. The closing of the Strait of Hormuz, the war in Yemen, and the threats..."
+  },
+  {
+   "title": "Commissioner Šuica addresses the Ministerial roundtable on Health and Humanitarian access in Gaza",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1977",
+   "date": "2026-09-23",
+   "summary": "European Commission Speech New York, 25 Sep 2026 Excellencies, Dear Colleagues, Let me thank the United Kingdom, Jordan, and Qatar for bringing us together today. Gaza cannot wait. Right now, Gazans have littl..."
+  },
+  {
+   "title": "Commissioner Šuica addresses the Ministerial Meeting on Palestine with all Ad Hoc Liaison Committee (AHLC) members",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1980",
+   "date": "2026-09-23",
+   "summary": "European Commission Speech New York, 25 Sep 2026 Dear Espen, Honourable Members, Dear colleagues, Let me thank Norway and the United Nations for organising this meeting at a crucial moment. The Palestinian Aut..."
+  }
+ ],
  "note": ""
 }

@@ -4,8 +4,117 @@
  "group": "해외 협회",
  "home": "https://www.semi.org",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "Semi Press releases",
+   "url": "https://www.semi.org/en/news-media-press-releases",
+   "date": "2026-09-22",
+   "summary": ""
+  },
+  {
+   "title": "ESGS 2026 to Drive Innovation Across the Electronic Gases Ecosystem September 22, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/esgs-2026-to-drive-innovation-across-the-electronic-gases-ecosystem",
+   "date": "2026-09-22",
+   "summary": ""
+  },
+  {
+   "title": "View SEMI Press releases",
+   "url": "https://www.semi.org/en/news-media-press/semi-press-releases/press-archive",
+   "date": "2026-09-22",
+   "summary": ""
+  },
+  {
+   "title": "SEMI Joins ReSiLient Consortium to Strengthen Europe’s Silicon and Silicon Carbide Raw Material Value Chains September 14, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/semi-europe-joins-resilient-consortium-to-strengthen-europes-silicon-and-silicon-carbide-raw-material-value-chains",
+   "date": "2026-09-14",
+   "summary": ""
+  },
+  {
+   "title": "National Network for Microelectronics Education Announces Inaugural Industry Advisory Committee to Help Shape America's Semiconductor Workforce Strategy Septemb",
+   "url": "https://www.semi.org/en/semi-press-release/national-network-for-microelectronics-education-announces-inaugural-industry-advisory-committee-to-help-shape-americas-semiconductor-workforce-strategy",
+   "date": "2026-09-09",
+   "summary": ""
+  },
+  {
+   "title": "SEMI Calls on the Chips Act 2.0 to Strengthen Semiconductor Competitiveness and Resilience September 8, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/semi-calls-on-the-chips-act-2.0-to-strengthen-semiconductor-competitiveness-and-resilience",
+   "date": "2026-09-08",
+   "summary": ""
+  },
+  {
+   "title": "Global Semiconductor Equipment Billings Increased 23% Year-Over-Year in Q2 2026, SEMI Reports September 3, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/global-semiconductor-equipment-billings-increased-23-percent-year-over-year-in-q2-2026-semi-reports",
+   "date": "2026-09-03",
+   "summary": ""
+  },
+  {
+   "title": "SEMI and Silicon Catalyst Aim to Accelerate Global Semiconductor Innovation with Strategic Partnership September 2, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/semi-and-silicon-catalyst-aim-to-accelerate-global-semiconductor-innovation-with-strategic-partnership",
+   "date": "2026-09-02",
+   "summary": ""
+  },
+  {
+   "title": "Registration Opens for SEMICON Europa 2026 as Industry Leaders Gather to Navigate Europe’s Semiconductor Future September 1, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/registration-opens-for-semicon-europa-2026-as-industry-leaders-gather-to-navigate-europes-semiconductor-future",
+   "date": "2026-09-01",
+   "summary": ""
+  },
+  {
+   "title": "DAS Environmental Experts Introduces ALCEA for Integrated NOx Treatment in Semiconductor Fabs September 1, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/175196",
+   "date": "2026-09-01",
+   "summary": ""
+  },
+  {
+   "title": "SEMICON West 2026 to Spotlight $1 Trillion Semiconductor Milestone and Technologies Powering the Industry’s Next Era August 27, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/semicon-west-2026-to-spotlight-1-trillion-dollars-semiconductor-milestone-and-technologies-powering-the-industrys-next-era",
+   "date": "2026-08-27",
+   "summary": ""
+  },
+  {
+   "title": "Diodes Incorporated Completes Acquisition of ElevATE Semiconductor August 27, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/175076",
+   "date": "2026-08-27",
+   "summary": ""
+  },
+  {
+   "title": "Trymax Secures Multi-Million-Dollar Supply Agreement with AOI to Support InP Laser Manufacturing August 26, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/175096",
+   "date": "2026-08-26",
+   "summary": ""
+  },
+  {
+   "title": "Brewer Science to Showcase Advanced Materials Innovation at SEMICON Taiwan 2026 August 25, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/174926",
+   "date": "2026-08-25",
+   "summary": ""
+  },
+  {
+   "title": "Hon’ble PM Shri. Narendra Modi to Inaugurate SEMICON® India 2026 on 17th September August 18, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/honble-pm-shri-narendra-modi-to-inaugurate-semicon-india-2026-on-17th-september",
+   "date": "2026-08-18",
+   "summary": ""
+  },
+  {
+   "title": "Brewer Science Strengthens America's Semiconductor Supply Chain with Acquisition of Heraeus Epurio's Semiconductor Chemicals Business August 7, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/174286",
+   "date": "2026-08-07",
+   "summary": ""
+  },
+  {
+   "title": "Micross to Acquire AEMtec July 28, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/174011",
+   "date": "2026-07-28",
+   "summary": ""
+  },
+  {
+   "title": "Verific App Store Opens with Downloadable Examples of Parser Platform Applications July 22, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/173931",
+   "date": "2026-07-22",
+   "summary": ""
+  }
+ ],
  "note": ""
 }

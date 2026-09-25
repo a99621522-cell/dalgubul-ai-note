@@ -245,7 +245,7 @@ def query(words: list[str]) -> int:
         for it in d.get("items", []):
             if pat.search(it["title"] + " " + it.get("summary", "")):
                 hits.append((it["date"], d["name"], it))
-    hits.sort(reverse=True)
+    hits.sort(key=lambda h: (h[0] or "", h[1]), reverse=True)
     print(f"'{' '.join(words)}' 일치 {len(hits)}건 (data/research, 최근 {MAX_DAYS}일)")
     for d, name, it in hits[:40]:
         print(f"  {d or '날짜 없음'}  [{name}] {it['title'][:70]}  {it['url']}")

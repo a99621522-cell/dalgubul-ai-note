@@ -230,23 +230,36 @@ def from_datago(pk: str, sess: requests.Session, days: int = 400) -> list[dict]:
     if not tcol:
         print(f"    열 이름을 못 골랐다: {cols[:12]}")
         return []
+    ycol = pick(r"발간연도|발행연도|발간년도|발행년도|연도|년도|year")
     items = []
     for r in rows:
+        title = str(r.get(tcol, "")).strip()
         dt = parse_date(str(r.get(dcol, ""))) if dcol else ""
         if not dt and dcol and re.fullmatch(r"\d{4}", str(r.get(dcol, "")).strip()):
             dt = f"{r[dcol].strip()}-01-01"
+        if not dt:
+            dt = date_from_title(title, str(r.get(ycol, "")) if ycol else "")
         if dt:
             try:
                 if (TODAY - date.fromisoformat(dt)).days > days:
                     continue
             except ValueError:
                 pass
-        items.append({"title": str(r.get(tcol, "")).strip()[:160], "url": str(r.get(ucol, "")).strip() if ucol else "", "date": dt,
+        items.append({"title": title[:160], "url": str(r.get(ucol, "")).strip() if ucol else "", "date": dt,
                       "summary": re.sub(r"\s+", " ", str(r.get(scol, "")))[:300] if scol else ""})
     items = [i for i in items if i["title"]]
     items.sort(key=lambda i: i["date"], reverse=True)
-    print(f"    포털 {pk}: {len(rows)}행 → 최근 {days}일 {len(items)}건 (열: 제목={tcol}, 일자={dcol}, URL={ucol})")
+    print(f"    포털 {pk}: {len(rows)}행 → 최근 {days}일 {len(items)}건 (열: 제목={tcol}, 일자={dcol}, 연도={ycol}, URL={ucol})")
     return items[:MAX_ITEMS]
+
+
+def date_from_title(title: str, year_cell: str = "") -> str:
+    """일자 열이 없는 발간 목록: 제목의 '2026-6월호'·'(2026-3호)'·'2026년 8월'·연도 열에서 날짜를 추정한다(월을 모르면 1월 1일)."""
+    m = re.search(r"(20\d{2})\s*[-.년]\s*(1[0-2]|0?[1-9])\s*월", title) or re.search(r"(20\d{2})\s*[-.]\s*(1[0-2]|0?[1-9])(?:\s*호|\s*월|\)|\]|\s|$)", title)
+    if m:
+        return f"{m.group(1)}-{int(m.group(2)):02d}-01"
+    m = re.search(r"\b(20\d{2})\b", title) or re.search(r"(20\d{2})", year_cell)
+    return f"{m.group(1)}-01-01" if m else ""
 
 
 def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:

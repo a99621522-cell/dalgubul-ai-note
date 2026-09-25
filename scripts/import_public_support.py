@@ -55,6 +55,11 @@ MAPPINGS: dict[str, dict] = {
     "15130932": {"kind": "support", "source": "대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털)", "layer": "시비", "type": "선정",
                  "name": ["기업명", "업체명", "회사명"], "year": ["선정년도", "선정연도", "지정년도", "기준년도"], "program": ["구분", "기업구분", "유형"],
                  "funder": "대구광역시", "region": None, "min_year": 0},
+    "15042015": {"kind": "support", "source": "기획예산처 보조사업자 정보공시 대상 목록(공공데이터포털)", "layer": "국비", "type": "보조금",
+                 "name": ["보조사업자명", "보조사업자", "사업자명", "기관명"], "year": ["회계연도", "연도", "기준연도", "사업연도", "공시연도"],
+                 "program": ["사업명", "보조사업명", "세부사업명"], "funder": ["소관부처", "부처명", "상위보조사업자", "중앙관서"],
+                 "amount": ["지원금액", "보조금액", "교부액", "교부금액", "보조금", "국고보조금"], "amount_unit_guess": False,
+                 "region": None, "min_year": 2018},
     "15084581": {"kind": "tag", "tag": "venture", "source": "중소벤처기업부 벤처기업명단(공공데이터포털)",
                  "name": ["기업명", "업체명", "회사명"], "address": ["주소", "간략주소", "소재지"], "region": ("지역", "대구"),
                  "sector": ["업종", "업종명", "산업분류"], "product": ["주요제품", "주생산품"], "founded": []},
@@ -62,6 +67,16 @@ MAPPINGS: dict[str, dict] = {
                 "name": ["기업명", "업체명", "회사명"], "address": ["주소", "소재지"], "region": ("지역", "대구"),
                 "sector": ["업종", "업종명"], "product": ["주요제품", "주생산품"], "founded": []},
 }
+
+
+def as_of_from(stem: str) -> str:
+    """파일명에서 기준일: 20260521 → 그대로, 2026-04 → 그대로, '2026년4월' → 2026-04, '(2022년)' → 2022, '_24.3' → 2024-03. 없으면 빈칸."""
+    for pat, fmt in ((r"(20\d{6})", "{0}"), (r"(20\d{2})[-_.](\d{2})(?!\d)", "{0}-{1}"), (r"(20\d{2})년\s*(\d{1,2})월", "{0}-{1:0>2}"),
+                     (r"(20\d{2})년", "{0}"), (r"(?<!\d)(\d{2})\.(\d{1,2})(?!\d)", "20{0}-{1:0>2}"), (r"(20\d{2})(?!\d)", "{0}")):
+        m = re.search(pat, stem)
+        if m:
+            return fmt.format(*m.groups())
+    return ""
 
 
 def norm_name(s: str) -> str:
@@ -122,8 +137,9 @@ def main(argv: list[str]) -> int:
         m = MAPPINGS.get(pk)
         for f in files:
             rows, cols = read_any(f)
+            print(f"[{pk}] 열: {cols[:30]} ({len(rows):,}행) · {f.name}")
             if not m:
-                print(f"[{pk}] 매핑 없음 — 열: {cols[:20]} ({len(rows):,}행) · {f.name}")
+                print(f"[{pk}] 매핑 없음 — MAPPINGS 에 추가 필요")
                 continue
             out = []
             for r in rows:
@@ -146,16 +162,19 @@ def main(argv: list[str]) -> int:
                     program = pick(r, m["program"]) if not isinstance(m["program"], str) or m["program"] in r or any(k.startswith(m["program"]) for k in r) else m["program"]
                     if not program:
                         program = m["program"] if isinstance(m["program"], str) else ""
-                    funder = pick(r, m["funder"]) if isinstance(m["funder"], str) and (m["funder"] in r) else m["funder"]
+                    if isinstance(m["funder"], list):
+                        funder = pick(r, m["funder"]) or m["source"].split(" ")[0]
+                    else:
+                        funder = pick(r, m["funder"]) if m["funder"] in r else m["funder"]
                     amount = re.sub(r"[^\d.]", "", pick(r, m["amount"])) if m.get("amount") else ""
                     unit = "백만원" if (amount and m.get("amount_unit_guess")) else ("원" if amount else "")
                     for n in names:
                         out.append({"기업명": n, "주소": "", "선정연도": year, "구분": m["layer"], "지원기관": funder, "사업명": program, "지원유형": m["type"],
-                                    "금액": amount, "단위": unit, "출처": m["source"], "출처URL": PORTAL.format(id=pk), "기준일": re.sub(r".*?(\d{8}|\d{4}[-_.]\d{2}).*", r"\1", f.stem)})
+                                    "금액": amount, "단위": unit, "출처": m["source"], "출처URL": PORTAL.format(id=pk), "기준일": as_of_from(f.stem)})
                 else:  # tag → import_extra 형식
                     out.append({"회사명": names[0], "주소": pick(r, m["address"]), "업종": pick(r, m["sector"]), "사업내용": pick(r, m["product"]),
                                 "종사자수": "", "설립연도": pick(r, m["founded"]) if m.get("founded") else "", "태그": m["tag"],
-                                "출처": m["source"], "기준월": re.sub(r".*?(\d{8}|\d{4}[-_.]\d{2}).*", r"\1", f.stem)})
+                                "출처": m["source"], "기준월": as_of_from(f.stem)})
             if not out:
                 print(f"[{pk}] 대구·기업 사전 일치 행 없음 ({len(rows):,}행, 열 {cols[:12]})")
                 continue

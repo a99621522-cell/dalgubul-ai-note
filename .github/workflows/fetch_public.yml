@@ -45,11 +45,12 @@ jobs:
         run: |
           set +e
           # push 로 돌 때는 data/fetch_mode.txt 의 첫 줄(mode ids pick)을 쓴다
-          # 형식: mode|ids|pick (예: probe|15117154 15083277|)
-          if [ -z "$MODE_IN" ] && [ -f data/fetch_mode.txt ]; then IFS='|' read -r MODE IDS PICK < data/fetch_mode.txt; else MODE="$MODE_IN"; IDS="$IDS_IN"; PICK="$PICK_IN"; fi
+          # 형식: mode|ids|pick|검색어 (예: probe|15117154 15083277||대구테크노파크). 4번째 칸이 있으면 포털 검색 결과도 함께 출력
+          if [ -z "$MODE_IN" ] && [ -f data/fetch_mode.txt ]; then IFS='|' read -r MODE IDS PICK SEARCH < data/fetch_mode.txt; else MODE="$MODE_IN"; IDS="$IDS_IN"; PICK="$PICK_IN"; SEARCH=""; fi
           MODE="${MODE:-probe}"; IDS="${IDS:-15117154 15083277}"
           echo "MODE=$MODE" >> "$GITHUB_ENV"
-          echo "mode=$MODE ids=$IDS pick=$PICK"
+          echo "mode=$MODE ids=$IDS pick=$PICK search=$SEARCH"
+          if [ -n "$SEARCH" ]; then python3 scripts/fetch_datago.py --search $SEARCH; fi
           if [ "$MODE" = "save" ]; then FLAG=--save; elif [ "$MODE" = "search" ]; then FLAG=--search; else FLAG=--probe; fi
           python3 scripts/fetch_datago.py $FLAG $IDS ${PICK:+--pick "$PICK"} --max 3
           echo "fetch exit=$?"
@@ -93,7 +94,9 @@ jobs:
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add scripts/data/support/portal_*.csv scripts/data/extra/portal_*.csv scripts/data/kic_buildings.csv scripts/data/company_financials.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/support_history.csv data/nps data/stats data/institutions src/generated
+          for p in scripts/data/support scripts/data/extra scripts/data/kic_buildings.csv scripts/data/company_financials.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/support_history.csv data/nps data/stats data/institutions src/generated; do
+            [ -e "$p" ] && git add -A "$p"   # 없는 경로가 있어도(포털이 안 열려 파일이 없을 때) 커밋 단계가 죽지 않게
+          done
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 공공데이터 파일 반영 $(date -u +%Y-%m-%d)"
           git pull -q --rebase origin "${GITHUB_REF_NAME}" || true   # 실행 중 다른 커밋이 올라와도 밀어넣을 수 있게
           git push

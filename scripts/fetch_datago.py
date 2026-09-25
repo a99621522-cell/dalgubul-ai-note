@@ -66,9 +66,19 @@ def search(keyword: str, sess: requests.Session, pages: int = 2) -> list[tuple[s
 
 
 def get_page(pk: str, sess: requests.Session) -> str:
-    r = sess.get(PAGE.format(id=pk), headers=UA, timeout=60)
-    print(f"[page {pk}] HTTP {r.status_code}, {len(r.text):,}자")
-    return r.text
+    """포털이 잠시 안 열릴 때(접속 시간 초과)를 대비해 3번까지 기다렸다 다시 시도한다."""
+    import time
+    for i in range(3):
+        try:
+            r = sess.get(PAGE.format(id=pk), headers=UA, timeout=60)
+            print(f"[page {pk}] HTTP {r.status_code}, {len(r.text):,}자")
+            return r.text
+        except requests.exceptions.ConnectionError as e:
+            if i == 2:
+                raise
+            print(f"[page {pk}] 접속 실패({str(e)[:60]}…) — {30 * (i + 1)}초 뒤 재시도")
+            time.sleep(30 * (i + 1))
+    return ""
 
 
 def discover(html: str) -> dict:

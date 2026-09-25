@@ -151,7 +151,8 @@ def review(path: Path) -> dict:
     if "검색 결과 요지" in body and body.count("요지") < 5:
         warns.append("검색 요지로 썼다면서 '요지' 표시가 적다")
 
-    return {"file": str(path.relative_to(ROOT)), "ok": not errors, "errors": errors, "warnings": warns, "chars": n, "sources": len(srcs)}
+    rel = str(path.resolve().relative_to(ROOT)) if path.resolve().is_relative_to(ROOT) else str(path)
+    return {"file": rel, "ok": not errors, "errors": errors, "warnings": warns, "chars": n, "sources": len(srcs)}
 
 
 def main(argv: list[str]) -> int:

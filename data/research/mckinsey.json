@@ -8,16 +8,16 @@
  "method": "rss(/insights/rss)",
  "items": [
   {
-   "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
-   "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
-   "date": "2026-09-24",
-   "summary": "Our new analysis reveals the odds of reaching $1 billion in sales—and how the paths to that milestone differ by category and ownership."
-  },
-  {
    "title": "Democratized superintelligence is coming: The world needs to get ready",
    "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
    "date": "2026-09-24",
    "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
+  },
+  {
+   "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
+   "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
+   "date": "2026-09-24",
+   "summary": "Our new analysis reveals the odds of reaching $1 billion in sales—and how the paths to that milestone differ by category and ownership."
   },
   {
    "title": "The new growth mandate: A conversation with LinkedIn CMO Jessica Jensen",
@@ -74,16 +74,16 @@
    "summary": "New McKinsey Health Institute analysis finds that addressing modifiable risk factors could add 12 years to healthy life expectancy at birth and add nearly 9 percent to the global economy by 2050."
   },
   {
-   "title": "Ready to ramp? How US manufacturers can scale at pace",
-   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/ready-to-ramp-how-us-manufacturers-can-scale-at-pace",
-   "date": "2026-09-22",
-   "summary": "US manufacturers have a once-in-a-generation opportunity to reshore the production of critical and at-risk goods, but to do so, they will need to aggressively ramp up production from today’s levels."
-  },
-  {
    "title": "Value is the compass. Consumers set the pace.",
    "url": "https://www.mckinsey.com/cn/our-insights/our-insights/value-is-the-compass-consumers-set-the-pace",
    "date": "2026-09-22",
    "summary": "In the 10th edition of McKinsey’s automotive consumer survey, China’s car buyers reveal where value is heading—and why the road ahead is exciting for consumers everywhere."
+  },
+  {
+   "title": "Ready to ramp? How US manufacturers can scale at pace",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/ready-to-ramp-how-us-manufacturers-can-scale-at-pace",
+   "date": "2026-09-22",
+   "summary": "US manufacturers have a once-in-a-generation opportunity to reshore the production of critical and at-risk goods, but to do so, they will need to aggressively ramp up production from today’s levels."
   },
   {
    "title": "The economics of AI",
@@ -98,16 +98,16 @@
    "summary": "WIRED’s Katie Drummond talks with McKinsey’s Dan Swan about why capturing AI’s full potential requires companies to move beyond experimentation and fundamentally rewire their businesses."
   },
   {
-   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
-   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
-   "date": "2026-09-21",
-   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
-  },
-  {
    "title": "AI drug discovery: Focusing on what matters most",
    "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/ai-drug-discovery-focusing-on-what-matters-most",
    "date": "2026-09-21",
    "summary": "AI is accelerating drug discovery, but investment has concentrated in molecule design—the stage with the best data and clearest tools. The industry’s real constraint lies elsewhere: identifying and validating the right disease mechanism."
+  },
+  {
+   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
+   "date": "2026-09-21",
+   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
   },
   {
    "title": "Social care referral networks: Improving health in rural communities",
@@ -158,28 +158,28 @@
    "summary": "As enterprises shift from experimenting with models to redesigning workflows, new research suggests Europe could be well-positioned for this new AI application era."
   },
   {
-   "title": "Aftershocks: Energy security beyond the Strait of Hormuz crisis",
-   "url": "https://www.mckinsey.com/mgi/our-research/aftershocks-energy-security-beyond-the-strait-of-hormuz-crisis",
-   "date": "2026-09-17",
-   "summary": "The energy system has proven surprisingly resilient, but shock absorbers are thinning. Energy security has no easy exits but room to maneuver."
-  },
-  {
    "title": "Here’s why some US industrial companies achieve higher multiples",
    "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/heres-why-some-us-industrial-companies-achieve-higher-multiples",
    "date": "2026-09-17",
    "summary": "Not every industrial company in a high-growth market earns a higher valuation. The biggest winners consistently combine four management actions."
   },
   {
-   "title": "Anchor or drift: What it takes to capture wallet share in 2026",
-   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/anchor-or-drift-what-it-takes-to-capture-wallet-share-in-2026",
-   "date": "2026-09-16",
-   "summary": "Client loyalty evolves quickly. Leading banks are reclaiming the 12 to 25 percent of wallet share that changes hands every year instead of letting it drift."
+   "title": "Aftershocks: Energy security beyond the Strait of Hormuz crisis",
+   "url": "https://www.mckinsey.com/mgi/our-research/aftershocks-energy-security-beyond-the-strait-of-hormuz-crisis",
+   "date": "2026-09-17",
+   "summary": "The energy system has proven surprisingly resilient, but shock absorbers are thinning. Energy security has no easy exits but room to maneuver."
   },
   {
    "title": "The agentic transformation office: Redefining the economics of change",
    "url": "https://www.mckinsey.com/capabilities/transformation/our-insights/the-agentic-transformation-office-redefining-the-economics-of-change",
    "date": "2026-09-16",
    "summary": "Successful transformations no longer require an army of people at the center."
+  },
+  {
+   "title": "Anchor or drift: What it takes to capture wallet share in 2026",
+   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/anchor-or-drift-what-it-takes-to-capture-wallet-share-in-2026",
+   "date": "2026-09-16",
+   "summary": "Client loyalty evolves quickly. Leading banks are reclaiming the 12 to 25 percent of wallet share that changes hands every year instead of letting it drift."
   },
   {
    "title": "The decade to redefine UK banking",

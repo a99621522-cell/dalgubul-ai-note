@@ -28,7 +28,7 @@
 | 기업지원기관 | [한국산업기술기획평가원(KEIT) PD이슈리포트](https://www.keit.re.kr) | OK | 공공데이터포털 15047479 | 9 | 2026-06-01 [KEIT 이슈픽 2026-6월호 : 첨단산업(산업기반혁신) - 배터리, ]() |
 | 기업지원기관 | [한국산업기술진흥원(KIAT)](https://www.kiat.or.kr) | OK | 공공데이터포털 15104286 | 40 | 2026-07-29 [[KIAT Policy Brief 2026-05] 산업기술 정책브리프·동]() |
 | 기업지원기관 | [한국지능정보사회진흥원(NIA)](https://www.nia.or.kr) | 최근 없음 | 최신 항목 2026-07-13 (최근 70일 밖) | 0 | — |
-| 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | OK | 첫 화면 | 6 | 2026-09-10 [9월 정례조회 등록일 : 2026.09.10](https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16370&bbsTyCode=BBST07&bbsAttrbCode=BBSA03) |
+| 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | 최근 없음 | 최신 항목 2026-06-24 (최근 70일 밖) | 0 | — |
 | 대구 기관 | [대구광역시 북구 보도자료(공공데이터포털)](https://www.buk.daegu.kr) | OK | 공공데이터포털 15149016 | 40 | 2026-08-14 [대백인터빌 전체에 물결친 애국심, 광복의 감동을 재현하다]() |
 | 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | 접속 실패 |  | 0 | — |
 | 대구 기관 | [대구기계부품연구원(DMI)](https://www.dmi.re.kr) | 접속 실패 |  | 0 | — |
@@ -37,15 +37,15 @@
 | 정부 | [산업통상부 보도자료](https://www.motie.go.kr) | OK | 목록 페이지 | 10 | 2026-09-23 [(참고자료) EU 산업가속화법 관련 유럽의회 핵심인사 대상 우리측 입장 ](https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/172238/view?mno=&pageIndex=1) |
 | 정부 | [정책브리핑(korea.kr) 정책뉴스](https://www.korea.kr) | OK | 목록 페이지 | 15 | 2026-09-25 [오늘의 정책뉴스 멕시코 동포 만난 이 대통령 "다음 세대 위한 희망의 나](https://www.korea.kr/news/policyNewsList.do) |
 | 정부 | [중소벤처기업부 보도자료](https://www.mss.go.kr) | OK | 목록 페이지 | 7 | 2026-09-22 [티메프 피해기업, 정책자금 상환부담 덜어드립니다 담당부서 기업금융과, 소](https://www.mss.go.kr/site/smba/ex/bbs/List.do?cbIdx=86#티메프-피해기업-정책자금-상환부담-덜어드립니다-담당부서-기업금융과-소상공) |
-| 해외 정부 | [EU 집행위 Press corner](https://ec.europa.eu) | OK | rss(/commission/presscorner/api/rss?language) | 10 | 2026-09-25 [Daily News 25 / 09 / 2026](https://ec.europa.eu/commission/presscorner/detail/en/mex_26_1982) |
+| 해외 정부 | [EU 집행위 Press corner](https://ec.europa.eu) | OK | rss(/commission/presscorner/api/rss?language) | 10 | 2026-09-25 [Speech by Commissioner Albuquerque at th](https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1986) |
 | 해외 정부 | [中 공업정보화부(MIIT)](https://www.miit.gov.cn) | OK | 목록 페이지 | 24 | 2026-09-23 [2026年中国国际信息通信展览会在京开幕](https://www.miit.gov.cn/xwfb/bldhd/art/2026/art_2fc0c942477d4a2694137f8fe8d17f47.html) |
 | 해외 정부 | [日 경제산업성(METI) 영문 보도자료](https://www.meti.go.jp) | 접속 실패 |  | 0 | — |
 | 해외 정부 | [美 상무부 보도자료](https://www.commerce.gov) | 접속 실패 |  | 0 | — |
-| 해외 컨설팅 | [BCG Publications](https://www.bcg.com) | OK | 목록 페이지 | 12 | 2026-09-25 [Corporate Finance and Strategy](https://www.bcg.com/capabilities/corporate-finance-strategy/overview) |
+| 해외 컨설팅 | [BCG Publications](https://www.bcg.com) | OK | 목록 페이지 | 12 | 2026-09-25 [Technology Industry](https://www.bcg.com/industries/technology-media-telecommunications/technology-industry) |
 | 해외 컨설팅 | [Deloitte Insights(비공식 RSS 집계)](https://www.deloitte.com) | OK | rss(ntent.com/yushakareem/public-deloitte-in) | 24 |  [2026 Global Human Capital Trends](https://www.deloitte.com/us/en/insights/topics/talent/human-capital-trends.html) |
 | 해외 컨설팅 | [Gartner Newsroom](https://www.gartner.com) | 접속 실패 |  | 0 | — |
 | 해외 컨설팅 | [IDC Press Releases](https://www.idc.com) | OK | rss(/feed) | 10 | 2026-09-24 [Two People. 100,000 Employees. One AI Pl](https://www.idc.com/resource-center/blog/two-people-100000-employees-one-ai-platform-to-close-the-gap/) |
-| 해외 컨설팅 | [McKinsey Insights](https://www.mckinsey.com) | OK | rss(/insights/rss) | 40 | 2026-09-24 [Billion-dollar beauty: The odds of scali](https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand) |
+| 해외 컨설팅 | [McKinsey Insights](https://www.mckinsey.com) | OK | rss(/insights/rss) | 40 | 2026-09-24 [Democratized superintelligence is coming](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready) |
 | 해외 협회 | [ACEA (유럽자동차공업협회)](https://www.acea.auto) | OK | 첫 화면 | 9 | 2026-09-25 [Local content rules: Study highlights ch](https://www.acea.auto/news/local-content-rules-study-highlights-challenges-for-european-truck-manufacturing/) |
 | 해외 협회 | [International Energy Agency (IEA)](https://www.iea.org) | 접속 실패 |  | 0 | — |
 | 해외 협회 | [International Federation of Robotics (IFR)](https://ifr.org) | OK | 목록 페이지 | 5 | 2026-09-24 [Top Five Robot Trends 2026](https://ifr.org/ifr-press-releases/news/top-5-global-robotics-trends-2026) |

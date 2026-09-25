@@ -15,17 +15,21 @@ sources:
   - { key: kdb,    group: 국내 연구, name: KDB 미래전략연구소,          home: "https://rd.kdb.co.kr", list: "https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031", render: true }
   - { key: kita,   group: 국내 연구, name: 한국무역협회(KITA) 보고서,   home: "https://www.kita.net", list: "https://www.kita.net/researchTrade/report/reportMain/reportMainList.do", render: true }
   - { key: kotra,  group: 국내 연구, name: KOTRA 해외시장뉴스,          home: "https://dream.kotra.or.kr", list: "https://dream.kotra.or.kr/kotranews/cms/news/actionKotraBoardList.do?MENU_ID=70&SITE_NO=3" }
-  - { key: kosi,   group: 국내 연구, name: 중소벤처기업연구원(KOSI),    home: "https://www.kosi.re.kr", list: "https://www.kosi.re.kr/front/functionDisplay?menuFrontNo=322423919227700596633306148027564711658&menuFrontURL=front%2FfocusList", render: true }
+  - { key: kosi,   group: 국내 연구, name: 중소벤처기업연구원(KOSI),    home: "https://www.kosi.re.kr", list: "https://www.kosi.re.kr/front/functionDisplay?menuFrontNo=322423919227700596633306148027564711658&menuFrontURL=front%2FfocusList", render: true, datago: "15117504" }
   - { key: nkis,   group: 국내 연구, name: 국가정책연구포털(NKIS, 국책연구기관 보고서 통합), home: "https://www.nkis.re.kr", list: "https://www.nkis.re.kr/nkisRssService_write.do", render: true }
   # ── 기업지원·전문기관 (부처 산하) ──
-  - { key: keit,   group: 기업지원기관, name: 한국산업기술기획평가원(KEIT) PD이슈리포트, home: "https://www.keit.re.kr", list: "https://srome.keit.re.kr/srome/biz/info/keitPub/retrieveKeitIssuListView.do?prgmId=XPG404010000", render: true }
-  - { key: kiat,   group: 기업지원기관, name: 한국산업기술진흥원(KIAT),  home: "https://www.kiat.or.kr", list: "https://www.kiat.or.kr/front/board/boardContentsListPage.do?board_id=71&MenuId=878cb9b6d5ec41bf914ad5c0f590ed14", render: true }
+  - { key: keit,   group: 기업지원기관, name: 한국산업기술기획평가원(KEIT) PD이슈리포트, home: "https://www.keit.re.kr", list: "https://srome.keit.re.kr/srome/biz/info/keitPub/retrieveKeitIssuListView.do?prgmId=XPG404010000", render: true, datago: "15047479" }
+  - { key: kiat,   group: 기업지원기관, name: 한국산업기술진흥원(KIAT),  home: "https://www.kiat.or.kr", list: "https://www.kiat.or.kr/front/board/boardContentsListPage.do?board_id=71&MenuId=878cb9b6d5ec41bf914ad5c0f590ed14", render: true, datago: "15104286" }
   - { key: iitp,   group: 기업지원기관, name: 정보통신기획평가원(IITP) ICT Brief, home: "https://www.iitp.kr", list: "https://www.iitp.kr/kr/1/knowledge/periodicalViewA.it" }
   - { key: nipa,   group: 기업지원기관, name: 정보통신산업진흥원(NIPA), home: "https://www.nipa.kr", list: "https://www.nipa.kr/home/2-1" }
   - { key: nia,    group: 기업지원기관, name: 한국지능정보사회진흥원(NIA), home: "https://www.nia.or.kr", list: "https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=25932", render: true }
   - { key: kisti,  group: 기업지원기관, name: 한국과학기술정보연구원(KISTI), home: "https://www.kisti.re.kr", list: "https://www.kisti.re.kr/post/kisti-issue-brief", render: true }
   - { key: kiria,  group: 기업지원기관, name: 한국로봇산업진흥원(KIRIA), home: "https://www.kiria.org", list: "https://www.kiria.org/portal/policysut/portalPlcyReports.do", render: true }
   - { key: kosmes, group: 기업지원기관, name: 중소벤처기업진흥공단,       home: "https://www.kosmes.or.kr", list: "https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do", render: true }
+  - { key: keit-review, group: 기업지원기관, name: KEIT 이슈리뷰(공공데이터포털 발간현황), home: "https://www.keit.re.kr", datago: "15121599", datago_only: true }
+  - { key: kisdi, group: 국내 연구, name: 정보통신정책연구원(KISDI) 연구보고서 DB, home: "https://www.kisdi.re.kr", datago: "3071323", datago_only: true }
+  - { key: itfind, group: 기업지원기관, name: ITFIND(IITP ICT Brief 등 정기간행물), home: "https://www.itfind.or.kr", list: "https://itfind.or.kr/publication/regular/periodical/list.do?pageIndex=&pageSize=40&selectedCategory=B_ITA_16", render: true }
+  - { key: daegu-buk-press, group: 대구 기관, name: 대구광역시 북구 보도자료(공공데이터포털), home: "https://www.buk.daegu.kr", datago: "15149016", datago_only: true }
   # ── 대구 기업지원기관 ──
   - { key: ttp,    group: 대구 기관, name: 대구테크노파크,               home: "https://www.ttp.org", list: "https://www.ttp.org/bbs/board.php?bo_table=notice" }
   - { key: dmi,    group: 대구 기관, name: 대구기계부품연구원(DMI),      home: "https://www.dmi.re.kr", list: "https://www.dmi.re.kr" }

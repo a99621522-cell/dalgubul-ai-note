@@ -170,12 +170,92 @@ def render_html(url: str) -> str:
         return ""
 
 
+def read_table(path: Path) -> list[dict]:
+    """CSV/XLSX → dict 행 목록 (pandas 있으면 xlsx 도)."""
+    import csv as _csv
+    if path.suffix.lower() in (".xlsx", ".xls"):
+        try:
+            import pandas as pd  # noqa: WPS433
+            return pd.read_excel(path, dtype=str).fillna("").to_dict("records")
+        except Exception as e:  # noqa: BLE001
+            print(f"    xlsx 읽기 실패 {path.name}: {str(e)[:60]}")
+            return []
+    raw = path.read_bytes()
+    for enc in ("utf-8-sig", "cp949", "utf-8"):
+        try:
+            txt = raw.decode(enc)
+            break
+        except UnicodeDecodeError:
+            continue
+    else:
+        return []
+    return list(_csv.DictReader(txt.splitlines()))
+
+
+def from_datago(pk: str, sess: requests.Session, days: int = 400) -> list[dict]:
+    """공공데이터포털 파일데이터(기관 발간 목록) → 항목. 열 이름은 제목/일자/URL 비슷한 것을 고른다. 갱신이 늦어 최근 400일까지 본다."""
+    try:
+        import fetch_datago as fd  # noqa: WPS433
+    except Exception as e:  # noqa: BLE001
+        print(f"    fetch_datago 없음: {e}")
+        return []
+    try:
+        html = fd.get_page(pk, sess)
+    except Exception as e:  # noqa: BLE001
+        print(f"    포털 페이지 실패 {pk}: {str(e)[:60]}")
+        return []
+    d = fd.discover(html)
+    calls = d["calls"] or [[u] for u in d["uddis"]] or [[x] for x in d["atch"]]
+    files: list[Path] = []
+    for c in calls[:3]:
+        r = fd.try_download(pk, c, sess, d["atch"])
+        if r is not None:
+            files = fd.save_response(r, pk, hint=next((x for x in c if "." in x), f"{pk}.csv"))
+            break
+    rows = []
+    for f in files:
+        if f.suffix.lower() in (".csv", ".xlsx", ".xls"):
+            rows += read_table(f)
+    if not rows:
+        return []
+    cols = list(rows[0].keys())
+    pick = lambda pats: next((c for c in cols if re.search(pats, str(c))), None)  # noqa: E731
+    tcol = pick(r"제목|보고서명|자료명|간행물명|명칭|title") or pick(r"명$")
+    dcol = pick(r"발간일|발행일|등록일|게시일|작성일|일자|날짜|date|연월")
+    ucol = pick(r"URL|url|주소|링크|원문")
+    scol = pick(r"요약|내용|개요|summary")
+    if not tcol:
+        print(f"    열 이름을 못 골랐다: {cols[:12]}")
+        return []
+    items = []
+    for r in rows:
+        dt = parse_date(str(r.get(dcol, ""))) if dcol else ""
+        if not dt and dcol and re.fullmatch(r"\d{4}", str(r.get(dcol, "")).strip()):
+            dt = f"{r[dcol].strip()}-01-01"
+        if dt:
+            try:
+                if (TODAY - date.fromisoformat(dt)).days > days:
+                    continue
+            except ValueError:
+                pass
+        items.append({"title": str(r.get(tcol, "")).strip()[:160], "url": str(r.get(ucol, "")).strip() if ucol else "", "date": dt,
+                      "summary": re.sub(r"\s+", " ", str(r.get(scol, "")))[:300] if scol else ""})
+    items = [i for i in items if i["title"]]
+    items.sort(key=lambda i: i["date"], reverse=True)
+    print(f"    포털 {pk}: {len(rows)}행 → 최근 {days}일 {len(items)}건 (열: 제목={tcol}, 일자={dcol}, URL={ucol})")
+    return items[:MAX_ITEMS]
+
+
 def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
     key, name = org["key"], org["name"]
     print(f"\n== {name} ({key})")
     res = {"key": key, "name": name, "group": org.get("group", ""), "home": org.get("home", ""), "fetched": TODAY.isoformat(), "status": "", "method": "", "items": [], "note": ""}
     reqs, failed = 0, 0
-    feeds = [u for u in [org.get("rss")] if u] + list(org.get("rss_candidates") or [])
+    if org.get("datago"):
+        res["items"] = from_datago(str(org["datago"]), sess)
+        if res["items"]:
+            res["method"] = f"공공데이터포털 {org['datago']}"
+    feeds = [] if res["items"] else [u for u in [org.get("rss")] if u] + list(org.get("rss_candidates") or [])
     host_root = f"{urlparse(org.get('home') or org.get('list')).scheme}://{urlparse(org.get('home') or org.get('list')).netloc}"
     feeds += [host_root + c for c in RSS_CANDIDATES[:4]]
     for feed in feeds:
@@ -188,7 +268,7 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
         if items:
             res["items"], res["method"] = items, f"rss({feed[len(host_root):][:40] or '/'})"
             break
-    if not res["items"]:
+    if not res["items"] and not org.get("datago_only"):
         for page in [org.get("list"), org.get("home")]:
             if not page or reqs >= 9:
                 continue

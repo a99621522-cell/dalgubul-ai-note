@@ -1,0 +1,48 @@
+name: 기관 홈페이지 선정 공고 → 지원 이력
+
+# 대구 기업지원기관 공고 게시판에서 '선정 기업 명단' 공고를 찾아 지원 이력에 넣는다 (config/institution_boards.yml).
+# 공공기관만, 주 1회, robots.txt 존중. 이 세션 환경은 기관 사이트 접속이 막혀 있어 Actions 가 대신 돈다.
+
+on:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: [".github/workflows/institution_boards.yml", "scripts/scrape_institution_boards.py", "config/institution_boards.yml"]
+  schedule:
+    - cron: "30 19 * * 0"   # 매주 월요일 04:30 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: institution-boards-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt playwright pdfplumber openpyxl pyhwp && python -m playwright install --with-deps chromium
+      - name: 공고 수집
+        run: |
+          set +e
+          python3 scripts/scrape_institution_boards.py
+          echo "exit=$?"
+      - name: 지원 이력 합치기
+        run: |
+          set +e
+          ls scripts/data/support/inst_*.csv >/dev/null 2>&1 && python3 scripts/import_support.py --replace-source '홈페이지 공고'
+          python3 scripts/build_stats.py --backfill && python3 scripts/render_charts.py
+          true
+      - name: 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          for p in data/institution_boards scripts/data/support scripts/data/support_history.csv data/stats src/generated; do [ -e "$p" ] && git add -A "$p"; done
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 기관 홈페이지 선정 공고 반영 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

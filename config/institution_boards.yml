@@ -1,0 +1,49 @@
+# 대구 기업지원기관 홈페이지 공고 게시판에서 '선정 기업 명단' 공고를 찾아 지원 이력으로 넣는 설정 (scripts/scrape_institution_boards.py)
+# 규칙(CLAUDE.md 9항): 공공기관 사이트만, 하루 1회, robots.txt 존중. robots 가 막는 기관(scripts/data/institutions.yml blocked)은 넣지 않는다.
+# boards 가 비어 있으면 첫 화면에서 '공고·공지' 링크를 찾아 들어간다. 게시판 목록은 JS 로 그리는 곳이 많아 Actions 에서 브라우저(Playwright)로 연다.
+version: 2026-09-25
+title_pattern: "선정|결과\\s*(발표|공고|안내)|합격|명단|참여\\s*기업|수혜\\s*기업|지원\\s*기업|선정\\s*기업|최종|확정"
+exclude_title: "채용|직원|평가위원|위원\\s*모집|입찰|낙찰|용역|임대|매각|강사|인턴|공무직|기간제|자문위원|심사위원"
+max_posts_per_institution: 40
+max_pages_per_board: 4
+institutions:
+  - key: ttp
+    name: 대구테크노파크
+    home: https://www.ttp.org
+    boards: ["https://www.ttp.org/bbs/BoardControll.do?bbsId=BBSMSTR_000000000003"]
+  - key: dmi
+    name: 대구기계부품연구원
+    home: https://www.dmi.re.kr
+    boards: ["https://www.dmi.re.kr/portal/contents.do?mId=0509000000"]
+  - key: kmedi
+    name: 대구경북첨단의료산업진흥재단(케이메디허브)
+    home: https://www.kmedihub.re.kr
+    boards: ["https://www.kmedihub.re.kr/index.do?menu_id=00000064"]
+  - key: kiria
+    name: 한국로봇산업진흥원
+    home: https://www.kiria.org
+    boards: ["https://www.kiria.org/portal/info/portalInfoBusinessList.do"]
+  - key: dgdp
+    name: 대구경북디자인진흥원
+    home: https://www.dgdp.or.kr
+    boards: ["https://www.dgdp.or.kr/notice/public"]
+  - key: kotiti
+    name: 한국섬유개발연구원
+    home: https://www.textile.or.kr
+    boards: []
+  - key: dyetec
+    name: 다이텍연구원
+    home: https://www.dyetec.or.kr
+    boards: []
+  - key: kri
+    name: 한국패션산업연구원
+    home: https://www.krifi.re.kr
+    boards: []
+  - key: iact
+    name: 경북대학교 첨단정보통신융합산업기술원
+    home: https://www.iact.or.kr
+    boards: []
+  - key: daegu-notice
+    name: 대구광역시 고시·공고
+    home: https://www.daegu.go.kr
+    boards: ["https://www.daegu.go.kr/index.do?menu_id=00000117"]

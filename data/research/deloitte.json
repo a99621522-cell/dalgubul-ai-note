@@ -1,11 +1,156 @@
 {
  "key": "deloitte",
- "name": "Deloitte Insights",
+ "name": "Deloitte Insights(비공식 RSS 집계)",
  "group": "해외 컨설팅",
  "home": "https://www.deloitte.com",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "rss(ntent.com/yushakareem/public-deloitte-in)",
+ "items": [
+  {
+   "title": "2026 Global Human Capital Trends",
+   "url": "https://www.deloitte.com/us/en/insights/topics/talent/human-capital-trends.html",
+   "date": "",
+   "summary": "Article • 9-min read • Our 2026 survey reveals a shift from tensions to tipping points. What intentional choices can organizations make to adapt continuously, move with speed, and lead with a human edge?"
+  },
+  {
+   "title": "Tech Trends 2026",
+   "url": "https://www.deloitte.com/us/en/insights/topics/technology-management/tech-trends.html",
+   "date": "",
+   "summary": "Article • 4-min read • As technology innovation and adoption accelerate, five trends reveal how successful organizations are moving from experimentation to impact"
+  },
+  {
+   "title": "2026 Industry outlooks",
+   "url": "https://www.deloitte.com/us/en/industries/industry-outlooks.html",
+   "date": "",
+   "summary": "Collection • Uncover key trends, challenges, opportunities and actionable insights to impact your industry, influence your strategy, and shape your business in the coming year."
+  },
+  {
+   "title": "TMT Predictions 2026",
+   "url": "https://www.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions.html",
+   "date": "",
+   "summary": "Article • 9-min read • Deloitte predicts 2026 will see the gap between the promise and reality of AI narrow, as further movements towards getting it to scale are made"
+  },
+  {
+   "title": "Deloitte Insights Magazine, issue 33",
+   "url": "https://www.deloitte.com/us/en/insights/deloitte-insights-magazine.html",
+   "date": "",
+   "summary": "Article • Deloitte’s latest proprietary research and insights to help move the AI conversation forward, offering fresh perspectives and foresight on what those organizational and economic impacts might be"
+  },
+  {
+   "title": "Deloitte Finance Trends 2027: Shaping the next era of stakeholder value",
+   "url": "https://www.deloitte.com/us/en/insights/topics/leadership/finance-trends-leadership.html",
+   "date": "",
+   "summary": "Article • 13-min read • Deloitte's 2027 Finance Trends report finds finance leaders moving deeper into AI and technology decisions—and expanding their teams to help steer the change"
+  },
+  {
+   "title": "How will AI agents fit into the human workplace?",
+   "url": "https://www.deloitte.com/us/en/insights/topics/technology-management/ai-agents-human-workplace.html",
+   "date": "",
+   "summary": "Article • 10-min read • What happens when AI agents become coworkers, infrastructure—or both? These four scenarios test the future of work with AI."
+  },
+  {
+   "title": "Environmental stewardship for leaner AI agent systems: The case for architectural restraint",
+   "url": "https://www.deloitte.com/us/en/insights/topics/emerging-technologies/environmentally-responsible-ai.html",
+   "date": "",
+   "summary": "Article • 9-min read • Architectural restraint can help AI agents reduce unnecessary computation, use computing resources more efficiently, and strengthen governance."
+  },
+  {
+   "title": "The next tech infrastructure advantage is intelligence orchestration",
+   "url": "https://www.deloitte.com/us/en/insights/topics/technology-management/enterprise-ai-control-plane.html",
+   "date": "",
+   "summary": "Article • 12-min read • Enterprise AI infrastructure needs an enterprise control plane to coordinate models, agents, workloads, decisions, and governance at scale"
+  },
+  {
+   "title": "Rethinking the CISO role for an AI-saturated enterprise",
+   "url": "https://www.deloitte.com/us/en/insights/topics/technology-management/ai-changing-ciso-role.html",
+   "date": "",
+   "summary": "Article • 9-min read • How is AI reshaping the CISO role? Explore how CISOs can help clarify accountability, governance, and risk ownership across the enterprise."
+  },
+  {
+   "title": "Video podcasts dominate: Opportunity for brands, competition for traditional video",
+   "url": "https://www.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions/2026/video-podcasts-reach.html",
+   "date": "",
+   "summary": "Article • 7-min read • Podcasting is booming as a video-first, multilingual medium. It may help brands reach global audiences, while occupying a larger share of viewers’ screen time."
+  },
+  {
+   "title": "Forecasting the rise of push payment scams—the fraud consumers are tricked into authorizing",
+   "url": "https://www.deloitte.com/us/en/insights/industry/financial-services/authorized-push-payment-fraud.html",
+   "date": "",
+   "summary": "Article • 7-min read • Deloitte estimates US losses from authorized push payment fraud could surge to nearly $15 billion by 2028. Who’s most vulnerable, and how can banks shore up their defenses?"
+  },
+  {
+   "title": "Digital Media Trends",
+   "url": "https://www.deloitte.com/us/en/insights/industry/technology/digital-media-trends-consumption-habits-survey/2025.html",
+   "date": "",
+   "summary": "Article • 14-min read • While studios and streaming providers compete, tougher competition is coming from social video platforms that are hyperscale and hyper-capitalized"
+  },
+  {
+   "title": "2025 Smart Manufacturing and Operations Survey: Navigating challenges to implementation",
+   "url": "https://www.deloitte.com/us/en/insights/industry/manufacturing-industrial-products/2025-smart-manufacturing-survey.html",
+   "date": "",
+   "summary": "Article • 12-min read • Deloitte’s survey of 600 executives shows that as factories and operations get smarter, manufacturers work to overcome obstacles in talent acquisition, manage complex transformations, and mitigate operational risk"
+  },
+  {
+   "title": "Getting human and machine relationships right",
+   "url": "https://www.deloitte.com/us/en/insights/topics/talent/human-capital-trends/2026/human-ai-interaction-design.html",
+   "date": "",
+   "summary": "Article • 9-min read • To multiply human potential with AI, organizations can deliberately design human and machine interactions"
+  },
+  {
+   "title": "Tech decisions can drive big earnings-per-share gains",
+   "url": "https://www.deloitte.com/us/en/insights/topics/technology-management/tech-decisions-eps-growth.html",
+   "date": "",
+   "summary": "Article • 13-min read • Under pressure to move faster on tech? Deloitte analysis shows how data, AI, and IT decisions can materially accelerate EPS growth."
+  },
+  {
+   "title": "Has the CISO finally been accepted as a key strategic player?",
+   "url": "https://www.deloitte.com/us/en/insights/topics/business-strategy-growth/ciso-and-cybersecurity-strategy.html",
+   "date": "",
+   "summary": "Article • 3-min read • Why was there a surge in CISOs' strategic involvement in business-critical technology conversations last year?"
+  },
+  {
+   "title": "Weekly Global Economic Update",
+   "url": "https://www.deloitte.com/us/en/insights/topics/economy/global-economic-outlook/weekly-update.html",
+   "date": "",
+   "summary": "Article • 7-min read • What’s happening this week in economics? Deloitte’s team of economists examines news and trends from around the world."
+  },
+  {
+   "title": "ConsumerSignals collection",
+   "url": "https://www.deloitte.com/us/en/insights/industry/retail-distribution/covid-19-state-of-the-consumer.html",
+   "date": "",
+   "summary": "Collection • We examine the implications of consumers' changing priorities and preferences, purchase behaviors, and spending patterns in a postpandemic world."
+  },
+  {
+   "title": "2026 Energy, Resources, and Industrials Outlooks",
+   "url": "https://www.deloitte.com/us/en/insights/industry/energy-resources-industrials/energy-resources-industrials-industry-outlooks.html",
+   "date": "",
+   "summary": "Collection • Explore the key trends likely to impact the oil and gas, chemicals, power and utilities, renewables, aerospace and defense, manufacturing, and engineering and construction sectors in 2026, in our latest energy, resources, and industrials outlooks"
+  },
+  {
+   "title": "2026 financial services industry outlooks",
+   "url": "https://www.deloitte.com/us/en/insights/industry/financial-services/financial-services-industry-outlooks.html",
+   "date": "",
+   "summary": "Collection • A guide to help you navigate what’s next and lead the industry forward in a time of extraordinary technological disruption, shifting customer expectations, regulatory complexity, and dynamic competition."
+  },
+  {
+   "title": "Government's Future Frontiers",
+   "url": "https://www.deloitte.com/us/en/insights/multimedia/podcasts/governments-leadership-future-frontiers-podcast.html",
+   "date": "",
+   "summary": "Collection • Big societal problems require new kinds of solutions that draw from the strengths of the public, private and not-for-profit sectors."
+  },
+  {
+   "title": "2026 Life Sciences and Health Care Industry Outlooks",
+   "url": "https://www.deloitte.com/us/en/insights/industry/health-care/life-sciences-and-health-care-industry-outlooks.html",
+   "date": "",
+   "summary": "Collection • Get insights on 2026 health care and life sciences to see how leaders are driving growth, tech adoption, and resilience in a changing global landscape"
+  },
+  {
+   "title": "2026 Digital Media Trends: Capturing always-on fandom between releases and seasons",
+   "url": "https://www.deloitte.com/us/en/insights/industry/technology/digital-media-trends-consumption-habits-survey.html",
+   "date": "",
+   "summary": "Article • 11-min read • To boost retention and monetize fan engagement, owners of strong fandoms could host year-round social content, shopping, and exclusive experiences in their own environments"
+  }
+ ],
  "note": ""
 }

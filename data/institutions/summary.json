@@ -12,8 +12,8 @@
    ],
    "total": {
     "projects": 24,
-    "daegu_firms": 12,
-    "outside_firms": 20
+    "daegu_firms": 13,
+    "outside_firms": 15
    },
    "by_year": {
     "2018": {
@@ -24,17 +24,17 @@
     "2019": {
      "projects": 2,
      "daegu_firms": 0,
-     "outside_firms": 7
+     "outside_firms": 4
     },
     "2020": {
      "projects": 4,
-     "daegu_firms": 2,
-     "outside_firms": 4
+     "daegu_firms": 3,
+     "outside_firms": 3
     },
     "2022": {
      "projects": 1,
      "daegu_firms": 2,
-     "outside_firms": 2
+     "outside_firms": 1
     },
     "2023": {
      "projects": 2,
@@ -49,7 +49,7 @@
     "2025": {
      "projects": 7,
      "daegu_firms": 3,
-     "outside_firms": 3
+     "outside_firms": 2
     },
     "2026": {
      "projects": 5,
@@ -100,19 +100,19 @@
    ],
    "total": {
     "projects": 75,
-    "daegu_firms": 37,
-    "outside_firms": 105
+    "daegu_firms": 42,
+    "outside_firms": 98
    },
    "by_year": {
     "2018": {
      "projects": 4,
-     "daegu_firms": 4,
-     "outside_firms": 2
+     "daegu_firms": 5,
+     "outside_firms": 1
     },
     "2019": {
      "projects": 11,
-     "daegu_firms": 11,
-     "outside_firms": 16
+     "daegu_firms": 12,
+     "outside_firms": 15
     },
     "2020": {
      "projects": 11,
@@ -121,13 +121,13 @@
     },
     "2021": {
      "projects": 10,
-     "daegu_firms": 4,
-     "outside_firms": 19
+     "daegu_firms": 5,
+     "outside_firms": 18
     },
     "2022": {
      "projects": 6,
-     "daegu_firms": 4,
-     "outside_firms": 11
+     "daegu_firms": 6,
+     "outside_firms": 9
     },
     "2023": {
      "projects": 6,
@@ -142,12 +142,12 @@
     "2025": {
      "projects": 5,
      "daegu_firms": 2,
-     "outside_firms": 9
+     "outside_firms": 8
     },
     "2026": {
      "projects": 11,
      "daegu_firms": 7,
-     "outside_firms": 21
+     "outside_firms": 20
     }
    },
    "top_programs": [
@@ -169,14 +169,14 @@
    ],
    "total": {
     "projects": 75,
-    "daegu_firms": 11,
-    "outside_firms": 87
+    "daegu_firms": 14,
+    "outside_firms": 80
    },
    "by_year": {
     "2018": {
      "projects": 5,
      "daegu_firms": 0,
-     "outside_firms": 8
+     "outside_firms": 7
     },
     "2019": {
      "projects": 1,
@@ -195,23 +195,23 @@
     },
     "2022": {
      "projects": 14,
-     "daegu_firms": 3,
-     "outside_firms": 12
+     "daegu_firms": 4,
+     "outside_firms": 11
     },
     "2023": {
      "projects": 8,
-     "daegu_firms": 2,
-     "outside_firms": 8
+     "daegu_firms": 3,
+     "outside_firms": 7
     },
     "2024": {
      "projects": 14,
-     "daegu_firms": 0,
-     "outside_firms": 25
+     "daegu_firms": 1,
+     "outside_firms": 22
     },
     "2025": {
      "projects": 15,
      "daegu_firms": 3,
-     "outside_firms": 19
+     "outside_firms": 18
     },
     "2026": {
      "projects": 4,
@@ -239,13 +239,13 @@
    "total": {
     "projects": 39,
     "daegu_firms": 5,
-    "outside_firms": 27
+    "outside_firms": 26
    },
    "by_year": {
     "2018": {
      "projects": 3,
      "daegu_firms": 1,
-     "outside_firms": 2
+     "outside_firms": 1
     },
     "2019": {
      "projects": 2,
@@ -280,7 +280,7 @@
     "2025": {
      "projects": 7,
      "daegu_firms": 0,
-     "outside_firms": 6
+     "outside_firms": 5
     },
     "2026": {
      "projects": 1,
@@ -308,49 +308,49 @@
    ],
    "total": {
     "projects": 201,
-    "daegu_firms": 29,
-    "outside_firms": 258
+    "daegu_firms": 31,
+    "outside_firms": 251
    },
    "by_year": {
     "2018": {
      "projects": 23,
-     "daegu_firms": 1,
-     "outside_firms": 30
+     "daegu_firms": 2,
+     "outside_firms": 27
     },
     "2019": {
      "projects": 23,
      "daegu_firms": 5,
-     "outside_firms": 35
+     "outside_firms": 34
     },
     "2020": {
      "projects": 27,
      "daegu_firms": 6,
-     "outside_firms": 37
+     "outside_firms": 36
     },
     "2021": {
      "projects": 15,
      "daegu_firms": 3,
-     "outside_firms": 31
+     "outside_firms": 30
     },
     "2022": {
      "projects": 37,
      "daegu_firms": 7,
-     "outside_firms": 26
+     "outside_firms": 25
     },
     "2023": {
      "projects": 16,
-     "daegu_firms": 4,
-     "outside_firms": 32
+     "daegu_firms": 5,
+     "outside_firms": 31
     },
     "2024": {
      "projects": 36,
      "daegu_firms": 7,
-     "outside_firms": 58
+     "outside_firms": 57
     },
     "2025": {
      "projects": 20,
-     "daegu_firms": 3,
-     "outside_firms": 38
+     "daegu_firms": 4,
+     "outside_firms": 35
     },
     "2026": {
      "projects": 4,
@@ -378,54 +378,54 @@
    ],
    "total": {
     "projects": 883,
-    "daegu_firms": 142,
-    "outside_firms": 1245
+    "daegu_firms": 169,
+    "outside_firms": 1203
    },
    "by_year": {
     "2018": {
      "projects": 34,
-     "daegu_firms": 5,
-     "outside_firms": 66
+     "daegu_firms": 6,
+     "outside_firms": 62
     },
     "2019": {
      "projects": 85,
-     "daegu_firms": 14,
-     "outside_firms": 146
+     "daegu_firms": 17,
+     "outside_firms": 135
     },
     "2020": {
      "projects": 145,
-     "daegu_firms": 35,
-     "outside_firms": 272
+     "daegu_firms": 39,
+     "outside_firms": 267
     },
     "2021": {
      "projects": 112,
-     "daegu_firms": 28,
-     "outside_firms": 213
+     "daegu_firms": 32,
+     "outside_firms": 204
     },
     "2022": {
      "projects": 146,
-     "daegu_firms": 18,
-     "outside_firms": 203
+     "daegu_firms": 22,
+     "outside_firms": 195
     },
     "2023": {
      "projects": 55,
-     "daegu_firms": 19,
-     "outside_firms": 114
+     "daegu_firms": 25,
+     "outside_firms": 105
     },
     "2024": {
      "projects": 171,
-     "daegu_firms": 47,
-     "outside_firms": 321
+     "daegu_firms": 57,
+     "outside_firms": 307
     },
     "2025": {
      "projects": 69,
-     "daegu_firms": 17,
-     "outside_firms": 151
+     "daegu_firms": 18,
+     "outside_firms": 147
     },
     "2026": {
      "projects": 67,
-     "daegu_firms": 14,
-     "outside_firms": 165
+     "daegu_firms": 18,
+     "outside_firms": 157
     }
    },
    "top_programs": [
@@ -448,8 +448,8 @@
    ],
    "total": {
     "projects": 192,
-    "daegu_firms": 58,
-    "outside_firms": 272
+    "daegu_firms": 63,
+    "outside_firms": 260
    },
    "by_year": {
     "2018": {
@@ -459,43 +459,43 @@
     },
     "2019": {
      "projects": 11,
-     "daegu_firms": 9,
-     "outside_firms": 13
+     "daegu_firms": 10,
+     "outside_firms": 11
     },
     "2020": {
      "projects": 27,
-     "daegu_firms": 8,
-     "outside_firms": 50
+     "daegu_firms": 9,
+     "outside_firms": 46
     },
     "2021": {
      "projects": 24,
      "daegu_firms": 10,
-     "outside_firms": 54
+     "outside_firms": 52
     },
     "2022": {
      "projects": 45,
      "daegu_firms": 6,
-     "outside_firms": 29
+     "outside_firms": 27
     },
     "2023": {
      "projects": 23,
-     "daegu_firms": 4,
-     "outside_firms": 37
+     "daegu_firms": 5,
+     "outside_firms": 35
     },
     "2024": {
      "projects": 24,
-     "daegu_firms": 11,
-     "outside_firms": 56
+     "daegu_firms": 12,
+     "outside_firms": 51
     },
     "2025": {
      "projects": 18,
      "daegu_firms": 6,
-     "outside_firms": 28
+     "outside_firms": 26
     },
     "2026": {
      "projects": 12,
-     "daegu_firms": 7,
-     "outside_firms": 36
+     "daegu_firms": 8,
+     "outside_firms": 33
     }
    },
    "top_programs": [
@@ -518,8 +518,8 @@
    ],
    "total": {
     "projects": 79,
-    "daegu_firms": 20,
-    "outside_firms": 117
+    "daegu_firms": 23,
+    "outside_firms": 113
    },
    "by_year": {
     "2018": {
@@ -539,8 +539,8 @@
     },
     "2021": {
      "projects": 6,
-     "daegu_firms": 1,
-     "outside_firms": 14
+     "daegu_firms": 2,
+     "outside_firms": 13
     },
     "2022": {
      "projects": 10,
@@ -549,13 +549,13 @@
     },
     "2023": {
      "projects": 7,
-     "daegu_firms": 4,
-     "outside_firms": 5
+     "daegu_firms": 5,
+     "outside_firms": 4
     },
     "2024": {
      "projects": 19,
      "daegu_firms": 4,
-     "outside_firms": 40
+     "outside_firms": 39
     },
     "2025": {
      "projects": 5,
@@ -564,8 +564,8 @@
     },
     "2026": {
      "projects": 10,
-     "daegu_firms": 1,
-     "outside_firms": 22
+     "daegu_firms": 2,
+     "outside_firms": 21
     }
    },
    "top_programs": [
@@ -587,8 +587,8 @@
    ],
    "total": {
     "projects": 107,
-    "daegu_firms": 44,
-    "outside_firms": 197
+    "daegu_firms": 52,
+    "outside_firms": 185
    },
    "by_year": {
     "2018": {
@@ -598,43 +598,43 @@
     },
     "2019": {
      "projects": 9,
-     "daegu_firms": 11,
-     "outside_firms": 15
+     "daegu_firms": 13,
+     "outside_firms": 12
     },
     "2020": {
      "projects": 19,
-     "daegu_firms": 9,
-     "outside_firms": 35
+     "daegu_firms": 11,
+     "outside_firms": 33
     },
     "2021": {
      "projects": 17,
-     "daegu_firms": 11,
-     "outside_firms": 36
+     "daegu_firms": 12,
+     "outside_firms": 35
     },
     "2022": {
      "projects": 4,
      "daegu_firms": 2,
-     "outside_firms": 10
+     "outside_firms": 9
     },
     "2023": {
      "projects": 6,
-     "daegu_firms": 3,
-     "outside_firms": 12
+     "daegu_firms": 4,
+     "outside_firms": 11
     },
     "2024": {
      "projects": 25,
-     "daegu_firms": 11,
-     "outside_firms": 66
+     "daegu_firms": 15,
+     "outside_firms": 60
     },
     "2025": {
      "projects": 13,
-     "daegu_firms": 9,
-     "outside_firms": 37
+     "daegu_firms": 11,
+     "outside_firms": 34
     },
     "2026": {
      "projects": 11,
-     "daegu_firms": 7,
-     "outside_firms": 29
+     "daegu_firms": 8,
+     "outside_firms": 28
     }
    },
    "top_programs": [
@@ -657,8 +657,8 @@
    ],
    "total": {
     "projects": 134,
-    "daegu_firms": 55,
-    "outside_firms": 273
+    "daegu_firms": 69,
+    "outside_firms": 252
    },
    "by_year": {
     "2018": {
@@ -668,43 +668,43 @@
     },
     "2019": {
      "projects": 17,
-     "daegu_firms": 11,
-     "outside_firms": 37
+     "daegu_firms": 17,
+     "outside_firms": 30
     },
     "2020": {
      "projects": 18,
-     "daegu_firms": 6,
-     "outside_firms": 45
+     "daegu_firms": 8,
+     "outside_firms": 43
     },
     "2021": {
      "projects": 20,
-     "daegu_firms": 14,
-     "outside_firms": 53
+     "daegu_firms": 17,
+     "outside_firms": 44
     },
     "2022": {
      "projects": 15,
-     "daegu_firms": 5,
-     "outside_firms": 34
+     "daegu_firms": 7,
+     "outside_firms": 30
     },
     "2023": {
      "projects": 8,
-     "daegu_firms": 3,
-     "outside_firms": 22
+     "daegu_firms": 4,
+     "outside_firms": 21
     },
     "2024": {
      "projects": 21,
-     "daegu_firms": 17,
-     "outside_firms": 53
+     "daegu_firms": 19,
+     "outside_firms": 45
     },
     "2025": {
      "projects": 14,
-     "daegu_firms": 5,
-     "outside_firms": 32
+     "daegu_firms": 6,
+     "outside_firms": 31
     },
     "2026": {
      "projects": 19,
-     "daegu_firms": 6,
-     "outside_firms": 45
+     "daegu_firms": 8,
+     "outside_firms": 42
     }
    },
    "top_programs": [
@@ -748,14 +748,14 @@
    ],
    "total": {
     "projects": 12,
-    "daegu_firms": 7,
-    "outside_firms": 28
+    "daegu_firms": 13,
+    "outside_firms": 21
    },
    "by_year": {
     "2018": {
      "projects": 2,
-     "daegu_firms": 5,
-     "outside_firms": 7
+     "daegu_firms": 11,
+     "outside_firms": 1
     },
     "2019": {
      "projects": 1,
@@ -770,7 +770,7 @@
     "2022": {
      "projects": 3,
      "daegu_firms": 1,
-     "outside_firms": 8
+     "outside_firms": 7
     },
     "2025": {
      "projects": 3,

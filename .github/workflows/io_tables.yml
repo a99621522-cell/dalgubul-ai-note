@@ -1,0 +1,41 @@
+name: 산업연관표 첨부 받기 (한국은행)
+
+# config/io_sources.yml 의 한국은행·KOSIS 페이지에서 기본부문 거래표·부문분류표 엑셀을 받아 scripts/data/io/ 에 커밋한다.
+# 이 세션 환경은 한국은행 접속이 막혀 있어 Actions 가 대신 받는다. 이후 분석은 scripts/attract.py(전국 팩토리온 파일은 국내 PC 에서).
+
+on:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: [".github/workflows/io_tables.yml", "scripts/fetch_io_tables.py", "config/io_sources.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: io-tables-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt playwright && python -m playwright install --with-deps chromium
+      - name: 받기
+        run: |
+          set +e
+          python3 scripts/fetch_io_tables.py
+          echo "exit=$?"
+          ls -la scripts/data/io
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add -A scripts/data/io
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 산업연관표 첨부 반영 $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"

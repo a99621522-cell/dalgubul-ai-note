@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="기타 서비스 고용 인원 추이. 2026-07부터 2026-07까지 1개월. 기타 서비스 최근 9,934명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="기타 서비스 고용 인원 추이. 2026-07부터 2026-07까지 1개월. 기타 서비스 최근 9,944명" style="max-width:720px;height:auto;font-size:14px">
 <title>기타 서비스 고용 인원 추이</title>
 <line x1="72" x2="652" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">9,250</text>
@@ -12,7 +12,7 @@
 <text x="64" y="45.0" text-anchor="end" fill="#767676">10,250</text>
 <text x="362.0" y="320" text-anchor="middle" fill="#767676">2026.7</text>
 <line x1="72" x2="652" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<circle cx="362.0" cy="120.9" r="4" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="362.0" cy="120.9" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="370.0" y="125.9" fill="#1a1a1a" font-weight="600">9,934명</text>
+<circle cx="362.0" cy="118.3" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="362.0" cy="118.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="370.0" y="123.3" fill="#1a1a1a" font-weight="600">9,944명</text>
 <text x="72" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text></svg>

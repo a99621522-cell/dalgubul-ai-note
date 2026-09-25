@@ -51,7 +51,8 @@ def company_names() -> list[str]:
         return []
     names = set()
     for r in csv.DictReader(open(COMPANIES, encoding="utf-8")):
-        n = re.sub(r"\s*\((주|유|합)\)\s*|^\(주\)|㈜|\s+", "", r.get("name", ""))
+        n = re.sub(r"\((주|유|합|재)\)|㈜|주식회사|유한회사|유한책임회사|합자회사|합명회사|\s+", "", r.get("name", ""))
+        n = re.sub(r"(제?\d*공장|[가-힣]*\d?(공장|지점|사업장|지사))$", "", n)   # '○○ 성서3공장' → '○○'
         if len(n) >= 3 and not re.fullmatch(r"[가-힣]{3}", n):   # 3자 한글 상호는 일반 명사와 겹쳐 뺀다
             names.add(n)
     return sorted(names, key=len, reverse=True)

@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 354" width="100%" role="img" aria-label="중구 산업별 고용 인원. 기타 제조 814명, 섬유·패션 356명, 전기·전자 89명, 식품 77명, 기계·금속 42명, 의료·바이오 39명, 화학·에너지 11명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 354" width="100%" role="img" aria-label="중구 산업별 고용 인원. 기타 제조 814명, 섬유·패션 376명, 전기·전자 89명, 식품 77명, 기계·금속 57명, 의료·바이오 39명, 화학·에너지 11명" style="max-width:360px;height:auto;font-size:14px">
 <title>중구 산업별 고용 인원</title>
-<text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 2개월</text>
+<text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">기타 제조</text>
 <rect x="8" y="54" width="306.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="320.0" y="68.0" fill="#1a1a1a">814명</text>
 <text x="8" y="92.0" fill="#1a1a1a">섬유·패션</text>
-<rect x="8" y="98" width="133.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="147.8" y="112.0" fill="#1a1a1a">356명</text>
+<rect x="8" y="98" width="141.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="155.3" y="112.0" fill="#1a1a1a">376명</text>
 <text x="8" y="136.0" fill="#1a1a1a">전기·전자</text>
 <rect x="8" y="142" width="33.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="47.5" y="156.0" fill="#1a1a1a">89명</text>
@@ -14,8 +14,8 @@
 <rect x="8" y="186" width="28.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="42.9" y="200.0" fill="#1a1a1a">77명</text>
 <text x="8" y="224.0" fill="#1a1a1a">기계·금속</text>
-<rect x="8" y="230" width="15.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="29.8" y="244.0" fill="#1a1a1a">42명</text>
+<rect x="8" y="230" width="21.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="35.4" y="244.0" fill="#1a1a1a">57명</text>
 <text x="8" y="268.0" fill="#1a1a1a">의료·바이오</text>
 <rect x="8" y="274" width="14.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="28.7" y="288.0" fill="#1a1a1a">39명</text>

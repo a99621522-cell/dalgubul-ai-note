@@ -1,16 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="화학·에너지 기업 수 추이. 2026-07부터 2026-08까지 2개월. 화학·에너지 최근 686곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="화학·에너지 기업 수 추이. 2026-07부터 2026-07까지 1개월. 화학·에너지 최근 811곳" style="max-width:360px;height:auto;font-size:14px">
 <title>화학·에너지 기업 수 추이</title>
 <line x1="60" x2="308" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="261.0" text-anchor="end" fill="#767676">600</text>
-<line x1="60" x2="308" y1="177.3" y2="177.3" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="182.3" text-anchor="end" fill="#767676">700</text>
-<line x1="60" x2="308" y1="98.7" y2="98.7" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="103.7" text-anchor="end" fill="#767676">800</text>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">750</text>
+<line x1="60" x2="308" y1="197.0" y2="197.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="202.0" text-anchor="end" fill="#767676">775</text>
+<line x1="60" x2="308" y1="138.0" y2="138.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="143.0" text-anchor="end" fill="#767676">800</text>
+<line x1="60" x2="308" y1="79.0" y2="79.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="84.0" text-anchor="end" fill="#767676">825</text>
 <line x1="60" x2="308" y1="20.0" y2="20.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="25.0" text-anchor="end" fill="#767676">900</text>
-<text x="60.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
-<text x="308.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="52" y="25.0" text-anchor="end" fill="#767676">850</text>
+<text x="184.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
 <line x1="60" x2="308" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,4.3 L308.0,188.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="308.0" cy="188.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="316.0" y="193.3" fill="#1a1a1a" font-weight="600">686곳</text></svg>
+<circle cx="184.0" cy="112.0" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="184.0" cy="112.0" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="192.0" y="117.0" fill="#1a1a1a" font-weight="600">811곳</text></svg>

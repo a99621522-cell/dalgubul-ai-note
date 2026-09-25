@@ -1,24 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 354" width="100%" role="img" aria-label="대구금호워터폴리스산단 산업별 고용 인원. 기계·금속 190명, 전기·전자 188명, 자동차·부품 77명, 의료·바이오 50명, 로봇 43명, 기타 제조 8명, 화학·에너지 1명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 354" width="100%" role="img" aria-label="대구금호워터폴리스산단 산업별 고용 인원. 전기·전자 196명, 기계·금속 101명, 로봇 50명, 의료·바이오 24명, 자동차·부품 10명, 기타 제조 10명, 화학·에너지 0명" style="max-width:360px;height:auto;font-size:14px">
 <title>대구금호워터폴리스산단 산업별 고용 인원</title>
-<text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 2개월</text>
-<text x="8" y="48.0" fill="#1a1a1a">기계·금속</text>
+<text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text>
+<text x="8" y="48.0" fill="#1a1a1a">전기·전자</text>
 <rect x="8" y="54" width="306.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="320.0" y="68.0" fill="#1a1a1a">190명</text>
-<text x="8" y="92.0" fill="#1a1a1a">전기·전자</text>
-<rect x="8" y="98" width="302.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="316.8" y="112.0" fill="#1a1a1a">188명</text>
-<text x="8" y="136.0" fill="#1a1a1a">자동차·부품</text>
-<rect x="8" y="142" width="124.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="138.0" y="156.0" fill="#1a1a1a">77명</text>
+<text x="320.0" y="68.0" fill="#1a1a1a">196명</text>
+<text x="8" y="92.0" fill="#1a1a1a">기계·금속</text>
+<rect x="8" y="98" width="157.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="171.7" y="112.0" fill="#1a1a1a">101명</text>
+<text x="8" y="136.0" fill="#1a1a1a">로봇</text>
+<rect x="8" y="142" width="78.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="92.1" y="156.0" fill="#1a1a1a">50명</text>
 <text x="8" y="180.0" fill="#1a1a1a">의료·바이오</text>
-<rect x="8" y="186" width="80.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="94.5" y="200.0" fill="#1a1a1a">50명</text>
-<text x="8" y="224.0" fill="#1a1a1a">로봇</text>
-<rect x="8" y="230" width="69.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="83.3" y="244.0" fill="#1a1a1a">43명</text>
+<rect x="8" y="186" width="37.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="51.5" y="200.0" fill="#1a1a1a">24명</text>
+<text x="8" y="224.0" fill="#1a1a1a">자동차·부품</text>
+<rect x="8" y="230" width="15.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="29.6" y="244.0" fill="#1a1a1a">10명</text>
 <text x="8" y="268.0" fill="#1a1a1a">기타 제조</text>
-<rect x="8" y="274" width="12.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="26.9" y="288.0" fill="#1a1a1a">8명</text>
+<rect x="8" y="274" width="15.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="29.6" y="288.0" fill="#1a1a1a">10명</text>
 <text x="8" y="312.0" fill="#1a1a1a">화학·에너지</text>
-<rect x="8" y="318" width="1.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="15.6" y="332.0" fill="#1a1a1a">1명</text></svg>
+<rect x="8" y="318" width="0.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="14.0" y="332.0" fill="#1a1a1a">0명</text></svg>

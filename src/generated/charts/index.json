@@ -1,10 +1,9 @@
 {
  "months": [
-  "2026-07",
-  "2026-08"
+  "2026-07"
  ],
- "latest": "2026-08",
- "basis": "공장등록 신고값(팩토리온)",
+ "latest": "2026-07",
+ "basis": "국민연금 가입자수",
  "total": {
   "employment": "total-4ce09bfd10",
   "firms": "total-66f6a8f155"
@@ -72,14 +71,14 @@
  "compare_default": [
   "기계·금속",
   "자동차·부품",
-  "섬유·패션",
+  "화학·에너지",
   "전기·전자",
-  "화학·에너지"
+  "섬유·패션"
  ],
  "complex-employment": {
-  "산단 외": "complex-employment-c151bf155a",
   "성서지방산업단지": "complex-employment-f0388aa782",
   "개별입지": "complex-employment-61fa24ec59",
+  "산단 외": "complex-employment-c151bf155a",
   "서대구일반산업단지": "complex-employment-24c497f1e6",
   "대구제3일반산업단지": "complex-employment-c23e8a8c44",
   "북구검단일반산업단지": "complex-employment-1e88836d1f",
@@ -102,9 +101,9 @@
   "대구경북첨단의료복합단지도시첨단산업단지": "complex-employment-6c76b4c42f"
  },
  "complex-industry": {
-  "산단 외": "complex-industry-c151bf155a",
   "성서지방산업단지": "complex-industry-f0388aa782",
   "개별입지": "complex-industry-61fa24ec59",
+  "산단 외": "complex-industry-c151bf155a",
   "서대구일반산업단지": "complex-industry-24c497f1e6",
   "대구제3일반산업단지": "complex-industry-c23e8a8c44",
   "북구검단일반산업단지": "complex-industry-1e88836d1f",

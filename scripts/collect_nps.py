@@ -44,6 +44,7 @@ COLS = {
     "사업장도로명상세주소": ["사업장도로명상세주소", "도로명주소"],
     "사업장지번상세주소": ["사업장지번상세주소", "지번주소"],
     "법정동주소광역시도코드": ["법정동주소광역시도코드", "광역시도코드"],
+    "법정동주소광역시시군구코드": ["법정동주소광역시시군구코드", "시군구코드"],
     "사업장업종코드": ["사업장업종코드", "업종코드"],
     "사업장업종코드명": ["사업장업종코드명", "업종코드명", "업종명"],
     "적용일자": ["적용일자"],
@@ -54,6 +55,8 @@ COLS = {
     "상실가입자수": ["상실가입자수", "당월상실자수"],
 }
 DAEGU_SIDO_CODE = "27"
+# '해운대구'(부산)에도 '대구'가 들어가므로 앞뒤에 한글이 없는 '대구' 또는 '대구광역시'만
+DAEGU_RE = re.compile(r"대구광역시|(?<![가-힣])대구(?![가-힣])")
 
 
 def cfg() -> dict:
@@ -73,10 +76,12 @@ def pick(row: dict, key: str) -> str:
 
 
 def is_daegu(row: dict, region_words: list[str]) -> bool:
-    if pick(row, "법정동주소광역시도코드") == DAEGU_SIDO_CODE:
-        return True
+    """주소 문자열이 있으면 주소로 판정한다(시도코드 27 인데 주소는 부산인 행이 실제로 있었다, 2026-07 파일 3,562행).
+    주소가 둘 다 비어 있을 때만 시도코드로."""
     addr = pick(row, "사업장도로명상세주소") + " " + pick(row, "사업장지번상세주소")
-    return any(w in addr for w in region_words)
+    if addr.strip():
+        return bool(DAEGU_RE.search(addr))
+    return pick(row, "법정동주소광역시도코드") == DAEGU_SIDO_CODE
 
 
 def month_of(rows: list[dict], override: str | None) -> str:

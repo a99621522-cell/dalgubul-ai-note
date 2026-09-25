@@ -61,10 +61,21 @@ def by_keyword(text: str) -> str | None:
     return None
 
 
+def service_first(text: str) -> bool:
+    """코드 없는 행: 서비스업 낱말이 있고 keep_service 낱말이 없으면 기타 서비스."""
+    cfg = config()
+    t = (text or "").replace(" ", "")
+    if any(k.replace(" ", "") in t for k in cfg.get("keep_service", [])):
+        return False
+    return any(k.replace(" ", "") in t for k in cfg.get("service_patterns", []))
+
+
 def classify(code: str, sector: str = "", product: str = "") -> str:
     cfg = config()
     code = (code or "").strip()
     text = f"{sector or ''} {product or ''}"
+    if not code and service_first(text):
+        return "기타 서비스"
     if code.startswith(cfg["_keyword_first"]):
         return by_keyword(text) or by_prefix(code) or cfg["unclassified"]
     return by_prefix(code) or by_keyword(text) or cfg["unclassified"]

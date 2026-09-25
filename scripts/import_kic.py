@@ -24,7 +24,7 @@ COLS = {
     "road": ["공장대표주소(도로명)", "도로명주소", "공장대표주소_도로명", "주소(도로명)"],
     "jibun": ["공장대표주소(지번)", "지번주소"],
 }
-_ROAD = re.compile(r"대구광역시\s+(\S+[구군])\s+(.+?(?:로|길)\s*\d+(?:-\d+)?)")
+_ROAD = re.compile(r"대구광역시\s+(\S+[구군])\s+(.+(?:로|길)\s*\d+(?:-\d+)?)")  # greedy: '성서공단로35길 42' 전체
 
 
 def pick(r: dict, k: str) -> str:
@@ -60,7 +60,7 @@ def main(argv: list[str]) -> int:
             continue
         m = _ROAD.search(pick(r, "road"))
         if not m:
-            continue
+            continue  # 건물번호 없는 주소는 거리 전체를 잡아 버리므로 쓰지 않는다
         district, road = m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()
         found[(district, road)] = pick(r, "name") or "지식산업센터(명칭 미확인)"
     if not found:

@@ -1,15 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구경북첨단의료복합단지도시산단 고용 인원 추이. 2026-07부터 2026-08까지 2개월. 대구경북첨단의료복합단지도시산단 최근 24명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구경북첨단의료복합단지도시산단 고용 인원 추이. 2026-07부터 2026-07까지 1개월. 대구경북첨단의료복합단지도시산단 최근 0명" style="max-width:720px;height:auto;font-size:14px">
 <title>대구경북첨단의료복합단지도시산단 고용 인원 추이</title>
-<line x1="72" x2="676" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" x2="684" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
-<line x1="72" x2="676" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="173.0" text-anchor="end" fill="#767676">10</text>
-<line x1="72" x2="676" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="45.0" text-anchor="end" fill="#767676">20</text>
-<text x="72.0" y="320" text-anchor="middle" fill="#767676">2026.7</text>
-<text x="676.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
-<line x1="72" x2="676" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,296.0 L676.0,-11.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="676.0" cy="-11.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="684.0" y="52.0" fill="#1a1a1a" font-weight="600">24명</text>
-<text x="72" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 2개월</text></svg>
+<line x1="72" x2="684" y1="232.0" y2="232.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="237.0" text-anchor="end" fill="#767676">0.25</text>
+<line x1="72" x2="684" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="173.0" text-anchor="end" fill="#767676">0.5</text>
+<line x1="72" x2="684" y1="104.0" y2="104.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="109.0" text-anchor="end" fill="#767676">0.75</text>
+<line x1="72" x2="684" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">1</text>
+<text x="378.0" y="320" text-anchor="middle" fill="#767676">2026.7</text>
+<line x1="72" x2="684" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
+<circle cx="378.0" cy="296.0" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="378.0" cy="296.0" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="386.0" y="294.0" fill="#1a1a1a" font-weight="600">0명</text>
+<text x="72" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text></svg>

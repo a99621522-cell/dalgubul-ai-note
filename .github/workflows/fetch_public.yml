@@ -66,7 +66,7 @@ jobs:
           for f in data/raw/15117154/*; do case "$f" in *.csv|*.xlsx|*.xls) python3 scripts/import_kic.py "$f" --as-of "$(date -u +%Y-%m)";; esac; done
           for f in data/raw/15083277/*.csv; do [ -f "$f" ] && python3 scripts/collect_nps.py --file "$f"; done
           # 팩토리온에 없는 대구 사업장 → 산단 외 기업 (임시 투입 파일은 반영 후 지운다)
-          python3 scripts/nps_to_extra.py && python3 scripts/import_extra.py && rm -f scripts/data/extra/nps_*.csv
+          python3 scripts/nps_to_extra.py && python3 scripts/import_extra.py --replace-source '국민연금' && rm -f scripts/data/extra/nps_*.csv
           python3 scripts/sites.py
           python3 scripts/build_stats.py --backfill
           python3 scripts/render_charts.py

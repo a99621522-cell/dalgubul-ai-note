@@ -18,13 +18,17 @@ from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from industry import classify  # noqa: E402
+from industry import classify, config as industry_config  # noqa: E402
 from sites import load_all_companies  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 NPS_DIR = ROOT / "data" / "nps"
 OUT_DIR = ROOT / "scripts" / "data" / "extra"
-KEEP_SERVICE = re.compile(r"연구|엔지니어링|소프트웨어|정보|데이터|컴퓨터|디자인")
+def keep_service(sector: str) -> bool:
+    """연구개발·소프트웨어·엔지니어링 등(keep_service)은 산업 그룹이 '기타 서비스'로 나와도 넣는다. 단 도매·소매 등 서비스 낱말이 함께 있으면 제외."""
+    c = industry_config()
+    t = (sector or "").replace(" ", "")
+    return any(k.replace(" ", "") in t for k in c.get("keep_service", [])) and not any(k.replace(" ", "") in t for k in c.get("service_patterns", []))
 _ROAD = re.compile(r"(\S+[구군])\s+(.+?(?:로|길)\s*\d+(?:-\d+)?)")
 
 
@@ -84,7 +88,7 @@ def main(argv: list[str]) -> int:
             continue
         sector = col(r, "사업장업종코드명")
         group = classify("", sector, "")
-        if group in ("기타 서비스", "미분류") and not KEEP_SERVICE.search(sector):
+        if group in ("기타 서비스", "미분류") and not keep_service(sector):
             why["범위 밖 업종"] += 1
             continue
         out.append({"회사명": name, "주소": addr, "업종": sector, "종사자수": col(r, "가입자수"), "설립연도": col(r, "적용일자")[:4],

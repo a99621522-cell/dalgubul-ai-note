@@ -92,6 +92,7 @@ def read_inputs() -> list[dict]:
 
 def main(argv: list[str]) -> int:
     dry = "--dry-run" in argv
+    replace = argv[argv.index("--replace-source") + 1] if "--replace-source" in argv else None  # 이 출처로 시작하는 기존 행은 버리고 다시 넣는다
     inputs = read_inputs()
     if not inputs:
         print(f"입력 없음: {INBOX.relative_to(ROOT)}/*.csv (형식은 그 안의 README.md)")
@@ -99,9 +100,16 @@ def main(argv: list[str]) -> int:
     fo = list(csv.DictReader(open(COMPANIES, encoding="utf-8")))
     by_key = {(norm_name(r["name"]), r["district"]): r["id"] for r in fo}
     extra = list(csv.DictReader(open(EXTRA, encoding="utf-8"))) if EXTRA.exists() else []
+    if replace:
+        kept_ids = {r["id"]: r for r in extra if not r["source"].startswith(replace)}
+        # 같은 출처로 다시 들어올 기업은 예전 id 를 그대로 쓴다(URL 유지)
+        old_ids = {(norm_name(r["name"]), r["district"]): r["id"] for r in extra if r["source"].startswith(replace)}
+        extra = list(kept_ids.values())
+    else:
+        old_ids = {}
     for r in extra:
         by_key.setdefault((norm_name(r["name"]), r["district"]), r["id"])
-    next_id = 1 + max((int(r["id"][1:]) for r in extra if r["id"].startswith("x")), default=0)
+    next_id = 1 + max([int(r["id"][1:]) for r in extra if r["id"].startswith("x")] + [int(i[1:]) for i in old_ids.values()], default=0)
     tag_rows = list(csv.DictReader(open(TAGS, encoding="utf-8"))) if TAGS.exists() else []
     have_tags = {(t["id"], t["tag"]) for t in tag_rows}
     outside = site_config()["outside_complex"]
@@ -117,8 +125,10 @@ def main(argv: list[str]) -> int:
             print(f"  건너뜀(대구 구·군을 주소에서 못 찾음): {r['name']} | {r['address'][:40]} [{r['_file']}]")
             continue
         if cid is None:
-            cid = f"x{next_id:04d}"
-            next_id += 1
+            cid = old_ids.get(key)
+            if cid is None:
+                cid = f"x{next_id:04d}"
+                next_id += 1
             w = int(r["workers"]) if r["workers"] else 0
             group = classify(r["sector_code"], r["sector"], r["product"])
             extra.append({"id": cid, "name": r["name"], "complex": outside, "district": dist, "eupmyeon": "", "sector_code": r["sector_code"],

@@ -510,6 +510,12 @@ def main(argv: list[str]) -> int:
     else:
         months = [nps_months[-1] if nps_months else fo_month]
 
+    if nps_months:  # 근거가 다른(팩토리온 전용) 옛 달 문서는 시계열에서 뺀다
+        for old_doc in MONTHLY.glob("??????.json"):
+            if old_doc.stem not in nps_months and json.loads(old_doc.read_text(encoding="utf-8")).get("basis") == "factoryon":
+                for f in MONTHLY.glob(f"{old_doc.stem}*"):
+                    f.unlink()
+                print(f"[{old_doc.stem}] 팩토리온 전용 달 문서 제거 (국민연금 달만 집계)")
     for m in months:
         doc = build_month(m, companies, dart, as_of=date.today())
         t = doc["total"]

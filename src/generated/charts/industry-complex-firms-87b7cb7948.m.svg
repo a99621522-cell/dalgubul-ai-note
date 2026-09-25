@@ -1,32 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464" width="100%" role="img" aria-label="로봇 산단별 기업 수. 성서산단 34곳, 개별입지 11곳, 대구제3산단 10곳, 성서5차산단 7곳, 서대구산단 6곳, 대구테크노폴리스산단 5곳, 대구국가산단 3곳, 대구이시아폴리스산단 3곳, 북구검단산단 3곳, 대구금호워터폴리스산단 2곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464" width="100%" role="img" aria-label="로봇 산단별 기업 수. 성서산단 34곳, 산단 외 26곳, 개별입지 11곳, 대구제3산단 10곳, 성서5차산단 7곳, 서대구산단 6곳, 대구테크노폴리스산단 5곳, 대구국가산단 3곳, 대구이시아폴리스산단 3곳, 북구검단산단 3곳" style="max-width:360px;height:auto;font-size:14px">
 <title>로봇 산단별 기업 수</title>
 <text x="8" y="26.0" fill="#1a1a1a">성서산단</text>
 <rect x="8" y="32" width="314.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="328.0" y="46.0" fill="#1a1a1a">34곳</text>
-<text x="8" y="70.0" fill="#1a1a1a">개별입지</text>
-<rect x="8" y="76" width="101.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="115.6" y="90.0" fill="#1a1a1a">11곳</text>
-<text x="8" y="114.0" fill="#1a1a1a">대구제3산단</text>
-<rect x="8" y="120" width="92.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="106.4" y="134.0" fill="#1a1a1a">10곳</text>
-<text x="8" y="158.0" fill="#1a1a1a">성서5차산단</text>
-<rect x="8" y="164" width="64.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="78.6" y="178.0" fill="#1a1a1a">7곳</text>
-<text x="8" y="202.0" fill="#1a1a1a">서대구산단</text>
-<rect x="8" y="208" width="55.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="69.4" y="222.0" fill="#1a1a1a">6곳</text>
-<text x="8" y="246.0" fill="#1a1a1a">대구테크노폴리스산단</text>
-<rect x="8" y="252" width="46.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="60.2" y="266.0" fill="#1a1a1a">5곳</text>
-<text x="8" y="290.0" fill="#1a1a1a">대구국가산단</text>
-<rect x="8" y="296" width="27.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="41.7" y="310.0" fill="#1a1a1a">3곳</text>
-<text x="8" y="334.0" fill="#1a1a1a">대구이시아폴리스산단</text>
+<text x="8" y="70.0" fill="#1a1a1a">산단 외</text>
+<rect x="8" y="76" width="240.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="254.1" y="90.0" fill="#1a1a1a">26곳</text>
+<text x="8" y="114.0" fill="#1a1a1a">개별입지</text>
+<rect x="8" y="120" width="101.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="115.6" y="134.0" fill="#1a1a1a">11곳</text>
+<text x="8" y="158.0" fill="#1a1a1a">대구제3산단</text>
+<rect x="8" y="164" width="92.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="106.4" y="178.0" fill="#1a1a1a">10곳</text>
+<text x="8" y="202.0" fill="#1a1a1a">성서5차산단</text>
+<rect x="8" y="208" width="64.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="78.6" y="222.0" fill="#1a1a1a">7곳</text>
+<text x="8" y="246.0" fill="#1a1a1a">서대구산단</text>
+<rect x="8" y="252" width="55.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="69.4" y="266.0" fill="#1a1a1a">6곳</text>
+<text x="8" y="290.0" fill="#1a1a1a">대구테크노폴리스산단</text>
+<rect x="8" y="296" width="46.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="60.2" y="310.0" fill="#1a1a1a">5곳</text>
+<text x="8" y="334.0" fill="#1a1a1a">대구국가산단</text>
 <rect x="8" y="340" width="27.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="41.7" y="354.0" fill="#1a1a1a">3곳</text>
-<text x="8" y="378.0" fill="#1a1a1a">북구검단산단</text>
+<text x="8" y="378.0" fill="#1a1a1a">대구이시아폴리스산단</text>
 <rect x="8" y="384" width="27.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="41.7" y="398.0" fill="#1a1a1a">3곳</text>
-<text x="8" y="422.0" fill="#1a1a1a">대구금호워터폴리스산단</text>
-<rect x="8" y="428" width="18.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="32.5" y="442.0" fill="#1a1a1a">2곳</text></svg>
+<text x="8" y="422.0" fill="#1a1a1a">북구검단산단</text>
+<rect x="8" y="428" width="27.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="41.7" y="442.0" fill="#1a1a1a">3곳</text></svg>

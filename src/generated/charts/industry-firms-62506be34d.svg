@@ -1,14 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="식품 기업 수 추이. 2026-07부터 2026-08까지 2개월. 식품 최근 375곳" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="식품 기업 수 추이. 2026-07부터 2026-07까지 1개월. 식품 최근 472곳" style="max-width:720px;height:auto;font-size:14px">
 <title>식품 기업 수 추이</title>
 <line x1="72" x2="668" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="301.0" text-anchor="end" fill="#767676">200</text>
+<text x="64" y="301.0" text-anchor="end" fill="#767676">440</text>
 <line x1="72" x2="668" y1="158.0" y2="158.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="163.0" text-anchor="end" fill="#767676">400</text>
+<text x="64" y="163.0" text-anchor="end" fill="#767676">460</text>
 <line x1="72" x2="668" y1="20.0" y2="20.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="25.0" text-anchor="end" fill="#767676">600</text>
-<text x="72.0" y="320" text-anchor="middle" fill="#767676">2026.7</text>
-<text x="668.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="64" y="25.0" text-anchor="end" fill="#767676">480</text>
+<text x="370.0" y="320" text-anchor="middle" fill="#767676">2026.7</text>
 <line x1="72" x2="668" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,-75.9 L668.0,175.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="668.0" cy="175.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="676.0" y="180.2" fill="#1a1a1a" font-weight="600">375곳</text></svg>
+<circle cx="370.0" cy="75.2" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="370.0" cy="75.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="378.0" y="80.2" fill="#1a1a1a" font-weight="600">472곳</text></svg>

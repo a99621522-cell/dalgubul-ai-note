@@ -38,7 +38,10 @@ TODAY = date.today()
 MAX_DAYS = 70
 MAX_ITEMS = 40
 RSS_CANDIDATES = ["/rss", "/feed", "/rss.xml", "/feed.xml", "/index.xml", "/rss/", "/feed/", "/atom.xml"]
-DATE_RE = re.compile(r"(20\d{2})[.\-/년]\s?(\d{1,2})[.\-/월]\s?(\d{1,2})")
+DATE_RE = re.compile(r"(20\d{2})[.\-/년年]\s?(\d{1,2})[.\-/월月]\s?(\d{1,2})")
+MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
+DATE_EN = re.compile(r"\b([A-Z][a-z]{2,8})\.?\s+(\d{1,2}),?\s+(20\d{2})\b|\b(\d{1,2})\s+([A-Z][a-z]{2,8})\.?,?\s+(20\d{2})\b")
+JUNK = re.compile(r"바로가기|건너뛰기|건더뛰기|메뉴|배너|skip to|본문|로그인|회원가입|sitemap|cookie", re.I)
 
 
 def get(url: str, sess: requests.Session, timeout: int = 40) -> requests.Response | None:
@@ -60,6 +63,15 @@ def parse_date(s: str) -> str:
             return date(int(y), int(mo), int(d)).isoformat()
         except ValueError:
             return ""
+    m = DATE_EN.search(s)
+    if m:
+        mon, d, y = (m.group(1), m.group(2), m.group(3)) if m.group(1) else (m.group(5), m.group(4), m.group(6))
+        mi = MONTHS.get(mon[:3].lower())
+        if mi:
+            try:
+                return date(int(y), mi, int(d)).isoformat()
+            except ValueError:
+                return ""
     try:
         from email.utils import parsedate_to_datetime  # noqa: WPS433
         return parsedate_to_datetime(s).date().isoformat()
@@ -116,16 +128,23 @@ def from_list(page_url: str, html: str, item_pat: str | None) -> list[dict]:
     for a in soup.find_all("a", href=True):
         title = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
         href = urljoin(page_url, a["href"])
-        if len(title) < 8 or href in seen or href.startswith("javascript"):
+        if len(title) < 8 or href in seen or href.startswith("javascript") or "#" in href.split("/")[-1] or JUNK.search(title):
             continue
         if pat and not pat.search(href + " " + title):
             continue
-        ctx = a.parent.get_text(" ", strip=True) if a.parent else ""
-        for _ in range(2):
-            if not DATE_RE.search(ctx) and a.parent and a.parent.parent:
-                a = a.parent
-                ctx = a.parent.get_text(" ", strip=True) if a.parent else ctx
-        d = parse_date(ctx)
+        node, ctx, d = a, "", ""
+        for _ in range(3):
+            par = node.parent
+            if par is None:
+                break
+            tm = par.find("time")
+            if tm is not None and (tm.get("datetime") or tm.get_text()):
+                d = parse_date(tm.get("datetime") or tm.get_text())
+            ctx = par.get_text(" ", strip=True)
+            if d or DATE_RE.search(ctx) or DATE_EN.search(ctx):
+                break
+            node = par
+        d = d or parse_date(ctx)
         if not d:
             continue
         seen.add(href)
@@ -134,17 +153,44 @@ def from_list(page_url: str, html: str, item_pat: str | None) -> list[dict]:
     return [i for i in items if recent(i["date"])][:MAX_ITEMS]
 
 
+def render_html(url: str) -> str:
+    """JS 로 그리는 목록: 브라우저로 연다(워크플로에 playwright 가 있을 때만)."""
+    try:
+        from scrape_institution_boards import _goto, browser  # noqa: WPS433
+        b = browser()
+        if not b:
+            return ""
+        page = b.new_page(user_agent=UA, locale="ko-KR")
+        try:
+            return page.content() if _goto(page, url) else ""
+        finally:
+            page.close()
+    except Exception as e:  # noqa: BLE001
+        print(f"    브라우저 실패 {url[:60]}: {str(e)[:60]}")
+        return ""
+
+
 def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
     key, name = org["key"], org["name"]
     print(f"\n== {name} ({key})")
     res = {"key": key, "name": name, "group": org.get("group", ""), "home": org.get("home", ""), "fetched": TODAY.isoformat(), "status": "", "method": "", "items": [], "note": ""}
-    pages = [u for u in [org.get("rss")] if u]
-    reqs = 0
-    if pages and robots_ok(pages[0], robots):
-        res["items"], res["method"], reqs = from_feed(pages[0], sess), "rss(설정)", reqs + 1
+    reqs, failed = 0, 0
+    feeds = [u for u in [org.get("rss")] if u] + list(org.get("rss_candidates") or [])
+    host_root = f"{urlparse(org.get('home') or org.get('list')).scheme}://{urlparse(org.get('home') or org.get('list')).netloc}"
+    feeds += [host_root + c for c in RSS_CANDIDATES[:4]]
+    for feed in feeds:
+        if reqs >= 7:
+            break
+        if not robots_ok(feed, robots):
+            continue
+        items = from_feed(feed, sess)
+        reqs += 1
+        if items:
+            res["items"], res["method"] = items, f"rss({feed[len(host_root):][:40] or '/'})"
+            break
     if not res["items"]:
         for page in [org.get("list"), org.get("home")]:
-            if not page or reqs >= 5:
+            if not page or reqs >= 9:
                 continue
             if not robots_ok(page, robots):
                 res["note"] = "robots.txt 차단"
@@ -153,8 +199,13 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
             r = get(page, sess)
             reqs += 1
             if not r:
+                failed += 1
                 continue
             html = r.text
+            if org.get("render") and not from_list(page, html, org.get("item_pattern")):
+                rendered = render_html(page)
+                if rendered:
+                    html = rendered
             for feed in discover_rss(page, html)[:2]:
                 if reqs >= 5:
                     break
@@ -170,7 +221,7 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                 if items:
                     res["items"], res["method"] = items, "목록 페이지"
                     break
-    res["status"] = "OK" if res["items"] else ("차단" if res["note"] else "항목 없음")
+    res["status"] = "OK" if res["items"] else ("차단" if res["note"] else ("접속 실패" if failed else "항목 없음"))
     print(f"  → {res['status']} · {res['method']} · {len(res['items'])}건" + (f" · 최신 {res['items'][0]['date']} {res['items'][0]['title'][:40]}" if res["items"] else ""))
     return res
 

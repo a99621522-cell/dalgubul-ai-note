@@ -4,52 +4,52 @@
 version: 2026-09-25
 sources:
   # ── 국내 연구기관 ──
-  - { key: kiet,   group: 국내 연구, name: 산업연구원(KIET),            home: "https://www.kiet.re.kr", list: "https://www.kiet.re.kr/research/reportList" }
-  - { key: kdi,    group: 국내 연구, name: 한국개발연구원(KDI),         home: "https://www.kdi.re.kr", list: "https://www.kdi.re.kr/research/reportList" }
-  - { key: kdi-eiec, group: 국내 연구, name: KDI 경제정보센터(정책자료), home: "https://eiec.kdi.re.kr", list: "https://eiec.kdi.re.kr/policy/materialList.do" }
-  - { key: kistep, group: 국내 연구, name: 한국과학기술기획평가원(KISTEP), home: "https://www.kistep.re.kr", list: "https://www.kistep.re.kr/board.es?mid=a10306040000&bid=0031" }
+  - { key: kiet,   group: 국내 연구, name: 산업연구원(KIET),            home: "https://www.kiet.re.kr", list: "https://www.kiet.re.kr/research/reportList", render: true }
+  - { key: kdi,    group: 국내 연구, name: 한국개발연구원(KDI),         home: "https://www.kdi.re.kr", list: "https://www.kdi.re.kr/research/reportList", render: true }
+  - { key: kdi-eiec, group: 국내 연구, name: KDI 경제정보센터(정책자료), home: "https://eiec.kdi.re.kr", list: "https://eiec.kdi.re.kr/policy/materialList.do", render: true }
+  - { key: kistep, group: 국내 연구, name: 한국과학기술기획평가원(KISTEP), home: "https://www.kistep.re.kr", list: "https://www.kistep.re.kr/board.es?mid=a10306040000&bid=0031", render: true }
   - { key: stepi,  group: 국내 연구, name: 과학기술정책연구원(STEPI),    home: "https://www.stepi.re.kr", list: "https://www.stepi.re.kr/site/stepiko/report/List.do?reIdx=3" }
   - { key: nabo,   group: 국내 연구, name: 국회예산정책처(NABO),        home: "https://www.nabo.go.kr", list: "https://www.nabo.go.kr/Sub/01Report/01_01_Board.jsp" }
   - { key: bok,    group: 국내 연구, name: 한국은행(지역경제보고서·조사통계), home: "https://www.bok.or.kr", list: "https://www.bok.or.kr/portal/bbs/P0002507/list.do?menuNo=200069" }
-  - { key: dgi,    group: 국내 연구, name: 대구정책연구원,              home: "https://www.dgi.re.kr", list: "https://www.dgi.re.kr" }
-  - { key: kdb,    group: 국내 연구, name: KDB 미래전략연구소,          home: "https://rd.kdb.co.kr", list: "https://rd.kdb.co.kr/index.jsp" }
-  - { key: kita,   group: 국내 연구, name: 한국무역협회(KITA) 보고서,   home: "https://www.kita.net", list: "https://www.kita.net/researchTrade/report/tradeFocus/tradeFocusList.do" }
+  - { key: dgi,    group: 국내 연구, name: 대구정책연구원,              home: "https://www.dgi.re.kr", list: "https://www.dgi.re.kr", render: true }
+  - { key: kdb,    group: 국내 연구, name: KDB 미래전략연구소,          home: "https://rd.kdb.co.kr", list: "https://rd.kdb.co.kr/index.jsp", render: true }
+  - { key: kita,   group: 국내 연구, name: 한국무역협회(KITA) 보고서,   home: "https://www.kita.net", list: "https://www.kita.net/researchTrade/report/tradeFocus/tradeFocusList.do", render: true }
   - { key: kotra,  group: 국내 연구, name: KOTRA 해외시장뉴스,          home: "https://dream.kotra.or.kr", list: "https://dream.kotra.or.kr/kotranews/cms/news/actionKotraBoardList.do?MENU_ID=70&SITE_NO=3" }
-  - { key: kosi,   group: 국내 연구, name: 중소벤처기업연구원(KOSI),    home: "https://www.kosi.re.kr", list: "https://www.kosi.re.kr/kosbiWar/front/functionDisplay?menuFrontNo=3&menuFrontURL=front/kosbiIssueList" }
+  - { key: kosi,   group: 국내 연구, name: 중소벤처기업연구원(KOSI),    home: "https://www.kosi.re.kr", list: "https://www.kosi.re.kr/kosbiWar/front/functionDisplay?menuFrontNo=3&menuFrontURL=front/kosbiIssueList", render: true }
   # ── 기업지원·전문기관 (부처 산하) ──
-  - { key: keit,   group: 기업지원기관, name: 한국산업기술기획평가원(KEIT) PD이슈리포트, home: "https://www.keit.re.kr", list: "https://www.keit.re.kr/board.es?mid=a10306010000&bid=0005" }
-  - { key: kiat,   group: 기업지원기관, name: 한국산업기술진흥원(KIAT),  home: "https://www.kiat.or.kr", list: "https://www.kiat.or.kr/front/board/boardContentsListPage.do?board_id=90&MenuId=" }
+  - { key: keit,   group: 기업지원기관, name: 한국산업기술기획평가원(KEIT) PD이슈리포트, home: "https://www.keit.re.kr", list: "https://www.keit.re.kr/board.es?mid=a10306010000&bid=0005", render: true }
+  - { key: kiat,   group: 기업지원기관, name: 한국산업기술진흥원(KIAT),  home: "https://www.kiat.or.kr", list: "https://www.kiat.or.kr/front/board/boardContentsListPage.do?board_id=90&MenuId=", render: true }
   - { key: iitp,   group: 기업지원기관, name: 정보통신기획평가원(IITP) ICT Brief, home: "https://www.iitp.kr", list: "https://www.iitp.kr/kr/1/knowledge/periodicalViewA.it" }
   - { key: nipa,   group: 기업지원기관, name: 정보통신산업진흥원(NIPA), home: "https://www.nipa.kr", list: "https://www.nipa.kr/home/2-1" }
-  - { key: nia,    group: 기업지원기관, name: 한국지능정보사회진흥원(NIA), home: "https://www.nia.or.kr", list: "https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=39485" }
-  - { key: kisti,  group: 기업지원기관, name: 한국과학기술정보연구원(KISTI), home: "https://www.kisti.re.kr", list: "https://www.kisti.re.kr/post/kisti-issue-brief" }
-  - { key: kiria,  group: 기업지원기관, name: 한국로봇산업진흥원(KIRIA), home: "https://www.kiria.org", list: "https://www.kiria.org/portal/policysut/portalPlcyReports.do" }
-  - { key: kosmes, group: 기업지원기관, name: 중소벤처기업진흥공단,       home: "https://www.kosmes.or.kr", list: "https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do" }
+  - { key: nia,    group: 기업지원기관, name: 한국지능정보사회진흥원(NIA), home: "https://www.nia.or.kr", list: "https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=39485", render: true }
+  - { key: kisti,  group: 기업지원기관, name: 한국과학기술정보연구원(KISTI), home: "https://www.kisti.re.kr", list: "https://www.kisti.re.kr/post/kisti-issue-brief", render: true }
+  - { key: kiria,  group: 기업지원기관, name: 한국로봇산업진흥원(KIRIA), home: "https://www.kiria.org", list: "https://www.kiria.org/portal/policysut/portalPlcyReports.do", render: true }
+  - { key: kosmes, group: 기업지원기관, name: 중소벤처기업진흥공단,       home: "https://www.kosmes.or.kr", list: "https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do", render: true }
   # ── 대구 기업지원기관 ──
   - { key: ttp,    group: 대구 기관, name: 대구테크노파크,               home: "https://www.ttp.org", list: "https://www.ttp.org/bbs/board.php?bo_table=notice" }
   - { key: dmi,    group: 대구 기관, name: 대구기계부품연구원(DMI),      home: "https://www.dmi.re.kr", list: "https://www.dmi.re.kr" }
-  - { key: kmedi,  group: 대구 기관, name: 대구경북첨단의료산업진흥재단(케이메디허브), home: "https://www.kmedihub.re.kr", list: "https://www.kmedihub.re.kr/index.do?menu_id=00000069" }
+  - { key: kmedi,  group: 대구 기관, name: 대구경북첨단의료산업진흥재단(케이메디허브), home: "https://www.kmedihub.re.kr", list: "https://www.kmedihub.re.kr/index.do?menu_id=00000069", render: true }
   - { key: daegu-press, group: 대구 기관, name: 대구광역시 보도자료,     home: "https://www.daegu.go.kr", list: "https://www.daegu.go.kr/index.do?menu_id=00000133" }
   # ── 정부 ──
   - { key: motie-press, group: 정부, name: 산업통상부 보도자료,          home: "https://www.motie.go.kr", list: "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c" }
-  - { key: msit-press,  group: 정부, name: 과학기술정보통신부 보도자료,  home: "https://www.msit.go.kr", list: "https://www.msit.go.kr/bbs/list.do?sCode=user&mId=113&mPid=238" }
+  - { key: msit-press,  group: 정부, name: 과학기술정보통신부 보도자료,  home: "https://www.msit.go.kr", list: "https://www.msit.go.kr/bbs/list.do?sCode=user&mId=113&mPid=238", render: true }
   - { key: mss-press,   group: 정부, name: 중소벤처기업부 보도자료,      home: "https://www.mss.go.kr", list: "https://www.mss.go.kr/site/smba/ex/bbs/List.do?cbIdx=86" }
   - { key: korea-kr,    group: 정부, name: 정책브리핑(korea.kr) 정책뉴스, home: "https://www.korea.kr", rss: "https://www.korea.kr/rss/policy.xml" }
   # ── 해외 산업협회·통계 ──
-  - { key: ifr,    group: 해외 협회, name: International Federation of Robotics (IFR), home: "https://ifr.org", list: "https://ifr.org/ifr-press-releases" }
-  - { key: semi,   group: 해외 협회, name: SEMI,                        home: "https://www.semi.org", list: "https://www.semi.org/en/news-media-press-releases" }
-  - { key: sia,    group: 해외 협회, name: Semiconductor Industry Association (SIA), home: "https://www.semiconductors.org", list: "https://www.semiconductors.org/news-events/latest-news/" }
-  - { key: iea,    group: 해외 협회, name: International Energy Agency (IEA), home: "https://www.iea.org", list: "https://www.iea.org/news" }
-  - { key: oecd,   group: 해외 협회, name: OECD Newsroom,               home: "https://www.oecd.org", list: "https://www.oecd.org/en/about/news.html" }
-  - { key: acea,   group: 해외 협회, name: ACEA (유럽자동차공업협회),    home: "https://www.acea.auto", list: "https://www.acea.auto/nav/?content=press-releases" }
+  - { key: ifr,    group: 해외 협회, name: International Federation of Robotics (IFR), home: "https://ifr.org", list: "https://ifr.org/ifr-press-releases", rss_candidates: ["https://ifr.org/rss", "https://ifr.org/ifr-press-releases/rss"], render: true }
+  - { key: semi,   group: 해외 협회, name: SEMI,                        home: "https://www.semi.org", list: "https://www.semi.org/en/news-media-press-releases", rss_candidates: ["https://www.semi.org/en/rss.xml", "https://www.semi.org/en/news-media-press-releases/rss"], render: true }
+  - { key: sia,    group: 해외 협회, name: Semiconductor Industry Association (SIA), home: "https://www.semiconductors.org", list: "https://www.semiconductors.org/news-events/latest-news/", rss_candidates: ["https://www.semiconductors.org/feed/"] }
+  - { key: iea,    group: 해외 협회, name: International Energy Agency (IEA), home: "https://www.iea.org", list: "https://www.iea.org/news", rss_candidates: ["https://www.iea.org/news/rss", "https://www.iea.org/rss"], render: true }
+  - { key: oecd,   group: 해외 협회, name: OECD Newsroom,               home: "https://www.oecd.org", list: "https://www.oecd.org/en/about/news.html", render: true }
+  - { key: acea,   group: 해외 협회, name: ACEA (유럽자동차공업협회),    home: "https://www.acea.auto", list: "https://www.acea.auto/nav/?content=press-releases", rss_candidates: ["https://www.acea.auto/feed/"] }
   # ── 해외 컨설팅 (공개 인사이트 페이지만, robots 존중) ──
-  - { key: mckinsey, group: 해외 컨설팅, name: McKinsey Insights,       home: "https://www.mckinsey.com", list: "https://www.mckinsey.com/featured-insights" }
-  - { key: bcg,      group: 해외 컨설팅, name: BCG Publications,        home: "https://www.bcg.com", list: "https://www.bcg.com/publications" }
-  - { key: deloitte, group: 해외 컨설팅, name: Deloitte Insights,       home: "https://www.deloitte.com", list: "https://www.deloitte.com/global/en/insights.html" }
-  - { key: gartner,  group: 해외 컨설팅, name: Gartner Newsroom,        home: "https://www.gartner.com", list: "https://www.gartner.com/en/newsroom" }
-  - { key: idc,      group: 해외 컨설팅, name: IDC Press Releases,      home: "https://www.idc.com", list: "https://my.idc.com/getdoc.jsp?containerId=prUS" }
+  - { key: mckinsey, group: 해외 컨설팅, name: McKinsey Insights,       home: "https://www.mckinsey.com", list: "https://www.mckinsey.com/featured-insights", rss_candidates: ["https://www.mckinsey.com/insights/rss"] }
+  - { key: bcg,      group: 해외 컨설팅, name: BCG Publications,        home: "https://www.bcg.com", list: "https://www.bcg.com/publications", rss_candidates: ["https://www.bcg.com/rss"], render: true }
+  - { key: deloitte, group: 해외 컨설팅, name: Deloitte Insights,       home: "https://www.deloitte.com", list: "https://www.deloitte.com/global/en/insights.html", rss_candidates: ["https://www2.deloitte.com/us/en/insights/rss.xml", "https://www.deloitte.com/global/en/insights/rss.xml"], render: true }
+  - { key: gartner,  group: 해외 컨설팅, name: Gartner Newsroom,        home: "https://www.gartner.com", list: "https://www.gartner.com/en/newsroom", rss_candidates: ["https://www.gartner.com/en/newsroom/rss"], render: true }
+  - { key: idc,      group: 해외 컨설팅, name: IDC Press Releases,      home: "https://www.idc.com", list: "https://my.idc.com/getdoc.jsp?containerId=prUS", render: true }
   # ── 해외 정부 ──
-  - { key: us-commerce, group: 해외 정부, name: 美 상무부 보도자료,      home: "https://www.commerce.gov", list: "https://www.commerce.gov/news/press-releases" }
-  - { key: ec,          group: 해외 정부, name: EU 집행위 Press corner,  home: "https://ec.europa.eu", list: "https://ec.europa.eu/commission/presscorner/home/en" }
-  - { key: meti,        group: 해외 정부, name: 日 경제산업성(METI) 영문 보도자료, home: "https://www.meti.go.jp", list: "https://www.meti.go.jp/english/press/index.html" }
-  - { key: miit,        group: 해외 정부, name: 中 공업정보화부(MIIT),   home: "https://www.miit.gov.cn", list: "https://www.miit.gov.cn/xwdt/gxdt/index.html" }
+  - { key: us-commerce, group: 해외 정부, name: 美 상무부 보도자료,      home: "https://www.commerce.gov", list: "https://www.commerce.gov/news/press-releases", rss_candidates: ["https://www.commerce.gov/news/press-releases/feed", "https://www.commerce.gov/rss.xml"] }
+  - { key: ec,          group: 해외 정부, name: EU 집행위 Press corner,  home: "https://ec.europa.eu", list: "https://ec.europa.eu/commission/presscorner/home/en", rss_candidates: ["https://ec.europa.eu/commission/presscorner/api/rss?language=en"] }
+  - { key: meti,        group: 해외 정부, name: 日 경제산업성(METI) 영문 보도자료, home: "https://www.meti.go.jp", list: "https://www.meti.go.jp/english/press/index.html", rss_candidates: ["https://www.meti.go.jp/english/rss/index.rss", "https://www.meti.go.jp/english/press/index.rss"], render: true }
+  - { key: miit,        group: 해외 정부, name: 中 공업정보화부(MIIT),   home: "https://www.miit.gov.cn", list: "https://www.miit.gov.cn/xwdt/gxdt/index.html", render: true }

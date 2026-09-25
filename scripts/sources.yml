@@ -68,6 +68,6 @@ pledges:
     - https://mayor.daegu.go.kr/index.do?menu_id=00938606   # 열린시장실 > 주요 추진과제 13개
     # 중앙선관위 정책·공약마당 > 당선인공약 > 제9회 전국동시지방선거 (JS 페이지: 시·도지사선거 → 지역 대구광역시 → 조회 → 당선인 공약서 PDF)
     - url: https://policy.nec.go.kr/plc/commiment/initUELCommiment.do?menuId=WINNR2
-      steps: [{click: 시·도지사선거}, {wait: 1}, {select: 대구광역시}, {wait: 1}, {click: 조회}, {wait: 3}]
+      steps: [{click: 선거선택}, {wait: 1}, {click: 도지사선거}, {wait: 2}, {click: 지역선택}, {wait: 1}, {click: 대구광역시}, {wait: 2}, {click: 조회}, {wait: 3}]
     - url: https://policy.nec.go.kr/plc/commiment/initUELCommiment.do?menuId=WINNR2
-      steps: [{click: 시·도지사선거}, {wait: 1}, {click: 대구광역시}, {wait: 1}, {click: 조회}, {wait: 3}, {click: 추경호}, {wait: 3}]
+      steps: [{click: 도지사선거}, {wait: 2}, {click: 대구}, {wait: 2}, {click: 조회}, {wait: 3}, {download: 공약서}]

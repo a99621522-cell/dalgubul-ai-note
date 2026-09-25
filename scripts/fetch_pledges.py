@@ -58,25 +58,71 @@ def render(url: str, shot: Path | None = None, steps: list | None = None) -> tup
         return "", []
     page = b.new_page(user_agent=UA["User-Agent"], locale="ko-KR", viewport={"width": 1280, "height": 900})
     try:
-        page.goto(url, wait_until="networkidle", timeout=60000)
+        for i in range(2):
+            try:
+                page.goto(url, wait_until="networkidle", timeout=60000)
+                break
+            except Exception as e:  # noqa: BLE001
+                if i == 1:
+                    raise
+                print(f"    [browser] 다시 시도 {url[:60]}: {str(e)[:50]}")
+                page.wait_for_timeout(5000)
         page.wait_for_timeout(1500)
+        def click_text(txt: str) -> None:
+            cands = [page.get_by_role("button", name=re.compile(re.escape(txt))), page.get_by_role("link", name=re.compile(re.escape(txt))),
+                     page.get_by_role("option", name=re.compile(re.escape(txt))), page.get_by_text(re.compile(re.escape(txt)))]
+            last = None
+            for loc in cands:
+                for i in range(min(loc.count(), 6)):
+                    el = loc.nth(i)
+                    try:
+                        if el.is_visible():
+                            el.click(timeout=4000)
+                            return
+                    except Exception as e:  # noqa: BLE001
+                        last = e
+            raise RuntimeError(f"보이는 요소 없음: {txt} ({str(last)[:40] if last else ''})")
+
         for st in steps or []:
             try:
                 if "click" in st:
-                    page.get_by_text(st["click"], exact=False).first.click(timeout=8000)
+                    click_text(st["click"])
+                elif "download" in st:  # 누르면 파일이 내려오는 버튼
+                    with page.expect_download(timeout=15000) as dl:
+                        click_text(st["download"])
+                    f = dl.value
+                    data = Path(f.path()).read_bytes()
+                    DOWNLOADS.append((safe(f.suggested_filename or "download.pdf", 80), data, page.url))
+                    print(f"    [browser] 내려받음(클릭) {f.suggested_filename} ({len(data):,} bytes)")
                 elif "select" in st:
                     page.locator("select").filter(has_text=st["select"]).first.select_option(label=st["select"], timeout=8000)
                 elif "wait" in st:
                     page.wait_for_timeout(int(st["wait"]) * 1000)
                 page.wait_for_load_state("networkidle", timeout=20000)
                 page.wait_for_timeout(800)
-                print(f"    [browser] 단계 성공: {st}")
+                vis = [t.strip()[:30] for t in page.locator("a:visible, button:visible, [role=button]:visible, li:visible").all_inner_texts() if t.strip()]
+                print(f"    [browser] 단계 성공: {st} → 보이는 항목 {len(vis)}개: " + " | ".join(dict.fromkeys(vis[:70])))
             except Exception as e:  # noqa: BLE001
                 print(f"    [browser] 단계 실패 {st}: {str(e)[:80]}")
         html = page.content()
         clickables = page.locator("a, button, [role=button], select option, li[onclick], [onclick]").all_inner_texts()
         if shot:
             page.screenshot(path=str(shot), full_page=True)
+        # '공약서'·'PDF' 글자가 든 버튼은 눌러서 내려받기를 기다린다
+        for loc in (page.get_by_role("button", name=re.compile("공약서|PDF|pdf")), page.get_by_role("link", name=re.compile("공약서|PDF|pdf"))):
+            for i in range(min(loc.count(), 12)):
+                try:
+                    el = loc.nth(i)
+                    if not el.is_visible():
+                        continue
+                    with page.expect_download(timeout=8000) as dl:
+                        el.click(timeout=4000)
+                    f = dl.value
+                    data = Path(f.path()).read_bytes()
+                    DOWNLOADS.append((safe(f.suggested_filename or f"pledge_{i}.pdf", 80), data, page.url))
+                    print(f"    [browser] 내려받음(버튼) {f.suggested_filename} ({len(data):,} bytes)")
+                except Exception as e:  # noqa: BLE001
+                    print(f"    [browser] 버튼 내려받기 실패 {i}: {str(e)[:60]}")
         # 화면의 PDF·내려받기 링크는 브라우저 세션으로 받아 files/ 에 둔다 (선관위 선거공약서 PDF 등)
         for a in page.locator("a[href]").all()[:200]:
             href = a.get_attribute("href") or ""

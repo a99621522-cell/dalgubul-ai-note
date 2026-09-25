@@ -40,5 +40,6 @@ tags:
   ccei: { name: 창경센터 보육, desc: 대구창조경제혁신센터 보육·졸업 기업 }
   labfirm: { name: 연구소기업, desc: 연구개발특구 연구소기업 }
   venture: { name: 벤처기업, desc: 벤처기업확인 공시 }
+  kmedi: { name: 첨복단지 입주, desc: 대구경북첨단의료복합단지 입주기업(케이메디허브 공개 현황) }
   innobiz: { name: 이노비즈, desc: 기술혁신형 중소기업 확인 }
 startup_years: 7

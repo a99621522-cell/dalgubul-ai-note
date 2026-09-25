@@ -62,15 +62,13 @@ MAPPINGS: dict[str, dict] = {
                  "region": None, "min_year": 2018},
     "15129730": {"kind": "namelist", "source": "대구광역시 지역중소기업 명단(공공데이터포털)", "name": ["기업명", "업체명"], "sector": ["업종명", "업종"],
                  "out": "scripts/data/daegu_sme_list.csv"},
-    "15159608": {"kind": "support", "source": "대구경북첨단의료산업진흥재단 연구과제 현황(공공데이터포털)", "layer": "기관", "type": "R&D",
-                 "name": ["참여기업", "참여기관", "협력기관", "수요기업", "기업명", "위탁기관", "공동연구기관"], "year": ["연도", "년도", "사업년도", "과제연도", "기준연도", "시작일", "과제시작일"],
-                 "program": ["사업명", "과제유형", "구분"], "title": ["과제명"], "funder": "대구경북첨단의료산업진흥재단", "region": None, "min_year": 2018},
+    "15159608": {"kind": "support", "source": "대구경북첨단의료산업진흥재단 연구과제 현황(공공데이터포털)", "layer": "국비", "type": "R&D",
+                 "name": ["연구개발기관(2020년 이전 명칭 과제수행기관명)", "연구개발기관", "과제수행기관명"], "year": ["기준년도", "기준연도"],
+                 "program": ["사업명"], "title": ["과제명(국문)", "과제명"], "funder": ["부처명", "과제관리(전문)기관명"],
+                 "amount": ["정부투자연구비"], "amount_unit_guess": False, "amount_sample": True, "region": None, "min_year": 2018},
     "15020969": {"kind": "tag", "tag": "kmedi", "source": "대구경북첨단의료산업진흥재단 입주기업 현황(공공데이터포털)",
-                 "name": ["기업명", "업체명", "입주기업명", "회사명"], "address": ["주소", "소재지", "입주위치", "위치"], "region": None,
-                 "sector": ["업종", "분야", "업종명"], "product": ["주요제품", "주생산품", "사업내용", "제품"], "founded": [], "default_district": "동구"},
-    "15052281": {"kind": "support", "source": "한국전자통신연구원 기술이전 목록(공공데이터포털)", "layer": "기관", "type": "기술이전",
-                 "name": ["기업명", "이전기업", "기술이전기업", "업체명", "이전업체", "계약업체"], "year": ["계약연도", "이전연도", "연도", "년도", "계약일", "계약일자"],
-                 "program": ["기술명", "이전기술명", "기술이전명", "과제명"], "funder": "한국전자통신연구원", "region": None, "min_year": 2018},
+                 "name": ["기업 및 기관명", "기업명", "업체명"], "address": ["주소", "소재지"], "region": ("주소", "대구"),
+                 "sector": ["업종", "분야"], "product": [], "founded": [], "default_district": "동구"},
     "15084581": {"kind": "tag", "tag": "venture", "source": "중소벤처기업부 벤처기업명단(공공데이터포털)",
                  "name": ["기업명", "업체명", "회사명"], "address": ["주소", "간략주소", "소재지"], "region": ("지역", "대구"),
                  "sector": ["업종", "업종명", "산업분류"], "product": ["주요제품", "주생산품"], "founded": []},
@@ -140,9 +138,9 @@ def main(argv: list[str]) -> int:
     SUPPORT_IN.mkdir(parents=True, exist_ok=True)
     EXTRA_IN.mkdir(parents=True, exist_ok=True)
     summary = Counter()
-    for d in sorted(raw_dir.glob("*")):
-        if not d.is_dir():
-            continue
+    # 이름 명단(namelist) 데이터셋을 먼저 처리해 그 뒤 과제 자료의 '대구 기업' 판정에 쓴다
+    dirs = sorted((d for d in raw_dir.glob("*") if d.is_dir()), key=lambda d: (MAPPINGS.get(d.name, {}).get("kind") != "namelist", d.name))
+    for d in dirs:
         pk = d.name
         files = [f for f in d.iterdir() if f.suffix.lower() in (".csv", ".xlsx", ".xls")]
         if not files:
@@ -197,6 +195,11 @@ def main(argv: list[str]) -> int:
                         funder = pick(r, m["funder"]) if m["funder"] in r else m["funder"]
                     amount = re.sub(r"[^\d.]", "", pick(r, m["amount"])) if m.get("amount") else ""
                     unit = "백만원" if (amount and m.get("amount_unit_guess")) else ("원" if amount else "")
+                    if m.get("amount_sample"):  # 단위가 파일에 없는 자료: 원문 값을 로그로 확인할 때까지 금액을 싣지 않는다
+                        if amount and summary[f"{pk}:sample"] < 3:
+                            summary[f"{pk}:sample"] += 1
+                            print(f"[{pk}] 금액 원문 예: {pick(r, m['amount'])!r} (열 {m['amount']}) — 단위 확인 전이라 비워 둠")
+                        amount, unit = "", ""
                     for n in names:
                         out.append({"기업명": n, "주소": "", "선정연도": year, "구분": m["layer"], "지원기관": funder, "사업명": program, "지원유형": m["type"],
                                     "금액": amount, "단위": unit, "출처": m["source"], "출처URL": PORTAL.format(id=pk), "기준일": as_of_from(f.stem)})

@@ -1,36 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="기타 서비스 산단별 고용 인원. 산단 외 3,283명, 성서산단 2,470명, 서대구산단 2,321명, 대구제3산단 568명, 대구국가산단 220명, 달성2차산단 156명, 북구검단산단 141명, 경자구역 수성의료지구 73명, 개별입지 63명, 대구이시아폴리스산단 61명, 그 밖의 단지 4명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 386" width="100%" role="img" aria-label="기타 서비스 산단별 고용 인원. 성서산단 2,470명, 서대구산단 2,321명, 대구제3산단 568명, 대구국가산단 220명, 달성2차산단 156명, 북구검단산단 141명, 경자구역 수성의료지구 73명, 개별입지 63명, 대구이시아폴리스산단 61명, 대구염색산단 4명" style="max-width:720px;height:auto;font-size:14px">
 <title>기타 서비스 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text>
-<text x="146" y="56.0" text-anchor="end" fill="#1a1a1a">산단 외</text>
+<text x="146" y="56.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
 <rect x="156" y="40" width="502.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="666.0" y="56.0" fill="#1a1a1a">3,283명</text>
-<text x="146" y="90.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
-<rect x="156" y="74" width="377.7" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="541.7" y="90.0" fill="#1a1a1a">2,470명</text>
-<text x="146" y="124.0" text-anchor="end" fill="#1a1a1a">서대구산단</text>
-<rect x="156" y="108" width="354.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="518.9" y="124.0" fill="#1a1a1a">2,321명</text>
-<text x="146" y="158.0" text-anchor="end" fill="#1a1a1a">대구제3산단</text>
-<rect x="156" y="142" width="86.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="250.9" y="158.0" fill="#1a1a1a">568명</text>
-<text x="146" y="192.0" text-anchor="end" fill="#1a1a1a">대구국가산단</text>
-<rect x="156" y="176" width="33.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="197.6" y="192.0" fill="#1a1a1a">220명</text>
-<text x="146" y="226.0" text-anchor="end" fill="#1a1a1a">달성2차산단</text>
-<rect x="156" y="210" width="23.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="187.9" y="226.0" fill="#1a1a1a">156명</text>
-<text x="146" y="260.0" text-anchor="end" fill="#1a1a1a">북구검단산단</text>
-<rect x="156" y="244" width="21.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="185.6" y="260.0" fill="#1a1a1a">141명</text>
-<text x="146" y="294.0" text-anchor="end" fill="#1a1a1a">경자구역 수성의료지구</text>
-<rect x="156" y="278" width="11.2" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="175.2" y="294.0" fill="#1a1a1a">73명</text>
-<text x="146" y="328.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
-<rect x="156" y="312" width="9.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="173.6" y="328.0" fill="#1a1a1a">63명</text>
-<text x="146" y="362.0" text-anchor="end" fill="#1a1a1a">대구이시아폴리스산단</text>
-<rect x="156" y="346" width="9.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="173.3" y="362.0" fill="#1a1a1a">61명</text>
-<text x="146" y="396.0" text-anchor="end" fill="#1a1a1a">그 밖의 단지</text>
-<rect x="156" y="380" width="0.6" height="22" fill="#767676" style="fill:var(--muted,#767676)"/>
-<text x="164.6" y="396.0" fill="#1a1a1a">4명</text></svg>
+<text x="666.0" y="56.0" fill="#1a1a1a">2,470명</text>
+<text x="146" y="90.0" text-anchor="end" fill="#1a1a1a">서대구산단</text>
+<rect x="156" y="74" width="471.7" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="635.7" y="90.0" fill="#1a1a1a">2,321명</text>
+<text x="146" y="124.0" text-anchor="end" fill="#1a1a1a">대구제3산단</text>
+<rect x="156" y="108" width="115.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="279.4" y="124.0" fill="#1a1a1a">568명</text>
+<text x="146" y="158.0" text-anchor="end" fill="#1a1a1a">대구국가산단</text>
+<rect x="156" y="142" width="44.7" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="208.7" y="158.0" fill="#1a1a1a">220명</text>
+<text x="146" y="192.0" text-anchor="end" fill="#1a1a1a">달성2차산단</text>
+<rect x="156" y="176" width="31.7" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="195.7" y="192.0" fill="#1a1a1a">156명</text>
+<text x="146" y="226.0" text-anchor="end" fill="#1a1a1a">북구검단산단</text>
+<rect x="156" y="210" width="28.7" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="192.7" y="226.0" fill="#1a1a1a">141명</text>
+<text x="146" y="260.0" text-anchor="end" fill="#1a1a1a">경자구역 수성의료지구</text>
+<rect x="156" y="244" width="14.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="178.8" y="260.0" fill="#1a1a1a">73명</text>
+<text x="146" y="294.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
+<rect x="156" y="278" width="12.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="176.8" y="294.0" fill="#1a1a1a">63명</text>
+<text x="146" y="328.0" text-anchor="end" fill="#1a1a1a">대구이시아폴리스산단</text>
+<rect x="156" y="312" width="12.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="176.4" y="328.0" fill="#1a1a1a">61명</text>
+<text x="146" y="362.0" text-anchor="end" fill="#1a1a1a">대구염색산단</text>
+<rect x="156" y="346" width="0.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="164.8" y="362.0" fill="#1a1a1a">4명</text></svg>

@@ -1,18 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 216" width="100%" role="img" aria-label="입지 유형별 고용 인원. 산업단지 102,237명, 개별입지 44,787명, 연구개발특구 3,200명, 수성알파시티 2,671명, 지식산업센터 332명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 216" width="100%" role="img" aria-label="입지 유형별 고용 인원. 산업단지 96,090명, 개별입지 13,248명, 지식산업센터 6,545명, 연구개발특구 3,200명, 수성알파시티 932명" style="max-width:720px;height:auto;font-size:14px">
 <title>입지 유형별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text>
 <text x="82" y="56.0" text-anchor="end" fill="#1a1a1a">산업단지</text>
-<rect x="92" y="40" width="550.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="650.0" y="56.0" fill="#1a1a1a">102,237명</text>
+<rect x="92" y="40" width="558.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="658.0" y="56.0" fill="#1a1a1a">96,090명</text>
 <text x="82" y="90.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
-<rect x="92" y="74" width="240.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="340.9" y="90.0" fill="#1a1a1a">44,787명</text>
-<text x="82" y="124.0" text-anchor="end" fill="#1a1a1a">연구개발특구</text>
-<rect x="92" y="108" width="17.2" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="117.2" y="124.0" fill="#1a1a1a">3,200명</text>
-<text x="82" y="158.0" text-anchor="end" fill="#1a1a1a">수성알파시티</text>
-<rect x="92" y="142" width="14.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="114.4" y="158.0" fill="#1a1a1a">2,671명</text>
-<text x="82" y="192.0" text-anchor="end" fill="#1a1a1a">지식산업센터</text>
-<rect x="92" y="176" width="1.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="101.8" y="192.0" fill="#1a1a1a">332명</text></svg>
+<rect x="92" y="74" width="76.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="176.9" y="90.0" fill="#1a1a1a">13,248명</text>
+<text x="82" y="124.0" text-anchor="end" fill="#1a1a1a">지식산업센터</text>
+<rect x="92" y="108" width="38.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="138.0" y="124.0" fill="#1a1a1a">6,545명</text>
+<text x="82" y="158.0" text-anchor="end" fill="#1a1a1a">연구개발특구</text>
+<rect x="92" y="142" width="18.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="118.6" y="158.0" fill="#1a1a1a">3,200명</text>
+<text x="82" y="192.0" text-anchor="end" fill="#1a1a1a">수성알파시티</text>
+<rect x="92" y="176" width="5.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="105.4" y="192.0" fill="#1a1a1a">932명</text></svg>

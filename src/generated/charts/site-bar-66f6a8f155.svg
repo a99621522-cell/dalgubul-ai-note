@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 194" width="100%" role="img" aria-label="입지 유형별 기업 수. 산업단지 8,186곳, 개별입지 4,781곳, 수성알파시티 156곳, 연구개발특구 130곳, 지식산업센터 128곳" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 194" width="100%" role="img" aria-label="입지 유형별 기업 수. 산업단지 7,357곳, 개별입지 2,666곳, 지식산업센터 974곳, 연구개발특구 130곳, 수성알파시티 48곳" style="max-width:720px;height:auto;font-size:14px">
 <title>입지 유형별 기업 수</title>
 <text x="82" y="34.0" text-anchor="end" fill="#1a1a1a">산업단지</text>
 <rect x="92" y="18" width="566.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="666.0" y="34.0" fill="#1a1a1a">8,186곳</text>
+<text x="666.0" y="34.0" fill="#1a1a1a">7,357곳</text>
 <text x="82" y="68.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
-<rect x="92" y="52" width="330.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="430.6" y="68.0" fill="#1a1a1a">4,781곳</text>
-<text x="82" y="102.0" text-anchor="end" fill="#1a1a1a">수성알파시티</text>
-<rect x="92" y="86" width="10.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="110.8" y="102.0" fill="#1a1a1a">156곳</text>
+<rect x="92" y="52" width="205.1" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="305.1" y="68.0" fill="#1a1a1a">2,666곳</text>
+<text x="82" y="102.0" text-anchor="end" fill="#1a1a1a">지식산업센터</text>
+<rect x="92" y="86" width="74.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="174.9" y="102.0" fill="#1a1a1a">974곳</text>
 <text x="82" y="136.0" text-anchor="end" fill="#1a1a1a">연구개발특구</text>
-<rect x="92" y="120" width="9.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="109.0" y="136.0" fill="#1a1a1a">130곳</text>
-<text x="82" y="170.0" text-anchor="end" fill="#1a1a1a">지식산업센터</text>
-<rect x="92" y="154" width="8.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="108.9" y="170.0" fill="#1a1a1a">128곳</text></svg>
+<rect x="92" y="120" width="10.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="110.0" y="136.0" fill="#1a1a1a">130곳</text>
+<text x="82" y="170.0" text-anchor="end" fill="#1a1a1a">수성알파시티</text>
+<rect x="92" y="154" width="3.7" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="103.7" y="170.0" fill="#1a1a1a">48곳</text></svg>

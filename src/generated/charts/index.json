@@ -71,14 +71,13 @@
  "compare_default": [
   "기계·금속",
   "자동차·부품",
-  "화학·에너지",
   "전기·전자",
+  "화학·에너지",
   "섬유·패션"
  ],
  "complex-employment": {
   "성서지방산업단지": "complex-employment-f0388aa782",
   "개별입지": "complex-employment-61fa24ec59",
-  "산단 외": "complex-employment-c151bf155a",
   "서대구일반산업단지": "complex-employment-24c497f1e6",
   "대구제3일반산업단지": "complex-employment-c23e8a8c44",
   "북구검단일반산업단지": "complex-employment-1e88836d1f",
@@ -98,12 +97,12 @@
   "대구구지농공단지": "complex-employment-e887d73213",
   "군위효령농공단지": "complex-employment-9eac342b15",
   "달성외국인투자지역": "complex-employment-df86dc61e8",
-  "대구경북첨단의료복합단지도시첨단산업단지": "complex-employment-6c76b4c42f"
+  "대구경북첨단의료복합단지도시첨단산업단지": "complex-employment-6c76b4c42f",
+  "산단 외": "complex-employment-c151bf155a"
  },
  "complex-industry": {
   "성서지방산업단지": "complex-industry-f0388aa782",
   "개별입지": "complex-industry-61fa24ec59",
-  "산단 외": "complex-industry-c151bf155a",
   "서대구일반산업단지": "complex-industry-24c497f1e6",
   "대구제3일반산업단지": "complex-industry-c23e8a8c44",
   "북구검단일반산업단지": "complex-industry-1e88836d1f",
@@ -123,7 +122,8 @@
   "대구구지농공단지": "complex-industry-e887d73213",
   "군위효령농공단지": "complex-industry-9eac342b15",
   "달성외국인투자지역": "complex-industry-df86dc61e8",
-  "대구경북첨단의료복합단지도시첨단산업단지": "complex-industry-6c76b4c42f"
+  "대구경북첨단의료복합단지도시첨단산업단지": "complex-industry-6c76b4c42f",
+  "산단 외": "complex-industry-c151bf155a"
  },
  "district-employment": {
   "달서구": "district-employment-720cc1facc",
@@ -131,10 +131,11 @@
   "달성군": "district-employment-74d440ce4d",
   "서구": "district-employment-412a0906ec",
   "동구": "district-employment-8dbaf73751",
-  "수성구": "district-employment-2b413bcefd",
-  "중구": "district-employment-8a2919abe0",
   "군위군": "district-employment-62844c2077",
-  "남구": "district-employment-dceae17167"
+  "중구": "district-employment-8a2919abe0",
+  "수성구": "district-employment-2b413bcefd",
+  "남구": "district-employment-dceae17167",
+  "2구": "district-employment-d3d23f1973"
  },
  "district-industry": {
   "달서구": "district-industry-720cc1facc",
@@ -142,10 +143,11 @@
   "달성군": "district-industry-74d440ce4d",
   "서구": "district-industry-412a0906ec",
   "동구": "district-industry-8dbaf73751",
-  "수성구": "district-industry-2b413bcefd",
-  "중구": "district-industry-8a2919abe0",
   "군위군": "district-industry-62844c2077",
-  "남구": "district-industry-dceae17167"
+  "중구": "district-industry-8a2919abe0",
+  "수성구": "district-industry-2b413bcefd",
+  "남구": "district-industry-dceae17167",
+  "2구": "district-industry-d3d23f1973"
  },
  "site-bar": {
   "employment": "site-bar-4ce09bfd10",

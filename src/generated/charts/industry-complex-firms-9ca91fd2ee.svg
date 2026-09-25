@@ -1,32 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 364" width="100%" role="img" aria-label="전기·전자 산단별 기업 수. 개별입지 373곳, 성서산단 335곳, 산단 외 146곳, 북구검단산단 118곳, 서대구산단 83곳, 대구제3산단 64곳, 대구국가산단 39곳, 대구연구개발특구 33곳, 성서5차산단 27곳, 달성산단 25곳" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 364" width="100%" role="img" aria-label="전기·전자 산단별 기업 수. 개별입지 373곳, 성서산단 335곳, 북구검단산단 118곳, 서대구산단 83곳, 대구제3산단 64곳, 대구국가산단 39곳, 대구연구개발특구 33곳, 성서5차산단 27곳, 달성산단 25곳, 대구테크노폴리스산단 24곳" style="max-width:720px;height:auto;font-size:14px">
 <title>전기·전자 산단별 기업 수</title>
-<text x="110" y="34.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
-<rect x="120" y="18" width="554.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="138" y="34.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
+<rect x="148" y="18" width="526.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="682.0" y="34.0" fill="#1a1a1a">373곳</text>
-<text x="110" y="68.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
-<rect x="120" y="52" width="497.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="625.6" y="68.0" fill="#1a1a1a">335곳</text>
-<text x="110" y="102.0" text-anchor="end" fill="#1a1a1a">산단 외</text>
-<rect x="120" y="86" width="216.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="344.8" y="102.0" fill="#1a1a1a">146곳</text>
-<text x="110" y="136.0" text-anchor="end" fill="#1a1a1a">북구검단산단</text>
-<rect x="120" y="120" width="175.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="303.3" y="136.0" fill="#1a1a1a">118곳</text>
-<text x="110" y="170.0" text-anchor="end" fill="#1a1a1a">서대구산단</text>
-<rect x="120" y="154" width="123.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="251.3" y="170.0" fill="#1a1a1a">83곳</text>
-<text x="110" y="204.0" text-anchor="end" fill="#1a1a1a">대구제3산단</text>
-<rect x="120" y="188" width="95.1" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="223.1" y="204.0" fill="#1a1a1a">64곳</text>
-<text x="110" y="238.0" text-anchor="end" fill="#1a1a1a">대구국가산단</text>
-<rect x="120" y="222" width="57.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="185.9" y="238.0" fill="#1a1a1a">39곳</text>
-<text x="110" y="272.0" text-anchor="end" fill="#1a1a1a">대구연구개발특구</text>
-<rect x="120" y="256" width="49.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="177.0" y="272.0" fill="#1a1a1a">33곳</text>
-<text x="110" y="306.0" text-anchor="end" fill="#1a1a1a">성서5차산단</text>
-<rect x="120" y="290" width="40.1" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="168.1" y="306.0" fill="#1a1a1a">27곳</text>
-<text x="110" y="340.0" text-anchor="end" fill="#1a1a1a">달성산단</text>
-<rect x="120" y="324" width="37.1" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="165.1" y="340.0" fill="#1a1a1a">25곳</text></svg>
+<text x="138" y="68.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
+<rect x="148" y="52" width="472.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="628.4" y="68.0" fill="#1a1a1a">335곳</text>
+<text x="138" y="102.0" text-anchor="end" fill="#1a1a1a">북구검단산단</text>
+<rect x="148" y="86" width="166.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="322.4" y="102.0" fill="#1a1a1a">118곳</text>
+<text x="138" y="136.0" text-anchor="end" fill="#1a1a1a">서대구산단</text>
+<rect x="148" y="120" width="117.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="273.0" y="136.0" fill="#1a1a1a">83곳</text>
+<text x="138" y="170.0" text-anchor="end" fill="#1a1a1a">대구제3산단</text>
+<rect x="148" y="154" width="90.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="246.3" y="170.0" fill="#1a1a1a">64곳</text>
+<text x="138" y="204.0" text-anchor="end" fill="#1a1a1a">대구국가산단</text>
+<rect x="148" y="188" width="55.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="211.0" y="204.0" fill="#1a1a1a">39곳</text>
+<text x="138" y="238.0" text-anchor="end" fill="#1a1a1a">대구연구개발특구</text>
+<rect x="148" y="222" width="46.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="202.5" y="238.0" fill="#1a1a1a">33곳</text>
+<text x="138" y="272.0" text-anchor="end" fill="#1a1a1a">성서5차산단</text>
+<rect x="148" y="256" width="38.1" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="194.1" y="272.0" fill="#1a1a1a">27곳</text>
+<text x="138" y="306.0" text-anchor="end" fill="#1a1a1a">달성산단</text>
+<rect x="148" y="290" width="35.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="191.3" y="306.0" fill="#1a1a1a">25곳</text>
+<text x="138" y="340.0" text-anchor="end" fill="#1a1a1a">대구테크노폴리스산단</text>
+<rect x="148" y="324" width="33.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="189.8" y="340.0" fill="#1a1a1a">24곳</text></svg>

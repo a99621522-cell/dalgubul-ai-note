@@ -29,8 +29,8 @@
 | 기업지원기관 | [한국산업기술진흥원(KIAT)](https://www.kiat.or.kr) | OK | 공공데이터포털 15104286 | 40 | 2026-07-29 [[KIAT Policy Brief 2026-05] 산업기술 정책브리프·동]() |
 | 기업지원기관 | [한국지능정보사회진흥원(NIA)](https://www.nia.or.kr) | 항목 없음 |  | 0 | — |
 | 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | 접속 실패 |  | 0 | — |
-| 대구 기관 | [대구광역시 보도자료](https://www.daegu.go.kr) | 차단 | robots.txt 차단 | 0 | — |
 | 대구 기관 | [대구광역시 북구 보도자료(공공데이터포털)](https://www.buk.daegu.kr) | OK | 공공데이터포털 15149016 | 40 | 2026-08-14 [대백인터빌 전체에 물결친 애국심, 광복의 감동을 재현하다]() |
+| 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | 접속 실패 |  | 0 | — |
 | 대구 기관 | [대구기계부품연구원(DMI)](https://www.dmi.re.kr) | 접속 실패 |  | 0 | — |
 | 대구 기관 | [대구테크노파크](https://www.ttp.org) | 접속 실패 |  | 0 | — |
 | 정부 | [과학기술정보통신부 보도자료](https://www.msit.go.kr) | OK | rss(/user/rss/rss.do?bbsSeqNo=94) | 40 | 2026-09-23 [과학기술로 바꾸는 우리 지역, 제1회 ｢지역 현안 해결 솔루션 챌린지｣ ](https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187808) |
@@ -41,12 +41,12 @@
 | 해외 정부 | [中 공업정보화부(MIIT)](https://www.miit.gov.cn) | OK | 목록 페이지 | 24 | 2026-09-23 [2026年中国国际信息通信展览会在京开幕](https://www.miit.gov.cn/xwfb/bldhd/art/2026/art_2fc0c942477d4a2694137f8fe8d17f47.html) |
 | 해외 정부 | [日 경제산업성(METI) 영문 보도자료](https://www.meti.go.jp) | 접속 실패 |  | 0 | — |
 | 해외 정부 | [美 상무부 보도자료](https://www.commerce.gov) | 접속 실패 |  | 0 | — |
-| 해외 컨설팅 | [BCG Publications](https://www.bcg.com) | OK | 목록 페이지 | 12 | 2026-09-25 [Corporate Finance and Strategy](https://www.bcg.com/capabilities/corporate-finance-strategy/overview) |
+| 해외 컨설팅 | [BCG Publications](https://www.bcg.com) | OK | 목록 페이지 | 12 | 2026-09-25 [Technology Industry](https://www.bcg.com/industries/technology-media-telecommunications/technology-industry) |
 | 해외 컨설팅 | [Deloitte Insights(비공식 RSS 집계)](https://www.deloitte.com) | OK | rss(ntent.com/yushakareem/public-deloitte-in) | 24 |  [2026 Global Human Capital Trends](https://www.deloitte.com/us/en/insights/topics/talent/human-capital-trends.html) |
 | 해외 컨설팅 | [Gartner Newsroom](https://www.gartner.com) | 접속 실패 |  | 0 | — |
 | 해외 컨설팅 | [IDC Press Releases](https://www.idc.com) | OK | rss(/feed) | 10 | 2026-09-24 [Two People. 100,000 Employees. One AI Pl](https://www.idc.com/resource-center/blog/two-people-100000-employees-one-ai-platform-to-close-the-gap/) |
-| 해외 컨설팅 | [McKinsey Insights](https://www.mckinsey.com) | OK | rss(/insights/rss) | 40 | 2026-09-24 [Democratized superintelligence is coming](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready) |
-| 해외 협회 | [ACEA (유럽자동차공업협회)](https://www.acea.auto) | 항목 없음 |  | 0 | — |
+| 해외 컨설팅 | [McKinsey Insights](https://www.mckinsey.com) | OK | rss(/insights/rss) | 40 | 2026-09-24 [Billion-dollar beauty: The odds of scali](https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand) |
+| 해외 협회 | [ACEA (유럽자동차공업협회)](https://www.acea.auto) | 접속 실패 |  | 0 | — |
 | 해외 협회 | [International Energy Agency (IEA)](https://www.iea.org) | 접속 실패 |  | 0 | — |
 | 해외 협회 | [International Federation of Robotics (IFR)](https://ifr.org) | OK | 목록 페이지 | 5 | 2026-09-24 [Top Five Robot Trends 2026](https://ifr.org/ifr-press-releases/news/top-5-global-robotics-trends-2026) |
 | 해외 협회 | [OECD Newsroom](https://www.oecd.org) | 접속 실패 |  | 0 | — |

@@ -8,12 +8,6 @@
  "method": "rss(/insights/rss)",
  "items": [
   {
-   "title": "Democratized superintelligence is coming: The world needs to get ready",
-   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
-   "date": "2026-09-24",
-   "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
-  },
-  {
    "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
    "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
    "date": "2026-09-24",
@@ -24,6 +18,12 @@
    "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/the-new-growth-mandate-a-conversation-with-linkedin-cmo-jessica-jensen",
    "date": "2026-09-24",
    "summary": "At Cannes Lions 2026, LinkedIn CMO Jessica Jensen and McKinsey senior partner Dianne Esber discussed what it takes to turn AI from experimentation into a catalyst for growth."
+  },
+  {
+   "title": "Democratized superintelligence is coming: The world needs to get ready",
+   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
+   "date": "2026-09-24",
+   "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
   },
   {
    "title": "Harnessing AI to make mining safer",
@@ -38,16 +38,16 @@
    "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
   },
   {
-   "title": "India’s new insurance track: The marathon becomes an AI-led decathlon",
-   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/indias-new-insurance-track-the-marathon-becomes-an-ai-led-decathlon",
-   "date": "2026-09-23",
-   "summary": "As India’s economy continues to ramp up, insurers have an opportunity to capture value by improving productivity, modernizing operating models, and scaling technology and AI across the enterprise."
-  },
-  {
    "title": "Author Talks: The business of owning a sports team",
    "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-the-business-of-owning-a-sports-team",
    "date": "2026-09-23",
    "summary": "How does business ownership compare with owning a sports team? Baltimore Orioles owner David M. Rubenstein explains the leadership mindset, culture building, and long-term thinking that team ownership requires."
+  },
+  {
+   "title": "India’s new insurance track: The marathon becomes an AI-led decathlon",
+   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/indias-new-insurance-track-the-marathon-becomes-an-ai-led-decathlon",
+   "date": "2026-09-23",
+   "summary": "As India’s economy continues to ramp up, insurers have an opportunity to capture value by improving productivity, modernizing operating models, and scaling technology and AI across the enterprise."
   },
   {
    "title": "Rewiring procurement in resources: Making judgment an enduring asset",
@@ -110,16 +110,16 @@
    "summary": "AI is accelerating drug discovery, but investment has concentrated in molecule design—the stage with the best data and clearest tools. The industry’s real constraint lies elsewhere: identifying and validating the right disease mechanism."
   },
   {
-   "title": "Social care referral networks: Improving health in rural communities",
-   "url": "https://www.mckinsey.com/industries/public-sector/our-insights/social-care-referral-networks-improving-health-in-rural-communities",
-   "date": "2026-09-18",
-   "summary": "Six design dimensions can help states stand up social care referral networks that meaningfully improve health outcomes for Medicaid members in rural and underserved communities."
-  },
-  {
    "title": "Author Talks: How to turn hope into action",
    "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-how-to-turn-hope-into-action",
    "date": "2026-09-18",
    "summary": "What compels us to act when we see a problem? Draper Richards Kaplan Foundation CEO Jim Bildner reflects on social entrepreneurship, personal loss, and how hope can move us to act."
+  },
+  {
+   "title": "Social care referral networks: Improving health in rural communities",
+   "url": "https://www.mckinsey.com/industries/public-sector/our-insights/social-care-referral-networks-improving-health-in-rural-communities",
+   "date": "2026-09-18",
+   "summary": "Six design dimensions can help states stand up social care referral networks that meaningfully improve health outcomes for Medicaid members in rural and underserved communities."
   },
   {
    "title": "The transformer supercycle: Why demand is outrunning supply",
@@ -152,16 +152,16 @@
    "summary": "Five common behavioral patterns can cause change efforts to falter. Know the warning signs—and what to do about them."
   },
   {
-   "title": "Aftershocks: Energy security beyond the Strait of Hormuz crisis",
-   "url": "https://www.mckinsey.com/mgi/our-research/aftershocks-energy-security-beyond-the-strait-of-hormuz-crisis",
-   "date": "2026-09-17",
-   "summary": "The energy system has proven surprisingly resilient, but shock absorbers are thinning. Energy security has no easy exits but room to maneuver."
-  },
-  {
    "title": "Europe’s new AI edge? The emerging application layer opportunity",
    "url": "https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/europes-new-ai-edge-the-emerging-application-layer-opportunity",
    "date": "2026-09-17",
    "summary": "As enterprises shift from experimenting with models to redesigning workflows, new research suggests Europe could be well-positioned for this new AI application era."
+  },
+  {
+   "title": "Aftershocks: Energy security beyond the Strait of Hormuz crisis",
+   "url": "https://www.mckinsey.com/mgi/our-research/aftershocks-energy-security-beyond-the-strait-of-hormuz-crisis",
+   "date": "2026-09-17",
+   "summary": "The energy system has proven surprisingly resilient, but shock absorbers are thinning. Energy security has no easy exits but room to maneuver."
   },
   {
    "title": "Here’s why some US industrial companies achieve higher multiples",
@@ -230,10 +230,10 @@
    "summary": "Australia’s prosperity has been built through deliberate choices, investment, and reinvention. After a lost decade of growth, the nation can draw on its strengths to choose another century of plenty."
   },
   {
-   "title": "The future of US manufacturing",
-   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/the-future-of-us-manufacturing",
+   "title": "Strategy in the age of arenas",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/strategy-in-the-age-of-arenas",
    "date": "2026-09-11",
-   "summary": "A quarter of America’s manufactured imports face critical trade dependencies. Strengthening US manufacturing will depend not only on capital but also on talent, energy, and resilient supplier networks."
+   "summary": "A group of fast-growing industries is reshaping the competitive landscape. Their rise requires business leaders to rethink strategy in two important ways."
   },
   {
    "title": "Capturing life cycle value in Europe’s trucking industry",
@@ -242,10 +242,10 @@
    "summary": "The vast majority of Europe’s truck-related revenue flows after a vehicle is sold. Capturing that value presents a major growth opportunity."
   },
   {
-   "title": "Strategy in the age of arenas",
-   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/strategy-in-the-age-of-arenas",
+   "title": "Zero-emission trucks: Accelerating Europe’s transition",
+   "url": "https://www.mckinsey.com/industries/automotive-and-assembly/our-insights/zero-emission-trucks-accelerating-europes-transition",
    "date": "2026-09-11",
-   "summary": "A group of fast-growing industries is reshaping the competitive landscape. Their rise requires business leaders to rethink strategy in two important ways."
+   "summary": "Challenges across the ecosystem delay the transition to zero-emission trucks, resulting in rising pressure on European OEMs due to potential CO2 penalties and growing competition."
   }
  ],
  "note": ""

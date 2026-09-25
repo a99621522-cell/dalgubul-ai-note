@@ -37,6 +37,8 @@ OUT = ROOT / "data" / "research"
 TODAY = date.today()
 MAX_DAYS = 70
 MAX_ITEMS = 40
+EXCERPT_N = 8            # 요지(본문 앞부분)를 받아 두는 항목 수(기관마다, excerpt: true 인 기관만)
+EXCERPT_CHARS = 1500     # 요지 길이. 본문 전체는 저장하지 않는다(공공기관 발간물의 논지·수치 확인용)
 FUTURE = (date.today() + timedelta(days=3)).isoformat()   # 이보다 뒤 날짜는 발간일로 보지 않는다
 RSS_CANDIDATES = ["/rss", "/feed", "/rss.xml", "/feed.xml", "/index.xml", "/rss/", "/feed/", "/atom.xml"]
 DATE_RE = re.compile(r"(20\d{2})[.\-/년年]\s?(\d{1,2})[.\-/월月]\s?(\d{1,2})")
@@ -422,8 +424,52 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
         res["status"] = "OK" if res["items"] else ("차단" if res["note"] else ("접속 실패" if failed else "항목 없음"))
     if res["items"]:
         res.pop("sample_links", None); res.pop("page_chars", None); res.pop("sample_dates", None)
+        if org.get("excerpt"):
+            add_excerpts(res["items"], sess, robots)
+    res["areas"] = list(org.get("areas") or [])
     print(f"  → {res['status']} · {res['method']} · {len(res['items'])}건" + (f" · 최신 {res['items'][0]['date']} {res['items'][0]['title'][:40]}" if res["items"] else ""))
     return res
+
+
+def add_excerpts(items: list[dict], sess: requests.Session, robots: dict) -> None:
+    """항목의 상세 페이지를 열어 본문 앞부분(요지)을 EXCERPT_CHARS 까지 저장한다. 리포트 작성 세션이 제목이 아니라 논지·수치를 읽고 대구에 적용하기 위해서다.
+    스크립트로 여는 목록(주소가 목록 페이지 #앵커)·PDF·HWP 는 건너뛴다. robots.txt 존중, 요청 사이 1초."""
+    n = 0
+    for it in items[:EXCERPT_N]:
+        u = it.get("url", "")
+        if not u.startswith("http") or "#" in u or re.search(r"\.(pdf|hwpx?|xlsx?|zip)(\?|$)", u, re.I):
+            continue
+        if not robots_ok(u, robots):
+            continue
+        r = get(u, sess, timeout=30)
+        time.sleep(1)
+        if not r or "html" not in r.headers.get("Content-Type", ""):
+            continue
+        it["excerpt"] = page_excerpt(r.text, it.get("title", ""))
+        n += bool(it["excerpt"])
+    if n:
+        print(f"    요지 {n}건 저장({EXCERPT_CHARS}자까지)")
+
+
+def page_excerpt(html: str, title: str = "") -> str:
+    """상세 페이지에서 본문으로 보이는 가장 긴 덩어리를 골라 앞부분만 돌려준다."""
+    soup = BeautifulSoup(html, "html.parser")
+    for t in soup(["script", "style", "nav", "header", "footer", "aside", "form", "iframe"]):
+        t.decompose()
+    cands = soup.find_all(["article", "main"]) + [d for d in soup.find_all("div") if re.search(r"cont|view|detail|body|article|text", " ".join(d.get("class", [])) + " " + (d.get("id") or ""), re.I)]
+    best = ""
+    for c in cands or [soup.body or soup]:
+        txt = re.sub(r"\s+", " ", c.get_text(" ", strip=True))
+        if len(txt) > len(best):
+            best = txt
+    if not best:
+        best = re.sub(r"\s+", " ", (soup.body or soup).get_text(" ", strip=True))
+    if title:
+        i = best.find(title[:20])
+        if 0 <= i < len(best) - 200:
+            best = best[i:]
+    best = re.sub(r"(다운로드|첨부파일|목록으로|이전글|다음글|인쇄|공유하기|SNS)\s*", "", best)
+    return best[:EXCERPT_CHARS].strip()
 
 
 def write_summary(results: list[dict]) -> None:
@@ -443,12 +489,14 @@ def query(words: list[str]) -> int:
     for f in sorted(OUT.glob("*.json")):
         d = json.loads(f.read_text(encoding="utf-8"))
         for it in d.get("items", []):
-            if pat.search(it["title"] + " " + it.get("summary", "")):
+            if pat.search(it["title"] + " " + it.get("summary", "") + " " + it.get("excerpt", "")):
                 hits.append((it["date"], d["name"], it))
     hits.sort(key=lambda h: (h[0] or "", h[1]), reverse=True)
     print(f"'{' '.join(words)}' 일치 {len(hits)}건 (data/research, 최근 {MAX_DAYS}일)")
     for d, name, it in hits[:40]:
         print(f"  {d or '날짜 없음'}  [{name}] {it['title'][:70]}  {it['url']}")
+        if it.get("excerpt") and "--excerpt" in sys.argv:
+            print("      요지: " + it["excerpt"][:EXCERPT_CHARS])
     return 0
 
 

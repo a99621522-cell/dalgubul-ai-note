@@ -4,8 +4,63 @@
  "group": "해외 협회",
  "home": "https://www.acea.auto",
  "fetched": "2026-09-25",
- "status": "접속 실패",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "첫 화면",
+ "items": [
+  {
+   "title": "Local content rules: Study highlights challenges for European truck manufacturing",
+   "url": "https://www.acea.auto/news/local-content-rules-study-highlights-challenges-for-european-truck-manufacturing/",
+   "date": "2026-09-25",
+   "summary": ""
+  },
+  {
+   "title": "back to top",
+   "url": "https://www.acea.auto#back-to-top",
+   "date": "2026-09-25",
+   "summary": ""
+  },
+  {
+   "title": "The Automobile Industry Pocket Guide 2026",
+   "url": "https://www.acea.auto/publication/the-automobile-industry-pocket-guide-2026/",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Accelerating the market uptake of zero-emission trucks: the case for strong demand-side measures",
+   "url": "https://www.acea.auto/event/accelerating-the-market-uptake-of-zero-emission-trucks-the-case-for-strong-demand-side-measures/",
+   "date": "2026-09-18",
+   "summary": ""
+  },
+  {
+   "title": "New car registrations: +5.3% in August 2026 year-to-date; battery-electric 21.7% market share New EU car registrations increased by 5.3% year-to-date, against a",
+   "url": "https://www.acea.auto/pc-registrations/new-car-registrations-5-3-in-august-2026-year-to-date-battery-electric-21-7-market-share/",
+   "date": "2026-09-14",
+   "summary": ""
+  },
+  {
+   "title": "Europe's battery capacity won’t meet IAA localisation demand, new study shows A new study by Mobility Global, commissioned by ACEA, assesses the preparedness of",
+   "url": "https://www.acea.auto/news/europes-battery-capacity-wont-meet-iaa-localisation-demand-new-study-shows/",
+   "date": "2026-09-14",
+   "summary": ""
+  },
+  {
+   "title": "ACEA proposal on EU electric vehicle exports to the United Kingdom In a letter to EU leaders, ACEA has asked the European Commission and EU Member States to con",
+   "url": "https://www.acea.auto/news/acea-proposal-on-eu-electric-vehicle-exports-to-the-united-kingdom/",
+   "date": "2026-09-14",
+   "summary": ""
+  },
+  {
+   "title": "European truckmakers: enabling conditions years behind, 2030 CO2 compliance timeline needs adjustment Hanover, 14 September 2026 — In an extraordinary appearanc",
+   "url": "https://www.acea.auto/press-release/european-truckmakers-enabling-conditions-years-behind-2030-co2-compliance-timeline-needs-adjustment/",
+   "date": "2026-09-14",
+   "summary": ""
+  },
+  {
+   "title": "Why Total Cost of Ownership matters for zero-emission trucks For a transport operator, buying a truck is a business decision. The vehicle needs to do the job re",
+   "url": "https://www.acea.auto/news/why-total-cost-of-ownership-matters-for-zero-emission-trucks/",
+   "date": "2026-09-14",
+   "summary": ""
+  }
+ ],
  "note": ""
 }

@@ -6,7 +6,7 @@ name: 민선 9기 대구시장 공약 원문 받기 (시청·선관위)
 on:
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: [".github/workflows/pledges.yml", "scripts/fetch_pledges.py"]
+    paths: [".github/workflows/pledges.yml", "scripts/fetch_pledges.py", "scripts/sources.yml"]
   workflow_dispatch:
 
 permissions:

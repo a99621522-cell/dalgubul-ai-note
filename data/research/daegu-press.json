@@ -4,8 +4,45 @@
  "group": "대구 기관",
  "home": "https://www.daegu.go.kr",
  "fetched": "2026-09-25",
- "status": "접속 실패",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "대구 제3산단, 교통·물류 수송 숨통 틔운다… 9월 22일 신천대로 진·출입로 임시개통 2026.09.21",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=278924",
+   "date": "2026-09-21",
+   "summary": ""
+  },
+  {
+   "title": "건강한 추석 연휴 보내기, 상황별 예방수칙 꼭 챙기세요! 2026.09.21",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=1&aid=278896",
+   "date": "2026-09-21",
+   "summary": ""
+  },
+  {
+   "title": "대구시, 추석 연휴 기간 자전거 수리센터 운영 및 무상점검 실시 2026.09.21",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=278916",
+   "date": "2026-09-21",
+   "summary": ""
+  },
+  {
+   "title": "이른 인플루엔자 유행, 대구시 인플루엔자 예방접종 순차 실시 2026.09.17",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=1&aid=278862",
+   "date": "2026-09-17",
+   "summary": ""
+  },
+  {
+   "title": "청년 여러분의 시선으로 대구의 더 나은 내일을 그려주세요! 2026.09.15",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=1&aid=278816",
+   "date": "2026-09-15",
+   "summary": ""
+  },
+  {
+   "title": "대구시, 다자녀가정 고등학생 ‘입학축하금’ 추가 접수 2026.08.24",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=278424",
+   "date": "2026-08-24",
+   "summary": ""
+  }
+ ],
  "note": ""
 }

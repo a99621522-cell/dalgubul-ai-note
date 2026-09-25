@@ -1,6 +1,6 @@
 # 참조 기관 조사 — 최근 발간물 목록 (scripts/fetch_research.py, 2026-09-25)
 
-정책제안 리포트가 근거로 쓰는 기관과 접속 결과. OK = 최근 70일 안 항목을 받음. '항목 없음' 은 페이지는 열렸으나 RSS 도 날짜 붙은 목록도 못 찾은 경우(대개 JS 목록). '차단' 은 robots.txt 가 크롤러를 막아 존중. 실패는 접속 시간 초과·오류.
+정책제안 리포트가 근거로 쓰는 기관과 접속 결과. OK = 최근 70일 안 항목을 받음. '항목 없음' 은 페이지는 열렸으나 RSS 도 날짜 붙은 목록도 못 찾은 경우(대개 JS 목록). '최근 없음' 은 목록은 읽었으나 최근 70일 안 발간물이 없는 경우(최신 날짜 표시). '차단' 은 robots.txt 가 크롤러를 막아 존중. 실패는 접속 시간 초과·오류.
 
 | 구분 | 기관 | 상태 | 방법 | 건수 | 최신 항목 |
 |---|---|---|---|---|---|
@@ -13,8 +13,8 @@
 | 국내 연구 | [대구정책연구원](https://www.dgi.re.kr) | 접속 실패 |  | 0 | — |
 | 국내 연구 | [산업연구원(KIET)](https://www.kiet.re.kr) | OK | 목록 페이지 | 5 | 2026-09-22 [지방대학의 인력 양성 경쟁력 현황과 정책 방향 - 권역별 인력 양성 거점](https://www.kiet.re.kr/research/issueView?issue_no=868&skey=&sval=&pg=1&pp=10) |
 | 국내 연구 | [정보통신정책연구원(KISDI) 연구보고서 DB](https://www.kisdi.re.kr) | OK | 공공데이터포털 3071323 | 13 |  [탈통신시대, 통신기업 성장 전략 효과 분석: 인수합병을 중심으로](https://www.kisdi.re.kr/report/view.do?key=m2101113024153&masterId=3934560&arrMasterId=3934560&artId=1127616) |
-| 국내 연구 | [중소벤처기업연구원(KOSI)](https://www.kosi.re.kr) | 항목 없음 |  | 0 | — |
-| 국내 연구 | [한국개발연구원(KDI)](https://www.kdi.re.kr) | 항목 없음 |  | 0 | — |
+| 국내 연구 | [중소벤처기업연구원(KOSI)](https://www.kosi.re.kr) | 최근 없음 | 최신 항목 2025-09-16 (최근 70일 밖) | 0 | — |
+| 국내 연구 | [한국개발연구원(KDI)](https://www.kdi.re.kr) | 최근 없음 | 최신 항목 2026-09-21 (최근 70일 밖) | 0 | — |
 | 국내 연구 | [한국과학기술기획평가원(KISTEP)](https://www.kistep.re.kr) | OK | 목록 페이지 | 16 | 2026-09-15 [국가 단위 과학기술 협력 전략 도출 프레임워크 탐색](https://www.kistep.re.kr/board.es?mid=a10306040000&bid=0031&b_list=10&act=view&list_no=94859&nPage=1&keyField=&orderby=) |
 | 국내 연구 | [한국무역협회(KITA) 보고서](https://www.kita.net) | OK | 목록 페이지 | 5 | 2026-09-22 [2026년 4분기 수출산업경기전망지수(EBSI)는 111.3으로, 202](https://www.kita.net/researchTrade/report/reportMain/reportMainList.do#2026년-4분기-수출산업경기전망지수-EBSI-는-111-3으로-2025) |
 | 국내 연구 | [한국은행(지역경제보고서·조사통계)](https://www.bok.or.kr) | 차단 | robots.txt 차단 | 0 | — |
@@ -24,13 +24,13 @@
 | 기업지원기관 | [정보통신산업진흥원(NIPA)](https://www.nipa.kr) | OK | 목록 페이지 | 11 | 2026-09-23 [[유관기관] (베트남 과학기술부) 2026년 한-베트남 디지털 포럼 개최](https://www.nipa.kr/home/2-1/16950) |
 | 기업지원기관 | [중소벤처기업진흥공단](https://www.kosmes.or.kr) | OK | 목록 페이지 | 10 | 2026-09-22 [새정부 출범, 중소벤처기업과 함께 뛴 중진공의 성과](https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do#새정부-출범-중소벤처기업과-함께-뛴-중진공의-성과) |
 | 기업지원기관 | [한국과학기술정보연구원(KISTI)](https://www.kisti.re.kr) | 접속 실패 |  | 0 | — |
-| 기업지원기관 | [한국로봇산업진흥원(KIRIA)](https://www.kiria.org) | 접속 실패 |  | 0 | — |
+| 기업지원기관 | [한국로봇산업진흥원(KIRIA)](https://www.kiria.org) | 최근 없음 | 최신 항목 2026-09-22 (최근 70일 밖) | 0 | — |
 | 기업지원기관 | [한국산업기술기획평가원(KEIT) PD이슈리포트](https://www.keit.re.kr) | OK | 공공데이터포털 15047479 | 9 | 2026-06-01 [KEIT 이슈픽 2026-6월호 : 첨단산업(산업기반혁신) - 배터리, ]() |
 | 기업지원기관 | [한국산업기술진흥원(KIAT)](https://www.kiat.or.kr) | OK | 공공데이터포털 15104286 | 40 | 2026-07-29 [[KIAT Policy Brief 2026-05] 산업기술 정책브리프·동]() |
-| 기업지원기관 | [한국지능정보사회진흥원(NIA)](https://www.nia.or.kr) | 항목 없음 |  | 0 | — |
-| 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | 접속 실패 |  | 0 | — |
+| 기업지원기관 | [한국지능정보사회진흥원(NIA)](https://www.nia.or.kr) | 최근 없음 | 최신 항목 2026-07-13 (최근 70일 밖) | 0 | — |
+| 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | 최근 없음 | 최신 항목 2026-09-10 (최근 70일 밖) | 0 | — |
 | 대구 기관 | [대구광역시 북구 보도자료(공공데이터포털)](https://www.buk.daegu.kr) | OK | 공공데이터포털 15149016 | 40 | 2026-08-14 [대백인터빌 전체에 물결친 애국심, 광복의 감동을 재현하다]() |
-| 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | 접속 실패 |  | 0 | — |
+| 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | OK | 목록 페이지 | 6 | 2026-09-21 [대구 제3산단, 교통·물류 수송 숨통 틔운다… 9월 22일 신천대로 진·](https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=278924) |
 | 대구 기관 | [대구기계부품연구원(DMI)](https://www.dmi.re.kr) | 접속 실패 |  | 0 | — |
 | 대구 기관 | [대구테크노파크](https://www.ttp.org) | 접속 실패 |  | 0 | — |
 | 정부 | [과학기술정보통신부 보도자료](https://www.msit.go.kr) | OK | rss(/user/rss/rss.do?bbsSeqNo=94) | 40 | 2026-09-23 [과학기술로 바꾸는 우리 지역, 제1회 ｢지역 현안 해결 솔루션 챌린지｣ ](https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187808) |
@@ -45,7 +45,7 @@
 | 해외 컨설팅 | [Deloitte Insights(비공식 RSS 집계)](https://www.deloitte.com) | OK | rss(ntent.com/yushakareem/public-deloitte-in) | 24 |  [2026 Global Human Capital Trends](https://www.deloitte.com/us/en/insights/topics/talent/human-capital-trends.html) |
 | 해외 컨설팅 | [Gartner Newsroom](https://www.gartner.com) | 접속 실패 |  | 0 | — |
 | 해외 컨설팅 | [IDC Press Releases](https://www.idc.com) | OK | rss(/feed) | 10 | 2026-09-24 [Two People. 100,000 Employees. One AI Pl](https://www.idc.com/resource-center/blog/two-people-100000-employees-one-ai-platform-to-close-the-gap/) |
-| 해외 컨설팅 | [McKinsey Insights](https://www.mckinsey.com) | OK | rss(/insights/rss) | 40 | 2026-09-24 [Billion-dollar beauty: The odds of scali](https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand) |
+| 해외 컨설팅 | [McKinsey Insights](https://www.mckinsey.com) | OK | rss(/insights/rss) | 40 | 2026-09-24 [Democratized superintelligence is coming](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready) |
 | 해외 협회 | [ACEA (유럽자동차공업협회)](https://www.acea.auto) | 접속 실패 |  | 0 | — |
 | 해외 협회 | [International Energy Agency (IEA)](https://www.iea.org) | 접속 실패 |  | 0 | — |
 | 해외 협회 | [International Federation of Robotics (IFR)](https://ifr.org) | OK | 목록 페이지 | 5 | 2026-09-24 [Top Five Robot Trends 2026](https://ifr.org/ifr-press-releases/news/top-5-global-robotics-trends-2026) |

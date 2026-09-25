@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon } from '../../lib/csv';
 import { partners } from '../../lib/partners';
+import { tagName, tagDesc } from '../../lib/sites';
 import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   return companies().map(c => ({ params: { id: c.id }, props: { c } }));
@@ -34,6 +35,7 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
       <tbody>
         <tr><th>소재</th><td>{c.district}{c.eupmyeon && ` ${c.eupmyeon}`} · <a href={`/companies/?complex=${encodeURIComponent(c.complex)}`}>{c.complex}</a></td></tr>
         <tr><th>업종</th><td>{c.sector} <span class="meta">({[c.sector_code, c.sector_group].filter(Boolean).join(', ')})</span></td></tr>
+        <tr><th>입지·구분</th><td>{c.site_type}{c.tags.length > 0 && <span> · {c.tags.map(t => <span class="tag primary" title={tagDesc(t)}>{tagName(t)}</span>)}</span>}{c.tags.length > 0 && <span class="meta"> (공개 명단 기준, 인증 여부는 원 기관에서 확인)</span>}</td></tr>
         {!fromNps && <tr><th>생산품</th><td>{c.product || '—'}</td></tr>}
         <tr><th>{fromNps ? '가입자' : '종사자'}</th><td>{c.workers_band || '—'}<span class="meta"> ({workersNote})</span></td></tr>
         {c.reg_type && <tr><th>공장 등록</th><td>{c.reg_type === '등록' ? '등록 완료' : '설립 승인(등록 전)'}{c.first_registered && ` · 최초 등록 ${c.first_registered}년`}</td></tr>}

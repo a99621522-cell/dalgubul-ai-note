@@ -77,12 +77,45 @@ def render(url: str, shot: Path | None = None, steps: list | None = None) -> tup
         clickables = page.locator("a, button, [role=button], select option, li[onclick], [onclick]").all_inner_texts()
         if shot:
             page.screenshot(path=str(shot), full_page=True)
+        # 화면의 PDF·내려받기 링크는 브라우저 세션으로 받아 files/ 에 둔다 (선관위 선거공약서 PDF 등)
+        for a in page.locator("a[href]").all()[:200]:
+            href = a.get_attribute("href") or ""
+            label = (a.inner_text() or "").strip()
+            if re.search(r"\.pdf(\?|$)|fileDown|download|Download", href, re.I) or re.search(r"공약서|PDF", label):
+                full = urljoin(page.url, href)
+                if full.startswith("javascript"):
+                    continue
+                try:
+                    resp = page.context.request.get(full, timeout=60000)
+                    if resp.ok and "text/html" not in (resp.headers.get("content-type") or ""):
+                        cd = resp.headers.get("content-disposition") or ""
+                        m = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
+                        name = safe(requests.utils.unquote(m.group(1)) if m else (label or Path(urlparse(full).path).name or "file"), 80)
+                        if not re.search(r"\.(pdf|hwpx?|xlsx?|docx?)$", name, re.I):
+                            name += ".pdf" if "pdf" in (resp.headers.get("content-type") or "") else ".bin"
+                        DOWNLOADS.append((name, resp.body(), full))
+                        print(f"    [browser] 내려받음 {name} ({len(resp.body()):,} bytes) ← {full[:100]}")
+                except Exception as e:  # noqa: BLE001
+                    print(f"    [browser] 내려받기 실패 {full[:80]}: {str(e)[:60]}")
     except Exception as e:  # noqa: BLE001
         print(f"    [browser] 실패 {url}: {str(e)[:100]}")
         html, clickables = "", []
     finally:
         page.close()
     return html, [c.strip()[:40] for c in clickables if c.strip()]
+
+
+DOWNLOADS: list[tuple[str, bytes, str]] = []
+BROWSER_HOSTS = ("policy.nec.go.kr", "mayor.daegu.go.kr")
+
+
+def pdf_text(data: bytes) -> str:
+    try:
+        from pypdf import PdfReader
+        import io
+        return "\n".join((pg.extract_text() or "") for pg in PdfReader(io.BytesIO(data)).pages)
+    except Exception as e:  # noqa: BLE001
+        return f"(PDF 본문 추출 실패: {str(e)[:60]})"
 
 
 def safe(s: str, n: int = 60) -> str:
@@ -133,7 +166,7 @@ def fetch_city(seeds: list[str], sess: requests.Session, max_pages: int = 60, ma
             r.encoding = r.apparent_encoding or "utf-8"
             html = r.text
         title, text = page_text(html) if html else ("", "")
-        if len(text) < 300 or steps:  # JS 페이지·접속 실패·단계가 있는 seed 는 브라우저로
+        if len(text) < 300 or steps or urlparse(url).netloc in BROWSER_HOSTS:  # JS 페이지·접속 실패·단계가 있는 seed 는 브라우저로
             shots = d / "shots"
             shots.mkdir(exist_ok=True)
             html2, clickables = render(url, shots / f"{saved + 1:02d}_{safe(urlparse(url).netloc + urlparse(url).path, 40)}.png", steps)
@@ -169,9 +202,23 @@ def fetch_city(seeds: list[str], sess: requests.Session, max_pages: int = 60, ma
                 queue.append((href, depth + 1))
         if depth == 0:  # 첫 페이지의 링크는 전부 로그에 남겨 다음 실행의 seed 를 고를 수 있게
             print(f"  [city] {url} 링크 {len(links)}개: " + " | ".join(f"{l[:20]}→{h[-60:]}" for l, h in links[:80]))
+    seen_dl = set()
+    for name, data, src in DOWNLOADS:
+        if name in seen_dl:
+            continue
+        seen_dl.add(name)
+        (d / "files" / name).write_bytes(data)
+        entry = {"url": src, "file": f"files/{name}", "bytes": len(data), "fetched": TODAY}
+        if name.lower().endswith(".pdf"):
+            txt = pdf_text(data)
+            (d / "files" / (name[:-4] + ".txt")).write_text(f"# {name}\n# 출처: {src}\n# 받은 날짜: {TODAY}\n\n{txt}", encoding="utf-8")
+            entry["text"] = f"files/{name[:-4]}.txt"
+            entry["chars"] = len(txt)
+            print(f"  [city] PDF 본문 {len(txt):,}자 → files/{name[:-4]}.txt")
+        index.append(entry)
     (d / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"[city] 페이지 {saved}개 저장 → {d.relative_to(ROOT)}")
-    return saved
+    print(f"[city] 페이지 {saved}개, 파일 {len(seen_dl)}개 저장 → {d.relative_to(ROOT)}")
+    return saved + len(seen_dl)
 
 
 def fetch_nec(key: str, sess: requests.Session, sg_id: str = "20260603", sg_type: str = "3", sd: str = "대구광역시") -> int:

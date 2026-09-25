@@ -4,8 +4,39 @@
  "group": "해외 협회",
  "home": "https://ifr.org",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "Top Five Robot Trends 2026",
+   "url": "https://ifr.org/ifr-press-releases/news/top-5-global-robotics-trends-2026",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Global Robot Demand in Factories Doubles Over 10 Years",
+   "url": "https://ifr.org/ifr-press-releases/news/global-robot-demand-in-factories-doubles-over-10-years",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Service Robots See Global Growth Boom",
+   "url": "https://ifr.org/ifr-press-releases/news/service-robots-see-global-growth-boom",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Video - Market report by Jane Heffner with preliminary figures 2025",
+   "url": "https://youtu.be/pdNi9hTmYb0",
+   "date": "2026-09-24",
+   "summary": ""
+  },
+  {
+   "title": "Five Million Robots now Operate in Factories Globally",
+   "url": "https://ifr.org/ifr-press-releases/news/five-million-robots-now-operate-in-factories-globally",
+   "date": "2026-09-24",
+   "summary": ""
+  }
+ ],
  "note": ""
 }

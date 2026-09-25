@@ -19,6 +19,7 @@
 - `config/industry_groups.yml` — 산업 그룹 11개 규칙(KSIC 접두어+키워드). `scripts/industry.py`·`src/lib/industry.ts`가 읽음. 규칙은 파일에만
 - `config/site_types.yml` — 입지 유형(수성알파시티·연구개발특구·지식산업센터·산업단지·개별입지)과 태그(창업·창경센터·연구소기업·벤처·이노비즈) 규칙. `scripts/sites.py`·`src/lib/sites.ts`
 - `scripts/data/kic_buildings.csv` + `scripts/import_kic.py` — 대구 지식산업센터 건물 도로명주소 목록. 주소가 일치하면 건물명이 없어도 입지 유형이 지식산업센터. 전국지식산업센터현황(산단공) 파일을 넣으면 갱신
+- `scripts/import_alphacity.py` + `scripts/data/alphacity/` + `.github/workflows/alphacity.yml` — 수성알파시티 홈페이지 기업현황(alphacity.or.kr, 32쪽 311곳) → `scripts/data/extra/alphacity.csv` → `import_extra.py --replace-source 수성알파시티`. 저장한 페이지(.mht/.html)를 폴더에 넣거나 `--fetch`(robots 확인, 쪽마다 1초). 대표자 열은 읽지 않는다. 주소가 목록에 없어 '대구광역시 수성구 (수성알파시티 입주)' 로 두어 구·군·입지 유형만 판정. 워크플로는 매월 6일·수동
 - `scripts/import_extra.py` — 산단 외 기업 목록(`scripts/data/extra/*.csv`, 형식은 그 README) → `extra_companies.csv`(id x0001~) + `company_tags.csv`. 팩토리온과 같은 기업이면 태그만
 - `scripts/data/support_history.csv` + `scripts/import_support.py` — 지원사업 수혜 이력(NTIS 과제·대구시 보조금 공개·기관 선정 공고, 투입구 `scripts/data/support/`, 형식은 그 README). 기업 페이지 '지원사업 이력(최근 3년)', 통계 `support_3y`, 리포트 근거. 비공개 자료(정책자금 개별 내역) 금지
 - `config/support_institutions.yml` + `scripts/institution_support.py` — 기업지원기관(대구TP·DIP·DMI·케이메디허브·창경센터·로봇산업진흥원·ETRI·생기원·경북대 등)이 주관·참여한 과제·보조사업의 기업을 대구 기업/역외 기업으로 나눠 `data/institutions/`(CSV·summary.json·README). 워크플로가 data/raw 의 포털 파일로 만든다. 기관·별칭 추가는 yml 에만

@@ -1,0 +1,42 @@
+name: 수성알파시티 기업현황 받기 (alphacity.or.kr)
+
+# 수성알파시티 홈페이지 입주현황 > 기업현황(32쪽)을 받아 scripts/data/extra/alphacity.csv 로 만들고 기업 DB(extra_companies.csv·company_tags.csv)에 반영해 커밋한다.
+# robots.txt 를 확인하고 쪽마다 1초 쉰다. 대표자 열은 읽지 않는다. 이 세션 환경은 외부 접속이 막혀 있어 이 워크플로가 대신 받는다.
+
+on:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/import_alphacity.py", ".github/workflows/alphacity.yml"]
+  workflow_dispatch:
+  schedule:
+    - cron: "40 19 6 * *"      # 매월 6일 04:40 KST (팩토리온·국민연금 갱신 무렵)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: alphacity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      - name: 받기·반영
+        run: |
+          set +e
+          python3 scripts/import_alphacity.py --fetch --import
+          echo "exit=$?"
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add -A scripts/data/extra/alphacity.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 수성알파시티 기업현황 반영 $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"

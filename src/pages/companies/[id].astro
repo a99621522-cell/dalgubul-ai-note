@@ -4,6 +4,7 @@ import PostList from '../../components/PostList.astro';
 import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon } from '../../lib/csv';
 import { partners } from '../../lib/partners';
 import { tagName, tagDesc } from '../../lib/sites';
+import { companyStats, monthly, monthLabel, fmt } from '../../lib/stats';
 import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   return companies().map(c => ({ params: { id: c.id }, props: { c } }));
@@ -18,6 +19,18 @@ const related = (await getCollection('posts', p => !p.data.draft))
   .filter(p => p.data.title.includes(c.name) || p.data.summary.includes(c.name) || p.data.tags.includes(c.name))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 10);
 const fromNps = (c.source || '').startsWith('국민연금');
+const cs = companyStats(); const st = cs?.companies?.[c.id] ?? null; const m = monthly();
+const series: (number | null)[] = st?.s ?? (st?.e != null ? [st.e] : []);
+const months: string[] = (cs?.months ?? []).slice(-series.length);
+const emp = series.length ? series.at(-1) : (st?.e ?? null);
+const prev = series.length > 1 ? series.at(-2) : null;
+const empDelta = emp != null && prev != null ? emp - prev : null;
+const basis = st?.b === 'nps' ? '국민연금 가입자수' : '공장등록 신고값';
+// 12개월 스파크라인 (자료가 1개월이면 점 하나)
+const last12 = series.slice(-12); const vals = last12.filter((v): v is number => v != null);
+const W = 240, H = 56, P = 6; const lo = vals.length ? Math.min(...vals) : 0, hi = vals.length ? Math.max(...vals) : 1;
+const pts = last12.map((v, i) => v == null ? null : [P + (last12.length > 1 ? (i * (W - 2 * P)) / (last12.length - 1) : (W - 2 * P) / 2), H - P - (hi === lo ? (H - 2 * P) / 2 : ((v - lo) * (H - 2 * P)) / (hi - lo))] as [number, number]);
+const poly = pts.filter(Boolean).map(q => `${q![0].toFixed(1)},${q![1].toFixed(1)}`).join(' ');
 const srcName = fromNps ? '국민연금 사업장 내역' : '팩토리온';
 const workersNote = fromNps ? '국민연금 가입자수' : '공장등록 신고값';
 const desc = `${c.name} — ${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''}, ${c.complex === '개별입지' ? '개별입지' : c.complex === '산단 외' ? '산단 외' : `${c.complex} 입주`}, ${c.sector.replace(/ 외 \d+ 종/, '')}${c.workers_band ? `, ${fromNps ? '가입자' : '종사자'} ${c.workers_band}` : ''}${c.product ? `, 생산품 ${c.product.split(',')[0]}` : ''}. ${srcName} ${c.as_of} 기준`;
@@ -31,6 +44,19 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
       <h1>{c.name}</h1>
       <p class="lede">{desc}</p>
     </header>
+    <ul class="tiles co-tiles" aria-label="핵심 숫자">
+      <li class="tile"><p class="label">고용 인원</p><p class="num">{emp == null ? <span class="unit">자료 없음</span> : <>{emp.toLocaleString('ko-KR')}<span class="unit">명</span></>}</p><p class="sub">{basis}{m ? ` · ${monthLabel(m.month)} 기준` : ''}{empDelta != null && ` · 전월 대비 ${empDelta > 0 ? '+' : ''}${empDelta.toLocaleString('ko-KR')}명`}</p></li>
+      <li class="tile"><p class="label">지원 이력 (최근 3년)</p><p class="num">{support3y.length.toLocaleString('ko-KR')}<span class="unit">건</span></p><p class="sub">공개 자료 기준{supportAll.length > support3y.length && ` · 전체 ${supportAll.length}건`}</p></li>
+      <li class="tile spark"><p class="label">최근 12개월 고용 추이</p>
+        {pts.some(Boolean) ? (
+          <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={`최근 ${last12.length}개월 고용 인원 추이`}>
+            {poly.includes(' ') && <polyline points={poly} fill="none" stroke="var(--primary)" stroke-width="2" />}
+            {pts.map(q => q && <circle cx={q[0]} cy={q[1]} r="3" fill="var(--primary)" />)}
+          </svg>
+        ) : <p class="sub">고용 자료 없음</p>}
+        <p class="sub">{months.length ? `${months[Math.max(0, months.length - last12.length)]} ~ ${months.at(-1)} · 자료 ${last12.length}개월` : '월별 자료가 쌓이면 표시'}</p>
+      </li>
+    </ul>
     <table class="card">
       <tbody>
         <tr><th>소재</th><td>{c.district}{c.eupmyeon && ` ${c.eupmyeon}`} · <a href={`/companies/?complex=${encodeURIComponent(c.complex)}`}>{c.complex}</a></td></tr>

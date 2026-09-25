@@ -141,3 +141,6 @@ article.post .body figcaption { font-size: var(--small); color: var(--muted); ma
 .support-table td:nth-child(6) { max-width: 520px; }
 .support-table td:nth-child(6) div + div { margin-top: 2px; }
 .more-row { margin: var(--s2) 0; }
+.co-tiles { grid-template-columns: repeat(2, 1fr); margin-bottom: var(--s3); }
+@media (min-width: 720px) { .co-tiles { grid-template-columns: repeat(3, 1fr); } }
+.co-tiles .spark svg { display: block; max-width: 100%; height: auto; margin-top: 4px; }

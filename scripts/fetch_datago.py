@@ -124,7 +124,12 @@ def try_download(pk: str, call: list[str], sess: requests.Session, atch_page: li
     if atch:
         for s_ in dict.fromkeys([sn, "1", "2", "3", "4"]):
             attempts.append(("GET", DL_OLD, {"atchFileId": atch, "fileDetailSn": s_}))
-    for method, url, params in attempts:
+    seen: set = set()
+    i = 0
+    while i < len(attempts) and i < 12:
+        method, url, params = attempts[i]
+        i += 1
+        seen.add((method, url, tuple(sorted(params.items()))))
         try:
             r = sess.request(method, url, params=params if method == "GET" else None, data=params if method == "POST" else None,
                              headers={**UA, "Referer": PAGE.format(id=pk)}, timeout=300, stream=True, allow_redirects=True)
@@ -140,11 +145,57 @@ def try_download(pk: str, call: list[str], sess: requests.Session, atch_page: li
                     continue
                 return r
             if "text/html" in ct:
-                print("    " + html_text(r))
+                body = r.content[:200000].decode(r.encoding or "utf-8", errors="replace").strip()
+                if body.startswith("{"):
+                    # 포털이 파일 대신 JSON(dataSetFileDetailInfo)을 주는 자료: 그 안의 atchFileId·fileDetailSn·주소로 다시 시도
+                    print("    json: " + body[:600].replace("\n", " "))
+                    for m2, u2, p2 in json_attempts(body, pk):
+                        if (m2, u2, tuple(sorted(p2.items()))) not in seen:
+                            attempts.append((m2, u2, p2))
+                else:
+                    print("    " + html_text(r))
             r.close()
         except Exception as e:  # noqa: BLE001
             print(f"  {method} 실패: {e}")
     return None
+
+
+def json_attempts(body: str, pk: str) -> list[tuple[str, str, dict]]:
+    """dataSetFileDetailInfo JSON 에서 다운로드 단서를 뽑아 시도 목록으로."""
+    import json
+    try:
+        obj = json.loads(body)
+    except ValueError:
+        return []
+    found: dict[str, str] = {}
+    urls: list[str] = []
+
+    def walk(o):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if isinstance(v, (dict, list)):
+                    walk(v)
+                elif isinstance(v, str):
+                    if re.fullmatch(r"FILE_[0-9]{10,}", v):
+                        found.setdefault("atch", v)
+                    if k in ("fileDetailSn", "atchFileDetailSn") and re.fullmatch(r"\d{1,3}", v):
+                        found.setdefault("sn", v)
+                    if v.startswith("http") and re.search(r"\.(csv|xlsx?|json|zip)(\?|$)|download|Download", v):
+                        urls.append(v)
+                elif isinstance(v, int) and k in ("fileDetailSn", "atchFileDetailSn"):
+                    found.setdefault("sn", str(v))
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    walk(obj)
+    out: list[tuple[str, str, dict]] = []
+    if found.get("atch"):
+        for s_ in dict.fromkeys([found.get("sn", "1"), "1", "2", "3"]):
+            out.append(("GET", DL_OLD, {"atchFileId": found["atch"], "fileDetailSn": s_}))
+    for u in urls[:3]:
+        out.append(("GET", u, {}))
+    print(f"    json 단서: {found} urls={urls[:3]}")
+    return out
 
 
 def try_catalog(pk: str, sess: requests.Session) -> None:

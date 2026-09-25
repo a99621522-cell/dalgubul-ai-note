@@ -8,16 +8,16 @@
  "method": "rss(/insights/rss)",
  "items": [
   {
-   "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
-   "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
-   "date": "2026-09-24",
-   "summary": "Our new analysis reveals the odds of reaching $1 billion in sales—and how the paths to that milestone differ by category and ownership."
-  },
-  {
    "title": "Democratized superintelligence is coming: The world needs to get ready",
    "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
    "date": "2026-09-24",
    "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
+  },
+  {
+   "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
+   "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
+   "date": "2026-09-24",
+   "summary": "Our new analysis reveals the odds of reaching $1 billion in sales—and how the paths to that milestone differ by category and ownership."
   },
   {
    "title": "The new growth mandate: A conversation with LinkedIn CMO Jessica Jensen",
@@ -26,28 +26,28 @@
    "summary": "At Cannes Lions 2026, LinkedIn CMO Jessica Jensen and McKinsey senior partner Dianne Esber discussed what it takes to turn AI from experimentation into a catalyst for growth."
   },
   {
-   "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
-   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
-   "date": "2026-09-23",
-   "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
-  },
-  {
    "title": "Harnessing AI to make mining safer",
    "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/harnessing-ai-to-make-mining-safer",
    "date": "2026-09-23",
    "summary": "AI could improve both safety and productivity by anticipating problems before they arise, detecting worker fatigue, and automating dangerous tasks."
   },
   {
-   "title": "Author Talks: The business of owning a sports team",
-   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-the-business-of-owning-a-sports-team",
+   "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
    "date": "2026-09-23",
-   "summary": "How does business ownership compare with owning a sports team? Baltimore Orioles owner David M. Rubenstein explains the leadership mindset, culture building, and long-term thinking that team ownership requires."
+   "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
   },
   {
    "title": "India’s new insurance track: The marathon becomes an AI-led decathlon",
    "url": "https://www.mckinsey.com/industries/financial-services/our-insights/indias-new-insurance-track-the-marathon-becomes-an-ai-led-decathlon",
    "date": "2026-09-23",
    "summary": "As India’s economy continues to ramp up, insurers have an opportunity to capture value by improving productivity, modernizing operating models, and scaling technology and AI across the enterprise."
+  },
+  {
+   "title": "Author Talks: The business of owning a sports team",
+   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-the-business-of-owning-a-sports-team",
+   "date": "2026-09-23",
+   "summary": "How does business ownership compare with owning a sports team? Baltimore Orioles owner David M. Rubenstein explains the leadership mindset, culture building, and long-term thinking that team ownership requires."
   },
   {
    "title": "Rewiring procurement in resources: Making judgment an enduring asset",
@@ -92,12 +92,6 @@
    "summary": "AI is getting more expensive for companies. As rising token usage and workflow complexity make costs harder to predict, leaders need new ways to manage AI economics."
   },
   {
-   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
-   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
-   "date": "2026-09-21",
-   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
-  },
-  {
    "title": "WIRED: The AI playbook top companies use",
    "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/wired-the-ai-playbook-top-companies-use",
    "date": "2026-09-21",
@@ -108,6 +102,12 @@
    "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/ai-drug-discovery-focusing-on-what-matters-most",
    "date": "2026-09-21",
    "summary": "AI is accelerating drug discovery, but investment has concentrated in molecule design—the stage with the best data and clearest tools. The industry’s real constraint lies elsewhere: identifying and validating the right disease mechanism."
+  },
+  {
+   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
+   "date": "2026-09-21",
+   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
   },
   {
    "title": "Social care referral networks: Improving health in rural communities",
@@ -158,16 +158,16 @@
    "summary": "As enterprises shift from experimenting with models to redesigning workflows, new research suggests Europe could be well-positioned for this new AI application era."
   },
   {
-   "title": "Aftershocks: Energy security beyond the Strait of Hormuz crisis",
-   "url": "https://www.mckinsey.com/mgi/our-research/aftershocks-energy-security-beyond-the-strait-of-hormuz-crisis",
-   "date": "2026-09-17",
-   "summary": "The energy system has proven surprisingly resilient, but shock absorbers are thinning. Energy security has no easy exits but room to maneuver."
-  },
-  {
    "title": "Here’s why some US industrial companies achieve higher multiples",
    "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/heres-why-some-us-industrial-companies-achieve-higher-multiples",
    "date": "2026-09-17",
    "summary": "Not every industrial company in a high-growth market earns a higher valuation. The biggest winners consistently combine four management actions."
+  },
+  {
+   "title": "Aftershocks: Energy security beyond the Strait of Hormuz crisis",
+   "url": "https://www.mckinsey.com/mgi/our-research/aftershocks-energy-security-beyond-the-strait-of-hormuz-crisis",
+   "date": "2026-09-17",
+   "summary": "The energy system has proven surprisingly resilient, but shock absorbers are thinning. Energy security has no easy exits but room to maneuver."
   },
   {
    "title": "The agentic transformation office: Redefining the economics of change",
@@ -230,10 +230,10 @@
    "summary": "Australia’s prosperity has been built through deliberate choices, investment, and reinvention. After a lost decade of growth, the nation can draw on its strengths to choose another century of plenty."
   },
   {
-   "title": "Strategy in the age of arenas",
-   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/strategy-in-the-age-of-arenas",
+   "title": "The future of US manufacturing",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/the-future-of-us-manufacturing",
    "date": "2026-09-11",
-   "summary": "A group of fast-growing industries is reshaping the competitive landscape. Their rise requires business leaders to rethink strategy in two important ways."
+   "summary": "A quarter of America’s manufactured imports face critical trade dependencies. Strengthening US manufacturing will depend not only on capital but also on talent, energy, and resilient supplier networks."
   },
   {
    "title": "Capturing life cycle value in Europe’s trucking industry",
@@ -242,10 +242,10 @@
    "summary": "The vast majority of Europe’s truck-related revenue flows after a vehicle is sold. Capturing that value presents a major growth opportunity."
   },
   {
-   "title": "Zero-emission trucks: Accelerating Europe’s transition",
-   "url": "https://www.mckinsey.com/industries/automotive-and-assembly/our-insights/zero-emission-trucks-accelerating-europes-transition",
+   "title": "Strategy in the age of arenas",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/strategy-in-the-age-of-arenas",
    "date": "2026-09-11",
-   "summary": "Challenges across the ecosystem delay the transition to zero-emission trucks, resulting in rising pressure on European OEMs due to potential CO2 penalties and growing competition."
+   "summary": "A group of fast-growing industries is reshaping the competitive landscape. Their rise requires business leaders to rethink strategy in two important ways."
   }
  ],
  "note": ""

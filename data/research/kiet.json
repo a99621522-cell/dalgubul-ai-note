@@ -4,8 +4,39 @@
  "group": "국내 연구",
  "home": "https://www.kiet.re.kr",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "지방대학의 인력 양성 경쟁력 현황과 정책 방향 - 권역별 인력 양성 거점 조성을 중심으로",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=868&skey=&sval=&pg=1&pp=10",
+   "date": "2026-09-22",
+   "summary": ""
+  },
+  {
+   "title": "제조 AX를 위한 피지컬 AI 생태계 발전 전략",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=867&skey=&sval=&pg=1&pp=10",
+   "date": "2026-09-15",
+   "summary": ""
+  },
+  {
+   "title": "한반도 평화경제·공동번영을 위한 평화경제특구의 발전 과제",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=866&skey=&sval=&pg=1&pp=10",
+   "date": "2026-08-25",
+   "summary": ""
+  },
+  {
+   "title": "한국-나토 조달기본협정 체결의 의미와 시사점",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=865&skey=&sval=&pg=1&pp=10",
+   "date": "2026-08-12",
+   "summary": ""
+  },
+  {
+   "title": "공공기관 지방이전의 파급효과와 혁신도시 거점화 방향",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=864&skey=&sval=&pg=1&pp=10",
+   "date": "2026-08-07",
+   "summary": ""
+  }
+ ],
  "note": ""
 }

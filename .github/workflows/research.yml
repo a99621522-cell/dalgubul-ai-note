@@ -26,12 +26,13 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 75      # 한 기관이 멈춰도 전체가 몇 시간 걸리지 않게
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r scripts/requirements.txt playwright && python -m playwright install --with-deps chromium
+      - run: pip install -r scripts/requirements.txt playwright pandas openpyxl && python -m playwright install --with-deps chromium
       - name: 받기
         env:
           ONLY: ${{ inputs.only }}

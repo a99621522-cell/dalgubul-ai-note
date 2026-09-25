@@ -1,0 +1,40 @@
+name: 참조 기관 발간물 받기 — 국내 러너 (지역 차단 사이트)
+
+# 대구시·대구TP·DMI·케이메디허브·대구정책연구원·KISTI·로봇산업진흥원처럼 미국 GitHub 러너에서 접속이 안 되는 사이트를
+# 국내에 둔 self-hosted 러너(라벨 korea)로 받는다. 러너 등록: 저장소 Settings → Actions → Runners → New self-hosted runner,
+# 국내 PC 에 설치하면서 라벨에 korea 를 추가하고 서비스로 실행. 러너가 없으면 이 워크플로는 대기 상태로 머무르므로 수동 실행만 둔다.
+# 러너 없이 하려면 국내 PC 에서 `python3 scripts/fetch_research.py --only daegu-press,ttp,dmi,kmedi,dgi,kisti,kiria` 를 돌리고 data/research 를 커밋한다.
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "기관 key (쉼표 구분)"
+        required: false
+        default: "daegu-press,ttp,dmi,kmedi,dgi,kisti,kiria,bok"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: [self-hosted, korea]
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -r scripts/requirements.txt pandas openpyxl
+      - name: 받기
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          set +e
+          python3 scripts/fetch_research.py --only "$ONLY"
+          echo "exit=$?"
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add -A data/research
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 참조 기관 발간물 목록(국내 러너) $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"

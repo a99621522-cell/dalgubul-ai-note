@@ -1,17 +1,17 @@
 {
  "month": "2026-07",
- "generated": "2026-09-25 10:39",
+ "generated": "2026-09-25 14:12",
  "basis": "nps",
  "basis_label": "국민연금 가입자수",
  "sources": {
   "factoryon": {
    "as_of": "2026-08",
-   "companies": 13820
+   "companies": 13828
   },
   "nps": {
    "file": "data/nps/202607.csv",
    "rows": 19475,
-   "matched": 6059
+   "matched": 6060
   },
   "dart": {
    "corps_daegu": 2,
@@ -19,17 +19,17 @@
   }
  },
  "total": {
-  "firms": 13820,
-  "employment": 155845,
-  "covered": 6059,
+  "firms": 13828,
+  "employment": 155855,
+  "covered": 6060,
   "avg_employment": 25.7,
   "size_bands": {
    "1~9": 2868,
-   "10~49": 2665,
+   "10~49": 2666,
    "50~299": 408,
    "300+": 54
   },
-  "nps_gain": 4507,
+  "nps_gain": 4508,
   "nps_loss": 3388,
   "new_firms": 5,
   "closed_firms": 26,
@@ -140,12 +140,12 @@
    "yoy": null
   },
   "소프트웨어·IT": {
-   "firms": 710,
-   "employment": 9235,
-   "covered": 584,
+   "firms": 714,
+   "employment": 9230,
+   "covered": 583,
    "avg_employment": 15.8,
    "size_bands": {
-    "1~9": 372,
+    "1~9": 371,
     "10~49": 183,
     "50~299": 26,
     "300+": 2
@@ -320,7 +320,7 @@
    "yoy": null
   },
   "기타 제조": {
-   "firms": 1344,
+   "firms": 1343,
    "employment": 10153,
    "covered": 621,
    "avg_employment": 16.3,
@@ -350,17 +350,17 @@
    "yoy": null
   },
   "기타 서비스": {
-   "firms": 1552,
-   "employment": 9934,
-   "covered": 528,
+   "firms": 1554,
+   "employment": 9944,
+   "covered": 529,
    "avg_employment": 18.8,
    "size_bands": {
     "1~9": 283,
-    "10~49": 202,
+    "10~49": 203,
     "50~299": 26,
     "300+": 3
    },
-   "nps_gain": 281,
+   "nps_gain": 282,
    "nps_loss": 262,
    "new_firms": 0,
    "closed_firms": 5,
@@ -380,12 +380,12 @@
    "yoy": null
   },
   "미분류": {
-   "firms": 56,
-   "employment": 523,
-   "covered": 29,
-   "avg_employment": 18.0,
+   "firms": 59,
+   "employment": 528,
+   "covered": 30,
+   "avg_employment": 17.6,
    "size_bands": {
-    "1~9": 9,
+    "1~9": 10,
     "10~49": 18,
     "50~299": 2,
     "300+": 0
@@ -472,17 +472,17 @@
    "yoy": null
   },
   "산단 외": {
-   "firms": 2646,
-   "employment": 35836,
-   "covered": 2365,
+   "firms": 2654,
+   "employment": 35846,
+   "covered": 2366,
    "avg_employment": 15.2,
    "size_bands": {
     "1~9": 1508,
-    "10~49": 770,
+    "10~49": 771,
     "50~299": 73,
     "300+": 9
    },
-   "nps_gain": 1528,
+   "nps_gain": 1529,
    "nps_loss": 1154,
    "new_firms": 4,
    "closed_firms": 2,
@@ -1246,17 +1246,17 @@
    "yoy": null
   },
   "수성구": {
-   "firms": 455,
-   "employment": 5106,
-   "covered": 345,
+   "firms": 463,
+   "employment": 5116,
+   "covered": 346,
    "avg_employment": 14.8,
    "size_bands": {
     "1~9": 198,
-    "10~49": 132,
+    "10~49": 133,
     "50~299": 13,
     "300+": 1
    },
-   "nps_gain": 197,
+   "nps_gain": 198,
    "nps_loss": 155,
    "new_firms": 0,
    "closed_firms": 1,
@@ -1396,17 +1396,17 @@
  },
  "by_site": {
   "수성알파시티": {
-   "firms": 156,
-   "employment": 2671,
-   "covered": 131,
-   "avg_employment": 20.4,
+   "firms": 165,
+   "employment": 2681,
+   "covered": 132,
+   "avg_employment": 20.3,
    "size_bands": {
     "1~9": 68,
-    "10~49": 53,
+    "10~49": 54,
     "50~299": 9,
     "300+": 1
    },
-   "nps_gain": 100,
+   "nps_gain": 101,
    "nps_loss": 73,
    "new_firms": 0,
    "closed_firms": 0,
@@ -1516,7 +1516,7 @@
    "yoy": null
   },
   "개별입지": {
-   "firms": 5203,
+   "firms": 5202,
    "employment": 47339,
    "covered": 2964,
    "avg_employment": 16.0,
@@ -1578,12 +1578,12 @@
    "yoy": null
   },
   "창업기업": {
-   "firms": 1089,
-   "employment": 10028,
-   "covered": 1089,
+   "firms": 1088,
+   "employment": 10023,
+   "covered": 1088,
    "avg_employment": 9.2,
    "size_bands": {
-    "1~9": 822,
+    "1~9": 821,
     "10~49": 248,
     "50~299": 19,
     "300+": 0
@@ -1639,7 +1639,7 @@
   }
  },
  "sources_extra": {
-  "outside_companies": 2646,
+  "outside_companies": 2654,
   "note": "산단 외 기업 목록(scripts/data/extra_companies.csv). 없으면 0"
  },
  "cross": {
@@ -1891,9 +1891,9 @@
   },
   "소프트웨어·IT": {
    "산단 외": {
-    "firms": 562,
-    "employment": 7687,
-    "covered": 520
+    "firms": 566,
+    "employment": 7682,
+    "covered": 519
    },
    "대구경북경제자유구역수성의료지구": {
     "firms": 39,
@@ -2398,7 +2398,7 @@
   },
   "기타 제조": {
    "산단 외": {
-    "firms": 404,
+    "firms": 403,
     "employment": 3884,
     "covered": 350
    },
@@ -2485,9 +2485,9 @@
   },
   "기타 서비스": {
    "산단 외": {
-    "firms": 353,
-    "employment": 3857,
-    "covered": 293
+    "firms": 355,
+    "employment": 3867,
+    "covered": 294
    },
    "성서지방산업단지": {
     "firms": 221,
@@ -2582,9 +2582,9 @@
   },
   "미분류": {
    "산단 외": {
-    "firms": 56,
-    "employment": 523,
-    "covered": 29
+    "firms": 59,
+    "employment": 528,
+    "covered": 30
    }
   }
  },
@@ -2672,9 +2672,9 @@
   },
   "소프트웨어·IT": {
    "수성알파시티": {
-    "firms": 106,
-    "employment": 1756,
-    "covered": 86
+    "firms": 110,
+    "employment": 1751,
+    "covered": 85
    },
    "연구개발특구": {
     "firms": 5,
@@ -2849,16 +2849,16 @@
     "covered": 189
    },
    "개별입지": {
-    "firms": 789,
+    "firms": 788,
     "employment": 5174,
     "covered": 419
    }
   },
   "기타 서비스": {
    "수성알파시티": {
-    "firms": 16,
-    "employment": 193,
-    "covered": 14
+    "firms": 18,
+    "employment": 203,
+    "covered": 15
    },
    "연구개발특구": {
     "firms": 1,
@@ -2882,6 +2882,11 @@
    }
   },
   "미분류": {
+   "수성알파시티": {
+    "firms": 3,
+    "employment": 5,
+    "covered": 1
+   },
    "개별입지": {
     "firms": 56,
     "employment": 523,

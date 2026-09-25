@@ -115,7 +115,8 @@ article.post .body figcaption { font-size: var(--small); color: var(--muted); ma
 .source-box { margin-top: var(--s4); padding: var(--s2); border: 1px solid var(--line); border-radius: var(--radius); font-size: var(--small); color: var(--muted); }
 .source-box strong { color: var(--ink); }
 .tags { margin-top: var(--s3); font-size: var(--small); color: var(--muted); display: flex; flex-wrap: wrap; gap: var(--s1); }
-.faq { margin-top: var(--s4); border-top: 1px solid var(--line); padding-top: var(--s2); }
+.faq, .sources { margin-top: var(--s4); border-top: 1px solid var(--line); padding-top: var(--s2); }
+.sources ol { padding-left: 1.4em; } .sources li { margin: 4px 0; overflow-wrap: anywhere; }
 .faq h2 { margin-bottom: var(--s1); }
 .faq details { border-bottom: 1px solid var(--line); padding: var(--s1) 0; }
 .faq summary { cursor: pointer; font-weight: 600; min-height: var(--touch); display: flex; align-items: center; }

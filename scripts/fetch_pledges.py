@@ -46,13 +46,14 @@ def page_text(html: str) -> tuple[str, str]:
     return title, text
 
 
-def fetch_city(seeds: list[str], sess: requests.Session, max_pages: int = 40) -> int:
+def fetch_city(seeds: list[str], sess: requests.Session, max_pages: int = 60, max_depth: int = 2) -> int:
     d = OUT / "city"
     (d / "files").mkdir(parents=True, exist_ok=True)
     seen, queue, saved = set(), [(u, 0) for u in seeds], 0
     index = []
     while queue and saved < max_pages:
         url, depth = queue.pop(0)
+        url = url.split("#")[0]
         if url in seen:
             continue
         seen.add(url)
@@ -73,7 +74,9 @@ def fetch_city(seeds: list[str], sess: requests.Session, max_pages: int = 40) ->
             continue
         r.encoding = r.apparent_encoding or "utf-8"
         title, text = page_text(r.text)
-        if "공약" in title + text[:3000]:
+        if len(text) < 200:
+            print(f"  [city] 본문이 거의 없음({len(text)}자, JS 렌더링일 수 있음): {url}\n      {r.text[:300].replace(chr(10), ' ')}")
+        if depth == 0 or "공약" in title + text[:5000]:
             fn = f"{saved + 1:02d}_{safe(title)}.txt"
             (d / fn).write_text(f"# {title}\n# 출처: {url}\n# 받은 날짜: {TODAY}\n\n{text}", encoding="utf-8")
             index.append({"url": url, "title": title, "file": fn, "chars": len(text), "fetched": TODAY})
@@ -81,17 +84,24 @@ def fetch_city(seeds: list[str], sess: requests.Session, max_pages: int = 40) ->
             print(f"  [city] 저장 {fn} ({len(text):,}자) ← {url}")
         else:
             print(f"  [city] '공약' 없음, 건너뜀: {title[:40]} ← {url}")
-        if depth >= 1:
+        if depth >= max_depth:
             continue
         soup = BeautifulSoup(r.text, "html.parser")
         host = urlparse(url).netloc
+        links = []
         for a in soup.find_all("a", href=True):
             label = a.get_text(" ", strip=True)
-            href = urljoin(url, a["href"])
-            if urlparse(href).netloc != host or href in seen:
+            href = urljoin(url, a["href"]).split("#")[0]
+            if urlparse(href).netloc != host or href in seen or href.startswith("javascript"):
                 continue
-            if "공약" in label or re.search(r"공약|pledge|promise", href, re.I) or re.search(r"\.(pdf|hwpx?|xlsx?)(\?|$)", href, re.I) and "공약" in label + str(a.parent)[:200]:
+            links.append((label, href))
+            hit = re.search(r"공약|비전|추진과제|시정|당선", label) or re.search(r"공약|pledge|promise|policy", href, re.I) \
+                or (re.search(r"\.(pdf|hwpx?|xlsx?)(\?|$)", href, re.I) and "공약" in label + str(a.parent)[:200]) \
+                or ("nec.go.kr" in host and re.search(r"대구|지방선거|시.?도지사|당선", label))
+            if hit:
                 queue.append((href, depth + 1))
+        if depth == 0:  # 첫 페이지의 링크는 전부 로그에 남겨 다음 실행의 seed 를 고를 수 있게
+            print(f"  [city] {url} 링크 {len(links)}개: " + " | ".join(f"{l[:20]}→{h[-60:]}" for l, h in links[:80]))
     (d / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"[city] 페이지 {saved}개 저장 → {d.relative_to(ROOT)}")
     return saved

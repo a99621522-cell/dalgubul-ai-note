@@ -64,7 +64,10 @@ nps:
 # 민선 9기 대구시장 공약 원문 (scripts/fetch_pledges.py, .github/workflows/pledges.yml)
 pledges:
   seeds:
-    - https://mayor.daegu.go.kr/index.do?menu_id=00001466   # 열린시장실 시장공약사항 관리지침 (같은 메뉴의 공약 목록 링크를 따라간다)
+    - https://mayor.daegu.go.kr/index.do?menu_id=00938972   # 열린시장실 > 공약실천계획
+    - https://mayor.daegu.go.kr/index.do?menu_id=00938606   # 열린시장실 > 주요 추진과제
+    - https://mayor.daegu.go.kr/index.do?menu_id=00001450   # 열린시장실 > 공약 관련 메뉴
+    - https://mayor.daegu.go.kr/index.do?menu_id=00001466   # 시장공약사항 관리지침
     - https://mayor.daegu.go.kr/
-    - https://www.daegu.go.kr/index.do?menu_id=00000021
-    - https://www.daegu.go.kr/
+    - https://policy.nec.go.kr/svc/policy/PolicyList.do     # 중앙선관위 정책·공약알리미 (당선인 공약)
+    - https://policy.nec.go.kr/

@@ -4,71 +4,39 @@
  "group": "국내 연구",
  "home": "https://rd.kdb.co.kr",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
- "note": "",
- "sample_links": [
-  [
-   "China Next(폐간)",
-   "https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031"
-  ],
-  [
-   "간행물 와 같은 뎁스의 메뉴목록 펼치기 접기",
-   "https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031"
-  ],
-  [
-   "정기간행물 와 같은 뎁스의 메뉴목록 펼치기 접기",
-   "https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031"
-  ],
-  [
-   "KDB리포트 와 같은 뎁스의 메뉴목록 펼치기 접기",
-   "https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031"
-  ],
-  [
-   "China Next(폐간)",
-   "https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=AB4D7578-657A-E2E5-9650-1F0666DE9358&fileId=24DB0356-3E76-E4E2-0F82-9C4AE94BCC5E"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=0B7F64E4-A15B-28C9-10B2-002FC6D210AB&fileId=B0C1DE8E-5205-DC01-72E3-A57C2F98A2AC"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=1DA5C41F-5571-FD23-C1F2-45B6AD3A453F&fileId=76DE9051-D9DB-7392-5C63-4737C5B3F3E2"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=C1436930-515C-CC21-9A2C-2C4972F11EFC&fileId=D082F7E6-880C-BC93-DD4E-3A5F08E34A6C"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=EC79AB09-84FD-146A-9E13-3BD3FBE66D9F&fileId=5446CDD6-9E5D-55E7-080A-4E7E325AFF17"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=2A36E251-3830-C12F-0F7E-FB98577559CF&fileId=4D5BA84E-7F44-565A-361F-640A4CBB7E26"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=689A974A-3563-F031-1A3F-203536DDC2EE&fileId=B917256E-36A5-3F2D-CF98-CFE9AE373F06"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=F1CB547B-6EA5-F610-4D45-7F85F5D7B57F&fileId=F8BD3568-6486-CA29-D22E-AE1425E8447C"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=30A3FD05-8862-0965-60BF-40C145E031AC&fileId=9A1BE1C6-659F-1054-0267-7B2ADD4E06F4"
-  ],
-  [
-   "pdf 파일 다운로드",
-   "https://rd.kdb.co.kr/fileView?groupId=91BE0890-EE9C-51AD-647B-7C19771425CF&fileId=D5099238-7C35-B4D6-629C-B1CFB38F89D1"
-  ]
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "KDB리포트(2026.9.21)",
+   "url": "https://rd.kdb.co.kr/fileView?groupId=AB4D7578-657A-E2E5-9650-1F0666DE9358&fileId=24DB0356-3E76-E4E2-0F82-9C4AE94BCC5E",
+   "date": "2026-09-21",
+   "summary": ""
+  },
+  {
+   "title": "KDB리포트(2026.9.7)",
+   "url": "https://rd.kdb.co.kr/fileView?groupId=0B7F64E4-A15B-28C9-10B2-002FC6D210AB&fileId=B0C1DE8E-5205-DC01-72E3-A57C2F98A2AC",
+   "date": "2026-09-07",
+   "summary": ""
+  },
+  {
+   "title": "KDB리포트(2026.8.18)",
+   "url": "https://rd.kdb.co.kr/fileView?groupId=1DA5C41F-5571-FD23-C1F2-45B6AD3A453F&fileId=76DE9051-D9DB-7392-5C63-4737C5B3F3E2",
+   "date": "2026-08-18",
+   "summary": ""
+  },
+  {
+   "title": "KDB리포트(2026.8.3)",
+   "url": "https://rd.kdb.co.kr/fileView?groupId=C1436930-515C-CC21-9A2C-2C4972F11EFC&fileId=D082F7E6-880C-BC93-DD4E-3A5F08E34A6C",
+   "date": "2026-08-03",
+   "summary": ""
+  },
+  {
+   "title": "KDB리포트(2026.7.20)",
+   "url": "https://rd.kdb.co.kr/fileView?groupId=EC79AB09-84FD-146A-9E13-3BD3FBE66D9F&fileId=5446CDD6-9E5D-55E7-080A-4E7E325AFF17",
+   "date": "2026-07-20",
+   "summary": ""
+  }
  ],
- "page_chars": 54572
+ "note": ""
 }

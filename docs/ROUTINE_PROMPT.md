@@ -13,9 +13,13 @@ scripts/data/ca-extra.pem 을 certifi 번들과 합쳐 넘겨야 한다.
 각 게시판에서 지난 7일 새 공고를 읽어 scripts/inbox/weekly-YYYYMMDD.json 에 저장한다
 (title, url, source=기관명, category, deadline(YYYY-MM-DD, 없으면 null), body=본문 300자 요약).
 첨부 PDF/HWP/HWPX 가 있으면 열어 대상·규모·기간을 body 에 포함한다.
+제목이 선정 결과·최종 선정·합격자 발표·선정 기업 명단인 글은 본문·첨부 표에서 기업명만 뽑아
+scripts/data/support/inst-YYYYMMDD.csv 에 저장한다(열: 기업명, 선정연도=게시일 연도, 지원기관=기관명, 사업명=공고 제목,
+구분=기관, 지원유형=선정, 출처="기관명 홈페이지 공고", 출처URL, 기준일=게시일; 형식은 그 폴더 README).
+기관·대학·병원은 넣지 않고 대표자·연락처는 읽지 않는다. 저장했으면 python3 scripts/import_support.py 를 실행해 support_history.csv 에 합친다.
 공공기관 사이트만, 개인정보 없는 글만, 기관당 요청 20건 이내.
 0건인 기관이 있으면 커밋 메시지에 "[구조 변경 의심] 기관명" 을 적는다.
-완료 후 "chore: 주간 기관 공고 수집 YYYY-MM-DD" 로 커밋·푸시한다.
+완료 후 "chore: 주간 기관 공고 수집 YYYY-MM-DD" 로 커밋·푸시한다(선정 결과가 있으면 support_history.csv 도 함께).
 
 ## 월간 기업 DB 갱신 — 매월 3일 06:00
 https://www.factoryon.go.kr/bbs/frtblRecsroomBbsList.do 에서 최신 월 "전국(개별,계획)입주업체현황" 과

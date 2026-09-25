@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+import { CATEGORIES, type CategoryKey } from '../../categories';
+/** /posts/ — 발행된 글 전체(최신순). 숨긴 카테고리(공모·지원사업)는 목록에서 빠지고 데이터(/support/, data/notices)로만 남는다. */
+const visible = (Object.keys(CATEGORIES) as CategoryKey[]).filter(k => !CATEGORIES[k].hidden);
+const posts = (await getCollection('posts', p => !p.data.draft && visible.includes(p.data.category)))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const counts = Object.fromEntries(visible.map(k => [k, posts.filter(p => p.data.category === k).length]));
+const drafts = (await getCollection('posts', p => p.data.draft)).length;
+---
+<Base title="글" description={`기업 동향·산업 정책 글 ${posts.length}건. 공시·보도자료 요약과 주간 정책제안 리포트. 자동 생성 초안은 사람이 검토한 뒤 발행합니다.`} current="posts">
+  <div class="section-head"><h1>글</h1><span class="meta">발행 {posts.length}건{drafts ? ` · 검토 대기 초안 ${drafts}건` : ''}</span></div>
+  <p class="lede">공시·보도자료에서 사실만 추린 기업 동향과, 부처·대구시 산업 정책·예산과 주간 정책제안 리포트입니다. 지원사업 공고는 글로 쓰지 않고 <a href="/support/">지원받은 기업</a>과 사업 데이터로만 남깁니다.</p>
+  <nav class="cat-tabs" aria-label="분류">
+    {visible.map(k => <a href={`/category/${k}/`}>{CATEGORIES[k].name} <span class="meta">{counts[k]}</span></a>)}
+  </nav>
+  <PostList posts={posts} />
+</Base>
+<style>
+  .cat-tabs { display: flex; flex-wrap: wrap; gap: var(--s1); margin: var(--s2) 0 var(--s3); }
+  .cat-tabs a { display: inline-flex; align-items: center; gap: 6px; min-height: var(--touch); padding: 0 var(--s2); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink); }
+  .cat-tabs a:hover, .cat-tabs a:focus-visible { border-color: var(--primary); color: var(--primary); }
+</style>

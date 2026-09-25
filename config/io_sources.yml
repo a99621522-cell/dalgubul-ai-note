@@ -1,0 +1,21 @@
+# 한국은행 산업연관표 첨부 받기 (scripts/fetch_io_tables.py → scripts/data/io/)
+# 필요한 파일: (1) 생산자가격 거래표(기본부문) (2) 부문분류표(기본부문 ↔ 한국표준산업분류). 둘 다 xlsx.
+# 자동으로 못 받으면 ECOS(ecos.bok.or.kr) > 산업연관표 > 해당 연도에서 내려받아 scripts/data/io/ 에 넣는다(파일명 자유, attract.py 가 내용으로 판별).
+version: 2026-09-25
+# API 로 받기 (scripts/fetch_io_api.py). 키는 GitHub Secrets ECOS_KEY(한국은행 Open API 인증키, ecos.bok.or.kr/api) / DATA_GO_KR_KEY(공공데이터포털)
+api:
+  ecos_stat: ""            # ECOS 통계표 코드. 비우면 ecos_name_pattern 으로 목록에서 고른다 (--list 로 목록 확인)
+  ecos_year: 2023
+  ecos_name_pattern: "생산자가격.*(기본부문|기본)|기본부문.*생산자가격"
+  datago_url: ""           # 공공데이터포털 한국은행_산업연관표(15059627) 요청주소를 여기 적으면 전부 받아 datago_*.csv 로 저장하고 열 이름을 출력
+file_pattern: "거래표|부문분류|기본부문|통계표|연장표|산업연관표|투입산출|분류표|xlsx|zip"
+exclude_pattern: "보도자료\\.hwp|\\.hwp$|\\.pdf$|해설"
+seeds:
+  - name: 한국은행 2023년 산업연관표(연장표) 보도자료
+    url: "https://www.bok.or.kr/portal/bbs/B0000501/view.do?menuNo=201264&nttId=10093668"
+  - name: 한국은행 2020년 기준년 산업연관표 간행물
+    url: "https://www.bok.or.kr/portal/bbs/P0001588/view.do?nttId=10087143&menuNo=200457"
+  - name: 한국은행 산업연관표 간행물 목록
+    url: "https://www.bok.or.kr/portal/bbs/P0001588/list.do?menuNo=200457"
+  - name: KOSIS 2023년 연장표 파일
+    url: "http://stat.kosis.kr/nsibsHtmlSvc/fileView/FileStbl/fileStblView.do?in_org_id=301&in_tbl_id=DT_301010_FILE2023&tab_yn=N&conn_path=E1"

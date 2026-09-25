@@ -64,7 +64,11 @@ export const complexes = () => readCsv('scripts/data/dalseong_complexes.csv');
 
 /** 부처 사업설명자료 DB(scripts/data/programs_*.csv). 예산 단위는 백만 원(자료 그대로). */
 export type Program = Record<string, string> & { src: string; b26: number; b25: number; isNew: boolean; newDerived: boolean; corp: boolean };
-const PROGRAM_FILES = ['programs_motie.csv', 'programs_smba.csv', 'programs_ai.csv'];
+const PROGRAM_FILES = (() => {
+  const dir = 'scripts/data';
+  const all = fs.readdirSync(dir).filter(f => /^programs_.*\.csv$/.test(f)).sort();
+  return [...all.filter(f => f !== 'programs_ai.csv'), ...all.filter(f => f === 'programs_ai.csv')];  // 부처 개별 자료 → AI 통합자료 순
+})();
 const num = (s: string) => { const n = Number((s || '').replace(/,/g, '')); return Number.isFinite(n) ? n : 0; };
 let _programs: Program[] | null = null;
 export const programs = () => {

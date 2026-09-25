@@ -6,7 +6,7 @@
 ## 구조
 
 - `src/content/posts/*.md` — 글. 프론트매터 스키마는 `src/content.config.ts`. `draft: true` 면 미노출
-- `src/pages/` — index(첫 화면), `dashboard/`(현황판: 입지·구군·단지·태그), `industry/`(산업 그룹 11개 목록·`[key]`·`compare`), `stats/[month]`(월간 통계표), `companies/`(기업 사전·카드), `support/`(지원받은 기업), `programs/`, `posts/`(글 목록)·`posts/[...id]`, `category/[cat]`, `rss.xml.ts`. 메뉴는 `src/nav.ts`
+- `src/pages/` — index(첫 화면), `dashboard/`(현황판: 입지·구군·단지·태그), `industry/`(산업 그룹 11개 목록·`[key]`·`compare`), `stats/[month]`(월간 통계표), `companies/`(기업 사전·카드), `support/`(지원받은 기업), `programs/`, `policy/`(정책 부문: 발행된 정책제안 리포트·산업 정책 글·국비↔시비 매칭 표), `supply-chain/`(산업연관표 빈 고리·유치 후보), `posts/`(글 목록)·`posts/[...id]`, `category/[cat]`, `rss.xml.ts`. 메뉴는 `src/nav.ts`
 - `src/layouts/Base.astro` — 공통 레이아웃과 SEO 메타. `src/styles/global.css` — 전체 스타일
 - `src/categories.ts` — 카테고리 3개: `economy` 기업 동향 / `grants` 공모·지원사업 / `policy` 산업 정책. AI 동향·공무원 AI 글은 이 사이트에서 다루지 않는다(별도 사이트 예정, 초안은 docs/archive-ai-notes)
 - `scripts/collect.py` — 수집(기업마당 API · RSS · 게시판 스크랩 · inbox JSON) → 선별 → 중복제거 → 공고(grants)는 `data/notices/notices.csv` 에 사실만 기록(Gemini 없음) / 기업 동향·정책은 Gemini 요약 → SEO 메타 → 초안 저장
@@ -31,6 +31,8 @@
 - `scripts/render_charts.py` — `data/stats` → `src/generated/charts/` 인라인 SVG(넓은 판·좁은 판)+표 JSON. `Chart.astro`가 읽음
 - `scripts/write_monthly_report.py` — 월보 초안: `data/stats/monthly/YYYYMM.json` 의 값만 옮겨 `src/content/posts/YYYY-MM-DD-monthly-YYYYMM.md`(draft·auto, 표 6개·faq 3)로. `nps.yml` 이 매월 집계 뒤 실행. 발행은 `approve.py`
 - `config/pledge_areas.yml` + `scripts/report_context.py` — 매주 공약 분야별 정책제안 리포트 루틴(docs/ROUTINE_PROMPT.md)의 분야 순환표와 근거 계산(기업 사전·사업 DB·대구시 매칭·최근 글). 리포트는 `draft: true`, 공약 이행 평가·점수화 금지
+- `config/budget_sources.yml` + `scripts/fetch_budget_docs.py` + `.github/workflows/fetch_budget.yml` — 부처(산업부·과기부·중기부)·대구시·기업지원기관 홈페이지에서 예산서·사업설명자료 첨부(PDF·HWP·HWPX·XLSX)를 받아 본문을 `data/budget/<key>/*.txt.gz`(+index.json)로. `parse: true` 기관은 `budget_year` 의 사업설명자료 본문을 `scripts/parse_budget.py` 로 읽어 `scripts/data/programs_budget_<key>.csv`(사업 DB에 자동 포함, 기존 programs_<key>.csv 는 덮어쓰지 않음). `--parse-only` 는 받지 않고 본문만 다시 파싱, `--only key`. `min_year` 보다 오래된 연도 첨부는 건너뜀. 이 세션 환경은 정부 사이트가 막혀 있어 워크플로(설정·스크립트 푸시 때 자동, 또는 수동)가 대신 받는다. 대구시·기관 사이트는 미국 러너에서 자주 시간 초과
+- `scripts/attract.py` + `scripts/data/io/` — 산업연관표 기반 기업유치 후보 분석. 한국은행 거래표(기본부문)·부문분류표(xlsx, `scripts/fetch_io_tables.py`/워크플로 `io_tables.yml` 이 받거나 손으로 넣음)로 KSIC→IO 부문 매핑 → 클러스터 5개(자동차부품·일반기계·전기장비·섬유·의료기기)의 빈 고리(`gaps.csv`) → 전국 팩토리온(`--factoryon`, 저장소 밖)에서 조건 필터로 후보(`candidates.csv`) → `attract_brief.md`·`summary.json`. 조건 상수는 파일 상단. 페이지 `/supply-chain/`. 전국 평균 계수 한계·기준연도 표시, '추천 아님' 명시, 기업 평가 문구 금지. 매월 `scripts/monthly.sh` 가 팩토리온 갱신 뒤 실행
 - `scripts/repair_factoryon.py` — 팩토리온 내려받기 파일이 엑셀에서 안 열릴 때. 첫 바이트로 실제 형식(진짜 xls·HTML 표·CSV·SpreadsheetML) 판정 → 옆에 `_정리.xlsx`(시트 1개, 헤더 고정, 자동 필터, 종사자 숫자·등록일 날짜). 원본은 건드리지 않음
 - `scripts/data/` — 달성 산단·기업 기초 CSV. `dalseong_complexes.csv`는 첫 화면·대구 경제 페이지의 산단 카드(`IndustrialCard.astro`)가 빌드 때 읽고, `dalseong_companies.csv`의 기업명은 collect.py가 경제 키워드로 자동 추가
 - `scripts/sources.yml` — 소스·키워드. 소스 추가는 코드가 아니라 여기서

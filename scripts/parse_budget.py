@@ -12,7 +12,14 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "scripts" / "data" / "programs_ai.csv"
 
 def load_pages(pdf: str):
-    txt = subprocess.run(["pdftotext", "-layout", pdf, "-"], capture_output=True, text=True).stdout
+    """PDF 는 pdftotext, .txt/.txt.gz(fetch_budget_docs 가 만든 본문)는 그대로. 쪽 구분은 form feed."""
+    if pdf.endswith(".txt.gz"):
+        import gzip
+        txt = gzip.open(pdf, "rt", encoding="utf-8").read()
+    elif pdf.endswith(".txt"):
+        txt = Path(pdf).read_text(encoding="utf-8")
+    else:
+        txt = subprocess.run(["pdftotext", "-layout", pdf, "-"], capture_output=True, text=True).stdout
     return txt.split("\f")
 
 def parse_toc(pages):

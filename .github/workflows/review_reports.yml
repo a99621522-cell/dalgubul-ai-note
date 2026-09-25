@@ -1,0 +1,59 @@
+name: 정책제안 리포트 품질 재검사
+
+# 발행된(draft: false) 정책제안 리포트를 scripts/review_report.py 로 다시 검사한다. 미달이면 draft: true 로 되돌려 커밋하고 재배포한다.
+# 작성 루틴이 자동 발행하므로 두 번째 문(gate). 기준은 review_report.py 에만 둔다.
+
+on:
+  push:
+    branches: [main]
+    paths: ["src/content/posts/*-policy-*.md", "scripts/review_report.py"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: review-reports
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    outputs:
+      reverted: ${{ steps.gate.outputs.reverted }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 검사 → 미달은 draft 로
+        id: gate
+        run: |
+          set +e
+          python3 scripts/review_report.py --published --json > /tmp/review.json
+          python3 scripts/review_report.py --published
+          python3 - <<'PY'
+          import json, re, pathlib
+          rs = json.load(open("/tmp/review.json"))
+          bad = [r for r in rs if not r["ok"]]
+          for r in bad:
+              p = pathlib.Path(r["file"]); t = p.read_text(encoding="utf-8")
+              p.write_text(re.sub(r"^draft:\s*false", "draft: true", t, count=1, flags=re.M), encoding="utf-8")
+              print("draft 로 되돌림:", r["file"], "|", "; ".join(r["errors"])[:300])
+          pathlib.Path("/tmp/reverted").write_text("1" if bad else "0")
+          PY
+          echo "reverted=$(cat /tmp/reverted)" >> "$GITHUB_OUTPUT"
+      - name: 커밋
+        if: steps.gate.outputs.reverted == '1'
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add src/content/posts
+          git commit -m "review: 품질 기준 미달 정책제안 리포트를 draft 로 되돌림 $(date -u +%Y-%m-%d)"
+          git pull --rebase origin main || true
+          git push origin HEAD:main
+  redeploy:
+    needs: review
+    if: needs.review.outputs.reverted == '1'
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

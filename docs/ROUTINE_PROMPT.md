@@ -51,6 +51,7 @@ tags: [정책제안, <분야>], summary, description(핵심 문장), faq 3개(�
 작성 규칙: 모든 문단에 숫자 하나 이상, 모든 숫자에 출처. "급성장·위기·획기적" 등 형용사 금지. 원문 수치·통화 그대로, 환산·추정 금지, 확인 안 되면 "미확인".
 전략 문서와 어긋나는 제안이면 이유 명시(전략 문서 갱신 제안). 기업 사전 필터 결과는 report_context.py 값과 조건을 그대로 적는다.
 
-저장: src/content/posts/YYYY-MM-DD-policy-<key>.md (draft:true), docs/strategy/proposals/<key>-YYYY-MM-DD.md 에 7절만.
+저장: src/content/posts/YYYY-MM-DD-policy-<key>.md, docs/strategy/proposals/<key>-YYYY-MM-DD.md 에 7절만.
+감수·발행(운영자 지시 2026-09-25, 자동 발행): `python3 scripts/review_report.py <파일>` 이 통과할 때까지 고친다(최대 3회). 이어서 자기 검토 — 모든 숫자가 출처와 맞는지, 검색 요지는 "요지" 표시가 있는지, 평가·비판·기관 입장 표현이 없는지, 특정 기업을 지목·순위화하지 않았는지, 지난주와 같은 제안을 되풀이하지 않았는지. 둘 다 통과하면 `draft: false` 로 바꿔 발행하고, 하나라도 못 넘으면 `draft: true` 로 두고 사유를 출력한다.
 커밋 "report: 정책제안 <분야> YYYY-MM-DD" 후 푸시. 완료 후 제목·제안 3줄·출처 수 출력.
 분야 10개(config/pledge_areas.yml 순서): mobility / robot-physical-ai / semiconductor / manufacturing-ax / healthcare / ai-sw-startup / machinery / automotive / textile / root

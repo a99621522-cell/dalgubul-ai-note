@@ -31,6 +31,7 @@
 - `scripts/render_charts.py` — `data/stats` → `src/generated/charts/` 인라인 SVG(넓은 판·좁은 판)+표 JSON. `Chart.astro`가 읽음
 - `scripts/write_monthly_report.py` — 월보 초안: `data/stats/monthly/YYYYMM.json` 의 값만 옮겨 `src/content/posts/YYYY-MM-DD-monthly-YYYYMM.md`(draft·auto, 표 6개·faq 3)로. `nps.yml` 이 매월 집계 뒤 실행. 발행은 `approve.py`
 - `config/pledge_areas.yml` + `scripts/report_context.py` — 매주 산업별 정책제안 리포트 루틴(docs/ROUTINE_PROMPT.md, Claude 루틴)의 분야 10개(6대 산업 + 기계·자동차·섬유·뿌리산업, 분야마다 주 1편 — `weekday_plan` 으로 평일 2개씩, 분야별 `ksic`·`focus`)와 근거 계산(기업 사전·사업 DB·대구시 매칭·최근 글). 리포트는 `draft: true`, 공약 이행 평가·점수화 금지
+- `scripts/review_report.py` + `.github/workflows/review_reports.yml` — 정책제안 리포트 품질 검사(구조 1~9절·제안 3개×여섯 항목·문단마다 숫자·금지 형용사·평가 표현·기업 지목·출처 수·길이). 작성 루틴이 통과시킨 뒤 자동 발행하고, main 푸시 때 워크플로가 발행본을 다시 검사해 미달이면 `draft: true` 로 되돌리고 재배포. 기준을 바꿀 때는 발행된 리포트 전체(`--published`)가 통과하는지 확인
 - `config/budget_sources.yml` + `scripts/fetch_budget_docs.py` + `.github/workflows/fetch_budget.yml` — 부처(산업부·과기부·중기부)·대구시·기업지원기관 홈페이지에서 예산서·사업설명자료 첨부(PDF·HWP·HWPX·XLSX)를 받아 본문을 `data/budget/<key>/*.txt.gz`(+index.json)로. `parse: true` 기관은 `budget_year` 의 사업설명자료 본문을 `scripts/parse_budget.py` 로 읽어 `scripts/data/programs_budget_<key>.csv`(사업 DB에 자동 포함, 기존 programs_<key>.csv 는 덮어쓰지 않음). `--parse-only` 는 받지 않고 본문만 다시 파싱, `--only key`. `min_year` 보다 오래된 연도 첨부는 건너뜀. 이 세션 환경은 정부 사이트가 막혀 있어 워크플로(설정·스크립트 푸시 때 자동, 또는 수동)가 대신 받는다. 대구시·기관 사이트는 미국 러너에서 자주 시간 초과
 - `scripts/attract.py` + `scripts/data/io/` — 산업연관표 기반 기업유치 후보 분석. 한국은행 거래표(기본부문)·부문분류표(xlsx, `scripts/fetch_io_tables.py`/워크플로 `io_tables.yml` 이 받거나 손으로 넣음)로 KSIC→IO 부문 매핑 → 클러스터 5개(자동차부품·일반기계·전기장비·섬유·의료기기)의 빈 고리(`gaps.csv`) → 전국 팩토리온(`--factoryon`, 저장소 밖)에서 조건 필터로 후보(`candidates.csv`) → `attract_brief.md`·`summary.json`. 조건 상수는 파일 상단. 페이지 `/supply-chain/`. 전국 평균 계수 한계·기준연도 표시, '추천 아님' 명시, 기업 평가 문구 금지. 매월 `scripts/monthly.sh` 가 팩토리온 갱신 뒤 실행
 - `scripts/repair_factoryon.py` — 팩토리온 내려받기 파일이 엑셀에서 안 열릴 때. 첫 바이트로 실제 형식(진짜 xls·HTML 표·CSV·SpreadsheetML) 판정 → 옆에 `_정리.xlsx`(시트 1개, 헤더 고정, 자동 필터, 종사자 숫자·등록일 날짜). 원본은 건드리지 않음
@@ -62,7 +63,7 @@ python3 scripts/approve.py            # 초안 승인
 2. 원문 문장을 그대로 옮기지 않는다. 완전히 다시 쓴다. 인용은 15단어 이내, 소스당 1회
 3. 모든 글에 출처(`source`, `sourceUrl`)를 남긴다. 보도자료는 공공누리 조건에 따라 출처 표시
 4. 정책 평가·비판 없음. 사실과 대구 산업 접점만 정리
-5. 자동 생성 글은 `auto: true` 로 표시하고 `draft: true` 로 저장. 승인 없이 노출하는 코드 변경 금지
+5. 자동 생성 글은 `auto: true` 로 표시하고 `draft: true` 로 저장. 승인 없이 노출하는 코드 변경 금지. **예외(운영자 지시 2026-09-25): 산업별 정책제안 리포트는 작성 세션이 `scripts/review_report.py` 검사를 통과시키고 자기 검토(수치·출처 대조, 평가·기관 입장 표현 없음)를 마치면 `draft: false` 로 자동 발행한다.** 검사 실패면 draft 로 남기고 보고. 발행 뒤에도 `.github/workflows/review_reports.yml` 이 다시 검사해 미달이면 draft 로 되돌린다
 6. 지원사업 공고는 글로 쓰지 않는다. `data/notices/notices.csv` 에 제목·기관·마감·링크만 남기고, 리포트는 그 데이터를 근거로 쓴다
 7. 개인정보·내부 자료·로그인 뒤 자료는 수집 대상에 넣지 않는다
 8. AI 답변 최적화(AEO): 모든 글은 `description`을 결론 먼저의 '핵심 문장'으로, 표로 정리할 수 있는 정보는 표로, 글마다 `faq` 3개(본문 근거만). 이미지는 캡션(figcaption) 필수. 글 페이지는 Article·FAQPage JSON-LD를 자동 출력한다

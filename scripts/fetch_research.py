@@ -119,13 +119,13 @@ def from_feed(feed_url: str, sess: requests.Session) -> list[dict]:
     return [i for i in items if i["title"] and recent(i["date"])][:MAX_ITEMS]
 
 
-def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple = ()) -> list[dict]:
+def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple = (), undated: bool = False) -> list[dict]:
     """목록 페이지: 링크 글자 + 그 주변 텍스트에서 날짜를 찾는다."""
     soup = BeautifulSoup(html, "html.parser")
     for t in soup(["script", "style", "nav", "header", "footer"]):
         t.decompose()
     pat = re.compile(item_pat) if item_pat else None
-    items, seen = [], set()
+    items, seen, undated_items = [], set(), []
     for a in soup.find_all("a", href=True):
         title = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
         href = urljoin(page_url, a["href"])
@@ -154,6 +154,10 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
                 break
             node = par
         d = d or parse_date(ctx)
+        if undated and not d and pat and href not in seen:
+            seen.add(href)
+            undated_items.append({"title": title[:160], "url": href, "date": "", "summary": ""})
+            continue
         if not d or d > FUTURE:   # 행사 예정일 같은 미래 날짜는 발간일이 아니다
             continue
         seen.add(href)
@@ -163,6 +167,9 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
             continue
         items.append({"title": title[:160], "url": href, "date": d, "summary": ""})
     items.sort(key=lambda i: i["date"], reverse=True)
+    note_latest(items)
+    if undated:   # 날짜가 아예 없는 목록(KOSI 등): 목록 순서대로 앞 10건만, 날짜 빈칸
+        return [i for i in undated_items[:10]]
     return [i for i in items if recent(i["date"])][:MAX_ITEMS]
 
 
@@ -193,7 +200,17 @@ def from_rows(page_url: str, html: str, org_names: tuple = ()) -> list[dict]:
         seen.add(title)
         items.append({"title": title[:160], "url": page_url + "#" + re.sub(r"\W+", "-", title)[:40], "date": d, "summary": ""})
     items.sort(key=lambda i: i["date"], reverse=True)
+    note_latest(items)
     return [i for i in items if recent(i["date"])][:MAX_ITEMS]
+
+
+LATEST_SEEN: dict = {"date": ""}
+
+
+def note_latest(items: list[dict]) -> None:
+    """읽은 항목 가운데 가장 최근 날짜(70일 밖이라도)를 기억해 '최근 없음' 상태에 표시한다."""
+    if items and items[0]["date"] > LATEST_SEEN["date"]:
+        LATEST_SEEN["date"] = items[0]["date"]
 
 
 def first_piece(txt: str, org_names: tuple = ()) -> str:
@@ -331,6 +348,7 @@ def date_from_title(title: str, year_cell: str = "") -> str:
 
 def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
     key, name = org["key"], org["name"]
+    LATEST_SEEN["date"] = ""
     print(f"\n== {name} ({key})")
     res = {"key": key, "name": name, "group": org.get("group", ""), "home": org.get("home", ""), "fetched": TODAY.isoformat(), "status": "", "method": "", "items": [], "note": ""}
     reqs, failed = 0, 0
@@ -387,14 +405,18 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
             if res["items"]:
                 break
             if page != org.get("home") or not org.get("list"):
-                items = from_list(page, html, org.get("item_pattern"), (org["name"], org["name"].split("(")[0].strip()))
-                method = "목록 페이지"
+                items = from_list(page, html, org.get("item_pattern"), (org["name"], org["name"].split("(")[0].strip()), bool(org.get("undated")))
+                method = "목록 페이지" + ("(날짜 없음, 목록 순서)" if org.get("undated") else "")
                 if not items and page != org.get("home"):
                     items, method = from_rows(page, html, (org["name"], org["name"].split("(")[0].strip())), "목록 페이지(행)"
                 if items:
                     res["items"], res["method"] = items, method
                     break
-    res["status"] = "OK" if res["items"] else ("차단" if res["note"] else ("접속 실패" if failed else "항목 없음"))
+    if not res["items"] and LATEST_SEEN["date"] and not res["note"]:
+        res["note"] = f"최신 항목 {LATEST_SEEN['date']} (최근 {MAX_DAYS}일 밖)"
+        res["status"] = "최근 없음"
+    else:
+        res["status"] = "OK" if res["items"] else ("차단" if res["note"] else ("접속 실패" if failed else "항목 없음"))
     if res["items"]:
         res.pop("sample_links", None); res.pop("page_chars", None); res.pop("sample_dates", None)
     print(f"  → {res['status']} · {res['method']} · {len(res['items'])}건" + (f" · 최신 {res['items'][0]['date']} {res['items'][0]['title'][:40]}" if res["items"] else ""))
@@ -403,7 +425,7 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
 
 def write_summary(results: list[dict]) -> None:
     L = [f"# 참조 기관 조사 — 최근 발간물 목록 (scripts/fetch_research.py, {TODAY})", "",
-         "정책제안 리포트가 근거로 쓰는 기관과 접속 결과. OK = 최근 70일 안 항목을 받음. '항목 없음' 은 페이지는 열렸으나 RSS 도 날짜 붙은 목록도 못 찾은 경우(대개 JS 목록). '차단' 은 robots.txt 가 크롤러를 막아 존중. 실패는 접속 시간 초과·오류.", "",
+         "정책제안 리포트가 근거로 쓰는 기관과 접속 결과. OK = 최근 70일 안 항목을 받음. '항목 없음' 은 페이지는 열렸으나 RSS 도 날짜 붙은 목록도 못 찾은 경우(대개 JS 목록). '최근 없음' 은 목록은 읽었으나 최근 70일 안 발간물이 없는 경우(최신 날짜 표시). '차단' 은 robots.txt 가 크롤러를 막아 존중. 실패는 접속 시간 초과·오류.", "",
          "| 구분 | 기관 | 상태 | 방법 | 건수 | 최신 항목 |", "|---|---|---|---|---|---|"]
     for r in sorted(results, key=lambda x: (x["group"], x["name"])):
         latest = f"{r['items'][0]['date']} [{r['items'][0]['title'][:40]}]({r['items'][0]['url']})" if r["items"] else "—"

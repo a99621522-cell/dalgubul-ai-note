@@ -28,6 +28,11 @@ on:
 permissions:
   contents: write
 
+# 새 푸시가 오면 진행 중인 예전 실행은 취소한다 (포털 접속 대기로 오래 걸리는 실행이 겹치지 않게)
+concurrency:
+  group: fetch-public-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -50,6 +55,9 @@ jobs:
           MODE="${MODE:-probe}"; IDS="${IDS:-15117154 15083277}"
           echo "MODE=$MODE" >> "$GITHUB_ENV"
           echo "mode=$MODE ids=$IDS pick=$PICK search=$SEARCH"
+          # 포털이 열리는지 먼저 확인 (안 열리면 3번 기다렸다가 포기 — 각 페이지마다 시간 초과를 기다리지 않도록)
+          up=0; for i in 1 2 3; do code=$(curl -s -o /dev/null -m 20 -w '%{http_code}' https://www.data.go.kr/ || echo 000); echo "portal check $i: HTTP $code"; if [ "$code" != "000" ]; then up=1; break; fi; sleep 60; done
+          if [ "$up" = "0" ]; then echo "::warning::data.go.kr 접속 불가 — 이번 실행은 파일을 받지 않음"; exit 0; fi
           if [ -n "$SEARCH" ]; then python3 scripts/fetch_datago.py --search $SEARCH; fi
           if [ "$MODE" = "save" ]; then FLAG=--save; elif [ "$MODE" = "search" ]; then FLAG=--search; else FLAG=--probe; fi
           python3 scripts/fetch_datago.py $FLAG $IDS ${PICK:+--pick "$PICK"} --max 3

@@ -39,7 +39,7 @@ CLAUDE.md 원칙 준수(정책 평가·비판, 기관 입장으로 읽힐 표현
 근거 수집(공개 자료만, 최근 8주): 글로벌(Reuters·Bloomberg·FT, 대표기업 IR, Gartner·McKinsey·BCG·Deloitte·IDC, SEMI·SIA·IFR·IEA, 해외 정부 발표) ·
 국내 연구(KEIT·KIAT·IITP·NIA·KISTEP·KIET·KDB·한국은행 지역경제보고서·국회예산정책처·대구정책연구원) · 증권사 공개 리포트 ·
 정부·시 보도자료(관계 부처·국가AI전략위·대구시·대구TP·DIP·DMI) · 타 도시(광주·부산·창원·구미·울산의 같은 분야 예산·공고·유치 실적).
-페이지 원문을 열 수 없는 환경이면 검색 요지임을 글 첫머리와 각 수치에 "요지"로 표시한다.
+기관 발간물은 먼저 data/research/(scripts/fetch_research.py 가 매주 받은 제목·링크·날짜·요약)에서 고른다 — report_context.py 가 키워드 일치 항목을 출력하고 `python3 scripts/fetch_research.py --query <키워드>` 로 더 찾는다. 여기서 나온 항목은 날짜·링크가 확인된 것이므로 sources 에 그대로 쓴다. 페이지 원문을 열 수 없는 환경이면 검색 요지임을 글 첫머리와 각 수치에 "요지"로 표시한다.
 
 리포트 구조(2,500~3,500자, 개조식+짧은 문단): frontmatter title("[정책제안] <분야>: <핵심 제안 한 줄>"), date, category: policy,
 tags: [정책제안, <분야>], summary, description(핵심 문장), faq 3개(본문 근거만), draft: true, auto: true, sources: [{title,url,date}].

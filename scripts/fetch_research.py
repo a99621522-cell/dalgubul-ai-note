@@ -141,6 +141,13 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
             continue
         if pat and not pat.search(href + " " + title):
             continue
+        if undated and pat and pat.search(href + " " + title):   # 날짜 없는 목록: 주변에 딴 날짜(수정일 등)가 있어도 무시
+            if title not in undated_seen:   # 같은 주소로 여러 글이 열리는 목록: 제목으로 구분
+                undated_seen[title] = len(undated_items)
+                undated_items.append({"title": title[:160], "url": href, "date": "", "summary": ""})
+            else:
+                undated_items[undated_seen[title]]["dup"] = True   # 두 번 이상 나오는 글자는 메뉴·빵부스러기
+            continue
         node, ctx, d = a, "", ""
         for _ in range(3):
             par = node.parent
@@ -154,13 +161,6 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
                 break
             node = par
         d = d or parse_date(ctx)
-        if undated and not d and pat:
-            if title not in undated_seen:   # 같은 주소로 여러 글이 열리는 목록: 제목으로 구분
-                undated_seen[title] = len(undated_items)
-                undated_items.append({"title": title[:160], "url": href, "date": "", "summary": ""})
-            else:
-                undated_items[undated_seen[title]]["dup"] = True   # 두 번 이상 나오는 글자는 메뉴·빵부스러기
-            continue
         if not d or d > FUTURE:   # 행사 예정일 같은 미래 날짜는 발간일이 아니다
             continue
         seen.add(href)

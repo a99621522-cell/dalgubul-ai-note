@@ -46,7 +46,8 @@ def pick_area(c: dict, week: int | None, key: str | None) -> tuple[dict, int]:
         return next(a for a in areas if a["key"] == key), week or date.today().isocalendar()[1]
     w = week or date.today().isocalendar()[1]
     step = 1 if c.get("cadence", "weekly") == "weekly" else 2
-    return areas[((w - 1) // step) % len(areas)], w
+    off = int(c.get("week_offset", 1))
+    return areas[((w - off) // step) % len(areas)], w
 
 
 def num(s: str) -> float:
@@ -56,14 +57,15 @@ def num(s: str) -> float:
         return 0.0
 
 
-def companies_block(groups: list[str], sub_counts: dict | None = None, tags: list[str] | None = None, site_types: list[str] | None = None) -> dict | None:
-    """분야 기업 = 산업 그룹 ∪ 태그 ∪ 입지 유형 가운데 지정된 것. 아무것도 없으면 None (사업 DB·예산 숫자만 쓴다)."""
-    if not (groups or tags or site_types):
+def companies_block(groups: list[str], sub_counts: dict | None = None, tags: list[str] | None = None, site_types: list[str] | None = None, ksic: list[str] | None = None) -> dict | None:
+    """분야 기업 = 산업 그룹 ∪ KSIC 접두어 ∪ 태그 ∪ 입지 유형 가운데 지정된 것. 아무것도 없으면 None (사업 DB·예산 숫자만 쓴다)."""
+    if not (groups or tags or site_types or ksic):
         return None
     rows = load_all_companies()
     for r in rows:
         r["group"] = classify(r["sector_code"], r["sector"], r["product"])
-    sel = [r for r in rows if (groups and r["group"] in groups) or (tags and r["tags"] & set(tags)) or (site_types and r["site_type"] in site_types)]
+    ks = tuple(str(k) for k in (ksic or []))
+    sel = [r for r in rows if (groups and r["group"] in groups) or (ks and r["sector_code"].startswith(ks)) or (tags and r["tags"] & set(tags)) or (site_types and r["site_type"] in site_types)]
     w = lambda rs: sum(int(r["workers"]) for r in rs if (r.get("workers") or "").isdigit())  # noqa: E731
     bands = Counter()
     for r in sel:
@@ -86,7 +88,7 @@ def companies_block(groups: list[str], sub_counts: dict | None = None, tags: lis
         "sub_sectors": Counter((r["sector_code"], r["sector"].split(" 외")[0]) for r in sel).most_common(10),
         "sub_counts": {name: _sub_count(sel, spec, w) for name, spec in (sub_counts or {}).items()},
         "as_of": sel[0]["as_of"] if sel else "",
-        "condition": " ∪ ".join(x for x in [f"산업 그룹 {groups}" if groups else "", f"태그 {tags}" if tags else "", f"입지 유형 {site_types}" if site_types else ""] if x)
+        "condition": " ∪ ".join(x for x in [f"산업 그룹 {groups}" if groups else "", f"KSIC {list(ks)}" if ks else "", f"태그 {tags}" if tags else "", f"입지 유형 {site_types}" if site_types else ""] if x)
                      + " (팩토리온 + 산단 외 목록, 종사자는 공장등록 신고값)",
         "tag_data_note": None if any(r["tags"] for r in rows) else "태그 자료 없음 — scripts/data/extra/ 목록·company_tags.csv 가 들어오면 채워짐",
     }
@@ -203,7 +205,7 @@ def main(argv: list[str]) -> int:
     area, week = pick_area(c, a.week, a.area)
     ctx = {
         "pledge_of": c.get("pledge_of", ""), "source_url": c.get("source_url", ""), "week": week, "area": area,
-        "companies": companies_block(area.get("industry_groups", []), area.get("sub_counts"), area.get("tags"), area.get("site_types")),
+        "companies": companies_block(area.get("industry_groups", []), area.get("sub_counts"), area.get("tags"), area.get("site_types"), area.get("ksic")),
         "programs": programs_block(area.get("keywords", [])),
         "city_match": city_match_block(area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
@@ -215,6 +217,8 @@ def main(argv: list[str]) -> int:
         return 0
     print(f"ISO {week}주 → 분야 [{area['key']}] {area['name']}  (공약: {c.get('pledge_of')})")
     print(f"공약 항목 {len(area.get('pledges') or [])}개: " + (" / ".join(area.get("pledges") or []) or "— 비어 있음, config/pledge_areas.yml 에 채울 것"))
+    if area.get("focus"):
+        print(f"관점: {area['focus']}")
     cb = ctx["companies"]
     if cb:
         print(f"\n[기업 사전 {cb['as_of']}] 기업 {cb['firms']:,}곳 · 고용 {cb['employment']:,}명(집계 대상 {cb['covered']:,}) · 대구 내 비중 기업 {cb['share_firms_pct']}% 고용 {cb['share_employment_pct']}%")

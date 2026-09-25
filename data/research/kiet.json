@@ -4,171 +4,39 @@
  "group": "국내 연구",
  "home": "https://www.kiet.re.kr",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
- "note": "",
- "sample_links": [
-  [
-   "i-KIET 산업경제이슈",
-   "https://www.kiet.re.kr/research/issueList"
-  ],
-  [
-   "월간 KIET 산업경제",
-   "https://www.kiet.re.kr/research/economy"
-  ],
-  [
-   "KIET Industrial Economic Review",
-   "https://www.kiet.re.kr/research/ecoreview"
-  ],
-  [
-   "Occasional Paper Series",
-   "https://www.kiet.re.kr/research/occapaperList"
-  ],
-  [
-   "KIET 산업동향 브리프",
-   "https://www.kiet.re.kr/trends/indbriefList"
-  ],
-  [
-   "KIET 산업 인사이트",
-   "https://www.kiet.re.kr/trends/insbriefList"
-  ],
-  [
-   "중국산업경제 브리프",
-   "https://www.kiet.re.kr/trends/china"
-  ],
-  [
-   "KIET 경제 · 산업 전망",
-   "https://www.kiet.re.kr/trends/ecolookList"
-  ],
-  [
-   "KIET 경제 · 산업 동향",
-   "https://www.kiet.re.kr/trends/ecotrendsList"
-  ],
-  [
-   "국내 제조업 경기실사",
-   "https://www.kiet.re.kr/trends/industryList"
-  ],
-  [
-   "전문가 경기서베이조사",
-   "https://www.kiet.re.kr/trends/digbreifList"
-  ],
-  [
-   "국내 서비스업 경기실사",
-   "https://www.kiet.re.kr/trends/serviceList"
-  ],
-  [
-   "해외 진출기업 실태조사",
-   "https://www.kiet.re.kr/trends/surveyList"
-  ],
-  [
-   "중소·중견기업 경쟁력",
-   "https://www.kiet.re.kr/trends/corpCompet"
-  ],
-  [
-   "이러닝산업 실태조사",
-   "https://www.kiet.re.kr/trends/elearningList"
-  ],
-  [
-   "KIET 관련 기사",
-   "https://www.kiet.re.kr/communicate/articleList"
-  ],
-  [
-   "친인척 채용인원 공개",
-   "https://www.kiet.re.kr/communicate/ntcRelateList"
-  ],
-  [
-   "국내 · 국제 MOU",
-   "https://www.kiet.re.kr/communicate/mouList"
-  ],
-  [
-   "인권침해 상담·신고 센터",
-   "https://www.kiet.re.kr/apply/hrvView"
-  ],
-  [
-   "부패알리오 익명시스템",
-   "https://www.kehi.co.kr/main/report.html?no=119"
-  ],
-  [
-   "주요 연락처·고객헌장",
-   "https://www.kiet.re.kr/communicate/contact"
-  ],
-  [
-   "i-KIET 산업경제이슈",
-   "https://www.kiet.re.kr/research/issueList"
-  ],
-  [
-   "월간 KIET 산업경제",
-   "https://www.kiet.re.kr/research/economy"
-  ],
-  [
-   "KIET Industrial Economic Review",
-   "https://www.kiet.re.kr/research/ecoreview"
-  ],
-  [
-   "Occasional Paper Series",
-   "https://www.kiet.re.kr/research/occapaperList"
-  ],
-  [
-   "KIET 산업동향 브리프",
-   "https://www.kiet.re.kr/trends/indbriefList"
-  ],
-  [
-   "KIET 산업 인사이트",
-   "https://www.kiet.re.kr/trends/insbriefList"
-  ],
-  [
-   "중국산업경제 브리프",
-   "https://www.kiet.re.kr/trends/china"
-  ],
-  [
-   "KIET 경제 · 산업 전망",
-   "https://www.kiet.re.kr/trends/ecolookList"
-  ],
-  [
-   "KIET 경제 · 산업 동향",
-   "https://www.kiet.re.kr/trends/ecotrendsList"
-  ],
-  [
-   "국내 제조업 경기실사",
-   "https://www.kiet.re.kr/trends/industryList"
-  ],
-  [
-   "전문가 경기서베이조사",
-   "https://www.kiet.re.kr/trends/digbreifList"
-  ],
-  [
-   "국내 서비스업 경기실사",
-   "https://www.kiet.re.kr/trends/serviceList"
-  ],
-  [
-   "해외 진출기업 실태조사",
-   "https://www.kiet.re.kr/trends/surveyList"
-  ],
-  [
-   "중소·중견기업 경쟁력",
-   "https://www.kiet.re.kr/trends/corpCompet"
-  ],
-  [
-   "이러닝산업 실태조사",
-   "https://www.kiet.re.kr/trends/elearningList"
-  ],
-  [
-   "KIET 관련 기사",
-   "https://www.kiet.re.kr/communicate/articleList"
-  ],
-  [
-   "친인척 채용인원 공개",
-   "https://www.kiet.re.kr/communicate/ntcRelateList"
-  ],
-  [
-   "국내 · 국제 MOU",
-   "https://www.kiet.re.kr/communicate/mouList"
-  ],
-  [
-   "인권침해 상담·신고 센터",
-   "https://www.kiet.re.kr/apply/hrvView"
-  ]
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "지방대학의 인력 양성 경쟁력 현황과 정책 방향 - 권역별 인력 양성 거점 조성을 중심으로",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=868&skey=&sval=&pg=1&pp=10",
+   "date": "2026-09-22",
+   "summary": ""
+  },
+  {
+   "title": "제조 AX를 위한 피지컬 AI 생태계 발전 전략",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=867&skey=&sval=&pg=1&pp=10",
+   "date": "2026-09-15",
+   "summary": ""
+  },
+  {
+   "title": "한반도 평화경제·공동번영을 위한 평화경제특구의 발전 과제",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=866&skey=&sval=&pg=1&pp=10",
+   "date": "2026-08-25",
+   "summary": ""
+  },
+  {
+   "title": "한국-나토 조달기본협정 체결의 의미와 시사점",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=865&skey=&sval=&pg=1&pp=10",
+   "date": "2026-08-12",
+   "summary": ""
+  },
+  {
+   "title": "공공기관 지방이전의 파급효과와 혁신도시 거점화 방향",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=864&skey=&sval=&pg=1&pp=10",
+   "date": "2026-08-07",
+   "summary": ""
+  }
  ],
- "page_chars": 59680
+ "note": ""
 }

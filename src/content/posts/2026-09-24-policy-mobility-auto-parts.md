@@ -15,13 +15,13 @@ faq:
   - q: "이 리포트의 근거 수집에는 어떤 한계가 있나?"
     a: "이번 회차는 실행 환경의 네트워크 정책으로 외부 페이지 원문을 열지 못해 검색 결과 요지만 썼다. 원문 확인이 필요한 수치는 본문에 '요지'로 표시했다."
 sources:
-  - { title: "한미, 관세협상 타결…자동차관세 15% (정책브리핑)", url: "https://www.korea.kr/news/policyNewsView.do?newsId=148953418", date: "미확인" }
-  - { title: "미국, '한국 자동차 관세 15%' 발효…11월 1일 소급 적용 (정책브리핑)", url: "https://www.korea.kr/news/policyNewsView.do?newsId=148955868", date: "미확인" }
+  - { title: "한미, 관세협상 타결…자동차관세 15% (정책브리핑)", url: "https://www.korea.kr/news/policyNewsView.do?newsId=148953418", date: "2025-10-29" }
+  - { title: "미국, '한국 자동차 관세 15%' 발효…11월 1일 소급 적용 (정책브리핑)", url: "https://www.korea.kr/news/policyNewsView.do?newsId=148955868", date: "2025-12-04" }
   - { title: "Section 232 Auto Parts (2026): covered parts (Dutiable)", url: "https://dutiable.io/blog/section-232-covered-auto-parts-2026-list-explained", date: "2026" }
   - { title: "2026년 8월 수출입동향 (정책브리핑)", url: "https://m.korea.kr/briefing/pressReleaseView.do?newsId=156776348", date: "2026-09-01" }
   - { title: "8월 자동차 수출 30% 급감 (뉴스핌, 산업부 8월 자동차산업 동향 인용)", url: "https://www.newspim.com/news/view/20260917000536", date: "2026-09-17" }
   - { title: "현대차, 2026년 2분기 경영실적 발표 (현대자동차그룹 뉴스룸)", url: "https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-2026-q2-earnings", date: "2026-07-23" }
-  - { title: "현대차 4Q25 Review (한국투자증권 리서치)", url: "https://m.truefriend.com/main/research/research/StrategyDetail.jsp?jkGubun=6&id=151880", date: "미확인" }
+  - { title: "현대차 4Q25 Review (한국투자증권 리서치)", url: "https://m.truefriend.com/main/research/research/StrategyDetail.jsp?jkGubun=6&id=151880", date: "2026-01-30" }
   - { title: "China Auto Exports Hit 4.059 Million Units in H1 2026 / CAAM 상반기 수출 (news18a)", url: "https://english.news18a.com/news/english_270831.html", date: "2026-07" }
   - { title: "China's monthly vehicle exports exceed 1 million (CarNewsChina, CAAM 인용)", url: "https://carnewschina.com/2026/07/10/chinas-monthly-vehicle-exports-exceed-1-million-for-the-first-time-with-nevs-claiming-over-half/", date: "2026-07-10" }
   - { title: "Automotive package (European Commission, Mobility and Transport)", url: "https://transport.ec.europa.eu/transport-themes/action-plan-future-automotive-sector/automotive-package_en", date: "2025-12-16" }

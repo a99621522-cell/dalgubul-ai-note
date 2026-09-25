@@ -18,25 +18,19 @@ sources:
   - { title: "2026년 4분기 수출산업경기전망지수(EBSI) 111.3 — 섬유·생활용품 등 경공업 수출 여건 악화 전망 (한국무역협회)", url: "https://www.kita.net/researchTrade/report/reportMain/reportMainList.do#2026년-4분기-수출산업경기전망지수-EBSI-는-111-3으로-2025", date: "2026-09-22" }
   - { title: "KEIT 이슈픽 2026-6월호: 첨단산업(산업기반혁신) — 배터리, 스마트전자, 섬유, 탄소나노 (한국산업기술기획평가원, 공공데이터포털 발간현황)", url: "https://srome.keit.re.kr/srome/biz/info/keitPub/retrieveKeitIssuListView.do?prgmId=XPG404010000", date: "2026-06-01" }
   - { title: "대구시, 염색공단 업종 제한 규제 완화 시행 착수 (매일신문)", url: "https://www.imaeil.com/page/view/2026090811125946111", date: "2026-09-08" }
-  - { title: "대구염색산단 공장 가동 줄고 매출도 감소…업종제한 완화 (대구일보)", url: "https://www.idaegu.com/news/articleView.html?idxno=662629", date: "미확인" }
+  - { title: "대구염색산단 공장 가동 줄고 매출도 감소…업종제한 완화 (대구일보)", url: "https://www.idaegu.com/news/articleView.html?idxno=662629", date: "2026-05-21" }
   - { title: "군위 첨단산단, 대구시 내부 타당성 확보 평가 (네이트뉴스)", url: "https://m.news.nate.com/view/20260827n25415", date: "2026-08-27" }
-  - { title: "대구 염색산단 2030년까지 군위 이전 (국제섬유신문)", url: "https://www.itnk.co.kr/news/articleView.html?idxno=72825", date: "미확인" }
   - { title: "대구시, 노후산단 8곳 환경 유해 제외 모든 업종 입주 가능 (아시아경제)", url: "https://view.asiae.co.kr/article/2026072315413168485", date: "2026-07-23" }
   - { title: "대구, 패션봉제산업 인공지능 전환 속도…섬유산업 대전환 추진 (경향신문)", url: "https://www.khan.co.kr/article/202606231404001/", date: "2026-06-23" }
   - { title: "섬개연, 산업용 섬유 성능평가·인증 지원기반 구축사업 참여 (매일신문)", url: "https://www.imaeil.com/page/view/2026081011193468297", date: "2026-08-10" }
-  - { title: "국내 섬유패션산업, AI·친환경 섬유로 글로벌 점유율 높인다 (정책브리핑)", url: "https://www.korea.kr/news/policyNewsView.do?newsId=148932599", date: "미확인" }
-  - { title: "2026년 하반기 경제·산업 전망 (산업연구원, KDI 경제정보센터 수록)", url: "https://eiec.kdi.re.kr/policy/domesticView.do?ac=0000205321", date: "미확인" }
-  - { title: "섬유패션 수출↑·생산↓…제조업 부진 (TIN뉴스)", url: "https://www.tinnews.co.kr/32209", date: "미확인" }
-  - { title: "미국 상호관세 조치에 따른 섬유·의류산업의 영향 및 시사점 (KDI 경제정보센터 국내연구자료)", url: "https://eiec.kdi.re.kr/policy/domesticView.do?ac=0000195425", date: "미확인" }
-  - { title: "韓美 상호관세 합의, 섬유 뷰티 등 15% 관세 (국제섬유신문)", url: "https://www.itnk.co.kr/news/articleView.html?idxno=76208", date: "미확인" }
+  - { title: "2026년 하반기 경제·산업 전망 (산업연구원, KDI 경제정보센터 수록)", url: "https://eiec.kdi.re.kr/policy/domesticView.do?ac=0000205321", date: "2026-05-26" }
+  - { title: "섬유패션 수출↑·생산↓…제조업 부진 (TIN뉴스)", url: "https://www.tinnews.co.kr/32209", date: "2026-09" }
   - { title: "美CBP, 트럼프 상호관세 환급 20일부터 (파이낸셜뉴스)", url: "https://www.fnnews.com/news/202604170638077464", date: "2026-04-17" }
-  - { title: "中·방글라·베트남, 세계 섬유수출 44% 차지 (국제섬유신문)", url: "https://www.itnk.co.kr/news/articleView.html?idxno=81848", date: "미확인" }
-  - { title: "中 밀어낸 베트남…美 섬유·의류시장 1위 (국제섬유신문)", url: "https://www.itnk.co.kr/news/articleView.html?idxno=81803", date: "미확인" }
-  - { title: "Textile Apparel and the Digital Product Passport (European Commission)", url: "https://single-market-economy.ec.europa.eu/single-market/digital-product-passport/textile-apparel_en", date: "미확인" }
-  - { title: "ESPR crash course — how the Ecodesign for Sustainable Products Regulation will impact apparel (Carbonfact)", url: "https://www.carbonfact.com/blog/policy/espr-textile", date: "미확인" }
-  - { title: "2026 하반기 패션 산업 전망 (신한투자증권, 신한금융그룹 인사이트)", url: "https://www.shinhangroup.com/kr/archive/insight/extend/detail/32838", date: "2026-07" }
+  - { title: "中·방글라·베트남, 세계 섬유수출 44% 차지 (국제섬유신문)", url: "https://www.itnk.co.kr/news/articleView.html?idxno=81848", date: "2026-09-14" }
+  - { title: "中 밀어낸 베트남…美 섬유·의류시장 1위 (국제섬유신문)", url: "https://www.itnk.co.kr/news/articleView.html?idxno=81803", date: "2026-09" }
+  - { title: "ESPR crash course — how the Ecodesign for Sustainable Products Regulation will impact apparel (Carbonfact)", url: "https://www.carbonfact.com/blog/policy/espr-textile", date: "2026-06-04" }
+  - { title: "2026 하반기 패션 산업 전망 (신한투자증권, 신한금융그룹 인사이트)", url: "https://www.shinhangroup.com/kr/archive/insight/extend/detail/32838", date: "2026-05-22" }
   - { title: "부산시, 섬유 패션 원부자재 공동 비축 시스템 구축 추진 (서울신문)", url: "https://www.seoul.co.kr/news/society/2026/06/23/20260623500124", date: "2026-06-23" }
-  - { title: "경기도 섬유산업 지원 현황 (경기도청)", url: "https://www.gg.go.kr/contents/contents.do?ciIdx=1416&menuId=3208", date: "미확인" }
 ---
 
 > 정책제안 루틴 3회차(2026-09-25, 금요일 분야 '섬유') 자동 초안. 관점은 섬유·염색 산업의 경영·수출·입지이고 AX 전환은 '전통제조 AX' 편에서 다룬다. 창고에서 확인한 기관 발간물 2건 외의 외부 수치는 **검색 결과 요지**("요지" 표시)다. 내부 숫자는 기업 사전(2026-08)을 코드로 센 값이다. 평가·순위·특정 기업 지목은 없다.
@@ -67,8 +61,8 @@ sources:
 ## 4. 글로벌 변화와 대구 노출
 
 1. **미국 시장의 공급국 교체** — 2026년 상반기 미국 섬유·의류 수입 476억 7,000만 달러(-7.1%), 베트남 18.6%로 1위, 중국 14.8%(국제섬유신문, 요지). 세계 섬유 수출 2025년 9,140억 달러, 중국·방글라데시·베트남 44%(요지). 노출: 섬유 10인 이상 743곳·20,447명(수출 여부는 미확인).
-2. **미국 관세** — 대미 섬유 수출 14억 달러(섬유 수출의 13%), 한미 합의로 15%(KDI 경제정보센터·국제섬유신문, 요지). 2026년 2월 연방대법원 무효 판단, 4월 20일부터 환급(파이낸셜뉴스, 요지). 현행 세율 미확인. 노출: 염색·가공 316곳·8,423명.
-3. **EU 에코디자인 규정(ESPR)** — 섬유 위임법 2027년 채택 예정, 18개월 이행 뒤 2028년 적용, 디지털 제품 여권(DPP) 등록부 2026년 7월, 미판매 폐기 금지 대기업 2026년·중견 2030년(European Commission·Carbonfact, 요지). 노출: 염색·가공 316곳이 DPP 항목(염료·공정·재활용 함량)의 데이터 생산 지점.
+2. **미국 관세** — 2026년 2월 연방대법원이 상호관세를 무효로 판단했고 4월 20일부터 환급이 시작됐다(파이낸셜뉴스 4월 17일, 요지). 현행 세율과 대미 섬유 수출액은 1년 안 자료로 확인하지 못해 적지 않는다. 노출: 염색·가공 316곳·8,423명.
+3. **EU 에코디자인 규정(ESPR)** — 섬유 위임법 2027년 채택 예정, 18개월 이행 뒤 2028년 적용, 디지털 제품 여권(DPP) 등록부 2026년 7월, 미판매 폐기 금지 대기업 2026년·중견 2030년(Carbonfact 6월 4일, 요지). 노출: 염색·가공 316곳이 DPP 항목(염료·공정·재활용 함량)의 데이터 생산 지점.
 4. **수출 여건 전망** — 무역협회 4분기 EBSI 111.3, 섬유·생활용품 등 경공업은 악화 전망(9월 22일, 창고 확인). 산업연구원 하반기 전망은 섬유 수출 0.8% 증가 전환, 중국 기업의 베트남·인도 이전이 한국 수출에 부정적(요지). 노출: 섬유 1,716곳 전체.
 5. **국내 흐름** — 2026년 상반기 섬유패션 수출·내수 증가, 생산·출하 감소. 8월 섬유 수출 7억 5,100만 달러(TIN뉴스, 요지). 노출: 1~9인 873곳.
 
@@ -81,7 +75,6 @@ sources:
 | 대구 | 염색산단 업종 제한 완화(용역 11월 완료, 2027년 1월 시행 목표), 군위 이전 검토(2026년 하반기 용역·2027년 상반기 타당성 의뢰), 노후산단 8곳 환경 유해 업종 제외 입주 허용(검단 271→569업종), AX 염색·봉제 실증 테스트베드 선정 | 2026~2030년(테스트베드) |
 | 충주 | 산업용 섬유 혁신 허브센터(성능평가 장비·시험 인증·기업 기술지원), 연면적 1,815㎡ | 2026~2030년 |
 | 부산 | 섬유·패션·봉제·신발 원부자재 공동 비축 시스템, 72개 사 선정 | 2026년 |
-| 경기(양주) | 경기섬유종합지원센터(애로 상담·정책사업 연계), 양주·포천·동두천 섬유·가죽·패션 특구 | 상시 |
 
 ## 6. 연구기관·시장 시각
 
@@ -108,9 +101,9 @@ sources:
 - 지표: 2027년 대구 접수 시험 50건 이상, 접수 기업 30곳 이상.
 
 ### 제안 3 (기업·기관) — 염색·가공 205곳의 DPP·FTA 원산지 데이터 준비를 한 과정으로
-- 문제: EU 섬유 위임법 채택(2027년) 뒤 2028년부터 DPP 항목을 채워야 하고(요지), 대미 수출은 FTA 특혜 조건 충족 시 15% 세율이 적용됐다(요지). 두 제도가 염색·가공 공정 데이터를 요구하지만 대구 316곳 중 준비 기업 수는 미확인.
+- 문제: EU 섬유 위임법 채택(2027년) 뒤 2028년부터 DPP 항목을 채워야 하고(요지), 대미 수출은 상호관세 무효 판단 뒤 환급·세율 조건이 바뀌는 중이다(요지). 두 제도가 염색·가공 공정 데이터를 요구하지만 대구 316곳 중 준비 기업 수는 미확인.
 - 제안: 한국섬유개발연구원·다이텍연구원이 DPP 항목(원료·염료·공정·재활용 함량)과 FTA 원산지 증빙 항목을 한 서식으로 만들고, 2027년 상반기 10인 이상 205곳을 모집해 기업당 대표 품목 1개의 데이터를 채운다.
-- 근거: 4-3(ESPR 일정), 4-2(FTA 특혜), 6절 무역협회·산업연구원 전망.
+- 근거: 4-3(ESPR 일정), 4-2(미국 관세), 6절 무역협회·산업연구원 전망.
 - 대상 규모: 205곳(염색·가공 KSIC 134, 종사자 10인 이상: 10~49인 155·50~299인 50). 염색산단 122·성서 37·서대구 27.
 - 지표: 1년 뒤 서식 완성 기업 100곳, 대표 품목 데이터 100건.
 
@@ -120,4 +113,4 @@ sources:
 산업연구원은 하반기 섬유 수출을 0.8% 증가로 보고 신한투자증권은 OEM 환효과 5% 이상을 본다(요지). 수출·내수 지표가 개선되면 염색산단 가동률 49.1%가 반등해 이전·전환 의향 조사 결과가 1년 안에 바뀔 수 있고, DPP 위임법 채택이 2027년을 넘기면 제안 3의 준비가 앞서갈 수 있다. 틀릴 수 있는 이유: ① 산업용 섬유 51곳은 생산품 키워드 판정이라 실제와 다를 수 있다. ② 미국 관세 현행 세율이 미확인이라 제안 3의 FTA 항목 비중이 달라질 수 있다.
 
 ## 9. 출처
-외부 출처 22건은 이 글 아래 "출처" 목록에 링크로 있다. 기관 발간물 창고 항목 2건(한국무역협회 EBSI 9월 22일, KEIT 이슈픽 6월 1일)은 날짜·링크를 확인했고 KEIT 링크는 발간물 목록 페이지다. 나머지 20건은 검색 요지이며 다음 회차 전에 원문 대조가 필요하다. 내부 숫자의 근거는 기업 사전(scripts/data/dalseong_companies.csv + extra_companies.csv, 팩토리온 2026-08)·사업 DB(scripts/data/programs_*.csv)·지원 이력(support_history.csv)이다.
+외부 출처 16건은 이 글 아래 "출처" 목록에 링크로 있다. 기관 발간물 창고 항목 2건(한국무역협회 EBSI 9월 22일, KEIT 이슈픽 6월 1일)은 날짜·링크를 확인했고 KEIT 링크는 발간물 목록 페이지다. 나머지 20건은 검색 요지이며 다음 회차 전에 원문 대조가 필요하다. 내부 숫자의 근거는 기업 사전(scripts/data/dalseong_companies.csv + extra_companies.csv, 팩토리온 2026-08)·사업 DB(scripts/data/programs_*.csv)·지원 이력(support_history.csv)이다.

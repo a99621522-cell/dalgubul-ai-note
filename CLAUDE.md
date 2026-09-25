@@ -29,6 +29,7 @@
 - `scripts/collect_nps.py` — 공공데이터포털 국민연금 가입 사업장 내역(오픈API 또는 내려받은 파일) → `data/nps/YYYYMM.csv` 대구만. 키 `DATA_GO_KR_KEY`, 주소는 `sources.yml` `nps:`. 이 세션 환경은 포털 접속 차단이라 `.github/workflows/nps.yml`(매월 6일)이나 로컬에서 실행
 - `scripts/build_stats.py` — 월간 집계(팩토리온+산단 외 기업+국민연금 파일 있으면) → `data/stats/`. 전수 기준. 자료 없는 지표는 null
 - `scripts/render_charts.py` — `data/stats` → `src/generated/charts/` 인라인 SVG(넓은 판·좁은 판)+표 JSON. `Chart.astro`가 읽음
+- `scripts/write_monthly_report.py` — 월보 초안: `data/stats/monthly/YYYYMM.json` 의 값만 옮겨 `src/content/posts/YYYY-MM-DD-monthly-YYYYMM.md`(draft·auto, 표 6개·faq 3)로. `nps.yml` 이 매월 집계 뒤 실행. 발행은 `approve.py`
 - `config/pledge_areas.yml` + `scripts/report_context.py` — 매주 공약 분야별 정책제안 리포트 루틴(docs/ROUTINE_PROMPT.md)의 분야 순환표와 근거 계산(기업 사전·사업 DB·대구시 매칭·최근 글). 리포트는 `draft: true`, 공약 이행 평가·점수화 금지
 - `scripts/repair_factoryon.py` — 팩토리온 내려받기 파일이 엑셀에서 안 열릴 때. 첫 바이트로 실제 형식(진짜 xls·HTML 표·CSV·SpreadsheetML) 판정 → 옆에 `_정리.xlsx`(시트 1개, 헤더 고정, 자동 필터, 종사자 숫자·등록일 날짜). 원본은 건드리지 않음
 - `scripts/data/` — 달성 산단·기업 기초 CSV. `dalseong_complexes.csv`는 첫 화면·대구 경제 페이지의 산단 카드(`IndustrialCard.astro`)가 빌드 때 읽고, `dalseong_companies.csv`의 기업명은 collect.py가 경제 키워드로 자동 추가

@@ -32,6 +32,59 @@ UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, 
 TODAY = date.today().isoformat()
 
 
+_BROWSER = None
+
+
+def browser():
+    """playwright 가 설치돼 있으면 Chromium 을 한 번 띄워 재사용한다 (Actions 에서 pip install playwright && playwright install chromium)."""
+    global _BROWSER
+    if _BROWSER is not None:
+        return _BROWSER or None
+    try:
+        from playwright.sync_api import sync_playwright
+        pw = sync_playwright().start()
+        _BROWSER = pw.chromium.launch()
+        print("[browser] Chromium 사용")
+    except Exception as e:  # noqa: BLE001
+        print(f"[browser] 없음({str(e)[:60]}) — requests 만 사용")
+        _BROWSER = False
+    return _BROWSER or None
+
+
+def render(url: str, shot: Path | None = None, steps: list | None = None) -> tuple[str, list[str]]:
+    """브라우저로 열어 JS 렌더링된 HTML 과, 화면의 클릭 가능한 글자 목록을 돌려준다. steps: [{click: 글자}|{select: 글자}|{wait: 초}] 순서대로 실행."""
+    b = browser()
+    if not b:
+        return "", []
+    page = b.new_page(user_agent=UA["User-Agent"], locale="ko-KR", viewport={"width": 1280, "height": 900})
+    try:
+        page.goto(url, wait_until="networkidle", timeout=60000)
+        page.wait_for_timeout(1500)
+        for st in steps or []:
+            try:
+                if "click" in st:
+                    page.get_by_text(st["click"], exact=False).first.click(timeout=8000)
+                elif "select" in st:
+                    page.locator("select").filter(has_text=st["select"]).first.select_option(label=st["select"], timeout=8000)
+                elif "wait" in st:
+                    page.wait_for_timeout(int(st["wait"]) * 1000)
+                page.wait_for_load_state("networkidle", timeout=20000)
+                page.wait_for_timeout(800)
+                print(f"    [browser] 단계 성공: {st}")
+            except Exception as e:  # noqa: BLE001
+                print(f"    [browser] 단계 실패 {st}: {str(e)[:80]}")
+        html = page.content()
+        clickables = page.locator("a, button, [role=button], select option, li[onclick], [onclick]").all_inner_texts()
+        if shot:
+            page.screenshot(path=str(shot), full_page=True)
+    except Exception as e:  # noqa: BLE001
+        print(f"    [browser] 실패 {url}: {str(e)[:100]}")
+        html, clickables = "", []
+    finally:
+        page.close()
+    return html, [c.strip()[:40] for c in clickables if c.strip()]
+
+
 def safe(s: str, n: int = 60) -> str:
     return re.sub(r"[^\w가-힣.-]+", "_", s).strip("_")[:n] or "page"
 
@@ -53,29 +106,43 @@ def fetch_city(seeds: list[str], sess: requests.Session, max_pages: int = 60, ma
     index = []
     while queue and saved < max_pages:
         url, depth = queue.pop(0)
+        steps = None
+        if isinstance(url, dict):  # seed 가 {url, steps} 꼴
+            steps, url = url.get("steps"), url["url"]
         url = url.split("#")[0]
-        if url in seen:
+        if url in seen and not steps:
             continue
         seen.add(url)
+        r = None
         try:
-            r = sess.get(url, headers=UA, timeout=60)
+            r = sess.get(url, headers=UA, timeout=45)
+            ct = r.headers.get("Content-Type", "")
         except Exception as e:  # noqa: BLE001
-            print(f"  [city] 실패 {url}: {str(e)[:80]}")
-            continue
-        ct = r.headers.get("Content-Type", "")
-        if r.status_code != 200:
+            print(f"  [city] requests 실패 {url}: {str(e)[:80]}")
+            ct = "text/html"
+        if r is not None and r.status_code != 200:
             print(f"  [city] HTTP {r.status_code} {url}")
-            continue
-        if "text/html" not in ct:
+        if r is not None and r.status_code == 200 and "text/html" not in ct:
             name = safe(Path(urlparse(url).path).name or "file", 80)
             (d / "files" / name).write_bytes(r.content)
             print(f"  [city] 첨부 저장 {name} ({len(r.content):,} bytes)")
             index.append({"url": url, "file": f"files/{name}", "fetched": TODAY})
             continue
-        r.encoding = r.apparent_encoding or "utf-8"
-        title, text = page_text(r.text)
-        if len(text) < 200:
-            print(f"  [city] 본문이 거의 없음({len(text)}자, JS 렌더링일 수 있음): {url}\n      {r.text[:300].replace(chr(10), ' ')}")
+        html = ""
+        if r is not None and r.status_code == 200:
+            r.encoding = r.apparent_encoding or "utf-8"
+            html = r.text
+        title, text = page_text(html) if html else ("", "")
+        if len(text) < 300 or steps:  # JS 페이지·접속 실패·단계가 있는 seed 는 브라우저로
+            shots = d / "shots"
+            shots.mkdir(exist_ok=True)
+            html2, clickables = render(url, shots / f"{saved + 1:02d}_{safe(urlparse(url).netloc + urlparse(url).path, 40)}.png", steps)
+            if html2:
+                html = html2
+                title, text = page_text(html)
+                print(f"  [city] 브라우저 렌더링 {len(text):,}자 · 클릭 가능 {len(clickables)}개: " + " | ".join(clickables[:60]))
+        if not html:
+            continue
         if depth == 0 or "공약" in title + text[:5000]:
             fn = f"{saved + 1:02d}_{safe(title)}.txt"
             (d / fn).write_text(f"# {title}\n# 출처: {url}\n# 받은 날짜: {TODAY}\n\n{text}", encoding="utf-8")
@@ -86,7 +153,7 @@ def fetch_city(seeds: list[str], sess: requests.Session, max_pages: int = 60, ma
             print(f"  [city] '공약' 없음, 건너뜀: {title[:40]} ← {url}")
         if depth >= max_depth:
             continue
-        soup = BeautifulSoup(r.text, "html.parser")
+        soup = BeautifulSoup(html, "html.parser")
         host = urlparse(url).netloc
         links = []
         for a in soup.find_all("a", href=True):

@@ -1,0 +1,97 @@
+---
+import fs from 'node:fs';
+import Base from '../../layouts/Base.astro';
+import { readCsv } from '../../lib/csv';
+/** /supply-chain/ — 산업연관표 기반 공급망 빈 고리와 유치 후보 (scripts/attract.py 결과: scripts/data/io/{summary.json,gaps.csv,candidates.csv}).
+ *  전국 평균 투입계수 × 대구 종사자 → 클러스터 5개의 빈 고리 → 전국 팩토리온 조건 필터. '조건 필터 결과'이지 추천이 아니다. 평가·순위 표현·연락처 없음. */
+const SUMMARY = 'scripts/data/io/summary.json';
+const summary = fs.existsSync(SUMMARY) ? JSON.parse(fs.readFileSync(SUMMARY, 'utf-8')) : null;
+const gaps = readCsv('scripts/data/io/gaps.csv');
+const cands = readCsv('scripts/data/io/candidates.csv');
+const clusters: string[] = summary ? Object.keys(summary.clusters) : [...new Set(gaps.map(g => g.cluster))];
+const TOP = Number(summary?.top_gaps || 15);
+const byCluster = (cl: string) => gaps.filter(g => g.cluster === cl).slice(0, TOP);
+const candCount = (cl: string, sec: string) => cands.filter(c => c.cluster === cl && c.io_sector === sec).length;
+const regionDist = (cl: string, sec: string) => {
+  const m = new Map<string, number>();
+  for (const c of cands) if (c.cluster === cl && c.io_sector === sec) m.set(c.region, (m.get(c.region) ?? 0) + 1);
+  return [...m.entries()].sort((a, b) => b[1] - a[1]);
+};
+const pct = (s: string) => `${(Number(s) * 100).toFixed(0)}%`;
+const num = (s: string) => Number(s || 0).toLocaleString('ko-KR');
+const baseYear = summary?.base_year || '기준연도 미확인';
+const asOf = summary?.companies_as_of || '';
+const desc = summary
+  ? `한국은행 산업연관표 ${baseYear} 전국 평균 투입계수로 본 대구 제조 클러스터 5개의 공급 빈 고리 ${gaps.length}부문과 전국 팩토리온 조건 필터 후보 ${cands.length}건. 추천이 아닌 조건 필터 결과.`
+  : '산업연관표 기반 공급망 빈 고리 분석. 아직 산업연관표 입력 파일이 없어 결과가 없습니다.';
+// 클라이언트에 넘길 후보(클러스터·부문별). 필드는 표시에 필요한 것만
+const candData = cands.map(c => ({ cl: c.cluster, s: c.io_sector, n: c.company, r: c.region, w: Number(c.workers), k: Number(c.sites), e: c.expansion_signal, f: Number(c.fit_score), d: c.matched_daegu_demand }));
+const incentives = summary?.incentives ?? [];
+---
+<Base title="공급망 빈 고리·유치 후보" description={desc} current="supply-chain">
+  <div class="section-head"><h1>공급망 빈 고리와 유치 후보</h1>{summary && <span class="meta">산업연관표 {baseYear} · 기업 사전 {asOf} · 생성 {summary.generated}</span>}</div>
+  <p class="lede">대구 제조 클러스터 5개가 역외에서 사 오는 공정(빈 고리)을 한국은행 산업연관표 <strong>{baseYear} 전국 평균 투입계수</strong>와 대구 기업 사전 종사자로 계산하고, 그 공정을 하는 전국 공장을 조건으로 걸러 나열합니다. <strong>조건 필터 결과이지 추천이 아닙니다.</strong> 전국 평균 계수는 대구 기업의 실제 거래 구조와 다를 수 있습니다.</p>
+  {!summary && <div class="note"><p>아직 결과가 없습니다. 한국은행 산업연관표 거래표(기본부문)·부문분류표를 <code>scripts/data/io/</code>에 넣고 <code>python3 scripts/attract.py</code>를 실행하면 이 페이지가 채워집니다(scripts/data/io/README.md).</p></div>}
+  {summary && <>
+    <p class="meta filters">필터 조건: {summary.filters}. 매핑률 대구 {pct(String(summary.daegu_mapping.rate))}{summary.national_mapping_rate ? ` · 전국 ${pct(String(summary.national_mapping_rate))}` : ''} · 자동차부품 검증 {summary.verify_auto.ok ? '통과' : '실패'} · {summary.orientation}{!summary.factoryon_file && ' · 전국 팩토리온 파일이 없어 후보 목록은 비어 있음'}</p>
+    <div class="tabs" role="tablist" aria-label="클러스터">
+      {clusters.map((cl, i) => <button type="button" role="tab" class="tab" aria-selected={i === 0 ? 'true' : 'false'} data-cl={cl}>{cl}<span class="meta"> {summary.clusters[cl]?.reduce((s: number, x: any) => s + x.firms, 0).toLocaleString('ko-KR')}곳</span></button>)}
+    </div>
+    {clusters.map((cl, i) => <section class="panel" data-cl={cl} hidden={i !== 0}>
+      <p class="meta">클러스터 부문(IO 기본부문): {summary.clusters[cl]?.map((x: any) => `${x.name} ${x.firms}곳·${num(String(x.workers))}명`).join(' · ') || '없음'}</p>
+      <div class="scroll-x"><table class="data-table gap-table">
+        <thead><tr><th class="n">순위</th><th>공급 부문</th><th class="n">요구 규모 지수</th><th class="n">대구 공급 기업</th><th class="n">대구 종사자</th><th class="n">coverage</th><th class="n">후보</th></tr></thead>
+        <tbody>{byCluster(cl).map(g => <tr class="gap-row" data-cl={cl} data-sec={g.io_sector} tabindex="0">
+          <td class="n">{g.rank}</td><td><strong>{g.io_name}</strong> <span class="meta">{g.io_sector}</span></td>
+          <td class="n">{num(g.demand_index)} <span class="meta">({pct(g.demand_share)})</span></td><td class="n">{g.daegu_firms}</td><td class="n">{num(g.daegu_workers)}</td>
+          <td class="n"><span class="bar" style={`--w:${Math.round(Number(g.coverage) * 100)}%`}></span>{Number(g.coverage).toFixed(2)}</td>
+          <td class="n">{candCount(cl, g.io_sector)}</td>
+        </tr>)}</tbody>
+      </table></div>
+      <p class="meta">요구 규모 지수 = 클러스터 대구 종사자 × 부문별 투입계수(상대값). coverage = 대구 공급 종사자 ÷ 요구 규모를 클러스터 안 상위 10% 수준이 1이 되도록 맞춘 값. 행을 누르면 그 부문의 후보 목록.</p>
+      <div class="cand" data-cl={cl} hidden>
+        <div class="section-head"><h2 id={`cand-${cl}`}>후보 목록 <span class="sec-name"></span></h2><span class="meta cand-count"></span></div>
+        <p class="meta dist"></p>
+        <div class="scroll-x"><table class="data-table cand-table"><thead><tr><th>회사명</th><th>지역</th><th class="n">종업원</th><th class="n">공장</th><th>확장 신호</th><th class="n">적합도</th></tr></thead><tbody></tbody></table></div>
+        <p class="more-row"><button type="button" class="btn more" hidden>다음 100곳 더 보기</button></p>
+      </div>
+    </section>)}
+    <div class="section-head"><h2>관련 국비 사업 (사업 DB, 2026 예산)</h2></div>
+    {incentives.length ? <ul class="plain">{incentives.map((p: any) => <li>{p.ministry} {p.code} {p.name} <span class="meta">{Number(p.budget_2026 || 0).toLocaleString('ko-KR')}백만 원</span></li>)}</ul> : <p class="meta">사업 DB에서 투자유치 관련 사업을 찾지 못했습니다.</p>}
+    <p class="meta">근거: 한국은행 산업연관표 {baseYear} 생산자가격 거래표(기본부문) — {summary.transactions?.file}; 부문분류표 — {summary.classification?.file}; 대구 기업 사전(팩토리온 {asOf}); {summary.factoryon_file ? `전국 팩토리온 ${summary.factoryon_file}` : '전국 팩토리온 파일 없음'}. 종사자는 팩토리온 신고값. 후보에는 연락처·평가가 없고, 순서는 필터 조건에서 계산한 적합도입니다. 투자유치 부서용 요약: <code>scripts/data/io/attract_brief.md</code></p>
+    <script is:inline define:vars={{ candData }}>
+      const tabs = [...document.querySelectorAll('.tab')], panels = [...document.querySelectorAll('.panel')];
+      tabs.forEach(t => t.addEventListener('click', () => { tabs.forEach(x => x.setAttribute('aria-selected', String(x === t))); panels.forEach(p => p.hidden = p.dataset.cl !== t.dataset.cl); }));
+      const PAGE = 100;
+      function show(cl, sec, name) {
+        const box = document.querySelector(`.cand[data-cl="${cl}"]`); if (!box) return;
+        const rows = candData.filter(c => c.cl === cl && c.s === sec).sort((a, b) => b.f - a.f);
+        const dist = {}; rows.forEach(r => { dist[r.r] = (dist[r.r] || 0) + 1; });
+        box.hidden = false; box.querySelector('.sec-name').textContent = `— ${name}`;
+        box.querySelector('.cand-count').textContent = `${rows.length}곳 (조건 필터 결과, 적합도순)`;
+        box.querySelector('.dist').textContent = rows.length ? `대구 수요 기업(이 부문을 상위 투입으로 쓰는 클러스터 부문): ${rows[0].d} · 시도별: ` + Object.entries(dist).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(' · ') : '전국 팩토리온 파일이 없거나 조건에 맞는 공장이 없습니다.';
+        const tb = box.querySelector('tbody'); tb.innerHTML = ''; let limit = PAGE;
+        const draw = () => { tb.innerHTML = rows.slice(0, limit).map(r => `<tr><td>${r.n}</td><td>${r.r}</td><td class="n">${r.w}</td><td class="n">${r.k}</td><td>${r.e}</td><td class="n">${r.f}</td></tr>`).join(''); more.hidden = rows.length <= limit; };
+        const more = box.querySelector('.more'); more.onclick = () => { limit += PAGE; draw(); }; draw();
+        box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      document.querySelectorAll('.gap-row').forEach(tr => {
+        const go = () => show(tr.dataset.cl, tr.dataset.sec, tr.querySelector('strong').textContent);
+        tr.addEventListener('click', go); tr.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      });
+    </script>
+  </>}
+  <style>
+    .note { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2); }
+    .filters { line-height: 1.6; }
+    .tabs { display: flex; flex-wrap: wrap; gap: var(--s1); margin: var(--s3) 0 var(--s2); }
+    .tab { border: 1px solid var(--line-strong); background: transparent; color: var(--ink); border-radius: var(--radius); padding: 6px 12px; font: inherit; cursor: pointer; }
+    .tab[aria-selected="true"] { border-color: var(--primary); color: var(--primary); font-weight: 600; }
+    .gap-row { cursor: pointer; }
+    .gap-row:hover td, .gap-row:focus-visible td { background: var(--bg-soft, rgba(0,0,0,0.03)); }
+    .bar { display: inline-block; width: 60px; height: 8px; margin-right: 6px; vertical-align: middle; background: linear-gradient(to right, var(--primary) var(--w), var(--line) var(--w)); border-radius: 4px; }
+    .scroll-x .gap-table { min-width: 640px; }
+    .scroll-x .cand-table { min-width: 560px; }
+    ul.plain { padding-left: 1.2em; }
+  </style>
+</Base>

@@ -3,10 +3,9 @@ name: 산업연관표 첨부 받기 (한국은행)
 # config/io_sources.yml 의 한국은행·KOSIS 페이지에서 기본부문 거래표·부문분류표 엑셀을 받아 scripts/data/io/ 에 커밋한다.
 # 이 세션 환경은 한국은행 접속이 막혀 있어 Actions 가 대신 받는다. 이후 분석은 scripts/attract.py(전국 팩토리온 파일은 국내 PC 에서).
 
+# 1회차(2026-09-25): bok.or.kr 은 robots.txt 로 크롤러를 막고(존중), KOSIS 파일 페이지는 첨부 링크가 화면 조작 뒤에만 나온다.
+# 그래서 지금은 수동 실행만 두고, 파일은 ECOS 에서 손으로 받아 scripts/data/io/ 에 넣는다.
 on:
-  push:
-    branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: [".github/workflows/io_tables.yml", "scripts/fetch_io_tables.py", "config/io_sources.yml"]
   workflow_dispatch:
 
 permissions:

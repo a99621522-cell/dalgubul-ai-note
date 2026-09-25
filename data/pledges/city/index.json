@@ -1,16 +1,16 @@
 [
  {
-  "url": "https://www.daegu.go.kr/",
-  "title": "대구광역시",
-  "file": "01_대구광역시.txt",
-  "chars": 6748,
+  "url": "https://policy.nec.go.kr/svc/policy/PolicyList.do",
+  "title": "",
+  "file": "01_page.txt",
+  "chars": 112,
   "fetched": "2026-09-25"
  },
  {
-  "url": "https://www.daegu.go.kr/index.do?menu_id=00000854&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00029&nttId=824465",
-  "title": "공지사항 | 대구광역시",
-  "file": "02_공지사항_대구광역시.txt",
-  "chars": 1563,
+  "url": "https://policy.nec.go.kr/",
+  "title": "중앙선거관리위원회 정책·공약마당",
+  "file": "02_중앙선거관리위원회_정책_공약마당.txt",
+  "chars": 7,
   "fetched": "2026-09-25"
  }
 ]

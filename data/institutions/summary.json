@@ -8,10 +8,11 @@
    "note": "",
    "datasets": [
     "15018033",
+    "15159608",
     "3044610"
    ],
    "total": {
-    "projects": 24,
+    "projects": 25,
     "daegu_firms": 13,
     "outside_firms": 15
    },
@@ -47,7 +48,7 @@
      "outside_firms": 1
     },
     "2025": {
-     "projects": 7,
+     "projects": 8,
      "daegu_firms": 3,
      "outside_firms": 2
     },
@@ -165,12 +166,13 @@
    "name": "대구경북첨단의료산업진흥재단(케이메디허브)",
    "note": "",
    "datasets": [
-    "15018033"
+    "15018033",
+    "15159608"
    ],
    "total": {
-    "projects": 75,
-    "daegu_firms": 14,
-    "outside_firms": 80
+    "projects": 323,
+    "daegu_firms": 15,
+    "outside_firms": 79
    },
    "by_year": {
     "2018": {
@@ -184,32 +186,32 @@
      "outside_firms": 0
     },
     "2020": {
-     "projects": 6,
+     "projects": 77,
      "daegu_firms": 0,
      "outside_firms": 8
     },
     "2021": {
-     "projects": 8,
+     "projects": 86,
      "daegu_firms": 1,
      "outside_firms": 11
     },
     "2022": {
-     "projects": 14,
+     "projects": 83,
      "daegu_firms": 4,
      "outside_firms": 11
     },
     "2023": {
-     "projects": 8,
+     "projects": 71,
      "daegu_firms": 3,
      "outside_firms": 7
     },
     "2024": {
-     "projects": 14,
-     "daegu_firms": 1,
-     "outside_firms": 22
+     "projects": 59,
+     "daegu_firms": 2,
+     "outside_firms": 21
     },
     "2025": {
-     "projects": 15,
+     "projects": 67,
      "daegu_firms": 3,
      "outside_firms": 18
     },
@@ -220,14 +222,14 @@
     }
    },
    "top_programs": [
+    "개인기초연구(과기정통부)",
+    "개인기초연구(과기정통부)(RnD)",
+    "바이오의료기술개발",
+    "바이오.의료기술개발(RnD)",
     "[IRIS 사업] 이종기술융합형",
     "[IRIS 사업] 맞춤형진단치료제품",
     "[IRIS 사업] 병원-기업협력공동사업화기반수요연계형기술개발사업",
-    "디지털헬스케어",
-    "[IRIS 사업] 디지털헬스케어",
-    "맞춤형진단치료제품",
-    "[IRIS 사업] 패키지형",
-    "소재부품이종기술융합형"
+    "첨단의료산업선도기반실증지원사업(RnD)"
    ]
   },
   "kiria": {
@@ -304,10 +306,11 @@
    "note": "자료에 본부 구분이 없어 전체 ETRI 과제로 잡힌다",
    "datasets": [
     "15018033",
-    "15106650"
+    "15106650",
+    "15159608"
    ],
    "total": {
-    "projects": 201,
+    "projects": 202,
     "daegu_firms": 31,
     "outside_firms": 251
    },
@@ -328,7 +331,7 @@
      "outside_firms": 36
     },
     "2021": {
-     "projects": 15,
+     "projects": 16,
      "daegu_firms": 3,
      "outside_firms": 30
     },
@@ -378,8 +381,8 @@
    ],
    "total": {
     "projects": 883,
-    "daegu_firms": 169,
-    "outside_firms": 1203
+    "daegu_firms": 170,
+    "outside_firms": 1202
    },
    "by_year": {
     "2018": {
@@ -404,13 +407,13 @@
     },
     "2022": {
      "projects": 146,
-     "daegu_firms": 22,
-     "outside_firms": 195
+     "daegu_firms": 23,
+     "outside_firms": 194
     },
     "2023": {
      "projects": 55,
-     "daegu_firms": 25,
-     "outside_firms": 105
+     "daegu_firms": 26,
+     "outside_firms": 104
     },
     "2024": {
      "projects": 171,
@@ -444,10 +447,11 @@
    "note": "",
    "datasets": [
     "15018033",
-    "15106650"
+    "15106650",
+    "15159608"
    ],
    "total": {
-    "projects": 192,
+    "projects": 209,
     "daegu_firms": 63,
     "outside_firms": 260
    },
@@ -463,7 +467,7 @@
      "outside_firms": 11
     },
     "2020": {
-     "projects": 27,
+     "projects": 32,
      "daegu_firms": 9,
      "outside_firms": 46
     },
@@ -473,12 +477,12 @@
      "outside_firms": 52
     },
     "2022": {
-     "projects": 45,
+     "projects": 50,
      "daegu_firms": 6,
      "outside_firms": 27
     },
     "2023": {
-     "projects": 23,
+     "projects": 33,
      "daegu_firms": 5,
      "outside_firms": 35
     },
@@ -488,7 +492,7 @@
      "outside_firms": 51
     },
     "2025": {
-     "projects": 18,
+     "projects": 20,
      "daegu_firms": 6,
      "outside_firms": 26
     },
@@ -514,10 +518,11 @@
    "note": "",
    "datasets": [
     "15018033",
-    "15106650"
+    "15106650",
+    "15159608"
    ],
    "total": {
-    "projects": 79,
+    "projects": 83,
     "daegu_firms": 23,
     "outside_firms": 113
    },
@@ -533,32 +538,32 @@
      "outside_firms": 12
     },
     "2020": {
-     "projects": 11,
+     "projects": 12,
      "daegu_firms": 4,
      "outside_firms": 17
     },
     "2021": {
-     "projects": 6,
+     "projects": 7,
      "daegu_firms": 2,
      "outside_firms": 13
     },
     "2022": {
-     "projects": 10,
+     "projects": 11,
      "daegu_firms": 2,
      "outside_firms": 12
     },
     "2023": {
-     "projects": 7,
+     "projects": 8,
      "daegu_firms": 5,
      "outside_firms": 4
     },
     "2024": {
-     "projects": 19,
+     "projects": 20,
      "daegu_firms": 4,
      "outside_firms": 39
     },
     "2025": {
-     "projects": 5,
+     "projects": 6,
      "daegu_firms": 0,
      "outside_firms": 2
     },

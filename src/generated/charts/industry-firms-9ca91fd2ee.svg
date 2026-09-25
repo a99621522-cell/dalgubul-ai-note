@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="전기·전자 기업 수 추이. 2026-07부터 2026-07까지 1개월. 전기·전자 최근 1,185곳" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="전기·전자 기업 수 추이. 2026-07부터 2026-07까지 1개월. 전기·전자 최근 1,331곳" style="max-width:720px;height:auto;font-size:14px">
 <title>전기·전자 기업 수 추이</title>
 <line x1="72" x2="652" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="301.0" text-anchor="end" fill="#767676">1,100</text>
+<text x="64" y="301.0" text-anchor="end" fill="#767676">1,250</text>
 <line x1="72" x2="652" y1="158.0" y2="158.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="163.0" text-anchor="end" fill="#767676">1,150</text>
+<text x="64" y="163.0" text-anchor="end" fill="#767676">1,300</text>
 <line x1="72" x2="652" y1="20.0" y2="20.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="25.0" text-anchor="end" fill="#767676">1,200</text>
+<text x="64" y="25.0" text-anchor="end" fill="#767676">1,350</text>
 <text x="362.0" y="320" text-anchor="middle" fill="#767676">2026.7</text>
 <line x1="72" x2="652" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<circle cx="362.0" cy="61.4" r="4" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="362.0" cy="61.4" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="370.0" y="66.4" fill="#1a1a1a" font-weight="600">1,185곳</text></svg>
+<circle cx="362.0" cy="72.4" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="362.0" cy="72.4" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="370.0" y="77.4" fill="#1a1a1a" font-weight="600">1,331곳</text></svg>

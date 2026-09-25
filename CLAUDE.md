@@ -22,6 +22,8 @@
 - `scripts/import_extra.py` — 산단 외 기업 목록(`scripts/data/extra/*.csv`, 형식은 그 README) → `extra_companies.csv`(id x0001~) + `company_tags.csv`. 팩토리온과 같은 기업이면 태그만
 - `scripts/data/support_history.csv` + `scripts/import_support.py` — 지원사업 수혜 이력(NTIS 과제·대구시 보조금 공개·기관 선정 공고, 투입구 `scripts/data/support/`, 형식은 그 README). 기업 페이지 '지원사업 이력(최근 3년)', 통계 `support_3y`, 리포트 근거. 비공개 자료(정책자금 개별 내역) 금지
 - `scripts/collect_dart_fin.py` — DART 정기보고서 매출·영업이익·당기순이익(대구 공시 기업만, `DART_KEY`) → `scripts/data/company_financials.csv`. 기업 페이지 '재무(DART 공시)'
+- `.github/workflows/fetch_public.yml` + `scripts/fetch_datago.py` — 공공데이터포털 파일데이터(지식산업센터현황 15117154, 국민연금 사업장 15083277)를 Actions 가 받아 처리·커밋. 이 세션 환경은 포털 접속이 막혀 있으므로 데이터 갱신은 이 워크플로로. `data/fetch_mode.txt`(mode|ids|pick)를 바꿔 푸시하면 실행
+- `scripts/nps_to_extra.py` — 국민연금 대구 사업장 중 팩토리온에 없는 곳 → 산단 외 기업 후보(서비스업 제외) → `import_extra.py --replace-source 국민연금`
 - `scripts/collect_nps.py` — 공공데이터포털 국민연금 가입 사업장 내역(오픈API 또는 내려받은 파일) → `data/nps/YYYYMM.csv` 대구만. 키 `DATA_GO_KR_KEY`, 주소는 `sources.yml` `nps:`. 이 세션 환경은 포털 접속 차단이라 `.github/workflows/nps.yml`(매월 6일)이나 로컬에서 실행
 - `scripts/build_stats.py` — 월간 집계(팩토리온+산단 외 기업+국민연금 파일 있으면) → `data/stats/`. 전수 기준. 자료 없는 지표는 null
 - `scripts/render_charts.py` — `data/stats` → `src/generated/charts/` 인라인 SVG(넓은 판·좁은 판)+표 JSON. `Chart.astro`가 읽음

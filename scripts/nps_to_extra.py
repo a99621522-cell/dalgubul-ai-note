@@ -55,7 +55,8 @@ def main(argv: list[str]) -> int:
         print("data/nps/YYYYMM.csv 없음")
         return 1
     month = path.stem
-    companies = load_all_companies()
+    # 비교 대상: 팩토리온 기업 + 다른 출처의 산단 외 기업. 예전 국민연금 투입분(같은 출처)은 빼야 자기 자신과 겹쳐 0건이 되지 않는다
+    companies = [c for c in load_all_companies() if not (c["id"].startswith("x") and (c.get("source") or "").startswith("국민연금"))]
     keys = {(norm_name(c["name"]), c["district"]) for c in companies}
     # 주소 → 그 주소에 등록된 팩토리온 기업 이름들. 한 건물에 여러 기업이 있으므로(지식산업센터·알파시티) 주소만으로 같은 기업이라 보지 않고,
     # 이름이 서로 포함 관계일 때만(예: '명장' ⊂ '(주)명장정밀') 같은 기업으로 본다

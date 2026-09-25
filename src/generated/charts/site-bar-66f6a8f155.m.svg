@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 244" width="100%" role="img" aria-label="입지 유형별 기업 수. 산업단지 7,357곳, 개별입지 2,666곳, 지식산업센터 974곳, 연구개발특구 130곳, 수성알파시티 48곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 244" width="100%" role="img" aria-label="입지 유형별 기업 수. 산업단지 7,357곳, 개별입지 4,765곳, 지식산업센터 974곳, 수성알파시티 156곳, 연구개발특구 130곳" style="max-width:360px;height:auto;font-size:14px">
 <title>입지 유형별 기업 수</title>
 <text x="8" y="26.0" fill="#1a1a1a">산업단지</text>
 <rect x="8" y="32" width="290.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="304.0" y="46.0" fill="#1a1a1a">7,357곳</text>
 <text x="8" y="70.0" fill="#1a1a1a">개별입지</text>
-<rect x="8" y="76" width="105.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="119.1" y="90.0" fill="#1a1a1a">2,666곳</text>
+<rect x="8" y="76" width="187.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="201.8" y="90.0" fill="#1a1a1a">4,765곳</text>
 <text x="8" y="114.0" fill="#1a1a1a">지식산업센터</text>
 <rect x="8" y="120" width="38.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="52.4" y="134.0" fill="#1a1a1a">974곳</text>
-<text x="8" y="158.0" fill="#1a1a1a">연구개발특구</text>
-<rect x="8" y="164" width="5.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="19.1" y="178.0" fill="#1a1a1a">130곳</text>
-<text x="8" y="202.0" fill="#1a1a1a">수성알파시티</text>
-<rect x="8" y="208" width="1.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="15.9" y="222.0" fill="#1a1a1a">48곳</text></svg>
+<text x="8" y="158.0" fill="#1a1a1a">수성알파시티</text>
+<rect x="8" y="164" width="6.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="20.1" y="178.0" fill="#1a1a1a">156곳</text>
+<text x="8" y="202.0" fill="#1a1a1a">연구개발특구</text>
+<rect x="8" y="208" width="5.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="19.1" y="222.0" fill="#1a1a1a">130곳</text></svg>

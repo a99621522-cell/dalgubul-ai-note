@@ -1,14 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구 등록 기업 수 추이. 2026-07부터 2026-07까지 1개월. 전체 최근 11,175곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구 등록 기업 수 추이. 2026-07부터 2026-07까지 1개월. 전체 최근 13,382곳" style="max-width:360px;height:auto;font-size:14px">
 <title>대구 등록 기업 수 추이</title>
 <line x1="60" x2="284" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="261.0" text-anchor="end" fill="#767676">10,500</text>
-<line x1="60" x2="284" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="153.0" text-anchor="end" fill="#767676">11,000</text>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">12,500</text>
+<line x1="60" x2="284" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="189.0" text-anchor="end" fill="#767676">13,000</text>
+<line x1="60" x2="284" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="117.0" text-anchor="end" fill="#767676">13,500</text>
 <line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">11,500</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">14,000</text>
 <text x="172.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
 <line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<circle cx="172.0" cy="110.2" r="4" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="172.0" cy="110.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="180.0" y="115.2" fill="#1a1a1a" font-weight="600">11,175곳</text>
+<circle cx="172.0" cy="129.0" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="172.0" cy="129.0" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="180.0" y="134.0" fill="#1a1a1a" font-weight="600">13,382곳</text>
 <text x="8" y="16" fill="#767676">자료 1개월</text></svg>

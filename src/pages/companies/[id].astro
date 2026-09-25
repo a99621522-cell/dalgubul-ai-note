@@ -16,7 +16,10 @@ const Row = (x: any) => x;
 const related = (await getCollection('posts', p => !p.data.draft))
   .filter(p => p.data.title.includes(c.name) || p.data.summary.includes(c.name) || p.data.tags.includes(c.name))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 10);
-const desc = `${c.name} — ${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''}, ${c.complex === '개별입지' ? '개별입지' : `${c.complex} 입주`}, ${c.sector.replace(/ 외 \d+ 종/, '')}${c.workers_band ? `, 종사자 ${c.workers_band}` : ''}${c.product ? `, 생산품 ${c.product.split(',')[0]}` : ''}. 팩토리온 ${c.as_of} 기준`;
+const fromNps = (c.source || '').startsWith('국민연금');
+const srcName = fromNps ? '국민연금 사업장 내역' : '팩토리온';
+const workersNote = fromNps ? '국민연금 가입자수' : '공장등록 신고값';
+const desc = `${c.name} — ${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''}, ${c.complex === '개별입지' ? '개별입지' : c.complex === '산단 외' ? '산단 외' : `${c.complex} 입주`}, ${c.sector.replace(/ 외 \d+ 종/, '')}${c.workers_band ? `, ${fromNps ? '가입자' : '종사자'} ${c.workers_band}` : ''}${c.product ? `, 생산품 ${c.product.split(',')[0]}` : ''}. ${srcName} ${c.as_of} 기준`;
 const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', name: c.name, address: c.address, description: desc,
   location: { '@type': 'Place', name: c.complex } }];
 ---
@@ -30,12 +33,12 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
     <table class="card">
       <tbody>
         <tr><th>소재</th><td>{c.district}{c.eupmyeon && ` ${c.eupmyeon}`} · <a href={`/companies/?complex=${encodeURIComponent(c.complex)}`}>{c.complex}</a></td></tr>
-        <tr><th>업종</th><td>{c.sector} <span class="meta">({c.sector_code}, {c.sector_group})</span></td></tr>
-        <tr><th>생산품</th><td>{c.product || '—'}</td></tr>
-        <tr><th>종사자</th><td>{c.workers_band || '—'}<span class="meta"> (공장등록 신고값)</span></td></tr>
+        <tr><th>업종</th><td>{c.sector} <span class="meta">({[c.sector_code, c.sector_group].filter(Boolean).join(', ')})</span></td></tr>
+        {!fromNps && <tr><th>생산품</th><td>{c.product || '—'}</td></tr>}
+        <tr><th>{fromNps ? '가입자' : '종사자'}</th><td>{c.workers_band || '—'}<span class="meta"> ({workersNote})</span></td></tr>
         {c.reg_type && <tr><th>공장 등록</th><td>{c.reg_type === '등록' ? '등록 완료' : '설립 승인(등록 전)'}{c.first_registered && ` · 최초 등록 ${c.first_registered}년`}</td></tr>}
         {c.mfg_area_band && <tr><th>제조시설 규모</th><td>{c.mfg_area_band}</td></tr>}
-        <tr><th>공장 주소{Number(c.sites) > 1 && ` (${c.sites}곳)`}</th><td>{c.address.split(' / ').map(a => <div>{a}</div>)}</td></tr>
+        <tr><th>{fromNps ? '사업장 주소' : '공장 주소'}{Number(c.sites) > 1 && ` (${c.sites}곳)`}</th><td>{c.address.split(' / ').map(a => <div>{a}</div>)}{fromNps && <div class="meta">국민연금 자료는 건물번호 없이 도로명까지만 제공합니다.</div>}</td></tr>
       </tbody>
     </table>
     <section class="partners" aria-label="협업 후보">
@@ -75,7 +78,7 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
     <section class="section-head"><h2>관련 글</h2></section>
     {related.length > 0 ? <PostList posts={related} /> : <p class="empty">아직 이 기업을 다룬 글이 없습니다. 공개된 뉴스·공시가 수집되면 여기에 쌓입니다.</p>}
     <aside class="source-box">
-      <strong>출처</strong> {c.source}, 기준 {c.as_of}. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아닙니다. 종사자 수는 구간으로만 표시합니다. 지원 이력·재무는 공개 자료(NTIS·대구시 보조금 공개·기관 선정 공고·DART)에서만 가져오며 비공개 자료는 싣지 않습니다. 정정 요청은 소개 페이지 연락처로.
+      <strong>출처</strong> {c.source}, 기준 {c.as_of}. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아닙니다. 종사자(또는 가입자) 수는 구간으로만 표시합니다. 지원 이력·재무는 공개 자료(NTIS·대구시 보조금 공개·기관 선정 공고·DART)에서만 가져오며 비공개 자료는 싣지 않습니다. 정정 요청은 소개 페이지 연락처로.
     </aside>
   </article>
 </Base>

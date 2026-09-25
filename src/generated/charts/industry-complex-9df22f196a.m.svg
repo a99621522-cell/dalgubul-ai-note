@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="자동차·부품 산단별 고용 인원. 성서산단 8,002명, 대구국가산단 4,257명, 대구테크노폴리스산단 3,898명, 달성산단 2,956명, 달성2차산단 1,586명, 대구제3산단 1,019명, 서대구산단 919명, 개별입지 697명, 북구검단산단 551명, 대구이시아폴리스산단 268명, 그 밖의 단지 530명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="자동차·부품 산단별 고용 인원. 성서산단 8,002명, 대구국가산단 4,257명, 대구테크노폴리스산단 3,898명, 산단 외 3,014명, 달성산단 2,956명, 달성2차산단 1,586명, 대구제3산단 1,019명, 서대구산단 919명, 개별입지 697명, 북구검단산단 551명, 그 밖의 단지 798명" style="max-width:360px;height:auto;font-size:14px">
 <title>자동차·부품 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">성서산단</text>
@@ -10,27 +10,27 @@
 <text x="8" y="136.0" fill="#1a1a1a">대구테크노폴리스산단</text>
 <rect x="8" y="142" width="141.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="155.3" y="156.0" fill="#1a1a1a">3,898명</text>
-<text x="8" y="180.0" fill="#1a1a1a">달성산단</text>
-<rect x="8" y="186" width="107.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="121.1" y="200.0" fill="#1a1a1a">2,956명</text>
-<text x="8" y="224.0" fill="#1a1a1a">달성2차산단</text>
-<rect x="8" y="230" width="57.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="71.5" y="244.0" fill="#1a1a1a">1,586명</text>
-<text x="8" y="268.0" fill="#1a1a1a">대구제3산단</text>
-<rect x="8" y="274" width="36.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="50.9" y="288.0" fill="#1a1a1a">1,019명</text>
-<text x="8" y="312.0" fill="#1a1a1a">서대구산단</text>
-<rect x="8" y="318" width="33.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="47.3" y="332.0" fill="#1a1a1a">919명</text>
-<text x="8" y="356.0" fill="#1a1a1a">개별입지</text>
-<rect x="8" y="362" width="25.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="39.3" y="376.0" fill="#1a1a1a">697명</text>
-<text x="8" y="400.0" fill="#1a1a1a">북구검단산단</text>
-<rect x="8" y="406" width="20.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="34.0" y="420.0" fill="#1a1a1a">551명</text>
-<text x="8" y="444.0" fill="#1a1a1a">대구이시아폴리스산단</text>
-<rect x="8" y="450" width="9.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="23.7" y="464.0" fill="#1a1a1a">268명</text>
+<text x="8" y="180.0" fill="#1a1a1a">산단 외</text>
+<rect x="8" y="186" width="109.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="123.2" y="200.0" fill="#1a1a1a">3,014명</text>
+<text x="8" y="224.0" fill="#1a1a1a">달성산단</text>
+<rect x="8" y="230" width="107.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="121.1" y="244.0" fill="#1a1a1a">2,956명</text>
+<text x="8" y="268.0" fill="#1a1a1a">달성2차산단</text>
+<rect x="8" y="274" width="57.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="71.5" y="288.0" fill="#1a1a1a">1,586명</text>
+<text x="8" y="312.0" fill="#1a1a1a">대구제3산단</text>
+<rect x="8" y="318" width="36.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="50.9" y="332.0" fill="#1a1a1a">1,019명</text>
+<text x="8" y="356.0" fill="#1a1a1a">서대구산단</text>
+<rect x="8" y="362" width="33.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="47.3" y="376.0" fill="#1a1a1a">919명</text>
+<text x="8" y="400.0" fill="#1a1a1a">개별입지</text>
+<rect x="8" y="406" width="25.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="39.3" y="420.0" fill="#1a1a1a">697명</text>
+<text x="8" y="444.0" fill="#1a1a1a">북구검단산단</text>
+<rect x="8" y="450" width="20.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="34.0" y="464.0" fill="#1a1a1a">551명</text>
 <text x="8" y="488.0" fill="#1a1a1a">그 밖의 단지</text>
-<rect x="8" y="494" width="19.2" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
-<text x="33.2" y="508.0" fill="#1a1a1a">530명</text></svg>
+<rect x="8" y="494" width="28.9" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="42.9" y="508.0" fill="#1a1a1a">798명</text></svg>

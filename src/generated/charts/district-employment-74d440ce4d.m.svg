@@ -1,14 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="달성군 고용 인원 추이. 2026-07부터 2026-07까지 1개월. 달성군 최근 43,002명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="달성군 고용 인원 추이. 2026-07부터 2026-07까지 1개월. 달성군 최근 47,970명" style="max-width:360px;height:auto;font-size:14px">
 <title>달성군 고용 인원 추이</title>
 <line x1="60" x2="284" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="261.0" text-anchor="end" fill="#767676">40,000</text>
-<line x1="60" x2="284" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="153.0" text-anchor="end" fill="#767676">42,000</text>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">44,000</text>
+<line x1="60" x2="284" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="189.0" text-anchor="end" fill="#767676">46,000</text>
+<line x1="60" x2="284" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="117.0" text-anchor="end" fill="#767676">48,000</text>
 <line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">44,000</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">50,000</text>
 <text x="172.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
 <line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<circle cx="172.0" cy="93.9" r="4" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="172.0" cy="93.9" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="180.0" y="98.9" fill="#1a1a1a" font-weight="600">43,002명</text>
+<circle cx="172.0" cy="113.1" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="172.0" cy="113.1" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="180.0" y="118.1" fill="#1a1a1a" font-weight="600">47,970명</text>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text></svg>

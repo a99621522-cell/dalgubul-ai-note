@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="로봇 산단별 고용 인원. 성서산단 1,197명, 대구테크노폴리스산단 455명, 성서5차산단 144명, 대구연구개발특구 75명, 대구국가산단 52명, 대구금호워터폴리스산단 50명, 대구이시아폴리스산단 29명, 개별입지 28명, 북구검단산단 27명, 대구제3산단 19명, 그 밖의 단지 18명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="로봇 산단별 고용 인원. 성서산단 1,197명, 대구테크노폴리스산단 455명, 산단 외 218명, 성서5차산단 144명, 대구연구개발특구 75명, 대구국가산단 52명, 대구금호워터폴리스산단 50명, 대구이시아폴리스산단 29명, 개별입지 28명, 북구검단산단 27명, 그 밖의 단지 37명" style="max-width:360px;height:auto;font-size:14px">
 <title>로봇 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">성서산단</text>
@@ -7,30 +7,30 @@
 <text x="8" y="92.0" fill="#1a1a1a">대구테크노폴리스산단</text>
 <rect x="8" y="98" width="110.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="124.2" y="112.0" fill="#1a1a1a">455명</text>
-<text x="8" y="136.0" fill="#1a1a1a">성서5차산단</text>
-<rect x="8" y="142" width="34.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="48.9" y="156.0" fill="#1a1a1a">144명</text>
-<text x="8" y="180.0" fill="#1a1a1a">대구연구개발특구</text>
-<rect x="8" y="186" width="18.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="32.2" y="200.0" fill="#1a1a1a">75명</text>
-<text x="8" y="224.0" fill="#1a1a1a">대구국가산단</text>
-<rect x="8" y="230" width="12.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="26.6" y="244.0" fill="#1a1a1a">52명</text>
-<text x="8" y="268.0" fill="#1a1a1a">대구금호워터폴리스산단</text>
-<rect x="8" y="274" width="12.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="26.1" y="288.0" fill="#1a1a1a">50명</text>
-<text x="8" y="312.0" fill="#1a1a1a">대구이시아폴리스산단</text>
-<rect x="8" y="318" width="7.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="21.0" y="332.0" fill="#1a1a1a">29명</text>
-<text x="8" y="356.0" fill="#1a1a1a">개별입지</text>
-<rect x="8" y="362" width="6.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="20.8" y="376.0" fill="#1a1a1a">28명</text>
-<text x="8" y="400.0" fill="#1a1a1a">북구검단산단</text>
-<rect x="8" y="406" width="6.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="20.5" y="420.0" fill="#1a1a1a">27명</text>
-<text x="8" y="444.0" fill="#1a1a1a">대구제3산단</text>
-<rect x="8" y="450" width="4.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="18.6" y="464.0" fill="#1a1a1a">19명</text>
+<text x="8" y="136.0" fill="#1a1a1a">산단 외</text>
+<rect x="8" y="142" width="52.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="66.8" y="156.0" fill="#1a1a1a">218명</text>
+<text x="8" y="180.0" fill="#1a1a1a">성서5차산단</text>
+<rect x="8" y="186" width="34.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="48.9" y="200.0" fill="#1a1a1a">144명</text>
+<text x="8" y="224.0" fill="#1a1a1a">대구연구개발특구</text>
+<rect x="8" y="230" width="18.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="32.2" y="244.0" fill="#1a1a1a">75명</text>
+<text x="8" y="268.0" fill="#1a1a1a">대구국가산단</text>
+<rect x="8" y="274" width="12.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="26.6" y="288.0" fill="#1a1a1a">52명</text>
+<text x="8" y="312.0" fill="#1a1a1a">대구금호워터폴리스산단</text>
+<rect x="8" y="318" width="12.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="26.1" y="332.0" fill="#1a1a1a">50명</text>
+<text x="8" y="356.0" fill="#1a1a1a">대구이시아폴리스산단</text>
+<rect x="8" y="362" width="7.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="21.0" y="376.0" fill="#1a1a1a">29명</text>
+<text x="8" y="400.0" fill="#1a1a1a">개별입지</text>
+<rect x="8" y="406" width="6.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="20.8" y="420.0" fill="#1a1a1a">28명</text>
+<text x="8" y="444.0" fill="#1a1a1a">북구검단산단</text>
+<rect x="8" y="450" width="6.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="20.5" y="464.0" fill="#1a1a1a">27명</text>
 <text x="8" y="488.0" fill="#1a1a1a">그 밖의 단지</text>
-<rect x="8" y="494" width="4.4" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
-<text x="18.4" y="508.0" fill="#1a1a1a">18명</text></svg>
+<rect x="8" y="494" width="9.0" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="23.0" y="508.0" fill="#1a1a1a">37명</text></svg>

@@ -166,6 +166,48 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
     return [i for i in items if recent(i["date"])][:MAX_ITEMS]
 
 
+def from_rows(page_url: str, html: str, org_names: tuple = ()) -> list[dict]:
+    """제목이 링크가 아닌 목록(행 클릭으로 여는 게시판, NIA·KOSI 등): 날짜가 든 칸(tr·li·div)의 첫 글자 조각을 제목으로. 링크는 목록 페이지 주소."""
+    soup = BeautifulSoup(html, "html.parser")
+    for t in soup(["script", "style", "nav", "header", "footer"]):
+        t.decompose()
+    items, seen = [], set()
+    for text_node in soup.find_all(string=DATE_RE):
+        d = parse_date(str(text_node))
+        if not d or d > FUTURE:
+            continue
+        node, title = text_node.parent, ""
+        for _ in range(4):
+            if node is None:
+                break
+            txt = node.get_text("\n", strip=True)
+            if len(txt) > 700:      # 칸이 아니라 목록 전체·본문까지 올라간 것
+                node = None
+                break
+            title = first_piece(txt, org_names)
+            if title:
+                break
+            node = node.parent
+        if not title or title in seen:
+            continue
+        seen.add(title)
+        items.append({"title": title[:160], "url": page_url + "#" + re.sub(r"\W+", "-", title)[:40], "date": d, "summary": ""})
+    items.sort(key=lambda i: i["date"], reverse=True)
+    return [i for i in items if recent(i["date"])][:MAX_ITEMS]
+
+
+def first_piece(txt: str, org_names: tuple = ()) -> str:
+    """칸 글자를 줄로 나눠 제목으로 보이는 첫 조각: 8자 이상, 날짜·번호·조회수·첨부·정크·기관명이 아닌 것."""
+    for x in txt.split("\n"):
+        x = re.sub(r"\s+", " ", x).strip()
+        if len(x) < 8 or JUNK.search(x) or DATE_RE.search(x) or DATE_EN.search(x) or x in org_names:
+            continue
+        if re.fullmatch(r"[\d.\-/ ,]+", x) or re.match(r"(조회수?|첨부|작성자|등록일|담당|No\.?|번호)\b", x):
+            continue
+        return x
+    return ""
+
+
 def block_title(a) -> str:
     """첨부 링크가 든 칸(tr·li·div)에서 제목으로 보이는 글자: 날짜·정크 링크 글자를 뺀 가장 긴 조각."""
     node = a
@@ -346,8 +388,11 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                 break
             if page != org.get("home") or not org.get("list"):
                 items = from_list(page, html, org.get("item_pattern"), (org["name"], org["name"].split("(")[0].strip()))
+                method = "목록 페이지"
+                if not items and page != org.get("home"):
+                    items, method = from_rows(page, html, (org["name"], org["name"].split("(")[0].strip())), "목록 페이지(행)"
                 if items:
-                    res["items"], res["method"] = items, "목록 페이지"
+                    res["items"], res["method"] = items, method
                     break
     res["status"] = "OK" if res["items"] else ("차단" if res["note"] else ("접속 실패" if failed else "항목 없음"))
     if res["items"]:

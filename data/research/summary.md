@@ -24,11 +24,11 @@
 | 기업지원기관 | [정보통신산업진흥원(NIPA)](https://www.nipa.kr) | OK | 목록 페이지 | 11 | 2026-09-23 [[유관기관] (베트남 과학기술부) 2026년 한-베트남 디지털 포럼 개최](https://www.nipa.kr/home/2-1/16950) |
 | 기업지원기관 | [중소벤처기업진흥공단](https://www.kosmes.or.kr) | OK | 목록 페이지 | 10 | 2026-09-22 [새정부 출범, 중소벤처기업과 함께 뛴 중진공의 성과](https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do#새정부-출범-중소벤처기업과-함께-뛴-중진공의-성과) |
 | 기업지원기관 | [한국과학기술정보연구원(KISTI)](https://www.kisti.re.kr) | 접속 실패 |  | 0 | — |
-| 기업지원기관 | [한국로봇산업진흥원(KIRIA)](https://www.kiria.org) | 최근 없음 | 최신 항목 2025-12-29 (최근 70일 밖) | 0 | — |
+| 기업지원기관 | [한국로봇산업진흥원(KIRIA)](https://www.kiria.org) | OK | 첫 화면 | 16 | 2026-09-22 [입찰공고 2026년도 서비스로봇 분야 지원사업 진도점검, 연차평가 및 최](https://www.kiria.org#입찰공고-2026년도-서비스로봇-분야-지원사업-진도점검-연차평가-및-최종) |
 | 기업지원기관 | [한국산업기술기획평가원(KEIT) PD이슈리포트](https://www.keit.re.kr) | OK | 공공데이터포털 15047479 | 9 | 2026-06-01 [KEIT 이슈픽 2026-6월호 : 첨단산업(산업기반혁신) - 배터리, ]() |
 | 기업지원기관 | [한국산업기술진흥원(KIAT)](https://www.kiat.or.kr) | OK | 공공데이터포털 15104286 | 40 | 2026-07-29 [[KIAT Policy Brief 2026-05] 산업기술 정책브리프·동]() |
 | 기업지원기관 | [한국지능정보사회진흥원(NIA)](https://www.nia.or.kr) | 최근 없음 | 최신 항목 2026-07-13 (최근 70일 밖) | 0 | — |
-| 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | 접속 실패 |  | 0 | — |
+| 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | OK | 첫 화면 | 6 | 2026-09-10 [9월 정례조회 등록일 : 2026.09.10](https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16370&bbsTyCode=BBST07&bbsAttrbCode=BBSA03) |
 | 대구 기관 | [대구광역시 북구 보도자료(공공데이터포털)](https://www.buk.daegu.kr) | OK | 공공데이터포털 15149016 | 40 | 2026-08-14 [대백인터빌 전체에 물결친 애국심, 광복의 감동을 재현하다]() |
 | 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | OK | 목록 페이지 | 6 | 2026-09-21 [대구 제3산단, 교통·물류 수송 숨통 틔운다… 9월 22일 신천대로 진·](https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=278924) |
 | 대구 기관 | [대구기계부품연구원(DMI)](https://www.dmi.re.kr) | 접속 실패 |  | 0 | — |
@@ -42,9 +42,9 @@
 | 분야 기관 | [한국바이오협회 이슈브리핑](https://koreabio.org) | OK | 목록 페이지 | 12 | 2026-09-24 [Facebook](https://www.facebook.com/koreabio.org) |
 | 분야 기관 | [한국반도체산업협회(KSIA)](https://www.ksia.or.kr) | 접속 실패 |  | 0 | — |
 | 분야 기관 | [한국생산기술연구원(KITECH)](https://www.kitech.re.kr) | OK | 첫 화면 | 3 | 2026-09-15 [자동차·조선·반도체 받치는 '뿌리기술', 최고 가린다 자동차·조선·반도체](https://www.kitech.re.kr/pages/61?id=14397&menuMode=READ&q=) |
-| 분야 기관 | [한국섬유개발연구원(KTDI)](https://www.textile.or.kr) | 항목 없음 |  | 0 | — |
+| 분야 기관 | [한국섬유개발연구원(KTDI)](https://www.textile.or.kr) | OK | 첫 화면 | 18 | 2026-09-17 [「휴머노이드 로봇용 스마트 스킨 복합소재 기술개발사업」수요조사 2026-](https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=33&bbsinfo_tcd=1&selectedId=56085) |
 | 분야 기관 | [한국섬유산업연합회(KOFOTI)](https://www.kofoti.or.kr) | 차단 | robots.txt 차단 | 0 | — |
-| 분야 기관 | [한국섬유소재연구원(KOTERI)](https://www.koteri.re.kr) | OK | 첫 화면 | 10 | 2026-09-16 [[ÀÔÂû°ø°í]Áö´ÉÇü ¿°»ö°øÁ¤ µ¥ÀÌÅÍ ¼öÁý ÀÎ](https://www.koteri.re.kr/board/content.asp?board_id=koteri_notice&ref=4669&step=1&re_level=1&page=1) |
+| 분야 기관 | [한국섬유소재연구원(KOTERI)](https://www.koteri.re.kr) | OK | 첫 화면 | 10 | 2026-09-16 [[입찰공고]지능형 염색공정 데이터 수집 인프라 및 ..](https://www.koteri.re.kr/board/content.asp?board_id=koteri_notice&ref=4669&step=1&re_level=1&page=1) |
 | 분야 기관 | [한국의료기기산업협회(KMDIA)](https://www.kmdia.or.kr) | OK | 목록 페이지 | 20 | 2026-09-22 [[한국보건의료기술평가학회] ‘2026 후기 학술대회 및 연수교육’ 실시 ](https://kmdia.or.kr/board/board_10L.asp?mode=LIST&bid=notice&bidsrl=2&bidssrl=6#-한국보건의료기술평가학회-2026-후기-학술대회-및-연수교육-실시-안내) |
 | 분야 기관 | [한국자동차연구원(KATECH) 산업분석](https://www.katech.re.kr) | 접속 실패 |  | 0 | — |
 | 분야 기관 | [한국재료연구원(KIMS)](https://www.kims.re.kr) | OK | 목록 페이지 | 10 | 2026-09-22 [재료硏, 사용후핵연료 건식저장용기 내부 재료의 장기 열화 원인과 물성 예](https://www.kims.re.kr/v17/bbx/board.php?bx_table=05_01&wr_id=794) |
@@ -57,11 +57,11 @@
 | 해외 정부 | [中 공업정보화부(MIIT)](https://www.miit.gov.cn) | OK | 목록 페이지 | 24 | 2026-09-23 [2026年中国国际信息通信展览会在京开幕](https://www.miit.gov.cn/xwfb/bldhd/art/2026/art_2fc0c942477d4a2694137f8fe8d17f47.html) |
 | 해외 정부 | [日 경제산업성(METI) 영문 보도자료](https://www.meti.go.jp) | 접속 실패 |  | 0 | — |
 | 해외 정부 | [美 상무부 보도자료](https://www.commerce.gov) | 접속 실패 |  | 0 | — |
-| 해외 컨설팅 | [BCG Publications](https://www.bcg.com) | OK | 목록 페이지 | 12 | 2026-09-25 [Corporate Finance and Strategy](https://www.bcg.com/capabilities/corporate-finance-strategy/overview) |
+| 해외 컨설팅 | [BCG Publications](https://www.bcg.com) | OK | 목록 페이지 | 12 | 2026-09-25 [Technology Industry](https://www.bcg.com/industries/technology-media-telecommunications/technology-industry) |
 | 해외 컨설팅 | [Deloitte Insights(비공식 RSS 집계)](https://www.deloitte.com) | OK | rss(ntent.com/yushakareem/public-deloitte-in) | 24 |  [2026 Global Human Capital Trends](https://www.deloitte.com/us/en/insights/topics/talent/human-capital-trends.html) |
 | 해외 컨설팅 | [Gartner Newsroom](https://www.gartner.com) | 접속 실패 |  | 0 | — |
 | 해외 컨설팅 | [IDC Press Releases](https://www.idc.com) | OK | rss(/feed) | 10 | 2026-09-25 [Meta Connect 2026: More Glasses on More ](https://www.idc.com/resource-center/blog/meta-connect-2026-more-glasses-on-more-faces/) |
-| 해외 컨설팅 | [McKinsey Insights](https://www.mckinsey.com) | OK | rss(/insights/rss) | 40 | 2026-09-24 [Billion-dollar beauty: The odds of scali](https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand) |
+| 해외 컨설팅 | [McKinsey Insights](https://www.mckinsey.com) | OK | rss(/insights/rss) | 40 | 2026-09-24 [Democratized superintelligence is coming](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready) |
 | 해외 협회 | [ACEA (유럽자동차공업협회)](https://www.acea.auto) | OK | 첫 화면 | 9 | 2026-09-25 [Local content rules: Study highlights ch](https://www.acea.auto/news/local-content-rules-study-highlights-challenges-for-european-truck-manufacturing/) |
 | 해외 협회 | [International Energy Agency (IEA)](https://www.iea.org) | 접속 실패 |  | 0 | — |
 | 해외 협회 | [International Federation of Robotics (IFR)](https://ifr.org) | OK | 목록 페이지 | 5 | 2026-09-24 [Top Five Robot Trends 2026](https://ifr.org/ifr-press-releases/news/top-5-global-robotics-trends-2026) |

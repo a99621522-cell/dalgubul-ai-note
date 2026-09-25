@@ -50,7 +50,11 @@ JUNK = re.compile(r"바로가기|건너뛰기|건더뛰기|메뉴|배너|skip to
 def get(url: str, sess: requests.Session, timeout: int = 40) -> requests.Response | None:
     try:
         r = sess.get(url, headers={"User-Agent": UA, "Accept-Language": "ko,en;q=0.8"}, timeout=timeout, allow_redirects=True)
-        return r if r.status_code == 200 else None
+        if r.status_code != 200:
+            return None
+        if "charset" not in r.headers.get("Content-Type", "").lower():   # 옛 ASP 사이트(EUC-KR)처럼 charset 이 없으면 본문에서 추정(KOTERI 글자 깨짐)
+            r.encoding = r.apparent_encoding
+        return r
     except Exception as e:  # noqa: BLE001
         print(f"    실패 {url[:80]}: {type(e).__name__} {str(e)[:60]}")
         return None

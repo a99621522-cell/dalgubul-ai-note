@@ -15,10 +15,8 @@ faq:
   - q: "이 리포트의 근거 수집에는 어떤 한계가 있나?"
     a: "실행 환경의 네트워크 정책으로 외부 페이지 원문을 열지 못해 검색 결과 요지만 썼다. 원문 확인이 필요한 수치는 본문에 '요지'로 표시했고, 부품 기업 73곳은 생산품 키워드 판정이라 실제와 다를 수 있다."
 sources:
-  - { title: "국가로봇테스트필드 예비타당성조사 통과 (KDI 경제정보센터, 산업부 보도자료)", url: "https://eiec.kdi.re.kr/policy/materialView.do?num=241918", date: "2023-08" }
-  - { title: "대구시, 국가로봇테스트필드 부지 내 '실외이동로봇 평가센터' 구축 (기계신문)", url: "https://www.mtnews.net/news/articleView.html?idxno=19719", date: "미확인" }
-  - { title: "[이슈분석 266호] AI 휴머노이드 로봇 동향 및 시사점 (KISTEP)", url: "https://www.kistep.re.kr/gpsIssueView.es?mid=a30101000000&list_no=49129&act=view", date: "미확인" }
-  - { title: "China Makes AI-powered Robots Core of National Strategy (IFR)", url: "https://ifr.org/ifr-press-releases/news/china-makes-ai-powered-robots-core-of-national-strategy", date: "미확인" }
+  - { title: "한국로봇산업진흥원, 국가로봇테스트필드 구축사업 로봇 분야 기술교류회 개최 (로봇신문)", url: "https://www.irobotnews.com/news/articleView.html?idxno=47410", date: "2026-07-14" }
+  - { title: "China Makes AI-powered Robots Core of National Strategy (IFR)", url: "https://ifr.org/ifr-press-releases/news/china-makes-ai-powered-robots-core-of-national-strategy", date: "2026-05-05" }
   - { title: "China Targets 10,000 Humanoid Robots in Commercial Use by End-2026 (Caixin Global)", url: "https://www.caixinglobal.com/2026-06-10/china-targets-10000-humanoid-robots-in-commercial-use-by-end-2026-102452656.html", date: "2026-06-10" }
   - { title: "대구시, 국내 최초 '휴머노이드 로봇 안전인증센터' 구축 본격화 (시사뉴스)", url: "https://www.sisa-news.com/news/article.html?no=274031", date: "2026-08" }
   - { title: "내년도 대구 건의 22개 국비사업 뜯어보니 (영남일보)", url: "https://www.yeongnam.com/web/view.php?key=20260709021295225", date: "2026-07-09" }
@@ -27,9 +25,9 @@ sources:
   - { title: "조영훈 한국로봇산업진흥원장 '국내 로봇기업 2500곳 중 99%가 중소기업' (아시아경제)", url: "https://view.asiae.co.kr/article/2026081813522196540", date: "2026-08-18" }
   - { title: "대동, 미래 핵심 거점 대구공장에 '피지컬 AI' 입힌다 (네이트뉴스)", url: "https://m.news.nate.com/view/20260820n26573", date: "2026-08-20" }
   - { title: "휴머노이드 상용화 성큼…K로봇 '부품株' 뜬다 (뉴스핌)", url: "https://www.newspim.com/news/view/20260824001091", date: "2026-08-24" }
-  - { title: "미래에셋증권 'HL만도, 휴머노이드 액추에이터 수주 기대' (로봇신문)", url: "https://www.irobotnews.com/news/articleView.html?idxno=47694", date: "미확인" }
+  - { title: "미래에셋증권 'HL만도, 휴머노이드 액추에이터 수주 기대' (로봇신문)", url: "https://www.irobotnews.com/news/articleView.html?idxno=47694", date: "2026-07" }
   - { title: "전남광주특별시, '피지컬AI 휴머노이드 제조혁신센터' 구축 (뉴스핌)", url: "https://www.newspim.com/news/view/20260827001053", date: "2026-08-27" }
-  - { title: "2030년까지 휴머노이드에 2.3조 투입…핵심부품 국산화율 80%로 (정책브리핑)", url: "https://www.korea.kr/news/policyNewsView.do?newsId=148970725", date: "미확인" }
+  - { title: "2030년까지 휴머노이드에 2.3조 투입…핵심부품 국산화율 80%로 (정책브리핑)", url: "https://www.korea.kr/news/policyNewsView.do?newsId=148970725", date: "2026-08-27" }
   - { title: "대구 미래산업 국비 대거 반영…AI·로봇·모빌리티·바이오 (네이트뉴스, 대구시 보도자료)", url: "https://m.news.nate.com/view/20260901n35280", date: "2026-09-01" }
   - { title: "대구, 로봇·공간컴퓨팅 창업 12개팀 육성…동대구벤처밸리 입주 (네이트뉴스)", url: "https://m.news.nate.com/view/20260901n29808", date: "2026-09-01" }
   - { title: "휴머노이드 부품 국산화 속도…정부, 내년 620억 투입 (뉴스핌)", url: "https://www.newspim.com/news/view/20260910000959", date: "2026-09-10" }
@@ -86,8 +84,7 @@ sources:
 
 - **신한투자증권 하반기 로보틱스 전망(7월, 요지)**: 로보틱스 테마 합산 시가총액 2024년 말 12조 → 2026년 1월 말 56조 원. 하반기는 '기대 선반영'에서 '확인' 구간. 액추에이터·센서·3D프린팅 병목 기술에 프리미엄.
 - **미래에셋증권(로봇신문 인용, 요지)**: 완제품보다 핵심 부품 경쟁력이 현실적. 액추에이터·감속기·모터·센서 4개 부품군으로 글로벌 밸류체인 편입.
-- **KISTEP 이슈분석 266호(요지)**: 한국–선도국 격차 약 3년, AI 미국 대비 70~85%, 첨단로봇·제조 80~85%.
-- 관점 차이: 증권사는 부품 병목의 프리미엄을, KISTEP은 3년 격차를, 진흥원장은 매출 10억 원 미만 70% 구조를 본다. 대구는 50인 미만 100곳과 부품 73곳이 각각 노출된다.
+- 관점 차이: 증권사는 부품 병목의 프리미엄을, 진흥원장은 매출 10억 원 미만 70% 구조를 본다. 대구는 50인 미만 100곳과 부품 73곳이 각각 노출된다.
 
 ## 7. 정책 제안
 
@@ -118,4 +115,4 @@ sources:
 신한투자증권은 하반기를 기대 선반영에서 확인 구간으로 보고(요지), 진흥원장은 로봇기업 70%가 매출 10억 원 미만이라고 말한다(요지). 휴머노이드 수요가 확인되지 않으면 부품 73곳의 전환 투자는 회수가 늦어질 수 있고, 3년 격차가 그대로면 정부 지원이 수도권 70~80%에 계속 집중될 수 있다. 틀릴 수 있는 이유: ① 부품 73곳은 생산품 키워드 판정이라 로봇용이 아닌 일반 모터 기업이 섞일 수 있다. ② 외부 수치가 모두 검색 요지라 원문과 다를 수 있다.
 
 ## 9. 출처
-외부 출처 20건은 이 글 아래 "출처" 목록에 링크로 있다. 모두 검색 요지이며 다음 회차 전에 원문 대조가 필요하다. 내부 숫자의 근거는 기업 사전(scripts/data/dalseong_companies.csv, 팩토리온 2026-08)·사업 DB(scripts/data/programs_*.csv)·대구시 매칭(match_daegu_national.csv) 3개 파일이다.
+외부 출처 18건은 이 글 아래 "출처" 목록에 링크로 있다. 모두 검색 요지이며 다음 회차 전에 원문 대조가 필요하다. 내부 숫자의 근거는 기업 사전(scripts/data/dalseong_companies.csv, 팩토리온 2026-08)·사업 DB(scripts/data/programs_*.csv)·대구시 매칭(match_daegu_national.csv) 3개 파일이다.

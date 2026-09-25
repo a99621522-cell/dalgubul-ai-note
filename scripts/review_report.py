@@ -12,7 +12,7 @@
   숫자  숫자 없는 문단 없음(제목·표·인용 제외), 대상 규모에 '곳'
   예산  본문에 사업코드·예산액·국비/시비·재원 언급 없음(정책제안서는 예산을 참조하지 않는다, 운영자 지시 2026-09-25)
   표현  금지 형용사(급성장·위기·획기적…), 평가·비판·기관 입장 표현, 순위·추천 표현, 7절에 기업 사전의 회사명(특정 기업 지목) 없음
-  출처  sources 의 url 이 http 로 시작·중복 없음, 검색 요지만 쓴 경우 본문에 '요지' 표시
+  출처  sources 의 url 이 http 로 시작·중복 없음, 날짜 확인(미확인 불가)·MAX_SOURCE_AGE 안, 최근 RECENT_DAYS 안 60% 이상 권장, 검색 요지만 쓴 경우 본문에 '요지' 표시
 CLAUDE.md 글 작성 원칙 1·4·5·8 과 루틴 사양(docs/ROUTINE_PROMPT.md)을 코드로 옮긴 것. 통과가 '사실이 맞다'는 뜻은 아니다 — 수치 대조는 작성 세션의 자기 검토 항목.
 """
 from __future__ import annotations
@@ -21,6 +21,7 @@ import csv
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -28,6 +29,8 @@ POSTS = ROOT / "src" / "content" / "posts"
 COMPANIES = ROOT / "scripts" / "data" / "dalseong_companies.csv"
 
 MIN_SOURCES = 8
+MAX_SOURCE_AGE = 365     # 출처 발행일이 리포트 날짜보다 이보다 오래되면 오류
+RECENT_DAYS = 120        # 이 안의 출처가 60% 미만이면 경고
 BODY_MIN, BODY_MAX = 2000, 6500          # 공백 제외 글자 수 (사양 2,500~3,500 에 표·머리말 여유)
 BANNED_ADJ = r"급성장|급증세|위기|획기적|비약적|폭발적|압도적|혁신적인|눈부신|가파른|파격적|전례 없는|역대급"
 EVALUATIVE = r"미흡하|부족하다|실패했|잘못됐|잘못된|무능|비판|안일|방치|늑장|졸속|전시행정|생색|무책임|실효성이 없|의문이다|우려된다|바람직하지"
@@ -41,6 +44,17 @@ BUDGET = r"\d{4}-\d{3}|예산(?!정책처)|국비|시비|지방비|백만\s*원|
 def split(text: str) -> tuple[str, str]:
     m = re.match(r"^---\n(.*?)\n---\n(.*)$", text, re.S)
     return (m.group(1), m.group(2)) if m else ("", text)
+
+
+def parse_date(s: str):
+    """'2026-09-25' · '2026-09' · '2026' → date (월·일이 없으면 1일). 그 밖('미확인' 등)은 None."""
+    m = re.match(r"^\s*(20\d{2})(?:[-./](\d{1,2}))?(?:[-./](\d{1,2}))?\s*$", str(s or ""))
+    if not m:
+        return None
+    try:
+        return date(int(m.group(1)), int(m.group(2) or 1), int(m.group(3) or 1))
+    except ValueError:
+        return None
 
 
 def fm_get(fm: str, key: str) -> str:
@@ -94,6 +108,20 @@ def review(path: Path) -> dict:
         errors.append("sources url 중 http 로 시작하지 않는 것이 있음")
     if len(set(urls)) != len(urls):
         warns.append("sources url 중복")
+    # 출처 날짜: 날짜를 확인하지 못한 출처는 쓰지 않는다. 리포트 날짜 기준 MAX_SOURCE_AGE 일보다 오래된 출처는 오류(옛 자료로 정책 제안을 쓰지 않는다)
+    rdate = parse_date(fm_get(fm, "date")) or date.today()
+    dates = re.findall(r"^\s*-\s*\{\s*title:\s*\"(.*?)\".*?date:\s*\"?([^\"}]*?)\"?\s*\}", fm, re.M)
+    undated = [t for t, d in dates if not parse_date(d)]
+    if len(dates) < len(srcs):
+        undated += ["(date 항목 없음)"] * (len(srcs) - len(dates))
+    if undated:
+        errors.append(f"출처 {len(undated)}건 날짜 미확인·누락 — 날짜를 확인할 수 없는 출처는 뺀다: " + "; ".join(t[:30] for t in undated[:5]))
+    old = [(t, d) for t, d in dates if parse_date(d) and (rdate - parse_date(d)).days > MAX_SOURCE_AGE]
+    if old:
+        errors.append(f"출처 {len(old)}건이 {MAX_SOURCE_AGE}일보다 오래됨: " + "; ".join(f"{d} {t[:30]}" for t, d in old[:5]))
+    recent_n = sum(1 for t, d in dates if parse_date(d) and (rdate - parse_date(d)).days <= RECENT_DAYS)
+    if dates and recent_n < len(dates) * 0.6:
+        warns.append(f"최근 {RECENT_DAYS}일 안 출처가 {recent_n}/{len(dates)}건 — 60% 이상 권장")
     if not re.search(r"^auto:\s*true", fm, re.M):
         warns.append("auto: true 표시 없음")
 

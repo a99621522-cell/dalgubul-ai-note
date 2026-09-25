@@ -8,6 +8,11 @@
 4. 팩토리온 **전국(개별,계획) 입주업체현황** xlsx (30만 공장, `scripts/data/raw/` 에 두고 `--factoryon` 으로 넘김. 저장소에 올리지 않는다) — 3단계 후보에만 필요
 5. `scripts/data/programs_*.csv` — 투자유치 관련 국비 사업(지방투자촉진·기회발전특구·국내복귀 등 키워드) — 자동
 
+## API 로 받기 (scripts/fetch_io_api.py, 워크플로 io_tables.yml)
+- 한국은행 Open API: https://ecos.bok.or.kr/api/ 에서 회원가입 → 인증키 신청 → GitHub Secrets `ECOS_KEY`. 워크플로가 통계표 목록에서 '산업연관' 표를 찾아(`ecos_tables.json`) 생산자가격·기본부문 표를 받아 `ecos_<코드>_<연도>_*.xlsx` 로 둔다. 표 코드를 알면 `config/io_sources.yml` `api.ecos_stat` 에 적는다
+- 공공데이터포털 한국은행_산업연관표(15059627): 활용신청 뒤 요청주소를 `api.datago_url` 에 적으면 `DATA_GO_KR_KEY` 로 전부 받아 `datago_*.csv` 로 저장하고 열 이름을 출력한다(응답 구조를 본 뒤 행렬 변환을 붙인다)
+- 부문분류표(KSIC 연계)는 API 에 없으므로 ECOS 화면에서 xlsx 를 받아 여기에 넣는다
+
 ## 실행
 ```
 python3 scripts/attract.py                                  # 1·2단계 (빈 고리)

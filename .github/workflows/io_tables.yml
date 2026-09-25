@@ -6,6 +6,9 @@ name: 산업연관표 첨부 받기 (한국은행)
 # 1회차(2026-09-25): bok.or.kr 은 robots.txt 로 크롤러를 막고(존중), KOSIS 파일 페이지는 첨부 링크가 화면 조작 뒤에만 나온다.
 # 그래서 지금은 수동 실행만 두고, 파일은 ECOS 에서 손으로 받아 scripts/data/io/ 에 넣는다.
 on:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["config/io_sources.yml", "scripts/fetch_io_api.py"]
   workflow_dispatch:
 
 permissions:
@@ -24,7 +27,17 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r scripts/requirements.txt playwright && python -m playwright install --with-deps chromium
-      - name: 받기
+      - name: API 로 받기 (ECOS_KEY / DATA_GO_KR_KEY 가 있을 때)
+        env:
+          ECOS_KEY: ${{ secrets.ECOS_KEY }}
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+        run: |
+          set +e
+          pip install pandas openpyxl
+          python3 scripts/fetch_io_api.py --list
+          python3 scripts/fetch_io_api.py
+          echo "exit=$?"
+      - name: 홈페이지 첨부 받기
         run: |
           set +e
           python3 scripts/fetch_io_tables.py

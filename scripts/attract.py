@@ -69,17 +69,19 @@ def _pd():
 
 
 def is_code(v) -> bool:
+    """부문 코드: 3~4자리 숫자(앞에 글자 1~2자가 붙은 ECOS 항목코드도 허용)"""
     s = str(v).strip()
     if s.endswith(".0"):
         s = s[:-2]
-    return bool(re.fullmatch(r"\d{3,4}", s))
+    return bool(re.fullmatch(r"[A-Za-z]{0,2}\d{3,4}", s))
 
 
 def norm_code(v, width: int) -> str:
     s = str(v).strip()
     if s.endswith(".0"):
         s = s[:-2]
-    return s.zfill(width) if s.isdigit() else s
+    d = re.sub(r"\D", "", s)
+    return d.zfill(width) if d and re.fullmatch(r"[A-Za-z]{0,2}\d{3,4}", s) else s
 
 
 def norm_name(s) -> str:
@@ -124,7 +126,7 @@ def load_transactions(files: list[Path]):
             hr, cc, nc = m
             row_idx = [i for i in range(hr + 1, len(df)) if is_code(df.iat[i, cc])]
             col_idx = [j for j in range(cc + 1, df.shape[1]) if is_code(df.iat[hr, j])]
-            width = max(len(str(df.iat[i, cc]).strip().replace(".0", "")) for i in row_idx)
+            width = max(len(re.sub(r"\D", "", str(df.iat[i, cc]))) for i in row_idx)
             rcodes = [norm_code(df.iat[i, cc], width) for i in row_idx]
             ccodes = [norm_code(df.iat[hr, j], width) for j in col_idx]
             common = [c for c in rcodes if c in set(ccodes)]

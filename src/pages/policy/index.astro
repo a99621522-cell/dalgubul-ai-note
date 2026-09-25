@@ -15,10 +15,10 @@ const ROTATION = ['미래모빌리티·자동차부품', '로봇·피지컬AI', 
 ---
 <Base title="정책" description={`대구 산업 정책 부문: 산업별 정책제안 리포트 ${reports.length}건, 산업 정책 글 ${others.length}건, 국비 사업과 대구시 예산이 맞는 사업 ${match.length}건. 공개 자료 근거, 평가 없음.`} current="policy">
   <div class="section-head"><h1>정책</h1><span class="meta">리포트 {reports.length}건 · 글 {others.length}건 · 국비–시비 매칭 {match.length}건</span></div>
-  <p class="lede">중앙부처 예산 사업과 대구시 예산, 기업 사전 숫자를 근거로 산업별 정책제안 리포트를 매주 한 편씩 만듭니다. 리포트는 자동 초안으로 만들어지고 운영자가 승인한 것만 여기에 나옵니다. 정책 평가·비판은 하지 않고, 사실과 대구 산업의 접점만 정리합니다.</p>
+  <p class="lede">중앙부처 예산 사업과 대구시 예산, 기업 사전 숫자를 근거로 산업별 정책제안 리포트를 분야마다 매주 한 편씩(10개 분야, 주 10편) 만듭니다. 리포트는 자동 초안으로 만들어지고 운영자가 승인한 것만 여기에 나옵니다. 정책 평가·비판은 하지 않고, 사실과 대구 산업의 접점만 정리합니다.</p>
 
-  <div class="section-head"><h2>산업별 정책제안 리포트</h2><span class="meta">매주 월요일 · 10개 산업 순환</span></div>
-  <p class="meta">순환: {ROTATION.map((r, i) => <>{i > 0 && ' → '}{r}</>)}. 각 리포트는 결론 3개(대상·수단·규모) → 현재 위치(기업 사전) → 글로벌 변화 → 정부·타도시 → 연구기관 시각 → 제안(문제·근거·재원·대상 규모·지표) → 반론 → 출처 순서로 씁니다.</p>
+  <div class="section-head"><h2>산업별 정책제안 리포트</h2><span class="meta">10개 분야 · 분야마다 주 1편</span></div>
+  <p class="meta">분야: {ROTATION.join(' · ')}. 월~금 2개 분야씩 초안이 만들어지고 승인된 것만 실립니다. 각 리포트는 결론 3개(대상·수단·규모) → 현재 위치(기업 사전) → 글로벌 변화 → 정부·타도시 → 연구기관 시각 → 제안(문제·근거·재원·대상 규모·지표) → 반론 → 출처 순서로 씁니다.</p>
   {reports.length ? <PostList posts={reports} /> : <p class="empty">승인·발행된 리포트가 아직 없습니다. 초안은 저장소 <code>src/content/posts/*-policy-*.md</code>에 있고 <code>python3 scripts/approve.py</code>로 발행합니다.</p>}
 
   <div class="section-head"><h2>국비 사업 ↔ 대구시 예산 매칭</h2><a href="/programs/">사업·예산 전체</a></div>

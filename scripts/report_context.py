@@ -50,6 +50,16 @@ def pick_area(c: dict, week: int | None, key: str | None) -> tuple[dict, int]:
     return areas[((w - off) // step) % len(areas)], w
 
 
+def todays_areas(c: dict, weekday: int | None = None) -> list[dict]:
+    """weekday_plan(ISO 요일 → key 목록)이 있으면 오늘 쓸 분야들, 없으면 주 순환 1개."""
+    plan = c.get("weekday_plan") or {}
+    wd = weekday or date.today().isoweekday()
+    keys = plan.get(wd) or plan.get(str(wd)) or []
+    if not keys:
+        return [pick_area(c, None, None)[0]] if not plan else []
+    return [a for k in keys for a in c["areas"] if a["key"] == k]
+
+
 def num(s: str) -> float:
     try:
         return float((s or "").replace(",", "")) or 0.0
@@ -200,8 +210,19 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--area")
     ap.add_argument("--week", type=int)
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--weekday", type=int, help="ISO 요일(1=월). 지정 없으면 오늘")
     a = ap.parse_args(argv)
     c = cfg()
+    if not a.area and c.get("weekday_plan"):   # 요일 배정표: 오늘 분야를 모두 차례로 출력
+        todays = todays_areas(c, a.weekday)
+        if not todays:
+            print(f"오늘(ISO 요일 {a.weekday or date.today().isoweekday()})은 배정된 분야가 없다 (config/pledge_areas.yml weekday_plan)")
+            return 0
+        print(f"오늘 분야 {len(todays)}개: " + ", ".join(f"[{x['key']}] {x['name']}" for x in todays) + " — 분야마다 리포트 1편 (지난 회차 = 1주 전)")
+        for x in todays:
+            print("\n" + "=" * 80)
+            main(["--area", x["key"]] + (["--json"] if a.json else []))
+        return 0
     area, week = pick_area(c, a.week, a.area)
     ctx = {
         "pledge_of": c.get("pledge_of", ""), "source_url": c.get("source_url", ""), "week": week, "area": area,

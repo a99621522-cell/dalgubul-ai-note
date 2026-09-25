@@ -1,8 +1,8 @@
-# 산업별 정책제안 리포트 — 순환 목록. 루틴(docs/ROUTINE_PROMPT.md, Claude 루틴 "주간 산업별 정책제안 리포트")과 scripts/report_context.py 가 읽는다.
+# 산업별 정책제안 리포트 — 분야 목록과 요일 배정. 루틴(docs/ROUTINE_PROMPT.md, Claude 루틴 "산업별 정책제안 리포트")과 scripts/report_context.py 가 읽는다.
 #
-# 주 1회(매주 월요일 05:00), 이번 주 분야 = areas[(ISO 주 번호 - week_offset) mod 분야 수]. 10개 분야 → 10주에 한 바퀴.
+# 분야 10개 모두 매주 1편씩(주 10편). 평일 5일에 2개 분야씩 배정(weekday_plan, ISO 요일 1=월 … 5=금).
 #   6대 산업(미래모빌리티·자동차부품 / 로봇·피지컬AI / 반도체·소부장 / 전통제조 AX / 헬스케어·의료기기 / AI·SW·창업)
-#   + 기존 주력 4개(기계 / 자동차 / 섬유 / 뿌리산업). 2026-09-28(40주) = 반도체·소부장부터(38·39주에 모빌리티·로봇을 먼저 썼다).
+#   + 기존 주력 4개(기계 / 자동차 / 섬유 / 뿌리산업). 지난 회차 같은 분야 = 1주 전.
 # 각 분야: pledges(공약 항목 원문) · industry_groups(config/industry_groups.yml 의 name) · ksic(선택: KSIC 접두어로 기업을 고른다, 그룹과 합집합) ·
 #          keywords(사업 DB·글 필터) · tags / site_types(선택) · sub_counts(선택) · focus(리포트 관점 — 같은 기업군을 다른 분야와 나눠 볼 때 무엇을 볼지)
 #
@@ -14,8 +14,14 @@ pledge_of: "민선 9기 대구광역시 주요 추진과제(열린시장실 13�
 source_url: "https://mayor.daegu.go.kr/index.do?menu_id=00938606"
 # 원문: data/pledges/city/ (scripts/fetch_pledges.py 가 받음, 2026-09-25). 항목 앞 번호는 열린시장실 '주요 추진과제' 순번.
 # 선관위 정책·공약마당 당선인 공약서(PDF)가 확보되면 그 항목도 같은 방식으로 붙인다. 공약 이행 평가·점수화는 하지 않는다.
-cadence: weekly
-week_offset: 38        # (ISO 주 - 38) mod 10 → 0 = 1번 분야. 40주 → 반도체·소부장
+cadence: weekly            # 분야마다 주 1편
+week_offset: 38            # weekday_plan 이 없을 때만 쓰는 순환 기준(구 방식)
+weekday_plan:              # ISO 요일 → 그날 쓰는 분야 key. 월~금 2개씩 = 주 10편
+  1: [mobility, robot-physical-ai]
+  2: [semiconductor, manufacturing-ax]
+  3: [healthcare, ai-sw-startup]
+  4: [machinery, automotive]
+  5: [textile, root]
 
 areas:
   - key: mobility

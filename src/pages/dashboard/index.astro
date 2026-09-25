@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import StatTiles, { type Tile } from '../../components/StatTiles.astro';
+import Chart from '../../components/Chart.astro';
+import Delta from '../../components/Delta.astro';
+import { monthly, monthLabel, fmt } from '../../lib/stats';
+import { siteTypes, tagName } from '../../lib/sites';
+/** /dashboard/ — 현황판: 큰 숫자 → 입지 유형(산단 외 포함) → 구·군 9 → 산업단지 23 → 태그(벤처 등). 표마다 기업 사전 필터로 연결. 평가·순위 없음. */
+const m = monthly();
+const ym = m ? monthLabel(m.month) : '';
+const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : '—');
+const tiles: Tile[] = m ? [
+  { label: '기업', value: m.total.firms, unit: '곳', sub: `팩토리온 공장등록 ${fmt(m.total.firms - m.sources_extra.outside_companies)} + 산단 외 목록 ${fmt(m.sources_extra.outside_companies)}`, href: '/companies/' },
+  { label: '고용 인원', value: m.total.employment, unit: '명', delta: m.total.mom?.employment ?? null, sub: `${m.basis_label} · 집계 대상 ${fmt(m.total.covered)}곳(${pct(m.total.covered, m.total.firms)})` },
+  { label: '이달 취득', value: m.total.nps_gain, unit: '명', sub: '국민연금 가입자 신규 취득(집계 대상 기업)' },
+  { label: '이달 상실', value: m.total.nps_loss, unit: '명', sub: '국민연금 가입자 상실(집계 대상 기업)' },
+] : [];
+const sites = m ? siteTypes().map(t => [t.name, m.by_site[t.name]] as const).filter(([, v]) => v) : [];
+const districts = m ? Object.entries(m.by_district).filter(([k]) => /[구군]$/.test(k) && !/^\d/.test(k)).sort((a, b) => b[1].firms - a[1].firms) : [];
+const complexes = m ? Object.entries(m.by_complex).filter(([k]) => k !== '개별입지' && k !== '산단 외').sort((a, b) => b[1].firms - a[1].firms) : [];
+const outside = m ? ['개별입지', '산단 외'].map(k => [k, m.by_complex[k]] as const).filter(([, v]) => v) : [];
+const tags = m ? Object.entries(m.by_tag) : [];
+const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.total.employment)}명(${ym}). 입지 유형·구군 9·산업단지 ${complexes.length}·태그별 기업 수와 고용, 취득·상실.` : '대구 산단·기업 현황판';
+---
+<Base title="현황판" description={description} current="dashboard">
+  <div class="section-head"><h1>현황판</h1><span class="meta">{ym} 기준 · {m?.basis_label}</span></div>
+  {m ? (
+    <>
+      <StatTiles tiles={tiles} />
+      <section aria-labelledby="h-site">
+        <div class="section-head"><h2 id="h-site">입지 유형별</h2></div>
+        <Chart kind="site-bar" name="employment" caption={`입지 유형별 고용 인원, ${ym}`} />
+        <div class="scroll-x"><table class="data-table">
+          <thead><tr><th>입지 유형</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">집계 대상</th><th class="n">취득</th><th class="n">상실</th><th class="n">지원 이력(3년)</th></tr></thead>
+          <tbody>{sites.map(([k, v]) => <tr><th scope="row">{k}</th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n">{fmt(v.covered)}</td><td class="n">{fmt(v.nps_gain)}</td><td class="n">{fmt(v.nps_loss)}</td><td class="n">{v.support_3y ? `${fmt(v.support_3y.firms)}곳` : '—'}</td></tr>)}</tbody>
+        </table></div>
+        <p class="meta">수성알파시티·연구개발특구·지식산업센터는 주소·단지명 규칙(config/site_types.yml)으로 판정합니다. 산단 외 기업은 국민연금 사업장·벤처 명단·첨복단지 입주 목록에서 보탠 {fmt(m.sources_extra.outside_companies)}곳입니다.</p>
+      </section>
+      <section aria-labelledby="h-district">
+        <div class="section-head"><h2 id="h-district">구·군별</h2></div>
+        <div class="scroll-x"><table class="data-table">
+          <thead><tr><th>구·군</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">전월 대비</th><th class="n">집계 대상</th></tr></thead>
+          <tbody>{districts.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?district=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n"><Delta d={v.mom?.employment ?? null} /></td><td class="n">{fmt(v.covered)}</td></tr>)}</tbody>
+        </table></div>
+      </section>
+      <section aria-labelledby="h-complex">
+        <div class="section-head"><h2 id="h-complex">산업단지별</h2><span class="meta">{complexes.length}개 단지 + 개별입지·산단 외</span></div>
+        <div class="scroll-x"><table class="data-table">
+          <thead><tr><th>단지</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">전월 대비</th><th class="n">집계 대상</th></tr></thead>
+          <tbody>
+            {complexes.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n"><Delta d={v.mom?.employment ?? null} /></td><td class="n">{fmt(v.covered)}</td></tr>)}
+            {outside.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n"><Delta d={v.mom?.employment ?? null} /></td><td class="n">{fmt(v.covered)}</td></tr>)}
+          </tbody>
+        </table></div>
+      </section>
+      {tags.length > 0 && (
+        <section aria-labelledby="h-tag">
+          <div class="section-head"><h2 id="h-tag">공개 명단 태그별</h2></div>
+          <div class="scroll-x"><table class="data-table">
+            <thead><tr><th>태그</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">집계 대상</th><th class="n">지원 이력(3년)</th></tr></thead>
+            <tbody>{tags.map(([k, v]) => <tr><th scope="row">{tagName(k)}</th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n">{fmt(v.covered)}</td><td class="n">{v.support_3y ? `${fmt(v.support_3y.firms)}곳` : '—'}</td></tr>)}</tbody>
+          </table></div>
+          <p class="meta">벤처기업은 중기부 벤처기업명단, 창업기업은 국민연금 적용일 기준 설립 7년 이내, 첨복단지 입주는 케이메디허브 공개 현황입니다.</p>
+        </section>
+      )}
+      <p class="meta">출처: 팩토리온 입주업체현황({m.sources.factoryon.as_of}), 국민연금 가입 사업장 내역({m.month}, {fmt(m.sources.nps?.rows ?? null)}행 중 {fmt(m.sources.nps?.matched ?? null)}곳 매칭). 이달 통계표: <a href={`/stats/${m.month}/`}>{ym}</a>.</p>
+    </>
+  ) : <p class="empty">통계가 아직 없습니다. scripts/build_stats.py 를 먼저 실행하세요.</p>}
+</Base>

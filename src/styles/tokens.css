@@ -1,0 +1,41 @@
+/* 디자인 토큰 — 공공서비스 톤: 큰 글씨, 넉넉한 여백, 장식 없음. 다크모드 없음.
+   색은 주색 하나(--primary)를 링크·버튼·강조 숫자·그래프 기본선에만 쓴다. 증감은 +주색 / −회색 (빨강·초록 금지). */
+:root {
+  /* 글꼴: Pretendard 가변(로컬 woff2, public/fonts/pretendard), 실패 시 시스템 sans-serif */
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --text-base: 18px;
+  --leading: 1.7;
+  --h1: 1.75rem;   /* 31.5px */
+  --h2: 1.333rem;  /* 24px */
+  --h3: 1.111rem;  /* 20px */
+  --small: 0.889rem; /* 16px */
+  --tiny: 0.778rem;  /* 14px — 이보다 작은 글자는 쓰지 않는다 */
+  --num-xl: 2.333rem; /* 42px 큰 숫자 */
+
+  /* 색 */
+  --bg: #ffffff;
+  --ink: #1a1a1a;
+  --muted: #595959;       /* 보조 회색 1 (본문 옆 설명, 4.5:1 이상) */
+  --muted-2: #767676;     /* 보조 회색 2 (표 머리·축 라벨) */
+  --line: #e0e0e0;
+  --line-strong: #bdbdbd;
+  --surface: #f5f6f8;     /* 표 머리·강조 상자 바탕 */
+  --primary: #1B4F9B;
+  --primary-ink: #ffffff;
+  --focus: #1B4F9B;
+  --chart-1: #1B4F9B;
+  --chart-2: #E69F00;
+  --chart-3: #009E73;
+  --chart-4: #D55E00;
+  --chart-5: #CC79A7;
+  --chart-6: #56B4E9;
+
+  /* 간격 8px 배수, 모서리 4px, 그림자 없음 */
+  --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s5: 40px; --s6: 48px; --s8: 64px;
+  --radius: 4px;
+  --touch: 44px;
+
+  /* 폭 */
+  --measure: 720px;        /* 글 본문 */
+  --measure-wide: 1080px;  /* 표·현황 화면 */
+}

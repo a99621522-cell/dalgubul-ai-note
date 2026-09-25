@@ -1,0 +1,8 @@
+---
+/** 증감 표시: +주색 / −회색, 기호와 숫자, 괄호 안 %. 자료 없으면 '자료 없음'. */
+import { deltaParts, type Delta } from '../lib/stats';
+interface Props { d: Delta; unit?: string; withPct?: boolean; label?: string }
+const { d, unit = '', withPct = true, label = '' } = Astro.props;
+const p = deltaParts(d);
+---
+<span class={`delta ${p.cls}`} aria-label={label ? `${label} ${p.text}${p.cls === 'none' ? '' : unit}${p.pct ? ` (${p.pct})` : ''}` : undefined}>{p.text}{p.cls !== 'none' && unit}{withPct && p.pct && ` (${p.pct})`}</span>

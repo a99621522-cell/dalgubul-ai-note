@@ -1,0 +1,45 @@
+# 입지 유형 규칙 — 산단 안팎을 가리지 않고 모든 기업에 유형 하나를 붙인다.
+# 읽는 코드: scripts/sites.py (Python), src/lib/sites.ts (Astro). 규칙은 이 파일에만 둔다.
+#
+# 판정 순서(위가 우선): 단지명(complex) 일치 → 주소 패턴 → 산단 여부 → 개별입지
+# complex 축(산단별 통계)과는 별개다. 예: 성서지식산업센터 입주기업은 complex=성서산단, site_type=지식산업센터.
+#
+# tags 는 여러 개 붙을 수 있는 표식이며 scripts/data/company_tags.csv 와 산단 외 목록의 tags 열에서 온다.
+#   창업기업: 설립(founded) 7년 이내 (창업지원법 기준) — founded 값이 있는 기업만 자동 판정
+#   창경센터보육, 연구소기업, 벤처, 이노비즈 등: 외부 공개 목록에서
+
+version: 2026-09-25
+
+types:
+  - key: alphacity
+    name: 수성알파시티
+    complexes: [대구경북경제자유구역수성의료지구]
+    address: ["알파시티", "수성구 대흥동", "알파시티1로", "알파시티2로"]
+  - key: rnd
+    name: 연구개발특구
+    complexes: [대구연구개발특구]
+    address: []
+  - key: kic
+    name: 지식산업센터
+    complexes: []
+    address: ["지식산업센터"]
+    buildings_file: scripts/data/kic_buildings.csv   # 건물 도로명주소 목록(구군 + 도로명 건물번호). 주소가 일치하면 건물명이 없어도 이 유형
+  - key: complex
+    name: 산업단지
+    rule: in_complex        # complex 가 '개별입지'·빈칸이 아니면
+  - key: standalone
+    name: 개별입지
+    rule: default
+
+# 산단 외 기업의 '단지' 값. 팩토리온 밖에서 들어온 기업은 complex 를 이 값으로 둔다
+outside_complex: 산단 외
+
+# 태그 정의 (표시 이름·설명). 목록 파일의 tags 열은 여기 key 를 ; 로 이어 쓴다
+tags:
+  startup: { name: 창업기업, desc: 설립 7년 이내 }
+  ccei: { name: 창경센터 보육, desc: 대구창조경제혁신센터 보육·졸업 기업 }
+  labfirm: { name: 연구소기업, desc: 연구개발특구 연구소기업 }
+  venture: { name: 벤처기업, desc: 벤처기업확인 공시 }
+  kmedi: { name: 첨복단지 입주, desc: 대구경북첨단의료복합단지 입주기업(케이메디허브 공개 현황) }
+  innobiz: { name: 이노비즈, desc: 기술혁신형 중소기업 확인 }
+startup_years: 7

@@ -1,0 +1,51 @@
+---
+/** 산업 그룹별 기업 수·고용 인원·전월 증감·전년 증감 표. 행의 산업명이 산업별 페이지 링크. */
+import Delta from './Delta.astro';
+import { monthly, fmt } from '../lib/stats';
+import { industryGroups } from '../lib/industry';
+interface Props { month?: string; compact?: boolean }
+const { month, compact = false } = Astro.props;
+const m = monthly(month);
+const groups = industryGroups();
+const rows = m ? groups.filter(g => m.by_industry[g.name]).map(g => ({ ...g, s: m.by_industry[g.name] })) : [];
+---
+{m ? (
+  <div class="scroll-x">
+    <table class="data-table industry-table">
+      <thead>
+        <tr>
+          <th scope="col">산업</th>
+          <th scope="col" class="n">기업 수</th>
+          <th scope="col" class="n">고용 인원</th>
+          <th scope="col" class="n">전월 대비</th>
+          <th scope="col" class="n">전년 동월 대비</th>
+          {!compact && <th scope="col" class="n">집계 대상</th>}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(r => (
+          <tr>
+            <th scope="row"><a href={`/industry/${r.key}/`}>{r.name}</a></th>
+            <td class="n">{fmt(r.s.firms)}</td>
+            <td class="n">{fmt(r.s.employment)}</td>
+            <td class="n"><Delta d={r.s.mom?.employment ?? null} /></td>
+            <td class="n"><Delta d={r.s.yoy?.employment ?? null} /></td>
+            {!compact && <td class="n">{fmt(r.s.covered)} / {fmt(r.s.firms)}</td>}
+          </tr>
+        ))}
+        <tr class="total">
+          <th scope="row">전체</th>
+          <td class="n">{fmt(m.total.firms)}</td>
+          <td class="n">{fmt(m.total.employment)}</td>
+          <td class="n"><Delta d={m.total.mom?.employment ?? null} /></td>
+          <td class="n"><Delta d={m.total.yoy?.employment ?? null} /></td>
+          {!compact && <td class="n">{fmt(m.total.covered)} / {fmt(m.total.firms)}</td>}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+) : <p class="empty">통계가 아직 없습니다. scripts/build_stats.py 를 먼저 실행하세요.</p>}
+<style>
+  .industry-table th[scope="row"] { font-weight: 600; }
+  .industry-table th[scope="row"] a { display: inline-flex; align-items: center; min-height: 28px; }
+</style>

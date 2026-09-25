@@ -1,0 +1,43 @@
+name: 민선 9기 대구시장 공약 원문 받기 (시청·선관위)
+
+# 이 세션 환경은 대구시청·선관위 API 접속이 막혀 있어 Actions 가 대신 받는다.
+# 결과 data/pledges/ 를 커밋한다. 공약 이행 평가는 하지 않는다.
+
+on:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: [".github/workflows/pledges.yml", "scripts/fetch_pledges.py", "scripts/sources.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pledges-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt playwright pypdf && python -m playwright install --with-deps chromium
+      - name: 공약 원문
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+        run: |
+          set +e
+          python3 scripts/fetch_pledges.py
+          echo "exit=$?"
+          ls -la data/pledges data/pledges/* 2>/dev/null | head -60
+      - name: 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          [ -e data/pledges ] && git add -A data/pledges
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 공약 원문 받기 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

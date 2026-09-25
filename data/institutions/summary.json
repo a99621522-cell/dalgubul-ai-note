@@ -1,0 +1,801 @@
+{
+ "generated": "2026-09-25",
+ "since": 2018,
+ "rule": "대구 기업 = 기업 사전(팩토리온·산단 외·벤처 명단) 이름 일치 또는 지역 열 '대구'. 역외 기업 = 그 외 기업명(지역 열 없는 자료는 사전 미수록 포함). 기관·대학은 제외. 평가 없음",
+ "institutions": {
+  "ttp": {
+   "name": "대구테크노파크",
+   "note": "",
+   "datasets": [
+    "15018033",
+    "15159608",
+    "3044610"
+   ],
+   "total": {
+    "projects": 25,
+    "daegu_firms": 13,
+    "outside_firms": 17
+   },
+   "by_year": {
+    "2018": {
+     "projects": 3,
+     "daegu_firms": 1,
+     "outside_firms": 3
+    },
+    "2019": {
+     "projects": 2,
+     "daegu_firms": 0,
+     "outside_firms": 4
+    },
+    "2020": {
+     "projects": 4,
+     "daegu_firms": 3,
+     "outside_firms": 4
+    },
+    "2022": {
+     "projects": 1,
+     "daegu_firms": 2,
+     "outside_firms": 1
+    },
+    "2023": {
+     "projects": 2,
+     "daegu_firms": 2,
+     "outside_firms": 1
+    },
+    "2024": {
+     "projects": 1,
+     "daegu_firms": 2,
+     "outside_firms": 1
+    },
+    "2025": {
+     "projects": 8,
+     "daegu_firms": 3,
+     "outside_firms": 2
+    },
+    "2026": {
+     "projects": 5,
+     "daegu_firms": 1,
+     "outside_firms": 1
+    }
+   },
+   "top_programs": [
+    "디스플레이혁신공정플랫폼구축",
+    "나노융합기반고도화사업",
+    "디지털헬스케어",
+    "[IRIS 사업] 주력산업IT융합",
+    "(비R&D)지역주력산업육성",
+    "주력산업IT융합",
+    "나노융합",
+    "소재부품패키지형"
+   ]
+  },
+  "dip": {
+   "name": "대구디지털혁신진흥원",
+   "note": "",
+   "datasets": [
+    "15018033"
+   ],
+   "total": {
+    "projects": 1,
+    "daegu_firms": 0,
+    "outside_firms": 0
+   },
+   "by_year": {
+    "2022": {
+     "projects": 1,
+     "daegu_firms": 0,
+     "outside_firms": 0
+    }
+   },
+   "top_programs": [
+    "인증기술개발"
+   ]
+  },
+  "dmi": {
+   "name": "대구기계부품연구원",
+   "note": "",
+   "datasets": [
+    "15018033",
+    "15106650",
+    "3044610"
+   ],
+   "total": {
+    "projects": 75,
+    "daegu_firms": 42,
+    "outside_firms": 99
+   },
+   "by_year": {
+    "2018": {
+     "projects": 4,
+     "daegu_firms": 5,
+     "outside_firms": 1
+    },
+    "2019": {
+     "projects": 11,
+     "daegu_firms": 12,
+     "outside_firms": 15
+    },
+    "2020": {
+     "projects": 11,
+     "daegu_firms": 3,
+     "outside_firms": 23
+    },
+    "2021": {
+     "projects": 10,
+     "daegu_firms": 5,
+     "outside_firms": 18
+    },
+    "2022": {
+     "projects": 6,
+     "daegu_firms": 6,
+     "outside_firms": 9
+    },
+    "2023": {
+     "projects": 6,
+     "daegu_firms": 8,
+     "outside_firms": 7
+    },
+    "2024": {
+     "projects": 11,
+     "daegu_firms": 3,
+     "outside_firms": 13
+    },
+    "2025": {
+     "projects": 5,
+     "daegu_firms": 2,
+     "outside_firms": 8
+    },
+    "2026": {
+     "projects": 11,
+     "daegu_firms": 7,
+     "outside_firms": 21
+    }
+   },
+   "top_programs": [
+    "[IRIS 사업] 패키지형",
+    "제조기반생산시스템",
+    "전략핵심소재자립화기술개발",
+    "제조장비실증",
+    "소재부품패키지형",
+    "고부가가치화기술개발",
+    "[IRIS 사업] 수요맞춤형산업별배터리소재및셀기술개발",
+    "[IRIS 사업] 이종기술융합형"
+   ]
+  },
+  "kmedi": {
+   "name": "대구경북첨단의료산업진흥재단(케이메디허브)",
+   "note": "",
+   "datasets": [
+    "15018033",
+    "15159608"
+   ],
+   "total": {
+    "projects": 323,
+    "daegu_firms": 15,
+    "outside_firms": 79
+   },
+   "by_year": {
+    "2018": {
+     "projects": 5,
+     "daegu_firms": 0,
+     "outside_firms": 7
+    },
+    "2019": {
+     "projects": 1,
+     "daegu_firms": 1,
+     "outside_firms": 0
+    },
+    "2020": {
+     "projects": 77,
+     "daegu_firms": 0,
+     "outside_firms": 8
+    },
+    "2021": {
+     "projects": 86,
+     "daegu_firms": 1,
+     "outside_firms": 11
+    },
+    "2022": {
+     "projects": 83,
+     "daegu_firms": 4,
+     "outside_firms": 11
+    },
+    "2023": {
+     "projects": 71,
+     "daegu_firms": 3,
+     "outside_firms": 7
+    },
+    "2024": {
+     "projects": 59,
+     "daegu_firms": 2,
+     "outside_firms": 21
+    },
+    "2025": {
+     "projects": 67,
+     "daegu_firms": 3,
+     "outside_firms": 18
+    },
+    "2026": {
+     "projects": 4,
+     "daegu_firms": 1,
+     "outside_firms": 3
+    }
+   },
+   "top_programs": [
+    "개인기초연구(과기정통부)",
+    "개인기초연구(과기정통부)(RnD)",
+    "바이오의료기술개발",
+    "바이오.의료기술개발(RnD)",
+    "[IRIS 사업] 이종기술융합형",
+    "[IRIS 사업] 맞춤형진단치료제품",
+    "[IRIS 사업] 병원-기업협력공동사업화기반수요연계형기술개발사업",
+    "첨단의료산업선도기반실증지원사업(RnD)"
+   ]
+  },
+  "kiria": {
+   "name": "한국로봇산업진흥원",
+   "note": "",
+   "datasets": [
+    "15018033"
+   ],
+   "total": {
+    "projects": 39,
+    "daegu_firms": 5,
+    "outside_firms": 26
+   },
+   "by_year": {
+    "2018": {
+     "projects": 3,
+     "daegu_firms": 1,
+     "outside_firms": 1
+    },
+    "2019": {
+     "projects": 2,
+     "daegu_firms": 0,
+     "outside_firms": 1
+    },
+    "2020": {
+     "projects": 5,
+     "daegu_firms": 0,
+     "outside_firms": 5
+    },
+    "2021": {
+     "projects": 3,
+     "daegu_firms": 0,
+     "outside_firms": 2
+    },
+    "2022": {
+     "projects": 6,
+     "daegu_firms": 0,
+     "outside_firms": 2
+    },
+    "2023": {
+     "projects": 1,
+     "daegu_firms": 0,
+     "outside_firms": 0
+    },
+    "2024": {
+     "projects": 11,
+     "daegu_firms": 4,
+     "outside_firms": 12
+    },
+    "2025": {
+     "projects": 7,
+     "daegu_firms": 0,
+     "outside_firms": 5
+    },
+    "2026": {
+     "projects": 1,
+     "daegu_firms": 0,
+     "outside_firms": 0
+    }
+   },
+   "top_programs": [
+    "[IRIS 사업] 로봇산업핵심기술개발",
+    "[IRIS 사업] 로봇실증평가기술개발",
+    "로봇산업핵심기술개발사업",
+    "국가표준기술력향상",
+    "[IRIS 사업] 실증인프라구축및운영",
+    "범부처협력로봇제품기술",
+    "인공지능융합로봇시스템기술",
+    "로봇핵심공통기반기술"
+   ]
+  },
+  "etri": {
+   "name": "한국전자통신연구원(대경권연구본부 포함)",
+   "note": "자료에 본부 구분이 없어 전체 ETRI 과제로 잡힌다",
+   "datasets": [
+    "15018033",
+    "15106650",
+    "15159608"
+   ],
+   "total": {
+    "projects": 202,
+    "daegu_firms": 31,
+    "outside_firms": 254
+   },
+   "by_year": {
+    "2018": {
+     "projects": 23,
+     "daegu_firms": 2,
+     "outside_firms": 27
+    },
+    "2019": {
+     "projects": 23,
+     "daegu_firms": 5,
+     "outside_firms": 34
+    },
+    "2020": {
+     "projects": 27,
+     "daegu_firms": 6,
+     "outside_firms": 36
+    },
+    "2021": {
+     "projects": 16,
+     "daegu_firms": 3,
+     "outside_firms": 30
+    },
+    "2022": {
+     "projects": 37,
+     "daegu_firms": 7,
+     "outside_firms": 25
+    },
+    "2023": {
+     "projects": 16,
+     "daegu_firms": 5,
+     "outside_firms": 32
+    },
+    "2024": {
+     "projects": 36,
+     "daegu_firms": 7,
+     "outside_firms": 59
+    },
+    "2025": {
+     "projects": 20,
+     "daegu_firms": 4,
+     "outside_firms": 36
+    },
+    "2026": {
+     "projects": 4,
+     "daegu_firms": 0,
+     "outside_firms": 6
+    }
+   },
+   "top_programs": [
+    "[IRIS 사업] 로봇산업핵심기술개발",
+    "소재부품패키지형",
+    "자율주행기술개발혁신사업",
+    "[IRIS 사업] 스마트카",
+    "국가표준기술력향상",
+    "디스플레이혁신공정플랫폼구축",
+    "로봇산업핵심기술개발사업",
+    "차세대지능형반도체기술개발(설계·제조) (사업분리로 인한 종료)"
+   ]
+  },
+  "kitech": {
+   "name": "한국생산기술연구원(대경본부 포함)",
+   "note": "자료에 본부 구분이 없어 전체 생기원 과제로 잡힌다",
+   "datasets": [
+    "15018033",
+    "15106650"
+   ],
+   "total": {
+    "projects": 883,
+    "daegu_firms": 170,
+    "outside_firms": 1215
+   },
+   "by_year": {
+    "2018": {
+     "projects": 34,
+     "daegu_firms": 6,
+     "outside_firms": 65
+    },
+    "2019": {
+     "projects": 85,
+     "daegu_firms": 17,
+     "outside_firms": 136
+    },
+    "2020": {
+     "projects": 145,
+     "daegu_firms": 39,
+     "outside_firms": 270
+    },
+    "2021": {
+     "projects": 112,
+     "daegu_firms": 32,
+     "outside_firms": 208
+    },
+    "2022": {
+     "projects": 146,
+     "daegu_firms": 23,
+     "outside_firms": 197
+    },
+    "2023": {
+     "projects": 55,
+     "daegu_firms": 26,
+     "outside_firms": 104
+    },
+    "2024": {
+     "projects": 171,
+     "daegu_firms": 57,
+     "outside_firms": 311
+    },
+    "2025": {
+     "projects": 69,
+     "daegu_firms": 18,
+     "outside_firms": 148
+    },
+    "2026": {
+     "projects": 67,
+     "daegu_firms": 18,
+     "outside_firms": 158
+    }
+   },
+   "top_programs": [
+    "[IRIS 사업] 패키지형",
+    "소재부품패키지형",
+    "제조기반생산시스템",
+    "전략핵심소재자립화기술개발",
+    "[IRIS 사업] 제조기반생산시스템",
+    "제조장비실증",
+    "글로벌주력산업품질대응뿌리기술개발",
+    "[IRIS 사업] 이종기술융합형"
+   ]
+  },
+  "knu": {
+   "name": "경북대학교(산학협력단·첨단정보통신융합산업기술원 등)",
+   "note": "",
+   "datasets": [
+    "15018033",
+    "15106650",
+    "15159608"
+   ],
+   "total": {
+    "projects": 209,
+    "daegu_firms": 64,
+    "outside_firms": 263
+   },
+   "by_year": {
+    "2018": {
+     "projects": 8,
+     "daegu_firms": 4,
+     "outside_firms": 6
+    },
+    "2019": {
+     "projects": 11,
+     "daegu_firms": 10,
+     "outside_firms": 12
+    },
+    "2020": {
+     "projects": 32,
+     "daegu_firms": 9,
+     "outside_firms": 47
+    },
+    "2021": {
+     "projects": 24,
+     "daegu_firms": 10,
+     "outside_firms": 54
+    },
+    "2022": {
+     "projects": 50,
+     "daegu_firms": 7,
+     "outside_firms": 26
+    },
+    "2023": {
+     "projects": 33,
+     "daegu_firms": 5,
+     "outside_firms": 35
+    },
+    "2024": {
+     "projects": 24,
+     "daegu_firms": 12,
+     "outside_firms": 52
+    },
+    "2025": {
+     "projects": 20,
+     "daegu_firms": 6,
+     "outside_firms": 26
+    },
+    "2026": {
+     "projects": 12,
+     "daegu_firms": 8,
+     "outside_firms": 34
+    }
+   },
+   "top_programs": [
+    "소재부품패키지형",
+    "[IRIS 사업] 패키지형",
+    "제조기반생산시스템",
+    "산업기술알키미스트프로젝트사업",
+    "디스플레이혁신공정플랫폼구축",
+    "서비스산업융합고도화",
+    "[IRIS 사업] 이종기술융합형",
+    "전략핵심소재자립화기술개발"
+   ]
+  },
+  "dgist": {
+   "name": "대구경북과학기술원",
+   "note": "",
+   "datasets": [
+    "15018033",
+    "15106650",
+    "15159608"
+   ],
+   "total": {
+    "projects": 83,
+    "daegu_firms": 23,
+    "outside_firms": 114
+   },
+   "by_year": {
+    "2018": {
+     "projects": 3,
+     "daegu_firms": 1,
+     "outside_firms": 5
+    },
+    "2019": {
+     "projects": 8,
+     "daegu_firms": 6,
+     "outside_firms": 12
+    },
+    "2020": {
+     "projects": 12,
+     "daegu_firms": 4,
+     "outside_firms": 18
+    },
+    "2021": {
+     "projects": 7,
+     "daegu_firms": 2,
+     "outside_firms": 13
+    },
+    "2022": {
+     "projects": 11,
+     "daegu_firms": 2,
+     "outside_firms": 12
+    },
+    "2023": {
+     "projects": 8,
+     "daegu_firms": 5,
+     "outside_firms": 4
+    },
+    "2024": {
+     "projects": 20,
+     "daegu_firms": 4,
+     "outside_firms": 40
+    },
+    "2025": {
+     "projects": 6,
+     "daegu_firms": 0,
+     "outside_firms": 2
+    },
+    "2026": {
+     "projects": 10,
+     "daegu_firms": 2,
+     "outside_firms": 21
+    }
+   },
+   "top_programs": [
+    "소재부품패키지형",
+    "산업기술알키미스트프로젝트사업",
+    "[IRIS 사업] 시장주도형K-센서기술개발",
+    "[IRIS 사업] 패키지형",
+    "로봇산업핵심기술개발사업",
+    "중소중견기업지원을위한전기자동차개방형플랫폼",
+    "[IRIS 사업] 이종기술융합형",
+    "[IRIS 사업] 로봇산업핵심기술개발"
+   ]
+  },
+  "kotiti": {
+   "name": "한국섬유개발연구원",
+   "note": "",
+   "datasets": [
+    "15018033"
+   ],
+   "total": {
+    "projects": 107,
+    "daegu_firms": 52,
+    "outside_firms": 188
+   },
+   "by_year": {
+    "2018": {
+     "projects": 3,
+     "daegu_firms": 0,
+     "outside_firms": 3
+    },
+    "2019": {
+     "projects": 9,
+     "daegu_firms": 13,
+     "outside_firms": 12
+    },
+    "2020": {
+     "projects": 19,
+     "daegu_firms": 11,
+     "outside_firms": 34
+    },
+    "2021": {
+     "projects": 17,
+     "daegu_firms": 12,
+     "outside_firms": 37
+    },
+    "2022": {
+     "projects": 4,
+     "daegu_firms": 2,
+     "outside_firms": 9
+    },
+    "2023": {
+     "projects": 6,
+     "daegu_firms": 4,
+     "outside_firms": 11
+    },
+    "2024": {
+     "projects": 25,
+     "daegu_firms": 15,
+     "outside_firms": 62
+    },
+    "2025": {
+     "projects": 13,
+     "daegu_firms": 11,
+     "outside_firms": 36
+    },
+    "2026": {
+     "projects": 11,
+     "daegu_firms": 8,
+     "outside_firms": 28
+    }
+   },
+   "top_programs": [
+    "소재부품패키지형",
+    "[IRIS 사업] 패키지형",
+    "[IRIS 사업] 이종기술융합형",
+    "안전보호융복합섬유산업육성사업",
+    "전략핵심소재자립화기술개발",
+    "[IRIS 사업] 첨단바이오신소재",
+    "[IRIS 사업] 폴리에스터혼방섬유의F2F(FiberToFiber)리사이클핵심기술개발",
+    "[IRIS 사업] 글로벌재활용규제대응플라스틱밸류업을위한혁신기술개발"
+   ]
+  },
+  "dyetec": {
+   "name": "다이텍연구원",
+   "note": "",
+   "datasets": [
+    "15018033",
+    "15106650"
+   ],
+   "total": {
+    "projects": 134,
+    "daegu_firms": 69,
+    "outside_firms": 257
+   },
+   "by_year": {
+    "2018": {
+     "projects": 2,
+     "daegu_firms": 1,
+     "outside_firms": 3
+    },
+    "2019": {
+     "projects": 17,
+     "daegu_firms": 17,
+     "outside_firms": 30
+    },
+    "2020": {
+     "projects": 18,
+     "daegu_firms": 8,
+     "outside_firms": 45
+    },
+    "2021": {
+     "projects": 20,
+     "daegu_firms": 17,
+     "outside_firms": 45
+    },
+    "2022": {
+     "projects": 15,
+     "daegu_firms": 7,
+     "outside_firms": 30
+    },
+    "2023": {
+     "projects": 8,
+     "daegu_firms": 4,
+     "outside_firms": 21
+    },
+    "2024": {
+     "projects": 21,
+     "daegu_firms": 19,
+     "outside_firms": 47
+    },
+    "2025": {
+     "projects": 14,
+     "daegu_firms": 6,
+     "outside_firms": 31
+    },
+    "2026": {
+     "projects": 19,
+     "daegu_firms": 8,
+     "outside_firms": 44
+    }
+   },
+   "top_programs": [
+    "소재부품패키지형",
+    "[IRIS 사업] 패키지형",
+    "국가참조표준데이터개발ㆍ보급",
+    "[IRIS 사업] 이종기술융합형",
+    "[IRIS 사업] 국가참조표준데이터개발·보급",
+    "[IRIS 사업] 화학산업친환경규제선제적대응을위한신격차소재기술개발",
+    "안전보호융복합섬유산업육성사업",
+    "[IRIS 사업] 글로벌재활용규제대응플라스틱밸류업을위한혁신기술개발"
+   ]
+  },
+  "kri": {
+   "name": "한국패션산업연구원",
+   "note": "",
+   "datasets": [
+    "15018033"
+   ],
+   "total": {
+    "projects": 1,
+    "daegu_firms": 0,
+    "outside_firms": 2
+   },
+   "by_year": {
+    "2019": {
+     "projects": 1,
+     "daegu_firms": 0,
+     "outside_firms": 2
+    }
+   },
+   "top_programs": [
+    "소비재산업고도화"
+   ]
+  },
+  "dgdp": {
+   "name": "대구경북디자인진흥원",
+   "note": "",
+   "datasets": [
+    "15018033"
+   ],
+   "total": {
+    "projects": 12,
+    "daegu_firms": 13,
+    "outside_firms": 21
+   },
+   "by_year": {
+    "2018": {
+     "projects": 2,
+     "daegu_firms": 11,
+     "outside_firms": 1
+    },
+    "2019": {
+     "projects": 1,
+     "daegu_firms": 2,
+     "outside_firms": 0
+    },
+    "2020": {
+     "projects": 1,
+     "daegu_firms": 0,
+     "outside_firms": 3
+    },
+    "2022": {
+     "projects": 3,
+     "daegu_firms": 1,
+     "outside_firms": 7
+    },
+    "2025": {
+     "projects": 3,
+     "daegu_firms": 0,
+     "outside_firms": 7
+    },
+    "2026": {
+     "projects": 2,
+     "daegu_firms": 1,
+     "outside_firms": 4
+    }
+   },
+   "top_programs": [
+    "[IRIS 사업] 디자인혁신역량강화",
+    "서비스디자인기반제조업신생태계구축",
+    "CMF디자인핵심기술개발사업",
+    "미래선행디자인기술개발",
+    "시장창출형혁신디자인개발",
+    "[IRIS 사업] 제조암묵지기반AI모델개발(R&D)"
+   ]
+  }
+ }
+}

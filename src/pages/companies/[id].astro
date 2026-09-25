@@ -1,19 +1,39 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
-import { companies, shortComplex } from '../../lib/csv';
+import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon } from '../../lib/csv';
 import { partners } from '../../lib/partners';
+import { tagName, tagDesc } from '../../lib/sites';
+import { companyStats, monthly, monthLabel, fmt } from '../../lib/stats';
 import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   return companies().map(c => ({ params: { id: c.id }, props: { c } }));
 }
 const { c } = Astro.props;
 const pt = partners(c);
+const supportAll = supportOf(c.id);
+const support3y = recentSupport(supportAll, 3);
+const fin = financialsOf(c.name).slice(0, 3);
 const Row = (x: any) => x;
 const related = (await getCollection('posts', p => !p.data.draft))
   .filter(p => p.data.title.includes(c.name) || p.data.summary.includes(c.name) || p.data.tags.includes(c.name))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 10);
-const desc = `${c.name} — ${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''}, ${c.complex === '개별입지' ? '개별입지' : `${c.complex} 입주`}, ${c.sector.replace(/ 외 \d+ 종/, '')}${c.workers_band ? `, 종사자 ${c.workers_band}` : ''}${c.product ? `, 생산품 ${c.product.split(',')[0]}` : ''}. 팩토리온 ${c.as_of} 기준`;
+const fromNps = (c.source || '').startsWith('국민연금');
+const cs = companyStats(); const st = cs?.companies?.[c.id] ?? null; const m = monthly();
+const series: (number | null)[] = st?.s ?? (st?.e != null ? [st.e] : []);
+const months: string[] = (cs?.months ?? []).slice(-series.length);
+const emp = series.length ? series.at(-1) : (st?.e ?? null);
+const prev = series.length > 1 ? series.at(-2) : null;
+const empDelta = emp != null && prev != null ? emp - prev : null;
+const basis = st?.b === 'nps' ? '국민연금 가입자수' : '공장등록 신고값';
+// 12개월 스파크라인 (자료가 1개월이면 점 하나)
+const last12 = series.slice(-12); const vals = last12.filter((v): v is number => v != null);
+const W = 240, H = 56, P = 6; const lo = vals.length ? Math.min(...vals) : 0, hi = vals.length ? Math.max(...vals) : 1;
+const pts = last12.map((v, i) => v == null ? null : [P + (last12.length > 1 ? (i * (W - 2 * P)) / (last12.length - 1) : (W - 2 * P) / 2), H - P - (hi === lo ? (H - 2 * P) / 2 : ((v - lo) * (H - 2 * P)) / (hi - lo))] as [number, number]);
+const poly = pts.filter(Boolean).map(q => `${q![0].toFixed(1)},${q![1].toFixed(1)}`).join(' ');
+const srcName = fromNps ? '국민연금 사업장 내역' : '팩토리온';
+const workersNote = fromNps ? '국민연금 가입자수' : '공장등록 신고값';
+const desc = `${c.name} — ${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''}, ${c.complex === '개별입지' ? '개별입지' : c.complex === '산단 외' ? '산단 외' : `${c.complex} 입주`}, ${c.sector.replace(/ 외 \d+ 종/, '')}${c.workers_band ? `, ${fromNps ? '가입자' : '종사자'} ${c.workers_band}` : ''}${c.product ? `, 생산품 ${c.product.split(',')[0]}` : ''}. ${srcName} ${c.as_of} 기준`;
 const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', name: c.name, address: c.address, description: desc,
   location: { '@type': 'Place', name: c.complex } }];
 ---
@@ -24,15 +44,29 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
       <h1>{c.name}</h1>
       <p class="lede">{desc}</p>
     </header>
+    <ul class="tiles co-tiles" aria-label="핵심 숫자">
+      <li class="tile"><p class="label">고용 인원</p><p class="num">{emp == null ? <span class="unit">자료 없음</span> : <>{emp.toLocaleString('ko-KR')}<span class="unit">명</span></>}</p><p class="sub">{basis}{m ? ` · ${monthLabel(m.month)} 기준` : ''}{empDelta != null && ` · 전월 대비 ${empDelta > 0 ? '+' : ''}${empDelta.toLocaleString('ko-KR')}명`}</p></li>
+      <li class="tile"><p class="label">지원 이력 (최근 3년)</p><p class="num">{support3y.length.toLocaleString('ko-KR')}<span class="unit">건</span></p><p class="sub">공개 자료 기준{supportAll.length > support3y.length && ` · 전체 ${supportAll.length}건`}</p></li>
+      <li class="tile spark"><p class="label">최근 12개월 고용 추이</p>
+        {pts.some(Boolean) ? (
+          <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={`최근 ${last12.length}개월 고용 인원 추이`}>
+            {poly.includes(' ') && <polyline points={poly} fill="none" stroke="var(--primary)" stroke-width="2" />}
+            {pts.map(q => q && <circle cx={q[0]} cy={q[1]} r="3" fill="var(--primary)" />)}
+          </svg>
+        ) : <p class="sub">고용 자료 없음</p>}
+        <p class="sub">{months.length ? `${months[Math.max(0, months.length - last12.length)]} ~ ${months.at(-1)} · 자료 ${last12.length}개월` : '월별 자료가 쌓이면 표시'}</p>
+      </li>
+    </ul>
     <table class="card">
       <tbody>
         <tr><th>소재</th><td>{c.district}{c.eupmyeon && ` ${c.eupmyeon}`} · <a href={`/companies/?complex=${encodeURIComponent(c.complex)}`}>{c.complex}</a></td></tr>
-        <tr><th>업종</th><td>{c.sector} <span class="meta">({c.sector_code}, {c.sector_group})</span></td></tr>
-        <tr><th>생산품</th><td>{c.product || '—'}</td></tr>
-        <tr><th>종사자</th><td>{c.workers_band || '—'}<span class="meta"> (공장등록 신고값)</span></td></tr>
+        <tr><th>업종</th><td>{c.sector} <span class="meta">({[c.sector_code, c.sector_group].filter(Boolean).join(', ')})</span></td></tr>
+        <tr><th>입지·구분</th><td>{c.site_type}{c.tags.length > 0 && <span> · {c.tags.map(t => <span class="tag primary" title={tagDesc(t)}>{tagName(t)}</span>)}</span>}{c.tags.length > 0 && <span class="meta"> (공개 명단 기준, 인증 여부는 원 기관에서 확인)</span>}</td></tr>
+        {!fromNps && <tr><th>생산품</th><td>{c.product || '—'}</td></tr>}
+        <tr><th>{fromNps ? '가입자' : '종사자'}</th><td>{c.workers_band || '—'}<span class="meta"> ({workersNote})</span></td></tr>
         {c.reg_type && <tr><th>공장 등록</th><td>{c.reg_type === '등록' ? '등록 완료' : '설립 승인(등록 전)'}{c.first_registered && ` · 최초 등록 ${c.first_registered}년`}</td></tr>}
         {c.mfg_area_band && <tr><th>제조시설 규모</th><td>{c.mfg_area_band}</td></tr>}
-        <tr><th>공장 주소{Number(c.sites) > 1 && ` (${c.sites}곳)`}</th><td>{c.address.split(' / ').map(a => <div>{a}</div>)}</td></tr>
+        <tr><th>{fromNps ? '사업장 주소' : '공장 주소'}{Number(c.sites) > 1 && ` (${c.sites}곳)`}</th><td>{c.address.split(' / ').map(a => <div>{a}</div>)}{fromNps && <div class="meta">국민연금 자료는 건물번호 없이 도로명까지만 제공합니다.</div>}</td></tr>
       </tbody>
     </table>
     <section class="partners" aria-label="협업 후보">
@@ -50,15 +84,34 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
         ))}
       </div>
     </section>
+    <section class="support" aria-label="지원사업 이력">
+      <div class="section-head"><h2>지원사업 이력 (최근 3년)</h2><span class="meta">{support3y.length}건{supportAll.length > support3y.length && ` · 이전 ${supportAll.length - support3y.length}건`}</span></div>
+      {support3y.length === 0 ? <p class="empty">공개 자료에서 확인된 지원 이력이 없습니다. 지원 이력은 NTIS 과제·대구시 보조금 공개·기관 선정 공고에서 모으며, 비공개 자료는 싣지 않습니다.</p> : (
+        <div class="scroll-x"><table class="data-table">
+          <thead><tr><th>연도</th><th>사업명</th><th>지원기관</th><th>유형</th><th class="n">금액</th><th>출처</th></tr></thead>
+          <tbody>{support3y.map(s => (<tr><td>{s.year}</td><td>{s.program}</td><td>{s.funder}{s.layer && ` (${s.layer})`}</td><td>{s.type || '—'}</td><td class="n">{fmtAmount(s)}</td><td>{s.source_url ? <a href={s.source_url} rel="noopener">{s.source}</a> : s.source}{s.as_of && <span class="meta"> {s.as_of}</span>}</td></tr>))}</tbody>
+        </table></div>
+      )}
+    </section>
+    {fin.length > 0 && (
+      <section class="fin" aria-label="공시 재무">
+        <div class="section-head"><h2>재무 (DART 공시)</h2><span class="meta">{fin[0].fs} 기준</span></div>
+        <div class="scroll-x"><table class="data-table">
+          <thead><tr><th>사업연도</th><th class="n">매출액</th><th class="n">영업이익</th><th class="n">당기순이익</th><th>원문</th></tr></thead>
+          <tbody>{fin.map(f => (<tr><td>{f.year}</td><td class="n">{fmtEokWon(f.revenue)}</td><td class="n">{fmtEokWon(f.operating_income)}</td><td class="n">{fmtEokWon(f.net_income)}</td><td>{f.source_url ? <a href={f.source_url} rel="noopener">사업보고서</a> : '—'}</td></tr>))}</tbody>
+        </table></div>
+        <p class="meta">금융감독원 전자공시 정기보고서의 값을 억 원으로 나눠 표시. 상장·공시대상 기업만 자료가 있습니다.</p>
+      </section>
+    )}
     <section class="section-head"><h2>관련 글</h2></section>
     {related.length > 0 ? <PostList posts={related} /> : <p class="empty">아직 이 기업을 다룬 글이 없습니다. 공개된 뉴스·공시가 수집되면 여기에 쌓입니다.</p>}
     <aside class="source-box">
-      <strong>출처</strong> {c.source}, 기준 {c.as_of}. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아닙니다. 종사자 수는 구간으로만 표시합니다. 인증(벤처·이노비즈), 투자, 특허, 채용 항목은 추후 공개 데이터로 보강합니다. 정정 요청은 소개 페이지 연락처로.
+      <strong>출처</strong> {c.source}, 기준 {c.as_of}. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아닙니다. 종사자(또는 가입자) 수는 구간으로만 표시합니다. 지원 이력·재무는 공개 자료(NTIS·대구시 보조금 공개·기관 선정 공고·DART)에서만 가져오며 비공개 자료는 싣지 않습니다. 정정 요청은 소개 페이지 연락처로.
     </aside>
   </article>
 </Base>
 <style>
-  .partners { margin-top: 1.5rem; }
+  .partners, .support, .fin { margin-top: 1.5rem; }
   .pt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   @media (max-width: 48rem) { .pt-grid { grid-template-columns: 1fr; } }
   .pt-col h3 { font-size: 0.95rem; margin-bottom: 0.2rem; }

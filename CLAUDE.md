@@ -1,21 +1,36 @@
 # 다잇다 노트 — Claude Code 작업 지침 (구 달구벌 AI 노트)
 
-대구 기업·지원사업·산업 정책을 다루는 개인 블로그(브랜드 '다잇다', 앱 daitda.co.kr / 블로그 note.daitda.co.kr). 범위는 대구광역시 전체(9개 구·군). 자동 수집한 초안을 사람이 승인해 발행한다.
+대구 산업·기업 현황과 정책 근거를 정리하는 **공무원용** 자료 사이트(브랜드 '다잇다', 블로그 note.daitda.co.kr). 범위는 대구광역시 전체(9개 구·군). 산업별 통계·기업 사전·사업 예산·정책제안 리포트가 중심이고, 기업 지원사업 공고는 글로 쓰지 않고 데이터(data/notices)로만 남긴다(2026-09-25). 자동 수집한 초안(공시·보도자료·리포트)은 사람이 승인해 발행한다.
 운영자는 현직 지방공무원이므로 **정책 평가·비판, 기관 입장으로 읽힐 표현, 비공개 자료 인용은 절대 넣지 않는다.**
 
 ## 구조
 
 - `src/content/posts/*.md` — 글. 프론트매터 스키마는 `src/content.config.ts`. `draft: true` 면 미노출
-- `src/pages/` — index(첫 화면), `category/[cat]`, `posts/[...id]`, `rss.xml.ts`
+- `src/pages/` — index(첫 화면), `dashboard/`(현황판: 입지·구군·단지·태그), `industry/`(산업 그룹 11개 목록·`[key]`·`compare`), `stats/[month]`(월간 통계표), `companies/`(기업 사전·카드), `support/`(지원받은 기업), `programs/`, `posts/`(글 목록)·`posts/[...id]`, `category/[cat]`, `rss.xml.ts`. 메뉴는 `src/nav.ts`
 - `src/layouts/Base.astro` — 공통 레이아웃과 SEO 메타. `src/styles/global.css` — 전체 스타일
 - `src/categories.ts` — 카테고리 3개: `economy` 기업 동향 / `grants` 공모·지원사업 / `policy` 산업 정책. AI 동향·공무원 AI 글은 이 사이트에서 다루지 않는다(별도 사이트 예정, 초안은 docs/archive-ai-notes)
-- `scripts/collect.py` — 수집(기업마당 API · RSS · 게시판 스크랩 · inbox JSON) → 선별 → 중복제거 → Gemini 요약 → SEO 메타 → 초안 저장
+- `scripts/collect.py` — 수집(기업마당 API · RSS · 게시판 스크랩 · inbox JSON) → 선별 → 중복제거 → 공고(grants)는 `data/notices/notices.csv` 에 사실만 기록(Gemini 없음) / 기업 동향·정책은 Gemini 요약 → SEO 메타 → 초안 저장
 - `scripts/inbox/` — 외부 크롤러 에이전트 결과 JSON 투입구. 형식은 그 안의 README
 - `scripts/collect_dart.py` — OpenDART 공시 중 대구 기업(본사 주소로 판정, `scripts/state/dart_corp.json` 캐시)의 확장 신호(신규시설투자·유상증자·공급계약 등)를 inbox JSON 으로. 공시 사실과 원문 링크만, 평가 없음. 설정은 `sources.yml` 의 `dart:`. 키는 `DART_KEY`
-- `src/pages/companies/` — 기업 사전(목록 + 기업별 페이지 /companies/<id>/). 데이터는 `src/lib/csv.ts`가 빌드 때 CSV에서 읽음
+- `src/pages/companies/` — 기업 사전(목록 + 기업별 페이지 /companies/<id>/). 데이터는 `src/lib/csv.ts`가 빌드 때 CSV에서 읽음. `sector_group` 은 CSV 값이 아니라 항상 `config/industry_groups.yml` 규칙(11개)으로 다시 판정한다. 목록 필터: 단지·업종·구군·입지 유형·태그·지원 이력, URL 인자 complex/group/district/site/tag/support/q
 - `src/pages/companies-index.json.ts` — 기업 사전 검색용 경량 색인(/companies-index.json). 목록 페이지는 처음 200곳만 HTML로 내보내고 검색·필터 때 이 색인을 받아 클라이언트에서 거른다. 필드를 바꾸면 `companies/index.astro`의 스크립트도 같이 고칠 것
 - `src/lib/partners.ts` — 협업 후보(공급/수요/동종) 규칙 엔진: 업종코드+생산품으로 공정 단계 추정 → 단계 간 공급 관계표 → 같은 단지·구군 우선. '후보'라고만 표기, 거래 관계 단정 금지. 이후 Gemini 공정 분류·산업연관표로 정밀화
 - `scripts/import_factoryon.py` — 팩토리온 월간 엑셀(전국 입주업체현황 + 선택: 산단공 리스트) → 기업·단지 CSV 갱신(id 유지). 사용법은 scripts/data/README.md
+- `config/industry_groups.yml` — 산업 그룹 11개 규칙(KSIC 접두어+키워드). `scripts/industry.py`·`src/lib/industry.ts`가 읽음. 규칙은 파일에만
+- `config/site_types.yml` — 입지 유형(수성알파시티·연구개발특구·지식산업센터·산업단지·개별입지)과 태그(창업·창경센터·연구소기업·벤처·이노비즈) 규칙. `scripts/sites.py`·`src/lib/sites.ts`
+- `scripts/data/kic_buildings.csv` + `scripts/import_kic.py` — 대구 지식산업센터 건물 도로명주소 목록. 주소가 일치하면 건물명이 없어도 입지 유형이 지식산업센터. 전국지식산업센터현황(산단공) 파일을 넣으면 갱신
+- `scripts/import_extra.py` — 산단 외 기업 목록(`scripts/data/extra/*.csv`, 형식은 그 README) → `extra_companies.csv`(id x0001~) + `company_tags.csv`. 팩토리온과 같은 기업이면 태그만
+- `scripts/data/support_history.csv` + `scripts/import_support.py` — 지원사업 수혜 이력(NTIS 과제·대구시 보조금 공개·기관 선정 공고, 투입구 `scripts/data/support/`, 형식은 그 README). 기업 페이지 '지원사업 이력(최근 3년)', 통계 `support_3y`, 리포트 근거. 비공개 자료(정책자금 개별 내역) 금지
+- `config/support_institutions.yml` + `scripts/institution_support.py` — 기업지원기관(대구TP·DIP·DMI·케이메디허브·창경센터·로봇산업진흥원·ETRI·생기원·경북대 등)이 주관·참여한 과제·보조사업의 기업을 대구 기업/역외 기업으로 나눠 `data/institutions/`(CSV·summary.json·README). 워크플로가 data/raw 의 포털 파일로 만든다. 기관·별칭 추가는 yml 에만
+- `config/institution_boards.yml` + `scripts/scrape_institution_boards.py` — 기관 홈페이지 공고 게시판에서 '선정 기업 명단' 글을 찾아 지원 이력 투입 CSV(`scripts/data/support/inst_<key>.csv`)로. robots.txt 존중, 표·첨부(PDF·HWPX·XLSX·HWP)에서 기업명만. GitHub 러너에서는 대부분 기관 사이트가 접속 시간 초과라 국내 PC 에서 돌린 뒤 `import_support.py --replace-source '홈페이지 공고'`. 워크플로 `institution_boards.yml` 은 수동 실행만
+- `scripts/collect_dart_fin.py` — DART 정기보고서 매출·영업이익·당기순이익(대구 공시 기업만, `DART_KEY`) → `scripts/data/company_financials.csv`. 기업 페이지 '재무(DART 공시)'
+- `.github/workflows/fetch_public.yml` + `scripts/fetch_datago.py` — 공공데이터포털 파일데이터(지식산업센터현황 15117154, 국민연금 사업장 15083277)를 Actions 가 받아 처리·커밋. 이 세션 환경은 포털 접속이 막혀 있으므로 데이터 갱신은 이 워크플로로. `data/fetch_mode.txt`(mode|ids|pick)를 바꿔 푸시하면 실행. mode=search 면 ids 를 검색어로 보고 포털 파일데이터 번호만 출력
+- `scripts/nps_to_extra.py` — 국민연금 대구 사업장 중 팩토리온에 없는 곳 → 산단 외 기업 후보(서비스업 제외) → `import_extra.py --replace-source 국민연금`
+- `scripts/collect_nps.py` — 공공데이터포털 국민연금 가입 사업장 내역(오픈API 또는 내려받은 파일) → `data/nps/YYYYMM.csv` 대구만. 키 `DATA_GO_KR_KEY`, 주소는 `sources.yml` `nps:`. 이 세션 환경은 포털 접속 차단이라 `.github/workflows/nps.yml`(매월 6일)이나 로컬에서 실행
+- `scripts/build_stats.py` — 월간 집계(팩토리온+산단 외 기업+국민연금 파일 있으면) → `data/stats/`. 전수 기준. 자료 없는 지표는 null
+- `scripts/render_charts.py` — `data/stats` → `src/generated/charts/` 인라인 SVG(넓은 판·좁은 판)+표 JSON. `Chart.astro`가 읽음
+- `config/pledge_areas.yml` + `scripts/report_context.py` — 매주 공약 분야별 정책제안 리포트 루틴(docs/ROUTINE_PROMPT.md)의 분야 순환표와 근거 계산(기업 사전·사업 DB·대구시 매칭·최근 글). 리포트는 `draft: true`, 공약 이행 평가·점수화 금지
+- `scripts/repair_factoryon.py` — 팩토리온 내려받기 파일이 엑셀에서 안 열릴 때. 첫 바이트로 실제 형식(진짜 xls·HTML 표·CSV·SpreadsheetML) 판정 → 옆에 `_정리.xlsx`(시트 1개, 헤더 고정, 자동 필터, 종사자 숫자·등록일 날짜). 원본은 건드리지 않음
 - `scripts/data/` — 달성 산단·기업 기초 CSV. `dalseong_complexes.csv`는 첫 화면·대구 경제 페이지의 산단 카드(`IndustrialCard.astro`)가 빌드 때 읽고, `dalseong_companies.csv`의 기업명은 collect.py가 경제 키워드로 자동 추가
 - `scripts/sources.yml` — 소스·키워드. 소스 추가는 코드가 아니라 여기서
 - `scripts/approve.py` — 초안 승인. `scripts/state/seen.json` — 중복 방지
@@ -45,7 +60,7 @@ python3 scripts/approve.py            # 초안 승인
 3. 모든 글에 출처(`source`, `sourceUrl`)를 남긴다. 보도자료는 공공누리 조건에 따라 출처 표시
 4. 정책 평가·비판 없음. 사실과 대구 산업 접점만 정리
 5. 자동 생성 글은 `auto: true` 로 표시하고 `draft: true` 로 저장. 승인 없이 노출하는 코드 변경 금지
-6. 공모 글은 `deadline` 을 채운다. 첫 화면 마감 띠가 이 값을 쓴다
+6. 지원사업 공고는 글로 쓰지 않는다. `data/notices/notices.csv` 에 제목·기관·마감·링크만 남기고, 리포트는 그 데이터를 근거로 쓴다
 7. 개인정보·내부 자료·로그인 뒤 자료는 수집 대상에 넣지 않는다
 8. AI 답변 최적화(AEO): 모든 글은 `description`을 결론 먼저의 '핵심 문장'으로, 표로 정리할 수 있는 정보는 표로, 글마다 `faq` 3개(본문 근거만). 이미지는 캡션(figcaption) 필수. 글 페이지는 Article·FAQPage JSON-LD를 자동 출력한다
 9. 게시판 스크랩·크롤러는 공공기관 사이트만, 하루 1회, robots.txt 존중. 약관상 수집 금지인 상업 사이트는 소스로 추가하지 않는다

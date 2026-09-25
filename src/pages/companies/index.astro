@@ -1,12 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
-import IndustrialCard from '../../components/IndustrialCard.astro';
-import { companies, shortComplex } from '../../lib/csv';
+import { companies, shortComplex, supportHistory } from '../../lib/csv';
+import { siteTypes, allTags } from '../../lib/sites';
 const list = companies();
 const complexesList = [...new Set(list.map(c => c.complex))];
 const groups = [...new Set(list.map(c => c.sector_group))].filter(Boolean).sort();
 const dists = [...new Set(list.map(c => c.district))].filter(Boolean).sort();
 const asOf = list[0]?.as_of ?? '';
+const sites = siteTypes();
+const tagList = allTags().filter(t => list.some(c => c.tags.includes(t.key)));
+const supportedCount = new Set(supportHistory().filter(r => r.id).map(r => r.id)).size;
 // 처음 200곳만 HTML 로 내보낸다. 전체(11,000곳)를 다 넣으면 4.5MB 라 휴대폰에서 느렸다.
 // 검색·필터를 쓰면 /companies-index.json(빌드 때 생성되는 경량 색인)을 한 번 받아 클라이언트에서 거른다.
 const FIRST = 200;
@@ -15,15 +18,19 @@ const head = list.slice(0, FIRST);
 <Base title="대구 기업 사전" description={`대구 공장등록 기업 ${list.length.toLocaleString('ko-KR')}곳 — 구·군·단지·업종·생산품·종사자 규모. 팩토리온 공개 자료 ${asOf} 기준`} current="companies">
   <div class="section-head"><h1>대구 기업 사전</h1><span class="meta">{list.length.toLocaleString('ko-KR')}곳 · {asOf} 기준</span></div>
   <p class="lede">대구에 공장을 둔 기업 {list.length.toLocaleString('ko-KR')}곳을 같은 형식으로 정리했습니다. 산업단지 21곳과 개별입지, 9개 구·군을 모두 포함하며, 평가나 순위는 하지 않습니다.</p>
-  <IndustrialCard />
+  <p class="meta">구·군·단지·입지 유형별 기업 수와 고용은 <a href="/dashboard/">현황판</a>에 있습니다.</p>
   <div class="tools">
     <input id="q" type="search" placeholder="회사명·업종 검색" aria-label="검색" />
     <select id="cx" aria-label="단지"><option value="">모든 단지</option>{complexesList.map(x => <option value={x}>{x}</option>)}</select>
     <select id="sg" aria-label="업종"><option value="">모든 업종</option>{groups.map(x => <option value={x}>{x}</option>)}</select>
     <select id="em" aria-label="구군"><option value="">모든 구·군</option>{dists.map(x => <option value={x}>{x}</option>)}</select>
+    <select id="st" aria-label="입지 유형"><option value="">모든 입지</option>{sites.map(x => <option value={x.name}>{x.name}</option>)}</select>
+    <select id="tg" aria-label="태그"><option value="">태그 전체</option>{tagList.map(x => <option value={x.key}>{x.name}</option>)}</select>
+    <label class="chk"><input id="sp" type="checkbox" /> 지원 이력 있음 ({supportedCount.toLocaleString('ko-KR')})</label>
+    <select id="sort" aria-label="정렬"><option value="name">가나다순</option><option value="size">종사자 규모 큰 순</option><option value="district">구·군순</option></select>
     <span id="count" class="meta">{list.length.toLocaleString('ko-KR')}곳</span>
   </div>
-  <p id="note" class="meta">가나다순 처음 {FIRST}곳입니다. 검색하거나 단지·업종·구·군을 고르면 전체 {list.length.toLocaleString('ko-KR')}곳에서 찾습니다.</p>
+  <p id="note" class="meta">가나다순 처음 {FIRST}곳입니다. 검색하거나 단지·업종·구·군·입지·태그를 고르면 전체 {list.length.toLocaleString('ko-KR')}곳에서 찾습니다. 산단 외 기업 중 국민연금 자료로 넣은 곳은 종사자 대신 가입자 규모입니다.</p>
   <ul class="co-list" id="list">
     {head.map(c => (
       <li>
@@ -36,12 +43,13 @@ const head = list.slice(0, FIRST);
   <script define:vars={{ total: list.length, FIRST }}>
     // 색인 행: i=id n=회사명 d=구군 e=읍면동 c=단지 g=업종군 s=업종 w=규모  (companies-index.json.ts 와 맞출 것)
     const q = document.getElementById('q');
-    const sel = ['cx', 'sg', 'em'].map(id => document.getElementById(id));
+    const sel = ['cx', 'sg', 'em', 'st', 'tg'].map(id => document.getElementById(id));
+    const spBox = document.getElementById('sp'), sortSel = document.getElementById('sort');
     const list = document.getElementById('list');
     const count = document.getElementById('count');
     const note = document.getElementById('note');
     const more = document.getElementById('more');
-    const PAGE = 300;                     // 한 번에 그리는 결과 수. 그 뒤는 '더 보기'
+    const PAGE = 100;                     // 한 번에 그리는 결과 수. 그 뒤는 '더 보기'
     let rows = null, loading = null;      // 색인은 처음 필터를 쓸 때 한 번만 받는다
     let matched = [], shown = 0;
 
@@ -62,7 +70,7 @@ const head = list.slice(0, FIRST);
       for (const r of matched.slice(from, from + PAGE)) {
         const li = el('li');
         const a = el('a', r.n); a.href = `/companies/${r.i}/`;
-        const meta = [r.d + (r.e ? ` ${r.e}` : ''), r.c, r.s].filter(Boolean).join(' · ') + (r.w ? ` · ${r.w}` : '');
+        const meta = [r.d + (r.e ? ` ${r.e}` : ''), r.c, r.s].filter(Boolean).join(' · ') + (r.w ? ` · ${r.w}` : '') + (r.t && r.t !== '산업단지' && r.t !== '개별입지' ? ` · ${r.t}` : '') + (r.p ? ' · 지원 이력' : '');
         li.append(a, el('span', meta, 'co-meta')); frag.append(li);
       }
       if (from === 0) list.replaceChildren(frag); else list.append(frag);
@@ -70,15 +78,23 @@ const head = list.slice(0, FIRST);
       more.hidden = shown >= matched.length;
       more.textContent = `더 보기 (${nf.format(matched.length - shown)}곳 남음)`;
     }
+    const BAND = { '300명 이상': 5, '100~299명': 4, '50~299명': 4, '50~99명': 3, '10~49명': 2, '1~9명': 1 };
+    function sortRows(arr) {
+      const k = sortSel.value;
+      if (k === 'size') return [...arr].sort((a, b) => (BAND[b.w] || 0) - (BAND[a.w] || 0) || a.n.localeCompare(b.n, 'ko'));
+      if (k === 'district') return [...arr].sort((a, b) => a.d.localeCompare(b.d, 'ko') || a.n.localeCompare(b.n, 'ko'));
+      return [...arr].sort((a, b) => a.n.localeCompare(b.n, 'ko'));
+    }
     async function apply() {
-      const t = q.value.trim().toLowerCase(); const [c, g, e] = sel.map(s => s.value);
-      if (!t && !c && !g && !e) {            // 조건 없음 → 처음 상태(서버가 그려 둔 200곳)로
+      const t = q.value.trim().toLowerCase(); const [c, g, e, st, tg] = sel.map(s => s.value); const sp = spBox.checked; const sorted = sortSel.value !== 'name';
+      if (!t && !c && !g && !e && !st && !tg && !sp && !sorted) {            // 조건 없음 → 처음 상태(서버가 그려 둔 200곳)로
         if (rows) { matched = rows; render(0); }
         count.textContent = `${nf.format(total)}곳`; note.hidden = !!rows; return;
       }
       const data = await load(); if (!data) return;
-      matched = data.filter(r => (!c || r.c === c || r.c === shortComplex(c)) && (!g || r.g === g) && (!e || r.d === e)
-        && (!t || (r.n + ' ' + r.s + ' ' + r.g).toLowerCase().includes(t)));
+      matched = sortRows(data.filter(r => (!c || r.c === c || r.c === shortComplex(c)) && (!g || r.g === g) && (!e || r.d === e)
+        && (!st || r.t === st) && (!tg || (r.k || []).includes(tg)) && (!sp || r.p)
+        && (!t || (r.n + ' ' + r.s + ' ' + r.g).toLowerCase().includes(t))));
       note.hidden = true;
       count.textContent = `${nf.format(matched.length)}곳`;
       render(0);
@@ -86,18 +102,24 @@ const head = list.slice(0, FIRST);
     // 단지 <option> 은 정식 명칭, 색인의 c 는 약칭이라 같은 방식으로 줄여서 비교한다
     function shortComplex(s) { return s.replace('일반산업단지', '산단').replace('첨단산업단지', '산단').replace('산업단지', '산단').replace('지방산단', '산단'); }
     let timer; q.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(apply, 150); });
-    sel.forEach(s => s.addEventListener('change', apply));
+    sel.forEach(s => s.addEventListener('change', apply)); spBox.addEventListener('change', apply); sortSel.addEventListener('change', apply);
     more.addEventListener('click', () => render(shown));
     const sp = new URLSearchParams(location.search);
     const ic = sp.get('complex'); if (ic) sel[0].value = ic;
     const idn = sp.get('district'); if (idn) sel[2].value = idn;
-    if (ic || idn) apply();
+    const ig = sp.get('group'); if (ig) sel[1].value = ig;      // 산업별 페이지에서 넘어온 산업 그룹
+    const iq = sp.get('q'); if (iq) q.value = iq;          // 첫 화면 검색창(/?q=)에서 넘어온 검색어
+    const ist = sp.get('site'); if (ist) sel[3].value = ist;
+    const itg = sp.get('tag'); if (itg) sel[4].value = itg;
+    if (sp.get('support')) spBox.checked = true;
+    if (ic || idn || ig || iq || ist || itg || sp.get('support')) apply();
   </script>
 </Base>
 <style>
   .tools { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1.25rem 0 0.5rem; }
   .tools input, .tools select { font: inherit; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); max-width: 100%; }
-  .tools input { flex: 1 1 14rem; }
+  .tools input[type="search"] { flex: 1 1 14rem; }
+  .chk { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.92rem; }
   .co-list { list-style: none; padding: 0; margin: 0; }
   /* 결과 행은 스크립트가 만들어 넣으므로 Astro 스코프 속성이 없다 → :global 로 자식에 적용 */
   .co-list :global(li) { padding: 0.55rem 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.1rem; }

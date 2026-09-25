@@ -18,7 +18,10 @@ export function readCsv(rel: string): Record<string, string>[] {
   const head = rows.shift() ?? [];
   return rows.filter(r => r.length > 1).map(r => Object.fromEntries(head.map((h, i) => [h, r[i] ?? ''])));
 }
-export type Company = { id: string; name: string; complex: string; district: string; eupmyeon: string; sector_code: string; sector: string; sector_group: string; product: string; workers_band: string; workers: string; reg_type: string; first_registered: string; mfg_area_band: string; address: string; sites: string; source: string; as_of: string };
+import { siteType, isStartup } from './sites';
+import { classify } from './industry';
+export type Company = { id: string; name: string; complex: string; district: string; eupmyeon: string; sector_code: string; sector: string; sector_group: string; product: string; workers_band: string; workers: string; reg_type: string; first_registered: string; mfg_area_band: string; address: string; sites: string; source: string; as_of: string;
+  founded: string; site_type: string; tags: string[] };
 export const shortComplex = (s: string) => s.replace('일반산업단지','산단').replace('첨단산업단지','산단').replace('산업단지','산단').replace('지방산단','산단');
 /** 개인 성명으로 보이는 공장명은 목록·페이지에서 뺀다 (CLAUDE.md 기업 사전 원칙).
  *  팩토리온 원자료에는 개인사업자가 대표자 성명을 공장명으로 등록한 행이 있다("김서규", "오연숙").
@@ -39,11 +42,22 @@ export const looksLikePersonName = (raw: string) => {
   return false;
 };
 let _companies: Company[] | null = null;
+/** 기업 사전용 목록: 팩토리온 기업 + 산단 외 기업(extra_companies.csv). 개인 성명으로 보이는 공장명은 표시에서만 뺀다(통계는 전수). */
 export const companies = () => {
   if (_companies) return _companies;
-  const all = readCsv('scripts/data/dalseong_companies.csv') as Company[];
+  const fo = readCsv('scripts/data/dalseong_companies.csv');
+  const extra = readCsv('scripts/data/extra_companies.csv');
+  const tagRows = readCsv('scripts/data/company_tags.csv');
+  const tags = new Map<string, Set<string>>();
+  for (const t of tagRows) if (t.id && t.tag) (tags.get(t.id) ?? tags.set(t.id, new Set()).get(t.id)!).add(t.tag);
+  const all = [...fo, ...extra].map(r => {
+    const t = new Set(tags.get(r.id) ?? []);
+    for (const k of (r.tags ?? '').split(';')) if (k.trim()) t.add(k.trim());
+    if (r.founded && isStartup(r.founded, r.as_of)) t.add('startup');
+    return { ...r, founded: r.founded ?? '', complex: r.complex || '개별입지', sector_group: classify(r.sector_code, r.sector, r.product), site_type: siteType(r.complex, r.address), tags: [...t] } as Company;  // 산업 그룹은 항상 config/industry_groups.yml 규칙(11개)으로
+  });
   _companies = all.filter(c => !looksLikePersonName(c.name));
-  console.log(`[companies] 개인 성명으로 보이는 공장명 ${all.length - _companies.length}건 제외 (전체 ${all.length} → ${_companies.length})`);
+  console.log(`[companies] 팩토리온 ${fo.length} + 산단 외 ${extra.length}, 개인 성명으로 보이는 공장명 ${all.length - _companies.length}건은 표시에서 제외 → ${_companies.length}`);
   return _companies;
 };
 export const complexes = () => readCsv('scripts/data/dalseong_complexes.csv');
@@ -86,3 +100,22 @@ export function byDistrict() {
   }
   return [...m.entries()].map(([name, v]) => ({ name, ...v })).sort((a, b) => b.workers - a.workers);
 }
+
+/** 지원사업 수혜 이력(scripts/data/support_history.csv, import_support.py). 공개 자료만, 금액은 원문 단위 그대로. */
+export type Support = { id: string; name: string; district: string; year: string; layer: string; funder: string; program: string; type: string; amount: string; amount_unit: string; source: string; source_url: string; as_of: string };
+let _support: Support[] | null = null;
+export const supportHistory = () => (_support ??= readCsv('scripts/data/support_history.csv') as Support[]);
+export const supportOf = (id: string) => supportHistory().filter(s => s.id === id).sort((a, b) => b.year.localeCompare(a.year));
+/** 최근 n년(올해 포함) 안의 이력만 */
+export const recentSupport = (rows: Support[], years = 3) => { const y = new Date().getFullYear() - years + 1; return rows.filter(r => Number(r.year) >= y); };
+/** 금액 표시: 원문 단위 그대로 (환산하지 않는다) */
+export const fmtAmount = (s: Support) => (s.amount ? `${Number(s.amount).toLocaleString('ko-KR')} ${s.amount_unit || '원'}` : '금액 미공개');
+
+/** DART 재무(scripts/data/company_financials.csv, collect_dart_fin.py). 상장·공시대상 기업만. */
+export type Financial = { corp_code: string; name: string; year: string; fs: string; revenue: string; operating_income: string; net_income: string; unit: string; rcept_no: string; source_url: string; as_of: string };
+let _fin: Financial[] | null = null;
+export const financials = () => (_fin ??= readCsv('scripts/data/company_financials.csv') as Financial[]);
+const normName = (s: string) => (s || '').replace(/\(주\)|㈜|\(유\)|주식회사|유한회사/g, '').replace(/[\s\-_.,·ㆍ&/()\[\]'"]/g, '').toLowerCase();
+export const financialsOf = (name: string) => financials().filter(f => normName(f.name) === normName(name)).sort((a, b) => b.year.localeCompare(a.year));
+/** 원 → 억 원 표시 (공시 값 그대로 나눈 것) */
+export const fmtEokWon = (won: string) => { const n = Number(won); return won && Number.isFinite(n) ? `${(n / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원` : '—'; };

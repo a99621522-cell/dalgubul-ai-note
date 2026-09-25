@@ -1,0 +1,58 @@
+name: 월간 국민연금 사업장 수집 → 통계 집계 → 그래프 → 배포
+
+# 공공데이터포털 "국민연금 가입 사업장 내역"을 받아 대구만 data/nps/YYYYMM.csv 로 저장하고,
+# build_stats.py → render_charts.py 를 이어 돌린 뒤 커밋·배포한다.
+# 이 세션 환경(claude.ai)은 포털 접속이 막혀 있어 Actions 가 대신 받는다.
+# 필요: Secrets DATA_GO_KR_KEY (공공데이터포털 일반 인증키, 해당 API 활용신청), scripts/sources.yml 의 nps.api (이번 달 uddi 주소)
+#      또는 workflow_dispatch 입력 api_url 로 주소를 넘긴다.
+
+on:
+  schedule:
+    - cron: "0 21 5 * *"      # 매월 6일 06:00 KST (포털 월별 갱신 뒤)
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: "odcloud API 주소 (비우면 sources.yml nps.api)"
+        required: false
+      month:
+        description: "YYYYMM (자료에 기준월이 없을 때만)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nps-collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      - name: 국민연금 사업장 수집 (대구)
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          API_URL: ${{ inputs.api_url }}
+          MONTH: ${{ inputs.month }}
+        run: python3 scripts/collect_nps.py ${API_URL:+--url "$API_URL"} ${MONTH:+--month "$MONTH"}
+      - name: 월간 통계 집계 · 그래프 생성
+        run: |
+          python3 scripts/build_stats.py --backfill
+          python3 scripts/render_charts.py
+      - name: 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/nps data/stats src/generated
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 국민연금 사업장 수집·월간 통계 $(date -u +%Y-%m-%d)"
+          git push
+
+  deploy:
+    needs: collect
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

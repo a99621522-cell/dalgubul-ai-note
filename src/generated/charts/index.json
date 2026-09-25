@@ -1,0 +1,170 @@
+{
+ "months": [
+  "2026-07"
+ ],
+ "latest": "2026-07",
+ "basis": "국민연금 가입자수",
+ "total": {
+  "employment": "total-4ce09bfd10",
+  "firms": "total-66f6a8f155"
+ },
+ "industry-employment": {
+  "robot": "industry-employment-87b7cb7948",
+  "auto": "industry-employment-9df22f196a",
+  "bio": "industry-employment-e5ba759015",
+  "software": "industry-employment-f9fa10ba95",
+  "textile": "industry-employment-8000f61488",
+  "electronics": "industry-employment-9ca91fd2ee",
+  "chemical": "industry-employment-56d1917e55",
+  "food": "industry-employment-62506be34d",
+  "machinery": "industry-employment-cc68ce7f5e",
+  "other-mfg": "industry-employment-c29a647f40",
+  "other-service": "industry-employment-b15ee13121"
+ },
+ "industry-firms": {
+  "robot": "industry-firms-87b7cb7948",
+  "auto": "industry-firms-9df22f196a",
+  "bio": "industry-firms-e5ba759015",
+  "software": "industry-firms-f9fa10ba95",
+  "textile": "industry-firms-8000f61488",
+  "electronics": "industry-firms-9ca91fd2ee",
+  "chemical": "industry-firms-56d1917e55",
+  "food": "industry-firms-62506be34d",
+  "machinery": "industry-firms-cc68ce7f5e",
+  "other-mfg": "industry-firms-c29a647f40",
+  "other-service": "industry-firms-b15ee13121"
+ },
+ "industry-complex": {
+  "robot": "industry-complex-87b7cb7948",
+  "auto": "industry-complex-9df22f196a",
+  "bio": "industry-complex-e5ba759015",
+  "software": "industry-complex-f9fa10ba95",
+  "textile": "industry-complex-8000f61488",
+  "electronics": "industry-complex-9ca91fd2ee",
+  "chemical": "industry-complex-56d1917e55",
+  "food": "industry-complex-62506be34d",
+  "machinery": "industry-complex-cc68ce7f5e",
+  "other-mfg": "industry-complex-c29a647f40",
+  "other-service": "industry-complex-b15ee13121"
+ },
+ "industry-complex-firms": {
+  "robot": "industry-complex-firms-87b7cb7948",
+  "auto": "industry-complex-firms-9df22f196a",
+  "bio": "industry-complex-firms-e5ba759015",
+  "software": "industry-complex-firms-f9fa10ba95",
+  "textile": "industry-complex-firms-8000f61488",
+  "electronics": "industry-complex-firms-9ca91fd2ee",
+  "chemical": "industry-complex-firms-56d1917e55",
+  "food": "industry-complex-firms-62506be34d",
+  "machinery": "industry-complex-firms-cc68ce7f5e",
+  "other-mfg": "industry-complex-firms-c29a647f40",
+  "other-service": "industry-complex-firms-b15ee13121"
+ },
+ "industry-bar": {
+  "employment": "industry-bar-4ce09bfd10",
+  "firms": "industry-bar-66f6a8f155"
+ },
+ "industry-compare": {
+  "employment": "industry-compare-4ce09bfd10",
+  "firms": "industry-compare-66f6a8f155"
+ },
+ "compare_default": [
+  "기계·금속",
+  "자동차·부품",
+  "화학·에너지",
+  "전기·전자",
+  "소프트웨어·IT"
+ ],
+ "complex-employment": {
+  "성서지방산업단지": "complex-employment-f0388aa782",
+  "개별입지": "complex-employment-61fa24ec59",
+  "산단 외": "complex-employment-c151bf155a",
+  "서대구일반산업단지": "complex-employment-24c497f1e6",
+  "대구제3일반산업단지": "complex-employment-c23e8a8c44",
+  "북구검단일반산업단지": "complex-employment-1e88836d1f",
+  "달성일반산업단지": "complex-employment-5e2cec46dd",
+  "달성2차일반산업단지": "complex-employment-806ee002a4",
+  "대구국가산업단지": "complex-employment-9d2931f2da",
+  "대구염색일반산업단지": "complex-employment-956c7d6cff",
+  "대구인쇄출판밸리": "complex-employment-8216173ca2",
+  "대구연구개발특구": "complex-employment-05bea650f7",
+  "대구테크노폴리스일반산업단지": "complex-employment-1703daa59b",
+  "성서5차첨단산업단지": "complex-employment-963c3f68a3",
+  "대구옥포농공단지": "complex-employment-9aa36f1c70",
+  "군위농공단지": "complex-employment-8889b60fe1",
+  "대구이시아폴리스일반산업단지": "complex-employment-bc4a48dd99",
+  "대구경북경제자유구역수성의료지구": "complex-employment-56a0b28f20",
+  "대구금호워터폴리스일반산업단지": "complex-employment-90cf154b22",
+  "대구구지농공단지": "complex-employment-e887d73213",
+  "군위효령농공단지": "complex-employment-9eac342b15",
+  "달성외국인투자지역": "complex-employment-df86dc61e8",
+  "대구경북첨단의료복합단지도시첨단산업단지": "complex-employment-6c76b4c42f"
+ },
+ "complex-industry": {
+  "성서지방산업단지": "complex-industry-f0388aa782",
+  "개별입지": "complex-industry-61fa24ec59",
+  "산단 외": "complex-industry-c151bf155a",
+  "서대구일반산업단지": "complex-industry-24c497f1e6",
+  "대구제3일반산업단지": "complex-industry-c23e8a8c44",
+  "북구검단일반산업단지": "complex-industry-1e88836d1f",
+  "달성일반산업단지": "complex-industry-5e2cec46dd",
+  "달성2차일반산업단지": "complex-industry-806ee002a4",
+  "대구국가산업단지": "complex-industry-9d2931f2da",
+  "대구염색일반산업단지": "complex-industry-956c7d6cff",
+  "대구인쇄출판밸리": "complex-industry-8216173ca2",
+  "대구연구개발특구": "complex-industry-05bea650f7",
+  "대구테크노폴리스일반산업단지": "complex-industry-1703daa59b",
+  "성서5차첨단산업단지": "complex-industry-963c3f68a3",
+  "대구옥포농공단지": "complex-industry-9aa36f1c70",
+  "군위농공단지": "complex-industry-8889b60fe1",
+  "대구이시아폴리스일반산업단지": "complex-industry-bc4a48dd99",
+  "대구경북경제자유구역수성의료지구": "complex-industry-56a0b28f20",
+  "대구금호워터폴리스일반산업단지": "complex-industry-90cf154b22",
+  "대구구지농공단지": "complex-industry-e887d73213",
+  "군위효령농공단지": "complex-industry-9eac342b15",
+  "달성외국인투자지역": "complex-industry-df86dc61e8",
+  "대구경북첨단의료복합단지도시첨단산업단지": "complex-industry-6c76b4c42f"
+ },
+ "district-employment": {
+  "달서구": "district-employment-720cc1facc",
+  "북구": "district-employment-e104fe997e",
+  "달성군": "district-employment-74d440ce4d",
+  "서구": "district-employment-412a0906ec",
+  "동구": "district-employment-8dbaf73751",
+  "수성구": "district-employment-2b413bcefd",
+  "중구": "district-employment-8a2919abe0",
+  "군위군": "district-employment-62844c2077",
+  "남구": "district-employment-dceae17167",
+  "2구": "district-employment-d3d23f1973"
+ },
+ "district-industry": {
+  "달서구": "district-industry-720cc1facc",
+  "북구": "district-industry-e104fe997e",
+  "달성군": "district-industry-74d440ce4d",
+  "서구": "district-industry-412a0906ec",
+  "동구": "district-industry-8dbaf73751",
+  "수성구": "district-industry-2b413bcefd",
+  "중구": "district-industry-8a2919abe0",
+  "군위군": "district-industry-62844c2077",
+  "남구": "district-industry-dceae17167",
+  "2구": "district-industry-d3d23f1973"
+ },
+ "site-bar": {
+  "employment": "site-bar-4ce09bfd10",
+  "firms": "site-bar-66f6a8f155"
+ },
+ "site-employment": {
+  "수성알파시티": "site-employment-d4e2b140dc",
+  "연구개발특구": "site-employment-af466e44ad",
+  "지식산업센터": "site-employment-29befde5ba",
+  "산업단지": "site-employment-73175ed0a3",
+  "개별입지": "site-employment-61fa24ec59"
+ },
+ "site-industry": {
+  "수성알파시티": "site-industry-d4e2b140dc",
+  "연구개발특구": "site-industry-af466e44ad",
+  "지식산업센터": "site-industry-29befde5ba",
+  "산업단지": "site-industry-73175ed0a3",
+  "개별입지": "site-industry-61fa24ec59"
+ }
+}

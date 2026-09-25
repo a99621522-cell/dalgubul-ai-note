@@ -1,0 +1,78 @@
+---
+import Base from '../../layouts/Base.astro';
+import { companies, supportHistory, fmtAmount, type Support } from '../../lib/csv';
+/** /support/ — 공개 자료(공공데이터포털 과제·선정 명단)에서 확인된 '지원받은 대구 기업' 전수 목록.
+ *  기업 사전에 연결된 기업은 링크, 대구시 지역중소기업 명단으로만 확인된 기업은 이름만.
+ *  가나다순, 평가·순위 없음. 금액은 원문에 있을 때만 원문 단위 그대로. */
+const co = new Map(companies().map(c => [c.id, c]));
+const rows = supportHistory().filter(r => r.program);
+type Firm = { key: string; id: string; name: string; district: string; group: string; recs: Support[] };
+const firms = new Map<string, Firm>();
+for (const r of rows) {
+  const key = r.id || `n:${r.name}`;
+  const c = r.id ? co.get(r.id) : undefined;
+  if (r.id && !c) continue; // 목록에서 제외된 기업(개인 성명 등)
+  const f = firms.get(key) ?? { key, id: r.id, name: c?.name ?? r.name, district: c?.district ?? r.district, group: c?.sector_group ?? '', recs: [] };
+  f.recs.push(r);
+  firms.set(key, f);
+}
+const list = [...firms.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+const thisYear = new Date().getFullYear();
+const funders = [...new Set(rows.map(r => r.funder).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko'));
+const years = [...new Set(rows.map(r => r.year).filter(Boolean))].sort().reverse();
+const groupsList = [...new Set(list.map(f => f.group).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko'));
+const PAGE = 200;
+const sources = [...new Set(rows.map(r => r.source))];
+const withAmount = rows.filter(r => r.amount).length;
+const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.length) return ''; const units = new Set(a.map(r => r.amount_unit || '원')); if (units.size > 1) return '단위 혼재'; return `${a.reduce((s, r) => s + Number(r.amount), 0).toLocaleString('ko-KR')} ${[...units][0]}`; };
+---
+<Base title="지원받은 기업" description={`공개 자료에서 확인된 지원사업 수혜 대구 기업 ${list.length.toLocaleString('ko-KR')}곳, 이력 ${rows.length.toLocaleString('ko-KR')}건. 기관·연도·사업명으로 찾고 기업 페이지로 이어집니다.`} current="support">
+  <div class="section-head"><h1>지원받은 기업</h1><span class="meta">기업 {list.length.toLocaleString('ko-KR')}곳 · 이력 {rows.length.toLocaleString('ko-KR')}건 · 금액 있는 이력 {withAmount}건</span></div>
+  <p class="lede">공공데이터포털에 공개된 과제·선정 명단에서 대구 기업(기업 사전 또는 대구시 지역중소기업 명단과 이름이 맞는 곳)을 모두 모았습니다. 가나다순이며 평가·순위가 아닙니다. 금액은 원문에 있을 때만 원문 단위 그대로 적고, 없으면 '금액 미공개'로 둡니다.</p>
+  <div class="tools">
+    <input id="q" type="search" placeholder="기업명·사업명 검색" aria-label="검색" />
+    <select id="funder" aria-label="지원기관"><option value="">지원기관 전체</option>{funders.map(f => <option value={f}>{f}</option>)}</select>
+    <select id="group" aria-label="산업"><option value="">산업 전체</option>{groupsList.map(x => <option value={x}>{x}</option>)}</select>
+    <select id="year" aria-label="연도"><option value="">연도 전체</option><option value="recent">최근 3년</option>{years.map(y => <option value={y}>{y}</option>)}</select>
+    <span class="meta" id="count"></span>
+  </div>
+  <div class="scroll-x"><table class="data-table support-table" id="tbl">
+    <thead><tr><th>기업</th><th>구·군</th><th>산업</th><th class="n">이력</th><th>연도</th><th>사업명 · 지원기관</th><th class="n">금액(원문 합)</th></tr></thead>
+    <tbody>{list.map(f => {
+      const recs = [...f.recs].sort((a, b) => b.year.localeCompare(a.year));
+      return (<tr data-name={f.name} data-group={f.group} data-funders={[...new Set(recs.map(r => r.funder))].join('|')} data-years={[...new Set(recs.map(r => r.year))].join('|')} data-text={recs.map(r => r.program).join(' ')}>
+        <td>{f.id ? <a href={`/companies/${f.id}/`}>{f.name}</a> : <span>{f.name}<span class="meta"> (명단만)</span></span>}</td>
+        <td>{f.district || '—'}</td><td>{f.group || '—'}</td><td class="n">{recs.length}</td>
+        <td>{recs.at(-1)!.year !== recs[0].year ? `${recs.at(-1)!.year}~${recs[0].year}` : recs[0].year}</td>
+        <td>{recs.slice(0, 3).map(r => <div>{r.year} {r.program.length > 48 ? r.program.slice(0, 48) + '…' : r.program} <span class="meta">· {r.funder}{r.type && ` · ${r.type}`}{r.amount && ` · ${fmtAmount(r)}`}</span></div>)}{recs.length > 3 && <div class="meta">외 {recs.length - 3}건 (기업 페이지에서 전체)</div>}</td>
+        <td class="n">{sumRecs(f) || '—'}</td>
+      </tr>);
+    })}</tbody>
+  </table></div>
+  <p class="more-row"><button type="button" class="btn" id="more" hidden>다음 {PAGE}곳 더 보기</button></p>
+  <p class="meta">출처: {sources.join(' · ')}. 기업 사전에 없는 기업은 이름만 표시하며(명단만), 같은 이름의 다른 기업일 수 있으므로 원문 링크는 기업 페이지의 이력 표에서 확인합니다.</p>
+  <script is:inline>
+    const q = document.getElementById('q'), fu = document.getElementById('funder'), gr = document.getElementById('group'), yr = document.getElementById('year'), cnt = document.getElementById('count'), more = document.getElementById('more');
+    const trs = [...document.querySelectorAll('#tbl tbody tr')];
+    const RECENT = new Date().getFullYear() - 2, PAGE = 200;
+    let limit = PAGE;
+    function apply(keep) {
+      if (!keep) limit = PAGE;
+      const s = q.value.trim().toLowerCase(), f = fu.value, g = gr.value, y = yr.value; let n = 0;
+      for (const tr of trs) {
+        const ok = (!s || (tr.dataset.name + ' ' + tr.dataset.text).toLowerCase().includes(s))
+          && (!f || tr.dataset.funders.split('|').includes(f))
+          && (!g || tr.dataset.group === g)
+          && (!y || (y === 'recent' ? tr.dataset.years.split('|').some(v => Number(v) >= RECENT) : tr.dataset.years.split('|').includes(y)));
+        if (ok) n++;
+        tr.hidden = !ok || n > limit;   // 처음 200곳만 그리고, 버튼으로 더 본다(긴 목록에서 화면이 무거워지지 않게)
+      }
+      cnt.textContent = n > limit ? `${n.toLocaleString('ko-KR')}곳 중 ${limit.toLocaleString('ko-KR')}곳 표시` : `${n.toLocaleString('ko-KR')}곳 표시`;
+      more.hidden = n <= limit;
+    }
+    q.addEventListener('input', () => apply()); fu.addEventListener('change', () => apply()); gr.addEventListener('change', () => apply()); yr.addEventListener('change', () => apply());
+    more.addEventListener('click', () => { limit += PAGE; apply(true); });
+    const sp = new URLSearchParams(location.search); if (sp.get('funder')) fu.value = sp.get('funder'); if (sp.get('group')) gr.value = sp.get('group'); if (sp.get('q')) q.value = sp.get('q');
+    apply();
+  </script>
+</Base>

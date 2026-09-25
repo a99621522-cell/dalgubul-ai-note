@@ -1,0 +1,110 @@
+name: 공공데이터 파일 받아오기 (지식산업센터·국민연금·DART 재무)
+
+# Claude Code 세션 환경은 공공데이터포털·DART 접속이 막혀 있어, 이 워크플로가 대신 받는다.
+# mode=probe: 페이지 구조와 다운로드 응답만 출력하고 파일은 artifact 로 올린다 (커밋 없음)
+# mode=save : 받은 파일로 지식산업센터 건물 목록·국민연금 대구 사업장·DART 재무를 갱신하고 커밋한다
+# mode=search: ids 를 검색어로 보고 포털 파일데이터 번호·제목만 출력한다 (커밋 없음)
+
+on:
+  # 작업 브랜치에서는 push 로도 돈다(기본 브랜치에 없는 워크플로는 수동 실행 API 에 안 잡히므로). 그때는 probe 모드
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: [".github/workflows/fetch_public.yml", "scripts/fetch_datago.py", "scripts/collect_dart_fin.py", "data/fetch_mode.txt"]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe | save"
+        required: true
+        default: "probe"
+      ids:
+        description: "data.go.kr 파일데이터 번호(공백 구분)"
+        required: false
+        default: "15117154 15083277"
+      pick:
+        description: "파일이 여럿일 때 고를 문자열(예: 2026)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+# 새 푸시가 오면 진행 중인 예전 실행은 취소한다 (포털 접속 대기로 오래 걸리는 실행이 겹치지 않게)
+concurrency:
+  group: fetch-public-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt pandas openpyxl
+      - name: 공공데이터포털 파일 (${{ inputs.mode }})
+        env:
+          MODE_IN: ${{ inputs.mode }}
+          IDS_IN: ${{ inputs.ids }}
+          PICK_IN: ${{ inputs.pick }}
+        run: |
+          set +e
+          # push 로 돌 때는 data/fetch_mode.txt 의 첫 줄(mode ids pick)을 쓴다
+          # 형식: mode|ids|pick|검색어 (예: probe|15117154 15083277||대구테크노파크). 4번째 칸이 있으면 포털 검색 결과도 함께 출력
+          if [ -z "$MODE_IN" ] && [ -f data/fetch_mode.txt ]; then IFS='|' read -r MODE IDS PICK SEARCH < data/fetch_mode.txt; else MODE="$MODE_IN"; IDS="$IDS_IN"; PICK="$PICK_IN"; SEARCH=""; fi
+          MODE="${MODE:-probe}"; IDS="${IDS:-15117154 15083277}"
+          echo "MODE=$MODE" >> "$GITHUB_ENV"
+          echo "mode=$MODE ids=$IDS pick=$PICK search=$SEARCH"
+          # 포털이 열리는지 먼저 확인 (안 열리면 3번 기다렸다가 포기 — 각 페이지마다 시간 초과를 기다리지 않도록)
+          up=0; for i in 1 2 3; do code=$(curl -s -o /dev/null -m 20 -w '%{http_code}' https://www.data.go.kr/ || echo 000); echo "portal check $i: HTTP $code"; if [ "$code" != "000" ]; then up=1; break; fi; sleep 60; done
+          if [ "$up" = "0" ]; then echo "::warning::data.go.kr 접속 불가 — 이번 실행은 파일을 받지 않음"; exit 0; fi
+          if [ -n "$SEARCH" ]; then python3 scripts/fetch_datago.py --search $SEARCH; fi
+          if [ "$MODE" = "save" ]; then FLAG=--save; elif [ "$MODE" = "search" ]; then FLAG=--search; else FLAG=--probe; fi
+          python3 scripts/fetch_datago.py $FLAG $IDS ${PICK:+--pick "$PICK"} --max 3
+          echo "fetch exit=$?"
+      - name: DART 재무 (DART_KEY 가 있을 때)
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+        run: |
+          set +e
+          python3 scripts/collect_dart_fin.py --years 3
+          echo "dart_fin exit=$?"
+      - name: 받은 파일 처리 (save 일 때)
+        if: env.MODE == 'save'
+        run: |
+          set +e
+          for f in data/raw/15117154/*; do case "$f" in *.csv|*.xlsx|*.xls) python3 scripts/import_kic.py "$f" --as-of "$(date -u +%Y-%m)";; esac; done
+          for f in data/raw/15083277/*.csv; do [ -f "$f" ] && python3 scripts/collect_nps.py --file "$f"; done
+          # 팩토리온에 없는 대구 사업장 → 산단 외 기업 (임시 투입 파일은 반영 후 지운다)
+          python3 scripts/nps_to_extra.py && python3 scripts/import_extra.py --replace-source '국민연금' && rm -f scripts/data/extra/nps_*.csv
+          # 지원받은 기업·벤처 등 명단 → 지원 이력(support_history.csv)·태그(company_tags.csv)
+          # 변환 파일(portal_<번호>.csv)은 저장소에 남긴다: 다음에 다른 데이터셋만 받아도 앞서 받은 것이 지워지지 않도록
+          python3 scripts/import_public_support.py data/raw
+          ls scripts/data/support/portal_*.csv >/dev/null 2>&1 && python3 scripts/import_support.py --replace-source '공공데이터포털'
+          ls scripts/data/extra/portal_*.csv >/dev/null 2>&1 && python3 scripts/import_extra.py --replace-inputs
+          true
+          # 기업지원기관(대구TP·DIP·DMI·케이메디허브·창경센터·로봇산업진흥원·ETRI·생기원·경북대 …)별 지원 기업: 대구 / 역외 구분
+          python3 scripts/institution_support.py data/raw || true
+          python3 scripts/sites.py
+          python3 scripts/build_stats.py --backfill
+          python3 scripts/render_charts.py
+          python3 scripts/report_context.py --area startup | head -20
+      - name: artifact (받은 원본)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-${{ github.run_id }}
+          path: data/raw
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: 커밋 (save 일 때)
+        if: env.MODE == 'save'
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          for p in scripts/data/support scripts/data/extra scripts/data/daegu_sme_list.csv scripts/data/kic_buildings.csv scripts/data/company_financials.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/support_history.csv data/nps data/stats data/institutions src/generated; do
+            [ -e "$p" ] && git add -A "$p"   # 없는 경로가 있어도(포털이 안 열려 파일이 없을 때) 커밋 단계가 죽지 않게
+          done
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 공공데이터 파일 반영 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true   # 실행 중 다른 커밋이 올라와도 밀어넣을 수 있게
+          git push

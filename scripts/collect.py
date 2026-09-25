@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """달구벌 AI 노트 수집·초안 생성기 (1주차 버전)
 
-흐름: 소스 수집 → 키워드 선별 → 중복 제거 → Gemini 요약 → Markdown 초안 저장
+흐름: 소스 수집 → 키워드 선별 → 중복 제거 → (공고) data/notices/notices.csv 에 사실만 기록
+                                        → (기업 동향·정책) Gemini 요약 → Markdown 초안 저장
+공무원용 사이트라 지원사업 공고는 글로 쓰지 않는다(2026-09-25). 공고는 제목·기관·마감·링크·예산 대조 결과만 데이터로 남겨
+정책제안 리포트(report_context.py)의 '타 기관 공고 동향' 근거로 쓴다. Gemini 는 공시·보도자료 초안에만 쓴다.
 초안은 draft: true 로 저장되며, approve.py 로 승인해야 사이트에 노출된다.
 
 필요 환경변수
@@ -162,8 +165,8 @@ def fetch_bizinfo(cfg: dict) -> list[dict]:
                    f"세부분야: {it.get('pldirSportRealmMlsfcCodeNm','')}\n접수방법: {it.get('reqstMthPapersCn','')}\n"
                    f"문의처: {it.get('refrncNm','')}\n해시태그: {it.get('hashtags','')}\n요약: {summary_txt[:2500]}",
         })
-    out.sort(key=lambda x: not x.pop("local"))  # 대구 한정 공고를 앞에 — max_per_run 에 잘려도 먼저 살아남게
-    n_local = sum(1 for x in out if "공고범위: 대구 한정" in x["raw"])
+    out.sort(key=lambda x: not x["local"])  # 대구 한정 공고를 앞에
+    n_local = sum(1 for x in out if x["local"])
     print(f"[bizinfo] {len(items)}건 중 {len(out)}건 선별 (대구 한정 {n_local} + 전국 {len(out) - n_local})")
     return out
 
@@ -417,6 +420,46 @@ def write_post(item: dict, summary: str, md: str, k: str, seo: dict | None = Non
     return path
 
 
+# ---------------------------------------------------------------- 공고 → 데이터 (data/notices/notices.csv)
+NOTICES = ROOT / "data" / "notices" / "notices.csv"
+NOTICE_COLS = ["collected", "title", "source", "ministry", "scope", "deadline", "url", "areas",
+               "program_code", "program_name", "program_ministry", "program_budget_2026", "program_score"]
+_area_pats: list[tuple[str, "re.Pattern"]] | None = None
+
+
+def notice_areas(text: str) -> str:
+    """공약 분야 키워드(config/pledge_areas.yml)에 걸리는 분야 key 를 ';' 로. 리포트가 분야별 공고 동향을 세는 데 쓴다."""
+    global _area_pats
+    if _area_pats is None:
+        _area_pats = []
+        try:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+            from report_context import cfg as pledge_cfg, kw_pattern
+            _area_pats = [(a["key"], kw_pattern(a.get("keywords", []))) for a in pledge_cfg()["areas"] if a.get("keywords")]
+        except Exception as e:  # noqa: BLE001
+            print(f"[notices] 분야 키워드 로드 실패(분야 없이 기록): {e}")
+    return ";".join(k for k, pat in _area_pats if pat.search(text))
+
+
+def record_notice(item: dict, program: dict | None) -> None:
+    """공고 한 건을 사실만(제목·기관·마감·링크·예산 대조) CSV 에 덧붙인다. 원문 요약·재작성 없음."""
+    import csv
+    NOTICES.parent.mkdir(parents=True, exist_ok=True)
+    new_file = not NOTICES.exists()
+    scope = "대구 한정" if item.get("local") or item["title"].startswith("[대구]") else "전국"
+    row = {"collected": date.today().isoformat(), "title": item["title"], "source": item.get("source", ""), "ministry": item.get("ministry", ""),
+           "scope": scope, "deadline": item.get("deadline") or "", "url": item.get("url", ""),
+           "areas": notice_areas(item["title"] + " " + item.get("raw", "")[:600]),
+           "program_code": (program or {}).get("code", ""), "program_name": (program or {}).get("name", ""),
+           "program_ministry": (program or {}).get("ministry", ""), "program_budget_2026": (program or {}).get("budget_2026", ""),
+           "program_score": (program or {}).get("score", "")}
+    with open(NOTICES, "a", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=NOTICE_COLS)
+        if new_file:
+            w.writeheader()
+        w.writerow(row)
+
+
 # ---------------------------------------------------------------- 메인
 def company_keywords() -> list[str]:
     """scripts/data/dalseong_companies.csv 의 기업명을 대구 경제 키워드에 자동 추가."""
@@ -460,6 +503,22 @@ def main() -> None:
         new.append(it)
     print(f"신규 {len(new)}건 (전체 {len(items)}건)")
     n_new_total = len(new)  # 상한 적용 전 신규 건수 — 요약에는 이 값을 쓴다
+
+    # 공고(grants)는 글을 만들지 않고 data/notices/notices.csv 에 사실만 기록한다 (Gemini 호출 없음, 상한 없음)
+    notices = [it for it in new if it["category"] == "grants"]
+    new = [it for it in new if it["category"] != "grants"]
+    n_notice = 0
+    for it in notices:
+        pm = match_program(it["title"], it.get("ministry") or it.get("source", ""))
+        if DRY_RUN:
+            print("  · [dry-run 공고]", it["title"][:60], f"| 예산 대조 {pm['code']}" if pm else "")
+            continue
+        record_notice(it, pm)
+        seen.add(it["_key"])
+        n_notice += 1
+    if notices:
+        print(f"[notices] 공고 {n_notice}건 기록 → {NOTICES.relative_to(ROOT)}")
+
     limit = cfg.get("max_per_run", 8)
     if len(new) > limit:
         print(f"1회 상한 {limit}건으로 잘라냄")
@@ -473,10 +532,9 @@ def main() -> None:
             body = fetch_article_text(it["url"])
             if len(body) > 500:
                 text += "\n\n[원문 본문]\n" + body
-        pm = match_program(it["title"], it.get("ministry") or it.get("source", "")) if it["category"] == "grants" else None
+        pm = None
         if DRY_RUN:
             print("  · [dry-run]", it["category"], it["title"])
-            if pm: print(f"      예산 대조: {pm['ministry']} {pm['name']} ({pm['code']}, 유사도 {pm['score']})")
             continue
         res = gemini(PROMPT_BY_SOURCE.get(it.get("source", ""), PROMPTS[it["category"]]), text)
         if res is None:
@@ -494,8 +552,8 @@ def main() -> None:
 
     if not DRY_RUN:
         save_state(seen)
-    print(f"완료: 초안 {len(written)}건. 승인은 `python3 scripts/approve.py`")
-    report_run(len(items), n_new_total, len(new), len(written), skipped)
+    print(f"완료: 공고 기록 {n_notice}건, 초안 {len(written)}건. 승인은 `python3 scripts/approve.py`")
+    report_run(len(items), n_new_total, len(new) + n_notice, len(written) + n_notice, skipped)
 
 
 def report_run(n_items: int, n_new: int, n_proc: int, n_written: int, n_skipped: int) -> None:

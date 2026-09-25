@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구염색산단 고용 인원 추이. 2026-07부터 2026-07까지 1개월. 대구염색산단 최근 1,731명" style="max-width:360px;height:auto;font-size:14px">
+<title>대구염색산단 고용 인원 추이</title>
+<line x1="60" x2="292" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">1,600</text>
+<line x1="60" x2="292" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="207.0" text-anchor="end" fill="#767676">1,650</text>
+<line x1="60" x2="292" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="153.0" text-anchor="end" fill="#767676">1,700</text>
+<line x1="60" x2="292" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="99.0" text-anchor="end" fill="#767676">1,750</text>
+<line x1="60" x2="292" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">1,800</text>
+<text x="176.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
+<line x1="60" x2="292" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
+<circle cx="176.0" cy="114.5" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="176.0" cy="114.5" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="184.0" y="119.5" fill="#1a1a1a" font-weight="600">1,731명</text>
+<text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 1개월</text></svg>

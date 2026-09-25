@@ -23,6 +23,8 @@ const posts = defineCollection({
     program_ministry: z.string().optional(),
     program_budget_2026: z.string().optional(), // 백만 원, 자료 값 그대로
     program_score: z.number().optional(),       // 대조 유사도 — 글에서 '자동 대조'임을 밝히는 데 씀
+    // 정책제안 리포트 등 근거 목록. 실제로 확인한 페이지만
+    sources: z.array(z.object({ title: z.string(), url: z.string(), date: z.string().optional() })).default([]),
   }),
 });
 

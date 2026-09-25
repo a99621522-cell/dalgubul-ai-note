@@ -8,8 +8,9 @@
 
 검사 항목(오류 = 발행 불가, 경고 = 고치는 게 좋음):
   구조  frontmatter(title "[정책제안] <분야>: …", category policy, tags 정책제안, summary, description, faq 3, sources ≥ MIN_SOURCES), 1~9절 제목,
-        7절 제안 3개와 여섯 항목(문제·제안·근거·재원·대상 규모·지표), 시/정부 건의/기업·기관 구분, 본문 길이
-  숫자  숫자 없는 문단 없음(제목·표·인용 제외), 재원 항목에 사업코드(NNNN-NNN) 하나 이상, 대상 규모에 '곳'
+        7절 제안 3개와 다섯 항목(문제·제안·근거·대상 규모·지표), 시/정부 건의/기업·기관 구분, 본문 길이
+  숫자  숫자 없는 문단 없음(제목·표·인용 제외), 대상 규모에 '곳'
+  예산  본문에 사업코드·예산액·국비/시비·재원 언급 없음(정책제안서는 예산을 참조하지 않는다, 운영자 지시 2026-09-25)
   표현  금지 형용사(급성장·위기·획기적…), 평가·비판·기관 입장 표현, 순위·추천 표현, 7절에 기업 사전의 회사명(특정 기업 지목) 없음
   출처  sources 의 url 이 http 로 시작·중복 없음, 검색 요지만 쓴 경우 본문에 '요지' 표시
 CLAUDE.md 글 작성 원칙 1·4·5·8 과 루틴 사양(docs/ROUTINE_PROMPT.md)을 코드로 옮긴 것. 통과가 '사실이 맞다'는 뜻은 아니다 — 수치 대조는 작성 세션의 자기 검토 항목.
@@ -33,7 +34,8 @@ EVALUATIVE = r"미흡하|부족하다|실패했|잘못됐|잘못된|무능|비�
 STANCE = r"대구시는 .{0,20}(입장이다|밝혔다고 본다|것이다)|우리 시는|본 시는|시의 입장"
 RANKING = r"\d+위\b|최고의|최상위|추천한다|추천하는|유망 기업|우수 기업|선도 기업으로 꼽|가장 뛰어난"
 SECTIONS = ["1. 결론 먼저", "2. 지난 제안 점검", "3. 현재 위치", "4. 글로벌 변화", "5. 정부·타도시", "6. 연구기관", "7. 정책 제안", "8. 반론", "9. 출처"]
-ITEMS = ["문제", "제안", "근거", "재원", "대상 규모", "지표"]
+ITEMS = ["문제", "제안", "근거", "대상 규모", "지표"]
+BUDGET = r"\d{4}-\d{3}|예산(?!정책처)|국비|시비|지방비|백만\s*원|사업설명자료|세출|기금운용|재원"   # 정책제안서에는 예산을 참조하지 않는다(운영자 지시 2026-09-25)
 
 
 def split(text: str) -> tuple[str, str]:
@@ -113,8 +115,6 @@ def review(path: Path) -> dict:
         for role in ("시", "정부 건의", "기업·기관|기관·기업|기업|기관"):
             if not re.search(rf"###\s*제안\s*\d\s*\(({role})\)", sec7):
                 errors.append(f"7절 제안 구분 '({role.split('|')[0]})' 없음 (시 / 정부 건의 / 기업·기관)")
-        if len(re.findall(r"\d{4}-\d{3}", sec7)) < 2:
-            warns.append("7절 재원에 사업코드(NNNN-NNN)가 2개 미만")
         gun = re.findall(r"^\s*-\s*대상 규모\s*[:：](.*)$", sec7, re.M)
         if any("곳" not in g for g in gun):
             errors.append("7절 '대상 규모' 에 기업 수('곳')가 없는 제안이 있음")
@@ -137,6 +137,10 @@ def review(path: Path) -> dict:
     if no_num:
         errors.append(f"숫자 없는 문단 {len(no_num)}개: " + " / ".join(no_num[:3]))
 
+    # 예산 참조 금지 (본문 전체)
+    bud = sorted(set(re.findall(BUDGET, body)))
+    if bud:
+        errors.append("예산 참조(사업코드·예산액·국비/시비·재원): " + ", ".join(bud[:6]))
     # 표현
     for name, pat, is_err in (("금지 형용사", BANNED_ADJ, True), ("평가·비판 표현", EVALUATIVE, True), ("기관 입장 표현", STANCE, True)):
         found = sorted(set(re.findall(pat, body)))

@@ -274,12 +274,12 @@ def main(argv: list[str]) -> int:
             print(f"  ※ {cb['tag_data_note']}")
     else:
         print("\n[기업 사전] 연결 산업 그룹·태그·입지 유형 없음 → 사업 DB·예산·공고 숫자만 사용")
-    print(f"\n[사업 DB] 키워드 {area.get('keywords')} 일치 {len(ctx['programs'])}건 (2026 예산 순, 백만 원)")
+    print(f"\n[정부 사업] 키워드 {area.get('keywords')} 일치 {len(ctx['programs'])}건 — 사업명·부처·신규 여부만 인용한다. 예산액·사업코드·시비 매칭은 정책제안서에 쓰지 않는다(운영자 지시 2026-09-25)")
     for p in ctx["programs"][:15]:
-        print(f"  {p['ministry']} {p['code']} {p['name'][:40]} | 2025 {p['budget_2025']} → 2026 {p['budget_2026']} {p['new']} {p['scope']}")
-    print(f"\n[대구시 매칭] {len(ctx['city_match'])}건")
+        print(f"  {p['ministry']} | {p['name'][:44]} | {p['new'] or '계속'} {p['scope']}")
+    print(f"\n[대구시가 함께 추진하는 사업] {len(ctx['city_match'])}건 (사업명만)")
     for m in ctx["city_match"][:10]:
-        print(f"  {m.get('대구시 세부사업', '')[:36]} | 시 2026 {m.get('대구시 2026(천원)', '')}천원 | 국비 {m.get('코드', '')} {m.get('국비 2026(백만원)', m.get('산업부 2026(백만원)', ''))}백만원")
+        print(f"  {m.get('대구시 세부사업', '')[:40]} ↔ {m.get('국비 사업', '')[:40]}")
     rs = ctx["research"]
     print(f"\n[기관 발간물 최근 70일] 키워드 일치 {len(rs)}건 (data/research, scripts/fetch_research.py)" + ("" if rs else " — 없으면 워크플로 research.yml 실행 여부 확인"))
     for r in rs[:15]:

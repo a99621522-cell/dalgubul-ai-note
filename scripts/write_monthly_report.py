@@ -80,7 +80,8 @@ def main(argv: list[str]) -> int:
     lines.append(row("목록에서 빠진 기업", n(t.get("closed_firms"), "곳"), "", ""))
     lines.append("")
     sb = t.get("size_bands") or {}
-    lines.append(f"집계 대상 기업의 규모 구간: 1~9명 {n(sb.get('1~9'), '곳')}, 10~49명 {n(sb.get('10~49'), '곳')}, 50~299명 {n(sb.get('50~299'), '곳')}, 300명 이상 {n(sb.get('300+'), '곳')}.")
+    # 물결표 두 개가 한 줄에 있으면 마크다운 취소선이 되므로 '~' 앞에 역슬래시
+    lines.append(f"집계 대상 기업의 규모 구간: 1\\~9명 {n(sb.get('1~9'), '곳')}, 10\\~49명 {n(sb.get('10~49'), '곳')}, 50\\~299명 {n(sb.get('50~299'), '곳')}, 300명 이상 {n(sb.get('300+'), '곳')}.")
     lines.append("")
     lines.append("## 산업 그룹별")
     lines.append("")

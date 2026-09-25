@@ -1,0 +1,72 @@
+{
+ "key": "distat",
+ "name": "대구산업경제동향 온라인시스템(distat)",
+ "group": "분야 기관",
+ "home": "https://distat.daegu.go.kr",
+ "fetched": "2026-09-25",
+ "status": "최근 없음",
+ "method": "",
+ "items": [],
+ "note": "최신 항목 2025-10-01 (최근 70일 밖)",
+ "sample_links": [
+  [
+   "오늘 본 통계가 없습니다.",
+   "javascript:void(0)"
+  ],
+  [
+   "[산업경제동향] 2026년 상반기 대구산업경제동향",
+   "https://distat.daegu.go.kr/site/bbs/BoardControllView.do?bbsId=BBSMSTR_000000000002&nttId=11439"
+  ],
+  [
+   "로봇산업 대구 첨단산업 새 판 짠다…핵심 승부처는 ‘피지컬 AI’",
+   "https://www.yeongnam.com/web/view.php?key=20260917026489325"
+  ],
+  [
+   "ICT융합 산업 대구시, 4207억 원 규모 ‘지역거점 AX 혁신 기술개발’ 본격 착수",
+   "https://www.hankyung.com/article/202609170530h"
+  ],
+  [
+   "미래형자동차산업 대구시, 서대구역에 UAM ‘버티포트’ 짓는다… 2030년 시범운항 목표",
+   "https://www.segye.com/newsView/20260916505675?OutUrl=naver"
+  ],
+  [
+   "스마트에너지산업 경북대, 에너지산업 AI 인재 키운다…사업비 168억원 확보",
+   "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4084564"
+  ],
+  [
+   "2025-10-01 [설문조사] 대구산업경제동향 온라인시스템 이용자 의견 설문조사",
+   "https://distat.daegu.go.kr/site/bbs/BoardControllView.do?bbsId=BBSMSTR_000000000021&nttId=11276"
+  ],
+  [
+   "2025-08-11 [시스템 중단] 대구산업경제동향 온라인시스템 일시 중단 안내(8/15~16)",
+   "https://distat.daegu.go.kr/site/bbs/BoardControllView.do?bbsId=BBSMSTR_000000000021&nttId=11251"
+  ],
+  [
+   "2025-03-17 [시스템 점검] 대구산업경제동향 온라인시스템 중단 안내",
+   "https://distat.daegu.go.kr/site/bbs/BoardControllView.do?bbsId=BBSMSTR_000000000021&nttId=11161"
+  ],
+  [
+   "2022-05-27 대구산업경제동향 온라인 시스템 통계DB 한국은행 관련 지표 일시 중단 안내(한국은행 경제",
+   "https://distat.daegu.go.kr/site/bbs/BoardControllView.do?bbsId=BBSMSTR_000000000021&nttId=10215"
+  ]
+ ],
+ "page_chars": 108287,
+ "sample_dates": [
+  " 대구시, 서대구역에 UAM ‘버티포트’ 짓는다… 2030년 시범운항 목표 스마트에너지산업 경북대, 에너지산업 AI 인재 키운다…사업비 168억원 확보 공지사항 2025-10-01 [설문조사] 대구산업경제동향 온라인",
+  "너지산업 경북대, 에너지산업 AI 인재 키운다…사업비 168억원 확보 공지사항 2025-10-01 [설문조사] 대구산업경제동향 온라인시스템 이용자 의견 설문조사 2025-08-11 [시스템 중단] 대구산업경제동향 온",
+  " [설문조사] 대구산업경제동향 온라인시스템 이용자 의견 설문조사 2025-08-11 [시스템 중단] 대구산업경제동향 온라인시스템 일시 중단 안내(8/15~16) 2025-03-17 [시스템 점검] 대구산업경제동향 온",
+  "8-11 [시스템 중단] 대구산업경제동향 온라인시스템 일시 중단 안내(8/15~16) 2025-03-17 [시스템 점검] 대구산업경제동향 온라인시스템 중단 안내 2022-05-27 대구산업경제동향 온라인 시스템 통계"
+ ],
+ "areas": [
+  "mobility",
+  "robot-physical-ai",
+  "semiconductor",
+  "manufacturing-ax",
+  "healthcare",
+  "ai-sw-startup",
+  "machinery",
+  "automotive",
+  "textile",
+  "root"
+ ]
+}

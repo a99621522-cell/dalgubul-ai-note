@@ -4,45 +4,11 @@
  "group": "대구 기관",
  "home": "https://www.kmedihub.re.kr",
  "fetched": "2026-09-25",
- "status": "OK",
- "method": "첫 화면",
- "items": [
-  {
-   "title": "9월 정례조회 등록일 : 2026.09.10",
-   "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16370&bbsTyCode=BBST07&bbsAttrbCode=BBSA03",
-   "date": "2026-09-10",
-   "summary": ""
-  },
-  {
-   "title": "8월 19일 명사초청강연-표창원 교수님 등록일 : 2026.08.24",
-   "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16321&bbsTyCode=BBST07&bbsAttrbCode=BBSA03",
-   "date": "2026-08-24",
-   "summary": ""
-  },
-  {
-   "title": "8월 정례조회 등록일 : 2026.08.03",
-   "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16255&bbsTyCode=BBST07&bbsAttrbCode=BBSA03",
-   "date": "2026-08-03",
-   "summary": ""
-  },
-  {
-   "title": "7월 특별세미나 등록일 : 2026.07.30",
-   "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16263&bbsTyCode=BBST07&bbsAttrbCode=BBSA03",
-   "date": "2026-07-30",
-   "summary": ""
-  },
-  {
-   "title": "제5회 자강 Junto 포럼 성료 등록일 : 2026.07.29",
-   "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16253&bbsTyCode=BBST07&bbsAttrbCode=BBSA03",
-   "date": "2026-07-29",
-   "summary": ""
-  },
-  {
-   "title": "7월 정례조회 등록일 : 2026.07.29",
-   "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16252&bbsTyCode=BBST07&bbsAttrbCode=BBSA03",
-   "date": "2026-07-29",
-   "summary": ""
-  }
- ],
- "note": ""
+ "status": "접속 실패",
+ "method": "",
+ "items": [],
+ "note": "",
+ "areas": [
+  "healthcare"
+ ]
 }

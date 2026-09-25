@@ -5,6 +5,7 @@
   python3 scripts/fetch_datago.py --probe 15117154 15083277     # 페이지를 읽어 찾은 파일 목록·다운로드 응답을 출력만 (구조 확인)
   python3 scripts/fetch_datago.py --save  15117154 15083277     # data/raw/<id>/ 에 저장 (zip 이면 풀어서)
   python3 scripts/fetch_datago.py --save 15083277 --pick 2026    # 파일이 여럿이면 이름에 '2026' 이 든 것만
+  python3 scripts/fetch_datago.py --search 대구테크노파크 한국로봇산업진흥원   # 포털 검색: 키워드별 파일데이터 번호·제목·제공기관 목록만 출력
 
 대상 예: 15117154 한국산업단지공단_전국지식산업센터현황 / 15083277 국민연금공단_국민연금 가입 사업장 내역(월별 파일 여러 개)
 이 세션 환경은 data.go.kr 접속이 막혀 있어 GitHub Actions(.github/workflows/fetch_public.yml)에서 실행한다.
@@ -28,6 +29,40 @@ UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, 
 PAGE = "https://www.data.go.kr/data/{id}/fileData.do"
 DL_NEW = "https://www.data.go.kr/tcs/dss/selectFileDataDownload.do"
 DL_OLD = "https://www.data.go.kr/cmm/cmm/fileDownload.do"
+
+
+SEARCH = "https://www.data.go.kr/tcs/dss/selectDataSetList.do"
+
+
+def search(keyword: str, sess: requests.Session, pages: int = 2) -> list[tuple[str, str, str]]:
+    """포털 검색(파일데이터만) → [(번호, 제목, 주변 문구)]. 페이지 구조가 바뀌면 링크만이라도 남긴다."""
+    out, seen = [], set()
+    for page in range(1, pages + 1):
+        params = {"dType": "FILE", "keyword": keyword, "currentPage": page, "perPage": 40, "sort": "updtDt"}
+        try:
+            r = sess.get(SEARCH, params=params, headers=UA, timeout=60)
+        except Exception as e:  # noqa: BLE001
+            print(f"  검색 실패 '{keyword}' p{page}: {e}")
+            break
+        html = r.text
+        hits = list(re.finditer(r'href="/data/(\d+)/fileData\.do[^"]*"[^>]*>([\s\S]{0,300}?)</a>', html))
+        if page == 1:
+            total = re.search(r"총\s*<[^>]*>?\s*([\d,]+)\s*<?[^>]*>?\s*건|검색결과\D{0,20}([\d,]+)", html)
+            print(f"[검색 '{keyword}'] HTTP {r.status_code}, 링크 {len(hits)}개" + (f", 전체 {total.group(1) or total.group(2)}건" if total else ""))
+        if not hits:
+            break
+        for m in hits:
+            pk = m.group(1)
+            if pk in seen:
+                continue
+            seen.add(pk)
+            title = re.sub(r"<[^>]+>|\s+", " ", m.group(2)).strip()
+            tail = re.sub(r"<[^>]+>|\s+", " ", html[m.end(): m.end() + 1500])
+            org = re.search(r"(?:제공기관|기관)\s*[:：]?\s*(\S[^|]{0,40}?)(?:\s{2,}|수정일|등록일|조회|다운로드|\||$)", tail)
+            out.append((pk, title, (org.group(1).strip() if org else tail[:80])))
+        if len(hits) < 40:
+            break
+    return out
 
 
 def get_page(pk: str, sess: requests.Session) -> str:
@@ -162,9 +197,17 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--save", action="store_true")
     ap.add_argument("--pick", help="파일이 여럿일 때 이름·인자에 이 문자열이 든 것만")
     ap.add_argument("--max", type=int, default=3, help="데이터셋당 최대 파일 수")
+    ap.add_argument("--search", action="store_true", help="ids 를 검색어로 보고 파일데이터 목록만 출력")
     a = ap.parse_args(argv)
     sess = requests.Session()
     ok = 0
+    if a.search:
+        for kw in a.ids:
+            for pk, title, org in search(kw, sess):
+                print(f"  {pk} | {title[:90]} | {org[:60]}")
+                ok += 1
+        print(f"완료: 검색 결과 {ok}개")
+        return 0
     for pk in a.ids:
         try:
             html = get_page(pk, sess)

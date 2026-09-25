@@ -41,7 +41,7 @@ RSS_CANDIDATES = ["/rss", "/feed", "/rss.xml", "/feed.xml", "/index.xml", "/rss/
 DATE_RE = re.compile(r"(20\d{2})[.\-/년年]\s?(\d{1,2})[.\-/월月]\s?(\d{1,2})")
 MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
 DATE_EN = re.compile(r"\b([A-Z][a-z]{2,8})\.?\s+(\d{1,2}),?\s+(20\d{2})\b|\b(\d{1,2})\s+([A-Z][a-z]{2,8})\.?,?\s+(20\d{2})\b")
-JUNK = re.compile(r"바로가기|건너뛰기|건더뛰기|메뉴|배너|skip to|본문|로그인|회원가입|sitemap|cookie", re.I)
+JUNK = re.compile(r"바로가기|건너뛰기|건더뛰기|메뉴|배너|skip to|본문|로그인|회원가입|sitemap|cookie|다운로드|download|열지않기|더보기|상세보기", re.I)
 
 
 def get(url: str, sess: requests.Session, timeout: int = 40) -> requests.Response | None:
@@ -128,7 +128,10 @@ def from_list(page_url: str, html: str, item_pat: str | None) -> list[dict]:
     for a in soup.find_all("a", href=True):
         title = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
         href = urljoin(page_url, a["href"])
-        if len(title) < 8 or href in seen or href.startswith("javascript") or "#" in href.split("/")[-1] or JUNK.search(title):
+        is_js = href.startswith("javascript") or a["href"].strip() in ("#", "")
+        if is_js:
+            href = page_url + "#" + re.sub(r"\W+", "-", title)[:40]   # 목록이 스크립트로 열리는 사이트: 목록 페이지 주소로 연결
+        if len(title) < 8 or href in seen or (not is_js and "#" in href.split("/")[-1]) or JUNK.search(title):
             continue
         if pat and not pat.search(href + " " + title):
             continue
@@ -269,8 +272,8 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
             res["items"], res["method"] = items, f"rss({feed[len(host_root):][:40] or '/'})"
             break
     if not res["items"] and not org.get("datago_only"):
-        for page in [org.get("list"), org.get("home")]:
-            if not page or reqs >= 9:
+        for page in (org.get("lists") or []) + [org.get("list"), org.get("home")]:
+            if not page or reqs >= 12 or res["items"]:
                 continue
             if not robots_ok(page, robots):
                 res["note"] = "robots.txt 차단"
@@ -301,7 +304,7 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                     break
             if res["items"]:
                 break
-            if page == org.get("list") or not org.get("list"):
+            if page != org.get("home") or not org.get("list"):
                 items = from_list(page, html, org.get("item_pattern"))
                 if items:
                     res["items"], res["method"] = items, "목록 페이지"

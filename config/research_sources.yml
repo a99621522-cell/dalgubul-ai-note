@@ -4,19 +4,18 @@
 version: 2026-09-25
 sources:
   # ── 국내 연구기관 ──
-  - { key: kiet,   group: 국내 연구, name: 산업연구원(KIET),            home: "https://www.kiet.re.kr", list: "https://www.kiet.re.kr/communicate/medataList?medata_no=982", render: true }
-  - { key: kdi,    group: 국내 연구, name: 한국개발연구원(KDI),         home: "https://www.kdi.re.kr", list: "https://www.kdi.re.kr/research/reportList", render: true }
+  - { key: kiet,   group: 국내 연구, name: 산업연구원(KIET),            home: "https://www.kiet.re.kr", list: "https://www.kiet.re.kr/communicate/medataList?medata_no=982", render: true, lists: ["https://www.kiet.re.kr/research/issueList", "https://www.kiet.re.kr/trends/indbriefList", "https://www.kiet.re.kr/trends/insbriefList"] }
+  - { key: kdi,    group: 국내 연구, name: 한국개발연구원(KDI),         home: "https://www.kdi.re.kr", list: "https://www.kdi.re.kr/research/reportList", render: true, lists: ["https://www.kdi.re.kr/research/reportList", "https://www.kdi.re.kr/research/focusList"] }
   - { key: kdi-eiec, group: 국내 연구, name: KDI 경제정보센터(정책자료), home: "https://eiec.kdi.re.kr", list: "https://eiec.kdi.re.kr/policy/materialList.do", render: true }
   - { key: kistep, group: 국내 연구, name: 한국과학기술기획평가원(KISTEP), home: "https://www.kistep.re.kr", list: "https://www.kistep.re.kr/board.es?mid=a10306040000&bid=0031", render: true }
   - { key: stepi,  group: 국내 연구, name: 과학기술정책연구원(STEPI),    home: "https://www.stepi.re.kr", list: "https://www.stepi.re.kr/site/stepiko/report/List.do?reIdx=3" }
   - { key: nabo,   group: 국내 연구, name: 국회예산정책처(NABO),        home: "https://www.nabo.go.kr", list: "https://www.nabo.go.kr/Sub/01Report/01_01_Board.jsp" }
   - { key: bok,    group: 국내 연구, name: 한국은행(지역경제보고서·조사통계), home: "https://www.bok.or.kr", list: "https://www.bok.or.kr/portal/bbs/P0002507/list.do?menuNo=200069" }
   - { key: dgi,    group: 국내 연구, name: 대구정책연구원,              home: "https://www.dgi.re.kr", list: "https://www.dgi.re.kr", render: true }
-  - { key: kdb,    group: 국내 연구, name: KDB 미래전략연구소,          home: "https://rd.kdb.co.kr", list: "https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031", render: true }
+  - { key: kdb,    group: 국내 연구, name: KDB 미래전략연구소,          home: "https://rd.kdb.co.kr", list: "https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031", render: true, lists: ["https://rd.kdb.co.kr/FLPBFP03N01.act?_mnuId=FYERER0031", "https://rd.kdb.co.kr/FLPBFP02N01.act?_mnuId=FYERER0030"] }
   - { key: kita,   group: 국내 연구, name: 한국무역협회(KITA) 보고서,   home: "https://www.kita.net", list: "https://www.kita.net/researchTrade/report/reportMain/reportMainList.do", render: true }
   - { key: kotra,  group: 국내 연구, name: KOTRA 해외시장뉴스,          home: "https://dream.kotra.or.kr", list: "https://dream.kotra.or.kr/kotranews/cms/news/actionKotraBoardList.do?MENU_ID=70&SITE_NO=3" }
   - { key: kosi,   group: 국내 연구, name: 중소벤처기업연구원(KOSI),    home: "https://www.kosi.re.kr", list: "https://www.kosi.re.kr/front/functionDisplay?menuFrontNo=322423919227700596633306148027564711658&menuFrontURL=front%2FfocusList", render: true, datago: "15117504" }
-  - { key: nkis,   group: 국내 연구, name: 국가정책연구포털(NKIS, 국책연구기관 보고서 통합), home: "https://www.nkis.re.kr", list: "https://www.nkis.re.kr/nkisRssService_write.do", render: true }
   # ── 기업지원·전문기관 (부처 산하) ──
   - { key: keit,   group: 기업지원기관, name: 한국산업기술기획평가원(KEIT) PD이슈리포트, home: "https://www.keit.re.kr", list: "https://srome.keit.re.kr/srome/biz/info/keitPub/retrieveKeitIssuListView.do?prgmId=XPG404010000", render: true, datago: "15047479" }
   - { key: kiat,   group: 기업지원기관, name: 한국산업기술진흥원(KIAT),  home: "https://www.kiat.or.kr", list: "https://www.kiat.or.kr/front/board/boardContentsListPage.do?board_id=71&MenuId=878cb9b6d5ec41bf914ad5c0f590ed14", render: true, datago: "15104286" }
@@ -34,7 +33,7 @@ sources:
   - { key: ttp,    group: 대구 기관, name: 대구테크노파크,               home: "https://www.ttp.org", list: "https://www.ttp.org/bbs/board.php?bo_table=notice" }
   - { key: dmi,    group: 대구 기관, name: 대구기계부품연구원(DMI),      home: "https://www.dmi.re.kr", list: "https://www.dmi.re.kr" }
   - { key: kmedi,  group: 대구 기관, name: 대구경북첨단의료산업진흥재단(케이메디허브), home: "https://www.kmedihub.re.kr", list: "https://www.kmedihub.re.kr/index.do?menu_id=00000069", render: true }
-  - { key: daegu-press, group: 대구 기관, name: 대구광역시 보도자료,     home: "https://www.daegu.go.kr", list: "https://www.daegu.go.kr/index.do?menu_id=00000133" }
+  - { key: daegu-press, group: 대구 기관, name: 대구광역시 보도자료,     home: "https://www.daegu.go.kr", list: "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=scatelist&mkey=26" }
   # ── 정부 ──
   - { key: motie-press, group: 정부, name: 산업통상부 보도자료,          home: "https://www.motie.go.kr", list: "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c" }
   - { key: msit-press,  group: 정부, name: 과학기술정보통신부 보도자료,  home: "https://www.msit.go.kr", list: "https://www.msit.go.kr/bbs/list.do?sCode=user&mId=113&mPid=238", render: true, rss: "https://www.msit.go.kr/user/rss/rss.do?bbsSeqNo=94" }

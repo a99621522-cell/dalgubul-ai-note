@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """예산서·사업설명자료 수집기 — config/budget_sources.yml 의 기관 페이지에서 예산·사업설명 첨부를 받아
 data/raw/budget/<key>/ 에 저장하고, 본문 텍스트(pdftotext·HWPX)를 data/budget/<key>/<파일>.txt.gz 로 남긴다.
-parse: true 인 기관의 '사업설명자료' PDF 는 scripts/parse_budget.py 로 읽어 scripts/data/programs_<key>.csv 를 만든다.
+parse: true 인 기관의 올해 '사업설명자료' 본문은 scripts/parse_budget.py 로 읽어 scripts/data/programs_budget_<key>.csv 를 만든다(--parse-only 면 받지 않고 본문만 다시 파싱).
 
 이 세션 환경은 정부 사이트 접속이 막혀 있어 GitHub Actions(.github/workflows/fetch_budget.yml)에서 브라우저(Playwright)로 돈다.
 robots.txt 를 지키고, 기관당 요청은 max_files_per_org 이내. 실패는 로그만 남긴다. 평가·해석 없음.
@@ -142,6 +142,18 @@ def to_text(kind: str, path: Path) -> str:
     return ""
 
 
+def years_in(text: str) -> list[int]:
+    """글자에 든 연도. '2026년'·'2026' 은 그대로, '25년'·'‘25' 은 2025."""
+    ys = [int(y) for y in re.findall(r"(?<!\d)(20[123]\d)(?!\d)", text)]
+    ys += [2000 + int(y) for y in re.findall(r"(?<![\d.])[‘'’]?([123]\d)\s*년", text)]
+    return ys
+
+
+def too_old(text: str, min_year: int) -> bool:
+    ys = years_in(text)
+    return bool(ys) and max(ys) < min_year
+
+
 def crawl_org(org: dict, cfg: dict, sess: requests.Session, robots: dict) -> list[dict]:
     key = org["key"]
     link_re = re.compile(cfg["link_pattern"])
@@ -151,7 +163,8 @@ def crawl_org(org: dict, cfg: dict, sess: requests.Session, robots: dict) -> lis
     raw_dir, out_dir = RAW / key, OUT / key
     raw_dir.mkdir(parents=True, exist_ok=True)
     out_dir.mkdir(parents=True, exist_ok=True)
-    got, seen_pages, files = [], set(), 0
+    got, seen_pages, files, seen_hrefs = [], set(), 0, set()
+    min_year = int(cfg.get("min_year") or 0)
     queue = [(s, 0) for s in org["seeds"]]
     print(f"\n== {org['name']}")
     while queue and files < cfg["max_files_per_org"]:
@@ -174,6 +187,11 @@ def crawl_org(org: dict, cfg: dict, sess: requests.Session, robots: dict) -> lis
             if is_file and (link_re.search(text) or link_re.search(html_title := text_of(html)[:300]) or depth >= 1):
                 if excl_re.search(label):
                     continue
+                if min_year and too_old(label + " " + href, min_year):
+                    continue
+                if href.startswith("http") and href in seen_hrefs:
+                    continue
+                seen_hrefs.add(href)
                 if not robots_ok(href if href.startswith("http") else final, robots):
                     continue
                 got_file = download(href, final, sess) if href.startswith("http") else click_download(final, label)
@@ -230,28 +248,45 @@ def crawl_org(org: dict, cfg: dict, sess: requests.Session, robots: dict) -> lis
     return got
 
 
-def parse_programs(org: dict, got: list[dict]) -> None:
-    """'사업설명자료' PDF → scripts/data/programs_<key>.csv (여러 권이면 이어 붙이고 volume 열에 파일명)."""
+def parse_programs(org: dict, got: list[dict], cfg: dict) -> None:
+    """올해(budget_year) '사업설명자료' 본문 → scripts/data/programs_budget_<key>.csv (여러 권이면 이어 붙이고 volume 열에 파일명).
+    사업 DB 원본(programs_<key>.csv)은 건드리지 않는다. 본문은 data/budget/<key>/*.txt.gz 를 읽으므로 원본 PDF 없이도 다시 파싱할 수 있다."""
     import parse_budget  # noqa: WPS433
     key = org["key"]
-    pdfs = [g for g in got if g["kind"] == "pdf" and re.search(r"사업\s*설명", g["file"] + g["label"]) and g["chars"] > 20000]
-    if not pdfs:
-        print(f"  [{key}] 사업설명자료 PDF 없음 — programs CSV 생성 안 함")
+    year = int(cfg.get("budget_year") or TODAY[:4])
+    out_dir = OUT / key
+    cands, seen_files = [], set()
+    for g in got:
+        if g["kind"] != "pdf" or g["chars"] < 20000 or g["file"] in seen_files:
+            continue
+        seen_files.add(g["file"])
+        gz = out_dir / (g["file"] + ".txt.gz")
+        if not gz.exists():
+            continue
+        head = gzip.open(gz, "rt", encoding="utf-8").read(3000)
+        label = f"{g['file']} {g['label']}"
+        is_desc = re.search(r"사\s*업\s*설\s*명\s*자\s*료", head) or re.search(r"사업\s*설명|공통요구자료", label)
+        ys = years_in(label) or years_in(head[:600])
+        if is_desc and ys and max(ys) == year:
+            cands.append((g, gz))
+    if not cands:
+        print(f"  [{key}] {year}년 사업설명자료 본문 없음 — programs_budget CSV 생성 안 함")
         return
     rows, cols = [], None
-    for g in pdfs:
-        tmp = RAW / key / (g["file"] + ".csv")
+    for g, gz in cands:
+        tmp = out_dir / (g["file"] + ".csv")
         try:
-            parse_budget.main(str(RAW / key / g["file"]), org.get("ministry"), str(tmp))
+            parse_budget.main(str(gz), org.get("ministry"), str(tmp))
         except Exception as e:  # noqa: BLE001
             print(f"  [{key}] 파싱 실패 {g['file'][:50]}: {str(e)[:80]}")
             continue
         for r in csv.DictReader(open(tmp, encoding="utf-8")):
-            r["source"] = f"{org['name']} 2026년도 예산 및 기금운용계획 사업설명자료({g['file'][:60]})"
+            r["source"] = f"{org['name']} {year}년도 예산 및 기금운용계획 사업설명자료({g['file'][:60]})"
             r["volume"] = g["file"]
             r["source_url"] = g["page"]
             rows.append(r)
             cols = cols or list(r.keys())
+        tmp.unlink(missing_ok=True)
     if not rows:
         return
     seen, uniq = set(), []
@@ -261,12 +296,12 @@ def parse_programs(org: dict, got: list[dict]) -> None:
             continue
         seen.add(k)
         uniq.append(r)
-    out = PROGRAMS / f"programs_{key}.csv"
+    out = PROGRAMS / f"programs_budget_{key}.csv"
     with out.open("w", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=cols)
         w.writeheader()
         w.writerows({c: r.get(c, "") for c in cols} for r in uniq)
-    print(f"  [{key}] 사업 {len(uniq)}건 → {out.relative_to(ROOT)} (권 {len(pdfs)})")
+    print(f"  [{key}] 사업 {len(uniq)}건 → {out.relative_to(ROOT)} (권 {len(cands)})")
 
 
 def main(argv: list[str]) -> int:
@@ -278,10 +313,14 @@ def main(argv: list[str]) -> int:
     for org in cfg["organizations"]:
         if only and org["key"] not in only:
             continue
-        got = crawl_org(org, cfg, sess, robots)
-        total += len(got)
+        if "--parse-only" in argv:  # 받은 본문(data/budget/<key>)만 다시 파싱
+            ix = OUT / org["key"] / "index.json"
+            got = json.loads(ix.read_text(encoding="utf-8"))["files"] if ix.exists() else []
+        else:
+            got = crawl_org(org, cfg, sess, robots)
+            total += len(got)
         if org.get("parse") and "--no-parse" not in argv and got:
-            parse_programs(org, got)
+            parse_programs(org, got, cfg)
     print(f"\n완료: 파일 {total}개")
     return 0
 

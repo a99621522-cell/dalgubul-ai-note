@@ -89,7 +89,7 @@ def try_download(pk: str, call: list[str], sess: requests.Session, atch_page: li
             if r.status_code == 200 and "text/html" not in ct:
                 name = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
                 fname = requests.utils.unquote(name.group(1)) if name else ""
-                if re.search(r"\.(png|jpe?g|gif|pdf|hwp|hwpx|docx?|pptx?)$", fname, re.I):
+                if not fname or re.search(r"\.(png|jpe?g|gif|pdf|hwp|hwpx|docx?|pptx?)$", fname, re.I):
                     print(f"    표 파일이 아님({fname[-40:]}) — 다음 파일 번호 시도")
                     r.close()
                     continue
@@ -189,10 +189,14 @@ def main(argv: list[str]) -> int:
         if not (a.probe or a.save):
             continue
         for c in calls[: a.max]:
-            r = try_download(pk, c, sess, d["atch"])
-            if r is None:
+            try:
+                r = try_download(pk, c, sess, d["atch"])
+                if r is None:
+                    continue
+                files = save_response(r, pk, hint=next((x for x in c if "." in x), f"{pk}.bin"))
+            except Exception as e:  # noqa: BLE001 — 한 파일이 끊겨도 다음 데이터셋으로
+                print(f"  [{pk}] 받기 실패: {e}")
                 continue
-            files = save_response(r, pk, hint=next((x for x in c if "." in x), f"{pk}.bin"))
             for f in files:
                 if f.suffix.lower() in (".csv", ".txt", ".json"):
                     print(f"  머리 {f.name}:")

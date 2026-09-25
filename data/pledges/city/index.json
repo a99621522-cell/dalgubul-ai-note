@@ -1,107 +1,16 @@
 [
  {
-  "url": "https://mayor.daegu.go.kr/index.do?menu_id=00938972",
-  "title": "대구광역시",
-  "file": "01_대구광역시.txt",
-  "chars": 13586,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://mayor.daegu.go.kr/index.do?menu_id=00938606",
-  "title": "주요 추진과제 | 대구 열린시장실",
-  "file": "02_주요_추진과제_대구_열린시장실.txt",
-  "chars": 4724,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://mayor.daegu.go.kr/index.do?menu_id=00001450",
-  "title": "",
-  "file": "03_page.txt",
-  "chars": 14,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://mayor.daegu.go.kr/index.do?menu_id=00001466",
-  "title": "",
-  "file": "04_page.txt",
-  "chars": 14,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://mayor.daegu.go.kr/",
-  "title": "대구광역시 열린시장실",
-  "file": "05_대구광역시_열린시장실.txt",
-  "chars": 2926,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/commiment/initUELCommiment.do?menuId=WINNR10",
+  "url": "https://policy.nec.go.kr/plc/commiment/initUELCommiment.do?menuId=WINNR2",
   "title": "중앙선거관리위원회 정책·공약마당 당선인공약",
-  "file": "06_중앙선거관리위원회_정책_공약마당_당선인공약.txt",
-  "chars": 303,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/commiment/initUELCommiment.do?menuId=WINNR10",
-  "title": "중앙선거관리위원회 정책·공약마당 당선인공약",
-  "file": "07_중앙선거관리위원회_정책_공약마당_당선인공약.txt",
-  "chars": 303,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/commiment/initUELCommiment.do?menuId=WINNR10",
-  "title": "중앙선거관리위원회 정책·공약마당 당선인공약",
-  "file": "08_중앙선거관리위원회_정책_공약마당_당선인공약.txt",
-  "chars": 303,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/main/initUMAMain.do",
-  "title": "중앙선거관리위원회 정책·공약마당",
-  "file": "09_중앙선거관리위원회_정책_공약마당.txt",
-  "chars": 207,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/policy/initUPAPolicy.do;jsessionid=IIPauvqthNZ6laCRvMqAvLmDLSzKauIaccNK8MRnWds4sPZ3TLqvjGb0w29mpdYW.elecapp10_servlet_engine3?menuId=PARTY5",
-  "title": "중앙선거관리위원회 정책·공약마당 정당정책",
-  "file": "10_중앙선거관리위원회_정책_공약마당_정당정책.txt",
-  "chars": 5291,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/commiment/initUELCommiment.do;jsessionid=IIPauvqthNZ6laCRvMqAvLmDLSzKauIaccNK8MRnWds4sPZ3TLqvjGb0w29mpdYW.elecapp10_servlet_engine3?menuId=WINNR2",
-  "title": "중앙선거관리위원회 정책·공약마당 당선인공약",
-  "file": "11_중앙선거관리위원회_정책_공약마당_당선인공약.txt",
+  "file": "01_중앙선거관리위원회_정책_공약마당_당선인공약.txt",
   "chars": 406,
   "fetched": "2026-09-25"
  },
  {
-  "url": "https://policy.nec.go.kr/plc/survey/initUSASurveyPolicyTree.do;jsessionid=IIPauvqthNZ6laCRvMqAvLmDLSzKauIaccNK8MRnWds4sPZ3TLqvjGb0w29mpdYW.elecapp10_servlet_engine3?keyinfo2=SURVEY1&menuId=SURVEY1",
-  "title": "중앙선거관리위원회 정책·공약마당 공약이슈트리",
-  "file": "12_중앙선거관리위원회_정책_공약마당_공약이슈트리.txt",
-  "chars": 1176,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/promotion/initUPRPromotion.do;jsessionid=IIPauvqthNZ6laCRvMqAvLmDLSzKauIaccNK8MRnWds4sPZ3TLqvjGb0w29mpdYW.elecapp10_servlet_engine3?menuId=PROMO1",
-  "title": "중앙선거관리위원회 정책·공약마당 정책선거 바로알기",
-  "file": "13_중앙선거관리위원회_정책_공약마당_정책선거_바로알기.txt",
-  "chars": 642,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/survey/initUSASurveyPolicySigungu.do?keyinfo2=SURVEY9",
-  "title": "중앙선거관리위원회 정책·공약마당 공약이슈트리",
-  "file": "14_중앙선거관리위원회_정책_공약마당_공약이슈트리.txt",
-  "chars": 1973,
-  "fetched": "2026-09-25"
- },
- {
-  "url": "https://policy.nec.go.kr/plc/survey/initUSASurveyPolicyIssue.do?keyinfo2=SURVEY2",
-  "title": "중앙선거관리위원회 정책·공약마당 공약이슈트리",
-  "file": "15_중앙선거관리위원회_정책_공약마당_공약이슈트리.txt",
-  "chars": 162,
+  "url": "https://policy.nec.go.kr/plc/commiment/initUELCommiment.do?menuId=WINNR2",
+  "title": "중앙선거관리위원회 정책·공약마당 당선인공약",
+  "file": "02_중앙선거관리위원회_정책_공약마당_당선인공약.txt",
+  "chars": 406,
   "fetched": "2026-09-25"
  }
 ]

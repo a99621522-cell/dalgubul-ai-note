@@ -17,6 +17,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import yaml
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sites import load_all_companies  # noqa: E402
 
@@ -65,7 +67,7 @@ MAPPINGS: dict[str, dict] = {
     "15159608": {"kind": "support", "source": "대구경북첨단의료산업진흥재단 연구과제 현황(공공데이터포털)", "layer": "국비", "type": "R&D",
                  "name": ["연구개발기관(2020년 이전 명칭 과제수행기관명)", "연구개발기관", "과제수행기관명"], "year": ["기준년도", "기준연도"],
                  "program": ["사업명"], "title": ["과제명(국문)", "과제명"], "funder": ["부처명", "과제관리(전문)기관명"],
-                 "amount": ["정부투자연구비"], "amount_unit_guess": False, "amount_sample": True, "region": None, "min_year": 2018},
+                 "amount": ["정부투자연구비"], "amount_unit_guess": False, "region": None, "min_year": 2018},  # 원문 값 예 2300000000 → 원 단위
     "15020969": {"kind": "tag", "tag": "kmedi", "source": "대구경북첨단의료산업진흥재단 입주기업 현황(공공데이터포털)",
                  "name": ["기업 및 기관명", "기업명", "업체명"], "address": ["주소", "소재지"], "region": ("주소", "대구"),
                  "sector": ["업종", "분야"], "product": [], "founded": [], "default_district": "동구"},
@@ -133,6 +135,9 @@ def main(argv: list[str]) -> int:
     companies = load_all_companies()
     known = {norm_name(c["name"]) for c in companies}
     sme = ROOT / "scripts" / "data" / "daegu_sme_list.csv"  # 대구시 지역중소기업 명단(15129730): 기업 사전에 없어도 '대구 기업'
+    # 기관·대학·병원 이름 패턴(config/support_institutions.yml): 입주기업·참여기관 목록에 섞인 기관은 기업으로 넣지 않는다
+    _inst = yaml.safe_load((ROOT / "config" / "support_institutions.yml").read_text(encoding="utf-8"))
+    non_co = re.compile("|".join(map(re.escape, _inst["non_company_patterns"])))
     if sme.exists():
         known |= {norm_name(r.get("name", "")) for r in csv.DictReader(open(sme, encoding="utf-8"))}
     SUPPORT_IN.mkdir(parents=True, exist_ok=True)
@@ -173,7 +178,7 @@ def main(argv: list[str]) -> int:
                 names = [pick(r, m["name"])]
                 if m.get("also_names"):
                     names += split_names(pick(r, m["also_names"]))
-                names = [n for n in names if n]
+                names = [n for n in names if n and not non_co.search(n)]  # 기관·대학·병원 제외
                 if not m.get("region"):  # 지역 열이 없으면 기업 사전에 있는 이름만
                     names = [n for n in names if norm_name(n) in known]
                 if not names:
@@ -204,9 +209,11 @@ def main(argv: list[str]) -> int:
                         out.append({"기업명": n, "주소": "", "선정연도": year, "구분": m["layer"], "지원기관": funder, "사업명": program, "지원유형": m["type"],
                                     "금액": amount, "단위": unit, "출처": m["source"], "출처URL": PORTAL.format(id=pk), "기준일": as_of_from(f.stem)})
                 else:  # tag → import_extra 형식
+                    if re.search(r"연구기관|공공행정|보건 및 복지행정|종합병원|한방병원|고등교육기관|교육훈련|바이오 연구 인프라|정책연구", pick(r, m["sector"])):
+                        continue  # 업종 열로 보아 기관
                     addr = pick(r, m["address"])
-                    if not addr and m.get("default_district"):
-                        addr = f"대구광역시 {m['default_district']}"  # 단지 소재지(첨복단지=동구)만 알 때
+                    if m.get("default_district") and not re.search(r"대구(?:광역시)?\s*\S+?[구군]", addr):
+                        addr = f"대구광역시 {m['default_district']} " + re.sub(r"^대구(?:광역시)?\s*", "", addr)  # 단지 소재지(첨복단지=동구)로 구·군 보완
                     out.append({"회사명": names[0], "주소": addr, "업종": pick(r, m["sector"]), "사업내용": pick(r, m["product"]),
                                 "종사자수": "", "설립연도": pick(r, m["founded"]) if m.get("founded") else "", "태그": m["tag"],
                                 "출처": m["source"], "기준월": as_of_from(f.stem)})

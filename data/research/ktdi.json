@@ -4,42 +4,127 @@
  "group": "분야 기관",
  "home": "https://www.textile.or.kr",
  "fetched": "2026-09-25",
- "status": "항목 없음",
- "method": "",
- "items": [],
- "note": "",
- "sample_links": [
-  [
-   "고기능성/고감성 섬유",
-   "https://www.textile.or.kr/contents/site/selectPageView.do?menuId=134"
-  ],
-  [
-   "디지털/ICT 융합 섬유",
-   "https://www.textile.or.kr/contents/site/selectPageView.do?menuId=135"
-  ],
-  [
-   "보유기술(보유특허)",
-   "https://www.textile.or.kr/contents/bbs/selectBbsList.do?menuId=100&&tab=2&bbsinfo_tcd=8"
-  ],
-  [
-   "고기능성/고감성 섬유",
-   "https://www.textile.or.kr/contents/site/selectPageView.do?menuId=134"
-  ],
-  [
-   "디지털/ICT 융합 섬유",
-   "https://www.textile.or.kr/contents/site/selectPageView.do?menuId=135"
-  ],
-  [
-   "보유기술(보유특허)",
-   "https://www.textile.or.kr/contents/bbs/selectBbsList.do?menuId=100&&tab=2&bbsinfo_tcd=8"
-  ],
-  [
-   "이메일주소무단수집거부",
-   "https://www.textile.or.kr/contents/site/policy.do?policy_cd=POLICY02&menuId=79"
-  ]
+ "status": "OK",
+ "method": "첫 화면",
+ "items": [
+  {
+   "title": "「휴머노이드 로봇용 스마트 스킨 복합소재 기술개발사업」수요조사 2026-09-17",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=33&bbsinfo_tcd=1&selectedId=56085",
+   "date": "2026-09-17",
+   "summary": "",
+   "excerpt": "미래산업과 융합! 기업의 성장! 섬유기술로 이끈다! 공지사항"
+  },
+  {
+   "title": "2026 AI-3DCLO 기반 기업맞춤형 디지털 상품개발 및 컨설팅 시범운영 공고 2026-09-15",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=33&bbsinfo_tcd=1&selectedId=56082",
+   "date": "2026-09-15",
+   "summary": "",
+   "excerpt": "미래산업과 융합! 기업의 성장! 섬유기술로 이끈다! 공지사항"
+  },
+  {
+   "title": "2026 AI-3DCLO 기반 기업맞춤형 디지털 상품개발 및 컨설팅 시범운영 공고 2026-09-15",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=34&bbsinfo_tcd=2&selectedId=56081",
+   "date": "2026-09-15",
+   "summary": "",
+   "excerpt": "미래산업과 융합! 기업의 성장! 섬유기술로 이끈다! 사업공고"
+  },
+  {
+   "title": "2026 패션테크 기반 소재 스타일 비주얼 콘텐츠 제작 재직자 교육 참여자 모집 2026-09-11",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=33&bbsinfo_tcd=1&selectedId=56080",
+   "date": "2026-09-11",
+   "summary": "",
+   "excerpt": "미래산업과 융합! 기업의 성장! 섬유기술로 이끈다! 공지사항"
+  },
+  {
+   "title": "한국섬유개발연구원-육군 군수사령부, 업무협약 체결 2026-09-08",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=35&bbsinfo_tcd=3&selectedId=56079",
+   "date": "2026-09-08",
+   "summary": "",
+   "excerpt": "미래산업과 융합! 기업의 성장! 섬유기술로 이끈다! 보도자료"
+  },
+  {
+   "title": "한국섬유개발연구원·FITI시험연구원, 난연 피복 품질기준 표준화 공청회 개최 2026-09-03",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=35&bbsinfo_tcd=3&selectedId=56078",
+   "date": "2026-09-03",
+   "summary": "",
+   "excerpt": "미래산업과 융합! 기업의 성장! 섬유기술로 이끈다! 보도자료"
+  },
+  {
+   "title": "「2026 디지털봉제클러스터맵 구축 및 활용지원사업」 일감연계 샘플개발 지원 공고 2026-09-02",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=33&bbsinfo_tcd=1&selectedId=56077",
+   "date": "2026-09-02",
+   "summary": "",
+   "excerpt": "미래산업과 융합! 기업의 성장! 섬유기술로 이끈다! 공지사항"
+  },
+  {
+   "title": "「2026 디지털봉제클러스터맵 구축 및 활용지원사업」 일감연계 샘플개발 지원 공고 2026-09-02",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=34&bbsinfo_tcd=2&selectedId=56076",
+   "date": "2026-09-02",
+   "summary": "",
+   "excerpt": "미래산업과 융합! 기업의 성장! 섬유기술로 이끈다! 사업공고"
+  },
+  {
+   "title": "테크패션 기술지도(컨설팅) 기술지원 프로그램 (2026-2차 추가 모집 공고) 2026-08-27",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=33&bbsinfo_tcd=1&selectedId=56075",
+   "date": "2026-08-27",
+   "summary": ""
+  },
+  {
+   "title": "프리뷰 인 서울 2026 (Preview in Seoul 2026) 부스 현장 공개!",
+   "url": "https://www.youtube.com/watch?v=enI7alafxzE&pp=0gcJCRMMAYcqIYzv",
+   "date": "2026-08-26",
+   "summary": ""
+  },
+  {
+   "title": "대한민국 국방산업발전대전(InLEX KOREA 2026)",
+   "url": "https://www.youtube.com/shorts/1cCjzL_aMuk",
+   "date": "2026-08-26",
+   "summary": ""
+  },
+  {
+   "title": "KTDI 테크 포럼 - 섬유·패션 산업 그린 전환GX으로 글로벌 공급망 대응 2026-06-23",
+   "url": "https://www.youtube.com/watch?v=pyHgiFT_jOc",
+   "date": "2026-08-26",
+   "summary": ""
+  },
+  {
+   "title": "KTDI 테크 포럼 - Fashion AI Connect 2026 2026-04-02",
+   "url": "https://www.youtube.com/watch?v=aC9aLsiRYP4",
+   "date": "2026-08-26",
+   "summary": ""
+  },
+  {
+   "title": "AI·지속가능·첨단소재까지ㅣ PID 2026 KTDI 부스 현장 공개! 2026-03-10",
+   "url": "https://www.youtube.com/watch?v=Sl8CqksdbyI&t",
+   "date": "2026-08-26",
+   "summary": ""
+  },
+  {
+   "title": "한국섬유개발연구원, PIS 2026서 ‘섬유패션 AX 실행모델’ 선보인다 2026-08-18",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=35&bbsinfo_tcd=3&selectedId=56072",
+   "date": "2026-08-18",
+   "summary": ""
+  },
+  {
+   "title": "한국섬유개발연구원, 산업용 부직포 개발의 반복 실험과 시행착오 줄인다 2026-08-10",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=35&bbsinfo_tcd=3&selectedId=56070",
+   "date": "2026-08-10",
+   "summary": ""
+  },
+  {
+   "title": "[채용공고 제2026-04호] 2026년도 한국섬유개발연구원 상반기 채용 공고 2026-07-30",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=37&bbsinfo_tcd=5&selectedId=56067",
+   "date": "2026-07-30",
+   "summary": ""
+  },
+  {
+   "title": "한국섬유개발연구원-한국에너지공단, 섬유산업 에너지·온실가스 데이터 구축 협력 2026-07-23",
+   "url": "https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=35&bbsinfo_tcd=3&selectedId=56061",
+   "date": "2026-07-23",
+   "summary": ""
+  }
  ],
- "page_chars": 38002,
- "sample_dates": [],
+ "note": "",
  "areas": [
   "textile"
  ]

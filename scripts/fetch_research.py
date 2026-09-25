@@ -125,7 +125,7 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
     for t in soup(["script", "style", "nav", "header", "footer"]):
         t.decompose()
     pat = re.compile(item_pat) if item_pat else None
-    items, seen, undated_items = [], set(), []
+    items, seen, undated_items, undated_seen = [], set(), [], {}
     for a in soup.find_all("a", href=True):
         title = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
         href = urljoin(page_url, a["href"])
@@ -154,9 +154,12 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
                 break
             node = par
         d = d or parse_date(ctx)
-        if undated and not d and pat and href not in seen:
-            seen.add(href)
-            undated_items.append({"title": title[:160], "url": href, "date": "", "summary": ""})
+        if undated and not d and pat:
+            if title not in undated_seen:   # 같은 주소로 여러 글이 열리는 목록: 제목으로 구분
+                undated_seen[title] = len(undated_items)
+                undated_items.append({"title": title[:160], "url": href, "date": "", "summary": ""})
+            else:
+                undated_items[undated_seen[title]]["dup"] = True   # 두 번 이상 나오는 글자는 메뉴·빵부스러기
             continue
         if not d or d > FUTURE:   # 행사 예정일 같은 미래 날짜는 발간일이 아니다
             continue
@@ -168,8 +171,8 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
         items.append({"title": title[:160], "url": href, "date": d, "summary": ""})
     items.sort(key=lambda i: i["date"], reverse=True)
     note_latest(items)
-    if undated:   # 날짜가 아예 없는 목록(KOSI 등): 목록 순서대로 앞 10건만, 날짜 빈칸
-        return [i for i in undated_items[:10]]
+    if undated:   # 날짜가 아예 없는 목록(KOSI 등): 목록 순서대로 앞 10건만, 날짜 빈칸. 두 번 이상 나온 글자(메뉴)는 뺀다
+        return [i for i in undated_items if not i.pop("dup", False)][:10]
     return [i for i in items if recent(i["date"])][:MAX_ITEMS]
 
 
@@ -404,14 +407,14 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                     break
             if res["items"]:
                 break
-            if page != org.get("home") or not org.get("list"):
-                items = from_list(page, html, org.get("item_pattern"), (org["name"], org["name"].split("(")[0].strip()), bool(org.get("undated")))
-                method = "목록 페이지" + ("(날짜 없음, 목록 순서)" if org.get("undated") else "")
-                if not items and page != org.get("home"):
-                    items, method = from_rows(page, html, (org["name"], org["name"].split("(")[0].strip())), "목록 페이지(행)"
-                if items:
-                    res["items"], res["method"] = items, method
-                    break
+            is_home = page == org.get("home") and bool(org.get("list"))   # 목록 페이지가 다 실패했을 때만 첫 화면(소식·공지)으로
+            items = from_list(page, html, org.get("item_pattern"), (org["name"], org["name"].split("(")[0].strip()), bool(org.get("undated")))
+            method = ("첫 화면" if is_home else "목록 페이지") + ("(날짜 없음, 목록 순서)" if org.get("undated") else "")
+            if not items and not is_home:
+                items, method = from_rows(page, html, (org["name"], org["name"].split("(")[0].strip())), "목록 페이지(행)"
+            if items:
+                res["items"], res["method"] = items, method
+                break
     if not res["items"] and LATEST_SEEN["date"] and not res["note"]:
         res["note"] = f"최신 항목 {LATEST_SEEN['date']} (최근 {MAX_DAYS}일 밖)"
         res["status"] = "최근 없음"

@@ -1,0 +1,50 @@
+name: 참조 기관 발간물 목록 받기 (연구기관·기업지원기관·해외)
+
+# config/research_sources.yml 의 기관 발간물 목록(RSS 또는 목록 페이지)을 받아 data/research/ 에 커밋한다.
+# 정책제안 리포트 루틴이 근거로 읽는다. 이 세션 환경은 외부 사이트가 막혀 있어 Actions 가 대신 돈다.
+
+on:
+  schedule:
+    - cron: "0 18 * * 0"      # 매주 월요일 03:00 KST (리포트 루틴 04:53 전)
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["config/research_sources.yml", "scripts/fetch_research.py", ".github/workflows/research.yml"]
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "기관 key (쉼표 구분, 비우면 전부)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt playwright && python -m playwright install --with-deps chromium
+      - name: 받기
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          set +e
+          python3 scripts/fetch_research.py ${ONLY:+--only "$ONLY"}
+          echo "exit=$?"
+          cat data/research/summary.md
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add -A data/research
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 참조 기관 발간물 목록 $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"

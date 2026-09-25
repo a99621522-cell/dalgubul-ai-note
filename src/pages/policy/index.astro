@@ -2,37 +2,20 @@
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { getCollection } from 'astro:content';
-import { readCsv, fmtEok } from '../../lib/csv';
 /** /policy/ — 정책 부문: 격주 정책제안 리포트(승인·발행된 것만), 산업 정책 글, 국비 사업 ↔ 대구시 예산 매칭 표.
  *  리포트는 자동 초안(draft)으로 만들어지고 사람이 승인해야 여기에 나온다. 평가·비판 없음, 사실과 대구 접점만. */
 const all = (await getCollection('posts', p => !p.data.draft && p.data.category === 'policy')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const reports = all.filter(p => (p.data.tags ?? []).includes('정책제안'));
 const others = all.filter(p => !(p.data.tags ?? []).includes('정책제안'));
-const match = readCsv('scripts/data/match_daegu_national.csv').filter(r => r['판정'] === '확실');
-const thousand = (s: string) => Number((s || '0').replace(/,/g, ''));
-const eokFromThousand = (s: string) => `${(thousand(s) / 100000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원`;
 const ROTATION = ['미래모빌리티·자동차부품', '로봇·피지컬AI', '반도체·소부장', '전통제조 AX(섬유 포함)', '헬스케어·의료기기', 'AI·SW·창업', '기계', '자동차', '섬유', '뿌리산업'];
 ---
-<Base title="정책" description={`대구 산업 정책 부문: 산업별 정책제안 리포트 ${reports.length}건, 산업 정책 글 ${others.length}건, 국비 사업과 대구시 예산이 맞는 사업 ${match.length}건. 공개 자료 근거, 평가 없음.`} current="policy">
-  <div class="section-head"><h1>정책</h1><span class="meta">리포트 {reports.length}건 · 글 {others.length}건 · 국비–시비 매칭 {match.length}건</span></div>
-  <p class="lede">중앙부처 예산 사업과 대구시 예산, 기업 사전 숫자를 근거로 산업별 정책제안 리포트를 분야마다 매주 한 편씩(10개 분야, 주 10편) 만듭니다. 리포트는 자동 초안으로 만들어지고 운영자가 승인한 것만 여기에 나옵니다. 정책 평가·비판은 하지 않고, 사실과 대구 산업의 접점만 정리합니다.</p>
+<Base title="정책" description={`대구 산업 정책 부문: 산업별 정책제안 리포트 ${reports.length}건, 산업 정책 글 ${others.length}건. 공개 자료 근거, 평가 없음. 정책제안 리포트는 예산을 참조하지 않는다.`} current="policy">
+  <div class="section-head"><h1>정책</h1><span class="meta">리포트 {reports.length}건 · 글 {others.length}건</span></div>
+  <p class="lede">중앙부처·대구시 정책 발표, 연구기관 발간물, 기업 사전 숫자를 근거로 산업별 정책제안 리포트를 분야마다 매주 한 편씩(10개 분야, 주 10편) 만듭니다. 리포트는 자동 초안으로 만들어지고 운영자가 승인한 것만 여기에 나옵니다. 정책 평가·비판은 하지 않고, 사실과 대구 산업의 접점만 정리합니다. 정책제안서이므로 예산액·사업코드는 인용하지 않습니다.</p>
 
   <div class="section-head"><h2>산업별 정책제안 리포트</h2><span class="meta">10개 분야 · 분야마다 주 1편</span></div>
   <p class="meta">분야: {ROTATION.join(' · ')}. 월~금 2개 분야씩 초안이 만들어지고 승인된 것만 실립니다. 각 리포트는 결론 3개(대상·수단·규모) → 현재 위치(기업 사전) → 글로벌 변화 → 정부·타도시 → 연구기관 시각 → 제안(문제·근거·재원·대상 규모·지표) → 반론 → 출처 순서로 씁니다.</p>
   {reports.length ? <PostList posts={reports} /> : <p class="empty">승인·발행된 리포트가 아직 없습니다. 초안은 저장소 <code>src/content/posts/*-policy-*.md</code>에 있고 <code>python3 scripts/approve.py</code>로 발행합니다.</p>}
-
-  <div class="section-head"><h2>국비 사업 ↔ 대구시 예산 매칭</h2><a href="/programs/">사업·예산 전체</a></div>
-  <p class="meta">대구시 세출예산 세부사업과 이름·소관이 맞는 중앙부처 사업(자동 대조, '확실' 판정만). 시비는 천원 단위 원값을 억 원으로, 국비는 백만 원 단위 원값을 억 원으로 표시합니다.</p>
-  <div class="scroll-x"><table class="data-table match-table">
-    <thead><tr><th>대구시 실국 · 세부사업</th><th class="n">시 2026</th><th class="n">시 2025</th><th>부처 · 국비 사업</th><th class="n">국비 2026</th></tr></thead>
-    <tbody>{match.map(r => <tr>
-      <td>{r['대구시 실국']}<br /><strong>{r['대구시 세부사업']}</strong></td>
-      <td class="n">{eokFromThousand(r['대구시 2026(천원)'])}</td><td class="n">{eokFromThousand(r['대구시 2025(천원)'])}</td>
-      <td>{r['부처']}<br /><a href={`/programs/#p-${r['코드']}`}>{r['국비 사업']}</a> <span class="meta">{r['코드']}</span></td>
-      <td class="n">{fmtEok(r['국비 2026(백만원)']) ?? '—'}</td>
-    </tr>)}</tbody>
-  </table></div>
-  <p class="meta">출처: 대구광역시 2026년 세출예산 명세서(경제국·미래혁신성장실), 부처 사업설명자료·국가AI전략위 통합 설명자료. 대조는 이름 유사도 기반 자동 판정이라 원문 확인이 필요합니다.</p>
 
   <div class="section-head"><h2>산업 정책 글</h2><a href="/category/policy/">분류 페이지</a></div>
   <PostList posts={others} />
@@ -45,7 +28,6 @@ const ROTATION = ['미래모빌리티·자동차부품', '로봇·피지컬AI', 
     <li><a href="/supply-chain/">공급망</a> — 산업연관표 기반 빈 고리·유치 후보(조건 필터 결과)</li>
   </ul>
   <style>
-    .scroll-x .match-table { min-width: 720px; }
     ul.plain { padding-left: 1.2em; }
   </style>
 </Base>

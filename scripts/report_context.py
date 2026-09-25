@@ -195,6 +195,25 @@ def notices_block(area_key: str, keywords: list[str], weeks: int = 8) -> list[di
     return out
 
 
+def research_block(keywords: list[str], days: int = 70) -> list[dict]:
+    """data/research/*.json (scripts/fetch_research.py 가 받은 기관 발간물 목록)에서 키워드 일치 항목, 최신순."""
+    d = ROOT / "data" / "research"
+    if not d.exists() or not keywords:
+        return []
+    pat = kw_pattern(keywords)
+    out = []
+    for f in sorted(d.glob("*.json")):
+        try:
+            j = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            continue
+        for it in j.get("items", []):
+            if pat.search(it.get("title", "") + " " + it.get("summary", "")):
+                out.append({"org": j.get("name", f.stem), "group": j.get("group", ""), **it})
+    out.sort(key=lambda x: x.get("date") or "", reverse=True)
+    return out[:40]
+
+
 def support_block(company_ids: set[str], years: int = 3) -> dict:
     """분야 기업의 지원사업 수혜 이력(최근 n년): 기업 수·건수·기관별·사업별 상위."""
     if not SUPPORT.exists():
@@ -231,6 +250,7 @@ def main(argv: list[str]) -> int:
         "city_match": city_match_block(area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
         "notices_8w": notices_block(area["key"], area.get("keywords", [])),
+        "research": research_block(area.get("keywords", [])),
     }
     ctx["support_3y"] = support_block(set(ctx["companies"]["ids"]) if ctx["companies"] else set())
     if a.json:
@@ -254,12 +274,16 @@ def main(argv: list[str]) -> int:
             print(f"  ※ {cb['tag_data_note']}")
     else:
         print("\n[기업 사전] 연결 산업 그룹·태그·입지 유형 없음 → 사업 DB·예산·공고 숫자만 사용")
-    print(f"\n[사업 DB] 키워드 {area.get('keywords')} 일치 {len(ctx['programs'])}건 (2026 예산 순, 백만 원)")
+    print(f"\n[정부 사업] 키워드 {area.get('keywords')} 일치 {len(ctx['programs'])}건 — 사업명·부처·신규 여부만 인용한다. 예산액·사업코드·시비 매칭은 정책제안서에 쓰지 않는다(운영자 지시 2026-09-25)")
     for p in ctx["programs"][:15]:
-        print(f"  {p['ministry']} {p['code']} {p['name'][:40]} | 2025 {p['budget_2025']} → 2026 {p['budget_2026']} {p['new']} {p['scope']}")
-    print(f"\n[대구시 매칭] {len(ctx['city_match'])}건")
+        print(f"  {p['ministry']} | {p['name'][:44]} | {p['new'] or '계속'} {p['scope']}")
+    print(f"\n[대구시가 함께 추진하는 사업] {len(ctx['city_match'])}건 (사업명만)")
     for m in ctx["city_match"][:10]:
-        print(f"  {m.get('대구시 세부사업', '')[:36]} | 시 2026 {m.get('대구시 2026(천원)', '')}천원 | 국비 {m.get('코드', '')} {m.get('국비 2026(백만원)', m.get('산업부 2026(백만원)', ''))}백만원")
+        print(f"  {m.get('대구시 세부사업', '')[:40]} ↔ {m.get('국비 사업', '')[:40]}")
+    rs = ctx["research"]
+    print(f"\n[기관 발간물 최근 70일] 키워드 일치 {len(rs)}건 (data/research, scripts/fetch_research.py)" + ("" if rs else " — 없으면 워크플로 research.yml 실행 여부 확인"))
+    for r in rs[:15]:
+        print(f"  {r.get('date') or '날짜 없음'} [{r['org']}] {r['title'][:60]} {r['url']}")
     sb = ctx["support_3y"]
     print(f"\n[지원사업 수혜 이력 최근 3년] 기업 {sb['firms']:,}곳 · {sb['records']:,}건" + ("" if sb["records"] else " (support_history.csv 비어 있음 — scripts/data/support/ 에 목록 투입)"))
     for k, v in sb["by_funder"][:6]:

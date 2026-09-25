@@ -1,0 +1,42 @@
+{
+ "key": "nabo",
+ "name": "국회예산정책처(NABO)",
+ "group": "국내 연구",
+ "home": "https://www.nabo.go.kr",
+ "fetched": "2026-09-25",
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "2026 대한민국 지방재정 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9442&key=2509250001",
+   "date": "2026-09-29",
+   "summary": ""
+  },
+  {
+   "title": "[경제현안분석 제110호] 생성형 AI의 노동시장 영향 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9435&key=2509250001",
+   "date": "2026-09-18",
+   "summary": ""
+  },
+  {
+   "title": "[경제현안분석 제109호] 스테이블코인의 금융시장에 대한 영향과 시사점",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9429&key=2509250001",
+   "date": "2026-09-08",
+   "summary": ""
+  },
+  {
+   "title": "조세지출의 효율적 관리를 위한 개선 방안 연구",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9424&key=2509250001",
+   "date": "2026-08-31",
+   "summary": ""
+  },
+  {
+   "title": "해외 주요국의 주택 보유세제 비교 분석",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9400&key=2509250001",
+   "date": "2026-07-27",
+   "summary": ""
+  }
+ ],
+ "note": ""
+}

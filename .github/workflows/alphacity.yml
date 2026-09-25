@@ -2,14 +2,14 @@ name: 수성알파시티 기업현황 받기 (alphacity.or.kr)
 
 # 수성알파시티 홈페이지 입주현황 > 기업현황(32쪽)을 받아 scripts/data/extra/alphacity.csv 로 만들고 기업 DB(extra_companies.csv·company_tags.csv)에 반영해 커밋한다.
 # robots.txt 를 확인하고 쪽마다 1초 쉰다. 대표자 열은 읽지 않는다. 이 세션 환경은 외부 접속이 막혀 있어 이 워크플로가 대신 받는다.
+# 2026-09-25 확인: 미국 러너(ubuntu-latest)에서는 alphacity.or.kr 이 HTTP 403 을 준다(해외 차단). 그래서 자동 일정 없이 수동 실행만 두고,
+# 실제 갱신은 국내 PC 에서 `python3 scripts/import_alphacity.py --fetch --import` 를 돌리거나 저장한 페이지(.mht)를 scripts/data/alphacity/ 에 넣어 한다.
 
 on:
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
     paths: ["scripts/import_alphacity.py", ".github/workflows/alphacity.yml"]
   workflow_dispatch:
-  schedule:
-    - cron: "40 19 6 * *"      # 매월 6일 04:40 KST (팩토리온·국민연금 갱신 무렵)
 
 permissions:
   contents: write

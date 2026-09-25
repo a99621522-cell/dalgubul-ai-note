@@ -60,6 +60,17 @@ MAPPINGS: dict[str, dict] = {
                  "program": ["사업명", "보조사업명", "세부사업명"], "funder": ["소관부처", "부처명", "상위보조사업자", "중앙관서"],
                  "amount": ["지원금액", "보조금액", "교부액", "교부금액", "보조금", "국고보조금"], "amount_unit_guess": False,
                  "region": None, "min_year": 2018},
+    "15129730": {"kind": "namelist", "source": "대구광역시 지역중소기업 명단(공공데이터포털)", "name": ["기업명", "업체명"], "sector": ["업종명", "업종"],
+                 "out": "scripts/data/daegu_sme_list.csv"},
+    "15159608": {"kind": "support", "source": "대구경북첨단의료산업진흥재단 연구과제 현황(공공데이터포털)", "layer": "기관", "type": "R&D",
+                 "name": ["참여기업", "참여기관", "협력기관", "수요기업", "기업명", "위탁기관", "공동연구기관"], "year": ["연도", "년도", "사업년도", "과제연도", "기준연도", "시작일", "과제시작일"],
+                 "program": ["사업명", "과제유형", "구분"], "title": ["과제명"], "funder": "대구경북첨단의료산업진흥재단", "region": None, "min_year": 2018},
+    "15020969": {"kind": "tag", "tag": "kmedi", "source": "대구경북첨단의료산업진흥재단 입주기업 현황(공공데이터포털)",
+                 "name": ["기업명", "업체명", "입주기업명", "회사명"], "address": ["주소", "소재지", "입주위치", "위치"], "region": None,
+                 "sector": ["업종", "분야", "업종명"], "product": ["주요제품", "주생산품", "사업내용", "제품"], "founded": [], "default_district": "동구"},
+    "15052281": {"kind": "support", "source": "한국전자통신연구원 기술이전 목록(공공데이터포털)", "layer": "기관", "type": "기술이전",
+                 "name": ["기업명", "이전기업", "기술이전기업", "업체명", "이전업체", "계약업체"], "year": ["계약연도", "이전연도", "연도", "년도", "계약일", "계약일자"],
+                 "program": ["기술명", "이전기술명", "기술이전명", "과제명"], "funder": "한국전자통신연구원", "region": None, "min_year": 2018},
     "15084581": {"kind": "tag", "tag": "venture", "source": "중소벤처기업부 벤처기업명단(공공데이터포털)",
                  "name": ["기업명", "업체명", "회사명"], "address": ["주소", "간략주소", "소재지"], "region": ("지역", "대구"),
                  "sector": ["업종", "업종명", "산업분류"], "product": ["주요제품", "주생산품"], "founded": []},
@@ -123,6 +134,9 @@ def main(argv: list[str]) -> int:
     raw_dir = Path(argv[0]) if argv else RAW
     companies = load_all_companies()
     known = {norm_name(c["name"]) for c in companies}
+    sme = ROOT / "scripts" / "data" / "daegu_sme_list.csv"  # 대구시 지역중소기업 명단(15129730): 기업 사전에 없어도 '대구 기업'
+    if sme.exists():
+        known |= {norm_name(r.get("name", "")) for r in csv.DictReader(open(sme, encoding="utf-8"))}
     SUPPORT_IN.mkdir(parents=True, exist_ok=True)
     EXTRA_IN.mkdir(parents=True, exist_ok=True)
     summary = Counter()
@@ -140,6 +154,17 @@ def main(argv: list[str]) -> int:
             print(f"[{pk}] 열: {cols[:30]} ({len(rows):,}행) · {f.name}")
             if not m:
                 print(f"[{pk}] 매핑 없음 — MAPPINGS 에 추가 필요")
+                continue
+            if m["kind"] == "namelist":  # 이름·업종만 저장 (주소·대표자 없음)
+                target = ROOT / m["out"]
+                names = sorted({(pick(r, m["name"]), pick(r, m["sector"])) for r in rows if pick(r, m["name"])})
+                with open(target, "w", encoding="utf-8", newline="") as fh:
+                    w = csv.writer(fh)
+                    w.writerow(["name", "sector", "source", "as_of"])
+                    w.writerows([n, sec, m["source"], as_of_from(f.stem)] for n, sec in names)
+                known |= {norm_name(n) for n, _ in names}
+                summary[pk] += len(names)
+                print(f"[{pk}] namelist {len(names):,}곳 → {target.relative_to(ROOT)} (원본 {len(rows):,}행)")
                 continue
             out = []
             for r in rows:
@@ -162,6 +187,10 @@ def main(argv: list[str]) -> int:
                     program = pick(r, m["program"]) if not isinstance(m["program"], str) or m["program"] in r or any(k.startswith(m["program"]) for k in r) else m["program"]
                     if not program:
                         program = m["program"] if isinstance(m["program"], str) else ""
+                    if m.get("title"):
+                        ttl = pick(r, m["title"])
+                        if ttl:
+                            program = f"{program} · {ttl[:60]}" if program else ttl[:80]
                     if isinstance(m["funder"], list):
                         funder = pick(r, m["funder"]) or m["source"].split(" ")[0]
                     else:
@@ -172,7 +201,10 @@ def main(argv: list[str]) -> int:
                         out.append({"기업명": n, "주소": "", "선정연도": year, "구분": m["layer"], "지원기관": funder, "사업명": program, "지원유형": m["type"],
                                     "금액": amount, "단위": unit, "출처": m["source"], "출처URL": PORTAL.format(id=pk), "기준일": as_of_from(f.stem)})
                 else:  # tag → import_extra 형식
-                    out.append({"회사명": names[0], "주소": pick(r, m["address"]), "업종": pick(r, m["sector"]), "사업내용": pick(r, m["product"]),
+                    addr = pick(r, m["address"])
+                    if not addr and m.get("default_district"):
+                        addr = f"대구광역시 {m['default_district']}"  # 단지 소재지(첨복단지=동구)만 알 때
+                    out.append({"회사명": names[0], "주소": addr, "업종": pick(r, m["sector"]), "사업내용": pick(r, m["product"]),
                                 "종사자수": "", "설립연도": pick(r, m["founded"]) if m.get("founded") else "", "태그": m["tag"],
                                 "출처": m["source"], "기준월": as_of_from(f.stem)})
             if not out:

@@ -102,7 +102,7 @@ jobs:
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          for p in scripts/data/support scripts/data/extra scripts/data/kic_buildings.csv scripts/data/company_financials.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/support_history.csv data/nps data/stats data/institutions src/generated; do
+          for p in scripts/data/support scripts/data/extra scripts/data/daegu_sme_list.csv scripts/data/kic_buildings.csv scripts/data/company_financials.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/support_history.csv data/nps data/stats data/institutions src/generated; do
             [ -e "$p" ] && git add -A "$p"   # 없는 경로가 있어도(포털이 안 열려 파일이 없을 때) 커밋 단계가 죽지 않게
           done
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 공공데이터 파일 반영 $(date -u +%Y-%m-%d)"

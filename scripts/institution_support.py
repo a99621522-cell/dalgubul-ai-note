@@ -88,6 +88,8 @@ def main(argv: list[str]) -> int:
     alias_map = [(norm(a), i) for i in insts for a in i["aliases"]]
     non_co = re.compile("|".join(map(re.escape, cfg["non_company_patterns"])))
     known = {norm(c["name"]) for c in load_all_companies()}
+    sme = ROOT / "scripts" / "data" / "daegu_sme_list.csv"  # 대구시 지역중소기업 명단(15129730)
+    sme_names = {norm(r["name"]) for r in csv.DictReader(open(sme, encoding="utf-8"))} if sme.exists() else set()
 
     def inst_of(name: str):
         n = norm(name)
@@ -98,6 +100,8 @@ def main(argv: list[str]) -> int:
             return "기관·대학", "기관명 패턴"
         if norm(name) in known:
             return "대구 기업", "기업 사전 일치"
+        if norm(name) in sme_names:
+            return "대구 기업", "대구시 지역중소기업 명단 일치"
         if region and DAEGU_RE.search(region):
             return "대구 기업", "지역 열 '대구'"
         if region:

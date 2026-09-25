@@ -26,4 +26,4 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler pages deploy --branch main
+        run: npx wrangler pages deploy --branch "${GITHUB_REF_NAME}"   # main 이면 운영, 다른 브랜치면 미리보기 주소(<브랜치>.dalgubul-ai-note.pages.dev)

@@ -8,16 +8,16 @@
  "method": "rss(/insights/rss)",
  "items": [
   {
-   "title": "Democratized superintelligence is coming: The world needs to get ready",
-   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
-   "date": "2026-09-24",
-   "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
-  },
-  {
    "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
    "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
    "date": "2026-09-24",
    "summary": "Our new analysis reveals the odds of reaching $1 billion in sales—and how the paths to that milestone differ by category and ownership."
+  },
+  {
+   "title": "Democratized superintelligence is coming: The world needs to get ready",
+   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
+   "date": "2026-09-24",
+   "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
   },
   {
    "title": "The new growth mandate: A conversation with LinkedIn CMO Jessica Jensen",
@@ -26,16 +26,16 @@
    "summary": "At Cannes Lions 2026, LinkedIn CMO Jessica Jensen and McKinsey senior partner Dianne Esber discussed what it takes to turn AI from experimentation into a catalyst for growth."
   },
   {
-   "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
-   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
-   "date": "2026-09-23",
-   "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
-  },
-  {
    "title": "Harnessing AI to make mining safer",
    "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/harnessing-ai-to-make-mining-safer",
    "date": "2026-09-23",
    "summary": "AI could improve both safety and productivity by anticipating problems before they arise, detecting worker fatigue, and automating dangerous tasks."
+  },
+  {
+   "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
+   "date": "2026-09-23",
+   "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
   },
   {
    "title": "India’s new insurance track: The marathon becomes an AI-led decathlon",
@@ -83,19 +83,19 @@
    "title": "Value is the compass. Consumers set the pace.",
    "url": "https://www.mckinsey.com/cn/our-insights/our-insights/value-is-the-compass-consumers-set-the-pace",
    "date": "2026-09-22",
-   "summary": "In the 10th edition of McKinsey’s automotive consumer survey, China’s car buyers reveal where value is heading—and why the road ahead is exciting for consumers everywhere."
-  },
-  {
-   "title": "The economics of AI",
-   "url": "https://www.mckinsey.com/quarterly/the-five-fifty/five-fifty-the-economics-of-ai",
-   "date": "2026-09-21",
-   "summary": "AI is getting more expensive for companies. As rising token usage and workflow complexity make costs harder to predict, leaders need new ways to manage AI economics."
+   "summary": "The 10th edition of McKinsey’s automotive consumer survey: China’s car buyers reveal where value is heading—and why the road ahead is exciting for consumers everywhere."
   },
   {
    "title": "WIRED: The AI playbook top companies use",
    "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/wired-the-ai-playbook-top-companies-use",
    "date": "2026-09-21",
    "summary": "WIRED’s Katie Drummond talks with McKinsey’s Dan Swan about why capturing AI’s full potential requires companies to move beyond experimentation and fundamentally rewire their businesses."
+  },
+  {
+   "title": "The economics of AI",
+   "url": "https://www.mckinsey.com/quarterly/the-five-fifty/five-fifty-the-economics-of-ai",
+   "date": "2026-09-21",
+   "summary": "AI is getting more expensive for companies. As rising token usage and workflow complexity make costs harder to predict, leaders need new ways to manage AI economics."
   },
   {
    "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
@@ -248,5 +248,6 @@
    "summary": "A group of fast-growing industries is reshaping the competitive landscape. Their rise requires business leaders to rethink strategy in two important ways."
   }
  ],
- "note": ""
+ "note": "",
+ "areas": []
 }

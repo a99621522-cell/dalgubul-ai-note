@@ -7,5 +7,17 @@
  "status": "접속 실패",
  "method": "",
  "items": [],
- "note": ""
+ "note": "",
+ "areas": [
+  "mobility",
+  "robot-physical-ai",
+  "semiconductor",
+  "manufacturing-ax",
+  "healthcare",
+  "ai-sw-startup",
+  "machinery",
+  "automotive",
+  "textile",
+  "root"
+ ]
 }

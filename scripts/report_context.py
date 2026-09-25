@@ -195,23 +195,30 @@ def notices_block(area_key: str, keywords: list[str], weeks: int = 8) -> list[di
     return out
 
 
-def research_block(keywords: list[str], days: int = 70) -> list[dict]:
-    """data/research/*.json (scripts/fetch_research.py 가 받은 기관 발간물 목록)에서 키워드 일치 항목, 최신순."""
+def research_block(keywords: list[str], area_key: str = "", days: int = 70) -> list[dict]:
+    """data/research/*.json (scripts/fetch_research.py 가 받은 기관 발간물 목록)에서
+    (1) 이 분야를 담당하는 기관(config/research_sources.yml 의 areas 에 분야 key 가 있는 곳)의 항목 전부 — 분야 기관은 키워드와 무관하게 먼저,
+    (2) 그 밖 기관의 키워드 일치 항목. 각 항목의 excerpt(요지, 본문 앞 1,500자)가 있으면 함께 돌려준다. 최신순."""
     d = ROOT / "data" / "research"
-    if not d.exists() or not keywords:
+    if not d.exists():
         return []
-    pat = kw_pattern(keywords)
-    out = []
+    pat = kw_pattern(keywords) if keywords else None
+    first, rest = [], []
     for f in sorted(d.glob("*.json")):
         try:
             j = json.loads(f.read_text(encoding="utf-8"))
         except Exception:  # noqa: BLE001
             continue
+        is_area = bool(area_key) and area_key in (j.get("areas") or [])
         for it in j.get("items", []):
-            if pat.search(it.get("title", "") + " " + it.get("summary", "")):
-                out.append({"org": j.get("name", f.stem), "group": j.get("group", ""), **it})
-    out.sort(key=lambda x: x.get("date") or "", reverse=True)
-    return out[:40]
+            row = {"org": j.get("name", f.stem), "group": j.get("group", ""), "area_org": is_area, **it}
+            if is_area:
+                first.append(row)
+            elif pat and pat.search(it.get("title", "") + " " + it.get("summary", "") + " " + it.get("excerpt", "")):
+                rest.append(row)
+    first.sort(key=lambda x: x.get("date") or "", reverse=True)
+    rest.sort(key=lambda x: x.get("date") or "", reverse=True)
+    return (first[:25] + rest)[:50]
 
 
 def support_block(company_ids: set[str], years: int = 3) -> dict:
@@ -250,7 +257,7 @@ def main(argv: list[str]) -> int:
         "city_match": city_match_block(area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
         "notices_8w": notices_block(area["key"], area.get("keywords", [])),
-        "research": research_block(area.get("keywords", [])),
+        "research": research_block(area.get("keywords", []), area.get("key", "")),
     }
     ctx["support_3y"] = support_block(set(ctx["companies"]["ids"]) if ctx["companies"] else set())
     if a.json:
@@ -281,9 +288,12 @@ def main(argv: list[str]) -> int:
     for m in ctx["city_match"][:10]:
         print(f"  {m.get('대구시 세부사업', '')[:40]} ↔ {m.get('국비 사업', '')[:40]}")
     rs = ctx["research"]
-    print(f"\n[기관 발간물 최근 70일] 키워드 일치 {len(rs)}건 (data/research, scripts/fetch_research.py)" + ("" if rs else " — 없으면 워크플로 research.yml 실행 여부 확인"))
-    for r in rs[:15]:
-        print(f"  {r.get('date') or '날짜 없음'} [{r['org']}] {r['title'][:60]} {r['url']}")
+    na = sum(1 for r in rs if r.get("area_org"))
+    print(f"\n[기관 발간물 최근 70일] 분야 기관 {na}건 + 키워드 일치 {len(rs) - na}건 (data/research, scripts/fetch_research.py)" + ("" if rs else " — 없으면 워크플로 research.yml 실행 여부 확인"))
+    print("  ※ '요지'가 있는 항목은 본문 앞 1,500자를 `python3 scripts/fetch_research.py --query <낱말> --excerpt` 로 읽고 논지·수치·조건을 대구에 적용해 쓴다. 제목만 아는 항목은 인용하지 않는다.")
+    for r in rs[:25]:
+        tag = "분야기관" if r.get("area_org") else "키워드"
+        print(f"  {r.get('date') or '날짜 없음'} [{r['org']}·{tag}] {r['title'][:60]} {r['url']}" + (f"\n      요지: {r['excerpt'][:200]}…" if r.get("excerpt") else ""))
     sb = ctx["support_3y"]
     print(f"\n[지원사업 수혜 이력 최근 3년] 기업 {sb['firms']:,}곳 · {sb['records']:,}건" + ("" if sb["records"] else " (support_history.csv 비어 있음 — scripts/data/support/ 에 목록 투입)"))
     for k, v in sb["by_funder"][:6]:

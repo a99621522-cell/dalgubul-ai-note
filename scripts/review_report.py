@@ -7,6 +7,7 @@
   python3 scripts/review_report.py --json <file>      # 결과 JSON
 
 검사 항목(오류 = 발행 불가, 경고 = 고치는 게 좋음):
+  정책  7절은 2026-09-28 부터 정책 설계 형식(문제·분석·제안·추진·대안·근거·대상 규모·지표), 6절은 제목만 인용 금지·항목마다 대구 시사점
   구조  frontmatter(title "[정책제안] <분야>: …", category policy, tags 정책제안, summary, description, faq 3, sources ≥ MIN_SOURCES), 1~9절 제목,
         7절 제안 3개와 다섯 항목(문제·제안·근거·대상 규모·지표), 시/정부 건의/기업·기관 구분, 본문 길이
   숫자  숫자 없는 문단 없음(제목·표·인용 제외), 대상 규모에 '곳'
@@ -37,7 +38,9 @@ EVALUATIVE = r"미흡하|부족하다|실패했|잘못됐|잘못된|무능|비�
 STANCE = r"대구시는 .{0,20}(입장이다|밝혔다고 본다|것이다)|우리 시는|본 시는|시의 입장"
 RANKING = r"\d+위\b|최고의|최상위|추천한다|추천하는|유망 기업|우수 기업|선도 기업으로 꼽|가장 뛰어난"
 SECTIONS = ["1. 결론 먼저", "2. 지난 제안 점검", "3. 현재 위치", "4. 글로벌 변화", "5. 정부·타도시", "6. 연구기관", "7. 정책 제안", "8. 반론", "9. 출처"]
-ITEMS = ["문제", "제안", "근거", "대상 규모", "지표"]
+ITEMS = ["문제", "제안", "근거", "대상 규모", "지표"]                                   # 2026-09-27 까지 발행본
+ITEMS_V2 = ["문제", "분석", "제안", "추진", "대안", "근거", "대상 규모", "지표"]          # 2026-09-28 부터: 정책 설계 형식(운영자 지시 2026-09-26 — 스크랩이 아니라 정책)
+V2_FROM = date(2026, 9, 28)
 BUDGET = r"\d{4}-\d{3}|예산(?!정책처)|국비|시비|지방비|백만\s*원|사업설명자료|세출|기금운용|재원"   # 정책제안서에는 예산을 참조하지 않는다(운영자 지시 2026-09-25)
 
 
@@ -136,10 +139,29 @@ def review(path: Path) -> dict:
         props = re.findall(r"^###\s*제안\s*\d", sec7, re.M)
         if len(props) != 3:
             errors.append(f"7절 제안이 3개가 아님 ({len(props)})")
-        for it in ITEMS:
-            n = len(re.findall(rf"^\s*-\s*{it}\s*[:：]", sec7, re.M))
+        items_req = ITEMS_V2 if rdate >= V2_FROM else ITEMS
+        for it in items_req:
+            n = len(re.findall(rf"^\s*-\s*{it}(?:\s*비교|\s*체계|\s*주체)?\s*[:：]", sec7, re.M))
             if n < 3:
-                errors.append(f"7절 '{it}' 항목이 제안 3개에 다 없음 ({n})")
+                errors.append(f"7절 '{it}' 항목이 제안 3개에 다 없음 ({n})" + (" — 정책 설계 형식: 문제·분석·제안·추진·대안·근거·대상 규모·지표" if rdate >= V2_FROM else ""))
+        if rdate >= V2_FROM:
+            # 분석 항목에는 원인·대구 특이점이, 대안 항목에는 택하지 않은 수단이 있어야 한다(숫자 포함은 문단 검사가 본다)
+            for lab, need in (("분석", r"때문|원인|이유|구조|대구"), ("대안", r"대신|대안|비교|택하지|않은|보다")):
+                vals = re.findall(rf"^\s*-\s*{lab}(?:\s*비교)?\s*[:：](.*)$", sec7, re.M)
+                if any(not re.search(need, v) for v in vals):
+                    warns.append(f"7절 '{lab}' 항목이 형식만 있고 내용이 얕은 제안이 있음({need.split('|')[0]} 등 표현 없음)")
+    # 6절: 제목만 보고 인용 금지, 항목마다 대구 시사점
+    m6 = re.search(r"^##\s*6\. 연구기관(.*?)(?=^##\s*7\.|\Z)", body, re.S | re.M)
+    if m6:
+        sec6 = m6.group(1)
+        if re.search(r"제목 기준|본문 미확인|제목만", sec6):
+            (errors if rdate >= V2_FROM else warns).append("6절에 제목만 보고 인용한 항목('제목 기준'·'본문 미확인') — 요지·본문을 읽지 못한 자료는 인용하지 않는다")
+        bullets = [b for b in re.findall(r"^\s*-\s*\*\*(.*)$", sec6, re.M)]
+        lacking = [b[:30] for b in bullets if "대구" not in b]
+        if bullets and lacking and rdate >= V2_FROM:
+            errors.append(f"6절 기관 시각 {len(lacking)}건에 대구 시사점(대구 …) 문장이 없음: " + "; ".join(lacking[:3]))
+        elif lacking:
+            warns.append(f"6절 기관 시각 {len(lacking)}건에 대구 시사점 문장이 없음")
         for role in ("시", "정부 건의", "기업·기관|기관·기업|기업|기관"):
             if not re.search(rf"###\s*제안\s*\d\s*\(({role})\)", sec7):
                 errors.append(f"7절 제안 구분 '({role.split('|')[0]})' 없음 (시 / 정부 건의 / 기업·기관)")

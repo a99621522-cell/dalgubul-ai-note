@@ -1,11 +1,23 @@
 {
  "key": "dgi",
- "name": "대구정책연구원",
+ "name": "대구정책연구원(DPI)",
  "group": "국내 연구",
- "home": "https://www.dgi.re.kr",
+ "home": "https://www.dpi.re.kr",
  "fetched": "2026-09-25",
  "status": "접속 실패",
  "method": "",
  "items": [],
- "note": ""
+ "note": "",
+ "areas": [
+  "mobility",
+  "robot-physical-ai",
+  "semiconductor",
+  "manufacturing-ax",
+  "healthcare",
+  "ai-sw-startup",
+  "machinery",
+  "automotive",
+  "textile",
+  "root"
+ ]
 }

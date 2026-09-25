@@ -12,6 +12,8 @@
 
 사용: python3 scripts/import_extra.py            # extra/ 전부 반영
       python3 scripts/import_extra.py --dry-run  # 무엇이 새로 들어가고 무엇이 태그만 붙는지
+      python3 scripts/import_extra.py --replace-inputs        # 입력 파일에 든 출처의 기존 행(기업·태그)을 버리고 다시 넣는다(멱등)
+      python3 scripts/import_extra.py --replace-source 국민연금  # 이 낱말로 시작하는 출처만
 """
 from __future__ import annotations
 
@@ -97,13 +99,19 @@ def main(argv: list[str]) -> int:
     if not inputs:
         print(f"입력 없음: {INBOX.relative_to(ROOT)}/*.csv (형식은 그 안의 README.md)")
         return 1
+    # --replace-inputs: 입력 파일에 든 출처(source)와 같은 기존 행을 모두 버리고 다시 넣는다 (여러 출처를 한 번에, 멱등)
+    sources = {r["source"] for r in inputs} if "--replace-inputs" in argv else set()
+
+    def replaced(src: str) -> bool:
+        return bool(replace and src.startswith(replace)) or src in sources
+
     fo = list(csv.DictReader(open(COMPANIES, encoding="utf-8")))
     by_key = {(norm_name(r["name"]), r["district"]): r["id"] for r in fo}
     extra = list(csv.DictReader(open(EXTRA, encoding="utf-8"))) if EXTRA.exists() else []
-    if replace:
-        kept_ids = {r["id"]: r for r in extra if not r["source"].startswith(replace)}
+    if replace or sources:
+        kept_ids = {r["id"]: r for r in extra if not replaced(r["source"])}
         # 같은 출처로 다시 들어올 기업은 예전 id 를 그대로 쓴다(URL 유지)
-        old_ids = {(norm_name(r["name"]), r["district"]): r["id"] for r in extra if r["source"].startswith(replace)}
+        old_ids = {(norm_name(r["name"]), r["district"]): r["id"] for r in extra if replaced(r["source"])}
         extra = list(kept_ids.values())
     else:
         old_ids = {}
@@ -111,6 +119,9 @@ def main(argv: list[str]) -> int:
         by_key.setdefault((norm_name(r["name"]), r["district"]), r["id"])
     next_id = 1 + max([int(r["id"][1:]) for r in extra if r["id"].startswith("x")] + [int(i[1:]) for i in old_ids.values()], default=0)
     tag_rows = list(csv.DictReader(open(TAGS, encoding="utf-8"))) if TAGS.exists() else []
+    if replace or sources:  # 갈아끼우는 출처의 태그와, 사라진 기업의 태그는 버린다
+        live = {r["id"] for r in fo} | {r["id"] for r in extra} | set(old_ids.values())
+        tag_rows = [t for t in tag_rows if not replaced(t.get("source", "")) and t["id"] in live]
     have_tags = {(t["id"], t["tag"]) for t in tag_rows}
     outside = site_config()["outside_complex"]
 
@@ -155,6 +166,8 @@ def main(argv: list[str]) -> int:
         w = csv.DictWriter(f, fieldnames=COLS)
         w.writeheader()
         w.writerows({k: e.get(k, "") for k in COLS} for e in sorted(extra, key=lambda e: e["id"]))
+    ids_now = {r["id"] for r in fo} | {r["id"] for r in extra}
+    tag_rows = [t for t in tag_rows if t["id"] in ids_now]
     with open(TAGS, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["id", "tag", "source", "as_of"])
         w.writeheader()

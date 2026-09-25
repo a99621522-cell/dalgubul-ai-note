@@ -138,6 +138,8 @@ def main(argv: list[str]) -> int:
     # 기관·대학·병원 이름 패턴(config/support_institutions.yml): 입주기업·참여기관 목록에 섞인 기관은 기업으로 넣지 않는다
     _inst = yaml.safe_load((ROOT / "config" / "support_institutions.yml").read_text(encoding="utf-8"))
     non_co = re.compile("|".join(map(re.escape, _inst["non_company_patterns"])))
+    _corp = re.compile(r"\(주\)|㈜|\(유\)|주식회사|유한회사|유한책임회사|합자회사|농업회사법인")
+    is_inst = lambda n: bool(non_co.search(n)) and not _corp.search(n)  # '주식회사 ○○연구소' 는 기업
     if sme.exists():
         known |= {norm_name(r.get("name", "")) for r in csv.DictReader(open(sme, encoding="utf-8"))}
     SUPPORT_IN.mkdir(parents=True, exist_ok=True)
@@ -178,7 +180,7 @@ def main(argv: list[str]) -> int:
                 names = [pick(r, m["name"])]
                 if m.get("also_names"):
                     names += split_names(pick(r, m["also_names"]))
-                names = [n for n in names if n and not non_co.search(n)]  # 기관·대학·병원 제외
+                names = [n for n in names if n and not is_inst(n)]  # 기관·대학·병원 제외(상호 접미어가 있으면 기업)
                 if not m.get("region"):  # 지역 열이 없으면 기업 사전에 있는 이름만
                     names = [n for n in names if norm_name(n) in known]
                 if not names:

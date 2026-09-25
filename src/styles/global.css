@@ -135,3 +135,8 @@ article.post .body figcaption { font-size: var(--small); color: var(--muted); ma
 .site-foot a { display: inline-flex; align-items: center; min-height: var(--touch); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* /support/ 지원받은 기업 표 */
+.support-table { min-width: 760px; }
+.support-table td:nth-child(6) { max-width: 520px; }
+.support-table td:nth-child(6) div + div { margin-top: 2px; }

@@ -95,8 +95,10 @@ def main(argv: list[str]) -> int:
         n = norm(name)
         return next((i for a, i in alias_map if a and a in n), None)
 
+    corp = re.compile(r"\(주\)|㈜|\(유\)|주식회사|유한회사|유한책임회사|합자회사|농업회사법인")
+
     def kind_of(name: str, region: str) -> tuple[str, str]:
-        if inst_of(name) or non_co.search(name):
+        if inst_of(name) or (non_co.search(name) and not corp.search(name)):  # '주식회사 ○○연구소' 는 기업
             return "기관·대학", "기관명 패턴"
         if norm(name) in known:
             return "대구 기업", "기업 사전 일치"

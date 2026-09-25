@@ -26,14 +26,15 @@ https://www.factoryon.go.kr/bbs/frtblRecsroomBbsList.do 에서 최신 월 "전�
 "산단공관할단지내_입주업체리스트" 첨부를 내려받아 python3 scripts/import_factoryon.py <전국파일> <산단공파일> 을 실행한다.
 변경 요약(신규 기업 수, 사라진 기업 수)을 커밋 메시지에 적고 푸시한다.
 
-## 공약 분야별 정책제안 리포트 — 매주 월요일 05:00
+## 산업별 정책제안 리포트 — 매주 월요일 05:00 (Claude 루틴 "주간 산업별 정책제안 리포트")
+분야 10개가 매주 하나씩 돈다(10주에 한 바퀴): 6대 산업(미래모빌리티·자동차부품 → 로봇·피지컬AI → 반도체·소부장 → 전통제조 AX → 헬스케어·의료기기 → AI·SW·창업) → 기계 → 자동차 → 섬유 → 뿌리산업. 이번 주 분야 = config/pledge_areas.yml areas[(ISO 주 − week_offset) mod 10]. 같은 기업군을 두 분야가 나눠 보는 경우(자동차 ↔ 미래모빌리티, 기계 ↔ 로봇·뿌리, 섬유 ↔ 전통제조 AX)는 각 분야의 `focus` 관점으로 쓴다. 지난 회차 같은 분야 = 10주 전.
 CLAUDE.md 원칙 준수(정책 평가·비판, 기관 입장으로 읽힐 표현, 비공개 자료 인용 금지. 공약 이행 여부를 점수화·평가하지 않고 발표·예산·공고 사실만 적는다).
 1. `python3 scripts/report_context.py` 를 실행해 이번 주 분야(config/pledge_areas.yml, ISO 주 번호로 순환)와 코드로 센 숫자를 받는다.
    기업 사전(연결 산업 그룹의 기업 수·고용·규모·단지·입지 유형), 사업 DB(키워드 일치 국비 사업·2026 예산·신규), 대구시 매칭,
    지원사업 수혜 이력(최근 3년 기업 수·기관별·사업별), 최근 8주 공고 데이터(data/notices, 타 기관 동향), 최근 8주 글이 나온다.
    분야에 산업 그룹이 없으면 태그·입지 유형(창업: 설립 7년 이내·창경센터 보육·벤처 태그)으로 세고, 그것도 없으면 사업 DB·예산·공고 숫자만 쓴다.
 2. config/pledge_areas.yml 의 pledges(공약 항목 원문)와 pledge_of·source_url 을 읽는다. 비어 있으면 리포트 첫머리에 "공약 항목 미입력"이라 적고 분야 이름만으로 쓴다.
-3. docs/strategy/ 의 전략 문서와 지난 회차 같은 분야 리포트(src/content/posts/*-pledge-<key>.md)를 읽고 "그때 제안 중 무엇이 진행됐나"를 사실만으로 첫 절에 쓴다(첫 회차는 생략).
+3. docs/strategy/ 의 전략 문서와 지난 회차 같은 분야 리포트(src/content/posts/*-policy-<key>.md)를 읽고 "그때 제안 중 무엇이 진행됐나"를 사실만으로 첫 절에 쓴다(첫 회차는 생략).
 
 근거 수집(공개 자료만, 최근 8주): 글로벌(Reuters·Bloomberg·FT, 대표기업 IR, Gartner·McKinsey·BCG·Deloitte·IDC, SEMI·SIA·IFR·IEA, 해외 정부 발표) ·
 국내 연구(KEIT·KIAT·IITP·NIA·KISTEP·KIET·KDB·한국은행 지역경제보고서·국회예산정책처·대구정책연구원) · 증권사 공개 리포트 ·
@@ -50,6 +51,6 @@ tags: [정책제안, <분야>], summary, description(핵심 문장), faq 3개(�
 작성 규칙: 모든 문단에 숫자 하나 이상, 모든 숫자에 출처. "급성장·위기·획기적" 등 형용사 금지. 원문 수치·통화 그대로, 환산·추정 금지, 확인 안 되면 "미확인".
 전략 문서와 어긋나는 제안이면 이유 명시(전략 문서 갱신 제안). 기업 사전 필터 결과는 report_context.py 값과 조건을 그대로 적는다.
 
-저장: src/content/posts/YYYY-MM-DD-pledge-<key>.md (draft:true), docs/strategy/proposals/<key>-YYYY-MM-DD.md 에 7절만.
+저장: src/content/posts/YYYY-MM-DD-policy-<key>.md (draft:true), docs/strategy/proposals/<key>-YYYY-MM-DD.md 에 7절만.
 커밋 "report: 정책제안 <분야> YYYY-MM-DD" 후 푸시. 완료 후 제목·제안 3줄·출처 수 출력.
-분야 9개(config/pledge_areas.yml): mobility / robot-physical-ai / semiconductor / textile / machinery-root / manufacturing-ax / healthcare / ai-sw / startup
+분야 10개(config/pledge_areas.yml 순서): mobility / robot-physical-ai / semiconductor / manufacturing-ax / healthcare / ai-sw-startup / machinery / automotive / textile / root

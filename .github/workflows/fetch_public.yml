@@ -67,6 +67,10 @@ jobs:
           for f in data/raw/15083277/*.csv; do [ -f "$f" ] && python3 scripts/collect_nps.py --file "$f"; done
           # 팩토리온에 없는 대구 사업장 → 산단 외 기업 (임시 투입 파일은 반영 후 지운다)
           python3 scripts/nps_to_extra.py && python3 scripts/import_extra.py --replace-source '국민연금' && rm -f scripts/data/extra/nps_*.csv
+          # 지원받은 기업·벤처 등 명단 → 지원 이력(support_history.csv)·태그(company_tags.csv)
+          python3 scripts/import_public_support.py data/raw
+          ls scripts/data/support/portal_*.csv >/dev/null 2>&1 && python3 scripts/import_support.py --replace-source '공공데이터포털' ; rm -f scripts/data/support/portal_*.csv
+          ls scripts/data/extra/portal_*.csv >/dev/null 2>&1 && python3 scripts/import_extra.py --replace-source '중소벤처기업부' ; rm -f scripts/data/extra/portal_*.csv
           python3 scripts/sites.py
           python3 scripts/build_stats.py --backfill
           python3 scripts/render_charts.py
@@ -84,6 +88,6 @@ jobs:
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add scripts/data/kic_buildings.csv scripts/data/company_financials.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv data/nps data/stats src/generated
+          git add scripts/data/kic_buildings.csv scripts/data/company_financials.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/support_history.csv data/nps data/stats src/generated
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 공공데이터 파일 반영 $(date -u +%Y-%m-%d)"
           git push

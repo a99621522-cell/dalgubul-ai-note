@@ -77,8 +77,8 @@ def try_download(pk: str, call: list[str], sess: requests.Session, atch_page: li
         attempts.append(("POST", DL_NEW, {**base, "publicDataSn": nums[1] if len(nums) > 1 else "3", "fileNm": ""}))
         attempts.append(("GET", "https://www.data.go.kr/tcs/dss/selectFileDataDownload.do", base))
     if atch:
-        attempts.append(("GET", DL_OLD, {"atchFileId": atch, "fileDetailSn": sn}))
-        attempts.append(("GET", "https://www.data.go.kr/cmm/cmm/fileDownload.do", {"atchFileId": atch, "fileDetailSn": "1"}))
+        for s_ in dict.fromkeys([sn, "1", "2", "3", "4"]):
+            attempts.append(("GET", DL_OLD, {"atchFileId": atch, "fileDetailSn": s_}))
     for method, url, params in attempts:
         try:
             r = sess.request(method, url, params=params if method == "GET" else None, data=params if method == "POST" else None,
@@ -87,6 +87,12 @@ def try_download(pk: str, call: list[str], sess: requests.Session, atch_page: li
             cd = r.headers.get("Content-Disposition", "")
             print(f"  {method} {url.split('/')[-1]} {params} → HTTP {r.status_code} · {ct[:40]} · {cd[:80]} · final {r.url[:100]}")
             if r.status_code == 200 and "text/html" not in ct:
+                name = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
+                fname = requests.utils.unquote(name.group(1)) if name else ""
+                if re.search(r"\.(png|jpe?g|gif|pdf|hwp|hwpx|docx?|pptx?)$", fname, re.I):
+                    print(f"    표 파일이 아님({fname[-40:]}) — 다음 파일 번호 시도")
+                    r.close()
+                    continue
                 return r
             if "text/html" in ct:
                 print("    " + html_text(r))

@@ -80,6 +80,9 @@ def main(argv: list[str]) -> int:
     for c in companies:
         by_name.setdefault(norm_name(c["name"]), []).append(c["id"])
     existing = list(csv.DictReader(open(OUT, encoding="utf-8"))) if OUT.exists() else []
+    replace = argv[argv.index("--replace-source") + 1] if "--replace-source" in argv else None
+    if replace:  # 이 낱말이 출처에 든 기존 행은 버리고 다시 넣는다(재실행 멱등)
+        existing = [r for r in existing if replace not in (r.get("source") or "")]
     seen = {(r["name"], r["year"], r["program"]) for r in existing}
 
     added, matched, dup = 0, 0, 0

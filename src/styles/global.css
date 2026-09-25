@@ -137,6 +137,7 @@ article.post .body figcaption { font-size: var(--small); color: var(--muted); ma
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
 /* /support/ 지원받은 기업 표 */
-.support-table { min-width: 760px; }
+.scroll-x .support-table { min-width: 760px; }
 .support-table td:nth-child(6) { max-width: 520px; }
 .support-table td:nth-child(6) div + div { margin-top: 2px; }
+.more-row { margin: var(--s2) 0; }

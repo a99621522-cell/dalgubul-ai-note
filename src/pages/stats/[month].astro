@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import Delta from '../../components/Delta.astro';
+import { statMonths, monthly, monthLabel, fmt } from '../../lib/stats';
+/** /stats/<YYYY-MM>/ — 그 달의 통계표 전체(산업·입지·구군·단지·태그). 월보의 근거 표. */
+export async function getStaticPaths() {
+  return statMonths().map(ym => ({ params: { month: `${ym.slice(0, 4)}-${ym.slice(4)}` }, props: { ym } }));
+}
+const { ym } = Astro.props;
+const m = monthly(ym)!;
+const label = monthLabel(m.month);
+const months = statMonths();
+const blocks: [string, Record<string, any>][] = [['산업 그룹', m.by_industry], ['입지 유형', m.by_site], ['구·군', m.by_district], ['단지', m.by_complex], ['태그', m.by_tag]];
+---
+<Base title={`${label} 통계표`} description={`${label} 대구 기업·고용 통계표: 산업 그룹·입지 유형·구군·단지·태그별 기업 수, 고용 인원, 취득·상실, 전월·전년 대비.`} current="dashboard">
+  <p class="meta"><a href="/dashboard/">현황판</a> › 통계표</p>
+  <div class="section-head"><h1>{label} 통계표</h1><span class="meta">{m.basis_label} · 생성 {m.generated}</span></div>
+  <p class="meta">다른 달: {months.map(x => x === ym ? <strong>{monthLabel(x)}</strong> : <a href={`/stats/${x.slice(0, 4)}-${x.slice(4)}/`}>{monthLabel(x)}</a>).reduce((a: any[], b) => a.length ? [...a, ' · ', b] : [b], [])}</p>
+  <div class="scroll-x"><table class="data-table">
+    <thead><tr><th>전체</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">집계 대상</th><th class="n">취득</th><th class="n">상실</th><th class="n">전월 대비</th><th class="n">전년 대비</th></tr></thead>
+    <tbody><tr><th scope="row">대구 전체</th><td class="n">{fmt(m.total.firms)}</td><td class="n">{fmt(m.total.employment)}</td><td class="n">{fmt(m.total.covered)}</td><td class="n">{fmt(m.total.nps_gain)}</td><td class="n">{fmt(m.total.nps_loss)}</td><td class="n"><Delta d={m.total.mom?.employment ?? null} /></td><td class="n"><Delta d={m.total.yoy?.employment ?? null} /></td></tr></tbody>
+  </table></div>
+  {blocks.map(([title, rows]) => (
+    <section>
+      <div class="section-head"><h2>{title}별</h2></div>
+      <div class="scroll-x"><table class="data-table">
+        <thead><tr><th>{title}</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">집계 대상</th><th class="n">1~9</th><th class="n">10~49</th><th class="n">50~299</th><th class="n">300+</th><th class="n">취득</th><th class="n">상실</th><th class="n">전월 대비</th></tr></thead>
+        <tbody>{Object.entries(rows).map(([k, v]: [string, any]) => <tr><th scope="row">{k}</th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n">{fmt(v.covered)}</td><td class="n">{fmt(v.size_bands?.['1~9'])}</td><td class="n">{fmt(v.size_bands?.['10~49'])}</td><td class="n">{fmt(v.size_bands?.['50~299'])}</td><td class="n">{fmt(v.size_bands?.['300+'])}</td><td class="n">{fmt(v.nps_gain)}</td><td class="n">{fmt(v.nps_loss)}</td><td class="n"><Delta d={v.mom?.employment ?? null} /></td></tr>)}</tbody>
+      </table></div>
+    </section>
+  ))}
+  <p class="meta">규모 구간은 집계 대상 기업의 고용 인원 기준. 값이 없는 지표는 '자료 없음'. 원자료: data/stats/monthly/{ym}.json</p>
+</Base>

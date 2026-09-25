@@ -19,6 +19,7 @@ export function readCsv(rel: string): Record<string, string>[] {
   return rows.filter(r => r.length > 1).map(r => Object.fromEntries(head.map((h, i) => [h, r[i] ?? ''])));
 }
 import { siteType, isStartup } from './sites';
+import { classify } from './industry';
 export type Company = { id: string; name: string; complex: string; district: string; eupmyeon: string; sector_code: string; sector: string; sector_group: string; product: string; workers_band: string; workers: string; reg_type: string; first_registered: string; mfg_area_band: string; address: string; sites: string; source: string; as_of: string;
   founded: string; site_type: string; tags: string[] };
 export const shortComplex = (s: string) => s.replace('일반산업단지','산단').replace('첨단산업단지','산단').replace('산업단지','산단').replace('지방산단','산단');
@@ -53,7 +54,7 @@ export const companies = () => {
     const t = new Set(tags.get(r.id) ?? []);
     for (const k of (r.tags ?? '').split(';')) if (k.trim()) t.add(k.trim());
     if (r.founded && isStartup(r.founded, r.as_of)) t.add('startup');
-    return { ...r, founded: r.founded ?? '', complex: r.complex || '개별입지', site_type: siteType(r.complex, r.address), tags: [...t] } as Company;
+    return { ...r, founded: r.founded ?? '', complex: r.complex || '개별입지', sector_group: classify(r.sector_code, r.sector, r.product), site_type: siteType(r.complex, r.address), tags: [...t] } as Company;  // 산업 그룹은 항상 config/industry_groups.yml 규칙(11개)으로
   });
   _companies = all.filter(c => !looksLikePersonName(c.name));
   console.log(`[companies] 팩토리온 ${fo.length} + 산단 외 ${extra.length}, 개인 성명으로 보이는 공장명 ${all.length - _companies.length}건은 표시에서 제외 → ${_companies.length}`);

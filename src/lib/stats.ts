@@ -8,6 +8,7 @@ export type Metrics = {
   size_bands: Record<'1~9' | '10~49' | '50~299' | '300+', number>;
   nps_gain: number | null; nps_loss: number | null; new_firms: number | null; closed_firms: number | null;
   dart_firms: number | null; dart_revenue: number | null; projects_12m: number | null;
+  support_3y?: { firms: number; records: number; amount_won: number | null; amount_known_records: number; by_layer: Record<string, number> };
   mom: { firms: Delta; employment: Delta } | null; yoy: { firms: Delta; employment: Delta } | null;
 };
 export type Monthly = {

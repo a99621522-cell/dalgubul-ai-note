@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import IndustryTable from '../../components/IndustryTable.astro';
+import Chart from '../../components/Chart.astro';
+import { monthly, monthLabel, fmt } from '../../lib/stats';
+import { industryGroups } from '../../lib/industry';
+/** /industry/ — 산업 그룹 11개 목록: 표(기업 수·고용·증감) → 막대 그래프 → 그룹별 카드(링크). 순위·평가 없음, 그룹 순서는 규칙 파일 순서. */
+const m = monthly();
+const ym = m ? monthLabel(m.month) : '';
+const groups = industryGroups().filter(g => m?.by_industry[g.name]);
+const description = m ? `대구 산업 그룹 11개의 기업 수·고용 인원(${ym}, ${m.basis_label})과 24개월 추이. 그룹별 단지 분포·지원 이력·기업 목록으로 이어집니다.` : '대구 산업별 기업·고용 통계';
+---
+<Base title="산업별 현황" description={description} current="industry">
+  <div class="section-head"><h1>산업별 현황</h1><span class="meta">{ym} 기준 · {m?.basis_label}</span></div>
+  <p class="lede">표준산업분류(KSIC) 코드와 생산품 키워드로 11개 그룹으로 나눈 대구 기업 {fmt(m?.total.firms ?? null)}곳의 현황입니다. 고용 인원은 {m?.basis_label ?? '국민연금 가입자수'}이며 값이 있는 기업만 집계합니다. 순위나 평가는 하지 않습니다.</p>
+  {m ? (
+    <>
+      <IndustryTable />
+      <p class="meta">그룹 규칙은 <code>config/industry_groups.yml</code> 하나로 관리하며, 산업명을 누르면 그룹별 페이지로 갑니다.</p>
+      <section aria-labelledby="h-bar">
+        <div class="section-head"><h2 id="h-bar">그룹별 고용·기업 수</h2><a href="/industry/compare/">추이 비교</a></div>
+        <Chart kind="industry-bar" name="employment" caption={`산업 그룹별 고용 인원, ${ym}`} />
+        <Chart kind="industry-bar" name="firms" caption={`산업 그룹별 기업 수, ${ym}`} />
+      </section>
+      <section aria-labelledby="h-cards">
+        <div class="section-head"><h2 id="h-cards">그룹별 페이지</h2></div>
+        <ul class="ind-cards">
+          {groups.map(g => { const s = m.by_industry[g.name]; return (
+            <li><a href={`/industry/${g.key}/`}>
+              <span class="name">{g.name}</span>
+              <span class="nums">{fmt(s.firms)}곳 · {fmt(s.employment)}명</span>
+              <span class="meta">집계 대상 {fmt(s.covered)}곳{s.support_3y ? ` · 지원 이력(3년) ${fmt(s.support_3y.firms)}곳` : ''}</span>
+            </a></li>
+          ); })}
+        </ul>
+      </section>
+    </>
+  ) : <p class="empty">통계가 아직 없습니다. scripts/build_stats.py 를 먼저 실행하세요.</p>}
+</Base>
+<style>
+  .ind-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s2); }
+  .ind-cards a { display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2); text-decoration: none; color: var(--ink); min-height: var(--touch); }
+  .ind-cards a:hover, .ind-cards a:focus-visible { border-color: var(--primary); }
+  .ind-cards .name { font-weight: 700; color: var(--primary); }
+  .ind-cards .nums { font-variant-numeric: tabular-nums; }
+</style>

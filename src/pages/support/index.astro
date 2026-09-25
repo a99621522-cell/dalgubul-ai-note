@@ -20,6 +20,8 @@ const list = [...firms.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko
 const thisYear = new Date().getFullYear();
 const funders = [...new Set(rows.map(r => r.funder).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko'));
 const years = [...new Set(rows.map(r => r.year).filter(Boolean))].sort().reverse();
+const groupsList = [...new Set(list.map(f => f.group).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko'));
+const PAGE = 200;
 const sources = [...new Set(rows.map(r => r.source))];
 const withAmount = rows.filter(r => r.amount).length;
 const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.length) return ''; const units = new Set(a.map(r => r.amount_unit || '원')); if (units.size > 1) return '단위 혼재'; return `${a.reduce((s, r) => s + Number(r.amount), 0).toLocaleString('ko-KR')} ${[...units][0]}`; };
@@ -30,6 +32,7 @@ const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.le
   <div class="tools">
     <input id="q" type="search" placeholder="기업명·사업명 검색" aria-label="검색" />
     <select id="funder" aria-label="지원기관"><option value="">지원기관 전체</option>{funders.map(f => <option value={f}>{f}</option>)}</select>
+    <select id="group" aria-label="산업"><option value="">산업 전체</option>{groupsList.map(x => <option value={x}>{x}</option>)}</select>
     <select id="year" aria-label="연도"><option value="">연도 전체</option><option value="recent">최근 3년</option>{years.map(y => <option value={y}>{y}</option>)}</select>
     <span class="meta" id="count"></span>
   </div>
@@ -37,7 +40,7 @@ const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.le
     <thead><tr><th>기업</th><th>구·군</th><th>산업</th><th class="n">이력</th><th>연도</th><th>사업명 · 지원기관</th><th class="n">금액(원문 합)</th></tr></thead>
     <tbody>{list.map(f => {
       const recs = [...f.recs].sort((a, b) => b.year.localeCompare(a.year));
-      return (<tr data-name={f.name} data-funders={[...new Set(recs.map(r => r.funder))].join('|')} data-years={[...new Set(recs.map(r => r.year))].join('|')} data-text={recs.map(r => r.program).join(' ')}>
+      return (<tr data-name={f.name} data-group={f.group} data-funders={[...new Set(recs.map(r => r.funder))].join('|')} data-years={[...new Set(recs.map(r => r.year))].join('|')} data-text={recs.map(r => r.program).join(' ')}>
         <td>{f.id ? <a href={`/companies/${f.id}/`}>{f.name}</a> : <span>{f.name}<span class="meta"> (명단만)</span></span>}</td>
         <td>{f.district || '—'}</td><td>{f.group || '—'}</td><td class="n">{recs.length}</td>
         <td>{recs.at(-1)!.year !== recs[0].year ? `${recs.at(-1)!.year}~${recs[0].year}` : recs[0].year}</td>
@@ -46,23 +49,30 @@ const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.le
       </tr>);
     })}</tbody>
   </table></div>
+  <p class="more-row"><button type="button" class="btn" id="more" hidden>다음 {PAGE}곳 더 보기</button></p>
   <p class="meta">출처: {sources.join(' · ')}. 기업 사전에 없는 기업은 이름만 표시하며(명단만), 같은 이름의 다른 기업일 수 있으므로 원문 링크는 기업 페이지의 이력 표에서 확인합니다.</p>
   <script is:inline>
-    const q = document.getElementById('q'), fu = document.getElementById('funder'), yr = document.getElementById('year'), cnt = document.getElementById('count');
+    const q = document.getElementById('q'), fu = document.getElementById('funder'), gr = document.getElementById('group'), yr = document.getElementById('year'), cnt = document.getElementById('count'), more = document.getElementById('more');
     const trs = [...document.querySelectorAll('#tbl tbody tr')];
-    const RECENT = new Date().getFullYear() - 2;
-    function apply() {
-      const s = q.value.trim().toLowerCase(), f = fu.value, y = yr.value; let n = 0;
+    const RECENT = new Date().getFullYear() - 2, PAGE = 200;
+    let limit = PAGE;
+    function apply(keep) {
+      if (!keep) limit = PAGE;
+      const s = q.value.trim().toLowerCase(), f = fu.value, g = gr.value, y = yr.value; let n = 0;
       for (const tr of trs) {
         const ok = (!s || (tr.dataset.name + ' ' + tr.dataset.text).toLowerCase().includes(s))
           && (!f || tr.dataset.funders.split('|').includes(f))
+          && (!g || tr.dataset.group === g)
           && (!y || (y === 'recent' ? tr.dataset.years.split('|').some(v => Number(v) >= RECENT) : tr.dataset.years.split('|').includes(y)));
-        tr.hidden = !ok; if (ok) n++;
+        if (ok) n++;
+        tr.hidden = !ok || n > limit;   // 처음 200곳만 그리고, 버튼으로 더 본다(긴 목록에서 화면이 무거워지지 않게)
       }
-      cnt.textContent = `${n.toLocaleString('ko-KR')}곳 표시`;
+      cnt.textContent = n > limit ? `${n.toLocaleString('ko-KR')}곳 중 ${limit.toLocaleString('ko-KR')}곳 표시` : `${n.toLocaleString('ko-KR')}곳 표시`;
+      more.hidden = n <= limit;
     }
-    q.addEventListener('input', apply); fu.addEventListener('change', apply); yr.addEventListener('change', apply);
-    const sp = new URLSearchParams(location.search); if (sp.get('funder')) fu.value = sp.get('funder'); if (sp.get('q')) q.value = sp.get('q');
+    q.addEventListener('input', () => apply()); fu.addEventListener('change', () => apply()); gr.addEventListener('change', () => apply()); yr.addEventListener('change', () => apply());
+    more.addEventListener('click', () => { limit += PAGE; apply(true); });
+    const sp = new URLSearchParams(location.search); if (sp.get('funder')) fu.value = sp.get('funder'); if (sp.get('group')) gr.value = sp.get('group'); if (sp.get('q')) q.value = sp.get('q');
     apply();
   </script>
 </Base>

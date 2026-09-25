@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import Chart from '../../components/Chart.astro';
+import { monthly, monthLabel, chartIndex } from '../../lib/stats';
+/** /industry/compare/ — 산업 그룹 추이 비교(고용·기업 수). 기본 5개 그룹은 render_charts.py 의 compare_default. */
+const m = monthly();
+const ym = m ? monthLabel(m.month) : '';
+const def: string[] = chartIndex()?.compare_default ?? [];
+---
+<Base title="산업별 추이 비교" description={`대구 산업 그룹 ${def.join('·')}의 고용 인원·기업 수 24개월 추이 비교(${ym}).`} current="industry">
+  <p class="meta"><a href="/industry/">산업별 현황</a> › 추이 비교</p>
+  <div class="section-head"><h1>산업별 추이 비교</h1><span class="meta">{ym} 기준</span></div>
+  <p class="lede">고용 규모가 큰 {def.length}개 그룹({def.join(', ')})을 한 그래프에 겹쳐 봅니다. 값은 {m?.basis_label ?? '국민연금 가입자수'} 기준이며, 자료가 쌓이는 만큼 기간이 늘어납니다.</p>
+  <Chart kind="industry-compare" name="employment" caption="고용 인원 추이 비교" />
+  <Chart kind="industry-compare" name="firms" caption="기업 수 추이 비교" />
+  <p class="meta">그룹별 상세는 <a href="/industry/">산업별 현황</a>에서 산업명을 누르세요.</p>
+</Base>

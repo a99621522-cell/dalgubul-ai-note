@@ -1,0 +1,76 @@
+---
+import Base from '../../layouts/Base.astro';
+import StatTiles, { type Tile } from '../../components/StatTiles.astro';
+import Chart from '../../components/Chart.astro';
+import { monthly, monthLabel, fmt } from '../../lib/stats';
+import { industryGroups } from '../../lib/industry';
+import { supportHistory, recentSupport, companies } from '../../lib/csv';
+/** /industry/<key>/ — 산업 그룹 하나: 큰 숫자 → 24개월 추이(고용·기업 수) → 단지·입지 분포 → 지원 이력(3년) 요약 → 기업 목록 링크. 평가·순위 없음. */
+export async function getStaticPaths() {
+  return industryGroups().map(g => ({ params: { key: g.key }, props: { g } }));
+}
+const { g } = Astro.props;
+const m = monthly();
+const s = m?.by_industry[g.name] ?? null;
+const ym = m ? monthLabel(m.month) : '';
+const cross = m?.cross[g.name] ?? {};
+const crossSite = m?.cross_site[g.name] ?? {};
+const complexRows = Object.entries(cross).filter(([, v]) => v.firms > 0).sort((a, b) => b[1].firms - a[1].firms);
+const siteRows = Object.entries(crossSite).filter(([, v]) => v.firms > 0);
+const ids = new Set(companies().filter(c => c.sector_group === g.name).map(c => c.id));
+const sup3 = recentSupport(supportHistory().filter(r => r.id && ids.has(r.id)), 3);
+const supFunders = [...sup3.reduce((mm, r) => mm.set(r.funder, (mm.get(r.funder) ?? 0) + 1), new Map<string, number>())].sort((a, b) => b[1] - a[1]);
+const tiles: Tile[] = s ? [
+  { label: '기업 수', value: s.firms, unit: '곳', sub: `${ym} 기준 · 팩토리온 + 산단 외 목록`, href: `/companies/?group=${encodeURIComponent(g.name)}` },
+  { label: '고용 인원', value: s.employment, unit: '명', delta: s.mom?.employment ?? null, sub: `${ym} 기준 · ${m!.basis_label} · 집계 대상 ${fmt(s.covered)}곳` },
+  { label: '기업당 평균 고용', value: s.avg_employment === null ? null : Math.round(s.avg_employment), unit: '명', sub: '집계 대상 기업 기준' },
+  { label: '지원 이력 있는 기업 (3년)', value: sup3.length ? new Set(sup3.map(r => r.id)).size : 0, unit: '곳', sub: `공개 자료 이력 ${sup3.length}건`, href: `/support/?group=${encodeURIComponent(g.name)}` },
+] : [];
+const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 ${fmt(s.employment)}명(${ym}). 24개월 추이, 단지·입지 분포, 최근 3년 지원 이력.` : `${g.name} 산업 현황`;
+---
+<Base title={g.name} description={description} current="industry">
+  <p class="meta"><a href="/industry/">산업별 현황</a> › {g.name}</p>
+  <div class="section-head"><h1>{g.name}</h1><span class="meta">{ym} 기준</span></div>
+  {s ? (
+    <>
+      <StatTiles tiles={tiles} />
+      <section aria-labelledby="h-trend">
+        <div class="section-head"><h2 id="h-trend">24개월 추이</h2><a href="/industry/compare/">다른 산업과 비교</a></div>
+        <Chart kind="industry-employment" name={g.key} caption={`${g.name} 고용 인원 추이`} />
+        <Chart kind="industry-firms" name={g.key} caption={`${g.name} 기업 수 추이`} />
+      </section>
+      <section aria-labelledby="h-where">
+        <div class="section-head"><h2 id="h-where">어디에 있나</h2></div>
+        <Chart kind="industry-complex" name={g.key} caption={`${g.name} 단지별 고용 인원, ${ym}`} />
+        <div class="two-col">
+          <div>
+            <h3>단지·입지별 기업 수</h3>
+            <div class="scroll-x"><table class="data-table">
+              <thead><tr><th>단지</th><th class="n">기업 수</th><th class="n">고용</th></tr></thead>
+              <tbody>{complexRows.map(([k, v]) => <tr><td><a href={`/companies/?complex=${encodeURIComponent(k)}&group=${encodeURIComponent(g.name)}`}>{k}</a></td><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td></tr>)}</tbody>
+            </table></div>
+          </div>
+          <div>
+            <h3>입지 유형별</h3>
+            <div class="scroll-x"><table class="data-table">
+              <thead><tr><th>입지 유형</th><th class="n">기업 수</th><th class="n">고용</th></tr></thead>
+              <tbody>{siteRows.map(([k, v]) => <tr><td>{k}</td><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td></tr>)}</tbody>
+            </table></div>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="h-sup">
+        <div class="section-head"><h2 id="h-sup">지원 이력 (최근 3년)</h2><a href="/support/">지원받은 기업 목록</a></div>
+        {sup3.length === 0 ? <p class="empty">공개 자료에서 확인된 이력이 없습니다.</p> : (
+          <p>이 그룹 기업 {new Set(sup3.map(r => r.id)).size}곳에 이력 {sup3.length}건. 지원기관별: {supFunders.map(([f, n]) => `${f} ${n}건`).join(', ')}. 사업명·연도는 기업 페이지의 이력 표에 있습니다.</p>
+        )}
+      </section>
+      <p class="meta">고용 인원은 {m!.basis_label}이며 값이 있는 기업만 집계합니다. 산업 그룹은 KSIC 코드·생산품 키워드 규칙(config/industry_groups.yml)으로 나눴습니다. 순위·평가가 아닙니다.</p>
+    </>
+  ) : <p class="empty">이 그룹의 통계가 아직 없습니다.</p>}
+</Base>
+<style>
+  .two-col { display: grid; grid-template-columns: 1fr; gap: var(--s3); }
+  @media (min-width: 760px) { .two-col { grid-template-columns: 1fr 1fr; } }
+  .two-col h3 { font-size: 1rem; margin: var(--s2) 0 var(--s1); }
+</style>

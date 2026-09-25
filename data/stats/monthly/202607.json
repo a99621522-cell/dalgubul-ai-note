@@ -1,6 +1,6 @@
 {
  "month": "2026-07",
- "generated": "2026-09-25 01:13",
+ "generated": "2026-09-25 02:11",
  "basis": "nps",
  "basis_label": "국민연금 가입자수",
  "sources": {
@@ -37,12 +37,12 @@
   "dart_revenue": null,
   "projects_12m": null,
   "support_3y": {
-   "firms": 281,
-   "records": 529,
+   "firms": 301,
+   "records": 550,
    "amount_won": null,
    "amount_known_records": 0,
    "by_layer": {
-    "국비": 529
+    "국비": 550
    }
   },
   "mom": null,
@@ -98,12 +98,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 30,
-    "records": 73,
+    "firms": 31,
+    "records": 74,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 73
+     "국비": 74
     }
    },
    "mom": null,
@@ -128,12 +128,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 7,
-    "records": 8,
+    "firms": 9,
+    "records": 10,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 8
+     "국비": 10
     }
    },
    "mom": null,
@@ -158,12 +158,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 32,
-    "records": 44,
+    "firms": 40,
+    "records": 51,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 44
+     "국비": 51
     }
    },
    "mom": null,
@@ -218,7 +218,7 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 52,
+    "firms": 51,
     "records": 87,
     "amount_won": null,
     "amount_known_records": 0,
@@ -248,12 +248,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 13,
-    "records": 18,
+    "firms": 15,
+    "records": 21,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 18
+     "국비": 21
     }
    },
    "mom": null,
@@ -308,12 +308,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 70,
-    "records": 102,
+    "firms": 73,
+    "records": 105,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 102
+     "국비": 105
     }
    },
    "mom": null,
@@ -338,12 +338,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 11,
-    "records": 13,
+    "firms": 13,
+    "records": 15,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 13
+     "국비": 15
     }
    },
    "mom": null,
@@ -368,12 +368,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 35,
-    "records": 143,
+    "firms": 36,
+    "records": 144,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 143
+     "국비": 144
     }
    },
    "mom": null,
@@ -398,11 +398,13 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 0,
-    "records": 0,
+    "firms": 2,
+    "records": 2,
     "amount_won": null,
     "amount_known_records": 0,
-    "by_layer": {}
+    "by_layer": {
+     "국비": 2
+    }
    },
    "mom": null,
    "yoy": null
@@ -458,12 +460,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 35,
-    "records": 52,
+    "firms": 34,
+    "records": 51,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 52
+     "국비": 51
     }
    },
    "mom": null,
@@ -488,12 +490,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 62,
-    "records": 102,
+    "firms": 84,
+    "records": 126,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 102
+     "국비": 126
     }
    },
    "mom": null,
@@ -518,12 +520,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 19,
-    "records": 36,
+    "firms": 18,
+    "records": 34,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 36
+     "국비": 34
     }
    },
    "mom": null,
@@ -1110,12 +1112,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 93,
-    "records": 169,
+    "firms": 98,
+    "records": 175,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 169
+     "국비": 175
     }
    },
    "mom": null,
@@ -1140,12 +1142,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 43,
-    "records": 66,
+    "firms": 46,
+    "records": 70,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 66
+     "국비": 70
     }
    },
    "mom": null,
@@ -1170,12 +1172,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 72,
-    "records": 179,
+    "firms": 73,
+    "records": 180,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 179
+     "국비": 180
     }
    },
    "mom": null,
@@ -1200,12 +1202,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 30,
-    "records": 56,
+    "firms": 29,
+    "records": 54,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 56
+     "국비": 54
     }
    },
    "mom": null,
@@ -1230,12 +1232,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 25,
-    "records": 35,
+    "firms": 29,
+    "records": 39,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 35
+     "국비": 39
     }
    },
    "mom": null,
@@ -1260,12 +1262,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 16,
-    "records": 22,
+    "firms": 23,
+    "records": 29,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 22
+     "국비": 29
     }
    },
    "mom": null,
@@ -1320,11 +1322,13 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 0,
-    "records": 0,
+    "firms": 1,
+    "records": 1,
     "amount_won": null,
     "amount_known_records": 0,
-    "by_layer": {}
+    "by_layer": {
+     "국비": 1
+    }
    },
    "mom": null,
    "yoy": null
@@ -1468,12 +1472,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 33,
-    "records": 73,
+    "firms": 32,
+    "records": 71,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 73
+     "국비": 71
     }
    },
    "mom": null,
@@ -1528,12 +1532,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 89,
-    "records": 145,
+    "firms": 110,
+    "records": 168,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 145
+     "국비": 168
     }
    },
    "mom": null,
@@ -1560,12 +1564,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 68,
-    "records": 103,
+    "firms": 92,
+    "records": 129,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 103
+     "국비": 129
     }
    },
    "mom": null,
@@ -1590,12 +1594,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 41,
-    "records": 63,
+    "firms": 39,
+    "records": 61,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 63
+     "국비": 61
     }
    },
    "mom": null,

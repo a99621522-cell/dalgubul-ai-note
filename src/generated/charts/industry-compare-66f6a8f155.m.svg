@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="주력 산업 기업 수 추이. 2026-07부터 2026-07까지 1개월. 기계·금속 최근 4,285곳; 자동차·부품 최근 972곳; 화학·에너지 최근 828곳; 전기·전자 최근 1,353곳; 소프트웨어·IT 최근 710곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="주력 산업 기업 수 추이. 2026-07부터 2026-07까지 1개월. 기계·금속 최근 4,285곳; 자동차·부품 최근 972곳; 화학·에너지 최근 827곳; 전기·전자 최근 1,353곳; 소프트웨어·IT 최근 710곳" style="max-width:360px;height:auto;font-size:14px">
 <title>주력 산업 기업 수 추이</title>
 <line x1="60" x2="252" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">0</text>
@@ -16,9 +16,9 @@
 <circle cx="156.0" cy="198.7" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
 <text x="164.0" y="169.0" fill="#1a1a1a" font-weight="600">972곳</text>
 <text x="164.0" y="186.0" fill="#1a1a1a">자동차·부품</text>
-<circle cx="156.0" cy="207.1" r="4" style="fill:var(--chart-3,#009E73)"/>
-<circle cx="156.0" cy="207.1" r="3.5" style="fill:var(--chart-3,#009E73)"/>
-<text x="164.0" y="203.0" fill="#1a1a1a" font-weight="600">828곳</text>
+<circle cx="156.0" cy="207.2" r="4" style="fill:var(--chart-3,#009E73)"/>
+<circle cx="156.0" cy="207.2" r="3.5" style="fill:var(--chart-3,#009E73)"/>
+<text x="164.0" y="203.0" fill="#1a1a1a" font-weight="600">827곳</text>
 <text x="164.0" y="220.0" fill="#1a1a1a">화학·에너지</text>
 <circle cx="156.0" cy="176.2" r="4" style="fill:var(--chart-4,#D55E00)"/>
 <circle cx="156.0" cy="176.2" r="3.5" style="fill:var(--chart-4,#D55E00)"/>

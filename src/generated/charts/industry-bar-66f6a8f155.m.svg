@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 508" width="100%" role="img" aria-label="산업별 기업 수. 기계·금속 4,285곳, 섬유·패션 1,716곳, 기타 서비스 1,562곳, 전기·전자 1,353곳, 기타 제조 1,344곳, 자동차·부품 972곳, 화학·에너지 828곳, 소프트웨어·IT 710곳, 식품 480곳, 의료·바이오 405곳, 로봇 121곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 508" width="100%" role="img" aria-label="산업별 기업 수. 기계·금속 4,285곳, 섬유·패션 1,716곳, 기타 서비스 1,563곳, 전기·전자 1,353곳, 기타 제조 1,343곳, 자동차·부품 972곳, 화학·에너지 827곳, 소프트웨어·IT 710곳, 식품 480곳, 의료·바이오 404곳, 로봇 121곳" style="max-width:360px;height:auto;font-size:14px">
 <title>산업별 기업 수</title>
 <text x="8" y="26.0" fill="#1a1a1a">기계·금속</text>
 <rect x="8" y="32" width="290.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
@@ -7,20 +7,20 @@
 <rect x="8" y="76" width="116.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="130.1" y="90.0" fill="#1a1a1a">1,716곳</text>
 <text x="8" y="114.0" fill="#1a1a1a">기타 서비스</text>
-<rect x="8" y="120" width="105.7" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="119.7" y="134.0" fill="#1a1a1a">1,562곳</text>
+<rect x="8" y="120" width="105.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="119.8" y="134.0" fill="#1a1a1a">1,563곳</text>
 <text x="8" y="158.0" fill="#1a1a1a">전기·전자</text>
 <rect x="8" y="164" width="91.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="105.6" y="178.0" fill="#1a1a1a">1,353곳</text>
 <text x="8" y="202.0" fill="#1a1a1a">기타 제조</text>
-<rect x="8" y="208" width="91.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="105.0" y="222.0" fill="#1a1a1a">1,344곳</text>
+<rect x="8" y="208" width="90.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="104.9" y="222.0" fill="#1a1a1a">1,343곳</text>
 <text x="8" y="246.0" fill="#1a1a1a">자동차·부품</text>
 <rect x="8" y="252" width="65.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="79.8" y="266.0" fill="#1a1a1a">972곳</text>
 <text x="8" y="290.0" fill="#1a1a1a">화학·에너지</text>
 <rect x="8" y="296" width="56.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="70.0" y="310.0" fill="#1a1a1a">828곳</text>
+<text x="70.0" y="310.0" fill="#1a1a1a">827곳</text>
 <text x="8" y="334.0" fill="#1a1a1a">소프트웨어·IT</text>
 <rect x="8" y="340" width="48.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="62.1" y="354.0" fill="#1a1a1a">710곳</text>
@@ -28,8 +28,8 @@
 <rect x="8" y="384" width="32.5" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="46.5" y="398.0" fill="#1a1a1a">480곳</text>
 <text x="8" y="422.0" fill="#1a1a1a">의료·바이오</text>
-<rect x="8" y="428" width="27.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="41.4" y="442.0" fill="#1a1a1a">405곳</text>
+<rect x="8" y="428" width="27.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="41.3" y="442.0" fill="#1a1a1a">404곳</text>
 <text x="8" y="466.0" fill="#1a1a1a">로봇</text>
 <rect x="8" y="472" width="8.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="22.2" y="486.0" fill="#1a1a1a">121곳</text></svg>

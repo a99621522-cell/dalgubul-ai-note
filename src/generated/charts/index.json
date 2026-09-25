@@ -1,5 +1,6 @@
 {
  "months": [
+  "2026-07",
   "2026-08"
  ],
  "latest": "2026-08",
@@ -76,6 +77,7 @@
   "화학·에너지"
  ],
  "complex-employment": {
+  "산단 외": "complex-employment-c151bf155a",
   "성서지방산업단지": "complex-employment-f0388aa782",
   "개별입지": "complex-employment-61fa24ec59",
   "서대구일반산업단지": "complex-employment-24c497f1e6",
@@ -100,6 +102,7 @@
   "대구경북첨단의료복합단지도시첨단산업단지": "complex-employment-6c76b4c42f"
  },
  "complex-industry": {
+  "산단 외": "complex-industry-c151bf155a",
   "성서지방산업단지": "complex-industry-f0388aa782",
   "개별입지": "complex-industry-61fa24ec59",
   "서대구일반산업단지": "complex-industry-24c497f1e6",
@@ -129,9 +132,9 @@
   "달성군": "district-employment-74d440ce4d",
   "서구": "district-employment-412a0906ec",
   "동구": "district-employment-8dbaf73751",
-  "군위군": "district-employment-62844c2077",
-  "중구": "district-employment-8a2919abe0",
   "수성구": "district-employment-2b413bcefd",
+  "중구": "district-employment-8a2919abe0",
+  "군위군": "district-employment-62844c2077",
   "남구": "district-employment-dceae17167"
  },
  "district-industry": {
@@ -140,9 +143,9 @@
   "달성군": "district-industry-74d440ce4d",
   "서구": "district-industry-412a0906ec",
   "동구": "district-industry-8dbaf73751",
-  "군위군": "district-industry-62844c2077",
-  "중구": "district-industry-8a2919abe0",
   "수성구": "district-industry-2b413bcefd",
+  "중구": "district-industry-8a2919abe0",
+  "군위군": "district-industry-62844c2077",
   "남구": "district-industry-dceae17167"
  },
  "site-bar": {

@@ -1,16 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구염색산단 고용 인원 추이. 2026-08부터 2026-08까지 1개월. 대구염색산단 최근 5,825명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구염색산단 고용 인원 추이. 2026-07부터 2026-08까지 2개월. 대구염색산단 최근 5,825명" style="max-width:360px;height:auto;font-size:14px">
 <title>대구염색산단 고용 인원 추이</title>
 <line x1="60" x2="292" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="261.0" text-anchor="end" fill="#767676">5,400</text>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">0</text>
 <line x1="60" x2="292" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="189.0" text-anchor="end" fill="#767676">5,600</text>
+<text x="52" y="189.0" text-anchor="end" fill="#767676">2,000</text>
 <line x1="60" x2="292" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="117.0" text-anchor="end" fill="#767676">5,800</text>
+<text x="52" y="117.0" text-anchor="end" fill="#767676">4,000</text>
 <line x1="60" x2="292" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="45.0" text-anchor="end" fill="#767676">6,000</text>
-<text x="176.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="60.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
+<text x="292.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="292" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<circle cx="176.0" cy="103.0" r="4" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="176.0" cy="103.0" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="184.0" y="108.0" fill="#1a1a1a" font-weight="600">5,825명</text>
-<text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 1개월</text></svg>
+<path d="M60.0,193.7 L292.0,46.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="292.0" cy="46.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="300.0" y="52.0" fill="#1a1a1a" font-weight="600">5,825명</text>
+<text x="8" y="16" fill="#767676">고용 인원 = 공장등록 신고값(팩토리온), 자료 2개월</text></svg>

@@ -19,7 +19,7 @@ const jsonld: object[] = [{
   keywords: d.tags.join(', '), mainEntityOfPage: pageUrl,
   author: { '@type': 'Person', name: '다잇다 노트' },
   publisher: { '@type': 'Organization', name: '다잇다 노트' },
-  ...(d.sourceUrl ? { citation: d.sourceUrl } : {}),
+  ...(d.sourceUrl ? { citation: d.sourceUrl } : d.sources.length ? { citation: d.sources.map(s => s.url) } : {}),
 }];
 if (d.faq.length > 0) jsonld.push({
   '@context': 'https://schema.org', '@type': 'FAQPage',
@@ -43,6 +43,13 @@ if (d.faq.length > 0) jsonld.push({
       <section class="faq" aria-label="자주 묻는 질문">
         <h2>자주 묻는 질문</h2>
         {d.faq.map(f => (<details><summary>{f.q}</summary><p>{f.a}</p></details>))}
+      </section>
+    )}
+    {d.sources.length > 0 && (
+      <section class="sources" aria-label="출처 목록">
+        <h2>출처 ({d.sources.length}건)</h2>
+        <ol>{d.sources.map(s => <li><a href={s.url} rel="noopener">{s.title}</a>{s.date && <span class="meta"> · {s.date}</span>}</li>)}</ol>
+        <p class="meta">날짜가 '미확인'인 항목과 본문에 '요지'로 표시한 수치는 검색 결과 요약을 옮긴 것이라 원문 확인이 필요합니다. 기업 수·고용·예산은 저장소의 기업 사전(팩토리온)과 사업설명자료 DB를 코드로 센 값입니다.</p>
       </section>
     )}
     {d.tags.length > 0 && <p class="tags">{d.tags.map(t => <span>#{t}</span>)}</p>}

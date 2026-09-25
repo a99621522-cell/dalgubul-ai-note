@@ -1,0 +1,57 @@
+name: 예산서·사업설명자료 받기 (부처·대구시·기관)
+
+# config/budget_sources.yml 의 기관 페이지에서 예산·사업설명 첨부를 받아 본문 텍스트(data/budget)와
+# 사업설명자료 DB(scripts/data/programs_<key>.csv)를 갱신한다. 이 세션 환경은 정부 사이트 접속이 막혀 있어 Actions 가 대신 돈다.
+
+on:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: [".github/workflows/fetch_budget.yml", "scripts/fetch_budget_docs.py", "config/budget_sources.yml"]
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "기관 key (쉼표 구분, 비우면 전부)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-budget-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils
+      - run: pip install -r scripts/requirements.txt playwright openpyxl pyhwp && python -m playwright install --with-deps chromium
+      - name: 받기·본문 추출·사업설명자료 파싱
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          set +e
+          python3 scripts/fetch_budget_docs.py ${ONLY:+--only "$ONLY"}
+          echo "exit=$?"
+          du -sh data/raw/budget/* 2>/dev/null | head -20
+      - name: artifact (받은 원본)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: budget-raw-${{ github.run_id }}
+          path: data/raw/budget
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          for p in data/budget scripts/data; do [ -e "$p" ] && git add -A "$p"; done
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 예산서·사업설명자료 반영 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

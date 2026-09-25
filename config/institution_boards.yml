@@ -2,8 +2,8 @@
 # 규칙(CLAUDE.md 9항): 공공기관 사이트만, 하루 1회, robots.txt 존중. robots 가 막는 기관(scripts/data/institutions.yml blocked)은 넣지 않는다.
 # boards 가 비어 있으면 첫 화면에서 '공고·공지' 링크를 찾아 들어간다. 게시판 목록은 JS 로 그리는 곳이 많아 Actions 에서 브라우저(Playwright)로 연다.
 version: 2026-09-25
-title_pattern: "선정|결과\\s*(발표|공고|안내)|합격|명단|참여\\s*기업|수혜\\s*기업|지원\\s*기업|선정\\s*기업|최종|확정"
-exclude_title: "채용|직원|평가위원|위원\\s*모집|입찰|낙찰|용역|임대|매각|강사|인턴|공무직|기간제|자문위원|심사위원"
+title_pattern: "선정\\s*(결과|기업|업체|공고|안내|명단|현황)|최종\\s*선정|결과\\s*(발표|공고|안내)|합격자?\\s*(발표|공고|명단)|확정\\s*(공고|안내|명단)|(참여|수혜|지원|선정)\\s*기업\\s*(명단|현황|목록)"
+exclude_title: "채용|직원|평가위원|위원\\s*모집|입찰|낙찰|용역|임대|매각|강사|인턴|공무직|기간제|자문위원|심사위원|수급자|요양기관|세무사|건립|부지"
 max_posts_per_institution: 40
 max_pages_per_board: 4
 institutions:
@@ -43,7 +43,3 @@ institutions:
     name: 경북대학교 첨단정보통신융합산업기술원
     home: https://www.iact.or.kr
     boards: []
-  - key: daegu-notice
-    name: 대구광역시 고시·공고
-    home: https://www.daegu.go.kr
-    boards: ["https://www.daegu.go.kr/index.do?menu_id=00000117"]

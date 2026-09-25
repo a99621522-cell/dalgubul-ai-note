@@ -33,7 +33,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CFG = ROOT / "config" / "institution_boards.yml"
 OUT_RAW = ROOT / "data" / "institution_boards"
 OUT_SUP = ROOT / "scripts" / "data" / "support"
-UA = "Mozilla/5.0 (X11; Linux x86_64) daitda-note-bot/1.0 (+https://note.daitda.co.kr; 공개 공고 수집, 하루 1회)"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36 daitda-note-bot/1.0 (+https://note.daitda.co.kr)"
 TODAY = date.today().isoformat()
 NAME_COL = re.compile(r"기업\s*명|업체\s*명|회사\s*명|참여\s*기업|선정\s*기업|수혜\s*기업|지원\s*기업|수행\s*기관|주관\s*기관|신청\s*기관|기업\s*\(?기관\)?\s*명|기관\s*명")
 CORP = re.compile(r"(?:\(주\)|㈜|주식회사|\(유\)|유한회사|유한책임회사|농업회사법인)\s*[가-힣A-Za-z0-9&·\-\.]{2,30}|[가-힣A-Za-z0-9&·\-\.]{2,30}\s*(?:\(주\)|㈜|주식회사|\(유\)|유한회사)")
@@ -77,6 +77,96 @@ def robots_ok(url: str, cache: dict) -> bool:
     return cache[host].can_fetch("*", url)
 
 
+def _goto(page, url: str) -> bool:
+    for i in range(2):
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            try:
+                page.wait_for_load_state("networkidle", timeout=15000)
+            except Exception:  # noqa: BLE001
+                pass
+            page.wait_for_timeout(800)
+            return True
+        except Exception as e:  # noqa: BLE001
+            print(f"    [browser] {'재시도' if i == 0 else '실패'} {url[:80]}: {str(e)[:60]}")
+            page.wait_for_timeout(3000)
+    return False
+
+
+def click_open(list_url: str, label: str) -> tuple[str, str]:
+    """목록 페이지에서 글 제목(자바스크립트 링크)을 눌러 글을 연다 → (html, 열린 주소)."""
+    b = browser()
+    if not b:
+        return "", ""
+    page = b.new_page(user_agent=UA, locale="ko-KR")
+    try:
+        if not _goto(page, list_url):
+            return "", ""
+        loc = page.get_by_text(label[:40], exact=False).first
+        try:
+            with page.expect_navigation(timeout=15000):
+                loc.click(timeout=8000)
+        except Exception:  # noqa: BLE001
+            page.wait_for_timeout(2500)  # 같은 페이지 안에서 바뀌는 경우
+        try:
+            page.wait_for_load_state("networkidle", timeout=15000)
+        except Exception:  # noqa: BLE001
+            pass
+        return page.content(), page.url
+    except Exception as e:  # noqa: BLE001
+        print(f"    [browser] 제목 클릭 실패 {label[:30]}: {str(e)[:60]}")
+        return "", ""
+    finally:
+        page.close()
+
+
+def click_downloads(post_url: str, list_url: str = "", label: str = "") -> list[tuple[str, bytes]]:
+    """글 페이지의 첨부(자바스크립트 내려받기 포함)를 눌러 받는다. 표 파일만(pdf·hwp·hwpx·xlsx·xls)."""
+    b = browser()
+    if not b:
+        return []
+    out = []
+    page = b.new_page(user_agent=UA, locale="ko-KR", accept_downloads=True)
+    try:
+        ok = _goto(page, post_url) if post_url else False
+        if not ok and list_url and label:
+            _goto(page, list_url)
+            try:
+                page.get_by_text(label[:40], exact=False).first.click(timeout=8000)
+                page.wait_for_timeout(2500)
+            except Exception:  # noqa: BLE001
+                return []
+        links = page.locator("a")
+        n = min(links.count(), 80)
+        for i in range(n):
+            a = links.nth(i)
+            try:
+                t = (a.inner_text() or "").strip()
+                h = a.get_attribute("href") or ""
+            except Exception:  # noqa: BLE001
+                continue
+            if not re.search(r"\.(pdf|hwpx?|xlsx?)\s*$", t, re.I) and not re.search(r"\.(pdf|hwpx?|xlsx?)(\?|$)", h, re.I):
+                continue
+            if re.search(r"신청서|서식|양식|동의서|계획서|지침|제안서", t):
+                continue  # 서식·지침은 선정 명단이 아니다
+            try:
+                with page.expect_download(timeout=20000) as dl:
+                    a.click(timeout=5000)
+                f = dl.value
+                data = Path(f.path()).read_bytes()
+                out.append((f.suggested_filename or t, data))
+                print(f"    첨부 내려받음 {(f.suggested_filename or t)[:50]} ({len(data):,} bytes)")
+            except Exception as e:  # noqa: BLE001
+                print(f"    첨부 클릭 실패 {t[:40]}: {str(e)[:50]}")
+            if len(out) >= 6:
+                break
+    except Exception as e:  # noqa: BLE001
+        print(f"    [browser] 첨부 단계 실패: {str(e)[:60]}")
+    finally:
+        page.close()
+    return out
+
+
 def get(url: str, sess: requests.Session, use_browser: bool = True) -> tuple[str, bytes, str]:
     """(html 또는 '', 바이너리, content-type). HTML 은 브라우저가 있으면 렌더링 결과."""
     try:
@@ -94,11 +184,8 @@ def get(url: str, sess: requests.Session, use_browser: bool = True) -> tuple[str
     if use_browser and browser():
         page = browser().new_page(user_agent=UA, locale="ko-KR")
         try:
-            page.goto(url, wait_until="networkidle", timeout=60000)
-            page.wait_for_timeout(800)
-            html = page.content()
-        except Exception as e:  # noqa: BLE001
-            print(f"    [browser] 실패 {url[:80]}: {str(e)[:60]}")
+            if _goto(page, url):
+                html = page.content()
         finally:
             page.close()
     return html, b"", ct
@@ -243,13 +330,17 @@ def list_posts(board_url: str, html: str, title_re: re.Pattern, excl_re: re.Patt
             continue
         if len(label) < 6 or not title_re.search(label) or excl_re.search(label):
             continue
-        if href.startswith("javascript") or urlparse(full).netloc != host:
+        is_js = href.startswith("javascript") or href in ("#", "")
+        if not is_js and urlparse(full).netloc != host:
             continue
-        if not POST_HREF.search(full) and not re.search(r"\d{3,}", full):
+        if not is_js and not POST_HREF.search(full) and not re.search(r"\d{3,}", full):
             continue
         tr = a.find_parent("tr") or a.find_parent("li") or a.parent
         d = DATE_RE.search(tr.get_text(" ", strip=True) if tr else "")
-        posts.append((label[:120], full, f"{d.group(1)}-{int(d.group(2)):02d}-{int(d.group(3)):02d}" if d else ""))
+        posts.append((label[:120], (f"js:{board_url}|{label[:60]}" if is_js else full), f"{d.group(1)}-{int(d.group(2)):02d}-{int(d.group(3)):02d}" if d else ""))
+    if not posts:
+        sample = [(a.get_text(" ", strip=True)[:30], (a.get("href") or "")[:50]) for a in soup.find_all("a", href=True) if len(a.get_text(strip=True)) >= 8][:12]
+        print(f"    (후보 없음) 링크 표본: {sample}")
     return posts, [p for p in pages if p][:6]
 
 
@@ -302,9 +393,15 @@ def main(argv: list[str]) -> int:
                 time.sleep(1)
         rows, index = [], []
         for t, u, d in found[:max_posts]:
-            if not robots_ok(u, robots):
-                continue
-            html, _, _ = get(u, sess)
+            list_url, js_label = "", ""
+            if u.startswith("js:"):
+                list_url, js_label = u[3:].split("|", 1)
+                html, opened = click_open(list_url, js_label)
+                u = opened or list_url
+            else:
+                if not robots_ok(u, robots):
+                    continue
+                html, _, _ = get(u, sess)
             if not html:
                 continue
             body = text_of(html)
@@ -320,16 +417,24 @@ def main(argv: list[str]) -> int:
                 label = a.get_text(" ", strip=True)
                 if re.search(r"\.(pdf|hwpx?|xlsx?)(\?|$)", href, re.I) or re.search(r"\.(pdf|hwpx?|xlsx?)$", label, re.I) or re.search(r"fileDown|download|FileDown|atchFile", href, re.I):
                     atts.append((label or Path(urlparse(href).path).name, href))
+            files: list[tuple[str, bytes]] = []
             for label, href in atts[:6]:
+                if href.startswith("javascript") or re.search(r"신청서|서식|양식|동의서|계획서|지침|제안서", label):
+                    continue
                 try:
                     r = sess.get(href, headers={"User-Agent": UA, "Referer": u}, timeout=90)
                     ct = r.headers.get("Content-Type", "")
                     cd = r.headers.get("Content-Disposition", "")
                     m = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
                     fname = requests.utils.unquote(m.group(1)) if m else label
-                    data = r.content
-                    if r.status_code != 200 or "text/html" in ct or len(data) < 200:
-                        continue
+                    if r.status_code == 200 and "text/html" not in ct and len(r.content) > 200:
+                        files.append((fname, r.content))
+                except Exception as e:  # noqa: BLE001
+                    print(f"    첨부 실패 {href[:70]}: {str(e)[:60]}")
+            if not files and any(h.startswith("javascript") for _, h in atts):
+                files = click_downloads(u if not js_label else "", list_url, js_label) if js_label else click_downloads(u)
+            for fname, data in files:
+                try:
                     ext = (re.search(r"\.(pdf|hwpx|hwp|xlsx|xls)$", fname.lower()) or [None, ""])[1] if fname else ""
                     if not ext:
                         ext = "pdf" if data[:4] == b"%PDF" else "hwpx" if data[:2] == b"PK" and b"Contents/" in data[:4000] else "xlsx" if data[:2] == b"PK" else "hwp" if data[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1" else ""
@@ -348,7 +453,7 @@ def main(argv: list[str]) -> int:
                     att_txt += f"\n\n### 첨부 {fname} ({ext}, {len(data):,} bytes)\n{at[:20000]}"
                     print(f"    첨부 {fname[:50]} ({ext}) 표 이름 {len(a1)} · 상호 패턴 {len(a2)}")
                 except Exception as e:  # noqa: BLE001
-                    print(f"    첨부 실패 {href[:70]}: {str(e)[:60]}")
+                    print(f"    첨부 처리 실패 {fname[:40]}: {str(e)[:60]}")
             names = clean_names(tn) or clean_names(ln)
             src_kind = "표" if clean_names(tn) else "상호 패턴"
             fn = raw / (re.sub(r"[^\w가-힣]+", "_", f"{post_date}_{t}")[:80] + ".txt")

@@ -44,7 +44,8 @@ jobs:
         run: |
           set +e
           # push 로 돌 때는 data/fetch_mode.txt 의 첫 줄(mode ids pick)을 쓴다
-          if [ -z "$MODE_IN" ] && [ -f data/fetch_mode.txt ]; then read -r MODE IDS PICK < data/fetch_mode.txt; else MODE="$MODE_IN"; IDS="$IDS_IN"; PICK="$PICK_IN"; fi
+          # 형식: mode|ids|pick (예: probe|15117154 15083277|)
+          if [ -z "$MODE_IN" ] && [ -f data/fetch_mode.txt ]; then IFS='|' read -r MODE IDS PICK < data/fetch_mode.txt; else MODE="$MODE_IN"; IDS="$IDS_IN"; PICK="$PICK_IN"; fi
           MODE="${MODE:-probe}"; IDS="${IDS:-15117154 15083277}"
           echo "MODE=$MODE" >> "$GITHUB_ENV"
           echo "mode=$MODE ids=$IDS pick=$PICK"

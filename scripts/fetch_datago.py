@@ -46,33 +46,69 @@ def discover(html: str) -> dict:
     names = sorted(set(re.findall(r"[^\"'<>\s]{3,120}\.(?:csv|zip|xlsx|xls|json)", html)))
     dates = sorted(set(re.findall(r"20\d{2}-\d{2}-\d{2}", html)))
     title = (re.search(r"<title>(.*?)</title>", html, re.S) or [None, ""])[1].strip()
-    return {"title": title, "calls": calls, "uddis": uddis, "atch": atch, "names": names, "dates": dates[-10:]}
+    fn = re.search(r"function\s+fn_fileDataDown\s*\([^)]*\)\s*\{[\s\S]{0,2500}", html)
+    scripts = re.findall(r"<script[^>]+src=[\"']([^\"']+)", html)
+    forms = re.findall(r"<form[^>]*>", html)[:8]
+    return {"title": title, "calls": calls, "uddis": uddis, "atch": atch, "names": names, "dates": dates[-10:],
+            "fn": fn.group(0) if fn else "", "scripts": scripts, "forms": forms}
 
 
-def try_download(pk: str, call: list[str], sess: requests.Session) -> requests.Response | None:
-    """fn_fileDataDown 인자 형태에 따라 두 엔드포인트를 차례로 시도한다."""
+def html_text(r: requests.Response, n: int = 1200) -> str:
+    """HTML 응답의 요지: 태그 제거 텍스트 + location/href/url 단서."""
+    body = r.content[:200000].decode(r.encoding or "utf-8", errors="replace")
+    hints = re.findall(r"(?:location\.href|location\.replace|window\.open|action)\s*[=(]\s*[\"']([^\"']+)", body)[:8]
+    urls = re.findall(r"https?://[^\"'\s<>]+", body)[:8]
+    text = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>", " ", body)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return f"text: {text[:n]}\n    hints: {hints}\n    urls: {urls}"
+
+
+def try_download(pk: str, call: list[str], sess: requests.Session, atch_page: list[str] | None = None) -> requests.Response | None:
+    """fn_fileDataDown 인자 형태에 따라 엔드포인트를 차례로 시도한다. HTML 이 오면 그 내용을 찍어 다음 단서로 쓴다."""
     attempts = []
     uddi = next((a for a in call if a.startswith("uddi:")), None)
-    atch = next((a for a in call if a.startswith("FILE_")), None)
-    sn = next((a for a in call if re.fullmatch(r"\d{1,3}", a)), "1")
+    atch = next((a for a in call if a.startswith("FILE_")), None) or (atch_page[0] if atch_page else None)
+    nums = [a for a in call if re.fullmatch(r"\d{1,3}", a)]
+    sn = nums[0] if nums else "1"
     if uddi:
-        attempts.append(("POST", DL_NEW, {"publicDataPk": pk, "publicDataDetailPk": uddi, "fileDetailSn": sn}))
-        attempts.append(("GET", DL_NEW, {"publicDataPk": pk, "publicDataDetailPk": uddi, "fileDetailSn": sn}))
+        base = {"publicDataPk": pk, "publicDataDetailPk": uddi, "fileDetailSn": sn}
+        attempts.append(("POST", DL_NEW, base))
+        attempts.append(("POST", DL_NEW, {**base, "publicDataSn": nums[1] if len(nums) > 1 else "3", "fileNm": ""}))
+        attempts.append(("GET", "https://www.data.go.kr/tcs/dss/selectFileDataDownload.do", base))
     if atch:
         attempts.append(("GET", DL_OLD, {"atchFileId": atch, "fileDetailSn": sn}))
+        attempts.append(("GET", "https://www.data.go.kr/cmm/cmm/fileDownload.do", {"atchFileId": atch, "fileDetailSn": "1"}))
     for method, url, params in attempts:
         try:
             r = sess.request(method, url, params=params if method == "GET" else None, data=params if method == "POST" else None,
-                             headers={**UA, "Referer": PAGE.format(id=pk)}, timeout=300, stream=True)
+                             headers={**UA, "Referer": PAGE.format(id=pk)}, timeout=300, stream=True, allow_redirects=True)
             ct = r.headers.get("Content-Type", "")
             cd = r.headers.get("Content-Disposition", "")
-            print(f"  {method} {url.split('/')[-1]} {params} → HTTP {r.status_code} · {ct[:40]} · {cd[:80]}")
+            print(f"  {method} {url.split('/')[-1]} {params} → HTTP {r.status_code} · {ct[:40]} · {cd[:80]} · final {r.url[:100]}")
             if r.status_code == 200 and "text/html" not in ct:
                 return r
+            if "text/html" in ct:
+                print("    " + html_text(r))
             r.close()
         except Exception as e:  # noqa: BLE001
             print(f"  {method} 실패: {e}")
     return None
+
+
+def try_catalog(pk: str, sess: requests.Session) -> None:
+    """/catalog/<pk>/fileData.json 같은 메타 끝점이 있으면 내용을 찍는다 (다운로드 주소 단서)."""
+    for url in (f"https://www.data.go.kr/catalog/{pk}/fileData.json", f"https://www.data.go.kr/catalog/{pk}/fileData.do"):
+        try:
+            r = sess.get(url, headers={**UA, "Accept": "application/json, text/html"}, timeout=60)
+            ct = r.headers.get("Content-Type", "")
+            print(f"  catalog {url.split('/')[-1]} → HTTP {r.status_code} · {ct[:40]}")
+            if "json" in ct:
+                print("    " + r.text[:1500].replace("\n", " "))
+            else:
+                print("    " + html_text(r, 600))
+        except Exception as e:  # noqa: BLE001
+            print(f"  catalog 실패: {e}")
 
 
 def save_response(r: requests.Response, pk: str, hint: str) -> list[Path]:
@@ -136,13 +172,18 @@ def main(argv: list[str]) -> int:
             print("   call:", c)
         for n in d["names"][:12]:
             print("   name:", n)
+        print("   atch:", d["atch"][:5], "| scripts:", [x for x in d["scripts"] if "data" in x or "file" in x.lower()][:8])
+        print("   forms:", d["forms"][:5])
+        if d["fn"]:
+            print("   fn_fileDataDown 원본:\n" + "\n".join("     " + ln for ln in d["fn"].splitlines()[:40]))
+        try_catalog(pk, sess)
         calls = d["calls"] or [[u] for u in d["uddis"]] or [[x] for x in d["atch"]]
         if a.pick:
             calls = [c for c in calls if any(a.pick in x for x in c)] or calls
         if not (a.probe or a.save):
             continue
         for c in calls[: a.max]:
-            r = try_download(pk, c, sess)
+            r = try_download(pk, c, sess, d["atch"])
             if r is None:
                 continue
             files = save_response(r, pk, hint=next((x for x in c if "." in x), f"{pk}.bin"))

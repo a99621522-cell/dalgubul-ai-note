@@ -206,6 +206,11 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                 rendered = render_html(page)
                 if rendered:
                     html = rendered
+            if "sample_links" not in res:   # 진단용: 목록을 못 읽으면 어떤 링크가 있는지 남긴다
+                soup = BeautifulSoup(html, "html.parser")
+                res["sample_links"] = [(re.sub(r"\s+", " ", a.get_text(" ", strip=True))[:60], urljoin(page, a["href"])[:120])
+                                       for a in soup.find_all("a", href=True) if len(a.get_text(strip=True)) >= 10][:40]
+                res["page_chars"] = len(html)
             for feed in discover_rss(page, html)[:2]:
                 if reqs >= 5:
                     break
@@ -222,6 +227,8 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                     res["items"], res["method"] = items, "목록 페이지"
                     break
     res["status"] = "OK" if res["items"] else ("차단" if res["note"] else ("접속 실패" if failed else "항목 없음"))
+    if res["items"]:
+        res.pop("sample_links", None); res.pop("page_chars", None)
     print(f"  → {res['status']} · {res['method']} · {len(res['items'])}건" + (f" · 최신 {res['items'][0]['date']} {res['items'][0]['title'][:40]}" if res["items"] else ""))
     return res
 

@@ -76,7 +76,7 @@ def companies_block(groups: list[str], sub_counts: dict | None = None, tags: lis
         else:
             bands["값 없음"] += 1
     return {
-        "groups": groups, "firms": len(sel), "employment": w(sel), "covered": sum(1 for r in sel if (r.get("workers") or "").isdigit()),
+        "groups": groups, "ids": [r["id"] for r in sel], "firms": len(sel), "employment": w(sel), "covered": sum(1 for r in sel if (r.get("workers") or "").isdigit()),
         "total_firms": len(rows), "total_employment": w(rows),
         "share_firms_pct": round(len(sel) / len(rows) * 100, 1), "share_employment_pct": round(w(sel) / w(rows) * 100, 1),
         "size_bands": dict(bands), "under_50": sum(1 for r in sel if (r.get("workers") or "").isdigit() and int(r["workers"]) < 50),
@@ -164,6 +164,35 @@ def posts_block(keywords: list[str], weeks: int = 8) -> list[dict]:
     return out
 
 
+NOTICES = ROOT / "data" / "notices" / "notices.csv"
+SUPPORT = ROOT / "scripts" / "data" / "support_history.csv"
+
+
+def notices_block(area_key: str, keywords: list[str], weeks: int = 8) -> list[dict]:
+    """최근 8주 공고(data/notices/notices.csv, collect.py 가 사실만 기록). 분야 key 가 붙었거나 키워드가 제목에 있으면."""
+    if not NOTICES.exists():
+        return []
+    pat = kw_pattern(keywords) if keywords else None
+    since = (date.today() - timedelta(weeks=weeks)).isoformat()
+    out = []
+    for r in csv.DictReader(open(NOTICES, encoding="utf-8")):
+        if r.get("collected", "") < since:
+            continue
+        if area_key in (r.get("areas") or "").split(";") or (pat and pat.search(r.get("title", ""))):
+            out.append(r)
+    return out
+
+
+def support_block(company_ids: set[str], years: int = 3) -> dict:
+    """분야 기업의 지원사업 수혜 이력(최근 n년): 기업 수·건수·기관별·사업별 상위."""
+    if not SUPPORT.exists():
+        return {"firms": 0, "records": 0, "by_funder": [], "by_program": []}
+    y0 = date.today().year - years + 1
+    recs = [r for r in csv.DictReader(open(SUPPORT, encoding="utf-8")) if r.get("id") in company_ids and (r.get("year") or "").isdigit() and int(r["year"]) >= y0]
+    return {"firms": len({r["id"] for r in recs}), "records": len(recs),
+            "by_funder": Counter(r["funder"] for r in recs).most_common(10), "by_program": Counter(r["program"] for r in recs).most_common(10)}
+
+
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--area")
@@ -178,7 +207,9 @@ def main(argv: list[str]) -> int:
         "programs": programs_block(area.get("keywords", [])),
         "city_match": city_match_block(area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
+        "notices_8w": notices_block(area["key"], area.get("keywords", [])),
     }
+    ctx["support_3y"] = support_block(set(ctx["companies"]["ids"]) if ctx["companies"] else set())
     if a.json:
         print(json.dumps(ctx, ensure_ascii=False, indent=1, default=str))
         return 0
@@ -204,6 +235,13 @@ def main(argv: list[str]) -> int:
     print(f"\n[대구시 매칭] {len(ctx['city_match'])}건")
     for m in ctx["city_match"][:10]:
         print(f"  {m.get('대구시 세부사업', '')[:36]} | 시 2026 {m.get('대구시 2026(천원)', '')}천원 | 국비 {m.get('코드', '')} {m.get('국비 2026(백만원)', m.get('산업부 2026(백만원)', ''))}백만원")
+    sb = ctx["support_3y"]
+    print(f"\n[지원사업 수혜 이력 최근 3년] 기업 {sb['firms']:,}곳 · {sb['records']:,}건" + ("" if sb["records"] else " (support_history.csv 비어 있음 — scripts/data/support/ 에 목록 투입)"))
+    for k, v in sb["by_funder"][:6]:
+        print(f"  {k}: {v}건")
+    print(f"\n[최근 8주 공고(데이터)] {len(ctx['notices_8w'])}건")
+    for n in ctx["notices_8w"][:10]:
+        print(f"  {n['collected']} {n['scope']} {n['source'][:14]} | {n['title'][:56]}{' (마감 ' + n['deadline'] + ')' if n.get('deadline') else ''}")
     print(f"\n[최근 8주 글] {len(ctx['posts_8w'])}건")
     for p in ctx["posts_8w"][:15]:
         print(f"  {p['date']} [{p['category']}] {p['title'][:60]}{' (마감 ' + p['deadline'] + ')' if p['deadline'] else ''}{' draft' if p['draft'] else ''}")

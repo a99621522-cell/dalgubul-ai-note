@@ -3,6 +3,6 @@ export const NAV = [
   { key: 'dashboard', name: '현황', href: '/dashboard/' },
   { key: 'industry', name: '산업별', href: '/industry/' },
   { key: 'companies', name: '기업 사전', href: '/companies/' },
-  { key: 'support', name: '지원사업', href: '/support/' },
+  { key: 'programs', name: '사업·예산', href: '/programs/' },
   { key: 'posts', name: '글', href: '/posts/' },
 ] as const;

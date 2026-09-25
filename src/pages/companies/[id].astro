@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
-import { companies, shortComplex } from '../../lib/csv';
+import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon } from '../../lib/csv';
 import { partners } from '../../lib/partners';
 import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
@@ -9,6 +9,9 @@ export async function getStaticPaths() {
 }
 const { c } = Astro.props;
 const pt = partners(c);
+const supportAll = supportOf(c.id);
+const support3y = recentSupport(supportAll, 3);
+const fin = financialsOf(c.name).slice(0, 3);
 const Row = (x: any) => x;
 const related = (await getCollection('posts', p => !p.data.draft))
   .filter(p => p.data.title.includes(c.name) || p.data.summary.includes(c.name) || p.data.tags.includes(c.name))
@@ -50,15 +53,34 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
         ))}
       </div>
     </section>
+    <section class="support" aria-label="지원사업 이력">
+      <div class="section-head"><h2>지원사업 이력 (최근 3년)</h2><span class="meta">{support3y.length}건{supportAll.length > support3y.length && ` · 이전 ${supportAll.length - support3y.length}건`}</span></div>
+      {support3y.length === 0 ? <p class="empty">공개 자료에서 확인된 지원 이력이 없습니다. 지원 이력은 NTIS 과제·대구시 보조금 공개·기관 선정 공고에서 모으며, 비공개 자료는 싣지 않습니다.</p> : (
+        <div class="scroll-x"><table class="data-table">
+          <thead><tr><th>연도</th><th>사업명</th><th>지원기관</th><th>유형</th><th class="n">금액</th><th>출처</th></tr></thead>
+          <tbody>{support3y.map(s => (<tr><td>{s.year}</td><td>{s.program}</td><td>{s.funder}{s.layer && ` (${s.layer})`}</td><td>{s.type || '—'}</td><td class="n">{fmtAmount(s)}</td><td>{s.source_url ? <a href={s.source_url} rel="noopener">{s.source}</a> : s.source}{s.as_of && <span class="meta"> {s.as_of}</span>}</td></tr>))}</tbody>
+        </table></div>
+      )}
+    </section>
+    {fin.length > 0 && (
+      <section class="fin" aria-label="공시 재무">
+        <div class="section-head"><h2>재무 (DART 공시)</h2><span class="meta">{fin[0].fs} 기준</span></div>
+        <div class="scroll-x"><table class="data-table">
+          <thead><tr><th>사업연도</th><th class="n">매출액</th><th class="n">영업이익</th><th class="n">당기순이익</th><th>원문</th></tr></thead>
+          <tbody>{fin.map(f => (<tr><td>{f.year}</td><td class="n">{fmtEokWon(f.revenue)}</td><td class="n">{fmtEokWon(f.operating_income)}</td><td class="n">{fmtEokWon(f.net_income)}</td><td>{f.source_url ? <a href={f.source_url} rel="noopener">사업보고서</a> : '—'}</td></tr>))}</tbody>
+        </table></div>
+        <p class="meta">금융감독원 전자공시 정기보고서의 값을 억 원으로 나눠 표시. 상장·공시대상 기업만 자료가 있습니다.</p>
+      </section>
+    )}
     <section class="section-head"><h2>관련 글</h2></section>
     {related.length > 0 ? <PostList posts={related} /> : <p class="empty">아직 이 기업을 다룬 글이 없습니다. 공개된 뉴스·공시가 수집되면 여기에 쌓입니다.</p>}
     <aside class="source-box">
-      <strong>출처</strong> {c.source}, 기준 {c.as_of}. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아닙니다. 종사자 수는 구간으로만 표시합니다. 인증(벤처·이노비즈), 투자, 특허, 채용 항목은 추후 공개 데이터로 보강합니다. 정정 요청은 소개 페이지 연락처로.
+      <strong>출처</strong> {c.source}, 기준 {c.as_of}. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아닙니다. 종사자 수는 구간으로만 표시합니다. 지원 이력·재무는 공개 자료(NTIS·대구시 보조금 공개·기관 선정 공고·DART)에서만 가져오며 비공개 자료는 싣지 않습니다. 정정 요청은 소개 페이지 연락처로.
     </aside>
   </article>
 </Base>
 <style>
-  .partners { margin-top: 1.5rem; }
+  .partners, .support, .fin { margin-top: 1.5rem; }
   .pt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   @media (max-width: 48rem) { .pt-grid { grid-template-columns: 1fr; } }
   .pt-col h3 { font-size: 0.95rem; margin-bottom: 0.2rem; }

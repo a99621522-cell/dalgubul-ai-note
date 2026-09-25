@@ -9,6 +9,7 @@
 입력
   scripts/data/dalseong_companies.csv   팩토리온 기업 DB (id, complex, district, sector_code, workers, as_of …)
   scripts/data/extra_companies.csv      산단 외 기업(알파시티·특구·창경센터·지식산업센터·창업기업, import_extra.py) + company_tags.csv
+  scripts/data/support_history.csv      지원사업 수혜 이력(import_support.py) → 축별 support_3y(기업 수·건수·합산 금액)
   data/nps/YYYYMM.csv                   국민연금 사업장 가입현황 대구분 (선택). 열 이름은 NPS_COLS 의 후보 가운데 하나면 된다
   config/industry_groups.yml            산업 그룹 규칙 (scripts/industry.py 가 읽음)
   scripts/state/dart_corp.json          DART 대구 기업 캐시 (공시 기업 수 계산용, 매출은 자료 없음 → null)
@@ -35,7 +36,7 @@ import csv
 import json
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
@@ -157,6 +158,46 @@ def match_nps(companies: list[dict], nps: list[dict]) -> dict[str, dict]:
     return matched
 
 
+SUPPORT = ROOT / "scripts" / "data" / "support_history.csv"
+UNIT_WON = {"원": 1, "천원": 1_000, "백만원": 1_000_000, "억원": 100_000_000}
+
+
+def load_support(years: int = 3) -> dict[str, list[dict]]:
+    """기업 id → 최근 n년 지원 이력. 금액은 단위를 원으로 통일해 합산할 수 있게 amount_won 을 붙인다(단위 모르면 None)."""
+    out: dict[str, list[dict]] = {}
+    if not SUPPORT.exists():
+        return out
+    y0 = date.today().year - years + 1
+    for r in csv.DictReader(open(SUPPORT, encoding="utf-8")):
+        if not r.get("id") or not (r.get("year") or "").isdigit() or int(r["year"]) < y0:
+            continue
+        won = None
+        if r.get("amount"):
+            try:
+                won = float(r["amount"]) * UNIT_WON.get((r.get("amount_unit") or "원").replace(" ", ""), 0) or None
+            except ValueError:
+                won = None
+        r["amount_won"] = won
+        out.setdefault(r["id"], []).append(r)
+    return out
+
+
+_support_cache: dict[str, list[dict]] | None = None
+
+
+def support_metrics(cs: list[dict]) -> dict:
+    """지원사업 수혜(최근 3년): 기업 수·이력 건수·합산 금액(원, 단위가 있는 건만)·국비/시비 건수."""
+    global _support_cache
+    if _support_cache is None:
+        _support_cache = load_support()
+    recs = [r for c in cs for r in _support_cache.get(c["id"], [])]
+    firms = {r["id"] for r in recs}
+    known = [r["amount_won"] for r in recs if r["amount_won"]]
+    layers = Counter((r.get("layer") or "미상") for r in recs)
+    return {"firms": len(firms), "records": len(recs), "amount_won": int(sum(known)) if known else None, "amount_known_records": len(known),
+            "by_layer": dict(layers)} if recs else {"firms": 0, "records": 0, "amount_won": None, "amount_known_records": 0, "by_layer": {}}
+
+
 def load_dart_names() -> set[str]:
     if not DART.exists():
         return set()
@@ -224,8 +265,9 @@ def metrics(cs: list[dict], nps: dict[str, dict] | None, prev: dict[str, list] |
         "new_firms": new_firms,
         "closed_firms": closed_firms,
         "dart_firms": sum(1 for c in cs if norm_name(c["name"]) in dart) if dart else None,
-        "dart_revenue": None,      # 재무 자료 없음 (DART 재무 API 미연결)
-        "projects_12m": None,      # 과제 선정 자료 없음 (NTIS 미연결)
+        "dart_revenue": None,      # 개별 기업 재무는 company_financials.csv(collect_dart_fin.py); 축 합산은 하지 않는다
+        "projects_12m": None,      # (구) 과제 선정 → support_3y 로 대체
+        "support_3y": support_metrics(cs),  # 지원사업 수혜 최근 3년 (support_history.csv)
         "mom": None, "yoy": None,  # 아래 attach_deltas 가 채움
     }
 

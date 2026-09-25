@@ -99,3 +99,22 @@ export function byDistrict() {
   }
   return [...m.entries()].map(([name, v]) => ({ name, ...v })).sort((a, b) => b.workers - a.workers);
 }
+
+/** 지원사업 수혜 이력(scripts/data/support_history.csv, import_support.py). 공개 자료만, 금액은 원문 단위 그대로. */
+export type Support = { id: string; name: string; district: string; year: string; layer: string; funder: string; program: string; type: string; amount: string; amount_unit: string; source: string; source_url: string; as_of: string };
+let _support: Support[] | null = null;
+export const supportHistory = () => (_support ??= readCsv('scripts/data/support_history.csv') as Support[]);
+export const supportOf = (id: string) => supportHistory().filter(s => s.id === id).sort((a, b) => b.year.localeCompare(a.year));
+/** 최근 n년(올해 포함) 안의 이력만 */
+export const recentSupport = (rows: Support[], years = 3) => { const y = new Date().getFullYear() - years + 1; return rows.filter(r => Number(r.year) >= y); };
+/** 금액 표시: 원문 단위 그대로 (환산하지 않는다) */
+export const fmtAmount = (s: Support) => (s.amount ? `${Number(s.amount).toLocaleString('ko-KR')} ${s.amount_unit || '원'}` : '금액 미공개');
+
+/** DART 재무(scripts/data/company_financials.csv, collect_dart_fin.py). 상장·공시대상 기업만. */
+export type Financial = { corp_code: string; name: string; year: string; fs: string; revenue: string; operating_income: string; net_income: string; unit: string; rcept_no: string; source_url: string; as_of: string };
+let _fin: Financial[] | null = null;
+export const financials = () => (_fin ??= readCsv('scripts/data/company_financials.csv') as Financial[]);
+const normName = (s: string) => (s || '').replace(/\(주\)|㈜|\(유\)|주식회사|유한회사/g, '').replace(/[\s\-_.,·ㆍ&/()\[\]'"]/g, '').toLowerCase();
+export const financialsOf = (name: string) => financials().filter(f => normName(f.name) === normName(name)).sort((a, b) => b.year.localeCompare(a.year));
+/** 원 → 억 원 표시 (공시 값 그대로 나눈 것) */
+export const fmtEokWon = (won: string) => { const n = Number(won); return won && Number.isFinite(n) ? `${(n / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원` : '—'; };

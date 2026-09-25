@@ -7,11 +7,14 @@ import Chart from '../components/Chart.astro';
 import PostList from '../components/PostList.astro';
 import { getCollection } from 'astro:content';
 import { monthly, monthLabel } from '../lib/stats';
+import { supportHistory, recentSupport } from '../lib/csv';
 
 const all = (await getCollection('posts', p => !p.data.draft)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const latest = all.slice(0, 5);
 const today = new Date(); today.setHours(0, 0, 0, 0);
-const openPrograms = all.filter(p => p.data.deadline && p.data.deadline >= today).length;
+const sup3 = recentSupport(supportHistory(), 3);
+const supportedFirms = new Set(sup3.filter(s => s.id).map(s => s.id)).size;
+const hasSupport = supportHistory().length > 0;
 
 const m = monthly();
 const ym = m ? monthLabel(m.month) : '';
@@ -21,7 +24,7 @@ const tiles: Tile[] = m ? [
   { label: '고용 인원', value: m.total.employment, unit: '명', delta: m.total.mom?.employment ?? null,
     sub: `${ym} 기준 · ${m.basis_label} · 집계 대상 ${m.total.covered.toLocaleString('ko-KR')}곳(${pct(m.total.covered, m.total.firms)})` },
   { label: '이달 신규 등록 기업', value: m.total.new_firms, unit: '곳', sub: m.total.new_firms === null ? `${ym} 기준 · 전월 자료가 쌓이면 표시` : `${ym} 기준 · 전월 대비 새로 등록` },
-  { label: '진행 중 지원사업 공고', value: openPrograms, unit: '건', sub: `오늘 기준 마감 전 공고 · 기업마당·기관 공고`, href: '/support/' },
+  { label: '지원사업 수혜 기업 (최근 3년)', value: hasSupport ? supportedFirms : null, unit: '곳', sub: hasSupport ? `NTIS·대구시 보조금 공개·기관 선정 공고 기준 · 이력 ${sup3.length.toLocaleString('ko-KR')}건` : '공개 자료(NTIS·보조금 공개·선정 공고) 투입 전', href: '/programs/' },
 ] : [];
 const description = m
   ? `대구 공장등록 기업 ${m.total.firms.toLocaleString('ko-KR')}곳, 고용 인원 ${m.total.employment.toLocaleString('ko-KR')}명(${ym}, ${m.basis_label}). 산업별 기업 수·고용과 24개월 추이, 기업 사전, 지원사업 공고.`

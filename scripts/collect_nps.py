@@ -61,9 +61,14 @@ def cfg() -> dict:
 
 
 def pick(row: dict, key: str) -> str:
+    """열 이름이 '사업장가입상태코드 1 등록 2 탈퇴'처럼 설명이 붙어 있어 접두어로 맞춘다."""
     for c in COLS[key]:
         if c in row and row[c] is not None:
             return str(row[c]).strip()
+    for c in COLS[key]:
+        for k, v in row.items():
+            if k and k.replace(" ", "").startswith(c) and v is not None:
+                return str(v).strip()
     return ""
 
 

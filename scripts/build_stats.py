@@ -98,6 +98,10 @@ def pick(row: dict, key: str) -> str:
     for c in NPS_COLS[key]:
         if c in row and row[c] is not None:
             return str(row[c]).strip()
+    for c in NPS_COLS[key]:  # '사업장가입상태코드 1 등록 2 탈퇴'처럼 설명이 붙은 열 이름
+        for k, v in row.items():
+            if k and k.replace(" ", "").startswith(c) and v is not None:
+                return str(v).strip()
     return ""
 
 
@@ -498,8 +502,9 @@ def main(argv: list[str]) -> int:
     fo_month = companies[0]["as_of"].replace("-", "")[:6]
     nps_months = sorted(p.stem for p in NPS_DIR.glob("??????.csv")) if NPS_DIR.is_dir() else []
 
+    # 국민연금 파일이 하나라도 있으면 그 달들만 집계한다(근거가 다른 달을 한 시계열에 섞지 않기 위해). 없으면 팩토리온 기준월 하나
     if a.backfill:
-        months = sorted(set(nps_months) | {fo_month})
+        months = nps_months or [fo_month]
     elif a.month:
         months = [a.month]
     else:

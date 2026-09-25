@@ -1,0 +1,76 @@
+name: 공공데이터 파일 받아오기 (지식산업센터·국민연금·DART 재무)
+
+# Claude Code 세션 환경은 공공데이터포털·DART 접속이 막혀 있어, 이 워크플로가 대신 받는다.
+# mode=probe: 페이지 구조와 다운로드 응답만 출력하고 파일은 artifact 로 올린다 (커밋 없음)
+# mode=save : 받은 파일로 지식산업센터 건물 목록·국민연금 대구 사업장·DART 재무를 갱신하고 커밋한다
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe | save"
+        required: true
+        default: "probe"
+      ids:
+        description: "data.go.kr 파일데이터 번호(공백 구분)"
+        required: false
+        default: "15117154 15083277"
+      pick:
+        description: "파일이 여럿일 때 고를 문자열(예: 2026)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt pandas openpyxl
+      - name: 공공데이터포털 파일 (${{ inputs.mode }})
+        env:
+          MODE: ${{ inputs.mode }}
+          IDS: ${{ inputs.ids }}
+          PICK: ${{ inputs.pick }}
+        run: |
+          set +e
+          if [ "$MODE" = "save" ]; then FLAG=--save; else FLAG=--probe; fi
+          python3 scripts/fetch_datago.py $FLAG $IDS ${PICK:+--pick "$PICK"} --max 3
+          echo "fetch exit=$?"
+      - name: DART 재무 (DART_KEY 가 있을 때)
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+        run: |
+          set +e
+          python3 scripts/collect_dart_fin.py --years 3
+          echo "dart_fin exit=$?"
+      - name: 받은 파일 처리 (save 일 때)
+        if: inputs.mode == 'save'
+        run: |
+          set +e
+          for f in data/raw/15117154/*; do case "$f" in *.csv|*.xlsx|*.xls) python3 scripts/import_kic.py "$f" --as-of "$(date -u +%Y-%m)";; esac; done
+          for f in data/raw/15083277/*.csv; do [ -f "$f" ] && python3 scripts/collect_nps.py --file "$f"; done
+          python3 scripts/sites.py
+          python3 scripts/build_stats.py --backfill
+          python3 scripts/render_charts.py
+      - name: artifact (받은 원본)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-${{ github.run_id }}
+          path: data/raw
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: 커밋 (save 일 때)
+        if: inputs.mode == 'save'
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add scripts/data/kic_buildings.csv scripts/data/company_financials.csv data/nps data/stats src/generated
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 공공데이터 파일 반영 $(date -u +%Y-%m-%d)"
+          git push

@@ -201,6 +201,9 @@ def crawl_org(org: dict, cfg: dict, sess: requests.Session, robots: dict) -> lis
                 kind = kind_of(name, data)
                 if not kind:
                     continue
+                if min_year and too_old(name, min_year):   # 링크 글자에 연도가 없어 받은 뒤에야 옛 자료임을 아는 경우
+                    print(f"  옛 자료 건너뜀: {name[:60]}")
+                    continue
                 name = safe(name)
                 (raw_dir / name).write_bytes(data)
                 files += 1

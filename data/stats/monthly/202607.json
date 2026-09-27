@@ -1,6 +1,6 @@
 {
  "month": "2026-07",
- "generated": "2026-09-27 14:02",
+ "generated": "2026-09-27 14:06",
  "basis": "nps",
  "basis_label": "국민연금 가입자수",
  "sources": {
@@ -37,12 +37,12 @@
   "dart_revenue": null,
   "projects_12m": null,
   "support_3y": {
-   "firms": 398,
-   "records": 629,
+   "firms": 400,
+   "records": 631,
    "amount_won": 9925589000,
    "amount_known_records": 28,
    "by_layer": {
-    "국비": 629
+    "국비": 631
    }
   },
   "mom": null,
@@ -188,12 +188,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 28,
-    "records": 36,
+    "firms": 29,
+    "records": 37,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 36
+     "국비": 37
     }
    },
    "mom": null,
@@ -278,12 +278,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 1,
-    "records": 1,
+    "firms": 2,
+    "records": 2,
     "amount_won": null,
     "amount_known_records": 0,
     "by_layer": {
-     "국비": 1
+     "국비": 2
     }
    },
    "mom": null,
@@ -460,12 +460,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 52,
-    "records": 74,
+    "firms": 53,
+    "records": 75,
     "amount_won": 1865000000,
     "amount_known_records": 5,
     "by_layer": {
-     "국비": 74
+     "국비": 75
     }
    },
    "mom": null,
@@ -490,12 +490,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 99,
-    "records": 141,
+    "firms": 100,
+    "records": 142,
     "amount_won": 5846589000,
     "amount_known_records": 13,
     "by_layer": {
-     "국비": 141
+     "국비": 142
     }
    },
    "mom": null,
@@ -1116,12 +1116,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 120,
-    "records": 181,
+    "firms": 122,
+    "records": 183,
     "amount_won": 179000000,
     "amount_known_records": 1,
     "by_layer": {
-     "국비": 181
+     "국비": 183
     }
    },
    "mom": null,
@@ -1476,12 +1476,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 37,
-    "records": 57,
+    "firms": 38,
+    "records": 58,
     "amount_won": 579000000,
     "amount_known_records": 2,
     "by_layer": {
-     "국비": 57
+     "국비": 58
     }
    },
    "mom": null,
@@ -1536,12 +1536,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 141,
-    "records": 203,
+    "firms": 142,
+    "records": 204,
     "amount_won": 7711589000,
     "amount_known_records": 18,
     "by_layer": {
-     "국비": 203
+     "국비": 204
     }
    },
    "mom": null,
@@ -1568,12 +1568,12 @@
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 116,
-    "records": 172,
+    "firms": 118,
+    "records": 174,
     "amount_won": 4358706000,
     "amount_known_records": 20,
     "by_layer": {
-     "국비": 172
+     "국비": 174
     }
    },
    "mom": null,

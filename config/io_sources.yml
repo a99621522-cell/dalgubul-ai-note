@@ -4,8 +4,8 @@
 version: 2026-09-25
 # API 로 받기 (scripts/fetch_io_api.py). 키는 GitHub Secrets ECOS_KEY(한국은행 Open API 인증키, ecos.bok.or.kr/api) / DATA_GO_KR_KEY(공공데이터포털)
 api:
-  ecos_stat: ""            # ECOS 통계표 코드. 비우면 ecos_name_pattern 으로 목록에서 고른다 (--list 로 목록 확인)
-  ecos_year: 2023
+  ecos_stat: "271Y120 271Y008"   # ECOS 통계표 코드(공백 구분, 여럿 가능). 2026-09-27 목록 확인: API 에는 기본부문 표가 없고 대·중분류만 있다. 271Y120 = 2.2.1 투입산출표 총거래표(생산자가격, 중분류), 271Y008 = 2.2.2 (이전 기준년) 대분류. 비우면 ecos_name_pattern 으로 고른다
+  ecos_year: 2023          # 이 연도에 자료가 없으면 fetch_io_api.py 가 2022→2021→2020 순으로 내려간다
   ecos_name_pattern: "생산자가격.*(기본부문|기본)|기본부문.*생산자가격"
   datago_url: ""           # 공공데이터포털 한국은행_산업연관표(15059627) 요청주소를 여기 적으면 전부 받아 datago_*.csv 로 저장하고 열 이름을 출력
 file_pattern: "거래표|부문분류|기본부문|통계표|연장표|산업연관표|투입산출|분류표|xlsx|zip"

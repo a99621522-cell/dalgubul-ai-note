@@ -30,10 +30,10 @@ def download(item: str, dest: Path) -> list[Path]:
     before = set(dest.rglob("*"))
     if item.startswith("folder:"):
         fid = drive_id(item[7:])
-        cmd = ["gdown", "--folder", "--remaining-ok", "-O", str(dest), f"https://drive.google.com/drive/folders/{fid}"]
+        cmd = ["gdown", "--folder", "-O", str(dest), f"https://drive.google.com/drive/folders/{fid}"]
     else:
         fid = drive_id(item)
-        cmd = ["gdown", "--fuzzy", "-O", str(dest) + "/", f"https://drive.google.com/uc?id={fid}"]
+        cmd = ["gdown", "-O", str(dest) + "/", fid]   # 최신 gdown 은 --fuzzy 옵션이 없다. id 를 그대로 준다
     if not fid:
         print(f"::warning::Drive id 를 못 읽음: {item}")
         return []

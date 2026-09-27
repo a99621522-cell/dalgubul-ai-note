@@ -1,0 +1,60 @@
+name: Drive 큰 PDF 글자 뽑기 (OCR → 아티팩트)
+
+# 운영 세션의 Drive 커넥터는 스캔 PDF(이미지)에서 글자를 못 얻는다. 이 워크플로가 러너에서 파일을 받아
+# tesseract(kor+eng)로 쪽마다 글자를 뽑고 결과 txt 를 아티팩트(7일)로만 남긴다. 저장소에는 아무것도 커밋하지 않는다.
+# 파일은 Drive 에서 '링크가 있는 모든 사용자' 로 공유돼 있어야 한다(폴더 공유면 folder:<폴더id>).
+# 실행: Actions → 이 워크플로 → Run workflow → files 에 Drive 파일 id 나 링크(공백 구분).
+# 결과 받기(운영 세션): GitHub API 로 아티팩트 zip 을 받아 요약 JSON(data/refs)만 남긴다. 절차는 data/refs/README.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      files:
+        description: "Drive 파일 id 또는 공유 링크(공백·쉼표 구분). folder:<폴더id> 면 폴더 전체"
+        required: true
+      dpi:
+        description: "렌더 해상도(기본 200, 흐린 스캔은 300)"
+        required: false
+        default: "200"
+      lang:
+        description: "tesseract 언어(기본 kor+eng)"
+        required: false
+        default: "kor+eng"
+
+permissions:
+  contents: read
+
+jobs:
+  ocr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/drive_ocr.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 도구 설치
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils tesseract-ocr tesseract-ocr-kor > /dev/null
+          pip install -q gdown
+          tesseract --version | head -1; tesseract --list-langs | tr '\n' ' '; echo
+      - name: 받기 + OCR
+        env:
+          FILES: ${{ inputs.files }}
+        run: python3 scripts/drive_ocr.py --files "$FILES" --dpi "${{ inputs.dpi }}" --lang "${{ inputs.lang }}" --out ocr
+      - name: 결과 요약
+        if: always()
+        run: |
+          { echo "## OCR 결과"; echo; echo '| 파일 | 쪽 | OCR 쪽 | 글자 수 | 빈 쪽 | 시간 |'; echo '|---|---:|---:|---:|---:|---:|';
+            python3 -c "import json;[print(f\"| {r['file']} | {r['pages']} | {r['ocr_pages']} | {r['chars']:,} | {r['empty_pages']} | {r['seconds']}s |\") for r in json.load(open('ocr/index.json'))]" 2>/dev/null || echo '| (없음) | | | | | |'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: drive-ocr-${{ github.run_number }}
+          path: ocr/
+          retention-days: 7
+          if-no-files-found: warn

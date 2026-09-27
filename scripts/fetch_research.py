@@ -420,6 +420,7 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
             method = ("첫 화면" if is_home else "목록 페이지") + ("(날짜 없음, 목록 순서)" if org.get("undated") else "")
             if not items and not is_home:
                 items, method = from_rows(page, html, (org["name"], org["name"].split("(")[0].strip())), "목록 페이지(행)"
+            raw_n = len(items)
             if items and org.get("keep_pattern"):   # 제목(행 클릭형 목록은 행 전체 글자)에 이 정규식이 맞는 항목만 (경제단체 보도자료에서 규제·건의 글만 고를 때)
                 kp = re.compile(org["keep_pattern"])
                 items = [i for i in items if kp.search(i.get("title", "") + " " + i.get("ctx", ""))]
@@ -429,6 +430,7 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
             if org.get("paginate") and page in (org.get("lists") or []):
                 seen_t = {i["title"] for i in acc}
                 acc += [i for i in items if i["title"] not in seen_t]
+                res.setdefault("page_counts", []).append(f"{page.rsplit('=', 1)[-1]}:{raw_n}/{len(items)}")   # 쪽:읽은 행/걸러 남은 행 (진단용)
                 res["method"] = method + f"(쪽 {len(org.get('lists') or [])}개)"
                 continue
             if items:

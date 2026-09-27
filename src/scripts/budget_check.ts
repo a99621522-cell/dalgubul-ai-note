@@ -1,8 +1,10 @@
 /**
- * 예산서·결산서 지침 검토기 — /programs/guidelines/check/
- * 사용자가 고른 PDF·HWPX·TXT 파일을 브라우저 안에서만 읽어(서버·AI 호출 없음, 파일은 밖으로 나가지 않는다)
- * 지침 검토표(data/guidelines/checks/*.json)의 항목마다 자동 판정 규칙(rules.json)을 돌리고
- * 확인됨 / 보완 필요 / 검토 필요 / 미확인 / 직접 확인 으로 나눠 '어디를 어떻게 고칠지'를 표로 보여 준다.
+ * 사업계획서 지침 검토기 — /programs/guidelines/check/
+ * 예산을 집행하는 사업계획서(보조사업 계획서·연구개발계획서; 집행 서류·정산보고서도 가능)를 PDF·HWPX·TXT 로 올리면
+ * 브라우저 안에서만 읽어(서버·AI 호출 없음, 파일은 밖으로 나가지 않는다) 먼저 계획서 구성(목적·내용·체계·일정·예산 산출근거·성과지표·집행 방법·정산 계획)을 점검하고,
+ * 지침 검토표(data/guidelines/checks/*.json)의 항목마다 자동 판정 규칙(rules.json)을 돌려
+ * 계획에 있음 / 보완 필요 / 검토 필요 / 계획에 없음 / 집행 때 확인 으로 나눠 '어디를 어떻게 고칠지'를 표로 보여 준다.
+ * 사업계획서는 집행 방법과 정산 절차까지 계획에 적혀야 하므로 세 단계(작성·집행·정산) 항목을 모두 대조한다.
  * 규칙은 공백을 뺀 글자에 정규식을 맞추는 참고용이며 조문 대조는 담당자가 한다(평가·판단 아님).
  * PDF 글자 추출은 pdf.js(pdfjs-dist, 빌드에 묶임)를 파일을 고른 뒤에만 불러 쓴다. HWPX 는 zip 을 DecompressionStream 으로 풀어 section*.xml 의 글자를 모은다.
  */
@@ -13,11 +15,14 @@ import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 type Item = { id: string; stage: string; item: string; check: string; basis: string; quote: string; doc: string };
 type Check = { key: string; name: string; eff: string; status: string; items: Item[] };
 type Rule = { type: string; patterns?: string[]; warn?: string[]; then?: string[]; cond?: string; pattern?: string; amount?: string; frm?: string; to?: string; min?: number; max?: number; max_days?: number; fix?: string };
-type Data = { checks: Check[]; rules: { doc_patterns: Record<string, string[]>; stage_patterns: Record<string, string[]>; items: Record<string, Rule> }; index: Record<string, { name: string; eff: string; url: string; issuer: string }> };
+type Section = { name: string; patterns: string[]; basis: string; fix: string };
+type Data = { checks: Check[]; rules: { doc_patterns: Record<string, string[]>; stage_patterns: Record<string, string[]>; plan_patterns?: string[]; plan_sections?: Section[]; items: Record<string, Rule> }; index: Record<string, { name: string; eff: string; url: string; issuer: string }> };
 type Verdict = 'ok' | 'fix' | 'review' | 'none' | 'manual' | 'na';
 type Result = { item: Item; v: Verdict; found: string; how: string };
 
-const LABEL: Record<Verdict, string> = { ok: '확인됨', fix: '보완 필요', review: '검토 필요', none: '미확인', manual: '직접 확인', na: '해당 없음' };
+const LABEL: Record<Verdict, string> = { ok: '계획에 있음', fix: '보완 필요', review: '검토 필요', none: '계획에 없음', manual: '집행 때 확인', na: '해당 없음' };
+const STAGE_TITLE: Record<string, string> = { '예산요구서': '계획 작성(예산요구서 단계)', '집행': '집행 방법(계획에 적힌 집행 절차)', '결산서': '정산·사후관리(계획에 적힌 정산 절차)' };
+const STAGE_PREFIX: Record<string, string> = { '예산요구서': '', '집행': '집행 계획에 적을 것 — ', '결산서': '정산·사후관리 계획에 적을 것 — ' };
 const STAGES = ['예산요구서', '집행', '결산서'];
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
@@ -84,7 +89,7 @@ function score(t: string, pats: Record<string, string[]>): [string, number][] {
   return Object.entries(pats).map(([k, ps]) => [k, ps.reduce((s, x) => s + (t.match(new RegExp(x, 'gi'))?.length ?? 0), 0)] as [string, number]).sort((a, b) => b[1] - a[1]);
 }
 function judge(t: string, it: Item, r: Rule | undefined): Result {
-  const how = r?.fix || it.check;
+  const how = (STAGE_PREFIX[it.stage] || '') + (r?.fix || it.check);
   if (!r || r.type === 'manual') return { item: it, v: 'manual', found: '', how };
   const hit = (ps: string[]) => ps.map(x => t.match(re(x))).filter(Boolean) as RegExpMatchArray[];
   const warnHits = r.warn ? hit(r.warn) : [];
@@ -144,16 +149,23 @@ function render(): void {
   const meta = d.index[key];
   const counts: Record<Verdict, number> = { ok: 0, fix: 0, review: 0, none: 0, manual: 0, na: 0 };
   const sections: string[] = [];
+  const secs = d.rules.plan_sections ?? [];
+  if (secs.length) {
+    const rows = secs.map(sec => { const miss = sec.patterns.filter(x => !text.match(re(x))).map(x => x.split('|')[0]); return { sec, miss }; });
+    const nmiss = rows.filter(r => r.miss.length).length;
+    sections.push(`<h3>계획서 구성 점검 (${secs.length}개 중 빠진 것 ${nmiss})</h3><div class="scroll-x"><table class="data-table check-table"><thead><tr><th>구성</th><th>판정</th><th>빠진 것</th><th>고칠 방법</th><th>근거</th></tr></thead><tbody>` +
+      rows.map(r => `<tr class="${r.miss.length ? 'v-fix' : ''}"><td>${esc(r.sec.name)}</td><td><span class="verdict ${r.miss.length ? (r.miss.length === r.sec.patterns.length ? 'none' : 'fix') : 'ok'}">${r.miss.length ? (r.miss.length === r.sec.patterns.length ? '계획에 없음' : '보완 필요') : '계획에 있음'}</span></td><td class="found">${esc(r.miss.join(', ') || '—')}</td><td>${esc(r.sec.fix)}</td><td class="quote">${esc(r.sec.basis)}</td></tr>`).join('') + '</tbody></table></div>');
+  }
   for (const s of stages) {
     const rows = check.items.filter(i => i.stage === s).map(i => judge(text, i, d.rules.items[`${key}/${i.id}`]));
     results[s] = rows; rows.forEach(r => counts[r.v]++);
-    sections.push(`<h3>${s} 검토 (${rows.length})</h3><div class="scroll-x"><table class="data-table check-table"><thead><tr><th>번호</th><th>판정</th><th>검토 항목</th><th>문서에서 찾은 것</th><th>고칠 방법</th><th>근거</th></tr></thead><tbody>` +
+    sections.push(`<h3>${STAGE_TITLE[s] || s} (${rows.length})</h3><div class="scroll-x"><table class="data-table check-table"><thead><tr><th>번호</th><th>판정</th><th>검토 항목</th><th>문서에서 찾은 것</th><th>고칠 방법</th><th>근거</th></tr></thead><tbody>` +
       rows.map((r, n) => `<tr class="v-${r.v}"><td class="n">${n + 1}</td><td><span class="verdict ${r.v}">${LABEL[r.v]}</span></td><td>${esc(r.item.item)}</td><td class="found">${esc(r.found)}</td><td>${esc(r.how)}<div class="meta">서류: ${esc(r.item.doc)}</div></td><td>${esc(r.item.basis)}<div class="quote">${esc(r.item.quote)}</div></td></tr>`).join('') + '</tbody></table></div>');
   }
   const todo = counts.fix + counts.review;
   out.innerHTML = `<div class="section-head"><h2>검토 결과 · ${esc(fileName)}</h2><span class="meta">${esc(meta?.name || check.name)} · 시행 ${esc(meta?.eff || check.eff)} · ${stages.join('·')} ${check.items.filter(i => stages.includes(i.stage)).length}항목</span></div>
-    <p class="summary"><strong>고칠 곳 ${todo}건</strong>(보완 필요 ${counts.fix}, 검토 필요 ${counts.review}) · 확인됨 ${counts.ok} · 미확인 ${counts.none} · 직접 확인 ${counts.manual} · 해당 없음 ${counts.na}</p>
-    <p class="meta">판정은 문서 글자에 규칙을 맞춘 참고용입니다. 「미확인」은 문서에서 관련 낱말을 못 찾은 것이므로 다른 서류에 있을 수 있고, 「직접 확인」은 문서만으로 판정할 수 없는 항목입니다. 조문(근거 열)은 지침 본문을 그대로 옮긴 것이며 최종 판단은 담당자가 합니다.</p>
+    <p class="summary"><strong>고칠 곳 ${todo}건</strong>(보완 필요 ${counts.fix}, 검토 필요 ${counts.review}) · 계획에 있음 ${counts.ok} · 계획에 없음 ${counts.none} · 집행 때 확인 ${counts.manual} · 해당 없음 ${counts.na}</p>
+    <p class="meta">판정은 계획서 글자에 규칙을 맞춘 참고용입니다. 「계획에 없음」은 관련 낱말을 못 찾은 것이므로 계획서에 그 절차를 적거나 별도 서류로 갖추면 되고, 「집행 때 확인」은 계획서만으로 판정할 수 없어 집행·정산 단계에서 볼 항목입니다. 조문(근거 열)은 지침 본문을 그대로 옮긴 것이며 최종 판단은 담당자가 합니다.</p>
     <div class="tools co-actions"><button class="btn" id="bc-hwp" type="button">검토 의견서 HWP</button><button class="btn secondary" id="bc-print" type="button">인쇄·PDF</button></div>` + sections.join('');
   out.querySelectorAll<HTMLTableElement>('table.data-table').forEach(attach);
   $('bc-hwp')!.addEventListener('click', hwp); $('bc-print')!.addEventListener('click', () => window.print());
@@ -166,10 +178,10 @@ async function hwp(): Promise<void> {
   try {
     btn.disabled = true; btn.textContent = '만드는 중…';
     const blocks: Block[] = [p('kicker', [`지침 검토 의견서  ·  ${today()}  ·  다잇다 노트`, 'kicker']), p('title', [`「${meta?.name || check.name}」 대조 결과`, 'title']), p('rule', ['', 'caption']),
-      p('body', [`검토 문서: ${fileName}. 대조 지침: ${meta?.name || check.name}(시행 ${meta?.eff || check.eff}). 브라우저 규칙 검토 결과이며 최종 판단은 담당자가 한다.`, 'body'])];
+      p('body', [`검토 문서(사업계획서): ${fileName}. 대조 지침: ${meta?.name || check.name}(시행 ${meta?.eff || check.eff}). 브라우저 규칙 검토 결과이며 최종 판단은 담당자가 한다.`, 'body'])];
     for (const [s, rows] of Object.entries(results)) {
       const todo = rows.filter(r => r.v === 'fix' || r.v === 'review');
-      blocks.push(p('h3', [`${s} — 고칠 곳 ${todo.length}건 / 확인됨 ${rows.filter(r => r.v === 'ok').length} / 미확인 ${rows.filter(r => r.v === 'none').length} / 직접 확인 ${rows.filter(r => r.v === 'manual').length}`, 'h3']));
+      blocks.push(p('h3', [`${STAGE_TITLE[s] || s} — 고칠 곳 ${todo.length}건 / 계획에 있음 ${rows.filter(r => r.v === 'ok').length} / 계획에 없음 ${rows.filter(r => r.v === 'none').length} / 집행 때 확인 ${rows.filter(r => r.v === 'manual').length}`, 'h3']));
       const list = todo.length ? todo : rows.filter(r => r.v !== 'na');
       blocks.push(table([['판정', '검토 항목', '문서에서 찾은 것', '고칠 방법', '근거'], ...list.map(r => [LABEL[r.v], r.item.item, r.found, r.how, `${r.item.basis} — ${r.item.quote}`])], { widths: [5000, 12000, 10000, 13188, 8000] }));
       blocks.push(p('spacer', ['', 'caption']));
@@ -189,11 +201,12 @@ async function onFile(file: File): Promise<void> {
     const docS = score(text, d.rules.doc_patterns); const stS = score(text, d.rules.stage_patterns);
     const sel = $<HTMLSelectElement>('bc-key')!;
     if (!sel.dataset.user && docS[0][1] > 0) sel.value = docS[0][0];
+    const isPlan = (d.rules.plan_patterns ?? []).some(x => text.match(re(x)));
     if (!sel.dataset.stageUser) {
       const top = stS.filter(s => s[1] > 0).map(s => s[0]);
-      STAGES.forEach(s => { ($<HTMLInputElement>(`bc-stage-${s}`)!).checked = top.length ? top.slice(0, 2).includes(s) : true; });
+      STAGES.forEach(s => { ($<HTMLInputElement>(`bc-stage-${s}`)!).checked = isPlan || !top.length ? true : top.slice(0, 2).includes(s); });
     }
-    st.textContent = `글자 ${text.length.toLocaleString('ko-KR')}자 읽음 · 지침 판정: ${docS.filter(x => x[1] > 0).slice(0, 3).map(x => `${d.index[x[0]]?.name || x[0]}(${x[1]})`).join(', ') || '단서 없음(직접 고르세요)'} · 문서 종류 단서: ${stS.filter(x => x[1] > 0).map(x => `${x[0]}(${x[1]})`).join(', ') || '없음'}`;
+    st.textContent = `글자 ${text.length.toLocaleString('ko-KR')}자 읽음 · 지침 판정: ${docS.filter(x => x[1] > 0).slice(0, 3).map(x => `${d.index[x[0]]?.name || x[0]}(${x[1]})`).join(', ') || '단서 없음(직접 고르세요)'} · 문서 종류: ${isPlan ? '사업계획서(작성·집행·정산 세 단계 모두 대조)' : (stS.filter(x => x[1] > 0).map(x => `${x[0]}(${x[1]})`).join(', ') || '단서 없음')}`;
     render();
   } catch (e) { st.textContent = '읽기 실패: ' + ((e as Error).message || '지원하지 않는 파일'); }
 }

@@ -3,10 +3,22 @@
  "name": "EU 집행위 Press corner",
  "group": "해외 정부",
  "home": "https://ec.europa.eu",
- "fetched": "2026-09-25",
+ "fetched": "2026-09-27",
  "status": "OK",
  "method": "rss(/commission/presscorner/api/rss?language)",
  "items": [
+  {
+   "title": "Wystąpienie komisarza Piotra Serafina podczas XXVI Międzynarodowej Konferencji „Rola chrześcijan w procesie integracji europejskiej” pt. „Europa skazana na podział czy zjednoczenie?”",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1989",
+   "date": "2026-09-26",
+   "summary": "European Commission Speech Krakow, 26 Sep 2026 Szanowni Państwo, Pytacie Państwo czy „Europa jest skazana na podział czy na jedność?”. Chce udzielić na to pytanie optymistycznej i prawdziwej odpowiedzi: przy..."
+  },
+  {
+   "title": "President von der Leyen announces €710 million to support displaced people in Africa and global crisis relief",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1985",
+   "date": "2026-09-25",
+   "summary": "European Commission Press release New York, 26 Sep 2026 As the 81st UN General Assembly High Level Week draws to a close in New York, President of the European Commission Ursula von der Leyen announced almost €710 million in EU support to displaced people and communities in Sub-Saharan Africa, as we"
+  },
   {
    "title": "Speech by Commissioner Albuquerque at the Interparliamentary Conference on Stability, Economic Coordination and Governance in the EU",
    "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1986",
@@ -54,18 +66,6 @@
    "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1968",
    "date": "2026-09-24",
    "summary": "European Commission Speech Brussels, 24 Sep 2026 Commissioner Zaharieva, dear Ekaterina, Distinguished speakers and panellists, Dear participants, It is a real pleasure to open with you all, the fourth EU Agri..."
-  },
-  {
-   "title": "Daily News 24 / 09 / 2026",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/mex_26_1966",
-   "date": "2026-09-24",
-   "summary": "European Commission Daily news Brussels, 24 Sep 2026 EU launches new initiative to boost women's employment in the Mediterranean Today, the European Commission launched a new initiative to boost women's employment..."
-  },
-  {
-   "title": "EU advances Global Health Resilience Initiative with new Global Gateway investments in Africa and Latin America",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1965",
-   "date": "2026-09-24",
-   "summary": "European Commission Press release New York, 24 Sep 2026 In the context of the United Nations General Assembly High-Level Week, the European Commission has announced three new Global Gateway investments that put the EU Global Health Resilience Initiative into action in partner countries."
   }
  ],
  "note": "",

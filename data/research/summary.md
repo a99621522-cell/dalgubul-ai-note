@@ -18,7 +18,7 @@
 | 국내 연구 | [한국과학기술기획평가원(KISTEP)](https://www.kistep.re.kr) | OK | 목록 페이지 | 16 | 2026-09-15 [국가 단위 과학기술 협력 전략 도출 프레임워크 탐색](https://www.kistep.re.kr/board.es?mid=a10306040000&bid=0031&b_list=10&act=view&list_no=94859&nPage=1&keyField=&orderby=) |
 | 국내 연구 | [한국무역협회(KITA) 보고서](https://www.kita.net) | OK | 목록 페이지 | 5 | 2026-09-22 [2026년 4분기 수출산업경기전망지수(EBSI)는 111.3으로, 202](https://www.kita.net/researchTrade/report/reportMain/reportMainList.do#2026년-4분기-수출산업경기전망지수-EBSI-는-111-3으로-2025) |
 | 국내 연구 | [한국은행(지역경제보고서·조사통계)](https://www.bok.or.kr) | 차단 | robots.txt 차단 | 0 | — |
-| 규제·건의 | [대구상공회의소 보도자료(대한상의 지역상의 게시판)](https://www.korcham.net) | 최근 없음 | 최신 항목 2026-09-30 (최근 70일 밖) | 0 | — |
+| 규제·건의 | [대구상공회의소 보도자료(대한상의 지역상의 게시판)](https://www.korcham.net) | 최근 없음 | 목록 페이지(행)(쪽 12개) | 0 | — |
 | 규제·건의 | [대한상공회의소 보도자료(정책건의·규제개선)](https://www.korcham.net) | OK | 첫 화면(keep_pattern) | 1 | 2026-09-21 [2026년 9월 대한상의 중견기업위원회 - 대한상의 중견위, 신동열 공정](https://www.korcham.net#2026년-9월-대한상의-중견기업위원회-대한상의-중견위-신동열-공정위-사) |
 | 규제·건의 | [중소기업중앙회 보도자료(입법과제·규제 애로)](https://www.kbiz.or.kr) | OK | 목록 페이지(keep_pattern) | 3 | 2026-09-23 [[논평] 이소영 중소벤처기업부장관 취임에 대한 중소기업계 의견 2026.](https://www.kbiz.or.kr/ko/contents/bbs/list.do?mnSeq=207#-논평-이소영-중소벤처기업부장관-취임에-대한-중소기업계-의견-2026-0) |
 | 기업지원기관 | [ITFIND(IITP ICT Brief 등 정기간행물)](https://www.itfind.or.kr) | 차단 | robots.txt 차단 | 0 | — |

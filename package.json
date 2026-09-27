@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "astro": "^5.0.0",
+    "docx": "^9.7.2",
     "js-yaml": "^4.3.2"
   },
   "devDependencies": {

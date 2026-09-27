@@ -1,0 +1,54 @@
+---
+/** 통합 검색: 검색어 하나로 기업 사전(/companies-index.json)·글·리포트·부처 사업·대구시 사업(/search-index.json)을 한 화면에서 찾는다.
+ *  서버·AI 호출 없이 브라우저에서 거른다. 결과가 많으면 각 목록 페이지로 이어 준다. 평가·순위 없음, 이름 가나다순·최신순. */
+import Base from '../../layouts/Base.astro';
+---
+<Base title="통합 검색" description="기업 사전·글·정책제안 리포트·부처 사업·대구시 사업설명서를 검색어 하나로 찾습니다." current="search">
+  <div class="page-head"><h1>통합 검색</h1></div>
+  <form class="big-search compact" action="/search/" method="get" role="search">
+    <label for="q" class="visually-hidden">검색어</label>
+    <input id="q" name="q" type="search" placeholder="기업명·업종·구군·사업명·주제" autocomplete="off" />
+    <button type="submit" aria-label="검색"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg></button>
+  </form>
+  <p class="meta" id="s-status">검색어를 입력하면 기업·글·사업을 함께 찾습니다.</p>
+  <div id="s-results" class="s-results" hidden>
+    <section aria-labelledby="s-co"><div class="section-head"><h2 id="s-co">기업 <span class="cnt" id="s-co-n"></span></h2><a id="s-co-more" href="/companies/">기업 사전에서 더 보기</a></div><ul class="s-list" id="s-co-list"></ul></section>
+    <section aria-labelledby="s-po"><div class="section-head"><h2 id="s-po">글·리포트 <span class="cnt" id="s-po-n"></span></h2><a href="/policy/">정책 부문</a></div><ul class="s-list" id="s-po-list"></ul></section>
+    <section aria-labelledby="s-pr"><div class="section-head"><h2 id="s-pr">부처 사업 <span class="cnt" id="s-pr-n"></span></h2><a href="/programs/">사업·예산</a></div><ul class="s-list" id="s-pr-list"></ul></section>
+    <section aria-labelledby="s-ci"><div class="section-head"><h2 id="s-ci">대구시 사업 <span class="cnt" id="s-ci-n"></span></h2><a id="s-ci-more" href="/programs/daegu/">대구시 사업설명서</a></div><ul class="s-list" id="s-ci-list"></ul></section>
+    <p class="s-explore"><a class="btn secondary" id="s-explore" href="/explore/">이 조건을 그래프로 보기 (탐색)</a></p>
+  </div>
+</Base>
+<script>
+  const $ = (id: string) => document.getElementById(id)!;
+  const q = new URLSearchParams(location.search).get('q')?.trim() ?? '';
+  ($('q') as HTMLInputElement).value = q;
+  const esc = (s: string) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  const norm = (s: string) => (s || '').toLowerCase().replace(/\s+/g, '');
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean).map(t => t.replace(/^#/, ''));
+  const hit = (...fields: string[]) => { const h = norm(fields.join(' ')); return terms.length > 0 && terms.every(t => h.includes(norm(t))); };
+  const fill = (id: string, items: string[], limit: number) => { $(id).innerHTML = items.slice(0, limit).join('') || '<li class="empty">일치하는 항목이 없습니다.</li>'; };
+  const cnt = (id: string, n: number) => { $(id).textContent = n ? `${n.toLocaleString('ko-KR')}건` : ''; };
+  async function run() {
+    if (!q) return;
+    document.title = `${q} — 통합 검색 — 다잇다 노트`;
+    $('s-status').textContent = '찾는 중…';
+    const [ci, si] = await Promise.all([fetch('/companies-index.json').then(r => r.json()), fetch('/search-index.json').then(r => r.json())]);
+    const co = (ci.rows as any[]).filter(r => hit(r.n, r.s, r.d, r.e, r.c, r.g, (r.k ?? []).join(' '))).sort((a, b) => a.n.localeCompare(b.n, 'ko'));
+    const po = (si.posts as any[]).filter(p => hit(p.t, p.d, p.g.join(' '), p.c));
+    const pr = (si.programs as any[]).filter(p => hit(p.n, p.m, p.e));
+    const cy = (si.city as any[]).filter(p => hit(p.n, p.o, p.p));
+    fill('s-co-list', co.map(r => `<li><a href="/companies/${r.i}/">${esc(r.n)}</a><span class="meta"> · ${esc(r.d)} ${esc(r.e || '')} · ${esc(r.s || '')}${r.c ? ' · ' + esc(r.c) : ''}${r.w ? ' · ' + esc(r.w) : ''}</span></li>`), 12);
+    fill('s-po-list', po.map(p => `<li><a href="${p.u}">${esc(p.t)}</a><span class="meta"> · ${esc(p.c)} · ${p.y}</span><p class="summary">${esc(p.d)}</p></li>`), 10);
+    fill('s-pr-list', pr.map(p => `<li><span class="name">${esc(p.n)}</span><span class="meta"> · ${esc(p.m)}${p.e ? ' · ' + esc(p.e) : ''}${p.b ? ' · 2026년 ' + esc(p.b) : ''}${p.w ? ' · <span class="tag">신규</span>' : ''}</span></li>`), 10);
+    fill('s-ci-list', cy.map(p => `<li><span class="name">${esc(p.n)}</span><span class="meta"> · ${esc(p.o)} ${esc(p.p)}${p.s ? ' · ' + esc(p.s) : ''}${p.b ? ' · 2026년 ' + esc(p.b) : ''}</span></li>`), 10);
+    cnt('s-co-n', co.length); cnt('s-po-n', po.length); cnt('s-pr-n', pr.length); cnt('s-ci-n', cy.length);
+    ($('s-co-more') as HTMLAnchorElement).href = `/companies/?q=${encodeURIComponent(q)}`;
+    ($('s-ci-more') as HTMLAnchorElement).href = `/programs/daegu/?q=${encodeURIComponent(q)}`;
+    ($('s-explore') as HTMLAnchorElement).href = `/explore/?q=${encodeURIComponent(q)}`;
+    const total = co.length + po.length + pr.length + cy.length;
+    $('s-status').textContent = total ? `'${q}' 검색 결과 ${total.toLocaleString('ko-KR')}건 — 기업 ${co.length.toLocaleString('ko-KR')} · 글 ${po.length} · 부처 사업 ${pr.length} · 대구시 사업 ${cy.length} (기업 사전 ${ci.as_of} 기준)` : `'${q}' 에 맞는 항목이 없습니다. 다른 낱말이나 업종·구군 이름으로 찾아보세요.`;
+    $('s-results').hidden = false;
+  }
+  run().catch(() => { $('s-status').textContent = '색인을 받지 못했습니다. 잠시 뒤 다시 시도해 주세요.'; });
+</script>

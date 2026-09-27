@@ -3,16 +3,10 @@
  "name": "McKinsey Insights",
  "group": "해외 컨설팅",
  "home": "https://www.mckinsey.com",
- "fetched": "2026-09-25",
+ "fetched": "2026-09-27",
  "status": "OK",
  "method": "rss(/insights/rss)",
  "items": [
-  {
-   "title": "Democratized superintelligence is coming: The world needs to get ready",
-   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
-   "date": "2026-09-24",
-   "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
-  },
   {
    "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
    "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
@@ -24,6 +18,12 @@
    "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/the-new-growth-mandate-a-conversation-with-linkedin-cmo-jessica-jensen",
    "date": "2026-09-24",
    "summary": "At Cannes Lions 2026, LinkedIn CMO Jessica Jensen and McKinsey senior partner Dianne Esber discussed what it takes to turn AI from experimentation into a catalyst for growth."
+  },
+  {
+   "title": "Democratized superintelligence is coming: The world needs to get ready",
+   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
+   "date": "2026-09-24",
+   "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
   },
   {
    "title": "Harnessing AI to make mining safer",
@@ -92,12 +92,6 @@
    "summary": "AI is getting more expensive for companies. As rising token usage and workflow complexity make costs harder to predict, leaders need new ways to manage AI economics."
   },
   {
-   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
-   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
-   "date": "2026-09-21",
-   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
-  },
-  {
    "title": "WIRED: The AI playbook top companies use",
    "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/wired-the-ai-playbook-top-companies-use",
    "date": "2026-09-21",
@@ -108,6 +102,12 @@
    "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/ai-drug-discovery-focusing-on-what-matters-most",
    "date": "2026-09-21",
    "summary": "AI is accelerating drug discovery, but investment has concentrated in molecule design—the stage with the best data and clearest tools. The industry’s real constraint lies elsewhere: identifying and validating the right disease mechanism."
+  },
+  {
+   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
+   "date": "2026-09-21",
+   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
   },
   {
    "title": "Social care referral networks: Improving health in rural communities",
@@ -188,16 +188,16 @@
    "summary": "UK banks have never been more profitable—but have rarely been more exposed. Success depends on securing customers and deposits, winning the commercial transaction layer, and rebuilding the cost base."
   },
   {
-   "title": "The strategic new arenas reshaping insurance",
-   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/the-strategic-new-arenas-reshaping-insurance",
-   "date": "2026-09-15",
-   "summary": "AI is not the only significant driver of change for insurers: 18 high-growth industries present major new opportunities even as they reconfigure industry economics."
-  },
-  {
    "title": "Backbones and networks: A blueprint for the biopharma plant of the future",
    "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/backbones-and-networks-a-blueprint-for-the-biopharma-plant-of-the-future",
    "date": "2026-09-15",
    "summary": "As their portfolios become more complex and productivity gains slow, biopharma manufacturers are investing heavily to keep pace with rising demand. But capacity alone will not solve the problem."
+  },
+  {
+   "title": "The strategic new arenas reshaping insurance",
+   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/the-strategic-new-arenas-reshaping-insurance",
+   "date": "2026-09-15",
+   "summary": "AI is not the only significant driver of change for insurers: 18 high-growth industries present major new opportunities even as they reconfigure industry economics."
   },
   {
    "title": "Author Talks: Read the room before you lead it",

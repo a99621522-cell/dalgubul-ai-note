@@ -1,0 +1,53 @@
+# 사업 지침 창고 갱신 — config/guidelines.yml 의 법령·행정규칙·자치법규 본문을 국가법령정보센터 오픈API 로 받아 data/guidelines 에 커밋한다.
+# 이 세션 환경은 law.go.kr 접속이 막혀 있어 워크플로가 대신 돈다. 매월 12일 03:20 KST + 수동 실행(only 로 일부만).
+name: 사업 지침 창고 갱신 (법령정보센터)
+
+on:
+  schedule:
+    - cron: "20 18 11 * *"
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "지침 key (쉼표 구분, 비우면 전부)"
+        required: false
+        default: ""
+      dry:
+        description: "검색만 하고 저장하지 않음(true)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: guidelines
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+          ONLY: ${{ inputs.only }}
+          DRY: ${{ inputs.dry }}
+        run: |
+          set +e
+          python3 scripts/fetch_guidelines.py ${ONLY:+--only "$ONLY"} $([ "$DRY" = "true" ] && echo --dry-run)
+          echo "exit=$?"
+      - name: 커밋
+        if: inputs.dry != 'true'
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A data/guidelines
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 사업 지침 창고 갱신 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

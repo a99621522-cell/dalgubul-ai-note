@@ -207,7 +207,8 @@ def from_rows(page_url: str, html: str, org_names: tuple = ()) -> list[dict]:
         if not title or title in seen:
             continue
         seen.add(title)
-        items.append({"title": title[:160], "url": page_url + "#" + re.sub(r"\W+", "-", title)[:40], "date": d, "summary": ""})
+        items.append({"title": title[:160], "url": page_url + "#" + re.sub(r"\W+", "-", title)[:40], "date": d, "summary": "",
+                      "ctx": re.sub(r"\s+", " ", node.get_text(" ", strip=True))[:300] if node is not None else ""})   # 행 전체 글자(keep_pattern 용, 저장 전 지움)
     items.sort(key=lambda i: i["date"], reverse=True)
     note_latest(items)
     return [i for i in items if recent(i["date"])][:MAX_ITEMS]
@@ -418,6 +419,12 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
             method = ("첫 화면" if is_home else "목록 페이지") + ("(날짜 없음, 목록 순서)" if org.get("undated") else "")
             if not items and not is_home:
                 items, method = from_rows(page, html, (org["name"], org["name"].split("(")[0].strip())), "목록 페이지(행)"
+            if items and org.get("keep_pattern"):   # 제목(행 클릭형 목록은 행 전체 글자)에 이 정규식이 맞는 항목만 (경제단체 보도자료에서 규제·건의 글만 고를 때)
+                kp = re.compile(org["keep_pattern"])
+                items = [i for i in items if kp.search(i.get("title", "") + " " + i.get("ctx", ""))]
+                method += "(keep_pattern)"
+            for i in items:
+                i.pop("ctx", None)
             if items:
                 res["items"], res["method"] = items, method
                 break

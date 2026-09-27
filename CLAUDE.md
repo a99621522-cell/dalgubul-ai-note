@@ -81,6 +81,7 @@ python3 scripts/approve.py            # 초안 승인
 - 외부 API 실패는 예외로 죽이지 말고 로그 찍고 건너뛴다 (매일 무인 실행)
 - 1회 실행 Gemini 호출 상한은 `sources.yml` 의 `max_per_run`. 상한 없이 루프 돌리지 않는다
 - Astro: 컴포넌트는 `src/components/`. Tailwind 등 CSS 프레임워크 추가하지 않음. `global.css` 의 CSS 변수 사용
+- 마크다운: `astro.config.mjs` 가 GFM 을 `singleTilde: false` 로 켠다 — 본문의 `10~49인` 같은 물결표 하나는 취소선이 아니다(취소선은 `~~`). 기업 이름 가나다순은 `src/lib/csv.ts` `byName`(법인 표기 제거) — 클라이언트 정렬(companies/index.astro)도 같은 규칙
 - 새 카테고리는 `src/categories.ts` 와 `content.config.ts` 의 enum, `collect.py` 의 `PROMPTS` 세 곳을 함께 수정
 
 ## 로드맵 (2026-09-22 기준)

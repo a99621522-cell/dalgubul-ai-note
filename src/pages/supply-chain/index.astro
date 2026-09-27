@@ -33,14 +33,14 @@ const incentives = summary?.incentives ?? [];
   <p class="lede">대구 제조 클러스터 5개가 역외에서 사 오는 공정(빈 고리)을 한국은행 산업연관표 <strong>{baseYear} 전국 평균 투입계수</strong>와 대구 기업 사전 종사자로 계산하고, 그 공정을 하는 전국 공장을 조건으로 걸러 나열합니다. <strong>조건 필터 결과이지 추천이 아닙니다.</strong> 전국 평균 계수는 대구 기업의 실제 거래 구조와 다를 수 있습니다.</p>
   {!summary && <div class="note"><p>아직 결과가 없습니다. 한국은행 산업연관표 거래표(기본부문)·부문분류표를 <code>scripts/data/io/</code>에 넣고 <code>python3 scripts/attract.py</code>를 실행하면 이 페이지가 채워집니다(scripts/data/io/README.md).</p></div>}
   {summary && <>
-    <p class="meta filters">필터 조건: {summary.filters}. 매핑률 대구 {pct(String(summary.daegu_mapping.rate))}{summary.national_mapping_rate ? ` · 전국 ${pct(String(summary.national_mapping_rate))}` : ''} · 자동차부품 검증 {summary.verify_auto.ok ? '통과' : '실패'} · {summary.orientation}{!summary.factoryon_file && ' · 전국 팩토리온 파일이 없어 후보 목록은 비어 있음'}</p>
+    <details class="filters-box"><summary class="meta">필터 조건 보기</summary><p class="meta filters">{summary.filters}. 매핑률 대구 {pct(String(summary.daegu_mapping.rate))}{summary.national_mapping_rate ? ` · 전국 ${pct(String(summary.national_mapping_rate))}` : ''} · 자동차부품 검증 {summary.verify_auto.ok ? '통과' : '실패'} · {summary.orientation}{!summary.factoryon_file && ' · 전국 팩토리온 파일이 없어 후보 목록은 비어 있음'}</p></details>
     <div class="tabs" role="tablist" aria-label="클러스터">
       {clusters.map((cl, i) => <button type="button" role="tab" class="tab" aria-selected={i === 0 ? 'true' : 'false'} data-cl={cl}>{cl}<span class="meta"> {summary.clusters[cl]?.reduce((s: number, x: any) => s + x.firms, 0).toLocaleString('ko-KR')}곳</span></button>)}
     </div>
     {clusters.map((cl, i) => <section class="panel" data-cl={cl} hidden={i !== 0}>
       <p class="meta">클러스터 부문(IO 기본부문): {summary.clusters[cl]?.map((x: any) => `${x.name} ${x.firms}곳·${num(String(x.workers))}명`).join(' · ') || '없음'}</p>
       <div class="scroll-x"><table class="data-table gap-table">
-        <thead><tr><th class="n">번호</th><th>공급 부문</th><th class="n">요구 규모 지수</th><th class="n">대구 공급 기업</th><th class="n">대구 종사자</th><th class="n">coverage</th><th class="n">후보</th></tr></thead>
+        <thead><tr><th class="n">번호</th><th>공급 부문</th><th class="n">요구 규모 지수</th><th class="n">대구 공급 기업</th><th class="n">대구 종사자</th><th class="n">충족률</th><th class="n">후보</th></tr></thead>
         <tbody>{byCluster(cl).map(g => <tr class="gap-row" data-cl={cl} data-sec={g.io_sector} tabindex="0">
           <td class="n">{g.rank}</td><td><strong>{g.io_name}</strong> <span class="meta">{g.io_sector}</span></td>
           <td class="n">{num(g.demand_index)} <span class="meta">({pct(g.demand_share)})</span></td><td class="n">{g.daegu_firms}</td><td class="n">{num(g.daegu_workers)}</td>
@@ -48,7 +48,7 @@ const incentives = summary?.incentives ?? [];
           <td class="n">{candCount(cl, g.io_sector)}</td>
         </tr>)}</tbody>
       </table></div>
-      <p class="meta">요구 규모 지수 = 클러스터 대구 종사자 × 부문별 투입계수(상대값). coverage = 대구 공급 종사자 ÷ 요구 규모를 클러스터 안 상위 10% 수준이 1이 되도록 맞춘 값. 행을 누르면 그 부문의 후보 목록.</p>
+      <p class="meta">요구 규모 지수 = 클러스터 대구 종사자 × 부문별 투입계수(상대값). 충족률(coverage) = 대구 공급 종사자 ÷ 요구 규모를 클러스터 안 상위 10% 수준이 1이 되도록 맞춘 값. 행을 누르면 그 부문의 후보 목록.</p>
       <div class="cand" data-cl={cl} hidden>
         <div class="section-head"><h2 id={`cand-${cl}`}>후보 목록 <span class="sec-name"></span></h2><span class="meta cand-count"></span></div>
         <p class="meta dist"></p>
@@ -82,6 +82,9 @@ const incentives = summary?.incentives ?? [];
     </script>
   </>}
   <style>
+    .filters-box { margin: 0 0 var(--s2); }
+    .filters-box summary { cursor: pointer; }
+    .filters-box .filters { margin: 4px 0 0; }
     .note { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2); }
     .filters { line-height: 1.6; }
     .tabs { display: flex; flex-wrap: wrap; gap: var(--s1); margin: var(--s3) 0 var(--s2); }

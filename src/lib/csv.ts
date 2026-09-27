@@ -42,6 +42,14 @@ export const looksLikePersonName = (raw: string) => {
   return false;
 };
 let _companies: Company[] | null = null;
+/** 가나다순 정렬 키: '(주)·㈜·( 주 )·（재）·주식회사' 같은 법인 표기를 떼고 비교한다. 안 떼면 '(주)…' 가 전부 앞에 몰린다.
+ *  글자로 시작하지 않는 이름('-', '.' 같은 등록값)은 뒤로 보낸다(rank 1). 클라이언트(companies/index.astro)와 같은 규칙. */
+const CORP_PFX = /^\s*([（(]\s*(주|유|사|재|자|합)\s*[)）]|㈜|주식회사|유한회사|사단법인|재단법인|농업회사법인|유한책임회사)\s*/g;
+const CORP_SFX = /\s*([（(]\s*(주|유)\s*[)）]|㈜|주식회사|유한회사|유한책임회사)\s*$/g;
+export const sortName = (s: string) => (s || '').replace(CORP_PFX, '').replace(CORP_SFX, '').trim() || s;
+export const nameRank = (k: string) => (/^[0-9A-Za-z가-힣ㄱ-ㅎ]/.test(k) ? 0 : 1);
+export const byName = (a: string, b: string) => { const ka = sortName(a), kb = sortName(b); return nameRank(ka) - nameRank(kb) || ka.localeCompare(kb, 'ko') || a.localeCompare(b, 'ko'); };
+
 /** 기업 사전용 목록: 팩토리온 기업 + 산단 외 기업(extra_companies.csv). 개인 성명으로 보이는 공장명은 표시에서만 뺀다(통계는 전수). */
 export const companies = () => {
   if (_companies) return _companies;

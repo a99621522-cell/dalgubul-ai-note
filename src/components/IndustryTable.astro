@@ -22,7 +22,7 @@ const hasYoy = !!m && (m.total.yoy?.employment != null || rows.some(r => r.s.yoy
           <th scope="col" class="n">고용 인원</th>
           {hasMom && <th scope="col" class="n">전월 대비</th>}
           {hasYoy && <th scope="col" class="n">전년 동월 대비</th>}
-          {!compact && <th scope="col" class="n">집계 대상</th>}
+          {!compact && <th scope="col" class="n col-opt">집계 대상</th>}
         </tr>
       </thead>
       <tbody>
@@ -33,7 +33,7 @@ const hasYoy = !!m && (m.total.yoy?.employment != null || rows.some(r => r.s.yoy
             <td class="n">{fmt(r.s.employment)}</td>
             {hasMom && <td class="n"><Delta d={r.s.mom?.employment ?? null} /></td>}
             {hasYoy && <td class="n"><Delta d={r.s.yoy?.employment ?? null} /></td>}
-            {!compact && <td class="n">{fmt(r.s.covered)} / {fmt(r.s.firms)}</td>}
+            {!compact && <td class="n col-opt">{fmt(r.s.covered)} / {fmt(r.s.firms)}</td>}
           </tr>
         ))}
         <tr class="total">
@@ -42,7 +42,7 @@ const hasYoy = !!m && (m.total.yoy?.employment != null || rows.some(r => r.s.yoy
           <td class="n">{fmt(m.total.employment)}</td>
           {hasMom && <td class="n"><Delta d={m.total.mom?.employment ?? null} /></td>}
           {hasYoy && <td class="n"><Delta d={m.total.yoy?.employment ?? null} /></td>}
-          {!compact && <td class="n">{fmt(m.total.covered)} / {fmt(m.total.firms)}</td>}
+          {!compact && <td class="n col-opt">{fmt(m.total.covered)} / {fmt(m.total.firms)}</td>}
         </tr>
       </tbody>
     </table>

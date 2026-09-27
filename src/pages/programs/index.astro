@@ -17,6 +17,8 @@ for (const p of posts) {
 }
 const sources = [...new Set(all.map(p => p.source))].filter(Boolean);
 const fmtDate = (x: Date) => x.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+/** 사업설명자료 파서가 남긴 빈 괄호 '( )'·끝의 ':'·'(' 를 표시에서만 지운다(CSV 원본은 그대로) */
+const tidy = (v: string) => (v || '').replace(/\(\s*\)/g, '').replace(/[\s:：(（]+$/g, '').replace(/\s{2,}/g, ' ').trim();
 ---
 <Base title="사업 예산" description={`부처 사업설명자료에서 수혜자에 기업이 포함된 예산 사업 ${list.length}건 — 부처·신규 여부·2026년 예산으로 찾고, 공고가 나온 사업은 글로 연결`} current="programs">
   <div class="section-head"><h1>사업 예산</h1><span class="meta">기업 수혜 사업 {list.length}건 · 전체 {all.length}건</span></div>
@@ -38,13 +40,13 @@ const fmtDate = (x: Date) => x.toLocaleDateString('ko-KR', { month: 'long', day:
         <li id={`p-${p.code}`} data-mi={p.ministry} data-b26={p.b26} data-new={p.isNew ? '1' : ''} data-live={posts.length ? '1' : ''}
             data-text={`${p.name} ${p.executor} ${p.bureau}`.toLowerCase()}>
           <div class="row1">
-            <span class="name">{p.name}</span>
+            <span class="name">{tidy(p.name)}</span>
             {p.isNew && <span class="tag">{p.newDerived ? '신규(추정)' : '신규'}</span>}
             {posts.length > 0 && <span class="badge">공고 중</span>}
           </div>
           <div class="row2">
             {p.ministry}{p.bureau && ` ${p.bureau}`} · <span class="code">{p.code}</span>
-            {p.executor && <> · 수행 {p.executor}</>}
+            {tidy(p.executor) && <> · 수행 {tidy(p.executor)}</>}
           </div>
           <div class="row3">
             2026년 {fmtEok(p.b26) ?? '—'}{p.b25 > 0 && <span class="prev"> (2025년 {fmtEok(p.b25)})</span>}

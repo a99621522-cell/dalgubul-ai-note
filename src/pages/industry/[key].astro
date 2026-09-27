@@ -35,15 +35,15 @@ const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 
   {s ? (
     <>
       <StatTiles tiles={tiles} />
+      {nMonths >= 2 ? (
       <section aria-labelledby="h-trend">
         <div class="section-head"><h2 id="h-trend">24개월 추이</h2><a href="/industry/compare/">다른 산업과 비교</a></div>
-        {nMonths >= 2 ? (
           <div class="chart-pair">
             <Chart kind="industry-employment" name={g.key} caption={`${g.name} 고용 인원 추이`} />
             <Chart kind="industry-firms" name={g.key} caption={`${g.name} 기업 수 추이`} />
           </div>
-        ) : <p class="meta note-box">월간 자료가 {ym} 1개월뿐이라 추이 그래프는 다음 달부터 그립니다. 지금 값은 위 큰 숫자에 있습니다.</p>}
       </section>
+      ) : <p class="meta trend-note">월간 자료가 {ym} 1개월뿐이라 추이 그래프는 다음 달부터 그립니다. <a href="/industry/compare/">다른 산업과 비교</a></p>}
       <section aria-labelledby="h-where">
         <div class="section-head"><h2 id="h-where">어디에 있나</h2></div>
         <Chart kind="industry-complex" name={g.key} caption={`${g.name} 단지별 고용 인원, ${ym}`} />
@@ -75,6 +75,7 @@ const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 
   ) : <p class="empty">이 그룹의 통계가 아직 없습니다.</p>}
 </Base>
 <style>
+  .trend-note { margin: var(--s3) 0 0; }
   .two-col { display: grid; grid-template-columns: 1fr; gap: var(--s3); }
   @media (min-width: 760px) { .two-col { grid-template-columns: 1fr 1fr; } }
   .two-col h3 { font-size: 1rem; margin: var(--s2) 0 var(--s1); }

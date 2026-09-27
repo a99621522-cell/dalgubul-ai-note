@@ -1,0 +1,6590 @@
+{
+"00100197": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 모간",
+"status": "none",
+"years": {}
+},
+"00100300": {
+"checked": "2026-09-23",
+"corp_name": "케이비메탈주식회사",
+"status": "none",
+"years": {}
+},
+"00102344": {
+"checked": "2026-09-23",
+"corp_name": "경창정공주식회사",
+"status": "none",
+"years": {}
+},
+"00102353": {
+"checked": "2026-09-23",
+"corp_name": "경창산업(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 506959781799,
+"equity": 104981220756,
+"fs": "CFS",
+"liabilities": 401978561043,
+"net_income": 3588929651,
+"op_income": 15300171505,
+"report": "2023",
+"revenue": 563663197817
+},
+"2022": {
+"assets": 508041143360,
+"equity": 137115652310,
+"fs": "CFS",
+"liabilities": 370925491050,
+"net_income": 19267463106,
+"op_income": 19184253102,
+"report": "2023",
+"revenue": 615579626824
+},
+"2023": {
+"assets": 506737389227,
+"equity": 149914846824,
+"fs": "CFS",
+"liabilities": 356822542403,
+"net_income": 8828533627,
+"op_income": 21036204670,
+"report": "2025",
+"revenue": 667253963817
+},
+"2024": {
+"assets": 485474497481,
+"equity": 141577609443,
+"fs": "CFS",
+"liabilities": 343896888038,
+"net_income": 3422323160,
+"op_income": 9641239878,
+"report": "2025",
+"revenue": 638045034346
+},
+"2025": {
+"assets": 491427943570,
+"equity": 118926059199,
+"fs": "CFS",
+"liabilities": 372501884371,
+"net_income": -21541167890,
+"op_income": 7343548529,
+"report": "2025",
+"revenue": 705339667803
+}
+}
+},
+"00102414": {
+"checked": "2026-09-23",
+"corp_name": "경희강재주식회사",
+"status": "none",
+"years": {}
+},
+"00106182": {
+"checked": "2026-09-23",
+"corp_name": "금용기계주식회사",
+"status": "none",
+"years": {}
+},
+"00107224": {
+"checked": "2026-09-23",
+"corp_name": "(주)남선알미늄",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 355238354994,
+"equity": 235930767817,
+"fs": "CFS",
+"liabilities": 119307587177,
+"net_income": 41688591681,
+"op_income": -6912235686,
+"report": "2023",
+"revenue": 230343536592
+},
+"2022": {
+"assets": 401195143871,
+"equity": 306636801620,
+"fs": "CFS",
+"liabilities": 94558342251,
+"net_income": 27929159088,
+"op_income": -2490017943,
+"report": "2023",
+"revenue": 255740299974
+},
+"2023": {
+"assets": 432707600573,
+"equity": 303168213251,
+"fs": "CFS",
+"liabilities": 129539387322,
+"net_income": -263740253,
+"op_income": 6445968577,
+"report": "2025",
+"revenue": 310499187506
+},
+"2024": {
+"assets": 404717544888,
+"equity": 297532317360,
+"fs": "CFS",
+"liabilities": 107185227528,
+"net_income": -26725073616,
+"op_income": 4824753722,
+"report": "2025",
+"revenue": 289539027472
+},
+"2025": {
+"assets": 437277779372,
+"equity": 284188276543,
+"fs": "CFS",
+"liabilities": 153089502829,
+"net_income": 3634987284,
+"op_income": -3265896897,
+"report": "2025",
+"revenue": 258921909120
+}
+}
+},
+"00107507": {
+"checked": "2026-09-23",
+"corp_name": "남양금속주식회사",
+"status": "none",
+"years": {}
+},
+"00107613": {
+"checked": "2026-09-23",
+"corp_name": "(주)이수페타시스",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 449678765264,
+"equity": 125491909633,
+"fs": "CFS",
+"liabilities": 324186855631,
+"net_income": -3603718792,
+"op_income": 46875580199,
+"report": "2023",
+"revenue": 469621094131
+},
+"2022": {
+"assets": 546014160739,
+"equity": 222328078478,
+"fs": "CFS",
+"liabilities": 323686082261,
+"net_income": 102473037692,
+"op_income": 116618143622,
+"report": "2023",
+"revenue": 642920533265
+},
+"2023": {
+"assets": 626436318507,
+"equity": 266778163292,
+"fs": "CFS",
+"liabilities": 359658155215,
+"net_income": 47723051484,
+"op_income": 62169058401,
+"report": "2025",
+"revenue": 675332755709
+},
+"2024": {
+"assets": 790136366426,
+"equity": 327526708412,
+"fs": "CFS",
+"liabilities": 462609658014,
+"net_income": 74034111779,
+"op_income": 101878836049,
+"report": "2025",
+"revenue": 836866961285
+},
+"2025": {
+"assets": 1289510030680,
+"equity": 756197181444,
+"fs": "CFS",
+"liabilities": 533312849236,
+"net_income": 160482561697,
+"op_income": 204724531402,
+"report": "2025",
+"revenue": 1088025119176
+}
+}
+},
+"00109204": {
+"checked": "2026-09-23",
+"corp_name": "대덕직물주식회사",
+"status": "none",
+"years": {}
+},
+"00109286": {
+"checked": "2026-09-23",
+"corp_name": "(주)대동",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 1260639075992,
+"equity": 385904527476,
+"fs": "CFS",
+"liabilities": 874734548516,
+"net_income": 34671963023,
+"op_income": 38206130770,
+"report": "2023",
+"revenue": 1179193321819
+},
+"2022": {
+"assets": 1713773205581,
+"equity": 471990756298,
+"fs": "CFS",
+"liabilities": 1241782449283,
+"net_income": 38470968608,
+"op_income": 88279120517,
+"report": "2023",
+"revenue": 1463737929724
+},
+"2023": {
+"assets": 1956376110942,
+"equity": 577059698865,
+"fs": "CFS",
+"liabilities": 1379316412077,
+"net_income": 11919509695,
+"op_income": 65403445106,
+"report": "2025",
+"revenue": 1433390777280
+},
+"2024": {
+"assets": 2132627316122,
+"equity": 601215345248,
+"fs": "CFS",
+"liabilities": 1531411970874,
+"net_income": -45134481978,
+"op_income": 18456574878,
+"report": "2025",
+"revenue": 1415582422216
+},
+"2025": {
+"assets": 2275000906820,
+"equity": 646506208741,
+"fs": "CFS",
+"liabilities": 1628494698079,
+"net_income": -29871783649,
+"op_income": 31224606429,
+"report": "2025",
+"revenue": 1484722098136
+}
+}
+},
+"00109356": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에이치씨대동레미콘",
+"status": "none",
+"years": {}
+},
+"00113067": {
+"checked": "2026-09-23",
+"corp_name": "대한소결금속(주)",
+"status": "none",
+"years": {}
+},
+"00113632": {
+"checked": "2026-09-23",
+"corp_name": "(주)아이디에이치",
+"status": "none",
+"years": {}
+},
+"00113711": {
+"checked": "2026-09-23",
+"corp_name": "(주)대호산업",
+"status": "none",
+"years": {}
+},
+"00115311": {
+"checked": "2026-09-23",
+"corp_name": "(주)동방플랜텍",
+"status": "none",
+"years": {}
+},
+"00118725": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 동진상사",
+"status": "none",
+"years": {}
+},
+"00118965": {
+"checked": "2026-09-23",
+"corp_name": "(주)티에이치엔",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 339937205990,
+"equity": 87689111508,
+"fs": "CFS",
+"liabilities": 252248094482,
+"net_income": 16762920164,
+"op_income": 19836086525,
+"report": "2023",
+"revenue": 402733099165
+},
+"2022": {
+"assets": 371353957512,
+"equity": 91434393027,
+"fs": "CFS",
+"liabilities": 279919564485,
+"net_income": -6326755155,
+"op_income": 1128592573,
+"report": "2023",
+"revenue": 469666790784
+},
+"2023": {
+"assets": 402977300428,
+"equity": 118206064350,
+"fs": "CFS",
+"liabilities": 284771236078,
+"net_income": 27567226965,
+"op_income": 43062857026,
+"report": "2025",
+"revenue": 586298306002
+},
+"2024": {
+"assets": 454354334361,
+"equity": 147980318373,
+"fs": "CFS",
+"liabilities": 306374015988,
+"net_income": 33467756461,
+"op_income": 30963784763,
+"report": "2025",
+"revenue": 651078994161
+},
+"2025": {
+"assets": 613083846458,
+"equity": 226187294395,
+"fs": "CFS",
+"liabilities": 386896552063,
+"net_income": 68654027715,
+"op_income": 70059562137,
+"report": "2025",
+"revenue": 989133894654
+}
+}
+},
+"00124249": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 부성",
+"status": "none",
+"years": {}
+},
+"00125521": {
+"checked": "2026-09-23",
+"corp_name": "에스엘(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 2567493133526,
+"equity": 1518474284906,
+"fs": "CFS",
+"liabilities": 1049018848620,
+"net_income": 96212544698,
+"op_income": 110540923374,
+"report": "2023",
+"revenue": 3001142196348
+},
+"2022": {
+"assets": 2931636940305,
+"equity": 1706009149013,
+"fs": "CFS",
+"liabilities": 1225627791292,
+"net_income": 165912606043,
+"op_income": 197915409993,
+"report": "2023",
+"revenue": 4174537934857
+},
+"2023": {
+"assets": 3235734467246,
+"equity": 2009119403482,
+"fs": "CFS",
+"liabilities": 1226615063764,
+"net_income": 349266124228,
+"op_income": 386185752873,
+"report": "2025",
+"revenue": 4838846695980
+},
+"2024": {
+"assets": 3698864220516,
+"equity": 2397248075458,
+"fs": "CFS",
+"liabilities": 1301616145058,
+"net_income": 381963573388,
+"op_income": 395164287548,
+"report": "2025",
+"revenue": 4973273970111
+},
+"2025": {
+"assets": 3997077723045,
+"equity": 2651661893348,
+"fs": "CFS",
+"liabilities": 1345415829697,
+"net_income": 320790309572,
+"op_income": 407099444958,
+"report": "2025",
+"revenue": 5239939345004
+}
+}
+},
+"00125813": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼보첨단소재",
+"status": "none",
+"years": {}
+},
+"00126159": {
+"checked": "2026-09-23",
+"corp_name": "삼성공업주식회사",
+"status": "none",
+"years": {}
+},
+"00126742": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼아",
+"status": "none",
+"years": {}
+},
+"00127802": {
+"checked": "2026-09-23",
+"corp_name": "삼익THK(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 378200330373,
+"equity": 197391601953,
+"fs": "CFS",
+"liabilities": 180808728420,
+"net_income": 11812259055,
+"op_income": 14809995790,
+"report": "2023",
+"revenue": 310484619649
+},
+"2022": {
+"assets": 444027583867,
+"equity": 210708900479,
+"fs": "CFS",
+"liabilities": 233318683388,
+"net_income": 16648775430,
+"op_income": 20638429209,
+"report": "2023",
+"revenue": 339133931324
+},
+"2023": {
+"assets": 473605961393,
+"equity": 202697984880,
+"fs": "CFS",
+"liabilities": 270907976513,
+"net_income": 985055837,
+"op_income": 6935482797,
+"report": "2025",
+"revenue": 315640474732
+},
+"2024": {
+"assets": 463599405877,
+"equity": 198828649589,
+"fs": "CFS",
+"liabilities": 264770756288,
+"net_income": 1533340639,
+"op_income": 564892513,
+"report": "2025",
+"revenue": 304426059356
+},
+"2025": {
+"assets": 392780111552,
+"equity": 157413151322,
+"fs": "CFS",
+"liabilities": 235366960230,
+"net_income": -44996713410,
+"op_income": -35459793585,
+"report": "2025",
+"revenue": 222175005872
+}
+}
+},
+"00128023": {
+"checked": "2026-09-23",
+"corp_name": "삼일염직주식회사",
+"status": "none",
+"years": {}
+},
+"00129642": {
+"checked": "2026-09-23",
+"corp_name": "상신브레이크(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 493641121647,
+"equity": 188454863923,
+"fs": "CFS",
+"liabilities": 305186257724,
+"net_income": 10375223860,
+"op_income": 12201673255,
+"report": "2023",
+"revenue": 397023068047
+},
+"2022": {
+"assets": 544569685947,
+"equity": 197589029086,
+"fs": "CFS",
+"liabilities": 346980656861,
+"net_income": 864464591,
+"op_income": 14080989932,
+"report": "2023",
+"revenue": 489014822462
+},
+"2023": {
+"assets": 564873378508,
+"equity": 211835213847,
+"fs": "CFS",
+"liabilities": 353038164661,
+"net_income": 14174122306,
+"op_income": 27544460360,
+"report": "2025",
+"revenue": 575491184783
+},
+"2024": {
+"assets": 591078392906,
+"equity": 232637650656,
+"fs": "CFS",
+"liabilities": 358440742250,
+"net_income": 17388553000,
+"op_income": 20646142654,
+"report": "2025",
+"revenue": 578555061212
+},
+"2025": {
+"assets": 557807152421,
+"equity": 219147952913,
+"fs": "CFS",
+"liabilities": 338659199508,
+"net_income": -12021082057,
+"op_income": -1358122964,
+"report": "2025",
+"revenue": 542260553063
+}
+}
+},
+"00134316": {
+"checked": "2026-09-23",
+"corp_name": "(주)세원정공",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 622152013878,
+"equity": 551375801026,
+"fs": "CFS",
+"liabilities": 70776212852,
+"net_income": 24591307198,
+"op_income": 150710685,
+"report": "2023",
+"revenue": 142473811849
+},
+"2022": {
+"assets": 628831844307,
+"equity": 551184435761,
+"fs": "CFS",
+"liabilities": 77647408546,
+"net_income": -27859580279,
+"op_income": -10941609997,
+"report": "2023",
+"revenue": 115215348076
+},
+"2023": {
+"assets": 674081857072,
+"equity": 581208055520,
+"fs": "CFS",
+"liabilities": 92873801552,
+"net_income": -31272001756,
+"op_income": 12037913130,
+"report": "2025",
+"revenue": 159199457308
+},
+"2024": {
+"assets": 725562845976,
+"equity": 662827548715,
+"fs": "CFS",
+"liabilities": 62735297261,
+"net_income": 55006671008,
+"op_income": 19208271775,
+"report": "2025",
+"revenue": 162533026895
+},
+"2025": {
+"assets": 779632174266,
+"equity": 712034833382,
+"fs": "CFS",
+"liabilities": 67597340884,
+"net_income": 48754157191,
+"op_income": 17027924616,
+"report": "2025",
+"revenue": 179353786749
+}
+}
+},
+"00135999": {
+"checked": "2026-09-23",
+"corp_name": "신라섬유(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 32849520233,
+"equity": 15402064410,
+"fs": "OFS",
+"liabilities": 17447455823,
+"net_income": 670274558,
+"op_income": 668527818,
+"report": "2023",
+"revenue": 4350723533
+},
+"2022": {
+"assets": 31936130222,
+"equity": 15392324935,
+"fs": "OFS",
+"liabilities": 16543805287,
+"net_income": -35839884,
+"op_income": 464547764,
+"report": "2023",
+"revenue": 4429624973
+},
+"2023": {
+"assets": 30965527275,
+"equity": 14732763935,
+"fs": "OFS",
+"liabilities": 16232763340,
+"net_income": -671622657,
+"op_income": 391543799,
+"report": "2025",
+"revenue": 3777530598
+},
+"2024": {
+"assets": 30634773233,
+"equity": 14396697455,
+"fs": "OFS",
+"liabilities": 16238075778,
+"net_income": -301764011,
+"op_income": 416940298,
+"report": "2025",
+"revenue": 3669468488
+},
+"2025": {
+"assets": 30736244622,
+"equity": 14473905270,
+"fs": "OFS",
+"liabilities": 16262339352,
+"net_income": 71723902,
+"op_income": 487816030,
+"report": "2025",
+"revenue": 3590565852
+}
+}
+},
+"00136013": {
+"checked": "2026-09-23",
+"corp_name": "신라철강 주식회사",
+"status": "none",
+"years": {}
+},
+"00138747": {
+"checked": "2026-09-23",
+"corp_name": "(주)아세아텍",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 125168624405,
+"equity": 102631541569,
+"fs": "OFS",
+"liabilities": 22537082836,
+"net_income": 4770432652,
+"op_income": 5932317239,
+"report": "2023",
+"revenue": 106540796260
+},
+"2022": {
+"assets": 147902766270,
+"equity": 121782743980,
+"fs": "OFS",
+"liabilities": 26120022290,
+"net_income": 11763794858,
+"op_income": 13864660992,
+"report": "2023",
+"revenue": 137718679157
+},
+"2023": {
+"assets": 174467263272,
+"equity": 130550074148,
+"fs": "OFS",
+"liabilities": 43917189124,
+"net_income": 9589973230,
+"op_income": 11873245292,
+"report": "2025",
+"revenue": 123630723741
+},
+"2024": {
+"assets": 197117710152,
+"equity": 131554905245,
+"fs": "OFS",
+"liabilities": 65562804907,
+"net_income": 4611938817,
+"op_income": 6386005621,
+"report": "2025",
+"revenue": 123825860518
+},
+"2025": {
+"assets": 196443090153,
+"equity": 129646925868,
+"fs": "OFS",
+"liabilities": 66796164285,
+"net_income": 2770072482,
+"op_income": 3987776535,
+"report": "2025",
+"revenue": 113296319206
+}
+}
+},
+"00139108": {
+"checked": "2026-09-23",
+"corp_name": "(주)아진피앤피",
+"status": "none",
+"years": {}
+},
+"00140575": {
+"checked": "2026-09-23",
+"corp_name": "영남주물공업 주식회사",
+"status": "none",
+"years": {}
+},
+"00153968": {
+"checked": "2026-09-23",
+"corp_name": "태왕물산주식회사",
+"status": "none",
+"years": {}
+},
+"00155115": {
+"checked": "2026-09-23",
+"corp_name": "(주)평화발레오",
+"status": "none",
+"years": {}
+},
+"00155133": {
+"checked": "2026-09-23",
+"corp_name": "평화오일씰공업(주)",
+"status": "none",
+"years": {}
+},
+"00155151": {
+"checked": "2026-09-23",
+"corp_name": "피에이치에이(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 957112455957,
+"equity": 645764121355,
+"fs": "CFS",
+"liabilities": 311348334602,
+"net_income": 37580148557,
+"op_income": 6584022198,
+"report": "2023",
+"revenue": 927613739033
+},
+"2022": {
+"assets": 979877043312,
+"equity": 673099593120,
+"fs": "CFS",
+"liabilities": 306777450192,
+"net_income": 28261284607,
+"op_income": 22872220991,
+"report": "2023",
+"revenue": 1024435467138
+},
+"2023": {
+"assets": 985337406245,
+"equity": 720990060924,
+"fs": "CFS",
+"liabilities": 264347345321,
+"net_income": 61505451409,
+"op_income": 48293293917,
+"report": "2025",
+"revenue": 1134618152654
+},
+"2024": {
+"assets": 1069586456407,
+"equity": 800192909386,
+"fs": "CFS",
+"liabilities": 269393547021,
+"net_income": 61943248940,
+"op_income": 51478190517,
+"report": "2025",
+"revenue": 1152879626217
+},
+"2025": {
+"assets": 1138284616470,
+"equity": 844946172522,
+"fs": "CFS",
+"liabilities": 293338443948,
+"net_income": 46274514432,
+"op_income": 48439190745,
+"report": "2025",
+"revenue": 1200673221564
+}
+}
+},
+"00155179": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 피에이치씨",
+"status": "none",
+"years": {}
+},
+"00156381": {
+"checked": "2026-09-23",
+"corp_name": "한국OSG(주)",
+"status": "none",
+"years": {}
+},
+"00158255": {
+"checked": "2026-09-23",
+"corp_name": "한국신동공업(주)",
+"status": "none",
+"years": {}
+},
+"00165079": {
+"checked": "2026-09-23",
+"corp_name": "(주)협립제작소",
+"status": "none",
+"years": {}
+},
+"00165103": {
+"checked": "2026-09-23",
+"corp_name": "(주)푸드웰",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 153153208353,
+"equity": 96723985113,
+"fs": "CFS",
+"liabilities": 56429223240,
+"net_income": 7659310890,
+"op_income": 6091672921,
+"report": "2023",
+"revenue": 148290775880
+},
+"2022": {
+"assets": 206903375017,
+"equity": 102019811939,
+"fs": "CFS",
+"liabilities": 104883563078,
+"net_income": 2024165163,
+"op_income": 6061317355,
+"report": "2023",
+"revenue": 183932294383
+},
+"2023": {
+"assets": 220507295795,
+"equity": 108222008027,
+"fs": "CFS",
+"liabilities": 112285287768,
+"net_income": 8183316059,
+"op_income": 8286725452,
+"report": "2025",
+"revenue": 228487093117
+},
+"2024": {
+"assets": 236512472211,
+"equity": 119796236379,
+"fs": "CFS",
+"liabilities": 116716235832,
+"net_income": 10944983833,
+"op_income": 13926410674,
+"report": "2025",
+"revenue": 272990916857
+},
+"2025": {
+"assets": 238033339321,
+"equity": 116152610961,
+"fs": "CFS",
+"liabilities": 121880728360,
+"net_income": 11994177686,
+"op_income": 18353038542,
+"report": "2025",
+"revenue": 320327563488
+}
+}
+},
+"00165884": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 글로스코",
+"status": "none",
+"years": {}
+},
+"00166333": {
+"checked": "2026-09-23",
+"corp_name": "(주)화신테크",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 38805586103,
+"equity": 18735084506,
+"fs": "OFS",
+"liabilities": 20070501597,
+"net_income": -9079483209,
+"op_income": -3561895302,
+"report": "2023",
+"revenue": 1424412029
+},
+"2022": {
+"assets": 38171151754,
+"equity": 18090458102,
+"fs": "OFS",
+"liabilities": 20080693652,
+"net_income": -5144626404,
+"op_income": -2383056565,
+"report": "2023",
+"revenue": 19133000
+},
+"2023": {
+"assets": 31009316725,
+"equity": 9889466361,
+"fs": "OFS",
+"liabilities": 21119850364,
+"net_income": -8752991701,
+"op_income": -1514296006,
+"report": "2023",
+"revenue": 0
+}
+}
+},
+"00169181": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 매일신문사",
+"status": "none",
+"years": {}
+},
+"00174022": {
+"checked": "2026-09-23",
+"corp_name": "유창섬유(주)",
+"status": "none",
+"years": {}
+},
+"00174475": {
+"checked": "2026-09-23",
+"corp_name": "(주)현대금속",
+"status": "none",
+"years": {}
+},
+"00175687": {
+"checked": "2026-09-23",
+"corp_name": "경희알미늄주식회사",
+"status": "none",
+"years": {}
+},
+"00175757": {
+"checked": "2026-09-23",
+"corp_name": "고려전선(주)",
+"status": "none",
+"years": {}
+},
+"00176172": {
+"checked": "2026-09-23",
+"corp_name": "(주)국제텍",
+"status": "none",
+"years": {}
+},
+"00176358": {
+"checked": "2026-09-23",
+"corp_name": "(주) 진오",
+"status": "none",
+"years": {}
+},
+"00176686": {
+"checked": "2026-09-23",
+"corp_name": "남선산업 주식회사",
+"status": "none",
+"years": {}
+},
+"00177898": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대철",
+"status": "none",
+"years": {}
+},
+"00179896": {
+"checked": "2026-09-23",
+"corp_name": "보국전기공업주식회사",
+"status": "none",
+"years": {}
+},
+"00180962": {
+"checked": "2026-09-23",
+"corp_name": "삼일방주식회사",
+"status": "none",
+"years": {}
+},
+"00181466": {
+"checked": "2026-09-23",
+"corp_name": "서도산업주식회사",
+"status": "none",
+"years": {}
+},
+"00183163": {
+"checked": "2026-09-23",
+"corp_name": "대아알미늄주식회사",
+"status": "none",
+"years": {}
+},
+"00186726": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 태양어패럴",
+"status": "none",
+"years": {}
+},
+"00188919": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 화성섬유",
+"status": "none",
+"years": {}
+},
+"00191287": {
+"checked": "2026-09-23",
+"corp_name": "대동금속(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 105938308805,
+"equity": 43735358936,
+"fs": "OFS",
+"liabilities": 62202949869,
+"net_income": 2566294321,
+"op_income": 2637926896,
+"report": "2023",
+"revenue": 134276161981
+},
+"2022": {
+"assets": 101041248838,
+"equity": 46843303092,
+"fs": "OFS",
+"liabilities": 54197945746,
+"net_income": 2182030396,
+"op_income": 2335666701,
+"report": "2023",
+"revenue": 146930756753
+},
+"2023": {
+"assets": 102674611649,
+"equity": 52438294792,
+"fs": "OFS",
+"liabilities": 50236316857,
+"net_income": 830402461,
+"op_income": 1301329207,
+"report": "2025",
+"revenue": 133065161759
+},
+"2024": {
+"assets": 97333008386,
+"equity": 45866594573,
+"fs": "OFS",
+"liabilities": 51466413813,
+"net_income": -5823383081,
+"op_income": -6503287192,
+"report": "2025",
+"revenue": 99514130970
+},
+"2025": {
+"assets": 98820466184,
+"equity": 43539324523,
+"fs": "OFS",
+"liabilities": 55281141661,
+"net_income": -1390413261,
+"op_income": 100414709,
+"report": "2025",
+"revenue": 101817187819
+}
+}
+},
+"00191904": {
+"checked": "2026-09-23",
+"corp_name": "고려섬유주식회사",
+"status": "none",
+"years": {}
+},
+"00192365": {
+"checked": "2026-09-23",
+"corp_name": "대원산업주식회사",
+"status": "none",
+"years": {}
+},
+"00195089": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 현대화섬",
+"status": "none",
+"years": {}
+},
+"00198493": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 삼일산업",
+"status": "none",
+"years": {}
+},
+"00198536": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대림프라콘",
+"status": "none",
+"years": {}
+},
+"00198688": {
+"checked": "2026-09-23",
+"corp_name": "동화기업주식회사",
+"status": "none",
+"years": {}
+},
+"00198989": {
+"checked": "2026-09-23",
+"corp_name": "주식회사팩슨",
+"status": "none",
+"years": {}
+},
+"00199696": {
+"checked": "2026-09-23",
+"corp_name": "동재산업주식회사",
+"status": "none",
+"years": {}
+},
+"00201016": {
+"checked": "2026-09-23",
+"corp_name": "신일산업주식회사",
+"status": "none",
+"years": {}
+},
+"00202060": {
+"checked": "2026-09-23",
+"corp_name": "(주)구영테크",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 222891435520,
+"equity": 76271999495,
+"fs": "CFS",
+"liabilities": 146619436025,
+"net_income": 3129413158,
+"op_income": 3994765934,
+"report": "2023",
+"revenue": 203398451836
+},
+"2022": {
+"assets": 240119537713,
+"equity": 83425564459,
+"fs": "CFS",
+"liabilities": 156693973254,
+"net_income": 3975738329,
+"op_income": 7695775160,
+"report": "2023",
+"revenue": 274207754755
+},
+"2023": {
+"assets": 317065956211,
+"equity": 106572543729,
+"fs": "CFS",
+"liabilities": 210493412482,
+"net_income": 18644442897,
+"op_income": 28953283159,
+"report": "2025",
+"revenue": 357438435431
+},
+"2024": {
+"assets": 384520058920,
+"equity": 130500728510,
+"fs": "CFS",
+"liabilities": 254019330410,
+"net_income": 18215888025,
+"op_income": 28853581117,
+"report": "2025",
+"revenue": 377361299120
+},
+"2025": {
+"assets": 710509062441,
+"equity": 153971153931,
+"fs": "CFS",
+"liabilities": 556537908510,
+"net_income": 22566030710,
+"op_income": 24310734730,
+"report": "2025",
+"revenue": 426181253496
+}
+}
+},
+"00202325": {
+"checked": "2026-09-23",
+"corp_name": "성창섬유주식회사",
+"status": "none",
+"years": {}
+},
+"00203829": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 문명에이스",
+"status": "none",
+"years": {}
+},
+"00206154": {
+"checked": "2026-09-23",
+"corp_name": "평화기공주식회사",
+"status": "none",
+"years": {}
+},
+"00206163": {
+"checked": "2026-09-23",
+"corp_name": "평화씨엠비주식회사",
+"status": "none",
+"years": {}
+},
+"00206190": {
+"checked": "2026-09-23",
+"corp_name": "피에이치지(주)",
+"status": "none",
+"years": {}
+},
+"00207667": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 카펙발레오",
+"status": "none",
+"years": {}
+},
+"00208499": {
+"checked": "2026-09-23",
+"corp_name": "송마디엠씨 주식회사",
+"status": "none",
+"years": {}
+},
+"00208657": {
+"checked": "2026-09-23",
+"corp_name": "조양모방(주)",
+"status": "none",
+"years": {}
+},
+"00210272": {
+"checked": "2026-09-23",
+"corp_name": "삼영금속공업 주식회사",
+"status": "none",
+"years": {}
+},
+"00210801": {
+"checked": "2026-09-23",
+"corp_name": "삼익정공(주)",
+"status": "none",
+"years": {}
+},
+"00211341": {
+"checked": "2026-09-23",
+"corp_name": "경산제지(주)",
+"status": "none",
+"years": {}
+},
+"00215824": {
+"checked": "2026-09-23",
+"corp_name": "현대화섬주식회사",
+"status": "none",
+"years": {}
+},
+"00217743": {
+"checked": "2026-09-23",
+"corp_name": "화성밸브(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 105271611979,
+"equity": 77711590955,
+"fs": "CFS",
+"liabilities": 27560021024,
+"net_income": 2388372353,
+"op_income": 2626030122,
+"report": "2023",
+"revenue": 71961904341
+},
+"2022": {
+"assets": 123476124858,
+"equity": 80493641768,
+"fs": "CFS",
+"liabilities": 42982483090,
+"net_income": 2980333411,
+"op_income": 3702458229,
+"report": "2023",
+"revenue": 85525543688
+},
+"2023": {
+"assets": 130325009989,
+"equity": 88520680631,
+"fs": "CFS",
+"liabilities": 41804329358,
+"net_income": 8066489164,
+"op_income": 10029597192,
+"report": "2025",
+"revenue": 91550544835
+},
+"2024": {
+"assets": 130853121273,
+"equity": 94538169255,
+"fs": "CFS",
+"liabilities": 36314952018,
+"net_income": 7102994731,
+"op_income": 7963490108,
+"report": "2025",
+"revenue": 91263944666
+},
+"2025": {
+"assets": 128787513223,
+"equity": 94374776670,
+"fs": "CFS",
+"liabilities": 34412736553,
+"net_income": -1966197176,
+"op_income": -1648107800,
+"report": "2025",
+"revenue": 81448684458
+}
+}
+},
+"00220792": {
+"checked": "2026-09-23",
+"corp_name": "신생공업(주)",
+"status": "none",
+"years": {}
+},
+"00224026": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 수성",
+"status": "none",
+"years": {}
+},
+"00225760": {
+"checked": "2026-09-23",
+"corp_name": "(주)한성피앤아이",
+"status": "none",
+"years": {}
+},
+"00227616": {
+"checked": "2026-09-23",
+"corp_name": "농업회사법인 농협에코아그로 주식회사",
+"status": "none",
+"years": {}
+},
+"00230984": {
+"checked": "2026-09-23",
+"corp_name": "세원섬유 주식회사",
+"status": "none",
+"years": {}
+},
+"00235280": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 상아뉴매틱",
+"status": "none",
+"years": {}
+},
+"00236641": {
+"checked": "2026-09-23",
+"corp_name": "태창공업(주)",
+"status": "none",
+"years": {}
+},
+"00236845": {
+"checked": "2026-09-23",
+"corp_name": "삼우기업 주식회사",
+"status": "none",
+"years": {}
+},
+"00238339": {
+"checked": "2026-09-23",
+"corp_name": "대지철강주식회사",
+"status": "none",
+"years": {}
+},
+"00239657": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 아세아스틸",
+"status": "none",
+"years": {}
+},
+"00240501": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 제이에스엔",
+"status": "none",
+"years": {}
+},
+"00244385": {
+"checked": "2026-09-23",
+"corp_name": "삼영공업(주)",
+"status": "none",
+"years": {}
+},
+"00246550": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 신대한물산",
+"status": "none",
+"years": {}
+},
+"00247717": {
+"checked": "2026-09-23",
+"corp_name": "(주)세일화섬",
+"status": "none",
+"years": {}
+},
+"00250368": {
+"checked": "2026-09-23",
+"corp_name": "신화정밀 주식회사",
+"status": "none",
+"years": {}
+},
+"00251279": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 성원산업",
+"status": "none",
+"years": {}
+},
+"00257255": {
+"checked": "2026-09-23",
+"corp_name": "주식회사코트라움",
+"status": "none",
+"years": {}
+},
+"00259004": {
+"checked": "2026-09-23",
+"corp_name": "대구텍 주식회사",
+"status": "none",
+"years": {}
+},
+"00260596": {
+"checked": "2026-09-23",
+"corp_name": "(주)우정",
+"status": "none",
+"years": {}
+},
+"00261285": {
+"checked": "2026-09-23",
+"corp_name": "한국가스공사(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 43669902324183,
+"equity": 9119335805807,
+"fs": "CFS",
+"liabilities": 34550566518376,
+"net_income": 964522139121,
+"op_income": 1239699333407,
+"report": "2023",
+"revenue": 27520756430324
+},
+"2022": {
+"assets": 62424983096053,
+"equity": 10410740312040,
+"fs": "CFS",
+"liabilities": 52014242784013,
+"net_income": 1497008012582,
+"op_income": 2463421952045,
+"report": "2023",
+"revenue": 51724286632369
+},
+"2023": {
+"assets": 57254666000000,
+"equity": 9826038000000,
+"fs": "CFS",
+"liabilities": 47428628000000,
+"net_income": -747429000000,
+"op_income": 1553419000000,
+"report": "2025",
+"revenue": 44555995000000
+},
+"2024": {
+"assets": 57669637000000,
+"equity": 10826356000000,
+"fs": "CFS",
+"liabilities": 46843281000000,
+"net_income": 1148985000000,
+"op_income": 3003363000000,
+"report": "2025",
+"revenue": 38388740000000
+},
+"2025": {
+"assets": 53627847000000,
+"equity": 10798925000000,
+"fs": "CFS",
+"liabilities": 42828922000000,
+"net_income": 132251000000,
+"op_income": 2101151000000,
+"report": "2025",
+"revenue": 35727336000000
+}
+}
+},
+"00268385": {
+"checked": "2026-09-23",
+"corp_name": "에스트라오토모티브시스템 주식회사",
+"status": "none",
+"years": {}
+},
+"00308896": {
+"checked": "2026-09-23",
+"corp_name": "(주)셀피글로벌",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 39925398363,
+"equity": 7888729655,
+"fs": "CFS",
+"liabilities": 32036668708,
+"net_income": -12052605279,
+"op_income": -9893029563,
+"report": "2023",
+"revenue": 27797305155
+},
+"2022": {
+"assets": 37998690263,
+"equity": 19297882233,
+"fs": "CFS",
+"liabilities": 18700808030,
+"net_income": 2937701847,
+"op_income": 484788964,
+"report": "2023",
+"revenue": 37586755718
+},
+"2023": {
+"assets": 32935484067,
+"equity": 18629823105,
+"fs": "CFS",
+"liabilities": 14305660962,
+"net_income": 234658557,
+"op_income": 2059022012,
+"report": "2025",
+"revenue": 34548050084
+},
+"2024": {
+"assets": 27979942852,
+"equity": 17778813569,
+"fs": "CFS",
+"liabilities": 10201129283,
+"net_income": -1825289437,
+"op_income": -1707181447,
+"report": "2025",
+"revenue": 33712530431
+},
+"2025": {
+"assets": 25777691812,
+"equity": 10246368914,
+"fs": "CFS",
+"liabilities": 15531322898,
+"net_income": -10567028684,
+"op_income": -3428445028,
+"report": "2025",
+"revenue": 35505883136
+}
+}
+},
+"00327800": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 청우섬유",
+"status": "none",
+"years": {}
+},
+"00351092": {
+"checked": "2026-09-23",
+"corp_name": "삼보모터스(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 789701419039,
+"equity": 235065946610,
+"fs": "CFS",
+"liabilities": 554635472429,
+"net_income": 12151046457,
+"op_income": 16607755088,
+"report": "2023",
+"revenue": 1029815041427
+},
+"2022": {
+"assets": 864519668863,
+"equity": 263794203632,
+"fs": "CFS",
+"liabilities": 600725465231,
+"net_income": 21354908783,
+"op_income": 24045241099,
+"report": "2023",
+"revenue": 1199512963508
+},
+"2023": {
+"assets": 1037465852411,
+"equity": 318844674836,
+"fs": "CFS",
+"liabilities": 718621177575,
+"net_income": 29804014257,
+"op_income": 51648116490,
+"report": "2025",
+"revenue": 1440557265080
+},
+"2024": {
+"assets": 1209043218812,
+"equity": 381447737508,
+"fs": "CFS",
+"liabilities": 827595481304,
+"net_income": 43826664737,
+"op_income": 54271873657,
+"report": "2025",
+"revenue": 1570625502210
+},
+"2025": {
+"assets": 1337854672855,
+"equity": 419356617050,
+"fs": "CFS",
+"liabilities": 918498055805,
+"net_income": 20266061263,
+"op_income": 61729555951,
+"report": "2025",
+"revenue": 1684582152379
+}
+}
+},
+"00361381": {
+"checked": "2026-09-23",
+"corp_name": "(주)제이브이엠",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 211040260387,
+"equity": 143490002714,
+"fs": "CFS",
+"liabilities": 67550257673,
+"net_income": 8950514043,
+"op_income": 12494617124,
+"report": "2023",
+"revenue": 115826299716
+},
+"2022": {
+"assets": 231713430104,
+"equity": 158121467743,
+"fs": "CFS",
+"liabilities": 73591962361,
+"net_income": 15756495119,
+"op_income": 21991342719,
+"report": "2023",
+"revenue": 141977630092
+},
+"2023": {
+"assets": 257522493174,
+"equity": 179492261206,
+"fs": "CFS",
+"liabilities": 78030231968,
+"net_income": 26243571574,
+"op_income": 29770728060,
+"report": "2025",
+"revenue": 157085342969
+},
+"2024": {
+"assets": 284799777615,
+"equity": 202336022424,
+"fs": "CFS",
+"liabilities": 82463755191,
+"net_income": 28844340035,
+"op_income": 30675011499,
+"report": "2025",
+"revenue": 159434150636
+},
+"2025": {
+"assets": 319127680911,
+"equity": 233947355120,
+"fs": "CFS",
+"liabilities": 85180325791,
+"net_income": 28350804537,
+"op_income": 33276260919,
+"report": "2025",
+"revenue": 173129219712
+}
+}
+},
+"00363635": {
+"checked": "2026-09-23",
+"corp_name": "(주)부용",
+"status": "none",
+"years": {}
+},
+"00363820": {
+"checked": "2026-09-23",
+"corp_name": "(주)동재",
+"status": "none",
+"years": {}
+},
+"00363972": {
+"checked": "2026-09-23",
+"corp_name": "덕영섬유(주)",
+"status": "none",
+"years": {}
+},
+"00364564": {
+"checked": "2026-09-23",
+"corp_name": "동원파이프(주)",
+"status": "none",
+"years": {}
+},
+"00364607": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼원산업",
+"status": "none",
+"years": {}
+},
+"00369833": {
+"checked": "2026-09-23",
+"corp_name": "유니온머티리얼(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 186669511383,
+"equity": 83880737291,
+"fs": "CFS",
+"liabilities": 102788774092,
+"net_income": 543550735,
+"op_income": -848992713,
+"report": "2023",
+"revenue": 118261478442
+},
+"2022": {
+"assets": 204164784861,
+"equity": 83821137932,
+"fs": "CFS",
+"liabilities": 120343646929,
+"net_income": -214987091,
+"op_income": 848339698,
+"report": "2023",
+"revenue": 126146837365
+},
+"2023": {
+"assets": 187088686775,
+"equity": 63730656159,
+"fs": "CFS",
+"liabilities": 123358030616,
+"net_income": -18050286189,
+"op_income": -4667933911,
+"report": "2025",
+"revenue": 116470234149
+},
+"2024": {
+"assets": 138270697101,
+"equity": 15425888242,
+"fs": "CFS",
+"liabilities": 122844808859,
+"net_income": -46475655498,
+"op_income": -16501073442,
+"report": "2025",
+"revenue": 108366485493
+},
+"2025": {
+"assets": 136395574481,
+"equity": 19626757399,
+"fs": "CFS",
+"liabilities": 116768817082,
+"net_income": 2459943818,
+"op_income": 5429904795,
+"report": "2025",
+"revenue": 101937090012
+}
+}
+},
+"00371245": {
+"checked": "2026-09-23",
+"corp_name": "정안철강(주)",
+"status": "none",
+"years": {}
+},
+"00371254": {
+"checked": "2026-09-23",
+"corp_name": "(주)금강밸브",
+"status": "none",
+"years": {}
+},
+"00372314": {
+"checked": "2026-09-23",
+"corp_name": "(주)부성리싸이클링",
+"status": "none",
+"years": {}
+},
+"00386715": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 세흥에스피",
+"status": "none",
+"years": {}
+},
+"00398701": {
+"checked": "2026-09-23",
+"corp_name": "(주)엘앤에프",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 1532199428137,
+"equity": 635190355556,
+"fs": "CFS",
+"liabilities": 897009072581,
+"net_income": -112263172018,
+"op_income": 44252213145,
+"report": "2023",
+"revenue": 970760874482
+},
+"2022": {
+"assets": 3023932974764,
+"equity": 1285330380477,
+"fs": "CFS",
+"liabilities": 1738602594287,
+"net_income": 271012385909,
+"op_income": 266321029961,
+"report": "2023",
+"revenue": 3887293713353
+},
+"2023": {
+"assets": 3351444610588,
+"equity": 1109988603801,
+"fs": "CFS",
+"liabilities": 2241456006787,
+"net_income": -194922089742,
+"op_income": -222296651919,
+"report": "2025",
+"revenue": 4644090367589
+},
+"2024": {
+"assets": 2799831517733,
+"equity": 723347931361,
+"fs": "CFS",
+"liabilities": 2076483586372,
+"net_income": -380729239417,
+"op_income": -558685355192,
+"report": "2025",
+"revenue": 1907478512809
+},
+"2025": {
+"assets": 3134104265112,
+"equity": 676823890646,
+"fs": "CFS",
+"liabilities": 2457280374466,
+"net_income": -534701333152,
+"op_income": -156849943423,
+"report": "2025",
+"revenue": 2154938965103
+}
+}
+},
+"00403906": {
+"checked": "2026-09-23",
+"corp_name": "(주) 디엔피코퍼레이션",
+"status": "none",
+"years": {}
+},
+"00404288": {
+"checked": "2026-09-23",
+"corp_name": "(주)아진엑스텍",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 51310526963,
+"equity": 44577714874,
+"fs": "OFS",
+"liabilities": 6732812089,
+"net_income": 4291733594,
+"op_income": 5159267561,
+"report": "2023",
+"revenue": 41649797849
+},
+"2022": {
+"assets": 50408075096,
+"equity": 43638381295,
+"fs": "OFS",
+"liabilities": 6769693801,
+"net_income": 1629981298,
+"op_income": 2059438358,
+"report": "2023",
+"revenue": 35691515631
+},
+"2023": {
+"assets": 47733264369,
+"equity": 42833397663,
+"fs": "OFS",
+"liabilities": 4899866706,
+"net_income": 494231750,
+"op_income": -912692556,
+"report": "2025",
+"revenue": 24884104476
+},
+"2024": {
+"assets": 45119440348,
+"equity": 40260811047,
+"fs": "OFS",
+"liabilities": 4858629301,
+"net_income": -2841785301,
+"op_income": -4189061187,
+"report": "2025",
+"revenue": 25168306541
+},
+"2025": {
+"assets": 45229672958,
+"equity": 41249972756,
+"fs": "OFS",
+"liabilities": 3979700202,
+"net_income": 837150932,
+"op_income": 962725276,
+"report": "2025",
+"revenue": 24617900877
+}
+}
+},
+"00405676": {
+"checked": "2026-09-23",
+"corp_name": "(주)평안",
+"status": "none",
+"years": {}
+},
+"00406356": {
+"checked": "2026-09-23",
+"corp_name": "크레텍웰딩주식회사",
+"status": "none",
+"years": {}
+},
+"00411048": {
+"checked": "2026-09-23",
+"corp_name": "(주)에스앤에스텍",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 197438760724,
+"equity": 174425177332,
+"fs": "CFS",
+"liabilities": 23013583392,
+"net_income": 11499406880,
+"op_income": 12610883776,
+"report": "2023",
+"revenue": 98842798689
+},
+"2022": {
+"assets": 226750296429,
+"equity": 190391469119,
+"fs": "CFS",
+"liabilities": 36358827310,
+"net_income": 17464205801,
+"op_income": 16012815858,
+"report": "2023",
+"revenue": 123506695451
+},
+"2023": {
+"assets": 256758748753,
+"equity": 220798777193,
+"fs": "CFS",
+"liabilities": 35959971560,
+"net_income": 25854851119,
+"op_income": 25039402690,
+"report": "2025",
+"revenue": 150320408224
+},
+"2024": {
+"assets": 297031688485,
+"equity": 246847048853,
+"fs": "CFS",
+"liabilities": 50184639632,
+"net_income": 30313647619,
+"op_income": 29478688017,
+"report": "2025",
+"revenue": 176013891367
+},
+"2025": {
+"assets": 393041682256,
+"equity": 304257904926,
+"fs": "CFS",
+"liabilities": 88783777330,
+"net_income": 58092807910,
+"op_income": 50389752346,
+"report": "2025",
+"revenue": 243733252593
+}
+}
+},
+"00412223": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 금성정공",
+"status": "none",
+"years": {}
+},
+"00412612": {
+"checked": "2026-09-23",
+"corp_name": "(주)에이치씨보광레미콘",
+"status": "none",
+"years": {}
+},
+"00413709": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대일",
+"status": "none",
+"years": {}
+},
+"00414373": {
+"checked": "2026-09-23",
+"corp_name": "대구특수나염(주)",
+"status": "none",
+"years": {}
+},
+"00415549": {
+"checked": "2026-09-23",
+"corp_name": "고문당인쇄주식회사",
+"status": "none",
+"years": {}
+},
+"00421133": {
+"checked": "2026-09-23",
+"corp_name": "한국대풍주식회사",
+"status": "none",
+"years": {}
+},
+"00428729": {
+"checked": "2026-09-23",
+"corp_name": "(주)대호에이엘",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 145025262064,
+"equity": 69025180108,
+"fs": "OFS",
+"liabilities": 76000081956,
+"net_income": -3042735063,
+"op_income": 1819870720,
+"report": "2023",
+"revenue": 143401758272
+},
+"2022": {
+"assets": 153542696876,
+"equity": 72880719330,
+"fs": "OFS",
+"liabilities": 80661977546,
+"net_income": 5924964090,
+"op_income": 9340386983,
+"report": "2023",
+"revenue": 174036740741
+},
+"2023": {
+"assets": 145877679821,
+"equity": 94727342781,
+"fs": "CFS",
+"liabilities": 51150337040,
+"net_income": 3485683671,
+"op_income": 8359024150,
+"report": "2025",
+"revenue": 181568717221
+},
+"2024": {
+"assets": 150164209033,
+"equity": 94682511143,
+"fs": "CFS",
+"liabilities": 55481697890,
+"net_income": 1395116723,
+"op_income": 5826923476,
+"report": "2025",
+"revenue": 168532831254
+},
+"2025": {
+"assets": 169573525667,
+"equity": 84405111704,
+"fs": "CFS",
+"liabilities": 85168413963,
+"net_income": -32498702771,
+"op_income": 3471899198,
+"report": "2025",
+"revenue": 215642472961
+}
+}
+},
+"00428853": {
+"checked": "2026-09-23",
+"corp_name": "(주)태일금속",
+"status": "none",
+"years": {}
+},
+"00436409": {
+"checked": "2026-09-23",
+"corp_name": "(주)코마텍",
+"status": "none",
+"years": {}
+},
+"00441784": {
+"checked": "2026-09-23",
+"corp_name": "(주)우성시엔시",
+"status": "none",
+"years": {}
+},
+"00443791": {
+"checked": "2026-09-23",
+"corp_name": "삼우정밀주식회사",
+"status": "none",
+"years": {}
+},
+"00446105": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 영빈산업",
+"status": "none",
+"years": {}
+},
+"00446877": {
+"checked": "2026-09-23",
+"corp_name": "풀토래 (주)",
+"status": "none",
+"years": {}
+},
+"00447441": {
+"checked": "2026-09-23",
+"corp_name": "엘에스메카피온주식회사",
+"status": "none",
+"years": {}
+},
+"00449290": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 화신",
+"status": "none",
+"years": {}
+},
+"00450038": {
+"checked": "2026-09-23",
+"corp_name": "(주)보광",
+"status": "none",
+"years": {}
+},
+"00451790": {
+"checked": "2026-09-23",
+"corp_name": "(주)한국클래드텍",
+"status": "none",
+"years": {}
+},
+"00452391": {
+"checked": "2026-09-23",
+"corp_name": "한국댓와일러(주)",
+"status": "none",
+"years": {}
+},
+"00452540": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 성일산업",
+"status": "none",
+"years": {}
+},
+"00454025": {
+"checked": "2026-09-23",
+"corp_name": "신대일페이퍼 주식회사",
+"status": "none",
+"years": {}
+},
+"00454441": {
+"checked": "2026-09-23",
+"corp_name": "성림첨단산업(주)",
+"status": "none",
+"years": {}
+},
+"00457031": {
+"checked": "2026-09-23",
+"corp_name": "(주)대창섬유",
+"status": "none",
+"years": {}
+},
+"00479097": {
+"checked": "2026-09-23",
+"corp_name": "경희정공 주식회사",
+"status": "none",
+"years": {}
+},
+"00479802": {
+"checked": "2026-09-23",
+"corp_name": "(주)텍스랜드앤넥스코",
+"status": "none",
+"years": {}
+},
+"00482578": {
+"checked": "2026-09-23",
+"corp_name": "에스제이에프 주식회사",
+"status": "none",
+"years": {}
+},
+"00486413": {
+"checked": "2026-09-23",
+"corp_name": "(주)SJ테크",
+"status": "none",
+"years": {}
+},
+"00487713": {
+"checked": "2026-09-23",
+"corp_name": "한국진공주식회사",
+"status": "none",
+"years": {}
+},
+"00490850": {
+"checked": "2026-09-23",
+"corp_name": "주식회사아이앤피",
+"status": "none",
+"years": {}
+},
+"00492131": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 엔유씨전자",
+"status": "none",
+"years": {}
+},
+"00492238": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 동아금속",
+"status": "none",
+"years": {}
+},
+"00496960": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 공성",
+"status": "none",
+"years": {}
+},
+"00497075": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대주기계",
+"status": "none",
+"years": {}
+},
+"00497659": {
+"checked": "2026-09-23",
+"corp_name": "금강파이프(주)",
+"status": "none",
+"years": {}
+},
+"00502711": {
+"checked": "2026-09-23",
+"corp_name": "(주)광성",
+"status": "none",
+"years": {}
+},
+"00513276": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 평화이엔지",
+"status": "none",
+"years": {}
+},
+"00521114": {
+"checked": "2026-09-23",
+"corp_name": "오성주식회사",
+"status": "none",
+"years": {}
+},
+"00524078": {
+"checked": "2026-09-23",
+"corp_name": "진성씨앤아이주식회사",
+"status": "none",
+"years": {}
+},
+"00526720": {
+"checked": "2026-09-23",
+"corp_name": "(주)스틸에이",
+"status": "none",
+"years": {}
+},
+"00527446": {
+"checked": "2026-09-23",
+"corp_name": "신한정공(주)",
+"status": "none",
+"years": {}
+},
+"00527774": {
+"checked": "2026-09-23",
+"corp_name": "(주)벽진피앤티(P&T)",
+"status": "none",
+"years": {}
+},
+"00529037": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 꿈그린",
+"status": "none",
+"years": {}
+},
+"00529842": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼광염직",
+"status": "none",
+"years": {}
+},
+"00530079": {
+"checked": "2026-09-23",
+"corp_name": "동진침장주식회사",
+"status": "none",
+"years": {}
+},
+"00531892": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 아이지에스피",
+"status": "none",
+"years": {}
+},
+"00532758": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 보국전자",
+"status": "none",
+"years": {}
+},
+"00533322": {
+"checked": "2026-09-23",
+"corp_name": "주식회사유성이엔지",
+"status": "none",
+"years": {}
+},
+"00533492": {
+"checked": "2026-09-23",
+"corp_name": "(주)성훈",
+"status": "none",
+"years": {}
+},
+"00533720": {
+"checked": "2026-09-23",
+"corp_name": "에이브이오카본코리아(주)",
+"status": "none",
+"years": {}
+},
+"00533739": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 영화",
+"status": "none",
+"years": {}
+},
+"00534127": {
+"checked": "2026-09-23",
+"corp_name": "(주)대명ENG",
+"status": "none",
+"years": {}
+},
+"00534844": {
+"checked": "2026-09-23",
+"corp_name": "주식회사은일",
+"status": "none",
+"years": {}
+},
+"00541260": {
+"checked": "2026-09-23",
+"corp_name": "코리아고꾸사이(주)",
+"status": "none",
+"years": {}
+},
+"00545585": {
+"checked": "2026-09-23",
+"corp_name": "(주)부광에프디",
+"status": "none",
+"years": {}
+},
+"00552248": {
+"checked": "2026-09-23",
+"corp_name": "(주)티에이케이",
+"status": "none",
+"years": {}
+},
+"00553919": {
+"checked": "2026-09-23",
+"corp_name": "삼익키리우주식회사",
+"status": "none",
+"years": {}
+},
+"00559755": {
+"checked": "2026-09-23",
+"corp_name": "(주)범서",
+"status": "none",
+"years": {}
+},
+"00561750": {
+"checked": "2026-09-23",
+"corp_name": "코어텍 주식회사",
+"status": "none",
+"years": {}
+},
+"00562148": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼양금속",
+"status": "none",
+"years": {}
+},
+"00562847": {
+"checked": "2026-09-23",
+"corp_name": "(주)베스툴",
+"status": "none",
+"years": {}
+},
+"00563642": {
+"checked": "2026-09-23",
+"corp_name": "(주)한국소방기구제작소",
+"status": "none",
+"years": {}
+},
+"00564872": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 효림엑스이",
+"status": "none",
+"years": {}
+},
+"00565491": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 신도",
+"status": "none",
+"years": {}
+},
+"00565899": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 해성합섬",
+"status": "none",
+"years": {}
+},
+"00567772": {
+"checked": "2026-09-23",
+"corp_name": "(주)진양오일씰",
+"status": "none",
+"years": {}
+},
+"00568009": {
+"checked": "2026-09-23",
+"corp_name": "세아기전 주식회사",
+"status": "none",
+"years": {}
+},
+"00568018": {
+"checked": "2026-09-23",
+"corp_name": "(주)동아티오엘",
+"status": "none",
+"years": {}
+},
+"00570077": {
+"checked": "2026-09-23",
+"corp_name": "금영정공(주)",
+"status": "none",
+"years": {}
+},
+"00573199": {
+"checked": "2026-09-23",
+"corp_name": "(주)성림티앤티",
+"status": "none",
+"years": {}
+},
+"00573579": {
+"checked": "2026-09-23",
+"corp_name": "평화산업(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 220115437716,
+"equity": 25989805786,
+"fs": "CFS",
+"liabilities": 194125631930,
+"net_income": 205128216,
+"op_income": 5916278187,
+"report": "2023",
+"revenue": 424123466253
+},
+"2022": {
+"assets": 236600606117,
+"equity": 41432301802,
+"fs": "CFS",
+"liabilities": 195168304315,
+"net_income": 6083364529,
+"op_income": 5734166110,
+"report": "2023",
+"revenue": 519932246828
+},
+"2023": {
+"assets": 252411568748,
+"equity": 43366110642,
+"fs": "CFS",
+"liabilities": 209045458106,
+"net_income": 3632456925,
+"op_income": 9937617006,
+"report": "2025",
+"revenue": 564038964404
+},
+"2024": {
+"assets": 232580292137,
+"equity": 46074402187,
+"fs": "CFS",
+"liabilities": 186505889950,
+"net_income": 3833191318,
+"op_income": 14061353558,
+"report": "2025",
+"revenue": 588377472367
+},
+"2025": {
+"assets": 256001257575,
+"equity": 62126438700,
+"fs": "CFS",
+"liabilities": 193874818875,
+"net_income": 15706368362,
+"op_income": 13342639921,
+"report": "2025",
+"revenue": 626062341683
+}
+}
+},
+"00573676": {
+"checked": "2026-09-23",
+"corp_name": "(주)메가젠임플란트",
+"status": "none",
+"years": {}
+},
+"00573773": {
+"checked": "2026-09-23",
+"corp_name": "부국철강",
+"status": "none",
+"years": {}
+},
+"00573913": {
+"checked": "2026-09-23",
+"corp_name": "유한염직공업(주)",
+"status": "none",
+"years": {}
+},
+"00574091": {
+"checked": "2026-09-23",
+"corp_name": "(주)대한실업",
+"status": "none",
+"years": {}
+},
+"00576123": {
+"checked": "2026-09-23",
+"corp_name": "한국에스케이에프씰주식회사",
+"status": "none",
+"years": {}
+},
+"00576831": {
+"checked": "2026-09-23",
+"corp_name": "델타캐스트(주)",
+"status": "none",
+"years": {}
+},
+"00577335": {
+"checked": "2026-09-23",
+"corp_name": "(주)대성하이텍",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 144875627685,
+"equity": 25040589813,
+"fs": "CFS",
+"liabilities": 119835037872,
+"net_income": 7412217476,
+"op_income": 12024066076,
+"report": "2023",
+"revenue": 112578599501
+},
+"2022": {
+"assets": 156515077203,
+"equity": 68184526665,
+"fs": "CFS",
+"liabilities": 88330550538,
+"net_income": 2139410055,
+"op_income": 11477824071,
+"report": "2023",
+"revenue": 128372242344
+},
+"2023": {
+"assets": 188870682626,
+"equity": 74099084362,
+"fs": "CFS",
+"liabilities": 114771598264,
+"net_income": -7485693014,
+"op_income": -6581048283,
+"report": "2025",
+"revenue": 92797688898
+},
+"2024": {
+"assets": 186595686542,
+"equity": 62626270426,
+"fs": "CFS",
+"liabilities": 123969416116,
+"net_income": -12510719210,
+"op_income": -13136615453,
+"report": "2025",
+"revenue": 92831306875
+},
+"2025": {
+"assets": 186030839262,
+"equity": 62581779264,
+"fs": "CFS",
+"liabilities": 123449059998,
+"net_income": -6174743090,
+"op_income": -2295340664,
+"report": "2025",
+"revenue": 95216185446
+}
+}
+},
+"00578176": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 비에스지",
+"status": "none",
+"years": {}
+},
+"00579838": {
+"checked": "2026-09-23",
+"corp_name": "고광산업(주)",
+"status": "none",
+"years": {}
+},
+"00580418": {
+"checked": "2026-09-23",
+"corp_name": "신풍섬유(주)",
+"status": "none",
+"years": {}
+},
+"00581082": {
+"checked": "2026-09-23",
+"corp_name": "(주)태원전장",
+"status": "none",
+"years": {}
+},
+"00586500": {
+"checked": "2026-09-23",
+"corp_name": "미래메탈테크(주)",
+"status": "none",
+"years": {}
+},
+"00595304": {
+"checked": "2026-09-23",
+"corp_name": "(주)대왕레미콘",
+"status": "none",
+"years": {}
+},
+"00596668": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 진영피앤티",
+"status": "none",
+"years": {}
+},
+"00604912": {
+"checked": "2026-09-23",
+"corp_name": "(주)진영R & S",
+"status": "none",
+"years": {}
+},
+"00607186": {
+"checked": "2026-09-23",
+"corp_name": "(주)씨엠테크",
+"status": "none",
+"years": {}
+},
+"00607441": {
+"checked": "2026-09-23",
+"corp_name": "(주)아이디에스",
+"status": "none",
+"years": {}
+},
+"00609166": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 티제이글로브스틸",
+"status": "none",
+"years": {}
+},
+"00610135": {
+"checked": "2026-09-23",
+"corp_name": "상원",
+"status": "none",
+"years": {}
+},
+"00610694": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 와이.엠.피",
+"status": "none",
+"years": {}
+},
+"00610746": {
+"checked": "2026-09-23",
+"corp_name": "케이지모빌리티대구서비스센터주식회사",
+"status": "none",
+"years": {}
+},
+"00611222": {
+"checked": "2026-09-23",
+"corp_name": "대기에너지(주)",
+"status": "none",
+"years": {}
+},
+"00612975": {
+"checked": "2026-09-23",
+"corp_name": "(주)대세엠케어",
+"status": "none",
+"years": {}
+},
+"00613017": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 세양",
+"status": "none",
+"years": {}
+},
+"00615574": {
+"checked": "2026-09-23",
+"corp_name": "(주)한양레미콘",
+"status": "none",
+"years": {}
+},
+"00615617": {
+"checked": "2026-09-23",
+"corp_name": "(주)제일정공",
+"status": "none",
+"years": {}
+},
+"00615626": {
+"checked": "2026-09-23",
+"corp_name": "파란테크 주식회사",
+"status": "none",
+"years": {}
+},
+"00621450": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 엠에이텍",
+"status": "none",
+"years": {}
+},
+"00621760": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 이원 머티리얼즈",
+"status": "none",
+"years": {}
+},
+"00622918": {
+"checked": "2026-09-23",
+"corp_name": "거림테크 주식회사",
+"status": "none",
+"years": {}
+},
+"00622927": {
+"checked": "2026-09-23",
+"corp_name": "(주) 육장성특수강",
+"status": "none",
+"years": {}
+},
+"00626127": {
+"checked": "2026-09-23",
+"corp_name": "(주)우리텍",
+"status": "none",
+"years": {}
+},
+"00632793": {
+"checked": "2026-09-23",
+"corp_name": "전진바이오팜(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 24817215477,
+"equity": 10795655811,
+"fs": "OFS",
+"liabilities": 14021559666,
+"net_income": -2108187585,
+"op_income": -3029817431,
+"report": "2023",
+"revenue": 3214363898
+},
+"2022": {
+"assets": 17924403091,
+"equity": 9565426482,
+"fs": "OFS",
+"liabilities": 8358976609,
+"net_income": -3113030365,
+"op_income": -3135915724,
+"report": "2023",
+"revenue": 7794175890
+},
+"2023": {
+"assets": 17703670101,
+"equity": 6219660916,
+"fs": "OFS",
+"liabilities": 11484009185,
+"net_income": -6439821104,
+"op_income": -1244871755,
+"report": "2025",
+"revenue": 15680552055
+},
+"2024": {
+"assets": 18853293193,
+"equity": 17661431638,
+"fs": "OFS",
+"liabilities": 1191861555,
+"net_income": 4346135759,
+"op_income": 1158262258,
+"report": "2025",
+"revenue": 19272841086
+},
+"2025": {
+"assets": 18509033933,
+"equity": 17408128190,
+"fs": "OFS",
+"liabilities": 1100905743,
+"net_income": -195814037,
+"op_income": -342851662,
+"report": "2025",
+"revenue": 13694344910
+}
+}
+},
+"00644600": {
+"checked": "2026-09-23",
+"corp_name": "현민지브이티(주)",
+"status": "none",
+"years": {}
+},
+"00654519": {
+"checked": "2026-09-23",
+"corp_name": "(주)위니텍",
+"status": "none",
+"years": {}
+},
+"00654953": {
+"checked": "2026-09-23",
+"corp_name": "(주)티씨엘",
+"status": "none",
+"years": {}
+},
+"00655527": {
+"checked": "2026-09-23",
+"corp_name": "주식회사한국정공",
+"status": "none",
+"years": {}
+},
+"00662077": {
+"checked": "2026-09-23",
+"corp_name": "미래테크(주)",
+"status": "none",
+"years": {}
+},
+"00662590": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼우농기",
+"status": "none",
+"years": {}
+},
+"00665232": {
+"checked": "2026-09-23",
+"corp_name": "(주)명진금속",
+"status": "none",
+"years": {}
+},
+"00668266": {
+"checked": "2026-09-23",
+"corp_name": "(주)청운테크",
+"status": "none",
+"years": {}
+},
+"00668716": {
+"checked": "2026-09-23",
+"corp_name": "한미에이디엠(주)",
+"status": "none",
+"years": {}
+},
+"00668822": {
+"checked": "2026-09-23",
+"corp_name": "영일산업(주)",
+"status": "none",
+"years": {}
+},
+"00668901": {
+"checked": "2026-09-23",
+"corp_name": "(주)정화테크",
+"status": "none",
+"years": {}
+},
+"00670076": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대명",
+"status": "none",
+"years": {}
+},
+"00670225": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼영기계",
+"status": "none",
+"years": {}
+},
+"00670517": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 천우텍스타일",
+"status": "none",
+"years": {}
+},
+"00670757": {
+"checked": "2026-09-23",
+"corp_name": "서창전기통신(주)",
+"status": "none",
+"years": {}
+},
+"00678096": {
+"checked": "2026-09-23",
+"corp_name": "(주)맥스로텍",
+"status": "none",
+"years": {}
+},
+"00689214": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 윤성테크",
+"status": "none",
+"years": {}
+},
+"00693554": {
+"checked": "2026-09-23",
+"corp_name": "(주)티케이케미칼",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 1148739179644,
+"equity": 667838398953,
+"fs": "OFS",
+"liabilities": 480900780691,
+"net_income": 350832727696,
+"op_income": 88042300672,
+"report": "2023",
+"revenue": 565548876045
+},
+"2022": {
+"assets": 1431444770374,
+"equity": 947929864901,
+"fs": "OFS",
+"liabilities": 483514905473,
+"net_income": 275231355241,
+"op_income": 22933282699,
+"report": "2023",
+"revenue": 620982174347
+},
+"2023": {
+"assets": 1372242761413,
+"equity": 956690431186,
+"fs": "OFS",
+"liabilities": 415552330227,
+"net_income": -2059225645,
+"op_income": -4297257985,
+"report": "2025",
+"revenue": 379151731204
+},
+"2024": {
+"assets": 1486403612128,
+"equity": 1116490027033,
+"fs": "OFS",
+"liabilities": 369913585095,
+"net_income": -111650211294,
+"op_income": -1585026335,
+"report": "2025",
+"revenue": 339574686712
+},
+"2025": {
+"assets": 1475543333684,
+"equity": 1227524315490,
+"fs": "OFS",
+"liabilities": 248019018194,
+"net_income": 116509818824,
+"op_income": 2403179067,
+"report": "2025",
+"revenue": 345756223802
+}
+}
+},
+"00755313": {
+"checked": "2026-09-23",
+"corp_name": "영신기전공업(주)",
+"status": "none",
+"years": {}
+},
+"00761581": {
+"checked": "2026-09-23",
+"corp_name": "아신산업 주식회사",
+"status": "none",
+"years": {}
+},
+"00764074": {
+"checked": "2026-09-23",
+"corp_name": "(주)비엠아이",
+"status": "none",
+"years": {}
+},
+"00764630": {
+"checked": "2026-09-23",
+"corp_name": "(주)에스엔아이",
+"status": "none",
+"years": {}
+},
+"00765897": {
+"checked": "2026-09-23",
+"corp_name": "한국피아이엠(주)",
+"status": "ok",
+"years": {
+"2023": {
+"assets": 71641762201,
+"equity": 28718667478,
+"fs": "CFS",
+"liabilities": 42923094723,
+"net_income": 1143730006,
+"op_income": 4272020203,
+"report": "2025",
+"revenue": 37963338813
+},
+"2024": {
+"assets": 76459309100,
+"equity": 43652099251,
+"fs": "CFS",
+"liabilities": 32807209849,
+"net_income": 2777596031,
+"op_income": 3606809251,
+"report": "2025",
+"revenue": 37447247186
+},
+"2025": {
+"assets": 85889946272,
+"equity": 56971709399,
+"fs": "CFS",
+"liabilities": 28918236873,
+"net_income": -54237984,
+"op_income": 1455551263,
+"report": "2025",
+"revenue": 36931110519
+}
+}
+},
+"00766294": {
+"checked": "2026-09-23",
+"corp_name": "(주)금호정공",
+"status": "none",
+"years": {}
+},
+"00769015": {
+"checked": "2026-09-23",
+"corp_name": "대영코어텍주식회사",
+"status": "none",
+"years": {}
+},
+"00770127": {
+"checked": "2026-09-23",
+"corp_name": "주식회사대안",
+"status": "none",
+"years": {}
+},
+"00784713": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 엠플러스",
+"status": "none",
+"years": {}
+},
+"00787376": {
+"checked": "2026-09-23",
+"corp_name": "대성에너지(주)",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 742479534651,
+"equity": 317343114088,
+"fs": "CFS",
+"liabilities": 425136420563,
+"net_income": 11912931284,
+"op_income": 16047844903,
+"report": "2023",
+"revenue": 770440986512
+},
+"2022": {
+"assets": 834489958201,
+"equity": 313793532919,
+"fs": "CFS",
+"liabilities": 520696425282,
+"net_income": -755414347,
+"op_income": 938738843,
+"report": "2023",
+"revenue": 1020936453937
+},
+"2023": {
+"assets": 803198158498,
+"equity": 319603451088,
+"fs": "OFS",
+"liabilities": 483594707410,
+"net_income": 14937263678,
+"op_income": 20391954237,
+"report": "2025",
+"revenue": 999533749249
+},
+"2024": {
+"assets": 797405774074,
+"equity": 328882817126,
+"fs": "OFS",
+"liabilities": 468522956948,
+"net_income": 17261222932,
+"op_income": 20476271942,
+"report": "2025",
+"revenue": 995129899139
+},
+"2025": {
+"assets": 791257168433,
+"equity": 345719204223,
+"fs": "OFS",
+"liabilities": 445537964210,
+"net_income": 24619870264,
+"op_income": 30348573111,
+"report": "2025",
+"revenue": 1017938768125
+}
+}
+},
+"00802082": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 이노테크",
+"status": "none",
+"years": {}
+},
+"00804956": {
+"checked": "2026-09-23",
+"corp_name": "(주)민영산업",
+"status": "none",
+"years": {}
+},
+"00805982": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼화테크",
+"status": "none",
+"years": {}
+},
+"00808961": {
+"checked": "2026-09-23",
+"corp_name": "(주)제일제약",
+"status": "none",
+"years": {}
+},
+"00811099": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼익테크",
+"status": "none",
+"years": {}
+},
+"00811567": {
+"checked": "2026-09-23",
+"corp_name": "(주)대동정공",
+"status": "none",
+"years": {}
+},
+"00813422": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 세신정밀",
+"status": "none",
+"years": {}
+},
+"00814908": {
+"checked": "2026-09-23",
+"corp_name": "한국프라스틱주식회사",
+"status": "none",
+"years": {}
+},
+"00815660": {
+"checked": "2026-09-23",
+"corp_name": "기승공업 주식회사",
+"status": "none",
+"years": {}
+},
+"00818029": {
+"checked": "2026-09-23",
+"corp_name": "(주)동진금속",
+"status": "none",
+"years": {}
+},
+"00818302": {
+"checked": "2026-09-23",
+"corp_name": "우성파워텍 주식회사",
+"status": "none",
+"years": {}
+},
+"00822350": {
+"checked": "2026-09-23",
+"corp_name": "(주)산엔지니어링",
+"status": "none",
+"years": {}
+},
+"00831808": {
+"checked": "2026-09-23",
+"corp_name": "(주)선일로에스",
+"status": "none",
+"years": {}
+},
+"00834106": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 디에이치테크",
+"status": "none",
+"years": {}
+},
+"00835628": {
+"checked": "2026-09-23",
+"corp_name": "(주)제일레이저",
+"status": "none",
+"years": {}
+},
+"00836007": {
+"checked": "2026-09-23",
+"corp_name": "(주)에스제이오토텍",
+"status": "none",
+"years": {}
+},
+"00841443": {
+"checked": "2026-09-23",
+"corp_name": "영남우유",
+"status": "none",
+"years": {}
+},
+"00842178": {
+"checked": "2026-09-23",
+"corp_name": "대리정밀(주)",
+"status": "none",
+"years": {}
+},
+"00852218": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 금복주",
+"status": "none",
+"years": {}
+},
+"00865063": {
+"checked": "2026-09-23",
+"corp_name": "(주)로얄정공",
+"status": "none",
+"years": {}
+},
+"00866521": {
+"checked": "2026-09-23",
+"corp_name": "에스제이이노테크",
+"status": "none",
+"years": {}
+},
+"00868778": {
+"checked": "2026-09-23",
+"corp_name": "대홍코스텍(주)",
+"status": "none",
+"years": {}
+},
+"00870162": {
+"checked": "2026-09-23",
+"corp_name": "신성에스앤티주식회사",
+"status": "none",
+"years": {}
+},
+"00871462": {
+"checked": "2026-09-23",
+"corp_name": "하이드로텍 주식회사",
+"status": "none",
+"years": {}
+},
+"00873035": {
+"checked": "2026-09-23",
+"corp_name": "명일폼테크주식회사",
+"status": "none",
+"years": {}
+},
+"00873804": {
+"checked": "2026-09-23",
+"corp_name": "대아하이테크주식회사",
+"status": "none",
+"years": {}
+},
+"00874034": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 오대",
+"status": "none",
+"years": {}
+},
+"00874760": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 유성오토모티브",
+"status": "none",
+"years": {}
+},
+"00876458": {
+"checked": "2026-09-23",
+"corp_name": "(주)S-Tech",
+"status": "none",
+"years": {}
+},
+"00877280": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에이에스이",
+"status": "none",
+"years": {}
+},
+"00877305": {
+"checked": "2026-09-23",
+"corp_name": "(주)마스윈",
+"status": "none",
+"years": {}
+},
+"00879659": {
+"checked": "2026-09-23",
+"corp_name": "(주)에스디페이퍼",
+"status": "none",
+"years": {}
+},
+"00881265": {
+"checked": "2026-09-23",
+"corp_name": "에스에스엘엠 주식회사",
+"status": "none",
+"years": {}
+},
+"00881706": {
+"checked": "2026-09-23",
+"corp_name": "원창머티리얼 주식회사",
+"status": "none",
+"years": {}
+},
+"00885429": {
+"checked": "2026-09-23",
+"corp_name": "(주)태창레이저",
+"status": "none",
+"years": {}
+},
+"00889285": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에코윈",
+"status": "none",
+"years": {}
+},
+"00892100": {
+"checked": "2026-09-23",
+"corp_name": "(주)금화텍스",
+"status": "none",
+"years": {}
+},
+"00893464": {
+"checked": "2026-09-23",
+"corp_name": "(주)도원",
+"status": "none",
+"years": {}
+},
+"00893978": {
+"checked": "2026-09-23",
+"corp_name": "(주)영광테크",
+"status": "none",
+"years": {}
+},
+"00895639": {
+"checked": "2026-09-23",
+"corp_name": "(주)태산철강",
+"status": "none",
+"years": {}
+},
+"00912909": {
+"checked": "2026-09-23",
+"corp_name": "(주)엔씨아이",
+"status": "none",
+"years": {}
+},
+"00914572": {
+"checked": "2026-09-23",
+"corp_name": "광진섬유(주)",
+"status": "none",
+"years": {}
+},
+"00915243": {
+"checked": "2026-09-23",
+"corp_name": "(주)케이아이비",
+"status": "none",
+"years": {}
+},
+"00915359": {
+"checked": "2026-09-23",
+"corp_name": "알앤디텍스타일(주)",
+"status": "none",
+"years": {}
+},
+"00916844": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 진성엠테크",
+"status": "none",
+"years": {}
+},
+"00917153": {
+"checked": "2026-09-23",
+"corp_name": "(주)태성스틸",
+"status": "none",
+"years": {}
+},
+"00919434": {
+"checked": "2026-09-23",
+"corp_name": "세광공업(주)",
+"status": "none",
+"years": {}
+},
+"00919683": {
+"checked": "2026-09-23",
+"corp_name": "(주)에이스정밀",
+"status": "none",
+"years": {}
+},
+"00921396": {
+"checked": "2026-09-23",
+"corp_name": "태경산업(주)",
+"status": "none",
+"years": {}
+},
+"00922784": {
+"checked": "2026-09-23",
+"corp_name": "(주)동조철강",
+"status": "none",
+"years": {}
+},
+"00923598": {
+"checked": "2026-09-23",
+"corp_name": "상신이엔지 주식회사",
+"status": "none",
+"years": {}
+},
+"00924375": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 장보고식자재마트",
+"status": "none",
+"years": {}
+},
+"00924560": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대영엠텍",
+"status": "none",
+"years": {}
+},
+"00925019": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 광림정공",
+"status": "none",
+"years": {}
+},
+"00925383": {
+"checked": "2026-09-23",
+"corp_name": "중앙포장(주)",
+"status": "none",
+"years": {}
+},
+"00925693": {
+"checked": "2026-09-23",
+"corp_name": "(주)동원철강",
+"status": "none",
+"years": {}
+},
+"00933212": {
+"checked": "2026-09-23",
+"corp_name": "일동케미칼(주)",
+"status": "none",
+"years": {}
+},
+"00933869": {
+"checked": "2026-09-23",
+"corp_name": "(주)명종스틸",
+"status": "none",
+"years": {}
+},
+"00937281": {
+"checked": "2026-09-23",
+"corp_name": "(주)우진하이텍",
+"status": "none",
+"years": {}
+},
+"00940647": {
+"checked": "2026-09-23",
+"corp_name": "(주)미광정공",
+"status": "none",
+"years": {}
+},
+"00943097": {
+"checked": "2026-09-23",
+"corp_name": "(주)대정밸브",
+"status": "none",
+"years": {}
+},
+"00944582": {
+"checked": "2026-09-23",
+"corp_name": "현대커민스엔진 유한회사",
+"status": "none",
+"years": {}
+},
+"00957106": {
+"checked": "2026-09-23",
+"corp_name": "(주)신양정밀",
+"status": "none",
+"years": {}
+},
+"00959362": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 아이에스아이",
+"status": "none",
+"years": {}
+},
+"00959788": {
+"checked": "2026-09-23",
+"corp_name": "(주)태광아이엔티",
+"status": "none",
+"years": {}
+},
+"00959937": {
+"checked": "2026-09-23",
+"corp_name": "(주)둔차오토모티브",
+"status": "none",
+"years": {}
+},
+"00962870": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 세광하이테크",
+"status": "none",
+"years": {}
+},
+"00962959": {
+"checked": "2026-09-23",
+"corp_name": "(주)보광아이엔티",
+"status": "none",
+"years": {}
+},
+"00963532": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 신한정밀",
+"status": "none",
+"years": {}
+},
+"00964160": {
+"checked": "2026-09-23",
+"corp_name": "(주)베사",
+"status": "none",
+"years": {}
+},
+"00968111": {
+"checked": "2026-09-23",
+"corp_name": "(주)산찬섬유",
+"status": "none",
+"years": {}
+},
+"00968157": {
+"checked": "2026-09-23",
+"corp_name": "휴먼플러스(주)",
+"status": "none",
+"years": {}
+},
+"00968290": {
+"checked": "2026-09-23",
+"corp_name": "(주)덕산코트랜",
+"status": "none",
+"years": {}
+},
+"00968333": {
+"checked": "2026-09-23",
+"corp_name": "정화ENP주식회사",
+"status": "none",
+"years": {}
+},
+"00968971": {
+"checked": "2026-09-23",
+"corp_name": "현대코퍼레이션(주)",
+"status": "none",
+"years": {}
+},
+"00969493": {
+"checked": "2026-09-23",
+"corp_name": "(주)한성",
+"status": "none",
+"years": {}
+},
+"00969730": {
+"checked": "2026-09-23",
+"corp_name": "주식회사프레시원대구경북",
+"status": "none",
+"years": {}
+},
+"00969855": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 삼영이앤티",
+"status": "none",
+"years": {}
+},
+"00970286": {
+"checked": "2026-09-23",
+"corp_name": "에이비테크 (주)",
+"status": "none",
+"years": {}
+},
+"00970596": {
+"checked": "2026-09-23",
+"corp_name": "(주)한국고분자",
+"status": "none",
+"years": {}
+},
+"00971805": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 프랜푸드",
+"status": "none",
+"years": {}
+},
+"00971911": {
+"checked": "2026-09-23",
+"corp_name": "세광산업 주식회사",
+"status": "none",
+"years": {}
+},
+"00972576": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에스씨피",
+"status": "none",
+"years": {}
+},
+"00972600": {
+"checked": "2026-09-23",
+"corp_name": "(주)신창엠텍",
+"status": "none",
+"years": {}
+},
+"00972840": {
+"checked": "2026-09-23",
+"corp_name": "에이티(주)",
+"status": "none",
+"years": {}
+},
+"00973098": {
+"checked": "2026-09-23",
+"corp_name": "(주)동양엘앤피",
+"status": "none",
+"years": {}
+},
+"00973663": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 씨엠에이글로벌",
+"status": "none",
+"years": {}
+},
+"00976554": {
+"checked": "2026-09-23",
+"corp_name": "(주)엔엘테크",
+"status": "none",
+"years": {}
+},
+"00978622": {
+"checked": "2026-09-23",
+"corp_name": "명성산업 주식회사",
+"status": "none",
+"years": {}
+},
+"00983192": {
+"checked": "2026-09-23",
+"corp_name": "(주)배관제일",
+"status": "none",
+"years": {}
+},
+"00983615": {
+"checked": "2026-09-23",
+"corp_name": "케이엔티주식회사",
+"status": "none",
+"years": {}
+},
+"00985710": {
+"checked": "2026-09-23",
+"corp_name": "(주)상원스틸",
+"status": "none",
+"years": {}
+},
+"01001273": {
+"checked": "2026-09-23",
+"corp_name": "(주)씨디씨뉴매틱",
+"status": "none",
+"years": {}
+},
+"01011793": {
+"checked": "2026-09-23",
+"corp_name": "아주철강산업(주)",
+"status": "none",
+"years": {}
+},
+"01012905": {
+"checked": "2026-09-23",
+"corp_name": "(주)가나공업",
+"status": "none",
+"years": {}
+},
+"01013807": {
+"checked": "2026-09-23",
+"corp_name": "(주)인타이어모터스",
+"status": "none",
+"years": {}
+},
+"01014000": {
+"checked": "2026-09-23",
+"corp_name": "(주)앤디아이",
+"status": "none",
+"years": {}
+},
+"01015355": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 전유산업",
+"status": "none",
+"years": {}
+},
+"01015373": {
+"checked": "2026-09-23",
+"corp_name": "잘만정공(주)",
+"status": "none",
+"years": {}
+},
+"01015595": {
+"checked": "2026-09-23",
+"corp_name": "오성전장 주식회사",
+"status": "none",
+"years": {}
+},
+"01016655": {
+"checked": "2026-09-23",
+"corp_name": "화성에이앤티(주)",
+"status": "none",
+"years": {}
+},
+"01016886": {
+"checked": "2026-09-23",
+"corp_name": "(주)테크엔",
+"status": "none",
+"years": {}
+},
+"01017964": {
+"checked": "2026-09-23",
+"corp_name": "(주)동일",
+"status": "none",
+"years": {}
+},
+"01017982": {
+"checked": "2026-09-23",
+"corp_name": "(주)명아스틸",
+"status": "none",
+"years": {}
+},
+"01018680": {
+"checked": "2026-09-23",
+"corp_name": "(주)도야지식품",
+"status": "none",
+"years": {}
+},
+"01019403": {
+"checked": "2026-09-23",
+"corp_name": "인덕염공(주)",
+"status": "none",
+"years": {}
+},
+"01019962": {
+"checked": "2026-09-23",
+"corp_name": "(주)영제자산관리",
+"status": "none",
+"years": {}
+},
+"01021648": {
+"checked": "2026-09-23",
+"corp_name": "(주)광진정밀 ",
+"status": "none",
+"years": {}
+},
+"01022461": {
+"checked": "2026-09-23",
+"corp_name": "(주)태영인프라",
+"status": "none",
+"years": {}
+},
+"01023150": {
+"checked": "2026-09-23",
+"corp_name": "(주)영풍열처리",
+"status": "none",
+"years": {}
+},
+"01023211": {
+"checked": "2026-09-23",
+"corp_name": "와이제이링크(주)",
+"status": "ok",
+"years": {
+"2023": {
+"assets": 73307093940,
+"equity": 41284093488,
+"fs": "CFS",
+"liabilities": 32023000452,
+"net_income": 7054253615,
+"op_income": 9159287098,
+"report": "2025",
+"revenue": 48551207007
+},
+"2024": {
+"assets": 115726215848,
+"equity": 78181301428,
+"fs": "CFS",
+"liabilities": 37544914420,
+"net_income": 394384071,
+"op_income": -1266842685,
+"report": "2025",
+"revenue": 48533636570
+},
+"2025": {
+"assets": 123519529020,
+"equity": 74489801386,
+"fs": "CFS",
+"liabilities": 49029727634,
+"net_income": -3101243499,
+"op_income": -3472858128,
+"report": "2025",
+"revenue": 46072766900
+}
+}
+},
+"01024609": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 신성하이텍",
+"status": "none",
+"years": {}
+},
+"01024867": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 하이컨코리아",
+"status": "none",
+"years": {}
+},
+"01024973": {
+"checked": "2026-09-23",
+"corp_name": "(주)반도",
+"status": "none",
+"years": {}
+},
+"01028845": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 지텍산업",
+"status": "none",
+"years": {}
+},
+"01028924": {
+"checked": "2026-09-23",
+"corp_name": "메디센서",
+"status": "none",
+"years": {}
+},
+"01029552": {
+"checked": "2026-09-23",
+"corp_name": "(주)세성",
+"status": "none",
+"years": {}
+},
+"01029622": {
+"checked": "2026-09-23",
+"corp_name": "(주)우창엔지니어링",
+"status": "none",
+"years": {}
+},
+"01029817": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 동남KTC",
+"status": "none",
+"years": {}
+},
+"01030655": {
+"checked": "2026-09-23",
+"corp_name": "(주)이화에스피에스",
+"status": "none",
+"years": {}
+},
+"01030752": {
+"checked": "2026-09-23",
+"corp_name": "(주)뉴프라임",
+"status": "none",
+"years": {}
+},
+"01030804": {
+"checked": "2026-09-23",
+"corp_name": "와우프레스주식회사",
+"status": "none",
+"years": {}
+},
+"01030938": {
+"checked": "2026-09-23",
+"corp_name": "(주)유창알앤씨",
+"status": "none",
+"years": {}
+},
+"01031645": {
+"checked": "2026-09-23",
+"corp_name": "(주)신경일염직",
+"status": "none",
+"years": {}
+},
+"01035438": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 티이씨씨",
+"status": "none",
+"years": {}
+},
+"01037454": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 일성실업",
+"status": "none",
+"years": {}
+},
+"01041323": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 모래코리아",
+"status": "none",
+"years": {}
+},
+"01043534": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 이룸쿡 ",
+"status": "none",
+"years": {}
+},
+"01044436": {
+"checked": "2026-09-23",
+"corp_name": "(주)동원텍스",
+"status": "none",
+"years": {}
+},
+"01044728": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 영동염직",
+"status": "none",
+"years": {}
+},
+"01044807": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대원에스디",
+"status": "none",
+"years": {}
+},
+"01047178": {
+"checked": "2026-09-23",
+"corp_name": "삼금공업(주)",
+"status": "none",
+"years": {}
+},
+"01069134": {
+"checked": "2026-09-23",
+"corp_name": "우성에스이주식회사",
+"status": "none",
+"years": {}
+},
+"01071829": {
+"checked": "2026-09-23",
+"corp_name": "용흥산업(주)",
+"status": "none",
+"years": {}
+},
+"01072475": {
+"checked": "2026-09-23",
+"corp_name": "서연이엔지 주식회사",
+"status": "none",
+"years": {}
+},
+"01073605": {
+"checked": "2026-09-23",
+"corp_name": "제이케이테크(주)",
+"status": "none",
+"years": {}
+},
+"01074552": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대광텍스타일",
+"status": "none",
+"years": {}
+},
+"01078062": {
+"checked": "2026-09-23",
+"corp_name": "(주)대우경금속",
+"status": "none",
+"years": {}
+},
+"01078099": {
+"checked": "2026-09-23",
+"corp_name": "(주) 에스티아이",
+"status": "none",
+"years": {}
+},
+"01081181": {
+"checked": "2026-09-23",
+"corp_name": "(주)창신산업",
+"status": "none",
+"years": {}
+},
+"01081534": {
+"checked": "2026-09-23",
+"corp_name": "(주)보우",
+"status": "none",
+"years": {}
+},
+"01082135": {
+"checked": "2026-09-23",
+"corp_name": "디에스메탈 주식회사",
+"status": "none",
+"years": {}
+},
+"01082931": {
+"checked": "2026-09-23",
+"corp_name": "(주)신화금속열처리",
+"status": "none",
+"years": {}
+},
+"01083116": {
+"checked": "2026-09-23",
+"corp_name": "(주)태일정밀",
+"status": "none",
+"years": {}
+},
+"01085196": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에스알",
+"status": "none",
+"years": {}
+},
+"01085327": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 백광테크",
+"status": "none",
+"years": {}
+},
+"01087556": {
+"checked": "2026-09-23",
+"corp_name": "주식회사동광명품도어",
+"status": "none",
+"years": {}
+},
+"01087918": {
+"checked": "2026-09-23",
+"corp_name": "(주)비젼사이언스",
+"status": "none",
+"years": {}
+},
+"01091629": {
+"checked": "2026-09-23",
+"corp_name": "화신자원주식회사",
+"status": "none",
+"years": {}
+},
+"01097270": {
+"checked": "2026-09-23",
+"corp_name": "한영모터스(주)",
+"status": "none",
+"years": {}
+},
+"01099782": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 부강티앤씨",
+"status": "none",
+"years": {}
+},
+"01100167": {
+"checked": "2026-09-23",
+"corp_name": "(주)우창케미칼",
+"status": "none",
+"years": {}
+},
+"01104589": {
+"checked": "2026-09-23",
+"corp_name": "케이비와이퍼시스템주식회사",
+"status": "none",
+"years": {}
+},
+"01109168": {
+"checked": "2026-09-23",
+"corp_name": "(주)신안피피",
+"status": "none",
+"years": {}
+},
+"01115381": {
+"checked": "2026-09-23",
+"corp_name": "(주)와이엠피라이팅",
+"status": "none",
+"years": {}
+},
+"01134517": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 엠엠티에스엠",
+"status": "none",
+"years": {}
+},
+"01135242": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에이앤티",
+"status": "none",
+"years": {}
+},
+"01135905": {
+"checked": "2026-09-23",
+"corp_name": "주식회사동현정밀",
+"status": "none",
+"years": {}
+},
+"01135978": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 현대디엘",
+"status": "none",
+"years": {}
+},
+"01137596": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 가우스",
+"status": "none",
+"years": {}
+},
+"01137879": {
+"checked": "2026-09-23",
+"corp_name": "세광전자 주식회사",
+"status": "none",
+"years": {}
+},
+"01138832": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼주기업",
+"status": "none",
+"years": {}
+},
+"01138948": {
+"checked": "2026-09-23",
+"corp_name": "(주)우성티오티",
+"status": "none",
+"years": {}
+},
+"01139336": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 벤텍 (BenTech.Inc)",
+"status": "none",
+"years": {}
+},
+"01139372": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 신형엔지니어링",
+"status": "none",
+"years": {}
+},
+"01140095": {
+"checked": "2026-09-23",
+"corp_name": "(주)진일공업",
+"status": "none",
+"years": {}
+},
+"01140411": {
+"checked": "2026-09-23",
+"corp_name": "(주)대일산업",
+"status": "none",
+"years": {}
+},
+"01141784": {
+"checked": "2026-09-23",
+"corp_name": "지제이테크 주식회사",
+"status": "none",
+"years": {}
+},
+"01141845": {
+"checked": "2026-09-23",
+"corp_name": "신아스틸주식회사",
+"status": "none",
+"years": {}
+},
+"01142376": {
+"checked": "2026-09-23",
+"corp_name": "(주)설텍",
+"status": "none",
+"years": {}
+},
+"01142604": {
+"checked": "2026-09-23",
+"corp_name": "(주)한성알미늄",
+"status": "none",
+"years": {}
+},
+"01144569": {
+"checked": "2026-09-23",
+"corp_name": "(주)피엔티 엠에스",
+"status": "ok",
+"years": {
+"2021": {
+"assets": 48398806920,
+"equity": 17911379139,
+"fs": "OFS",
+"liabilities": 30487427781,
+"net_income": -4838205410,
+"op_income": -4564202656,
+"report": "2023",
+"revenue": 11554370648
+},
+"2022": {
+"assets": 48835384515,
+"equity": 15913666904,
+"fs": "OFS",
+"liabilities": 32921717611,
+"net_income": -7149077432,
+"op_income": -5914319418,
+"report": "2023",
+"revenue": 6217222081
+},
+"2023": {
+"assets": 50901786770,
+"equity": 24209717132,
+"fs": "OFS",
+"liabilities": 26692069638,
+"net_income": -2485154547,
+"op_income": -1062362267,
+"report": "2025",
+"revenue": 25029807561
+},
+"2024": {
+"assets": 56670110391,
+"equity": 28147222667,
+"fs": "OFS",
+"liabilities": 28522887724,
+"net_income": 1441030335,
+"op_income": 1180029330,
+"report": "2025",
+"revenue": 26217506855
+},
+"2025": {
+"assets": 52886257303,
+"equity": 21518623374,
+"fs": "OFS",
+"liabilities": 31367633929,
+"net_income": -7330579133,
+"op_income": -2124801207,
+"report": "2025",
+"revenue": 11082330000
+}
+}
+},
+"01145382": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 스페이스",
+"status": "none",
+"years": {}
+},
+"01145799": {
+"checked": "2026-09-23",
+"corp_name": "알리다그룹 주식회사",
+"status": "none",
+"years": {}
+},
+"01145805": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 라지",
+"status": "none",
+"years": {}
+},
+"01146318": {
+"checked": "2026-09-23",
+"corp_name": "(주)케이제이",
+"status": "none",
+"years": {}
+},
+"01148158": {
+"checked": "2026-09-23",
+"corp_name": "일신프라스틱(주)",
+"status": "none",
+"years": {}
+},
+"01149005": {
+"checked": "2026-09-23",
+"corp_name": "(주)유창테크",
+"status": "none",
+"years": {}
+},
+"01149096": {
+"checked": "2026-09-23",
+"corp_name": "주식회사동원섬유산업",
+"status": "none",
+"years": {}
+},
+"01149874": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대흥",
+"status": "none",
+"years": {}
+},
+"01150056": {
+"checked": "2026-09-23",
+"corp_name": "(주)유원",
+"status": "none",
+"years": {}
+},
+"01150870": {
+"checked": "2026-09-23",
+"corp_name": "주식회사루브캠코리아",
+"status": "none",
+"years": {}
+},
+"01152434": {
+"checked": "2026-09-23",
+"corp_name": "(주)영원코포레이션",
+"status": "none",
+"years": {}
+},
+"01152975": {
+"checked": "2026-09-23",
+"corp_name": "농업회사법인(주)영풍",
+"status": "none",
+"years": {}
+},
+"01153363": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 우진기계",
+"status": "none",
+"years": {}
+},
+"01153840": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 유성염직",
+"status": "none",
+"years": {}
+},
+"01154706": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 구비테크",
+"status": "none",
+"years": {}
+},
+"01155097": {
+"checked": "2026-09-23",
+"corp_name": "(주)우성",
+"status": "none",
+"years": {}
+},
+"01156485": {
+"checked": "2026-09-23",
+"corp_name": "금오이엠에스(주)",
+"status": "none",
+"years": {}
+},
+"01159136": {
+"checked": "2026-09-23",
+"corp_name": "대산금속주식회사",
+"status": "none",
+"years": {}
+},
+"01171721": {
+"checked": "2026-09-23",
+"corp_name": "(주)그린식품",
+"status": "none",
+"years": {}
+},
+"01174968": {
+"checked": "2026-09-23",
+"corp_name": "(주)텍스존",
+"status": "none",
+"years": {}
+},
+"01175064": {
+"checked": "2026-09-23",
+"corp_name": "에스알코퍼레이션 주식회사",
+"status": "none",
+"years": {}
+},
+"01175666": {
+"checked": "2026-09-23",
+"corp_name": "(주)대영알씨",
+"status": "none",
+"years": {}
+},
+"01180923": {
+"checked": "2026-09-23",
+"corp_name": "(주)대일정공사",
+"status": "none",
+"years": {}
+},
+"01206717": {
+"checked": "2026-09-23",
+"corp_name": "(주)마이크로엔엑스",
+"status": "none",
+"years": {}
+},
+"01208487": {
+"checked": "2026-09-23",
+"corp_name": "(주)월성",
+"status": "none",
+"years": {}
+},
+"01210349": {
+"checked": "2026-09-23",
+"corp_name": "(주)디케이코리아",
+"status": "none",
+"years": {}
+},
+"01211001": {
+"checked": "2026-09-23",
+"corp_name": "피티코퍼레이션 주식회사",
+"status": "none",
+"years": {}
+},
+"01211092": {
+"checked": "2026-09-23",
+"corp_name": "대신정공(주)",
+"status": "none",
+"years": {}
+},
+"01211889": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 이지스",
+"status": "ok",
+"years": {
+"2023": {
+"assets": 41023572287,
+"equity": 15441982818,
+"fs": "OFS",
+"liabilities": 25581589469,
+"net_income": 3392018406,
+"op_income": 3004525128,
+"report": "2025",
+"revenue": 21406057623
+},
+"2024": {
+"assets": 54032055903,
+"equity": 31702224943,
+"fs": "OFS",
+"liabilities": 22329830960,
+"net_income": 3125609503,
+"op_income": 2387692657,
+"report": "2025",
+"revenue": 30275625425
+},
+"2025": {
+"assets": 67455823286,
+"equity": 48927876186,
+"fs": "OFS",
+"liabilities": 18527947100,
+"net_income": -4807683600,
+"op_income": -6798876860,
+"report": "2025",
+"revenue": 21250116427
+}
+}
+},
+"01212152": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 영원이엔지",
+"status": "none",
+"years": {}
+},
+"01212903": {
+"checked": "2026-09-23",
+"corp_name": "영일엔지니어링(주)",
+"status": "none",
+"years": {}
+},
+"01213391": {
+"checked": "2026-09-23",
+"corp_name": "진명산업주식회사",
+"status": "none",
+"years": {}
+},
+"01214576": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 떡파는사람들",
+"status": "none",
+"years": {}
+},
+"01215070": {
+"checked": "2026-09-23",
+"corp_name": "대신로보트(주)",
+"status": "none",
+"years": {}
+},
+"01215414": {
+"checked": "2026-09-23",
+"corp_name": "녹색자원(주)",
+"status": "none",
+"years": {}
+},
+"01215511": {
+"checked": "2026-09-23",
+"corp_name": "(주)씨엠에스",
+"status": "none",
+"years": {}
+},
+"01215797": {
+"checked": "2026-09-23",
+"corp_name": "(주)부광정밀",
+"status": "none",
+"years": {}
+},
+"01217546": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 제인모터스",
+"status": "none",
+"years": {}
+},
+"01218031": {
+"checked": "2026-09-23",
+"corp_name": "(주)동재자동차백화점",
+"status": "none",
+"years": {}
+},
+"01219225": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 문창",
+"status": "none",
+"years": {}
+},
+"01219623": {
+"checked": "2026-09-23",
+"corp_name": "(주)오토크로바",
+"status": "none",
+"years": {}
+},
+"01220203": {
+"checked": "2026-09-23",
+"corp_name": "유성정밀공업주식회사",
+"status": "none",
+"years": {}
+},
+"01221929": {
+"checked": "2026-09-23",
+"corp_name": "(주)썬폴리폼",
+"status": "none",
+"years": {}
+},
+"01222016": {
+"checked": "2026-09-23",
+"corp_name": "(주)옥천당",
+"status": "none",
+"years": {}
+},
+"01224917": {
+"checked": "2026-09-23",
+"corp_name": "(주)신화에스티",
+"status": "none",
+"years": {}
+},
+"01225721": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 원하이테크",
+"status": "none",
+"years": {}
+},
+"01227710": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 보림엘텍",
+"status": "none",
+"years": {}
+},
+"01227738": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 화신금속공업",
+"status": "none",
+"years": {}
+},
+"01228126": {
+"checked": "2026-09-23",
+"corp_name": "(주)제이에스코리아",
+"status": "none",
+"years": {}
+},
+"01229204": {
+"checked": "2026-09-23",
+"corp_name": "(주)윤성산업개발",
+"status": "none",
+"years": {}
+},
+"01229675": {
+"checked": "2026-09-23",
+"corp_name": "영신타올(주)",
+"status": "none",
+"years": {}
+},
+"01230200": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 두경산업",
+"status": "none",
+"years": {}
+},
+"01230750": {
+"checked": "2026-09-23",
+"corp_name": "탑테크주식회사",
+"status": "none",
+"years": {}
+},
+"01230909": {
+"checked": "2026-09-23",
+"corp_name": "(주)원화정밀",
+"status": "none",
+"years": {}
+},
+"01231917": {
+"checked": "2026-09-23",
+"corp_name": "영강금속(주)",
+"status": "none",
+"years": {}
+},
+"01232679": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 코리아와이드터미널",
+"status": "none",
+"years": {}
+},
+"01239186": {
+"checked": "2026-09-23",
+"corp_name": "(주)디엠",
+"status": "none",
+"years": {}
+},
+"01244610": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 브이피에이치씨",
+"status": "none",
+"years": {}
+},
+"01247051": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에어텍",
+"status": "none",
+"years": {}
+},
+"01253955": {
+"checked": "2026-09-23",
+"corp_name": "태평 주식회사",
+"status": "none",
+"years": {}
+},
+"01260335": {
+"checked": "2026-09-23",
+"corp_name": "(주)야성",
+"status": "none",
+"years": {}
+},
+"01265288": {
+"checked": "2026-09-23",
+"corp_name": "한세모빌리티 주식회사",
+"status": "none",
+"years": {}
+},
+"01279698": {
+"checked": "2026-09-23",
+"corp_name": "채비(주)",
+"status": "none",
+"years": {}
+},
+"01283886": {
+"checked": "2026-09-23",
+"corp_name": "(주)벽산엔지니어링",
+"status": "none",
+"years": {}
+},
+"01285732": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 동보",
+"status": "none",
+"years": {}
+},
+"01285918": {
+"checked": "2026-09-23",
+"corp_name": "(주)만조",
+"status": "none",
+"years": {}
+},
+"01286458": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 진양정밀",
+"status": "none",
+"years": {}
+},
+"01287420": {
+"checked": "2026-09-23",
+"corp_name": "(주)세화어패럴",
+"status": "none",
+"years": {}
+},
+"01289066": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대영합섬",
+"status": "none",
+"years": {}
+},
+"01290822": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 쓰리에이치",
+"status": "none",
+"years": {}
+},
+"01292246": {
+"checked": "2026-09-23",
+"corp_name": "(주)씨케이씨",
+"status": "none",
+"years": {}
+},
+"01294712": {
+"checked": "2026-09-23",
+"corp_name": "(주)에스에스이티",
+"status": "none",
+"years": {}
+},
+"01294776": {
+"checked": "2026-09-23",
+"corp_name": "거산산업(주)",
+"status": "none",
+"years": {}
+},
+"01296251": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 유니테크시스템",
+"status": "none",
+"years": {}
+},
+"01297861": {
+"checked": "2026-09-23",
+"corp_name": "지앤티클린",
+"status": "none",
+"years": {}
+},
+"01297986": {
+"checked": "2026-09-23",
+"corp_name": "(주)노벨오토모티브코리아",
+"status": "none",
+"years": {}
+},
+"01298064": {
+"checked": "2026-09-23",
+"corp_name": "영진알루미늄(주)",
+"status": "none",
+"years": {}
+},
+"01299850": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 나경",
+"status": "none",
+"years": {}
+},
+"01299939": {
+"checked": "2026-09-23",
+"corp_name": "케이아이피주식회사",
+"status": "none",
+"years": {}
+},
+"01300934": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 일송엔지니어링",
+"status": "none",
+"years": {}
+},
+"01301067": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 하나하이텍",
+"status": "none",
+"years": {}
+},
+"01302923": {
+"checked": "2026-09-23",
+"corp_name": "(주)유일엔지니어링",
+"status": "none",
+"years": {}
+},
+"01303241": {
+"checked": "2026-09-23",
+"corp_name": "(주)프라임광학",
+"status": "none",
+"years": {}
+},
+"01303630": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 동진씨앤피",
+"status": "none",
+"years": {}
+},
+"01303977": {
+"checked": "2026-09-23",
+"corp_name": "(주)칼라원",
+"status": "none",
+"years": {}
+},
+"01304471": {
+"checked": "2026-09-23",
+"corp_name": "대한미디어(주)",
+"status": "none",
+"years": {}
+},
+"01304499": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 씨씨엠",
+"status": "none",
+"years": {}
+},
+"01304541": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 봉성유리",
+"status": "none",
+"years": {}
+},
+"01305504": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 성신앤큐",
+"status": "none",
+"years": {}
+},
+"01305799": {
+"checked": "2026-09-23",
+"corp_name": "(주)디에스피이엔지",
+"status": "none",
+"years": {}
+},
+"01306956": {
+"checked": "2026-09-23",
+"corp_name": "주식회사에스엘씨",
+"status": "none",
+"years": {}
+},
+"01307405": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에스.씨.엠",
+"status": "none",
+"years": {}
+},
+"01308389": {
+"checked": "2026-09-23",
+"corp_name": "(주)영신에프에이",
+"status": "none",
+"years": {}
+},
+"01309777": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 신계",
+"status": "none",
+"years": {}
+},
+"01310472": {
+"checked": "2026-09-23",
+"corp_name": "극동볼트주식회사",
+"status": "none",
+"years": {}
+},
+"01310728": {
+"checked": "2026-09-23",
+"corp_name": "(주)한국다이케스팅",
+"status": "none",
+"years": {}
+},
+"01311222": {
+"checked": "2026-09-23",
+"corp_name": "퍼시픽엑스코리아 주식회사",
+"status": "none",
+"years": {}
+},
+"01311879": {
+"checked": "2026-09-23",
+"corp_name": "태산하이테크 주식회사",
+"status": "none",
+"years": {}
+},
+"01313196": {
+"checked": "2026-09-23",
+"corp_name": "(주)대웅에프엔티",
+"status": "none",
+"years": {}
+},
+"01326835": {
+"checked": "2026-09-23",
+"corp_name": "디에스스틸(주)",
+"status": "none",
+"years": {}
+},
+"01326871": {
+"checked": "2026-09-23",
+"corp_name": "(주)지케이삼성",
+"status": "none",
+"years": {}
+},
+"01327454": {
+"checked": "2026-09-23",
+"corp_name": "(주)위드텍",
+"status": "none",
+"years": {}
+},
+"01328693": {
+"checked": "2026-09-23",
+"corp_name": "(주)그린스틸",
+"status": "none",
+"years": {}
+},
+"01330980": {
+"checked": "2026-09-23",
+"corp_name": "(주)한국단자부품",
+"status": "none",
+"years": {}
+},
+"01331509": {
+"checked": "2026-09-23",
+"corp_name": "오양이피(EP) 주식회사",
+"status": "none",
+"years": {}
+},
+"01332933": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 DAS",
+"status": "none",
+"years": {}
+},
+"01335426": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 기룡테크",
+"status": "none",
+"years": {}
+},
+"01339264": {
+"checked": "2026-09-23",
+"corp_name": "삼덕산업주식회사",
+"status": "none",
+"years": {}
+},
+"01356331": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 산단재생1호서대구지식산업센터위탁관리부동산투자회사",
+"status": "none",
+"years": {}
+},
+"01356678": {
+"checked": "2026-09-23",
+"corp_name": "(주)대아엔지니어링 ",
+"status": "none",
+"years": {}
+},
+"01360167": {
+"checked": "2026-09-23",
+"corp_name": "(주)명성",
+"status": "none",
+"years": {}
+},
+"01361865": {
+"checked": "2026-09-23",
+"corp_name": "(주)무한기술",
+"status": "none",
+"years": {}
+},
+"01362420": {
+"checked": "2026-09-23",
+"corp_name": "(주)은일섬유",
+"status": "none",
+"years": {}
+},
+"01363696": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 삼정",
+"status": "none",
+"years": {}
+},
+"01364394": {
+"checked": "2026-09-23",
+"corp_name": "(주)대영알앤티",
+"status": "none",
+"years": {}
+},
+"01364987": {
+"checked": "2026-09-23",
+"corp_name": "이조아이엔디 주식회사",
+"status": "none",
+"years": {}
+},
+"01365612": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 오에스티투",
+"status": "none",
+"years": {}
+},
+"01365791": {
+"checked": "2026-09-23",
+"corp_name": "(주)청운다이텍",
+"status": "none",
+"years": {}
+},
+"01367735": {
+"checked": "2026-09-23",
+"corp_name": "에스에이치글로벌",
+"status": "none",
+"years": {}
+},
+"01368123": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 호성베아링",
+"status": "none",
+"years": {}
+},
+"01369070": {
+"checked": "2026-09-23",
+"corp_name": "대경로보텍(주)",
+"status": "none",
+"years": {}
+},
+"01369797": {
+"checked": "2026-09-23",
+"corp_name": "한빛식품주식회사",
+"status": "none",
+"years": {}
+},
+"01372083": {
+"checked": "2026-09-23",
+"corp_name": "(주)진명아이앤씨",
+"status": "none",
+"years": {}
+},
+"01372454": {
+"checked": "2026-09-23",
+"corp_name": "(주)현대정밀",
+"status": "none",
+"years": {}
+},
+"01373374": {
+"checked": "2026-09-23",
+"corp_name": "(주)민스텍스타일",
+"status": "none",
+"years": {}
+},
+"01373417": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 브이씨티이",
+"status": "none",
+"years": {}
+},
+"01374559": {
+"checked": "2026-09-23",
+"corp_name": "(주)한슬",
+"status": "none",
+"years": {}
+},
+"01375239": {
+"checked": "2026-09-23",
+"corp_name": "(주)티에스티",
+"status": "none",
+"years": {}
+},
+"01375646": {
+"checked": "2026-09-23",
+"corp_name": "이조디엔씨주식회사",
+"status": "none",
+"years": {}
+},
+"01377617": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 신정기공",
+"status": "none",
+"years": {}
+},
+"01377981": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 혜우",
+"status": "none",
+"years": {}
+},
+"01378148": {
+"checked": "2026-09-23",
+"corp_name": "청하종합개발(주)",
+"status": "none",
+"years": {}
+},
+"01378537": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 제오테크",
+"status": "none",
+"years": {}
+},
+"01379013": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대호분체산업",
+"status": "none",
+"years": {}
+},
+"01379068": {
+"checked": "2026-09-23",
+"corp_name": "주식회사올소테크",
+"status": "none",
+"years": {}
+},
+"01381799": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 엔도비전",
+"status": "ok",
+"years": {
+"2023": {
+"assets": 17959951877,
+"equity": -3656818049,
+"fs": "CFS",
+"liabilities": 21616769926,
+"report": "2025"
+},
+"2024": {
+"assets": 17664671602,
+"equity": -4733615165,
+"fs": "CFS",
+"liabilities": 22398286767,
+"net_income": -1113904668,
+"op_income": 713402916,
+"report": "2025",
+"revenue": 13582273333
+},
+"2025": {
+"assets": 34869791529,
+"equity": -3878459152,
+"fs": "CFS",
+"liabilities": 38748250681,
+"net_income": 760413970,
+"op_income": 3231277387,
+"report": "2025",
+"revenue": 19831333366
+}
+}
+},
+"01383636": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 홍성엔지니어링",
+"status": "none",
+"years": {}
+},
+"01383797": {
+"checked": "2026-09-23",
+"corp_name": "신창정밀",
+"status": "none",
+"years": {}
+},
+"01385926": {
+"checked": "2026-09-23",
+"corp_name": "(주)에이엘테크",
+"status": "none",
+"years": {}
+},
+"01397392": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 화진",
+"status": "none",
+"years": {}
+},
+"01398285": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 유성에스에이치",
+"status": "none",
+"years": {}
+},
+"01399600": {
+"checked": "2026-09-23",
+"corp_name": "박스뱅크주식회사",
+"status": "none",
+"years": {}
+},
+"01400030": {
+"checked": "2026-09-23",
+"corp_name": "(주) 삼영테크",
+"status": "none",
+"years": {}
+},
+"01401330": {
+"checked": "2026-09-23",
+"corp_name": "(주)디와이특강",
+"status": "none",
+"years": {}
+},
+"01401419": {
+"checked": "2026-09-23",
+"corp_name": "(주)기은씨앤피",
+"status": "none",
+"years": {}
+},
+"01402834": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 소포스",
+"status": "none",
+"years": {}
+},
+"01404160": {
+"checked": "2026-09-23",
+"corp_name": "주식회사부경화섬",
+"status": "none",
+"years": {}
+},
+"01412309": {
+"checked": "2026-09-23",
+"corp_name": "(주)애플테크",
+"status": "none",
+"years": {}
+},
+"01422087": {
+"checked": "2026-09-23",
+"corp_name": "포트래치 주식회사",
+"status": "none",
+"years": {}
+},
+"01428577": {
+"checked": "2026-09-23",
+"corp_name": "(주)아크로드",
+"status": "none",
+"years": {}
+},
+"01447086": {
+"checked": "2026-09-23",
+"corp_name": "바이크뱅크 주식회사",
+"status": "none",
+"years": {}
+},
+"01454174": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 한맥아이피에스",
+"status": "none",
+"years": {}
+},
+"01454679": {
+"checked": "2026-09-23",
+"corp_name": "유한회사 대구특수금속",
+"status": "none",
+"years": {}
+},
+"01455410": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 파인메딕스",
+"status": "ok",
+"years": {
+"2023": {
+"assets": 18526266425,
+"equity": 12622330000,
+"fs": "CFS",
+"liabilities": 5903936425,
+"net_income": 1175867954,
+"op_income": 873577931,
+"report": "2025",
+"revenue": 10154094544
+},
+"2024": {
+"assets": 26898440044,
+"equity": 20784222124,
+"fs": "CFS",
+"liabilities": 6114217920,
+"net_income": -24152328,
+"op_income": -29192239,
+"report": "2025",
+"revenue": 9960360985
+},
+"2025": {
+"assets": 25521054978,
+"equity": 19003394878,
+"fs": "CFS",
+"liabilities": 6517660100,
+"net_income": -1877915520,
+"op_income": -2580325297,
+"report": "2025",
+"revenue": 9522704304
+}
+}
+},
+"01455669": {
+"checked": "2026-09-23",
+"corp_name": "삼성교역(주)",
+"status": "none",
+"years": {}
+},
+"01456206": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대신",
+"status": "none",
+"years": {}
+},
+"01457001": {
+"checked": "2026-09-23",
+"corp_name": "다올엠 주식회사",
+"status": "none",
+"years": {}
+},
+"01457542": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 굿유니폼",
+"status": "none",
+"years": {}
+},
+"01460625": {
+"checked": "2026-09-23",
+"corp_name": "아이디스주식회사",
+"status": "none",
+"years": {}
+},
+"01463552": {
+"checked": "2026-09-23",
+"corp_name": "(주)신성에프에이",
+"status": "none",
+"years": {}
+},
+"01464065": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 청보",
+"status": "none",
+"years": {}
+},
+"01464375": {
+"checked": "2026-09-23",
+"corp_name": "(주)한아IT",
+"status": "none",
+"years": {}
+},
+"01464409": {
+"checked": "2026-09-23",
+"corp_name": "씨엠티(주)",
+"status": "none",
+"years": {}
+},
+"01465550": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 일진",
+"status": "none",
+"years": {}
+},
+"01466647": {
+"checked": "2026-09-23",
+"corp_name": "신흥버스(주)",
+"status": "none",
+"years": {}
+},
+"01467239": {
+"checked": "2026-09-23",
+"corp_name": "(주)렉스코",
+"status": "none",
+"years": {}
+},
+"01467770": {
+"checked": "2026-09-23",
+"corp_name": "(주)대동전자",
+"status": "none",
+"years": {}
+},
+"01469404": {
+"checked": "2026-09-23",
+"corp_name": "(주)범일정보",
+"status": "none",
+"years": {}
+},
+"01473425": {
+"checked": "2026-09-23",
+"corp_name": "(주)한솔아이엠비",
+"status": "none",
+"years": {}
+},
+"01474105": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 무한컴퍼니",
+"status": "none",
+"years": {}
+},
+"01477175": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 세운축산",
+"status": "none",
+"years": {}
+},
+"01477625": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 삼주테크",
+"status": "none",
+"years": {}
+},
+"01478420": {
+"checked": "2026-09-23",
+"corp_name": "(주)진부",
+"status": "none",
+"years": {}
+},
+"01479711": {
+"checked": "2026-09-23",
+"corp_name": "(주)나이스맥",
+"status": "none",
+"years": {}
+},
+"01484245": {
+"checked": "2026-09-23",
+"corp_name": "에이치디현대로보틱스 주식회사",
+"status": "none",
+"years": {}
+},
+"01487002": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 피에프에스",
+"status": "none",
+"years": {}
+},
+"01495579": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대성도어몰딩",
+"status": "none",
+"years": {}
+},
+"01496143": {
+"checked": "2026-09-23",
+"corp_name": "경동공업 주식회사",
+"status": "none",
+"years": {}
+},
+"01496888": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 상상",
+"status": "none",
+"years": {}
+},
+"01497559": {
+"checked": "2026-09-23",
+"corp_name": "(주)윈텍통신",
+"status": "none",
+"years": {}
+},
+"01498187": {
+"checked": "2026-09-23",
+"corp_name": "(주)청송엔지니어링",
+"status": "none",
+"years": {}
+},
+"01500695": {
+"checked": "2026-09-23",
+"corp_name": "주식회사케이에프씨티",
+"status": "none",
+"years": {}
+},
+"01506079": {
+"checked": "2026-09-23",
+"corp_name": "(주)풍국면",
+"status": "none",
+"years": {}
+},
+"01539651": {
+"checked": "2026-09-23",
+"corp_name": "(주)티씨하이테크",
+"status": "none",
+"years": {}
+},
+"01540286": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 AL네트웍스",
+"status": "none",
+"years": {}
+},
+"01545856": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 포파코",
+"status": "none",
+"years": {}
+},
+"01545935": {
+"checked": "2026-09-23",
+"corp_name": "블루센 주식회사",
+"status": "none",
+"years": {}
+},
+"01551802": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 코레카",
+"status": "none",
+"years": {}
+},
+"01552528": {
+"checked": "2026-09-23",
+"corp_name": "에임트 주식회사",
+"status": "none",
+"years": {}
+},
+"01555181": {
+"checked": "2026-09-23",
+"corp_name": "(주)스틸앤스틸러스",
+"status": "none",
+"years": {}
+},
+"01556807": {
+"checked": "2026-09-23",
+"corp_name": "(주)한진",
+"status": "none",
+"years": {}
+},
+"01561304": {
+"checked": "2026-09-23",
+"corp_name": "(주)지에스앤티",
+"status": "none",
+"years": {}
+},
+"01567690": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 코레쉬텍",
+"status": "none",
+"years": {}
+},
+"01572665": {
+"checked": "2026-09-23",
+"corp_name": "성아텍주식회사",
+"status": "none",
+"years": {}
+},
+"01574399": {
+"checked": "2026-09-23",
+"corp_name": "(주)선미",
+"status": "none",
+"years": {}
+},
+"01580390": {
+"checked": "2026-09-23",
+"corp_name": "(주)군월드",
+"status": "none",
+"years": {}
+},
+"01583175": {
+"checked": "2026-09-23",
+"corp_name": "한국비철(주)",
+"status": "none",
+"years": {}
+},
+"01585395": {
+"checked": "2026-09-23",
+"corp_name": "(주)G.M식품",
+"status": "none",
+"years": {}
+},
+"01587339": {
+"checked": "2026-09-23",
+"corp_name": "고평",
+"status": "none",
+"years": {}
+},
+"01588277": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 디에프씨",
+"status": "none",
+"years": {}
+},
+"01606865": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 피자앤컴퍼니",
+"status": "none",
+"years": {}
+},
+"01625611": {
+"checked": "2026-09-23",
+"corp_name": "(주)동방금속",
+"status": "none",
+"years": {}
+},
+"01627558": {
+"checked": "2026-09-23",
+"corp_name": "(주)경원정공",
+"status": "none",
+"years": {}
+},
+"01629273": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 나노아이티",
+"status": "none",
+"years": {}
+},
+"01630419": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 호성상사",
+"status": "none",
+"years": {}
+},
+"01631685": {
+"checked": "2026-09-23",
+"corp_name": "(주)제이씨티",
+"status": "none",
+"years": {}
+},
+"01631959": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 씨더블유",
+"status": "none",
+"years": {}
+},
+"01632329": {
+"checked": "2026-09-23",
+"corp_name": "(주)얼라이드시스템",
+"status": "none",
+"years": {}
+},
+"01636060": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 영원플러스",
+"status": "none",
+"years": {}
+},
+"01637980": {
+"checked": "2026-09-23",
+"corp_name": "씨지에프주식회사",
+"status": "none",
+"years": {}
+},
+"01641761": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 태양산업사",
+"status": "none",
+"years": {}
+},
+"01641910": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 아코스코리아",
+"status": "none",
+"years": {}
+},
+"01642317": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 비앤에프",
+"status": "none",
+"years": {}
+},
+"01644360": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 미래산업",
+"status": "none",
+"years": {}
+},
+"01644476": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 비알오",
+"status": "none",
+"years": {}
+},
+"01645846": {
+"checked": "2026-09-23",
+"corp_name": "(주)엔에스씨",
+"status": "none",
+"years": {}
+},
+"01646216": {
+"checked": "2026-09-23",
+"corp_name": "(주)비젼하이테크",
+"status": "none",
+"years": {}
+},
+"01647659": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 가베",
+"status": "none",
+"years": {}
+},
+"01649718": {
+"checked": "2026-09-23",
+"corp_name": "(주)동양금속",
+"status": "none",
+"years": {}
+},
+"01650574": {
+"checked": "2026-09-23",
+"corp_name": "(주)류림산업",
+"status": "none",
+"years": {}
+},
+"01650866": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 제이원",
+"status": "none",
+"years": {}
+},
+"01651908": {
+"checked": "2026-09-23",
+"corp_name": "미래첨단소재 주식회사",
+"status": "none",
+"years": {}
+},
+"01653793": {
+"checked": "2026-09-23",
+"corp_name": "경일워터이엔지(주)",
+"status": "none",
+"years": {}
+},
+"01654048": {
+"checked": "2026-09-23",
+"corp_name": "(주)미래안전산업",
+"status": "none",
+"years": {}
+},
+"01654613": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 올인마켓",
+"status": "none",
+"years": {}
+},
+"01654710": {
+"checked": "2026-09-23",
+"corp_name": "(주)동원",
+"status": "none",
+"years": {}
+},
+"01655199": {
+"checked": "2026-09-23",
+"corp_name": "한국케이엘티주식회사",
+"status": "none",
+"years": {}
+},
+"01659593": {
+"checked": "2026-09-23",
+"corp_name": "(주)디비전",
+"status": "none",
+"years": {}
+},
+"01661525": {
+"checked": "2026-09-23",
+"corp_name": "우일염직(주)",
+"status": "none",
+"years": {}
+},
+"01661862": {
+"checked": "2026-09-23",
+"corp_name": "대지메카트로닉스",
+"status": "none",
+"years": {}
+},
+"01661996": {
+"checked": "2026-09-23",
+"corp_name": "(주)시호텍",
+"status": "none",
+"years": {}
+},
+"01674015": {
+"checked": "2026-09-23",
+"corp_name": "신에이메탈코리아 주식회사",
+"status": "none",
+"years": {}
+},
+"01675430": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 우리소프트",
+"status": "none",
+"years": {}
+},
+"01675494": {
+"checked": "2026-09-23",
+"corp_name": "(주)한성알루미늄",
+"status": "none",
+"years": {}
+},
+"01677702": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 통합",
+"status": "none",
+"years": {}
+},
+"01681501": {
+"checked": "2026-09-23",
+"corp_name": "(주)제이에스테크윈",
+"status": "none",
+"years": {}
+},
+"01681680": {
+"checked": "2026-09-23",
+"corp_name": "건영산업주식회사",
+"status": "none",
+"years": {}
+},
+"01683934": {
+"checked": "2026-09-23",
+"corp_name": "대봉산업(주)",
+"status": "none",
+"years": {}
+},
+"01691854": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대경레이저",
+"status": "none",
+"years": {}
+},
+"01692048": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 케이비팩토리",
+"status": "none",
+"years": {}
+},
+"01695726": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 세운",
+"status": "none",
+"years": {}
+},
+"01695939": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 브랜디드인더스트리",
+"status": "none",
+"years": {}
+},
+"01712209": {
+"checked": "2026-09-23",
+"corp_name": "(주)일선정밀",
+"status": "none",
+"years": {}
+},
+"01723463": {
+"checked": "2026-09-23",
+"corp_name": "비젼디지텍 주식회사",
+"status": "none",
+"years": {}
+},
+"01725407": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 인코아",
+"status": "none",
+"years": {}
+},
+"01728361": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에스티영원",
+"status": "none",
+"years": {}
+},
+"01730320": {
+"checked": "2026-09-23",
+"corp_name": "(주)대영모스",
+"status": "none",
+"years": {}
+},
+"01730870": {
+"checked": "2026-09-23",
+"corp_name": "(주)라임",
+"status": "none",
+"years": {}
+},
+"01732498": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 동신금속",
+"status": "none",
+"years": {}
+},
+"01732522": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 아진아이디티",
+"status": "none",
+"years": {}
+},
+"01734733": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 한성이엔지",
+"status": "none",
+"years": {}
+},
+"01738067": {
+"checked": "2026-09-23",
+"corp_name": "(주)스누콘",
+"status": "none",
+"years": {}
+},
+"01741186": {
+"checked": "2026-09-23",
+"corp_name": "옵티머스시스템(주)",
+"status": "none",
+"years": {}
+},
+"01742510": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 제이앤케이",
+"status": "none",
+"years": {}
+},
+"01742556": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 삼송",
+"status": "none",
+"years": {}
+},
+"01745942": {
+"checked": "2026-09-23",
+"corp_name": "에이스툴 주식회사",
+"status": "none",
+"years": {}
+},
+"01745997": {
+"checked": "2026-09-23",
+"corp_name": "(주)성보산업",
+"status": "none",
+"years": {}
+},
+"01746048": {
+"checked": "2026-09-23",
+"corp_name": "(주)디맥스",
+"status": "none",
+"years": {}
+},
+"01747816": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 선비테크",
+"status": "none",
+"years": {}
+},
+"01748754": {
+"checked": "2026-09-23",
+"corp_name": "(주)아이디알시스템",
+"status": "none",
+"years": {}
+},
+"01749160": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 일등모터스",
+"status": "none",
+"years": {}
+},
+"01749355": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 제일이엔지",
+"status": "none",
+"years": {}
+},
+"01750175": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 옵티모",
+"status": "none",
+"years": {}
+},
+"01751402": {
+"checked": "2026-09-23",
+"corp_name": "유엔디",
+"status": "none",
+"years": {}
+},
+"01751943": {
+"checked": "2026-09-23",
+"corp_name": "(주)유명이앤씨",
+"status": "none",
+"years": {}
+},
+"01751989": {
+"checked": "2026-09-23",
+"corp_name": "(주)휴먼허브",
+"status": "none",
+"years": {}
+},
+"01767892": {
+"checked": "2026-09-23",
+"corp_name": "삼우철강주식회사",
+"status": "none",
+"years": {}
+},
+"01768262": {
+"checked": "2026-09-23",
+"corp_name": "(주)세원피앤피",
+"status": "none",
+"years": {}
+},
+"01769438": {
+"checked": "2026-09-23",
+"corp_name": "(주)윈텍",
+"status": "none",
+"years": {}
+},
+"01770346": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 나라테크",
+"status": "none",
+"years": {}
+},
+"01772238": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 삼오",
+"status": "none",
+"years": {}
+},
+"01773884": {
+"checked": "2026-09-23",
+"corp_name": "(주)씨엠케이푸드",
+"status": "none",
+"years": {}
+},
+"01774856": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에스엘통상",
+"status": "none",
+"years": {}
+},
+"01775633": {
+"checked": "2026-09-23",
+"corp_name": "(주)대림섬유",
+"status": "none",
+"years": {}
+},
+"01781032": {
+"checked": "2026-09-23",
+"corp_name": "우일화학 주식회사",
+"status": "none",
+"years": {}
+},
+"01802645": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 희성피브이씨",
+"status": "none",
+"years": {}
+},
+"01817780": {
+"checked": "2026-09-23",
+"corp_name": "(주)대성테크",
+"status": "none",
+"years": {}
+},
+"01818318": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에스와이티컴퍼니",
+"status": "none",
+"years": {}
+},
+"01820298": {
+"checked": "2026-09-23",
+"corp_name": "(주)하이박",
+"status": "none",
+"years": {}
+},
+"01822144": {
+"checked": "2026-09-23",
+"corp_name": "신신유공압(주)",
+"status": "none",
+"years": {}
+},
+"01826326": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 지아이티이브이",
+"status": "none",
+"years": {}
+},
+"01828847": {
+"checked": "2026-09-23",
+"corp_name": "(주)아이엔텍",
+"status": "none",
+"years": {}
+},
+"01829350": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 에이치티인테크",
+"status": "none",
+"years": {}
+},
+"01829916": {
+"checked": "2026-09-23",
+"corp_name": "발레오모빌리티코리아주식회사",
+"status": "none",
+"years": {}
+},
+"01830675": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 카이",
+"status": "none",
+"years": {}
+},
+"01830754": {
+"checked": "2026-09-23",
+"corp_name": "현대다이텍주식회사",
+"status": "none",
+"years": {}
+},
+"01831319": {
+"checked": "2026-09-23",
+"corp_name": "(주)달구지푸드",
+"status": "none",
+"years": {}
+},
+"01831887": {
+"checked": "2026-09-23",
+"corp_name": "(주)해원통상",
+"status": "none",
+"years": {}
+},
+"01831920": {
+"checked": "2026-09-23",
+"corp_name": "(주)진성잉크",
+"status": "none",
+"years": {}
+},
+"01832734": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 비에스이엔지",
+"status": "none",
+"years": {}
+},
+"01833751": {
+"checked": "2026-09-23",
+"corp_name": "씨엘테크놀로지 주식회사",
+"status": "none",
+"years": {}
+},
+"01834307": {
+"checked": "2026-09-23",
+"corp_name": "(주)미라클솔루션",
+"status": "none",
+"years": {}
+},
+"01834653": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 리빙케어",
+"status": "none",
+"years": {}
+},
+"01836332": {
+"checked": "2026-09-23",
+"corp_name": "(주)와이디테크",
+"status": "none",
+"years": {}
+},
+"01836891": {
+"checked": "2026-09-23",
+"corp_name": "대아프로폰",
+"status": "none",
+"years": {}
+},
+"01837146": {
+"checked": "2026-09-23",
+"corp_name": "(주)청수",
+"status": "none",
+"years": {}
+},
+"01837605": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 피에이치씨발레오써멀시스템스",
+"status": "none",
+"years": {}
+},
+"01837997": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 나프",
+"status": "none",
+"years": {}
+},
+"01838297": {
+"checked": "2026-09-23",
+"corp_name": "(주)에코맥스",
+"status": "none",
+"years": {}
+},
+"01839959": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 동양테크툴",
+"status": "none",
+"years": {}
+},
+"01843004": {
+"checked": "2026-09-23",
+"corp_name": "(주)에이시스테크놀로지",
+"status": "none",
+"years": {}
+},
+"01843873": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 재성",
+"status": "none",
+"years": {}
+},
+"01845686": {
+"checked": "2026-09-23",
+"corp_name": "상협산업",
+"status": "none",
+"years": {}
+},
+"01862249": {
+"checked": "2026-09-23",
+"corp_name": "(주)한국이엔씨",
+"status": "none",
+"years": {}
+},
+"01862869": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼우알루미늄",
+"status": "none",
+"years": {}
+},
+"01863123": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 샤인",
+"status": "none",
+"years": {}
+},
+"01863372": {
+"checked": "2026-09-23",
+"corp_name": "(주)바다마을",
+"status": "none",
+"years": {}
+},
+"01863451": {
+"checked": "2026-09-23",
+"corp_name": "선호산업 주식회사",
+"status": "none",
+"years": {}
+},
+"01864025": {
+"checked": "2026-09-23",
+"corp_name": "(주)대진전산시스템",
+"status": "none",
+"years": {}
+},
+"01864043": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 다담",
+"status": "none",
+"years": {}
+},
+"01864520": {
+"checked": "2026-09-23",
+"corp_name": "(주)태양레미콘",
+"status": "none",
+"years": {}
+},
+"01880139": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 케이엠에프",
+"status": "none",
+"years": {}
+},
+"01883190": {
+"checked": "2026-09-23",
+"corp_name": "(주)엔에스테크닉스",
+"status": "none",
+"years": {}
+},
+"01883668": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 케이와이",
+"status": "none",
+"years": {}
+},
+"01885675": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 두영파워텍",
+"status": "none",
+"years": {}
+},
+"01897625": {
+"checked": "2026-09-23",
+"corp_name": "산도브레이크 주식회사",
+"status": "none",
+"years": {}
+},
+"01907250": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 앤우드  ",
+"status": "none",
+"years": {}
+},
+"01909188": {
+"checked": "2026-09-23",
+"corp_name": "재영정밀",
+"status": "none",
+"years": {}
+},
+"01909993": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 와우텍",
+"status": "none",
+"years": {}
+},
+"01910087": {
+"checked": "2026-09-23",
+"corp_name": "한국정유기주식회사",
+"status": "none",
+"years": {}
+},
+"01910096": {
+"checked": "2026-09-23",
+"corp_name": "(주)일성도금",
+"status": "none",
+"years": {}
+},
+"01911651": {
+"checked": "2026-09-23",
+"corp_name": "아레텍 주식회사",
+"status": "none",
+"years": {}
+},
+"01913181": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 삼성피앤씨",
+"status": "none",
+"years": {}
+},
+"01913349": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 한국파크골프",
+"status": "none",
+"years": {}
+},
+"01913516": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 영진아이앤디",
+"status": "none",
+"years": {}
+},
+"01914597": {
+"checked": "2026-09-23",
+"corp_name": "(주)에스제이프로텍",
+"status": "none",
+"years": {}
+},
+"01914931": {
+"checked": "2026-09-23",
+"corp_name": "세아전설(주)",
+"status": "none",
+"years": {}
+},
+"01915462": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 프라임덴탈",
+"status": "none",
+"years": {}
+},
+"01915994": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 창안애",
+"status": "none",
+"years": {}
+},
+"01917187": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 삼화에프앤디",
+"status": "none",
+"years": {}
+},
+"01918122": {
+"checked": "2026-09-23",
+"corp_name": "(주)씨오알엔",
+"status": "none",
+"years": {}
+},
+"01918317": {
+"checked": "2026-09-23",
+"corp_name": "근우테크(주)",
+"status": "none",
+"years": {}
+},
+"01918876": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 예성전기통신",
+"status": "none",
+"years": {}
+},
+"01919848": {
+"checked": "2026-09-23",
+"corp_name": "오션코리아 주식회사",
+"status": "none",
+"years": {}
+},
+"01920172": {
+"checked": "2026-09-23",
+"corp_name": "거성정공(주)",
+"status": "none",
+"years": {}
+},
+"01920729": {
+"checked": "2026-09-23",
+"corp_name": "유림공업주식회사",
+"status": "none",
+"years": {}
+},
+"01923850": {
+"checked": "2026-09-23",
+"corp_name": "그린힐염직(주)",
+"status": "none",
+"years": {}
+},
+"01925548": {
+"checked": "2026-09-23",
+"corp_name": "(주)구오기업",
+"status": "none",
+"years": {}
+},
+"01926264": {
+"checked": "2026-09-23",
+"corp_name": "세계실업(주)",
+"status": "none",
+"years": {}
+},
+"01927351": {
+"checked": "2026-09-23",
+"corp_name": "에이치디비글로벌 주식회사",
+"status": "none",
+"years": {}
+},
+"01928509": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 텐빌리언컴퍼니",
+"status": "none",
+"years": {}
+},
+"01928590": {
+"checked": "2026-09-23",
+"corp_name": "(주)블랑코퍼레이션",
+"status": "none",
+"years": {}
+},
+"01929678": {
+"checked": "2026-09-23",
+"corp_name": "선진정밀(주)",
+"status": "none",
+"years": {}
+},
+"01929872": {
+"checked": "2026-09-23",
+"corp_name": "대경정공(주)",
+"status": "none",
+"years": {}
+},
+"01930045": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 대일종합에너지",
+"status": "none",
+"years": {}
+},
+"01948530": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 으뜸",
+"status": "none",
+"years": {}
+},
+"01949104": {
+"checked": "2026-09-23",
+"corp_name": "(주)에스피아이",
+"status": "none",
+"years": {}
+},
+"01951093": {
+"checked": "2026-09-23",
+"corp_name": "제일기술 주식회사",
+"status": "none",
+"years": {}
+},
+"01954285": {
+"checked": "2026-09-23",
+"corp_name": "신창정공(주)",
+"status": "none",
+"years": {}
+},
+"01954373": {
+"checked": "2026-09-23",
+"corp_name": "(주)코넥스트",
+"status": "none",
+"years": {}
+},
+"01987450": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 원데이바이오텍",
+"status": "none",
+"years": {}
+},
+"01993354": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 엘앤에프플러스",
+"status": "none",
+"years": {}
+},
+"02001012": {
+"checked": "2026-09-23",
+"corp_name": "(주)삼코",
+"status": "none",
+"years": {}
+},
+"02001739": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 동위",
+"status": "none",
+"years": {}
+},
+"02003320": {
+"checked": "2026-09-23",
+"corp_name": "경진기계주식회사",
+"status": "none",
+"years": {}
+},
+"02004143": {
+"checked": "2026-09-23",
+"corp_name": "(주)디에이치원",
+"status": "none",
+"years": {}
+},
+"02007690": {
+"checked": "2026-09-23",
+"corp_name": "건일공업(주)",
+"status": "none",
+"years": {}
+},
+"02008291": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 하이테크디젤",
+"status": "none",
+"years": {}
+},
+"02008723": {
+"checked": "2026-09-23",
+"corp_name": "(주)옥원산업",
+"status": "none",
+"years": {}
+},
+"02010199": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 홍두당 ",
+"status": "none",
+"years": {}
+},
+"02012595": {
+"checked": "2026-09-23",
+"corp_name": "(주)티와이플라텍",
+"status": "none",
+"years": {}
+},
+"02012762": {
+"checked": "2026-09-23",
+"corp_name": "(주)신흥환경금속",
+"status": "none",
+"years": {}
+},
+"02014025": {
+"checked": "2026-09-23",
+"corp_name": "아이엠로보틱스(주)",
+"status": "none",
+"years": {}
+},
+"02014168": {
+"checked": "2026-09-23",
+"corp_name": "(주)궁전방",
+"status": "none",
+"years": {}
+},
+"02015909": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 호성",
+"status": "none",
+"years": {}
+},
+"02016120": {
+"checked": "2026-09-23",
+"corp_name": "에스엠모빌리티 주식회사",
+"status": "none",
+"years": {}
+},
+"02016555": {
+"checked": "2026-09-23",
+"corp_name": "(주)YH데이타베이스",
+"status": "none",
+"years": {}
+},
+"02018872": {
+"checked": "2026-09-23",
+"corp_name": "(주)화성알피",
+"status": "none",
+"years": {}
+},
+"02018915": {
+"checked": "2026-09-23",
+"corp_name": "(주)금룡테크",
+"status": "none",
+"years": {}
+},
+"02020053": {
+"checked": "2026-09-23",
+"corp_name": "(주)이상플랜트",
+"status": "none",
+"years": {}
+},
+"02021618": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 래딕스",
+"status": "none",
+"years": {}
+},
+"02021672": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 루타스",
+"status": "none",
+"years": {}
+},
+"02023139": {
+"checked": "2026-09-23",
+"corp_name": "(주)에스에이치테크",
+"status": "none",
+"years": {}
+},
+"02025021": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 플레이위즈",
+"status": "none",
+"years": {}
+},
+"02025313": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 준텍스글로벌",
+"status": "none",
+"years": {}
+},
+"02027074": {
+"checked": "2026-09-23",
+"corp_name": "(주)유진엠에스",
+"status": "none",
+"years": {}
+},
+"02035198": {
+"checked": "2026-09-23",
+"corp_name": "(주)신진이테크",
+"status": "none",
+"years": {}
+},
+"02035949": {
+"checked": "2026-09-23",
+"corp_name": "주식회사 아진포장",
+"status": "none",
+"years": {}
+},
+"02051363": {
+"checked": "2026-09-23",
+"corp_name": "(주)협신금속",
+"status": "none",
+"years": {}
+}
+}

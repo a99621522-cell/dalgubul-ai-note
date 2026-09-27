@@ -26,6 +26,7 @@
 - `scripts/data/support_history.csv` + `scripts/import_support.py` — 지원사업 수혜 이력(NTIS 과제·대구시 보조금 공개·기관 선정 공고, 투입구 `scripts/data/support/`, 형식은 그 README). 기업 페이지 '지원사업 이력(최근 3년)', 통계 `support_3y`, 리포트 근거. 비공개 자료(정책자금 개별 내역) 금지
 - `config/support_institutions.yml` + `scripts/institution_support.py` — 기업지원기관(대구TP·DIP·DMI·케이메디허브·창경센터·로봇산업진흥원·ETRI·생기원·경북대 등)이 주관·참여한 과제·보조사업의 기업을 대구 기업/역외 기업으로 나눠 `data/institutions/`(CSV·summary.json·README). 워크플로가 data/raw 의 포털 파일로 만든다. 기관·별칭 추가는 yml 에만
 - `config/institution_boards.yml` + `scripts/scrape_institution_boards.py` — 기관 홈페이지 공고 게시판에서 '선정 기업 명단' 글을 찾아 지원 이력 투입 CSV(`scripts/data/support/inst_<key>.csv`)로. robots.txt 존중, 표·첨부(PDF·HWPX·XLSX·HWP)에서 기업명만. GitHub 러너에서는 대부분 기관 사이트가 접속 시간 초과라 국내 PC 에서 돌린 뒤 `import_support.py --replace-source '홈페이지 공고'`. 워크플로 `institution_boards.yml` 은 수동 실행만
+- `scripts/collect_ntis.py` + `.github/workflows/ntis.yml` — NTIS 국가R&D 과제 오픈API(`NTIS_KEY`, 설정 `sources.yml` `ntis:`) → 대구 수행기관(지역 필드) 또는 기업 사전 이름 일치 과제만 `scripts/data/support/ntis.csv` → `import_support.py --replace-source 'NTIS 국가R&D 과제(오픈API)'`. 매월 11일. 연구책임자 등 사람 이름 태그는 읽지 않는다. 첫 연결은 `probe=true` 로 응답 태그를 보고 `ntis.fields` 를 맞춘다. 이 세션 환경은 ntis.go.kr 차단
 - `scripts/collect_dart_fin.py` — DART 정기보고서 매출·영업이익·당기순이익(대구 공시 기업만, `DART_KEY`) → `scripts/data/company_financials.csv`. 기업 페이지 '재무(DART 공시)'
 - `.github/workflows/fetch_public.yml` + `scripts/fetch_datago.py` — 공공데이터포털 파일데이터(지식산업센터현황 15117154, 국민연금 사업장 15083277)를 Actions 가 받아 처리·커밋. 이 세션 환경은 포털 접속이 막혀 있으므로 데이터 갱신은 이 워크플로로. `data/fetch_mode.txt`(mode|ids|pick)를 바꿔 푸시하면 실행. mode=search 면 ids 를 검색어로 보고 포털 파일데이터 번호만 출력
 - `scripts/nps_to_extra.py` — 국민연금 대구 사업장 중 팩토리온에 없는 곳 → 산단 외 기업 후보(서비스업 제외) → `import_extra.py --replace-source 국민연금`
@@ -133,4 +134,4 @@ python3 scripts/approve.py            # 초안 승인
 - 기업 애로·규제개선 접수: 군 공식 AI 정부 실험실 과제
 
 ### 필요한 키 (사용자 발급)
-BIZINFO_KEY(있음), GEMINI_KEY(있음), NAVER_CLIENT_ID/SECRET, DART_KEY, WORK24_KEY(고용24), G2B_KEY(나라장터, data.go.kr), KIPRIS_KEY, NTIS_KEY
+BIZINFO_KEY(있음), GEMINI_KEY(있음), NTIS_KEY(있음, 2026-09-27), NAVER_CLIENT_ID/SECRET, DART_KEY, WORK24_KEY(고용24), G2B_KEY(나라장터, data.go.kr), KIPRIS_KEY

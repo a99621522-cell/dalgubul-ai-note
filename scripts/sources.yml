@@ -61,6 +61,19 @@ nps:
   filter: { column: 법정동주소광역시도코드, op: EQ, value: "27" }
   region_words: [대구광역시, "대구 "]
 
+# NTIS 국가R&D 과제 오픈API (scripts/collect_ntis.py, .github/workflows/ntis.yml, 키 NTIS_KEY). 첫 연결은 워크플로 probe=true 로 응답 태그를 확인해 fields 를 맞춘다
+ntis:
+  api: https://www.ntis.go.kr/rndopen/openApi/public_project
+  collection: project
+  query: 대구           # 검색어(과제명·기관명 등 전체 필드). 지역 필드가 있으면 그것으로 거른다
+  years: "2023,2024,2025"
+  year_query: "PJT_YEAR:{year}"   # addQuery 형식 — probe 뒤 조정
+  display_cnt: 100
+  max_pages: 50
+  amount_unit: 천원
+  params: {}           # 추가 요청 인자(searchFds 등)
+  fields: {}           # 태그 이름이 다르면 여기서 덮어쓴다. 예: { org: RESEARCH_AGENCY_NAME, region: RESEARCH_AGENCY_ADDR }
+
 # 민선 9기 대구시장 공약 원문 (scripts/fetch_pledges.py, .github/workflows/pledges.yml)
 pledges:
   seeds:

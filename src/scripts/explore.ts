@@ -335,6 +335,6 @@ export function init() {
   $('copy-link').addEventListener('click', async () => { await navigator.clipboard.writeText(location.href); ($('copy-link') as HTMLButtonElement).textContent = '링크 복사됨'; });
   $('dl-png').addEventListener('click', () => lastSvg && last && png(lastSvg, last.title));
   const q = fromParams();
-  if (q) { $<HTMLDetailsElement>('controls').open = true; run(q, false); }
+  if (q) { $<HTMLDetailsElement>('controls').open = false; run(q, false); }   // 결과가 있으면 조건 상자는 접어 두고 결과를 위로
   addEventListener('resize', () => { if (last) lastSvg = draw(last, $('r-chart')); });
 }

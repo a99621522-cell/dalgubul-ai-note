@@ -48,12 +48,12 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
       <li class="tile"><p class="label">고용 인원</p><p class="num">{emp == null ? <span class="unit">자료 없음</span> : <>{emp.toLocaleString('ko-KR')}<span class="unit">명</span></>}</p><p class="sub">{basis}{m ? ` · ${monthLabel(m.month)} 기준` : ''}{empDelta != null && ` · 전월 대비 ${empDelta > 0 ? '+' : ''}${empDelta.toLocaleString('ko-KR')}명`}</p></li>
       <li class="tile"><p class="label">지원 이력 (최근 3년)</p><p class="num">{support3y.length.toLocaleString('ko-KR')}<span class="unit">건</span></p><p class="sub">공개 자료 기준{supportAll.length > support3y.length && ` · 전체 ${supportAll.length}건`}</p></li>
       <li class="tile spark"><p class="label">최근 12개월 고용 추이</p>
-        {pts.some(Boolean) ? (
+        {vals.length >= 2 ? (
           <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={`최근 ${last12.length}개월 고용 인원 추이`}>
             {poly.includes(' ') && <polyline points={poly} fill="none" stroke="var(--primary)" stroke-width="2" />}
             {pts.map(q => q && <circle cx={q[0]} cy={q[1]} r="3" fill="var(--primary)" />)}
           </svg>
-        ) : <p class="sub">고용 자료 없음</p>}
+        ) : <p class="sub">{vals.length === 1 ? `${vals[0].toLocaleString('ko-KR')}명 · 자료 1개월, 다음 달부터 추이` : '고용 자료 없음'}</p>}
         <p class="sub">{months.length ? `${months[Math.max(0, months.length - last12.length)]} ~ ${months.at(-1)} · 자료 ${last12.length}개월` : '월별 자료가 쌓이면 표시'}</p>
       </li>
     </ul>
@@ -77,9 +77,10 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
           <div class="pt-col">
             <h3>{title}</h3>
             <p class="meta">{hint}</p>
-            {list.length === 0 ? <p class="empty">해당 후보 없음</p> : (
-              <ul>{list.map((x: any) => (<li><a href={`/companies/${x.id}/`}>{x.name}</a><span class="co-meta">{shortComplex(x.complex)} · {x.sector.replace(/ 외 \d+ 종/, '')}{x.workers_band && ` · ${x.workers_band}`}</span></li>))}</ul>
-            )}
+            {list.length === 0 ? <p class="empty">해당 후보 없음</p> : (<>
+              <ul>{list.slice(0, 4).map((x: any) => (<li><a href={`/companies/${x.id}/`}>{x.name}</a><span class="co-meta">{shortComplex(x.complex)} · {x.sector.replace(/ 외 \d+ 종/, '')}{x.workers_band && ` · ${x.workers_band}`}</span></li>))}</ul>
+              {list.length > 4 && <details class="pt-more"><summary>{list.length - 4}곳 더 보기</summary><ul>{list.slice(4).map((x: any) => (<li><a href={`/companies/${x.id}/`}>{x.name}</a><span class="co-meta">{shortComplex(x.complex)} · {x.sector.replace(/ 외 \d+ 종/, '')}{x.workers_band && ` · ${x.workers_band}`}</span></li>))}</ul></details>}
+            </>)}
           </div>
         ))}
       </div>
@@ -116,11 +117,12 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
   @media (max-width: 48rem) { .pt-grid { grid-template-columns: 1fr; } }
   .pt-col h3 { font-size: 0.95rem; margin-bottom: 0.2rem; }
   .pt-col ul { list-style: none; padding: 0; margin: 0.4rem 0 0; }
+  .pt-more summary { cursor: pointer; color: var(--primary); min-height: var(--touch); display: flex; align-items: center; }
   .pt-col li { padding: 0.4rem 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; }
   .pt-col a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.92rem; }
   .pt-col a:hover { text-decoration: underline; }
-  .co-meta { font-size: 0.78rem; color: var(--ink-soft); }
+  .co-meta { font-size: 0.78rem; color: var(--muted); }
   table.card { width: 100%; border-collapse: collapse; margin-top: 1.25rem; font-size: 0.95rem; }
-  table.card th { text-align: left; width: 7.5rem; color: var(--ink-soft); font-weight: 600; vertical-align: top; padding: 0.5rem 0.4rem 0.5rem 0; border-bottom: 1px solid var(--line); }
+  table.card th { text-align: left; width: 7.5rem; color: var(--muted); font-weight: 600; vertical-align: top; padding: 0.5rem 0.4rem 0.5rem 0; border-bottom: 1px solid var(--line); }
   table.card td { padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
 </style>

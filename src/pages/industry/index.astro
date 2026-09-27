@@ -19,18 +19,16 @@ const description = m ? `대구 산업 그룹 11개의 기업 수·고용 인원
       <p class="meta">그룹 규칙은 <code>config/industry_groups.yml</code> 하나로 관리하며, 산업명을 누르면 그룹별 페이지로 갑니다.</p>
       <section aria-labelledby="h-bar">
         <div class="section-head"><h2 id="h-bar">그룹별 고용·기업 수</h2><a href="/industry/compare/">추이 비교</a></div>
-        <Chart kind="industry-bar" name="employment" caption={`산업 그룹별 고용 인원, ${ym}`} />
-        <Chart kind="industry-bar" name="firms" caption={`산업 그룹별 기업 수, ${ym}`} />
+        <div class="chart-pair">
+          <Chart kind="industry-bar" name="employment" caption={`산업 그룹별 고용 인원, ${ym}`} />
+          <Chart kind="industry-bar" name="firms" caption={`산업 그룹별 기업 수, ${ym}`} />
+        </div>
       </section>
       <section aria-labelledby="h-cards">
         <div class="section-head"><h2 id="h-cards">그룹별 페이지</h2></div>
-        <ul class="ind-cards">
+        <ul class="ind-links">
           {groups.map(g => { const s = m.by_industry[g.name]; return (
-            <li><a href={`/industry/${g.key}/`}>
-              <span class="name">{g.name}</span>
-              <span class="nums">{fmt(s.firms)}곳 · {fmt(s.employment)}명</span>
-              <span class="meta">집계 대상 {fmt(s.covered)}곳{s.support_3y ? ` · 지원 이력(3년) ${fmt(s.support_3y.firms)}곳` : ''}</span>
-            </a></li>
+            <li><a href={`/industry/${g.key}/`}>{g.name}</a> <span class="meta">{fmt(s.firms)}곳 · {fmt(s.employment)}명{s.support_3y ? ` · 지원 이력(3년) ${fmt(s.support_3y.firms)}곳` : ''}</span></li>
           ); })}
         </ul>
       </section>
@@ -38,9 +36,9 @@ const description = m ? `대구 산업 그룹 11개의 기업 수·고용 인원
   ) : <p class="empty">통계가 아직 없습니다. scripts/build_stats.py 를 먼저 실행하세요.</p>}
 </Base>
 <style>
-  .ind-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s2); }
-  .ind-cards a { display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2); text-decoration: none; color: var(--ink); min-height: var(--touch); }
-  .ind-cards a:hover, .ind-cards a:focus-visible { border-color: var(--primary); }
-  .ind-cards .name { font-weight: 700; color: var(--primary); }
-  .ind-cards .nums { font-variant-numeric: tabular-nums; }
+  .ind-links { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: var(--s4); }
+  @media (max-width: 600px) { .ind-links { columns: 1; } }
+  .ind-links li { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .ind-links a { font-weight: 700; text-decoration: none; }
+  .ind-links a:hover, .ind-links a:focus-visible { text-decoration: underline; }
 </style>

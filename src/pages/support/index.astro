@@ -21,7 +21,7 @@ const thisYear = new Date().getFullYear();
 const funders = [...new Set(rows.map(r => r.funder).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko'));
 const years = [...new Set(rows.map(r => r.year).filter(Boolean))].sort().reverse();
 const groupsList = [...new Set(list.map(f => f.group).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko'));
-const PAGE = 200;
+const PAGE = 50;
 const sources = [...new Set(rows.map(r => r.source))];
 const withAmount = rows.filter(r => r.amount).length;
 const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.length) return ''; const units = new Set(a.map(r => r.amount_unit || '원')); if (units.size > 1) return '단위 혼재'; return `${a.reduce((s, r) => s + Number(r.amount), 0).toLocaleString('ko-KR')} ${[...units][0]}`; };
@@ -54,7 +54,7 @@ const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.le
   <script is:inline>
     const q = document.getElementById('q'), fu = document.getElementById('funder'), gr = document.getElementById('group'), yr = document.getElementById('year'), cnt = document.getElementById('count'), more = document.getElementById('more');
     const trs = [...document.querySelectorAll('#tbl tbody tr')];
-    const RECENT = new Date().getFullYear() - 2, PAGE = 200;
+    const RECENT = new Date().getFullYear() - 2, PAGE = 50;
     let limit = PAGE;
     function apply(keep) {
       if (!keep) limit = PAGE;
@@ -65,7 +65,7 @@ const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.le
           && (!g || tr.dataset.group === g)
           && (!y || (y === 'recent' ? tr.dataset.years.split('|').some(v => Number(v) >= RECENT) : tr.dataset.years.split('|').includes(y)));
         if (ok) n++;
-        tr.hidden = !ok || n > limit;   // 처음 200곳만 그리고, 버튼으로 더 본다(긴 목록에서 화면이 무거워지지 않게)
+        tr.hidden = !ok || n > limit;   // 처음 50곳만 그리고, 버튼으로 더 본다(긴 목록에서 화면이 무거워지지 않게)
       }
       cnt.textContent = n > limit ? `${n.toLocaleString('ko-KR')}곳 중 ${limit.toLocaleString('ko-KR')}곳 표시` : `${n.toLocaleString('ko-KR')}곳 표시`;
       more.hidden = n <= limit;

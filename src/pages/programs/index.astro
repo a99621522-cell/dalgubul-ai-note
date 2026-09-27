@@ -57,6 +57,7 @@ const fmtDate = (x: Date) => x.toLocaleDateString('ko-KR', { month: 'long', day:
       );
     })}
   </ul>
+  <p class="more-row"><button type="button" class="btn secondary" id="more" hidden>다음 50건 더 보기</button></p>
   <p class="meta src">출처: {sources.join(' · ')}. 신규(추정)은 자료에 신규 표기가 없지만 2025년 예산이 0이고 2026년 예산이 있는 사업입니다.</p>
   <script>
     const q = document.getElementById('q') as HTMLInputElement;
@@ -66,37 +67,43 @@ const fmtDate = (x: Date) => x.toLocaleDateString('ko-KR', { month: 'long', day:
     const lv = document.getElementById('lv') as HTMLInputElement;
     const count = document.getElementById('count')!;
     const items = Array.from(document.querySelectorAll<HTMLLIElement>('#list > li'));
-    function apply() {
+    const more = document.getElementById('more') as HTMLButtonElement;
+    const PAGE = 50; let limit = PAGE;   // 600건을 한 번에 그리면 화면이 7만 px — 처음 50건만, 버튼으로 더 본다
+    function apply(reset = true) {
+      if (reset) limit = PAGE;
       const t = q.value.trim().toLowerCase(); const m = mi.value; const b = Number(bg.value); let n = 0;
       for (const li of items) {
         const ok = (!m || li.dataset.mi === m) && Number(li.dataset.b26) >= b && (!nw.checked || li.dataset.new === '1')
           && (!lv.checked || li.dataset.live === '1') && (!t || (li.dataset.text ?? '').includes(t));
-        li.hidden = !ok; if (ok) n++;
+        if (ok) n++;
+        li.hidden = !ok || n > limit;
       }
-      count.textContent = `${n.toLocaleString('ko-KR')}건`;
+      count.textContent = `${n.toLocaleString('ko-KR')}건${n > limit ? ` 중 ${limit}건 표시` : ''}`;
+      more.hidden = n <= limit;
     }
-    q.addEventListener('input', apply); [mi, bg].forEach(s => s.addEventListener('change', apply)); [nw, lv].forEach(c => c.addEventListener('change', apply));
+    more.addEventListener('click', () => { limit += PAGE; apply(false); });
+    q.addEventListener('input', () => apply()); [mi, bg].forEach(s => s.addEventListener('change', () => apply())); [nw, lv].forEach(c => c.addEventListener('change', () => apply()));
     const sp = new URLSearchParams(location.search); const im = sp.get('ministry'); if (im) mi.value = im;
-    if (location.hash) { const el = document.querySelector(location.hash); if (el) el.classList.add('hit'); }
     apply();
+    if (location.hash) { const el = document.querySelector<HTMLLIElement>(location.hash); if (el) { el.classList.add('hit'); el.hidden = false; el.scrollIntoView(); } }
   </script>
 </Base>
 <style>
   .tools { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1.25rem 0 0.5rem; }
-  .tools input[type=search], .tools select { font: inherit; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); max-width: 100%; }
+  .tools input[type=search], .tools select { font: inherit; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); max-width: 100%; }
   .tools input[type=search] { flex: 1 1 14rem; }
   .chk { display: inline-flex; gap: 0.3rem; align-items: center; font-size: 0.9rem; }
   .pg-list { list-style: none; padding: 0; margin: 0; }
   .pg-list > li { padding: 0.7rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: 4rem; }
-  .pg-list > li.hit { background: var(--dawn); }
+  .pg-list > li.hit { background: var(--surface); }
   .row1 { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: baseline; }
   .name { font-weight: 600; }
-  .row2, .row3 { font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.15rem; }
+  .row2, .row3 { font-size: 0.85rem; color: var(--muted); margin-top: 0.15rem; }
   .code { font-family: ui-monospace, monospace; }
-  .prev { color: var(--ink-soft); }
-  .tag { font-size: 0.75rem; padding: 0.05rem 0.4rem; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-soft); }
-  .badge { font-size: 0.75rem; padding: 0.05rem 0.45rem; border-radius: 999px; background: var(--pine); color: #fff; }
+  .prev { color: var(--muted); }
+  .tag { font-size: 0.75rem; padding: 0.05rem 0.4rem; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+  .badge { font-size: 0.75rem; padding: 0.05rem 0.45rem; border-radius: 999px; background: var(--primary); color: #fff; }
   .posts { list-style: none; padding: 0.35rem 0 0 0; margin: 0; font-size: 0.88rem; }
-  .posts a { color: var(--pine-deep); }
+  .posts a { color: var(--primary); }
   .src { margin-top: 1.25rem; }
 </style>

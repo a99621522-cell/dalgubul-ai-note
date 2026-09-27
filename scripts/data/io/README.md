@@ -5,7 +5,7 @@
 2. 부문분류표(기본부문 ↔ 한국표준산업분류) — 한국은행 공개 파일(ECOS `2020 상품부문분류표`·`2020 산업부문분류표`)에는 KSIC 대응 열이 없다. 그래서 `scripts/build_io_ksic_map.py` 가 기업 사전에 나온 KSIC 세세분류 627개를 상품 기본부문에 **자동 추정**으로 잇는다(`io_ksic_map_auto.xlsx`·`.csv`: KSIC 대분류→상품 중분류 허용표 + 접두어 규칙 254건 + 이름 겹침. 검토용 csv 에 방식·점수 표시). 공식 연계표(ISTANS 산업분류 연계표 등, 기본부문 코드 열 + `한국표준산업분류` 열)를 구하면 이 폴더에 넣고 `io_ksic_map_auto.xlsx` 를 지운다 — attract.py 가 헤더에 '표준산업'이 있는 표를 부문분류표로 쓴다
    - 거래표 내려받기: ECOS 통계검색 > 2.2 산업연관표 > 2.2.1 2020년 실측표 기준 > 2.2.1.1 파일 다운로드 > 2024 연장표 > 투입산출표 > 생산자가격 > 기본부문(2026-09-27 반영: `ecos_2024_연장표_투입산출표_생산자가격_기본부문.xlsx`, 380부문). 한국은행 홈페이지는 robots.txt 로 크롤러를 막아(존중) 워크플로로는 못 받고, ECOS Open API(`fetch_io_api.py`, ECOS_KEY)는 대·중분류만 준다
 3. `scripts/data/dalseong_companies.csv` (대구, 팩토리온) — 자동
-4. 팩토리온 **전국(개별,계획) 입주업체현황** xlsx (30만 공장, `scripts/data/raw/` 에 두고 `--factoryon` 으로 넘김. 저장소에 올리지 않는다) — 3단계 후보에만 필요
+4. 팩토리온 **전국(개별,계획) 입주업체현황** xlsx (30만 공장, 저장소에 올리지 않는다) — 3단계 후보에만 필요. 두 가지 방법: (a) 국내 PC 에서 `--factoryon <파일>` 로 실행 (b) 파일을 GitHub 릴리스(Releases → Draft a new release, 태그 예: factoryon-2026-08)에 첨부하고 Actions 의 `attract.yml` 을 실행하면 러너가 받아 분석하고 결과만 커밋한다
 5. `scripts/data/programs_*.csv` — 투자유치 관련 국비 사업(지방투자촉진·기회발전특구·국내복귀 등 키워드) — 자동
 
 ## API 로 받기 (scripts/fetch_io_api.py, 워크플로 io_tables.yml)

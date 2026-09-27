@@ -1,0 +1,58 @@
+name: 산업연관표 전국 후보 분석 (팩토리온 전국 파일은 릴리스 첨부)
+
+# 전국(개별,계획) 입주업체현황 xlsx 는 수십 MB 라 저장소에 넣지 않는다. GitHub 릴리스(Releases)에 첨부해 두면
+# 이 워크플로가 받아 scripts/attract.py --factoryon 을 돌리고 결과(gaps·candidates·brief·summary)만 커밋한다.
+# 실행: Actions → 이 워크플로 → Run workflow (tag 를 비우면 가장 최근 릴리스). 결과는 /supply-chain/ 에 배포된다.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "릴리스 태그(비우면 최근 릴리스)"
+        required: false
+        default: ""
+      pattern:
+        description: "첨부파일 이름 무늬"
+        required: false
+        default: "*전국*"
+
+permissions:
+  contents: write
+
+jobs:
+  attract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt pandas openpyxl
+      - name: 릴리스 첨부 받기
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          PAT: ${{ inputs.pattern }}
+        run: |
+          mkdir -p data/raw/factoryon
+          if [ -z "$TAG" ]; then TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName'); fi
+          echo "release=$TAG"
+          gh release download "$TAG" --pattern "$PAT" -D data/raw/factoryon --clobber
+          ls -la data/raw/factoryon
+      - name: 분석
+        run: |
+          f=$(ls data/raw/factoryon/*.xlsx data/raw/factoryon/*.xls 2>/dev/null | head -1)
+          [ -n "$f" ] || { echo "::error::전국 파일이 없다(릴리스 첨부 이름에 '전국'이 들어가야 함)"; exit 1; }
+          python3 scripts/attract.py --factoryon "$f"
+          rm -rf data/raw/factoryon
+      - name: 대표자·연락처 열이 결과에 없는지 확인
+        run: |
+          ! grep -lE "대표자|전화|휴대|이메일" scripts/data/io/candidates.csv scripts/data/io/attract_brief.md
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add scripts/data/io/gaps.csv scripts/data/io/candidates.csv scripts/data/io/attract_brief.md scripts/data/io/summary.json
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "data: 산업연관표 전국 후보 분석 $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"

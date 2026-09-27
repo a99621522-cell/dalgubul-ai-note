@@ -70,6 +70,15 @@ jobs:
           PY
           git add src/content/posts
           git diff --cached --quiet || git commit -m "review: 품질 기준 미달 정책제안 리포트를 draft 로 되돌림 $(date -u +%Y-%m-%d)"
+      - name: 대표 그림 생성 (format insight, hero.png 없는 리포트만 · Gemini)
+        if: steps.merge.outputs.merged == '1'
+        env:
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+        run: |
+          pip install -q requests
+          python3 scripts/gen_hero.py --all || true
+          git add public/figures
+          git diff --cached --quiet || git commit -m "figures: 리포트 대표 그림 생성 $(date -u +%Y-%m-%d)"
       - name: main 푸시
         if: steps.merge.outputs.merged == '1'
         run: |

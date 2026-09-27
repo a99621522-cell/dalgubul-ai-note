@@ -25,6 +25,11 @@ const posts = defineCollection({
     program_score: z.number().optional(),       // 대조 유사도 — 글에서 '자동 대조'임을 밝히는 데 씀
     // 정책제안 리포트 등 근거 목록. 실제로 확인한 페이지만
     sources: z.array(z.object({ title: z.string(), url: z.string(), date: z.string().optional() })).default([]),
+    // 정책제안 리포트 형식. report = 1~9절 개조식(2026-09-27 까지), insight = 산문형 인사이트 리포트(대표 그림·요약 상자·절 4~6개·그림, 2026-09-28 부터)
+    format: z.enum(['report', 'insight']).default('report'),
+    outline: z.array(z.string()).default([]),            // insight: 요약 상자에 보이는 절 제목 4~6개
+    hero: z.object({ prompt: z.string(), caption: z.string(), alt: z.string().optional() }).optional(), // insight: 대표 그림(Gemini 생성, scripts/gen_hero.py)
+    authors: z.string().optional(),
   }),
 });
 

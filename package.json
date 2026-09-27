@@ -10,6 +10,7 @@
     "deploy": "astro build && wrangler pages deploy"
   },
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "astro": "^5.0.0",
     "docx": "^9.7.2",
     "js-yaml": "^4.3.2"

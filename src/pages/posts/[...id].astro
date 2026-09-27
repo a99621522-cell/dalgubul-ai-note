@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content';
 import { CATEGORIES } from '../../categories';
 import BudgetSource from '../../components/BudgetSource.astro';
 import { isReport, downloadUrls } from '../../lib/reports';
+import fs from 'node:fs';
 export async function getStaticPaths() {
   const posts = await getCollection('posts', p => !p.data.draft);
   return posts.map(p => ({ params: { id: p.id }, props: { post: p } }));
@@ -12,9 +13,11 @@ const { post } = Astro.props;
 const { Content, headings } = await render(post);
 // 차례: 2단계 제목 4개 이상인 긴 글(정책제안 리포트·월보)만. 슬러그는 Astro 가 붙인 id.
 const toc = headings.filter(h => h.depth === 2);
-const showToc = toc.length >= 4;
 const d = post.data;
 const dl = isReport(post) ? downloadUrls(post.id) : null;
+const insight = d.format === 'insight';
+const heroSrc = insight && fs.existsSync(`public/figures/${post.id}/hero.png`) ? `/figures/${post.id}/hero.png` : null;
+const showToc = !insight && toc.length >= 4;
 const fmt = (x: Date) => x.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : Astro.url.pathname;
 const jsonld: object[] = [{
@@ -32,7 +35,7 @@ if (d.faq.length > 0) jsonld.push({
 });
 ---
 <Base title={d.title} seoTitle={d.seoTitle} description={d.description || d.summary} current={d.category} tags={d.tags} jsonld={jsonld}>
-  <article class="post">
+  <article class:list={["post", { insight }]}>
     <header>
       <h1 class:list={{ long: d.title.length > 60 }}>{d.title}</h1>
       <div class="meta">
@@ -42,7 +45,13 @@ if (d.faq.length > 0) jsonld.push({
         {dl && <span class="dl"> · 내려받기 <a href={dl.docx} download>Word</a> · <a href={dl.md} download>MD</a></span>}
       </div>
     </header>
-    {d.description && <p class="lede">{d.description}</p>}
+    {insight && heroSrc && d.hero && (
+      <figure class="hero"><img src={heroSrc} alt={d.hero.alt ?? d.hero.caption} width="1600" height="900" loading="eager" /><figcaption>{d.hero.caption}</figcaption></figure>
+    )}
+    {insight && d.outline.length > 0 && (
+      <nav class="outline" aria-label="요약"><ul>{d.outline.map(o => <li><a href={`#${headings.find(h => h.depth === 2 && h.text.includes(o))?.slug ?? ''}`}>{o}</a></li>)}</ul></nav>
+    )}
+    {!insight && d.description && <p class="lede">{d.description}</p>}
     {d.program_code && d.program_name && <BudgetSource code={d.program_code} name={d.program_name} ministry={d.program_ministry} budget2026={d.program_budget_2026} score={d.program_score} />}
     {showToc && (
       <nav class="toc" aria-label="차례">

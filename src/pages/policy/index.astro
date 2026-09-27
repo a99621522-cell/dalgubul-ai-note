@@ -15,7 +15,7 @@ const ROTATION = ['미래모빌리티·자동차부품', '로봇·피지컬AI', 
   <p class="lede">중앙부처·대구시 정책 발표, 연구기관 발간물, 기업 사전 숫자를 근거로 산업별 정책제안 리포트를 분야마다 매주 한 편씩(10개 분야, 주 10편) 만듭니다. 리포트는 자동 초안으로 만들어지고 운영자가 승인한 것만 여기에 나옵니다. 정책 평가·비판은 하지 않고, 사실과 대구 산업의 접점만 정리합니다. 정책제안서이므로 예산액·사업코드는 인용하지 않습니다.</p>
 
   <div class="section-head"><h2>산업별 정책제안 리포트</h2><span class="meta">10개 분야 · 분야마다 주 1편</span></div>
-  <p class="meta">분야: {ROTATION.join(' · ')}. 각 리포트는 결론 3개 → 현재 위치(기업 사전) → 글로벌 변화 → 정부·타도시 → 연구기관 시각 → 제안(문제·분석·제안·추진·대안·근거·대상 규모·지표) → 반론 → 출처 순서입니다. <strong>Word</strong> 는 한글·Word 에서 바로 열어 편집하는 문서(본문·FAQ·출처 포함), <strong>MD</strong> 는 마크다운 원문입니다.</p>
+  <p class="meta">분야: {ROTATION.join(' · ')}. 리포트는 대표 그림·요약 상자·절 4~6개의 산문형(2026-09-28 부터)으로, 기업 사전 숫자 → 글로벌·정부 변화 → 연구기관 시각 → 제안 3개(시·정부 건의·기업·기관) → 반론 순서입니다. 이전 글은 1~9절 개조식입니다. <strong>Word</strong> 는 한글·Word 에서 바로 열어 편집하는 문서(본문·FAQ·출처 포함), <strong>MD</strong> 는 마크다운 원문입니다.</p>
   {reports.length ? <ReportList posts={reports} /> : <p class="empty">승인·발행된 리포트가 아직 없습니다. 초안은 저장소 <code>src/content/posts/*-policy-*.md</code>에 있고 <code>python3 scripts/approve.py</code>로 발행합니다.</p>}
 
   <div class="section-head"><h2>산업 정책 글</h2><a href="/category/policy/">분류 페이지</a></div>

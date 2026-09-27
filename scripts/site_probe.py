@@ -39,6 +39,19 @@ def main():
         if urlparse(href).netloc != urlparse(url).netloc or href in seen or not text: continue
         seen.add(href); print(f"{text} - {href}")
     print(f"== 링크 {len(seen)}개")
+    if "--dump" in sys.argv:   # 표·선택 상자·스크립트 속 주소까지: 통계표 화면이 어떻게 그려지는지 볼 때
+        for i, sel in enumerate(soup.find_all("select")[:12]):
+            opts = [o.get_text(strip=True) for o in sel.find_all("option")]
+            print(f"== select[{i}] name={sel.get('name') or sel.get('id')} ({len(opts)}개): {' | '.join(opts[:40])}")
+        for i, tb in enumerate(soup.find_all("table")[:15]):
+            cap = tb.find("caption"); rows = tb.find_all("tr")
+            print(f"== table[{i}] caption={cap.get_text(strip=True) if cap else ''} rows={len(rows)}")
+            for tr in rows[:4]:
+                print("   " + " | ".join(re.sub(r"\s+", " ", c.get_text(" ", strip=True))[:30] for c in tr.find_all(["th", "td"])[:10]))
+        urls = sorted(set(re.findall(r"""['"]([^'"]*?\.(?:do|json|xml|csv|xlsx?)(?:\?[^'"]*)?)['"]""", html)))
+        print(f"== 스크립트·속성 속 주소 {len(urls)}개: " + " | ".join(urls[:60]))
+        for i, sc in enumerate([x for x in soup.find_all("script") if x.string and re.search(r"ajax|fetch|XMLHttpRequest|\.do", x.string)][:6]):
+            print(f"== script[{i}] 앞 600자: " + re.sub(r"\s+", " ", sc.string)[:600])
 
 
 if __name__ == "__main__":

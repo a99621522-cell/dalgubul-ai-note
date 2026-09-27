@@ -195,6 +195,15 @@ def notices_block(area_key: str, keywords: list[str], weeks: int = 8) -> list[di
     return out
 
 
+def refs_block(keywords: list[str], area_key: str = "") -> list[dict]:
+    """data/refs/*.json (운영자가 Drive 에 올린 보고서를 운영 세션이 요약한 참고자료 창고). 분야 항목 먼저, 그다음 키워드 일치."""
+    try:
+        from refs import load_refs, match_refs  # scripts/refs.py
+    except Exception:  # noqa: BLE001
+        return []
+    return match_refs(load_refs(), area_key, keywords)
+
+
 def research_block(keywords: list[str], area_key: str = "", days: int = 70) -> list[dict]:
     """data/research/*.json (scripts/fetch_research.py 가 받은 기관 발간물 목록)에서
     (1) 이 분야를 담당하는 기관(config/research_sources.yml 의 areas 에 분야 key 가 있는 곳)의 항목 전부 — 분야 기관은 키워드와 무관하게 먼저,
@@ -258,6 +267,7 @@ def main(argv: list[str]) -> int:
         "posts_8w": posts_block(area.get("keywords", [])),
         "notices_8w": notices_block(area["key"], area.get("keywords", [])),
         "research": research_block(area.get("keywords", []), area.get("key", "")),
+        "refs": refs_block(area.get("keywords", []), area.get("key", "")),
     }
     ctx["support_3y"] = support_block(set(ctx["companies"]["ids"]) if ctx["companies"] else set())
     if a.json:
@@ -294,6 +304,15 @@ def main(argv: list[str]) -> int:
     for r in rs[:25]:
         tag = "분야기관" if r.get("area_org") else "키워드"
         print(f"  {r.get('date') or '날짜 없음'} [{r['org']}·{tag}] {r['title'][:60]} {r['url']}" + (f"\n      요지: {r['excerpt'][:200]}…" if r.get("excerpt") else ""))
+    rf = ctx["refs"]
+    print(f"\n[참고자료 창고 data/refs] {len(rf)}건 — 운영자가 Drive 에 올린 보고서의 요약(scripts/refs.py). 논지·수치(쪽 번호)를 대구 숫자와 연결해 쓴다. public_url 이 없는 자료의 수치는 sources 에 넣지 못하므로 기관·제목·발행월로만 언급하고 공개 페이지를 검색해 확인한다.")
+    for r in rf[:8]:
+        print(f"  {r.get('published')} [{r.get('publisher')}] {r.get('title')} ({r.get('pages', '?')}쪽) {r.get('public_url') or '(공개 URL 미확인)'}")
+        print("      요약: " + (r.get("summary") or "")[:300].replace("\n", " ") + "…")
+        for k in (r.get("key_figures") or [])[:4]:
+            print(f"      · {k.get('text')} (p.{k.get('page')})")
+        for n in (r.get("daegu_notes") or [])[:3]:
+            print(f"      → {n}")
     sb = ctx["support_3y"]
     print(f"\n[지원사업 수혜 이력 최근 3년] 기업 {sb['firms']:,}곳 · {sb['records']:,}건" + ("" if sb["records"] else " (support_history.csv 비어 있음 — scripts/data/support/ 에 목록 투입)"))
     for k, v in sb["by_funder"][:6]:

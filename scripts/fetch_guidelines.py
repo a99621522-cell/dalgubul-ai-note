@@ -70,32 +70,55 @@ def first_text(el: ET.Element, tag: str) -> str:
     return (x.text or "").strip() if x is not None else ""
 
 
-def search(target: str, name: str) -> dict | None:
-    """이름으로 검색해 현행 항목(이름이 정확히 같은 것 우선)을 돌려준다."""
+def search_once(target: str, q: str) -> list[dict]:
     f = FIELDS[target]
-    r = get(f"{BASE}/lawSearch.do", {"OC": OC, "target": target, "type": "XML", "query": name, "display": 20})
+    q = q.replace("·", " ").replace("ㆍ", " ")   # 가운뎃점은 API 가 &middot; 로 되돌려 XML 이 깨진다(2026-09-27)
+    r = get(f"{BASE}/lawSearch.do", {"OC": OC, "target": target, "type": "XML", "query": q, "display": 30})
     if not r:
-        return None
+        return []
     try:
         root = ET.fromstring(r.content)
     except ET.ParseError as e:
         print(f"    XML 오류: {e}; 앞부분 {r.text[:120]!r}")
-        return None
+        return []
     if (root.findtext("resultCode") or "00") != "00":
         print(f"    결과 코드 {root.findtext('resultCode')} {root.findtext('resultMsg')}")
     items = []
     for it in root.iter(f["item"]):
         d = {k: first_text(it, t) for k, t in f.items() if k not in ("item", "param", "public")}
-        d["_exact"] = norm(d.get("name", "")) == norm(name)
         d["_current"] = "현행" in (d.get("current") or "") or d.get("current") in ("", "010202", "현행")
         items.append(d)
+    return items
+
+
+def search(target: str, name: str, queries: list[str] | None = None, issuer: str = "") -> tuple[dict | None, list[str]]:
+    """이름(공백 없는 law.go.kr 주소식)과 보조 검색어(queries)로 검색해 (정확히 같은 이름 > 소관 일치 > 현행) 순으로 고른다.
+    (고른 항목, 후보 이름 목록) 을 돌려준다 — 정확한 이름이 없으면 후보를 index.json 에 남겨 운영자가 이름을 바로잡는다."""
+    seen, items = set(), []
+    for q in [name] + [x for x in (queries or []) if x]:
+        for d in search_once(target, q):
+            k = d.get("id") or d.get("name")
+            if k and k not in seen:
+                seen.add(k)
+                items.append(d)
+        if any(norm(d.get("name", "")) == norm(name) for d in items):
+            break
     if not items:
-        return None
-    items.sort(key=lambda d: (not d["_exact"], not d["_current"], d.get("eff") or ""), reverse=False)
+        return None, []
+    def _issuer_ok(d):
+        return not issuer or issuer in (d.get("issuer") or "") or (d.get("issuer") or "") in issuer
+    for d in items:
+        d["_exact"] = norm(d.get("name", "")) == norm(name)
+        d["_issuer"] = _issuer_ok(d)
+    items.sort(key=lambda d: (not d["_exact"], not d["_issuer"], not d["_current"], d.get("eff") or ""))
     hit = items[0]
+    cands = [f"{d.get('name')} ({d.get('kind')}, {d.get('issuer')}, 시행 {d.get('eff')})" for d in items[:8]]
     if not hit["_exact"]:
-        print(f"    정확히 같은 이름 없음 → 가장 가까운 항목: {hit.get('name')} (검색 {len(items)}건)")
-    return hit
+        print(f"    정확히 같은 이름 없음 → 가장 가까운 항목: {hit.get('name')} ({hit.get('issuer')}) · 후보 {len(items)}건")
+        if issuer and not hit["_issuer"]:
+            print(f"    소관({issuer})이 다른 항목뿐이라 채택하지 않음")
+            return None, cands
+    return hit, cands
 
 
 def body(target: str, ident: str) -> tuple[str, dict]:
@@ -145,16 +168,17 @@ def fetch(only: set[str], dry: bool) -> int:
         if target not in FIELDS:
             print("    source.type 이 law|admrul|ordin 이 아니라 건너뜀(부처 첨부는 fetch_budget_docs 방식으로 따로)")
             continue
-        hit = search(target, name)
+        hit, cands = search(target, name, g.get("queries"), g.get("match_issuer", ""))
         entry = {"key": key, "name": g["name"], "kind": g.get("kind", ""), "issuer": g.get("issuer", ""), "source": src, "applies": g.get("applies", {}),
                  "review": g.get("review", []), "fetched": TODAY, "status": "없음", "found": "", "id": "", "date": "", "eff": "", "url": "", "chars": 0}
+        entry["candidates"] = cands
         if not hit:
-            print("    검색 결과 없음 — config/guidelines.yml 의 이름을 확인")
+            print("    검색 결과 없음 — config/guidelines.yml 의 이름·queries 를 확인" + (f" (후보: {' | '.join(cands[:4])})" if cands else ""))
             idx["items"][key] = entry
             fail += 1
             continue
         f = FIELDS[target]
-        entry.update({"found": hit.get("name", ""), "id": hit.get("id", ""), "date": hit.get("date", ""), "eff": hit.get("eff", ""), "found_kind": hit.get("kind", ""), "found_issuer": hit.get("issuer", ""),
+        entry.update({"exact": bool(hit.get("_exact")), "found": hit.get("name", ""), "id": hit.get("id", ""), "date": hit.get("date", ""), "eff": hit.get("eff", ""), "found_kind": hit.get("kind", ""), "found_issuer": hit.get("issuer", ""),
                       "url": f["public"].format(id=hit.get("id", ""), name=norm(hit.get("name", "")) if target != "admrul" else "")})
         if dry:
             print(f"    → {hit.get('name')} · {hit.get('kind')} · {hit.get('issuer')} · 발령 {hit.get('date')} 시행 {hit.get('eff')} (dry-run)")

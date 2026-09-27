@@ -1,0 +1,35 @@
+---
+/** 정책제안 리포트 목록: 제목만(요약 없음) + 분야·날짜 + 내려받기(DOCX·MD). 공무원이 문서에 바로 옮겨 쓰도록. */
+import type { CollectionEntry } from 'astro:content';
+import { reportArea, downloadUrls } from '../lib/reports';
+interface Props { posts: CollectionEntry<'posts'>[] }
+const { posts } = Astro.props;
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+const short = (t: string) => t.replace(/^\[정책제안\]\s*/, '');
+---
+{posts.length === 0 ? <p class="empty">발행된 리포트가 아직 없습니다.</p> :
+<ol class="report-list" reversed>
+  {posts.map(p => { const u = downloadUrls(p.id); return (
+    <li>
+      <div class="rl-main">
+        <a class="rl-title" href={`/posts/${p.id}/`}>{short(p.data.title)}</a>
+        <span class="rl-meta">{reportArea(p) && <span class="tag primary">{reportArea(p)}</span>} {fmt(p.data.date)}</span>
+      </div>
+      <span class="rl-dl" aria-label="내려받기">
+        <a class="btn secondary sm" href={u.docx} download>Word</a>
+        <a class="btn secondary sm" href={u.md} download>MD</a>
+      </span>
+    </li>
+  ); })}
+</ol>}
+<style>
+  .report-list { list-style: none; margin: 0; padding: 0; }
+  .report-list li { display: flex; gap: var(--s2); align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .rl-main { flex: 1 1 auto; min-width: 0; }
+  .rl-title { display: block; color: var(--ink); text-decoration: none; font-weight: 600; line-height: 1.45; }
+  .rl-title:hover, .rl-title:focus-visible { color: var(--primary); text-decoration: underline; }
+  .rl-meta { display: block; margin-top: 4px; font-size: var(--small); color: var(--muted); }
+  .rl-dl { display: flex; gap: 6px; flex: 0 0 auto; padding-top: 2px; }
+  .btn.sm { min-height: 36px; padding: 0 12px; font-size: var(--small); }
+  @media (max-width: 600px) { .report-list li { flex-wrap: wrap; } .rl-dl { width: 100%; } }
+</style>

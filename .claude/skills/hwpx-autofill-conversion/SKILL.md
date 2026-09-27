@@ -14,12 +14,12 @@ description: 한글(HWPX) 양식을 채워 문서를 만든다. 정책제안 리
 
 # 채우는 절차 (scripts/hwpx_report.py 가 하는 일)
 1. 양식의 최상위 문단을 훑어 역할을 정한다: 표지 제목·날짜·부서 표, 목차 표, 절 머리표(Ⅰ Ⅱ …), 본문 단계 문단(□ HY헤드라인M 15 / ○ 휴먼명조 14 / - 14 / ※ 11), 표(맑은 고딕 12, 머리 행 굵게).
-2. 내용을 블록으로 나눈다: `##` → 절, `###`·굵은 첫 문장 → □, 문단 → ○, 목록 → -, 인용·그림 캡션 → ※, 마크다운 표 → 표.
+2. 내용을 블록으로 나눈다: `##` → 절, `###` → □, 굵은 첫 문장이 있는 문단 → ○ 한 문단 안에 붉은 굵은 리드 run(header.xml 에 글자 모양을 하나 추가: 원형 charPr + `<hh:bold/>` + textColor #C00000) + 보통 run, 문단 → ○, 목록 → -, 인용 → ※, `<figure>` → 그림 문단(가운데) + 캡션 문단, `**표 N. 제목**` → 표 캡션, 마크다운 표 → 표. 대표 그림(public/figures/<id>/hero.png)은 요약 절 맨 앞에.
 3. 표지·목차를 바꿔 넣고, 첫 절 머리표부터 끝까지 지운 뒤 절마다 머리표(로마 숫자·제목) + 단계 문단을 복제해 붙인다.
 4. zip 으로 다시 싼다(mimetype 은 STORED 로 첫 항목). `python3 scripts/hwpx_report.py --check <파일>` 로 XML 이 열리는지 본다.
 
 # 지킬 것
 - 원문 문장을 그대로 옮긴다(요약·평가·의견 추가 없음). 정책제안서에는 예산액·사업코드를 넣지 않는다.
 - 담당자 성명·연락처 칸에는 사람 이름을 넣지 않는다('다잇다 노트', 누리집 주소).
-- 그림(SVG)은 넣지 않고 캡션을 ※ 줄로 남긴다. 그림이 꼭 필요하면 PNG 로 바꿔 BinData 에 넣고 manifest·content.hpf 에 등록해야 한다.
+- 그림은 LG경영연구원 리포트처럼 본문에 넣는다(운영자 지시 2026-09-27): SVG 는 `rsvg-convert -w 1600` 으로 PNG 로, 400KB 넘는 PNG 는 JPEG(폭 1400)로 줄여 `BinData/imageN.<ext>` 에 넣고 `Contents/content.hpf` 의 `<opf:manifest>` 에 `<opf:item id="imageN" href="BinData/imageN.png" media-type="image/png" isEmbeded="1"/>` 를 더한다. 문단에는 `<hp:run><hp:pic …><hc:img binaryItemIDRef="imageN"/>…</hp:pic><hp:t/></hp:run>` (treatAsChar=1, 크기 HWPUNIT = 픽셀×75, 최대 너비 42000, 가운데 정렬 paraPr). 캡션은 그림 아래 가운데 정렬 11pt. rsvg-convert 가 없으면 캡션만 ※ 줄로 남긴다. `--check` 가 그림 참조와 BinData·manifest 를 대조한다.
 - 양식 파일: `scripts/data/hwpx/report_basic.hwpx`(보고서 기본), `report_summary.hwpx`(한 쪽 요약). 양식이 바뀌면 파일만 갈아끼우고 문단 역할 인덱스(top[3]·[8]·[12]·[15]·[17]·[19]~[24]·[64])를 다시 확인한다.

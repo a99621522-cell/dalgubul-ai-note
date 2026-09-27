@@ -69,11 +69,11 @@ def _pd():
 
 
 def is_code(v) -> bool:
-    """부문 코드: 3~4자리 숫자(앞에 글자 1~2자가 붙은 ECOS 항목코드도 허용)"""
+    """부문 코드: 2~4자리 숫자(기본부문 3~4자리, ECOS 중분류 2자리. 앞에 글자 1~2자가 붙은 ECOS 항목코드도 허용)"""
     s = str(v).strip()
     if s.endswith(".0"):
         s = s[:-2]
-    return bool(re.fullmatch(r"[A-Za-z]{0,2}\d{3,4}", s))
+    return bool(re.fullmatch(r"[A-Za-z]{0,2}\d{2,4}", s))
 
 
 def norm_code(v, width: int) -> str:
@@ -81,7 +81,7 @@ def norm_code(v, width: int) -> str:
     if s.endswith(".0"):
         s = s[:-2]
     d = re.sub(r"\D", "", s)
-    return d.zfill(width) if d and re.fullmatch(r"[A-Za-z]{0,2}\d{3,4}", s) else s
+    return d.zfill(width) if d and re.fullmatch(r"[A-Za-z]{0,2}\d{2,4}", s) else s
 
 
 def norm_name(s) -> str:

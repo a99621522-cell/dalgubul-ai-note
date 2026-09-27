@@ -32,7 +32,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
   <a class="skip" href="#main">본문으로 건너뛰기</a>
   <header class="site-head">
     <div class="wrap row">
-      <a class="brand" href="/">다잇다 노트</a>
+      <a class="brand" href="/">다잇다 노트<span class="tagline">대구 산업·기업 자료</span></a>
       <nav class="nav" aria-label="주요 메뉴">
         {NAV.map(n => <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.name}</a>)}
       </nav>

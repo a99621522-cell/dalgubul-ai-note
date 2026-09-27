@@ -6,7 +6,7 @@ import IndustryTable from '../components/IndustryTable.astro';
 import Chart from '../components/Chart.astro';
 import PostList from '../components/PostList.astro';
 import { getCollection } from 'astro:content';
-import { monthly, monthLabel } from '../lib/stats';
+import { monthly, monthLabel, statMonths } from '../lib/stats';
 import { supportHistory, recentSupport } from '../lib/csv';
 
 const all = (await getCollection('posts', p => !p.data.draft)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -17,6 +17,7 @@ const supportedFirms = new Set(sup3.filter(s => s.id).map(s => s.id)).size;
 const hasSupport = supportHistory().length > 0;
 
 const m = monthly();
+const nMonths = statMonths().length;
 const ym = m ? monthLabel(m.month) : '';
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : '—');
 const tiles: Tile[] = m ? [
@@ -45,7 +46,9 @@ const description = m
       </section>
       <section aria-labelledby="h-trend">
         <div class="section-head"><h2 id="h-trend">고용 인원 추이</h2><a href={`/stats/${m.month}/`}>이달 통계표</a></div>
-        <Chart kind="total" name="employment" caption="대구 전체 고용 인원, 최근 24개월" />
+        {nMonths >= 2
+          ? <Chart kind="total" name="employment" caption="대구 전체 고용 인원, 최근 24개월" />
+          : <p class="meta note-box">월간 자료가 {ym} 1개월뿐이라 추이 그래프는 다음 달부터 그립니다. 지금 값은 위 큰 숫자와 <a href={`/stats/${m.month}/`}>이달 통계표</a>에 있습니다.</p>}
       </section>
     </>
   ) : <p class="empty">통계가 아직 없습니다. scripts/build_stats.py 를 먼저 실행하세요.</p>}
@@ -66,4 +69,5 @@ const description = m
   .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .search { display: flex; gap: var(--s1); max-width: 560px; }
   .search input { flex: 1 1 auto; min-width: 0; }
+  .note-box { margin: 0; padding: var(--s2); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
 </style>

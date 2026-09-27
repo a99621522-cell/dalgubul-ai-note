@@ -2,8 +2,8 @@
 
 ## 입력 (여기에 둔다, 파일명 자유 — 내용으로 판별)
 1. 한국은행 산업연관표 **생산자가격 거래표(기본부문)** xlsx — 행 = 투입(공급) 부문, 열 = 산출(수요) 부문, 코드 50개 이상의 정방 블록. '총투입액' 행이 있으면 그 값을, 없으면 중간투입계+부가가치 항목 합을 총투입으로 쓴다
-2. 한국은행 산업연관표 **부문분류표** xlsx — 기본부문 코드·명 열과 한국표준산업분류(KSIC) 코드 열(예: `10111, 10112~10119, 1013(일부)`). 기본부문 코드가 거래표와 다른 체계면 부문명으로 잇는다
-   - 내려받기: ECOS(ecos.bok.or.kr) > 산업연관표 > 해당 연도(2023년 연장표 또는 2020년 기준년표)에서 손으로. `.github/workflows/io_tables.yml`(scripts/fetch_io_tables.py)로 자동 수집을 시도했으나 bok.or.kr 은 robots.txt 로 크롤러를 막고 있어(존중) 받지 못했다. 워크플로는 수동 실행만 남겨 둠
+2. 부문분류표(기본부문 ↔ 한국표준산업분류) — 한국은행 공개 파일(ECOS `2020 상품부문분류표`·`2020 산업부문분류표`)에는 KSIC 대응 열이 없다. 그래서 `scripts/build_io_ksic_map.py` 가 기업 사전에 나온 KSIC 세세분류 627개를 상품 기본부문에 **자동 추정**으로 잇는다(`io_ksic_map_auto.xlsx`·`.csv`: KSIC 대분류→상품 중분류 허용표 + 접두어 규칙 254건 + 이름 겹침. 검토용 csv 에 방식·점수 표시). 공식 연계표(ISTANS 산업분류 연계표 등, 기본부문 코드 열 + `한국표준산업분류` 열)를 구하면 이 폴더에 넣고 `io_ksic_map_auto.xlsx` 를 지운다 — attract.py 가 헤더에 '표준산업'이 있는 표를 부문분류표로 쓴다
+   - 거래표 내려받기: ECOS 통계검색 > 2.2 산업연관표 > 2.2.1 2020년 실측표 기준 > 2.2.1.1 파일 다운로드 > 2024 연장표 > 투입산출표 > 생산자가격 > 기본부문(2026-09-27 반영: `ecos_2024_연장표_투입산출표_생산자가격_기본부문.xlsx`, 380부문). 한국은행 홈페이지는 robots.txt 로 크롤러를 막아(존중) 워크플로로는 못 받고, ECOS Open API(`fetch_io_api.py`, ECOS_KEY)는 대·중분류만 준다
 3. `scripts/data/dalseong_companies.csv` (대구, 팩토리온) — 자동
 4. 팩토리온 **전국(개별,계획) 입주업체현황** xlsx (30만 공장, `scripts/data/raw/` 에 두고 `--factoryon` 으로 넘김. 저장소에 올리지 않는다) — 3단계 후보에만 필요
 5. `scripts/data/programs_*.csv` — 투자유치 관련 국비 사업(지방투자촉진·기회발전특구·국내복귀 등 키워드) — 자동
@@ -22,7 +22,7 @@ python3 scripts/attract.py --transpose                       # 자동차부품 �
 매달 팩토리온 갱신 뒤 `scripts/monthly.sh` 가 함께 돌린다.
 
 ## 출력
-- `gaps.csv` — cluster, rank, io_sector, io_name, demand_index(클러스터 대구 종사자 × 투입계수), demand_share, daegu_firms, daegu_workers, coverage(대구 공급/요구, 클러스터 안 상위 10% 수준 = 1), gap_score(demand_share × (1−coverage))
+- `gaps.csv` — cluster, rank, io_sector, io_name, demand_index(클러스터 대구 종사자 × 전국 투입계수 = 요구 규모 지수, 종사자 단위), demand_share, daegu_firms, daegu_workers, coverage(min(1, 대구 공급 부문 종사자 ÷ 요구 규모 지수); 1 = 채워진 고리), gap_score(demand_share × (1−coverage))
 - `candidates.csv` — io_sector, io_name, cluster, company, region, workers, sites, first_registered, expansion_signal, size_fit, region_weight, expansion, gap_score, fit_score, matched_daegu_demand, incentive. 전수 나열, fit_score 순. 연락처·평가 없음
 - `attract_brief.md` — 클러스터별 빈 고리 3·후보 10·관련 국비 사업 (투자유치 부서용 A4 2장)
 - `summary.json` — 기준연도·매핑률·검증 결과·필터 조건 (사이트 /supply-chain/ 이 읽음)

@@ -15,6 +15,10 @@ on:
         description: "표·선택 상자·스크립트 속 주소까지 찍기(true)"
         required: false
         default: "false"
+      text:
+        description: "기사·공지 한 쪽의 제목·날짜·본문 글자만 찍기(true) — 운영자가 준 링크를 세션이 읽을 때"
+        required: false
+        default: "false"
 
 permissions:
   contents: read
@@ -30,4 +34,4 @@ jobs:
       - run: pip install -q -r scripts/requirements.txt
       - if: inputs.render == 'true'
         run: pip install -q playwright && python -m playwright install --with-deps chromium
-      - run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump)
+      - run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text)

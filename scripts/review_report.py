@@ -8,7 +8,9 @@
 
 검사 항목(오류 = 발행 불가, 경고 = 고치는 게 좋음):
   정책  7절은 2026-09-28 부터 정책 설계 형식(문제·분석·제안·추진·대안·근거·대상 규모·지표), 6절은 제목만 인용 금지·항목마다 대구 시사점
-  구조  frontmatter(title "[정책제안] <분야>: …", category policy, tags 정책제안, summary, description, faq 3, sources ≥ MIN_SOURCES), 1~9절 제목,
+  형식  format: insight(2026-09-28 부터, 산문형 인사이트 리포트: 제목 40자 이하 헤드라인, outline 4~6, hero.prompt/caption, 2단계 절 4~8, 그림 ≥2, 제안 절 ### 3개(시/정부 건의/기업·기관, 각각 N곳·지표), 반론, 3,000~7,500자)
+        format 없음/report(2026-09-27 까지): 아래 1~9절 구조
+  구조  frontmatter(title "[정책제안] <분야>: <헤드라인>", category policy, tags 정책제안, summary, description, faq 3, sources ≥ MIN_SOURCES), 1~9절 제목,
         7절 제안 3개와 다섯 항목(문제·제안·근거·대상 규모·지표), 시/정부 건의/기업·기관 구분, 본문 길이
   숫자  숫자 없는 문단 없음(제목·표·인용 제외), 대상 규모에 '곳'
   예산  본문에 사업코드·예산액·국비/시비·재원 언급 없음(정책제안서는 예산을 참조하지 않는다, 운영자 지시 2026-09-25)
@@ -83,13 +85,88 @@ GENERIC = {"대구광역시", "대구테크노파크", "한국로봇산업진흥
            "정보통신기획평가원", "한국과학기술기획평가원", "대구정책연구원", "한국자동차연구원", "한국로봇융합연구원", "대구경북연구원", "한국무역협회", "대한상공회의소"}
 
 
+INSIGHT_MIN, INSIGHT_MAX = 3000, 7500   # 인사이트 리포트 본문(공백 제외). LG경영연구원 리포트 7쪽 ≈ 5,000자
+INSIGHT_MIN_FIGS = 2                    # 그림(<figure> + /figures/<id>/) 최소 개수
+TITLE_MAX = 40                          # 제목은 짧은 헤드라인(명사구 또는 "…이 열린다" 형). "…하게 한다" 식 긴 절 금지(운영자 지시 2026-09-27)
+TITLE_BAD_END = r"(하게 한다|쓰게 한다|되게 한다|해야 한다|한다\.|하자)$"
+
+
+def review_insight(path: Path, fm: str, body: str, errors: list, warns: list) -> None:
+    """format: insight — 산문형 리포트 구조 검사. 공통 검사(출처·숫자·표현·예산)는 review() 가 이어서 한다."""
+    title = fm_get(fm, "title")
+    if title.startswith("[정책제안]"):
+        errors.append("insight 제목에 '[정책제안]' 접두어를 붙이지 않는다(태그로 구분)")
+    if len(title) > TITLE_MAX:
+        errors.append(f"제목 {len(title)}자 — {TITLE_MAX}자 이하 헤드라인으로")
+    if re.search(TITLE_BAD_END, title):
+        errors.append(f"제목이 '…하게 한다' 식 절로 끝남 — 명사구나 짧은 문장 헤드라인으로 → {title}")
+    mo = re.search(r"^outline:\s*\[(.*?)\]\s*$", fm, re.M)
+    if mo:  # 한 줄 목록 ["a", "b"]
+        outline = [x.strip().strip('"\'') for x in mo.group(1).split(",") if x.strip()]
+    else:   # 여러 줄 목록
+        mb = re.search(r"^outline:\s*\n((?:[ \t]+-.*\n?)+)", fm, re.M)
+        outline = [x.strip().strip('"\'') for x in re.findall(r"^[ \t]+-\s*(.*)$", mb.group(1), re.M)] if mb else []
+    if not 4 <= len(outline) <= 6:
+        errors.append(f"outline(요약 상자 절 제목)은 4~6개 ({len(outline)})")
+    heads = re.findall(r"^##\s+(.*)$", body, re.M)
+    if not 4 <= len(heads) <= 8:
+        errors.append(f"2단계 절이 4~8개여야 함 ({len(heads)})")
+    for o in outline:
+        if not any(o.strip() in h for h in heads):
+            errors.append(f"outline 항목이 본문 절 제목에 없음: {o[:30]}")
+    if not re.search(r"^hero:\s*\n\s+prompt:", fm, re.M):
+        errors.append("hero.prompt 없음(대표 그림 생성 프롬프트)")
+    if not re.search(r"^hero:\s*\n(?:.*\n)*?\s+caption:", fm, re.M):
+        errors.append("hero.caption 없음")
+    figs = re.findall(r"<figure[\s\S]*?<img[^>]+src=\"(/figures/[^\"]+)\"[\s\S]*?<figcaption>([\s\S]*?)</figcaption>[\s\S]*?</figure>", body)
+    if len(figs) < INSIGHT_MIN_FIGS:
+        errors.append(f"그림(<figure><img src=/figures/…><figcaption>) {len(figs)}개 < {INSIGHT_MIN_FIGS} — scripts/figure.py 로 만든 SVG")
+    for src, cap in figs:
+        if not src.startswith(f"/figures/{path.stem}/"):
+            errors.append(f"그림 경로는 /figures/{path.stem}/ 아래여야 함: {src}")
+        if "출처" not in cap and "자료" not in cap:
+            warns.append(f"그림 설명에 출처가 없음: {cap[:30]}")
+    # 정책 제안 절: ### 3개, (시)/(정부 건의)/(기업·기관), 각 제안에 대상(곳)·지표·추진 시점
+    m = re.search(r"^##\s+[^\n]*제안[^\n]*\n(.*?)(?=^##\s|\Z)", body, re.S | re.M)
+    if not m:
+        errors.append("'제안' 이 든 2단계 절 없음(정책 제안 절)")
+        return
+    sec = m.group(1)
+    props = re.findall(r"^###\s+(.*)$", sec, re.M)
+    if len(props) != 3:
+        errors.append(f"제안 절의 3단계 제목(제안)이 3개가 아님 ({len(props)})")
+    for role in ("시", "정부 건의", "기업·기관|기관·기업|기업|기관"):
+        if not any(re.search(rf"\(({role})\)", h) for h in props):
+            errors.append(f"제안 제목에 '({role.split('|')[0]})' 구분 없음 (시 / 정부 건의 / 기업·기관)")
+    parts = re.split(r"^###\s+.*$", sec, flags=re.M)[1:]
+    for h, ptxt in zip(props, parts):
+        if not re.search(r"\d[\d,]*\s*곳", ptxt):
+            errors.append(f"제안 '{h[:20]}'에 대상 규모('N곳')가 없음")
+        if not re.search(r"지표|1년 뒤|성공 기준", ptxt):
+            errors.append(f"제안 '{h[:20]}'에 지표(1년 뒤 성공 기준)가 없음")
+        if not re.search(r"20\d\d년|20\d\d-\d\d|상반기|하반기|분기", ptxt):
+            warns.append(f"제안 '{h[:20]}'에 추진 시점이 없음")
+        if not re.search(r"대신|대안|택하지|비교하면|보다", ptxt):
+            warns.append(f"제안 '{h[:20]}'에 검토한 다른 수단(대안) 언급이 없음")
+    if not re.search(r"반론|반대|틀릴 수", body):
+        errors.append("반론(반대 근거와 틀릴 수 있는 이유)이 없음")
+    hits = [n for n in company_names() if n in re.sub(r"\s+", "", sec) and n not in GENERIC and not any(n in g for g in GENERIC)]
+    if hits:
+        errors.append(f"제안 절에 기업 사전의 회사명이 있음(특정 기업 지목 금지): {hits[:5]}")
+    if re.search(RANKING, sec):
+        errors.append("제안 절에 순위·추천 표현: " + ", ".join(sorted(set(re.findall(RANKING, sec)))[:3]))
+
+
 def review(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
     fm, body = split(text)
     errors, warns = [], []
+    insight = bool(re.search(r"^format:\s*insight", fm, re.M))
     title = fm_get(fm, "title")
-    if not re.match(r"^\[정책제안\]\s*\S+.*:\s*\S", title):
-        errors.append(f"title 형식: '[정책제안] <분야>: <핵심 제안 한 줄>' 이어야 함 → {title[:60]}")
+    if not insight and not re.match(r"^\[정책제안\]\s*\S+.*:\s*\S", title):
+        errors.append(f"title 형식: '[정책제안] <분야>: <헤드라인>' 이어야 함 → {title[:60]}")
+    if not insight and re.search(TITLE_BAD_END, title):
+        errors.append(f"제목이 '…하게 한다' 식 절로 끝남 — 짧은 헤드라인으로 → {title[:60]}")
     if fm_get(fm, "category") != "policy":
         errors.append("category 가 policy 가 아님")
     if "정책제안" not in fm_get(fm, "tags"):
@@ -129,11 +206,13 @@ def review(path: Path) -> dict:
         warns.append("auto: true 표시 없음")
 
     # 절 구조
-    for s in SECTIONS:
+    sec7 = ""
+    if insight:
+        review_insight(path, fm, body, errors, warns)
+    for s in ([] if insight else SECTIONS):
         if not re.search(rf"^##\s*{re.escape(s)}", body, re.M):
             errors.append(f"절 없음: {s}")
-    sec7 = ""
-    m = re.search(r"^##\s*7\. 정책 제안(.*?)(?=^##\s*8\.|\Z)", body, re.S | re.M)
+    m = None if insight else re.search(r"^##\s*7\. 정책 제안(.*?)(?=^##\s*8\.|\Z)", body, re.S | re.M)
     if m:
         sec7 = m.group(1)
         props = re.findall(r"^###\s*제안\s*\d", sec7, re.M)
@@ -151,7 +230,7 @@ def review(path: Path) -> dict:
                 if any(not re.search(need, v) for v in vals):
                     warns.append(f"7절 '{lab}' 항목이 형식만 있고 내용이 얕은 제안이 있음({need.split('|')[0]} 등 표현 없음)")
     # 6절: 제목만 보고 인용 금지, 항목마다 대구 시사점
-    m6 = re.search(r"^##\s*6\. 연구기관(.*?)(?=^##\s*7\.|\Z)", body, re.S | re.M)
+    m6 = None if insight else re.search(r"^##\s*6\. 연구기관(.*?)(?=^##\s*7\.|\Z)", body, re.S | re.M)
     if m6:
         sec6 = m6.group(1)
         if re.search(r"제목 기준|본문 미확인|제목만", sec6):
@@ -175,9 +254,10 @@ def review(path: Path) -> dict:
         if re.search(RANKING, sec7):
             errors.append("7절에 순위·추천 표현: " + ", ".join(sorted(set(re.findall(RANKING, sec7)))[:3]))
 
-    # 문단마다 숫자
+    # 문단마다 숫자 (그림 <figure> 블록은 제외)
     no_num = []
-    for para in re.split(r"\n\s*\n", body):
+    body_nf = re.sub(r"<figure[\s\S]*?</figure>", "", body)
+    for para in re.split(r"\n\s*\n", body_nf):
         p = para.strip()
         if not p or p.startswith(("#", "|", ">", "<", "!")) or re.match(r"^-{3,}$", p):
             continue
@@ -198,16 +278,17 @@ def review(path: Path) -> dict:
             (errors if is_err else warns).append(f"{name}: {', '.join(found[:5])}")
 
     # 길이·요지
-    n = len(re.sub(r"\s", "", body))
-    if n < BODY_MIN or n > BODY_MAX:
-        errors.append(f"본문 {n:,}자(공백 제외) — {BODY_MIN:,}~{BODY_MAX:,} 범위 밖")
-    elif n > 4500:
+    n = len(re.sub(r"\s", "", body_nf))
+    lo, hi = (INSIGHT_MIN, INSIGHT_MAX) if insight else (BODY_MIN, BODY_MAX)
+    if n < lo or n > hi:
+        errors.append(f"본문 {n:,}자(공백 제외) — {lo:,}~{hi:,} 범위 밖")
+    elif not insight and n > 4500:
         warns.append(f"본문 {n:,}자 — 사양 2,500~3,500 보다 길다")
     if "검색 결과 요지" in body and body.count("요지") < 5:
         warns.append("검색 요지로 썼다면서 '요지' 표시가 적다")
 
     rel = str(path.resolve().relative_to(ROOT)) if path.resolve().is_relative_to(ROOT) else str(path)
-    return {"file": rel, "ok": not errors, "errors": errors, "warnings": warns, "chars": n, "sources": len(srcs)}
+    return {"file": rel, "ok": not errors, "errors": errors, "warnings": warns, "chars": n, "sources": len(srcs), "format": "insight" if insight else "report"}
 
 
 def main(argv: list[str]) -> int:

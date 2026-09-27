@@ -14,4 +14,5 @@ export const downloadUrls = (id: string) => ({ docx: `/policy/download/${id}.doc
 export const reportMeta = (p: CollectionEntry<'posts'>): ReportMeta => ({
   title: p.data.title, date: p.data.date, area: reportArea(p), description: p.data.description, summary: p.data.summary,
   url: `${SITE}/posts/${p.id}/`, faq: p.data.faq, sources: p.data.sources,
+  format: p.data.format, outline: p.data.outline, hero: p.data.hero ? { caption: p.data.hero.caption, path: `public/figures/${p.id}/hero.png` } : undefined,
 });

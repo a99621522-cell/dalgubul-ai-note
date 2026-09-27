@@ -171,8 +171,11 @@ def main(argv: list[str]) -> int:
         for t in cand:
             fetch_matrix(key, t["STAT_CODE"], year, t.get("STAT_NAME", ""))
     else:
-        name = next((t.get("STAT_NAME", "") for t in tables if t.get("STAT_CODE") == stat), "")
-        fetch_matrix(key, stat, year, name)
+        for code in stat.split():
+            name = next((t.get("STAT_NAME", "") for t in tables if t.get("STAT_CODE") == code), "")
+            for y in range(int(year), int(year) - 4, -1):          # 요청 연도에 없으면 3년까지 내려가 본다
+                if fetch_matrix(key, code, str(y), name):
+                    break
     return 0
 
 

@@ -79,6 +79,13 @@ jobs:
           python3 scripts/gen_hero.py --all || true
           git add public/figures
           git diff --cached --quiet || git commit -m "figures: 리포트 대표 그림 생성 $(date -u +%Y-%m-%d)"
+      - name: 한글 파일 생성 (발행 리포트 전부, 양식 scripts/data/hwpx)
+        if: steps.merge.outputs.merged == '1'
+        run: |
+          pip install -q pyyaml
+          python3 scripts/hwpx_report.py --all || true
+          git add public/hwpx
+          git diff --cached --quiet || git commit -m "hwpx: 정책제안 리포트 한글 파일 갱신 $(date -u +%Y-%m-%d)"
       - name: main 푸시
         if: steps.merge.outputs.merged == '1'
         run: |

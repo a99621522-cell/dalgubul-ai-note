@@ -1,5 +1,5 @@
 ---
-/** 정책제안 리포트 목록: 제목만(요약 없음) + 분야·날짜 + 내려받기(DOCX·MD). 공무원이 문서에 바로 옮겨 쓰도록. */
+/** 정책제안 리포트 목록: 제목만(요약 없음) + 분야·날짜 + 내려받기(HWPX·DOCX·MD). 공무원이 문서에 바로 옮겨 쓰도록. */
 import type { CollectionEntry } from 'astro:content';
 import { reportArea, downloadUrls } from '../lib/reports';
 interface Props { posts: CollectionEntry<'posts'>[] }
@@ -16,6 +16,8 @@ const short = (t: string) => t.replace(/^\[정책제안\]\s*/, '');
         <span class="rl-meta">{reportArea(p) && <span class="tag primary">{reportArea(p)}</span>} {fmt(p.data.date)}</span>
       </div>
       <span class="rl-dl" aria-label="내려받기">
+        {u.hwpx && <a class="btn secondary sm" href={u.hwpx} download>HWP</a>}
+        {u.hwpxSummary && <a class="btn secondary sm" href={u.hwpxSummary} download title="한 쪽 요약">HWP 요약</a>}
         <a class="btn secondary sm" href={u.docx} download>Word</a>
         <a class="btn secondary sm" href={u.md} download>MD</a>
       </span>

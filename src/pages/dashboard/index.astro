@@ -20,6 +20,7 @@ const districts = m ? Object.entries(m.by_district).filter(([k]) => /[구군]$/.
 const complexes = m ? Object.entries(m.by_complex).filter(([k]) => k !== '개별입지' && k !== '산단 외').sort((a, b) => b[1].firms - a[1].firms) : [];
 const outside = m ? ['개별입지', '산단 외'].map(k => [k, m.by_complex[k]] as const).filter(([, v]) => v) : [];
 const tags = m ? Object.entries(m.by_tag) : [];
+const hasMom = !!m && (m.total.mom?.employment != null || [...districts, ...complexes].some(([, v]) => v.mom?.employment != null));
 const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.total.employment)}명(${ym}). 입지 유형·구군 9·산업단지 ${complexes.length}·태그별 기업 수와 고용, 취득·상실.` : '대구 산단·기업 현황판';
 ---
 <Base title="현황판" description={description} current="dashboard">
@@ -39,17 +40,17 @@ const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.
       <section aria-labelledby="h-district">
         <div class="section-head"><h2 id="h-district">구·군별</h2></div>
         <div class="scroll-x"><table class="data-table">
-          <thead><tr><th>구·군</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">전월 대비</th><th class="n">집계 대상</th></tr></thead>
-          <tbody>{districts.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?district=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n"><Delta d={v.mom?.employment ?? null} /></td><td class="n">{fmt(v.covered)}</td></tr>)}</tbody>
+          <thead><tr><th>구·군</th><th class="n">기업 수</th><th class="n">고용 인원</th>{hasMom && <th class="n">전월 대비</th>}<th class="n">집계 대상</th></tr></thead>
+          <tbody>{districts.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?district=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td>{hasMom && <td class="n"><Delta d={v.mom?.employment ?? null} /></td>}<td class="n">{fmt(v.covered)}</td></tr>)}</tbody>
         </table></div>
       </section>
       <section aria-labelledby="h-complex">
         <div class="section-head"><h2 id="h-complex">산업단지별</h2><span class="meta">{complexes.length}개 단지 + 개별입지·산단 외</span></div>
         <div class="scroll-x"><table class="data-table">
-          <thead><tr><th>단지</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">전월 대비</th><th class="n">집계 대상</th></tr></thead>
+          <thead><tr><th>단지</th><th class="n">기업 수</th><th class="n">고용 인원</th>{hasMom && <th class="n">전월 대비</th>}<th class="n">집계 대상</th></tr></thead>
           <tbody>
-            {complexes.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n"><Delta d={v.mom?.employment ?? null} /></td><td class="n">{fmt(v.covered)}</td></tr>)}
-            {outside.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n"><Delta d={v.mom?.employment ?? null} /></td><td class="n">{fmt(v.covered)}</td></tr>)}
+            {complexes.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td>{hasMom && <td class="n"><Delta d={v.mom?.employment ?? null} /></td>}<td class="n">{fmt(v.covered)}</td></tr>)}
+            {outside.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td>{hasMom && <td class="n"><Delta d={v.mom?.employment ?? null} /></td>}<td class="n">{fmt(v.covered)}</td></tr>)}
           </tbody>
         </table></div>
       </section>

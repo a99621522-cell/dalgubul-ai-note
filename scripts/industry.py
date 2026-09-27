@@ -70,10 +70,25 @@ def service_first(text: str) -> bool:
     return any(k.replace(" ", "") in t for k in cfg.get("service_patterns", []))
 
 
+def manufacturing_first(text: str) -> bool:
+    """코드 없는 행: 제조 낱말이 있고 manufacturing_except 낱말이 없으면 서비스 규칙보다 먼저 제조업."""
+    cfg = config()
+    t = (text or "").replace(" ", "")
+    if any(k.replace(" ", "") in t for k in cfg.get("manufacturing_except", [])):
+        return False
+    return any(k.replace(" ", "") in t for k in cfg.get("manufacturing_patterns", []))
+
+
+def other_mfg_name() -> str:
+    return next((g["name"] for g in config()["groups"] if g["key"] == "other-mfg"), config()["unclassified"])
+
+
 def classify(code: str, sector: str = "", product: str = "") -> str:
     cfg = config()
     code = (code or "").strip()
     text = f"{sector or ''} {product or ''}"
+    if not code and manufacturing_first(text):
+        return by_keyword(text) or other_mfg_name()
     if not code and service_first(text):
         return "기타 서비스"
     if code.startswith(cfg["_keyword_first"]):

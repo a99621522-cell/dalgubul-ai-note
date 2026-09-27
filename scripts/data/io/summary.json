@@ -24,8 +24,8 @@
   "unmapped": 0,
   "fail_codes": []
  },
- "national_mapping_rate": 0.0,
- "factoryon_file": "",
+ "national_mapping_rate": 0.9913033414347834,
+ "factoryon_file": "2026.08._.1.xlsx",
  "verify_auto": {
   "ok": true,
   "top_supply": [
@@ -283,7 +283,7 @@
  "filters": "소재지 대구 제외(거리 가중 경북 1.0, 경남 0.9, 울산 0.9, 부산 0.85, 충북 0.75, 충남 0.75, 대전 0.75, 세종 0.75, 경기 0.6, 서울 0.6, 인천 0.6, 강원 0.5, 전북 0.5, 전남 0.5, 광주 0.5, 전남광주 0.5, 제주 0.4) · 종업원 30~300명(50~200명 1.0, 그 밖 0.8) · 확장 신호(최근 5년 최초등록 또는 복수 공장) 없으면 ×0.5 · 클러스터 부문 투입계수 상위 15 안 · 빈 고리 상위 15 부문",
  "top_gaps": 15,
  "gaps": 807,
- "candidates": 0,
+ "candidates": 1216,
  "incentives": [
   {
    "ministry": "산업통상부",

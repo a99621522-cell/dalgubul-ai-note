@@ -6,7 +6,7 @@
 LG경영연구원 리포트 형식(운영자 지시 2026-09-27 「이 파일처럼 그림도 넣고 표도 넣고」)을 따라 그림·표를 본문에 넣는다:
 대표 그림(public/figures/<id>/hero.png)은 요약 앞에, 본문 <figure> 의 SVG 는 rsvg-convert 로 PNG 로 바꿔 캡션과 함께,
 마크다운 표는 한글 표로, 문단 첫머리의 굵은 핵심 문장은 붉은 굵은 글씨(LG 리포트의 리드 문장) 로. rsvg-convert 가 없으면 캡션만 ※ 줄로 남긴다.
-원문 문장은 그대로 옮긴다(요약·평가 없음). 표지의 부서·담당·연락처 표는 빼고, 한 쪽 요약의 소속부서 칸은 날짜만 둔다(운영자 지시 2026-09-27).
+원문 문장은 그대로 옮긴다(요약·평가 없음). 표지의 부서·담당·연락처 표와 날짜는 빼고, 한 쪽 요약의 소속부서 칸도 비운다(운영자 지시 2026-09-27).
 
 사용: python3 scripts/hwpx_report.py src/content/posts/<파일>.md [-o public/hwpx/<id>.hwpx]
       python3 scripts/hwpx_report.py --all        # 발행된 정책제안 리포트 전부 → public/hwpx/<id>.hwpx
@@ -302,7 +302,7 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
     # 표지
     replace_t(top[3], "2027년 회계연도 ", line1)
     replace_t(top[3], "회계감사인 선임 제안 요청서", title)
-    set_para_text(top[8], fmt_date(meta.get("date", date.today())))
+    set_para_text(top[8], "")   # 표지 날짜도 넣지 않는다(운영자 지시 2026-09-27)
     # 표지의 부서·담당·연락처 표와 부서 이름 상자는 넣지 않는다(운영자 지시 2026-09-27)
     root.remove(top[12]); root.remove(top[15])
     # 본문 블록 → 절
@@ -404,7 +404,7 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
         root.append(clone(blank_proto))
     ET.indent(root, space="") if hasattr(ET, "indent") else None
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
-    preview = "\n".join([line1, title, fmt_date(meta.get("date", date.today()))] + [f"{ROMAN[i % 12]}. {s}" for i, (s, _) in enumerate(sections)])
+    preview = "\n".join([line1, title] + [f"{ROMAN[i % 12]}. {s}" for i, (s, _) in enumerate(sections)])
     out.parent.mkdir(parents=True, exist_ok=True)
     manifest = "".join(f'<opf:item id="{bid}" href="BinData/{bid}.{ext}" media-type="image/{"jpeg" if ext == "jpg" else ext}" isEmbeded="1"/>' for bid, _, ext in images.files)
     with zipfile.ZipFile(out, "w") as zo:
@@ -499,7 +499,7 @@ def build_summary(meta: dict, body_md: str, area: str, out: Path, post_id: str) 
             counter.append(str(p)[:120])
     d = fmt_date(meta.get("date", date.today()))
     fills = [("OOO 신사업 보고서", title), ("폰트 HY헤드라인M, 크기 18", f"정책제안 리포트{' · ' + area if area else ''}"),
-             ("<소속부서 : OOOO부서, 2022.12.31.>", f"<{d}>"),
+             ("<소속부서 : OOOO부서, 2022.12.31.>", ""),
              ("(본 문서를 한 페이지로 나타내기 위한 내용 작성 1줄 또는 2줄 이내)", desc[:160]),
              ("최신 기술을 접목한 OOOO 시스템의 사용자 친화적 UI/UX 개선을 위한 용역사업 추진", desc[160:400] if len(desc) > 160 else ""),
              ("추진방안 1 : 사용자 온라인 수요조사 수행 ", props[0] if len(props) > 0 else ""),
@@ -520,7 +520,7 @@ def build_summary(meta: dict, body_md: str, area: str, out: Path, post_id: str) 
     out.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(out, "w") as zo:
         for n in z.namelist():
-            data = new_sec.encode("utf-8") if n == "Contents/section0.xml" else (f"{title}\n{d}".encode("utf-8") if n == "Preview/PrvText.txt" else z.read(n))
+            data = new_sec.encode("utf-8") if n == "Contents/section0.xml" else (f"{title}".encode("utf-8") if n == "Preview/PrvText.txt" else z.read(n))
             zo.writestr(zipfile.ZipInfo(n), data, compress_type=zipfile.ZIP_STORED if n == "mimetype" else zipfile.ZIP_DEFLATED)
     print(f"→ {out} ({out.stat().st_size:,} bytes, 요약)")
 

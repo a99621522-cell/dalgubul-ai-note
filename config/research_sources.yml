@@ -52,7 +52,6 @@ sources:
   - { key: kria,   group: 분야 기관, name: 한국AI·로봇산업협회(KRIA),    home: "https://www.korearobot.or.kr", list: "https://www.korearobot.or.kr/data_room/survey.htm", lists: ["https://www.korearobot.or.kr/information/notice.htm"], render: true, areas: [robot-physical-ai], excerpt: true }
   - { key: koreabio, group: 분야 기관, name: 한국바이오협회 이슈브리핑,   home: "https://koreabio.org", list: "https://koreabio.org/board/board.php?bo_table=report", areas: [healthcare], excerpt: true }
   - { key: kcarbon, group: 분야 기관, name: 한국탄소산업진흥원,           home: "https://www.kcarbon.or.kr", list: "https://www.kcarbon.or.kr/bbs/board.php?bo_id=press", lists: ["https://www.kcarbon.or.kr/bbs/board.php?bo_id=trend"], areas: [textile, mobility], excerpt: true }
-  - { key: distat, group: 분야 기관, name: 대구산업경제동향 온라인시스템(distat), home: "https://distat.daegu.go.kr", list: "https://distat.daegu.go.kr", render: true, areas: [mobility, robot-physical-ai, semiconductor, manufacturing-ax, healthcare, ai-sw-startup, machinery, automotive, textile, root], excerpt: true }
   # ── 정부 ──
   - { key: motie-press, group: 정부, name: 산업통상부 보도자료,          home: "https://www.motie.go.kr", list: "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c", excerpt: true }
   - { key: msit-press,  group: 정부, name: 과학기술정보통신부 보도자료,  home: "https://www.msit.go.kr", list: "https://www.msit.go.kr/bbs/list.do?sCode=user&mId=113&mPid=238", render: true, rss: "https://www.msit.go.kr/user/rss/rss.do?bbsSeqNo=94", excerpt: true }

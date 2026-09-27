@@ -265,6 +265,37 @@ def research_block(keywords: list[str], area_key: str = "", days: int = 70) -> l
     return (first[:25] + rest)[:50]
 
 
+REG_GROUP = "규제·건의"
+
+
+def regulation_block(keywords: list[str], days: int = 180) -> list[dict]:
+    """data/research 가운데 group 이 '규제·건의'인 출처(대한상의·대구상의·중기중앙회 등 경제단체가 정부에 낸 규제개선 건의·기업 애로 조사)의 항목.
+    키워드 일치 항목을 먼저, 그다음 최신 항목. 정책제안 리포트의 '정부 건의' 제안 근거로 쓰되 '○○이 건의한 내용'으로 출처를 붙여 인용하고,
+    건의의 타당성·수용 여부를 평가하는 문장은 쓰지 않는다(경제단체 입장이지 시·사이트 입장이 아니다)."""
+    d = ROOT / "data" / "research"
+    if not d.exists():
+        return []
+    pat = kw_pattern(keywords) if keywords else None
+    since = (date.today() - timedelta(days=days)).isoformat()
+    hit, rest = [], []
+    for f in sorted(d.glob("*.json")):
+        try:
+            j = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            continue
+        if j.get("group") != REG_GROUP:
+            continue
+        for it in j.get("items", []):
+            if (it.get("date") or "9999") < since:
+                continue
+            row = {"org": j.get("name", f.stem), **it}
+            text = it.get("title", "") + " " + it.get("summary", "") + " " + it.get("excerpt", "")
+            (hit if pat and pat.search(text) else rest).append(row)
+    hit.sort(key=lambda x: x.get("date") or "", reverse=True)
+    rest.sort(key=lambda x: x.get("date") or "", reverse=True)
+    return hit[:15] + rest[:8]
+
+
 def support_block(company_ids: set[str], years: int = 3) -> dict:
     """분야 기업의 지원사업 수혜 이력(최근 n년): 기업 수·건수·기관별·사업별 상위."""
     if not SUPPORT.exists():
@@ -304,6 +335,7 @@ def main(argv: list[str]) -> int:
         "posts_8w": posts_block(area.get("keywords", [])),
         "notices_8w": notices_block(area["key"], area.get("keywords", [])),
         "research": research_block(area.get("keywords", []), area.get("key", "")),
+        "regulation": regulation_block(area.get("keywords", [])),
         "refs": refs_block(area.get("keywords", []), area.get("key", "")),
     }
     ctx["support_3y"] = support_block(set(ctx["companies"]["ids"]) if ctx["companies"] else set())
@@ -349,6 +381,11 @@ def main(argv: list[str]) -> int:
     for r in rs[:25]:
         tag = "분야기관" if r.get("area_org") else "키워드"
         print(f"  {r.get('date') or '날짜 없음'} [{r['org']}·{tag}] {r['title'][:60]} {r['url']}" + (f"\n      요지: {r['excerpt'][:200]}…" if r.get("excerpt") else ""))
+    rg = ctx["regulation"]
+    print(f"\n[경제단체 규제개선 건의·기업 애로 최근 180일] {len(rg)}건 (data/research 의 '규제·건의' 출처: 대한상의·대구상의·중기중앙회 등)" + ("" if rg else " — 없으면 워크플로 research.yml 실행 여부 확인"))
+    print("  ※ 7절 '정부 건의' 제안의 근거로 쓴다. '대한상의가 ○월 건의한 △△' 처럼 반드시 단체 이름과 날짜를 붙여 옮기고, 건의의 타당성·수용 여부·정부 대응을 평가하는 문장은 쓰지 않는다. 특정 기업의 애로는 기업명을 빼고 유형만 쓴다.")
+    for r in rg:
+        print(f"  {r.get('date') or '날짜 없음'} [{r['org']}] {r['title'][:70]} {r['url']}" + (f"\n      요지: {r['excerpt'][:200]}…" if r.get("excerpt") else ""))
     rf = ctx["refs"]
     print(f"\n[참고자료 창고 data/refs] {len(rf)}건 — 운영자가 Drive 에 올린 보고서의 요약(scripts/refs.py). 논지·수치(쪽 번호)를 대구 숫자와 연결해 쓴다. public_url 이 없는 자료의 수치는 sources 에 넣지 못하므로 기관·제목·발행월로만 언급하고 공개 페이지를 검색해 확인한다.")
     for r in rf[:8]:

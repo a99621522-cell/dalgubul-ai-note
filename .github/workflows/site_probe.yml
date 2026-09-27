@@ -1,0 +1,29 @@
+name: 사이트 확인 (robots.txt + 첫 화면 링크)
+
+# 소스를 추가하기 전에 robots.txt 와 첫 화면 메뉴 링크만 로그로 본다(첫 화면 1회, 다른 쪽은 열지 않음). 저장소 변경 없음.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "확인할 주소"
+        required: true
+      render:
+        description: "JS 로 그리는 화면이면 true(브라우저로 연다)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - if: inputs.render == 'true'
+        run: pip install -q playwright && python -m playwright install --with-deps chromium
+      - run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render)

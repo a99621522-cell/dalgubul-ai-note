@@ -6,7 +6,7 @@
 ## 구조
 
 - `src/content/posts/*.md` — 글. 프론트매터 스키마는 `src/content.config.ts`. `draft: true` 면 미노출
-- `src/pages/` — index(첫 화면), `dashboard/`(현황판: 입지·구군·단지·태그), `industry/`(산업 그룹 11개 목록·`[key]`·`compare`), `stats/[month]`(월간 통계표), `companies/`(기업 사전·카드), `support/`(지원받은 기업), `programs/`, `policy/`(정책 부문: 발행된 정책제안 리포트·산업 정책 글·국비↔시비 매칭 표), `supply-chain/`(산업연관표 빈 고리·유치 후보), `posts/`(글 목록)·`posts/[...id]`, `category/[cat]`, `rss.xml.ts`. 메뉴는 `src/nav.ts`
+- `src/pages/` — index(첫 화면), `dashboard/`(현황판: 입지·구군·단지·태그), `industry/`(산업 그룹 11개 목록·`[key]`·`compare`), `stats/[month]`(월간 통계표), `companies/`(기업 사전·카드), `support/`(지원받은 기업), `programs/`, `policy/`(정책 부문: 발행된 정책제안 리포트·산업 정책 글·국비↔시비 매칭 표), `posts/`(글 목록)·`posts/[...id]`, `category/[cat]`, `rss.xml.ts`. 메뉴는 `src/nav.ts`
 - `src/pages/search/` + `src/pages/search-index.json.ts` — 통합 검색(/search/?q=). 기업 색인(/companies-index.json)과 글·리포트·부처 사업·대구시 사업 색인(/search-index.json)을 받아 브라우저에서 거른다(서버·AI 호출 없음). 첫 화면 큰 검색창·헤더 돋보기·인기 검색어 칩이 여기로 온다. 첫 화면은 `src/components/HomeHero.astro`(표제·인기 검색어·검색창·사업 DB 건수)와 `ReportCarousel.astro`(최근 리포트 5편 회전 카드, 6초 자동 넘김·움직임 줄이기 존중) — 기업마당 첫 화면을 본보기로(운영자 지시 2026-09-27)
 - `src/layouts/Base.astro` — 공통 레이아웃과 SEO 메타. `src/styles/global.css` — 전체 스타일
 - `src/categories.ts` — 카테고리 3개: `economy` 기업 동향 / `grants` 공모·지원사업 / `policy` 산업 정책. AI 동향·공무원 AI 글은 이 사이트에서 다루지 않는다(별도 사이트 예정, 초안은 docs/archive-ai-notes)
@@ -15,7 +15,7 @@
 - `scripts/collect_dart.py` — OpenDART 공시 중 대구 기업(본사 주소로 판정, `scripts/state/dart_corp.json` 캐시)의 확장 신호(신규시설투자·유상증자·공급계약 등)를 inbox JSON 으로. 공시 사실과 원문 링크만, 평가 없음. 설정은 `sources.yml` 의 `dart:`. 키는 `DART_KEY`
 - `src/pages/companies/` — 기업 사전(목록 + 기업별 페이지 /companies/<id>/). 데이터는 `src/lib/csv.ts`가 빌드 때 CSV에서 읽음. `sector_group` 은 CSV 값이 아니라 항상 `config/industry_groups.yml` 규칙(11개)으로 다시 판정한다. 목록 필터: 단지·업종·구군·입지 유형·태그·지원 이력, URL 인자 complex/group/district/site/tag/support/q
 - `src/pages/companies-index.json.ts` — 기업 사전 검색용 경량 색인(/companies-index.json). 목록 페이지는 처음 200곳만 HTML로 내보내고 검색·필터 때 이 색인을 받아 클라이언트에서 거른다. 필드를 바꾸면 `companies/index.astro`의 스크립트도 같이 고칠 것
-- `src/pages/explore/` + `src/scripts/explore.ts` + `src/pages/explore-data.json.ts` — 데이터 탐색(/explore/, 메뉴 '탐색'). 공무원이 필요한 자료를 한 줄로 적으면(예: 달성군 자동차부품 기업 규모별) 브라우저 규칙 파서가 지표(기업 수·고용·국민연금 취득상실·신규폐업·지원 수혜·빈 고리)·가로축(산업·구군·읍면동·단지·입지·규모·업종·태그·월)·필터로 바꿔 기업 색인(/companies-index.json, `m`=고용)과 집계 묶음(/explore-data.json: 월간 통계·시계열·빈 고리)으로 표+SVG 그래프(막대·가로막대·선, 툴팁)를 그린다. 서버·AI 호출 없음. 조건은 URL 인자(m/x/g/d/c/t/w/k/p/ch/q)라 링크 공유 가능. CSV·PNG·TSV 복사 버튼. 항상 표를 함께 내고 출처·기준월을 적는다. 평가·순위 없음
+- `src/pages/explore/` + `src/scripts/explore.ts` + `src/pages/explore-data.json.ts` — 데이터 탐색(/explore/, 메뉴 '탐색'). 공무원이 필요한 자료를 한 줄로 적으면(예: 달성군 자동차부품 기업 규모별) 브라우저 규칙 파서가 지표(기업 수·고용·국민연금 취득상실·신규폐업·지원 수혜)·가로축(산업·구군·읍면동·단지·입지·규모·업종·태그·월)·필터로 바꿔 기업 색인(/companies-index.json, `m`=고용)과 집계 묶음(/explore-data.json: 월간 통계·시계열)으로 표+SVG 그래프(막대·가로막대·선, 툴팁)를 그린다. 서버·AI 호출 없음. 조건은 URL 인자(m/x/g/d/c/t/w/k/p/ch/q)라 링크 공유 가능. CSV·PNG·TSV 복사 버튼. 항상 표를 함께 내고 출처·기준월을 적는다. 평가·순위 없음
 - `src/lib/partners.ts` — 협업 후보(공급/수요/동종) 규칙 엔진: 업종코드+생산품으로 공정 단계 추정 → 단계 간 공급 관계표 → 같은 단지·구군 우선. '후보'라고만 표기, 거래 관계 단정 금지. 이후 Gemini 공정 분류·산업연관표로 정밀화
 - `scripts/import_factoryon.py` — 팩토리온 월간 엑셀(전국 입주업체현황 + 선택: 산단공 리스트) → 기업·단지 CSV 갱신(id 유지). 사용법은 scripts/data/README.md
 - `config/industry_groups.yml` — 산업 그룹 11개 규칙(KSIC 접두어+키워드). `scripts/industry.py`·`src/lib/industry.ts`가 읽음. 규칙은 파일에만
@@ -43,7 +43,6 @@
 - `scripts/review_report.py` + `.github/workflows/review_reports.yml` — 정책제안 리포트 품질 검사(구조 1~9절·제안 3개×여섯 항목·문단마다 숫자·금지 형용사·평가 표현·기업 지목·출처 수·길이·출처 최신성 — 날짜 미확인 출처와 1년 넘은 출처는 오류, 최근 120일 안 출처 60% 미만은 경고. 옛 자료로 정책 제안을 쓰지 않는다, 운영자 지시 2026-09-26 / 정책 설계 형식 — 2026-09-28 부터 7절 제안마다 문제·분석·제안·추진·대안·근거·대상 규모·지표, 6절은 제목만 인용 금지·항목마다 대구 시사점. 스크랩이 아니라 정책, 운영자 지시 2026-09-26). 작성 루틴이 통과시킨 뒤 자동 발행하고, main 푸시 때 워크플로가 발행본을 다시 검사해 미달이면 `draft: true` 로 되돌리고 재배포. 기준을 바꿀 때는 발행된 리포트 전체(`--published`)가 통과하는지 확인
 - `config/budget_sources.yml` + `scripts/fetch_budget_docs.py` + `.github/workflows/fetch_budget.yml` — 부처(산업부·과기부·중기부)·대구시·기업지원기관 홈페이지에서 예산서·사업설명자료 첨부(PDF·HWP·HWPX·XLSX)를 받아 본문을 `data/budget/<key>/*.txt.gz`(+index.json)로. `parse: true` 기관은 `budget_year` 의 사업설명자료 본문을 `scripts/parse_budget.py` 로 읽어 `scripts/data/programs_budget_<key>.csv`(사업 DB에 자동 포함, 기존 programs_<key>.csv 는 덮어쓰지 않음). `--parse-only` 는 받지 않고 본문만 다시 파싱, `--only key`. `min_year` 보다 오래된 연도 첨부는 건너뜀. 이 세션 환경은 정부 사이트가 막혀 있어 워크플로(설정·스크립트 푸시 때 자동, 또는 수동)가 대신 받는다. 대구시·기관 사이트는 미국 러너에서 자주 시간 초과
 - `scripts/parse_city_budget.py` — 대구시 본예산 **사업설명서**(부서별 PDF, 홈페이지 공개용; 운영자가 Drive DAITDA 폴더에 올리면 `drive_ocr.yml` 로 글자를 뽑거나 10MB 아래면 커넥터로 받는다) → `scripts/data/city_programs.csv`(실국·과·팀, 정책·단위사업, 2025 당초/최종·2026 당초·증감, 재원별 시비·국비·균특, 기간·근거·목적·내용, 기업 수혜·행정경비 표시, 쪽). 담당자 성명·전화는 뽑지 않는다. 금액은 천 원 그대로. `--append` 로 부서 파일을 누적. 페이지 `/programs/daegu/`(실국·부서·상태·기업 수혜 필터, 신규·증액·감액 수). `scripts/match_daegu.py`(인자 없음)가 이 CSV 와 부처 사업 DB 를 이름 유사도로 이어 `match_daegu_national.csv` → `/policy/#city-match` 표, `report_context.py` 는 분야 키워드로 대구시 세부사업(사업명·부서·상태만, 예산액 없음)을 출력한다
-- `scripts/attract.py` + `scripts/data/io/` — 산업연관표 기반 기업유치 후보 분석. 한국은행 2024년 연장표 생산자가격 거래표(기본부문 380, ECOS 화면에서 손으로 받음)와 자동 추정 연계표(`scripts/build_io_ksic_map.py` → `io_ksic_map_auto.xlsx`, 공식 KSIC 연계표가 없어 KSIC 대분류→상품 중분류 허용표+접두어 규칙+이름 겹침으로 잇는다. 공식 연계표를 구하면 교체)로 KSIC→IO 부문 매핑. ECOS Open API(`fetch_io_api.py`, ECOS_KEY)는 대·중분류 표만 준다 → 클러스터 5개(자동차부품·일반기계·전기장비·섬유·의료기기)의 빈 고리(`gaps.csv`) → 전국 팩토리온(`--factoryon`, 저장소 밖 — 국내 PC 또는 GitHub 릴리스 첨부 + 워크플로 `attract.yml`)에서 조건 필터로 후보(`candidates.csv`) → `attract_brief.md`·`summary.json`. 조건 상수는 파일 상단. 페이지 `/supply-chain/`. 전국 평균 계수 한계·기준연도 표시, '추천 아님' 명시, 기업 평가 문구 금지. 매월 `scripts/monthly.sh` 가 팩토리온 갱신 뒤 실행
 - `scripts/repair_factoryon.py` — 팩토리온 내려받기 파일이 엑셀에서 안 열릴 때. 첫 바이트로 실제 형식(진짜 xls·HTML 표·CSV·SpreadsheetML) 판정 → 옆에 `_정리.xlsx`(시트 1개, 헤더 고정, 자동 필터, 종사자 숫자·등록일 날짜). 원본은 건드리지 않음
 - `scripts/data/` — 달성 산단·기업 기초 CSV. `dalseong_complexes.csv`는 첫 화면·대구 경제 페이지의 산단 카드(`IndustrialCard.astro`)가 빌드 때 읽고, `dalseong_companies.csv`의 기업명은 collect.py가 경제 키워드로 자동 추가
 - `scripts/sources.yml` — 소스·키워드. 소스 추가는 코드가 아니라 여기서
@@ -118,8 +117,8 @@ python3 scripts/approve.py            # 초안 승인
 ### 4단계 — 기업 신호·연결 기능
 11. 확장 신호 수집기: DART 신규시설투자 공시, 네이버 뉴스(증설·MOU·이전), 팩토리온 신규입주계약, 고용24 채용 급증, 벤처투자 공시, KIPRIS 특허 → 기업 타임라인 + "확장 신호 감지 목록"(신호만, 평가 없음)
 12. 선정 기업 아카이브: 보도자료 선정기업 명단 → 기업 사전 지원사업 이력
-13. 협업 후보 정밀화: Gemini 공정 분류 + 한국은행 산업연관표(KSIC→IO 부문 매핑)
-14. 공급망 지도: 대구 클러스터별 공정 분포·빈 고리 → 전국 팩토리온 파일에서 보완 후보 업종·기업(조건 명시, 전수 나열)
+13. 협업 후보 정밀화: Gemini 공정 분류
+14. (삭제, 운영자 지시 2026-09-27) 산업연관표 기반 공급망 빈 고리·유치 후보 페이지(/supply-chain/, scripts/attract.py, scripts/data/io/)는 도움이 되지 않아 없앴다. 다시 만들지 않는다
 15. 입찰 알림: 나라장터 API, 기업 업종·생산품 매칭
 16. 정책·규제 변화 알림: 법령·고시·조례 RSS → 기업 언어 요약
 

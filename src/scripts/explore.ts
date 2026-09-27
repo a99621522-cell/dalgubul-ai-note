@@ -7,10 +7,9 @@ type Data = {
   dims: Record<'industry' | 'district' | 'complex' | 'site' | 'tag', string[]>;
   metrics: Record<'industry' | 'district' | 'complex' | 'site' | 'tag', Record<string, Lite>>;
   timeseries: { months: string[]; total: { employment: (number | null)[]; firms: (number | null)[] }; by_industry: any; by_district: any; by_complex: any; by_site: any } | null;
-  gaps: { cluster: string; rank: number; name: string; code: string; demand: number; firms: number; workers: number; coverage: number }[];
   tag_names: Record<string, string>;
 };
-type Metric = 'firms' | 'employment' | 'nps' | 'new_closed' | 'support_firms' | 'gaps';
+type Metric = 'firms' | 'employment' | 'nps' | 'new_closed' | 'support_firms';
 type Axis = 'industry' | 'district' | 'eupmyeon' | 'complex' | 'site' | 'size' | 'sector' | 'tag' | 'month';
 type Q = { m: Metric; x: Axis; g: string; d: string; c: string; t: string; w: string; k: string; p: boolean; ch: 'auto' | 'bar' | 'hbar' | 'line' | 'table'; q: string };
 type Result = { title: string; sub: string; series: string[]; rows: { label: string; v: (number | null)[] }[]; unit: string; kind: 'bar' | 'hbar' | 'line' | 'table'; read: string; source: string; extra?: string[][] };
@@ -60,7 +59,7 @@ export function parse(text: string): Partial<Q> {
   else if (/1~9인|10인 미만|소기업/.test(t)) q.w = '1~9';
   if (/지원\s*이력|수혜\s*기업만/.test(t)) q.p = true;
   // 지표
-  q.m = /빈\s*고리|공급망|유치\s*후보/.test(t) ? 'gaps' : /취득|상실/.test(t) ? 'nps' : /신규|폐업/.test(t) ? 'new_closed' : /지원|수혜/.test(t) ? 'support_firms'
+  q.m = /취득|상실/.test(t) ? 'nps' : /신규|폐업/.test(t) ? 'new_closed' : /지원|수혜/.test(t) ? 'support_firms'
     : /고용|인원|종사자|가입자|일자리/.test(t) && !/규모별/.test(t) ? 'employment' : 'firms';
   // 구분(가로축)
   const ax = t.match(/(산업|업종군|구군|구·군|구\/군|지역|읍면동|동|단지|입지|규모|종사자 규모|업종|세분류|태그|월)별/);
@@ -71,7 +70,7 @@ export function parse(text: string): Partial<Q> {
   return q;
 }
 function defaults(q: Partial<Q>): Q {
-  const x: Axis = q.x ?? (q.m === 'gaps' ? 'industry' : q.d ? 'industry' : q.g ? 'district' : q.c ? 'industry' : q.t ? 'industry' : 'industry');
+  const x: Axis = q.x ?? (q.d ? 'industry' : q.g ? 'district' : q.c ? 'industry' : q.t ? 'industry' : 'industry');
   return { m: q.m ?? 'firms', x, g: q.g ?? '', d: q.d ?? '', c: q.c ?? '', t: q.t ?? '', w: q.w ?? '', k: q.k ?? '', p: q.p ?? false, ch: q.ch ?? 'auto', q: q.q ?? '' };
 }
 
@@ -103,7 +102,7 @@ function fromParams(): Q | null {
 
 /* ---------- 계산 ---------- */
 const AXIS_NAME: Record<Axis, string> = { industry: '산업', district: '구·군', eupmyeon: '읍면동', complex: '단지', site: '입지 유형', size: '종사자 규모', sector: '업종(세분류)', tag: '태그', month: '월' };
-const METRIC_NAME: Record<Metric, string> = { firms: '기업 수', employment: '고용 인원', nps: '국민연금 취득·상실', new_closed: '신규 등록·폐업', support_firms: '지원사업 수혜 기업(최근 3년)', gaps: '공급망 빈 고리' };
+const METRIC_NAME: Record<Metric, string> = { firms: '기업 수', employment: '고용 인원', nps: '국민연금 취득·상실', new_closed: '신규 등록·폐업', support_firms: '지원사업 수혜 기업(최근 3년)' };
 function filterDesc(q: Q, data: Data): string[] {
   const f: string[] = [];
   if (q.d) f.push(q.d); if (q.g) f.push(q.g); if (q.c) f.push(q.c); if (q.t) f.push(q.t);
@@ -127,15 +126,6 @@ export function compute(q: Q, data: Data, rows: Row[]): Result {
   const src = (co: boolean, st: boolean) => [co ? `기업 사전 ${data.companies_as_of}(팩토리온 공장등록 + 산단 외 목록)` : '', st ? `월간 통계 ${data.stats_month}(고용 = ${data.basis_label})` : ''].filter(Boolean).join(' · ');
   const aggDims: Axis[] = ['industry', 'district', 'complex', 'site', 'tag'];
 
-  if (q.m === 'gaps') {
-    const clusters = [...new Set(data.gaps.map(g => g.cluster))];
-    const want = clusters.find(c => q.q.includes(c) || (q.g && c.includes(q.g.split('·')[0]))) ?? clusters[0];
-    const rows2 = data.gaps.filter(g => g.cluster === want).sort((a, b) => a.rank - b.rank);
-    return { title: `${want} 클러스터 빈 고리 상위 ${rows2.length}`, sub: '요구 규모 지수(클러스터 종사자 × 전국 투입계수, 종사자 단위)', series: ['요구 규모 지수'], unit: '',
-      rows: rows2.map(g => ({ label: `${g.name} ${g.code}`, v: [g.demand] })), kind: 'hbar',
-      read: `coverage 는 대구 공급 부문 종사자 ÷ 요구 규모(1 이면 채워진 고리). 조건 필터 결과이지 추천이 아닙니다. 다른 클러스터: ${clusters.filter(c => c !== want).join(', ')}`,
-      source: `한국은행 산업연관표 2024 + ${src(true, false)} · /supply-chain/`, extra: [['대구 기업', '대구 종사자', 'coverage'], ...rows2.map(g => [fmt(g.firms), fmt(g.workers), g.coverage.toFixed(2)])] };
-  }
   if (q.x === 'month') {
     const ts = data.timeseries;
     if (!ts) return { title: '월별 추이', sub: '', series: [], rows: [], unit: '', kind: 'table', read: '시계열 자료가 아직 없습니다.', source: '' };

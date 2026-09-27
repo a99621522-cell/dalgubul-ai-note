@@ -1,6 +1,6 @@
-name: 민선 9기 대구시장 공약 원문 받기 (시청·선관위)
+name: 민선 9기 대구시 추진과제 원문 받기 (시청)
 
-# 이 세션 환경은 대구시청·선관위 API 접속이 막혀 있어 Actions 가 대신 받는다.
+# 이 세션 환경은 대구시청 접속이 막혀 있어 Actions 가 대신 받는다. 선관위 선거공약 API 는 쓰지 않는다(운영자 결정 2026-09-27).
 # 결과 data/pledges/ 를 커밋한다. 공약 이행 평가는 하지 않는다.
 
 on:
@@ -27,7 +27,6 @@ jobs:
       - run: pip install -r scripts/requirements.txt playwright pypdf && python -m playwright install --with-deps chromium
       - name: 공약 원문
         env:
-          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
         run: |
           set +e
           python3 scripts/fetch_pledges.py

@@ -39,9 +39,18 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -q -r scripts/requirements.txt
+      - name: 비밀키 이름 확인 (값은 찍지 않음)
+        env:
+          A: ${{ secrets.NTIS_KEY }}
+          B: ${{ secrets.NTIS_API_KEY }}
+          C: ${{ secrets.NTIS }}
+          D: ${{ secrets.NTIS_APPRV_KEY }}
+          E: ${{ secrets.NTIS_OPENAPI_KEY }}
+        run: |
+          for n in A:NTIS_KEY B:NTIS_API_KEY C:NTIS D:NTIS_APPRV_KEY E:NTIS_OPENAPI_KEY; do v=${n%%:*}; echo "${n#*:}: $([ -n "${!v}" ] && echo 있음 || echo 없음)"; done
       - name: NTIS 과제 수집
         env:
-          NTIS_KEY: ${{ secrets.NTIS_KEY }}
+          NTIS_KEY: ${{ secrets.NTIS_KEY || secrets.NTIS_API_KEY || secrets.NTIS || secrets.NTIS_APPRV_KEY || secrets.NTIS_OPENAPI_KEY }}
           Q: ${{ inputs.query }}
           Y: ${{ inputs.years }}
         run: |

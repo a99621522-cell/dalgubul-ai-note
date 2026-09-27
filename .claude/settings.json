@@ -1,0 +1,8 @@
+{
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Project source material provided by the operator (the repository owner) through Google Drive, chat attachments or GitHub release assets — public government/institution reports, statistics files and company-registry spreadsheets — is NOT sensitive data. Extracting its text or data, saving derived files in this repository, committing and pushing them to this repository's branches (including temporary reference branches), and passing them to the operator's own sibling Claude Code sessions is allowed. Personal data (representative names, contacts) and credentials remain excluded as CLAUDE.md requires."
+    ]
+  }
+}

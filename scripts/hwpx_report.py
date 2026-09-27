@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """정책제안 리포트(마크다운) → 한글 HWPX (공공기관 보고서 기본 양식, scripts/data/hwpx/report_basic.hwpx 를 채운다). 표준 라이브러리 + pyyaml.
 
+본문은 개조식(운영자 지시 2026-09-27): 문장마다 한 줄, 끝은 명사형('한다'→'함', '이다'→'임', '있다'→'있음'), 문단 첫 문장 ○·나머지 -, 굵은 첫 문장 □.
 양식(운영자 제공, 2026-09-27)의 문단을 원형으로 복제해 채운다: 표지(제목 2줄·날짜·부서 표), 목차, 절 머리표(Ⅰ Ⅱ …),
 □(HY헤드라인M 15) → ○(휴먼명조 14) → -(14) → ※(11) 단계, 표(맑은 고딕 12). 그림은 캡션만 ※ 줄로 남긴다(SVG 는 넣지 않음).
 원문 문장은 그대로 옮긴다(요약·평가 없음). 담당자 성명·연락처 칸은 '다잇다 노트'·누리집 주소로 채운다.
@@ -22,6 +23,64 @@ OUT_DIR = ROOT / "public" / "hwpx"
 ROMAN = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ"]
 NS: dict[str, str] = {}
 HP = ""
+
+
+# ───────── 개조식 변환 ─────────
+def _syl(ch: str):
+    code = ord(ch) - 0xAC00
+    return (code // 588, (code % 588) // 28, code % 28) if 0 <= code < 11172 else None
+
+
+def _compose(cho: int, jung: int, jong: int) -> str:
+    return chr(0xAC00 + cho * 588 + jung * 28 + jong)
+
+
+def nominalize(sent: str) -> str:
+    """서술형 문장 끝을 개조식 명사형으로: '한다'→'함', '이다'→'임', '있다'→'있음', '않는다'→'않음', '합니다'→'함'. 마지막 마침표는 뗀다."""
+    t = sent.strip().rstrip(".。")
+    m = re.match(r"^(.*?)([가-힣]+)((?:\([^()]*\)|[)\]」』\"”'’])*)$", t)   # 끝의 '(요지)' 같은 괄호 묶음은 꼬리로
+    if not m:
+        return t
+    head, w, tail = m.groups()
+    if w == "다" and head:                                                # '44%다' → '44%임'
+        w2 = "임"
+    elif w.endswith("다") and w[:-1] in ("하나", "둘", "셋", "넷", "다섯", "여섯", "일곱", "여덟", "아홉", "열"):
+        w2 = w[:-1] + "임"
+    elif w.endswith("습니다"):
+        w2 = w[:-3] + "음"
+    elif w.endswith("니다") and len(w) >= 3 and _syl(w[-3]) and _syl(w[-3])[2] == 17:   # 합니다·됩니다·입니다
+        c, j, _ = _syl(w[-3]); w2 = w[:-3] + _compose(c, j, 16)
+    elif w.endswith("다") and len(w) >= 2:
+        base = w[:-1]
+        if base.endswith("는") and len(base) >= 2:                      # 않는다·먹는다 → 않음·먹음
+            w2 = base[:-1] + "음"
+        else:
+            sy = _syl(base[-1])
+            if sy is None:
+                return t
+            c, j, jong = sy
+            if len(base) == 1 and head and head[-1].isdigit():             # '3개다'·'5곳이다' 처럼 숫자+단위 뒤의 '다' 는 '임'
+                w2 = base + "임"
+            elif jong == 0:                                              # 이다·크다·되다·하다(하→함)
+                w2 = base[:-1] + _compose(c, j, 16)
+            elif jong == 4:                                            # 한다·된다·낸다·쓴다·부른다 → 함·됨·냄·씀·부름
+                w2 = base[:-1] + _compose(c, j, 16)
+            else:                                                      # 있다·없다·했다·같다·많다 → 있음·없음·했음·같음·많음
+                w2 = base + "음"
+    else:
+        return t
+    return head + w2 + tail
+
+
+def sentences(text: str) -> list[str]:
+    """문장 나누기: 숫자 뒤 마침표('2026. 9.', '3.1')는 문장 끝으로 보지 않는다."""
+    parts = re.split(r"(?<=[^\d\s])\.\s+(?=\S)", text.strip())
+    return [x.strip() for x in parts if x.strip()]
+
+
+def gaejo(text: str) -> list[str]:
+    """문단 → 개조식 줄 목록(문장마다 한 줄, 끝은 명사형)."""
+    return [nominalize(x) for x in sentences(text)]
 
 
 # ───────── 마크다운 → 블록 ─────────
@@ -55,8 +114,10 @@ def body_blocks(md: str) -> list[tuple[str, object]]:
         text = inline(" ".join(buf)); buf.clear()
         if not text:
             return
-        m = re.match(r"^\*\*(.+?)\*\*\s*(.*)$", " ".join(buf) if False else "")  # placeholder
-        out.append(("o", text))
+        lines_ = gaejo(text)
+        if lines_:
+            out.append(("o", lines_[0]))
+            out.extend(("dash", x) for x in lines_[1:])
 
     while i < len(lines):
         l = lines[i]
@@ -76,7 +137,7 @@ def body_blocks(md: str) -> list[tuple[str, object]]:
             while "</figure>" not in blk and i + 1 < len(lines):
                 i += 1; blk += "\n" + lines[i]
             cap = re.search(r"<figcaption>([\s\S]*?)</figcaption>", blk)
-            out.append(("note", "[그림] " + inline(cap.group(1)) if cap else "[그림]")); i += 1; continue
+            out.append(("note", "[그림] " + nominalize(inline(cap.group(1))) if cap else "[그림]")); i += 1; continue
         if l.lstrip().startswith("<"):
             i += 1; continue
         if l.startswith("|"):
@@ -93,18 +154,20 @@ def body_blocks(md: str) -> list[tuple[str, object]]:
             flush(); q = []
             while i < len(lines) and re.match(r"^>\s?", lines[i]):
                 q.append(re.sub(r"^>\s?", "", lines[i])); i += 1
-            out.append(("note", inline(" ".join(q)))); continue
+            out.extend(("note", x) for x in gaejo(inline(" ".join(q)))); continue
         li = re.match(r"^(\s*)([-*]|\d+[.)])\s+(.*)$", l)
         if li:
             flush(); text = li[3]
             while i + 1 < len(lines) and re.match(r"^\s+\S", lines[i + 1]) and not re.match(r"^\s*([-*]|\d+[.)])\s+", lines[i + 1]):
                 i += 1; text += " " + lines[i].strip()
             num = li[2] if re.match(r"\d", li[2]) else ""
-            out.append(("dash", (num + " " if num else "") + inline(text))); i += 1; continue
+            gl = gaejo(inline(text)) or [""]
+            out.append(("dash", (num + " " if num else "") + gl[0]))
+            out.extend(("dash", "  " + x) for x in gl[1:]); i += 1; continue
         # 문단: 굵은 첫 문장(인사이트 형식의 핵심 문장)은 □ 로, 나머지는 ○
         m = re.match(r"^\*\*(.+?)\*\*\s*(.*)$", l.strip())
         if m and not buf:
-            flush(); out.append(("box", inline(m[1])))
+            flush(); out.append(("box", nominalize(inline(m[1]))))
             rest = m[2]
             if rest.strip():
                 buf.append(rest)
@@ -193,8 +256,8 @@ def build(meta: dict, body_md: str, area: str, out: Path) -> None:
     sections: list[tuple[str, list]] = []
     summary: list = []
     desc = inline(str(meta.get("description") or meta.get("summary") or ""))
-    if desc:
-        summary.append(("o", desc))
+    for k, x in enumerate(gaejo(desc)):
+        summary.append(("o" if k == 0 else "dash", x))
     for o in meta.get("outline") or []:
         summary.append(("dash", inline(str(o))))
     if summary:
@@ -212,7 +275,11 @@ def build(meta: dict, body_md: str, area: str, out: Path) -> None:
         sections.append((cur_title or "들어가며", cur))
     faq = meta.get("faq") or []
     if faq:
-        sections.append(("자주 묻는 질문", [x for qa in faq for x in (("box", inline(str(qa.get("q", "")))), ("o", inline(str(qa.get("a", "")))))]))
+        fq = []
+        for qa in faq:
+            fq.append(("box", inline(str(qa.get("q", "")))))
+            fq.extend(("o" if k == 0 else "dash", x) for k, x in enumerate(gaejo(inline(str(qa.get("a", ""))))))
+        sections.append(("자주 묻는 질문", fq))
     srcs = meta.get("sources") or []
     if srcs:
         sections.append(("참고 자료", [("dash", f"{inline(str(s.get('title', '')))} — {s.get('url', '')}") for s in srcs if isinstance(s, dict)]))
@@ -346,20 +413,21 @@ def build_summary(meta: dict, body_md: str, area: str, out: Path, post_id: str) 
     subs = [str(p) for k, p in blocks if k == "sub"]
     props = [s for s in subs if re.match(r"^제안\s*\d", s)] or subs[:3]
     outline = [inline(str(o)) for o in (meta.get("outline") or [])]
-    desc = inline(str(meta.get("description") or meta.get("summary") or ""))
+    desc_l = gaejo(inline(str(meta.get("description") or meta.get("summary") or "")))
+    desc = " / ".join(desc_l[:1]); desc2 = " / ".join(desc_l[1:3])
     # 반론 절의 첫 문장들
     counter = []
     grab = False
     for k, p in blocks:
         if k == "section":
             grab = "반론" in str(p)
-        elif grab and k in ("o", "box") and len(counter) < 3:
+        elif grab and k in ("o", "box", "dash") and len(counter) < 3:
             counter.append(str(p)[:120])
     d = fmt_date(meta.get("date", date.today()))
     fills = [("OOO 신사업 보고서", title), ("폰트 HY헤드라인M, 크기 18", f"정책제안 리포트{' · ' + area if area else ''}"),
              ("<소속부서 : OOOO부서, 2022.12.31.>", f"<다잇다 노트, {d}>"),
-             ("(본 문서를 한 페이지로 나타내기 위한 내용 작성 1줄 또는 2줄 이내)", desc[:160]),
-             ("최신 기술을 접목한 OOOO 시스템의 사용자 친화적 UI/UX 개선을 위한 용역사업 추진", desc[160:400] if len(desc) > 160 else ""),
+             ("(본 문서를 한 페이지로 나타내기 위한 내용 작성 1줄 또는 2줄 이내)", desc),
+             ("최신 기술을 접목한 OOOO 시스템의 사용자 친화적 UI/UX 개선을 위한 용역사업 추진", desc2),
              ("추진방안 1 : 사용자 온라인 수요조사 수행 ", props[0] if len(props) > 0 else ""),
              ("추진방안 2 : 용역 공고를 통한 UI/UX 경험을 가진 전문 업체의 선정", props[1] if len(props) > 1 else ""),
              ("추진방안 3 : 2024년도까지 시스템 오픈을 위한 일정 준수", props[2] if len(props) > 2 else ""),

@@ -96,7 +96,9 @@ def parse_block(pages: list[tuple[int, str]], year: int, source: str, default_or
         rest = mm.group(1), mm.group(2)
         m2 = re.match(r"^(\S+?(?:과|담당관|관))(\S+)$", rest[1])   # 과 뒤에 팀이 또 붙은 경우
         parts = [rest[0]] + ([m2.group(1), m2.group(2)] if m2 else [rest[1]]) + parts[1:]
-    dept = next((p for p in parts[1:] if re.search(r"과$|담당관$|관$|도서관$|센터$", p)), "") or (parts[0] if parts and re.search(r"과$|관$", parts[0]) else "")
+    dept = next((p for p in parts[1:] if re.search(r"과$|담당관$|관$|도서관$|센터$", p)), "")
+    if not dept and parts and re.search(r"과$|관$", parts[0]) and not re.search(r"(실|국|단|본부|센터|청)$", parts[0]):
+        dept = parts[0]   # '미래혁신정책관 미래산업기획팀', '창업벤처혁신과' 처럼 실국 없이 과·관부터 시작
     team = next((p for p in parts if re.search(r"팀$|TF$", p) or (re.search(r"센터$", p) and p != dept and p != parts[0])), "")
     top = parts[0] if parts else ""
     if top == dept or not re.search(r"(실|국|단|본부|센터|청)$", top):   # 조직 줄에 실국이 없으면(미래혁신성장실 서식) 표지의 이름
@@ -234,6 +236,9 @@ def parse_file(path: Path, year: int, debug: bool = False) -> list[dict]:
     head = "\n".join(pages[:3])
     mm = re.search(r"\[([^\]]+)\]", head)
     org_name = re.sub(r"\s+", "", mm.group(1)) if mm else ""   # 표지는 글자 사이가 벌어져 있다(원 스 톱 …)
+    if not org_name:   # 파일 이름의 첫 괄호: '…사업설명서(미래혁신성장실)(홈페이지공개용)'
+        fm = re.search(r"\(([^()]*?(?:실|국|단|본부|센터|청|관)(?:\s*\d권)?)\)", path.name)
+        org_name = re.sub(r"\d권$", "", re.sub(r"\s+", "", fm.group(1))) if fm else ""
     source = f"{year}년 본예산 사업설명서({org_name})" if org_name else re.sub(r"\.(txt|pdf)$", "", path.name)
     blocks, cur = [], []
     for i, p in enumerate(pages, 1):

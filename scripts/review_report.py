@@ -163,8 +163,8 @@ def review(path: Path) -> dict:
     errors, warns = [], []
     insight = bool(re.search(r"^format:\s*insight", fm, re.M))
     title = fm_get(fm, "title")
-    if not insight and not re.match(r"^\[정책제안\]\s*\S+.*:\s*\S", title):
-        errors.append(f"title 형식: '[정책제안] <분야>: <헤드라인>' 이어야 함 → {title[:60]}")
+    if not insight and not re.match(r"^(\[정책제안\]\s*)?\S+.*:\s*\S", title):   # 접두어는 선택(2026-09-27 목록 표기 통일로 뗌)
+        errors.append(f"title 형식: '<분야>: <헤드라인>' 이어야 함 → {title[:60]}")
     if not insight and re.search(TITLE_BAD_END, title):
         errors.append(f"제목이 '…하게 한다' 식 절로 끝남 — 짧은 헤드라인으로 → {title[:60]}")
     if fm_get(fm, "category") != "policy":

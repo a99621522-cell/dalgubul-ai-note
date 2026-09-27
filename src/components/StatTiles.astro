@@ -12,7 +12,7 @@ const num = (v: number | null) => (v === null ? '자료 없음' : v.toLocaleStri
     <li class="tile">
       <p class="label">{t.label}</p>
       <p class="num">{t.value === null ? <span class="unit">자료 없음</span> : <>{num(t.value)}<span class="unit">{t.unit ?? ''}</span></>}</p>
-      {t.delta !== undefined && <span class="delta-row">{t.deltaLabel ?? '전월 대비'} <Delta d={t.delta} unit={t.unit} label={t.deltaLabel ?? '전월 대비'} /></span>}
+      {t.delta != null && t.delta.diff != null && <span class="delta-row">{t.deltaLabel ?? '전월 대비'} <Delta d={t.delta} unit={t.unit} label={t.deltaLabel ?? '전월 대비'} /></span>}
       <p class="sub">{t.sub}{t.href && <> · <a href={t.href}>{t.linkText ?? `${t.label} 자세히`}</a></>}</p>
     </li>
   ))}

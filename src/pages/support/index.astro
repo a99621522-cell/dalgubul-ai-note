@@ -37,15 +37,15 @@ const sumRecs = (f: Firm) => { const a = f.recs.filter(r => r.amount); if (!a.le
     <span class="meta" id="count"></span>
   </div>
   <div class="scroll-x"><table class="data-table support-table" id="tbl">
-    <thead><tr><th>기업</th><th>구·군</th><th>산업</th><th class="n">이력</th><th>연도</th><th>사업명 · 지원기관</th><th class="n">금액(원문 합)</th></tr></thead>
+    <thead><tr><th>기업</th><th class="col-opt">구·군</th><th class="col-opt">산업</th><th class="n">이력</th><th>연도</th><th>사업명 · 지원기관</th><th class="n col-opt">금액(원문 합)</th></tr></thead>
     <tbody>{list.map(f => {
       const recs = [...f.recs].sort((a, b) => b.year.localeCompare(a.year));
       return (<tr data-name={f.name} data-group={f.group} data-funders={[...new Set(recs.map(r => r.funder))].join('|')} data-years={[...new Set(recs.map(r => r.year))].join('|')} data-text={recs.map(r => r.program).join(' ')}>
         <td>{f.id ? <a href={`/companies/${f.id}/`}>{f.name}</a> : <span>{f.name}<span class="meta"> (명단만)</span></span>}</td>
-        <td>{f.district || '—'}</td><td>{f.group || '—'}</td><td class="n">{recs.length}</td>
+        <td class="col-opt">{f.district || '—'}</td><td class="col-opt">{f.group || '—'}</td><td class="n">{recs.length}</td>
         <td>{recs.at(-1)!.year !== recs[0].year ? `${recs.at(-1)!.year}~${recs[0].year}` : recs[0].year}</td>
         <td>{recs.slice(0, 3).map(r => <div>{r.year} {r.program.length > 48 ? r.program.slice(0, 48) + '…' : r.program} <span class="meta">· {r.funder}{r.type && ` · ${r.type}`}{r.amount && ` · ${fmtAmount(r)}`}</span></div>)}{recs.length > 3 && <div class="meta">외 {recs.length - 3}건 (기업 페이지에서 전체)</div>}</td>
-        <td class="n">{sumRecs(f) || '—'}</td>
+        <td class="n col-opt">{sumRecs(f) || '—'}</td>
       </tr>);
     })}</tbody>
   </table></div>

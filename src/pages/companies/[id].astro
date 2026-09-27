@@ -45,9 +45,9 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
       <p class="lede">{desc}</p>
     </header>
     <ul class="tiles co-tiles" aria-label="핵심 숫자">
-      <li class="tile"><p class="label">고용 인원</p><p class="num">{emp == null ? <span class="unit">자료 없음</span> : <>{emp.toLocaleString('ko-KR')}<span class="unit">명</span></>}</p><p class="sub">{basis}{m ? ` · ${monthLabel(m.month)} 기준` : ''}{empDelta != null && ` · 전월 대비 ${empDelta > 0 ? '+' : ''}${empDelta.toLocaleString('ko-KR')}명`}</p></li>
+      <li class="tile"><p class="label">고용 인원</p><p class="num">{emp == null ? <span class="unit">자료 없음</span> : <>{emp.toLocaleString('ko-KR')}<span class="unit">명</span></>}</p><p class="sub">{basis}{m ? ` · ${monthLabel(m.month)} 기준` : ''}{empDelta != null && ` · 전월 대비 ${empDelta > 0 ? '+' : ''}${empDelta.toLocaleString('ko-KR')}명`}{vals.length === 1 && ' · 월별 추이는 자료가 2개월부터'}</p></li>
       <li class="tile"><p class="label">지원 이력 (최근 3년)</p><p class="num">{support3y.length.toLocaleString('ko-KR')}<span class="unit">건</span></p><p class="sub">공개 자료 기준{supportAll.length > support3y.length && ` · 전체 ${supportAll.length}건`}</p></li>
-      <li class="tile spark"><p class="label">최근 12개월 고용 추이</p>
+      {vals.length >= 2 && <li class="tile spark"><p class="label">최근 12개월 고용 추이</p>
         {vals.length >= 2 ? (
           <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={`최근 ${last12.length}개월 고용 인원 추이`}>
             {poly.includes(' ') && <polyline points={poly} fill="none" stroke="var(--primary)" stroke-width="2" />}
@@ -55,7 +55,7 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
           </svg>
         ) : <p class="sub">{vals.length === 1 ? `${vals[0].toLocaleString('ko-KR')}명 · 자료 1개월, 다음 달부터 추이` : '고용 자료 없음'}</p>}
         <p class="sub">{months.length ? `${months[Math.max(0, months.length - last12.length)]} ~ ${months.at(-1)} · 자료 ${last12.length}개월` : '월별 자료가 쌓이면 표시'}</p>
-      </li>
+      </li>}
     </ul>
     <table class="card">
       <tbody>
@@ -85,15 +85,16 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
         ))}
       </div>
     </section>
+    {support3y.length === 0 ? <p class="meta empty-line"><strong>지원사업 이력(최근 3년)</strong> 공개 자료(NTIS 과제·대구시 보조금 공개·기관 선정 공고)에서 확인된 이력 없음{supportAll.length > 0 && ` · 이전 ${supportAll.length}건`}. 비공개 자료는 싣지 않습니다.</p> : (
     <section class="support" aria-label="지원사업 이력">
       <div class="section-head"><h2>지원사업 이력 (최근 3년)</h2><span class="meta">{support3y.length}건{supportAll.length > support3y.length && ` · 이전 ${supportAll.length - support3y.length}건`}</span></div>
-      {support3y.length === 0 ? <p class="empty">공개 자료에서 확인된 지원 이력이 없습니다. 지원 이력은 NTIS 과제·대구시 보조금 공개·기관 선정 공고에서 모으며, 비공개 자료는 싣지 않습니다.</p> : (
+      {(
         <div class="scroll-x"><table class="data-table">
           <thead><tr><th>연도</th><th>사업명</th><th>지원기관</th><th>유형</th><th class="n">금액</th><th>출처</th></tr></thead>
           <tbody>{support3y.map(s => (<tr><td>{s.year}</td><td>{s.program}</td><td>{s.funder}{s.layer && ` (${s.layer})`}</td><td>{s.type || '—'}</td><td class="n">{fmtAmount(s)}</td><td>{s.source_url ? <a href={s.source_url} rel="noopener">{s.source}</a> : s.source}{s.as_of && <span class="meta"> {s.as_of}</span>}</td></tr>))}</tbody>
         </table></div>
       )}
-    </section>
+    </section>)}
     {fin.length > 0 && (
       <section class="fin" aria-label="공시 재무">
         <div class="section-head"><h2>재무 (DART 공시)</h2><span class="meta">{fin[0].fs} 기준</span></div>
@@ -104,8 +105,7 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
         <p class="meta">금융감독원 전자공시 정기보고서의 값을 억 원으로 나눠 표시. 상장·공시대상 기업만 자료가 있습니다.</p>
       </section>
     )}
-    <section class="section-head"><h2>관련 글</h2></section>
-    {related.length > 0 ? <PostList posts={related} /> : <p class="empty">아직 이 기업을 다룬 글이 없습니다. 공개된 뉴스·공시가 수집되면 여기에 쌓입니다.</p>}
+    {related.length > 0 ? <><section class="section-head"><h2>관련 글</h2></section><PostList posts={related} /></> : <p class="meta empty-line"><strong>관련 글</strong> 아직 이 기업을 다룬 글 없음 · 공개된 뉴스·공시가 수집되면 여기에 쌓입니다.</p>}
     <aside class="source-box">
       <strong>출처</strong> {c.source}, 기준 {c.as_of}. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아닙니다. 종사자(또는 가입자) 수는 구간으로만 표시합니다. 지원 이력·재무는 공개 자료(NTIS·대구시 보조금 공개·기관 선정 공고·DART)에서만 가져오며 비공개 자료는 싣지 않습니다. 정정 요청은 소개 페이지 연락처로.
     </aside>

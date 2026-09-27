@@ -34,22 +34,21 @@ button, input, select { font: inherit; }
 .brand .tagline { display: none; font-size: var(--small); font-weight: 400; color: var(--muted); }
 @media (min-width: 900px) { .brand .tagline { display: inline; } }
 /* 메뉴: 좁은 화면에서는 가로로 밀어 보고, 오른쪽 끝을 흐리게 해 더 있음을 알린다 */
-.nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin: 0 calc(-1 * var(--s2)); padding: 0 var(--s2); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); }
-.nav::-webkit-scrollbar { display: none; }
+.nav { display: flex; flex-wrap: wrap; gap: 2px; margin: 0 calc(-1 * var(--s2)); padding: 0 var(--s1); }   /* 좁은 화면은 두 줄로 — 옆으로 밀어 숨기면 '정책·글'이 있는 줄 모른다 */
 .nav a { display: inline-flex; align-items: center; min-height: var(--touch); padding: 0 12px; white-space: nowrap; color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent; border-radius: var(--radius) var(--radius) 0 0; }
 .nav a[aria-current="page"] { border-bottom-color: var(--primary); color: var(--primary); font-weight: 700; }
 .nav a:hover { background: var(--surface); }
-@media (min-width: 720px) { .site-head .row { padding-top: 0; min-height: 60px; } .nav { margin: 0; padding: 0; margin-left: auto; -webkit-mask-image: none; mask-image: none; } }
+@media (min-width: 720px) { .site-head .row { padding-top: 0; min-height: 60px; } .nav { flex-wrap: nowrap; margin: 0; padding: 0; margin-left: auto; } }
 
 /* ---------- 본문 공통 ---------- */
-main { padding: var(--s4) 0 var(--s8); }
-@media (min-width: 720px) { main { padding-top: var(--s5); } }
+main.wrap { padding-top: var(--s3); padding-bottom: var(--s8); }   /* .wrap 의 padding 이 main 을 덮어써 헤더에 제목이 붙었던 것 */
+@media (min-width: 720px) { main.wrap { padding-top: var(--s4); } }
 .page-head { margin-bottom: var(--s3); }
 .page-head .lede { margin: var(--s1) 0 0; font-size: 1.05rem; }
 .section { margin-top: var(--s6); }
 .section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--s1) var(--s2); margin: var(--s6) 0 var(--s2); padding-bottom: var(--s1); border-bottom: 2px solid var(--ink); }
 .section-head h2 { font-size: var(--h2); }
-.section-head:first-child { margin-top: 0; }
+main > .section-head:first-child, main > :first-child > .section-head:first-child { margin-top: 0; }   /* 페이지 맨 위만. 절마다 첫 자식이라고 위 여백을 없애면 숫자 카드에 제목이 붙는다 */
 .section-head .meta { margin: 0; }
 .lede { margin: var(--s2) 0 0; font-size: 1.05rem; font-weight: 500; }
 .empty { color: var(--muted); padding: var(--s2) 0; }
@@ -156,11 +155,15 @@ article.post .body figcaption { font-size: var(--small); color: var(--muted); ma
 
 /* /support/ 지원받은 기업 표 */
 .scroll-x .support-table { min-width: 760px; }
+/* 좁은 화면에서는 덜 중요한 열을 숨겨 핵심(기업·사업명)이 잘리지 않게. 값은 기업 페이지·통계표에 있다 */
+@media (max-width: 600px) { .col-opt { display: none; } .scroll-x .support-table { min-width: 520px; } .support-table td:first-child { min-width: 7em; } }
 .support-table td:nth-child(6) { max-width: 520px; }
 .support-table td:nth-child(6) div + div { margin-top: 2px; }
 .more-row { margin: var(--s2) 0; }
 .co-tiles { grid-template-columns: repeat(2, 1fr); margin-bottom: var(--s3); }
-@media (min-width: 720px) { .co-tiles { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 720px) { .co-tiles { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); } }   /* 카드가 2장이든 3장이든 폭을 채운다 */
+.empty-line { margin: var(--s4) 0 0; padding-top: var(--s2); border-top: 1px solid var(--line); }
+.empty-line strong { color: var(--ink); margin-right: 6px; }
 .co-tiles .spark svg { display: block; max-width: 100%; height: auto; margin-top: 4px; }
 
 /* /explore/ 데이터 탐색 그래프 */
@@ -206,6 +209,7 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
 .featured h3 a { color: var(--ink); text-decoration: none; }
 .featured h3 a:hover, .featured h3 a:focus-visible { color: var(--primary); text-decoration: underline; }
 .featured p { margin: 0 0 var(--s1); }
+.featured p.desc { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }   /* 요약은 4줄까지, 나머지는 '읽기'로 */
 .featured .links { display: flex; flex-wrap: wrap; gap: var(--s1); }
 
 /* ---------- 인쇄 ---------- */

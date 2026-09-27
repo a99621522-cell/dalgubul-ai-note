@@ -14,7 +14,7 @@ const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month:
         <span class="cat">{CATEGORIES[p.data.category].name}</span>
         {' · '}{fmt(p.data.date)}
         {p.data.source && <>{' · '}{p.data.source}</>}
-        {p.data.auto && <span class="auto">AI 초안</span>}
+        {p.data.auto && <span class="auto">AI 작성</span>}
       </div>
       <p class="summary">{p.data.summary}</p>
     </li>

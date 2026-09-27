@@ -51,7 +51,7 @@ const description = m
             <div>
               <p class="kicker">{reportArea(featured)} · {featured.data.date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
               <h3><a href={`/posts/${featured.id}/`}>{featured.data.title.replace(/^\[정책제안\]\s*/, '')}</a></h3>
-              <p>{featured.data.description ?? featured.data.summary}</p>
+              <p class="desc">{featured.data.description ?? featured.data.summary}</p>
               <p class="links"><a class="btn" href={`/posts/${featured.id}/`}>읽기</a><a class="btn secondary" href={downloadUrls(featured.id).docx} download>Word</a></p>
             </div>
           </div>

@@ -41,7 +41,7 @@ if (d.faq.length > 0) jsonld.push({
       <div class="meta">
         <span class="cat">{CATEGORIES[d.category].name}</span>{' · '}{fmt(d.date)}
         {d.deadline && <>{' · '}마감 {fmt(d.deadline)}</>}
-        {d.auto && <span class="auto">AI 초안</span>}
+        {d.auto && <span class="auto">AI 작성</span>}
         {dl && <span class="dl"> · 내려받기 <a href={dl.docx} download>Word</a> · <a href={dl.md} download>MD</a></span>}
       </div>
     </header>

@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { companies, shortComplex, supportHistory } from '../../lib/csv';
+import { companies, shortComplex, supportHistory, byName } from '../../lib/csv';
 import { siteTypes, allTags } from '../../lib/sites';
 const list = companies();
 const complexesList = [...new Set(list.map(c => c.complex))];
@@ -13,7 +13,7 @@ const supportedCount = new Set(supportHistory().filter(r => r.id).map(r => r.id)
 // 처음 60곳만 HTML 로 내보낸다. 전체(11,000곳)를 다 넣으면 4.5MB 라 휴대폰에서 느렸다.
 // 검색·필터를 쓰면 /companies-index.json(빌드 때 생성되는 경량 색인)을 한 번 받아 클라이언트에서 거른다.
 const FIRST = 60;
-const head = list.slice(0, FIRST);
+const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
 ---
 <Base title="대구 기업 사전" description={`대구 공장등록 기업 ${list.length.toLocaleString('ko-KR')}곳 — 구·군·단지·업종·생산품·종사자 규모. 팩토리온 공개 자료 ${asOf} 기준`} current="companies">
   <div class="section-head"><h1>대구 기업 사전</h1><span class="meta">{list.length.toLocaleString('ko-KR')}곳 · {asOf} 기준</span></div>
@@ -21,6 +21,9 @@ const head = list.slice(0, FIRST);
   <p class="meta">구·군·단지·입지 유형별 기업 수와 고용은 <a href="/dashboard/">현황판</a>에 있습니다.</p>
   <div class="tools">
     <input id="q" type="search" placeholder="회사명·업종 검색" aria-label="검색" />
+    <details class="filters" id="filters">
+    <summary>필터 · 정렬</summary>
+    <div class="filters-body">
     <select id="cx" aria-label="단지"><option value="">모든 단지</option>{complexesList.map(x => <option value={x}>{x}</option>)}</select>
     <select id="sg" aria-label="업종"><option value="">모든 업종</option>{groups.map(x => <option value={x}>{x}</option>)}</select>
     <select id="em" aria-label="구군"><option value="">모든 구·군</option>{dists.map(x => <option value={x}>{x}</option>)}</select>
@@ -28,6 +31,8 @@ const head = list.slice(0, FIRST);
     <select id="tg" aria-label="태그"><option value="">태그 전체</option>{tagList.map(x => <option value={x.key}>{x.name}</option>)}</select>
     <label class="chk"><input id="sp" type="checkbox" /> 지원 이력 있음 ({supportedCount.toLocaleString('ko-KR')})</label>
     <select id="sort" aria-label="정렬"><option value="name">가나다순</option><option value="size">종사자 규모 큰 순</option><option value="district">구·군순</option></select>
+    </div>
+    </details>
     <span id="count" class="meta">{list.length.toLocaleString('ko-KR')}곳</span>
   </div>
   <p id="note" class="meta">가나다순 처음 {FIRST}곳입니다. 검색하거나 단지·업종·구·군·입지·태그를 고르면 전체 {list.length.toLocaleString('ko-KR')}곳에서 찾습니다. 산단 외 기업 중 국민연금 자료로 넣은 곳은 종사자 대신 가입자 규모입니다.</p>
@@ -54,6 +59,16 @@ const head = list.slice(0, FIRST);
     let matched = [], shown = 0;
 
     const nf = new Intl.NumberFormat('ko-KR');
+    // 법인 표기를 뗀 정렬 키(src/lib/csv.ts sortName 과 같은 규칙)
+    const PFX = /^\s*([（(]\s*(주|유|사|재|자|합)\s*[)）]|㈜|주식회사|유한회사|사단법인|재단법인|농업회사법인|유한책임회사)\s*/g, SFX = /\s*([（(]\s*(주|유)\s*[)）]|㈜|주식회사|유한회사|유한책임회사)\s*$/g;
+    const key = r => r._k ?? (r._k = ((r.n || '').replace(PFX, '').replace(SFX, '').trim() || r.n));
+    const rank = k => (/^[0-9A-Za-z가-힣ㄱ-ㅎ]/.test(k) ? 0 : 1);   // 글자로 시작하지 않는 등록값('-', '.')은 뒤로
+    const byName = (a, b) => rank(key(a)) - rank(key(b)) || key(a).localeCompare(key(b), 'ko') || a.n.localeCompare(b.n, 'ko');
+    // 넓은 화면은 필터를 펼쳐 두고, 좁은 화면은 접어 결과가 먼저 보이게
+    const filters = document.getElementById('filters');
+    const wide = matchMedia('(min-width: 720px)');
+    const syncFilters = () => { filters.open = wide.matches; };
+    syncFilters(); wide.addEventListener('change', syncFilters);
     function load() {
       if (rows) return Promise.resolve(rows);
       if (!loading) {
@@ -81,9 +96,9 @@ const head = list.slice(0, FIRST);
     const BAND = { '300명 이상': 5, '100~299명': 4, '50~299명': 4, '50~99명': 3, '10~49명': 2, '1~9명': 1 };
     function sortRows(arr) {
       const k = sortSel.value;
-      if (k === 'size') return [...arr].sort((a, b) => (BAND[b.w] || 0) - (BAND[a.w] || 0) || a.n.localeCompare(b.n, 'ko'));
-      if (k === 'district') return [...arr].sort((a, b) => a.d.localeCompare(b.d, 'ko') || a.n.localeCompare(b.n, 'ko'));
-      return [...arr].sort((a, b) => a.n.localeCompare(b.n, 'ko'));
+      if (k === 'size') return [...arr].sort((a, b) => (BAND[b.w] || 0) - (BAND[a.w] || 0) || byName(a, b));
+      if (k === 'district') return [...arr].sort((a, b) => a.d.localeCompare(b.d, 'ko') || byName(a, b));
+      return [...arr].sort(byName);
     }
     async function apply() {
       const t = q.value.trim().toLowerCase(); const [c, g, e, st, tg] = sel.map(s => s.value); const sp = spBox.checked; const sorted = sortSel.value !== 'name';
@@ -119,6 +134,10 @@ const head = list.slice(0, FIRST);
   .tools { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1.25rem 0 0.5rem; }
   .tools input, .tools select { font: inherit; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); max-width: 100%; }
   .tools input[type="search"] { flex: 1 1 14rem; }
+  .filters { flex: 1 1 100%; }
+  .filters summary { cursor: pointer; font-size: var(--small); color: var(--muted); padding: 4px 0; }
+  .filters-body { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 4px; }
+  @media (min-width: 720px) { .filters summary { display: none; } .filters-body { margin-top: 0; } }
   .chk { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.92rem; }
   .co-list { list-style: none; padding: 0; margin: 0; }
   /* 결과 행은 스크립트가 만들어 넣으므로 Astro 스코프 속성이 없다 → :global 로 자식에 적용 */

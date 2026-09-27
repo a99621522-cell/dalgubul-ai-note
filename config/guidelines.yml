@@ -7,6 +7,8 @@
 # 원칙: 공개된 법령·고시·조례만(법령은 공공저작물). 사업별 내부 지침(비공개)은 넣지 않는다. 지침 내용을 평가하지 않고 조문을 그대로 인용한다.
 # source.type: law(법령) | admrul(행정규칙: 고시·예규·훈령) | ordin(자치법규: 조례·규칙) | url(부처 홈페이지 첨부). name 은 law.go.kr 의 한글 주소(공백 없음).
 # queries: 이름으로 못 찾을 때 시도할 보조 검색어, match_issuer: 소관(지자체기관명·소관부처명)이 이 낱말과 맞는 항목만 채택(교육부 '교육비특별회계 세출예산 집행기준' 같은 오매칭 방지)
+# 2026-09-27 수집: 27개 중 22개 OK. 못 찾은 5개(산업부 사업비 산정·정산 요령, 중기부 창업지원사업 통합관리지침, 행안부 지방출자·출연기관 예산편성기준, 행안부 세출예산 집행기준(교육부 교육비특별회계 기준만 검색됨), 대구시 지방보조금 관리 조례 시행규칙)는
+#   법령정보센터에 행정규칙으로 등록되지 않았거나 이름이 다른 것으로 보인다 — 부처·시 홈페이지 첨부(fetch_budget_docs 방식)로 받는 길을 다음에 붙인다. 그때까지 index.json 에 '없음' 으로 남는다
 # verify: true 는 이름·존재를 아직 확인하지 않은 항목 — fetch_guidelines.py 가 못 찾으면 index.json 에 '없음' 으로 남기고, 운영자가 이름을 바로잡는다.
 # applies: layer(국비|시비|기관), ministry(소관), program_type(R&D|보조금|출연|위탁|융자|창업|전체), name_pattern(사업명 정규식, 선택). 사업 DB 의 사업마다 맞는 지침을 이 규칙으로 고른다.
 # review: 이 지침이 검토 근거가 되는 문서 — 예산요구서(편성 단계) / 집행(집행 단계) / 결산서(정산 단계).
@@ -39,11 +41,11 @@ guidelines:
   # ── 중소벤처기업부 ──
   - { key: mss-rnd,            kind: 고시,   issuer: 중소벤처기업부,  name: 중소기업기술개발 지원사업 운영요령,        source: { type: admrul, name: 중소기업기술개발지원사업운영요령 }, verify: true,
       applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [R&D] }, review: [예산요구서, 집행, 결산서] }
-  - { key: mss-rnd-mgmt,       kind: 고시,   issuer: 중소벤처기업부,  name: 중소기업기술개발사업 관리지침,             source: { type: admrul, name: 중소기업기술개발사업관리지침 }, queries: ["중소기업기술개발사업 관리", "기술개발사업 관리지침"], match_issuer: 중소벤처기업부, verify: true,
-      applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [R&D] }, review: [예산요구서, 집행, 결산서] }
+  - { key: mss-rnd-mgmt,       kind: 고시,   issuer: 중소벤처기업부,  name: 중소기업기술개발 지원사업 기술료 관리규정,  source: { type: admrul, name: 중소기업기술개발지원사업기술료관리규정 },
+      applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [R&D] }, review: [결산서] }   # '관리지침'은 고시가 아니라 못 찾음(2026-09-27) → 기술료 관리규정으로
   - { key: mss-startup,        kind: 고시,   issuer: 중소벤처기업부,  name: 창업지원사업 통합관리지침,                 source: { type: admrul, name: 창업지원사업통합관리지침 }, queries: ["창업지원사업 관리", "창업사업화 지원사업"], match_issuer: 중소벤처기업부, verify: true,
       applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [창업, 보조금], name_pattern: "창업|스타트업|팁스|TIPS|액셀러" }, review: [예산요구서, 집행, 결산서] }
-  - { key: mss-smart,          kind: 고시,   issuer: 중소벤처기업부,  name: 스마트제조혁신 지원사업 운영요령,          source: { type: admrul, name: 스마트제조혁신지원사업운영요령 }, queries: ["스마트제조혁신", "스마트공장 지원사업"], match_issuer: 중소벤처기업부, verify: true,
+  - { key: mss-smart,          kind: 고시,   issuer: 중소벤처기업부,  name: 중소기업 스마트제조혁신 지원사업 운영 등에 관한 고시, source: { type: admrul, name: 중소기업스마트제조혁신지원사업운영등에관한고시 },
       applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [보조금], name_pattern: "스마트공장|스마트제조|제조혁신" }, review: [예산요구서, 집행, 결산서] }
   # ── 과학기술정보통신부(ICT) ──
   - { key: msit-ict,           kind: 고시,   issuer: 과학기술정보통신부, name: 정보통신·방송 연구개발 관리규정,          source: { type: admrul, name: 정보통신·방송연구개발관리규정 }, verify: true,
@@ -68,7 +70,7 @@ guidelines:
       applies: { layer: 시비, program_type: [보조금, 전체] }, review: [예산요구서, 집행, 결산서] }
   - { key: daegu-subsidy-rule, kind: 규칙,   issuer: 대구광역시,      name: 대구광역시 지방보조금 관리 조례 시행규칙,   source: { type: ordin,  name: 대구광역시지방보조금관리조례시행규칙 }, queries: ["대구광역시 지방보조금 관리 조례 시행규칙", "대구광역시 지방보조금 시행규칙"], match_issuer: 대구광역시, verify: true,
       applies: { layer: 시비, program_type: [보조금, 전체] }, review: [예산요구서, 집행, 결산서] }
-  - { key: daegu-corp-ord,     kind: 조례,   issuer: 대구광역시,      name: 대구광역시 출자·출연 기관의 운영에 관한 조례, source: { type: ordin, name: 대구광역시출자출연기관의운영에관한조례 }, queries: ["대구광역시 출자 출연 기관", "대구광역시 출자·출연 기관의 운영에 관한 조례"], match_issuer: 대구광역시, verify: true,
+  - { key: daegu-corp-ord,     kind: 조례,   issuer: 대구광역시,      name: 대구광역시 출자·출연 기관의 운영에 관한 조례, source: { type: ordin, name: 대구광역시출자출연기관의운영에관한조례 }, match_issuer: 대구광역시,
       applies: { layer: 기관, program_type: [출연, 전체] }, review: [예산요구서, 결산서] }
   - { key: daegu-industry-ord, kind: 조례,   issuer: 대구광역시,      name: 대구광역시 지역산업 육성 및 지원 조례,      source: { type: ordin,  name: 대구광역시지역산업육성및지원조례 },
       applies: { layer: 시비, program_type: [보조금, 출연, 전체], name_pattern: "산업|기업|육성|지원" }, review: [예산요구서] }

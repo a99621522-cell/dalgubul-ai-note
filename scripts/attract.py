@@ -34,13 +34,13 @@ COMPANIES = DATA / "dalseong_companies.csv"
 
 # ───────────────────────── 조건 상수 (화면·brief 에 그대로 표시) ─────────────────────────
 CLUSTERS: dict[str, str] = {  # 대구 주력 수요 클러스터 → IO 기본부문명 정규식 (부문 이름으로 고른다)
-    "자동차부품": r"자동차\s*부품|자동차용|차체|트레일러|자동차\s*엔진|자동차\s*(전기|전자)",
+    "자동차부품": r"자동차\s*(부품|부분품)|자동차용|차체|트레일러|자동차\s*엔진|자동차\s*(전기|전자)|특장차",
     "일반기계": r"공작\s*기계|금속\s*(가공|절삭)\s*기계|일반\s*목적|특수\s*목적|산업용\s*(기계|로봇)|펌프|압축기|밸브|베어링|기어|동력\s*전달|운반\s*(기계|장비)|냉동|공기\s*조화|섬유\s*기계|반도체\s*(제조|장비)|디스플레이\s*제조\s*장비|건설\s*기계|광업용\s*기계",
     "전기장비": r"전동기|발전기|변압기|전기\s*(변환|공급|제어)|배전|제어\s*(장치|반)|전선|케이블|축전지|전지|조명\s*(장치|기구)|전기\s*장비|절연",
     "섬유": r"직물|염색|가공사|편조|부직포|섬유\s*제품|면\s*방적|화학\s*섬유|산업용\s*섬유|의복|봉제",
     "의료기기": r"의료용\s*(기기|기구|장비|측정)|의료\s*기기|정형외과|치과용|방사선|안경|의료용품|재활",
 }
-EXCLUDE_SUPPLY = r"전력|전기업|가스|증기|수도|폐기물|하수|석유\s*정제|코크스|원유|천연가스|채굴|광석|광업|석탄|농산|축산|수산|임산|도매|소매|운송|금융|보험|부동산|서비스|연구|교육|보건|행정|국방|음식|숙박|임대|건설|건축|토목"
+EXCLUDE_SUPPLY = r"전력|전기업|화력|수력|원자력|자가발전|신에너지|재생에너지|가스|증기|수도|폐기물|하수|석유\s*정제|석유제품|중유|휘발유|경유|등유|나프타|윤활유|LPG|코크스|원유|천연가스|채굴|광석|광업|석탄|농산|축산|수산|임산|도매|소매|중개|운송|금융|보험|은행|예금|부동산|서비스|제조임가공|연구|교육|보건|행정|국방|음식|숙박|임대|건설|건축|토목"
 MANUFACTURING_KSIC = {f"{d:02d}" for d in range(10, 34)} - {"19"}  # 제조업(10~33) 중 코크스·석유정제(19) 제외
 TOP_GAPS = 15           # 클러스터별 빈 고리 상위 N 부문 → 후보 추출 대상
 TOP_INPUTS = 15         # '투입계수 상위 N 안' 거래 가능성 판정
@@ -291,7 +291,9 @@ def build_gaps(codes, names, A, daegu_workers: Counter, daegu_firms: Counter, io
         by_ksic = bool(divs & MANUFACTURING_KSIC) if divs else None
         if re.search(EXCLUDE_SUPPLY, names.get(c, "")):
             return False
-        return True if by_ksic is None else by_ksic
+        if by_ksic is None:   # 대구 기업이 없어 KSIC 정보가 없는 부문: 2020 상품분류(4자리)면 중분류 08~44 가 제조업
+            return "08" <= c[:2] <= "44" if len(c) == 4 else True
+        return by_ksic
 
     cluster_sectors, rows = {}, []
     for cl, pat in CLUSTERS.items():
@@ -311,15 +313,13 @@ def build_gaps(codes, names, A, daegu_workers: Counter, daegu_firms: Counter, io
         cand = [c for c in codes if c not in S and demand[idx[c]] > 0 and is_mfg(c)]
         tot = sum(demand[idx[c]] for c in cand) or 1.0
         ratios = {c: daegu_workers.get(c, 0) / demand[idx[c]] for c in cand}
-        srt = sorted(ratios.values())
-        ref = srt[int(len(srt) * 0.9)] if srt else 1.0   # 상위 10% 수준을 coverage 1 로
-        ref = ref or 1.0
+        top_demand = set(sorted(cand, key=lambda c: -demand[idx[c]])[:TOP_GAPS * 2])   # 요구 규모 상위 30 부문만 빈 고리 후보(미미한 투입 링크 제외)
         for c in cand:
-            cov = min(1.0, ratios[c] / ref)
+            cov = min(1.0, ratios[c])   # 요구 규모 지수(클러스터 종사자 × 투입계수, 종사자 단위)에 대한 대구 공급 부문 종사자 비율. 1 이상이면 채워진 고리
             share = demand[idx[c]] / tot
             rows.append({"cluster": cl, "io_sector": c, "io_name": names.get(c, ""), "demand_index": round(demand[idx[c]], 1), "demand_share": round(share, 4),
                          "daegu_firms": daegu_firms.get(c, 0), "daegu_workers": daegu_workers.get(c, 0), "coverage": round(cov, 3),
-                         "gap_score": round(share * (1 - cov), 5)})
+                         "gap_score": round(share * (1 - cov), 5) if c in top_demand else 0.0})
     rows.sort(key=lambda r: (r["cluster"], -r["gap_score"]))
     rank = Counter()
     for r in rows:

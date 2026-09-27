@@ -24,7 +24,7 @@ POSTS = ROOT / "src" / "content" / "posts"
 OUT_DIR = ROOT / "public" / "hwpx"
 PUBLIC = ROOT / "public"
 PX_UNIT = 75            # 96dpi 픽셀 1 = 75 HWPUNIT(1/7200인치)
-MAX_IMG_W = 42000       # 본문 그림 최대 너비(≈148mm, 본문 폭 48188 안)
+MAX_IMG_W = 46000       # 본문 그림 최대 너비(≈162mm, 본문 폭 48188 안)
 LEAD_COLOR = "#C00000"  # 핵심(리드) 문장 색 — LG경영연구원 리포트의 붉은 굵은 글씨
 ROMAN = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ"]
 NS: dict[str, str] = {}
@@ -239,11 +239,11 @@ class Images:
         return bid
 
 
-def pic_paragraph(proto, bid: str, px_w: int, px_h: int, comment: str):
+def pic_paragraph(ids: dict, bid: str, px_w: int, px_h: int, comment: str):
     """가운데 정렬 문단 하나에 그림(글자처럼 취급)을 넣는다."""
     w = min(px_w * PX_UNIT, MAX_IMG_W)
     h = int(px_h * PX_UNIT * (w / (px_w * PX_UNIT)))
-    xml = (f'<hp:run xmlns:hp="{NS["hp"]}" xmlns:hc="{NS["hc"]}" charPrIDRef="24"><hp:pic id="{2000000000 + hash(bid) % 100000000}" zOrder="{10 + int(bid[5:])}" numberingType="PICTURE" '
+    xml = (f'<hp:run xmlns:hp="{NS["hp"]}" xmlns:hc="{NS["hc"]}" charPrIDRef="{ids["char"]["caption"]}"><hp:pic id="{2000000000 + hash(bid) % 100000000}" zOrder="{10 + int(bid[5:])}" numberingType="PICTURE" '
            f'textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" href="" groupLevel="0" instid="{1100000000 + int(bid[5:])}" reverse="0">'
            f'<hp:offset x="0" y="0"/><hp:orgSz width="{w}" height="{h}"/><hp:curSz width="{w}" height="{h}"/><hp:flip horizontal="0" vertical="0"/>'
            f'<hp:rotationInfo angle="0" centerX="{w // 2}" centerY="{h // 2}" rotateimage="1"/><hp:renderingInfo><hc:transMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/>'
@@ -253,14 +253,11 @@ def pic_paragraph(proto, bid: str, px_w: int, px_h: int, comment: str):
            f'<hc:img binaryItemIDRef="{bid}" bright="0" contrast="0" effect="REAL_PIC" alpha="0"/><hp:effects/>'
            f'<hp:sz width="{w}" widthRelTo="ABSOLUTE" height="{h}" heightRelTo="ABSOLUTE" protect="0"/>'
            f'<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
-           f'<hp:outMargin left="0" right="0" top="283" bottom="283"/><hp:shapeComment>{comment}</hp:shapeComment></hp:pic><hp:t/></hp:run>')
-    run = ET.fromstring(xml)
-    p = clone(proto)
+           f'<hp:outMargin left="0" right="0" top="0" bottom="0"/><hp:shapeComment>{comment}</hp:shapeComment></hp:pic><hp:t/></hp:run>')
+    p = para(ids, "fig", [])
     for r in p.findall(HP + "run"):
         p.remove(r)
-    lineseg = p.find(HP + "linesegarray")
-    p.insert(list(p).index(lineseg) if lineseg is not None else 0, run)
-    p.set("paraPrIDRef", "20")   # 가운데 정렬
+    p.insert(0, ET.fromstring(xml))
     return p
 
 
@@ -283,7 +280,139 @@ def fmt_date(d) -> str:
     return f"{d.year}. {d.month}. {d.day}."
 
 
+# ───────── 디자인(LG경영연구원 리포트를 본보기로 한 전문가 편집 판, 운영자 지시 2026-09-27) ─────────
+TEXT_W = 48188            # A4, 좌우 여백 5669 → 본문 폭(HWPUNIT)
+NAVY, NAVY2, INK, INK2, MUTE, RED = "#0F2A5F", "#1F3A93", "#1F2933", "#374151", "#6B7280", "#B91C1C"
+GOTHIC, MYEONGJO = "0", "5"      # header.xml 글꼴 id: 맑은 고딕 / 휴먼명조
+# 문단 모양: (이름, 정렬, 줄간격%, 앞 간격, 뒤 간격, 왼쪽 여백, 첫 줄 들여쓰기, keepWithNext, 문단 테두리 key)
+PARA_SPECS = [
+    ("kicker", "LEFT", 150, 0, 150, 0, 0, 1, None), ("title", "LEFT", 128, 0, 450, 0, 0, 1, None), ("rule", "LEFT", 60, 0, 700, 0, 0, 0, "rule"),
+    ("body", "JUSTIFY", 172, 0, 650, 0, 0, 0, None), ("h2", "LEFT", 140, 1700, 450, 0, 0, 1, "h2"), ("h3", "LEFT", 140, 900, 300, 0, 0, 1, None),
+    ("fig", "CENTER", 100, 500, 150, 0, 0, 1, None), ("caption", "CENTER", 145, 0, 950, 0, 0, 0, None),
+    ("bullet", "JUSTIFY", 165, 0, 230, 900, -560, 0, None), ("note", "JUSTIFY", 158, 150, 700, 900, 0, 0, "note"),
+    ("box_title", "LEFT", 140, 0, 350, 0, 0, 1, None), ("box_body", "JUSTIFY", 165, 0, 300, 0, 0, 0, None), ("box_item", "LEFT", 160, 0, 120, 700, -450, 0, None),
+    ("th", "CENTER", 140, 0, 0, 0, 0, 0, None), ("td", "LEFT", 145, 0, 0, 0, 0, 0, None), ("tdc", "CENTER", 145, 0, 0, 0, 0, 0, None),
+    ("src", "JUSTIFY", 145, 0, 160, 800, -800, 0, None), ("faq_q", "LEFT", 150, 500, 150, 0, 0, 1, None), ("spacer", "LEFT", 100, 0, 0, 0, 0, 0, None),
+]
+# 글자 모양: (이름, 글꼴 id, 크기 pt×100, 색, 굵게)
+CHAR_SPECS = [
+    ("kicker", GOTHIC, 950, MUTE, True), ("title", GOTHIC, 2300, "#111827", True), ("body", MYEONGJO, 1050, INK, False), ("lead", MYEONGJO, 1050, RED, True),
+    ("h2", GOTHIC, 1500, NAVY, True), ("h3", GOTHIC, 1200, NAVY2, True), ("caption", GOTHIC, 850, MUTE, False), ("note", MYEONGJO, 950, INK2, False),
+    ("box_title", GOTHIC, 950, NAVY, True), ("box_body", GOTHIC, 1000, INK, False), ("box_item", GOTHIC, 1000, INK, False), ("box_mark", GOTHIC, 1000, NAVY2, True),
+    ("th", GOTHIC, 950, NAVY, True), ("td", GOTHIC, 950, INK, False), ("src", GOTHIC, 850, INK2, False), ("faq_q", GOTHIC, 1050, "#111827", True), ("bullet_mark", GOTHIC, 1050, NAVY2, False),
+]
+# 테두리·채움: (이름, 왼, 오른, 위, 아래, 채움색)  — 선은 (type, width, color) 또는 None
+LN = lambda w, c: ("SOLID", w, c)
+BORDER_SPECS = [
+    ("none", None, None, None, None, None), ("rule", None, None, None, LN("0.5 mm", NAVY2), None), ("h2", None, None, None, LN("0.12 mm", "#C7D2E3"), None),
+    ("note", LN("0.6 mm", "#C7D2E3"), None, None, None, None), ("box", None, None, None, None, "#F3F6FB"),
+    ("th", None, None, LN("0.4 mm", NAVY), LN("0.15 mm", "#9DB0CC"), "#EEF3FA"), ("td", None, None, None, LN("0.12 mm", "#D9DEE7"), None), ("td_alt", None, None, None, LN("0.12 mm", "#D9DEE7"), "#FAFBFD"),
+]
+
+
+def add_design_styles(header_xml: str) -> tuple[str, dict]:
+    """header.xml 에 위 스펙의 문단·글자·테두리 모양을 덧붙이고 이름 → id 사전을 돌려준다."""
+    ids: dict = {"para": {}, "char": {}, "border": {}}
+    bcnt = int(re.search(r'<hh:borderFills itemCnt="(\d+)"', header_xml).group(1))
+    bxml = ""
+    for i, (name, l, r, t, b, fill) in enumerate(BORDER_SPECS):
+        bid = bcnt + i; ids["border"][name] = str(bid)
+        def line(tag, spec):
+            return f'<hh:{tag} type="{spec[0]}" width="{spec[1]}" color="{spec[2]}"/>' if spec else f'<hh:{tag} type="NONE" width="0.1 mm" color="#000000"/>'
+        bxml += (f'<hh:borderFill id="{bid}" threeD="0" shadow="0" centerLine="NONE" breakCellSeparateLine="0"><hh:slash type="NONE" Crooked="0" isCounter="0"/><hh:backSlash type="NONE" Crooked="0" isCounter="0"/>'
+                 + line("leftBorder", l) + line("rightBorder", r) + line("topBorder", t) + line("bottomBorder", b) + '<hh:diagonal type="SOLID" width="0.1 mm" color="#000000"/>'
+                 + (f'<hc:fillBrush><hc:winBrush faceColor="{fill}" hatchColor="#000000" alpha="0"/></hc:fillBrush>' if fill else "") + "</hh:borderFill>")
+    header_xml = re.sub(r'<hh:borderFills itemCnt="\d+"', f'<hh:borderFills itemCnt="{bcnt + len(BORDER_SPECS)}"', header_xml, 1).replace("</hh:borderFills>", bxml + "</hh:borderFills>", 1)
+    ccnt = int(re.search(r'<hh:charProperties itemCnt="(\d+)"', header_xml).group(1))
+    cxml = ""
+    for i, (name, font, size, color, bold) in enumerate(CHAR_SPECS):
+        cid = ccnt + i; ids["char"][name] = str(cid)
+        cxml += (f'<hh:charPr id="{cid}" height="{size}" textColor="{color}" shadeColor="none" useFontSpace="0" useKerning="0" symMark="NONE" borderFillIDRef="{ids["border"]["none"]}">'
+                 f'<hh:fontRef hangul="{font}" latin="{font}" hanja="{font}" japanese="{font}" other="{font}" symbol="{font}" user="{font}"/>'
+                 '<hh:ratio hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:spacing hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/>'
+                 '<hh:relSz hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:offset hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/>'
+                 + ("<hh:bold/>" if bold else "") + "</hh:charPr>")
+    header_xml = re.sub(r'<hh:charProperties itemCnt="\d+"', f'<hh:charProperties itemCnt="{ccnt + len(CHAR_SPECS)}"', header_xml, 1).replace("</hh:charProperties>", cxml + "</hh:charProperties>", 1)
+    pcnt = int(re.search(r'<hh:paraProperties itemCnt="(\d+)"', header_xml).group(1))
+    pxml = ""
+    for i, (name, align, ls, prev, nxt, left, intent, keep, border) in enumerate(PARA_SPECS):
+        pid = pcnt + i; ids["para"][name] = str(pid)
+        bf = ids["border"][border or "none"]
+        boff = ' offsetLeft="0" offsetRight="0" offsetTop="0" offsetBottom="0"' if border != "note" else ' offsetLeft="500" offsetRight="0" offsetTop="0" offsetBottom="0"'
+        pxml += (f'<hh:paraPr id="{pid}" tabPrIDRef="0" condense="0" fontLineHeight="0" snapToGrid="0" suppressLineNumbers="0" checked="0"><hh:align horizontal="{align}" vertical="BASELINE"/>'
+                 '<hh:heading type="NONE" idRef="0" level="0"/>'
+                 f'<hh:breakSetting breakLatinWord="KEEP_WORD" breakNonLatinWord="KEEP_WORD" widowOrphan="1" keepWithNext="{keep}" keepLines="0" pageBreakBefore="0" lineWrap="BREAK"/>'
+                 '<hh:autoSpacing eAsianEng="1" eAsianNum="1"/>'
+                 f'<hh:margin><hc:intent value="{intent}" unit="HWPUNIT"/><hc:left value="{left}" unit="HWPUNIT"/><hc:right value="0" unit="HWPUNIT"/><hc:prev value="{prev}" unit="HWPUNIT"/><hc:next value="{nxt}" unit="HWPUNIT"/></hh:margin>'
+                 f'<hh:lineSpacing type="PERCENT" value="{ls}" unit="HWPUNIT"/><hh:border borderFillIDRef="{bf}"{boff} connect="0" ignoreMargin="0"/></hh:paraPr>')
+    header_xml = re.sub(r'<hh:paraProperties itemCnt="\d+"', f'<hh:paraProperties itemCnt="{pcnt + len(PARA_SPECS)}"', header_xml, 1).replace("</hh:paraProperties>", pxml + "</hh:paraProperties>", 1)
+    return header_xml, ids
+
+
+def para(ids: dict, pname: str, segs: list[tuple[str, str]]):
+    """문단 원소: segs = [(글, 글자 모양 이름)]."""
+    p = ET.Element(HP + "p", {"id": "0", "paraPrIDRef": ids["para"][pname], "styleIDRef": "0", "pageBreak": "0", "columnBreak": "0", "merged": "0"})
+    for text, cname in segs or [("", "body")]:
+        r = ET.SubElement(p, HP + "run", {"charPrIDRef": ids["char"][cname]})
+        ET.SubElement(r, HP + "t").text = text
+    ET.SubElement(ET.SubElement(p, HP + "linesegarray"), HP + "lineseg", {"textpos": "0", "vertpos": "0", "vertsize": "1000", "textheight": "1000", "baseline": "850", "spacing": "600", "horzpos": "0", "horzsize": str(TEXT_W), "flags": "393216"})
+    return p
+
+
+def design_table(proto, ids: dict, rows: list[list[str]], head: bool = True, widths: list[int] | None = None, fill_key: str | None = None, margin: int = 320):
+    """원형 표를 복제해 디자인 스타일(머리 행 남색 선·옅은 채움, 본문 행 얇은 밑줄)로 채운다. rows 의 각 칸은 str 또는 문단 원소 목록."""
+    p = clone(proto)
+    p.set("paraPrIDRef", ids["para"]["body"])
+    tbl = p.find(".//" + HP + "tbl")
+    trs = tbl.findall(HP + "tr")
+    tr_proto = trs[1] if len(trs) > 1 else trs[0]
+    for tr in trs:
+        tbl.remove(tr)
+    tbl.set("borderFillIDRef", ids["border"]["none"]); tbl.set("repeatHeader", "1" if head else "0")
+    ncol = max(len(r) for r in rows)
+    if not widths:
+        lens = [max(len(str(r[c])) if c < len(r) and isinstance(r[c], str) else 12 for r in rows) for c in range(ncol)]
+        lens = [max(l, 6) for l in lens]; tot = sum(lens)
+        widths = [max(int(TEXT_W * l / tot), int(TEXT_W * 0.14)) for l in lens]
+    scale = TEXT_W / sum(widths); widths = [int(w * scale) for w in widths]
+    tbl.find(HP + "sz").set("width", str(TEXT_W))
+    im = tbl.find(HP + "inMargin")
+    if im is not None:
+        for k in ("left", "right"):
+            im.set(k, str(margin))
+        for k in ("top", "bottom"):
+            im.set(k, "230")
+    tc_proto = tr_proto.findall(HP + "tc")[0]
+    for ri, row in enumerate(rows):
+        tr = ET.SubElement(tbl, HP + "tr")
+        is_head = head and ri == 0
+        for ci in range(ncol):
+            tc = clone(tc_proto)
+            tc.set("header", "1" if is_head else "0")
+            tc.set("borderFillIDRef", ids["border"][fill_key or ("th" if is_head else ("td_alt" if ri % 2 == 0 else "td"))])
+            sl = tc.find(HP + "subList")
+            for old in sl.findall(HP + "p"):
+                sl.remove(old)
+            sl.set("vertAlign", "CENTER" if is_head else "TOP")
+            cell = row[ci] if ci < len(row) else ""
+            if isinstance(cell, str):
+                sl.append(para(ids, "th" if is_head else ("tdc" if re.fullmatch(r"[\d,.%~\-–\s곳명건개년월억원만천]+", cell or "x") else "td"), [(cell, "th" if is_head else "td")]))
+            else:
+                for e in cell:
+                    sl.append(e)
+            tc.find(HP + "cellAddr").set("colAddr", str(ci)); tc.find(HP + "cellAddr").set("rowAddr", str(ri))
+            tc.find(HP + "cellSpan").set("colSpan", "1"); tc.find(HP + "cellSpan").set("rowSpan", "1")
+            csz = tc.find(HP + "cellSz"); csz.set("width", str(widths[ci])); csz.set("height", "1000")
+            cm = tc.find(HP + "cellMargin")
+            if cm is not None:
+                cm.set("left", str(margin)); cm.set("right", str(margin)); cm.set("top", "230"); cm.set("bottom", "230")
+            tr.append(tc)
+    tbl.set("rowCnt", str(len(rows))); tbl.set("colCnt", str(ncol))
+    return p
+
+
 def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> None:
+    """LG경영연구원 리포트를 본보기로 한 편집: 머리말(분야) → 제목 → 남색 선 → 대표 그림 → 요약 상자 → 본문(절 제목·리드 문장·그림·표) → FAQ → 참고 자료."""
     global HP
     z = zipfile.ZipFile(TEMPLATE)
     names = z.namelist()
@@ -294,117 +423,90 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
     HP = "{%s}" % NS["hp"]
     root = ET.fromstring(sec_xml)
     top = list(root)
-    header_xml, lead_cp = add_lead_charpr(z.read("Contents/header.xml").decode("utf-8"))
+    header_xml, ids = add_design_styles(z.read("Contents/header.xml").decode("utf-8"))
     images = Images()
     post_id = post_id or out.stem
     title = re.sub(r"^\[정책제안\]\s*", "", str(meta.get("title", "")))
-    line1 = f"정책제안 리포트{' · ' + area if area else ''}"
-    # 표지
-    replace_t(top[3], "2027년 회계연도 ", line1)
-    replace_t(top[3], "회계감사인 선임 제안 요청서", title)
-    set_para_text(top[8], "")   # 표지 날짜도 넣지 않는다(운영자 지시 2026-09-27)
-    # 표지의 부서·담당·연락처 표와 부서 이름 상자는 넣지 않는다(운영자 지시 2026-09-27)
-    root.remove(top[12]); root.remove(top[15])
-    # 본문 블록 → 절
-    blocks = body_blocks(body_md)
-    sections: list[tuple[str, list]] = []
-    summary: list = []
-    desc = inline(str(meta.get("description") or meta.get("summary") or ""))
+    tbl_proto = top[64]
+    # 첫 문단(용지·쪽 번호 설정)은 두고 머리말의 자리표시 로고는 뺀다. 나머지 양식 문단은 모두 지운다.
+    first = top[0]
+    for run in first.findall(HP + "run"):
+        for ctrl in run.findall(HP + "ctrl"):
+            if ctrl.find(HP + "header") is not None or ctrl.find(HP + "footer") is not None:
+                run.remove(ctrl)
+    for p in top[1:]:
+        root.remove(p)
+    add = root.append
+    # 제목 블록
+    add(para(ids, "kicker", [("정책제안 리포트" + (f"  ·  {area}" if area else ""), "kicker")]))
+    add(para(ids, "title", [(title, "title")]))
+    add(para(ids, "rule", [("", "caption")]))
+    # 대표 그림
     hero = meta.get("hero") if isinstance(meta.get("hero"), dict) else {}
-    if (PUBLIC / "figures" / post_id / "hero.png").exists():
-        summary.append(("figure", (f"/figures/{post_id}/hero.png", inline(str(hero.get("caption") or "대표 그림 (AI 생성 이미지)")))))
+    hero_path = f"/figures/{post_id}/hero.png"
+    img = load_image(hero_path)
+    if img:
+        data, ext, pw, ph = img
+        add(pic_paragraph(ids, images.add(data, ext), pw, ph, "대표 그림"))
+        add(para(ids, "caption", [(inline(str(hero.get("caption") or "대표 그림 (AI 생성 이미지)")), "caption")]))
+    # 요약 상자
+    desc = inline(str(meta.get("description") or meta.get("summary") or ""))
+    outline = [inline(str(o)) for o in (meta.get("outline") or [])]
+    box: list = [para(ids, "box_title", [("요약", "box_title")])]
     if desc:
-        summary.append(("o", desc))
-    for o in meta.get("outline") or []:
-        summary.append(("dash", inline(str(o))))
-    if summary:
-        sections.append(("요약", summary))
-    cur: list = []
-    cur_title = ""
-    for kind, payload in blocks:
+        box.append(para(ids, "box_body", [(desc, "box_body")]))
+    for o in outline:
+        box.append(para(ids, "box_item", [("▪  ", "box_mark"), (o, "box_item")]))
+    if len(box) > 1:
+        add(design_table(tbl_proto, ids, [[box]], head=False, widths=[TEXT_W], fill_key="box", margin=760))
+        add(para(ids, "spacer", [("", "caption")]))
+    # 본문
+    fig_n = 0
+    for kind, payload in body_blocks(body_md):
         if kind == "section":
-            if cur_title or cur:
-                sections.append((cur_title or "들어가며", cur))
-            cur_title, cur = str(payload), []
-        else:
-            cur.append((kind, payload))
-    if cur_title or cur:
-        sections.append((cur_title or "들어가며", cur))
+            add(para(ids, "h2", [(str(payload), "h2")]))
+        elif kind == "sub":
+            add(para(ids, "h3", [(str(payload), "h3")]))
+        elif kind == "lead":
+            lead, rest = payload  # type: ignore[misc]
+            add(para(ids, "body", [(lead, "lead")] + ([(" " + rest, "body")] if rest else [])))
+        elif kind == "o" or kind == "box":
+            add(para(ids, "body", [(str(payload), "body")]))
+        elif kind == "dash":
+            txt = str(payload)
+            m = re.match(r"^(\d+[.)])\s+(.*)$", txt)
+            add(para(ids, "bullet", [((m[1] + " ") if m else "•  ", "bullet_mark"), (m[2] if m else txt, "body")]))
+        elif kind == "note":
+            add(para(ids, "note", [(str(payload), "note")]))
+        elif kind == "caption":
+            add(para(ids, "caption", [(str(payload), "caption")]))
+        elif kind == "figure":
+            src, cap = payload  # type: ignore[misc]
+            img = load_image(src) if src else None
+            if img is None:
+                add(para(ids, "note", [(f"[그림] {cap}", "note")]))
+            else:
+                data, ext, pw, ph = img; fig_n += 1
+                add(pic_paragraph(ids, images.add(data, ext), pw, ph, f"그림 {fig_n}"))
+                add(para(ids, "caption", [(cap, "caption")]))
+        elif kind == "table":
+            add(design_table(tbl_proto, ids, payload))  # type: ignore[arg-type]
+            add(para(ids, "spacer", [("", "caption")]))
     faq = meta.get("faq") or []
     if faq:
-        sections.append(("자주 묻는 질문", [x for qa in faq for x in (("box", inline(str(qa.get("q", "")))), ("o", inline(str(qa.get("a", "")))))]))
-    srcs = meta.get("sources") or []
+        add(para(ids, "h2", [("자주 묻는 질문", "h2")]))
+        for qa in faq:
+            add(para(ids, "faq_q", [("Q. " + inline(str(qa.get("q", ""))), "faq_q")]))
+            add(para(ids, "body", [(inline(str(qa.get("a", ""))), "body")]))
+    srcs = [s_ for s_ in (meta.get("sources") or []) if isinstance(s_, dict)]
     if srcs:
-        sections.append(("참고 자료", [("dash", f"{inline(str(s.get('title', '')))} — {s.get('url', '')}") for s in srcs if isinstance(s, dict)]))
-    # 목차
-    toc_tbl = top[17]
-    entry_proto = sub_proto = spacer_proto = None
-    toc_list = None
-    for sl in toc_tbl.iter(HP + "subList"):
-        for p in sl.findall(HP + "p"):
-            tx = text_of(p)
-            if tx.strip().startswith("Ⅰ.") and entry_proto is None:
-                entry_proto, toc_list = p, sl
-            elif re.match(r"^\s*1\.\s", tx) and sub_proto is None:
-                sub_proto = p
-            elif entry_proto is not None and not tx.strip() and spacer_proto is None:
-                spacer_proto = p
-    if toc_list is not None and entry_proto is not None:
-        ps = toc_list.findall(HP + "p")
-        start = ps.index(entry_proto)
-        for p in ps[start:]:
-            toc_list.remove(p)
-        for si, (stitle, sblocks) in enumerate(sections):
-            e = clone(entry_proto); set_para_text(e, f" {ROMAN[si % len(ROMAN)]}. {stitle} "); toc_list.append(e)
-            n = 0
-            for kind, payload in sblocks:
-                if kind == "sub" and sub_proto is not None and n < 8:
-                    n += 1; s = clone(sub_proto); set_para_text(s, f"  {n}. {payload} "); toc_list.append(s)
-            if spacer_proto is not None:
-                toc_list.append(clone(spacer_proto))
-    # 본문 원형
-    head_proto, box_proto, o_proto, dash_proto, note_proto, blank_proto, tbl_proto = top[19], top[20], top[21], top[22], top[23], top[24], top[64]
-    for p in top[19:]:
-        root.remove(p)
-    for si, (stitle, sblocks) in enumerate(sections):
-        h = clone(head_proto)
-        if si > 0:
-            h.set("pageBreak", "1")
-        replace_t(h, "Ⅰ", ROMAN[si % len(ROMAN)]); replace_t(h, " 사업 개요", f" {stitle}")
-        root.append(h)
-        for kind, payload in sblocks:
-            if kind in ("box", "sub"):
-                e = clone(box_proto); set_para_text(e, f" □ {payload}")
-            elif kind == "lead":
-                lead, rest = payload  # type: ignore[misc]
-                e = clone(o_proto); set_para_runs(e, [("  ○ ", None), (lead, lead_cp)] + ([(" " + rest, None)] if rest else []))
-            elif kind == "caption":
-                e = clone(note_proto); set_para_text(e, str(payload)); e.set("paraPrIDRef", "20")
-            elif kind == "figure":
-                src, cap = payload  # type: ignore[misc]
-                img = load_image(src) if src else None
-                if img is None:
-                    e = clone(note_proto); set_para_text(e, f"       ※ [그림] {cap}")
-                else:
-                    data, ext, pw, ph = img
-                    bid = images.add(data, ext)
-                    root.append(pic_paragraph(blank_proto, bid, pw, ph, f"그림: {cap[:120]}"))
-                    e = clone(note_proto); set_para_text(e, cap); e.set("paraPrIDRef", "20")
-            elif kind == "o":
-                e = clone(o_proto); set_para_text(e, f"  ○ {payload}")
-            elif kind == "dash":
-                e = clone(dash_proto); set_para_text(e, f"   - {payload}")
-            elif kind == "note":
-                e = clone(note_proto); set_para_text(e, f"       ※ {payload}")
-            elif kind == "table":
-                e = make_table(tbl_proto, payload)  # type: ignore[arg-type]
-            else:
-                continue
-            root.append(e)
-        root.append(clone(blank_proto))
-    ET.indent(root, space="") if hasattr(ET, "indent") else None
+        add(para(ids, "h2", [("참고 자료", "h2")]))
+        for i, s_ in enumerate(srcs, 1):
+            d = str(s_.get("date") or "")[:10]
+            add(para(ids, "src", [(f"{i}. ", "src"), (inline(str(s_.get("title", ""))) + (f" ({d})" if d else "") + f" — {s_.get('url', '')}", "src")]))
+    add(para(ids, "caption", [("다잇다 노트 · note.daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
-    preview = "\n".join([line1, title] + [f"{ROMAN[i % 12]}. {s}" for i, (s, _) in enumerate(sections)])
+    preview = "\n".join(["정책제안 리포트" + (f" · {area}" if area else ""), title] + outline)
     out.parent.mkdir(parents=True, exist_ok=True)
     manifest = "".join(f'<opf:item id="{bid}" href="BinData/{bid}.{ext}" media-type="image/{"jpeg" if ext == "jpg" else ext}" isEmbeded="1"/>' for bid, _, ext in images.files)
     with zipfile.ZipFile(out, "w") as zo:
@@ -421,53 +523,7 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
             zo.writestr(zipfile.ZipInfo(n), data, compress_type=zipfile.ZIP_STORED if n == "mimetype" else zipfile.ZIP_DEFLATED)
         for bid, data, ext in images.files:
             zo.writestr(zipfile.ZipInfo(f"BinData/{bid}.{ext}"), data, compress_type=zipfile.ZIP_DEFLATED)
-    print(f"→ {out} ({out.stat().st_size:,} bytes, 절 {len(sections)}개, 그림 {len(images.files)}개)")
-
-
-def make_table(proto, rows: list[list[str]]):
-    """원형 표(머리 1행 + 본문 행)를 복제해 rows 로 채운다. 열 수는 본문 rows 에 맞춘다."""
-    p = clone(proto)
-    tbl = p.find(".//" + HP + "tbl")
-    trs = tbl.findall(HP + "tr")
-    head_tr, body_tr = trs[0], trs[1]
-    for tr in trs:
-        tbl.remove(tr)
-    ncol = max(len(r) for r in rows)
-    sz = tbl.find(HP + "sz")
-    total_w = int(sz.get("width")) if sz is not None else 47000
-
-    def fit(tr, cells):
-        tcs = tr.findall(HP + "tc")
-        while len(tcs) < ncol:
-            tr.append(clone(tcs[-1])); tcs = tr.findall(HP + "tc")
-        for extra in tcs[ncol:]:
-            tr.remove(extra)
-        tcs = tr.findall(HP + "tc")
-        for ci, tc in enumerate(tcs):
-            addr = tc.find(HP + "cellAddr")
-            if addr is not None:
-                addr.set("colAddr", str(ci))
-            csz = tc.find(HP + "cellSz")
-            if csz is not None:
-                csz.set("width", str(total_w // ncol))
-            sl = tc.find(HP + "subList")
-            ps = sl.findall(HP + "p") if sl is not None else []
-            if ps:
-                set_para_text(ps[0], cells[ci] if ci < len(cells) else "")
-                for extra in ps[1:]:
-                    sl.remove(extra)
-        return tr
-
-    tbl.append(fit(head_tr, rows[0]))
-    for ri, r in enumerate(rows[1:], 1):
-        tr = fit(clone(body_tr), r)
-        for tc in tr.findall(HP + "tc"):
-            addr = tc.find(HP + "cellAddr")
-            if addr is not None:
-                addr.set("rowAddr", str(ri))
-        tbl.append(tr)
-    tbl.set("rowCnt", str(len(rows))); tbl.set("colCnt", str(ncol))
-    return p
+    print(f"→ {out} ({out.stat().st_size:,} bytes, 그림 {len(images.files)}개)")
 
 
 SUMMARY_TEMPLATE = ROOT / "scripts" / "data" / "hwpx" / "report_summary.hwpx"

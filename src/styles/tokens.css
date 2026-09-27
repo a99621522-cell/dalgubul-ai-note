@@ -21,6 +21,8 @@
   --line-strong: #bdbdbd;
   --surface: #f5f6f8;     /* 표 머리·강조 상자 바탕 */
   --primary: #1B4F9B;
+  --primary-2: #2E86DE;   /* 첫 화면 표제·검색 단추의 그라데이션 끝 색(기업마당 첫 화면을 본보기로, 2026-09-27). 그 밖에는 쓰지 않는다 */
+  --primary-deep: #16305F; /* 첫 화면 큰 숫자 */
   --primary-ink: #ffffff;
   --focus: #1B4F9B;
   --chart-1: #1B4F9B;

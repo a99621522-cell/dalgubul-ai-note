@@ -14,6 +14,7 @@
 - `scripts/collect_dart.py` — OpenDART 공시 중 대구 기업(본사 주소로 판정, `scripts/state/dart_corp.json` 캐시)의 확장 신호(신규시설투자·유상증자·공급계약 등)를 inbox JSON 으로. 공시 사실과 원문 링크만, 평가 없음. 설정은 `sources.yml` 의 `dart:`. 키는 `DART_KEY`
 - `src/pages/companies/` — 기업 사전(목록 + 기업별 페이지 /companies/<id>/). 데이터는 `src/lib/csv.ts`가 빌드 때 CSV에서 읽음. `sector_group` 은 CSV 값이 아니라 항상 `config/industry_groups.yml` 규칙(11개)으로 다시 판정한다. 목록 필터: 단지·업종·구군·입지 유형·태그·지원 이력, URL 인자 complex/group/district/site/tag/support/q
 - `src/pages/companies-index.json.ts` — 기업 사전 검색용 경량 색인(/companies-index.json). 목록 페이지는 처음 200곳만 HTML로 내보내고 검색·필터 때 이 색인을 받아 클라이언트에서 거른다. 필드를 바꾸면 `companies/index.astro`의 스크립트도 같이 고칠 것
+- `src/pages/explore/` + `src/scripts/explore.ts` + `src/pages/explore-data.json.ts` — 데이터 탐색(/explore/, 메뉴 '탐색'). 공무원이 필요한 자료를 한 줄로 적으면(예: 달성군 자동차부품 기업 규모별) 브라우저 규칙 파서가 지표(기업 수·고용·국민연금 취득상실·신규폐업·지원 수혜·빈 고리)·가로축(산업·구군·읍면동·단지·입지·규모·업종·태그·월)·필터로 바꿔 기업 색인(/companies-index.json, `m`=고용)과 집계 묶음(/explore-data.json: 월간 통계·시계열·빈 고리)으로 표+SVG 그래프(막대·가로막대·선, 툴팁)를 그린다. 서버·AI 호출 없음. 조건은 URL 인자(m/x/g/d/c/t/w/k/p/ch/q)라 링크 공유 가능. CSV·PNG·TSV 복사 버튼. 항상 표를 함께 내고 출처·기준월을 적는다. 평가·순위 없음
 - `src/lib/partners.ts` — 협업 후보(공급/수요/동종) 규칙 엔진: 업종코드+생산품으로 공정 단계 추정 → 단계 간 공급 관계표 → 같은 단지·구군 우선. '후보'라고만 표기, 거래 관계 단정 금지. 이후 Gemini 공정 분류·산업연관표로 정밀화
 - `scripts/import_factoryon.py` — 팩토리온 월간 엑셀(전국 입주업체현황 + 선택: 산단공 리스트) → 기업·단지 CSV 갱신(id 유지). 사용법은 scripts/data/README.md
 - `config/industry_groups.yml` — 산업 그룹 11개 규칙(KSIC 접두어+키워드). `scripts/industry.py`·`src/lib/industry.ts`가 읽음. 규칙은 파일에만

@@ -6,7 +6,7 @@
 LG경영연구원 리포트 형식(운영자 지시 2026-09-27 「이 파일처럼 그림도 넣고 표도 넣고」)을 따라 그림·표를 본문에 넣는다:
 대표 그림(public/figures/<id>/hero.png)은 요약 앞에, 본문 <figure> 의 SVG 는 rsvg-convert 로 PNG 로 바꿔 캡션과 함께,
 마크다운 표는 한글 표로, 문단 첫머리의 굵은 핵심 문장은 붉은 굵은 글씨(LG 리포트의 리드 문장) 로. rsvg-convert 가 없으면 캡션만 ※ 줄로 남긴다.
-원문 문장은 그대로 옮긴다(요약·평가 없음). 담당자 성명·연락처 칸은 '다잇다 노트'·누리집 주소로 채운다.
+원문 문장은 그대로 옮긴다(요약·평가 없음). 표지의 부서·담당·연락처 표는 빼고, 한 쪽 요약의 소속부서 칸은 날짜만 둔다(운영자 지시 2026-09-27).
 
 사용: python3 scripts/hwpx_report.py src/content/posts/<파일>.md [-o public/hwpx/<id>.hwpx]
       python3 scripts/hwpx_report.py --all        # 발행된 정책제안 리포트 전부 → public/hwpx/<id>.hwpx
@@ -303,12 +303,8 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
     replace_t(top[3], "2027년 회계연도 ", line1)
     replace_t(top[3], "회계감사인 선임 제안 요청서", title)
     set_para_text(top[8], fmt_date(meta.get("date", date.today())))
-    for old, new in [("전 략 실", "다잇다 노트"), ("(전 략 부)", "(정책제안 리포트)"), ("홍길동 팀장", "운영자"), ("(123)456-7891", "note.daitda.co.kr"),
-                     ("박진미 과장", ""), ("(123)456-7892", "")]:
-        replace_t(top[12], old, new)
-    for t in top[15].iter(HP + "t"):
-        if t.text and "전" in t.text and "략" in t.text:
-            t.text = "다잇다 노트" if t.text.strip() else t.text
+    # 표지의 부서·담당·연락처 표와 부서 이름 상자는 넣지 않는다(운영자 지시 2026-09-27)
+    root.remove(top[12]); root.remove(top[15])
     # 본문 블록 → 절
     blocks = body_blocks(body_md)
     sections: list[tuple[str, list]] = []
@@ -503,7 +499,7 @@ def build_summary(meta: dict, body_md: str, area: str, out: Path, post_id: str) 
             counter.append(str(p)[:120])
     d = fmt_date(meta.get("date", date.today()))
     fills = [("OOO 신사업 보고서", title), ("폰트 HY헤드라인M, 크기 18", f"정책제안 리포트{' · ' + area if area else ''}"),
-             ("<소속부서 : OOOO부서, 2022.12.31.>", f"<다잇다 노트, {d}>"),
+             ("<소속부서 : OOOO부서, 2022.12.31.>", f"<{d}>"),
              ("(본 문서를 한 페이지로 나타내기 위한 내용 작성 1줄 또는 2줄 이내)", desc[:160]),
              ("최신 기술을 접목한 OOOO 시스템의 사용자 친화적 UI/UX 개선을 위한 용역사업 추진", desc[160:400] if len(desc) > 160 else ""),
              ("추진방안 1 : 사용자 온라인 수요조사 수행 ", props[0] if len(props) > 0 else ""),

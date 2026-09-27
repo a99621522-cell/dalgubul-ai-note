@@ -111,6 +111,15 @@ main { padding: var(--s4) 0 var(--s8); }
 
 article.post { max-width: var(--measure); }
 article.post header h1 { margin-bottom: var(--s1); }
+article.post header h1.long { font-size: 1.45rem; line-height: 1.4; }   /* 60자 넘는 긴 제목(정책제안) */
+.toc { margin: var(--s3) 0 0; padding: var(--s2); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); font-size: var(--small); }
+.toc-title { margin: 0 0 4px; font-weight: 700; color: var(--ink); }
+.toc ol { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: var(--s3); }   /* 제목에 번호가 이미 있다 */
+.toc li { break-inside: avoid; padding: 2px 0; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a:hover, .toc a:focus-visible { color: var(--primary); text-decoration: underline; }
+@media (max-width: 600px) { .toc ol { columns: 1; } }
+article.post .body h2 { scroll-margin-top: var(--s2); }
 article.post .body { margin-top: var(--s3); }
 article.post .body h2 { margin: var(--s4) 0 var(--s1); }
 article.post .body h3 { margin: var(--s3) 0 var(--s1); }

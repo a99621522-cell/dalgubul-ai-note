@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """소스 추가 전 확인용: robots.txt 와 첫 화면의 메뉴·게시판 링크를 찍는다(첫 화면 1회, 그 밖의 쪽은 열지 않는다).
 이 세션 환경은 외부 사이트가 막혀 있어 GitHub Actions(site_probe.yml)로 돌리고 로그로 본다.
-사용: python3 scripts/site_probe.py <url> [--render] [--dump] [--text]
+사용: python3 scripts/site_probe.py <url> [--render] [--dump] [--text] [--raw]
 --text: 운영자가 준 기사·공지 한 쪽의 제목·날짜·본문 글자만 찍는다(robots.txt 가 그 경로를 막으면 본문은 찍지 않는다). 수집기가 아니라 한 번 읽기용.
 """
 import re, sys
@@ -31,6 +31,8 @@ def main():
             pg.goto(url, wait_until="networkidle", timeout=60000); html = pg.content(); b.close()
     else:
         rr = requests.get(url, headers={"User-Agent": UA}, timeout=30); print(f"== {url} ({rr.status_code}, {len(rr.text)} bytes) =="); html = rr.text
+        if "--raw" in sys.argv:   # XML·JSON 응답(오픈API)처럼 파싱하지 않고 앞부분을 그대로 볼 때
+            print(f"== raw (Content-Type {rr.headers.get('Content-Type', '')}) ==\n" + rr.text[:3000])
     soup = BeautifulSoup(html, "html.parser")
     print(f"== title: {soup.title.get_text(strip=True) if soup.title else ''}")
     seen = set()

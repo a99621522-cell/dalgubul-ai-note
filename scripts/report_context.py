@@ -155,6 +155,21 @@ def city_match_block(keywords: list[str]) -> list[dict]:
     return out
 
 
+def city_programs_block(keywords: list[str]) -> list[dict]:
+    """대구시 본예산 사업설명서 세부사업(city_programs.csv) 가운데 키워드가 맞는 것. 사업명·부서·상태만(리포트는 예산액을 인용하지 않는다)."""
+    pat = kw_pattern(keywords)
+    p = DATA / "city_programs.csv"
+    out = []
+    if not p.exists():
+        return out
+    for r in csv.DictReader(open(p, encoding="utf-8")):
+        if r.get("admin") == "Y":
+            continue
+        if pat.search(" ".join([r.get("name", ""), r.get("purpose", ""), r.get("content", "")])):
+            out.append({"org": r["org"], "dept": r["dept"], "name": r["name"], "status": r["status"], "policy": r.get("policy_program", ""), "source": r.get("source", "")})
+    return out
+
+
 def posts_block(keywords: list[str], weeks: int = 8) -> list[dict]:
     pat = kw_pattern(keywords)
     since = date.today() - timedelta(weeks=weeks)
@@ -264,6 +279,7 @@ def main(argv: list[str]) -> int:
         "companies": companies_block(area.get("industry_groups", []), area.get("sub_counts"), area.get("tags"), area.get("site_types"), area.get("ksic")),
         "programs": programs_block(area.get("keywords", [])),
         "city_match": city_match_block(area.get("keywords", [])),
+        "city_programs": city_programs_block(area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
         "notices_8w": notices_block(area["key"], area.get("keywords", [])),
         "research": research_block(area.get("keywords", []), area.get("key", "")),
@@ -294,6 +310,9 @@ def main(argv: list[str]) -> int:
     print(f"\n[정부 사업] 키워드 {area.get('keywords')} 일치 {len(ctx['programs'])}건 — 사업명·부처·신규 여부만 인용한다. 예산액·사업코드·시비 매칭은 정책제안서에 쓰지 않는다(운영자 지시 2026-09-25)")
     for p in ctx["programs"][:15]:
         print(f"  {p['ministry']} | {p['name'][:44]} | {p['new'] or '계속'} {p['scope']}")
+    print(f"\n[대구시 세부사업 — 본예산 사업설명서, 사업명·부서·상태만] {len(ctx['city_programs'])}건")
+    for m in ctx["city_programs"][:15]:
+        print(f"  {m['name'][:40]} · {m['org']} {m['dept']} · {m['status']}")
     print(f"\n[대구시가 함께 추진하는 사업] {len(ctx['city_match'])}건 (사업명만)")
     for m in ctx["city_match"][:10]:
         print(f"  {m.get('대구시 세부사업', '')[:40]} ↔ {m.get('국비 사업', '')[:40]}")

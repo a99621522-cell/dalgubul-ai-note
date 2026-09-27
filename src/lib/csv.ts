@@ -97,6 +97,25 @@ export const programs = () => {
   console.log(`[programs] 사업 ${out.length}건 (기업 수혜 ${out.filter(p => p.corp).length}, 중복 제거 ${dup})`);
   return out;
 };
+/** 대구시 본예산 사업설명서(부서별)에서 뽑은 세부사업(scripts/data/city_programs.csv, scripts/parse_city_budget.py). 금액 단위는 자료 그대로 천 원. */
+export type CityProgram = Record<string, string> & { b26: number; b25: number; isNew: boolean; corp: boolean; admin: boolean; funds: { city: number; national: number; balanced: number; other: number } };
+let _city: CityProgram[] | null = null;
+export const cityPrograms = () => {
+  if (_city) return _city;
+  const p = 'scripts/data/city_programs.csv';
+  const rows = fs.existsSync(p) ? readCsv(p) : [];
+  _city = rows.filter(r => r.name).map(r => ({ ...r, b26: num(r.budget_2026), b25: num(r.budget_2025), isNew: r.status === '신규', corp: r.corp === 'Y', admin: r.admin === 'Y',
+    funds: { city: num(r.fund_city), national: num(r.fund_national), balanced: num(r.fund_balanced), other: num(r.fund_other) } }));
+  return _city;
+};
+/** 천 원 → '12.3억 원' / '1,234만 원'. 0이면 null. */
+export const fmtCheon = (v: number): string | null => {
+  if (!v) return null;
+  const eok = v / 100000;
+  if (Math.abs(eok) >= 1) return `${eok.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원`;
+  return `${Math.round(v / 10).toLocaleString('ko-KR')}만 원`;
+};
+
 /** 백만 원 → '1,234.5억 원'. 값이 없거나 0이면 null. */
 export const fmtEok = (mil: string | number) => {
   const n = typeof mil === 'number' ? mil : num(mil);

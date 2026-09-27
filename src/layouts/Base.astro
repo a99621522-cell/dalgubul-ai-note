@@ -40,6 +40,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
     </div>
   </header>
   <script>window.addEventListener('beforeprint', () => document.querySelectorAll('details').forEach(d => { d.open = true; }));</script>
+  <script>import '../scripts/table_tools';</script>
   <main id="main" class="wrap">
     <slot />
   </main>

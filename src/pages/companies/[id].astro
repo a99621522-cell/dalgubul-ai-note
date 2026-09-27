@@ -36,6 +36,30 @@ const workersNote = fromNps ? '국민연금 가입자수' : '공장등록 신고
 const desc = `${c.name} — ${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''}, ${c.complex === '개별입지' ? '개별입지' : c.complex === '산단 외' ? '산단 외' : `${c.complex} 입주`}, ${c.sector.replace(/ 외 \d+ 종/, '')}${c.workers_band ? `, ${fromNps ? '가입자' : '종사자'} ${c.workers_band}` : ''}${c.product ? `, 생산품 ${c.product.split(',')[0]}` : ''}. ${srcName} ${c.as_of} 기준`;
 const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', name: c.name, address: c.address, description: desc,
   location: { '@type': 'Place', name: c.complex } }];
+// 기업 카드 한 장(HWP·인쇄) — 화면과 같은 값만 담는다(src/scripts/company_card.ts). 대표자 등 개인정보 없음
+const card = {
+  id: c.id, name: c.name, district: c.district, desc, url: `https://note.daitda.co.kr/companies/${c.id}/`,
+  rows: ([
+    ['소재', `${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''} · ${c.complex}`],
+    ['업종', `${c.sector}${[c.sector_code, c.sector_group].filter(Boolean).length ? ` (${[c.sector_code, c.sector_group].filter(Boolean).join(', ')})` : ''}`],
+    ['입지·구분', `${c.site_type}${c.tags.length ? ' · ' + c.tags.map(t => tagName(t)).join(', ') + ' (공개 명단 기준)' : ''}`],
+    !fromNps && ['생산품', c.product || '—'],
+    [fromNps ? '가입자' : '종사자', `${c.workers_band || '—'} (${workersNote})`],
+    ['고용 인원', emp == null ? '자료 없음' : `${emp.toLocaleString('ko-KR')}명 (${basis}${m ? `, ${monthLabel(m.month)} 기준` : ''}${empDelta != null ? `, 전월 대비 ${empDelta > 0 ? '+' : ''}${empDelta.toLocaleString('ko-KR')}명` : ''})`],
+    c.reg_type && ['공장 등록', `${c.reg_type === '등록' ? '등록 완료' : '설립 승인(등록 전)'}${c.first_registered ? ` · 최초 등록 ${c.first_registered}년` : ''}`],
+    c.mfg_area_band && ['제조시설 규모', c.mfg_area_band],
+    [`${fromNps ? '사업장 주소' : '공장 주소'}${Number(c.sites) > 1 ? ` (${c.sites}곳)` : ''}`, c.address],
+  ] as any[]).filter(Boolean),
+  support: support3y.map(s => [s.year, s.program, `${s.funder}${s.layer ? ` (${s.layer})` : ''}`, s.type || '—', fmtAmount(s)]),
+  supportNote: support3y.length
+    ? `공개 자료(NTIS 과제·대구시 보조금 공개·기관 선정 공고) 기준 ${support3y.length}건${supportAll.length > support3y.length ? `, 이전 ${supportAll.length - support3y.length}건` : ''}. 출처: ${[...new Set(support3y.map(s => s.source))].join(', ')}.`
+    : `공개 자료(NTIS 과제·대구시 보조금 공개·기관 선정 공고)에서 확인된 최근 3년 이력 없음${supportAll.length ? ` (이전 ${supportAll.length}건)` : ''}. 비공개 자료는 싣지 않습니다.`,
+  fin: fin.map(f => [f.year, fmtEokWon(f.revenue), fmtEokWon(f.operating_income), fmtEokWon(f.net_income)]),
+  finNote: fin.length ? `금융감독원 전자공시 정기보고서(${fin[0].fs})의 값을 억 원으로 나눠 표시.` : '',
+  partners: { stage: pt.stage, note: '업종 분류와 생산품으로 추정한 후보입니다. 거래 관계가 아니라 같은 단지·구군 안의 탐색용 목록이며, 확인은 기업이 직접 합니다. 순서는 같은 단지 → 같은 구·군 → 규모 순.',
+    groups: [['공급 후보', pt.suppliers], ['수요 후보', pt.buyers], ['동종 업체', pt.peers]].map(([g, list]: any) => [g, list.slice(0, 4).map((x: any) => [x.name, shortComplex(x.complex), x.sector.replace(/ 외 \d+ 종/, ''), x.workers_band || '—'])]) },
+  source: `${c.source}, 기준 ${c.as_of}`,
+};
 ---
 <Base title={c.name} description={desc} current="companies" jsonld={jsonld}>
   <article class="post">
@@ -43,6 +67,10 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
       <p class="meta"><a href="/companies/">대구 기업 사전</a> › <a href={`/companies/?district=${encodeURIComponent(c.district)}`}>{c.district}</a> › {c.complex}</p>
       <h1>{c.name}</h1>
       <p class="lede">{desc}</p>
+      <div class="tools co-actions">
+        <button type="button" class="btn secondary" id="card-hwp" title="이 기업의 개요·지원 이력·재무·협업 후보를 한글 파일 한 장으로 받습니다">기업 카드 HWP</button>
+        <button type="button" class="btn secondary" id="card-print" title="브라우저 인쇄 창에서 PDF 로 저장할 수 있습니다">인쇄·PDF</button>
+      </div>
     </header>
     <ul class="tiles co-tiles" aria-label="핵심 숫자">
       <li class="tile"><p class="label">고용 인원</p><p class="num">{emp == null ? <span class="unit">자료 없음</span> : <>{emp.toLocaleString('ko-KR')}<span class="unit">명</span></>}</p><p class="sub">{basis}{m ? ` · ${monthLabel(m.month)} 기준` : ''}{empDelta != null && ` · 전월 대비 ${empDelta > 0 ? '+' : ''}${empDelta.toLocaleString('ko-KR')}명`}{vals.length === 1 && ' · 월별 추이는 자료가 2개월부터'}</p></li>
@@ -105,11 +133,13 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
         <p class="meta">금융감독원 전자공시 정기보고서의 값을 억 원으로 나눠 표시. 상장·공시대상 기업만 자료가 있습니다.</p>
       </section>
     )}
-    {related.length > 0 ? <><section class="section-head"><h2>관련 글</h2></section><PostList posts={related} /></> : <p class="meta empty-line"><strong>관련 글</strong> 아직 이 기업을 다룬 글 없음 · 공개된 뉴스·공시가 수집되면 여기에 쌓입니다.</p>}
+    {related.length > 0 ? <div class="print-hide"><section class="section-head"><h2>관련 글</h2></section><PostList posts={related} /></div> : <p class="meta empty-line print-hide"><strong>관련 글</strong> 아직 이 기업을 다룬 글 없음 · 공개된 뉴스·공시가 수집되면 여기에 쌓입니다.</p>}
     <aside class="source-box">
       <strong>출처</strong> {c.source}, 기준 {c.as_of}. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아닙니다. 종사자(또는 가입자) 수는 구간으로만 표시합니다. 지원 이력·재무는 공개 자료(NTIS·대구시 보조금 공개·기관 선정 공고·DART)에서만 가져오며 비공개 자료는 싣지 않습니다. 정정 요청은 소개 페이지 연락처로.
     </aside>
   </article>
+  <script type="application/json" id="card-data" set:html={JSON.stringify(card)} />
+  <script>import '../../scripts/company_card';</script>
 </Base>
 <style>
   .partners, .support, .fin { margin-top: 1.5rem; }

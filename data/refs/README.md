@@ -1,6 +1,6 @@
 # 참고자료 창고 (data/refs)
 
-운영자가 Google Drive 폴더 **「다잇다 참고자료」** 에 올린 보고서·통계·전략 문서를 운영 세션이 읽고 **요약만** 여기에 남긴다. 원문 파일(PDF·HWP)은 저장소에 넣지 않는다. 정책제안 리포트 작성 세션은 `python3 scripts/report_context.py --area <key>` 의 "[참고자료 창고]" 항목으로 이 요약을 받아 근거로 쓴다.
+운영자가 Google Drive 폴더 **「DAITDA」**(폴더 id 1ugUlvYhcH4wsdUGentTTYCaMpl1yYB5t) 에 올린 보고서·통계·전략 문서를 운영 세션이 읽고 **요약만** 여기에 남긴다. 원문 파일(PDF·HWP)은 저장소에 넣지 않는다. 정책제안 리포트 작성 세션은 `python3 scripts/report_context.py --area <key>` 의 "[참고자료 창고]" 항목으로 이 요약을 받아 근거로 쓴다.
 
 ## 규칙
 - 파일 하나 = `data/refs/<slug>.json` 하나. slug 는 `<기관약칭>-<YYYY-MM>-<주제-영문-또는-한글>`.

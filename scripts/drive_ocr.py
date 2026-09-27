@@ -69,28 +69,37 @@ def ocr_page(png: Path, lang: str) -> str:
     return r.stdout
 
 
-def process_pdf(pdf: Path, out: Path, dpi: int, lang: str, workers: int) -> dict:
+def process_pdf(pdf: Path, out: Path, dpi: int, lang: str, workers: int, batch: int = 20) -> dict:
+    """쪽을 batch 개씩 렌더→OCR 하고 그때마다 txt 를 다시 써 둔다(취소·시간 초과여도 그때까지의 글자는 아티팩트에 남는다).
+    렌더한 PNG 는 out 밖(_work)에 두고 배치마다 지운다 — 아티팩트에 원문 쪽 그림이 들어가지 않게."""
     t0 = time.time()
     n = pdf_pages(pdf)
     layer = text_layer(pdf, n) if n else []
     need = [i for i, t in enumerate(layer, 1) if not t]
     print(f"{pdf.name}: {n}쪽, 글자 층 있는 쪽 {n - len(need)}, OCR 할 쪽 {len(need)}", flush=True)
-    work = out / "_pages" / pdf.stem
-    work.mkdir(parents=True, exist_ok=True)
+    work = Path("_work") / pdf.stem
     texts = list(layer)
-    if need:
-        # 필요한 쪽만 회색 PNG 로 렌더 → 병렬 OCR
-        subprocess.run(["pdftoppm", "-r", str(dpi), "-gray", "-png", str(pdf), str(work / "p")], check=True)
+    name = re.sub(r"[^\w가-힣.()\- ]+", "_", pdf.stem)[:80] or "doc"
+    txt = out / f"{name}.txt"
+
+    def save(done: int):
+        head = "" if done >= n else f"(부분 결과: {done}/{n}쪽까지)\n"
+        txt.write_text(head + "\n".join(f"=== 쪽 {i} ===\n{t.strip()}\n" for i, t in enumerate(texts, 1)), encoding="utf-8")
+
+    save(0)
+    for s in range(0, len(need), batch):
+        chunk = need[s:s + batch]
+        shutil.rmtree(work, ignore_errors=True); work.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["pdftoppm", "-r", str(dpi), "-gray", "-png", "-f", str(chunk[0]), "-l", str(chunk[-1]), str(pdf), str(work / "p")], check=True)
         pngs = {int(m.group(1)): p for p in work.glob("p-*.png") if (m := re.search(r"-(\d+)\.png$", p.name))}
         with ThreadPoolExecutor(max_workers=workers) as ex:
-            for i, t in zip(need, ex.map(lambda i: ocr_page(pngs[i], lang) if i in pngs else "", need)):
+            for i, t in zip(chunk, ex.map(lambda i: ocr_page(pngs[i], lang) if i in pngs else "", chunk)):
                 texts[i - 1] = t
-                if i % 20 == 0:
-                    print(f"  … {i}/{n} ({time.time() - t0:.0f}s)", flush=True)
+        save(chunk[-1])
+        print(f"  … {chunk[-1]}/{n} ({time.time() - t0:.0f}s)", flush=True)
     shutil.rmtree(work, ignore_errors=True)
-    body = "\n".join(f"=== 쪽 {i} ===\n{t.strip()}\n" for i, t in enumerate(texts, 1))
-    name = re.sub(r"[^\w가-힣.()\- ]+", "_", pdf.stem)[:80] or "doc"
-    (out / f"{name}.txt").write_text(body, encoding="utf-8")
+    save(n)
+    body = txt.read_text(encoding="utf-8")
     empty = sum(1 for t in texts if len(re.sub(r"\s", "", t)) < 20)
     return {"file": pdf.name, "txt": f"{name}.txt", "pages": n, "ocr_pages": len(need), "chars": len(body), "empty_pages": empty, "seconds": round(time.time() - t0)}
 
@@ -115,7 +124,7 @@ def main():
             index.append(process_pdf(f, out, a.dpi, a.lang, a.workers))
         else:
             print(f"건너뜀(PDF 아님): {f.name}")
-    shutil.rmtree(dl, ignore_errors=True)
+    shutil.rmtree(dl, ignore_errors=True); shutil.rmtree("_work", ignore_errors=True)
     (out / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
     for r in index:
         print(f"{r['file']}: {r['pages']}쪽 · OCR {r['ocr_pages']}쪽 · {r['chars']:,}자 · 빈 쪽 {r['empty_pages']} · {r['seconds']}s → {r['txt']}")

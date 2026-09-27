@@ -56,7 +56,9 @@ jobs:
         if: always()
         with:
           name: drive-ocr-${{ github.run_number }}
-          path: ocr/
+          path: |
+            ocr/*.txt
+            ocr/index.json
           retention-days: 7
           if-no-files-found: warn
       - name: 대구시 사업설명서 파싱 → city_programs.csv 커밋

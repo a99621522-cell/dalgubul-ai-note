@@ -257,6 +257,12 @@ def main():
         srcs = {r["source"] for r in rows}
         old = [r for r in csv.DictReader(open(out, encoding="utf-8")) if r["source"] not in srcs]
         rows = old + rows
+    # 같은 실국에 사업설명서(목적·내용·재원이 있는 판)가 있으면 사업명세서(표만 있는 판) 행은 뺀다 — 같은 사업이 두 번 실리지 않게
+    rich = {(r["org"], r["dept"]) for r in rows if "명세서" not in r["source"]}   # 부서 단위(설명서가 권별로 나뉘어 올 수 있다)
+    n0 = len(rows)
+    rows = [r for r in rows if not ("명세서" in r["source"] and (r["org"], r["dept"]) in rich)]
+    if n0 != len(rows):
+        print(f"사업설명서가 있는 실국의 명세서 행 {n0 - len(rows)}건 제외")
     rows.sort(key=lambda r: (r["source"], r["org"], r["dept"], int(r["page"] or 0)))
     with open(out, "w", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=COLS)

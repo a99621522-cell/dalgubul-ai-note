@@ -2,14 +2,17 @@
 """정책제안 리포트(마크다운) → 한글 HWPX (공공기관 보고서 기본 양식, scripts/data/hwpx/report_basic.hwpx 를 채운다). 표준 라이브러리 + pyyaml.
 
 양식(운영자 제공, 2026-09-27)의 문단을 원형으로 복제해 채운다: 표지(제목 2줄·날짜·부서 표), 목차, 절 머리표(Ⅰ Ⅱ …),
-□(HY헤드라인M 15) → ○(휴먼명조 14) → -(14) → ※(11) 단계, 표(맑은 고딕 12). 그림은 캡션만 ※ 줄로 남긴다(SVG 는 넣지 않음).
+□(HY헤드라인M 15) → ○(휴먼명조 14) → -(14) → ※(11) 단계, 표(맑은 고딕 12).
+LG경영연구원 리포트 형식(운영자 지시 2026-09-27 「이 파일처럼 그림도 넣고 표도 넣고」)을 따라 그림·표를 본문에 넣는다:
+대표 그림(public/figures/<id>/hero.png)은 요약 앞에, 본문 <figure> 의 SVG 는 rsvg-convert 로 PNG 로 바꿔 캡션과 함께,
+마크다운 표는 한글 표로, 문단 첫머리의 굵은 핵심 문장은 붉은 굵은 글씨(LG 리포트의 리드 문장) 로. rsvg-convert 가 없으면 캡션만 ※ 줄로 남긴다.
 원문 문장은 그대로 옮긴다(요약·평가 없음). 담당자 성명·연락처 칸은 '다잇다 노트'·누리집 주소로 채운다.
 
 사용: python3 scripts/hwpx_report.py src/content/posts/<파일>.md [-o public/hwpx/<id>.hwpx]
       python3 scripts/hwpx_report.py --all        # 발행된 정책제안 리포트 전부 → public/hwpx/<id>.hwpx
       python3 scripts/hwpx_report.py --check <hwpx>  # XML 이 잘 열리는지
 """
-import argparse, copy, re, sys, zipfile
+import argparse, copy, io, re, shutil, struct, subprocess, sys, zipfile
 import xml.etree.ElementTree as ET
 from datetime import date
 from pathlib import Path
@@ -19,6 +22,10 @@ ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "scripts" / "data" / "hwpx" / "report_basic.hwpx"
 POSTS = ROOT / "src" / "content" / "posts"
 OUT_DIR = ROOT / "public" / "hwpx"
+PUBLIC = ROOT / "public"
+PX_UNIT = 75            # 96dpi 픽셀 1 = 75 HWPUNIT(1/7200인치)
+MAX_IMG_W = 42000       # 본문 그림 최대 너비(≈148mm, 본문 폭 48188 안)
+LEAD_COLOR = "#C00000"  # 핵심(리드) 문장 색 — LG경영연구원 리포트의 붉은 굵은 글씨
 ROMAN = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ"]
 NS: dict[str, str] = {}
 HP = ""
@@ -76,7 +83,8 @@ def body_blocks(md: str) -> list[tuple[str, object]]:
             while "</figure>" not in blk and i + 1 < len(lines):
                 i += 1; blk += "\n" + lines[i]
             cap = re.search(r"<figcaption>([\s\S]*?)</figcaption>", blk)
-            out.append(("note", "[그림] " + inline(cap.group(1)) if cap else "[그림]")); i += 1; continue
+            src = re.search(r'<img[^>]*src="([^"]+)"', blk)
+            out.append(("figure", (src.group(1) if src else "", inline(cap.group(1)) if cap else ""))); i += 1; continue
         if l.lstrip().startswith("<"):
             i += 1; continue
         if l.startswith("|"):
@@ -101,13 +109,18 @@ def body_blocks(md: str) -> list[tuple[str, object]]:
                 i += 1; text += " " + lines[i].strip()
             num = li[2] if re.match(r"\d", li[2]) else ""
             out.append(("dash", (num + " " if num else "") + inline(text))); i += 1; continue
-        # 문단: 굵은 첫 문장(인사이트 형식의 핵심 문장)은 □ 로, 나머지는 ○
+        # 문단: 굵은 첫 문장(인사이트 형식의 핵심 문장)은 붉은 굵은 리드 + 같은 문단의 나머지(LG 리포트 식).
+        # '**표 1. 제목**' 처럼 표 제목만 있는 줄은 표 캡션.
         m = re.match(r"^\*\*(.+?)\*\*\s*(.*)$", l.strip())
         if m and not buf:
-            flush(); out.append(("box", inline(m[1])))
-            rest = m[2]
-            if rest.strip():
-                buf.append(rest)
+            flush()
+            lead, rest = inline(m[1]), [m[2]] if m[2].strip() else []
+            while i + 1 < len(lines) and lines[i + 1].strip() and not re.match(r"^(#|\||<|>|\s*[-*]\s|---)", lines[i + 1]):
+                i += 1; rest.append(lines[i].strip())
+            if not rest and re.match(r"^표\s*\d", lead):
+                out.append(("caption", lead))
+            else:
+                out.append(("lead", (lead, inline(" ".join(rest)))))
             i += 1; continue
         buf.append(l.strip()); i += 1
     flush()
@@ -159,13 +172,118 @@ def clone(e):
     return copy.deepcopy(e)
 
 
+def set_para_runs(p, segs: list[tuple[str, str | None]]) -> None:
+    """문단을 (텍스트, charPrIDRef) 조각들로 채운다. None 이면 원형 run 의 글자 모양."""
+    set_para_text(p, "")
+    runs = [r for r in p.findall(HP + "run") if r.find(HP + "t") is not None]
+    proto = runs[0]
+    p.remove(proto)
+    lineseg = p.find(HP + "linesegarray")
+    for text, cp in segs:
+        r = clone(proto)
+        if cp:
+            r.set("charPrIDRef", cp)
+        r.find(HP + "t").text = text
+        if lineseg is not None:
+            p.insert(list(p).index(lineseg), r)
+        else:
+            p.append(r)
+
+
+def png_size(data: bytes) -> tuple[int, int]:
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        return struct.unpack(">II", data[16:24])
+    return 800, 450
+
+
+def svg_to_png(svg: Path) -> bytes | None:
+    """rsvg-convert(librsvg2-bin) 로 SVG → PNG(폭 1600px). 없으면 None."""
+    if not shutil.which("rsvg-convert"):
+        return None
+    r = subprocess.run(["rsvg-convert", "-w", "1600", "-b", "white", str(svg)], capture_output=True)
+    return r.stdout if r.returncode == 0 and r.stdout[:4] == b"\x89PNG" else None
+
+
+def load_image(src: str) -> tuple[bytes, str, int, int] | None:
+    """사이트 경로(/figures/…) → (바이트, 확장자, 픽셀 너비, 높이). 큰 PNG(대표 그림)는 JPEG 로 줄인다."""
+    path = PUBLIC / src.lstrip("/")
+    if not path.exists():
+        return None
+    ext = path.suffix.lower().lstrip(".")
+    data = svg_to_png(path) if ext == "svg" else path.read_bytes()
+    if not data:
+        return None
+    ext = "png" if ext == "svg" else ext
+    try:
+        from PIL import Image
+        im = Image.open(io.BytesIO(data)); im.load()
+        if ext in ("png", "jpg", "jpeg") and len(data) > 400_000:
+            im = im.convert("RGB"); im.thumbnail((1400, 1400))
+            b = io.BytesIO(); im.save(b, "JPEG", quality=85, optimize=True); data, ext = b.getvalue(), "jpg"
+        w, h = im.size
+    except Exception:
+        w, h = png_size(data)
+    return data, ext, w, h
+
+
+class Images:
+    """본문에 넣는 그림 모음: BinData/imageN.<ext> + content.hpf manifest 항목."""
+
+    def __init__(self, start: int = 2):
+        self.n = start
+        self.files: list[tuple[str, bytes, str]] = []   # (id, bytes, ext)
+
+    def add(self, data: bytes, ext: str) -> str:
+        bid = f"image{self.n}"; self.n += 1
+        self.files.append((bid, data, ext))
+        return bid
+
+
+def pic_paragraph(proto, bid: str, px_w: int, px_h: int, comment: str):
+    """가운데 정렬 문단 하나에 그림(글자처럼 취급)을 넣는다."""
+    w = min(px_w * PX_UNIT, MAX_IMG_W)
+    h = int(px_h * PX_UNIT * (w / (px_w * PX_UNIT)))
+    xml = (f'<hp:run xmlns:hp="{NS["hp"]}" xmlns:hc="{NS["hc"]}" charPrIDRef="24"><hp:pic id="{2000000000 + hash(bid) % 100000000}" zOrder="{10 + int(bid[5:])}" numberingType="PICTURE" '
+           f'textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" href="" groupLevel="0" instid="{1100000000 + int(bid[5:])}" reverse="0">'
+           f'<hp:offset x="0" y="0"/><hp:orgSz width="{w}" height="{h}"/><hp:curSz width="{w}" height="{h}"/><hp:flip horizontal="0" vertical="0"/>'
+           f'<hp:rotationInfo angle="0" centerX="{w // 2}" centerY="{h // 2}" rotateimage="1"/><hp:renderingInfo><hc:transMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/>'
+           f'<hc:scaMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/><hc:rotMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/></hp:renderingInfo>'
+           f'<hp:imgRect><hc:pt0 x="0" y="0"/><hc:pt1 x="{w}" y="0"/><hc:pt2 x="{w}" y="{h}"/><hc:pt3 x="0" y="{h}"/></hp:imgRect>'
+           f'<hp:imgClip left="0" right="{px_w * PX_UNIT}" top="0" bottom="{px_h * PX_UNIT}"/><hp:inMargin left="0" right="0" top="0" bottom="0"/>'
+           f'<hc:img binaryItemIDRef="{bid}" bright="0" contrast="0" effect="REAL_PIC" alpha="0"/><hp:effects/>'
+           f'<hp:sz width="{w}" widthRelTo="ABSOLUTE" height="{h}" heightRelTo="ABSOLUTE" protect="0"/>'
+           f'<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
+           f'<hp:outMargin left="0" right="0" top="283" bottom="283"/><hp:shapeComment>{comment}</hp:shapeComment></hp:pic><hp:t/></hp:run>')
+    run = ET.fromstring(xml)
+    p = clone(proto)
+    for r in p.findall(HP + "run"):
+        p.remove(r)
+    lineseg = p.find(HP + "linesegarray")
+    p.insert(list(p).index(lineseg) if lineseg is not None else 0, run)
+    p.set("paraPrIDRef", "20")   # 가운데 정렬
+    return p
+
+
+def add_lead_charpr(header_xml: str, base_id: str = "16") -> tuple[str, str]:
+    """header.xml 에 리드 문장용 글자 모양(원형 base_id + 굵게 + 붉은색)을 추가하고 (새 header, 새 id) 를 돌려준다."""
+    m = re.search(r'<hh:charPr id="%s".*?</hh:charPr>' % base_id, header_xml, re.S)
+    cnt = re.search(r'<hh:charProperties itemCnt="(\d+)"', header_xml)
+    if not m or not cnt:
+        return header_xml, base_id
+    new_id = cnt.group(1)
+    cp = m.group(0).replace(f'id="{base_id}"', f'id="{new_id}"', 1).replace('textColor="#000000"', f'textColor="{LEAD_COLOR}"', 1)
+    cp = cp.replace("<hh:strikeout", "<hh:bold/><hh:strikeout", 1) if "<hh:strikeout" in cp else cp.replace("</hh:charPr>", "<hh:bold/></hh:charPr>")
+    header_xml = header_xml.replace(cnt.group(0), f'<hh:charProperties itemCnt="{int(new_id) + 1}"', 1).replace("</hh:charProperties>", cp + "</hh:charProperties>", 1)
+    return header_xml, new_id
+
+
 def fmt_date(d) -> str:
     if isinstance(d, str):
         d = date.fromisoformat(d[:10])
     return f"{d.year}. {d.month}. {d.day}."
 
 
-def build(meta: dict, body_md: str, area: str, out: Path) -> None:
+def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> None:
     global HP
     z = zipfile.ZipFile(TEMPLATE)
     names = z.namelist()
@@ -176,6 +294,9 @@ def build(meta: dict, body_md: str, area: str, out: Path) -> None:
     HP = "{%s}" % NS["hp"]
     root = ET.fromstring(sec_xml)
     top = list(root)
+    header_xml, lead_cp = add_lead_charpr(z.read("Contents/header.xml").decode("utf-8"))
+    images = Images()
+    post_id = post_id or out.stem
     title = re.sub(r"^\[정책제안\]\s*", "", str(meta.get("title", "")))
     line1 = f"정책제안 리포트{' · ' + area if area else ''}"
     # 표지
@@ -193,6 +314,9 @@ def build(meta: dict, body_md: str, area: str, out: Path) -> None:
     sections: list[tuple[str, list]] = []
     summary: list = []
     desc = inline(str(meta.get("description") or meta.get("summary") or ""))
+    hero = meta.get("hero") if isinstance(meta.get("hero"), dict) else {}
+    if (PUBLIC / "figures" / post_id / "hero.png").exists():
+        summary.append(("figure", (f"/figures/{post_id}/hero.png", inline(str(hero.get("caption") or "대표 그림 (AI 생성 이미지)")))))
     if desc:
         summary.append(("o", desc))
     for o in meta.get("outline") or []:
@@ -255,6 +379,21 @@ def build(meta: dict, body_md: str, area: str, out: Path) -> None:
         for kind, payload in sblocks:
             if kind in ("box", "sub"):
                 e = clone(box_proto); set_para_text(e, f" □ {payload}")
+            elif kind == "lead":
+                lead, rest = payload  # type: ignore[misc]
+                e = clone(o_proto); set_para_runs(e, [("  ○ ", None), (lead, lead_cp)] + ([(" " + rest, None)] if rest else []))
+            elif kind == "caption":
+                e = clone(note_proto); set_para_text(e, str(payload)); e.set("paraPrIDRef", "20")
+            elif kind == "figure":
+                src, cap = payload  # type: ignore[misc]
+                img = load_image(src) if src else None
+                if img is None:
+                    e = clone(note_proto); set_para_text(e, f"       ※ [그림] {cap}")
+                else:
+                    data, ext, pw, ph = img
+                    bid = images.add(data, ext)
+                    root.append(pic_paragraph(blank_proto, bid, pw, ph, f"그림: {cap[:120]}"))
+                    e = clone(note_proto); set_para_text(e, cap); e.set("paraPrIDRef", "20")
             elif kind == "o":
                 e = clone(o_proto); set_para_text(e, f"  ○ {payload}")
             elif kind == "dash":
@@ -271,15 +410,22 @@ def build(meta: dict, body_md: str, area: str, out: Path) -> None:
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
     preview = "\n".join([line1, title, fmt_date(meta.get("date", date.today()))] + [f"{ROMAN[i % 12]}. {s}" for i, (s, _) in enumerate(sections)])
     out.parent.mkdir(parents=True, exist_ok=True)
+    manifest = "".join(f'<opf:item id="{bid}" href="BinData/{bid}.{ext}" media-type="image/{"jpeg" if ext == "jpg" else ext}" isEmbeded="1"/>' for bid, _, ext in images.files)
     with zipfile.ZipFile(out, "w") as zo:
         for n in names:
             data = z.read(n)
             if n == "Contents/section0.xml":
                 data = new_sec.encode("utf-8")
+            elif n == "Contents/header.xml":
+                data = header_xml.encode("utf-8")
+            elif n == "Contents/content.hpf":
+                data = data.decode("utf-8").replace("</opf:manifest>", manifest + "</opf:manifest>", 1).encode("utf-8")
             elif n == "Preview/PrvText.txt":
                 data = preview.encode("utf-8")
             zo.writestr(zipfile.ZipInfo(n), data, compress_type=zipfile.ZIP_STORED if n == "mimetype" else zipfile.ZIP_DEFLATED)
-    print(f"→ {out} ({out.stat().st_size:,} bytes, 절 {len(sections)}개)")
+        for bid, data, ext in images.files:
+            zo.writestr(zipfile.ZipInfo(f"BinData/{bid}.{ext}"), data, compress_type=zipfile.ZIP_DEFLATED)
+    print(f"→ {out} ({out.stat().st_size:,} bytes, 절 {len(sections)}개, 그림 {len(images.files)}개)")
 
 
 def make_table(proto, rows: list[list[str]]):
@@ -400,7 +546,12 @@ def main() -> int:
         for n in z.namelist():
             if n.endswith(".xml") or n.endswith(".hpf"):
                 ET.fromstring(z.read(n))
-        print("ok:", a.check, z.namelist()[:3]); return 0
+        sec = z.read("Contents/section0.xml").decode("utf-8"); hpf = z.read("Contents/content.hpf").decode("utf-8")
+        refs = set(re.findall(r'binaryItemIDRef="([^"]+)"', sec))
+        missing = [r for r in refs if f'id="{r}"' not in hpf or not any(n.startswith(f"BinData/{r}.") for n in z.namelist())]
+        if missing:
+            print("그림 참조 오류:", missing); return 1
+        print("ok:", a.check, f"그림 {len(refs)}개"); return 0
     targets = []
     if a.all:
         for f in sorted(POSTS.glob("*.md")):
@@ -414,7 +565,7 @@ def main() -> int:
     for f in targets:
         meta, body = split_front(f.read_text(encoding="utf-8"))
         out = Path(a.out) if (a.out and not a.all) else OUT_DIR / f"{f.stem}.hwpx"
-        build(meta, body, area_of(meta), out)
+        build(meta, body, area_of(meta), out, f.stem)
         build_summary(meta, body, area_of(meta), out.with_name(out.stem + "-요약.hwpx"), f.stem)
     return 0
 

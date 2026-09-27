@@ -82,7 +82,8 @@ jobs:
       - name: 한글 파일 생성 (발행 리포트 전부, 양식 scripts/data/hwpx)
         if: steps.merge.outputs.merged == '1'
         run: |
-          pip install -q pyyaml
+          pip install -q pyyaml pillow
+          sudo apt-get install -y -qq librsvg2-bin fonts-noto-cjk > /dev/null   # 그림 SVG → PNG(한글 글꼴 포함)
           python3 scripts/hwpx_report.py --all || true
           git add public/hwpx
           git diff --cached --quiet || git commit -m "hwpx: 정책제안 리포트 한글 파일 갱신 $(date -u +%Y-%m-%d)"

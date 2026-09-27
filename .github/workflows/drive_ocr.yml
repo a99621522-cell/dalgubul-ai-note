@@ -20,9 +20,13 @@ on:
         description: "tesseract 언어(기본 kor+eng)"
         required: false
         default: "kor+eng"
+      parse_budget:
+        description: "대구시 본예산 사업설명서면 true — 글자를 뽑은 뒤 scripts/parse_city_budget.py --append 로 city_programs.csv 를 갱신하고 main 에 커밋(원문 txt 는 커밋하지 않음)"
+        required: false
+        default: "false"
 
 permissions:
-  contents: read
+  contents: write   # parse_budget=true 일 때 city_programs.csv·match_daegu_national.csv 커밋
 
 jobs:
   ocr:
@@ -30,9 +34,6 @@ jobs:
     timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout: scripts/drive_ocr.py
-          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -58,3 +59,16 @@ jobs:
           path: ocr/
           retention-days: 7
           if-no-files-found: warn
+      - name: 대구시 사업설명서 파싱 → city_programs.csv 커밋
+        if: inputs.parse_budget == 'true'
+        run: |
+          ls ocr/*.txt
+          python3 scripts/parse_city_budget.py ocr/*.txt --append
+          python3 scripts/match_daegu.py
+          ! grep -qE "담당자\s*:|\(80[0-9]-[0-9]{4}\)" scripts/data/city_programs.csv   # 담당자·전화가 섞이지 않았는지
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add scripts/data/city_programs.csv scripts/data/match_daegu_national.csv
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "data: 대구시 본예산 사업설명서 세부사업 갱신 $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"

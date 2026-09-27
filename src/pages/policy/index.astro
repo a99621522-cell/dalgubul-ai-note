@@ -3,11 +3,15 @@ import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import ReportList from '../../components/ReportList.astro';
 import { getCollection } from 'astro:content';
+import { readCsv, cityPrograms } from '../../lib/csv';
+import fs from 'node:fs';
 /** /policy/ — 정책 부문: 격주 정책제안 리포트(승인·발행된 것만), 산업 정책 글, 국비 사업 ↔ 대구시 예산 매칭 표.
  *  리포트는 자동 초안(draft)으로 만들어지고 사람이 승인해야 여기에 나온다. 평가·비판 없음, 사실과 대구 접점만. */
 const all = (await getCollection('posts', p => !p.data.draft && p.data.category === 'policy')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const reports = all.filter(p => (p.data.tags ?? []).includes('정책제안'));
 const others = all.filter(p => !(p.data.tags ?? []).includes('정책제안'));
+const match = fs.existsSync('scripts/data/match_daegu_national.csv') ? readCsv('scripts/data/match_daegu_national.csv').filter(r => r['국비 사업']) : [];
+const cityN = cityPrograms().filter(p => !p.admin).length;
 const ROTATION = ['미래모빌리티·자동차부품', '로봇·피지컬AI', '반도체·소부장', '전통제조 AX(섬유 포함)', '헬스케어·의료기기', 'AI·SW·창업', '기계', '자동차', '섬유', '뿌리산업'];
 ---
 <Base title="정책" description={`대구 산업 정책 부문: 산업별 정책제안 리포트 ${reports.length}건, 산업 정책 글 ${others.length}건. 공개 자료 근거, 평가 없음. 정책제안 리포트는 예산을 참조하지 않는다.`} current="policy">
@@ -21,9 +25,19 @@ const ROTATION = ['미래모빌리티·자동차부품', '로봇·피지컬AI', 
   <div class="section-head"><h2>산업 정책 글</h2><a href="/category/policy/">분류 페이지</a></div>
   <PostList posts={others} />
 
+  {match.length > 0 && (
+    <section aria-labelledby="city-match">
+      <div class="section-head"><h2 id="city-match">국비 사업 ↔ 대구시 세부사업 매칭</h2><span class="meta">{match.length}건 · 이름 대조</span></div>
+      <p class="meta">대구시 본예산 사업설명서의 세부사업 {cityN}건과 부처 사업설명자료의 사업을 이름 유사도로 이은 표입니다. '확인 필요' 는 이름이 비슷할 뿐 같은 사업이 아닐 수 있습니다. 금액은 <a href="/programs/daegu/">대구시 사업 예산</a>·<a href="/programs/">사업 예산</a>에서 봅니다.</p>
+      <div class="scroll-x"><table class="data-table">
+        <thead><tr><th>대구시 세부사업</th><th class="col-opt">부서</th><th>국비 사업</th><th class="col-opt">부처</th><th>판정</th></tr></thead>
+        <tbody>{match.map(r => (<tr><td>{r['대구시 세부사업']}{r['대구시 상태'] === '신규' && <span class="meta"> (신규)</span>}</td><td class="col-opt">{r['대구시 실국']} {r['부서']}</td><td><a href={`/programs/#p-${r['코드']}`}>{r['국비 사업']}</a></td><td class="col-opt">{r['부처']}</td><td>{r['판정']}</td></tr>))}</tbody>
+      </table></div>
+    </section>
+  )}
   <div class="section-head"><h2>근거 자료</h2></div>
   <ul class="plain">
-    <li><a href="/programs/">사업·예산</a> — 부처 사업설명자료 DB(2026 예산·신규 여부)</li>
+    <li><a href="/programs/">사업·예산</a> — 부처 사업설명자료 DB(2026 예산·신규 여부){cityN > 0 && <> · <a href="/programs/daegu/">대구시 사업 예산</a> — 본예산 사업설명서 세부사업 {cityN}건</>}</li>
     <li><a href="/industry/">산업별</a> · <a href="/dashboard/">현황</a> — 기업 사전 집계(기업·고용·단지·규모)</li>
     <li><a href="/support/">지원 기업</a> — 공개 자료에서 확인된 지원사업 수혜 이력</li>
     <li><a href="/supply-chain/">공급망</a> — 산업연관표 기반 빈 고리·유치 후보(조건 필터 결과)</li>

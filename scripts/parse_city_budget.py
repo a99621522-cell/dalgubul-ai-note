@@ -238,7 +238,7 @@ def parse_file(path: Path, year: int, debug: bool = False) -> list[dict]:
     org_name = re.sub(r"\s+", "", mm.group(1)) if mm else ""   # 표지는 글자 사이가 벌어져 있다(원 스 톱 …)
     if not org_name:   # 파일 이름의 첫 괄호: '…사업설명서(미래혁신성장실)(홈페이지공개용)'
         fm = re.search(r"\(([^()]*?(?:실|국|단|본부|센터|청|관)(?:\s*\d권)?)\)", path.name)
-        org_name = re.sub(r"\s+", "", fm.group(1)) if fm else ""
+        org_name = re.sub(r"\d권$", "", re.sub(r"\s+", "", fm.group(1))) if fm else ""
     source = f"{year}년 본예산 사업설명서({org_name})" if org_name else re.sub(r"\.(txt|pdf)$", "", path.name)
     blocks, cur = [], []
     for i, p in enumerate(pages, 1):

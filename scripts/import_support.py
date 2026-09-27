@@ -10,7 +10,7 @@
 - 기업 매칭: 정규화 회사명 + 구·군(주소가 있을 때), 없으면 이름이 유일할 때만. 못 맞춘 행도 이름으로 남긴다(id 빈칸)
 - 평가·순위 없음. 같은 기업·연도·사업명은 한 번만
 
-사용: python3 scripts/import_support.py [--dry-run]
+사용: python3 scripts/import_support.py [--rebuild] [--replace-source 낱말] [--dry-run] [--dry-run]
 """
 from __future__ import annotations
 
@@ -79,7 +79,18 @@ def main(argv: list[str]) -> int:
     by_name: dict[str, list[str]] = {}
     for c in companies:
         by_name.setdefault(norm_name(c["name"]), []).append(c["id"])
-    existing = list(csv.DictReader(open(OUT, encoding="utf-8"))) if OUT.exists() else []
+    # 같은 이름의 공장 기록이 여럿(대구 안 공장 여러 곳)이면 종사자 수가 가장 큰 기록을 대표로 잇는다.
+    # (예전에는 이름이 하나뿐일 때만 이었더니 성우하이텍·삼보모터스처럼 공장이 여러 곳인 기업이 통째로 빠졌다, 2026-09-27)
+    def _w(c: dict) -> int:
+        try:
+            return int(re.sub(r"\D", "", str(c.get("workers") or "")) or 0)
+        except ValueError:
+            return 0
+    primary: dict[str, str] = {}
+    for c in sorted(companies, key=_w, reverse=True):
+        primary.setdefault(norm_name(c["name"]), c["id"])
+    rebuild = "--rebuild" in argv   # 투입 CSV 전부에서 이력을 다시 만든다(매칭 규칙을 바꿨을 때)
+    existing = [] if rebuild else (list(csv.DictReader(open(OUT, encoding="utf-8"))) if OUT.exists() else [])
     replace = argv[argv.index("--replace-source") + 1] if "--replace-source" in argv else None
     if replace:  # 이 낱말이 출처에 든 기존 행은 버리고 다시 넣는다(재실행 멱등)
         existing = [r for r in existing if replace not in (r.get("source") or "")]
@@ -105,8 +116,8 @@ def main(argv: list[str]) -> int:
                 dist = m.group(1)
             n = norm_name(name)
             cid = by_key.get((n, dist)) if dist else None
-            if cid is None and len(by_name.get(n, [])) == 1:
-                cid = by_name[n][0]
+            if cid is None and n in primary:
+                cid = primary[n]
             if cid:
                 matched += 1
             amount = re.sub(r"[^\d.]", "", pick(r, "amount"))

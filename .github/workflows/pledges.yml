@@ -26,7 +26,6 @@ jobs:
           python-version: "3.12"
       - run: pip install -r scripts/requirements.txt playwright pypdf && python -m playwright install --with-deps chromium
       - name: 공약 원문
-        env:
         run: |
           set +e
           python3 scripts/fetch_pledges.py

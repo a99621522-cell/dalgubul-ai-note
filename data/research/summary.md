@@ -1,4 +1,4 @@
-# 참조 기관 조사 — 최근 발간물 목록 (scripts/fetch_research.py, 2026-09-25)
+# 참조 기관 조사 — 최근 발간물 목록 (scripts/fetch_research.py, 2026-09-27)
 
 정책제안 리포트가 근거로 쓰는 기관과 접속 결과. OK = 최근 70일 안 항목을 받음. '항목 없음' 은 페이지는 열렸으나 RSS 도 날짜 붙은 목록도 못 찾은 경우(대개 JS 목록). '최근 없음' 은 목록은 읽었으나 최근 70일 안 발간물이 없는 경우(최신 날짜 표시). '차단' 은 robots.txt 가 크롤러를 막아 존중. 실패는 접속 시간 초과·오류.
 
@@ -32,10 +32,10 @@
 | 대구 기관 | [대구광역시 북구 보도자료(공공데이터포털)](https://www.buk.daegu.kr) | OK | 공공데이터포털 15149016 | 40 | 2026-08-14 [대백인터빌 전체에 물결친 애국심, 광복의 감동을 재현하다]() |
 | 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | OK | 목록 페이지 | 6 | 2026-09-21 [대구 제3산단, 교통·물류 수송 숨통 틔운다… 9월 22일 신천대로 진·](https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=278924) |
 | 대구 기관 | [대구기계부품연구원(DMI)](https://www.dmi.re.kr) | 접속 실패 |  | 0 | — |
+| 대구 기관 | [대구산업경제동향 온라인 시스템(대구광역시)](https://distat.daegu.go.kr) | 접속 실패 |  | 0 | — |
 | 대구 기관 | [대구테크노파크](https://www.ttp.org) | 접속 실패 |  | 0 | — |
 | 분야 기관 | [국가뿌리산업진흥센터(KPIC)](https://www.kpic.re.kr) | 차단 | robots.txt 차단 | 0 | — |
 | 분야 기관 | [다이텍연구원(DYETEC)](https://www.dyetec.or.kr) | 차단 | robots.txt 차단 | 0 | — |
-| 분야 기관 | [대구산업경제동향 온라인시스템(distat)](https://distat.daegu.go.kr) | 최근 없음 | 최신 항목 2025-10-01 (최근 70일 밖) | 0 | — |
 | 분야 기관 | [소프트웨어정책연구소(SPRi) 이슈리포트](https://spri.kr) | OK | 목록 페이지 | 5 | 2026-09-10 [기업가형 AI 인재 육성 전략 연구](https://spri.kr/posts/view/24021?code=research&study_type=&board_type=research&flg=0) |
 | 분야 기관 | [한국AI·로봇산업협회(KRIA)](https://www.korearobot.or.kr) | OK | 목록 페이지(행) | 12 | 2026-09-23 [유관기관/기타공고](https://www.korearobot.or.kr/information/notice.htm#유관기관-기타공고) |
 | 분야 기관 | [한국기계연구원(KIMM) 기계기술정책](https://www.kimm.re.kr) | OK | 목록 페이지 | 10 | 2026-09-22 [행사 2026-09-22 기계연–해군, 국방기술 협력 강화 위한 기술교류](https://www.kimm.re.kr/sub0504/view/id/21461) |

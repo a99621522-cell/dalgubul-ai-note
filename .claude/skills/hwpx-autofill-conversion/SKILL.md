@@ -20,6 +20,6 @@ description: 한글(HWPX) 양식을 채워 문서를 만든다. 정책제안 리
 
 # 지킬 것
 - 원문 문장을 그대로 옮긴다(요약·평가·의견 추가 없음). 정책제안서에는 예산액·사업코드를 넣지 않는다.
-- 표지의 부서·담당·연락처 표와 부서 이름 상자는 지운다(운영자 지시 2026-09-27). 한 쪽 요약의 소속부서 칸은 날짜만. 어떤 칸에도 사람 이름·연락처를 넣지 않는다.
+- 표지의 부서·담당·연락처 표·부서 이름 상자·날짜는 지운다(운영자 지시 2026-09-27). 표지는 제목 두 줄과 목차만. 한 쪽 요약의 소속부서 칸도 비운다. 어떤 칸에도 사람 이름·연락처를 넣지 않는다.
 - 그림은 LG경영연구원 리포트처럼 본문에 넣는다(운영자 지시 2026-09-27): SVG 는 `rsvg-convert -w 1600` 으로 PNG 로, 400KB 넘는 PNG 는 JPEG(폭 1400)로 줄여 `BinData/imageN.<ext>` 에 넣고 `Contents/content.hpf` 의 `<opf:manifest>` 에 `<opf:item id="imageN" href="BinData/imageN.png" media-type="image/png" isEmbeded="1"/>` 를 더한다. 문단에는 `<hp:run><hp:pic …><hc:img binaryItemIDRef="imageN"/>…</hp:pic><hp:t/></hp:run>` (treatAsChar=1, 크기 HWPUNIT = 픽셀×75, 최대 너비 42000, 가운데 정렬 paraPr). 캡션은 그림 아래 가운데 정렬 11pt. rsvg-convert 가 없으면 캡션만 ※ 줄로 남긴다. `--check` 가 그림 참조와 BinData·manifest 를 대조한다.
 - 양식 파일: `scripts/data/hwpx/report_basic.hwpx`(보고서 기본), `report_summary.hwpx`(한 쪽 요약). 양식이 바뀌면 파일만 갈아끼우고 문단 역할 인덱스(top[3]·[8]·[12]·[15]·[17]·[19]~[24]·[64])를 다시 확인한다.

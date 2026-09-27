@@ -12,9 +12,9 @@ on:
         required: false
         default: ""
       pattern:
-        description: "첨부파일 이름 무늬"
+        description: "첨부파일 이름 무늬 (GitHub 가 한글 파일명을 지우므로 기본은 모든 xlsx, 가장 큰 파일을 전국 파일로 본다)"
         required: false
-        default: "*전국*"
+        default: "*.xlsx"
 
 permissions:
   contents: write
@@ -41,8 +41,9 @@ jobs:
           ls -la data/raw/factoryon
       - name: 분석
         run: |
-          f=$(ls data/raw/factoryon/*.xlsx data/raw/factoryon/*.xls 2>/dev/null | head -1)
-          [ -n "$f" ] || { echo "::error::전국 파일이 없다(릴리스 첨부 이름에 '전국'이 들어가야 함)"; exit 1; }
+          f=$(ls -S data/raw/factoryon/*.xlsx data/raw/factoryon/*.xls 2>/dev/null | head -1)   # 가장 큰 파일 = 전국(개별,계획) 입주업체현황
+          [ -n "$f" ] || { echo "::error::릴리스에 xlsx 첨부가 없다"; exit 1; }
+          echo "전국 파일로 판단: $f ($(stat -c %s "$f") bytes)"
           python3 scripts/attract.py --factoryon "$f"
           rm -rf data/raw/factoryon
       - name: 대표자·연락처 열이 결과에 없는지 확인

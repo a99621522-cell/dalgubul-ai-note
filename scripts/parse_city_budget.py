@@ -19,6 +19,21 @@ COLS = ["year", "org", "dept", "team", "function", "policy_program", "unit_progr
         "fund_city", "fund_national", "fund_balanced", "fund_other", "period", "basis", "purpose", "content",
         "corp", "admin", "page", "source"]
 TITLE = re.compile(r"^\s*(\S[^\n]*?)\s*\((계속|신규|종료|변경|일몰|폐지|재편)\)\s*$")
+STATUS_ONLY = re.compile(r"^\s*(계\s*속|신\s*규|종\s*료|변\s*경|일\s*몰|폐\s*지|재\s*편)\s*$")
+
+
+def block_title(page: str):
+    """세부사업 쪽의 (사업명, 상태). '사업명(계속)' 한 줄이거나, '계 속' 줄 다음 줄이 사업명인 서식."""
+    lines = [l for l in page.split("\n") if l.strip()][:3]
+    if not lines:
+        return None
+    m = TITLE.match(lines[0])
+    if m:
+        return re.sub(r"\s{2,}", " ", m.group(1).strip()), m.group(2)
+    m = STATUS_ONLY.match(lines[0])
+    if m and len(lines) > 1 and not re.search(r"회계연도|조\s*직", lines[1]):
+        return re.sub(r"\s{2,}", " ", lines[1].strip()), re.sub(r"\s", "", m.group(1))
+    return None
 NUM = r"(-?△?[\d,]+(?:\.\d+)?)"
 ADMIN = re.compile(r"기본경비|인력운영비|예수금|원리금상환|청사관리|공무원|인건비|운영비$")
 CORP = re.compile(r"기업|소상공인|창업|스타트업|벤처|소공인|업체|사업자|공장|산업단지|입주")
@@ -66,26 +81,27 @@ def section(text: str, start: str, ends: list[str]) -> list[str]:
     return rest[:cut].split("\n")
 
 
-def parse_block(pages: list[tuple[int, str]], year: int, source: str) -> dict:
+def parse_block(pages: list[tuple[int, str]], year: int, source: str, default_org: str = "") -> dict:
     pno, first = pages[0]
     text = "\n".join(p for _, p in pages)
-    m = TITLE.match(next(l for l in first.split("\n") if l.strip()))
-    name, status = m.group(1).strip(), m.group(2)
-    name = re.sub(r"\s{2,}", " ", name)
-    org = re.search(r"조\s*직\s*:?\s*([^\n:]+?)(?=\s{2,}담\s*당|\s{3,}|\n)", text)
+    name, status = block_title(first)
+    org = re.search(r"^\s*조\s*직\s*:?\s*([^\n:]+?)(?=\s{2,}담\s*당|\s{3,}|\n)", text, re.M)   # 줄 머리의 '조 직' 만(사업명 속 '조직 및…' 제외)
     orgs = re.sub(r"\s+", " ", org.group(1)).strip() if org else ""
     # '원스톱기업투자센터 투자유치과 투자기획팀' → 실국 / 과 / 팀. 붙어 있으면(예: '미래혁신성장실산업정책과…') 과·팀 낱말로 자른다
     parts = orgs.split(" ")
-    # 실국과 과가 붙어 나오면('원스톱기업투자센터투자유치과') 실·국·단·본부·센터·청 뒤에서 자른다
-    split_parts = []
-    for p in parts:
-        mm = re.match(r"^(.+?(?:실|국|단|본부|센터|청))(\S+?(?:과|관))$", p)
-        split_parts += [mm.group(1), mm.group(2)] if mm else [p]
-    parts = split_parts
-    dept = next((p for p in parts if re.search(r"과$|관$", p)), "")
-    team = next((p for p in parts if re.search(r"팀$", p)), "")
+    # 실국·과·팀이 붙어 나오면('경제국고용노동정책과고용노동기획팀', '대학정책국대구도서관') 첫 토큰을 실·국·단·본부·센터·청 뒤에서 자른다.
+    # 실국 부분이 3자 이상일 때만 — '산단진흥과' 를 '산단'+'진흥과' 로 자르지 않게
+    mm = re.match(r"^(.{2,}?(?:실|국|단|본부|센터|청))(\S{3,})$", parts[0]) if parts else None
+    if mm and len(mm.group(1)) >= 3:
+        rest = mm.group(1), mm.group(2)
+        m2 = re.match(r"^(\S+?(?:과|담당관|관))(\S+)$", rest[1])   # 과 뒤에 팀이 또 붙은 경우
+        parts = [rest[0]] + ([m2.group(1), m2.group(2)] if m2 else [rest[1]]) + parts[1:]
+    dept = next((p for p in parts[1:] if re.search(r"과$|담당관$|관$|도서관$|센터$", p)), "") or (parts[0] if parts and re.search(r"과$|관$", parts[0]) else "")
+    team = next((p for p in parts if re.search(r"팀$|TF$", p) or (re.search(r"센터$", p) and p != dept and p != parts[0])), "")
     top = parts[0] if parts else ""
-    func = re.search(r"기\s*능\s*:?\s*([^\n:]+?)(?:\s{3,}|\n)", text)
+    if top == dept or not re.search(r"(실|국|단|본부|센터|청)$", top):   # 조직 줄에 실국이 없으면(미래혁신성장실 서식) 표지의 이름
+        top = default_org or top
+    func = re.search(r"^\s*기\s*능\s*:?\s*([^\n:]+?)(?:\s{3,}|\n)", text, re.M)
     pol = re.search(r"정책사업\s*:?\s*([^\n:]+?)\s*(?=단위사업|\s{3,}|\n)", text)
     unit = re.search(r"단위사업\s*:\s*([^\n:]+?)(?:\s{3,}|\n)", text)
     if not unit or not unit.group(1).strip():   # '단위사업' 뒤에 값이 없고 다음 줄에 ':   지역대학 육성 지원' 로 오는 서식
@@ -222,7 +238,7 @@ def parse_file(path: Path, year: int, debug: bool = False) -> list[dict]:
     blocks, cur = [], []
     for i, p in enumerate(pages, 1):
         lines = [l for l in p.split("\n") if l.strip()]
-        if lines and TITLE.match(lines[0]) and "예산총괄" in p and "회계연도" in p:
+        if lines and block_title(p) and "예산총괄" in p and "회계연도" in p:
             if cur:
                 blocks.append(cur)
             cur = [(i, p)]
@@ -233,7 +249,7 @@ def parse_file(path: Path, year: int, debug: bool = False) -> list[dict]:
     rows = []
     for blk in blocks:
         try:
-            rows.append(parse_block(blk, year, source))
+            rows.append(parse_block(blk, year, source, org_name))
         except Exception as e:  # 한 사업이 깨져도 나머지는 살린다
             print(f"::warning::{path.name} p.{blk[0][0]} 파싱 실패: {e}", file=sys.stderr)
     return rows

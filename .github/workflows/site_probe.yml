@@ -19,6 +19,10 @@ on:
         description: "기사·공지 한 쪽의 제목·날짜·본문 글자만 찍기(true) — 운영자가 준 링크를 세션이 읽을 때"
         required: false
         default: "false"
+      raw:
+        description: "응답 본문 앞 3,000자를 그대로 찍기(true) — XML·JSON 오픈API 확인용"
+        required: false
+        default: "false"
 
 permissions:
   contents: read

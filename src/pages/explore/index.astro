@@ -1,0 +1,151 @@
+---
+/** 데이터 탐색: 공무원이 필요한 자료를 한 줄로 적으면(또는 조건을 고르면) 표와 그래프로 보여 준다.
+ *  계산은 브라우저에서 한다 — /companies-index.json(기업 단위)과 /explore-data.json(월간 집계·시계열·공급망). 서버·AI 호출 없음.
+ *  질문 해석은 scripts/explore.ts 의 규칙(구군·산업·단지·입지·규모·태그·"○○별"·지표 낱말). 결과는 URL 에 남아 공유·재현된다. */
+import Base from '../../layouts/Base.astro';
+import { monthly, monthLabel } from '../../lib/stats';
+import { companies } from '../../lib/csv';
+import { allTags, siteTypes } from '../../lib/sites';
+import { shortComplex } from '../../lib/csv';
+
+const m = monthly();
+const ym = m ? monthLabel(m.month) : '';
+const list = companies();
+const asOf = list[0]?.as_of ?? '';
+const uniq = (xs: string[]) => [...new Set(xs.filter(Boolean))];
+const districts = uniq(list.map(c => c.district)).filter(d => /구$|군$/.test(d)).sort((a, b) => a.localeCompare(b, 'ko'));
+const industries = Object.keys(m?.by_industry ?? {});
+const complexes = Object.entries(list.reduce((acc, c) => { const k = shortComplex(c.complex); acc[k] = (acc[k] ?? 0) + 1; return acc; }, {} as Record<string, number>))
+  .sort((a, b) => b[1] - a[1]).map(([k]) => k);
+const sites = siteTypes().map(t => t.name);
+const tags = allTags();
+const SIZES = [['1~9', '1~9명'], ['10~49', '10~49명'], ['50~299', '50~299명'], ['300+', '300명 이상'], ['none', '미기재']];
+const examples = [
+  ['달성군 자동차부품 기업 규모별', 'm=firms&x=size&d=달성군&g=자동차·부품'],
+  ['구군별 고용 인원', 'm=employment&x=district'],
+  ['성서산단 업종별 기업 수', 'm=firms&x=sector&c=성서산단'],
+  ['산업별 지원사업 수혜 기업', 'm=support_firms&x=industry'],
+  ['산업별 국민연금 취득·상실', 'm=nps&x=industry'],
+  ['수성알파시티 산업별 기업 수', 'm=firms&x=industry&t=수성알파시티'],
+  ['벤처기업 구군별', 'm=firms&x=district&k=venture'],
+  ['자동차·부품 고용 월별 추이', 'm=employment&x=month&g=자동차·부품'],
+];
+const description = `대구 기업 사전 ${list.length.toLocaleString('ko-KR')}곳과 월간 통계(${ym})를 조건에 맞춰 표·그래프로 바로 그립니다. 구군·산업·단지·입지·규모·태그별 기업 수, 고용 인원, 취득·상실, 지원사업 수혜, 월별 추이.`;
+---
+<Base title="데이터 탐색" description={description} current="explore">
+  <div class="page-head">
+    <div class="section-head"><h1>데이터 탐색</h1><span class="meta">기업 사전 {asOf} · 통계 {ym}</span></div>
+    <p class="lede">필요한 자료를 한 줄로 적으면 표와 그래프로 보여 줍니다. 예: <em>달성군 자동차부품 기업 규모별</em>, <em>구군별 고용 인원</em>, <em>성서산단 업종별 기업 수</em>. 아래 조건으로 직접 고를 수도 있습니다.</p>
+  </div>
+
+  <form id="ask" class="ask" role="search">
+    <label for="q" class="visually-hidden">보고 싶은 자료</label>
+    <input id="q" name="q" type="search" class="field" placeholder="예: 달성군 자동차부품 기업 규모별" autocomplete="off" />
+    <button type="submit" class="btn">그리기</button>
+  </form>
+  <ul class="examples" aria-label="예시">
+    {examples.map(([label, qs]) => <li><a href={`/explore/?${qs}`} data-qs={qs}>{label}</a></li>)}
+  </ul>
+
+  <details id="controls" class="controls">
+    <summary>조건 직접 고르기</summary>
+    <div class="control-grid">
+      <label>지표
+        <select id="metric" class="field">
+          <option value="firms">기업 수</option>
+          <option value="employment">고용 인원</option>
+          <option value="nps">국민연금 취득·상실(이달)</option>
+          <option value="new_closed">신규 등록·폐업(이달)</option>
+          <option value="support_firms">지원사업 수혜 기업(최근 3년)</option>
+          <option value="gaps">공급망 빈 고리(클러스터별)</option>
+        </select>
+      </label>
+      <label>구분(가로축)
+        <select id="axis" class="field">
+          <option value="industry">산업별</option>
+          <option value="district">구·군별</option>
+          <option value="eupmyeon">읍면동별</option>
+          <option value="complex">단지별</option>
+          <option value="site">입지 유형별</option>
+          <option value="size">종사자 규모별</option>
+          <option value="sector">업종(세분류)별</option>
+          <option value="tag">태그별</option>
+          <option value="month">월별 추이</option>
+        </select>
+      </label>
+      <label>산업
+        <select id="f-g" class="field"><option value="">전체</option>{industries.map(v => <option value={v}>{v}</option>)}</select>
+      </label>
+      <label>구·군
+        <select id="f-d" class="field"><option value="">전체</option>{districts.map(v => <option value={v}>{v}</option>)}</select>
+      </label>
+      <label>단지
+        <select id="f-c" class="field"><option value="">전체</option>{complexes.map(v => <option value={v}>{v}</option>)}</select>
+      </label>
+      <label>입지 유형
+        <select id="f-t" class="field"><option value="">전체</option>{sites.map(v => <option value={v}>{v}</option>)}</select>
+      </label>
+      <label>종사자 규모
+        <select id="f-w" class="field"><option value="">전체</option>{SIZES.map(([k, v]) => <option value={k}>{v}</option>)}</select>
+      </label>
+      <label>태그
+        <select id="f-k" class="field"><option value="">전체</option>{tags.map(t => <option value={t.key}>{t.name}</option>)}</select>
+      </label>
+      <label>표시
+        <select id="chart" class="field">
+          <option value="auto">자동</option>
+          <option value="bar">세로 막대</option>
+          <option value="hbar">가로 막대</option>
+          <option value="line">선</option>
+          <option value="table">표만</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" id="f-p" /> 지원 이력 있는 기업만</label>
+    </div>
+  </details>
+
+  <section id="result" class="result" aria-live="polite" hidden>
+    <div class="section-head"><h2 id="r-title"></h2><span class="meta" id="r-meta"></span></div>
+    <p class="meta" id="r-read"></p>
+    <figure class="xchart" id="r-fig">
+      <div class="xchart-box" id="r-chart"></div>
+      <figcaption id="r-cap"></figcaption>
+    </figure>
+    <div class="tools">
+      <button type="button" class="btn secondary" id="dl-csv">CSV 내려받기</button>
+      <button type="button" class="btn secondary" id="dl-png">그래프 PNG</button>
+      <button type="button" class="btn secondary" id="copy-tsv">표 복사(엑셀 붙여넣기)</button>
+      <button type="button" class="btn secondary" id="copy-link">링크 복사</button>
+    </div>
+    <div class="scroll-x"><table class="data-table" id="r-table"></table></div>
+    <p class="meta" id="r-src"></p>
+  </section>
+  <p class="empty" id="r-empty">위에 질문을 적거나 예시를 누르면 여기에 표와 그래프가 나옵니다.</p>
+
+  <script>
+    import { init } from '../../scripts/explore';
+    init();
+  </script>
+</Base>
+<style>
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ask { display: flex; gap: var(--s1); max-width: 720px; margin-top: var(--s2); }
+  .ask input { flex: 1 1 auto; min-width: 0; }
+  .examples { list-style: none; padding: 0; margin: var(--s2) 0 0; display: flex; flex-wrap: wrap; gap: var(--s1); }
+  .examples a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 18px; color: var(--ink); text-decoration: none; font-size: var(--small); }
+  .examples a:hover, .examples a:focus-visible { border-color: var(--primary); color: var(--primary); }
+  .controls { margin-top: var(--s3); border: 1px solid var(--line); border-radius: var(--radius); padding: 0 var(--s2); }
+  .controls summary { cursor: pointer; min-height: var(--touch); display: flex; align-items: center; font-weight: 600; }
+  .control-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s2); padding: var(--s1) 0 var(--s2); }
+  @media (min-width: 720px) { .control-grid { grid-template-columns: repeat(4, 1fr); } }
+  .control-grid label { display: flex; flex-direction: column; gap: 4px; font-size: var(--small); color: var(--muted); }
+  .control-grid label.check { flex-direction: row; align-items: center; gap: var(--s1); align-self: end; min-height: var(--touch); color: var(--ink); }
+  .control-grid select { width: 100%; }
+  .result { margin-top: var(--s4); }
+  .xchart { margin: var(--s2) 0 0; }
+  .xchart-box { position: relative; }
+  .xchart svg { display: block; width: 100%; height: auto; }
+  .xchart figcaption { font-size: var(--small); color: var(--muted); margin-top: var(--s1); }
+  .tools { display: flex; flex-wrap: wrap; gap: var(--s1); margin: var(--s2) 0; }
+  .tools .btn { min-height: 36px; font-size: var(--small); }
+</style>

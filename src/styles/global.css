@@ -145,3 +145,11 @@ article.post .body figcaption { font-size: var(--small); color: var(--muted); ma
 .co-tiles { grid-template-columns: repeat(2, 1fr); margin-bottom: var(--s3); }
 @media (min-width: 720px) { .co-tiles { grid-template-columns: repeat(3, 1fr); } }
 .co-tiles .spark svg { display: block; max-width: 100%; height: auto; margin-top: 4px; }
+
+/* /explore/ 데이터 탐색 그래프 */
+.xchart-box .tip { display: none; position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 6px 10px; font-size: var(--tiny); color: var(--muted); white-space: nowrap; box-shadow: 0 1px 4px rgba(0,0,0,.08); z-index: 2; }
+.xchart-box .tip strong { color: var(--ink); font-size: var(--small); }
+.xchart-box path:focus-visible, .xchart-box g:focus-visible { outline: 2px solid var(--focus); }
+.xchart-box path:hover { filter: brightness(1.12); }
+.legend { list-style: none; margin: var(--s1) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); font-size: var(--small); color: var(--muted); }
+.legend .sw { display: inline-block; width: 14px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }

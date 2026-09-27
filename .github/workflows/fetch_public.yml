@@ -88,7 +88,7 @@ jobs:
           python3 scripts/sites.py
           python3 scripts/build_stats.py --backfill
           python3 scripts/render_charts.py
-          python3 scripts/report_context.py --area startup | head -20
+          python3 scripts/report_context.py --area ai-sw-startup | head -20
       - name: artifact (받은 원본)
         if: always()
         uses: actions/upload-artifact@v4

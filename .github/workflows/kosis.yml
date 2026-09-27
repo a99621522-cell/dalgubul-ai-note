@@ -1,0 +1,51 @@
+name: 통계청 KOSIS 통계표 받기
+
+# config/kosis_tables.yml 의 표를 KOSIS 공유서비스에서 받아 data/kosis/ 에 커밋한다(대구 행만).
+# 키는 Secrets KOSIS_KEY 하나. 없으면 받지 않고 끝난다. 이 세션 환경은 kosis.kr 이 막혀 있어 Actions 가 대신 돈다.
+# discover=true 면 tbl_id 가 빈 표의 후보를 로그에 찍기만 한다(커밋 없음).
+
+on:
+  schedule:
+    - cron: "17 19 8 * *"      # 매월 9일 04:17 KST (월간 통계 공표 뒤)
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "표 key (쉼표 구분, 비우면 전부)"
+        required: false
+        default: ""
+      discover:
+        description: "tbl_id 가 빈 표의 후보 검색만(true)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kosis-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          KOSIS_KEY: ${{ secrets.KOSIS_KEY }}
+        run: |
+          if [ "${{ inputs.discover }}" = "true" ]; then python3 scripts/fetch_kosis.py --discover ${{ inputs.only && format('--only {0}', inputs.only) || '' }}; exit 0; fi
+          python3 scripts/fetch_kosis.py ${{ inputs.only && format('--only {0}', inputs.only) || '' }}
+      - name: 커밋
+        if: inputs.discover != 'true'
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/kosis
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "data: KOSIS 통계표 갱신 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"

@@ -64,3 +64,13 @@ frontmatter: title("[정책제안] <산업>: <핵심 제안 한 줄>"), date, ca
 작성 규칙: 모든 문단에 숫자 하나 이상, 모든 숫자에 출처. "급성장·위기·획기적" 등 형용사 금지. 원문 수치·통화 그대로, 환산·추정 금지, 확인 안 되면 "미확인". 예산액·사업코드·예산서 인용 금지. docs/strategy/ 전략 문서와 어긋나는 제안이면 이유 명시(전략 문서 갱신 제안).
 
 저장: src/content/posts/YYYY-MM-DD-policy-<key>.md (key 는 config/pledge_areas.yml: mobility / robot-physical-ai / semiconductor / manufacturing-ax / healthcare / ai-sw-startup / machinery / automotive / textile / root), docs/strategy/proposals/<key>-YYYY-MM-DD.md 에 7절만. 완료 후 편마다 제목·제안 3줄·출처 수·발행 여부(발행/보류 사유)와 푸시 결과(성공 또는 오류 메시지 원문)를 출력한다.
+
+## 참고자료 창고 갱신 — 매주 월 06:19 KST (Claude 루틴 "참고자료 창고 갱신", 운영 세션을 깨움)
+
+운영 세션(Google Drive 커넥터가 붙어 있는 세션)에 다음 메시지가 온다. 자식 세션은 Drive 커넥터가 없고 지정 브랜치 없이는 푸시가 막히므로 운영 세션이 직접 한다.
+
+```
+참고자료 창고 갱신 시각이다. Google Drive 에서 폴더 「다잇다 참고자료」(search_files: mimeType = 'application/vnd.google-apps.folder' and title = '다잇다 참고자료')를 찾고, 그 안에서 지난 7일 안에 추가·수정된 파일을 찾는다(폴더가 없으면 list_recent_files 로 최근 7일 파일 중 보고서·통계로 보이는 것). 이미 data/refs/*.json 에 drive_id 가 있는 파일은 건너뛴다.
+파일마다: 10MB 이하 PDF·HWP·HWPX·DOCX·XLSX 는 read_file_content 로 읽고 data/refs/README.md 형식으로 data/refs/<slug>.json 요약을 쓴다(작성자 문장, 수치는 쪽 번호와 함께, 평가 없음, 개인정보 없음). 공개 페이지(PRISM·기관 누리집)를 검색해 public_url 을 채운다. 10MB 초과·스캔본(글자 없음)·비공개로 보이는 파일은 read_status: skipped 와 사유만 적는다.
+python3 scripts/refs.py --check 를 통과시킨 뒤 "refs: 참고자료 N건 요약 YYYY-MM-DD" 로 커밋, 지정 브랜치에 푸시, PR 을 열어 병합한다. 새 파일이 없으면 아무것도 하지 않는다. 끝나면 요약한 파일 제목과 건너뛴 파일(사유)을 사용자에게 알린다.
+```

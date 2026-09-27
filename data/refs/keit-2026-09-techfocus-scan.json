@@ -1,0 +1,18 @@
+{
+ "slug": "keit-2026-09-techfocus-scan",
+ "file": "202609.pdf",
+ "drive_id": "1PEZv5m0uM2cKw6SxtBKg3YvIHaWlahb-",
+ "title": "KEIT 테크 포커스 2026년 9월호(추정, 파일 이름 202609.pdf)",
+ "publisher": "한국산업기술기획평가원(KEIT) 월간 웹진 테크 포커스(추정)",
+ "published": "2026-09",
+ "doc_type": "웹진",
+ "areas": [],
+ "keywords": [
+  "테크 포커스"
+ ],
+ "summary": "커넥터로 읽었으나 이미지 위주 PDF 라 광고·캡션 조각(산업단지 AX 분과회의, 인터넷은 빛으로, 볼트와 너트 등)만 글자로 나오고 본문 기사가 없다. 요약하지 않았다.",
+ "public_url": "",
+ "read_status": "skipped",
+ "note": "29MB, 글자 층이 거의 없는 이미지 PDF. 필요하면 drive_ocr.yml 로 글자를 뽑거나 techfocus.kr 웹진 페이지(2026-08호는 keit-2026-08-techfocus-ai-semiconductor 참고)에서 읽는다.",
+ "added": "2026-09-28"
+}

@@ -1,0 +1,282 @@
+[
+ {
+  "P_STAT_CODE": "0000000066",
+  "STAT_CODE": "0000000110",
+  "STAT_NAME": "2.2. 산업연관표",
+  "CYCLE": null,
+  "SRCH_YN": "N",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y110",
+  "STAT_NAME": "2.2.1.2.1. 투입산출표 총거래표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y111",
+  "STAT_NAME": "2.2.1.2.2. 투입산출표 총투입계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y112",
+  "STAT_NAME": "2.2.1.2.3. 투입산출표 생산유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y113",
+  "STAT_NAME": "2.2.1.2.4. 투입산출표 수입유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y114",
+  "STAT_NAME": "2.2.1.2.5. 투입산출표 부가가치유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y115",
+  "STAT_NAME": "2.2.1.2.6. 투입산출표 취업유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y116",
+  "STAT_NAME": "2.2.1.2.7. 투입산출표 고용유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y120",
+  "STAT_NAME": "2.2.1.2.8. 투입산출표 총거래표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y121",
+  "STAT_NAME": "2.2.1.2.9. 투입산출표 총투입계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y122",
+  "STAT_NAME": "2.2.1.2.10. 투입산출표 생산유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y123",
+  "STAT_NAME": "2.2.1.2.11. 투입산출표 수입유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y124",
+  "STAT_NAME": "2.2.1.2.12. 투입산출표 부가가치유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y125",
+  "STAT_NAME": "2.2.1.2.13. 투입산출표 취업유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000903",
+  "STAT_CODE": "271Y126",
+  "STAT_NAME": "2.2.1.2.14. 투입산출표 고용유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y008",
+  "STAT_NAME": "2.2.2.2.1. 투입산출표 총거래표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y009",
+  "STAT_NAME": "2.2.2.2.2. 투입산출표 총투입계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y010",
+  "STAT_NAME": "2.2.2.2.3. 투입산출표 생산유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y011",
+  "STAT_NAME": "2.2.2.2.4. 투입산출표 수입유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y012",
+  "STAT_NAME": "2.2.2.2.5. 투입산출표 부가가치유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y013",
+  "STAT_NAME": "2.2.2.2.6. 투입산출표 취업유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y014",
+  "STAT_NAME": "2.2.2.2.7. 투입산출표 고용유발계수표(생산자가격, 대분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y068",
+  "STAT_NAME": "2.2.2.2.11. 투입산출표 총거래표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y069",
+  "STAT_NAME": "2.2.2.2.12. 투입산출표 총투입계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y070",
+  "STAT_NAME": "2.2.2.2.13. 투입산출표 생산유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y071",
+  "STAT_NAME": "2.2.2.2.14. 투입산출표 수입유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y072",
+  "STAT_NAME": "2.2.2.2.15. 투입산출표 부가가치유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y073",
+  "STAT_NAME": "2.2.2.2.16. 투입산출표 취업유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000533",
+  "STAT_CODE": "271Y074",
+  "STAT_NAME": "2.2.2.2.17. 투입산출표 고용유발계수표(생산자가격, 중분류)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000112",
+  "STAT_CODE": "281Y001",
+  "STAT_NAME": "2.3.1.2. 금융거래표(2009~)",
+  "CYCLE": "Q",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000001009",
+  "STAT_CODE": "284Y002",
+  "STAT_NAME": "2.3.1.5.2. 거래표",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": "한국은행"
+ },
+ {
+  "P_STAT_CODE": "0000000115",
+  "STAT_CODE": "281Y006",
+  "STAT_NAME": "2.3.2.1. 금융거래표(2003~2013)",
+  "CYCLE": "Q",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000118",
+  "STAT_CODE": "281Y004",
+  "STAT_NAME": "2.3.3.1. 금융거래표(1975~2005)",
+  "CYCLE": "Q",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000121",
+  "STAT_CODE": "281Y011",
+  "STAT_NAME": "2.3.4.1. 금융거래표(1970~1974)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ },
+ {
+  "P_STAT_CODE": "0000000124",
+  "STAT_CODE": "281Y009",
+  "STAT_NAME": "2.3.5.1. 금융거래표(1963~1970)",
+  "CYCLE": "A",
+  "SRCH_YN": "Y",
+  "ORG_NAME": null
+ }
+]

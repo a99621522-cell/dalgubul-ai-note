@@ -63,7 +63,7 @@ jobs:
         if: inputs.parse_budget == 'true'
         run: |
           ls ocr/*.txt
-          python3 scripts/parse_city_budget.py ocr/*.txt --append
+          python3 scripts/parse_city_budget.py ocr/*.txt --append --debug
           python3 scripts/match_daegu.py
           ! grep -qE "담당자\s*:|\(80[0-9]-[0-9]{4}\)" scripts/data/city_programs.csv   # 담당자·전화가 섞이지 않았는지
           git config user.name dalgubul-bot

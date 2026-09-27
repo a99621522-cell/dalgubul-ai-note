@@ -40,7 +40,7 @@ const incentives = summary?.incentives ?? [];
     {clusters.map((cl, i) => <section class="panel" data-cl={cl} hidden={i !== 0}>
       <p class="meta">클러스터 부문(IO 기본부문): {summary.clusters[cl]?.map((x: any) => `${x.name} ${x.firms}곳·${num(String(x.workers))}명`).join(' · ') || '없음'}</p>
       <div class="scroll-x"><table class="data-table gap-table">
-        <thead><tr><th class="n">순위</th><th>공급 부문</th><th class="n">요구 규모 지수</th><th class="n">대구 공급 기업</th><th class="n">대구 종사자</th><th class="n">coverage</th><th class="n">후보</th></tr></thead>
+        <thead><tr><th class="n">번호</th><th>공급 부문</th><th class="n">요구 규모 지수</th><th class="n">대구 공급 기업</th><th class="n">대구 종사자</th><th class="n">coverage</th><th class="n">후보</th></tr></thead>
         <tbody>{byCluster(cl).map(g => <tr class="gap-row" data-cl={cl} data-sec={g.io_sector} tabindex="0">
           <td class="n">{g.rank}</td><td><strong>{g.io_name}</strong> <span class="meta">{g.io_sector}</span></td>
           <td class="n">{num(g.demand_index)} <span class="meta">({pct(g.demand_share)})</span></td><td class="n">{g.daegu_firms}</td><td class="n">{num(g.daegu_workers)}</td>

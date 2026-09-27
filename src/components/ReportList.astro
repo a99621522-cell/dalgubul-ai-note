@@ -4,7 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import { reportArea, downloadUrls } from '../lib/reports';
 interface Props { posts: CollectionEntry<'posts'>[] }
 const { posts } = Astro.props;
-const fmt = (d: Date) => d.toISOString().slice(0, 10);
+const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 const short = (t: string) => t.replace(/^\[정책제안\]\s*/, '');
 ---
 {posts.length === 0 ? <p class="empty">발행된 리포트가 아직 없습니다.</p> :

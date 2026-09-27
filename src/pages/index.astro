@@ -8,6 +8,10 @@ import PostList from '../components/PostList.astro';
 import { getCollection } from 'astro:content';
 import { monthly, monthLabel, statMonths } from '../lib/stats';
 import { supportHistory, recentSupport } from '../lib/csv';
+import { policyReports, reportArea, downloadUrls } from '../lib/reports';
+import fs from 'node:fs';
+const featured = (await policyReports())[0];
+const featuredImg = featured && featured.data.format === 'insight' && fs.existsSync(`public/figures/${featured.id}/hero.png`) ? `/figures/${featured.id}/hero.png` : null;
 
 const all = (await getCollection('posts', p => !p.data.draft)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const latest = all.slice(0, 5);
@@ -39,6 +43,20 @@ const description = m
         <div class="section-head"><h2 id="h-now">대구 산단·기업 현황</h2><span class="meta">{ym} 기준</span></div>
         <StatTiles tiles={tiles} />
       </section>
+      {featured && (
+        <section aria-labelledby="h-feat" class="section">
+          <div class="section-head"><h2 id="h-feat">이번 주 리포트</h2><a href="/policy/">리포트 전체</a></div>
+          <div class:list={["featured", { 'has-img': !!featuredImg }]}>
+            {featuredImg && <a href={`/posts/${featured.id}/`}><img src={featuredImg} alt={featured.data.hero?.alt ?? featured.data.hero?.caption ?? ''} width="1600" height="900" loading="lazy" /></a>}
+            <div>
+              <p class="kicker">{reportArea(featured)} · {featured.data.date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              <h3><a href={`/posts/${featured.id}/`}>{featured.data.title.replace(/^\[정책제안\]\s*/, '')}</a></h3>
+              <p>{featured.data.description ?? featured.data.summary}</p>
+              <p class="links"><a class="btn" href={`/posts/${featured.id}/`}>읽기</a><a class="btn secondary" href={downloadUrls(featured.id).docx} download>Word</a></p>
+            </div>
+          </div>
+        </section>
+      )}
       <section aria-labelledby="h-ind">
         <div class="section-head"><h2 id="h-ind">산업별 현황</h2><a href="/industry/">산업별 자세히</a></div>
         <IndustryTable compact={true} />

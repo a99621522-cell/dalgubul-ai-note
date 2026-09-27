@@ -191,3 +191,31 @@ article.post.insight .body figure img { display: block; width: 100%; height: aut
 article.post.insight .body table { display: table; white-space: normal; width: 100%; margin: var(--s2) 0; border: 1px solid var(--line-strong); }
 article.post.insight .body thead th { background: var(--surface); text-align: center; }
 article.post.insight .body td:first-child { font-weight: 600; background: var(--surface); }
+
+/* ---------- 그래프 두 개 나란히 (900px 이상) ---------- */
+.chart-pair { display: grid; gap: var(--s3); }
+@media (min-width: 900px) { .chart-pair { grid-template-columns: 1fr 1fr; } .chart-pair .chart .chart-wide { display: none; } .chart-pair .chart .chart-narrow { display: block; } }
+.note-box { margin: 0; padding: var(--s2); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+
+/* ---------- 이번 주 리포트 (첫 화면) ---------- */
+.featured { display: grid; gap: var(--s2); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2); background: var(--surface); }
+@media (min-width: 720px) { .featured.has-img { grid-template-columns: 5fr 7fr; align-items: center; } }
+.featured img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
+.featured .kicker { font-size: var(--small); color: var(--muted); margin: 0 0 4px; }
+.featured h3 { font-size: 1.25rem; line-height: 1.35; margin: 0 0 var(--s1); }
+.featured h3 a { color: var(--ink); text-decoration: none; }
+.featured h3 a:hover, .featured h3 a:focus-visible { color: var(--primary); text-decoration: underline; }
+.featured p { margin: 0 0 var(--s1); }
+.featured .links { display: flex; flex-wrap: wrap; gap: var(--s1); }
+
+/* ---------- 인쇄 ---------- */
+@media print {
+  .site-head, .site-foot, .skip, .rl-dl, .dl, .toc, .examples, .controls, .more-row, .tools, .btn, nav.nav { display: none !important; }
+  html { font-size: 11pt; }
+  main { padding: 0; }
+  article.post, article.post.insight { max-width: none; }
+  a { color: var(--ink); text-decoration: none; }
+  .sources a::after { content: " (" attr(href) ")"; font-size: 9pt; color: var(--muted); word-break: break-all; }
+  .chart .chart-narrow { display: none; } .chart .chart-wide { display: block; }
+  figure, table, .tile { break-inside: avoid; }
+}

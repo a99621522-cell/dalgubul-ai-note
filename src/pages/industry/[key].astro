@@ -2,7 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import StatTiles, { type Tile } from '../../components/StatTiles.astro';
 import Chart from '../../components/Chart.astro';
-import { monthly, monthLabel, fmt } from '../../lib/stats';
+import { monthly, monthLabel, fmt, statMonths } from '../../lib/stats';
+const nMonths = statMonths().length;
 import { industryGroups } from '../../lib/industry';
 import { supportHistory, recentSupport, companies } from '../../lib/csv';
 /** /industry/<key>/ — 산업 그룹 하나: 큰 숫자 → 24개월 추이(고용·기업 수) → 단지·입지 분포 → 지원 이력(3년) 요약 → 기업 목록 링크. 평가·순위 없음. */
@@ -36,8 +37,12 @@ const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 
       <StatTiles tiles={tiles} />
       <section aria-labelledby="h-trend">
         <div class="section-head"><h2 id="h-trend">24개월 추이</h2><a href="/industry/compare/">다른 산업과 비교</a></div>
-        <Chart kind="industry-employment" name={g.key} caption={`${g.name} 고용 인원 추이`} />
-        <Chart kind="industry-firms" name={g.key} caption={`${g.name} 기업 수 추이`} />
+        {nMonths >= 2 ? (
+          <div class="chart-pair">
+            <Chart kind="industry-employment" name={g.key} caption={`${g.name} 고용 인원 추이`} />
+            <Chart kind="industry-firms" name={g.key} caption={`${g.name} 기업 수 추이`} />
+          </div>
+        ) : <p class="meta note-box">월간 자료가 {ym} 1개월뿐이라 추이 그래프는 다음 달부터 그립니다. 지금 값은 위 큰 숫자에 있습니다.</p>}
       </section>
       <section aria-labelledby="h-where">
         <div class="section-head"><h2 id="h-where">어디에 있나</h2></div>

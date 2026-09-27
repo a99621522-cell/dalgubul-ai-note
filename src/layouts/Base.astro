@@ -38,6 +38,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
       </nav>
     </div>
   </header>
+  <script>window.addEventListener('beforeprint', () => document.querySelectorAll('details').forEach(d => { d.open = true; }));</script>
   <main id="main" class="wrap">
     <slot />
   </main>

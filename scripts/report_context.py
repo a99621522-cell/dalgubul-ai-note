@@ -170,6 +170,26 @@ def city_programs_block(keywords: list[str]) -> list[dict]:
     return out
 
 
+def kosis_block(area_key: str, keywords: list[str]) -> list[dict]:
+    """data/kosis 의 표 가운데 areas 에 이 분야가 있거나 표 이름이 키워드에 맞는 것 — 최근 시점의 대구 행 몇 개(값 그대로, 출처 URL 포함)."""
+    kdir = ROOT / "data" / "kosis"
+    if not kdir.exists():
+        return []
+    pat = kw_pattern(keywords)
+    out = []
+    for jf in sorted(kdir.glob("*.json")):
+        m = json.loads(jf.read_text(encoding="utf-8"))
+        if area_key not in (m.get("areas") or []) and not pat.search(m.get("name", "") + " " + m.get("tbl_nm", "")):
+            continue
+        cf = kdir / f"{m['key']}.csv"
+        rows = list(csv.DictReader(open(cf, encoding="utf-8"))) if cf.exists() else []
+        latest = [r for r in rows if r.get("PRD_DE") == m.get("latest")]
+        out.append({"key": m["key"], "name": m.get("tbl_nm") or m["name"], "latest": m.get("latest", ""), "unit": m.get("unit", ""),
+                    "source_url": m.get("source_url", ""), "fetched": m.get("fetched", ""),
+                    "rows": [{k: r.get(k, "") for k in ("ITM_NM", "C1_NM", "C2_NM", "C3_NM", "DT")} for r in latest[:12]]})
+    return out
+
+
 def posts_block(keywords: list[str], weeks: int = 8) -> list[dict]:
     pat = kw_pattern(keywords)
     since = date.today() - timedelta(weeks=weeks)
@@ -280,6 +300,7 @@ def main(argv: list[str]) -> int:
         "programs": programs_block(area.get("keywords", [])),
         "city_match": city_match_block(area.get("keywords", [])),
         "city_programs": city_programs_block(area.get("keywords", [])),
+        "kosis": kosis_block(area["key"], area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
         "notices_8w": notices_block(area["key"], area.get("keywords", [])),
         "research": research_block(area.get("keywords", []), area.get("key", "")),
@@ -310,6 +331,11 @@ def main(argv: list[str]) -> int:
     print(f"\n[정부 사업] 키워드 {area.get('keywords')} 일치 {len(ctx['programs'])}건 — 사업명·부처·신규 여부만 인용한다. 예산액·사업코드·시비 매칭은 정책제안서에 쓰지 않는다(운영자 지시 2026-09-25)")
     for p in ctx["programs"][:15]:
         print(f"  {p['ministry']} | {p['name'][:44]} | {p['new'] or '계속'} {p['scope']}")
+    print(f"\n[통계청 KOSIS — 분야 표의 최근 시점 대구 값, 출처는 source_url] {len(ctx['kosis'])}표")
+    for k in ctx["kosis"][:6]:
+        print(f"  {k['name'][:50]} · {k['latest']} · {k['unit']} · {k['source_url']}")
+        for r in k["rows"][:6]:
+            print(f"     {r['ITM_NM']} | {r['C1_NM']} {r['C2_NM']} {r['C3_NM']} | {r['DT']}")
     print(f"\n[대구시 세부사업 — 본예산 사업설명서, 사업명·부서·상태만] {len(ctx['city_programs'])}건")
     for m in ctx["city_programs"][:15]:
         print(f"  {m['name'][:40]} · {m['org']} {m['dept']} · {m['status']}")

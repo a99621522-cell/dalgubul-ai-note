@@ -234,11 +234,15 @@ def parse_file(path: Path, year: int, debug: bool = False) -> list[dict]:
         return parse_itemized(pages, year, f"{year}년 본예산 세출예산 사업명세서({mo.group(1) if mo else path.stem})")
     # 표지의 '[원스톱기업투자센터]' 나 파일명에서 출처 이름
     head = "\n".join(pages[:3])
-    mm = re.search(r"\[([^\]]+)\]", head)
-    org_name = re.sub(r"\s+", "", mm.group(1)) if mm else ""   # 표지는 글자 사이가 벌어져 있다(원 스 톱 …)
-    if not org_name:   # 파일 이름의 첫 괄호: '…사업설명서(미래혁신성장실)(홈페이지공개용)'
-        fm = re.search(r"\(([^()]*?(?:실|국|단|본부|센터|청|관)(?:\s*\d권)?)\)", path.name)
-        org_name = re.sub(r"\d권$", "", re.sub(r"\s+", "", fm.group(1))) if fm else ""
+    # 실국 이름: 파일 이름의 첫 괄호('…사업설명서(미래혁신성장실)(홈페이지공개용)')를 먼저, 없으면 표지의 [실국] — 단 실·국·단·본부·센터·청으로
+    # 끝나는 것만(표지에 첫 부서 '[미래혁신정책관]' 이 대괄호로 오는 문서가 있다). 표지는 글자 사이가 벌어져 있다(원 스 톱 …)
+    fm = re.search(r"\(([^()]*?(?:실|국|단|본부|센터|청)(?:\s*\d권)?)\)", path.name)
+    org_name = re.sub(r"\d권$", "", re.sub(r"\s+", "", fm.group(1))) if fm else ""
+    if not org_name:
+        for mm in re.finditer(r"\[([^\]]+)\]", head):
+            cand = re.sub(r"\s+", "", mm.group(1))
+            if re.search(r"(실|국|단|본부|센터|청)$", cand):
+                org_name = cand; break
     source = f"{year}년 본예산 사업설명서({org_name})" if org_name else re.sub(r"\.(txt|pdf)$", "", path.name)
     blocks, cur = [], []
     for i, p in enumerate(pages, 1):
@@ -276,7 +280,8 @@ def main():
     out = Path(a.out)
     if a.append and out.exists():
         srcs = {r["source"] for r in rows}
-        old = [r for r in csv.DictReader(open(out, encoding="utf-8")) if r["source"] not in srcs]
+        new_keys = {(r["org"], r["name"]) for r in rows}   # 출처 이름이 바뀌어 다시 들어온 같은 사업은 옛 행을 뺀다
+        old = [r for r in csv.DictReader(open(out, encoding="utf-8")) if r["source"] not in srcs and (r["org"], r["name"]) not in new_keys]
         rows = old + rows
     # 같은 실국에 사업설명서(목적·내용·재원이 있는 판)가 있으면 사업명세서(표만 있는 판) 행은 뺀다 — 같은 사업이 두 번 실리지 않게
     rich = {(r["org"], r["dept"]) for r in rows if "명세서" not in r["source"]}   # 부서 단위(설명서가 권별로 나뉘어 올 수 있다)

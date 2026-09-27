@@ -379,9 +379,10 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
         if items:
             res["items"], res["method"] = items, f"rss({feed[len(host_root):][:40] or '/'})"
             break
+    acc: list[dict] = []   # paginate: true 면 lists 의 쪽을 모두 읽어 합친다(행 클릭형 게시판의 pageno=1,2,… — 대한상의 보도자료, 2026-09-27)
     if not res["items"] and not org.get("datago_only"):
         for page in (org.get("lists") or []) + [org.get("list"), org.get("home")]:
-            if not page or reqs >= 12 or res["items"]:
+            if not page or reqs >= (12 + len(org.get("lists") or []) if org.get("paginate") else 12) or res["items"]:
                 continue
             if not robots_ok(page, robots):
                 res["note"] = "robots.txt 차단"
@@ -425,9 +426,16 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                 method += "(keep_pattern)"
             for i in items:
                 i.pop("ctx", None)
+            if org.get("paginate") and page in (org.get("lists") or []):
+                seen_t = {i["title"] for i in acc}
+                acc += [i for i in items if i["title"] not in seen_t]
+                res["method"] = method + f"(쪽 {len(org.get('lists') or [])}개)"
+                continue
             if items:
                 res["items"], res["method"] = items, method
                 break
+        if acc and not res["items"]:
+            res["items"] = sorted(acc, key=lambda i: i.get("date") or "", reverse=True)[:MAX_ITEMS]
     if not res["items"] and LATEST_SEEN["date"] and not res["note"]:
         res["note"] = f"최신 항목 {LATEST_SEEN['date']} (최근 {MAX_DAYS}일 밖)"
         res["status"] = "최근 없음"

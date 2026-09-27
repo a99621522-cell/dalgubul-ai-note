@@ -42,6 +42,15 @@ def main():
         if urlparse(href).netloc != urlparse(url).netloc or href in seen or not text: continue
         seen.add(href); print(f"{text} - {href}")
     print(f"== 링크 {len(seen)}개")
+    if "--dump" in sys.argv:   # 검색 폼·입력 이름·쪽 넘김 함수(행 클릭형 게시판의 검색·쪽 인자를 알아낼 때)
+        for i, f in enumerate(soup.find_all("form")[:6]):
+            ins = [(x.get("name") or x.get("id") or "", x.get("type") or x.name) for x in f.find_all(["input", "select"]) if (x.get("name") or x.get("id"))]
+            print(f"== form[{i}] method={f.get('method')} action={f.get('action')} inputs={ins[:20]}")
+        fns = sorted(set(re.findall(r"(?:href|onclick)=[\"']javascript:([A-Za-z_]\w*)\(([^)]*)\)", html)))[:20]
+        print(f"== javascript: 호출 {len(fns)}개: " + " | ".join(f"{a}({b[:30]})" for a, b in fns))
+        for m in re.finditer(r"function\s+(fn_?[Pp]age\w*|goPage\w*|fn_?[Ss]earch\w*|page\w*)\s*\(([^)]*)\)\s*\{(.{0,300})", html, re.S):
+            body3 = re.sub(r"\s+", " ", m.group(3))[:300]
+            print(f"== function {m.group(1)}({m.group(2)}): {body3}")
     if "--text" in sys.argv:   # 기사·공지 한 쪽 읽기: 메타 → 본문(가장 글이 많은 덩어리)
         blocked = any(re.match(r"(?i)disallow:\s*(\S+)", l.strip()) and path.startswith(re.match(r"(?i)disallow:\s*(\S+)", l.strip()).group(1).rstrip("*")) for l in r.text.splitlines() if r.ok and re.match(r"(?i)disallow:\s*\S", l.strip()))
         for k in ("og:title", "og:description", "article:published_time", "article:modified_time", "og:site_name", "author"):

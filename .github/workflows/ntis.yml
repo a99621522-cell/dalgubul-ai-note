@@ -1,0 +1,59 @@
+name: NTIS 국가R&D 과제 수집 (대구 수행기관 → 지원 이력)
+
+# NTIS 오픈API(키 NTIS_KEY)로 과제를 받아 대구 수행기관·기업 사전 이름 일치 과제만 scripts/data/support/ntis.csv 로 두고
+# import_support.py --replace-source 'NTIS 국가R&D 과제(오픈API)' 로 지원 이력에 합친다. 이 세션 환경은 ntis.go.kr 접속이 막혀 있어 러너가 대신 돈다.
+# 첫 실행은 probe=true 로 응답 원문·태그 이름을 로그로 확인한 뒤 scripts/sources.yml ntis.fields 를 맞춘다.
+
+on:
+  schedule:
+    - cron: "0 20 10 * *"     # 매월 11일 05:00 KST
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "응답 원문·태그 이름만 확인(true)"
+        required: false
+        default: "false"
+      query:
+        description: "검색어(비우면 sources.yml ntis.query)"
+        required: false
+        default: ""
+      years:
+        description: "연도(쉼표, 비우면 sources.yml)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ntis-collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: NTIS 과제 수집
+        env:
+          NTIS_KEY: ${{ secrets.NTIS_KEY }}
+          Q: ${{ inputs.query }}
+          Y: ${{ inputs.years }}
+        run: |
+          if [ "${{ inputs.probe }}" = "true" ]; then python3 scripts/collect_ntis.py --probe ${Q:+--query "$Q"}; exit 0; fi
+          python3 scripts/collect_ntis.py ${Q:+--query "$Q"} ${Y:+--years "$Y"}
+          python3 scripts/import_support.py --replace-source 'NTIS 국가R&D 과제(오픈API)'
+      - name: 커밋
+        if: inputs.probe != 'true'
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add scripts/data/support/ntis.csv scripts/data/support_history.csv
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: NTIS 국가R&D 과제(대구) 수집 $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

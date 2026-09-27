@@ -221,8 +221,19 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
   a { color: var(--ink); text-decoration: none; }
   .sources a::after { content: " (" attr(href) ")"; font-size: 9pt; color: var(--muted); word-break: break-all; }
   .chart .chart-narrow { display: none; } .chart .chart-wide { display: block; }
-  figure, table, .tile { break-inside: avoid; }
+  figure, .tile, tr { break-inside: avoid; }
+  .scroll-x { overflow: visible !important; }   /* 넘침 상자는 쪽을 나누지 못해 긴 표가 통째로 밀리거나 잘린다 */
+  table { break-inside: auto; }
+  thead { display: table-header-group; }
+  .print-hide, .table-tools, .co-actions, .pt-more { display: none !important; }
+  article.post .lede { font-size: 10.5pt; }
 }
+
+/* ---------- 표 도구(한글 표 복사·HWP 내려받기, 모든 통계표 아래) ---------- */
+.table-tools { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; margin: 4px 0 var(--s2); }
+.table-tools .btn { min-height: 32px; padding: 0 10px; font-size: var(--small); font-weight: 600; }
+.co-actions { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s2); }
+.co-actions .btn { min-height: 36px; font-size: var(--small); }
 
 /* ---------- 첫 화면 머리(기업마당 첫 화면을 본보기로 한 배치, 2026-09-27) ---------- */
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

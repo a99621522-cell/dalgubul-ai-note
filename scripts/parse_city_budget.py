@@ -280,7 +280,8 @@ def main():
     out = Path(a.out)
     if a.append and out.exists():
         srcs = {r["source"] for r in rows}
-        old = [r for r in csv.DictReader(open(out, encoding="utf-8")) if r["source"] not in srcs]
+        new_keys = {(r["org"], r["name"]) for r in rows}   # 출처 이름이 바뀌어 다시 들어온 같은 사업은 옛 행을 뺀다
+        old = [r for r in csv.DictReader(open(out, encoding="utf-8")) if r["source"] not in srcs and (r["org"], r["name"]) not in new_keys]
         rows = old + rows
     # 같은 실국에 사업설명서(목적·내용·재원이 있는 판)가 있으면 사업명세서(표만 있는 판) 행은 뺀다 — 같은 사업이 두 번 실리지 않게
     rich = {(r["org"], r["dept"]) for r in rows if "명세서" not in r["source"]}   # 부서 단위(설명서가 권별로 나뉘어 올 수 있다)

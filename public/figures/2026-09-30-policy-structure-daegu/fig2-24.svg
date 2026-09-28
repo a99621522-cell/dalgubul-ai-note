@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="420" viewBox="0 0 800 420" role="img" aria-label="지역별 경제지표 격차(2015~24년 연평균 증가율)">
+<rect width="800" height="420" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >지역별 경제지표 격차(2015~24년 연평균 증가율)</text>
+<rect x="70" y="44" width="14" height="10" rx="2" fill="#1B4F9B"/>
+<text x="90.0" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대구</text>
+<rect x="139.6" y="44" width="14" height="10" rx="2" fill="#E69F00"/>
+<text x="159.6" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >전국</text>
+<rect x="209.2" y="44" width="14" height="10" rx="2" fill="#009E73"/>
+<text x="229.2" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >6개 광역시</text>
+<line x1="70" y1="350.0" x2="776" y2="350.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="354.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="70" y1="283.0" x2="776" y2="283.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="287.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.6</text>
+<line x1="70" y1="216.0" x2="776" y2="216.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="220.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.2</text>
+<line x1="70" y1="149.0" x2="776" y2="149.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="153.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.9</text>
+<line x1="70" y1="82.0" x2="776" y2="82.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="86.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2.5</text>
+<path d="M147.7,350.0 v-113.9 q0,-4 4,-4 h16.0 q4,0 4,4 v113.9 z" fill="#1B4F9B"/>
+<text x="159.7" y="226.1" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.1</text>
+<path d="M175.7,350.0 v-264.0 q0,-4 4,-4 h16.0 q4,0 4,4 v264.0 z" fill="#E69F00"/>
+<text x="187.7" y="76.0" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2.5</text>
+<path d="M203.7,350.0 v-197.5 q0,-4 4,-4 h16.0 q4,0 4,4 v197.5 z" fill="#009E73"/>
+<text x="215.7" y="142.5" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.9</text>
+<text x="187.7" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >GRDP</text>
+<path d="M383.0,350.0 v-167.5 q0,-4 4,-4 h16.0 q4,0 4,4 v167.5 z" fill="#1B4F9B"/>
+<text x="395.0" y="172.5" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.6</text>
+<path d="M411.0,350.0 v-167.5 q0,-4 4,-4 h16.0 q4,0 4,4 v167.5 z" fill="#E69F00"/>
+<text x="423.0" y="172.5" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.6</text>
+<path d="M439.0,350.0 v-169.7 q0,-4 4,-4 h16.0 q4,0 4,4 v169.7 z" fill="#009E73"/>
+<text x="451.0" y="170.3" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.6</text>
+<text x="423.0" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >노동생산성</text>
+<path d="M618.3,350.0 v0.0 q0,-4 4,-4 h16.0 q4,0 4,4 v0.0 z" fill="#1B4F9B"/>
+<text x="630.3" y="344.0" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >-0</text>
+<path d="M646.3,350.0 v-60.3 q0,-4 4,-4 h16.0 q4,0 4,4 v60.3 z" fill="#E69F00"/>
+<text x="658.3" y="279.7" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.6</text>
+<path d="M674.3,350.0 v-12.1 q0,-4 4,-4 h16.0 q4,0 4,4 v12.1 z" fill="#009E73"/>
+<text x="686.3" y="327.9" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.1</text>
+<text x="658.3" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >15세 이상 인구</text>
+<text x="776.0" y="384.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >%</text>
+<text x="24.0" y="406.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 국가데이터처 지역소득·경제활동인구조사(KOSIS), 다잇다 노트 시산</text>
+</svg>

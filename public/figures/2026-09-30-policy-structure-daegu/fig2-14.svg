@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="420" viewBox="0 0 800 420" role="img" aria-label="지역별 산업집중도(HHI, 2024년)">
+<rect width="800" height="420" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >지역별 산업집중도(HHI, 2024년)</text>
+<line x1="70" y1="350.0" x2="776" y2="350.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="354.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="70" y1="277.5" x2="776" y2="277.5" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="281.5" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >500</text>
+<line x1="70" y1="205.0" x2="776" y2="205.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="209.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1,000</text>
+<line x1="70" y1="132.5" x2="776" y2="132.5" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="136.5" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1,500</text>
+<line x1="70" y1="60.0" x2="776" y2="60.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="64.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2,000</text>
+<path d="M78.8,350.0 v-204.1 q0,-4 4,-4 h16.0 q4,0 4,4 v204.1 z" fill="#1B4F9B"/>
+<text x="90.8" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >울산</text>
+<path d="M120.3,350.0 v-174.1 q0,-4 4,-4 h16.0 q4,0 4,4 v174.1 z" fill="#1B4F9B"/>
+<text x="132.3" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >세종</text>
+<path d="M161.8,350.0 v-132.9 q0,-4 4,-4 h16.0 q4,0 4,4 v132.9 z" fill="#1B4F9B"/>
+<text x="173.8" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >서울</text>
+<path d="M203.4,350.0 v-128.7 q0,-4 4,-4 h16.0 q4,0 4,4 v128.7 z" fill="#1B4F9B"/>
+<text x="215.4" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >강원</text>
+<path d="M244.9,350.0 v-114.5 q0,-4 4,-4 h16.0 q4,0 4,4 v114.5 z" fill="#1B4F9B"/>
+<text x="256.9" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >경남</text>
+<path d="M286.4,350.0 v-114.5 q0,-4 4,-4 h16.0 q4,0 4,4 v114.5 z" fill="#1B4F9B"/>
+<text x="298.4" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >경기</text>
+<path d="M327.9,350.0 v-112.7 q0,-4 4,-4 h16.0 q4,0 4,4 v112.7 z" fill="#1B4F9B"/>
+<text x="339.9" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >충남</text>
+<path d="M369.5,350.0 v-111.9 q0,-4 4,-4 h16.0 q4,0 4,4 v111.9 z" fill="#1B4F9B"/>
+<text x="381.5" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >전남</text>
+<path d="M411.0,350.0 v-105.5 q0,-4 4,-4 h16.0 q4,0 4,4 v105.5 z" fill="#1B4F9B"/>
+<text x="423.0" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >제주</text>
+<path d="M452.5,350.0 v-100.0 q0,-4 4,-4 h16.0 q4,0 4,4 v100.0 z" fill="#1B4F9B"/>
+<text x="464.5" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >충북</text>
+<path d="M494.1,350.0 v-98.8 q0,-4 4,-4 h16.0 q4,0 4,4 v98.8 z" fill="#1B4F9B"/>
+<text x="506.1" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >경북</text>
+<path d="M535.6,350.0 v-95.5 q0,-4 4,-4 h16.0 q4,0 4,4 v95.5 z" fill="#1B4F9B"/>
+<text x="547.6" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >광주</text>
+<path d="M577.1,350.0 v-88.4 q0,-4 4,-4 h16.0 q4,0 4,4 v88.4 z" fill="#1B4F9B"/>
+<text x="589.1" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대전</text>
+<path d="M618.6,350.0 v-87.5 q0,-4 4,-4 h16.0 q4,0 4,4 v87.5 z" fill="#1B4F9B"/>
+<text x="630.6" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >부산</text>
+<path d="M660.2,350.0 v-87.2 q0,-4 4,-4 h16.0 q4,0 4,4 v87.2 z" fill="#1B4F9B"/>
+<text x="672.2" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >인천</text>
+<path d="M701.7,350.0 v-85.8 q0,-4 4,-4 h16.0 q4,0 4,4 v85.8 z" fill="#1B4F9B"/>
+<text x="713.7" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대구</text>
+<path d="M743.2,350.0 v-83.7 q0,-4 4,-4 h16.0 q4,0 4,4 v83.7 z" fill="#1B4F9B"/>
+<text x="755.2" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >전북</text>
+<text x="776.0" y="384.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" ></text>
+<text x="24.0" y="406.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 국가데이터처 지역소득·경제활동인구조사(KOSIS), 다잇다 노트 시산 · 17개 시도 평균 809</text>
+</svg>

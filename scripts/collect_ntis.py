@@ -95,7 +95,7 @@ def main() -> int:
     ap.add_argument("--query", default=CFG.get("query") or "대구")
     ap.add_argument("--max-pages", type=int, default=int(CFG.get("max_pages") or 50))
     a = ap.parse_args()
-    key = os.environ.get("NTIS_KEY", "")
+    key = os.environ.get("NTIS_KEY", "").strip().strip('"\'')   # 시크릿에 탭·공백·따옴표가 딸려 와도 그대로 쓰지 않게(2026-09-28 첫 등록 값 앞에 탭이 있었다)
     if not key:
         print("::error::NTIS_KEY 가 없다"); return 1
     per = int(CFG.get("display_cnt") or 100)

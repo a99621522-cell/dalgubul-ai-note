@@ -1,0 +1,57 @@
+name: 정책 브리프 출처 원문 대조
+
+# scripts/verify_sources.py 로 브리프 sources 의 URL 을 실제로 열어 접속·제목·날짜를 확인하고 data/source_checks/<id>.json 을 커밋한다.
+# 작성 세션 환경은 외부 접속이 막혀 있어 러너가 대신 연다(운영자 지시 2026-09-28: 충분한 자료와 신뢰성이 있을 때만 발간).
+
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "검사할 리포트 파일(공백 구분). 비우면 draft 인 브리프 전부"
+        required: false
+        default: ""
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb", "claude/policy-reports"]
+    paths: ["src/content/posts/*-policy-*.md", "scripts/verify_sources.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verify-sources-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests
+      - name: 원문 대조
+        env:
+          FILES_IN: ${{ inputs.file }}
+        run: |
+          set +e
+          FILES="$FILES_IN"
+          if [ -z "$FILES" ]; then
+            FILES=$(git diff --name-only HEAD^1 HEAD -- 'src/content/posts/*-policy-*.md' 2>/dev/null | tr '\n' ' ')
+          fi
+          if [ -z "$FILES" ]; then
+            FILES=$(grep -lE '^format:\s*brief' src/content/posts/*-policy-*.md | tr '\n' ' ')
+          fi
+          echo "files: $FILES"
+          python3 scripts/verify_sources.py $FILES
+          echo "exit=$?"
+      - name: 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A data/source_checks
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 브리프 출처 원문 대조 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

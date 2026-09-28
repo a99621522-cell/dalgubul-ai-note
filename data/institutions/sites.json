@@ -27,7 +27,7 @@
    "url": "https://www.dip.or.kr",
    "status": "HTTP 200",
    "title": "대구디지털혁신진흥원",
-   "robots": "robots allow",
+   "robots": "robots 실패(ConnectionError)",
    "links": [],
    "note": "→ https://www.dip.or.kr/home/main.ubs"
   },
@@ -196,27 +196,27 @@
    "links": [
     {
      "text": "입주기업모집",
-     "url": "https://www.kiria.org/portal/bizsupt/portalBsuptComRecru.do;jsessionid=38FDC0857FB3A1156FF12FB2BA83DDAF"
+     "url": "https://www.kiria.org/portal/bizsupt/portalBsuptComRecru.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
     },
     {
      "text": "알림마당",
-     "url": "https://www.kiria.org/portal/info/portalInfoNotiList.do;jsessionid=38FDC0857FB3A1156FF12FB2BA83DDAF"
+     "url": "https://www.kiria.org/portal/info/portalInfoNotiList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
     },
     {
      "text": "사업공고",
-     "url": "https://www.kiria.org/portal/info/portalInfoBusinessList.do;jsessionid=38FDC0857FB3A1156FF12FB2BA83DDAF"
+     "url": "https://www.kiria.org/portal/info/portalInfoBusinessList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
     },
     {
      "text": "입찰공고",
-     "url": "https://www.kiria.org/portal/info/portalInfoTenderList.do;jsessionid=38FDC0857FB3A1156FF12FB2BA83DDAF"
+     "url": "https://www.kiria.org/portal/info/portalInfoTenderList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
     },
     {
      "text": "채용공고",
-     "url": "https://www.kiria.org/portal/info/portalInfoJobList.do;jsessionid=38FDC0857FB3A1156FF12FB2BA83DDAF"
+     "url": "https://www.kiria.org/portal/info/portalInfoJobList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
     },
     {
      "text": "보도자료",
-     "url": "https://www.kiria.org/portal/info/portalInfoNewsClipSideList.do;jsessionid=38FDC0857FB3A1156FF12FB2BA83DDAF"
+     "url": "https://www.kiria.org/portal/info/portalInfoNewsClipSideList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
     }
    ],
    "note": ""
@@ -288,7 +288,7 @@
    "url": "https://www.kotmi.re.kr",
    "status": "HTTP 200",
    "title": "한국섬유기계융합연구원",
-   "robots": "robots allow",
+   "robots": "robots 실패(ConnectionError)",
    "links": [
     {
      "text": "알림마당",
@@ -449,10 +449,10 @@
    "name": "중소벤처기업진흥공단 대구지역본부",
    "url": "https://www.kosmes.or.kr",
    "status": "HTTP 200",
-   "title": "ì¤ìë²¤ì²ê¸°ì ì§í¥ê³µë¨",
+   "title": "Áß¼Òº¥Ã³±â¾÷ÁøÈï°ø´Ü",
    "robots": "robots allow",
    "links": [],
-   "note": "→ https://www.kosmes.or.kr/intro/intro.html"
+   "note": ""
   },
   {
    "key": "semas",
@@ -468,21 +468,21 @@
    "key": "kibo",
    "name": "기술보증기금 대구지역본부",
    "url": "https://www.kibo.or.kr",
-   "status": "HTTP 200",
-   "title": "기술보증기금",
-   "robots": "robots allow",
+   "status": "실패 ConnectTimeout",
+   "title": "",
+   "robots": "robots 실패(ConnectTimeout)",
    "links": [],
-   "note": "→ https://www.kibo.or.kr/index.do"
+   "note": ""
   },
   {
    "key": "kodit",
    "name": "신용보증기금 대구경북지역본부",
-   "url": "https://www.kodit.co.kr",
+   "url": "https://www.kodit.or.kr",
    "status": "HTTP 200",
    "title": "",
    "robots": "robots allow",
    "links": [],
-   "note": "→ https://www.kodit.or.kr/"
+   "note": ""
   },
   {
    "key": "kita",

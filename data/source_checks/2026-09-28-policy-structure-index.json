@@ -1,0 +1,131 @@
+{
+ "file": "src/content/posts/2026-09-28-policy-structure-index.md",
+ "checked": "2026-09-28",
+ "ok": 3,
+ "total": 10,
+ "ratio": 0.3,
+ "official_bad": [],
+ "pass": false,
+ "sources": [
+  {
+   "title": "지역소득 — 시도별 경제활동별 지역내총생산(KOSIS, 국가데이터처, 2024년 잠정)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91",
+   "date": "2026-09-28",
+   "kind": "",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "경제활동인구조사 — 행정구역(시도)별 경제활동인구(KOSIS, 국가데이터처)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S",
+   "date": "2026-09-28",
+   "kind": "",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "광공업생산지수(시도)(KOSIS, 국가데이터처)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=INH_1F02001",
+   "date": "2026-09-28",
+   "kind": "",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "2024년 지역소득(잠정) (국가데이터처 보도자료, 대한민국 정책브리핑)",
+   "url": "https://www.korea.kr/briefing/policyBriefingView.do?newsId=156736434",
+   "date": "2025-12-23",
+   "kind": "",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "대구시, 산업 대전환 시동…'피지컬 AI·반도체·바이오' 전략 짠다 (쿠키뉴스)",
+   "url": "https://www.kukinews.com/article/view/kuk202609170183",
+   "date": "2026-09-17",
+   "kind": "",
+   "status": 403,
+   "page_title": "Attention Required! | Cloudflare",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": ""
+  },
+  {
+   "title": "대구, AI 대전환…로봇·바이오로 미래 산업지도 바꾼다 (글로벌이코노믹)",
+   "url": "https://www.g-enews.com/article/General-News/2026/09/202609180836006747d2e64277d7_1",
+   "date": "2026-09-18",
+   "kind": "",
+   "status": 200,
+   "page_title": "대구, 4207억 원 걸고 AI 대전환…로봇·바이오로 미래 산업지도 바꾼다 - 글로벌이코노믹",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "대구광역시, 2026년 디지털·AI 협의체 3차 회의 개최…산·학·연 전문가 집결 (국제뉴스)",
+   "url": "https://www.gukjenews.com/news/articleView.html?idxno=3702414",
+   "date": "2026-09",
+   "kind": "",
+   "status": 200,
+   "page_title": "대구광역시, 2026년 디지털·AI 협의체 3차 회의 개최...산·학·연 전문가 집결 < 대구 < 전국 < 기사본문 - 국제뉴스",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "대구정책브리프 제32호 — 2026년 대구경제 전망과 정책 시사점 (대구정책연구원)",
+   "url": "https://www.dpi.re.kr/board/view?menuId=MENU002020100000000&titleId=ec7TUKOGNN&boardId=BOARD00077",
+   "date": "2026-01-26",
+   "kind": "",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "SSLError"
+  },
+  {
+   "title": "SDV 양산 2028년, 대구 전장 부품 76곳의 준비 (다잇다 노트)",
+   "url": "https://note.daitda.co.kr/posts/2026-09-28-policy-mobility-sdv/",
+   "date": "2026-09-28",
+   "kind": "",
+   "status": 404,
+   "page_title": "페이지를 찾을 수 없습니다 — 다잇다 노트",
+   "title_match": 0.0,
+   "date_found": true,
+   "ok": false,
+   "note": ""
+  },
+  {
+   "title": "대구 기업 사전 — 산업 그룹별 기업·고용(다잇다 노트, 2026-08 기준)",
+   "url": "https://note.daitda.co.kr/industry/",
+   "date": "2026-09-28",
+   "kind": "",
+   "status": 200,
+   "page_title": "산업별 현황 — 다잇다 노트",
+   "title_match": 0.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

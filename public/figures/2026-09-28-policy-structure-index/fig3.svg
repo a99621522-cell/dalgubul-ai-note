@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400" role="img" aria-label="고부가 3부문(전기·전자·정밀기기, 정보통신, 금융보험) 부가가치 비중 추이">
+<rect width="800" height="400" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >고부가 3부문(전기·전자·정밀기기, 정보통신, 금융보험) 부가가치 비중 추이</text>
+<rect x="70" y="44" width="14" height="10" rx="2" fill="#1B4F9B"/>
+<text x="90.0" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대구</text>
+<rect x="139.6" y="44" width="14" height="10" rx="2" fill="#E69F00"/>
+<text x="159.6" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >전국</text>
+<line x1="70" y1="330.0" x2="760" y2="330.0" stroke="#e0e0e0"/>
+<text x="62.0" y="334.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="70" y1="268.0" x2="760" y2="268.0" stroke="#e0e0e0"/>
+<text x="62.0" y="272.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >6.2</text>
+<line x1="70" y1="206.0" x2="760" y2="206.0" stroke="#e0e0e0"/>
+<text x="62.0" y="210.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >12.5</text>
+<line x1="70" y1="144.0" x2="760" y2="144.0" stroke="#e0e0e0"/>
+<text x="62.0" y="148.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >18.8</text>
+<line x1="70" y1="82.0" x2="760" y2="82.0" stroke="#e0e0e0"/>
+<text x="62.0" y="86.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >25</text>
+<text x="70.0" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2015</text>
+<text x="223.3" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2017</text>
+<text x="376.7" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2019</text>
+<text x="530.0" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2021</text>
+<text x="683.3" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2023</text>
+<text x="760.0" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2024</text>
+<path d="M70.0,198.1 L146.7,194.1 L223.3,185.2 L300.0,189.1 L376.7,198.1 L453.3,198.1 L530.0,194.1 L606.7,183.2 L683.3,190.1 L760.0,191.1" fill="none" stroke="#1B4F9B" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="70.0" cy="198.1" r="4" fill="#1B4F9B" stroke="#ffffff" stroke-width="2"/>
+<circle cx="760.0" cy="191.1" r="4" fill="#1B4F9B" stroke="#ffffff" stroke-width="2"/>
+<text x="760.0" y="195.1" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >14%</text>
+<path d="M70.0,143.5 L146.7,144.5 L223.3,131.6 L300.0,124.7 L376.7,136.6 L453.3,129.6 L530.0,120.7 L606.7,121.7 L683.3,139.5 L760.0,129.6" fill="none" stroke="#E69F00" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="70.0" cy="143.5" r="4" fill="#E69F00" stroke="#ffffff" stroke-width="2"/>
+<circle cx="760.0" cy="129.6" r="4" fill="#E69F00" stroke="#ffffff" stroke-width="2"/>
+<text x="760.0" y="133.6" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >20.2%</text>
+<text x="24.0" y="386.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: KOSIS 지역소득(명목 총부가가치), 2026-09-28 조회, 이 리포트 계산</text>
+</svg>

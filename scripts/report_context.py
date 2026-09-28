@@ -178,7 +178,11 @@ def kosis_block(area_key: str, keywords: list[str]) -> list[dict]:
     pat = kw_pattern(keywords)
     out = []
     for jf in sorted(kdir.glob("*.json")):
+        if jf.name.endswith(".meta.json"):  # 항목·분류 메타(--meta)는 표가 아니다
+            continue
         m = json.loads(jf.read_text(encoding="utf-8"))
+        if not isinstance(m, dict):
+            continue
         if area_key not in (m.get("areas") or []) and not pat.search(m.get("name", "") + " " + m.get("tbl_nm", "")):
             continue
         cf = kdir / f"{m['key']}.csv"

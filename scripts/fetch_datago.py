@@ -149,6 +149,7 @@ def try_download(pk: str, call: list[str], sess: requests.Session, atch_page: li
                 if body.startswith("{"):
                     # 포털이 파일 대신 JSON(dataSetFileDetailInfo)을 주는 자료: 그 안의 atchFileId·fileDetailSn·주소로 다시 시도
                     print("    json: " + body[:600].replace("\n", " "))
+                    print("    json 값(빈칸 제외): " + json_leaves(body)[:2500])
                     for m2, u2, p2 in json_attempts(body, pk):
                         if (m2, u2, tuple(sorted(p2.items()))) not in seen:
                             attempts.append((m2, u2, p2))
@@ -158,6 +159,28 @@ def try_download(pk: str, call: list[str], sess: requests.Session, atch_page: li
         except Exception as e:  # noqa: BLE001
             print(f"  {method} 실패: {e}")
     return None
+
+
+def json_leaves(body: str) -> str:
+    """JSON 의 빈칸이 아닌 잎 값을 key=value 로 한 줄에 (probe 에서 다운로드 단서를 보기 위해)."""
+    import json
+    try:
+        obj = json.loads(body)
+    except ValueError:
+        return ""
+    out: list[str] = []
+
+    def walk(o, prefix=""):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                walk(v, k)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v, prefix)
+        elif o not in (None, "", 0, False, [], {}):
+            out.append(f"{prefix}={str(o)[:120]}")
+    walk(obj)
+    return " · ".join(out)
 
 
 def json_attempts(body: str, pk: str) -> list[tuple[str, str, dict]]:
@@ -176,7 +199,7 @@ def json_attempts(body: str, pk: str) -> list[tuple[str, str, dict]]:
                 if isinstance(v, (dict, list)):
                     walk(v)
                 elif isinstance(v, str):
-                    if re.fullmatch(r"FILE_[0-9]{10,}", v):
+                    if re.fullmatch(r"FILE_[0-9]{10,}", v) or (k in ("atchFileId", "atchFileld") and v.strip()):
                         found.setdefault("atch", v)
                     if k in ("fileDetailSn", "atchFileDetailSn") and re.fullmatch(r"\d{1,3}", v):
                         found.setdefault("sn", v)

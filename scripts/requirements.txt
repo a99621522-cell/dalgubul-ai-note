@@ -3,3 +3,5 @@ feedparser>=6.0
 pyyaml>=6.0
 beautifulsoup4>=4.12
 olefile>=0.46   # HWP(OLE) 본문 추출 scripts/hwp_text.py
+python-docx>=1.1   # 글 → 편집용 Word scripts/post_to_docx.py
+markdown>=3.5      # 같은 스크립트의 본문 변환

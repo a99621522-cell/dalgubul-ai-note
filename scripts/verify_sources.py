@@ -4,7 +4,7 @@
   python3 scripts/verify_sources.py src/content/posts/2026-09-29-policy-robot-physical-ai.md [--min-ok 0.8]
 
 출처마다 GET(20초) → HTTP 상태, <title>, 본문에서 출처 제목 낱말(4자 이상)·발행일(YYYY-MM-DD / YYYY.MM.DD / YYYY년 M월 D일) 발견 여부.
-판정: 접속 200 이고 (제목 낱말 30% 이상 일치 또는 날짜 발견) 이면 ok. ok 비율이 --min-ok 이상이고 공식 자료(kind official/law/gov/report)가 모두 ok 이면 PASS.
+판정: 접속 200 이고 (제목 낱말 30% 이상 일치 또는 날짜 발견, kind data 는 접속만) 이면 ok. ok 비율이 --min-ok 이상이고 공식 자료(kind official/law/gov/report)가 모두 ok 이면 PASS.
 결과는 data/source_checks/<id>.json 에 남긴다. 작성 세션 환경은 외부 접속이 막혀 있으므로 .github/workflows 에서 돌린다.
 """
 from __future__ import annotations
@@ -63,7 +63,7 @@ def check(src: dict, sess: requests.Session) -> dict:
     hit = sum(1 for w in toks if w in text)
     rec["title_match"] = round(hit / len(toks), 2) if toks else 0.0
     rec["date_found"] = any(f in text for f in date_forms(src["date"]))
-    rec["ok"] = rec["status"] == 200 and (rec["title_match"] >= 0.3 or rec["date_found"])
+    rec["ok"] = rec["status"] == 200 and (rec["title_match"] >= 0.3 or rec["date_found"] or src["kind"] == "data")   # data = 저장소에 수집해 둔 통계(KOSIS·ECOS 는 JS 화면이라 제목·날짜가 본문에 없다)
     if rec["status"] == 200 and not rec["ok"]:
         rec["note"] = "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
     return rec

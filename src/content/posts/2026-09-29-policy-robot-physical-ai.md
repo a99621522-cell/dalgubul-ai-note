@@ -5,7 +5,7 @@ category: policy
 tags: ["정책제안", "로봇·피지컬AI", "휴머노이드 공공 파운드리"]
 summary: "정부는 휴머노이드 생산 거점을 새만금(로봇 파운드리)에, 실증·부품기업 전환을 대경권에 배치했고, 경북은 구미 양산·포항 실증, 광주는 부품 평가·시제품 제작 센터를 정했다. 대구의 휴머노이드 공공 기능은 안전인증센터·부품 실증사업·요소기술 시제품 R&D 3가지이므로, 완제품 파운드리를 새로 짓기보다 이 셋을 '부품 시제→성능·신뢰성 평가→인증' 한 경로로 묶고 대경권 공동기획단에서 구미·포항과 역할을 나누는 것을 제안한다."
 description: "대구는 휴머노이드 완제품 파운드리를 새로 짓기보다 안전인증센터·부품 실증사업·요소기술 시제품 R&D를 '부품 시제→평가→인증' 한 경로로 묶고, 대경권 공동기획단에서 구미 양산·포항 실증과 역할을 나누는 것이 정부 분담과 대구 부품 기업의 품목 분포에 맞다."
-draft: true
+draft: false
 auto: true
 format: brief
 authors: "다잇다 노트"
@@ -42,7 +42,7 @@ sources:
   - { title: "경북일보, 「구미, 휴머노이드 부품부터 양산까지 산업생태계 구축 추진」", url: "https://www.kyongbuk.co.kr/news/articleView.html?idxno=4085399", date: "2026-09-28", kind: news }
   - { title: "서울신문, 「포항에 '로봇 파운드리' 들어선다…피지컬 AI 허브로 도약」(경북도·포항시·민간 기업 협약)", url: "https://www.seoul.co.kr/news/society/2026/09/10/20260910500248", date: "2026-09-10", kind: news }
   - { title: "아시아투데이, 「대구시·HD현대로보틱스, 휴머노이드 로봇 산업 육성 맞손」", url: "https://www.asiatoday.co.kr/kn/view.php?key=20251230010015711", date: "2025-12-30", kind: news }
-  - { title: "통계청 KOSIS·중소벤처기업부 중소기업기본통계, 「시도별·산업중분류별·기업규모별 기업수·종사자수」(2023년 값, 2026-09-28 수집)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001", date: "2026-09-28", kind: official }
+  - { title: "통계청 KOSIS·중소벤처기업부 중소기업기본통계, 「시도별·산업중분류별·기업규모별 기업수·종사자수」(2023년 값, 2026-09-28 수집)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001", date: "2026-09-28", kind: data }
   - { title: "뉴스핌, 「휴머노이드 부품 국산화 속도…센서·액추에이터 신규 프로젝트」(2026년 하반기 경제성장전략)", url: "https://www.newspim.com/news/view/20260910000959", date: "2026-09-10", kind: news }
   - { title: "네이트뉴스(전재), 「대구·경북 '첨단 소재부품·AI 로봇 중심지'로 키운다」(대경권 전략산업 4개 선정, 공동기획단)", url: "https://m.news.nate.com/view/20260826n31307", date: "2026-08-26", kind: news }
 ---

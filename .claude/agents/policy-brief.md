@@ -58,7 +58,7 @@ faq:
   - q: "…"
     a: "…"   # 3쌍, 본문 근거만
 sources:
-  - { title: "기관, 「자료명」", url: "https://…", date: "YYYY-MM-DD", kind: official }   # kind: official(통계·기관 발간물)/law(법령·고시)/gov(정부·시 보도자료)/report(연구 보고서)/news(기사)
+  - { title: "기관, 「자료명」", url: "https://…", date: "YYYY-MM-DD", kind: official }   # kind: official(통계·기관 발간물)/law(법령·고시)/gov(정부·시 보도자료)/report(연구 보고서)/news(기사)/data(저장소에 수집해 둔 KOSIS·ECOS 표 — 공식 자료 수에는 세지 않음)
 ---
 ```
 출처는 5건 이상, 그중 official/law/gov/report 가 2건 이상. 본문에서는 `[n]` 으로 sources 의 n번째를 가리킨다.

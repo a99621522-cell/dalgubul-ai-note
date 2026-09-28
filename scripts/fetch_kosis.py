@@ -97,13 +97,13 @@ def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
         print(f"[dry] {t['key']}: {API_DATA}?" + "&".join(f"{k}={'***' if k == 'apiKey' else v}" for k, v in {**base, "objL1": "ALL", "startPrdDe": start, "endPrdDe": end}.items()))
         return None
     rows = _get_rows(base, start, end)
-    area_words = t.get("area") or ["대구"]
+    area_words = t["area"] if "area" in t and t["area"] is not None else ["대구"]   # area: [] 이면 전 지역 행을 남긴다
     col = t.get("area_col")
     keep = []
     for row in rows:
         names = [row.get(f"{c}_NM", "") for c in ("C1", "C2", "C3", "C4")]
         hay = row.get(f"{col}_NM", "") if col else " ".join(names)
-        if any(w in hay for w in area_words):
+        if not area_words or any(w in hay for w in area_words):
             keep.append(row)
     if not keep and rows:   # 지역 열이 없는 표(전국 표)면 전부 남긴다
         keep = rows

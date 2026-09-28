@@ -1711,6 +1711,44 @@
    "attachment": "붙임4. 관련 법령 및 규정.zip",
    "articles": 43,
    "annexes": []
+  },
+  "doc-dfmts-01": {
+   "key": "doc-dfmts-01",
+   "name": "2. 상세안내문 기술지원 2026년 모빌리티 부품 제조AI 확산센터 구축 사업 취합 재공고 KETI",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구 미래차 전환 종합지원센터",
+   "source": {
+    "type": "url",
+    "name": "https://d-fmts.or.kr/pg/bbs/board.php?bo_table=info1_re&wr_id=444"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구 미래차 전환 종합지원센터",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "2. 상세안내문 기술지원 2026년 모빌리티 부품 제조AI 확산센터 구축 사업 취합 재공고 KETI",
+   "found_kind": "기관 첨부(hwpx)",
+   "found_issuer": "대구 미래차 전환 종합지원센터",
+   "id": "0e5e4091f306d394",
+   "sha": "0e5e4091f306d394",
+   "date": "",
+   "eff": "20261031",
+   "url": "https://d-fmts.or.kr/pg/bbs/board.php?bo_table=info1_re&wr_id=444",
+   "chars": 1325,
+   "file": "docs/dfmts/2._상세안내문_기술지원_2026년_모빌리티_부품_제조AI_확산센터_구축_사업_취합_재공고_KETI.hwpx.txt.gz",
+   "post": "2026년 모빌리티 부품 제조AI 확산센터 구축 사업 기업지원 수혜기업 모집 재공고",
+   "attachment": "2. 상세안내문 및 공통서식.zip (168.8K)",
+   "articles": 0,
+   "annexes": []
   }
  },
  "skipped": [

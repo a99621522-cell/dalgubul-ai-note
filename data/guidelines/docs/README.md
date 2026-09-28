@@ -4,6 +4,7 @@
 
 | key | 기관 | 문서 | 글 | 시행일(추정) | 글자 | 출처 |
 |---|---|---|---|---|---|---|
+| doc-dfmts-01 | 대구 미래차 전환 종합지원센터 | 2. 상세안내문 기술지원 2026년 모빌리티 부품 제조AI 확산센터 구축 사업 취합 재공고 KETI | 2026년 모빌리티 부품 제조AI 확산센터 구축 사업 기업지원 수혜기업 모집 재공고 | 2026-10-31 | 1,325 | https://d-fmts.or.kr/pg/bbs/board.php?bo_table=info1_re&wr_id=444 |
 | doc-riia-01 | 대구지역산업진흥원 | 지역산업육성 기업지원사업 관리지침(중소벤처기업부 승인, 2023-09-01 시행) | (중기부) 지역산업육성사업 운영요령(중소벤처기업부 제2023-69호) | 2023-09-01 | 68,675 | https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1 |
 | doc-riia-02 | 대구지역산업진흥원 | 지역산업육성 기술개발사업 관리지침(중소벤처기업부 승인, 2023-09-01 시행) | (중기부) 지역산업육성사업 운영요령(중소벤처기업부 제2023-69호) | 2023-09-01 | 83,086 | https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1 |
 | doc-riia-03 | 대구지역산업진흥원 | 산업기술개발장비 통합관리요령 | 2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차) | 2024-06-13 | 73,479 | https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1 |

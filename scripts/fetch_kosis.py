@@ -237,9 +237,10 @@ def save_meta(t: dict, key: str) -> None:
     print(f"[meta] {t['key']}: 항목·분류 {len(items)}개 → data/kosis/{t['key']}.meta.json")
 
 
-def walk_list(key: str, words: list[str], parent: str = "", depth: int = 0, max_depth: int = 6, path: str = "") -> None:
-    """KOSIS 주제별 통계목록 트리를 내려가며 이름에 낱말이 든 목록·표를 찍는다(--list '전국사업체조사 시도'). 검색 API 는 일부 표를 못 찾는다.
-    낱말은 상위 목록 이름과 표 이름을 합친 글자에서 찾는다(조사 이름은 목록에, '시도'는 표 이름에 있는 식). 여러 검색은 ';' 로 나눈다."""
+def walk_list(key: str, phrases: list[list[str]], parent: str = "", depth: int = 0, max_depth: int = 6, path: str = "") -> None:
+    """KOSIS 주제별 통계목록 트리를 한 번 내려가며 이름에 낱말이 든 목록·표를 찍는다(--list '전국사업체조사 시도;수출입 시도'). 검색 API 는 일부 표를 못 찾는다.
+    낱말은 상위 목록 이름과 표 이름을 합친 글자에서 찾는다(조사 이름은 목록에, '시도'는 표 이름에 있는 식). ';' 로 나눈 검색 여러 개를 한 번의 순회로 처리한다
+    (2026-09-28: 검색마다 순회하니 3개에 35분 넘게 걸렸다). 목록 이름(상위 포함)에 어느 검색의 첫 낱말이 들어 있으면 그 아래를 끝까지, 아니면 깊이 2까지만."""
     try:
         r = requests.get(API_LIST, params={"method": "getList", "apiKey": key, "vwCd": "MT_ZTITLE", "parentListId": parent, "format": "json", "jsonVD": "Y"},
                          headers={"User-Agent": UA}, timeout=(20, 60))
@@ -251,17 +252,18 @@ def walk_list(key: str, words: list[str], parent: str = "", depth: int = 0, max_
     for it in items:
         name = it.get("LIST_NM") or it.get("TBL_NM") or ""
         tbl = it.get("TBL_ID")
+        full = path + " " + name
         if tbl:
-            if all(w in path + " " + name for w in words):
-                print(f"   {it.get('ORG_ID')} {tbl} | {path.strip(' >')} > {name} | {it.get('PRD_DE', '')}~")
+            hits = [" ".join(w) for w in phrases if all(x in full for x in w)]
+            if hits:
+                print(f"   {it.get('ORG_ID')} {tbl} | {path.strip(' >')} > {name} | {it.get('PRD_DE', '')}~ | 검색 '{'; '.join(hits)}'")
             continue
         lid = it.get("LIST_ID")
-        # 목록 이름(상위 포함)에 첫 낱말이 들어 있으면 그 아래를 끝까지, 아니면 얕게만 내려간다
-        if any(w in path + " " + name for w in words[:1]) or depth < 2:
+        if any(w[0] in full for w in phrases if w) or depth < 2:
             if depth >= max_depth:
                 continue
-            walk_list(key, words, lid, depth + 1, max_depth, path + " > " + name)
-            time.sleep(0.2)
+            walk_list(key, phrases, lid, depth + 1, max_depth, path + " > " + name)
+            time.sleep(0.1)
 
 
 def write_summary(metas: list[dict]) -> None:
@@ -298,10 +300,10 @@ def main() -> int:
     if not key and not a.dry_run:
         print("KOSIS_KEY 가 없어 받지 않음(GitHub Secrets 에 넣으면 동작)"); return 0
     if a.list:
-        for phrase in a.list.split(";"):
-            if phrase.strip():
-                print(f"[list] '{phrase.strip()}'")
-                walk_list(key, phrase.split())
+        phrases = [ph.split() for ph in a.list.split(";") if ph.strip()]
+        print("[list] 검색:", "; ".join(" ".join(ph) for ph in phrases))
+        walk_list(key, phrases)
+        print("[list] 끝")
         return 0
     if a.meta:
         for t in load():

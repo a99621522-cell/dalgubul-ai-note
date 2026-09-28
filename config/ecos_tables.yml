@@ -13,7 +13,7 @@ tables:
   # ── 지역 금융 (월간) ──
   - key: bank-deposits-region
     name: 예금은행 지역별 수신(말잔)
-    stat_code: ""
+    stat_code: "141Y002"
     search: "지역별 수신"
     cycle: M
     years: 4
@@ -21,14 +21,14 @@ tables:
   - key: bank-loans-region
     name: 예금은행 지역별 여신(말잔)
     stat_code: ""
-    search: "지역별 여신"
+    search: "예금은행 지역별"
     cycle: M
     years: 4
     areas: [manufacturing-ax, machinery, automotive, textile, root]
     note: 대구 소재 예금은행 대출 잔액(기업대출 항목이 있으면 함께)
   - key: bank-loans-industry-region
     name: 예금은행 지역별 산업별 대출금
-    stat_code: ""
+    stat_code: "132Y001"
     search: "산업별 대출금"
     cycle: Q
     years: 5
@@ -36,7 +36,7 @@ tables:
   # ── 지역 경기 심리 ──
   - key: bsi-region
     name: 기업경기조사 — 지역별 업황 BSI
-    stat_code: ""
+    stat_code: "512Y019"
     search: "지역별 기업경기"
     cycle: M
     years: 4
@@ -44,13 +44,13 @@ tables:
   - key: ccsi-region
     name: 소비자동향조사 — 지역별 소비자심리지수
     stat_code: ""
-    search: "지역별 소비자"
+    search: "소비자"
     cycle: M
     years: 4
   # ── 지역 신용 ──
   - key: default-rate-region
     name: 어음부도율 — 지역별
-    stat_code: ""
+    stat_code: "801Y003"
     search: "부도율"
     cycle: M
     years: 4

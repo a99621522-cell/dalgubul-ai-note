@@ -25,8 +25,8 @@ const jsonld: object[] = [{
   headline: d.seoTitle || d.title, description: d.description || d.summary,
   datePublished: d.date.toISOString(), articleSection: CATEGORIES[d.category].name,
   keywords: d.tags.join(', '), mainEntityOfPage: pageUrl,
-  author: { '@type': 'Person', name: '다잇다 노트' },
-  publisher: { '@type': 'Organization', name: '다잇다 노트' },
+  author: { '@type': 'Organization', name: '다잇다' },
+  publisher: { '@type': 'Organization', name: '다잇다' },
   ...(d.sourceUrl ? { citation: d.sourceUrl } : d.sources.length ? { citation: d.sources.map(s => s.url) } : {}),
 }];
 if (d.faq.length > 0) jsonld.push({

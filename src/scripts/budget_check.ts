@@ -177,7 +177,7 @@ async function hwp(): Promise<void> {
   const btn = $<HTMLButtonElement>('bc-hwp')!; const key = ($<HTMLSelectElement>('bc-key')!).value; const meta = data!.index[key]; const check = data!.checks.find(c => c.key === key)!;
   try {
     btn.disabled = true; btn.textContent = '만드는 중…';
-    const blocks: Block[] = [p('kicker', [`지침 검토 의견서  ·  ${today()}  ·  다잇다 노트`, 'kicker']), p('title', [`「${meta?.name || check.name}」 대조 결과`, 'title']), p('rule', ['', 'caption']),
+    const blocks: Block[] = [p('kicker', [`지침 검토 의견서  ·  ${today()}`, 'kicker']), p('title', [`「${meta?.name || check.name}」 대조 결과`, 'title']), p('rule', ['', 'caption']),
       p('body', [`검토 문서(사업계획서): ${fileName}. 대조 지침: ${meta?.name || check.name}(시행 ${meta?.eff || check.eff}). 브라우저 규칙 검토 결과이며 최종 판단은 담당자가 한다.`, 'body'])];
     for (const [s, rows] of Object.entries(results)) {
       const todo = rows.filter(r => r.v === 'fix' || r.v === 'review');
@@ -186,7 +186,7 @@ async function hwp(): Promise<void> {
       blocks.push(table([['판정', '검토 항목', '문서에서 찾은 것', '고칠 방법', '근거'], ...list.map(r => [LABEL[r.v], r.item.item, r.found, r.how, `${r.item.basis} — ${r.item.quote}`])], { widths: [5000, 12000, 10000, 13188, 8000] }));
       blocks.push(p('spacer', ['', 'caption']));
     }
-    blocks.push(p('src', [`출처: ${meta?.name || check.name} 본문(국가법령정보센터). 다잇다 노트 /programs/guidelines/check/ 에서 ${today()} 만듦. 파일은 브라우저 안에서만 읽었고 서버로 보내지 않았다.`, 'src']));
+    blocks.push(p('src', [`출처: ${meta?.name || check.name} 본문(국가법령정보센터). note.daitda.co.kr/programs/guidelines/check/ 에서 ${today()} 만듦. 파일은 브라우저 안에서만 읽었고 서버로 보내지 않았다.`, 'src']));
     download(`지침검토 ${safeName(fileName.replace(/\.[^.]+$/, ''))}.hwpx`, await buildHwpx(blocks, `지침 검토 의견서 · ${fileName}`));
   } catch { btn.textContent = '만들기 실패'; setTimeout(() => { btn.textContent = '검토 의견서 HWP'; }, 1800); }
   finally { btn.disabled = false; if (btn.textContent === '만드는 중…') btn.textContent = '검토 의견서 HWP'; }

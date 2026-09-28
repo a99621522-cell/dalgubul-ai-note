@@ -194,6 +194,18 @@ def probe(t: dict, key: str) -> None:
             time.sleep(0.3)
 
 
+def save_meta(t: dict, key: str) -> None:
+    """표의 항목·분류 메타(getMeta ITM)를 data/kosis/<key>.meta.json 에 저장 — 분류 코드(대·중·소분류 단계)가 필요한 표(전국사업체조사 산업 등)에."""
+    r = requests.get("https://kosis.kr/openapi/statisticsData.do", params={"method": "getMeta", "apiKey": key, "format": "json", "jsonVD": "Y", "orgId": str(t["org_id"]), "tblId": t["tbl_id"], "type": "ITM"},
+                     headers={"User-Agent": UA}, timeout=(20, 120))
+    items = r.json()
+    if not isinstance(items, list):
+        print(f"[meta] {t['key']}: {items}"); return
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / f"{t['key']}.meta.json").write_text(json.dumps(items, ensure_ascii=False), encoding="utf-8")
+    print(f"[meta] {t['key']}: 항목·분류 {len(items)}개 → data/kosis/{t['key']}.meta.json")
+
+
 def walk_list(key: str, words: list[str], parent: str = "", depth: int = 0, max_depth: int = 6) -> None:
     """KOSIS 주제별 통계목록 트리를 내려가며 이름에 낱말이 든 목록·표를 찍는다(--list '전국사업체조사 시도'). 검색 API 는 일부 표를 못 찾는다."""
     try:
@@ -238,6 +250,7 @@ def main() -> int:
     ap.add_argument("--summary", action="store_true")
     ap.add_argument("--list", default="", help="통계목록 트리에서 낱말이 든 표를 찾는다(예: '전국사업체조사 시도')")
     ap.add_argument("--probe", default="", help="표 key 하나의 메타·최소 요청 응답을 찍는다(오류 21 원인 확인)")
+    ap.add_argument("--meta", default="", help="표 key 의 항목·분류 메타를 data/kosis/<key>.meta.json 으로 저장(분류 코드가 필요할 때)")
     a = ap.parse_args()
     tables = load()
     if a.only:
@@ -250,6 +263,11 @@ def main() -> int:
         print("KOSIS_KEY 가 없어 받지 않음(GitHub Secrets 에 넣으면 동작)"); return 0
     if a.list:
         walk_list(key, a.list.split()); return 0
+    if a.meta:
+        for t in load():
+            if t["key"] in a.meta.split(","):
+                save_meta(t, key)
+        return 0
     if a.probe:
         for t in load():
             if t["key"] == a.probe:

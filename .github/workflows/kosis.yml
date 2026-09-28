@@ -25,6 +25,10 @@ on:
         description: "표 key 하나의 메타·최소 요청 응답 찍기(오류 21 원인 확인). 비우면 안 함"
         required: false
         default: ""
+      meta:
+        description: "표 key(쉼표)의 항목·분류 메타를 data/kosis/<key>.meta.json 으로 저장·커밋. 비우면 안 함"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -52,6 +56,7 @@ jobs:
         env:
           KOSIS_KEY: ${{ secrets.KOSIS_KEY }}
         run: |
+          if [ -n "${{ inputs.meta }}" ]; then python3 scripts/fetch_kosis.py --meta "${{ inputs.meta }}"; exit 0; fi
           if [ -n "${{ inputs.probe }}" ]; then python3 scripts/fetch_kosis.py --probe "${{ inputs.probe }}"; exit 0; fi
           if [ -n "${{ inputs.list }}" ]; then python3 scripts/fetch_kosis.py --list "${{ inputs.list }}"; exit 0; fi
           if [ "${{ inputs.discover }}" = "true" ]; then python3 scripts/fetch_kosis.py --discover ${{ inputs.only && format('--only {0}', inputs.only) || '' }}; exit 0; fi

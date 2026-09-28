@@ -55,6 +55,7 @@ jobs:
       - name: 받기
         env:
           KOSIS_KEY: ${{ secrets.KOSIS_KEY }}
+          PYTHONUNBUFFERED: "1"      # 취소·중단돼도 --list·--discover 출력이 로그에 남게(2026-09-28: 33분 뒤 취소했더니 출력 0줄)
         run: |
           if [ -n "${{ inputs.meta }}" ]; then python3 scripts/fetch_kosis.py --meta "${{ inputs.meta }}"; exit 0; fi
           if [ -n "${{ inputs.probe }}" ]; then python3 scripts/fetch_kosis.py --probe "${{ inputs.probe }}"; exit 0; fi

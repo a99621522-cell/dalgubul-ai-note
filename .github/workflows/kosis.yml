@@ -71,4 +71,16 @@ jobs:
           git add data/kosis src/generated/kosis
           git diff --cached --quiet && { echo "변경 없음"; exit 0; }
           git commit -m "data: KOSIS 통계표 갱신 $(date -u +%Y-%m-%d)"
-          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done
+          # 러너 3개가 같은 표를 받아 동시에 커밋하면 summary.md 가 충돌한다(2026-09-28: 데이터 커밋 2개가 밀려 사라짐).
+          # 충돌하면 summary.md 는 내 쪽 JSON 으로 다시 만들어 이어 간다
+          for i in 1 2 3 4; do
+            git fetch -q origin "${GITHUB_REF_NAME}"
+            if ! git rebase -q "origin/${GITHUB_REF_NAME}"; then
+              git checkout --theirs -- data/kosis/summary.md 2>/dev/null || true
+              python3 scripts/fetch_kosis.py --summary >/dev/null 2>&1 || true
+              git add -A data/kosis src/generated/kosis
+              GIT_EDITOR=true git rebase --continue || { git rebase --abort; sleep $((i * 5)); continue; }
+            fi
+            git push origin HEAD:"${GITHUB_REF_NAME}" && break
+            sleep $((i * 5))
+          done

@@ -83,7 +83,7 @@ def _get_rows(base: dict, start: str, end: str) -> list:
                 time.sleep(0.3)
             if rows:
                 return rows
-        elif "21" not in e and "변수" not in e:
+        elif not any(x in e for x in ("21", "변수", "30", "존재하지")):   # 분류 단계가 모자라면 21 또는 30(데이터 없음)이 온다
             break
         time.sleep(0.3)
     raise RuntimeError(last or "응답 없음")
@@ -172,10 +172,7 @@ def main() -> int:
     metas = []
     for t in tables:
         if not t.get("tbl_id"):
-            if a.discover:
-                discover(t, key); time.sleep(0.5)
-            else:
-                print(f"{t['key']}: tbl_id 비어 있음 — --discover 로 후보 확인")
+            discover(t, key); time.sleep(0.5)   # tbl_id 가 비면 받기 실행에서도 후보를 찍어 준다
             continue
         try:
             m = fetch_table(t, key, a.dry_run)

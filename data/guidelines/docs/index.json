@@ -1,6 +1,6 @@
 {
  "fetched": "2026-09-28",
- "count": 17,
+ "count": 16,
  "items": {
   "doc-riia-01": {
    "key": "doc-riia-01",
@@ -432,9 +432,9 @@
   },
   "doc-riia-12": {
    "key": "doc-riia-12",
-   "name": "별표 1 정부지원연구개발비의 지원기준 및 기관부담연구개발비의 부담기준(제19조제3항 관련)",
+   "name": "국가연구개발혁신법 시행령 [별표 1] 정부지원연구개발비의 지원기준 및 기관부담연구개발비의 부담기준(제19조제3항 관련) (진흥원 '연구개발혁신법 및 하위규정' 첨부)",
    "kind": "기관 첨부(관리지침)",
-   "issuer": "대구지역산업진흥원",
+   "issuer": "과학기술정보통신부(국가연구개발혁신법 시행령)",
    "source": {
     "type": "url",
     "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b"
@@ -470,9 +470,9 @@
   },
   "doc-riia-13": {
    "key": "doc-riia-13",
-   "name": "별표 6 참여제한 처분기준(제59조제1항 관련)",
+   "name": "국가연구개발혁신법 시행령 [별표 6] 참여제한 처분기준(제59조제1항 관련) (진흥원 '연구개발혁신법 및 하위규정' 첨부)",
    "kind": "기관 첨부(관리지침)",
-   "issuer": "대구지역산업진흥원",
+   "issuer": "과학기술정보통신부(국가연구개발혁신법 시행령)",
    "source": {
     "type": "url",
     "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b"
@@ -508,9 +508,9 @@
   },
   "doc-riia-14": {
    "key": "doc-riia-14",
-   "name": "별표 7 제재부가금 처분기준(제59조제2항 관련)",
+   "name": "국가연구개발혁신법 시행령 [별표 7] 제재부가금 처분기준(제59조제2항 관련) (진흥원 '연구개발혁신법 및 하위규정' 첨부)",
    "kind": "기관 첨부(관리지침)",
-   "issuer": "대구지역산업진흥원",
+   "issuer": "과학기술정보통신부(국가연구개발혁신법 시행령)",
    "source": {
     "type": "url",
     "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b"
@@ -546,47 +546,9 @@
   },
   "doc-riia-15": {
    "key": "doc-riia-15",
-   "name": "붙임2 DPIS 신청방법 안내문",
+   "name": "과학기술분야 R&D 대체인력 활용 지원사업 운영지침(전문기관 한국여성과학기술인육성재단, 2025-12-18 개정; 대구테크노파크 2026년 모집 공고 첨부)",
    "kind": "기관 첨부(관리지침)",
-   "issuer": "대구지역산업진흥원",
-   "source": {
-    "type": "url",
-    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/1f786b0e-62d4-11f1-8dbc-7d97902dbc43"
-   },
-   "applies": {
-    "layer": "기관",
-    "ministry": "대구지역산업진흥원",
-    "program_type": [
-     "전체"
-    ]
-   },
-   "review": [
-    "예산요구서",
-    "집행",
-    "결산서"
-   ],
-   "fetched": "2026-09-28",
-   "status": "OK",
-   "found": "붙임2 DPIS 신청방법 안내문",
-   "found_kind": "기관 첨부(pdf)",
-   "found_issuer": "대구지역산업진흥원",
-   "id": "0d9b4168c029b286",
-   "sha": "0d9b4168c029b286",
-   "date": "",
-   "eff": "",
-   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/1f786b0e-62d4-11f1-8dbc-7d97902dbc43",
-   "chars": 2937,
-   "file": "docs/riia/붙임2_DPIS_신청방법_안내문.pdf.txt.gz",
-   "post": "[대구테크노파크] 2026년「과학기술분야 R&D 대체인력 활용 지원사업」3차 모집 공고",
-   "attachment": "2. 신청서 양식 및 관련규정.zip",
-   "articles": 0,
-   "annexes": []
-  },
-  "doc-riia-16": {
-   "key": "doc-riia-16",
-   "name": "붙임3 과학기술분야 R D 대체인력 활용 지원사업 운영지침",
-   "kind": "기관 첨부(관리지침)",
-   "issuer": "대구지역산업진흥원",
+   "issuer": "한국여성과학기술인육성재단(전문기관)·대구테크노파크(공고)",
    "source": {
     "type": "url",
     "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/1f786b0e-62d4-11f1-8dbc-7d97902dbc43"
@@ -620,11 +582,11 @@
    "articles": 50,
    "annexes": []
   },
-  "doc-riia-17": {
-   "key": "doc-riia-17",
-   "name": "연구자율성 촉진을 위한 특별요령",
+  "doc-riia-16": {
+   "key": "doc-riia-16",
+   "name": "연구자율성 촉진을 위한 특별요령(산업통상자원부 고시 제2024-219호)",
    "kind": "기관 첨부(관리지침)",
-   "issuer": "대구지역산업진흥원",
+   "issuer": "산업통상자원부",
    "source": {
     "type": "url",
     "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"

@@ -38,7 +38,7 @@ OUT = ROOT / "data" / "guidelines" / "docs"
 INDEX = ROOT / "data" / "guidelines" / "index.json"
 TODAY = date.today().isoformat()
 POST_HREF = re.compile(r"view|read|detail|nttId|boardRead|articleView|seq=|idx=|no=|wr_id|contentsView|BoardView|getBoard|/board/[^/]+/view", re.I)
-FILE_HINT = re.compile(r"fileDown|FileDown|download|atchFile|fileSn|attach|\.(pdf|hwpx?|zip)(\?|$)", re.I)
+FILE_HINT = re.compile(r"fileDown|FileDown|downFile|download|atchFile|fileSn|attach|\.(pdf|hwpx?|zip)(\?|$)", re.I)
 INNER_HINT = re.compile(r"안내문|안내서|지침|요령|기준|매뉴얼|가이드|규정|운영|집행|정산")   # zip 안 파일 이름(서식·양식은 exclude_pattern 이 거른다)
 DATE_RE = re.compile(r"(20\d{2})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})")
 
@@ -116,6 +116,8 @@ def list_posts(html: str, base: str, post_re: re.Pattern, link_re: re.Pattern, e
             continue
         if len(t) > 200 or not (post_re.search(t) or link_re.search(t)) or excl_re.search(t):
             continue
+        if href.startswith("http") and onclick and href.split("#")[0].split("?")[0] == base.split("#")[0].split("?")[0] and not POST_HREF.search(href):
+            href = ""   # 대구TP(eGov): href 는 목록 주소 그대로, onclick 의 fn_egov_inqire_notice 가 글을 연다 → 제목을 눌러 연다
         if href.startswith("http") and not POST_HREF.search(href) and not POST_HREF.search(onclick):
             continue
         k = t[:60]
@@ -189,9 +191,16 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
         posts, pages = list_posts(html, final, post_re, link_re, excl_re)
         # 첫 화면(seed 가 홈)이거나 글이 없으면 게시판 링크를 찾아 들어간다
         if home_re and (not posts or len(urlparse(board).path.strip("/")) == 0):
+            clicked = 0
             for label, href, _ in links_of(html, final):
                 if href.startswith("http") and urlparse(href).netloc == host and home_re.search(label) and href not in seen_boards and href not in boards:
                     boards.append(href)
+                elif href.startswith("javascript") and home_re.search(label) and len(label.strip()) <= 12 and clicked < 3:
+                    clicked += 1   # DIP 처럼 메뉴가 javascript:link('business') 이면 눌러서 실제 게시판 주소를 얻는다
+                    _, jurl = open_post(final, label.strip(), "")
+                    if jurl and jurl.split("#")[0] != final.split("#")[0] and urlparse(jurl).netloc == host and jurl not in seen_boards and jurl not in boards:
+                        print(f"  메뉴 '{label.strip()}' 클릭 → {jurl[:90]}")
+                        boards.append(jurl)
         print(f"  {board[:90]} → 글 후보 {len(posts)}개, 쪽 {len(pages)}개")
         if len(posts) <= 2:   # 단서가 적으면 링크 표본을 남겨 설정(post_pattern·seeds)을 고칠 수 있게
             sample = [(l[:30], h[-55:], oc[:40]) for l, h, oc in links_of(html, final) if len(l.strip()) >= 6 and (post_re.search(l) or re.search(r"20\d\d", l))][:15]
@@ -241,6 +250,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                 name, data = got_file
                 kind = kind_of(name, data)
                 if not kind:
+                    print(f"    형식 모름 건너뜀: {name[:50]} ({data[:4]!r}, {len(data):,} bytes)")
                     continue
                 items = [(safe(name), data, kind)]
                 if kind == "zip":
@@ -258,6 +268,8 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                                 zk = kind_of(zname, zd)
                                 if zk and zk != "zip":
                                     items.append((safe(Path(zname).name), zd, zk))
+                        if not items:
+                            print(f"    zip 안에 지침 이름 파일 없음: {name[:50]}")
                     except Exception as e:  # noqa: BLE001
                         print(f"    zip 실패 {name[:40]}: {str(e)[:50]}")
                 for fn, fd, fk in items:
@@ -281,7 +293,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                     if min_year and eff[:4].isdigit() and int(eff[:4]) < min_year:
                         print(f"    옛 자료 건너뜀(시행 {eff[:4]}): {fn[:50]}")
                         continue
-                    n = len([k for k in idx["items"] if k.startswith(f"doc-{key}-")]) + 1
+                    n = max([int(k.rsplit("-", 1)[1]) for k in idx["items"] if k.startswith(f"doc-{key}-") and k.rsplit("-", 1)[1].isdigit()] + [0]) + 1
                     dkey = f"doc-{key}-{n:02d}"
                     txt = txt.encode("utf-8", errors="replace").decode("utf-8")
                     with gzip.open(out_dir / (fn + ".txt.gz"), "wt", encoding="utf-8") as gz:

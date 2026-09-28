@@ -1093,6 +1093,728 @@
    "found_issuer": "중소벤처기업부",
    "articles": 110,
    "annexes": []
+  },
+  "doc-riia-01": {
+   "key": "doc-riia-01",
+   "name": "붙임2-2 지역산업육성 기업지원사업 관리지침 제정안",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "붙임2-2 지역산업육성 기업지원사업 관리지침 제정안",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "c0249e1807001d8e",
+   "sha": "c0249e1807001d8e",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1",
+   "chars": 68675,
+   "file": "docs/riia/붙임2-2_지역산업육성_기업지원사업_관리지침_제정안.hwp.txt.gz",
+   "post": "(중기부) 지역산업육성사업 운영요령(중소벤처기업부 제2023-69호)",
+   "attachment": "붙임2-2_지역산업육성 기업지원사업 관리지침 제정안.hwp",
+   "articles": 60,
+   "annexes": []
+  },
+  "doc-riia-03": {
+   "key": "doc-riia-03",
+   "name": "붙임2-1 지역산업육성 기술개발사업 관리지침 제정안",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "붙임2-1 지역산업육성 기술개발사업 관리지침 제정안",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "8dcfcd5ff20c0bc1",
+   "sha": "8dcfcd5ff20c0bc1",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1",
+   "chars": 83086,
+   "file": "docs/riia/붙임2-1_지역산업육성_기술개발사업_관리지침_제정안.hwp.txt.gz",
+   "post": "(중기부) 지역산업육성사업 운영요령(중소벤처기업부 제2023-69호)",
+   "attachment": "붙임2-1_지역산업육성 기술개발사업 관리지침 제정안.hwp",
+   "articles": 57,
+   "annexes": []
+  },
+  "doc-riia-05": {
+   "key": "doc-riia-05",
+   "name": "별지10 학생인건비부당회수 현황",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별지10 학생인건비부당회수 현황",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "57a1c80a7af30c71",
+   "sha": "57a1c80a7af30c71",
+   "date": "",
+   "eff": "20210101",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b",
+   "chars": 924,
+   "file": "docs/riia/별지10_학생인건비부당회수_현황.hwp.txt.gz",
+   "post": "연구개발혁신법 및 하위규정",
+   "attachment": "연구개발혁신법 및 하위규정.zip",
+   "articles": 1,
+   "annexes": []
+  },
+  "doc-riia-07": {
+   "key": "doc-riia-07",
+   "name": "별지1 학생연구자 연구참여확약서",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별지1 학생연구자 연구참여확약서",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "3de43133a3e67ed6",
+   "sha": "3de43133a3e67ed6",
+   "date": "",
+   "eff": "20210101",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b",
+   "chars": 1789,
+   "file": "docs/riia/별지1_학생연구자_연구참여확약서.hwp.txt.gz",
+   "post": "연구개발혁신법 및 하위규정",
+   "attachment": "연구개발혁신법 및 하위규정.zip",
+   "articles": 0,
+   "annexes": []
+  },
+  "doc-riia-09": {
+   "key": "doc-riia-09",
+   "name": "별지2 영리기관의 신규연구자 인건비 관리 계획 및 현황",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별지2 영리기관의 신규연구자 인건비 관리 계획 및 현황",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "1842aa7b47464a35",
+   "sha": "1842aa7b47464a35",
+   "date": "",
+   "eff": "20210101",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b",
+   "chars": 792,
+   "file": "docs/riia/별지2_영리기관의_신규연구자_인건비_관리_계획_및_현황.hwp.txt.gz",
+   "post": "연구개발혁신법 및 하위규정",
+   "attachment": "연구개발혁신법 및 하위규정.zip",
+   "articles": 0,
+   "annexes": []
+  },
+  "doc-riia-11": {
+   "key": "doc-riia-11",
+   "name": "별지3 영리기관의 연구실운영비 활용 관리 계획",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별지3 영리기관의 연구실운영비 활용 관리 계획",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "11fedd476e6c4c9f",
+   "sha": "11fedd476e6c4c9f",
+   "date": "",
+   "eff": "20210101",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b",
+   "chars": 1160,
+   "file": "docs/riia/별지3_영리기관의_연구실운영비_활용_관리_계획.hwp.txt.gz",
+   "post": "연구개발혁신법 및 하위규정",
+   "attachment": "연구개발혁신법 및 하위규정.zip",
+   "articles": 0,
+   "annexes": []
+  },
+  "doc-riia-13": {
+   "key": "doc-riia-13",
+   "name": "3. (전문) 산업기술혁신사업 사업비 산정 관리 및 사용 정산에 관한 요령 일부개정안 191231",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/51e0e243-b101-11ee-89d7-67e2f537a965"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "3. (전문) 산업기술혁신사업 사업비 산정 관리 및 사용 정산에 관한 요령 일부개정안 191231",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "674cbbf35d0ed870",
+   "sha": "674cbbf35d0ed870",
+   "date": "",
+   "eff": "20191231",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/51e0e243-b101-11ee-89d7-67e2f537a965",
+   "chars": 62646,
+   "file": "docs/riia/3._(전문)_산업기술혁신사업_사업비_산정_관리_및_사용_정산에_관한_요령_일부개정안_191231.hwp.txt.gz",
+   "post": "기술혁신사업_공통운영요령_기술개발 평가관리_사업비 산정 일부개정안(20191231)",
+   "attachment": "기술혁신사업_공통운영요령_기술개발 평가관리_사업비 산정 일부개정안(20191231).zip",
+   "articles": 155,
+   "annexes": []
+  },
+  "doc-riia-15": {
+   "key": "doc-riia-15",
+   "name": "1. (전문) 산업기술혁신사업 공통 운영요령 일부개정안 191231",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/51e0e243-b101-11ee-89d7-67e2f537a965"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "1. (전문) 산업기술혁신사업 공통 운영요령 일부개정안 191231",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "24f0dc5520f1182e",
+   "sha": "24f0dc5520f1182e",
+   "date": "",
+   "eff": "20191231",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/51e0e243-b101-11ee-89d7-67e2f537a965",
+   "chars": 82463,
+   "file": "docs/riia/1._(전문)_산업기술혁신사업_공통_운영요령_일부개정안_191231.hwp.txt.gz",
+   "post": "기술혁신사업_공통운영요령_기술개발 평가관리_사업비 산정 일부개정안(20191231)",
+   "attachment": "기술혁신사업_공통운영요령_기술개발 평가관리_사업비 산정 일부개정안(20191231).zip",
+   "articles": 313,
+   "annexes": []
+  },
+  "doc-riia-17": {
+   "key": "doc-riia-17",
+   "name": "2. (전문) 산업기술혁신사업 기술개발 평가관리지침 일부개정안 191231",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/51e0e243-b101-11ee-89d7-67e2f537a965"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "2. (전문) 산업기술혁신사업 기술개발 평가관리지침 일부개정안 191231",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "c9751c0e299e5f12",
+   "sha": "c9751c0e299e5f12",
+   "date": "",
+   "eff": "20191231",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/51e0e243-b101-11ee-89d7-67e2f537a965",
+   "chars": 54039,
+   "file": "docs/riia/2._(전문)_산업기술혁신사업_기술개발_평가관리지침_일부개정안_191231.hwp.txt.gz",
+   "post": "기술혁신사업_공통운영요령_기술개발 평가관리_사업비 산정 일부개정안(20191231)",
+   "attachment": "기술혁신사업_공통운영요령_기술개발 평가관리_사업비 산정 일부개정안(20191231).zip",
+   "articles": 195,
+   "annexes": []
+  },
+  "doc-riia-19": {
+   "key": "doc-riia-19",
+   "name": "(전문) 산업기술혁신사업 기술개발 평가관리지침 일부개정안 190808",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/regulationsAndForms/view/515f2f1b-b101-11ee-89d7-2706c20a058f"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "(전문) 산업기술혁신사업 기술개발 평가관리지침 일부개정안 190808",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "8bc5694199ff7cdc",
+   "sha": "8bc5694199ff7cdc",
+   "date": "",
+   "eff": "20190808",
+   "url": "https://daegu.riia.or.kr/board/regulationsAndForms/view/515f2f1b-b101-11ee-89d7-2706c20a058f",
+   "chars": 54220,
+   "file": "docs/riia/(전문)_산업기술혁신사업_기술개발_평가관리지침_일부개정안_190808.hwp.txt.gz",
+   "post": "산업기술혁신사업 기술개발 평가관리지침 개정전문(산업부 예규 제78호)_20190808",
+   "attachment": "(전문) 산업기술혁신사업 기술개발 평가관리지침 일부개정안_190808.hwp",
+   "articles": 186,
+   "annexes": []
+  },
+  "doc-riia-21": {
+   "key": "doc-riia-21",
+   "name": "산업기술개발장비 통합관리요령",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "산업기술개발장비 통합관리요령",
+   "found_kind": "기관 첨부(hwpx)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "5383ab14a3da5c3c",
+   "sha": "5383ab14a3da5c3c",
+   "date": "",
+   "eff": "20240613",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 73479,
+   "file": "docs/riia/산업기술개발장비_통합관리요령.hwpx.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 132,
+   "annexes": []
+  },
+  "doc-riia-23": {
+   "key": "doc-riia-23",
+   "name": "산업기술혁신사업 공통 운영요령",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "산업기술혁신사업 공통 운영요령",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "ed1bcf867586f0ab",
+   "sha": "ed1bcf867586f0ab",
+   "date": "",
+   "eff": "20241230",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 149884,
+   "file": "docs/riia/산업기술혁신사업_공통_운영요령.hwp.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 444,
+   "annexes": []
+  },
+  "doc-riia-25": {
+   "key": "doc-riia-25",
+   "name": "별표 보안관리 조치사항(제12조 관련)(산업기술혁신사업 보안관리요령)",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별표 보안관리 조치사항(제12조 관련)(산업기술혁신사업 보안관리요령)",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "6ce63fc0b760d364",
+   "sha": "6ce63fc0b760d364",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 3106,
+   "file": "docs/riia/별표_보안관리_조치사항(제12조_관련)(산업기술혁신사업_보안관리요령).hwp.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 3,
+   "annexes": []
+  },
+  "doc-riia-27": {
+   "key": "doc-riia-27",
+   "name": "별표1",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별표1",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "1949ec81718cac86",
+   "sha": "1949ec81718cac86",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 2709,
+   "file": "docs/riia/별표1.hwp.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 3,
+   "annexes": []
+  },
+  "doc-riia-29": {
+   "key": "doc-riia-29",
+   "name": "별표2",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별표2",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "df990836c7c46543",
+   "sha": "df990836c7c46543",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 4626,
+   "file": "docs/riia/별표2.hwp.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 6,
+   "annexes": []
+  },
+  "doc-riia-31": {
+   "key": "doc-riia-31",
+   "name": "별표3",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별표3",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "58f6e1d83fe30ffb",
+   "sha": "58f6e1d83fe30ffb",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 1948,
+   "file": "docs/riia/별표3.hwp.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 0,
+   "annexes": []
+  },
+  "doc-riia-33": {
+   "key": "doc-riia-33",
+   "name": "별표4",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별표4",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "1c4d3df7d1ccfad7",
+   "sha": "1c4d3df7d1ccfad7",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 21211,
+   "file": "docs/riia/별표4.hwp.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 39,
+   "annexes": []
+  },
+  "doc-riia-35": {
+   "key": "doc-riia-35",
+   "name": "별표5",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별표5",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "42d4206b97bb2016",
+   "sha": "42d4206b97bb2016",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 11171,
+   "file": "docs/riia/별표5.hwp.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 4,
+   "annexes": []
+  },
+  "doc-riia-37": {
+   "key": "doc-riia-37",
+   "name": "별표6",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "별표6",
+   "found_kind": "기관 첨부(hwp)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "08244e990dfe3d8e",
+   "sha": "08244e990dfe3d8e",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1",
+   "chars": 5515,
+   "file": "docs/riia/별표6.hwp.txt.gz",
+   "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
+   "attachment": "붙임4. 관련 법령 및 규정.zip",
+   "articles": 4,
+   "annexes": []
   }
  }
 }

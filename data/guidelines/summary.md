@@ -24,6 +24,7 @@
 | doc-riia-14 | 별표 7 제재부가금 처분기준(제59조제2항 관련) | 기관 첨부(hwp) | 대구지역산업진흥원 |  | OK | 5,204 | 예산요구서 · 집행 · 결산서 | https://daegu.riia.or.kr/board/regulationsAndForms/view/530a4726-b101-11ee-89d7-b9f479909d8b |
 | doc-riia-15 | 붙임3 과학기술분야 R D 대체인력 활용 지원사업 운영지침 | 기관 첨부(pdf) | 대구지역산업진흥원 | 2025-12-18 | OK | 14,772 | 예산요구서 · 집행 · 결산서 | https://daegu.riia.or.kr/board/businessAnnouncement/view/1f786b0e-62d4-11f1-8dbc-7d97902dbc43 |
 | doc-riia-16 | 연구자율성 촉진을 위한 특별요령 | 기관 첨부(hwp) | 대구지역산업진흥원 | 2024-12-30 | OK | 9,029 | 예산요구서 · 집행 · 결산서 | https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1 |
+| doc-riia-17 | 붙임2 DPIS 신청방법 안내문 | 기관 첨부(pdf) | 대구지역산업진흥원 |  | OK | 2,937 | 예산요구서 · 집행 · 결산서 | https://daegu.riia.or.kr/board/businessAnnouncement/view/1f786b0e-62d4-11f1-8dbc-7d97902dbc43 |
 | local-budget-std | 지방자치단체 예산편성 운영기준 | 훈령 | 행정안전부 | 2026-06-30 | OK | 328,485 | 예산요구서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000281550 |
 | local-corp-act | 지방자치단체 출자ㆍ출연 기관의 운영에 관한 법률 | 법률 | 행정안전부 | 2026-01-02 | OK | 24,656 | 예산요구서 · 결산서 | https://www.law.go.kr/법령/지방자치단체출자출연기관의운영에관한법률 |
 | local-corp-budget | 지방출자·출연기관 예산편성기준 | 지침 | 행정안전부 |  | 없음 | 0 | 예산요구서 |  |

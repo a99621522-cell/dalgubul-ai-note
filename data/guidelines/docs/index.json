@@ -1,6 +1,6 @@
 {
  "fetched": "2026-09-28",
- "count": 16,
+ "count": 17,
  "items": {
   "doc-riia-01": {
    "key": "doc-riia-01",
@@ -618,6 +618,44 @@
    "post": "2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차)",
    "attachment": "붙임4. 관련 법령 및 규정.zip",
    "articles": 43,
+   "annexes": []
+  },
+  "doc-riia-17": {
+   "key": "doc-riia-17",
+   "name": "붙임2 DPIS 신청방법 안내문",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "대구지역산업진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://daegu.riia.or.kr/board/businessAnnouncement/view/1f786b0e-62d4-11f1-8dbc-7d97902dbc43"
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "대구지역산업진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "붙임2 DPIS 신청방법 안내문",
+   "found_kind": "기관 첨부(pdf)",
+   "found_issuer": "대구지역산업진흥원",
+   "id": "0d9b4168c029b286",
+   "sha": "0d9b4168c029b286",
+   "date": "",
+   "eff": "",
+   "url": "https://daegu.riia.or.kr/board/businessAnnouncement/view/1f786b0e-62d4-11f1-8dbc-7d97902dbc43",
+   "chars": 2937,
+   "file": "docs/riia/붙임2_DPIS_신청방법_안내문.pdf.txt.gz",
+   "post": "[대구테크노파크] 2026년「과학기술분야 R&D 대체인력 활용 지원사업」3차 모집 공고",
+   "attachment": "2. 신청서 양식 및 관련규정.zip",
+   "articles": 0,
    "annexes": []
   }
  }

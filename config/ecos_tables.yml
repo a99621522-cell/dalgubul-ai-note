@@ -19,13 +19,25 @@ tables:
     years: 4
     note: 대구 소재 예금은행 수신 잔액. 지역 자금 규모의 공식 기준값
   - key: bank-loans-region
-    name: 예금은행 지역별 여신(말잔)
-    stat_code: ""
+    name: 예금은행 지역별 대출금(말잔)
+    stat_code: "141Y003"
     search: "예금은행 지역별"
     cycle: M
     years: 4
     areas: [manufacturing-ax, machinery, automotive, textile, root]
-    note: 대구 소재 예금은행 대출 잔액(기업대출 항목이 있으면 함께)
+    note: 대구 소재 예금은행 대출금 잔액
+  - key: bank-corp-loans-region
+    name: 예금은행 지역별 기업대출(말잔)
+    stat_code: "141Y004"
+    cycle: M
+    years: 4
+    areas: [manufacturing-ax, machinery, automotive, textile, root, semiconductor, ai-sw-startup]
+    note: 대구 소재 예금은행의 기업대출 잔액
+  - key: bank-delinquency-region
+    name: 예금은행 지역별 연체율
+    stat_code: "141Y005"
+    cycle: M
+    years: 4
   - key: bank-loans-industry-region
     name: 예금은행 지역별 산업별 대출금
     stat_code: "132Y001"
@@ -43,7 +55,7 @@ tables:
     areas: [manufacturing-ax, machinery, automotive, textile, root]
   - key: ccsi-region
     name: 소비자동향조사 — 지역별 소비자심리지수
-    stat_code: ""
+    stat_code: "511Y004"
     search: "소비자"
     cycle: M
     years: 4

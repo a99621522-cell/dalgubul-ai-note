@@ -86,7 +86,9 @@ def discover(t: dict, key: str) -> None:
         print(f"[discover] {t['key']}: 검색 실패 {e}")
         return
     if not isinstance(items, list):
-        print(f"[discover] {t['key']}: {items}")
+        msg = items.get("errMsg", "") if isinstance(items, dict) else ""
+        hint = " — KOSIS 공유서비스(kosis.kr → 공유서비스 → 인증키 발급)의 키인지, 마이페이지 활용신청이 승인됐는지, 시크릿에 공백이 없는지 확인" if "인증" in msg else ""
+        print(f"[discover] {t['key']}: {items}{hint}")
         return
     print(f"[discover] {t['key']} ← '{q}'")
     for it in items[:15]:
@@ -116,7 +118,7 @@ def main() -> int:
         tables = [t for t in tables if t["key"] in want]
     if a.summary:
         write_summary([]); return 0
-    key = os.environ.get("KOSIS_KEY", "")
+    key = os.environ.get("KOSIS_KEY", "").strip().strip('"\'')   # 시크릿에 공백·따옴표가 딸려 와도 그대로 쓰지 않게
     if not key and not a.dry_run:
         print("KOSIS_KEY 가 없어 받지 않음(GitHub Secrets 에 넣으면 동작)"); return 0
     metas = []

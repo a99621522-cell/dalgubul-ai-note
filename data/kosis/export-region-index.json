@@ -1,0 +1,20 @@
+{
+ "key": "export-region-index",
+ "name": "관세청 기업무역활동통계 — 지역별 수출지표 현황(시도별)",
+ "tbl_nm": "지역별 수출지표 현황",
+ "org_id": "134",
+ "tbl_id": "DT_134006_N015",
+ "prd_se": "Y",
+ "period": [
+  "2014",
+  "2026"
+ ],
+ "rows_total": 459,
+ "rows_kept": 459,
+ "latest": "2025",
+ "unit": "%",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N015",
+ "note": ""
+}

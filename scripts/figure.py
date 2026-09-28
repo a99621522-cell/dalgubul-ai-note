@@ -8,6 +8,8 @@ spec 형식 (type 마다):
   {"type": "line",  "title": "…", "unit": "명", "x": ["2025-01", ...], "series": [{"name": "…", "values": [...]}]}
   {"type": "steps", "title": "로드맵", "steps": [{"label": "1단계", "head": "접수 1회", "items": ["…", "…"]}, ...], "current": 2}
   {"type": "compare", "title": "…", "columns": ["구분", "기존", "제안"], "rows": [["창구", "3개", "1개"], ...]}
+  {"type": "scatter", "title": "…", "xlabel": "…", "ylabel": "…", "points": [{"label": "대구", "x": 1.2, "y": 0.9, "highlight": true}], "xmean": 2.5, "ymean": 0.1, "xmean_label": "전국", "ymean_label": "전국"}
+  {"type": "heatmap", "title": "…", "rows": ["서울", …], "cols": ["농림어업", …], "values": [[1.2, …], …], "vmax": 3, "highlight_row": "대구"}
 규칙(dataviz): 막대 ≤ 24px·끝 4px 둥글게, 선 2px, 격자 hairline, 값 라벨은 항목 12개 이하일 때만, 시리즈 2개 이상이면 범례, 색은 사이트 팔레트 고정 순서.
 글자는 SVG 안에서 Pretendard/맑은 고딕/시스템 sans-serif. 원본 수치는 그대로(환산 없음)."""
 from __future__ import annotations
@@ -228,7 +230,68 @@ def compare(spec):
     return "\n".join(out + footer(spec, h))
 
 
-RENDER = {"bar": bar, "hbar": hbar, "line": line, "steps": steps, "compare": compare}
+def scatter(spec):
+    """산점도: 점마다 이름표, 평균선(x·y), 강조 점(highlight)은 주황·굵게. 회귀선은 그리지 않는다(값 그대로)."""
+    pts = spec["points"]
+    h = 480
+    left, top, pw, ph = 70, 56, W - 100, h - 56 - 80
+    xs = [p["x"] for p in pts] + ([spec["xmean"]] if spec.get("xmean") is not None else [])
+    ys = [p["y"] for p in pts] + ([spec["ymean"]] if spec.get("ymean") is not None else [])
+    xmin, xmax = spec.get("xmin", min(xs)), spec.get("xmax", max(xs))
+    ymin, ymax = spec.get("ymin", min(ys)), spec.get("ymax", max(ys))
+    xpad, ypad = (xmax - xmin or 1) * 0.08, (ymax - ymin or 1) * 0.1
+    xmin, xmax, ymin, ymax = xmin - xpad, xmax + xpad, ymin - ypad, ymax + ypad
+    sx = lambda v: left + (v - xmin) / (xmax - xmin) * pw
+    sy = lambda v: top + ph - (v - ymin) / (ymax - ymin) * ph
+    out = header(spec, h)
+    out.append(f'<rect x="{left}" y="{top}" width="{pw}" height="{ph}" fill="none" stroke="{LINE}"/>')
+    # 눈금 5개
+    for i in range(6):
+        xv = xmin + (xmax - xmin) * i / 5; yv = ymin + (ymax - ymin) * i / 5
+        out.append(text(sx(xv), top + ph + 18, f"{xv:.{spec.get('xdec', 2)}f}", 11, MUTED, "middle"))
+        out.append(text(left - 6, sy(yv) + 4, f"{yv:.{spec.get('ydec', 1)}f}", 11, MUTED, "end"))
+        out.append(f'<line x1="{left}" y1="{sy(yv):.1f}" x2="{left + pw}" y2="{sy(yv):.1f}" stroke="{LINE}" stroke-dasharray="2,3"/>')
+    if spec.get("xmean") is not None:
+        out.append(f'<line x1="{sx(spec["xmean"]):.1f}" y1="{top}" x2="{sx(spec["xmean"]):.1f}" y2="{top + ph}" stroke="{COLORS[2]}" stroke-width="1.5" stroke-dasharray="6,4"/>')
+        out.append(text(sx(spec["xmean"]) + 4, top + 14, f"{spec.get('xmean_label', '평균')}: {spec['xmean']:.{spec.get('xdec', 2)}f}", 11, COLORS[2]))
+    if spec.get("ymean") is not None:
+        out.append(f'<line x1="{left}" y1="{sy(spec["ymean"]):.1f}" x2="{left + pw}" y2="{sy(spec["ymean"]):.1f}" stroke="{COLORS[2]}" stroke-width="1.5" stroke-dasharray="6,4"/>')
+        out.append(text(left + 4, sy(spec["ymean"]) - 5, f"{spec.get('ymean_label', '평균')}: {spec['ymean']:.{spec.get('ydec', 1)}f}", 11, COLORS[2]))
+    for p_ in pts:
+        hl = p_.get("highlight")
+        out.append(f'<circle cx="{sx(p_["x"]):.1f}" cy="{sy(p_["y"]):.1f}" r="{7 if hl else 5}" fill="{COLORS[1] if hl else COLORS[0]}" stroke="{BG}" stroke-width="2"/>')
+        out.append(text(sx(p_["x"]) + 8, sy(p_["y"]) - 6, p_["label"], 12 if hl else 11, INK if hl else MUTED, weight=700 if hl else 400))
+    out.append(text(left + pw / 2, h - 36, spec.get("xlabel", ""), 12, MUTED, "middle"))
+    out.append(text(16, top - 8, spec.get("ylabel", ""), 12, MUTED))
+    return "\n".join(out + footer(spec, h))
+
+
+def heatmap(spec):
+    """히트맵: 값이 클수록 붉게(1 기준 흰색 → vmax 진한 붉음). 강조 행은 테두리."""
+    rows, cols, vals = spec["rows"], spec["cols"], spec["values"]
+    left, top = 90, 56
+    cw = min(44, (W - left - 24) / max(1, len(cols))); rh = 22
+    h = top + rh * len(rows) + 150
+    vmin, vmax = spec.get("vmin", 0), spec.get("vmax", max(max(r) for r in vals) or 1)
+    out = header(spec, h)
+    for i, r in enumerate(rows):
+        y = top + i * rh
+        hl = r == spec.get("highlight_row")
+        out.append(text(left - 6, y + rh - 6, r, 11, INK if hl else MUTED, "end", 700 if hl else 400))
+        for j, v in enumerate(vals[i]):
+            t = 0 if v is None else max(0, min(1, (v - vmin) / (vmax - vmin)))
+            rch, gch, bch = 255, int(255 - 200 * t), int(255 - 210 * t)
+            out.append(f'<rect x="{left + j * cw:.1f}" y="{y}" width="{cw - 1:.1f}" height="{rh - 1}" fill="rgb({rch},{gch},{bch})"/>')
+        if hl:
+            out.append(f'<rect x="{left}" y="{y}" width="{cw * len(cols):.1f}" height="{rh - 1}" fill="none" stroke="{INK}" stroke-width="1.5"/>')
+    for j, c in enumerate(cols):
+        x = left + j * cw + cw / 2
+        out.append(f'<text x="{x:.1f}" y="{top + rh * len(rows) + 6}" font-size="10" fill="{MUTED}" text-anchor="end" transform="rotate(-60 {x:.1f},{top + rh * len(rows) + 6})" {FONT}>{esc(str(c))}</text>')
+    out.append(text(left, h - 34, f"색: 흰색 {vmin:g} → 붉은색 {vmax:g} 이상 (값이 클수록 특화)", 11, MUTED))
+    return "\n".join(out + footer(spec, h))
+
+
+RENDER = {"bar": bar, "hbar": hbar, "line": line, "steps": steps, "compare": compare, "scatter": scatter, "heatmap": heatmap}
 DEMO = {"type": "bar", "title": "대구 의료용 기기 제조 기업 규모 분포", "unit": "곳", "categories": ["1~9인", "10~49인", "50인 이상", "미기재"], "series": [{"name": "기업 수", "values": [50, 42, 21, 9]}], "source": "기업 사전 2026-08(팩토리온), KSIC 271(안경 제외)"}
 
 

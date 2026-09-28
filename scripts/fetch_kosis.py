@@ -269,7 +269,11 @@ def write_summary(metas: list[dict]) -> None:
     lines = ["# KOSIS 수집 결과", "", f"갱신 {date.today().isoformat()} · 표 {len(files)}개 · 설정 config/kosis_tables.yml", "",
              "| key | 표 | 기간 | 최근 | 대구 행 | 단위 |", "|---|---|---|---|---:|---|"]
     for f in files:
+        if f.name.endswith(".meta.json") or f.name == "structure_report.json":   # 표가 아닌 JSON(메타·보고서 수치)은 건너뛴다 — 2026-09-28 discover 실행이 여기서 죽었다
+            continue
         m = json.loads(f.read_text(encoding="utf-8"))
+        if not isinstance(m, dict) or "key" not in m:
+            continue
         lines.append(f"| {m['key']} | [{m.get('tbl_nm') or m['name']}]({m['source_url']}) | {m['prd_se']} {m['period'][0]}~{m['period'][1]} | {m['latest']} | {m['rows_kept']} | {m['unit']} |")
     (OUT / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 

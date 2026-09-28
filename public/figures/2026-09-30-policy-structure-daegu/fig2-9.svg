@@ -1,0 +1,474 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="580" viewBox="0 0 800 580" role="img" aria-label="부가가치 기준 지역별 입지계수 히트맵(2024년)">
+<rect width="800" height="580" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >부가가치 기준 지역별 입지계수 히트맵(2024년)</text>
+<text x="84.0" y="72.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >서울</text>
+<rect x="90.0" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="117.4" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="144.9" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="172.3" y="56" width="26.4" height="21" fill="rgb(255,121,114)"/>
+<rect x="199.8" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="227.2" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="254.6" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="282.1" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="309.5" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="337.0" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="364.4" y="56" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="391.8" y="56" width="26.4" height="21" fill="rgb(255,246,245)"/>
+<rect x="419.3" y="56" width="26.4" height="21" fill="rgb(255,113,105)"/>
+<rect x="446.7" y="56" width="26.4" height="21" fill="rgb(255,224,222)"/>
+<rect x="474.2" y="56" width="26.4" height="21" fill="rgb(255,193,189)"/>
+<rect x="501.6" y="56" width="26.4" height="21" fill="rgb(255,59,49)"/>
+<rect x="529.0" y="56" width="26.4" height="21" fill="rgb(255,86,77)"/>
+<rect x="556.5" y="56" width="26.4" height="21" fill="rgb(255,170,165)"/>
+<rect x="583.9" y="56" width="26.4" height="21" fill="rgb(255,86,78)"/>
+<rect x="611.4" y="56" width="26.4" height="21" fill="rgb(255,123,116)"/>
+<rect x="638.8" y="56" width="26.4" height="21" fill="rgb(255,247,246)"/>
+<rect x="666.2" y="56" width="26.4" height="21" fill="rgb(255,213,210)"/>
+<rect x="693.7" y="56" width="26.4" height="21" fill="rgb(255,205,202)"/>
+<rect x="721.1" y="56" width="26.4" height="21" fill="rgb(255,189,185)"/>
+<rect x="748.6" y="56" width="26.4" height="21" fill="rgb(255,177,173)"/>
+<text x="84.0" y="94.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >부산</text>
+<rect x="90.0" y="78" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="117.4" y="78" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="144.9" y="78" width="26.4" height="21" fill="rgb(255,237,236)"/>
+<rect x="172.3" y="78" width="26.4" height="21" fill="rgb(255,171,166)"/>
+<rect x="199.8" y="78" width="26.4" height="21" fill="rgb(255,254,253)"/>
+<rect x="227.2" y="78" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="254.6" y="78" width="26.4" height="21" fill="rgb(255,190,186)"/>
+<rect x="282.1" y="78" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="309.5" y="78" width="26.4" height="21" fill="rgb(255,217,215)"/>
+<rect x="337.0" y="78" width="26.4" height="21" fill="rgb(255,224,222)"/>
+<rect x="364.4" y="78" width="26.4" height="21" fill="rgb(255,213,210)"/>
+<rect x="391.8" y="78" width="26.4" height="21" fill="rgb(255,209,206)"/>
+<rect x="419.3" y="78" width="26.4" height="21" fill="rgb(255,195,192)"/>
+<rect x="446.7" y="78" width="26.4" height="21" fill="rgb(255,89,80)"/>
+<rect x="474.2" y="78" width="26.4" height="21" fill="rgb(255,162,157)"/>
+<rect x="501.6" y="78" width="26.4" height="21" fill="rgb(255,252,251)"/>
+<rect x="529.0" y="78" width="26.4" height="21" fill="rgb(255,194,190)"/>
+<rect x="556.5" y="78" width="26.4" height="21" fill="rgb(255,185,181)"/>
+<rect x="583.9" y="78" width="26.4" height="21" fill="rgb(255,197,194)"/>
+<rect x="611.4" y="78" width="26.4" height="21" fill="rgb(255,198,195)"/>
+<rect x="638.8" y="78" width="26.4" height="21" fill="rgb(255,202,199)"/>
+<rect x="666.2" y="78" width="26.4" height="21" fill="rgb(255,179,175)"/>
+<rect x="693.7" y="78" width="26.4" height="21" fill="rgb(255,145,139)"/>
+<rect x="721.1" y="78" width="26.4" height="21" fill="rgb(255,203,200)"/>
+<rect x="748.6" y="78" width="26.4" height="21" fill="rgb(255,189,185)"/>
+<text x="84.0" y="116.0" font-size="11" fill="#1a1a1a" text-anchor="end" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대구</text>
+<rect x="90.0" y="100" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="117.4" y="100" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="144.9" y="100" width="26.4" height="21" fill="rgb(255,251,250)"/>
+<rect x="172.3" y="100" width="26.4" height="21" fill="rgb(255,64,54)"/>
+<rect x="199.8" y="100" width="26.4" height="21" fill="rgb(255,158,153)"/>
+<rect x="227.2" y="100" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="254.6" y="100" width="26.4" height="21" fill="rgb(255,189,185)"/>
+<rect x="282.1" y="100" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="309.5" y="100" width="26.4" height="21" fill="rgb(255,207,204)"/>
+<rect x="337.0" y="100" width="26.4" height="21" fill="rgb(255,251,250)"/>
+<rect x="364.4" y="100" width="26.4" height="21" fill="rgb(255,192,188)"/>
+<rect x="391.8" y="100" width="26.4" height="21" fill="rgb(255,203,200)"/>
+<rect x="419.3" y="100" width="26.4" height="21" fill="rgb(255,201,198)"/>
+<rect x="446.7" y="100" width="26.4" height="21" fill="rgb(255,203,200)"/>
+<rect x="474.2" y="100" width="26.4" height="21" fill="rgb(255,170,165)"/>
+<rect x="501.6" y="100" width="26.4" height="21" fill="rgb(255,241,240)"/>
+<rect x="529.0" y="100" width="26.4" height="21" fill="rgb(255,186,182)"/>
+<rect x="556.5" y="100" width="26.4" height="21" fill="rgb(255,177,173)"/>
+<rect x="583.9" y="100" width="26.4" height="21" fill="rgb(255,220,218)"/>
+<rect x="611.4" y="100" width="26.4" height="21" fill="rgb(255,219,217)"/>
+<rect x="638.8" y="100" width="26.4" height="21" fill="rgb(255,194,190)"/>
+<rect x="666.2" y="100" width="26.4" height="21" fill="rgb(255,146,140)"/>
+<rect x="693.7" y="100" width="26.4" height="21" fill="rgb(255,135,129)"/>
+<rect x="721.1" y="100" width="26.4" height="21" fill="rgb(255,209,206)"/>
+<rect x="748.6" y="100" width="26.4" height="21" fill="rgb(255,176,172)"/>
+<rect x="90" y="100" width="686.0" height="21" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+<text x="84.0" y="138.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >인천</text>
+<rect x="90.0" y="122" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="117.4" y="122" width="26.4" height="21" fill="rgb(255,246,245)"/>
+<rect x="144.9" y="122" width="26.4" height="21" fill="rgb(255,204,201)"/>
+<rect x="172.3" y="122" width="26.4" height="21" fill="rgb(255,243,242)"/>
+<rect x="199.8" y="122" width="26.4" height="21" fill="rgb(255,194,190)"/>
+<rect x="227.2" y="122" width="26.4" height="21" fill="rgb(255,171,166)"/>
+<rect x="254.6" y="122" width="26.4" height="21" fill="rgb(255,205,202)"/>
+<rect x="282.1" y="122" width="26.4" height="21" fill="rgb(255,233,231)"/>
+<rect x="309.5" y="122" width="26.4" height="21" fill="rgb(255,195,192)"/>
+<rect x="337.0" y="122" width="26.4" height="21" fill="rgb(255,144,138)"/>
+<rect x="364.4" y="122" width="26.4" height="21" fill="rgb(255,185,181)"/>
+<rect x="391.8" y="122" width="26.4" height="21" fill="rgb(255,177,173)"/>
+<rect x="419.3" y="122" width="26.4" height="21" fill="rgb(255,211,208)"/>
+<rect x="446.7" y="122" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="474.2" y="122" width="26.4" height="21" fill="rgb(255,209,206)"/>
+<rect x="501.6" y="122" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="122" width="26.4" height="21" fill="rgb(255,240,239)"/>
+<rect x="556.5" y="122" width="26.4" height="21" fill="rgb(255,198,195)"/>
+<rect x="583.9" y="122" width="26.4" height="21" fill="rgb(255,248,247)"/>
+<rect x="611.4" y="122" width="26.4" height="21" fill="rgb(255,224,222)"/>
+<rect x="638.8" y="122" width="26.4" height="21" fill="rgb(255,213,210)"/>
+<rect x="666.2" y="122" width="26.4" height="21" fill="rgb(255,204,201)"/>
+<rect x="693.7" y="122" width="26.4" height="21" fill="rgb(255,198,195)"/>
+<rect x="721.1" y="122" width="26.4" height="21" fill="rgb(255,188,184)"/>
+<rect x="748.6" y="122" width="26.4" height="21" fill="rgb(255,210,207)"/>
+<text x="84.0" y="160.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >광주</text>
+<rect x="90.0" y="144" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="117.4" y="144" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="144.9" y="144" width="26.4" height="21" fill="rgb(255,217,215)"/>
+<rect x="172.3" y="144" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="144" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="227.2" y="144" width="26.4" height="21" fill="rgb(255,248,247)"/>
+<rect x="254.6" y="144" width="26.4" height="21" fill="rgb(255,226,224)"/>
+<rect x="282.1" y="144" width="26.4" height="21" fill="rgb(255,225,223)"/>
+<rect x="309.5" y="144" width="26.4" height="21" fill="rgb(255,120,113)"/>
+<rect x="337.0" y="144" width="26.4" height="21" fill="rgb(255,254,253)"/>
+<rect x="364.4" y="144" width="26.4" height="21" fill="rgb(255,207,204)"/>
+<rect x="391.8" y="144" width="26.4" height="21" fill="rgb(255,223,221)"/>
+<rect x="419.3" y="144" width="26.4" height="21" fill="rgb(255,215,213)"/>
+<rect x="446.7" y="144" width="26.4" height="21" fill="rgb(255,226,224)"/>
+<rect x="474.2" y="144" width="26.4" height="21" fill="rgb(255,198,195)"/>
+<rect x="501.6" y="144" width="26.4" height="21" fill="rgb(255,249,248)"/>
+<rect x="529.0" y="144" width="26.4" height="21" fill="rgb(255,206,203)"/>
+<rect x="556.5" y="144" width="26.4" height="21" fill="rgb(255,180,176)"/>
+<rect x="583.9" y="144" width="26.4" height="21" fill="rgb(255,232,230)"/>
+<rect x="611.4" y="144" width="26.4" height="21" fill="rgb(255,205,202)"/>
+<rect x="638.8" y="144" width="26.4" height="21" fill="rgb(255,208,205)"/>
+<rect x="666.2" y="144" width="26.4" height="21" fill="rgb(255,164,159)"/>
+<rect x="693.7" y="144" width="26.4" height="21" fill="rgb(255,128,121)"/>
+<rect x="721.1" y="144" width="26.4" height="21" fill="rgb(255,180,176)"/>
+<rect x="748.6" y="144" width="26.4" height="21" fill="rgb(255,172,167)"/>
+<text x="84.0" y="182.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대전</text>
+<rect x="90.0" y="166" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="117.4" y="166" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="144.9" y="166" width="26.4" height="21" fill="rgb(255,130,123)"/>
+<rect x="172.3" y="166" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="166" width="26.4" height="21" fill="rgb(255,173,168)"/>
+<rect x="227.2" y="166" width="26.4" height="21" fill="rgb(255,249,248)"/>
+<rect x="254.6" y="166" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="282.1" y="166" width="26.4" height="21" fill="rgb(255,248,247)"/>
+<rect x="309.5" y="166" width="26.4" height="21" fill="rgb(255,251,250)"/>
+<rect x="337.0" y="166" width="26.4" height="21" fill="rgb(255,246,245)"/>
+<rect x="364.4" y="166" width="26.4" height="21" fill="rgb(255,230,228)"/>
+<rect x="391.8" y="166" width="26.4" height="21" fill="rgb(255,190,186)"/>
+<rect x="419.3" y="166" width="26.4" height="21" fill="rgb(255,211,208)"/>
+<rect x="446.7" y="166" width="26.4" height="21" fill="rgb(255,233,231)"/>
+<rect x="474.2" y="166" width="26.4" height="21" fill="rgb(255,175,171)"/>
+<rect x="501.6" y="166" width="26.4" height="21" fill="rgb(255,234,232)"/>
+<rect x="529.0" y="166" width="26.4" height="21" fill="rgb(255,212,209)"/>
+<rect x="556.5" y="166" width="26.4" height="21" fill="rgb(255,185,181)"/>
+<rect x="583.9" y="166" width="26.4" height="21" fill="rgb(255,108,100)"/>
+<rect x="611.4" y="166" width="26.4" height="21" fill="rgb(255,163,158)"/>
+<rect x="638.8" y="166" width="26.4" height="21" fill="rgb(255,161,156)"/>
+<rect x="666.2" y="166" width="26.4" height="21" fill="rgb(255,158,153)"/>
+<rect x="693.7" y="166" width="26.4" height="21" fill="rgb(255,168,163)"/>
+<rect x="721.1" y="166" width="26.4" height="21" fill="rgb(255,217,215)"/>
+<rect x="748.6" y="166" width="26.4" height="21" fill="rgb(255,163,158)"/>
+<text x="84.0" y="204.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >울산</text>
+<rect x="90.0" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="117.4" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="144.9" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="172.3" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="188" width="26.4" height="21" fill="rgb(255,219,217)"/>
+<rect x="227.2" y="188" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="254.6" y="188" width="26.4" height="21" fill="rgb(255,134,127)"/>
+<rect x="282.1" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="309.5" y="188" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="337.0" y="188" width="26.4" height="21" fill="rgb(255,152,146)"/>
+<rect x="364.4" y="188" width="26.4" height="21" fill="rgb(255,227,225)"/>
+<rect x="391.8" y="188" width="26.4" height="21" fill="rgb(255,210,207)"/>
+<rect x="419.3" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="446.7" y="188" width="26.4" height="21" fill="rgb(255,233,231)"/>
+<rect x="474.2" y="188" width="26.4" height="21" fill="rgb(255,246,245)"/>
+<rect x="501.6" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="556.5" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="583.9" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="611.4" y="188" width="26.4" height="21" fill="rgb(255,253,252)"/>
+<rect x="638.8" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="666.2" y="188" width="26.4" height="21" fill="rgb(255,240,239)"/>
+<rect x="693.7" y="188" width="26.4" height="21" fill="rgb(255,250,249)"/>
+<rect x="721.1" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="748.6" y="188" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<text x="84.0" y="226.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >세종</text>
+<rect x="90.0" y="210" width="26.4" height="21" fill="rgb(255,252,251)"/>
+<rect x="117.4" y="210" width="26.4" height="21" fill="rgb(255,134,127)"/>
+<rect x="144.9" y="210" width="26.4" height="21" fill="rgb(255,166,161)"/>
+<rect x="172.3" y="210" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="210" width="26.4" height="21" fill="rgb(255,57,47)"/>
+<rect x="227.2" y="210" width="26.4" height="21" fill="rgb(255,176,172)"/>
+<rect x="254.6" y="210" width="26.4" height="21" fill="rgb(255,239,238)"/>
+<rect x="282.1" y="210" width="26.4" height="21" fill="rgb(255,233,231)"/>
+<rect x="309.5" y="210" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="337.0" y="210" width="26.4" height="21" fill="rgb(255,191,187)"/>
+<rect x="364.4" y="210" width="26.4" height="21" fill="rgb(255,195,192)"/>
+<rect x="391.8" y="210" width="26.4" height="21" fill="rgb(255,161,156)"/>
+<rect x="419.3" y="210" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="446.7" y="210" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="474.2" y="210" width="26.4" height="21" fill="rgb(255,225,223)"/>
+<rect x="501.6" y="210" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="210" width="26.4" height="21" fill="rgb(255,247,246)"/>
+<rect x="556.5" y="210" width="26.4" height="21" fill="rgb(255,214,211)"/>
+<rect x="583.9" y="210" width="26.4" height="21" fill="rgb(255,233,231)"/>
+<rect x="611.4" y="210" width="26.4" height="21" fill="rgb(255,251,250)"/>
+<rect x="638.8" y="210" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="666.2" y="210" width="26.4" height="21" fill="rgb(255,152,146)"/>
+<rect x="693.7" y="210" width="26.4" height="21" fill="rgb(255,237,236)"/>
+<rect x="721.1" y="210" width="26.4" height="21" fill="rgb(255,226,224)"/>
+<rect x="748.6" y="210" width="26.4" height="21" fill="rgb(255,234,232)"/>
+<text x="84.0" y="248.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >경기</text>
+<rect x="90.0" y="232" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="117.4" y="232" width="26.4" height="21" fill="rgb(255,249,248)"/>
+<rect x="144.9" y="232" width="26.4" height="21" fill="rgb(255,210,207)"/>
+<rect x="172.3" y="232" width="26.4" height="21" fill="rgb(255,219,217)"/>
+<rect x="199.8" y="232" width="26.4" height="21" fill="rgb(255,155,150)"/>
+<rect x="227.2" y="232" width="26.4" height="21" fill="rgb(255,226,224)"/>
+<rect x="254.6" y="232" width="26.4" height="21" fill="rgb(255,217,215)"/>
+<rect x="282.1" y="232" width="26.4" height="21" fill="rgb(255,84,76)"/>
+<rect x="309.5" y="232" width="26.4" height="21" fill="rgb(255,200,197)"/>
+<rect x="337.0" y="232" width="26.4" height="21" fill="rgb(255,234,232)"/>
+<rect x="364.4" y="232" width="26.4" height="21" fill="rgb(255,194,190)"/>
+<rect x="391.8" y="232" width="26.4" height="21" fill="rgb(255,196,193)"/>
+<rect x="419.3" y="232" width="26.4" height="21" fill="rgb(255,215,213)"/>
+<rect x="446.7" y="232" width="26.4" height="21" fill="rgb(255,217,215)"/>
+<rect x="474.2" y="232" width="26.4" height="21" fill="rgb(255,218,216)"/>
+<rect x="501.6" y="232" width="26.4" height="21" fill="rgb(255,199,196)"/>
+<rect x="529.0" y="232" width="26.4" height="21" fill="rgb(255,245,244)"/>
+<rect x="556.5" y="232" width="26.4" height="21" fill="rgb(255,203,200)"/>
+<rect x="583.9" y="232" width="26.4" height="21" fill="rgb(255,235,234)"/>
+<rect x="611.4" y="232" width="26.4" height="21" fill="rgb(255,223,221)"/>
+<rect x="638.8" y="232" width="26.4" height="21" fill="rgb(255,234,232)"/>
+<rect x="666.2" y="232" width="26.4" height="21" fill="rgb(255,223,221)"/>
+<rect x="693.7" y="232" width="26.4" height="21" fill="rgb(255,215,213)"/>
+<rect x="721.1" y="232" width="26.4" height="21" fill="rgb(255,199,196)"/>
+<rect x="748.6" y="232" width="26.4" height="21" fill="rgb(255,214,211)"/>
+<text x="84.0" y="270.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >강원</text>
+<rect x="90.0" y="254" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="117.4" y="254" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="144.9" y="254" width="26.4" height="21" fill="rgb(255,142,136)"/>
+<rect x="172.3" y="254" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="254" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="227.2" y="254" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="254.6" y="254" width="26.4" height="21" fill="rgb(255,248,247)"/>
+<rect x="282.1" y="254" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="309.5" y="254" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="337.0" y="254" width="26.4" height="21" fill="rgb(255,157,152)"/>
+<rect x="364.4" y="254" width="26.4" height="21" fill="rgb(255,171,166)"/>
+<rect x="391.8" y="254" width="26.4" height="21" fill="rgb(255,154,148)"/>
+<rect x="419.3" y="254" width="26.4" height="21" fill="rgb(255,244,243)"/>
+<rect x="446.7" y="254" width="26.4" height="21" fill="rgb(255,209,206)"/>
+<rect x="474.2" y="254" width="26.4" height="21" fill="rgb(255,129,122)"/>
+<rect x="501.6" y="254" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="254" width="26.4" height="21" fill="rgb(255,236,235)"/>
+<rect x="556.5" y="254" width="26.4" height="21" fill="rgb(255,222,220)"/>
+<rect x="583.9" y="254" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="611.4" y="254" width="26.4" height="21" fill="rgb(255,220,218)"/>
+<rect x="638.8" y="254" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="666.2" y="254" width="26.4" height="21" fill="rgb(255,145,139)"/>
+<rect x="693.7" y="254" width="26.4" height="21" fill="rgb(255,186,182)"/>
+<rect x="721.1" y="254" width="26.4" height="21" fill="rgb(255,93,84)"/>
+<rect x="748.6" y="254" width="26.4" height="21" fill="rgb(255,186,182)"/>
+<text x="84.0" y="292.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >충북</text>
+<rect x="90.0" y="276" width="26.4" height="21" fill="rgb(255,140,134)"/>
+<rect x="117.4" y="276" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="144.9" y="276" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="172.3" y="276" width="26.4" height="21" fill="rgb(255,250,249)"/>
+<rect x="199.8" y="276" width="26.4" height="21" fill="rgb(255,130,123)"/>
+<rect x="227.2" y="276" width="26.4" height="21" fill="rgb(255,97,89)"/>
+<rect x="254.6" y="276" width="26.4" height="21" fill="rgb(255,178,174)"/>
+<rect x="282.1" y="276" width="26.4" height="21" fill="rgb(255,133,126)"/>
+<rect x="309.5" y="276" width="26.4" height="21" fill="rgb(255,209,206)"/>
+<rect x="337.0" y="276" width="26.4" height="21" fill="rgb(255,240,239)"/>
+<rect x="364.4" y="276" width="26.4" height="21" fill="rgb(255,143,137)"/>
+<rect x="391.8" y="276" width="26.4" height="21" fill="rgb(255,183,179)"/>
+<rect x="419.3" y="276" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="446.7" y="276" width="26.4" height="21" fill="rgb(255,229,227)"/>
+<rect x="474.2" y="276" width="26.4" height="21" fill="rgb(255,221,219)"/>
+<rect x="501.6" y="276" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="276" width="26.4" height="21" fill="rgb(255,253,252)"/>
+<rect x="556.5" y="276" width="26.4" height="21" fill="rgb(255,241,240)"/>
+<rect x="583.9" y="276" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="611.4" y="276" width="26.4" height="21" fill="rgb(255,222,220)"/>
+<rect x="638.8" y="276" width="26.4" height="21" fill="rgb(255,181,177)"/>
+<rect x="666.2" y="276" width="26.4" height="21" fill="rgb(255,196,193)"/>
+<rect x="693.7" y="276" width="26.4" height="21" fill="rgb(255,230,228)"/>
+<rect x="721.1" y="276" width="26.4" height="21" fill="rgb(255,236,235)"/>
+<rect x="748.6" y="276" width="26.4" height="21" fill="rgb(255,226,224)"/>
+<text x="84.0" y="314.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >충남</text>
+<rect x="90.0" y="298" width="26.4" height="21" fill="rgb(255,113,105)"/>
+<rect x="117.4" y="298" width="26.4" height="21" fill="rgb(255,178,174)"/>
+<rect x="144.9" y="298" width="26.4" height="21" fill="rgb(255,117,110)"/>
+<rect x="172.3" y="298" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="298" width="26.4" height="21" fill="rgb(255,207,204)"/>
+<rect x="227.2" y="298" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="254.6" y="298" width="26.4" height="21" fill="rgb(255,136,130)"/>
+<rect x="282.1" y="298" width="26.4" height="21" fill="rgb(255,131,124)"/>
+<rect x="309.5" y="298" width="26.4" height="21" fill="rgb(255,151,145)"/>
+<rect x="337.0" y="298" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="364.4" y="298" width="26.4" height="21" fill="rgb(255,183,179)"/>
+<rect x="391.8" y="298" width="26.4" height="21" fill="rgb(255,189,185)"/>
+<rect x="419.3" y="298" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="446.7" y="298" width="26.4" height="21" fill="rgb(255,243,242)"/>
+<rect x="474.2" y="298" width="26.4" height="21" fill="rgb(255,242,241)"/>
+<rect x="501.6" y="298" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="298" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="556.5" y="298" width="26.4" height="21" fill="rgb(255,251,250)"/>
+<rect x="583.9" y="298" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="611.4" y="298" width="26.4" height="21" fill="rgb(255,249,248)"/>
+<rect x="638.8" y="298" width="26.4" height="21" fill="rgb(255,212,209)"/>
+<rect x="666.2" y="298" width="26.4" height="21" fill="rgb(255,225,223)"/>
+<rect x="693.7" y="298" width="26.4" height="21" fill="rgb(255,244,243)"/>
+<rect x="721.1" y="298" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="748.6" y="298" width="26.4" height="21" fill="rgb(255,243,242)"/>
+<text x="84.0" y="336.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >전북</text>
+<rect x="90.0" y="320" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="117.4" y="320" width="26.4" height="21" fill="rgb(255,139,133)"/>
+<rect x="144.9" y="320" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="172.3" y="320" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="320" width="26.4" height="21" fill="rgb(255,142,136)"/>
+<rect x="227.2" y="320" width="26.4" height="21" fill="rgb(255,211,208)"/>
+<rect x="254.6" y="320" width="26.4" height="21" fill="rgb(255,200,197)"/>
+<rect x="282.1" y="320" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="309.5" y="320" width="26.4" height="21" fill="rgb(255,216,214)"/>
+<rect x="337.0" y="320" width="26.4" height="21" fill="rgb(255,176,172)"/>
+<rect x="364.4" y="320" width="26.4" height="21" fill="rgb(255,137,131)"/>
+<rect x="391.8" y="320" width="26.4" height="21" fill="rgb(255,174,169)"/>
+<rect x="419.3" y="320" width="26.4" height="21" fill="rgb(255,240,239)"/>
+<rect x="446.7" y="320" width="26.4" height="21" fill="rgb(255,217,215)"/>
+<rect x="474.2" y="320" width="26.4" height="21" fill="rgb(255,197,194)"/>
+<rect x="501.6" y="320" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="320" width="26.4" height="21" fill="rgb(255,215,213)"/>
+<rect x="556.5" y="320" width="26.4" height="21" fill="rgb(255,219,217)"/>
+<rect x="583.9" y="320" width="26.4" height="21" fill="rgb(255,246,245)"/>
+<rect x="611.4" y="320" width="26.4" height="21" fill="rgb(255,249,248)"/>
+<rect x="638.8" y="320" width="26.4" height="21" fill="rgb(255,122,115)"/>
+<rect x="666.2" y="320" width="26.4" height="21" fill="rgb(255,154,148)"/>
+<rect x="693.7" y="320" width="26.4" height="21" fill="rgb(255,167,162)"/>
+<rect x="721.1" y="320" width="26.4" height="21" fill="rgb(255,212,209)"/>
+<rect x="748.6" y="320" width="26.4" height="21" fill="rgb(255,183,179)"/>
+<text x="84.0" y="358.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >전남</text>
+<rect x="90.0" y="342" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="117.4" y="342" width="26.4" height="21" fill="rgb(255,142,136)"/>
+<rect x="144.9" y="342" width="26.4" height="21" fill="rgb(255,175,171)"/>
+<rect x="172.3" y="342" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="342" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="227.2" y="342" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="254.6" y="342" width="26.4" height="21" fill="rgb(255,122,115)"/>
+<rect x="282.1" y="342" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="309.5" y="342" width="26.4" height="21" fill="rgb(255,232,230)"/>
+<rect x="337.0" y="342" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="364.4" y="342" width="26.4" height="21" fill="rgb(255,181,177)"/>
+<rect x="391.8" y="342" width="26.4" height="21" fill="rgb(255,170,165)"/>
+<rect x="419.3" y="342" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="446.7" y="342" width="26.4" height="21" fill="rgb(255,191,187)"/>
+<rect x="474.2" y="342" width="26.4" height="21" fill="rgb(255,233,231)"/>
+<rect x="501.6" y="342" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="342" width="26.4" height="21" fill="rgb(255,251,250)"/>
+<rect x="556.5" y="342" width="26.4" height="21" fill="rgb(255,251,250)"/>
+<rect x="583.9" y="342" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="611.4" y="342" width="26.4" height="21" fill="rgb(255,254,253)"/>
+<rect x="638.8" y="342" width="26.4" height="21" fill="rgb(255,140,134)"/>
+<rect x="666.2" y="342" width="26.4" height="21" fill="rgb(255,206,203)"/>
+<rect x="693.7" y="342" width="26.4" height="21" fill="rgb(255,217,215)"/>
+<rect x="721.1" y="342" width="26.4" height="21" fill="rgb(255,241,240)"/>
+<rect x="748.6" y="342" width="26.4" height="21" fill="rgb(255,233,231)"/>
+<text x="84.0" y="380.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >경북</text>
+<rect x="90.0" y="364" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="117.4" y="364" width="26.4" height="21" fill="rgb(255,194,190)"/>
+<rect x="144.9" y="364" width="26.4" height="21" fill="rgb(255,195,192)"/>
+<rect x="172.3" y="364" width="26.4" height="21" fill="rgb(255,154,148)"/>
+<rect x="199.8" y="364" width="26.4" height="21" fill="rgb(255,212,209)"/>
+<rect x="227.2" y="364" width="26.4" height="21" fill="rgb(255,218,216)"/>
+<rect x="254.6" y="364" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="282.1" y="364" width="26.4" height="21" fill="rgb(255,144,138)"/>
+<rect x="309.5" y="364" width="26.4" height="21" fill="rgb(255,208,205)"/>
+<rect x="337.0" y="364" width="26.4" height="21" fill="rgb(255,118,111)"/>
+<rect x="364.4" y="364" width="26.4" height="21" fill="rgb(255,148,142)"/>
+<rect x="391.8" y="364" width="26.4" height="21" fill="rgb(255,189,185)"/>
+<rect x="419.3" y="364" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="446.7" y="364" width="26.4" height="21" fill="rgb(255,221,219)"/>
+<rect x="474.2" y="364" width="26.4" height="21" fill="rgb(255,221,219)"/>
+<rect x="501.6" y="364" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="364" width="26.4" height="21" fill="rgb(255,252,251)"/>
+<rect x="556.5" y="364" width="26.4" height="21" fill="rgb(255,243,242)"/>
+<rect x="583.9" y="364" width="26.4" height="21" fill="rgb(255,247,246)"/>
+<rect x="611.4" y="364" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="638.8" y="364" width="26.4" height="21" fill="rgb(255,174,169)"/>
+<rect x="666.2" y="364" width="26.4" height="21" fill="rgb(255,210,207)"/>
+<rect x="693.7" y="364" width="26.4" height="21" fill="rgb(255,228,226)"/>
+<rect x="721.1" y="364" width="26.4" height="21" fill="rgb(255,239,238)"/>
+<rect x="748.6" y="364" width="26.4" height="21" fill="rgb(255,230,228)"/>
+<text x="84.0" y="402.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >경남</text>
+<rect x="90.0" y="386" width="26.4" height="21" fill="rgb(255,106,98)"/>
+<rect x="117.4" y="386" width="26.4" height="21" fill="rgb(255,237,236)"/>
+<rect x="144.9" y="386" width="26.4" height="21" fill="rgb(255,153,147)"/>
+<rect x="172.3" y="386" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="386" width="26.4" height="21" fill="rgb(255,199,196)"/>
+<rect x="227.2" y="386" width="26.4" height="21" fill="rgb(255,239,238)"/>
+<rect x="254.6" y="386" width="26.4" height="21" fill="rgb(255,84,75)"/>
+<rect x="282.1" y="386" width="26.4" height="21" fill="rgb(255,251,250)"/>
+<rect x="309.5" y="386" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="337.0" y="386" width="26.4" height="21" fill="rgb(255,165,160)"/>
+<rect x="364.4" y="386" width="26.4" height="21" fill="rgb(255,174,169)"/>
+<rect x="391.8" y="386" width="26.4" height="21" fill="rgb(255,213,210)"/>
+<rect x="419.3" y="386" width="26.4" height="21" fill="rgb(255,249,248)"/>
+<rect x="446.7" y="386" width="26.4" height="21" fill="rgb(255,223,221)"/>
+<rect x="474.2" y="386" width="26.4" height="21" fill="rgb(255,219,217)"/>
+<rect x="501.6" y="386" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="529.0" y="386" width="26.4" height="21" fill="rgb(255,243,242)"/>
+<rect x="556.5" y="386" width="26.4" height="21" fill="rgb(255,229,227)"/>
+<rect x="583.9" y="386" width="26.4" height="21" fill="rgb(255,253,252)"/>
+<rect x="611.4" y="386" width="26.4" height="21" fill="rgb(255,249,248)"/>
+<rect x="638.8" y="386" width="26.4" height="21" fill="rgb(255,180,176)"/>
+<rect x="666.2" y="386" width="26.4" height="21" fill="rgb(255,201,198)"/>
+<rect x="693.7" y="386" width="26.4" height="21" fill="rgb(255,207,204)"/>
+<rect x="721.1" y="386" width="26.4" height="21" fill="rgb(255,223,221)"/>
+<rect x="748.6" y="386" width="26.4" height="21" fill="rgb(255,215,213)"/>
+<text x="84.0" y="424.0" font-size="11" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >제주</text>
+<rect x="90.0" y="408" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="117.4" y="408" width="26.4" height="21" fill="rgb(255,209,206)"/>
+<rect x="144.9" y="408" width="26.4" height="21" fill="rgb(255,213,210)"/>
+<rect x="172.3" y="408" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="199.8" y="408" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="227.2" y="408" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="254.6" y="408" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="282.1" y="408" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="309.5" y="408" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="337.0" y="408" width="26.4" height="21" fill="rgb(255,254,253)"/>
+<rect x="364.4" y="408" width="26.4" height="21" fill="rgb(255,218,216)"/>
+<rect x="391.8" y="408" width="26.4" height="21" fill="rgb(255,199,196)"/>
+<rect x="419.3" y="408" width="26.4" height="21" fill="rgb(255,212,209)"/>
+<rect x="446.7" y="408" width="26.4" height="21" fill="rgb(255,167,162)"/>
+<rect x="474.2" y="408" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="501.6" y="408" width="26.4" height="21" fill="rgb(255,230,228)"/>
+<rect x="529.0" y="408" width="26.4" height="21" fill="rgb(255,214,211)"/>
+<rect x="556.5" y="408" width="26.4" height="21" fill="rgb(255,158,153)"/>
+<rect x="583.9" y="408" width="26.4" height="21" fill="rgb(255,255,255)"/>
+<rect x="611.4" y="408" width="26.4" height="21" fill="rgb(255,173,168)"/>
+<rect x="638.8" y="408" width="26.4" height="21" fill="rgb(255,108,100)"/>
+<rect x="666.2" y="408" width="26.4" height="21" fill="rgb(255,177,173)"/>
+<rect x="693.7" y="408" width="26.4" height="21" fill="rgb(255,192,188)"/>
+<rect x="721.1" y="408" width="26.4" height="21" fill="rgb(255,55,45)"/>
+<rect x="748.6" y="408" width="26.4" height="21" fill="rgb(255,192,188)"/>
+<text x="103.7" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 103.7,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">농림어업</text>
+<text x="131.2" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 131.2,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">광업</text>
+<text x="158.6" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 158.6,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">음식료품·담배</text>
+<text x="186.0" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 186.0,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">섬유·의복·가죽</text>
+<text x="213.5" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 213.5,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">목재·종이·인쇄</text>
+<text x="240.9" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 240.9,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">석탄·석유·화학</text>
+<text x="268.4" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 268.4,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">비금속·금속</text>
+<text x="295.8" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 295.8,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">전기·전자·정밀기기</text>
+<text x="323.2" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 323.2,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">기계·운송장비·기타</text>
+<text x="350.7" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 350.7,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">전기·가스</text>
+<text x="378.1" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 378.1,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">수도·폐기물</text>
+<text x="405.6" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 405.6,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">건설업</text>
+<text x="433.0" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 433.0,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">도소매</text>
+<text x="460.4" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 460.4,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">운수·창고</text>
+<text x="487.9" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 487.9,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">숙박·음식점</text>
+<text x="515.3" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 515.3,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">정보통신업</text>
+<text x="542.8" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 542.8,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">금융 및 보험업</text>
+<text x="570.2" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 570.2,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">부동산업</text>
+<text x="597.6" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 597.6,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">전문·과학·기술</text>
+<text x="625.1" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 625.1,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">사업시설·지원</text>
+<text x="652.5" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 652.5,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">공공행정</text>
+<text x="680.0" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 680.0,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">교육</text>
+<text x="707.4" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 707.4,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">보건·사회복지</text>
+<text x="734.8" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 734.8,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">예술·스포츠·여가</text>
+<text x="762.3" y="436" font-size="10" fill="#595959" text-anchor="end" transform="rotate(-60 762.3,436)" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif">협회·수리·개인</text>
+<text x="90.0" y="546.0" font-size="11" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >색: 흰색 0.5 → 붉은색 2.5 이상 (값이 클수록 특화)</text>
+<text x="24.0" y="566.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 국가데이터처 지역소득·경제활동인구조사(KOSIS), 다잇다 노트 시산</text>
+</svg>

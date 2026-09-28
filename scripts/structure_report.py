@@ -4,6 +4,9 @@
 자료: data/kosis/grdp-sido-industry-all.csv(지역소득 시도·경제활동별 총부가가치, 명목·실질, 17개 시도+전국 2014~2024)
       data/kosis/labor-force-sido-annual-all.csv(경활 연간: 취업자·경제활동인구·15세이상인구)
       data/kosis/biz-census-sido-industry-all.csv(+meta, 전국사업체조사 종사자 2020~2023)
+      data/kosis/population-sido.csv(주민등록인구 총인구수, 시도·연간) — 인구성장률(그림 2-17·2-24)
+      data/kosis/employed-industry-sido.csv(지역별고용조사 시도·산업별 취업자, 반기 → 연평균; 2024년은 상반기만) — 산업별 노동생산성지수(그림 2-8)
+      data/kosis/retail-sales-index-sido.csv(시도별 소매판매액지수 불변, 2020=100) — 소비 패널회귀(표 3-3)
 지표 정의는 scripts/structure_index.py(LQ·HHI·SCI·특화 비중·고부가 3부문). 값은 그대로, 평가 없음. 기관·작성자 명기 없음(계산 방식만 따름).
 출력: public/figures/<ID>/figN.svg (scripts/figure.py), data/kosis/structure_report.json(본문에 옮길 수치), 화면에 표 마크다운
 사용: python3 scripts/structure_report.py
@@ -54,6 +57,64 @@ def load_lf():
         if r["DT"] not in ("", "-"):
             lf[(r["C1_NM"], int(r["PRD_DE"]))][r["ITM_NM"]] = float(r["DT"])
     return lf
+
+
+ALIAS = {"계": "전국", "강원도": "강원", "전라북도": "전북", "세종시": "세종"}   # 표마다 다른 지역 이름 → 짧은 이름
+
+
+def short_region(name: str) -> str | None:
+    name = name.strip()
+    return REGION_SHORT.get(name) or ALIAS.get(name)
+
+
+def load_pop():
+    """주민등록 총인구수 (짧은 지역, 연도) -> 명. 시군구 행은 시도 이름이 아니므로 버린다."""
+    pop = {}
+    for r in csv.DictReader(open(K / "population-sido.csv", encoding="utf-8")):
+        reg = short_region(r["C1_NM"])
+        if r["ITM_NM"] == "총인구수" and reg and r["DT"] not in ("", "-"):
+            pop[(reg, int(r["PRD_DE"]))] = float(r["DT"])
+    return pop
+
+
+EMP_GROUPS = {"제조업": ["제조업(10~34)"], "건설업": ["건설업(41~42)"], "전산업": ["계"],
+              "서비스업": ["도매 및 소매업(45~47)", "운수 및 창고업(49~52)", "숙박 및 음식점업(55~56)", "정보통신업(58~63)", "금융 및 보험업(64~66)", "부동산업(68)",
+                       "전문 과학 및 기술 서비스업(70~73)", "사업시설 관리 사업 지원 및 임대 서비스업(74~76)", "공공 행정 국방 및 사회보장 행정(84)", "교육 서비스업(85)",
+                       "보건업 및 사회복지 서비스업(86~87)", "예술 스포츠 및 여가관련 서비스업(90~91)", "협회 및 단체 수리 및 기타 개인 서비스업(94~96)",
+                       "가구 내 고용활동 및 달리 분류되지 않은 자가소비 생산활동(97~98)", "국제 및 외국기관(99)"]}
+
+
+def load_emp_ind():
+    """지역별고용조사 산업별 취업자(천명): (짧은 지역, 연도) -> {제조업·서비스업·건설업·전산업}. 반기 값의 연평균, 2024년은 상반기만(반기 수 함께 반환)."""
+    half = defaultdict(lambda: defaultdict(list))   # (reg, year) -> group -> [값…]
+    for r in csv.DictReader(open(K / "employed-industry-sido.csv", encoding="utf-8")):
+        reg = short_region(r["C1_NM"])
+        if not r["ITM_NM"].startswith("취업자") or not reg or r["DT"] in ("", "-"):
+            continue
+        name = r["C2_NM"].strip(); y = int(r["PRD_DE"][:4])
+        for g, names in EMP_GROUPS.items():
+            if name in names:
+                half[(reg, y)][g].append((r["PRD_DE"], name, float(r["DT"])))
+    out, halves = {}, {}
+    for key, d in half.items():
+        per = defaultdict(float)
+        for g, vals in d.items():
+            for prd, _, v in vals:
+                per[(g, prd)] += v
+        groups = {g for g, _ in per}
+        out[key] = {g: sum(v for (gg, _), v in per.items() if gg == g) / len({p for (gg, p) in per if gg == g}) for g in groups}
+        halves[key] = len({p for (_, p) in per})
+    return out, halves
+
+
+def load_retail():
+    """시도별 소매판매액지수(불변, 2020=100) 총지수: (짧은 지역, 연도) -> 지수."""
+    idx = {}
+    for r in csv.DictReader(open(K / "retail-sales-index-sido.csv", encoding="utf-8")):
+        reg = short_region(r["C1_NM"])
+        if r["C2_NM"] == "총지수" and reg and r["DT"] not in ("", "-"):
+            idx[(reg, int(r["PRD_DE"]))] = float(r["DT"])
+    return idx
 
 
 def census_lq_major():
@@ -121,6 +182,7 @@ def main() -> int:
     gva, real_tot, emp = load()
     real = load_real_sectors()
     lf = load_lf()
+    pop = load_pop(); emp_ind, emp_halves = load_emp_ind(); retail = load_retail()
     for (reg, y) in list(emp):          # 경제활동인구조사는 전국이 '계'
         if reg == "계":
             emp[("전국", y)] = emp[(reg, y)]
@@ -146,13 +208,9 @@ def main() -> int:
     hhi_chg = {r: cagr(hhi[(r, Y0)], hhi[(r, Y1)], Y1 - Y0) for r in regs}
     sci_avg = {r: sum(sci[(r, y)] for y in range(Y0, Y1 + 1)) / (Y1 - Y0 + 1) for r in regs + ["전국"]}
     scih_avg = {r: sum(sci_h[(r, y)] for y in range(Y0, Y1 + 1)) / (Y1 - Y0 + 1) for r in regs + ["전국"]}
-    pop_key = "15세이상인구"
-    g_pop = {}
-    for r in regs + ["전국"]:   # 세종처럼 2015년 값이 없는 지역은 첫 연도부터(기간을 줄여 연평균)
-        ys_ = [y for y in range(Y0, Y1 + 1) if (R[r], y) in lf and pop_key in lf[(R[r], y)]]
-        if len(ys_) >= 3:
-            g_pop[r] = cagr(lf[(R[r], ys_[0])][pop_key], lf[(R[r], Y1)][pop_key], Y1 - ys_[0])
-    D["pop_note"] = {r: min(y for y in range(Y0, Y1 + 1) if (R[r], y) in lf and pop_key in lf[(R[r], y)]) for r in regs if r in g_pop}
+    # 인구성장률: 주민등록 총인구수(행정안전부, KOSIS DT_1B040A3) 2015~2024 연평균. 17개 시도 모두 값 있음
+    g_pop = {r: cagr(pop[(r, Y0)], pop[(r, Y1)], Y1 - Y0) for r in regs + ["전국"] if (r, Y0) in pop and (r, Y1) in pop}
+    D["pop_2015_2024"] = {r: [int(pop[(r, Y0)]), int(pop[(r, Y1)])] for r in ("대구", "전국")}
     avg = lambda d: sum(d[r] for r in regs if d.get(r) is not None) / len([r for r in regs if d.get(r) is not None])
     D["grdp_growth"] = {r: round(v, 2) for r, v in g_grdp.items()}
     D["prod_growth"] = {r: round(v, 2) for r, v in g_prod.items()}
@@ -207,7 +265,24 @@ def main() -> int:
     figs["2-7"] = save({"type": "hbar", "title": f"대구 산업별 종사자 비중({cy}년, 전국사업체조사)", "unit": "%", "categories": [s.split("(")[0][:14] for s, _ in cs[:8]] + ["기타"], "series": [{"name": "비중", "values": [round(v, 1) for _, v in cs[:8]] + [round(100 - sum(v for _, v in cs[:8]), 1)]}], "source": "국가데이터처 전국사업체조사(KOSIS)"}, "fig2-7")
     pidx = lambda r: [round(prod[(r, y)] / prod[(r, Y0)] * 100, 1) for y in range(Y0, Y1 + 1)]
     D["prod_index"] = {"대구": dict(zip(range(Y0, Y1 + 1), pidx("대구"))), "전국": dict(zip(range(Y0, Y1 + 1), pidx("전국")))}
-    figs["2-8"] = save({"type": "line", "title": "노동생산성 지수 추이(실질 총부가가치/취업자, 2015=100)", "unit": "", "x": [str(y) for y in range(Y0, Y1 + 1)], "series": [{"name": "대구", "values": pidx("대구")}, {"name": "전국", "values": pidx("전국")}], "source": SRC}, "fig2-8")
+    # 산업별 노동생산성 = 실질 총부가가치(제조업·서비스업·건설업) / 산업별 취업자(지역별고용조사, 반기 연평균; 2024년은 상반기만). 2015=100
+    ind_prod = {}
+    for r in ("대구", "전국"):
+        for g, sec in (("제조업", "제조업"), ("서비스업", "서비스업"), ("건설업", "건설업")):
+            for y in range(Y0, Y1 + 1):
+                e = emp_ind.get((r, y), {}).get(g)
+                if e:
+                    ind_prod[(r, g, y)] = real[(R[r], y)][sec] / e
+    ipx = lambda r, g: [round(ind_prod[(r, g, y)] / ind_prod[(r, g, Y0)] * 100, 1) if (r, g, y) in ind_prod else None for y in range(Y0, Y1 + 1)]
+    D["ind_prod_index"] = {r: {g: dict(zip(range(Y0, Y1 + 1), ipx(r, g))) for g in ("제조업", "서비스업", "건설업")} for r in ("대구", "전국")}
+    D["ind_prod_growth"] = {r: {g: round(cagr(ind_prod[(r, g, Y0)], ind_prod[(r, g, Y1)], Y1 - Y0), 2) for g in ("제조업", "서비스업", "건설업")} for r in ("대구", "전국")}
+    D["emp_halves_2024"] = emp_halves.get(("대구", Y1))
+    figs["2-8"] = save({"type": "line", "title": "대구 산업별 노동생산성 지수 추이(2015=100)", "unit": "", "x": [str(y) for y in range(Y0, Y1 + 1)],
+                        "series": [{"name": "제조업", "values": ipx("대구", "제조업")}, {"name": "서비스업", "values": ipx("대구", "서비스업")}, {"name": "건설업", "values": ipx("대구", "건설업")}, {"name": "전산업", "values": pidx("대구")}], "ymin": 60,
+                        "source": "국가데이터처 지역소득·지역별고용조사(KOSIS), 다잇다 노트 시산 · 2024년 취업자는 상반기 값"}, "fig2-8")
+    figs["2-8n"] = save({"type": "line", "title": "전국 산업별 노동생산성 지수 추이(2015=100)", "unit": "", "x": [str(y) for y in range(Y0, Y1 + 1)],
+                         "series": [{"name": "제조업", "values": ipx("전국", "제조업")}, {"name": "서비스업", "values": ipx("전국", "서비스업")}, {"name": "건설업", "values": ipx("전국", "건설업")}, {"name": "전산업", "values": pidx("전국")}], "ymin": 60,
+                         "source": "국가데이터처 지역소득·지역별고용조사(KOSIS), 다잇다 노트 시산 · 2024년 취업자는 상반기 값"}, "fig2-8n")
     # 2-9 / 2-10 히트맵
     figs["2-9"] = save({"type": "heatmap", "title": f"부가가치 기준 지역별 입지계수 히트맵({Y1}년)", "rows": regs, "cols": [SHORT.get(s, s) for s in LEAVES], "values": [[round(lqv[(r, Y1)][s] or 0, 2) for s in LEAVES] for r in regs], "vmin": 0.5, "vmax": 2.5, "highlight_row": "대구", "source": SRC}, "fig2-9")
     cshort = [s.split("(")[0][:9] for s in csecs]
@@ -234,7 +309,7 @@ def main() -> int:
         return out
     g17 = split_groups(hhi_chg, g_pop)
     D["fig2_17"] = {k: [round(a, 2), round(b, 2)] for k, (a, b) in g17.items()}
-    figs["2-17"] = save({"type": "bar", "title": "고집중 vs 저집중 지역 간 15세 이상 인구 증가율 차이(2015~24년 연평균)", "unit": "%", "categories": list(g17), "series": [{"name": "고집중(산업집중도 변화율 상위)", "values": [round(a, 2) for a, _ in g17.values()]}, {"name": "저집중", "values": [round(b, 2) for _, b in g17.values()]}], "source": SRC + " · 인구는 경제활동인구조사 15세 이상 인구"}, "fig2-17")
+    figs["2-17"] = save({"type": "bar", "title": "고집중 vs 저집중 지역 간 인구성장률 차이(2015~24년 연평균, 주민등록인구)", "unit": "%", "categories": list(g17), "series": [{"name": "고집중(산업집중도 변화율 상위)", "values": [round(a, 2) for a, _ in g17.values()]}, {"name": "저집중", "values": [round(b, 2) for _, b in g17.values()]}], "source": SRC + " · 인구는 행정안전부 주민등록인구(KOSIS)"}, "fig2-17")
     order = sorted(regs, key=lambda r: -sci_avg[r])
     figs["2-19"] = save({"type": "bar", "title": "최근 시·도별 산업구조 변화속도(2015~24년 연평균 SCI)", "unit": "", "categories": order, "series": [{"name": "SCI", "values": [round(sci_avg[r], 4) for r in order]}], "source": SRC + f" · 17개 시도 평균 {avg(sci_avg):.4f}"}, "fig2-19")
     figs["2-20"] = save({"type": "scatter", "title": "산업구조 변화속도와 경제성장률 간 관계", "xlabel": "2015~24년 연평균 산업구조 변화속도(SCI)", "ylabel": "연평균 경제성장률(%)", "points": [{"label": r, "x": sci_avg[r], "y": g_grdp[r], "highlight": r == "대구"} for r in regs], "xmean": avg(sci_avg), "ymean": g_grdp["전국"], "xmean_label": "17개 시도 평균", "ymean_label": "전국", "xdec": 4, "source": SRC}, "fig2-20")
@@ -243,10 +318,11 @@ def main() -> int:
     D["fig2_22"] = {k: [round(a, 2), round(b, 2)] for k, (a, b) in g22.items()}
     figs["2-22"] = save({"type": "bar", "title": "고부가 산업구조 변화속도 상·하위 지역의 노동생산성 성장률(2015~24년 연평균)", "unit": "%", "categories": list(g22), "series": [{"name": "상위", "values": [round(a, 2) for a, _ in g22.values()]}, {"name": "하위", "values": [round(b, 2) for _, b in g22.values()]}], "source": SRC + " · 노동생산성 = 실질 총부가가치/취업자(전산업)"}, "fig2-22")
     figs["2-23"] = save({"type": "line", "title": "대구 및 전국의 산업구조 변화속도(SCI)", "unit": "", "x": [str(y) for y in range(Y0, Y1 + 1)], "series": [{"name": "전국", "values": [round(sci[("전국", y)], 4) for y in range(Y0, Y1 + 1)]}, {"name": "대구", "values": [round(sci[("대구", y)], 4) for y in range(Y0, Y1 + 1)]}], "source": SRC + f" · 평균 전국 {sci_avg['전국']:.4f}, 대구 {sci_avg['대구']:.4f}"}, "fig2-23")
-    figs["2-24"] = save({"type": "bar", "title": "지역별 경제지표 격차(2015~24년 연평균 증가율)", "unit": "%", "categories": ["GRDP", "노동생산성", "15세 이상 인구"], "series": [{"name": "대구", "values": [round(g_grdp["대구"], 1), round(g_prod["대구"], 1), round(g_pop["대구"], 1)]}, {"name": "전국", "values": [round(g_grdp["전국"], 1), round(g_prod["전국"], 1), round(g_pop["전국"], 1)]}, {"name": "6개 광역시", "values": [D["metro6_avg"]["grdp"], D["metro6_avg"]["prod"], D["metro6_avg"]["pop"]]}], "source": SRC}, "fig2-24")
+    figs["2-24"] = save({"type": "bar", "title": "지역별 경제지표 격차(2015~24년 연평균 증가율)", "unit": "%", "categories": ["GRDP", "노동생산성", "인구(주민등록)"], "series": [{"name": "대구", "values": [round(g_grdp["대구"], 1), round(g_prod["대구"], 1), round(g_pop["대구"], 1)]}, {"name": "전국", "values": [round(g_grdp["전국"], 1), round(g_prod["전국"], 1), round(g_pop["전국"], 1)]}, {"name": "6개 광역시", "values": [D["metro6_avg"]["grdp"], D["metro6_avg"]["prod"], D["metro6_avg"]["pop"]]}], "source": SRC}, "fig2-24")
     # Ⅲ 패널 회귀(연간, 17개 시도 × 2016~2024): Δln Y 에 특화비중(t-1) / Δln HHI / SCI 각각, 통제: 경제활동인구 증가율, 지역·연도 고정효과
     D["panel"] = {}
-    for dep_name, dep in (("GRDP", lambda r, y: math.log(real_tot[(R[r], y, "지역내총생산(시장가격)")])), ("노동생산성", lambda r, y: math.log(prod[(r, y)]))):
+    for dep_name, dep in (("GRDP", lambda r, y: math.log(real_tot[(R[r], y, "지역내총생산(시장가격)")])), ("노동생산성", lambda r, y: math.log(prod[(r, y)])),
+                          ("소매판매", lambda r, y: math.log(retail[(r, y)]))):
         res = {}
         for var, xf in (("특화산업 비중(t-1)", lambda r, y: spec_share[(r, y - 1)]), ("Δln(산업집중도)", lambda r, y: math.log(hhi[(r, y)]) - math.log(hhi[(r, y - 1)])), ("산업구조 변화속도", lambda r, y: sci[(r, y)])):
             ys, Xs, gs, ts = [], [], [], []
@@ -267,6 +343,9 @@ def main() -> int:
     print("성장률 대구/전국/6광역시:", D["grdp_growth"]["대구"], D["grdp_growth"]["전국"], D["metro6_avg"]); print("고착화 대구", D["lq_corr"]["대구"], "평균", D["lq_corr_avg"])
     print("HHI 대구", D["hhi_2024"]["대구"], "평균", D["hhi_avg"], "변화율", D["hhi_chg"]["대구"]); print("SCI 대구", D["sci_avg"]["대구"], "전국", D["sci_avg"]["전국"], "고부가", D["scih_avg"]["대구"], D["scih_avg"]["전국"])
     print("표 2-1", D["table_2_1"]); print("패널", json.dumps(D["panel"], ensure_ascii=False))
+    print("인구 증가율 대구/전국/6광역시:", D["pop_growth"]["대구"], D["pop_growth"]["전국"], D["metro6_avg"]["pop"], "2-17", D["fig2_17"])
+    print("산업별 노동생산성 증가율", json.dumps(D["ind_prod_growth"], ensure_ascii=False), "2024 반기 수", D["emp_halves_2024"])
+    print("산업별 지수 대구", json.dumps(D["ind_prod_index"]["대구"], ensure_ascii=False))
     return 0
 
 

@@ -71,14 +71,26 @@ def bar(spec):
     h = 420
     top, left, right, bottom = 60 + (22 if k > 1 else 0), 70, 24, 70
     pw, ph = W - left - right, h - top - bottom
-    vmax = nice_max(max(v for s in series for v in s["values"] if v is not None))
+    vals = [v for s in series for v in s["values"] if v is not None]
+    if min(vals) < 0:   # 음수(증가율 등)는 0 기준선 아래로 그린다. 눈금은 0 을 지나도록 한 칸 크기로 위아래를 채운다
+        stepv = nice_max(max(max(vals), -min(vals))) / 4
+        vmax = math.ceil(max(max(vals), 0) / stepv) * stepv
+        vmin = -math.ceil(-min(vals) / stepv + 0.35) * stepv   # 가장 낮은 막대 아래에 값 표시 자리(눈금 1/3 이상)를 남긴다
+        ticks = [vmin + stepv * t for t in range(int(round((vmax - vmin) / stepv)) + 1)]
+    else:
+        vmax = nice_max(max(vals)); vmin = 0
+        ticks = [vmax * t / 4 for t in range(5)]
+    span = vmax - vmin or 1
+    y0 = top + ph - ph * (0 - vmin) / span          # 0 기준선
     out = header(spec, h)
     if k > 1:
         out += legend(series, left, 54)
-    for t in range(5):
-        y = top + ph - ph * t / 4
+    for val in ticks:
+        y = top + ph - ph * (val - vmin) / span
         out.append(f'<line x1="{left}" y1="{y:.1f}" x2="{left + pw}" y2="{y:.1f}" stroke="{LINE}" stroke-width="1"/>')
-        out.append(text(left - 8, y + 4, fmt(vmax * t / 4), 12, MUTED, "end"))
+        out.append(text(left - 8, y + 4, fmt(val), 12, MUTED, "end"))
+    if vmin < 0:
+        out.append(f'<line x1="{left}" y1="{y0:.1f}" x2="{left + pw}" y2="{y0:.1f}" stroke="{MUTED}" stroke-width="1"/>')
     group = pw / n
     bw = min(24, (group * 0.7) / k)
     for i, c in enumerate(cats):
@@ -87,11 +99,17 @@ def bar(spec):
             v = s["values"][i]
             if v is None:
                 continue
-            bh = ph * v / vmax
-            x, y = gx + j * (bw + 4), top + ph - bh
-            out.append(f'<path d="M{x:.1f},{top + ph:.1f} v{-max(bh - 4, 0):.1f} q0,-4 4,-4 h{bw - 8:.1f} q4,0 4,4 v{max(bh - 4, 0):.1f} z" fill="{COLORS[j % 6]}"/>')
+            bh = ph * abs(v) / span
+            x = gx + j * (bw + 4)
+            if v >= 0:
+                y = y0 - bh
+                out.append(f'<path d="M{x:.1f},{y0:.1f} v{-max(bh - 4, 0):.1f} q0,-4 4,-4 h{bw - 8:.1f} q4,0 4,4 v{max(bh - 4, 0):.1f} z" fill="{COLORS[j % 6]}"/>')
+                ly = y - 6
+            else:
+                out.append(f'<path d="M{x:.1f},{y0:.1f} v{max(bh - 4, 0):.1f} q0,4 4,4 h{bw - 8:.1f} q4,0 4,-4 v{-max(bh - 4, 0):.1f} z" fill="{COLORS[j % 6]}"/>')
+                ly = y0 + bh + 14
             if n * k <= 12:
-                out.append(text(x + bw / 2, y - 6, fmt(v), 12, INK, "middle", 600))
+                out.append(text(x + bw / 2, ly, fmt(v), 12, INK, "middle", 600))
         out.append(text(left + group * i + group / 2, top + ph + 22, c, 13, INK, "middle"))
     out.append(text(W - right, h - 36, spec.get("unit", ""), 12, MUTED, "end"))
     return "\n".join(out + footer(spec, h))
@@ -136,6 +154,8 @@ def line(spec):
     pw, ph = W - left - right, h - top - bottom
     vals = [v for s in series for v in s["values"] if v is not None]
     vmax = nice_max(max(vals)); vmin = 0 if min(vals) >= 0 else min(vals)
+    if spec.get("ymin") is not None:   # 지수(2015=100)처럼 0 에서 시작하면 변화가 눌리는 그림은 축 아래를 지정(출처 줄에 밝힘)
+        vmin = spec["ymin"]; vmax = nice_max(max(vals) - vmin) + vmin
     out = header(spec, h)
     if k > 1:
         out += legend(series, left, 54)
@@ -144,6 +164,14 @@ def line(spec):
         out.append(f'<line x1="{left}" y1="{y:.1f}" x2="{left + pw}" y2="{y:.1f}" stroke="{LINE}"/>')
         out.append(text(left - 8, y + 4, fmt(vmin + (vmax - vmin) * t / 4), 12, MUTED, "end"))
     step = pw / max(n - 1, 1)
+    # 끝 값 표시가 겹치지 않게: 마지막 점의 y 를 모아 14px 이상 떨어뜨린다
+    ends = sorted(((top + ph - ph * (s["values"][-1] - vmin) / (vmax - vmin), j) for j, s in enumerate(series) if s["values"] and s["values"][-1] is not None))
+    label_y = {}
+    prev = None
+    for y, j in ends:
+        if prev is not None and y - prev < 14:
+            y = prev + 14
+        label_y[j] = y; prev = y
     lab_every = max(1, math.ceil(n / 8))
     for i, x in enumerate(xs):
         if i % lab_every == 0 or i == n - 1:
@@ -156,7 +184,7 @@ def line(spec):
             out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4" fill="{COLORS[j % 6]}" stroke="{BG}" stroke-width="2"/>')
         if pts:
             x, y = pts[-1]
-            out.append(text(min(x + 8, W - right), y + 4, fmt(s["values"][-1]) + spec.get("unit", ""), 12, INK, "start", 600))
+            out.append(text(min(x + 8, W - right), label_y.get(j, y) + 4, fmt(s["values"][-1]) + spec.get("unit", ""), 12, INK, "start", 600))
     return "\n".join(out + footer(spec, h))
 
 

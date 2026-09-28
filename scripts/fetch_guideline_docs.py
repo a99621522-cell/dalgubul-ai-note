@@ -268,7 +268,11 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                     if min_year and years_in(fn) and max(years_in(fn)) < min_year:
                         continue
                     files += 1
-                    n = len([k for k in idx["items"] if k.startswith(f"doc-{key}-")]) + len([g for g in got]) + 1
+                    eff = eff_of(fn, txt)
+                    if min_year and eff[:4].isdigit() and int(eff[:4]) < min_year:
+                        print(f"    옛 자료 건너뜀(시행 {eff[:4]}): {fn[:50]}")
+                        continue
+                    n = len([k for k in idx["items"] if k.startswith(f"doc-{key}-")]) + 1
                     dkey = f"doc-{key}-{n:02d}"
                     txt = txt.encode("utf-8", errors="replace").decode("utf-8")
                     with gzip.open(out_dir / (fn + ".txt.gz"), "wt", encoding="utf-8") as gz:
@@ -276,7 +280,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                     entry = {"key": dkey, "name": Path(fn).stem.replace("_", " "), "kind": "기관 첨부(관리지침)", "issuer": org["name"],
                              "source": {"type": "url", "name": purl}, "applies": {"layer": "기관", "ministry": org["name"], "program_type": ["전체"]},
                              "review": ["예산요구서", "집행", "결산서"], "fetched": TODAY, "status": "OK", "found": Path(fn).stem.replace("_", " "),
-                             "found_kind": f"기관 첨부({fk})", "found_issuer": org["name"], "id": sha, "sha": sha, "date": "", "eff": eff_of(fn, txt),
+                             "found_kind": f"기관 첨부({fk})", "found_issuer": org["name"], "id": sha, "sha": sha, "date": "", "eff": eff,
                              "url": purl, "chars": len(txt), "file": f"docs/{key}/{fn}.txt.gz", "post": title[:120], "attachment": label[:120],
                              "articles": len(re.findall(r"제\d+조", txt)), "annexes": []}
                     idx["items"][dkey] = entry

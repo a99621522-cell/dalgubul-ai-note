@@ -1,0 +1,27 @@
+{
+ "key": "biz-census-sido-industry-all",
+ "name": "전국사업체조사 — 시도·산업·사업체구분별 사업체 수·종사자 수('20~), 17개 시도 전체(종사자 기준 입지계수용)",
+ "tbl_nm": "시도·산업·사업체구분별 사업체수 종사자수(’20~ )",
+ "org_id": "101",
+ "tbl_id": "DT_1K52D01",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 747742,
+ "rows_kept": 747742,
+ "latest": "2023",
+ "unit": "개",
+ "areas": [
+  "manufacturing-ax",
+  "ai-sw-startup",
+  "machinery",
+  "automotive",
+  "textile",
+  "root"
+ ],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01",
+ "note": "산업 그룹의 공식 기준값(사업체·종사자)과 scripts/structure_index.py 의 종사자 기준 LQ. 40,000셀을 넘는 표라 연도×시도별로 나눠 받는다. 표 번호는 KOSIS 통계표 주소(statHtml.do?tblId=…)에서 확인"
+}

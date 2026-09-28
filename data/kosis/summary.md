@@ -1,9 +1,10 @@
 # KOSIS 수집 결과
 
-갱신 2026-09-28 · 표 10개 · 설정 config/kosis_tables.yml
+갱신 2026-09-28 · 표 11개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
+| biz-census-sido-industry-all | [시도·산업·사업체구분별 사업체수 종사자수(’20~ )](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01) | Y 2020~2026 | 2023 | 747742 | 개 |
 | grdp-sido-industry-all | [시도별 경제활동별 지역내총생산](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91) | Y 2014~2026 | 2024 | 19602 | 백만원 %p |
 | grdp-sido-industry | [시도별 경제활동별 지역내총생산](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91) | Y 2020~2026 | 2024 | 495 | 백만원 %p |
 | labor-force-sido-annual-all | [행정구역(시도)별 경제활동인구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S) | Y 2014~2026 | 2025 | 1953 | 천명 |

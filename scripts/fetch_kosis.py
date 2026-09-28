@@ -237,14 +237,14 @@ def save_meta(t: dict, key: str) -> None:
     print(f"[meta] {t['key']}: 항목·분류 {len(items)}개 → data/kosis/{t['key']}.meta.json")
 
 
-def walk_list(key: str, phrases: list[list[str]], parent: str = "", depth: int = 0, max_depth: int = 6, path: str = "") -> None:
+def walk_list(key: str, phrases: list[list[str]], parent: str = "", depth: int = 0, max_depth: int = 6, path: str = "", vw: str = "MT_ZTITLE") -> None:
     """KOSIS 주제별 통계목록 트리를 한 번 내려가며 이름에 낱말이 든 목록·표를 찍는다(--list '전국사업체조사 시도;수출입 시도'). 검색 API 는 일부 표를 못 찾는다.
     낱말은 상위 목록 이름과 표 이름을 합친 글자에서 찾는다(조사 이름은 목록에, '시도'는 표 이름에 있는 식). ';' 로 나눈 검색 여러 개를 한 번의 순회로 처리한다
     (2026-09-28: 검색마다 순회하니 3개에 35분 넘게 걸렸다). 목록 이름(상위 포함)에 어느 검색의 첫 낱말이 들어 있으면 그 아래를 끝까지, 아니면 깊이 2까지만."""
     items = None
     for attempt in range(4):   # 1분 200건 제한(err 40)에 걸리면 65초 쉬고 다시. 목록이 없는 잎(err 30)은 조용히 넘긴다
         try:
-            r = requests.get(API_LIST, params={"method": "getList", "apiKey": key, "vwCd": "MT_ZTITLE", "parentListId": parent, "format": "json", "jsonVD": "Y"},
+            r = requests.get(API_LIST, params={"method": "getList", "apiKey": key, "vwCd": vw, "parentListId": parent, "format": "json", "jsonVD": "Y"},
                              headers={"User-Agent": UA}, timeout=(20, 60))
             items = r.json()
         except Exception as e:  # noqa: BLE001
@@ -269,7 +269,7 @@ def walk_list(key: str, phrases: list[list[str]], parent: str = "", depth: int =
         if any(w[0] in full for w in phrases if w) or depth < 2:
             if depth >= max_depth:
                 continue
-            walk_list(key, phrases, lid, depth + 1, max_depth, path + " > " + name)
+            walk_list(key, phrases, lid, depth + 1, max_depth, path + " > " + name, vw)
             time.sleep(0.35)   # 1분 200건 한도 아래로(러너 하나만 돈다)
 
 
@@ -307,9 +307,13 @@ def main() -> int:
     if not key and not a.dry_run:
         print("KOSIS_KEY 가 없어 받지 않음(GitHub Secrets 에 넣으면 동작)"); return 0
     if a.list:
-        phrases = [ph.split() for ph in a.list.split(";") if ph.strip()]
-        print("[list] 검색:", "; ".join(" ".join(ph) for ph in phrases))
-        walk_list(key, phrases)
+        vw = "MT_ZTITLE"   # 주제별 목록. '기관별:' 로 시작하면 기관별 목록(MT_OTITLE, 예: '기관별:관세청 시도' — 관세청 무역통계는 주제별 목록에 없다, 2026-09-28)
+        text = a.list
+        if text.startswith("기관별:"):
+            vw, text = "MT_OTITLE", text[len("기관별:"):]
+        phrases = [ph.split() for ph in text.split(";") if ph.strip()]
+        print(f"[list] 검색({vw}):", "; ".join(" ".join(ph) for ph in phrases))
+        walk_list(key, phrases, vw=vw)
         print("[list] 끝")
         return 0
     if a.meta:

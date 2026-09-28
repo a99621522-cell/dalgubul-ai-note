@@ -1,7 +1,8 @@
 name: 정책제안 리포트 발행 (루틴 브랜치 → main)
 
 # 정책제안 리포트 루틴(Claude 루틴, 세션은 main 에 직접 푸시할 수 없다)이 claude/policy-reports 브랜치에 푸시하면
-# 이 워크플로가 main 에 병합하고, 발행본(draft: false)을 scripts/review_report.py 로 다시 검사해 미달은 draft 로 되돌린 뒤 main 에 푸시하고 배포한다.
+# 이 워크플로가 main 에 병합하고, 브랜치에서 온 리포트를 전부 draft 로 강제한 뒤(운영자 지시 2026-09-28: 초안으로만, 발행은 운영자가 approve.py 로),
+# 발행본(draft: false)을 scripts/review_report.py 로 다시 검사해 미달은 draft 로 되돌리고 main 에 푸시·배포한다.
 # GITHUB_TOKEN 으로 한 푸시는 다른 워크플로를 깨우지 않으므로 배포는 여기서 deploy.yml 을 직접 부른다.
 
 on:
@@ -54,6 +55,16 @@ jobs:
             git commit -m "publish: 정책제안 리포트 병합(충돌은 리포트만 반영) ($BRANCH) $(date -u +%Y-%m-%d)"
             echo "merged=1" >> "$GITHUB_OUTPUT"
           fi
+      - name: 브랜치에서 온 리포트는 초안으로만 (운영자 지시 2026-09-28)
+        if: steps.merge.outputs.merged == '1'
+        run: |
+          set +e
+          # 병합으로 바뀐 리포트 파일만 draft: true 로 강제한다(운영자가 approve.py 로 발행한 기존 리포트는 건드리지 않음)
+          for f in $(git diff --name-only HEAD^1 HEAD -- 'src/content/posts/*-policy-*.md'); do
+            [ -f "$f" ] && grep -qE '^draft:\s*false' "$f" && sed -i -E '0,/^draft:\s*false/s//draft: true   # 초안으로만(운영자 지시 2026-09-28)/' "$f" && echo "draft 로: $f"
+          done
+          git add src/content/posts
+          git diff --cached --quiet || git commit -m "publish: 루틴 리포트는 초안으로만 $(date -u +%Y-%m-%d)"
       - name: 발행본 재검사 → 미달은 draft 로
         if: steps.merge.outputs.merged == '1'
         run: |

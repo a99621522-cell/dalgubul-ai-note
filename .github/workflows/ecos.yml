@@ -1,0 +1,51 @@
+name: 한국은행 ECOS 통계표 받기
+
+# config/ecos_tables.yml 의 표를 한국은행 경제통계시스템 오픈API 에서 받아 data/ecos/ 에 커밋한다(대구 항목만).
+# 키는 Secrets ECOS_KEY 하나. 없으면 받지 않고 끝난다. 이 세션 환경은 ecos.bok.or.kr 이 막혀 있어 Actions 가 대신 돈다.
+# discover=true 면 stat_code 가 빈 표의 후보(표 목록)와, 코드가 있는 표의 '대구' 항목을 로그에 찍기만 한다(커밋 없음).
+
+on:
+  schedule:
+    - cron: "37 19 9 * *"      # 매월 10일 04:37 KST
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "표 key (쉼표 구분, 비우면 전부)"
+        required: false
+        default: ""
+      discover:
+        description: "후보 검색만(true)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ecos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          ECOS_KEY: ${{ secrets.ECOS_KEY }}
+        run: |
+          if [ "${{ inputs.discover }}" = "true" ]; then python3 scripts/fetch_ecos.py --discover ${{ inputs.only && format('--only {0}', inputs.only) || '' }}; exit 0; fi
+          python3 scripts/fetch_ecos.py ${{ inputs.only && format('--only {0}', inputs.only) || '' }}
+      - name: 커밋
+        if: inputs.discover != 'true'
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/ecos
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "data: ECOS 통계표 갱신 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"

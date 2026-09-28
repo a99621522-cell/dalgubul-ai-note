@@ -3,6 +3,7 @@ name: NTIS 국가R&D 과제 수집 (대구 수행기관 → 지원 이력)
 # NTIS 오픈API(키 NTIS_KEY)로 과제를 받아 대구 수행기관·기업 사전 이름 일치 과제만 scripts/data/support/ntis.csv 로 두고
 # import_support.py --replace-source 'NTIS 국가R&D 과제(오픈API)' 로 지원 이력에 합친다. 이 세션 환경은 ntis.go.kr 접속이 막혀 있어 러너가 대신 돈다.
 # 첫 실행은 probe=true 로 응답 원문·태그 이름을 로그로 확인한 뒤 scripts/sources.yml ntis.fields 를 맞춘다.
+# NTIS 키는 접근 허용 IP 가 있어야 한다(2026-09-28: 미국 러너는 '접근 허용 IP가 아닙니다'). 국내 self-hosted 러너(runner=korea)나 국내 PC 에서 돌린다.
 
 on:
   schedule:
@@ -21,6 +22,10 @@ on:
         description: "연도(쉼표, 비우면 sources.yml)"
         required: false
         default: ""
+      runner:
+        description: "러너: github(미국, IP 가 바뀌어 NTIS 허용 IP 등록 불가) / korea(국내 self-hosted, 라벨 korea, 그 PC 의 공인 IP 를 NTIS 에 등록)"
+        required: false
+        default: "github"
 
 permissions:
   contents: write
@@ -31,7 +36,7 @@ concurrency:
 
 jobs:
   collect:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner == 'korea' && fromJSON('["self-hosted","korea"]') || 'ubuntu-latest' }}
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4

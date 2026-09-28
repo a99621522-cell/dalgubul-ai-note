@@ -190,6 +190,26 @@ def kosis_block(area_key: str, keywords: list[str]) -> list[dict]:
     return out
 
 
+def ecos_block(area_key: str, keywords: list[str]) -> list[dict]:
+    """data/ecos 의 표 가운데 areas 에 이 분야가 있거나 표 이름이 키워드에 맞는 것 — 최근 시점의 대구 항목 행(값 그대로, 출처 URL 포함)."""
+    kdir = ROOT / "data" / "ecos"
+    if not kdir.exists():
+        return []
+    pat = kw_pattern(keywords)
+    out = []
+    for jf in sorted(kdir.glob("*.json")):
+        m = json.loads(jf.read_text(encoding="utf-8"))
+        if area_key not in (m.get("areas") or []) and not pat.search(m.get("name", "") + " " + m.get("stat_name", "")):
+            continue
+        cf = kdir / f"{m['key']}.csv"
+        rows = list(csv.DictReader(open(cf, encoding="utf-8"))) if cf.exists() else []
+        latest = [r for r in rows if r.get("TIME") == m.get("latest")]
+        out.append({"key": m["key"], "name": m.get("stat_name") or m["name"], "latest": m.get("latest", ""), "unit": m.get("unit", ""),
+                    "source_url": m.get("source_url", ""), "source_note": m.get("source_note", ""), "fetched": m.get("fetched", ""),
+                    "rows": [{k: r.get(k, "") for k in ("ITEM_NAME1", "ITEM_NAME2", "ITEM_NAME3", "DATA_VALUE")} for r in latest[:12]]})
+    return out
+
+
 def posts_block(keywords: list[str], weeks: int = 8) -> list[dict]:
     pat = kw_pattern(keywords)
     since = date.today() - timedelta(weeks=weeks)
@@ -332,6 +352,7 @@ def main(argv: list[str]) -> int:
         "city_match": city_match_block(area.get("keywords", [])),
         "city_programs": city_programs_block(area.get("keywords", [])),
         "kosis": kosis_block(area["key"], area.get("keywords", [])),
+        "ecos": ecos_block(area["key"], area.get("keywords", [])),
         "posts_8w": posts_block(area.get("keywords", [])),
         "notices_8w": notices_block(area["key"], area.get("keywords", [])),
         "research": research_block(area.get("keywords", []), area.get("key", "")),
@@ -368,6 +389,11 @@ def main(argv: list[str]) -> int:
         print(f"  {k['name'][:50]} · {k['latest']} · {k['unit']} · {k['source_url']}")
         for r in k["rows"][:6]:
             print(f"     {r['ITM_NM']} | {r['C1_NM']} {r['C2_NM']} {r['C3_NM']} | {r['DT']}")
+    print(f"\n[한국은행 ECOS — 분야 표의 최근 시점 대구 값, 출처는 source_url(통계표 코드 함께 적기)] {len(ctx['ecos'])}표")
+    for k in ctx["ecos"][:6]:
+        print(f"  {k['name'][:50]} · {k['latest']} · {k['unit']} · {k['source_url']} ({k['source_note']})")
+        for r in k["rows"][:6]:
+            print(f"     {r['ITEM_NAME1']} | {r['ITEM_NAME2']} {r['ITEM_NAME3']} | {r['DATA_VALUE']}")
     print(f"\n[대구시 세부사업 — 본예산 사업설명서, 사업명·부서·상태만] {len(ctx['city_programs'])}건")
     for m in ctx["city_programs"][:15]:
         print(f"  {m['name'][:40]} · {m['org']} {m['dept']} · {m['status']}")

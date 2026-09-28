@@ -59,7 +59,7 @@ jobs:
         run: |
           if [ -n "${{ inputs.meta }}" ]; then python3 scripts/fetch_kosis.py --meta "${{ inputs.meta }}"; exit 0; fi
           if [ -n "${{ inputs.probe }}" ]; then python3 scripts/fetch_kosis.py --probe "${{ inputs.probe }}"; exit 0; fi
-          if [ -n "${{ inputs.list }}" ]; then python3 scripts/fetch_kosis.py --list "${{ inputs.list }}"; exit 0; fi
+          if [ -n "${{ inputs.list }}" ]; then [ "${{ matrix.attempt }}" = "1" ] && python3 scripts/fetch_kosis.py --list "${{ inputs.list }}"; exit 0; fi   # 목록 검색은 러너 하나만(셋이 같이 돌면 1분 200건 한도에 걸린다)
           if [ "${{ inputs.discover }}" = "true" ]; then python3 scripts/fetch_kosis.py --discover ${{ inputs.only && format('--only {0}', inputs.only) || '' }}; exit 0; fi
           python3 scripts/fetch_kosis.py ${{ inputs.only && format('--only {0}', inputs.only) || '' }} || { rc=$?; [ "$rc" = "75" ] && echo "::warning::이 러너(attempt ${{ matrix.attempt }})는 kosis.kr 연결 불가" && exit 0; exit $rc; }
       - name: 커밋

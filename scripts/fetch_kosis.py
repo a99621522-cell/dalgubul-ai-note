@@ -241,14 +241,21 @@ def walk_list(key: str, phrases: list[list[str]], parent: str = "", depth: int =
     """KOSIS 주제별 통계목록 트리를 한 번 내려가며 이름에 낱말이 든 목록·표를 찍는다(--list '전국사업체조사 시도;수출입 시도'). 검색 API 는 일부 표를 못 찾는다.
     낱말은 상위 목록 이름과 표 이름을 합친 글자에서 찾는다(조사 이름은 목록에, '시도'는 표 이름에 있는 식). ';' 로 나눈 검색 여러 개를 한 번의 순회로 처리한다
     (2026-09-28: 검색마다 순회하니 3개에 35분 넘게 걸렸다). 목록 이름(상위 포함)에 어느 검색의 첫 낱말이 들어 있으면 그 아래를 끝까지, 아니면 깊이 2까지만."""
-    try:
-        r = requests.get(API_LIST, params={"method": "getList", "apiKey": key, "vwCd": "MT_ZTITLE", "parentListId": parent, "format": "json", "jsonVD": "Y"},
-                         headers={"User-Agent": UA}, timeout=(20, 60))
-        items = r.json()
-    except Exception as e:  # noqa: BLE001
-        print(f"[list] {parent}: 실패 {e}"); return
+    items = None
+    for attempt in range(4):   # 1분 200건 제한(err 40)에 걸리면 65초 쉬고 다시. 목록이 없는 잎(err 30)은 조용히 넘긴다
+        try:
+            r = requests.get(API_LIST, params={"method": "getList", "apiKey": key, "vwCd": "MT_ZTITLE", "parentListId": parent, "format": "json", "jsonVD": "Y"},
+                             headers={"User-Agent": UA}, timeout=(20, 60))
+            items = r.json()
+        except Exception as e:  # noqa: BLE001
+            print(f"[list] {parent}: 실패 {e}"); time.sleep(5); continue
+        if isinstance(items, dict) and str(items.get("err")) == "40":
+            print(f"[list] {parent}: 호출 한도, 65초 대기"); time.sleep(65); continue
+        break
     if not isinstance(items, list):
-        print(f"[list] {parent}: {items}"); return
+        if not (isinstance(items, dict) and str(items.get("err")) == "30"):
+            print(f"[list] {parent}: {items}")
+        return
     for it in items:
         name = it.get("LIST_NM") or it.get("TBL_NM") or ""
         tbl = it.get("TBL_ID")
@@ -263,7 +270,7 @@ def walk_list(key: str, phrases: list[list[str]], parent: str = "", depth: int =
             if depth >= max_depth:
                 continue
             walk_list(key, phrases, lid, depth + 1, max_depth, path + " > " + name)
-            time.sleep(0.1)
+            time.sleep(0.35)   # 1분 200건 한도 아래로(러너 하나만 돈다)
 
 
 def write_summary(metas: list[dict]) -> None:

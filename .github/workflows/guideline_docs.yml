@@ -1,0 +1,67 @@
+name: 기관 관리지침 받기 (대구 기업지원기관 홈페이지)
+
+# config/guideline_docs.yml 의 대구 기업지원기관 공고·규정 게시판에서 사업 관리지침·운영지침·사업비 지침 첨부를 받아
+# data/guidelines/docs/ 와 data/guidelines/index.json 을 갱신한다. 이 세션 환경은 기관 사이트가 막혀 있어 Actions 가 대신 돈다.
+# 매월 13일 03:40 KST + 수동 실행. 미국 러너에서 접속이 안 되는 기관은 국내 러너(research_kr.yml 방식)에서 --only 로.
+
+on:
+  schedule:
+    - cron: "40 18 12 * *"
+  push:
+    branches: ["claude/policy-reports"]
+    paths: [".github/workflows/guideline_docs.yml", "scripts/fetch_guideline_docs.py", "config/guideline_docs.yml"]
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "기관 key (쉼표 구분, 비우면 전부)"
+        required: false
+        default: ""
+      dry:
+        description: "받지 않고 후보만(true)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: guideline-docs-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils
+      - run: pip install -r scripts/requirements.txt playwright openpyxl pyhwp && python -m playwright install --with-deps chromium
+      - name: 받기·본문 추출
+        env:
+          ONLY: ${{ inputs.only }}
+          DRY: ${{ inputs.dry }}
+        run: |
+          set +e
+          python3 scripts/fetch_guideline_docs.py ${ONLY:+--only "$ONLY"} $([ "$DRY" = "true" ] && echo --dry-run)
+          echo "exit=$?"
+          du -sh data/raw/guideline_docs/* 2>/dev/null | head -20
+      - name: artifact (받은 원본)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guideline-docs-raw-${{ github.run_id }}
+          path: data/raw/guideline_docs
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: 커밋
+        if: inputs.dry != 'true'
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A data/guidelines
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 기관 관리지침 받기 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

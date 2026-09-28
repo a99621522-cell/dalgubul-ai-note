@@ -37,20 +37,52 @@ def period_range(prd_se: str, years: int) -> tuple[str, str]:
     return str(y - years), str(y)
 
 
-def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
-    start, end = period_range(t.get("prd_se", "Y"), int(t.get("years", 6)))
-    params = {"method": "getList", "apiKey": key, "itmId": "ALL", "objL1": "ALL", "objL2": "ALL", "objL3": "ALL", "objL4": "ALL",
-              "format": "json", "jsonVD": "Y", "prdSe": t.get("prd_se", "Y"), "startPrdDe": start, "endPrdDe": end,
-              "orgId": str(t["org_id"]), "tblId": t["tbl_id"]}
-    if dry:
-        print(f"[dry] {t['key']}: {API_DATA}?" + "&".join(f"{k}={'***' if k == 'apiKey' else v}" for k, v in params.items()))
-        return None
+def _call(params: dict) -> list | dict:
     r = requests.get(API_DATA, params=params, headers={"User-Agent": UA}, timeout=90)
     r.raise_for_status()
-    data = r.json()
-    if isinstance(data, dict) and data.get("err"):
-        raise RuntimeError(f"KOSIS 오류 {data.get('err')}: {data.get('errMsg')}")
-    rows = data if isinstance(data, list) else []
+    return r.json()
+
+
+def _err(data) -> str:
+    return f"KOSIS 오류 {data.get('err')}: {data.get('errMsg')}" if isinstance(data, dict) and data.get("err") else ""
+
+
+def _get_rows(base: dict, start: str, end: str) -> list:
+    """분류 단계 수(objL1..objL8)는 표마다 달라 API 가 '잘못된 요청 변수'(21)를 돌려주므로 1단계부터 늘려 가며 맞춘다.
+    한 번에 받을 수 있는 양을 넘기면(오류 메시지에 '초과') 기간을 1년씩 나눠 받는다."""
+    last = ""
+    for n in range(1, 9):
+        params = {**base, "startPrdDe": start, "endPrdDe": end, **{f"objL{i}": "ALL" for i in range(1, n + 1)}}
+        data = _call(params)
+        e = _err(data)
+        if not e:
+            return data if isinstance(data, list) else []
+        last = e
+        if "초과" in e or "40000" in e.replace(",", ""):
+            rows = []
+            for y in range(int(start[:4]), int(end[:4]) + 1):
+                ps, pe = (f"{y}01", f"{y}{end[4:]}") if len(start) > 4 else (str(y), str(y))
+                params.update({"startPrdDe": ps, "endPrdDe": pe})
+                d = _call(params)
+                if not _err(d) and isinstance(d, list):
+                    rows.extend(d)
+                time.sleep(0.3)
+            if rows:
+                return rows
+        elif "21" not in e and "변수" not in e:
+            break
+        time.sleep(0.3)
+    raise RuntimeError(last or "응답 없음")
+
+
+def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
+    start, end = period_range(t.get("prd_se", "Y"), int(t.get("years", 6)))
+    base = {"method": "getList", "apiKey": key, "itmId": "ALL", "format": "json", "jsonVD": "Y", "prdSe": t.get("prd_se", "Y"),
+            "orgId": str(t["org_id"]), "tblId": t["tbl_id"]}
+    if dry:
+        print(f"[dry] {t['key']}: {API_DATA}?" + "&".join(f"{k}={'***' if k == 'apiKey' else v}" for k, v in {**base, "objL1": "ALL", "startPrdDe": start, "endPrdDe": end}.items()))
+        return None
+    rows = _get_rows(base, start, end)
     area_words = t.get("area") or ["대구"]
     col = t.get("area_col")
     keep = []

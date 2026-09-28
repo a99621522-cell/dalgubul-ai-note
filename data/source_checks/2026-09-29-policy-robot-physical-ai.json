@@ -1,23 +1,26 @@
 {
  "file": "src/content/posts/2026-09-29-policy-robot-physical-ai.md",
  "checked": "2026-09-28",
- "ok": 26,
+ "ok": 23,
  "total": 27,
- "ratio": 0.96,
- "official_bad": [],
- "pass": true,
+ "ratio": 0.85,
+ "official_bad": [
+  "산업통상부, 「(참고자료) '대한민국 대도약 3대 메가프로젝트 국민보고회' 개최」",
+  "대한민국 정책브리핑, 「2030년까지 휴머노이드 핵심부품 국산화율 80%로」(제2차 재정운용전략협의회)"
+ ],
+ "pass": false,
  "sources": [
   {
    "title": "산업통상부, 「(참고자료) '대한민국 대도약 3대 메가프로젝트 국민보고회' 개최」",
    "url": "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/171974/view",
    "date": "2026-06-29",
    "kind": "gov",
-   "status": 200,
-   "page_title": "(참고자료)‘대한민국 대도약 3대 메가프로젝트 국민보고회’ 개최 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "전자신문, 「새만금·대경권 양대 축으로 AI로봇 글로벌 3강으로 키운다」",
@@ -48,12 +51,12 @@
    "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148970725",
    "date": "2026-08-27",
    "kind": "gov",
-   "status": 200,
-   "page_title": "2030년까지 휴머노이드에 2.3조 투입…핵심부품 국산화율 80%로↑ - 정책뉴스 | 뉴스 | 대한민국 정책브리핑",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "머니투데이, 「전남광주시, '피지컬AI 휴머노이드 제조혁신센터' 구축」",
@@ -300,12 +303,12 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001",
    "date": "2026-09-28",
    "kind": "data",
-   "status": 200,
-   "page_title": "KOSIS",
-   "title_match": 0.14,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
-   "note": ""
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "뉴스핌, 「휴머노이드 부품 국산화 속도…센서·액추에이터 신규 프로젝트」(2026년 하반기 경제성장전략)",

@@ -139,10 +139,20 @@ tables:
     years: 12
     area_col: C1
     area: []
-  - key: export-sido
-    name: 시도별 수출입 — 관세청 무역통계(수출액·품목용)
-    tbl_id: ""
-    search: "시도별 수출입 관세청 수출액"
+  - key: export-region
+    name: 관세청 기업무역활동통계 — 지역별 수출현황(시도별 수출액·수출기업 수, 연간; 산업구조 보고서 표 3-4·그림 2-5 대체). 주제별 목록에는 시도별 수출 표가 없어 기관별 목록에서 찾음(2026-09-28)
+    tbl_id: "DT_134006_N007"
+    org_id: "134"
+    search: "관세청 기업무역활동통계 지역별 수출현황"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []
+  - key: export-region-index
+    name: 관세청 기업무역활동통계 — 지역별 수출지표 현황(시도별)
+    tbl_id: "DT_134006_N015"
+    org_id: "134"
+    search: "관세청 기업무역활동통계 지역별 수출지표 현황"
     prd_se: Y
     years: 12
     area_col: C1

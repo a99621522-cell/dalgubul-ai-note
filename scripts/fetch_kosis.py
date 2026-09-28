@@ -4,6 +4,8 @@
 - 키: 환경변수 KOSIS_KEY(인증키 하나로 모든 표). 없으면 아무것도 받지 않고 끝낸다(무인 실행이 죽지 않게).
 - 표마다 통계자료 조회 API 를 부른다. 실패는 로그만 남기고 다음 표로.
 - --discover: tbl_id 가 빈 표의 search 낱말로 통계표 검색 API 를 불러 후보(표 이름·orgId·tblId)를 찍는다. 확인해서 yml 에 채운다.
+- --list '낱말 낱말': 검색 API 가 못 찾을 때 주제별 통계목록 트리(statisticsList)를 내려가며 이름에 낱말이 든 표를 찍는다(워크플로 입력 list).
+  표 번호를 찾는 다른 방법: KOSIS 사이트에서 표를 연 뒤 주소의 tblId=… 를 읽는다(예: statHtml.do?orgId=101&tblId=DT_1K52D01).
 - --only key,key  --dry-run(주소만 출력)  --summary(data/kosis/summary.md 만 다시 씀)
 - 이 세션 환경은 kosis.kr 접속이 막혀 있어 GitHub Actions(kosis.yml)가 대신 돈다. 평가 없음, 값은 그대로.
 """
@@ -17,6 +19,7 @@ CFG = ROOT / "config" / "kosis_tables.yml"
 OUT = ROOT / "data" / "kosis"
 API_DATA = "https://kosis.kr/openapi/Param/statisticsParameterData.do"
 API_SEARCH = "https://kosis.kr/openapi/statisticsSearch.do"
+API_LIST = "https://kosis.kr/openapi/statisticsList.do"      # 통계목록(주제별 트리) — 검색 API 가 못 찾는 표 번호를 트리에서 찾는다
 UA = "daitda-note-bot/1.0 (+https://note.daitda.co.kr)"
 
 
@@ -143,6 +146,32 @@ def discover(t: dict, key: str) -> None:
         print(f"   {it.get('ORG_ID')} {it.get('TBL_ID')} | {it.get('TBL_NM')} | {it.get('STAT_NM', '')} | {it.get('PRD_DE', '')}")
 
 
+def walk_list(key: str, words: list[str], parent: str = "", depth: int = 0, max_depth: int = 6) -> None:
+    """KOSIS 주제별 통계목록 트리를 내려가며 이름에 낱말이 든 목록·표를 찍는다(--list '전국사업체조사 시도'). 검색 API 는 일부 표를 못 찾는다."""
+    try:
+        r = requests.get(API_LIST, params={"method": "getList", "apiKey": key, "vwCd": "MT_ZTITLE", "parentListId": parent, "format": "json", "jsonVD": "Y"},
+                         headers={"User-Agent": UA}, timeout=(20, 60))
+        items = r.json()
+    except Exception as e:  # noqa: BLE001
+        print(f"[list] {parent}: 실패 {e}"); return
+    if not isinstance(items, list):
+        print(f"[list] {parent}: {items}"); return
+    for it in items:
+        name = it.get("LIST_NM") or it.get("TBL_NM") or ""
+        tbl = it.get("TBL_ID")
+        if tbl:
+            if all(w in name for w in words):
+                print(f"   {it.get('ORG_ID')} {tbl} | {name}")
+            continue
+        lid = it.get("LIST_ID")
+        # 목록 이름에 첫 낱말이 들어 있으면 그 아래를 끝까지, 아니면 얕게만 내려간다
+        if any(w in name for w in words[:1]) or depth < 2:
+            if depth >= max_depth:
+                continue
+            walk_list(key, words, lid, depth + 1, max_depth)
+            time.sleep(0.2)
+
+
 def write_summary(metas: list[dict]) -> None:
     files = sorted(OUT.glob("*.json"))
     lines = ["# KOSIS 수집 결과", "", f"갱신 {date.today().isoformat()} · 표 {len(files)}개 · 설정 config/kosis_tables.yml", "",
@@ -159,6 +188,7 @@ def main() -> int:
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--summary", action="store_true")
+    ap.add_argument("--list", default="", help="통계목록 트리에서 낱말이 든 표를 찾는다(예: '전국사업체조사 시도')")
     a = ap.parse_args()
     tables = load()
     if a.only:
@@ -169,6 +199,8 @@ def main() -> int:
     key = os.environ.get("KOSIS_KEY", "").strip().strip('"\'')   # 시크릿에 공백·따옴표가 딸려 와도 그대로 쓰지 않게
     if not key and not a.dry_run:
         print("KOSIS_KEY 가 없어 받지 않음(GitHub Secrets 에 넣으면 동작)"); return 0
+    if a.list:
+        walk_list(key, a.list.split()); return 0
     metas = []
     for t in tables:
         if not t.get("tbl_id"):

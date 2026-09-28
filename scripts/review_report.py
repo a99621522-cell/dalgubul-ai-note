@@ -258,6 +258,16 @@ def review_brief(path: Path, fm: str, body: str, errors: list, warns: list) -> N
         for it in ("근거", "추진"):
             if not re.search(rf"^\s*-\s*\*?\*?{it}", ptxt, re.M):
                 errors.append(f"제안 '{h[:20]}'에 '- {it}:' 항목 없음")
+        # 논증 사슬(운영자 지적 2026-09-28): 목표·진단·원인·기제·기대효과 — 조사 제안은 예외
+        if "조사" not in h:
+            for it in ("목표", "진단", "원인", "기제", "기대효과"):
+                val = re.search(rf"^\s*-\s*\*?\*?{it}\*?\*?\s*[:：](.*)$", ptxt, re.M)
+                if not val:
+                    errors.append(f"제안 '{h[:20]}'에 '- {it}:' 항목 없음(논증 사슬: 목표→진단→원인→기제→기대효과)")
+                elif it in ("진단", "원인", "기제") and not re.search(CITE, val.group(1)):
+                    errors.append(f"제안 '{h[:20]}' '{it}' 항목에 근거 표시 없음")
+                elif it == "기제" and re.search(r"정했|배치했|지정했|발표했", val.group(1)) and not re.search(r"비교우위|대구 값|대구에|기업 사전|곳", val.group(1)):
+                    errors.append(f"제안 '{h[:20]}' '기제' 가 남의 계획 서술뿐(왜 이 수단이 원인을 없애고 대구가 비교우위인지 대구 값으로)")
         if "조사" not in h and not re.search(r"^\s*-\s*\*?\*?대상", ptxt, re.M):
             errors.append(f"제안 '{h[:20]}'에 '- 대상:' 항목(기업 사전 필터와 N곳) 없음")
         # 제안 수치는 도출 근거 또는 '조사 뒤 정함' (연·월·일 날짜는 제외)

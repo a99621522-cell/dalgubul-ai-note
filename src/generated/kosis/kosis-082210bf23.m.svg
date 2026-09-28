@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="고부가 3부문(전기·전자·정밀기기, 정보통신, 금융보험) 부가가치 비중. 2014부터 2024까지 11개월. 대구 최근 14.0%; 전국 최근 20.2%" style="max-width:360px;height:auto;font-size:14px">
+<title>고부가 3부문(전기·전자·정밀기기, 정보통신, 금융보험) 부가가치 비중</title>
+<line x1="60" x2="306" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">10</text>
+<line x1="60" x2="306" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="153.0" text-anchor="end" fill="#767676">15</text>
+<line x1="60" x2="306" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">20</text>
+<text x="84.6" y="280" text-anchor="middle" fill="#767676">2015</text>
+<text x="158.4" y="280" text-anchor="middle" fill="#767676">2018</text>
+<text x="232.2" y="280" text-anchor="middle" fill="#767676">2021</text>
+<text x="306.0" y="280" text-anchor="middle" fill="#767676">2024</text>
+<line x1="60" x2="306" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
+<path d="M60.0,180.4 L84.6,184.7 L109.2,176.1 L133.8,156.6 L158.4,165.3 L183.0,184.7 L207.6,184.7 L232.2,176.1 L256.8,152.3 L281.4,167.4 L306.0,169.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="306.0" cy="169.6" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="314.0" y="167.6" fill="#1a1a1a" font-weight="600">14.0%</text>
+<text x="314.0" y="184.6" fill="#1a1a1a">대구</text>
+<path d="M60.0,59.4 L84.6,65.9 L109.2,68.1 L133.8,40.0 L158.4,24.9 L183.0,50.8 L207.6,35.7 L232.2,16.2 L256.8,18.4 L281.4,57.3 L306.0,35.7" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="306.0" cy="35.7" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="314.0" y="55.0" fill="#1a1a1a" font-weight="600">20.2%</text>
+<text x="314.0" y="72.0" fill="#1a1a1a">전국</text>
+<text x="8" y="16" fill="#767676">명목 총부가가치 기준</text></svg>

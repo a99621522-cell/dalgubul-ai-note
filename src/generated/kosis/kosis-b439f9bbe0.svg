@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구 인구이동(월간). 2024-09부터 2026-08까지 24개월. 총전입 최근 19,288.0명; 총전출 최근 19,961.0명; 순이동 최근 -673.0명" style="max-width:720px;height:auto;font-size:14px">
+<title>대구 인구이동(월간)</title>
+<line x1="72" x2="578" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
+<line x1="72" x2="578" y1="210.7" y2="210.7" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="215.7" text-anchor="end" fill="#767676">10,000</text>
+<line x1="72" x2="578" y1="125.3" y2="125.3" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="130.3" text-anchor="end" fill="#767676">20,000</text>
+<line x1="72" x2="578" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">30,000</text>
+<text x="182.0" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="314.0" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="446.0" y="320" text-anchor="middle" fill="#767676">2026.2</text>
+<text x="578.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<line x1="72" x2="578" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
+<path d="M72.0,103.7 L94.0,84.9 L116.0,107.2 L138.0,85.8 L160.0,86.7 L182.0,20.5 L204.0,103.6 L226.0,125.7 L248.0,125.3 L270.0,129.7 L292.0,98.8 L314.0,115.1 L336.0,105.6 L358.0,126.2 L380.0,135.4 L402.0,88.6 L424.0,71.2 L446.0,50.0 L468.0,69.7 L490.0,109.8 L512.0,104.2 L534.0,117.9 L556.0,130.3 L578.0,131.4" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="578.0" cy="131.4" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="586.0" y="133.9" fill="#1a1a1a" font-weight="600">19,288.0명 총전입</text>
+<path d="M72.0,104.0 L94.0,84.9 L116.0,107.3 L138.0,84.3 L160.0,88.6 L182.0,22.1 L204.0,90.2 L226.0,118.7 L248.0,119.3 L270.0,124.9 L292.0,102.3 L314.0,114.9 L336.0,106.2 L358.0,123.7 L380.0,131.6 L402.0,82.1 L424.0,69.1 L446.0,46.4 L468.0,60.7 L490.0,106.2 L512.0,106.5 L534.0,110.9 L556.0,126.5 L578.0,125.7" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="578.0" cy="125.7" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="586.0" y="117.9" fill="#1a1a1a" font-weight="600">19,961.0명 총전출</text>
+<path d="M72.0,295.6 L94.0,296.0 L116.0,295.9 L138.0,297.6 L160.0,294.1 L182.0,294.4 L204.0,309.4 L226.0,302.9 L248.0,302.0 L270.0,300.8 L292.0,292.4 L314.0,296.2 L336.0,295.4 L358.0,298.5 L380.0,299.9 L402.0,302.4 L424.0,298.1 L446.0,299.6 L468.0,305.0 L490.0,299.6 L512.0,293.6 L534.0,303.0 L556.0,299.9 L578.0,301.7" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="578.0" cy="301.7" r="3.5" style="fill:var(--chart-3,#009E73)"/>
+<text x="586.0" y="294.0" fill="#1a1a1a" font-weight="600">-673.0명 순이동</text>
+<text x="72" y="16" fill="#767676">KOSIS 시군구별 이동자수</text></svg>

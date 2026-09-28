@@ -37,19 +37,24 @@ def period_range(prd_se: str, years: int) -> tuple[str, str]:
     return str(y - years), str(y)
 
 
+class NetworkDead(RuntimeError):
+    """러너 IP 에서 kosis.kr 연결 자체가 안 되는 상태(2026-09-28 관찰: 러너 IP 에 따라 첫 연결부터 시간 초과, 같은 IP 로 재시도해도 소용없음)."""
+
+
 def _call(params: dict) -> list | dict:
-    """접속 실패(시간 초과·연결 끊김)는 5·15·30초 뒤 다시 시도한다. 미국 러너에서 kosis.kr 접속이 가끔 막힌다."""
+    """접속 실패(시간 초과·연결 끊김)는 5초 뒤 한 번 더. 그래도 안 되면 NetworkDead — 같은 러너에서 다른 표를 더 시도하지 않는다.
+    워크플로가 러너(IP)를 바꿔 다시 시도한다(kosis.yml 의 attempt 매트릭스)."""
     last = None
-    for wait in (0, 5, 15, 30):
+    for wait in (0, 5):
         if wait:
             time.sleep(wait)
         try:
-            r = requests.get(API_DATA, params=params, headers={"User-Agent": UA}, timeout=(20, 120))
+            r = requests.get(API_DATA, params=params, headers={"User-Agent": UA}, timeout=(10, 120))
             r.raise_for_status()
             return r.json()
         except (requests.ConnectionError, requests.Timeout) as e:
             last = e
-    raise RuntimeError(f"접속 실패(4회): {type(last).__name__}")
+    raise NetworkDead(f"kosis.kr 접속 실패: {type(last).__name__}")
 
 
 def _err(data) -> str:
@@ -176,6 +181,10 @@ def main() -> int:
             m = fetch_table(t, key, a.dry_run)
             if m:
                 metas.append(m)
+        except NetworkDead as e:
+            print(f"{t['key']}: {e} — 이 러너에서는 더 시도하지 않음(남은 표는 다음 시도에서)")
+            write_summary(metas)
+            return 75
         except Exception as e:  # noqa: BLE001
             print(f"{t['key']}: 실패 — {e}")
         time.sleep(0.5)

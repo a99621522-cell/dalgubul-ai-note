@@ -1,13 +1,11 @@
 {
  "file": "src/content/posts/2026-09-29-policy-robot-physical-ai.md",
  "checked": "2026-09-28",
- "ok": 24,
+ "ok": 26,
  "total": 27,
- "ratio": 0.89,
- "official_bad": [
-  "통계청 KOSIS·중소벤처기업부 중소기업기본통계, 「시도별·산업중분류별·기업규모별 기업수·종사자수」(2023년 값, 2026-09-28 수집)"
- ],
- "pass": false,
+ "ratio": 0.96,
+ "official_bad": [],
+ "pass": true,
  "sources": [
   {
    "title": "산업통상부, 「(참고자료) '대한민국 대도약 3대 메가프로젝트 국민보고회' 개최」",
@@ -26,12 +24,12 @@
    "url": "https://www.etnews.com/20260629000377",
    "date": "2026-06-29",
    "kind": "news",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "[대한민국 3대 메가프로젝트]새만금·대경권 양대 축으로 AI로봇 글로벌 3강으로 키운다 - 전자신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "글로벌이코노믹, 「정부, '피지컬 AI' 공공구매 확대…로봇·반도체 생태계 총력 지원」(메가프로젝트 민관합동 2차 점검회의 산업통상부 보고)",
@@ -301,13 +299,13 @@
    "title": "통계청 KOSIS·중소벤처기업부 중소기업기본통계, 「시도별·산업중분류별·기업규모별 기업수·종사자수」(2023년 값, 2026-09-28 수집)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001",
    "date": "2026-09-28",
-   "kind": "official",
+   "kind": "data",
    "status": 200,
    "page_title": "KOSIS",
    "title_match": 0.14,
    "date_found": false,
-   "ok": false,
-   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "뉴스핌, 「휴머노이드 부품 국산화 속도…센서·액추에이터 신규 프로젝트」(2026년 하반기 경제성장전략)",

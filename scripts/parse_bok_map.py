@@ -247,22 +247,19 @@ MODIFIER = re.compile(r"^(자동차|차량|승용차|산업|가정|전기차|반
 
 
 def keywords(item: str) -> list[str]:
-    """품목명에서 대조에 쓸 핵심 낱말: 괄호 안 조건은 버리고, '자동차용'·'기타' 같은 수식어를 뺀 나머지.
-    '자동차용 나선용 스프링' → ['스프링'], '롤러베어링(니들)' → ['롤러베어링'], '장착구·부착구' → ['장착구', '부착구']."""
+    """품목명에서 대조에 쓸 머리 낱말: 괄호 안 조건은 버리고 '와/과/및/·/,' 로 나눈 구절마다 마지막 낱말(수식어 제외)만 쓴다.
+    '반도체 웨이퍼 레이저 다이싱기' → ['다이싱기'], '경보기(horn)와 사이렌' → ['경보기', '사이렌'], '로프·케이블' → ['로프', '케이블']."""
     base = re.sub(r"\(.*?\)", " ", item)
-    toks = []
-    for part in re.split(r"[\s,/&]+", base):
-        for t in re.split(r"[·∙ㆍ]", part):
-            t = re.sub(r"[^가-힣A-Za-z0-9]", "", t)
-            if len(t) >= 1 and t not in GENERIC and not MODIFIER.match(t):
-                toks.append(t)
-    return toks or [re.sub(r"\s+", "", base)]
+    heads = []
+    for phrase in re.split(r"[·∙ㆍ,/&]|\s(?:와|과|및)\s|(?<=[가-힣])(?:와|과)\s", base):
+        toks = [re.sub(r"[^가-힣A-Za-z0-9]", "", t) for t in phrase.split()]
+        toks = [t for t in toks if t and t not in GENERIC and not MODIFIER.match(t)]
+        if toks:
+            heads.append(toks[-1])
+    return heads or [re.sub(r"\s+", "", base)]
 
 
 def hit(kws: list[str], prod: str, prod_tokens: set[str]) -> bool:
-    joined = "".join(kws)
-    if len(joined) >= 3 and joined in prod:
-        return True
     for k in kws:
         if len(k) >= 3 and k in prod:
             return True

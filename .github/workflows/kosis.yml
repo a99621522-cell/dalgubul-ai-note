@@ -21,6 +21,10 @@ on:
         description: "통계목록 트리에서 낱말이 든 표 번호 찾기(예: 전국사업체조사 시도). 비우면 안 함"
         required: false
         default: ""
+      probe:
+        description: "표 key 하나의 메타·최소 요청 응답 찍기(오류 21 원인 확인). 비우면 안 함"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -48,11 +52,12 @@ jobs:
         env:
           KOSIS_KEY: ${{ secrets.KOSIS_KEY }}
         run: |
+          if [ -n "${{ inputs.probe }}" ]; then python3 scripts/fetch_kosis.py --probe "${{ inputs.probe }}"; exit 0; fi
           if [ -n "${{ inputs.list }}" ]; then python3 scripts/fetch_kosis.py --list "${{ inputs.list }}"; exit 0; fi
           if [ "${{ inputs.discover }}" = "true" ]; then python3 scripts/fetch_kosis.py --discover ${{ inputs.only && format('--only {0}', inputs.only) || '' }}; exit 0; fi
           python3 scripts/fetch_kosis.py ${{ inputs.only && format('--only {0}', inputs.only) || '' }} || { rc=$?; [ "$rc" = "75" ] && echo "::warning::이 러너(attempt ${{ matrix.attempt }})는 kosis.kr 연결 불가" && exit 0; exit $rc; }
       - name: 커밋
-        if: inputs.discover != 'true' && inputs.list == ''
+        if: inputs.discover != 'true' && inputs.list == '' && inputs.probe == ''
         run: |
           git config user.name dalgubul-bot
           git config user.email bot@users.noreply.github.com

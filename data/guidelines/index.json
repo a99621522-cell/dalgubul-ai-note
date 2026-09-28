@@ -1,5 +1,5 @@
 {
- "fetched": "2026-09-27",
+ "fetched": "2026-09-28",
  "items": {
   "subsidy-act": {
    "key": "subsidy-act",
@@ -1052,6 +1052,46 @@
    "found_kind": "조례",
    "found_issuer": "대구광역시",
    "articles": 0,
+   "annexes": []
+  },
+  "mss-regional": {
+   "key": "mss-regional",
+   "name": "지역산업육성사업 운영요령",
+   "kind": "고시",
+   "issuer": "중소벤처기업부",
+   "source": {
+    "type": "admrul",
+    "name": "지역산업육성사업운영요령"
+   },
+   "applies": {
+    "layer": "국비",
+    "ministry": "중소벤처기업부",
+    "program_type": [
+     "R&D",
+     "보조금"
+    ],
+    "name_pattern": "지역주력|지역특화|지역혁신|지역산업|지역 산업|지역기업|지역 기업|스마트특성화|지역혁신선도|지역스타"
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-09-28",
+   "status": "OK",
+   "found": "지역산업육성사업 운영요령",
+   "id": "2100000257414",
+   "date": "20250404",
+   "eff": "20250404",
+   "url": "https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000257414",
+   "chars": 56473,
+   "candidates": [
+    "지역산업육성사업 운영요령 (고시, 중소벤처기업부, 시행 20250404)"
+   ],
+   "exact": true,
+   "found_kind": "고시",
+   "found_issuer": "중소벤처기업부",
+   "articles": 110,
    "annexes": []
   }
  }

@@ -1,6 +1,6 @@
 # 사업 지침 창고 (data/guidelines)
 
-받은 날짜: 2026-09-27 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
+받은 날짜: 2026-09-28 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
 
 | key | 지침 | 종류 | 소관 | 시행일 | 상태 | 글자 | 검토 단계 | 원문 |
 |---|---|---|---|---|---|---|---|---|
@@ -20,6 +20,7 @@
 | motie-regional | 지역산업지원사업 공통운영요령 | 고시 | 산업통상부 | 2026-02-13 | OK | 175,476 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000274750 |
 | motie-royalty | 기술료 징수 및 관리에 관한 통합요령 | 고시 | 산업통상부 | 2025-04-07 | OK | 28,141 | 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000257278 |
 | msit-ict | 정보통신·방송 연구개발 관리규정 | 고시 | 과학기술정보통신부 | 2025-05-13 | OK | 81,259 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000258836 |
+| mss-regional | 지역산업육성사업 운영요령 | 고시 | 중소벤처기업부 | 2025-04-04 | OK | 56,473 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000257414 |
 | mss-rnd | 중소기업기술개발 지원사업 운영요령 | 고시 | 중소벤처기업부 | 2026-01-21 | OK | 62,841 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000273462 |
 | mss-rnd-mgmt | 중소기업기술개발 지원사업 기술료 관리규정 | 고시 | 중소벤처기업부 | 2026-04-02 | OK | 9,896 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000276844 |
 | mss-smart | 중소기업 스마트제조혁신 지원사업 운영 등에 관한 고시 | 고시 | 중소벤처기업부 | 2023-08-07 | OK | 6,292 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000227710 |

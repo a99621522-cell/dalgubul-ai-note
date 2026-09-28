@@ -33,7 +33,7 @@ sources:
   - { title: "창원특례시, 방산·자동차부품 기업과 투자협약 체결 (아시아경제)", url: "https://view.asiae.co.kr/article/2026083116173928080", date: "2026-08-31" }
   - { title: "울산시-현대차, 손잡고 미래차·부품 생태계 조성 (서울신문)", url: "https://www.seoul.co.kr/news/society/2026/04/21/20260421500214", date: "2026-04-21" }
   - { title: "전남광주특별시 첫 국비 13조9천9억원 (아시아경제)", url: "https://view.asiae.co.kr/article/2026090117072156639", date: "2026-09-01" }
-  - { title: "HS화성 단일판매ㆍ공급계약체결 (DART, 다잇다 노트 글)", url: "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260922800306", date: "2026-09-22" }
+  - { title: "HS화성 단일판매ㆍ공급계약체결 (DART 공시)", url: "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260922800306", date: "2026-09-22" }
   - { title: "[대구] 2026년 모빌리티 해외실증 지원사업 공고 (기업마당)", url: "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000126740", date: "2026-09-21" }
 ---
 

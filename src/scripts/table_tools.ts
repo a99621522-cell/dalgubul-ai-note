@@ -91,11 +91,11 @@ export function attach(tbl: HTMLTableElement): void {
     if (!g.body.length) return flash(hwp, '표가 비어 있음');
     const title = titleOf(anchor), src = sourceOf(anchor);
     const blocks: Block[] = [
-      p('kicker', ['다잇다 노트  ·  ' + document.title.replace(/\s*[|·-]\s*다잇다.*$/, ''), 'kicker']),
+      p('kicker', [document.title.replace(/\s*[|·-]\s*다잇다.*$/, ''), 'kicker']),
       p('title', [title, 'title']), p('rule', ['', 'caption']),
       table([...g.head.slice(0, 1), ...g.body], { head: g.head.length > 0 }),
       p('spacer', ['', 'caption']),
-      p('src', [`출처: 다잇다 노트 (note.daitda.co.kr${location.pathname}), ${today()} 내려받음. ${src || '공개 자료를 같은 형식으로 집계한 것이며 평가·순위·추천이 아닙니다.'}`, 'src']),
+      p('src', [`출처: note.daitda.co.kr${location.pathname}, ${today()} 내려받음. ${src || '공개 자료를 같은 형식으로 집계한 것이며 평가·순위·추천이 아닙니다.'}`, 'src']),
     ];
     try {
       hwp.disabled = true; hwp.textContent = '만드는 중…';

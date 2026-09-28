@@ -8,7 +8,6 @@ description: "대구시가 2027년 상반기 자동차·부품·기계·금속 5
 draft: true   # 운영자 지시 2026-09-28: 정책자료 전부 내림(다시 올릴 때 false)
 auto: true
 format: insight
-authors: "다잇다 노트"
 outline:
   - "로봇 121곳, 학습할 현장 271곳"
   - "공장이 데이터 학습장이 된 8주"
@@ -43,7 +42,7 @@ sources:
   - { title: "New IFR Position Paper: The Impact of Robots — Employment, Productivity and Competitiveness (IFR)", url: "https://ifr.org/ifr-press-releases/news/new-ifr-position-paper-the-impact-of-robots", date: "2026-08-11" }
   - { title: "미국 FCC, 외국산 로봇 수입 금지… 한국 로봇 생태계 공급망 시험대 (글로벌이코노믹)", url: "https://www.g-enews.com/article/Global-Biz/2026/08/202608051752106733fbbec65dfb_1", date: "2026-08-05" }
   - { title: "대구시, 제조현장 투입 'AI 휴머노이드 개발 거점센터' 구축 (네이트뉴스)", url: "https://news.nate.com/view/20260528n27408", date: "2026-05-28" }
-  - { title: "로봇·피지컬AI: 공공 로봇 파운드리, 테스트필드 옆 시제·파일럿 센터 (다잇다 노트, 지난 회차)", url: "https://note.daitda.co.kr/posts/2026-09-26-policy-robot-physical-ai-foundry/", date: "2026-09-26" }
+  - { title: "로봇·피지컬AI: 공공 로봇 파운드리, 테스트필드 옆 시제·파일럿 센터 (지난 회차)", url: "https://note.daitda.co.kr/posts/2026-09-26-policy-robot-physical-ai-foundry/", date: "2026-09-26" }
   - { title: "피지컬AI 실증단지 전북에 짓는다 — 협업지능 피지컬AI SW플랫폼 공모 선정 (네이트뉴스)", url: "https://m.news.nate.com/view/20260916n25301", date: "2026-09-16" }
   - { title: "과기정통부, 피지컬 AI 핵심기술 국산화 착수 — 피지컬AI 선도기술개발 착수보고회 (네이트뉴스)", url: "https://m.news.nate.com/view/20260609n21110", date: "2026-06-09" }
   - { title: "한국로봇산업진흥원, 2026년 첨단제조로봇 실증사업 지원 과제 모집 (로봇신문)", url: "https://www.irobotnews.com/news/articleView.html?idxno=45407", date: "2026-03-13" }

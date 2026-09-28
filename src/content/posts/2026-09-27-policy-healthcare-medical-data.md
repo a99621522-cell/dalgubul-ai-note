@@ -8,7 +8,6 @@ description: "대구시가 7월 3일 출범한 의료데이터 활용 활성화 
 draft: true   # 운영자 지시 2026-09-28: 정책자료 전부 내림(다시 올릴 때 false)
 auto: true
 format: insight
-authors: "다잇다 노트"
 outline:
   - "데이터를 쓸 기업 137곳, 창구는 3개"
   - "국가 제도는 전국 단위로 커졌다"

@@ -16,7 +16,7 @@ type Card = {
 
 function blocks(c: Card): Block[] {
   const out: Block[] = [
-    p('kicker', [`기업 카드  ·  ${c.district}  ·  다잇다 노트`, 'kicker']),
+    p('kicker', [`기업 카드  ·  ${c.district}`, 'kicker']),
     p('title', [c.name, 'title']), p('rule', ['', 'caption']),
     p('body', [c.desc, 'body']),
     p('h3', ['개요', 'h3']),
@@ -43,7 +43,7 @@ function blocks(c: Card): Block[] {
     out.push(p('spacer', ['', 'caption']));
   } else out.push(p('body', ['같은 단지·구군 안에서 찾은 후보 없음.', 'body']));
   out.push(p('note', [c.partners.note, 'note']));
-  out.push(p('src', [`출처: ${c.source}. 다잇다 노트 ${c.url}, ${today()} 내려받음. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아니며 비공개 자료는 싣지 않습니다.`, 'src']));
+  out.push(p('src', [`출처: ${c.source}. ${c.url}, ${today()} 내려받음. 공개 자료를 그대로 옮긴 것으로 평가·추천이 아니며 비공개 자료는 싣지 않습니다.`, 'src']));
   return out;
 }
 

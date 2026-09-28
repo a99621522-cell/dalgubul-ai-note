@@ -1,0 +1,22 @@
+{
+ "key": "migration-age-sido",
+ "name": "국내인구이동통계 — 시도·연령별 순이동(연간)",
+ "tbl_nm": "시군구/성/연령(5세)별 순이동자수",
+ "org_id": "101",
+ "tbl_id": "DT_1B26002",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 97257,
+ "rows_kept": 720,
+ "latest": "2025",
+ "unit": "명",
+ "areas": [
+  "ai-sw-startup"
+ ],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26002",
+ "note": ""
+}

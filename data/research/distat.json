@@ -4,9 +4,16 @@
  "group": "대구 기관",
  "home": "https://distat.daegu.go.kr",
  "fetched": "2026-09-27",
- "status": "접속 실패",
- "method": "",
- "items": [],
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "[2026_대구산업통계브리프]",
+   "url": "https://distat.daegu.go.kr/site/bbs/BoardControll.do?bbsId=BBSMSTR_000000000036#-2026_대구산업통계브리프-",
+   "date": "2026-07-22",
+   "summary": ""
+  }
+ ],
  "note": "",
  "areas": [
   "mobility",

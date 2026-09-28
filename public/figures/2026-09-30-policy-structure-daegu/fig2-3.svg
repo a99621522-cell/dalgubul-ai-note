@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="420" viewBox="0 0 800 420" role="img" aria-label="대구 제조업 내 업종별 부가가치 비중">
+<rect width="800" height="420" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대구 제조업 내 업종별 부가가치 비중</text>
+<rect x="70" y="44" width="14" height="10" rx="2" fill="#1B4F9B"/>
+<text x="90.0" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2015년</text>
+<rect x="178.0" y="44" width="14" height="10" rx="2" fill="#E69F00"/>
+<text x="198.0" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2024년</text>
+<line x1="70" y1="350.0" x2="776" y2="350.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="354.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="70" y1="283.0" x2="776" y2="283.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="287.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >12.5</text>
+<line x1="70" y1="216.0" x2="776" y2="216.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="220.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >25</text>
+<line x1="70" y1="149.0" x2="776" y2="149.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="153.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >37.5</text>
+<line x1="70" y1="82.0" x2="776" y2="82.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="86.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >50</text>
+<path d="M94.4,350.0 v-14.8 q0,-4 4,-4 h16.0 q4,0 4,4 v14.8 z" fill="#1B4F9B"/>
+<path d="M122.4,350.0 v-15.8 q0,-4 4,-4 h16.0 q4,0 4,4 v15.8 z" fill="#E69F00"/>
+<text x="120.4" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >음식료품·담배</text>
+<path d="M195.3,350.0 v-67.3 q0,-4 4,-4 h16.0 q4,0 4,4 v67.3 z" fill="#1B4F9B"/>
+<path d="M223.3,350.0 v-40.0 q0,-4 4,-4 h16.0 q4,0 4,4 v40.0 z" fill="#E69F00"/>
+<text x="221.3" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >섬유·의복·가죽</text>
+<path d="M296.1,350.0 v-21.2 q0,-4 4,-4 h16.0 q4,0 4,4 v21.2 z" fill="#1B4F9B"/>
+<path d="M324.1,350.0 v-21.2 q0,-4 4,-4 h16.0 q4,0 4,4 v21.2 z" fill="#E69F00"/>
+<text x="322.1" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >목재·종이·인쇄</text>
+<path d="M397.0,350.0 v-46.4 q0,-4 4,-4 h16.0 q4,0 4,4 v46.4 z" fill="#1B4F9B"/>
+<path d="M425.0,350.0 v-49.1 q0,-4 4,-4 h16.0 q4,0 4,4 v49.1 z" fill="#E69F00"/>
+<text x="423.0" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >석탄·석유·화학</text>
+<path d="M497.9,350.0 v-116.1 q0,-4 4,-4 h16.0 q4,0 4,4 v116.1 z" fill="#1B4F9B"/>
+<path d="M525.9,350.0 v-120.9 q0,-4 4,-4 h16.0 q4,0 4,4 v120.9 z" fill="#E69F00"/>
+<text x="523.9" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >비금속·금속</text>
+<path d="M598.7,350.0 v-75.9 q0,-4 4,-4 h16.0 q4,0 4,4 v75.9 z" fill="#1B4F9B"/>
+<path d="M626.7,350.0 v-93.6 q0,-4 4,-4 h16.0 q4,0 4,4 v93.6 z" fill="#E69F00"/>
+<text x="624.7" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >전기·전자·정밀기기</text>
+<path d="M699.6,350.0 v-165.9 q0,-4 4,-4 h16.0 q4,0 4,4 v165.9 z" fill="#1B4F9B"/>
+<path d="M727.6,350.0 v-167.5 q0,-4 4,-4 h16.0 q4,0 4,4 v167.5 z" fill="#E69F00"/>
+<text x="725.6" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >기계·운송장비·기타</text>
+<text x="776.0" y="384.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >%</text>
+<text x="24.0" y="406.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 국가데이터처 지역소득·경제활동인구조사(KOSIS), 자체 계산</text>
+</svg>

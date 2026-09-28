@@ -31,6 +31,10 @@ scripts/state/       중복 방지용 seen.json (자동 생성)
 4. **Cloudflare Pages** → Create project → GitHub 저장소 연결
    - Build command: `npm run build`  /  Output directory: `dist`
    - 이후 push 때마다 자동 배포
+   - 도메인: 사이트 정식 주소는 `note.daitda.co.kr`(astro.config.mjs `site`). 루트 `daitda.co.kr` 은 앞으로 만들 앱 자리라 비워 두고, 앱이 나오기 전까지는 Cloudflare 에서 `note.` 로 넘긴다(운영자 결정 2026-09-28) —
+     Cloudflare 대시보드 → daitda.co.kr 도메인 → DNS 에 루트(`@`) A 레코드 `192.0.2.1`(Proxied, 더미) 추가 → Rules → Redirect Rules → Create rule:
+     조건 `Hostname equals daitda.co.kr`(www 도 넘기려면 `or www.daitda.co.kr`), 동작 Dynamic, 식 `concat("https://note.daitda.co.kr", http.request.uri.path)`, 상태 301, 'Preserve query string' 켬.
+     저장소 변경 없음. 앱을 루트에 올릴 때 이 규칙만 지운다
 5. Actions 탭에서 "매일 새벽 수집·초안 생성" → Run workflow 로 첫 수집 테스트
 
 ## 매일 하는 일 (5분)

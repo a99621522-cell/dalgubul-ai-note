@@ -1,0 +1,20 @@
+{
+ "key": "migration-sido",
+ "name": "국내인구이동통계 — 시도별 전입·전출·순이동(월간)",
+ "tbl_nm": "시군구별 이동자수",
+ "org_id": "101",
+ "tbl_id": "DT_1B26001_A01",
+ "prd_se": "M",
+ "period": [
+  "202301",
+  "202612"
+ ],
+ "rows_total": 96208,
+ "rows_kept": 704,
+ "latest": "202608",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26001_A01",
+ "note": ""
+}

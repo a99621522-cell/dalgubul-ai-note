@@ -1,0 +1,28 @@
+{
+ "key": "bank-corp-loans-region",
+ "name": "예금은행 지역별 기업대출(말잔)",
+ "stat_name": "1.2.3.4.3. 예금은행 지역별 기업대출(말잔)",
+ "stat_code": "141Y004",
+ "cycle": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 2973,
+ "rows_kept": 165,
+ "latest": "202607",
+ "unit": "십억원",
+ "areas": [
+  "manufacturing-ax",
+  "machinery",
+  "automotive",
+  "textile",
+  "root",
+  "semiconductor",
+  "ai-sw-startup"
+ ],
+ "fetched": "2026-09-28",
+ "source_url": "https://ecos.bok.or.kr/#/Short/141Y004",
+ "source_note": "한국은행 ECOS 통계표 141Y004",
+ "note": "대구 소재 예금은행의 기업대출 잔액"
+}

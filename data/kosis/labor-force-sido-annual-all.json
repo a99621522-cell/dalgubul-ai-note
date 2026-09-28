@@ -1,0 +1,20 @@
+{
+ "key": "labor-force-sido-annual-all",
+ "name": "경제활동인구조사 — 시도별 취업자·고용률(연간, 17개 시도 전체)",
+ "tbl_nm": "행정구역(시도)별 경제활동인구",
+ "org_id": "101",
+ "tbl_id": "DT_1DA7004S",
+ "prd_se": "Y",
+ "period": [
+  "2014",
+  "2026"
+ ],
+ "rows_total": 1953,
+ "rows_kept": 1953,
+ "latest": "2025",
+ "unit": "천명",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S",
+ "note": "노동생산성(총부가가치/취업자) 계산용"
+}

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구 고용률·실업률(월간). 2024-09부터 2026-08까지 24개월. 고용률 최근 58.3%; 실업률 최근 2.1%" style="max-width:720px;height:auto;font-size:14px">
+<title>대구 고용률·실업률(월간)</title>
+<line x1="72" x2="616" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
+<line x1="72" x2="616" y1="210.7" y2="210.7" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="215.7" text-anchor="end" fill="#767676">20</text>
+<line x1="72" x2="616" y1="125.3" y2="125.3" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="130.3" text-anchor="end" fill="#767676">40</text>
+<line x1="72" x2="616" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">60</text>
+<text x="190.3" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="332.2" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="474.1" y="320" text-anchor="middle" fill="#767676">2026.2</text>
+<text x="616.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<line x1="72" x2="616" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
+<path d="M72.0,48.5 L95.7,48.5 L119.3,48.1 L143.0,53.7 L166.6,54.5 L190.3,52.4 L213.9,47.7 L237.6,46.8 L261.2,45.5 L284.9,46.8 L308.5,49.4 L332.2,49.0 L355.8,46.4 L379.5,48.1 L403.1,46.0 L426.8,51.9 L450.4,56.2 L474.1,49.0 L497.7,48.5 L521.4,46.8 L545.0,45.5 L568.7,46.4 L592.3,46.0 L616.0,47.3" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="616.0" cy="47.3" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="624.0" y="52.3" fill="#1a1a1a" font-weight="600">58.3% 고용률</text>
+<path d="M72.0,284.1 L95.7,283.2 L119.3,283.6 L143.0,281.1 L166.6,278.9 L190.3,280.2 L213.9,284.1 L237.6,280.2 L261.2,282.3 L284.9,282.3 L308.5,283.6 L332.2,287.0 L355.8,284.1 L379.5,283.2 L403.1,283.6 L426.8,275.1 L450.4,274.2 L474.1,282.3 L497.7,281.9 L521.4,284.9 L545.0,284.1 L568.7,283.2 L592.3,285.3 L616.0,287.0" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="616.0" cy="287.0" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="624.0" y="292.0" fill="#1a1a1a" font-weight="600">2.1% 실업률</text>
+<text x="72" y="16" fill="#767676">KOSIS 행정구역(시도)별 경제활동인구</text></svg>

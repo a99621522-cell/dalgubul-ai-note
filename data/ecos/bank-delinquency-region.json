@@ -1,0 +1,20 @@
+{
+ "key": "bank-delinquency-region",
+ "name": "예금은행 지역별 연체율",
+ "stat_name": "1.2.3.7. 예금은행 지역별 연체율",
+ "stat_code": "141Y005",
+ "cycle": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 5946,
+ "rows_kept": 330,
+ "latest": "202607",
+ "unit": "%",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://ecos.bok.or.kr/#/Short/141Y005",
+ "source_note": "한국은행 ECOS 통계표 141Y005",
+ "note": ""
+}

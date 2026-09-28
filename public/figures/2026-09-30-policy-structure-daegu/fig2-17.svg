@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="420" viewBox="0 0 800 420" role="img" aria-label="고집중 vs 저집중 지역 간 인구성장률 차이(2015~24년 연평균, 주민등록인구)">
+<rect width="800" height="420" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >고집중 vs 저집중 지역 간 인구성장률 차이(2015~24년 연평균, 주민등록인구)</text>
+<rect x="70" y="44" width="14" height="10" rx="2" fill="#1B4F9B"/>
+<text x="90.0" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >고집중(산업집중도 변화율 상위)</text>
+<rect x="331.6" y="44" width="14" height="10" rx="2" fill="#E69F00"/>
+<text x="351.6" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >저집중</text>
+<line x1="70" y1="350.0" x2="776" y2="350.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="354.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >-1.2</text>
+<line x1="70" y1="283.0" x2="776" y2="283.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="287.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="70" y1="216.0" x2="776" y2="216.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="220.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.2</text>
+<line x1="70" y1="149.0" x2="776" y2="149.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="153.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2.5</text>
+<line x1="70" y1="82.0" x2="776" y2="82.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="62.0" y="86.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >3.8</text>
+<line x1="70" y1="283.0" x2="776" y2="283.0" stroke="#595959" stroke-width="1"/>
+<path d="M132.2,283.0 v-28.7 q0,-4 4,-4 h16.0 q4,0 4,4 v28.7 z" fill="#1B4F9B"/>
+<text x="144.2" y="244.3" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.6</text>
+<path d="M160.2,283.0 v31.9 q0,4 4,4 h16.0 q4,0 4,-4 v-31.9 z" fill="#E69F00"/>
+<text x="172.2" y="332.9" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >-0.7</text>
+<text x="158.2" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >전국평균 대비</text>
+<path d="M308.8,283.0 v-136.4 q0,-4 4,-4 h16.0 q4,0 4,4 v136.4 z" fill="#1B4F9B"/>
+<text x="320.8" y="136.6" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2.6</text>
+<path d="M336.8,283.0 v35.1 q0,4 4,4 h16.0 q4,0 4,-4 v-35.1 z" fill="#E69F00"/>
+<text x="348.8" y="336.1" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >-0.7</text>
+<text x="334.8" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >상하위 3개</text>
+<path d="M485.2,283.0 v-83.9 q0,-4 4,-4 h16.0 q4,0 4,4 v83.9 z" fill="#1B4F9B"/>
+<text x="497.2" y="189.1" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.6</text>
+<path d="M513.2,283.0 v30.8 q0,4 4,4 h16.0 q4,0 4,-4 v-30.8 z" fill="#E69F00"/>
+<text x="525.2" y="331.8" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >-0.7</text>
+<text x="511.2" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >상하위 5개</text>
+<path d="M661.8,283.0 v-36.2 q0,-4 4,-4 h16.0 q4,0 4,4 v36.2 z" fill="#1B4F9B"/>
+<text x="673.8" y="236.8" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.8</text>
+<path d="M689.8,283.0 v20.7 q0,4 4,4 h16.0 q4,0 4,-4 v-20.7 z" fill="#E69F00"/>
+<text x="701.8" y="321.7" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >-0.5</text>
+<text x="687.8" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >상하위 8개</text>
+<text x="776.0" y="384.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >%</text>
+<text x="24.0" y="406.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 국가데이터처 지역소득·경제활동인구조사(KOSIS), 자체 계산 · 인구는 행정안전부 주민등록인구(KOSIS)</text>
+</svg>

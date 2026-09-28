@@ -31,10 +31,6 @@ institutions:
     name: 한국섬유개발연구원
     home: https://www.textile.or.kr
     boards: []
-  - key: dyetec
-    name: 다이텍연구원
-    home: https://www.dyetec.or.kr
-    boards: []
   - key: kri
     name: 한국패션산업연구원
     home: https://www.krifi.re.kr
@@ -43,3 +39,44 @@ institutions:
     name: 경북대학교 첨단정보통신융합산업기술원
     home: https://www.iact.or.kr
     boards: []
+  # ---------- 2026-09-28 홈페이지 조사(config/daegu_institutions.yml, data/institutions/sites.md)로 찾은 게시판 ----------
+  - key: koia
+    name: 한국안광학산업진흥원
+    home: https://www.koia.or.kr
+    boards: ["https://www.koia.or.kr/contents/06_customer/announcement.html?board_id=board_announce&mode=user_l"]
+  - key: kotmi
+    name: 한국섬유기계융합연구원
+    home: https://www.kotmi.re.kr
+    boards: ["https://www.kotmi.re.kr/?menu_code=377"]
+  - key: seongseo
+    name: 대구성서산업단지관리공단
+    home: https://www.seongseo.or.kr
+    boards: ["https://www.seongseo.or.kr/html/sub_02_0107", "https://www.seongseo.or.kr/board/notice"]
+  - key: dgwbiz
+    name: 대구여성기업종합지원센터(Wbiz)
+    home: https://www.wbiz.or.kr
+    boards: ["https://www.wbiz.or.kr/notice/bizNew.do"]
+  - key: mss_daegu
+    name: 대구경북지방중소벤처기업청
+    home: https://www.mss.go.kr/site/daegu/main.do
+    boards: ["https://www.mss.go.kr/site/daegu/ex/bbs/List.do?cbIdx=253"]
+  - key: kitech
+    name: 한국생산기술연구원
+    home: https://www.kitech.re.kr
+    boards: ["https://www.kitech.re.kr/community/notice"]
+  - key: knu_startup
+    name: 경북대학교 창업지원단
+    home: https://startup.knu.ac.kr
+    boards: ["https://startup.knu.ac.kr/bbs/board.php?bo_table=noti2"]
+  - key: knu_iac
+    name: 경북대학교 산학협력단
+    home: https://iac.knu.ac.kr
+    boards: ["https://iac.knu.ac.kr/Notice?menuId=MENU_0000000333"]
+  - key: dcci
+    name: 대구상공회의소
+    home: https://www.dcci.or.kr
+    boards: ["http://www.dcci.or.kr/content.html?md=0028"]
+  - key: energy
+    name: 한국에너지공단
+    home: https://www.energy.or.kr
+    boards: ["https://www.energy.or.kr/front/board/List2.do"]

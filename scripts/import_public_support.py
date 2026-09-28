@@ -62,14 +62,31 @@ MAPPINGS: dict[str, dict] = {
     "15128797": {"kind": "support", "source": "소상공인시장진흥공단 로컬크리에이터 선정 현황(공공데이터포털)", "layer": "국비", "type": "선정",
                  "name": ["크리에이터명"], "year": "선정연도", "program": "로컬크리에이터 선정", "funder": "소상공인시장진흥공단",
                  "region": ("지역", "대구"), "min_year": 2018},
+    # 열(2025-03 파일): 연번,회   사   명,대표자,주요 생산 품목,비고(스타기업/프리스타기업/3030기업) — 대표자는 읽지 않는다. 연도 열이 없어 기준일만
     "15130932": {"kind": "support", "source": "대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털)", "layer": "시비", "type": "선정",
-                 "name": ["기업명", "업체명", "회사명"], "year": ["선정년도", "선정연도", "지정년도", "기준년도"], "program": ["구분", "기업구분", "유형"],
-                 "funder": "대구광역시", "region": None, "min_year": 0},
+                 "name": ["기업명", "업체명", "회사명"], "year": ["선정년도", "선정연도", "지정년도", "기준년도"], "program": ["구분", "기업구분", "유형", "비고"],
+                 "funder": "대구광역시", "region": None, "min_year": 0, "as_of": "2025-03"},
     "15042015": {"kind": "support", "source": "기획예산처 보조사업자 정보공시 대상 목록(공공데이터포털)", "layer": "국비", "type": "보조금",
                  "name": ["보조사업자명", "보조사업자", "사업자명", "기관명"], "year": ["회계연도", "연도", "기준연도", "사업연도", "공시연도"],
                  "program": ["사업명", "보조사업명", "세부사업명"], "funder": ["소관부처", "부처명", "상위보조사업자", "중앙관서"],
                  "amount": ["지원금액", "보조금액", "교부액", "교부금액", "보조금", "국고보조금"], "amount_unit_guess": False,
                  "region": None, "min_year": 2018},
+    # 열: 구분,지정번호,지정차수,지정구분,지정부처,하위분류,혁신기업,사업자등록번호,혁신명,시작일자(지정일자),종료일자 — 전국 자료라 기업 사전 이름 일치 행만. 사업자등록번호는 읽지 않는다
+    "15089195": {"kind": "support", "source": "중소기업기술정보진흥원 우수연구개발 혁신제품 지정 현황(공공데이터포털)", "layer": "국비", "type": "인증",
+                 "name": ["혁신기업"], "year": ["시작일자", "지정차수"], "program": "우수연구개발 혁신제품 지정", "title": ["혁신명"],
+                 "funder": ["지정부처"], "region": None, "min_year": 2018},
+    # 열: 번호,기업명,업종,주력제품,신청일,소재지 — 소재지 '대구' 행만
+    "15104421": {"kind": "support", "source": "한국산업기술진흥원 월드클래스 300 기업(공공데이터포털)", "layer": "국비", "type": "선정",
+                 "name": ["기업명"], "year": ["신청일"], "program": "월드클래스 300", "funder": "한국산업기술진흥원",
+                 "region": ("소재지", "대구"), "min_year": 2018},
+    # 열: 연번,선정년도,기업명,소재지,데이터기준일자
+    "15119071": {"kind": "support", "source": "대구광역시 수성구 일자리우수기업 인증업체(공공데이터포털)", "layer": "구비", "type": "인증",
+                 "name": ["기업명"], "year": ["선정년도"], "program": "수성구 일자리우수기업 인증", "funder": "대구광역시 수성구",
+                 "region": ("소재지", "대구"), "min_year": 2018},
+    # 열: 구분,기업명,등록연도,현행특구,강소특구여부 — 현행특구 '대구' 행만. 주소가 없어 태그(labfirm)가 아니라 이력(등록)으로 잇는다(이름 매칭)
+    "15089826": {"kind": "support", "source": "연구개발특구진흥재단 연구소기업 운영현황(공공데이터포털)", "layer": "국비", "type": "등록",
+                 "name": ["기업명"], "year": ["등록연도"], "program": "연구소기업 등록", "funder": "연구개발특구진흥재단",
+                 "region": ("현행특구", "대구"), "min_year": 0},
     "15129730": {"kind": "namelist", "source": "대구광역시 지역중소기업 명단(공공데이터포털)", "name": ["기업명", "업체명"], "sector": ["업종명", "업종"],
                  "out": "scripts/data/daegu_sme_list.csv"},
     "15159608": {"kind": "support", "source": "대구경북첨단의료산업진흥재단 연구과제 현황(공공데이터포털)", "layer": "국비", "type": "R&D",
@@ -195,6 +212,8 @@ def main(argv: list[str]) -> int:
                     continue
                 if m["kind"] == "support":
                     year = re.sub(r"\D", "", pick(r, m["year"]))[:4]
+                    if not year and m.get("as_of"):  # 연도 열이 없는 현황 파일: 기준일의 연도(그 시점에 유효한 선정·지정)
+                        year = m["as_of"][:4]
                     if year and int(year) < m.get("min_year", 0):
                         continue
                     program = pick(r, m["program"]) if not isinstance(m["program"], str) or m["program"] in r or any(k.startswith(m["program"]) for k in r) else m["program"]

@@ -1,0 +1,68 @@
+# 한국은행 경제통계시스템(ECOS) 오픈API 에서 받을 통계표 (scripts/fetch_ecos.py, .github/workflows/ecos.yml)
+# 키는 ECOS 인증키 하나(GitHub Secrets ECOS_KEY). 표마다 stat_code(통계표 코드)·cycle(주기) 만 다르다.
+# stat_code 가 비어 있으면 `fetch_ecos.py --discover` 가 통계표 목록(StatisticTableList)에서 search 낱말이 든 표를,
+# stat_code 가 있으면 항목 목록(StatisticItemList)에서 '대구'가 든 항목을 로그에 찍는다 → 확인해서 채운다.
+# 결과: data/ecos/<key>.csv (대구 항목 행만) + <key>.json (표 이름·코드·주기·기간·최근 시점·단위). 평가 없음, 값은 그대로.
+#   cycle   주기 A 연간 / S 반년 / Q 분기 / M 월간 / D 일별
+#   years   받을 기간 길이(연도 수)
+#   area    남길 항목 이름 조각(ITEM_NAME1~4 가운데 하나라도 들어 있으면 남긴다). 지역 항목이 없는 전국 표면 [] 로 두면 전부 남긴다
+#   areas   리포트 분야 key(config/pledge_areas.yml) — report_context 가 분야 근거로 먼저 보여 준다
+version: 2026-09-28
+defaults: { area: ["대구"], years: 6 }
+tables:
+  # ── 지역 금융 (월간) ──
+  - key: bank-deposits-region
+    name: 예금은행 지역별 수신(말잔)
+    stat_code: "141Y002"
+    search: "지역별 수신"
+    cycle: M
+    years: 4
+    note: 대구 소재 예금은행 수신 잔액. 지역 자금 규모의 공식 기준값
+  - key: bank-loans-region
+    name: 예금은행 지역별 대출금(말잔)
+    stat_code: "141Y003"
+    search: "예금은행 지역별"
+    cycle: M
+    years: 4
+    areas: [manufacturing-ax, machinery, automotive, textile, root]
+    note: 대구 소재 예금은행 대출금 잔액
+  - key: bank-corp-loans-region
+    name: 예금은행 지역별 기업대출(말잔)
+    stat_code: "141Y004"
+    cycle: M
+    years: 4
+    areas: [manufacturing-ax, machinery, automotive, textile, root, semiconductor, ai-sw-startup]
+    note: 대구 소재 예금은행의 기업대출 잔액
+  - key: bank-delinquency-region
+    name: 예금은행 지역별 연체율
+    stat_code: "141Y005"
+    cycle: M
+    years: 4
+  - key: bank-loans-industry-region
+    name: 예금은행 지역별 산업별 대출금
+    stat_code: "132Y001"
+    search: "산업별 대출금"
+    cycle: Q
+    years: 5
+    areas: [manufacturing-ax, machinery, automotive, textile, root, semiconductor]
+  # ── 지역 경기 심리 ──
+  - key: bsi-region
+    name: 기업경기조사 — 지역별 업황 BSI
+    stat_code: "512Y019"
+    search: "지역별 기업경기"
+    cycle: M
+    years: 4
+    areas: [manufacturing-ax, machinery, automotive, textile, root]
+  - key: ccsi-region
+    name: 소비자동향조사 — 지역별 소비자심리지수
+    stat_code: "511Y004"
+    search: "소비자"
+    cycle: M
+    years: 4
+  # ── 지역 신용 ──
+  - key: default-rate-region
+    name: 어음부도율 — 지역별
+    stat_code: "801Y003"
+    search: "부도율"
+    cycle: M
+    years: 4

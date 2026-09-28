@@ -1,0 +1,20 @@
+{
+ "key": "sme-stats-sido",
+ "name": "중소기업기본통계 — 시도·산업별 중소기업 수·종사자·매출액",
+ "tbl_nm": "시도별·산업중분류별·기업규모별 기업수",
+ "org_id": "142",
+ "tbl_id": "DT_BR_A001",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 45863,
+ "rows_kept": 45863,
+ "latest": "2023",
+ "unit": "개",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001",
+ "note": ""
+}

@@ -1,0 +1,20 @@
+{
+ "key": "export-region",
+ "name": "관세청 기업무역활동통계 — 지역별 수출현황(시도별 수출액·수출기업 수, 연간; 산업구조 보고서 표 3-4·그림 2-5 대체). 주제별 목록에는 시도별 수출 표가 없어 기관별 목록에서 찾음(2026-09-28)",
+ "tbl_nm": "지역별 수출현황",
+ "org_id": "134",
+ "tbl_id": "DT_134006_N007",
+ "prd_se": "Y",
+ "period": [
+  "2014",
+  "2026"
+ ],
+ "rows_total": 1700,
+ "rows_kept": 1700,
+ "latest": "2025",
+ "unit": "개",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N007",
+ "note": ""
+}

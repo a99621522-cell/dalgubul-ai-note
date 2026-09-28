@@ -1,0 +1,758 @@
+{
+ "checked": "2026-09-28",
+ "sites": [
+  {
+   "key": "factoryon",
+   "name": "팩토리온(한국산업단지공단 공장등록·입주업체현황)",
+   "url": "https://www.factoryon.go.kr",
+   "status": "HTTP 200",
+   "title": "FACTORY ON - 한국산업단지공단",
+   "robots": "robots allow",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "ttp",
+   "name": "대구테크노파크",
+   "url": "https://www.ttp.org",
+   "status": "실패 SSLError",
+   "title": "",
+   "robots": "robots 실패(SSLError)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dip",
+   "name": "대구디지털혁신진흥원(DIP)",
+   "url": "https://www.dip.or.kr",
+   "status": "HTTP 200",
+   "title": "대구디지털혁신진흥원",
+   "robots": "robots 실패(ConnectionError)",
+   "links": [],
+   "note": "→ https://www.dip.or.kr/home/main.ubs"
+  },
+  {
+   "key": "dmi",
+   "name": "대구기계부품연구원(DMI)",
+   "url": "https://www.dmi.re.kr",
+   "status": "실패 ConnectTimeout",
+   "title": "",
+   "robots": "robots 실패(ConnectTimeout)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dgdp",
+   "name": "대구경북디자인진흥원(DGDP)",
+   "url": "https://www.dgdp.or.kr",
+   "status": "HTTP 200",
+   "title": "대구경북디자인진흥원",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "사업안내",
+     "url": "https://www.dgdp.or.kr/business-guide/design-develop"
+    },
+    {
+     "text": "알림마당",
+     "url": "https://www.dgdp.or.kr/notice/public"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "ccei",
+   "name": "대구창조경제혁신센터",
+   "url": "https://ccei.creativekorea.or.kr/daegu",
+   "status": "HTTP 200",
+   "title": "대구창조경제혁신센터",
+   "robots": "robots 차단",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kmedi",
+   "name": "대구경북첨단의료산업진흥재단(케이메디허브)",
+   "url": "https://www.kmedihub.re.kr",
+   "status": "HTTP 200",
+   "title": "케이메디허브 K-MEDI hub 대구경북첨단의료산업진흥재단",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "공지사항",
+     "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000063"
+    },
+    {
+     "text": "채용공고",
+     "url": "https://www.kmedihub.re.kr/index.do?menu_id=00400271"
+    },
+    {
+     "text": "과제공고",
+     "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000064"
+    },
+    {
+     "text": "보도자료",
+     "url": "https://www.kmedihub.re.kr/index.do?menu_id=00000057"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "dgsinbo",
+   "name": "대구신용보증재단",
+   "url": "https://www.dgsinbo.co.kr",
+   "status": "실패 ConnectionError",
+   "title": "",
+   "robots": "robots 실패(ConnectionError)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dgfez",
+   "name": "대구경북경제자유구역청",
+   "url": "https://www.dgfez.go.kr",
+   "status": "실패 ConnectTimeout",
+   "title": "",
+   "robots": "robots 실패(ConnectTimeout)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dudc",
+   "name": "대구도시개발공사",
+   "url": "https://www.dudc.or.kr",
+   "status": "HTTP 200",
+   "title": "ëêµ¬ëìê°ë°ê³µì¬",
+   "robots": "robots 차단",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dpi",
+   "name": "대구정책연구원",
+   "url": "https://www.dpi.re.kr",
+   "status": "실패 SSLError",
+   "title": "",
+   "robots": "robots 실패(SSLError)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "daegu",
+   "name": "대구광역시청(경제·기업지원 안내)",
+   "url": "https://www.daegu.go.kr",
+   "status": "실패 ConnectTimeout",
+   "title": "",
+   "robots": "robots 실패(ConnectTimeout)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dgwbiz",
+   "name": "대구여성기업종합지원센터(한국여성경제인협회 대구지회)",
+   "url": "https://www.wbiz.or.kr",
+   "status": "HTTP 200",
+   "title": "Wbiz 여성기업 종합정보 포털",
+   "robots": "robots 404(없음)",
+   "links": [
+    {
+     "text": "전자입찰 실무교육",
+     "url": "https://www.wbiz.or.kr/company/edu.do"
+    },
+    {
+     "text": "사업공고",
+     "url": "https://www.wbiz.or.kr/notice/bizNew.do"
+    },
+    {
+     "text": "공고조회ㆍ신청",
+     "url": "https://www.wbiz.or.kr/notice/bizNew.do?searchOp8=recruiting"
+    },
+    {
+     "text": "알림",
+     "url": "https://www.wbiz.or.kr/notice/notice.do"
+    },
+    {
+     "text": "사업공고",
+     "url": "https://www.wbiz.or.kr/notice/biz.do"
+    },
+    {
+     "text": "유관기관 공지",
+     "url": "https://www.wbiz.or.kr/notice/related.do"
+    },
+    {
+     "text": "보도자료",
+     "url": "https://www.wbiz.or.kr/notice/report.do"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "kiria",
+   "name": "한국로봇산업진흥원",
+   "url": "https://www.kiria.org",
+   "status": "HTTP 200",
+   "title": "한국로봇산업진흥원",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "입주기업모집",
+     "url": "https://www.kiria.org/portal/bizsupt/portalBsuptComRecru.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+    },
+    {
+     "text": "알림마당",
+     "url": "https://www.kiria.org/portal/info/portalInfoNotiList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+    },
+    {
+     "text": "사업공고",
+     "url": "https://www.kiria.org/portal/info/portalInfoBusinessList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+    },
+    {
+     "text": "입찰공고",
+     "url": "https://www.kiria.org/portal/info/portalInfoTenderList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+    },
+    {
+     "text": "채용공고",
+     "url": "https://www.kiria.org/portal/info/portalInfoJobList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+    },
+    {
+     "text": "보도자료",
+     "url": "https://www.kiria.org/portal/info/portalInfoNewsClipSideList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "kotiti",
+   "name": "한국섬유개발연구원",
+   "url": "https://www.textile.or.kr",
+   "status": "HTTP 200",
+   "title": "íêµ­ì¬ì ê°ë°ì°êµ¬ì",
+   "robots": "robots allow",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dyetec",
+   "name": "다이텍연구원",
+   "url": "https://www.dyetec.or.kr",
+   "status": "HTTP 200",
+   "title": "다이텍연구원",
+   "robots": "robots 차단",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kri",
+   "name": "한국패션산업연구원",
+   "url": "https://www.krifi.re.kr",
+   "status": "실패 ConnectionError",
+   "title": "",
+   "robots": "robots 실패(ConnectionError)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "koia",
+   "name": "한국안광학산업진흥원",
+   "url": "https://www.koia.or.kr",
+   "status": "HTTP 200",
+   "title": "한국안광학산업진흥원",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "알림마당",
+     "url": "https://www.koia.or.kr/contents/06_customer/notice.html?board_id=board_knotice&mode=user_list"
+    },
+    {
+     "text": "사업공고",
+     "url": "https://www.koia.or.kr/contents/06_customer/announcement.html?board_id=board_announce&mode=user_list"
+    },
+    {
+     "text": "입찰공고",
+     "url": "https://www.koia.or.kr/contents/06_customer/bid_announcement.html?board_id=board_bid_an&mode=user_list"
+    },
+    {
+     "text": "채용공고",
+     "url": "https://www.koia.or.kr/contents/06_customer/employment.html?board_id=board_employment&mode=user_list"
+    },
+    {
+     "text": "보도자료",
+     "url": "https://www.koia.or.kr/contents/08_community/news.html?board_id=board_news&mode=user_list"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "kotmi",
+   "name": "한국섬유기계융합연구원",
+   "url": "https://www.kotmi.re.kr",
+   "status": "HTTP 200",
+   "title": "한국섬유기계융합연구원",
+   "robots": "robots 실패(ConnectionError)",
+   "links": [
+    {
+     "text": "알림마당",
+     "url": "https://www.kotmi.re.kr/?menu_code=498"
+    },
+    {
+     "text": "채용공고",
+     "url": "https://www.kotmi.re.kr/?menu_code=499"
+    },
+    {
+     "text": "전자입찰",
+     "url": "https://www.kotmi.re.kr/?menu_code=500"
+    },
+    {
+     "text": "정부사업공고",
+     "url": "https://www.kotmi.re.kr/?menu_code=377"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "kitech",
+   "name": "한국생산기술연구원 대경본부",
+   "url": "https://www.kitech.re.kr",
+   "status": "HTTP 200",
+   "title": "한국생산기술연구원(KITECH)",
+   "robots": "robots 404(없음)",
+   "links": [
+    {
+     "text": "2026년도 중소 제조기업 맞춤형 시뮬레이션 지원사업 모집 공고(추가)",
+     "url": "https://www.kitech.re.kr/pages/19?id=14380&amp;menuMode=READ&amp;q="
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.kitech.re.kr/community/notice"
+    },
+    {
+     "text": "보도자료",
+     "url": "https://www.kitech.re.kr/pages/61"
+    },
+    {
+     "text": "채용공고",
+     "url": "https://www.kitech.re.kr/communication/recruit"
+    },
+    {
+     "text": "사업공고",
+     "url": "https://www.kitech.re.kr/community/business"
+    },
+    {
+     "text": "입찰공고",
+     "url": "https://www.kitech.re.kr/community/bidding"
+    },
+    {
+     "text": "입찰정보",
+     "url": "https://www.kitech.re.kr/pages/25"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "etri",
+   "name": "한국전자통신연구원 대경권연구본부",
+   "url": "https://www.etri.re.kr",
+   "status": "HTTP 200",
+   "title": "ETRI",
+   "robots": "robots allow",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kimm",
+   "name": "한국기계연구원 대구융합기술연구센터",
+   "url": "https://www.kimm.re.kr",
+   "status": "HTTP 200",
+   "title": "KIMM 한국기계연구원",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "인공지능기계연구실",
+     "url": "https://www.kimm.re.kr/sub010604"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.kimm.re.kr/notice"
+    },
+    {
+     "text": "구매·입찰",
+     "url": "https://www.kimm.re.kr/bidding"
+    },
+    {
+     "text": "공통서식(입찰자료실)",
+     "url": "https://www.kimm.re.kr/format"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "dgist",
+   "name": "대구경북과학기술원(DGIST)",
+   "url": "https://www.dgist.ac.kr",
+   "status": "HTTP 200",
+   "title": "Daegu Gyeongbuk Institute of Science&Technology",
+   "robots": "robots 실패(ConnectionError)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kbri",
+   "name": "한국뇌연구원",
+   "url": "https://www.kbri.re.kr",
+   "status": "HTTP 200",
+   "title": "한국뇌연구원",
+   "robots": "robots 차단",
+   "links": [],
+   "note": "→ https://www.kbri.re.kr/new/pages/main/"
+  },
+  {
+   "key": "ktl",
+   "name": "한국산업기술시험원 대구경북지역본부",
+   "url": "https://www.ktl.re.kr",
+   "status": "HTTP 200",
+   "title": "한국산업기술시험원",
+   "robots": "robots allow",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kicox",
+   "name": "한국산업단지공단 대구경북지역본부",
+   "url": "https://www.kicox.or.kr",
+   "status": "실패 SSLError",
+   "title": "",
+   "robots": "robots 실패(SSLError)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "mss_daegu",
+   "name": "대구경북지방중소벤처기업청",
+   "url": "https://www.mss.go.kr/site/daegu/main.do",
+   "status": "HTTP 200",
+   "title": "대구경북지방중소벤처기업청",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "공지사항",
+     "url": "https://www.mss.go.kr/site/daegu/ex/bbs/List.do?cbIdx=253"
+    },
+    {
+     "text": "보도자료",
+     "url": "https://www.mss.go.kr/site/daegu/ex/bbs/List.do?cbIdx=203"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "kosmes",
+   "name": "중소벤처기업진흥공단 대구지역본부",
+   "url": "https://www.kosmes.or.kr",
+   "status": "HTTP 200",
+   "title": "Áß¼Òº¥Ã³±â¾÷ÁøÈï°ø´Ü",
+   "robots": "robots allow",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "semas",
+   "name": "소상공인시장진흥공단 대구경북지역본부",
+   "url": "https://www.semas.or.kr",
+   "status": "실패 SSLError",
+   "title": "",
+   "robots": "robots 실패(SSLError)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kibo",
+   "name": "기술보증기금 대구지역본부",
+   "url": "https://www.kibo.or.kr",
+   "status": "실패 ConnectTimeout",
+   "title": "",
+   "robots": "robots 실패(ConnectTimeout)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kodit",
+   "name": "신용보증기금 대구경북지역본부",
+   "url": "https://www.kodit.or.kr",
+   "status": "HTTP 200",
+   "title": "",
+   "robots": "robots allow",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kita",
+   "name": "한국무역협회 대구경북지역본부",
+   "url": "https://www.kita.net",
+   "status": "HTTP 200",
+   "title": "한국무역협회-KITA.NET",
+   "robots": "robots allow",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kotra",
+   "name": "KOTRA 대구경북지원단",
+   "url": "https://www.kotra.or.kr",
+   "status": "HTTP 200",
+   "title": "KOTRA 무역투자24",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "채용 공고",
+     "url": "https://www.kotra.or.kr/subList/20000005817"
+    },
+    {
+     "text": "알림·홍보",
+     "url": "https://www.kotra.or.kr/subList/41000022001"
+    },
+    {
+     "text": "입찰공고",
+     "url": "https://www.kotra.or.kr/subList/20000005958"
+    },
+    {
+     "text": "보도자료",
+     "url": "https://www.kotra.or.kr/subList/41000022002"
+    }
+   ],
+   "note": "→ https://www.kotra.or.kr/index.do"
+  },
+  {
+   "key": "energy",
+   "name": "한국에너지공단 대구경북지역본부",
+   "url": "https://www.energy.or.kr",
+   "status": "HTTP 200",
+   "title": "한국에너지공단",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "채용공고",
+     "url": "https://www.energy.or.kr/front/board/etc/jobList.do"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.energy.or.kr/front/board/List2.do"
+    },
+    {
+     "text": "보도자료",
+     "url": "https://www.energy.or.kr/front/board/List3.do"
+    },
+    {
+     "text": "공시송달공고",
+     "url": "https://www.energy.or.kr/front/board/List33.do"
+    },
+    {
+     "text": "입찰정보",
+     "url": "https://www.energy.or.kr/front/board/etc/kemList.do"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "ripc",
+   "name": "대구지식재산센터(대구상공회의소 운영)",
+   "url": "https://www.ripc.org",
+   "status": "HTTP 200",
+   "title": "",
+   "robots": "robots allow",
+   "links": [],
+   "note": "→ https://pms.ripc.org/"
+  },
+  {
+   "key": "knu_iac",
+   "name": "경북대학교 산학협력단",
+   "url": "https://iac.knu.ac.kr",
+   "status": "HTTP 200",
+   "title": "경북대학교(KNU) 산학협력단 - 경북대학교(KNU) 산학협력단",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "공지사항",
+     "url": "https://iac.knu.ac.kr/Notice?menuId=MENU_0000001351"
+    },
+    {
+     "text": "예결산공고",
+     "url": "https://iac.knu.ac.kr/Budget-Announcement?menuId=MENU_0000000339"
+    },
+    {
+     "text": "R&D정보 및 사업공지 >",
+     "url": "https://iac.knu.ac.kr/Notice?menuId=MENU_0000000333"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "knu_startup",
+   "name": "경북대학교 창업지원단",
+   "url": "https://startup.knu.ac.kr",
+   "status": "HTTP 200",
+   "title": "경북대학교 창업지원단",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "공지사항",
+     "url": "https://startup.knu.ac.kr/bbs/board.php?bo_table=noti2"
+    },
+    {
+     "text": "[대구창조경제혁신센터]「모두의창업 CREW」 모집 안내",
+     "url": "https://startup.knu.ac.kr/bbs/board.php?bo_table=noti2&amp;wr_id=746"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "iact",
+   "name": "경북대학교 첨단정보통신융합산업기술원(IACT)",
+   "url": "https://www.iact.or.kr",
+   "status": "실패 ConnectTimeout",
+   "title": "",
+   "robots": "robots 실패(ConnectTimeout)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "kmu",
+   "name": "계명대학교 산학협력단·창업지원단",
+   "url": "https://www.kmu.ac.kr",
+   "status": "실패 SSLError",
+   "title": "",
+   "robots": "robots 실패(SSLError)",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "yu",
+   "name": "영남대학교 산학협력단",
+   "url": "https://www.yu.ac.kr",
+   "status": "HTTP 404",
+   "title": "Error",
+   "robots": "robots allow",
+   "links": [],
+   "note": "→ https://www.yu.ac.kr/english-test/index.do"
+  },
+  {
+   "key": "dcci",
+   "name": "대구상공회의소",
+   "url": "https://www.dcci.or.kr",
+   "status": "HTTP 200",
+   "title": "대구상공회의소",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "공지사항",
+     "url": "http://www.dcci.or.kr/content.html?md=0028"
+    },
+    {
+     "text": "협조공지",
+     "url": "http://www.dcci.or.kr/content.html?md=0029"
+    },
+    {
+     "text": "보도자료",
+     "url": "http://www.dcci.or.kr/content.html?md=0030"
+    },
+    {
+     "text": "(재)대구테크노파크 제12대 원장 초빙 3차 공고",
+     "url": "https://www.dcci.or.kr/content.html?md=0029&amp;seq=29077&amp;vmode=view"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "kbiz",
+   "name": "중소기업중앙회 대구경북지역본부",
+   "url": "https://www.kbiz.or.kr",
+   "status": "HTTP 200",
+   "title": "",
+   "robots": "robots allow",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "seongseo",
+   "name": "대구성서산업단지관리공단",
+   "url": "https://www.seongseo.or.kr",
+   "status": "HTTP 200",
+   "title": "대구성서산업단지관리공단",
+   "robots": "robots 404(없음)",
+   "links": [
+    {
+     "text": "지원사업안내",
+     "url": "https://www.seongseo.or.kr/html/sub_02_01"
+    },
+    {
+     "text": "지원사업공고",
+     "url": "https://www.seongseo.or.kr/html/sub_02_0107"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.seongseo.or.kr/board/sportsnotice"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.seongseo.or.kr/board/notice"
+    },
+    {
+     "text": "입찰공고",
+     "url": "https://www.seongseo.or.kr/board/bid"
+    },
+    {
+     "text": "지원사업안내",
+     "url": "https://www.seongseo.or.kr/html/sub_02_01.php"
+    },
+    {
+     "text": "지원사업공고",
+     "url": "https://www.seongseo.or.kr/html/sub_02_0107.php"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.seongseo.or.kr/board/board_list.php?bid=notice"
+    }
+   ],
+   "note": ""
+  },
+  {
+   "key": "dyecomplex",
+   "name": "대구염색산업단지관리공단",
+   "url": "",
+   "status": "주소 없음",
+   "title": "",
+   "robots": "",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dalseong_ic",
+   "name": "대구달성산업단지관리공단",
+   "url": "",
+   "status": "주소 없음",
+   "title": "",
+   "robots": "",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "dgva",
+   "name": "대구경북벤처기업협회",
+   "url": "",
+   "status": "주소 없음",
+   "title": "",
+   "robots": "",
+   "links": [],
+   "note": ""
+  },
+  {
+   "key": "gu",
+   "name": "대구 9개 구·군청(고시·공고)",
+   "url": "https://www.daegu.go.kr",
+   "status": "실패 ConnectTimeout",
+   "title": "",
+   "robots": "robots 실패(ConnectTimeout)",
+   "links": [],
+   "note": ""
+  }
+ ]
+}

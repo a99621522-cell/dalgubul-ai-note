@@ -31,3 +31,12 @@ requests.get(url, verify=str(bundle))
 ```
 
 ttp.org 가 서버 설정을 고치면 이 파일은 필요 없어진다.
+
+## 한국은행 공급망 지도 표 (bok_*.csv)
+
+`python3 scripts/parse_bok_map.py [--match]` 가 `docs/sources/bok_supplychain_2026-07.pdf`(한국은행 「우리나라 주요 제조업 생산 및 공급망 지도」 2026.7)에서 pdftotext 로 뽑는다. 값은 보고서 그대로, 평가 없음.
+
+- `bok_dependency.csv` — 업종별 '특정국 의존도가 높은 품목'(2025년 수입, 백만달러·%). industry(장)·priority(자동차부품·기계장비·전기장비·반도체 = 우선)·section(표 이름)·country·item·hs_code·amount_musd·share_pct·check(빈 칸이 있으면 '원문 확인')·page. 자동차부품 장은 HS 표 대신 희소금속 표(한국지질자원연구원 자료)라 item=금속(기호), hs_code 빈칸, amount=총수입액, country=주요 수입국, note=용도. 자동차 장의 '특정국 의존도가 높은 자동차부품' 표는 industry=자동차. 기준: 의존도 40%(이차전지 20%) 이상·천만달러 초과 품목만 보고서에 실림
+- `bok_multipliers.csv` — 부록 권역별 유발계수(생산·수입·부가가치·취업(명/10억원), 중분류 12개 부문). 자료: 한국은행 지역산업연관표(2020)
+- `bok_region.csv` — 권역별 현황: 업종별 권역 생산 점유율(2024, 각 장), 전국 업종 현황(요약, 2014/2019/2024, 수출은 2025), 권역 제조업 생산 비중(요약). **부록의 권역별 '사업체 수·고용(2024)' 그래프는 막대에 숫자가 없어 글자로 뽑히지 않는다** — 값을 만들지 않고 비워 둔다
+- `bok_dependency_daegu.csv`(`--match`) — 의존도 품목의 핵심 낱말(괄호 조건·'자동차용' 같은 수식어 제외)이 `dalseong_companies.csv` 생산품에 들어 있는지로 '대구 안에 생산 기업이 있는 품목/없는 품목'을 나눈 것. 낱말 일치일 뿐 그 기업이 그 품목을 만든다는 뜻이 아니므로 참고용(has_daegu_producer·daegu_companies·examples)

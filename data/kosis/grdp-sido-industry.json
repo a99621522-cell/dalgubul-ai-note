@@ -1,0 +1,20 @@
+{
+ "key": "grdp-sido-industry",
+ "name": "지역내총생산(GRDP) — 시도·경제활동별",
+ "tbl_nm": "시도별 경제활동별 지역내총생산",
+ "org_id": "101",
+ "tbl_id": "DT_1C91",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 8910,
+ "rows_kept": 495,
+ "latest": "2024",
+ "unit": "백만원 %p",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91",
+ "note": ""
+}

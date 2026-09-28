@@ -22,20 +22,20 @@
 | 규제·건의 | [대한상공회의소 보도자료(정책건의·규제개선)](https://www.korcham.net) | OK | 목록 페이지(keep_pattern) | 2 | 2026-09-10 [국회 경제대도약위원회 출범식](https://www.korcham.net/nCham/Service/Economy/appl/KcciReportList.asp#국회-경제대도약위원회-출범식) |
 | 규제·건의 | [중소기업중앙회 보도자료(입법과제·규제 애로)](https://www.kbiz.or.kr) | OK | 목록 페이지(keep_pattern) | 3 | 2026-09-23 [[논평] 이소영 중소벤처기업부장관 취임에 대한 중소기업계 의견 2026.](https://www.kbiz.or.kr/ko/contents/bbs/list.do?mnSeq=207#-논평-이소영-중소벤처기업부장관-취임에-대한-중소기업계-의견-2026-0) |
 | 기업지원기관 | [ITFIND(IITP ICT Brief 등 정기간행물)](https://www.itfind.or.kr) | 차단 | robots.txt 차단 | 0 | — |
-| 기업지원기관 | [KEIT 이슈리뷰(공공데이터포털 발간현황)](https://www.keit.re.kr) | 항목 없음 |  | 0 | — |
+| 기업지원기관 | [KEIT 이슈리뷰(공공데이터포털 발간현황)](https://www.keit.re.kr) | OK | 공공데이터포털 15121599 | 9 | 2026-06-01 [KEIT 이슈픽 2026-6월호 : 첨단산업(산업기반혁신) - 배터리, ]() |
 | 기업지원기관 | [정보통신기획평가원(IITP) ICT Brief](https://www.iitp.kr) | 차단 | robots.txt 차단 | 0 | — |
 | 기업지원기관 | [정보통신산업진흥원(NIPA)](https://www.nipa.kr) | OK | 목록 페이지 | 11 | 2026-09-23 [[유관기관] (베트남 과학기술부) 2026년 한-베트남 디지털 포럼 개최](https://www.nipa.kr/home/2-1/16950) |
-| 기업지원기관 | [중소벤처기업진흥공단](https://www.kosmes.or.kr) | OK | 목록 페이지 | 10 | 2026-09-22 [새정부 출범, 중소벤처기업과 함께 뛴 중진공의 성과](https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do#새정부-출범-중소벤처기업과-함께-뛴-중진공의-성과) |
+| 기업지원기관 | [중소벤처기업진흥공단](https://www.kosmes.or.kr) | 최근 없음 | 최신 항목 2025-06-20 (최근 70일 밖) | 0 | — |
 | 기업지원기관 | [한국과학기술정보연구원(KISTI)](https://www.kisti.re.kr) | 접속 실패 |  | 0 | — |
 | 기업지원기관 | [한국로봇산업진흥원(KIRIA)](https://www.kiria.org) | OK | 첫 화면 | 16 | 2026-09-22 [입찰공고 2026년도 서비스로봇 분야 지원사업 진도점검, 연차평가 및 최](https://www.kiria.org#입찰공고-2026년도-서비스로봇-분야-지원사업-진도점검-연차평가-및-최종) |
 | 기업지원기관 | [한국산업기술기획평가원(KEIT) PD이슈리포트](https://www.keit.re.kr) | OK | 공공데이터포털 15047479 | 9 | 2026-06-01 [KEIT 이슈픽 2026-6월호 : 첨단산업(산업기반혁신) - 배터리, ]() |
 | 기업지원기관 | [한국산업기술진흥원(KIAT)](https://www.kiat.or.kr) | OK | 공공데이터포털 15104286 | 40 | 2026-07-29 [[KIAT Policy Brief 2026-05] 산업기술 정책브리프·동]() |
 | 기업지원기관 | [한국지능정보사회진흥원(NIA)](https://www.nia.or.kr) | 최근 없음 | 최신 항목 2026-07-13 (최근 70일 밖) | 0 | — |
-| 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | 최근 없음 | 최신 항목 2026-06-24 (최근 70일 밖) | 0 | — |
+| 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | OK | 첫 화면 | 6 | 2026-09-10 [9월 정례조회 등록일 : 2026.09.10](https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16370&bbsTyCode=BBST07&bbsAttrbCode=BBSA03) |
 | 대구 기관 | [대구광역시 북구 보도자료(공공데이터포털)](https://www.buk.daegu.kr) | OK | 공공데이터포털 15149016 | 40 | 2026-08-14 [대백인터빌 전체에 물결친 애국심, 광복의 감동을 재현하다]() |
-| 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | 접속 실패 |  | 0 | — |
+| 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | OK | 목록 페이지 | 5 | 2026-09-21 [대구 제3산단, 교통·물류 수송 숨통 틔운다… 9월 22일 신천대로 진·](https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=278924) |
 | 대구 기관 | [대구기계부품연구원(DMI)](https://www.dmi.re.kr) | 접속 실패 |  | 0 | — |
-| 대구 기관 | [대구산업경제동향 온라인 시스템(대구광역시)](https://distat.daegu.go.kr) | 접속 실패 |  | 0 | — |
+| 대구 기관 | [대구산업경제동향 온라인 시스템(대구광역시)](https://distat.daegu.go.kr) | OK | 목록 페이지 | 1 | 2026-07-22 [[2026_대구산업통계브리프]](https://distat.daegu.go.kr/site/bbs/BoardControll.do?bbsId=BBSMSTR_000000000036#-2026_대구산업통계브리프-) |
 | 대구 기관 | [대구테크노파크](https://www.ttp.org) | 접속 실패 |  | 0 | — |
 | 분야 기관 | [국가뿌리산업진흥센터(KPIC)](https://www.kpic.re.kr) | 차단 | robots.txt 차단 | 0 | — |
 | 분야 기관 | [다이텍연구원(DYETEC)](https://www.dyetec.or.kr) | 차단 | robots.txt 차단 | 0 | — |
@@ -54,13 +54,13 @@
 | 분야 기관 | [한국탄소산업진흥원](https://www.kcarbon.or.kr) | OK | 목록 페이지 | 3 | 2026-09-09 [[보도자료] 한국탄소산업진흥원, 중국 최대 복합소재 전시회 CCE2026](https://www.kcarbon.or.kr/bbs/board.php?bo_id=press&wr_id=5085) |
 | 정부 | [과학기술정보통신부 보도자료](https://www.msit.go.kr) | OK | rss(/user/rss/rss.do?bbsSeqNo=94) | 40 | 2026-09-23 [과기정통부, 맞춤형 안전 지원으로 반도체 연구 든든히 뒷받침… 올해 시범](https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187810) |
 | 정부 | [산업통상부 보도자료](https://www.motie.go.kr) | OK | 목록 페이지 | 10 | 2026-09-23 [(참고자료) EU 산업가속화법 관련 유럽의회 핵심인사 대상 우리측 입장 ](https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/172238/view?mno=&pageIndex=1) |
-| 정부 | [정책브리핑(korea.kr) 정책뉴스](https://www.korea.kr) | OK | 목록 페이지 | 15 | 2026-09-27 [오늘의 정책뉴스 이 대통령, 멕시코시티서 K-팝 팬들과 소통…"K-팝 사](https://www.korea.kr/news/policyNewsList.do) |
+| 정부 | [정책브리핑(korea.kr) 정책뉴스](https://www.korea.kr) | OK | 목록 페이지 | 15 | 2026-09-28 [행정안전부 (설명) 국정자원 화재·상황실 신설에도 1·2급 전산사고 빈발](https://www.korea.kr/briefing/actuallyView.do?newsId=148972640&pWise=main&pWiseMain=B1) |
 | 정부 | [중소벤처기업부 보도자료](https://www.mss.go.kr) | OK | 목록 페이지 | 7 | 2026-09-22 [티메프 피해기업, 정책자금 상환부담 덜어드립니다 담당부서 기업금융과, 소](https://www.mss.go.kr/site/smba/ex/bbs/List.do?cbIdx=86#티메프-피해기업-정책자금-상환부담-덜어드립니다-담당부서-기업금융과-소상공) |
 | 해외 정부 | [EU 집행위 Press corner](https://ec.europa.eu) | OK | rss(/commission/presscorner/api/rss?language) | 10 | 2026-09-26 [Wystąpienie komisarza Piotra Serafina po](https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1989) |
 | 해외 정부 | [中 공업정보화부(MIIT)](https://www.miit.gov.cn) | OK | 목록 페이지 | 24 | 2026-09-23 [2026年中国国际信息通信展览会在京开幕](https://www.miit.gov.cn/xwfb/bldhd/art/2026/art_2fc0c942477d4a2694137f8fe8d17f47.html) |
 | 해외 정부 | [日 경제산업성(METI) 영문 보도자료](https://www.meti.go.jp) | 접속 실패 |  | 0 | — |
 | 해외 정부 | [美 상무부 보도자료](https://www.commerce.gov) | 접속 실패 |  | 0 | — |
-| 해외 컨설팅 | [BCG Publications](https://www.bcg.com) | OK | 목록 페이지 | 12 | 2026-09-25 [Corporate Finance and Strategy](https://www.bcg.com/capabilities/corporate-finance-strategy/overview) |
+| 해외 컨설팅 | [BCG Publications](https://www.bcg.com) | OK | 목록 페이지 | 12 | 2026-09-25 [Technology Industry](https://www.bcg.com/industries/technology-media-telecommunications/technology-industry) |
 | 해외 컨설팅 | [Deloitte Insights(비공식 RSS 집계)](https://www.deloitte.com) | OK | rss(ntent.com/yushakareem/public-deloitte-in) | 24 |  [2026 Global Human Capital Trends](https://www.deloitte.com/us/en/insights/topics/talent/human-capital-trends.html) |
 | 해외 컨설팅 | [Gartner Newsroom](https://www.gartner.com) | 접속 실패 |  | 0 | — |
 | 해외 컨설팅 | [IDC Press Releases](https://www.idc.com) | OK | rss(/feed) | 10 | 2026-09-25 [Meta Connect 2026: More Glasses on More ](https://www.idc.com/resource-center/blog/meta-connect-2026-more-glasses-on-more-faces/) |

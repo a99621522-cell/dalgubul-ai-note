@@ -1,0 +1,20 @@
+{
+ "key": "sme-workers-sido",
+ "name": "중소기업기본통계 — 시도·산업중분류·기업규모별 종사자 수",
+ "tbl_nm": "시도별·산업중분류별·기업규모별 종사자수",
+ "org_id": "142",
+ "tbl_id": "DT_BR_B001",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 45864,
+ "rows_kept": 45864,
+ "latest": "2023",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_B001",
+ "note": ""
+}

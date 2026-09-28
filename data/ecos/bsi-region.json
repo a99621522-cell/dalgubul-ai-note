@@ -1,0 +1,26 @@
+{
+ "key": "bsi-region",
+ "name": "기업경기조사 — 지역별 업황 BSI",
+ "stat_name": "6.1.5.1. 지역별 기업경기조사(실적(2013.1~))",
+ "stat_code": "512Y019",
+ "cycle": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 20000,
+ "rows_kept": 1922,
+ "latest": "202509",
+ "unit": null,
+ "areas": [
+  "manufacturing-ax",
+  "machinery",
+  "automotive",
+  "textile",
+  "root"
+ ],
+ "fetched": "2026-09-28",
+ "source_url": "https://ecos.bok.or.kr/#/Short/512Y019",
+ "source_note": "한국은행 ECOS 통계표 512Y019",
+ "note": ""
+}

@@ -2,28 +2,30 @@
 # 키는 KOSIS 인증키 하나(GitHub Secrets KOSIS_KEY)로 모든 표를 받는다. 표마다 orgId·tblId 만 다르다.
 # tblId 가 비어 있으면 `fetch_kosis.py --discover` 가 통계표 검색 API 로 후보(표 이름·ID)를 로그에 찍는다 → 확인해서 채운다.
 # 결과: data/kosis/<key>.csv (대구 행만) + <key>.json (표 이름·단위·기간·출처 URL). 평가 없음, 값은 그대로.
-#   prd_se   기간 구분 Y 연간 / Q 분기 / M 월간
+#   prd_se   기간 구분 Y 연간 / H 반기 / Q 분기 / M 월간
 #   years    받을 기간 길이(연도 수)
 #   area_col 행정구역이 든 분류 열(C1..C4). 없으면 '대구' 낱말이 든 행을 전부 남긴다
 #   area     남길 지역 이름 조각(대구 = 시도, 구·군 이름은 대구 아래 하위 행으로 온다)
 #   areas    리포트 분야 key(config/pledge_areas.yml) — report_context 가 분야 근거로 먼저 보여 준다
-version: 2026-09-27
+#   keep     저장 전 거르기 {C2_level: [1,2], C2_also: [...], C3: [...]}: 분류 코드 길이(메타 <key>.meta.json 필요)·값. 큰 표를 줄일 때
+version: 2026-09-28
 defaults: { org_id: "101", area: ["대구"], years: 6 }
 tables:
   # ── 산업·기업 구조 (연간) ──
-  - key: biz-census-sigungu-industry
-    name: 전국사업체조사 — 시군구·산업중분류별 사업체 수·종사자 수
+  - key: biz-census-sido-industry-all
+    name: 전국사업체조사 — 시도·산업·사업체구분별 사업체 수·종사자 수('20~), 17개 시도 전체(종사자 기준 입지계수용)
     org_id: "101"
-    tbl_id: ""
-    search: "시군구 산업중분류 사업체수 종사자수 사업체조사"
+    tbl_id: "DT_1K52D01"
     prd_se: Y
+    years: 6
     area_col: C1
-    area: ["대구"]
+    area: []
     areas: [manufacturing-ax, ai-sw-startup, machinery, automotive, textile, root]
-    note: 산업 그룹 11개의 공식 기준값. 팩토리온(공장)에 없는 SW·서비스 기업 규모 보정
+    keep: { C2_level: [1, 3], C3: ["계"] }   # 산업 대분류(A, 1자)·중분류(A01, 3자)·전체 산업(0) + 사업체구분 '계' 만(원본 74만 행 → 저장소 크기 제한)
+    note: 산업 그룹의 공식 기준값(사업체·종사자)과 scripts/structure_index.py 의 종사자 기준 LQ. 40,000셀을 넘는 표라 연도×시도별로 나눠 받고, 메타(<key>.meta.json, --meta)의 분류 코드로 대·중분류만 남긴다. 표 번호는 KOSIS 통계표 주소(statHtml.do?tblId=…)에서 확인
   - key: mining-mfg-survey-sido
     name: 광업·제조업조사 — 시도·산업중분류별 사업체 수·종사자·출하액·부가가치(10인 이상)
-    tbl_id: ""
+    tbl_id: "DT_1F1610"
     search: "광업제조업조사 시도 산업중분류 출하액 부가가치"
     prd_se: Y
     area_col: C1
@@ -31,45 +33,68 @@ tables:
   - key: biz-birth-death-sido
     name: 기업생멸행정통계 — 시도·산업별 신생기업·소멸기업·활동기업
     tbl_id: ""
-    search: "기업생멸 시도 산업 신생기업 활동기업"
+    search: "기업생멸행정통계 시도별 활동기업"
     prd_se: Y
     area_col: C1
     areas: [ai-sw-startup]
   - key: corp-stats-sido
     name: 영리법인기업체 행정통계 — 시도·종사자 규모별 기업 수·매출액
     tbl_id: ""
-    search: "영리법인기업체 시도 종사자규모 기업수 매출액"
+    search: "영리법인 기업체행정통계 시도"
     prd_se: Y
     area_col: C1
   - key: sme-stats-sido
     name: 중소기업기본통계 — 시도·산업별 중소기업 수·종사자·매출액
-    tbl_id: ""
+    org_id: "142"
+    tbl_id: "DT_BR_A001"
     search: "중소기업기본통계 시도 산업 기업수 종사자"
+    prd_se: Y
+    area_col: C1
+  - key: sme-workers-sido
+    name: 중소기업기본통계 — 시도·산업중분류·기업규모별 종사자 수
+    org_id: "142"
+    tbl_id: "DT_BR_B001"
     prd_se: Y
     area_col: C1
   - key: grdp-sido-industry
     name: 지역내총생산(GRDP) — 시도·경제활동별
-    tbl_id: ""
+    tbl_id: "DT_1C91"
     search: "지역내총생산 경제활동별 시도"
     prd_se: Y
     area_col: C1
+  - key: grdp-sido-industry-all
+    name: 지역내총생산(GRDP) — 시도·경제활동별, 17개 시도 전체(산업구조지수 계산용)
+    tbl_id: "DT_1C91"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []
+    note: 입지계수·산업집중도·산업구조 변화속도(scripts/structure_index.py)는 전국 대비 비교라 모든 시도 행이 필요하다
   # ── 고용·인구 (월간·반기·연간) ──
+  - key: labor-force-sido-annual-all
+    name: 경제활동인구조사 — 시도별 취업자·고용률(연간, 17개 시도 전체)
+    tbl_id: "DT_1DA7004S"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []
+    note: 노동생산성(총부가가치/취업자) 계산용
   - key: regional-employment-sigungu
     name: 지역별고용조사 — 시군구·산업별 취업자
-    tbl_id: ""
+    tbl_id: "DT_1ES3A05S"
     search: "지역별고용조사 시군구 산업별 취업자"
-    prd_se: Q
+    prd_se: H
     area_col: C1
   - key: labor-force-sido
     name: 경제활동인구조사 — 시도별 고용률·실업률
-    tbl_id: ""
+    tbl_id: "DT_1DA7004S"
     search: "경제활동인구조사 시도 고용률 실업률"
     prd_se: M
     years: 3
     area_col: C1
   - key: mfg-production-index-sido
     name: 광공업생산지수 — 시도·산업별(월간)
-    tbl_id: ""
+    tbl_id: "INH_1F02001"
     search: "광공업생산지수 시도 산업별"
     prd_se: M
     years: 3
@@ -77,15 +102,58 @@ tables:
     areas: [manufacturing-ax, machinery, automotive, textile, root]
   - key: migration-sido
     name: 국내인구이동통계 — 시도별 전입·전출·순이동(월간)
-    tbl_id: ""
+    tbl_id: "DT_1B26001_A01"
     search: "국내인구이동 시도 전입 전출 순이동"
     prd_se: M
     years: 3
     area_col: C1
   - key: migration-age-sido
     name: 국내인구이동통계 — 시도·연령별 순이동(연간)
-    tbl_id: ""
+    tbl_id: "DT_1B26002"
     search: "국내인구이동 시도 연령 순이동"
     prd_se: Y
     area_col: C1
     areas: [ai-sw-startup]
+  # ── 산업구조 보고서(대구판) 추가 표: tbl_id 비움 → discover 로 후보 확인 뒤 채움 (2026-09-28) ──
+  - key: population-sido
+    name: 주민등록인구 — 시도별 연간 인구(인구성장률용, 행정안전부 주민등록인구현황)
+    tbl_id: "DT_1B040A3"
+    search: "주민등록인구현황 행정구역 시도 성별 인구수"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []
+  - key: employed-industry-sido
+    name: 지역별고용조사 — 시도·산업별 취업자(산업별 취업자 비중·제조업 노동생산성용, 반기)
+    tbl_id: "DT_1ES3B05S"
+    search: "경제활동인구조사 시도 산업별 취업자"
+    prd_se: H
+    years: 12
+    area_col: C1
+    area: []
+  - key: retail-sales-index-sido
+    name: 소매판매액지수 — 시도별(소비 지표용, 2020=100)
+    tbl_id: "DT_1K41018"
+    search: "시도별 소매판매액지수"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []
+  - key: export-region
+    name: 관세청 기업무역활동통계 — 지역별 수출현황(시도별 수출액·수출기업 수, 연간; 산업구조 보고서 표 3-4·그림 2-5 대체). 주제별 목록에는 시도별 수출 표가 없어 기관별 목록에서 찾음(2026-09-28)
+    tbl_id: "DT_134006_N007"
+    org_id: "134"
+    search: "관세청 기업무역활동통계 지역별 수출현황"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []
+  - key: export-region-index
+    name: 관세청 기업무역활동통계 — 지역별 수출지표 현황(시도별)
+    tbl_id: "DT_134006_N015"
+    org_id: "134"
+    search: "관세청 기업무역활동통계 지역별 수출지표 현황"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []

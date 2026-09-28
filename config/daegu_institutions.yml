@@ -8,7 +8,14 @@
 # support: 기업지원 기능(공고·선정 명단이 나오는 분야). linked: 이미 쓰는 설정 파일(support_institutions / institution_boards / institutions).
 version: 2026-09-28
 institutions:
-  # ---------- 기초 자료(기업 사전의 바탕) — 운영자 지시 2026-09-28: 팩토리온이 제일 먼저 ----------
+  # ---------- 기초 자료(기업 사전의 바탕) — 운영자 지시 2026-09-28: 대구시 기업현황 자료가 맨 먼저, 그다음 팩토리온 ----------
+  - key: daegu_data
+    name: 대구광역시 기업현황 자료(공공데이터포털 파일데이터)
+    group: data
+    url: https://www.data.go.kr/tcs/dss/selectDataSetList.do?keyword=대구광역시+기업
+    support: [제조업체(공장등록업체)현황 15069132, 산업단지 기업 등록현황 15073542, 지역중소기업 명단 15129730, 스타기업·프리스타기업 현황 15130932, 기업지원사업 내용 15131167, 창업지원 현황 15130750, 구·군 공장등록 현황(서구 15092730·달성군 15113443·군위군 15035026)]
+    linked: [import_public_support(15129730 namelist)]
+    note: 시가 직접 공개한 기업현황. 15129730 은 이미 '대구 기업' 판정에 쓴다. 나머지 번호는 fetch_public.yml probe 로 열 이름을 확인해 기업 사전 대조에 쓴다(다음 단계)
   - key: factoryon
     name: 팩토리온(한국산업단지공단 공장등록·입주업체현황)
     group: data

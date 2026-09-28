@@ -1,0 +1,46 @@
+name: 대구 기업지원기관 홈페이지 조사
+
+# config/daegu_institutions.yml 의 기관 첫 화면·robots.txt 를 받아 접속 결과와 공고·공지 링크 후보를 data/institutions/sites.md 로 커밋한다.
+# 미국 러너에서는 대구 기관 사이트가 자주 시간 초과라 runner=korea(self-hosted, 라벨 korea)를 고를 수 있다. 수동 실행만.
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "기관 key(쉼표). 비우면 전부"
+        required: false
+        default: ""
+      runner:
+        description: "ubuntu-latest | korea"
+        required: false
+        default: "ubuntu-latest"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: institution-sites-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ${{ inputs.runner == 'korea' && fromJSON('["self-hosted","korea"]') || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 조사
+        run: |
+          set +e
+          python3 scripts/check_institutions.py ${{ inputs.only && format('--only "{0}"', inputs.only) || '' }}
+          echo "exit=$?"
+      - name: 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A data/institutions
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 기업지원기관 홈페이지 조사 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

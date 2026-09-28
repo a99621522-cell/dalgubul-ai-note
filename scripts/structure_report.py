@@ -134,8 +134,8 @@ def main() -> int:
     sh = {(r, y): shares(gva[(R[r], y)]) for r in regs + ["전국"] for y in range(2014, Y1 + 1) if gva.get((R[r], y))}
     lqv = {(r, y): {s: (sh[(r, y)][s] / sh[("전국", y)][s] if sh[("전국", y)][s] else None) for s in LEAVES} for (r, y) in sh if r != "전국"}
     hhi = {(r, y): sum((v * 100) ** 2 for v in sh[(r, y)].values()) for (r, y) in sh}
-    sci = {(r, y): 0.5 * sum(abs(sh[(r, y)][s] - sh[(r, y - 1)][s]) for s in LEAVES) * 100 for (r, y) in sh if (r, y - 1) in sh}
-    sci_h = {(r, y): 0.5 * sum(abs(sh[(r, y)][s] - sh[(r, y - 1)][s]) for s in HIGH) * 100 for (r, y) in sh if (r, y - 1) in sh}
+    sci = {(r, y): 0.5 * sum(abs(sh[(r, y)][s] - sh[(r, y - 1)][s]) for s in LEAVES) for (r, y) in sh if (r, y - 1) in sh}   # 비중 0~1 기준(원보고서 눈금, 예 0.029)
+    sci_h = {(r, y): 0.5 * sum(abs(sh[(r, y)][s] - sh[(r, y - 1)][s]) for s in HIGH) for (r, y) in sh if (r, y - 1) in sh}
     spec_share = {(r, y): sum(sh[(r, y)][s] for s in LEAVES if lqv[(r, y)][s] and lqv[(r, y)][s] >= 1) * 100 for (r, y) in lqv}
     high_share = {(r, y): sum(sh[(r, y)][s] for s in HIGH) * 100 for (r, y) in sh}
     g_grdp = {r: cagr(real_tot[(R[r], Y0, "지역내총생산(시장가격)")], real_tot[(R[r], Y1, "지역내총생산(시장가격)")], Y1 - Y0) for r in regs + ["전국"]}
@@ -236,13 +236,13 @@ def main() -> int:
     D["fig2_17"] = {k: [round(a, 2), round(b, 2)] for k, (a, b) in g17.items()}
     figs["2-17"] = save({"type": "bar", "title": "고집중 vs 저집중 지역 간 15세 이상 인구 증가율 차이(2015~24년 연평균)", "unit": "%", "categories": list(g17), "series": [{"name": "고집중(산업집중도 변화율 상위)", "values": [round(a, 2) for a, _ in g17.values()]}, {"name": "저집중", "values": [round(b, 2) for _, b in g17.values()]}], "source": SRC + " · 인구는 경제활동인구조사 15세 이상 인구"}, "fig2-17")
     order = sorted(regs, key=lambda r: -sci_avg[r])
-    figs["2-19"] = save({"type": "bar", "title": "최근 시·도별 산업구조 변화속도(2015~24년 연평균 SCI, %p)", "unit": "%p", "categories": order, "series": [{"name": "SCI", "values": [round(sci_avg[r], 3) for r in order]}], "source": SRC + f" · 17개 시도 평균 {avg(sci_avg):.3f}"}, "fig2-19")
-    figs["2-20"] = save({"type": "scatter", "title": "산업구조 변화속도와 경제성장률 간 관계", "xlabel": "2015~24년 연평균 산업구조 변화속도(SCI, %p)", "ylabel": "연평균 경제성장률(%)", "points": [{"label": r, "x": sci_avg[r], "y": g_grdp[r], "highlight": r == "대구"} for r in regs], "xmean": avg(sci_avg), "ymean": g_grdp["전국"], "xmean_label": "17개 시도 평균", "ymean_label": "전국", "xdec": 3, "source": SRC}, "fig2-20")
-    figs["2-21"] = save({"type": "scatter", "title": "고부가산업으로의 구조 변화속도와 경제성장률 간 관계", "xlabel": "2015~24년 연평균 고부가 SCI(%p)", "ylabel": "연평균 경제성장률(%)", "points": [{"label": r, "x": scih_avg[r], "y": g_grdp[r], "highlight": r == "대구"} for r in regs], "xmean": avg(scih_avg), "ymean": g_grdp["전국"], "xmean_label": "17개 시도 평균", "ymean_label": "전국", "xdec": 4, "source": SRC}, "fig2-21")
+    figs["2-19"] = save({"type": "bar", "title": "최근 시·도별 산업구조 변화속도(2015~24년 연평균 SCI)", "unit": "", "categories": order, "series": [{"name": "SCI", "values": [round(sci_avg[r], 4) for r in order]}], "source": SRC + f" · 17개 시도 평균 {avg(sci_avg):.4f}"}, "fig2-19")
+    figs["2-20"] = save({"type": "scatter", "title": "산업구조 변화속도와 경제성장률 간 관계", "xlabel": "2015~24년 연평균 산업구조 변화속도(SCI)", "ylabel": "연평균 경제성장률(%)", "points": [{"label": r, "x": sci_avg[r], "y": g_grdp[r], "highlight": r == "대구"} for r in regs], "xmean": avg(sci_avg), "ymean": g_grdp["전국"], "xmean_label": "17개 시도 평균", "ymean_label": "전국", "xdec": 4, "source": SRC}, "fig2-20")
+    figs["2-21"] = save({"type": "scatter", "title": "고부가산업으로의 구조 변화속도와 경제성장률 간 관계", "xlabel": "2015~24년 연평균 고부가 SCI", "ylabel": "연평균 경제성장률(%)", "points": [{"label": r, "x": scih_avg[r], "y": g_grdp[r], "highlight": r == "대구"} for r in regs], "xmean": avg(scih_avg), "ymean": g_grdp["전국"], "xmean_label": "17개 시도 평균", "ymean_label": "전국", "xdec": 4, "source": SRC}, "fig2-21")
     g22 = split_groups(scih_avg, g_prod)
     D["fig2_22"] = {k: [round(a, 2), round(b, 2)] for k, (a, b) in g22.items()}
     figs["2-22"] = save({"type": "bar", "title": "고부가 산업구조 변화속도 상·하위 지역의 노동생산성 성장률(2015~24년 연평균)", "unit": "%", "categories": list(g22), "series": [{"name": "상위", "values": [round(a, 2) for a, _ in g22.values()]}, {"name": "하위", "values": [round(b, 2) for _, b in g22.values()]}], "source": SRC + " · 노동생산성 = 실질 총부가가치/취업자(전산업)"}, "fig2-22")
-    figs["2-23"] = save({"type": "line", "title": "대구 및 전국의 산업구조 변화속도(SCI, %p)", "unit": "%p", "x": [str(y) for y in range(Y0, Y1 + 1)], "series": [{"name": "전국", "values": [round(sci[("전국", y)], 3) for y in range(Y0, Y1 + 1)]}, {"name": "대구", "values": [round(sci[("대구", y)], 3) for y in range(Y0, Y1 + 1)]}], "source": SRC + f" · 평균 전국 {sci_avg['전국']:.3f}, 대구 {sci_avg['대구']:.3f}"}, "fig2-23")
+    figs["2-23"] = save({"type": "line", "title": "대구 및 전국의 산업구조 변화속도(SCI)", "unit": "", "x": [str(y) for y in range(Y0, Y1 + 1)], "series": [{"name": "전국", "values": [round(sci[("전국", y)], 4) for y in range(Y0, Y1 + 1)]}, {"name": "대구", "values": [round(sci[("대구", y)], 4) for y in range(Y0, Y1 + 1)]}], "source": SRC + f" · 평균 전국 {sci_avg['전국']:.4f}, 대구 {sci_avg['대구']:.4f}"}, "fig2-23")
     figs["2-24"] = save({"type": "bar", "title": "지역별 경제지표 격차(2015~24년 연평균 증가율)", "unit": "%", "categories": ["GRDP", "노동생산성", "15세 이상 인구"], "series": [{"name": "대구", "values": [round(g_grdp["대구"], 1), round(g_prod["대구"], 1), round(g_pop["대구"], 1)]}, {"name": "전국", "values": [round(g_grdp["전국"], 1), round(g_prod["전국"], 1), round(g_pop["전국"], 1)]}, {"name": "6개 광역시", "values": [D["metro6_avg"]["grdp"], D["metro6_avg"]["prod"], D["metro6_avg"]["pop"]]}], "source": SRC}, "fig2-24")
     # Ⅲ 패널 회귀(연간, 17개 시도 × 2016~2024): Δln Y 에 특화비중(t-1) / Δln HHI / SCI 각각, 통제: 경제활동인구 증가율, 지역·연도 고정효과
     D["panel"] = {}

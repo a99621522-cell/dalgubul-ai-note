@@ -116,24 +116,24 @@ tables:
     areas: [ai-sw-startup]
   # ── 산업구조 보고서(대구판) 추가 표: tbl_id 비움 → discover 로 후보 확인 뒤 채움 (2026-09-28) ──
   - key: population-sido
-    name: 주민등록인구 — 시도별 연간 인구(인구성장률용, 행정안전부)
-    tbl_id: ""
+    name: 주민등록인구 — 시도별 연간 인구(인구성장률용, 행정안전부 주민등록인구현황)
+    tbl_id: "DT_1B040A3"
     search: "주민등록인구현황 행정구역 시도 성별 인구수"
     prd_se: Y
     years: 12
     area_col: C1
     area: []
   - key: employed-industry-sido
-    name: 경제활동인구조사 — 시도·산업별 취업자(산업별 취업자 비중·제조업 노동생산성용)
-    tbl_id: ""
+    name: 지역별고용조사 — 시도·산업별 취업자(산업별 취업자 비중·제조업 노동생산성용, 반기)
+    tbl_id: "DT_1ES3B05S"
     search: "경제활동인구조사 시도 산업별 취업자"
-    prd_se: Y
+    prd_se: H
     years: 12
     area_col: C1
     area: []
   - key: retail-sales-index-sido
-    name: 소매판매액지수 — 시도별(소비 지표용)
-    tbl_id: ""
+    name: 소매판매액지수 — 시도별(소비 지표용, 2020=100)
+    tbl_id: "DT_1K41018"
     search: "시도별 소매판매액지수"
     prd_se: Y
     years: 12

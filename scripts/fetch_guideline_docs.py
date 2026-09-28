@@ -49,8 +49,30 @@ def load_index() -> dict:
     return {"fetched": "", "items": {}}
 
 
-def open_post(list_url: str, label: str, href: str) -> tuple[str, str]:
-    """글을 연다: 주소가 있으면 렌더링, 자바스크립트 링크면 목록에서 제목을 눌러 연다."""
+def _run_js(page, js: str) -> bool:
+    """목록의 onclick / javascript: 링크(fn_egov_inqire_notice('id','bbs'), link('business') 등)를 페이지 안에서 실행해 글로 이동한다."""
+    js = re.sub(r"^\s*javascript:\s*", "", js).strip()
+    if not js or js in ("void(0);", "void(0)", ";"):
+        return False
+    before = page.url
+    try:
+        try:
+            with page.expect_navigation(timeout=15000):
+                page.evaluate("() => { " + js + " }")
+        except Exception:  # noqa: BLE001  — 이동 없이 화면만 바꾸는 경우
+            page.wait_for_timeout(2500)
+        try:
+            page.wait_for_load_state("networkidle", timeout=15000)
+        except Exception:  # noqa: BLE001
+            pass
+        return page.url.split("#")[0] != before.split("#")[0]
+    except Exception as e:  # noqa: BLE001
+        print(f"    [browser] onclick 실행 실패 {js[:40]}: {str(e)[:50]}")
+        return False
+
+
+def open_post(list_url: str, label: str, href: str, onclick: str = "") -> tuple[str, str]:
+    """글을 연다: 주소가 있으면 렌더링, 자바스크립트 링크면 onclick 을 실행하고, 안 되면 목록에서 제목을 눌러 연다."""
     if href.startswith("http"):
         return render(href)
     b = browser()
@@ -60,6 +82,8 @@ def open_post(list_url: str, label: str, href: str) -> tuple[str, str]:
     try:
         if not _goto(page, list_url):
             return "", ""
+        if onclick and _run_js(page, onclick):
+            return page.content(), page.url
         loc = page.get_by_text(label[:40], exact=False).first
         try:
             with page.expect_navigation(timeout=15000):
@@ -98,7 +122,7 @@ def click_attachment(post_url: str, label: str) -> tuple[str, bytes] | None:
         page.close()
 
 
-def list_posts(html: str, base: str, post_re: re.Pattern, link_re: re.Pattern, excl_re: re.Pattern) -> tuple[list[tuple[str, str]], list[str]]:
+def list_posts(html: str, base: str, post_re: re.Pattern, link_re: re.Pattern, excl_re: re.Pattern) -> tuple[list[tuple[str, str, str]], list[str]]:
     """목록 페이지에서 (제목, 주소 또는 '' = 제목 클릭) 와 다음 쪽 링크. href 없는 앵커·onclick 요소(td·span 등)의 글자도 제목 후보로 본다."""
     from bs4 import BeautifulSoup
     posts, pages, seen = [], [], set()
@@ -124,7 +148,7 @@ def list_posts(html: str, base: str, post_re: re.Pattern, link_re: re.Pattern, e
         if k in seen:
             continue
         seen.add(k)
-        posts.append((t, href if href.startswith("http") else ""))
+        posts.append((t, href if href.startswith("http") else "", onclick or (href if href.startswith("javascript") else "")))
     return posts, pages
 
 
@@ -172,7 +196,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
     out_dir.mkdir(parents=True, exist_ok=True)
     got, hashes, opened, files = [], set(), 0, 0
     no_file_diag = 0
-    existing = {v.get("sha") for v in idx["items"].values() if v.get("sha")}
+    existing = {v.get("sha") for v in idx["items"].values() if v.get("sha")} | set(idx.get("skipped", []))
     boards = list(org["seeds"])
     print(f"\n== {org['name']}")
     seen_boards: set[str] = set()
@@ -197,7 +221,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                     boards.append(href)
                 elif href.startswith("javascript") and home_re.search(label) and len(label.strip()) <= 12 and clicked < 3:
                     clicked += 1   # DIP 처럼 메뉴가 javascript:link('business') 이면 눌러서 실제 게시판 주소를 얻는다
-                    _, jurl = open_post(final, label.strip(), "")
+                    _, jurl = open_post(final, label.strip(), "", href)
                     if jurl and jurl.split("#")[0] != final.split("#")[0] and urlparse(jurl).netloc == host and jurl not in seen_boards and jurl not in boards:
                         print(f"  메뉴 '{label.strip()}' 클릭 → {jurl[:90]}")
                         boards.append(jurl)
@@ -210,13 +234,13 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
         for p in pages[: max(0, cfg["max_pages_per_board"] - 1)]:
             if p not in seen_boards:
                 boards.insert(0, p)
-        for title, href in posts:
+        for title, href, onclick in posts:
             if opened >= cfg["max_posts_per_org"] or files >= cfg["max_files_per_org"]:
                 break
             if min_year and years_in(title) and max(years_in(title)) < min_year:
                 continue
             opened += 1
-            phtml, purl = open_post(final, title, href)
+            phtml, purl = open_post(final, title, href, onclick)
             if not phtml:
                 continue
             title_hit = bool(link_re.search(title))
@@ -244,7 +268,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                 if dry:
                     print(f"    (dry) {label[:60]} {ahref[:60]}")
                     continue
-                got_file = download(ahref, purl, sess) if ahref else click_attachment(purl, label)
+                got_file = (download(ahref, purl, sess) if ahref else None) or click_attachment(purl, label)   # 주소 내려받기가 HTML 이면(미래차센터) 브라우저로 다시
                 if not got_file:
                     continue
                 name, data = got_file

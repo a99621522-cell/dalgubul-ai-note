@@ -132,20 +132,28 @@ def main() -> int:
         get = lambda item: [next((num(r["DT"]) for r in mg if r["PRD_DE"] == m and r["ITM_NM"] == item), None) for m in months]
         rc.write("kosis", "migration", rc.line_chart, "대구 인구이동(월간)", [ym(m) for m in months], [("총전입", get("총전입")), ("총전출", get("총전출")), ("순이동", get("순이동"))], index=index, unit="명", note=short("migration-sido"))
 
-    # 5) 전국사업체조사 — 대구 산업별 사업체·종사자(자료가 있을 때만)
-    bc = [r for r in rows("biz-census-sido-industry-all") if r["C1_NM"] in ("대구", "대구광역시")]
-    if bc:
+    # 5) 전국사업체조사 — 대구 산업 중분류별 사업체·종사자 + 종사자 기준 입지계수(자료·메타가 있을 때만)
+    bc = [r for r in rows("biz-census-sido-industry-all") if r["C1_NM"] in ("대구", "대구광역시") and r["C3_NM"] in ("계", "")]
+    mp = K / "biz-census-sido-industry-all.meta.json"
+    if bc and mp.exists():
+        codes = {}
+        for it in json.loads(mp.read_text(encoding="utf-8")):
+            if str(it.get("OBJ_ID_SN")) == "2" and (it["ITM_NM"] not in codes or len(it["ITM_ID"]) < len(codes[it["ITM_NM"]])):
+                codes[it["ITM_NM"]] = it["ITM_ID"]
         y = max(r["PRD_DE"] for r in bc)
-        kinds = sorted({r["C3_NM"] for r in bc})
-        tot = next((k for k in kinds if "전체" in k or k in ("계", "")), kinds[0])
         v = defaultdict(dict)
         for r in bc:
-            if r["PRD_DE"] == y and r["C3_NM"] == tot:
+            if r["PRD_DE"] == y and len(codes.get(r["C2_NM"], "")) in (1, 3):
                 v[r["C2_NM"]][r["ITM_NM"]] = num(r["DT"])
-        secs = [s for s in v if re.match(r"^[A-Z]|^전산업|^전체", s) or len(s) < 40][:120]
-        tables.append({"id": "census_daegu", "title": f"대구 산업별 사업체 수·종사자 수 ({y}년, 전국사업체조사)", "unit": "",
-                       "columns": ["산업", "사업체 수(개)", "종사자 수(명)"], "rows": [[s, v[s].get("사업체수"), v[s].get("종사자수")] for s in secs],
-                       "source": src("biz-census-sido-industry-all"), "latest": y, "note": f"사업체 구분 '{tot}' 기준"})
+        elq = {r["sector"]: r for r in (csv.DictReader(open(K / "structure_lq_employment.csv", encoding="utf-8")) if (K / "structure_lq_employment.csv").exists() else []) if r["region"] == "대구" and r["year"] == y}
+        secs = sorted(v, key=lambda s: codes.get(s, ""))
+        tables.append({"id": "census_daegu", "title": f"대구 산업 대·중분류별 사업체 수·종사자 수 ({y}년, 전국사업체조사)", "unit": "",
+                       "columns": ["코드", "산업", "사업체 수(개)", "종사자 수(명)", "종사자 비중(%)", "전국 종사자 비중(%)", "입지계수(종사자 기준)"],
+                       "rows": [[codes.get(s, ""), s, v[s].get("사업체수"), v[s].get("종사자수"), elq.get(f"{codes.get(s, '')} {s}".strip(), {}).get("share_pct", ""), elq.get(f"{codes.get(s, '')} {s}".strip(), {}).get("national_share_pct", ""), elq.get(f"{codes.get(s, '')} {s}".strip(), {}).get("lq", "")] for s in secs],
+                       "source": src("biz-census-sido-industry-all") + ", 입지계수는 이 사이트 계산(중분류 종사자 기준)", "latest": y, "note": "사업체 구분 '계'. 대분류 행은 입지계수 없음(중분류만 계산)"})
+        top = sorted([r for r in elq.values() if int(r["workers"]) >= 1000], key=lambda r: -float(r["lq"]))[:15]
+        if top:
+            rc.write("kosis", "lq-employment", rc.bar_chart, f"대구 산업 중분류 종사자 기준 입지계수 상위({y}년, 종사자 1,000명 이상)", [(r["sector"][3:], float(r["lq"])) for r in top], index=index, unit="", note="전국사업체조사 종사자 기준, 값 큰 순")
 
     (OUT / "index.json").write_text(json.dumps({"tables": tables, "charts": index.get("kosis", {}), "generated": __import__("datetime").date.today().isoformat()}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"표 {len(tables)}개, 그래프 {len(index.get('kosis', {}))}개 → {OUT.relative_to(ROOT)}")

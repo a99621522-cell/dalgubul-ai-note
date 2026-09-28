@@ -116,6 +116,36 @@ def _split_fetch(params: dict, start: str, end: str) -> list:
     return rows
 
 
+def meta_codes(t: dict, obj_sn: int) -> dict[str, str]:
+    """data/kosis/<key>.meta.json(--meta 로 저장)에서 분류 obj_sn 단계의 이름→코드."""
+    p = OUT / f"{t['key']}.meta.json"
+    if not p.exists():
+        return {}
+    out: dict[str, str] = {}
+    for it in json.loads(p.read_text(encoding="utf-8")):
+        if str(it.get("OBJ_ID_SN")) == str(obj_sn) and (it["ITM_NM"] not in out or len(it["ITM_ID"]) < len(out[it["ITM_NM"]])):
+            out[it["ITM_NM"]] = it["ITM_ID"]     # 같은 이름이 여러 단계에 있으면 짧은 코드(상위 단계)
+    return out
+
+
+def apply_keep(t: dict, rows: list) -> list:
+    """yml 의 keep: {C2_level: [1, 2], C3: ["계"]} — 분류 코드 길이(대분류 1·중분류 2·소분류 3…)와 값으로 행을 거른다. 74만 행짜리 표를 저장소에 맞게 줄일 때."""
+    k = t.get("keep") or {}
+    if not k:
+        return rows
+    out = rows
+    for col in ("C1", "C2", "C3", "C4"):
+        lv = k.get(f"{col}_level")
+        if lv:
+            codes = meta_codes(t, int(col[1]))
+            if codes:
+                out = [r for r in out if len(codes.get(r.get(f"{col}_NM", ""), "")) in lv or r.get(f"{col}_NM", "") in (k.get(f"{col}_also") or [])]
+        vals = k.get(col)
+        if vals:
+            out = [r for r in out if r.get(f"{col}_NM", "") in vals]
+    return out
+
+
 def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
     start, end = period_range(t.get("prd_se", "Y"), int(t.get("years", 6)))
     base = {"method": "getList", "apiKey": key, "itmId": "ALL", "format": "json", "jsonVD": "Y", "prdSe": t.get("prd_se", "Y"),
@@ -134,6 +164,7 @@ def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
             keep.append(row)
     if not keep and rows:   # 지역 열이 없는 표(전국 표)면 전부 남긴다
         keep = rows
+    keep = apply_keep(t, keep)
     fields = ["PRD_DE", "ITM_NM", "C1_NM", "C2_NM", "C3_NM", "C4_NM", "DT", "UNIT_NM"]
     OUT.mkdir(parents=True, exist_ok=True)
     with open(OUT / f"{t['key']}.csv", "w", encoding="utf-8", newline="") as fh:

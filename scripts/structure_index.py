@@ -12,7 +12,8 @@
   - 특화산업 비중(지역, 연도) = LQ ≥ 1 인 부문의 비중 합(%)
   - 고착화(LQ 상관) = 2015년과 2024년 부문별 LQ 의 피어슨 상관계수
   - GRDP 실질 성장률 = 실질 지역내총생산(시장가격) 2015→2024 연평균(CAGR, %), 노동생산성 = 실질 총부가가치(기초가격) / 취업자(천명) 의 2015→2024 연평균 증가율(%)
-출력: data/kosis/structure_index.csv(지역×연도 지표), data/kosis/structure_lq.csv(지역×부문×연도 비중·LQ), 화면에 대구 요약·17개 시도 순위표
+출력: data/kosis/structure_index.csv(지역×연도 지표), data/kosis/structure_lq.csv(지역×부문×연도 비중·LQ),
+      data/kosis/structure_lq_employment.csv(전국사업체조사 종사자 기준 지역×산업 중분류 LQ — 메타 파일이 있을 때), 화면에 대구 요약·17개 시도 표
 사용: python3 scripts/structure_index.py [--region 대구광역시] [--json]
 """
 import argparse, csv, json, math, sys
@@ -76,6 +77,41 @@ def pearson(x: list[float], y: list[float]) -> float | None:
     return sxy / math.sqrt(sxx * syy) if sxx and syy else None
 
 
+def employment_lq() -> list[dict]:
+    """전국사업체조사(시도·산업 중분류·사업체구분 '계')의 종사자수로 지역×중분류 입지계수. 메타(biz-census-sido-industry-all.meta.json)의 코드로 중분류(A01 처럼 3자)만 쓴다."""
+    p, mp = K / "biz-census-sido-industry-all.csv", K / "biz-census-sido-industry-all.meta.json"
+    if not p.exists():
+        return []
+    codes = {}
+    for it in (json.loads(mp.read_text(encoding="utf-8")) if mp.exists() else []):
+        if str(it.get("OBJ_ID_SN")) == "2" and (it["ITM_NM"] not in codes or len(it["ITM_ID"]) < len(codes[it["ITM_NM"]])):
+            codes[it["ITM_NM"]] = it["ITM_ID"]
+    emp = defaultdict(dict)   # (region, year) -> {sector: workers}
+    for r in csv.DictReader(open(p, encoding="utf-8")):
+        if r["ITM_NM"] != "종사자수" or r["C3_NM"] not in ("계", ""):
+            continue
+        sec = r["C2_NM"]
+        if codes and len(codes.get(sec, "")) != 3:
+            continue
+        try:
+            emp[(r["C1_NM"], int(r["PRD_DE"]))][sec] = float(r["DT"])   # 'X'(비밀보호)·'-' 는 뺀다
+        except ValueError:
+            continue
+    out = []
+    for (reg, y), d in emp.items():
+        nat = emp.get(("전국", y))
+        if reg == "전국" or not nat:
+            continue
+        tot, ntot = sum(d.values()), sum(nat.values())
+        for sec, v in d.items():
+            ns = nat.get(sec)
+            if not tot or not ntot or not ns:
+                continue
+            out.append({"region": REGION_SHORT.get(reg, reg), "sector": f"{codes.get(sec, '')} {sec}".strip(), "year": y, "workers": int(v), "share_pct": round(v / tot * 100, 2),
+                        "national_share_pct": round(ns / ntot * 100, 2), "lq": round((v / tot) / (ns / ntot), 2)})
+    return sorted(out, key=lambda r: (r["region"], r["year"], r["sector"]))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--region", default="대구광역시")
@@ -131,6 +167,10 @@ def main() -> int:
         w = csv.DictWriter(fh, fieldnames=list(lq_rows[0].keys())); w.writeheader(); w.writerows(lq_rows)
     with open(K / "structure_index.csv", "w", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(idx_rows[0].keys())); w.writeheader(); w.writerows(idx_rows)
+    elq = employment_lq()
+    if elq:
+        with open(K / "structure_lq_employment.csv", "w", encoding="utf-8", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(elq[0].keys())); w.writeheader(); w.writerows(elq)
     last = [r for r in idx_rows if r["year"] == Y1]
     reg = REGION_SHORT.get(a.region, a.region)
     me = next(r for r in last if r["region"] == reg)

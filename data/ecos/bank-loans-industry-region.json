@@ -1,0 +1,27 @@
+{
+ "key": "bank-loans-industry-region",
+ "name": "예금은행 지역별 산업별 대출금",
+ "stat_name": "1.2.5.2.5. 산업별대출금(예금은행, 지역별, 전산업)",
+ "stat_code": "132Y001",
+ "cycle": "Q",
+ "period": [
+  "2021Q1",
+  "2026Q4"
+ ],
+ "rows_total": 16407,
+ "rows_kept": 902,
+ "latest": "2026Q2",
+ "unit": "십억원",
+ "areas": [
+  "manufacturing-ax",
+  "machinery",
+  "automotive",
+  "textile",
+  "root",
+  "semiconductor"
+ ],
+ "fetched": "2026-09-28",
+ "source_url": "https://ecos.bok.or.kr/#/Short/132Y001",
+ "source_note": "한국은행 ECOS 통계표 132Y001",
+ "note": ""
+}

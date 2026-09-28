@@ -1,0 +1,26 @@
+{
+ "key": "bank-loans-region",
+ "name": "예금은행 지역별 대출금(말잔)",
+ "stat_name": "1.2.3.4.1. 예금은행 지역별 대출금(말잔)",
+ "stat_code": "141Y003",
+ "cycle": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 7928,
+ "rows_kept": 440,
+ "latest": "202607",
+ "unit": "십억원",
+ "areas": [
+  "manufacturing-ax",
+  "machinery",
+  "automotive",
+  "textile",
+  "root"
+ ],
+ "fetched": "2026-09-28",
+ "source_url": "https://ecos.bok.or.kr/#/Short/141Y003",
+ "source_note": "한국은행 ECOS 통계표 141Y003",
+ "note": "대구 소재 예금은행 대출금 잔액"
+}

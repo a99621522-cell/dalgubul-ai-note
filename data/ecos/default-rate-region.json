@@ -1,0 +1,20 @@
+{
+ "key": "default-rate-region",
+ "name": "어음부도율 — 지역별",
+ "stat_name": "7.1.2. 지역별 어음부도율",
+ "stat_code": "801Y003",
+ "cycle": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 1039,
+ "rows_kept": 55,
+ "latest": "202607",
+ "unit": "%",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://ecos.bok.or.kr/#/Short/801Y003",
+ "source_note": "한국은행 ECOS 통계표 801Y003",
+ "note": ""
+}

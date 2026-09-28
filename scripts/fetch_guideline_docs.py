@@ -39,6 +39,7 @@ INDEX = ROOT / "data" / "guidelines" / "index.json"
 TODAY = date.today().isoformat()
 POST_HREF = re.compile(r"view|read|detail|nttId|boardRead|articleView|seq=|idx=|no=|wr_id|contentsView|BoardView|getBoard|/board/[^/]+/view", re.I)
 FILE_HINT = re.compile(r"fileDown|FileDown|download|atchFile|fileSn|attach|\.(pdf|hwpx?|zip)(\?|$)", re.I)
+INNER_HINT = re.compile(r"안내문|안내서|지침|요령|기준|매뉴얼|가이드|규정|운영|집행|정산")   # zip 안 파일 이름(서식·양식은 exclude_pattern 이 거른다)
 DATE_RE = re.compile(r"(20\d{2})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})")
 
 
@@ -132,10 +133,11 @@ def attachments_of(html: str, base: str, link_re: re.Pattern, excl_re: re.Patter
         is_file = bool(ext_re.search(href)) or bool(FILE_HINT.search(href + " " + onclick)) or bool(re.search(r"\.(pdf|hwpx?|zip)\s*(\(|$)", t, re.I))
         if not is_file:
             continue
-        if excl_re.search(t):
-            continue
         is_zip = bool(re.search(r"\.zip\s*(\(|$)", t, re.I)) or bool(re.search(r"\.zip(\?|$)", href, re.I))
-        if not (title_hit or link_re.search(t) or is_zip):   # zip 은 안에 지침이 들어 있을 수 있어 열어 본다
+        # zip 은 이름이 '공통서식.zip'·'양식 및 관련규정.zip' 이어도 안에 지침이 들어 있을 수 있어 항상 열어 보고, 안의 파일 이름으로 거른다
+        if not is_zip and excl_re.search(t):
+            continue
+        if not (title_hit or link_re.search(t) or is_zip):
             continue
         k = (t, href)
         if k in seen:
@@ -167,6 +169,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
     raw_dir.mkdir(parents=True, exist_ok=True)
     out_dir.mkdir(parents=True, exist_ok=True)
     got, hashes, opened, files = [], set(), 0, 0
+    no_file_diag = 0
     existing = {v.get("sha") for v in idx["items"].values() if v.get("sha")}
     boards = list(org["seeds"])
     print(f"\n== {org['name']}")
@@ -213,6 +216,12 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                 files_seen = [(l[:40], h[-50:]) for l, h, oc in links_of(phtml, purl) if ext_re.search(h) or FILE_HINT.search(h + " " + oc) or re.search(r"\.(pdf|hwpx?|zip)\s*$", l, re.I)][:8]
                 if files_seen:
                     print(f"  글 '{title[:40]}' 첨부 {len(files_seen)}개 있으나 지침 이름 아님: {files_seen[:4]}")
+                elif no_file_diag < 2:   # 첨부 링크를 하나도 못 찾은 글은 표본을 남겨 첨부 방식(자바스크립트·iframe)을 알 수 있게
+                    no_file_diag += 1
+                    same = " (목록 주소 그대로 — 글 이동 안 됨)" if purl.split("#")[0] == final.split("#")[0] else ""
+                    sample = [(l[:25], h[-45:], oc[:45]) for l, h, oc in links_of(phtml, purl) if oc or h.startswith("javascript") or re.search(r"첨부|파일|다운|download", l + h, re.I)][:8]
+                    iframes = re.findall(r"<iframe[^>]+src=[\"']([^\"']+)", phtml)[:3]
+                    print(f"  글 '{title[:40]}' 첨부 링크 없음{same}: 주소 {purl[-70:]} / 표본 {sample} / iframe {iframes}")
                 continue
             print(f"  글 '{title[:50]}' → 첨부 후보 {len(atts)}개")
             for label, ahref in atts[:8]:
@@ -243,7 +252,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                                     zname = zi.filename.encode("cp437").decode("cp949")
                                 except Exception:  # noqa: BLE001
                                     zname = zi.filename
-                                if excl_re.search(zname) or not (link_re.search(zname) or title_hit):
+                                if excl_re.search(zname) or not (link_re.search(zname) or INNER_HINT.search(zname) or title_hit):
                                     continue
                                 zd = z.read(zi)
                                 zk = kind_of(zname, zd)

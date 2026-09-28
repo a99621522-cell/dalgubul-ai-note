@@ -10,7 +10,7 @@ const sections: { title: string; desc: string; tables: string[]; charts: string[
   { title: '산업구조 지표 — 17개 시도 비교', desc: 'KOSIS 지역소득(시도별 경제활동별 총부가가치, 24개 부문)으로 이 사이트가 계산한 입지계수·산업집중도·산업구조 변화속도. 정의는 저장소 scripts/structure_index.py 에 있습니다.', tables: ['structure17'], charts: ['hhi17'] },
   { title: '대구 부문별 부가가치와 입지계수', desc: '대구 총부가가치 24개 부문의 비중과 전국 대비 입지계수(2015년 대비). 고부가 3부문 비중 추이.', tables: ['daegu_sectors'], charts: ['lq-daegu', 'high-share'] },
   { title: '대구 산업별 기업·종사자 (중소기업기본통계)', desc: '산업중분류별 전체 기업·중소기업·소상공인 수와 종사자 수. 행정통계라 개인사업자를 포함합니다.', tables: ['sme_daegu'], charts: [] },
-  { title: '대구 산업별 사업체·종사자 (전국사업체조사)', desc: '전국사업체조사의 대구 산업별 사업체 수·종사자 수.', tables: ['census_daegu'], charts: [] },
+  { title: '대구 산업 중분류별 사업체·종사자 (전국사업체조사)', desc: '전국사업체조사(2020년부터 등록센서스 기반)의 대구 산업 대·중분류별 사업체 수·종사자 수와, 중분류 종사자 비중을 전국과 비교한 입지계수.', tables: ['census_daegu'], charts: ['lq-employment'] },
   { title: '대구 구·군별·산업별 취업자 (지역별고용조사)', desc: '반기마다 조사하는 시군구 취업자를 산업 대분류 묶음으로.', tables: ['employment_gu'], charts: [] },
   { title: '대구 고용·생산·인구이동 (월간)', desc: '경제활동인구조사(취업자·고용률·실업률), 광공업생산지수, 국내인구이동통계의 대구 월간 값.', tables: [], charts: ['employed', 'rates', 'mfg-index', 'migration'] },
 ];

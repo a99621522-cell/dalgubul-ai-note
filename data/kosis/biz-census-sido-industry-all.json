@@ -10,7 +10,7 @@
   "2026"
  ],
  "rows_total": 747742,
- "rows_kept": 747742,
+ "rows_kept": 14520,
  "latest": "2023",
  "unit": "개",
  "areas": [
@@ -23,5 +23,5 @@
  ],
  "fetched": "2026-09-28",
  "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01",
- "note": "산업 그룹의 공식 기준값(사업체·종사자)과 scripts/structure_index.py 의 종사자 기준 LQ. 40,000셀을 넘는 표라 연도×시도별로 나눠 받는다. 표 번호는 KOSIS 통계표 주소(statHtml.do?tblId=…)에서 확인"
+ "note": "산업 그룹의 공식 기준값(사업체·종사자)과 scripts/structure_index.py 의 종사자 기준 LQ. 40,000셀을 넘는 표라 연도×시도별로 나눠 받는다. 표 번호는 KOSIS 통계표 주소(statHtml.do?tblId=…)에서 확인 (저장은 대·중분류·사업체구분 계만)"
 }

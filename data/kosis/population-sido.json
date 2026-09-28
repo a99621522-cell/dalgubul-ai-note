@@ -1,0 +1,20 @@
+{
+ "key": "population-sido",
+ "name": "주민등록인구 — 시도별 연간 인구(인구성장률용, 행정안전부 주민등록인구현황)",
+ "tbl_nm": "행정구역(시군구)별 성별 인구수",
+ "org_id": "101",
+ "tbl_id": "DT_1B040A3",
+ "prd_se": "Y",
+ "period": [
+  "2014",
+  "2026"
+ ],
+ "rows_total": 10257,
+ "rows_kept": 10257,
+ "latest": "2025",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-09-28",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3",
+ "note": ""
+}

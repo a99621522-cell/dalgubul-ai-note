@@ -41,7 +41,7 @@ jobs:
           id=$(python3 -c "import re,sys;s=sys.argv[1];m=re.search(r'/d/([\w-]+)|[?&]id=([\w-]+)',s);print((m.group(1) or m.group(2)) if m else s)" "$FILE")
           case "$DEST" in /*|*..*) echo "잘못된 경로"; exit 1;; esac
           mkdir -p "$(dirname "$DEST")"
-          gdown --fuzzy -O "$DEST" "https://drive.google.com/uc?id=$id"
+          gdown -O "$DEST" "https://drive.google.com/uc?id=$id"
           sz=$(stat -c %s "$DEST"); echo "크기 $sz 바이트"
           [ "$sz" -le $((MAX_MB * 1024 * 1024)) ] || { echo "너무 큼"; exit 1; }
           file "$DEST"

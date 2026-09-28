@@ -7,7 +7,7 @@ on:
   # 기본 브랜치에 없는 워크플로는 수동 실행 API 에 안 잡히므로 작업 브랜치에서는 push 로도 돈다(전체 기관, ubuntu 러너)
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: [".github/workflows/institution_sites.yml", "scripts/check_institutions.py", "config/daegu_institutions.yml"]
+    paths: [".github/workflows/institution_sites.yml", "scripts/check_institutions.py"]
   workflow_dispatch:
     inputs:
       only:

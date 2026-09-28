@@ -37,7 +37,7 @@ def load() -> list[dict]:
 
 def write_list(insts: list[dict]) -> Path:
     lines = ["# 대구 기업지원기관 목록", "", f"기준 {date.today().isoformat()} · {len(insts)}곳 · 설정 config/daegu_institutions.yml · 공공·공익 기관만, 평가·순위 없음",
-             "", "| # | 구분 | 기관 | 홈페이지 | 기업지원 기능 | 이미 쓰는 설정 | 비고 |", "|---:|---|---|---|---|---|---|"]
+             "", "| # | 구분 | 기관 | 홈페이지 | 기업지원 기능 | 공고 게시판 | 홈페이지 조사 | 이미 쓰는 설정 | 비고 |", "|---:|---|---|---|---|---|---|---|---|"]
     n = 0
     for g, gname in GROUPS.items():
         for i in [x for x in insts if x.get("group") == g]:
@@ -46,7 +46,10 @@ def write_list(insts: list[dict]) -> Path:
             link = f"[{urlparse(url).netloc}]({url})" if url else "(주소 확인 필요)"
             if i.get("verify") and url:
                 link += " ⚠️확인 전"
-            lines.append(f"| {n} | {gname} | {i['name']} | {link} | {', '.join(i.get('support') or [])} | {', '.join(i.get('linked') or [])} | {i.get('note') or ''} |")
+            ck = i.get("checked") or {}
+            checked = (f"{ck.get('status', '')}" + (f" · robots {ck['robots']}" if ck.get("robots") else "") + (f" ({ck['date']})" if ck.get("date") else "")) if ck else ""
+            board = f"[게시판]({i['board']})" if i.get("board") else ""
+            lines.append(f"| {n} | {gname} | {i['name']} | {link} | {', '.join(i.get('support') or [])} | {board} | {checked} | {', '.join(i.get('linked') or [])} | {i.get('note') or ''} |")
     OUT.mkdir(parents=True, exist_ok=True)
     p = OUT / "list.md"
     p.write_text("\n".join(lines) + "\n", encoding="utf-8")

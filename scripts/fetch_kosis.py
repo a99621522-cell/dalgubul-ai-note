@@ -32,6 +32,8 @@ def period_range(prd_se: str, years: int) -> tuple[str, str]:
         return f"{y - years}01", f"{y}12"
     if prd_se == "Q":
         return f"{y - years}01", f"{y}04"
+    if prd_se == "H":
+        return f"{y - years}01", f"{y}02"
     return str(y - years), str(y)
 
 

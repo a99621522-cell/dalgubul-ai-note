@@ -246,6 +246,16 @@ def main() -> int:
                   "rank_hhi": sorted(regs, key=lambda r: -hhi[(r, Y1)]).index("대구") + 1, "rank_sci": sorted(regs, key=lambda r: -sci_avg[r]).index("대구") + 1,
                   "rank_growth": sorted(regs, key=lambda r: -g_grdp[r]).index("대구") + 1, "rank_corr": sorted(regs, key=lambda r: -corr[r]).index("대구") + 1}
     D["metro6_avg"] = {"grdp": round(sum(g_grdp[r] for r in METRO6) / 6, 2), "prod": round(sum(g_prod[r] for r in METRO6) / 6, 2), "pop": round(sum(g_pop[r] for r in METRO6 if r in g_pop) / len([r for r in METRO6 if r in g_pop]), 2)}
+    # 본문 상관계수·부문 비중 변동(본문 숫자 전수 대조용 — 본문의 모든 숫자는 이 JSON 에 있어야 한다)
+    D["corr"] = {"hhi_chg_growth": round(pearson([hhi_chg[r] for r in regs], [g_grdp[r] for r in regs]), 3),
+                 "hhi_chg_growth_ex_sejong": round(pearson([hhi_chg[r] for r in regs if r != "세종"], [g_grdp[r] for r in regs if r != "세종"]), 3),
+                 "hhi_chg_pop": round(pearson([hhi_chg[r] for r in regs if r in g_pop], [g_pop[r] for r in regs if r in g_pop]), 3),
+                 "hhi_chg_pop_ex_sejong": round(pearson([hhi_chg[r] for r in regs if r in g_pop and r != "세종"], [g_pop[r] for r in regs if r in g_pop and r != "세종"]), 3),
+                 "lqcorr_growth": round(pearson([corr[r] for r in regs], [g_grdp[r] for r in regs]), 3),
+                 "sci_growth": round(pearson([sci_avg[r] for r in regs], [g_grdp[r] for r in regs]), 3),
+                 "scih_growth": round(pearson([scih_avg[r] for r in regs], [g_grdp[r] for r in regs]), 3),
+                 "scih_prod": round(pearson([scih_avg[r] for r in regs if r in g_prod], [g_prod[r] for r in regs if r in g_prod]), 3)}
+    D["share_change"] = {r: [(SHORT.get(s_, s_), round(sh[(r, Y0)][s_] * 100, 1), round(sh[(r, Y1)][s_] * 100, 1)) for s_ in sorted(LEAVES, key=lambda x: -abs(sh[(r, Y1)][x] - sh[(r, Y0)][x]))[:3]] for r in regs}
     figs = {}
     # 요약-1 / 2-12: 성장률 vs 고착화
     pts = [{"label": r, "x": corr[r], "y": g_grdp[r], "highlight": r == "대구"} for r in regs]

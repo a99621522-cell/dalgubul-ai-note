@@ -75,21 +75,45 @@ def _get_rows(base: dict, start: str, end: str) -> list:
         if not e:
             return data if isinstance(data, list) else []
         last = e
-        if "초과" in e or "40000" in e.replace(",", ""):
-            rows = []
-            for y in range(int(start[:4]), int(end[:4]) + 1):
-                ps, pe = (f"{y}01", f"{y}{end[4:]}") if len(start) > 4 else (str(y), str(y))
-                params.update({"startPrdDe": ps, "endPrdDe": pe})
-                d = _call(params)
-                if not _err(d) and isinstance(d, list):
-                    rows.extend(d)
-                time.sleep(0.3)
+        if "초과" in e or "40000" in e.replace(",", ""):   # 오류 31: 40,000셀 초과 → 연도별, 그래도 넘치면 1단계 분류(시도) 코드별로 나눠 받는다
+            rows = _split_fetch(params, start, end)
             if rows:
                 return rows
         elif not any(x in e for x in ("21", "변수", "30", "존재하지")):   # 분류 단계가 모자라면 21 또는 30(데이터 없음)이 온다
             break
         time.sleep(0.3)
     raise RuntimeError(last or "응답 없음")
+
+
+def _obj1_codes(params: dict) -> list[str]:
+    """표 메타(ITM)에서 1단계 분류(OBJ_ID_SN=1)의 코드 목록. 40,000셀 초과 표를 코드별로 나눠 받을 때 쓴다."""
+    try:
+        r = requests.get("https://kosis.kr/openapi/statisticsData.do", params={"method": "getMeta", "apiKey": params["apiKey"], "format": "json", "jsonVD": "Y",
+                         "orgId": params["orgId"], "tblId": params["tblId"], "type": "ITM"}, headers={"User-Agent": UA}, timeout=(20, 60))
+        items = r.json()
+        return [it["ITM_ID"] for it in items if str(it.get("OBJ_ID_SN")) == "1" and it.get("OBJ_ID") != "ITEM"] if isinstance(items, list) else []
+    except Exception:  # noqa: BLE001
+        return []
+
+
+def _split_fetch(params: dict, start: str, end: str) -> list:
+    rows = []
+    years = range(int(start[:4]), int(end[:4]) + 1)
+    per = lambda y: (f"{y}01", f"{y}{end[4:]}") if len(start) > 4 else (str(y), str(y))
+    for y in years:                                         # 1) 연도별
+        ps, pe = per(y)
+        d = _call({**params, "startPrdDe": ps, "endPrdDe": pe})
+        e = _err(d)
+        if not e and isinstance(d, list):
+            rows.extend(d); time.sleep(0.3); continue
+        if "초과" not in e and "40000" not in e.replace(",", ""):
+            time.sleep(0.3); continue
+        for code in _obj1_codes(params):                    # 2) 연도 × 1단계 분류 코드별
+            d = _call({**params, "startPrdDe": ps, "endPrdDe": pe, "objL1": code})
+            if not _err(d) and isinstance(d, list):
+                rows.extend(d)
+            time.sleep(0.3)
+    return rows
 
 
 def fetch_table(t: dict, key: str, dry: bool) -> dict | None:

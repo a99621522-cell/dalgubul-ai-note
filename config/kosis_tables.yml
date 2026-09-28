@@ -11,16 +11,6 @@ version: 2026-09-28
 defaults: { org_id: "101", area: ["대구"], years: 6 }
 tables:
   # ── 산업·기업 구조 (연간) ──
-  - key: biz-census-sigungu-industry
-    name: 전국사업체조사 — 시도·산업·사업체구분별 사업체 수·종사자 수('20~)
-    org_id: "101"
-    tbl_id: "DT_1K52D01"
-    search: "전국사업체조사 시군구 산업분류 사업체수"
-    prd_se: Y
-    area_col: C1
-    area: ["대구"]
-    areas: [manufacturing-ax, ai-sw-startup, machinery, automotive, textile, root]
-    note: 산업 그룹 11개의 공식 기준값. 팩토리온(공장)에 없는 SW·서비스 기업 규모 보정
   - key: biz-census-sido-industry-all
     name: 전국사업체조사 — 시도·산업·사업체구분별 사업체 수·종사자 수('20~), 17개 시도 전체(종사자 기준 입지계수용)
     org_id: "101"
@@ -29,7 +19,8 @@ tables:
     years: 6
     area_col: C1
     area: []
-    note: scripts/structure_index.py 의 종사자 기준 LQ. 표 번호는 KOSIS 통계표 주소(statHtml.do?tblId=…)에서 확인
+    areas: [manufacturing-ax, ai-sw-startup, machinery, automotive, textile, root]
+    note: 산업 그룹의 공식 기준값(사업체·종사자)과 scripts/structure_index.py 의 종사자 기준 LQ. 40,000셀을 넘는 표라 연도×시도별로 나눠 받는다. 표 번호는 KOSIS 통계표 주소(statHtml.do?tblId=…)에서 확인
   - key: mining-mfg-survey-sido
     name: 광업·제조업조사 — 시도·산업중분류별 사업체 수·종사자·출하액·부가가치(10인 이상)
     tbl_id: "DT_1F1610"

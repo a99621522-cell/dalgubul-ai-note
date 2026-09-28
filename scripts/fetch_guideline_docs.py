@@ -98,19 +98,26 @@ def click_attachment(post_url: str, label: str) -> tuple[str, bytes] | None:
 
 
 def list_posts(html: str, base: str, post_re: re.Pattern, link_re: re.Pattern, excl_re: re.Pattern) -> tuple[list[tuple[str, str]], list[str]]:
-    """목록 페이지에서 (제목, 주소 또는 javascript) 와 다음 쪽 링크."""
+    """목록 페이지에서 (제목, 주소 또는 '' = 제목 클릭) 와 다음 쪽 링크. href 없는 앵커·onclick 요소(td·span 등)의 글자도 제목 후보로 본다."""
+    from bs4 import BeautifulSoup
     posts, pages, seen = [], [], set()
-    for label, href, onclick in links_of(html, base):
+    cands: list[tuple[str, str, str]] = list(links_of(html, base))
+    soup = BeautifulSoup(html, "html.parser")
+    for el in soup.find_all(lambda tag: (tag.name == "a" and not tag.has_attr("href")) or tag.has_attr("onclick")):
+        t = el.get_text(" ", strip=True)
+        if 6 <= len(t) <= 200:
+            cands.append((t, "", el.get("onclick") or ""))
+    for label, href, onclick in cands:
         t = label.strip()
         if len(t) < 6:
             if re.fullmatch(r"\d{1,2}", t) and href.startswith("http") and href not in pages:
                 pages.append(href)
             continue
-        if not (post_re.search(t) or link_re.search(t)) or excl_re.search(t):
+        if len(t) > 200 or not (post_re.search(t) or link_re.search(t)) or excl_re.search(t):
             continue
         if href.startswith("http") and not POST_HREF.search(href) and not POST_HREF.search(onclick):
             continue
-        k = t + "|" + href
+        k = t[:60]
         if k in seen:
             continue
         seen.add(k)
@@ -122,12 +129,13 @@ def attachments_of(html: str, base: str, link_re: re.Pattern, excl_re: re.Patter
     out, seen = [], set()
     for label, href, onclick in links_of(html, base):
         t = label.strip()
-        is_file = bool(ext_re.search(href)) or bool(FILE_HINT.search(href + " " + onclick)) or bool(re.search(r"\.(pdf|hwpx?|zip)\s*$", t, re.I))
+        is_file = bool(ext_re.search(href)) or bool(FILE_HINT.search(href + " " + onclick)) or bool(re.search(r"\.(pdf|hwpx?|zip)\s*(\(|$)", t, re.I))
         if not is_file:
             continue
         if excl_re.search(t):
             continue
-        if not (title_hit or link_re.search(t)):
+        is_zip = bool(re.search(r"\.zip\s*(\(|$)", t, re.I)) or bool(re.search(r"\.zip(\?|$)", href, re.I))
+        if not (title_hit or link_re.search(t) or is_zip):   # zip 은 안에 지침이 들어 있을 수 있어 열어 본다
             continue
         k = (t, href)
         if k in seen:
@@ -176,15 +184,17 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
             continue
         host = urlparse(final).netloc
         posts, pages = list_posts(html, final, post_re, link_re, excl_re)
-        # 첫 화면(seed 가 홈)이면 게시판 링크를 찾아 들어간다
-        if not posts and home_re:
+        # 첫 화면(seed 가 홈)이거나 글이 없으면 게시판 링크를 찾아 들어간다
+        if home_re and (not posts or len(urlparse(board).path.strip("/")) == 0):
             for label, href, _ in links_of(html, final):
-                if href.startswith("http") and urlparse(href).netloc == host and home_re.search(label) and href not in seen_boards:
+                if href.startswith("http") and urlparse(href).netloc == host and home_re.search(label) and href not in seen_boards and href not in boards:
                     boards.append(href)
         print(f"  {board[:90]} → 글 후보 {len(posts)}개, 쪽 {len(pages)}개")
         if len(posts) <= 2:   # 단서가 적으면 링크 표본을 남겨 설정(post_pattern·seeds)을 고칠 수 있게
-            sample = [(l[:30], h[-55:], oc[:40]) for l, h, oc in links_of(html, final) if len(l.strip()) >= 6][:25]
-            print(f"    링크 표본 {len(sample)}: {sample}")
+            sample = [(l[:30], h[-55:], oc[:40]) for l, h, oc in links_of(html, final) if len(l.strip()) >= 6 and (post_re.search(l) or re.search(r"20\d\d", l))][:15]
+            print(f"    글 비슷한 링크 표본 {len(sample)}: {sample}")
+            body_hint = re.findall(r"20\d\d년[^\n<]{6,60}", text_of(html))[:8]
+            print(f"    본문에 보이는 제목 표본: {body_hint}")
         for p in pages[: max(0, cfg["max_pages_per_board"] - 1)]:
             if p not in seen_boards:
                 boards.insert(0, p)
@@ -233,7 +243,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                                     zname = zi.filename.encode("cp437").decode("cp949")
                                 except Exception:  # noqa: BLE001
                                     zname = zi.filename
-                                if excl_re.search(zname) or not link_re.search(zname):
+                                if excl_re.search(zname) or not (link_re.search(zname) or title_hit):
                                     continue
                                 zd = z.read(zi)
                                 zk = kind_of(zname, zd)
@@ -260,6 +270,7 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                     files += 1
                     n = len([k for k in idx["items"] if k.startswith(f"doc-{key}-")]) + len([g for g in got]) + 1
                     dkey = f"doc-{key}-{n:02d}"
+                    txt = txt.encode("utf-8", errors="replace").decode("utf-8")
                     with gzip.open(out_dir / (fn + ".txt.gz"), "wt", encoding="utf-8") as gz:
                         gz.write(f"# {fn}\n# 기관: {org['name']}\n# 글: {title}\n# 출처: {purl}\n# 받은 날짜: {TODAY}\n\n{txt}")
                     entry = {"key": dkey, "name": Path(fn).stem.replace("_", " "), "kind": "기관 첨부(관리지침)", "issuer": org["name"],

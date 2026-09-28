@@ -40,22 +40,27 @@ def _records(data: bytes):
 
 
 def _para_text(payload: bytes) -> str:
-    out, i, n = [], 0, len(payload) - (len(payload) % 2)
+    """제어문자를 걷어낸 UTF-16LE 조각을 모아 한 번에 풀어 서로게이트 쌍(보충 문자)이 깨지지 않게 한다."""
+    out, buf, i, n = [], [], 0, len(payload) - (len(payload) % 2)
+
+    def flush():
+        if buf:
+            out.append(b"".join(buf).decode("utf-16-le", errors="replace"))
+            buf.clear()
     while i + 2 <= n:
         (ch,) = struct.unpack_from("<H", payload, i)
         if ch < 32:
+            flush()
             if ch in (10, 13):
                 out.append("\n")
             elif ch == 9:
                 out.append("\t")
-            if ch in ONE_CHAR_CTRL or ch == 9:
-                i += 2
-            else:
-                i += 16   # 인라인·확장 컨트롤: 8 WCHAR
+            i += 2 if (ch in ONE_CHAR_CTRL or ch == 9) else 16   # 인라인·확장 컨트롤: 8 WCHAR
             continue
-        out.append(chr(ch))
+        buf.append(payload[i:i + 2])
         i += 2
-    return "".join(out)
+    flush()
+    return "".join(out).encode("utf-8", errors="replace").decode("utf-8")
 
 
 def extract(path: str | Path) -> str:

@@ -182,6 +182,9 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                 if href.startswith("http") and urlparse(href).netloc == host and home_re.search(label) and href not in seen_boards:
                     boards.append(href)
         print(f"  {board[:90]} → 글 후보 {len(posts)}개, 쪽 {len(pages)}개")
+        if len(posts) <= 2:   # 단서가 적으면 링크 표본을 남겨 설정(post_pattern·seeds)을 고칠 수 있게
+            sample = [(l[:30], h[-55:], oc[:40]) for l, h, oc in links_of(html, final) if len(l.strip()) >= 6][:25]
+            print(f"    링크 표본 {len(sample)}: {sample}")
         for p in pages[: max(0, cfg["max_pages_per_board"] - 1)]:
             if p not in seen_boards:
                 boards.insert(0, p)
@@ -197,6 +200,9 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
             title_hit = bool(link_re.search(title))
             atts = attachments_of(phtml, purl, link_re, excl_re, ext_re, title_hit)
             if not atts:
+                files_seen = [(l[:40], h[-50:]) for l, h, oc in links_of(phtml, purl) if ext_re.search(h) or FILE_HINT.search(h + " " + oc) or re.search(r"\.(pdf|hwpx?|zip)\s*$", l, re.I)][:8]
+                if files_seen:
+                    print(f"  글 '{title[:40]}' 첨부 {len(files_seen)}개 있으나 지침 이름 아님: {files_seen[:4]}")
                 continue
             print(f"  글 '{title[:50]}' → 첨부 후보 {len(atts)}개")
             for label, ahref in atts[:8]:
@@ -243,8 +249,11 @@ def crawl(org: dict, cfg: dict, sess: requests.Session, robots: dict, idx: dict,
                     hashes.add(sha)
                     (raw_dir / fn).write_bytes(fd)
                     txt = to_text(fk, raw_dir / fn)
+                    if txt.startswith("(본문 추출 실패"):
+                        print(f"    {txt[:100]}: {fn[:50]}")
+                        continue
                     if len(txt.strip()) < 500:
-                        print(f"    본문 없음(스캔 PDF 등): {fn[:50]}")
+                        print(f"    본문 없음(스캔 PDF 등, {len(txt.strip())}자): {fn[:50]}")
                         continue
                     if min_year and years_in(fn) and max(years_in(fn)) < min_year:
                         continue

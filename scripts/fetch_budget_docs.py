@@ -132,7 +132,18 @@ def to_text(kind: str, path: Path) -> str:
                 parts = [re.sub(r"<[^>]+>", " ", z.read(n).decode("utf-8", errors="replace")) for n in z.namelist() if n.startswith("Contents/section")]
             return re.sub(r"[ \t]+", " ", "\n".join(parts))
         if kind == "hwp":
-            return subprocess.run(["hwp5txt", str(path)], capture_output=True, text=True, timeout=600).stdout
+            txt = ""
+            try:
+                r = subprocess.run(["hwp5txt", str(path)], capture_output=True, text=True, timeout=600)
+                txt = r.stdout
+                if not txt.strip():
+                    print(f"    hwp5txt 빈 결과({(r.stderr or '')[:80].strip()}) → hwp_text 로 다시 시도")
+            except Exception as e:  # noqa: BLE001
+                print(f"    hwp5txt 실패({str(e)[:60]}) → hwp_text 로 다시 시도")
+            if not txt.strip():
+                import hwp_text  # noqa: WPS433
+                txt = hwp_text.extract(path)
+            return txt
         if kind == "xlsx":
             import openpyxl
             wb = openpyxl.load_workbook(path, read_only=True, data_only=True)

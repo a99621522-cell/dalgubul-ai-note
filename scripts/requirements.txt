@@ -2,3 +2,4 @@ requests>=2.31
 feedparser>=6.0
 pyyaml>=6.0
 beautifulsoup4>=4.12
+olefile>=0.46   # HWP(OLE) 본문 추출 scripts/hwp_text.py

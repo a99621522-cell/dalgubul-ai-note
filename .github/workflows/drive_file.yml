@@ -1,0 +1,57 @@
+name: Drive 파일을 저장소에 넣기
+
+# 운영 세션의 Drive 커넥터는 10MB 를 넘는 파일을 내려받지 못한다. 이 워크플로가 러너에서 '링크가 있는 모든 사용자' 로 공유된
+# Drive 파일을 받아 지정한 경로(예: docs/sources/bok_supplychain_2026-07.pdf)에 커밋한다. 공개 자료(기관 발간 보고서)만 넣는다.
+# 실행: Actions → 이 워크플로 → Run workflow → file 에 Drive 파일 id 나 공유 링크, dest 에 저장소 안 경로.
+
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "Drive 파일 id 또는 공유 링크"
+        required: true
+      dest:
+        description: "저장소 안 저장 경로(파일명 포함)"
+        required: true
+      max_mb:
+        description: "허용 최대 크기(MB)"
+        required: false
+        default: "40"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q gdown
+      - name: 받기
+        env:
+          FILE: ${{ inputs.file }}
+          DEST: ${{ inputs.dest }}
+          MAX_MB: ${{ inputs.max_mb }}
+        run: |
+          set -e
+          id=$(python3 -c "import re,sys;s=sys.argv[1];m=re.search(r'/d/([\w-]+)|[?&]id=([\w-]+)',s);print((m.group(1) or m.group(2)) if m else s)" "$FILE")
+          case "$DEST" in /*|*..*) echo "잘못된 경로"; exit 1;; esac
+          mkdir -p "$(dirname "$DEST")"
+          gdown --fuzzy -O "$DEST" "https://drive.google.com/uc?id=$id"
+          sz=$(stat -c %s "$DEST"); echo "크기 $sz 바이트"
+          [ "$sz" -le $((MAX_MB * 1024 * 1024)) ] || { echo "너무 큼"; exit 1; }
+          file "$DEST"
+      - name: 커밋
+        env:
+          DEST: ${{ inputs.dest }}
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add "$DEST"
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "docs: Drive 파일 저장 — $DEST"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

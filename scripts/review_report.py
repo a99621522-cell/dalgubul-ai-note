@@ -285,7 +285,7 @@ def review_brief(path: Path, fm: str, body: str, errors: list, warns: list) -> N
     if official < BRIEF_MIN_OFFICIAL:
         errors.append(f"공식 자료 출처(kind: official/stat/report/law/gov) {official}건 < {BRIEF_MIN_OFFICIAL} — 통계·기관 발간물·법령·정부 문서로 받친다")
     if len(kinds) < len(re.findall(r"^\s*-\s*\{\s*title:", fm, re.M)):
-        warns.append("kind 가 없는 출처가 있음(official/stat/report/law/gov/news 중 하나)")
+        warns.append("kind 가 없는 출처가 있음(official/stat/report/law/gov/news/data 중 하나)")
 
 
 def review(path: Path) -> dict:

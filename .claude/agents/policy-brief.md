@@ -58,7 +58,7 @@ faq:
   - q: "…"
     a: "…"   # 3쌍, 본문 근거만
 sources:
-  - { title: "기관, 「자료명」", url: "https://…", date: "YYYY-MM-DD", kind: official }   # kind: official(통계·기관 발간물)/law(법령·고시)/gov(정부·시 보도자료)/report(연구 보고서)/news(기사)
+  - { title: "기관, 「자료명」", url: "https://…", date: "YYYY-MM-DD", kind: official }   # kind: official(통계·기관 발간물)/law(법령·고시)/gov(정부·시 보도자료)/report(연구 보고서)/news(기사)/data(저장소에 수집해 둔 KOSIS·ECOS 표 — 공식 자료 수에는 세지 않음)
 ---
 ```
 출처는 5건 이상, 그중 official/law/gov/report 가 2건 이상. 본문에서는 `[n]` 으로 sources 의 n번째를 가리킨다.
@@ -104,5 +104,6 @@ sources:
 2. `python3 scripts/review_report.py <파일>` 오류를 모두 고친다(최대 3회). 그다음 `python3 scripts/review_report.py --gate <파일>`.
 3. 자기 검토(각 항목을 출력에 적는다): 모든 숫자가 출처·계산과 맞는가 / 잣대가 다른 값을 같은 것처럼 쓰지 않았는가 / 병목과 제안이 맞물리는가 / 평가·기관 입장·기업 지목·예산 인용이 없는가 / 개조식인가.
 4. **발행 조건: --gate 가 PASS 이고 자기 검토 5항목이 모두 예** 일 때만 `draft: false`. 하나라도 아니면 `draft: true` 로 두고 사유를 적는다. 발행이면 `docs/strategy/proposals/<key>-YYYY-MM-DD.md` 에 3절만 복사.
+   - 작성 환경에서 WebFetch 가 막혀 원문을 못 열었으면 자기 검토 1항목은 '검색 요지와 일치' 로 예로 치되 본문에 "(요지)" 표시를 남긴다. 원문 대조는 푸시 뒤 워크플로(`scripts/verify_sources.py`, verify_sources.yml·publish_reports.yml)가 출처 URL 을 실제로 열어 접속·제목·날짜를 확인하고, FAIL 이면 자동으로 draft 로 되돌린다.
 5. `npm run build` 통과 확인. 커밋 메시지 "brief: <제목> YYYY-MM-DD" (끝에 "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" 줄). 푸시는 호출한 세션의 지시대로(지정 브랜치가 있으면 그 브랜치).
 6. 마지막 출력: 고른 주제와 채점표, 쓴 파일, 검사 결과, 발행 여부와 사유, 출처 수(공식 N·기사 N), 확인 못 한 것.

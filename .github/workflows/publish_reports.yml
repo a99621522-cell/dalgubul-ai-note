@@ -63,11 +63,11 @@ jobs:
           for f in $(git diff --name-only HEAD^1 HEAD -- 'src/content/posts/*-policy-*.md'); do
             [ -f "$f" ] || continue
             grep -qE '^draft:\s*false' "$f" || continue
-            if python3 scripts/review_report.py --gate "$f"; then echo "발행 문 통과: $f"; else
-              sed -i -E '0,/^draft:\s*false/s//draft: true   # 발행 문(--gate) 미통과(자동)/' "$f"; echo "draft 로 되돌림: $f"; fi
+            if python3 scripts/review_report.py --gate "$f" && python3 scripts/verify_sources.py "$f"; then echo "발행 문·출처 대조 통과: $f"; else
+              sed -i -E '0,/^draft:\s*false/s//draft: true   # 발행 문(--gate·출처 대조) 미통과(자동)/' "$f"; echo "draft 로 되돌림: $f"; fi
           done
-          git add src/content/posts
-          git diff --cached --quiet || git commit -m "publish: 발행 문 미통과 리포트를 draft 로 $(date -u +%Y-%m-%d)"
+          git add src/content/posts data/source_checks
+          git diff --cached --quiet || git commit -m "publish: 발행 문·출처 대조 결과 반영 $(date -u +%Y-%m-%d)"
       - name: 발행본 재검사 → 미달은 draft 로
         if: steps.merge.outputs.merged == '1'
         run: |

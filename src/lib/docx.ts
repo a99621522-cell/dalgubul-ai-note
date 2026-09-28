@@ -10,7 +10,7 @@ import { Resvg } from '@resvg/resvg-js';
 export type ReportMeta = {
   title: string; date: Date; area?: string; description?: string; summary?: string; url: string;
   faq: { q: string; a: string }[]; sources: { title: string; url: string; date?: string }[];
-  format?: 'report' | 'insight'; outline?: string[]; hero?: { caption: string; path: string };
+  format?: 'report' | 'insight' | 'brief'; outline?: string[]; hero?: { caption: string; path: string };
 };
 
 /** 그림 파일(public/ 아래 경로) → PNG 바이트. SVG 는 resvg 로 1600px 폭 렌더링, PNG 는 그대로. 없으면 null. */

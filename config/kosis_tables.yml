@@ -60,7 +60,23 @@ tables:
     search: "지역내총생산 경제활동별 시도"
     prd_se: Y
     area_col: C1
+  - key: grdp-sido-industry-all
+    name: 지역내총생산(GRDP) — 시도·경제활동별, 17개 시도 전체(산업구조지수 계산용)
+    tbl_id: "DT_1C91"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []
+    note: 입지계수·산업집중도·산업구조 변화속도(scripts/structure_index.py)는 전국 대비 비교라 모든 시도 행이 필요하다
   # ── 고용·인구 (월간·반기·연간) ──
+  - key: labor-force-sido-annual-all
+    name: 경제활동인구조사 — 시도별 취업자·고용률(연간, 17개 시도 전체)
+    tbl_id: "DT_1DA7004S"
+    prd_se: Y
+    years: 12
+    area_col: C1
+    area: []
+    note: 노동생산성(총부가가치/취업자) 계산용
   - key: regional-employment-sigungu
     name: 지역별고용조사 — 시군구·산업별 취업자
     tbl_id: "DT_1ES3A05S"

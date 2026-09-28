@@ -8,7 +8,6 @@
 | daegu-industry-ord | 대구광역시 지역산업 육성 및 지원 조례 | 조례 | 대구광역시 | 2019-02-28 | OK | 1,986 | 예산요구서 | https://www.law.go.kr/자치법규/대구광역시지역산업육성및지원조례 |
 | daegu-subsidy-ord | 대구광역시 지방보조금 관리 조례 | 조례 | 대구광역시 | 2023-05-10 | OK | 6,582 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/자치법규/대구광역시지방보조금관리조례 |
 | daegu-subsidy-rule | 대구광역시 지방보조금 관리 조례 시행규칙 | 규칙 | 대구광역시 |  | 없음 | 0 | 예산요구서 · 집행 · 결산서 |  |
-| doc-dfmts-01 | 2. 상세안내문 기술지원 2026년 모빌리티 부품 제조AI 확산센터 구축 사업 취합 재공고 KETI | 기관 첨부(hwpx) | 대구 미래차 전환 종합지원센터 | 2026-10-31 | OK | 1,325 | 예산요구서 · 집행 · 결산서 | https://d-fmts.or.kr/pg/bbs/board.php?bo_table=info1_re&wr_id=444 |
 | doc-riia-01 | 지역산업육성 기업지원사업 관리지침(중소벤처기업부 승인, 2023-09-01 시행) | 기관 첨부(hwp) | 대구지역산업진흥원 | 2023-09-01 | OK | 68,675 | 예산요구서 · 집행 · 결산서 | https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1 |
 | doc-riia-02 | 지역산업육성 기술개발사업 관리지침(중소벤처기업부 승인, 2023-09-01 시행) | 기관 첨부(hwp) | 대구지역산업진흥원 | 2023-09-01 | OK | 83,086 | 예산요구서 · 집행 · 결산서 | https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1 |
 | doc-riia-03 | 산업기술개발장비 통합관리요령 | 기관 첨부(hwpx) | 대구지역산업진흥원 | 2024-06-13 | OK | 73,479 | 예산요구서 · 집행 · 결산서 | https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1 |

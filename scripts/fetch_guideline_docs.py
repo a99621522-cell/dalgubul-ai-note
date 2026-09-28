@@ -39,7 +39,7 @@ INDEX = ROOT / "data" / "guidelines" / "index.json"
 TODAY = date.today().isoformat()
 POST_HREF = re.compile(r"view|read|detail|nttId|boardRead|articleView|seq=|idx=|no=|wr_id|contentsView|BoardView|getBoard|/board/[^/]+/view", re.I)
 FILE_HINT = re.compile(r"fileDown|FileDown|downFile|download|atchFile|fileSn|attach|\.(pdf|hwpx?|zip)(\?|$)", re.I)
-INNER_HINT = re.compile(r"안내문|안내서|지침|요령|기준|매뉴얼|가이드|규정|운영|집행|정산")   # zip 안 파일 이름(서식·양식은 exclude_pattern 이 거른다)
+INNER_HINT = re.compile(r"지침|요령|기준|매뉴얼|가이드|규정|집행|정산")   # zip 안 파일 이름(서식·양식은 exclude_pattern 이 거른다). 사업 상세안내문·신청방법 안내문은 지침이 아니라 뺐다
 DATE_RE = re.compile(r"(20\d{2})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})")
 
 

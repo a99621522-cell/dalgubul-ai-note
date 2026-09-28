@@ -146,6 +146,30 @@ def discover(t: dict, key: str) -> None:
         print(f"   {it.get('ORG_ID')} {it.get('TBL_ID')} | {it.get('TBL_NM')} | {it.get('STAT_NM', '')} | {it.get('PRD_DE', '')}")
 
 
+def probe(t: dict, key: str) -> None:
+    """표 하나의 메타(수록기간·항목·분류)와 최소 요청 응답을 그대로 찍는다 — 오류 21(잘못된 요청 변수)이 어느 인자 때문인지 볼 때."""
+    meta = "https://kosis.kr/openapi/statisticsData.do"
+    for typ in ("TBL", "PRD", "ITM", "OBJ", "CMMT"):
+        try:
+            r = requests.get(meta, params={"method": "getMeta", "apiKey": key, "format": "json", "jsonVD": "Y", "orgId": str(t["org_id"]), "tblId": t["tbl_id"], "type": typ},
+                             headers={"User-Agent": UA}, timeout=(20, 60))
+            print(f"[meta {typ}] {r.text[:1200]}")
+        except Exception as e:  # noqa: BLE001
+            print(f"[meta {typ}] 실패 {e}")
+    start, end = period_range(t.get("prd_se", "Y"), 1)
+    base = {"method": "getList", "apiKey": key, "itmId": "ALL", "format": "json", "jsonVD": "Y", "prdSe": t.get("prd_se", "Y"), "orgId": str(t["org_id"]), "tblId": t["tbl_id"]}
+    for n in (1, 2, 3, 4):
+        for extra in ({"newEstPrdCnt": "1"}, {"startPrdDe": start, "endPrdDe": end}):
+            params = {**base, **extra, **{f"objL{i}": "ALL" for i in range(1, n + 1)}}
+            try:
+                r = requests.get(API_DATA, params=params, headers={"User-Agent": UA}, timeout=(20, 120))
+                body = r.text
+                print(f"[try objL1..{n} {extra}] {len(body)}자: {body[:300]}")
+            except Exception as e:  # noqa: BLE001
+                print(f"[try objL1..{n} {extra}] 실패 {e}")
+            time.sleep(0.3)
+
+
 def walk_list(key: str, words: list[str], parent: str = "", depth: int = 0, max_depth: int = 6) -> None:
     """KOSIS 주제별 통계목록 트리를 내려가며 이름에 낱말이 든 목록·표를 찍는다(--list '전국사업체조사 시도'). 검색 API 는 일부 표를 못 찾는다."""
     try:
@@ -189,6 +213,7 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--summary", action="store_true")
     ap.add_argument("--list", default="", help="통계목록 트리에서 낱말이 든 표를 찾는다(예: '전국사업체조사 시도')")
+    ap.add_argument("--probe", default="", help="표 key 하나의 메타·최소 요청 응답을 찍는다(오류 21 원인 확인)")
     a = ap.parse_args()
     tables = load()
     if a.only:
@@ -201,6 +226,11 @@ def main() -> int:
         print("KOSIS_KEY 가 없어 받지 않음(GitHub Secrets 에 넣으면 동작)"); return 0
     if a.list:
         walk_list(key, a.list.split()); return 0
+    if a.probe:
+        for t in load():
+            if t["key"] == a.probe:
+                probe(t, key)
+        return 0
     metas = []
     for t in tables:
         if not t.get("tbl_id"):

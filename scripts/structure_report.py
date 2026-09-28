@@ -26,7 +26,7 @@ K = ROOT / "data" / "kosis"
 ID = "2026-09-30-policy-structure-daegu"
 OUT = ROOT / "public" / "figures" / ID
 Y0, Y1 = 2015, 2024
-SRC = "국가데이터처 지역소득·경제활동인구조사(KOSIS), 다잇다 노트 시산"
+SRC = "국가데이터처 지역소득·경제활동인구조사(KOSIS), 자체 계산"
 MFG = ["음식료품 및 담배제조업", "섬유 의복 및 가죽 제품 제조업", "목재종이인쇄 및 복제업", "석탄 및 석유 화학제품 제조업", "비금속광물 및 금속제품 제조업",
        "전기 전자 및 정밀기기 제조업", "기계 운송장비 및 기타 제품 제조업"]
 SVC = ["도매 및 소매업", "운수 및 창고업", "숙박 및 음식점업", "정보통신업", "금융 및 보험업", "부동산업", "전문 과학 및 기술 서비스업",
@@ -318,14 +318,14 @@ def main() -> int:
     D["emp_halves_2024"] = emp_halves.get(("대구", Y1))
     figs["2-8"] = save({"type": "line", "title": "대구 산업별 노동생산성 지수 추이(2015=100)", "unit": "", "x": [str(y) for y in range(Y0, Y1 + 1)],
                         "series": [{"name": "제조업", "values": ipx("대구", "제조업")}, {"name": "서비스업", "values": ipx("대구", "서비스업")}, {"name": "건설업", "values": ipx("대구", "건설업")}, {"name": "전산업", "values": pidx("대구")}], "ymin": 60,
-                        "source": "국가데이터처 지역소득·지역별고용조사(KOSIS), 다잇다 노트 시산 · 2024년 취업자는 상반기 값"}, "fig2-8")
+                        "source": "국가데이터처 지역소득·지역별고용조사(KOSIS), 자체 계산 · 2024년 취업자는 상반기 값"}, "fig2-8")
     figs["2-8n"] = save({"type": "line", "title": "전국 산업별 노동생산성 지수 추이(2015=100)", "unit": "", "x": [str(y) for y in range(Y0, Y1 + 1)],
                          "series": [{"name": "제조업", "values": ipx("전국", "제조업")}, {"name": "서비스업", "values": ipx("전국", "서비스업")}, {"name": "건설업", "values": ipx("전국", "건설업")}, {"name": "전산업", "values": pidx("전국")}], "ymin": 60,
-                         "source": "국가데이터처 지역소득·지역별고용조사(KOSIS), 다잇다 노트 시산 · 2024년 취업자는 상반기 값"}, "fig2-8n")
+                         "source": "국가데이터처 지역소득·지역별고용조사(KOSIS), 자체 계산 · 2024년 취업자는 상반기 값"}, "fig2-8n")
     # 2-9 / 2-10 히트맵
     figs["2-9"] = save({"type": "heatmap", "title": f"부가가치 기준 지역별 입지계수 히트맵({Y1}년)", "rows": regs, "cols": [SHORT.get(s, s) for s in LEAVES], "values": [[round(lqv[(r, Y1)][s] or 0, 2) for s in LEAVES] for r in regs], "vmin": 0.5, "vmax": 2.5, "highlight_row": "대구", "source": SRC}, "fig2-9")
     cshort = [s.split("(")[0][:9] for s in csecs]
-    figs["2-10"] = save({"type": "heatmap", "title": f"종사자 기준 지역별 입지계수 히트맵({cy}년, 전국사업체조사)", "rows": regs, "cols": cshort, "values": [[clq.get(r, {}).get(s) or 0 for s in csecs] for r in regs], "vmin": 0.5, "vmax": 2.5, "highlight_row": "대구", "source": "국가데이터처 전국사업체조사(KOSIS), 다잇다 노트 시산"}, "fig2-10")
+    figs["2-10"] = save({"type": "heatmap", "title": f"종사자 기준 지역별 입지계수 히트맵({cy}년, 전국사업체조사)", "rows": regs, "cols": cshort, "values": [[clq.get(r, {}).get(s) or 0 for s in csecs] for r in regs], "vmin": 0.5, "vmax": 2.5, "highlight_row": "대구", "source": "국가데이터처 전국사업체조사(KOSIS), 자체 계산"}, "fig2-10")
     D["emp_lq_daegu"] = {s.split("(")[0]: clq["대구"][s] for s in csecs}
     order = sorted(regs, key=lambda r: -corr[r])
     figs["2-11"] = save({"type": "hbar", "title": "과거 10년 간 지역별 특화산업 고착화 수준(2015·2024년 입지계수 상관계수)", "unit": "", "categories": order, "series": [{"name": "상관계수", "values": [round(corr[r], 3) for r in order]}], "source": SRC + f" · 17개 시도 평균 {avg(corr):.3f}"}, "fig2-11")

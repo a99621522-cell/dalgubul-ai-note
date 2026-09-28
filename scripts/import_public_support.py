@@ -212,6 +212,8 @@ def main(argv: list[str]) -> int:
                     continue
                 if m["kind"] == "support":
                     year = re.sub(r"\D", "", pick(r, m["year"]))[:4]
+                    if not year and m.get("as_of"):  # 연도 열이 없는 현황 파일: 기준일의 연도(그 시점에 유효한 선정·지정)
+                        year = m["as_of"][:4]
                     if year and int(year) < m.get("min_year", 0):
                         continue
                     program = pick(r, m["program"]) if not isinstance(m["program"], str) or m["program"] in r or any(k.startswith(m["program"]) for k in r) else m["program"]

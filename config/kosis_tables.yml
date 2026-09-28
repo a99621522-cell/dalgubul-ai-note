@@ -76,7 +76,7 @@ tables:
     area_col: C1
   - key: mfg-production-index-sido
     name: 광공업생산지수 — 시도·산업별(월간)
-    tbl_id: "DT_1F02001"
+    tbl_id: "INH_1F02001"
     search: "광공업생산지수 시도 산업별"
     prd_se: M
     years: 3

@@ -7,6 +7,7 @@
       data/kosis/population-sido.csv(주민등록인구 총인구수, 시도·연간) — 인구성장률(그림 2-17·2-24)
       data/kosis/employed-industry-sido.csv(지역별고용조사 시도·산업별 취업자, 반기 → 연평균; 2024년은 상반기만) — 산업별 노동생산성지수(그림 2-8)
       data/kosis/retail-sales-index-sido.csv(시도별 소매판매액지수 불변, 2020=100) — 소비 패널회귀(표 3-3)
+      data/kosis/export-region.csv(관세청 기업무역활동통계 지역별 수출현황: 활동기업 수출액 백만달러·업체 수, 2016~) — 수출 추이(그림 2-5)·수출 패널회귀(표 3-4)
 지표 정의는 scripts/structure_index.py(LQ·HHI·SCI·특화 비중·고부가 3부문). 값은 그대로, 평가 없음. 기관·작성자 명기 없음(계산 방식만 따름).
 출력: public/figures/<ID>/figN.svg (scripts/figure.py), data/kosis/structure_report.json(본문에 옮길 수치), 화면에 표 마크다운
 사용: python3 scripts/structure_report.py
@@ -64,7 +65,23 @@ ALIAS = {"계": "전국", "강원도": "강원", "전라북도": "전북", "세�
 
 def short_region(name: str) -> str | None:
     name = name.strip()
+    if name in REGION_SHORT.values():   # 이미 짧은 이름(관세청 표)
+        return name
     return REGION_SHORT.get(name) or ALIAS.get(name)
+
+
+def load_export():
+    """관세청 기업무역활동통계 지역별 수출현황: (짧은 지역, 연도) -> {'수출액': 백만달러, '업체수': 개} (활동기업 기준)."""
+    ex = defaultdict(dict)
+    for r in csv.DictReader(open(K / "export-region.csv", encoding="utf-8")):
+        reg = short_region(r["C1_NM"])
+        if r["C2_NM"] != "활동기업" or not reg or r["DT"] in ("", "-"):
+            continue
+        if r["ITM_NM"] == "교역액":
+            ex[(reg, int(r["PRD_DE"]))]["수출액"] = float(r["DT"])
+        elif r["ITM_NM"] == "업체수":
+            ex[(reg, int(r["PRD_DE"]))]["업체수"] = float(r["DT"])
+    return ex
 
 
 def load_pop():
@@ -182,7 +199,7 @@ def main() -> int:
     gva, real_tot, emp = load()
     real = load_real_sectors()
     lf = load_lf()
-    pop = load_pop(); emp_ind, emp_halves = load_emp_ind(); retail = load_retail()
+    pop = load_pop(); emp_ind, emp_halves = load_emp_ind(); retail = load_retail(); export = load_export()
     for (reg, y) in list(emp):          # 경제활동인구조사는 전국이 '계'
         if reg == "계":
             emp[("전국", y)] = emp[(reg, y)]
@@ -257,6 +274,18 @@ def main() -> int:
     svc_share = lambda y: {k: sum(gva[(R["대구"], y)].get(s, 0) for s in v) / sum(gva[(R["대구"], y)].get(x, 0) for x in SVC) * 100 for k, v in svc4.items()}
     D["svc_share"] = {y: {k: round(v, 1) for k, v in svc_share(y).items()} for y in (Y0, Y1)}
     figs["2-4"] = save({"type": "bar", "title": "대구 서비스업 내 업종별 부가가치 비중", "unit": "%", "categories": list(svc4), "series": [{"name": f"{Y0}년", "values": [round(v, 1) for v in svc_share(Y0).values()]}, {"name": f"{Y1}년", "values": [round(v, 1) for v in svc_share(Y1).values()]}], "source": SRC}, "fig2-4")
+    # 2-5 대구 수출액·수출기업 수 추이(관세청 기업무역활동통계, 활동기업). 원보고서의 품목별·시장별 수출 비중(2-5·2-6)은 시도×품목 자료가 없어 총액·기업 수로 대신한다
+    ex_years = sorted({y for (r, y) in export if r == "대구"})
+    ex_nat = {y: sum(export[(r, y)]["수출액"] for r in regs if (r, y) in export and "수출액" in export[(r, y)]) for y in ex_years}
+    D["export"] = {"years": ex_years, "대구_수출액": {y: export[("대구", y)]["수출액"] for y in ex_years}, "대구_업체수": {y: int(export[("대구", y)]["업체수"]) for y in ex_years},
+                   "대구_비중": {y: round(export[("대구", y)]["수출액"] / ex_nat[y] * 100, 2) for y in ex_years}, "17개시도_합": {y: round(ex_nat[y]) for y in ex_years},
+                   "대구_증가율": round(cagr(export[("대구", ex_years[0])]["수출액"], export[("대구", ex_years[-1])]["수출액"], ex_years[-1] - ex_years[0]), 2),
+                   "전국_증가율": round(cagr(ex_nat[ex_years[0]], ex_nat[ex_years[-1]], ex_years[-1] - ex_years[0]), 2),
+                   "rank_2024": sorted(regs, key=lambda r: -export.get((r, 2024), {}).get("수출액", 0)).index("대구") + 1}
+    figs["2-5"] = save({"type": "bar", "title": "대구 수출액 추이(활동 수출기업 기준)", "unit": "백만달러", "categories": [str(y) for y in ex_years],
+                        "series": [{"name": "수출액", "values": [round(export[("대구", y)]["수출액"]) for y in ex_years]}], "source": "관세청 기업무역활동통계(KOSIS) · 활동기업 수출액, 명목 달러"}, "fig2-5")
+    figs["2-6"] = save({"type": "bar", "title": "대구 활동 수출기업 수 추이", "unit": "곳", "categories": [str(y) for y in ex_years],
+                        "series": [{"name": "수출기업 수", "values": [int(export[("대구", y)]["업체수"]) for y in ex_years]}], "source": "관세청 기업무역활동통계(KOSIS) · 17개 시도 합계 중 대구 비중은 본문 표"}, "fig2-6")
     # 2-7 종사자 비중(전국사업체조사 대분류, 대구 최신), 2-8 노동생산성 지수(총량, 2015=100) 대구·전국
     cy, csecs, clq, cemp = census_lq_major()
     dtot = sum(cemp[("대구", cy)].values())   # 전국사업체조사는 시도 이름이 짧다(대구·전국)
@@ -322,7 +351,7 @@ def main() -> int:
     # Ⅲ 패널 회귀(연간, 17개 시도 × 2016~2024): Δln Y 에 특화비중(t-1) / Δln HHI / SCI 각각, 통제: 경제활동인구 증가율, 지역·연도 고정효과
     D["panel"] = {}
     for dep_name, dep in (("GRDP", lambda r, y: math.log(real_tot[(R[r], y, "지역내총생산(시장가격)")])), ("노동생산성", lambda r, y: math.log(prod[(r, y)])),
-                          ("소매판매", lambda r, y: math.log(retail[(r, y)]))):
+                          ("소매판매", lambda r, y: math.log(retail[(r, y)])), ("수출", lambda r, y: math.log(export[(r, y)]["수출액"]))):
         res = {}
         for var, xf in (("특화산업 비중(t-1)", lambda r, y: spec_share[(r, y - 1)]), ("Δln(산업집중도)", lambda r, y: math.log(hhi[(r, y)]) - math.log(hhi[(r, y - 1)])), ("산업구조 변화속도", lambda r, y: sci[(r, y)])):
             ys, Xs, gs, ts = [], [], [], []
@@ -346,6 +375,7 @@ def main() -> int:
     print("인구 증가율 대구/전국/6광역시:", D["pop_growth"]["대구"], D["pop_growth"]["전국"], D["metro6_avg"]["pop"], "2-17", D["fig2_17"])
     print("산업별 노동생산성 증가율", json.dumps(D["ind_prod_growth"], ensure_ascii=False), "2024 반기 수", D["emp_halves_2024"])
     print("산업별 지수 대구", json.dumps(D["ind_prod_index"]["대구"], ensure_ascii=False))
+    print("수출", json.dumps(D["export"], ensure_ascii=False))
     return 0
 
 

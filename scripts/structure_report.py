@@ -322,7 +322,7 @@ def main() -> int:
     # 2-13 대구 상·하위 특화산업, 표 2-1
     lq24 = sorted(((SHORT.get(s, s), lqv[("대구", Y1)][s], s) for s in LEAVES), key=lambda x: -x[1])
     top5, bot5 = lq24[:5], lq24[-5:]
-    figs["2-13"] = save({"type": "hbar", "title": f"대구 상·하위 특화산업({Y1}년 부가가치 기준 입지계수)", "unit": "", "categories": [t[0] for t in top5] + ["…"] + [t[0] for t in bot5], "series": [{"name": "입지계수", "values": [round(t[1], 2) for t in top5] + [0] + [round(t[1], 2) for t in bot5]}], "source": SRC}, "fig2-13")
+    figs["2-13"] = save({"type": "hbar", "title": f"대구 상·하위 특화산업({Y1}년 부가가치 기준 입지계수)", "unit": "", "categories": [t[0] for t in top5] + ["…"] + [t[0] for t in bot5], "series": [{"name": "입지계수", "values": [round(t[1], 2) for t in top5] + [None] + [round(t[1], 2) for t in bot5]}], "source": SRC}, "fig2-13")
     D["table_2_1"] = [{"산업": t[0], "lq_2015": round(lqv[("대구", Y0)][t[2]], 1), "lq_2024": round(t[1], 1), "share_2015": round(sh[("대구", Y0)][t[2]] * 100, 1), "share_2024": round(sh[("대구", Y1)][t[2]] * 100, 1)} for t in top5]
     D["bottom5"] = [{"산업": t[0], "lq_2024": round(t[1], 2)} for t in bot5]
     # 2-14 HHI, 2-17 고집중 vs 저집중(15세 이상 인구 증가율), 2-19 SCI, 2-22 고부가 SCI 상·하위 노동생산성, 2-23, 2-24

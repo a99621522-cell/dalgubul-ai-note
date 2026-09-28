@@ -2,15 +2,15 @@
 <rect width="800" height="420" fill="#ffffff"/>
 <text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >최근 시·도별 산업구조 변화속도(2015~24년 연평균 SCI)</text>
 <line x1="70" y1="350.0" x2="776" y2="350.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="62.0" y="354.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<text x="62.0" y="354.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0000</text>
 <line x1="70" y1="277.5" x2="776" y2="277.5" stroke="#e0e0e0" stroke-width="1"/>
-<text x="62.0" y="281.5" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0</text>
+<text x="62.0" y="281.5" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0125</text>
 <line x1="70" y1="205.0" x2="776" y2="205.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="62.0" y="209.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0</text>
+<text x="62.0" y="209.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0250</text>
 <line x1="70" y1="132.5" x2="776" y2="132.5" stroke="#e0e0e0" stroke-width="1"/>
-<text x="62.0" y="136.5" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0</text>
+<text x="62.0" y="136.5" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0375</text>
 <line x1="70" y1="60.0" x2="776" y2="60.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="62.0" y="64.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.1</text>
+<text x="62.0" y="64.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0500</text>
 <path d="M78.8,350.0 v-284.8 q0,-4 4,-4 h16.0 q4,0 4,4 v284.8 z" fill="#1B4F9B"/>
 <text x="90.8" y="372.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >울산</text>
 <path d="M120.3,350.0 v-218.7 q0,-4 4,-4 h16.0 q4,0 4,4 v218.7 z" fill="#1B4F9B"/>

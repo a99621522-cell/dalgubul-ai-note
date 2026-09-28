@@ -29,6 +29,16 @@ def fmt(v: float | int | None) -> str:
     return f"{v:,.0f}" if float(v).is_integer() else f"{v:,.1f}"
 
 
+def fmt_tick(v: float, step: float) -> str:
+    """눈금 값: 눈금 간격이 1 보다 작으면 간격에 맞는 소수 자리로(0.0294 같은 값이 전부 0.0 으로 찍히지 않게)."""
+    if step >= 1:
+        return fmt(v)
+    dec = 1
+    while dec < 5 and abs(round(step, dec) - step) > step * 0.01:   # 간격(예 0.0125)이 그대로 보이는 자리까지
+        dec += 1
+    return f"{v:,.{dec}f}"
+
+
 def nice_max(v: float) -> float:
     if v <= 0:
         return 1
@@ -85,10 +95,11 @@ def bar(spec):
     out = header(spec, h)
     if k > 1:
         out += legend(series, left, 54)
+    tstep = (ticks[1] - ticks[0]) if len(ticks) > 1 else 1
     for val in ticks:
         y = top + ph - ph * (val - vmin) / span
         out.append(f'<line x1="{left}" y1="{y:.1f}" x2="{left + pw}" y2="{y:.1f}" stroke="{LINE}" stroke-width="1"/>')
-        out.append(text(left - 8, y + 4, fmt(val), 12, MUTED, "end"))
+        out.append(text(left - 8, y + 4, fmt_tick(val, tstep), 12, MUTED, "end"))
     if vmin < 0:
         out.append(f'<line x1="{left}" y1="{y0:.1f}" x2="{left + pw}" y2="{y0:.1f}" stroke="{MUTED}" stroke-width="1"/>')
     group = pw / n
@@ -109,7 +120,7 @@ def bar(spec):
                 out.append(f'<path d="M{x:.1f},{y0:.1f} v{max(bh - 4, 0):.1f} q0,4 4,4 h{bw - 8:.1f} q4,0 4,-4 v{-max(bh - 4, 0):.1f} z" fill="{COLORS[j % 6]}"/>')
                 ly = y0 + bh + 14
             if n * k <= 12:
-                out.append(text(x + bw / 2, ly, fmt(v), 12, INK, "middle", 600))
+                out.append(text(x + bw / 2, ly, fmt_tick(v, tstep) if tstep < 1 else fmt(v), 12, INK, "middle", 600))
         out.append(text(left + group * i + group / 2, top + ph + 22, c, 13, INK, "middle"))
     out.append(text(W - right, h - 36, spec.get("unit", ""), 12, MUTED, "end"))
     return "\n".join(out + footer(spec, h))
@@ -130,7 +141,7 @@ def hbar(spec):
     for t in range(5):
         x = left + pw * t / 4
         out.append(f'<line x1="{x:.1f}" y1="{top}" x2="{x:.1f}" y2="{top + rowh * n}" stroke="{LINE}"/>')
-        out.append(text(x, top + rowh * n + 18, fmt(vmax * t / 4), 12, MUTED, "middle"))
+        out.append(text(x, top + rowh * n + 18, fmt_tick(vmax * t / 4, vmax / 4), 12, MUTED, "middle"))
     for i, c in enumerate(cats):
         y0 = top + rowh * i + 7
         out.append(text(left - 8, y0 + (rowh - 14) / 2 + 5, c, 13, INK, "end"))
@@ -142,7 +153,7 @@ def hbar(spec):
             y = y0 + j * 18
             out.append(f'<path d="M{left},{y} h{max(bw - 4, 0):.1f} q4,0 4,4 v6 q0,4 -4,4 h{-max(bw - 4, 0):.1f} z" fill="{COLORS[j % 6]}"/>')
             if n * k <= 12:
-                out.append(text(left + bw + 6, y + 11, fmt(v) + (spec.get("unit", "") if k == 1 else ""), 12, INK, "start", 600))
+                out.append(text(left + bw + 6, y + 11, (fmt_tick(v, vmax / 4) if vmax < 4 else fmt(v)) + (spec.get("unit", "") if k == 1 else ""), 12, INK, "start", 600))
     return "\n".join(out + footer(spec, h))
 
 
@@ -285,10 +296,16 @@ def scatter(spec):
     if spec.get("ymean") is not None:
         out.append(f'<line x1="{left}" y1="{sy(spec["ymean"]):.1f}" x2="{left + pw}" y2="{sy(spec["ymean"]):.1f}" stroke="{COLORS[2]}" stroke-width="1.5" stroke-dasharray="6,4"/>')
         out.append(text(left + 4, sy(spec["ymean"]) - 5, f"{spec.get('ymean_label', '평균')}: {spec['ymean']:.{spec.get('ydec', 1)}f}", 11, COLORS[2]))
+    placed = []   # 이름표 겹침 방지: 가까운 점의 이름표는 아래쪽으로 밀어 낸다
     for p_ in pts:
         hl = p_.get("highlight")
         out.append(f'<circle cx="{sx(p_["x"]):.1f}" cy="{sy(p_["y"]):.1f}" r="{7 if hl else 5}" fill="{COLORS[1] if hl else COLORS[0]}" stroke="{BG}" stroke-width="2"/>')
-        out.append(text(sx(p_["x"]) + 8, sy(p_["y"]) - 6, p_["label"], 12 if hl else 11, INK if hl else MUTED, weight=700 if hl else 400))
+        lx, ly = sx(p_["x"]) + 8, sy(p_["y"]) - 6
+        for (qx, qy) in placed:
+            if abs(qx - lx) < 44 and abs(qy - ly) < 13:
+                ly = qy + 13
+        placed.append((lx, ly))
+        out.append(text(lx, ly, p_["label"], 12 if hl else 11, INK if hl else MUTED, weight=700 if hl else 400))
     out.append(text(left + pw / 2, h - 36, spec.get("xlabel", ""), 12, MUTED, "middle"))
     out.append(text(16, top - 8, spec.get("ylabel", ""), 12, MUTED))
     return "\n".join(out + footer(spec, h))

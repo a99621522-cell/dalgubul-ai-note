@@ -6,15 +6,15 @@
 <rect x="139.6" y="44" width="14" height="10" rx="2" fill="#E69F00"/>
 <text x="159.6" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >하위</text>
 <line x1="70" y1="350.0" x2="776" y2="350.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="62.0" y="354.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<text x="62.0" y="354.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.0</text>
 <line x1="70" y1="283.0" x2="776" y2="283.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="62.0" y="287.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0.5</text>
 <line x1="70" y1="216.0" x2="776" y2="216.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="62.0" y="220.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1</text>
+<text x="62.0" y="220.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.0</text>
 <line x1="70" y1="149.0" x2="776" y2="149.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="62.0" y="153.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.5</text>
 <line x1="70" y1="82.0" x2="776" y2="82.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="62.0" y="86.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2</text>
+<text x="62.0" y="86.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2.0</text>
 <path d="M132.2,350.0 v-219.8 q0,-4 4,-4 h16.0 q4,0 4,4 v219.8 z" fill="#1B4F9B"/>
 <text x="144.2" y="120.2" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1.7</text>
 <path d="M160.2,350.0 v-168.9 q0,-4 4,-4 h16.0 q4,0 4,4 v168.9 z" fill="#E69F00"/>

@@ -104,7 +104,11 @@ jobs:
       - name: main 푸시
         if: steps.merge.outputs.merged == '1'
         run: |
-          git pull --rebase origin main || true
+          # 2026-09-28 사고: `git pull --rebase … || true` 가 충돌로 리베이스 도중에 멈춘 채 HEAD 가 origin/main 으로 돌아가
+          # `git push HEAD:main` 이 "Everything up-to-date" 로 조용히 아무것도 안 올렸다(브리프·기관 지침 커밋 21개가 하루 동안 브랜치에 갇힘).
+          # 병합(merge)으로 받고, 충돌이면 실패로 끝내 로그에 남긴다.
+          git fetch origin main
+          git merge --no-edit origin/main
           git push origin HEAD:main
   deploy:
     needs: merge

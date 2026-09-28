@@ -45,6 +45,8 @@ guidelines:
       applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [R&D] }, review: [결산서] }   # '관리지침'은 고시가 아니라 못 찾음(2026-09-27) → 기술료 관리규정으로
   - { key: mss-startup,        kind: 고시,   issuer: 중소벤처기업부,  name: 창업지원사업 통합관리지침,                 source: { type: admrul, name: 창업지원사업통합관리지침 }, queries: ["창업지원사업 관리", "창업사업화 지원사업"], match_issuer: 중소벤처기업부, verify: true,
       applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [창업, 보조금], name_pattern: "창업|스타트업|팁스|TIPS|액셀러" }, review: [예산요구서, 집행, 결산서] }
+  - { key: mss-regional,       kind: 고시,   issuer: 중소벤처기업부,  name: 지역산업육성사업 운영요령,                 source: { type: admrul, name: 지역산업육성사업운영요령 }, queries: ["지역산업육성사업 운영요령", "지역산업육성사업"], match_issuer: 중소벤처기업부,
+      applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [R&D, 보조금], name_pattern: "지역주력|지역특화|지역혁신|지역산업|지역 산업|지역기업|지역 기업|스마트특성화|지역혁신선도|지역스타" }, review: [예산요구서, 집행, 결산서] }   # 중기부고시 제2025-34호(2025-04-04 시행). 지역주력산업육성·지역혁신선도기업육성(R&D) 등 중기부 지역산업육성사업(관리기관 지역산업진흥원·테크노파크) — 운영자 지시 2026-09-28
   - { key: mss-smart,          kind: 고시,   issuer: 중소벤처기업부,  name: 중소기업 스마트제조혁신 지원사업 운영 등에 관한 고시, source: { type: admrul, name: 중소기업스마트제조혁신지원사업운영등에관한고시 },
       applies: { layer: 국비, ministry: 중소벤처기업부, program_type: [보조금], name_pattern: "스마트공장|스마트제조|제조혁신" }, review: [예산요구서, 집행, 결산서] }
   # ── 과학기술정보통신부(ICT) ──

@@ -1,0 +1,69 @@
+# 기관 관리지침 수집 대상 — 대구 기업지원기관 홈페이지의 공고·규정 게시판에서 사업 관리지침·운영지침·사업비 집행(정산) 지침 첨부를 받아
+# data/guidelines/docs/<org>/*.txt.gz 로 남기고 data/guidelines/index.json 에 'doc-<org>-<번호>' 항목으로 넣는다(scripts/fetch_guideline_docs.py,
+# .github/workflows/guideline_docs.yml). 운영자 지시 2026-09-28 「대구시 기업지원기관 홈페이지 공고문에 들어가 관리지침을 다 반영」.
+# 원칙(CLAUDE.md 9항): 공공기관 사이트만, 하루 1회, robots.txt 존중. 공개 게시판에 올린 지침만(로그인 뒤 자료 없음). 지침 내용을 평가하지 않는다.
+# 흐름: seeds(게시판) → 제목이 post_pattern 에 맞는 글을 연다(최대 max_posts_per_org) → 첨부 가운데 link_pattern 에 맞고 exclude_pattern 에 안 걸리는
+#       PDF·HWP·HWPX·ZIP 을 받는다 → 본문 글자 추출 → 같은 내용(해시)이면 한 번만. 글 제목 자체가 link_pattern 에 맞으면 첨부 이름과 무관하게 받는다.
+# 이 세션 환경은 기관 사이트가 모두 막혀 있어 워크플로(미국 러너, Playwright)가 대신 돈다. 미국에서 접속이 안 되는 기관은 국내 러너(research_kr.yml 방식)로.
+version: 2026-09-28
+link_pattern: "관리\\s*지침|운영\\s*지침|사업\\s*지침|평가\\s*관리|운영\\s*요령|관리\\s*요령|사업비\\s*(관리|집행|정산|산정|사용)|집행\\s*기준|정산\\s*(지침|기준|안내|매뉴얼)|관리\\s*기준|운영\\s*기준|매뉴얼|가이드라인|사용\\s*기준|공통\\s*운영|통합\\s*관리"
+post_pattern: "지침|규정|요령|기준|매뉴얼|가이드|정산|사업비|공고|시행계획|안내"
+exclude_pattern: "신청서|서식|양식|별지|확약서|현황표?$|동의서|사업계획서|제안서|채용|입찰|낙찰|용역|임대|매각|평가위원|위원\\s*모집|인턴|기간제|결과\\s*발표|선정\\s*결과|최종\\s*선정|합격|설문|만족도|보도자료|뉴스레터|카드뉴스|홍보"
+file_ext: "pdf|hwpx?|zip"
+min_year: 2023            # 파일 이름·링크 글자에 연도가 있고 이보다 오래된 지침은 받지 않는다(2023-09 승인 관리지침이 현행인 경우가 있어 2023 부터)
+max_posts_per_org: 30     # 기관당 여는 글 수
+max_pages_per_board: 3    # 게시판 목록 넘김 수
+max_files_per_org: 30
+organizations:
+  - key: riia
+    name: 대구지역산업진흥원
+    home: https://daegu.riia.or.kr
+    seeds: ["https://daegu.riia.or.kr/board/regulationsAndForms", "https://daegu.riia.or.kr/board/businessAnnouncement"]
+    home_pattern: "규정|서식|사업공고|공지"
+    note: "지역산업육성사업(지역주력·지역혁신선도 등) 관리기관. '규정 및 서식' 게시판에 운영요령·관리지침·사업비 요령이 올라온다. 화면을 JS 로 그린다"
+  - key: ttp
+    name: 대구테크노파크
+    home: https://dgtp.or.kr
+    seeds: ["https://dgtp.or.kr/bbs/BoardControll.do?bbsId=BBSMSTR_000000000003", "https://dgtp.or.kr/bbs/BoardControll.do?bbsId=BBSMSTR_000000000001"]
+    home_pattern: "사업공고|공지사항|자료실|규정"
+    note: "사업공고(BBSMSTR_000000000003) 글의 첨부에 사업별 관리지침·사업비 집행 안내가 붙는다"
+  - key: dip
+    name: 대구디지털혁신진흥원
+    home: https://www.dip.or.kr
+    seeds: ["https://www.dip.or.kr"]
+    home_pattern: "사업공고|공지사항|자료실|공고"
+  - key: dmi
+    name: 대구기계부품연구원
+    home: https://www.dmi.re.kr
+    seeds: ["https://www.dmi.re.kr/portal/contents.do?mId=0509000000"]
+    home_pattern: "사업공고|공지|자료실"
+  - key: kmedi
+    name: 대구경북첨단의료산업진흥재단(케이메디허브)
+    home: https://www.kmedihub.re.kr
+    seeds: ["https://www.kmedihub.re.kr/index.do?menu_id=00000064"]
+    home_pattern: "사업공고|공지|자료실"
+  - key: kiapi
+    name: 지능형자동차부품진흥원
+    home: https://www.kiapi.or.kr
+    seeds: ["https://www.kiapi.or.kr/pages/board/list.php?board_sid=12"]
+    home_pattern: "사업공고|공지|자료실"
+  - key: dfmts
+    name: 대구 미래차 전환 종합지원센터
+    home: https://d-fmts.or.kr
+    seeds: ["https://d-fmts.or.kr/pg/bbs/board.php?bo_table=info1_re"]
+    home_pattern: "기업지원사업|공고|자료"
+  - key: kiria
+    name: 한국로봇산업진흥원
+    home: https://www.kiria.org
+    seeds: ["https://www.kiria.org/portal/info/portalInfoBusinessList.do", "https://kiria.org/pms/pbnc"]
+    home_pattern: "사업공고|규정|자료실"
+  - key: dgdp
+    name: 대구경북디자인진흥원
+    home: https://www.dgdp.or.kr
+    seeds: ["https://www.dgdp.or.kr/notice/public"]
+    home_pattern: "공고|공지|자료"
+  - key: ccei
+    name: 대구창조경제혁신센터
+    home: https://ccei.creativekorea.or.kr/daegu
+    seeds: ["https://ccei.creativekorea.or.kr/daegu/custom/notice_list.do"]
+    home_pattern: "공고|공지|모집"

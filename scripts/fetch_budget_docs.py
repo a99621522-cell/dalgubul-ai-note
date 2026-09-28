@@ -81,6 +81,7 @@ def download(url: str, referer: str, sess: requests.Session) -> tuple[str, bytes
         return None
     ct = r.headers.get("Content-Type", "")
     if r.status_code != 200 or "text/html" in ct or len(r.content) < 1000:
+        print(f"    내려받기 안 됨(HTTP {r.status_code}, {ct.split(';')[0] or '형식 없음'}, {len(r.content):,} bytes): {url[-70:]}")
         return None
     cd = r.headers.get("Content-Disposition", "")
     m = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
@@ -110,15 +111,27 @@ def click_download(page_url: str, label: str) -> tuple[str, bytes] | None:
 
 def kind_of(name: str, data: bytes) -> str:
     n = name.lower()
-    if n.endswith(".pdf") or data[:4] == b"%PDF":
+    # 파일 머리(매직)를 이름보다 먼저 본다 — .hwp 이름으로 올라온 HWPX(zip)·PDF 가 있다
+    if data[:4] == b"%PDF":
         return "pdf"
-    if n.endswith(".hwpx") or (data[:2] == b"PK" and b"Contents/" in data[:6000]):
+    if data[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":
+        return "xlsx" if n.endswith(".xls") else "hwp"
+    if data[:2] == b"PK":
+        head = data[:6000]
+        if b"Contents/" in head or n.endswith(".hwpx"):
+            return "hwpx"
+        if b"xl/" in head or n.endswith(".xlsx"):
+            return "xlsx"
+        return "zip"
+    if n.endswith(".pdf"):
+        return "pdf"
+    if n.endswith(".hwpx"):
         return "hwpx"
     if n.endswith((".xlsx", ".xls")):
         return "xlsx"
-    if n.endswith(".hwp") or data[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":
+    if n.endswith(".hwp"):
         return "hwp"
-    if n.endswith(".zip") or data[:2] == b"PK":
+    if n.endswith(".zip"):
         return "zip"
     return ""
 
@@ -132,7 +145,18 @@ def to_text(kind: str, path: Path) -> str:
                 parts = [re.sub(r"<[^>]+>", " ", z.read(n).decode("utf-8", errors="replace")) for n in z.namelist() if n.startswith("Contents/section")]
             return re.sub(r"[ \t]+", " ", "\n".join(parts))
         if kind == "hwp":
-            return subprocess.run(["hwp5txt", str(path)], capture_output=True, text=True, timeout=600).stdout
+            txt = ""
+            try:
+                r = subprocess.run(["hwp5txt", str(path)], capture_output=True, text=True, timeout=600)
+                txt = r.stdout
+                if not txt.strip():
+                    print(f"    hwp5txt 빈 결과({(r.stderr or '')[:80].strip()}) → hwp_text 로 다시 시도")
+            except Exception as e:  # noqa: BLE001
+                print(f"    hwp5txt 실패({str(e)[:60]}) → hwp_text 로 다시 시도")
+            if not txt.strip():
+                import hwp_text  # noqa: WPS433
+                txt = hwp_text.extract(path)
+            return txt
         if kind == "xlsx":
             import openpyxl
             wb = openpyxl.load_workbook(path, read_only=True, data_only=True)

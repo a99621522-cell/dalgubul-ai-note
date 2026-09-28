@@ -423,7 +423,10 @@ def review(path: Path) -> dict:
             (errors if is_err else warns).append(f"{name}: {', '.join(found[:5])}")
 
     # 길이·요지
-    n = len(re.sub(r"\s", "", body_nf))
+    n_src = body_nf
+    if brief:   # 브리프는 표 행을 길이에서 뺀다(표는 근거 자료라 길이 상한의 대상이 아님 — 운영자 지시 2026-09-30: 앵커 사업장 표에 기업명 기재)
+        n_src = "\n".join(l for l in body_nf.split("\n") if not l.lstrip().startswith("|"))
+    n = len(re.sub(r"\s", "", n_src))
     lo, hi = (BRIEF_MIN, BRIEF_MAX) if brief else (INSIGHT_MIN, INSIGHT_MAX) if insight else (BODY_MIN, BODY_MAX)
     if n < lo or n > hi:
         errors.append(f"본문 {n:,}자(공백 제외) — {lo:,}~{hi:,} 범위 밖")

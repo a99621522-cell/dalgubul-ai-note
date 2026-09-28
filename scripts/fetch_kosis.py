@@ -38,9 +38,18 @@ def period_range(prd_se: str, years: int) -> tuple[str, str]:
 
 
 def _call(params: dict) -> list | dict:
-    r = requests.get(API_DATA, params=params, headers={"User-Agent": UA}, timeout=90)
-    r.raise_for_status()
-    return r.json()
+    """접속 실패(시간 초과·연결 끊김)는 5·15·30초 뒤 다시 시도한다. 미국 러너에서 kosis.kr 접속이 가끔 막힌다."""
+    last = None
+    for wait in (0, 5, 15, 30):
+        if wait:
+            time.sleep(wait)
+        try:
+            r = requests.get(API_DATA, params=params, headers={"User-Agent": UA}, timeout=(20, 120))
+            r.raise_for_status()
+            return r.json()
+        except (requests.ConnectionError, requests.Timeout) as e:
+            last = e
+    raise RuntimeError(f"접속 실패(4회): {type(last).__name__}")
 
 
 def _err(data) -> str:

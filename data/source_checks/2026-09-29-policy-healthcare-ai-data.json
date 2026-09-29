@@ -1,13 +1,11 @@
 {
  "file": "src/content/posts/2026-09-29-policy-healthcare-ai-data.md",
  "checked": "2026-09-29",
- "ok": 46,
- "total": 51,
- "ratio": 0.9,
- "official_bad": [
-  "A comparison of institutional review board models and study efficiency in the Environmental influences on Child Health Outcomes Cohort Consortium (Contemporary Clinical Trials)"
- ],
- "pass": false,
+ "ok": 44,
+ "total": 50,
+ "ratio": 0.88,
+ "official_bad": [],
+ "pass": true,
  "sources": [
   {
    "title": "MarketsandMarkets, Artificial Intelligence in Healthcare Market worth $194.79 billion by 2031 (PR Newswire)",
@@ -50,12 +48,12 @@
    "url": "https://www.asiae.co.kr/article/2026061212010141501",
    "date": "2026-06-12",
    "kind": "news",
-   "status": 200,
-   "page_title": "&quot;디지털의료기기, '진단' 중심으로 성장…인허가 애로 커&quot;",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "의료기기 생산·수출 2년 연속 반등…무역수지 3억3000만달러 흑자 — 식약처 2025년 실적 (아시아경제)",
@@ -314,12 +312,12 @@
    "url": "https://www.etnews.com/20260528000252",
    "date": "2026-05-28",
    "kind": "news",
-   "status": 200,
-   "page_title": "日, AI 위해 의료기록·전과까지 푼다…“동의 없이 활용 가능” 논란 - 전자신문",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "대구시, '2026년 의료데이터 중개 사업' 본격 추진 — 포털 25만 건, 4차년도 (뉴스핌)",
@@ -548,18 +546,6 @@
    "date_found": true,
    "ok": true,
    "note": ""
-  },
-  {
-   "title": "A comparison of institutional review board models and study efficiency in the Environmental influences on Child Health Outcomes Cohort Consortium (Contemporary Clinical Trials)",
-   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:41232754%20AND%20SRC:MED&format=json&resultType=lite",
-   "date": "2025-11-11",
-   "kind": "report",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ReadTimeout"
   },
   {
    "title": "보건의료데이터표준 선도병원 1→4개소 확대 의료현장 실증·확산 본격화 (네이트뉴스)",

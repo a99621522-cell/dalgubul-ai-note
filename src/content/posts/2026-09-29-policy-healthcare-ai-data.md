@@ -63,7 +63,7 @@ sources:
   - { title: "Holland & Knight, CMS Releases CY 2026 Medicare Physician Fee Schedule Final Rule", url: "https://www.hklaw.com/en/insights/publications/2025/11/cms-releases-cy-2026-medicare-physician-fee-schedule-final-rule", date: "2025-11", kind: news }
   - { title: "UK should make money from NHS patient data, says health minister (Digital Health)", url: "https://www.digitalhealth.net/2025/12/uk-should-make-money-from-nhs-patient-data-says-health-minister/", date: "2025-12-04", kind: news }
   - { title: "복지부 '보건의료 데이터 활용 가이드라인' 개정…연구 문턱 낮춘다 (머니투데이)", url: "https://www.mt.co.kr/thebio/2025/12/31/2025123114272425006", date: "2025-12-31", kind: news }
-  - { title: "A comparison of institutional review board models and study efficiency in the Environmental influences on Child Health Outcomes Cohort Consortium (Contemporary Clinical Trials)", url: "https://pubmed.ncbi.nlm.nih.gov/41232754/", date: "2025-11-11", kind: report }
+  - { title: "A comparison of institutional review board models and study efficiency in the Environmental influences on Child Health Outcomes Cohort Consortium (Contemporary Clinical Trials)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12666723/", date: "2025-11-11", kind: report }
   - { title: "보건의료데이터표준 선도병원 1→4개소 확대 의료현장 실증·확산 본격화 (네이트뉴스)", url: "https://m.news.nate.com/view/20260902n25167", date: "2026-09-02", kind: news }
   - { title: "개인정보위, 보건의료 마이데이터 기관 387개로 확대 (뉴스핌)", url: "https://www.newspim.com/news/view/20260318000944", date: "2026-03-18", kind: news }
   - { title: "\"가명정보 제3자 재사용 허용\" 개보위, '개인정보 이노베이션 존' 신규 모집 (머니투데이)", url: "https://www.mt.co.kr/tech/2026/07/20/2026072014060429344", date: "2026-07-20", kind: news }

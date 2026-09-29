@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-09-29-policy-healthcare-ai-data.md",
  "checked": "2026-09-29",
- "ok": 44,
- "total": 50,
- "ratio": 0.88,
+ "ok": 46,
+ "total": 49,
+ "ratio": 0.94,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -48,12 +48,12 @@
    "url": "https://www.asiae.co.kr/article/2026061212010141501",
    "date": "2026-06-12",
    "kind": "news",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "&quot;디지털의료기기, '진단' 중심으로 성장…인허가 애로 커&quot;",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "의료기기 생산·수출 2년 연속 반등…무역수지 3억3000만달러 흑자 — 식약처 2025년 실적 (아시아경제)",
@@ -312,12 +312,12 @@
    "url": "https://www.etnews.com/20260528000252",
    "date": "2026-05-28",
    "kind": "news",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "日, AI 위해 의료기록·전과까지 푼다…“동의 없이 활용 가능” 논란 - 전자신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "대구시, '2026년 의료데이터 중개 사업' 본격 추진 — 포털 25만 건, 4차년도 (뉴스핌)",
@@ -521,18 +521,6 @@
    "title_match": 1.0,
    "date_found": false,
    "ok": true,
-   "note": ""
-  },
-  {
-   "title": "UK should make money from NHS patient data, says health minister (Digital Health)",
-   "url": "https://www.digitalhealth.net/2025/12/uk-should-make-money-from-nhs-patient-data-says-health-minister/",
-   "date": "2025-12-04",
-   "kind": "news",
-   "status": 403,
-   "page_title": "Just a moment...",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
    "note": ""
   },
   {

@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-09-24-policy-mobility-auto-parts.md",
- "checked": "2026-09-28",
- "ok": 16,
+ "checked": "2026-09-29",
+ "ok": 20,
  "total": 20,
- "ratio": 0.8,
+ "ratio": 1.0,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -12,24 +12,24 @@
    "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148953418",
    "date": "2025-10-29",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "한미, 관세협상 타결…자동차관세 15%·현금투자 연 200억 달러 상한 - 정책뉴스 | 뉴스 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "미국, '한국 자동차 관세 15%' 발효…11월 1일 소급 적용 (정책브리핑)",
    "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148955868",
    "date": "2025-12-04",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "미국, &#039;한국 자동차 관세 15%&#039; 4일 발효…11월 1일 소급 적용 - 정책뉴스 | 뉴스 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "Section 232 Auto Parts (2026): covered parts (Dutiable)",
@@ -48,12 +48,12 @@
    "url": "https://m.korea.kr/briefing/pressReleaseView.do?newsId=156776348",
    "date": "2026-09-01",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "2026년 8월 수출입동향 - 보도자료 | 브리핑룸 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "8월 자동차 수출 30% 급감 (뉴스핌, 산업부 8월 자동차산업 동향 인용)",
@@ -224,7 +224,7 @@
    "note": ""
   },
   {
-   "title": "HS화성 단일판매ㆍ공급계약체결 (DART, 다잇다 노트 글)",
+   "title": "HS화성 단일판매ㆍ공급계약체결 (DART 공시)",
    "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260922800306",
    "date": "2026-09-22",
    "kind": "",
@@ -240,12 +240,12 @@
    "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000126740",
    "date": "2026-09-21",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "기업마당>정책정보>지원사업 공고",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   }
  ]
 }

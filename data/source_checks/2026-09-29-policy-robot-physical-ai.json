@@ -1,12 +1,10 @@
 {
  "file": "src/content/posts/2026-09-29-policy-robot-physical-ai.md",
- "checked": "2026-09-28",
- "ok": 23,
+ "checked": "2026-09-29",
+ "ok": 25,
  "total": 27,
- "ratio": 0.85,
+ "ratio": 0.93,
  "official_bad": [
-  "산업통상부, 「(참고자료) '대한민국 대도약 3대 메가프로젝트 국민보고회' 개최」",
-  "대한민국 정책브리핑, 「2030년까지 휴머노이드 핵심부품 국산화율 80%로」(제2차 재정운용전략협의회)",
   "통계청 KOSIS·중소벤처기업부 중소기업기본통계, 「시도별·산업중분류별·기업규모별 기업수·종사자수」(2023년 값, 2026-09-28 수집)"
  ],
  "pass": false,
@@ -16,12 +14,12 @@
    "url": "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/171974/view",
    "date": "2026-06-29",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "(참고자료)‘대한민국 대도약 3대 메가프로젝트 국민보고회’ 개최 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "전자신문, 「새만금·대경권 양대 축으로 AI로봇 글로벌 3강으로 키운다」",
@@ -52,12 +50,12 @@
    "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148970725",
    "date": "2026-08-27",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "2030년까지 휴머노이드에 2.3조 투입…핵심부품 국산화율 80%로↑ - 정책뉴스 | 뉴스 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "머니투데이, 「전남광주시, '피지컬AI 휴머노이드 제조혁신센터' 구축」",
@@ -221,7 +219,7 @@
    "date": "2026-09-28",
    "kind": "news",
    "status": 200,
-   "page_title": "[기획]“감속기·모터 등 핵심 부품 국산화가 숙제” - 매일일보",
+   "page_title": "[기획]“감속기·모터 등 핵심 부품 국산화가 숙제” < 산업 < 경제 < 기사본문 - 매일일보",
    "title_match": 1.0,
    "date_found": true,
    "ok": true,
@@ -304,12 +302,12 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001",
    "date": "2026-09-28",
    "kind": "official",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.14,
    "date_found": false,
    "ok": false,
-   "note": "ConnectTimeout"
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   },
   {
    "title": "ZDNet Korea, 「로봇 밀도 1위 한국, 소재·부품 국산화율은 40%」(한국무역협회 국제무역통상연구원 「글로벌 로보틱스 산업 지형 변화와 한·일 공급망 비교 및 시사점」)",

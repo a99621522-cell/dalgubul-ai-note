@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-09-28-policy-structure-index.md",
- "checked": "2026-09-28",
- "ok": 3,
+ "checked": "2026-09-29",
+ "ok": 5,
  "total": 10,
- "ratio": 0.3,
+ "ratio": 0.5,
  "official_bad": [],
  "pass": false,
  "sources": [
@@ -12,48 +12,48 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91",
    "date": "2026-09-28",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.17,
    "date_found": false,
    "ok": false,
-   "note": "ConnectTimeout"
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   },
   {
    "title": "경제활동인구조사 — 행정구역(시도)별 경제활동인구(KOSIS, 국가데이터처)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S",
    "date": "2026-09-28",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.2,
    "date_found": false,
    "ok": false,
-   "note": "ConnectTimeout"
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   },
   {
    "title": "광공업생산지수(시도)(KOSIS, 국가데이터처)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=INH_1F02001",
    "date": "2026-09-28",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.33,
    "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "2024년 지역소득(잠정) (국가데이터처 보도자료, 대한민국 정책브리핑)",
    "url": "https://www.korea.kr/briefing/policyBriefingView.do?newsId=156736434",
    "date": "2025-12-23",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "2024년 지역소득(잠정) - 부처 브리핑 | 브리핑룸 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "대구시, 산업 대전환 시동…'피지컬 AI·반도체·바이오' 전략 짠다 (쿠키뉴스)",
@@ -101,27 +101,27 @@
    "title_match": 0.0,
    "date_found": false,
    "ok": false,
-   "note": "SSLError"
+   "note": "ConnectionError"
   },
   {
-   "title": "SDV 양산 2028년, 대구 전장 부품 76곳의 준비 (다잇다 노트)",
+   "title": "SDV 양산 2028년, 대구 전장 부품 76곳의 준비 ",
    "url": "https://note.daitda.co.kr/posts/2026-09-28-policy-mobility-sdv/",
    "date": "2026-09-28",
    "kind": "",
    "status": 404,
-   "page_title": "페이지를 찾을 수 없습니다 — 다잇다 노트",
+   "page_title": "페이지를 찾을 수 없습니다 — 다잇다",
    "title_match": 0.0,
    "date_found": true,
    "ok": false,
    "note": ""
   },
   {
-   "title": "대구 기업 사전 — 산업 그룹별 기업·고용(다잇다 노트, 2026-08 기준)",
+   "title": "대구 기업 사전 — 산업 그룹별 기업·고용(2026-08 기준)",
    "url": "https://note.daitda.co.kr/industry/",
    "date": "2026-09-28",
    "kind": "",
    "status": 200,
-   "page_title": "산업별 현황 — 다잇다 노트",
+   "page_title": "산업별 현황 — 다잇다",
    "title_match": 0.0,
    "date_found": true,
    "ok": true,

@@ -1,14 +1,11 @@
 {
  "file": "src/content/posts/2026-09-29-policy-healthcare-ai-data.md",
  "checked": "2026-09-29",
- "ok": 35,
+ "ok": 37,
  "total": 40,
- "ratio": 0.88,
- "official_bad": [
-  "한국데이터산업진흥원, 동향리포트 2025년 7호 「AI 학습용 데이터의 생태계 및 법제도 변화」",
-  "한국데이터산업진흥원, 동향리포트 2025년 6호 「합성데이터 생성과 활용, 향후 과제」"
- ],
- "pass": false,
+ "ratio": 0.93,
+ "official_bad": [],
+ "pass": true,
  "sources": [
   {
    "title": "MarketsandMarkets, Artificial Intelligence in Healthcare Market worth $194.79 billion by 2031 (PR Newswire)",
@@ -468,27 +465,27 @@
   },
   {
    "title": "한국데이터산업진흥원, 동향리포트 2025년 7호 「AI 학습용 데이터의 생태계 및 법제도 변화」",
-   "url": "https://www.kdata.or.kr/kr/board/info_01/boardList.do",
+   "url": "https://www.kdata.or.kr/kr/board/info_11/boardList.do?pageIndex=1&searchCondition=all&searchKeyword=%ED%95%99%EC%8A%B5%EC%9A%A9%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98%20%EC%83%9D%ED%83%9C%EA%B3%84",
    "date": "2025-11-28",
    "kind": "report",
    "status": 200,
-   "page_title": "한국데이터산업진흥원 - 정보마당 | 조사&amp;middot;연구보고서",
-   "title_match": 0.25,
-   "date_found": false,
-   "ok": false,
-   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+   "page_title": "한국데이터산업진흥원 - 정보마당 | 데이터 산업 동향",
+   "title_match": 0.75,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "한국데이터산업진흥원, 동향리포트 2025년 6호 「합성데이터 생성과 활용, 향후 과제」",
-   "url": "https://www.kdata.or.kr/kr/board/info_01/boardList.do",
+   "url": "https://www.kdata.or.kr/kr/board/info_11/boardList.do?pageIndex=1&searchCondition=all&searchKeyword=%ED%95%A9%EC%84%B1%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%83%9D%EC%84%B1%EA%B3%BC%20%ED%99%9C%EC%9A%A9",
    "date": "2025-10-30",
    "kind": "report",
    "status": 200,
-   "page_title": "한국데이터산업진흥원 - 정보마당 | 조사&amp;middot;연구보고서",
-   "title_match": 0.25,
-   "date_found": false,
-   "ok": false,
-   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+   "page_title": "한국데이터산업진흥원 - 정보마당 | 데이터 산업 동향",
+   "title_match": 0.75,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   }
  ]
 }

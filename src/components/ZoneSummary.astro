@@ -1,0 +1,90 @@
+---
+/** 첫 화면 '산업단지·특구별 기업': 산단 안/밖 기업 수·고용, 대구 지정 특구별 기업 수·고용, 산단별 목록(펼침).
+ *  특구 판정 규칙은 config/site_types.yml 의 zones(단지·입지 유형·태그로 근사). 숫자를 누르면 기업 사전 목록으로 간다. */
+import { companies, shortComplex } from '../lib/csv';
+import { OUTSIDE, zones, zoneCountable, zonesOf } from '../lib/sites';
+import { companyStats } from '../lib/stats';
+
+const list = companies();
+const emp = (companyStats()?.companies ?? {}) as Record<string, { e: number | null }>;
+const e = (id: string) => emp[id]?.e ?? 0;
+const nf = (n: number) => n.toLocaleString('ko-KR');
+const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : '—');
+const isOut = (cx: string) => !cx || cx === '개별입지' || cx === OUTSIDE();
+
+const inside = list.filter(c => !isOut(c.complex));
+const outside = list.filter(c => isOut(c.complex));
+const sum = (rs: typeof list) => rs.reduce((a, c) => a + e(c.id), 0);
+const total = list.length;
+
+const byComplex = [...inside.reduce((m, c) => m.set(c.complex, [...(m.get(c.complex) ?? []), c]), new Map<string, typeof list>())]
+  .map(([name, rs]) => ({ name, n: rs.length, w: sum(rs) }))
+  .sort((a, b) => b.n - a.n);
+
+const zoneRows = zones().map(z => {
+  if (!zoneCountable(z)) return { z, n: null as number | null, w: null as number | null };
+  const rs = list.filter(c => zonesOf(c).includes(z.key));
+  return { z, n: rs.length, w: sum(rs) };
+});
+const asOf = list[0]?.as_of ?? '';
+---
+<section aria-labelledby="h-zone" class="section">
+  <div class="section-head"><h2 id="h-zone">산업단지·특구별 기업</h2><span class="meta">{asOf} 기준 · 기업 사전 {nf(total)}곳</span></div>
+
+  <div class="scroll-x">
+    <table class="data-table zone-table">
+      <caption class="sr-only">산업단지 안과 밖의 기업 수와 고용 인원</caption>
+      <thead><tr><th scope="col">입지</th><th scope="col" class="n">기업 수(비중)</th><th scope="col" class="n">고용 인원</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">산업단지 안</th><td class="n">{nf(inside.length)} <span class="meta">({pct(inside.length, total)})</span></td><td class="n">{nf(sum(inside))}</td></tr>
+        <tr><th scope="row">산업단지 밖</th><td class="n">{nf(outside.length)} <span class="meta">({pct(outside.length, total)})</span></td><td class="n">{nf(sum(outside))}</td></tr>
+        <tr class="total"><th scope="row">전체</th><td class="n">{nf(total)}</td><td class="n">{nf(sum(list))}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub">대구에 지정된 특구별</h3>
+  <div class="scroll-x">
+    <table class="data-table zone-table">
+      <caption class="sr-only">대구 지정 특구별 기업 수와 고용 인원</caption>
+      <thead><tr><th scope="col">특구(지정 시기 · 포함한 구역)</th><th scope="col" class="n">기업 수</th><th scope="col" class="n">고용 인원</th></tr></thead>
+      <tbody>
+        {zoneRows.map(({ z, n, w }) => (
+          <tr>
+            <th scope="row" class="zone-name">
+              <a href={z.source} rel="noopener">{z.name}</a>
+              <span class="areas">{z.designated} · {z.areas}{z.note && ` (${z.note})`}</span>
+            </th>
+            <td class="n">{n === null ? '—' : <a href={`/companies/?zone=${z.key}`}>{nf(n)}</a>}</td>
+            <td class="n">{w === null ? '—' : nf(w)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <details class="cx-list">
+    <summary>산업단지별 기업 수 ({byComplex.length}개 단지)</summary>
+    <div class="scroll-x">
+      <table class="data-table zone-table">
+        <thead><tr><th scope="col">산업단지</th><th scope="col" class="n">기업 수</th><th scope="col" class="n">고용 인원</th></tr></thead>
+        <tbody>
+          {byComplex.map(r => (
+            <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(r.name)}`}>{shortComplex(r.name)}</a></th><td class="n">{nf(r.n)}</td><td class="n">{nf(r.w)}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <p class="meta">산업단지 밖은 팩토리온 개별입지와 팩토리온 밖 목록(국민연금 사업장·수성알파시티 등)입니다. 고용 인원은 통계 기준월 값이 있는 기업만 더했습니다. 특구는 공개된 경계 도면이 없어 기업 사전의 단지·입지 유형으로 가렸고, 특구에 걸친 단지는 통째로 세어 대부분 실제보다 큰 값입니다. 한 기업이 여러 특구에 들 수 있어 특구끼리 더하지 않습니다. 특구 이름을 누르면 지정 보도, 기업 수를 누르면 해당 기업 목록으로 갑니다.</p>
+</section>
+<style>
+  .sub { font-size: var(--h3, 1.05rem); margin: var(--s3, 1.5rem) 0 var(--s1, 0.5rem); }
+  .zone-table { max-width: 860px; }
+  .zone-table th.zone-name { white-space: normal; }
+  .zone-table .areas { display: block; font-weight: 400; font-size: var(--small); color: var(--muted); line-height: 1.5; margin-top: 2px; }
+  .cx-list { margin-top: var(--s2, 1rem); }
+  .cx-list summary { cursor: pointer; color: var(--muted); font-size: var(--small); padding: 4px 0; min-height: 28px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>

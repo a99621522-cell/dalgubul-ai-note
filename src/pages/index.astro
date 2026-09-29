@@ -1,5 +1,5 @@
 ---
-/** 첫 화면: 표제·인기 검색어·통합 검색창·사업 DB 건수(HomeHero) → 리포트 회전 카드 → 큰 숫자 4개 → 산업별 현황 표 → 고용 추이 → 최신 글 5개 */
+/** 첫 화면: 표제·인기 검색어·통합 검색창·사업 DB 건수(HomeHero) → 리포트 회전 카드 → 큰 숫자 4개 → 산업단지·특구별 기업(ZoneSummary) → 산업별 현황 표 → 고용 추이 → 최신 글 5개 */
 import Base from '../layouts/Base.astro';
 import StatTiles, { type Tile } from '../components/StatTiles.astro';
 import IndustryTable from '../components/IndustryTable.astro';
@@ -11,6 +11,7 @@ import { supportHistory, recentSupport } from '../lib/csv';
 import { policyReports } from '../lib/reports';
 import HomeHero from '../components/HomeHero.astro';
 import ReportCarousel from '../components/ReportCarousel.astro';
+import ZoneSummary from '../components/ZoneSummary.astro';
 const reports = await policyReports();
 
 const all = (await getCollection('posts', p => !p.data.draft)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -44,6 +45,7 @@ const description = m
         <div class="section-head"><h2 id="h-now">대구 산단·기업 현황</h2><span class="meta">{ym} 기준</span></div>
         <StatTiles tiles={tiles} />
       </section>
+      <ZoneSummary />
       <section aria-labelledby="h-ind">
         <div class="section-head"><h2 id="h-ind">산업별 현황</h2><a href="/industry/">산업별 자세히</a></div>
         <IndustryTable compact={true} />

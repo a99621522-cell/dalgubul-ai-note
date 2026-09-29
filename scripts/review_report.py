@@ -11,6 +11,8 @@
   형식  format: brief(2026-09-29 부터, 대구정책 브리프식 개조식 정책 브리프 — review_brief(): 요약·1 배경·2 현황과 문제·3 제안(0~3개)·4 기대효과와 한계,
         주장(● 항목)마다 근거 표시 [n]/기업 사전/KOSIS, 제안 수치는 도출 근거 또는 '조사 뒤 정함', 키워드 집계를 역량·수요 근거로 쓰지 않음, 원인 문장에 근거, 현황·제안에 '미확인' 전제 금지,
         출처 ≥ BRIEF_MIN_SOURCES 이고 공식통계·기관발간물·정부문서 ≥ BRIEF_MIN_OFFICIAL, 2,000~6,000자, 개조식(명사형 종결). --gate 는 발행 가능 여부만 출력)
+        format: full(2026-09-29 부터, 보고서형 — 운영자 지시: 브리프의 논리 규칙을 그대로 쓰되 절 수 자유(요약·…·'해결방안/제안' 절·'한계' 절을 제목으로 찾음),
+        방안 0~5개, 출처 ≥ 10·공식 ≥ 4, 5,000~16,000자(표 행 제외), 순위·추천 표현은 본문 전체에서 금지)
         format: insight(2026-09-28 부터, 산문형 인사이트 리포트: 제목 40자 이하 헤드라인, outline 4~6, hero.prompt/caption, 2단계 절 4~8, 그림 ≥2, 제안 절 ### 3개(시/정부 건의/기업·기관, 각각 N곳·지표), 반론, 3,000~7,500자)
         format 없음/report(2026-09-27 까지): 아래 1~9절 구조
   구조  frontmatter(title "[정책제안] <분야>: <헤드라인>", category policy, tags 정책제안, summary, description, faq 3, sources ≥ MIN_SOURCES), 1~9절 제목,
@@ -85,7 +87,8 @@ def company_names() -> list[str]:
 GENERIC = {"대구광역시", "대구테크노파크", "한국로봇산업진흥원", "대구기계부품연구원", "대구디지털혁신진흥원", "경북대학교", "계명대학교", "영남대학교", "한국생산기술연구원",
            "한국전자통신연구원", "대구경북첨단의료산업진흥재단", "한국섬유개발연구원", "다이텍연구원", "대구창조경제혁신센터", "한국산업단지공단", "산업통상부", "중소벤처기업부",
            "과학기술정보통신부", "지능형자동차부품진흥원", "대구경북과학기술원", "한국은행", "대구상공회의소", "산업연구원", "한국산업기술기획평가원", "한국산업기술진흥원",
-           "정보통신기획평가원", "한국과학기술기획평가원", "대구정책연구원", "한국자동차연구원", "한국로봇융합연구원", "대구경북연구원", "한국무역협회", "대한상공회의소"}
+           "정보통신기획평가원", "한국과학기술기획평가원", "대구정책연구원", "한국자동차연구원", "한국로봇융합연구원", "대구경북연구원", "한국무역협회", "대한상공회의소",
+           "개인정보이노베이션존"}   # 개인정보위 지정 제도 이름(2026-09-29) — 같은 이름의 회사 '이노베이션'과 겹침
 
 
 INSIGHT_MIN, INSIGHT_MAX = 3000, 7500   # 인사이트 리포트 본문(공백 제외). LG경영연구원 리포트 7쪽 ≈ 5,000자
@@ -161,6 +164,8 @@ def review_insight(path: Path, fm: str, body: str, errors: list, warns: list) ->
 
 
 BRIEF_MIN, BRIEF_MAX = 2000, 6000        # 정책 브리프 본문(공백 제외). 대구정책 브리프 8쪽 ≈ 3,500자
+FULL_MIN, FULL_MAX = 5000, 16000        # 보고서형(format: full, 운영자 지시 2026-09-29) 본문(공백 제외, 표 행 제외)
+FULL_MIN_SOURCES, FULL_MIN_OFFICIAL, FULL_MAX_PROPS = 10, 4, 5
 BRIEF_MIN_SOURCES = 5                    # 출처 하한(운영자 지시 2026-09-28: 개수 하한을 낮춤)
 BRIEF_MIN_OFFICIAL = 2                   # 그중 공식통계·기관 발간물·법령·정부 문서(kind 가 official) 최소
 CITE = r"\[\d+\]|기업 사전|KOSIS|ECOS|사업 DB|지원 이력|report_context|data/(kosis|ecos|research|refs)"   # 근거 표시
@@ -171,12 +176,14 @@ CAUSE = r"때문|원인은|원인이|이유는|탓|기인"
 DERIVED = CITE + r"|조사 뒤 정함|계산\s*[:：]|=|÷|×|나눈|곱한|합계|합한"
 
 
-def _sections_brief(body: str) -> dict[str, str]:
-    """'## 요약', '## 1. 배경' … 절을 번호(요약은 0)로 나눈다."""
+def _sections_brief(body: str, titles: dict | None = None) -> dict[str, str]:
+    """'## 요약', '## 1. 배경' … 절을 번호(요약은 0)로 나눈다. titles 를 주면 번호 → 절 제목도 채운다."""
     out: dict[str, str] = {}
     for m in re.finditer(r"^##\s+(요약|(\d)\.\s*[^\n]*)\n(.*?)(?=^##\s|\Z)", body, re.S | re.M):
         key = "0" if m.group(1).startswith("요약") else m.group(2)
         out[key] = m.group(3)
+        if titles is not None:
+            titles[key] = m.group(1)
     return out
 
 
@@ -200,7 +207,7 @@ def _claims(sec: str) -> list[tuple[str, str]]:
     return claims
 
 
-def review_brief(path: Path, fm: str, body: str, errors: list, warns: list) -> None:
+def review_brief(path: Path, fm: str, body: str, errors: list, warns: list, full: bool = False) -> None:
     """format: brief — 대구정책 브리프식 개조식 정책 브리프. 논리 규칙(운영자 지시 2026-09-28):
     주장마다 근거 1개 / 제안 수치는 도출 근거 또는 '조사 뒤 정함' / 키워드 집계는 품목 등록 기업 수로만 / 원인 문장에 근거 /
     확인 안 된 전제(미확인)로 문제·제안을 쓰지 않음(한계 절에서만) / 제안 0~3개 / 출처·공식 자료 하한 / 개조식."""
@@ -211,49 +218,66 @@ def review_brief(path: Path, fm: str, body: str, errors: list, warns: list) -> N
         errors.append(f"제목 {len(title)}자 — {TITLE_MAX}자 이하")
     if re.search(TITLE_BAD_END, title):
         errors.append(f"제목이 '…하게 한다' 식 절로 끝남 → {title}")
-    secs = _sections_brief(body)
-    for k, name in (("0", "요약"), ("1", "1. 배경"), ("2", "2. 현황과 문제"), ("3", "3. 제안"), ("4", "4. 기대효과와 한계")):
-        if k not in secs:
-            errors.append(f"절 없음: '## {name}' (요약 · 1. 배경 · 2. 대구 현황과 문제 · 3. 제안 · 4. 기대효과와 한계)")
-    if any(k not in secs for k in "0123"):
-        return
+    titles: dict[str, str] = {}
+    secs = _sections_brief(body, titles)
+    if full:
+        # 보고서형(운영자 지시 2026-09-29): 절 수는 자유, 절은 제목으로 찾는다 — 해결방안(또는 제안) 절 1개, 한계 절 1개
+        prop_k = next((k for k in sorted(secs) if k != "0" and re.search(r"해결\s*방안|제안", titles[k])), None)
+        lim_k = next((k for k in sorted(secs) if k != "0" and re.search(r"한계", titles[k])), None)
+        if "0" not in secs:
+            errors.append("절 없음: '## 요약'")
+        if not prop_k:
+            errors.append("절 없음: 제목에 '해결방안' 또는 '제안'이 든 절")
+        if not lim_k:
+            errors.append("절 없음: 제목에 '한계'가 든 절(기대효과와 한계)")
+        if "0" not in secs or not prop_k or not lim_k:
+            return
+        claim_ks = [k for k in sorted(secs) if k not in ("0", lim_k)]
+        max_props = FULL_MAX_PROPS
+    else:
+        for k, name in (("0", "요약"), ("1", "1. 배경"), ("2", "2. 현황과 문제"), ("3", "3. 제안"), ("4", "4. 기대효과와 한계")):
+            if k not in secs:
+                errors.append(f"절 없음: '## {name}' (요약 · 1. 배경 · 2. 대구 현황과 문제 · 3. 제안 · 4. 기대효과와 한계)")
+        if any(k not in secs for k in "0123"):
+            return
+        prop_k, lim_k, claim_ks, max_props = "3", "4", ["1", "2", "3"], 3
     # 요약: ● 항목 3~6개
     n_sum = len(re.findall(r"^- ", secs["0"], re.M))
     if not 3 <= n_sum <= 6:
         errors.append(f"요약 ● 항목은 3~6개 ({n_sum})")
     # 주장마다 근거: 1·2·3절의 ● 항목은 자신이나 아래 – 항목에 근거 표시([n]·기업 사전·KOSIS…)가 있어야 한다
     ITEM_LABEL = r"^\**(내용|추진|대상|대안|지표|일정|효과|한계)\**\s*[:：]"   # 제안의 항목 줄은 '- 근거:' 항목이 근거를 맡는다
-    for k in ("1", "2", "3"):
+    for k in claim_ks:
         for claim, ev in _claims(secs[k]):
-            if k == "3" and re.match(ITEM_LABEL, claim):
+            if k == prop_k and re.match(ITEM_LABEL, claim):
                 continue
             if not re.search(CITE, claim + " " + ev):
                 errors.append(f"{k}절 근거 없는 주장: {claim[:40]}")
     # 원인 문장에는 근거
-    for k in ("1", "2", "3"):
+    for k in claim_ks:
         for line in secs[k].split("\n"):
             if re.search(CAUSE, line) and not re.search(CITE, line):
                 errors.append(f"{k}절 근거 없는 원인 문장: {line.strip()[:50]}")
     # 키워드 집계를 역량·수요·대응의 근거로 쓰지 않는다
-    for k in ("0", "1", "2", "3"):
+    for k in ["0"] + claim_ks:
         for line in secs[k].split("\n"):
             if re.search(KEYWORD_COUNT, line) and re.search(CAPABILITY, line):
                 errors.append(f"{k}절 키워드 집계를 역량·수요·대응의 근거로 씀(품목 등록 기업 수로만): {line.strip()[:50]}")
     # 확인 안 된 전제: 현황·제안 절에 '미확인' 금지(한계 절로)
-    for k in ("2", "3"):
+    for k in (claim_ks if full else ["2", "3"]):
         for line in secs[k].split("\n"):
             if re.search(r"미확인|확인되지 않|확인할 수 없", line):
                 errors.append(f"{k}절에 확인 안 된 전제('미확인') — 사실로 쓰지 말고 4절 한계로 옮기거나 조사 제안으로: {line.strip()[:50]}")
     # 제안 0~3개, 항목: 내용·근거·추진·대상 / 조사 제안은 1개
-    props = re.findall(r"^###\s+(.*)$", secs["3"], re.M)
-    if len(props) > 3:
-        errors.append(f"제안이 3개를 넘음 ({len(props)}) — 근거가 받쳐 주는 만큼만(0~3)")
-    if len(props) == 0 and not re.search(r"조사 제안|제안 없음|제안하지 않", secs["3"]):
+    props = re.findall(r"^###\s+(.*)$", secs[prop_k], re.M)
+    if len(props) > max_props:
+        errors.append(f"제안이 {max_props}개를 넘음 ({len(props)}) — 근거가 받쳐 주는 만큼만(0~{max_props})")
+    if len(props) == 0 and not re.search(r"조사 제안|제안 없음|제안하지 않", secs[prop_k]):
         errors.append("3절에 제안(### 제안 N.)이 없으면 '조사 제안' 또는 '제안 없음'과 이유를 적는다")
     survey = [h for h in props if "조사" in h]
-    if survey and len(props) > 1:
+    if survey and len(props) > 1 and not full:
         errors.append("조사 제안이 있으면 제안은 그 1개만(전제가 확인되지 않은 주제)")
-    parts = re.split(r"^###\s+.*$", secs["3"], flags=re.M)[1:]
+    parts = re.split(r"^###\s+.*$", secs[prop_k], flags=re.M)[1:]
     for h, ptxt in zip(props, parts):
         for it in ("근거", "추진"):
             if not re.search(rf"^\s*-\s*\*?\*?{it}", ptxt, re.M):
@@ -276,24 +300,25 @@ def review_brief(path: Path, fm: str, body: str, errors: list, warns: list) -> N
             if nums and not re.search(DERIVED, line):
                 errors.append(f"제안 '{h[:16]}' 수치에 도출 근거 없음(근거 표시·계산 또는 '조사 뒤 정함'): {line.strip()[:50]}")
     # 4절: 기대효과와 한계(반론)
-    if not re.search(r"한계|반론|틀릴 수", secs["4"]):
-        errors.append("4절에 한계·반론이 없음")
+    if not re.search(r"한계|반론|틀릴 수", secs[lim_k]):
+        errors.append(f"{lim_k}절에 한계·반론이 없음")
     # 개조식: ● – 항목이 '~다.' 로 끝나면 안 된다(명사형 종결)
     bullets = [l.strip() for l in body.split("\n") if re.match(r"^\s*- ", l)]
     dah = [b for b in bullets if re.search(r"(다|요)\.\s*(\[\d+\])?\s*$", b)]
     if bullets and len(dah) > len(bullets) * 0.2:
         errors.append(f"개조식이 아님: '~다.' 로 끝나는 항목 {len(dah)}/{len(bullets)} (명사형 종결로): " + dah[0][:40])
     # 특정 기업 지목·순위(제안 절)
-    hits = [n for n in company_names() if n in re.sub(r"\s+", "", secs["3"]) and n not in GENERIC and not any(n in g for g in GENERIC)]
+    hits = [n for n in company_names() if n in re.sub(r"\s+", "", secs[prop_k]) and n not in GENERIC and not any(n in g for g in GENERIC)]
     if hits:
         errors.append(f"제안 절에 기업 사전의 회사명이 있음(특정 기업 지목 금지): {hits[:5]}")
-    if re.search(RANKING, secs["3"]):
-        errors.append("제안 절에 순위·추천 표현: " + ", ".join(sorted(set(re.findall(RANKING, secs["3"])))[:3]))
+    if re.search(RANKING, body if full else secs[prop_k]):
+        errors.append("순위·추천 표현: " + ", ".join(sorted(set(re.findall(RANKING, body if full else secs[prop_k])))[:3]))
     # 출처 신뢰성: kind official(공식통계·기관 발간물·법령·정부 문서) 최소 개수
     kinds = re.findall(r"^\s*-\s*\{\s*title:.*?kind:\s*\"?(\w+)\"?", fm, re.M)
     official = sum(1 for k in kinds if k in ("official", "stat", "report", "law", "gov"))
-    if official < BRIEF_MIN_OFFICIAL:
-        errors.append(f"공식 자료 출처(kind: official/stat/report/law/gov) {official}건 < {BRIEF_MIN_OFFICIAL} — 통계·기관 발간물·법령·정부 문서로 받친다")
+    min_off = FULL_MIN_OFFICIAL if full else BRIEF_MIN_OFFICIAL
+    if official < min_off:
+        errors.append(f"공식 자료 출처(kind: official/stat/report/law/gov) {official}건 < {min_off} — 통계·기관 발간물·법령·정부 문서로 받친다")
     if len(kinds) < len(re.findall(r"^\s*-\s*\{\s*title:", fm, re.M)):
         warns.append("kind 가 없는 출처가 있음(official/stat/report/law/gov/news/data 중 하나)")
 
@@ -303,7 +328,8 @@ def review(path: Path) -> dict:
     fm, body = split(text)
     errors, warns = [], []
     insight = bool(re.search(r"^format:\s*insight", fm, re.M))
-    brief = bool(re.search(r"^format:\s*brief", fm, re.M))
+    full = bool(re.search(r"^format:\s*full", fm, re.M))      # 보고서형(운영자 지시 2026-09-29): 브리프 논리 규칙 + 절·방안 수 확대
+    brief = full or bool(re.search(r"^format:\s*brief", fm, re.M))
     title = fm_get(fm, "title")
     if not insight and not brief and not re.match(r"^(\[정책제안\]\s*)?\S+.*:\s*\S", title):   # 접두어는 선택(2026-09-27 목록 표기 통일로 뗌)
         errors.append(f"title 형식: '<분야>: <헤드라인>' 이어야 함 → {title[:60]}")
@@ -323,7 +349,7 @@ def review(path: Path) -> dict:
     if nq != 3 or na != 3:
         errors.append(f"faq 는 q/a 3쌍이어야 함 (q {nq}, a {na})")
     srcs = re.findall(r"^\s*-\s*\{\s*title:\s*\"(.*?)\",\s*url:\s*\"(.*?)\"", fm, re.M)
-    min_src = BRIEF_MIN_SOURCES if brief else MIN_SOURCES
+    min_src = FULL_MIN_SOURCES if full else BRIEF_MIN_SOURCES if brief else MIN_SOURCES
     if len(srcs) < min_src:
         errors.append(f"sources {len(srcs)}건 < {min_src}")
     urls = [u for _, u in srcs]
@@ -353,7 +379,7 @@ def review(path: Path) -> dict:
     if insight:
         review_insight(path, fm, body, errors, warns)
     if brief:
-        review_brief(path, fm, body, errors, warns)
+        review_brief(path, fm, body, errors, warns, full=full)
     for s in ([] if (insight or brief) else SECTIONS):
         if not re.search(rf"^##\s*{re.escape(s)}", body, re.M):
             errors.append(f"절 없음: {s}")
@@ -427,16 +453,16 @@ def review(path: Path) -> dict:
     if brief:   # 브리프는 표 행을 길이에서 뺀다(표는 근거 자료라 길이 상한의 대상이 아님 — 운영자 지시 2026-09-30: 앵커 사업장 표에 기업명 기재)
         n_src = "\n".join(l for l in body_nf.split("\n") if not l.lstrip().startswith("|"))
     n = len(re.sub(r"\s", "", n_src))
-    lo, hi = (BRIEF_MIN, BRIEF_MAX) if brief else (INSIGHT_MIN, INSIGHT_MAX) if insight else (BODY_MIN, BODY_MAX)
+    lo, hi = (FULL_MIN, FULL_MAX) if full else (BRIEF_MIN, BRIEF_MAX) if brief else (INSIGHT_MIN, INSIGHT_MAX) if insight else (BODY_MIN, BODY_MAX)
     if n < lo or n > hi:
         errors.append(f"본문 {n:,}자(공백 제외) — {lo:,}~{hi:,} 범위 밖")
-    elif not insight and n > 4500:
+    elif not insight and not full and n > 4500:
         warns.append(f"본문 {n:,}자 — 사양 2,500~3,500 보다 길다")
     if "검색 결과 요지" in body and body.count("요지") < 5:
         warns.append("검색 요지로 썼다면서 '요지' 표시가 적다")
 
     rel = str(path.resolve().relative_to(ROOT)) if path.resolve().is_relative_to(ROOT) else str(path)
-    return {"file": rel, "ok": not errors, "errors": errors, "warnings": warns, "chars": n, "sources": len(srcs), "format": "brief" if brief else "insight" if insight else "report"}
+    return {"file": rel, "ok": not errors, "errors": errors, "warnings": warns, "chars": n, "sources": len(srcs), "format": "full" if full else "brief" if brief else "insight" if insight else "report"}
 
 
 def main(argv: list[str]) -> int:
@@ -450,13 +476,13 @@ def main(argv: list[str]) -> int:
         return 2
     results = [review(p) for p in files]
     if "--gate" in argv:
-        ok = all(r["ok"] and r["format"] == "brief" for r in results)
+        ok = all(r["ok"] and r["format"] in ("brief", "full") for r in results)
         print("PASS" if ok else "FAIL")
         for r in results:
             for e in r["errors"]:
                 print(f"   ✗ {e}")
-            if r["format"] != "brief":
-                print(f"   ✗ format 이 brief 가 아님({r['format']}) — 2026-09-29 부터 브리프 형식만 발행")
+            if r["format"] not in ("brief", "full"):
+                print(f"   ✗ format 이 brief/full 이 아님({r['format']}) — 2026-09-29 부터 브리프·보고서형만 발행")
         return 0 if ok else 1
     if as_json:
         print(json.dumps(results, ensure_ascii=False, indent=1))

@@ -26,7 +26,7 @@ const posts = defineCollection({
     // 정책제안 리포트 등 근거 목록. 실제로 확인한 페이지만
     sources: z.array(z.object({ title: z.string(), url: z.string(), date: z.string().optional(), kind: z.string().optional() })).default([]),   // kind: official/law/gov/report/news (brief 신뢰성 검사)
     // 정책제안 리포트 형식. report = 1~9절 개조식(2026-09-27 까지), insight = 산문형 인사이트 리포트(대표 그림·요약 상자·절 4~6개·그림, 2026-09-28 부터)
-    format: z.enum(['report', 'insight', 'brief']).default('report'),   // brief = 대구정책 브리프식 개조식 정책 브리프(2026-09-29 부터, .claude/agents/policy-brief.md)
+    format: z.enum(['report', 'insight', 'brief', 'full']).default('report'),   // full = 보고서형(2026-09-29, 브리프 논리 규칙 + 절·방안 수 확대) / brief = 대구정책 브리프식 개조식 정책 브리프(2026-09-29 부터, .claude/agents/policy-brief.md)
     outline: z.array(z.string()).default([]),            // insight: 요약 상자에 보이는 절 제목 4~6개
     hero: z.object({ prompt: z.string(), caption: z.string(), alt: z.string().optional() }).optional(), // insight: 대표 그림(Gemini 생성, scripts/gen_hero.py)
     authors: z.string().optional(),

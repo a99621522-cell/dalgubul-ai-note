@@ -1,13 +1,11 @@
 {
  "file": "src/content/posts/2026-09-29-policy-healthcare-ai-data.md",
  "checked": "2026-09-29",
- "ok": 32,
+ "ok": 34,
  "total": 38,
- "ratio": 0.84,
- "official_bad": [
-  "HHS, HHS Expands Secure Access to Health Records Through the TEFCA Network, Announces Milestone of One Billion Health Records Exchanged"
- ],
- "pass": false,
+ "ratio": 0.89,
+ "official_bad": [],
+ "pass": true,
  "sources": [
   {
    "title": "MarketsandMarkets, Artificial Intelligence in Healthcare Market worth $194.79 billion by 2031 (PR Newswire)",
@@ -154,16 +152,16 @@
    "note": ""
   },
   {
-   "title": "개인정보 이노베이션 존에 국세청·질병관리청 추가 지정 (아시아경제)",
-   "url": "https://view.asiae.co.kr/article/2026092110522269071",
+   "title": "개인정보위, 국세청·질병관리청 '개인정보 이노베이션 존' 지정 (세계일보)",
+   "url": "https://www.segye.com/newsView/20260921508849",
    "date": "2026-09-21",
    "kind": "news",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectionError"
+   "status": 200,
+   "page_title": "개인정보위, 국세청·질병관리청 ‘개인정보 이노베이션 존’ 지정 | 세계일보",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "\\\"EMR 인증제 개선, 의료 정보교류·AI 스타트업 지원 강화\\\" (네이트뉴스)",
@@ -178,40 +176,40 @@
    "note": ""
   },
   {
-   "title": "Tempus Reports First Quarter 2026 Results (Business Wire)",
-   "url": "https://www.businesswire.com/news/home/20260505411869/en/Tempus-Reports-First-Quarter-2026-Results",
+   "title": "Tempus Reports First Quarter 2026 Results (Tempus AI 투자자 공시)",
+   "url": "https://investors.tempus.com/news-releases/news-release-details/tempus-reports-first-quarter-2026-results",
    "date": "2026-05-05",
    "kind": "news",
-   "status": 403,
-   "page_title": "Access Denied",
-   "title_match": 0.71,
-   "date_found": true,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
    "ok": false,
-   "note": ""
+   "note": "ReadTimeout"
   },
   {
-   "title": "Tempus Reports Second Quarter 2026 Results (Business Wire)",
-   "url": "https://www.businesswire.com/news/home/20260730328545/en/Tempus-Reports-Second-Quarter-2026-Results",
+   "title": "Tempus Reports Second Quarter 2026 Results (Tempus AI 투자자 공시)",
+   "url": "https://investors.tempus.com/news-releases/news-release-details/tempus-reports-second-quarter-2026-results",
    "date": "2026-07-30",
    "kind": "news",
-   "status": 403,
-   "page_title": "Access Denied",
-   "title_match": 0.71,
-   "date_found": true,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
    "ok": false,
-   "note": ""
+   "note": "ReadTimeout"
   },
   {
-   "title": "Tempus Launches Effort to Build the Largest Multimodal Whole-Genome Dataset to Advance AI-Driven Healthcare Innovation (Business Wire)",
-   "url": "https://www.businesswire.com/news/home/20260911945729/en/Tempus-Launches-Effort-to-Build-the-Largest-Multimodal-Whole-Genome-Dataset-to-Advance-AI-Driven-Healthcare-Innovation",
+   "title": "Tempus Launches Effort to Build the Largest Multimodal Whole-Genome Dataset to Advance AI-Driven Healthcare Innovation (Tempus AI 투자자 공시)",
+   "url": "https://investors.tempus.com/news-releases/news-release-details/tempus-launches-effort-build-largest-multimodal-whole-genome",
    "date": "2026-09-11",
    "kind": "news",
-   "status": 403,
-   "page_title": "Access Denied",
-   "title_match": 0.87,
-   "date_found": true,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
    "ok": false,
-   "note": ""
+   "note": "ReadTimeout"
   },
   {
    "title": "루닛, 세브란스병원과 MOU…의료 파운데이션 모델 기반 AI 임상 확산 협력 (아시아경제)",
@@ -262,15 +260,15 @@
    "note": ""
   },
   {
-   "title": "HHS, HHS Expands Secure Access to Health Records Through the TEFCA Network, Announces Milestone of One Billion Health Records Exchanged",
-   "url": "https://www.hhs.gov/press-room/onc-strengthens-tefca-one-billion-health-records-exchanged.html",
+   "title": "ONC, HHS Expands Secure Access to Health Records Through the TEFCA Network, Announces Milestone of One Billion Health Records Exchanged",
+   "url": "https://healthit.gov/news/hhs-expands-secure-access-to-health-records-through-the-tefca-network-announces-milestone-of-one-billion-health-records-exchanged/",
    "date": "2026-06-26",
    "kind": "gov",
-   "status": 403,
-   "page_title": "Access Denied",
-   "title_match": 0.07,
+   "status": 200,
+   "page_title": "HHS Expands Secure Access to Health Records Through the TEFCA® Network, Announces Milestone of One Billion Health Record",
+   "title_match": 1.0,
    "date_found": false,
-   "ok": false,
+   "ok": true,
    "note": ""
   },
   {
@@ -286,15 +284,15 @@
    "note": ""
   },
   {
-   "title": "Digital Health, Melanie Ivarsson appointed CEO of Health Data Research Service",
-   "url": "https://www.digitalhealth.net/2026/01/melanie-ivarsson-appointed-ceo-of-health-data-research-service/",
-   "date": "2026-01",
+   "title": "Health Business, New CEO appointed to Health Data Research Service",
+   "url": "https://healthbusinessuk.net/news/13012026/new-ceo-appointed-health-data-research-service",
+   "date": "2026-01-13",
    "kind": "news",
-   "status": 403,
-   "page_title": "Just a moment...",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "New CEO appointed to Health Data Research Service | Health Business",
+   "title_match": 1.0,
    "date_found": false,
-   "ok": false,
+   "ok": true,
    "note": ""
   },
   {
@@ -302,12 +300,12 @@
    "url": "https://m.news.nate.com/view/20260710n19926",
    "date": "2026-07-10",
    "kind": "news",
-   "status": 200,
-   "page_title": "에이팜건강, 27개국 보건데이터 허브 구축 나선 유럽 'EHDS' 공략…\"유럽이 2029년 도달하려는 미래, 한국엔 이미 현실이다\" : 네이트 뉴스",
-   "title_match": 0.86,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectionError"
   },
   {
    "title": "日, AI 위해 의료기록·전과까지 푼다…\\\"동의 없이 활용 가능\\\" 논란 (전자신문)",

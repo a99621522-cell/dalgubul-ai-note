@@ -3,7 +3,8 @@ import yaml from 'js-yaml';
 
 /** 입지 유형·태그. 규칙은 config/site_types.yml 에만 있다 (scripts/sites.py 와 같은 판정 순서). */
 type SiteType = { key: string; name: string; complexes?: string[]; address?: string[]; buildings_file?: string; rule?: 'in_complex' | 'default' };
-type Config = { version: string; types: SiteType[]; outside_complex: string; tags: Record<string, { name: string; desc: string }>; startup_years: number };
+export type Zone = { key: string; name: string; designated: string; areas: string; match: { complexes?: string[]; site_types?: string[]; tags?: string[] }; note: string; source: string };
+type Config = { version: string; types: SiteType[]; outside_complex: string; tags: Record<string, { name: string; desc: string }>; startup_years: number; zones?: Zone[] };
 let _cfg: Config | null = null;
 const cfg = () => (_cfg ??= yaml.load(fs.readFileSync('config/site_types.yml', 'utf-8')) as Config);
 
@@ -13,6 +14,11 @@ export const siteName = (key: string) => cfg().types.find(t => t.key === key)?.n
 export const OUTSIDE = () => cfg().outside_complex;
 export const tagName = (key: string) => cfg().tags[key]?.name ?? key;
 export const tagDesc = (key: string) => cfg().tags[key]?.desc ?? '';
+/** 특구 목록과 판정 — 단지·입지 유형·태그 중 하나라도 맞으면 그 특구(규칙은 config/site_types.yml zones). match 가 비면 셀 수 없는 특구 */
+export const zones = () => cfg().zones ?? [];
+export const zoneCountable = (z: Zone) => !!(z.match.complexes?.length || z.match.site_types?.length || z.match.tags?.length);
+export const zonesOf = (c: { complex: string; site_type: string; tags: string[] }) =>
+  zones().filter(z => zoneCountable(z) && ((z.match.complexes ?? []).includes(c.complex) || (z.match.site_types ?? []).includes(c.site_type) || (z.match.tags ?? []).some(t => c.tags.includes(t)))).map(z => z.key);
 export const allTags = () => Object.entries(cfg().tags).map(([key, v]) => ({ key, ...v }));
 
 const _buildings = new Map<string, RegExp[]>();

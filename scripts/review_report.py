@@ -168,7 +168,7 @@ FULL_MIN, FULL_MAX = 5000, 16000        # 보고서형(format: full, 운영자 �
 FULL_MIN_SOURCES, FULL_MIN_OFFICIAL, FULL_MAX_PROPS = 10, 4, 5
 BRIEF_MIN_SOURCES = 5                    # 출처 하한(운영자 지시 2026-09-28: 개수 하한을 낮춤)
 BRIEF_MIN_OFFICIAL = 2                   # 그중 공식통계·기관 발간물·법령·정부 문서(kind 가 official) 최소
-CITE = r"\[\d+\]|기업 사전|KOSIS|ECOS|사업 DB|지원 이력|report_context|data/(kosis|ecos|research|refs)"   # 근거 표시
+CITE = r"\[\d+\]|\[\^[^\]\s]+\]|기업 사전|KOSIS|ECOS|사업 DB|지원 이력|report_context|data/(kosis|ecos|research|refs)"   # 근거 표시
 UNITS = r"곳|건|명|개|석|%|％|억|만\s*원|원|일|주|회|기|종|톤|대|㎡|㎢|점|배"
 KEYWORD_COUNT = r"낱말이 든|키워드|검색어|낱말 일치"                              # 공장등록 키워드 집계
 CAPABILITY = r"역량|수요|대응|준비|수준|단계에 있|전환 전|전환 상태|SDV 대응|소프트웨어 조직"   # 키워드 집계로 말하면 안 되는 것
@@ -285,7 +285,8 @@ def review_brief(path: Path, fm: str, body: str, errors: list, warns: list, full
         # 논증 사슬(운영자 지적 2026-09-28): 목표·진단·원인·기제·기대효과 — 조사 제안은 예외
         if "조사" not in h:
             for it in ("목표", "진단", "원인", "기제", "기대효과"):
-                val = re.search(rf"^\s*-\s*\*?\*?{it}\*?\*?\s*[:：](.*)$", ptxt, re.M)
+                lab = {"진단": "진단|현황", "기제": "기제|작동 방식"}.get(it, it)   # 사람이 읽는 말로 써도 된다(운영자 지시 2026-09-29)
+                val = re.search(rf"^\s*-\s*\*?\*?(?:{lab})\*?\*?\s*[:：](.*)$", ptxt, re.M)
                 if not val:
                     errors.append(f"제안 '{h[:20]}'에 '- {it}:' 항목 없음(논증 사슬: 목표→진단→원인→기제→기대효과)")
                 elif it in ("진단", "원인", "기제") and not re.search(CITE, val.group(1)):

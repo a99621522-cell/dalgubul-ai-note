@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { companies, shortComplex, supportHistory, byName } from '../../lib/csv';
-import { siteTypes, allTags } from '../../lib/sites';
+import { siteTypes, allTags, zones } from '../../lib/sites';
 const list = companies();
 const complexesList = [...new Set(list.map(c => c.complex))];
 const groups = [...new Set(list.map(c => c.sector_group))].filter(Boolean).sort();
@@ -13,6 +13,7 @@ const supportedCount = new Set(supportHistory().filter(r => r.id).map(r => r.id)
 // 처음 60곳만 HTML 로 내보낸다. 전체(11,000곳)를 다 넣으면 4.5MB 라 휴대폰에서 느렸다.
 // 검색·필터를 쓰면 /companies-index.json(빌드 때 생성되는 경량 색인)을 한 번 받아 클라이언트에서 거른다.
 const FIRST = 60;
+const ZONES = Object.fromEntries(zones().map(z => [z.key, z.name]));   // 첫 화면 특구 표에서 ?zone=key 로 넘어온다
 const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
 ---
 <Base title="대구 기업 사전" description={`대구 공장등록 기업 ${list.length.toLocaleString('ko-KR')}곳 — 구·군·단지·업종·생산품·종사자 규모. 팩토리온 공개 자료 ${asOf} 기준`} current="companies">
@@ -45,7 +46,8 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
     ))}
   </ul>
   <div class="more-wrap"><button id="more" type="button" class="more" hidden>더 보기</button></div>
-  <script define:vars={{ total: list.length, FIRST }}>
+  <script define:vars={{ total: list.length, FIRST, ZONES }}>
+    const iz = new URLSearchParams(location.search).get('zone') || '';   // 특구(선택 상자 없이 URL 로만)
     // 색인 행: i=id n=회사명 d=구군 e=읍면동 c=단지 g=업종군 s=업종 w=규모  (companies-index.json.ts 와 맞출 것)
     const q = document.getElementById('q');
     const sel = ['cx', 'sg', 'em', 'st', 'tg'].map(id => document.getElementById(id));
@@ -102,16 +104,16 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
     }
     async function apply() {
       const t = q.value.trim().toLowerCase(); const [c, g, e, st, tg] = sel.map(s => s.value); const sp = spBox.checked; const sorted = sortSel.value !== 'name';
-      if (!t && !c && !g && !e && !st && !tg && !sp && !sorted) {            // 조건 없음 → 처음 상태(서버가 그려 둔 60곳)로
+      if (!t && !c && !g && !e && !st && !tg && !sp && !sorted && !iz) {            // 조건 없음 → 처음 상태(서버가 그려 둔 60곳)로
         if (rows) { matched = rows; render(0); }
         count.textContent = `${nf.format(total)}곳`; note.hidden = !!rows; return;
       }
       const data = await load(); if (!data) return;
       matched = sortRows(data.filter(r => (!c || r.c === c || r.c === shortComplex(c)) && (!g || r.g === g) && (!e || r.d === e)
-        && (!st || r.t === st) && (!tg || (r.k || []).includes(tg)) && (!sp || r.p)
+        && (!st || r.t === st) && (!tg || (r.k || []).includes(tg)) && (!sp || r.p) && (!iz || (r.z || []).includes(iz))
         && (!t || (r.n + ' ' + r.s + ' ' + r.g).toLowerCase().includes(t))));
       note.hidden = true;
-      count.textContent = `${nf.format(matched.length)}곳`;
+      count.textContent = `${iz && ZONES[iz] ? ZONES[iz] + ' · ' : ''}${nf.format(matched.length)}곳`;
       render(0);
     }
     // 단지 <option> 은 정식 명칭, 색인의 c 는 약칭이라 같은 방식으로 줄여서 비교한다
@@ -127,7 +129,7 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
     const ist = sp.get('site'); if (ist) sel[3].value = ist;
     const itg = sp.get('tag'); if (itg) sel[4].value = itg;
     if (sp.get('support')) spBox.checked = true;
-    if (ic || idn || ig || iq || ist || itg || sp.get('support')) apply();
+    if (ic || idn || ig || iq || ist || itg || iz || sp.get('support')) apply();
   </script>
 </Base>
 <style>

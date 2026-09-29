@@ -43,3 +43,57 @@ tags:
   kmedi: { name: 첨복단지 입주, desc: 대구경북첨단의료복합단지 입주기업(케이메디허브 공개 현황) }
   innobiz: { name: 이노비즈, desc: 기술혁신형 중소기업 확인 }
 startup_years: 7
+
+# 특구별 분류(운영자 지시 2026-09-29: 첫 화면에 산단 안팎·특구별 기업 수). 특구 경계는 공개 도면이 없어
+# 기업 사전의 단지(complex)·입지 유형(site_type)·태그로 근사한다 → 걸친 단지는 통째로 세므로 대부분 상한값.
+# 한 기업이 여러 특구에 들 수 있어 특구 합계를 서로 더하지 않는다. 읽는 코드: src/lib/sites.ts zones()/zonesOf()
+zones:
+  - key: opportunity
+    name: 기회발전특구
+    designated: 2024-06
+    areas: 수성알파시티, 대구국가산단(2단계), 금호워터폴리스
+    match: { site_types: [수성알파시티], complexes: [대구국가산업단지, 대구금호워터폴리스일반산업단지] }
+    note: 국가산단은 2단계만 특구인데 1단계 기업까지 셈
+    source: https://www.newsis.com/view/NISX20240620_0002781168
+  - key: rnd
+    name: 연구개발특구
+    designated: 2025-12(변경)
+    areas: 테크노폴리스, 성서첨단산업(성서5차), 융합R&D(수성알파시티), 의료R&D(첨복단지), 지식서비스R&D
+    match: { site_types: [수성알파시티, 연구개발특구], complexes: [대구테크노폴리스일반산업단지, 성서5차첨단산업단지, 대구경북첨단의료복합단지도시첨단산업단지], tags: [kmedi] }
+    note: 경북대 일대(지식서비스R&D지구)는 산단이 아니라 세지 못함
+    source: https://www.ajunews.com/view/20251208154549158
+  - key: robot
+    name: AI로봇 글로벌혁신특구
+    designated: 2025-05
+    areas: 테크노폴리스, 국가산단, 제3산단, 성서산단, 수성알파시티, 대구의료원
+    match: { site_types: [수성알파시티], complexes: [대구테크노폴리스일반산업단지, 대구국가산업단지, 대구제3일반산업단지, 성서지방산업단지] }
+    note: 성서산단 전체를 셈
+    source: https://www.newspim.com/news/view/20260224000519
+  - key: fez
+    name: 경제자유구역(대구 지구)
+    designated: 2008-05
+    areas: 테크노폴리스, 국제패션디자인(이시아폴리스), 신서첨단의료, 수성의료(알파시티)
+    match: { site_types: [수성알파시티], complexes: [대구테크노폴리스일반산업단지, 대구이시아폴리스일반산업단지, 대구경북첨단의료복합단지도시첨단산업단지], tags: [kmedi] }
+    note: ""
+    source: https://dgfez.go.kr/page.php?mnu_uid=1508
+  - key: motor
+    name: 모터 소부장 특화단지
+    designated: 2023-07
+    areas: 국가산단, 테크노폴리스, 달성1·2차, 성서산단 1~5차
+    match: { complexes: [대구국가산업단지, 대구테크노폴리스일반산업단지, 달성일반산업단지, 달성2차일반산업단지, 성서지방산업단지, 성서5차첨단산업단지] }
+    note: 네 단지 전체를 셈
+    source: https://m.sentv.co.kr/article/view/sentv202309070074
+  - key: kmedi
+    name: 첨단의료복합단지
+    designated: 2009-08
+    areas: 신서혁신도시 첨복단지
+    match: { complexes: [대구경북첨단의료복합단지도시첨단산업단지], tags: [kmedi] }
+    note: 케이메디허브 공개 입주기업 포함
+    source: https://www.kmedihub.re.kr/
+  - key: urban
+    name: 도심융합특구
+    designated: 2024-11
+    areas: 옛 경북도청 터, 경북대, 삼성창조캠퍼스
+    match: {}
+    note: 주소가 동 단위까지만 있어 특구 경계를 가릴 수 없음
+    source: https://www.etnews.com/20241107000326

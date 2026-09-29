@@ -63,7 +63,6 @@ sources:
   - { title: "Holland & Knight, CMS Releases CY 2026 Medicare Physician Fee Schedule Final Rule", url: "https://www.hklaw.com/en/insights/publications/2025/11/cms-releases-cy-2026-medicare-physician-fee-schedule-final-rule", date: "2025-11", kind: news }
   - { title: "UK should make money from NHS patient data, says health minister (Digital Health)", url: "https://www.digitalhealth.net/2025/12/uk-should-make-money-from-nhs-patient-data-says-health-minister/", date: "2025-12-04", kind: news }
   - { title: "복지부 '보건의료 데이터 활용 가이드라인' 개정…연구 문턱 낮춘다 (머니투데이)", url: "https://www.mt.co.kr/thebio/2025/12/31/2025123114272425006", date: "2025-12-31", kind: news }
-  - { title: "A comparison of institutional review board models and study efficiency in the Environmental influences on Child Health Outcomes Cohort Consortium (Contemporary Clinical Trials)", url: "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:41232754%20AND%20SRC:MED&format=json&resultType=lite", date: "2025-11-11", kind: report }
   - { title: "보건의료데이터표준 선도병원 1→4개소 확대 의료현장 실증·확산 본격화 (네이트뉴스)", url: "https://m.news.nate.com/view/20260902n25167", date: "2026-09-02", kind: news }
   - { title: "개인정보위, 보건의료 마이데이터 기관 387개로 확대 (뉴스핌)", url: "https://www.newspim.com/news/view/20260318000944", date: "2026-03-18", kind: news }
   - { title: "\"가명정보 제3자 재사용 허용\" 개보위, '개인정보 이노베이션 존' 신규 모집 (머니투데이)", url: "https://www.mt.co.kr/tech/2026/07/20/2026072014060429344", date: "2026-07-20", kind: news }
@@ -360,7 +359,7 @@ sources:
 - **내용:**
   - 협의체 5개 병원 IRB·DRB가 '공동 심의 승인 인정 협약'을 맺음 — 공동 IRB·DRB 승인을 각 병원 승인으로 인정하고, 병원은 자기 기관 고유 사항(반출 방식·보안 서약)만 확인 — 확인 기한은 20일 목표[^30] 안에서 조사 뒤 정함
   - 협의체 공동 DRB를 개정 가이드라인의 공용 DRB로 운영하도록 복지부와 협의[^45]
-  - 처리 기한(접수 뒤 20일)과 보완 요청 1회 원칙을 규정에 넣음 — 미국 연구에서 단일 IRB와 지역 IRB의 승인 기간이 19일과 20일로 차이가 없었던 만큼 창구 통합만으로는 기간이 줄지 않음[^46]
+  - 처리 기한(접수 뒤 20일)과 보완 요청 1회 원칙을 규정에 넣음 — 창구만 합치고 기한이 없으면 병원별 확인 단계에서 다시 늦어질 수 있어 20일 목표[^30]를 규정으로 둠
   - 영상·텍스트 등 데이터 유형별 가명처리 기준(위험도 3단계)에 법적 지위를 주는 규제개선 과제 제출[^11]
   - 심의 수수료는 공동 심의 1건 기준으로 정하고 병원별 중복 청구를 없앰 — 금액은 협의체 병원 현행 수수료 조사 뒤 정함
 
@@ -470,7 +469,7 @@ sources:
   - 기업 사전은 공장등록 기업만 담아 의료 AI 소프트웨어 기업이 빠지므로 대상 기업 수는 실제보다 작을 수 있음[^corp]
   - 템퍼스·루닛 사례는 확보 방식의 예시이며 기업 평가가 아님
   - 병원 대가(과제당 1억~4억 원)는 2026년 이용권 공고 기준이며 해마다 바뀔 수 있고, 기업 부담 경감 비율과 전문의 단가는 방안 5 조사 전이라 정하지 않음[^41]
-  - 공동 심의 창구를 하나로 해도 기간이 줄지 않은 해외 연구가 있어 처리 기한 규정이 없으면 효과가 작을 수 있음[^46]
+  - 공동 심의 20일은 협의체 목표치이며 실제 기간은 운영 뒤 측정해야 확인됨[^30]
   - 합성데이터도 단일 식별·연결·추론 공격에 따른 재식별 위험이 있어 방안 4의 미리보기용으로 쓸 때도 재식별 위험 평가 절차가 필요[^40]
   - 국가 승인형 개방 체계는 연구자 제안이며 정부 방침이 아님[^7]
   - 원문 대조 상태는 각주 끝 참고[^check]
@@ -520,7 +519,6 @@ sources:
 [^43]: Holland & Knight, CMS Releases CY 2026 Medicare Physician Fee Schedule Final Rule, 2025-11. MIPS 성과 기준 75점(2026~2028 성과 기간), 최대 감액 9%.
 [^44]: UK should make money from NHS patient data, says health minister (Digital Health), 2025-12-04. Health Data Research Service 가 제약사·연구기관에 이용료를 받을 방침.
 [^45]: 복지부 '보건의료 데이터 활용 가이드라인' 개정…연구 문턱 낮춘다 (머니투데이), 2025-12-31. 공용 DRB 도입, IRB·DRB 심의 표준절차 제시.
-[^46]: A comparison of institutional review board models and study efficiency in the Environmental influences on Child Health Outcomes Cohort Consortium (Contemporary Clinical Trials), 2025-11-11. 110개 연구 현장, 제출부터 승인까지 중앙값 지역 IRB 20일·단일 IRB 19일(p=0.71).
 [^47]: 보건의료데이터표준 선도병원 1→4개소 확대 의료현장 실증·확산 본격화 (네이트뉴스), 2026-09-02. 분당서울대병원(2024년 지정)에 서울성모·원광대·서울적십자병원 추가, KR Core 로 진료의뢰·회송 교류 검증.
 [^48]: 개인정보위, 보건의료 마이데이터 기관 387개로 확대 (뉴스핌), 2026-03-18. 정보전송자 50곳(질병청·건보공단·심평원·상급종합병원 47곳)에 종합병원 337곳 추가, 건강정보고속도로 연계 115곳부터 단계 적용.
 [^49]: "가명정보 제3자 재사용 허용" 개보위, '개인정보 이노베이션 존' 신규 모집 (머니투데이), 2026-07-20. 4인 이상 담당 전문 조직·다중 인증·실시간 화면 녹화, 가명처리 수준 완화·결합키·장기 보관·제3자 재사용.

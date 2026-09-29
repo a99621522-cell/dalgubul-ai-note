@@ -1,6 +1,8 @@
 ---
-/** 첫 화면 '산업단지·특구별 기업': 산단 안/밖 기업 수·고용, 대구 지정 특구별 기업 수·고용, 산단별 목록(펼침).
- *  특구 판정 규칙은 config/site_types.yml 의 zones(단지·입지 유형·태그로 근사). 숫자를 누르면 기업 사전 목록으로 간다. */
+/** 첫 화면 '산업단지·특구별 기업'(운영자 지시 2026-09-29: 가시성·편의).
+ *  ① 산단 안/밖 비중 막대 ② 탭: 특구별 카드 / 산업단지별 가로 막대(기업 수·고용 정렬) / 표로 보기(한글 표 복사·HWP)
+ *  특구 판정 규칙은 config/site_types.yml 의 zones(단지·입지 유형·태그로 근사, 상한값). 카드·막대를 누르면 기업 사전 목록으로 간다.
+ *  스크립트가 없으면 세 패널이 모두 펼쳐진다. */
 import { companies, shortComplex } from '../lib/csv';
 import { OUTSIDE, zones, zoneCountable, zonesOf } from '../lib/sites';
 import { companyStats } from '../lib/stats';
@@ -9,17 +11,19 @@ const list = companies();
 const emp = (companyStats()?.companies ?? {}) as Record<string, { e: number | null }>;
 const e = (id: string) => emp[id]?.e ?? 0;
 const nf = (n: number) => n.toLocaleString('ko-KR');
-const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : '—');
+const share = (a: number, b: number) => (b ? Math.round((a / b) * 1000) / 10 : 0);
 const isOut = (cx: string) => !cx || cx === '개별입지' || cx === OUTSIDE();
 
 const inside = list.filter(c => !isOut(c.complex));
 const outside = list.filter(c => isOut(c.complex));
 const sum = (rs: typeof list) => rs.reduce((a, c) => a + e(c.id), 0);
 const total = list.length;
+const inPct = share(inside.length, total), outPct = Math.round((100 - inPct) * 10) / 10;
 
 const byComplex = [...inside.reduce((m, c) => m.set(c.complex, [...(m.get(c.complex) ?? []), c]), new Map<string, typeof list>())]
   .map(([name, rs]) => ({ name, n: rs.length, w: sum(rs) }))
   .sort((a, b) => b.n - a.n);
+const maxN = Math.max(...byComplex.map(r => r.n), 1), maxW = Math.max(...byComplex.map(r => r.w), 1);
 
 const zoneRows = zones().map(z => {
   if (!zoneCountable(z)) return { z, n: null as number | null, w: null as number | null };
@@ -27,64 +31,207 @@ const zoneRows = zones().map(z => {
   return { z, n: rs.length, w: sum(rs) };
 });
 const asOf = list[0]?.as_of ?? '';
+const cxHref = (name: string) => `/companies/?complex=${encodeURIComponent(name)}`;
 ---
-<section aria-labelledby="h-zone" class="section">
+<section aria-labelledby="h-zone" class="section zone">
   <div class="section-head"><h2 id="h-zone">산업단지·특구별 기업</h2><span class="meta">{asOf} 기준 · 기업 사전 {nf(total)}곳</span></div>
 
-  <div class="scroll-x">
-    <table class="data-table zone-table">
-      <caption class="sr-only">산업단지 안과 밖의 기업 수와 고용 인원</caption>
-      <thead><tr><th scope="col">입지</th><th scope="col" class="n">기업 수(비중)</th><th scope="col" class="n">고용 인원</th></tr></thead>
-      <tbody>
-        <tr><th scope="row">산업단지 안</th><td class="n">{nf(inside.length)} <span class="meta">({pct(inside.length, total)})</span></td><td class="n">{nf(sum(inside))}</td></tr>
-        <tr><th scope="row">산업단지 밖</th><td class="n">{nf(outside.length)} <span class="meta">({pct(outside.length, total)})</span></td><td class="n">{nf(sum(outside))}</td></tr>
-        <tr class="total"><th scope="row">전체</th><td class="n">{nf(total)}</td><td class="n">{nf(sum(list))}</td></tr>
-      </tbody>
-    </table>
+  <div class="split" role="img" aria-label={`산업단지 안 ${nf(inside.length)}곳(${inPct}%), 산업단지 밖 ${nf(outside.length)}곳(${outPct}%)`}>
+    <div class="split-legend">
+      <p><span class="dot in"></span><b>산업단지 안</b> <span class="big">{nf(inside.length)}</span>곳 <span class="meta">({inPct}%) · 고용 {nf(sum(inside))}명</span></p>
+      <p><span class="dot out"></span><b>산업단지 밖</b> <span class="big">{nf(outside.length)}</span>곳 <span class="meta">({outPct}%) · 고용 {nf(sum(outside))}명</span></p>
+    </div>
+    <div class="split-bar" aria-hidden="true"><span class="in" style={`width:${inPct}%`}></span><span class="out" style={`width:${outPct}%`}></span></div>
   </div>
 
-  <h3 class="sub">대구에 지정된 특구별</h3>
-  <div class="scroll-x">
-    <table class="data-table zone-table">
-      <caption class="sr-only">대구 지정 특구별 기업 수와 고용 인원</caption>
-      <thead><tr><th scope="col">특구(지정 시기 · 포함한 구역)</th><th scope="col" class="n">기업 수</th><th scope="col" class="n">고용 인원</th></tr></thead>
-      <tbody>
-        {zoneRows.map(({ z, n, w }) => (
-          <tr>
-            <th scope="row" class="zone-name">
-              <a href={z.source} rel="noopener">{z.name}</a>
-              <span class="areas">{z.designated} · {z.areas}{z.note && ` (${z.note})`}</span>
-            </th>
-            <td class="n">{n === null ? '—' : <a href={`/companies/?zone=${z.key}`}>{nf(n)}</a>}</td>
-            <td class="n">{w === null ? '—' : nf(w)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+  <div class="tabs" role="tablist" aria-label="보기 방식" hidden>
+    <button type="button" role="tab" id="zt-zone" aria-controls="zp-zone" aria-selected="true">특구별</button>
+    <button type="button" role="tab" id="zt-cx" aria-controls="zp-cx" aria-selected="false" tabindex="-1">산업단지별</button>
+    <button type="button" role="tab" id="zt-table" aria-controls="zp-table" aria-selected="false" tabindex="-1">표로 보기</button>
   </div>
 
-  <details class="cx-list">
-    <summary>산업단지별 기업 수 ({byComplex.length}개 단지)</summary>
+  <div id="zp-zone" role="tabpanel" aria-labelledby="zt-zone" class="panel">
+    <h3 class="panel-title">대구에 지정된 특구별</h3>
+    <ul class="zone-cards">
+      {zoneRows.map(({ z, n, w }) => (
+        <li class:list={['zcard', { off: n === null }]}>
+          <p class="zname">{z.name}</p>
+          {n === null ? (
+            <p class="znum na">집계 불가</p>
+          ) : (
+            <p class="znum"><a href={`/companies/?zone=${z.key}`} aria-label={`${z.name} 기업 ${nf(n)}곳 목록 보기`}>{nf(n)}<span class="unit">곳</span></a></p>
+          )}
+          {n !== null && <div class="zbar" aria-hidden="true"><span style={`width:${Math.max(share(n, total), 1)}%`}></span></div>}
+          {n !== null && <p class="zsub">대구 기업의 {share(n, total)}% · 고용 {nf(w ?? 0)}명</p>}
+          <p class="zarea"><span class="when">{z.designated}</span> {z.areas}</p>
+          {z.note && <p class="znote">{z.note}</p>}
+          <p class="zlinks">
+            {n !== null && <a href={`/companies/?zone=${z.key}`}>기업 목록 →</a>}
+            <a href={z.source} rel="noopener" class="src">지정 보도</a>
+          </p>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div id="zp-cx" role="tabpanel" aria-labelledby="zt-cx" class="panel">
+    <div class="panel-head">
+      <h3 class="panel-title">산업단지별 ({byComplex.length}개 단지)</h3>
+      <div class="sorter" role="group" aria-label="정렬">
+        <button type="button" data-sort="n" aria-pressed="true">기업 수 순</button>
+        <button type="button" data-sort="w" aria-pressed="false">고용 순</button>
+      </div>
+    </div>
+    <ol class="cx-bars">
+      {byComplex.map(r => (
+        <li data-n={r.n} data-w={r.w}>
+          <a href={cxHref(r.name)}>
+            <span class="cx-name">{shortComplex(r.name)}</span>
+            <span class="cx-track" aria-hidden="true"><span class="cx-fill" style={`width:${Math.max((r.n / maxN) * 100, 1)}%`} data-pn={(r.n / maxN) * 100} data-pw={(r.w / maxW) * 100}></span></span>
+            <span class="cx-val"><b>{nf(r.n)}</b>곳 <span class="meta">· {nf(r.w)}명</span></span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <div id="zp-table" role="tabpanel" aria-labelledby="zt-table" class="panel">
+    <h3 class="panel-title">표로 보기</h3>
     <div class="scroll-x">
       <table class="data-table zone-table">
-        <thead><tr><th scope="col">산업단지</th><th scope="col" class="n">기업 수</th><th scope="col" class="n">고용 인원</th></tr></thead>
+        <caption class="sr-only">산업단지 안과 밖의 기업 수와 고용 인원</caption>
+        <thead><tr><th scope="col">입지</th><th scope="col" class="n">기업 수</th><th scope="col" class="n">비중</th><th scope="col" class="n">고용 인원</th></tr></thead>
         <tbody>
-          {byComplex.map(r => (
-            <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(r.name)}`}>{shortComplex(r.name)}</a></th><td class="n">{nf(r.n)}</td><td class="n">{nf(r.w)}</td></tr>
+          <tr><th scope="row">산업단지 안</th><td class="n">{nf(inside.length)}</td><td class="n">{inPct}%</td><td class="n">{nf(sum(inside))}</td></tr>
+          <tr><th scope="row">산업단지 밖</th><td class="n">{nf(outside.length)}</td><td class="n">{outPct}%</td><td class="n">{nf(sum(outside))}</td></tr>
+          <tr class="total"><th scope="row">전체</th><td class="n">{nf(total)}</td><td class="n">100%</td><td class="n">{nf(sum(list))}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="scroll-x">
+      <table class="data-table zone-table">
+        <caption class="sr-only">대구 지정 특구별 기업 수와 고용 인원</caption>
+        <thead><tr><th scope="col">특구</th><th scope="col">지정</th><th scope="col">포함한 구역</th><th scope="col" class="n">기업 수</th><th scope="col" class="n">고용 인원</th></tr></thead>
+        <tbody>
+          {zoneRows.map(({ z, n, w }) => (
+            <tr><th scope="row">{z.name}</th><td>{z.designated}</td><td class="small">{z.areas}{z.note && ` (${z.note})`}</td><td class="n">{n === null ? '—' : nf(n)}</td><td class="n">{w === null ? '—' : nf(w)}</td></tr>
           ))}
         </tbody>
       </table>
     </div>
-  </details>
+    <div class="scroll-x">
+      <table class="data-table zone-table">
+        <caption class="sr-only">산업단지별 기업 수와 고용 인원</caption>
+        <thead><tr><th scope="col">산업단지</th><th scope="col" class="n">기업 수</th><th scope="col" class="n">고용 인원</th></tr></thead>
+        <tbody>{byComplex.map(r => <tr><th scope="row">{shortComplex(r.name)}</th><td class="n">{nf(r.n)}</td><td class="n">{nf(r.w)}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </div>
 
-  <p class="meta">산업단지 밖은 팩토리온 개별입지와 팩토리온 밖 목록(국민연금 사업장·수성알파시티 등)입니다. 고용 인원은 통계 기준월 값이 있는 기업만 더했습니다. 특구는 공개된 경계 도면이 없어 기업 사전의 단지·입지 유형으로 가렸고, 특구에 걸친 단지는 통째로 세어 대부분 실제보다 큰 값입니다. 한 기업이 여러 특구에 들 수 있어 특구끼리 더하지 않습니다. 특구 이름을 누르면 지정 보도, 기업 수를 누르면 해당 기업 목록으로 갑니다.</p>
+  <p class="meta zone-note">산업단지 밖은 팩토리온 개별입지와 팩토리온 밖 목록(국민연금 사업장·수성알파시티 등)입니다. 고용 인원은 통계 기준월 값이 있는 기업만 더했습니다. 특구는 경계 도면이 공개되지 않아 산업단지·입지 유형으로 가렸고, 특구에 걸친 단지는 통째로 세어 대부분 실제보다 큰 값입니다. 한 기업이 여러 특구에 들 수 있어 특구끼리 더하지 않습니다.</p>
 </section>
+
+<script>
+  // 탭: 스크립트가 있을 때만 탭을 보이고 패널 하나만 펼친다(없으면 모두 펼침). 화살표 키로 탭 이동
+  const root = document.querySelector('section.zone');
+  if (root) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = tabs.map(t => document.getElementById(t.getAttribute('aria-controls')!)!);
+    const show = (i: number, focus = false) => {
+      tabs.forEach((t, j) => { t.setAttribute('aria-selected', String(i === j)); t.tabIndex = i === j ? 0 : -1; panels[j].hidden = i !== j; });
+      if (focus) tabs[i].focus();
+    };
+    root.querySelector<HTMLElement>('.tabs')!.hidden = false;
+    root.querySelectorAll<HTMLElement>('.panel-title').forEach(h => h.classList.add('sr-only'));
+    show(0);
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => show(i));
+      t.addEventListener('keydown', ev => {
+        if (ev.key === 'ArrowRight' || ev.key === 'ArrowLeft') { ev.preventDefault(); show((i + (ev.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length, true); }
+      });
+    });
+    // 산업단지별 정렬: 기업 수 순 / 고용 순 — 막대 길이도 기준에 맞춰 바꾼다
+    const ol = root.querySelector('.cx-bars')!;
+    const btns = [...root.querySelectorAll<HTMLButtonElement>('.sorter button')];
+    btns.forEach(b => b.addEventListener('click', () => {
+      const k = b.dataset.sort as 'n' | 'w';
+      btns.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      const items = [...ol.children] as HTMLElement[];
+      items.sort((a, c) => Number(c.dataset[k]) - Number(a.dataset[k])).forEach(li => {
+        const f = li.querySelector<HTMLElement>('.cx-fill')!;
+        f.style.width = `${Math.max(Number(k === 'n' ? f.dataset.pn : f.dataset.pw), 1)}%`;
+        ol.appendChild(li);
+      });
+    }));
+  }
+</script>
+
 <style>
-  .sub { font-size: var(--h3, 1.05rem); margin: var(--s3, 1.5rem) 0 var(--s1, 0.5rem); }
-  .zone-table { max-width: 860px; }
-  .zone-table th.zone-name { white-space: normal; }
-  .zone-table .areas { display: block; font-weight: 400; font-size: var(--small); color: var(--muted); line-height: 1.5; margin-top: 2px; }
-  .cx-list { margin-top: var(--s2, 1rem); }
-  .cx-list summary { cursor: pointer; color: var(--muted); font-size: var(--small); padding: 4px 0; min-height: 28px; }
+  .zone .split { margin: var(--s2) 0 var(--s3); }
+  .split-legend { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); }
+  .split-legend p { margin: 0; }
+  .split-legend .big { font-size: 1.6rem; font-weight: 700; color: var(--primary-deep); font-variant-numeric: tabular-nums; margin-left: 4px; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  .dot.in, .split-bar .in { background: var(--primary); }
+  .dot.out, .split-bar .out { background: #a9c1e3; }
+  .split-bar { display: flex; height: 16px; border-radius: var(--radius); overflow: hidden; margin-top: var(--s1); background: var(--surface); }
+
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line-strong); margin-bottom: var(--s2); overflow-x: auto; }
+  .tabs button { min-height: var(--touch); padding: 0 var(--s2); border: 1px solid transparent; border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; background: none; color: var(--muted); cursor: pointer; white-space: nowrap; font-weight: 600; }
+  .tabs button[aria-selected="true"] { color: var(--primary); background: var(--bg); border-color: var(--line-strong); margin-bottom: -1px; }
+  .tabs button:hover { color: var(--primary); }
+  .panel { margin-bottom: var(--s2); }
+  .panel-title { font-size: var(--h3); margin: var(--s3) 0 var(--s1); }
+
+  .zone-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: var(--s2); }
+  @media (min-width: 560px) { .zone-cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .zone-cards { grid-template-columns: repeat(3, 1fr); } }
+  .zcard { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2); background: var(--surface); display: flex; flex-direction: column; }
+  .zcard:hover { border-color: var(--primary); }
+  .zcard.off { background: var(--bg); }
+  .zcard p { margin: 0; }
+  .zname { font-weight: 700; }
+  .zcard .znum { font-size: var(--num-xl); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; margin-top: 4px; }
+  .znum a { color: var(--primary); text-decoration: none; }
+  .znum a:hover { text-decoration: underline; }
+  .znum .unit { font-size: 1rem; font-weight: 500; color: var(--ink); margin-left: 2px; }
+  .zcard .znum.na { font-size: 1.2rem; color: var(--muted); padding: 10px 0; }
+  .zbar { height: 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin: var(--s1) 0 4px; }
+  .zbar span { display: block; height: 100%; background: var(--primary); }
+  .zsub { font-size: var(--small); color: var(--ink); }
+  .zcard .zarea { font-size: var(--tiny); color: var(--muted); margin-top: var(--s1); line-height: 1.55; }
+  .zarea .when { display: inline-block; font-weight: 600; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 0 6px; margin-right: 4px; }
+  .znote { font-size: var(--tiny); color: var(--muted); line-height: 1.55; }
+  .zcard .zlinks { margin-top: auto; padding-top: var(--s1); display: flex; gap: var(--s2); font-size: var(--small); }
+  .zlinks a { display: inline-flex; align-items: center; min-height: 32px; font-weight: 600; }
+  .zlinks .src { font-weight: 400; color: var(--muted); }
+
+  .panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s1); }
+  .sorter { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; margin: var(--s1) 0; margin-left: auto; }
+  .sorter button { min-height: 36px; padding: 0 12px; border: 0; background: var(--bg); color: var(--ink); cursor: pointer; font-size: var(--small); }
+  .sorter button + button { border-left: 1px solid var(--line-strong); }
+  .sorter button[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); font-weight: 600; }
+  .cx-bars { list-style: none; margin: 0; padding: 0; }
+  .cx-bars a { display: grid; grid-template-columns: minmax(7em, 11em) 1fr auto; align-items: center; gap: 4px 12px; min-height: var(--touch); padding: 4px 0; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+  .cx-bars a:hover .cx-name { text-decoration: underline; color: var(--primary); }
+  .cx-name { font-weight: 600; font-size: var(--small); }
+  .cx-track { height: 14px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+  .cx-fill { display: block; height: 100%; background: var(--primary); border-radius: 3px; transition: width .2s; }
+  .cx-val { font-size: var(--small); white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
+  @media (max-width: 560px) {
+    .cx-bars a { grid-template-columns: 1fr auto; }
+    .cx-track { grid-column: 1 / -1; grid-row: 2; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cx-fill { transition: none; } }
+  @media (max-width: 559px) {   /* 휴대폰: 카드 두 칸, 숫자·비중만(구역 설명은 '표로 보기') */
+    .zone-cards { grid-template-columns: repeat(2, 1fr); gap: var(--s1); }
+    .zcard { padding: 12px; }
+    .zcard .znum { font-size: 1.6rem; }
+    .zcard .zarea, .zcard .znote, .zlinks .src { display: none; }
+    .zsub { font-size: var(--tiny); line-height: 1.5; }
+    .split-legend .meta { display: block; }
+  }
+  .zone-table { margin-bottom: var(--s3); }
+  .zone-note { margin-top: var(--s1); }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 </style>

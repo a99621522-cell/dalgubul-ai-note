@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="280" viewBox="0 0 800 280" role="img" aria-label="디지털의료기기 업체의 주 서비스 분야 비중">
+<rect width="800" height="280" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >디지털의료기기 업체의 주 서비스 분야 비중</text>
+<line x1="123.0" y1="60" x2="123.0" y2="220" stroke="#e0e0e0"/>
+<text x="123.0" y="238.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="272.2" y1="60" x2="272.2" y2="220" stroke="#e0e0e0"/>
+<text x="272.2" y="238.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >12.5</text>
+<line x1="421.5" y1="60" x2="421.5" y2="220" stroke="#e0e0e0"/>
+<text x="421.5" y="238.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >25</text>
+<line x1="570.8" y1="60" x2="570.8" y2="220" stroke="#e0e0e0"/>
+<text x="570.8" y="238.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >37.5</text>
+<line x1="720.0" y1="60" x2="720.0" y2="220" stroke="#e0e0e0"/>
+<text x="720.0" y="238.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >50</text>
+<text x="115.0" y="81.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >진단보조</text>
+<path d="M123,67 h423.5 q4,0 4,4 v6 q0,4 -4,4 h-423.5 z" fill="#1B4F9B"/>
+<text x="556.5" y="78.0" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >35.8%</text>
+<text x="115.0" y="113.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >검사</text>
+<path d="M123,99 h313.6 q4,0 4,4 v6 q0,4 -4,4 h-313.6 z" fill="#1B4F9B"/>
+<text x="446.6" y="110.0" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >26.6%</text>
+<text x="115.0" y="145.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >정보제공·관리</text>
+<path d="M123,131 h178.7 q4,0 4,4 v6 q0,4 -4,4 h-178.7 z" fill="#1B4F9B"/>
+<text x="311.7" y="142.0" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >15.3%</text>
+<text x="115.0" y="177.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >치료</text>
+<path d="M123,163 h144.1 q4,0 4,4 v6 q0,4 -4,4 h-144.1 z" fill="#1B4F9B"/>
+<text x="277.1" y="174.0" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >12.4%</text>
+<text x="115.0" y="209.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >기타(계산)</text>
+<path d="M123,195 h114.2 q4,0 4,4 v6 q0,4 -4,4 h-114.2 z" fill="#1B4F9B"/>
+<text x="247.2" y="206.0" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >9.9%</text>
+<text x="24.0" y="266.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 식약처 2025년 디지털의료기기 시장현황 조사(2026-06-12, 382개 업체 중 274곳 응답). 기타 = 100 − 네 분야 합</text>
+</svg>

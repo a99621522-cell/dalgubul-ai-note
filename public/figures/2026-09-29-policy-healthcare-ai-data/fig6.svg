@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400" role="img" aria-label="미국 전국 의료정보 교환망(TEFCA) 누적 교환 건수">
+<rect width="800" height="400" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >미국 전국 의료정보 교환망(TEFCA) 누적 교환 건수</text>
+<line x1="70" y1="330.0" x2="760" y2="330.0" stroke="#e0e0e0"/>
+<text x="62.0" y="334.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="70" y1="262.5" x2="760" y2="262.5" stroke="#e0e0e0"/>
+<text x="62.0" y="266.5" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >250</text>
+<line x1="70" y1="195.0" x2="760" y2="195.0" stroke="#e0e0e0"/>
+<text x="62.0" y="199.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >500</text>
+<line x1="70" y1="127.5" x2="760" y2="127.5" stroke="#e0e0e0"/>
+<text x="62.0" y="131.5" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >750</text>
+<line x1="70" y1="60.0" x2="760" y2="60.0" stroke="#e0e0e0"/>
+<text x="62.0" y="64.0" font-size="12" fill="#595959" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1,000</text>
+<text x="70.0" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2025-01</text>
+<text x="415.0" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2026-02</text>
+<text x="760.0" y="352.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >2026-06</text>
+<path d="M70.0,327.3 L415.0,195.0 L760.0,60.0" fill="none" stroke="#1B4F9B" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="70.0" cy="327.3" r="4" fill="#1B4F9B" stroke="#ffffff" stroke-width="2"/>
+<circle cx="760.0" cy="60.0" r="4" fill="#1B4F9B" stroke="#ffffff" stroke-width="2"/>
+<text x="760.0" y="64.0" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1,000백만 건</text>
+<text x="24.0" y="386.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 미국 보건복지부·ONC(2026-02, 2026-06-26). 2026-06은 '10억 건 이상'</text>
+</svg>

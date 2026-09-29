@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="184" viewBox="0 0 800 184" role="img" aria-label="심평원 비정형 의료데이터 중 표준화된 양">
+<rect width="800" height="184" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >심평원 비정형 의료데이터 중 표준화된 양</text>
+<line x1="201.0" y1="60" x2="201.0" y2="124" stroke="#e0e0e0"/>
+<text x="201.0" y="142.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="330.8" y1="60" x2="330.8" y2="124" stroke="#e0e0e0"/>
+<text x="330.8" y="142.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >62,500</text>
+<line x1="460.5" y1="60" x2="460.5" y2="124" stroke="#e0e0e0"/>
+<text x="460.5" y="142.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >125,000</text>
+<line x1="590.2" y1="60" x2="590.2" y2="124" stroke="#e0e0e0"/>
+<text x="590.2" y="142.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >187,500</text>
+<line x1="720.0" y1="60" x2="720.0" y2="124" stroke="#e0e0e0"/>
+<text x="720.0" y="142.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >250,000</text>
+<text x="193.0" y="81.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >보유 전체</text>
+<path d="M201,67 h425.4 q4,0 4,4 v6 q0,4 -4,4 h-425.4 z" fill="#1B4F9B"/>
+<text x="636.4" y="78.0" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >206,848GB</text>
+<text x="193.0" y="113.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >표준화(0.5%, 계산)</text>
+<path d="M201,99 h0.0 q4,0 4,4 v6 q0,4 -4,4 h0.0 z" fill="#1B4F9B"/>
+<text x="209.1" y="110.0" font-size="12" fill="#1a1a1a" text-anchor="start" font-weight="600" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1,034GB</text>
+<text x="24.0" y="170.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 감사원 「인공지능 대비실태 Ⅱ」(2026-03-24). 표준화 양 = 206,848GB × 0.5%</text>
+</svg>

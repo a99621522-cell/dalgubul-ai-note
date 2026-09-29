@@ -285,7 +285,8 @@ def review_brief(path: Path, fm: str, body: str, errors: list, warns: list, full
         # 논증 사슬(운영자 지적 2026-09-28): 목표·진단·원인·기제·기대효과 — 조사 제안은 예외
         if "조사" not in h:
             for it in ("목표", "진단", "원인", "기제", "기대효과"):
-                val = re.search(rf"^\s*-\s*\*?\*?{it}\*?\*?\s*[:：](.*)$", ptxt, re.M)
+                lab = {"진단": "진단|현황", "기제": "기제|작동 방식"}.get(it, it)   # 사람이 읽는 말로 써도 된다(운영자 지시 2026-09-29)
+                val = re.search(rf"^\s*-\s*\*?\*?(?:{lab})\*?\*?\s*[:：](.*)$", ptxt, re.M)
                 if not val:
                     errors.append(f"제안 '{h[:20]}'에 '- {it}:' 항목 없음(논증 사슬: 목표→진단→원인→기제→기대효과)")
                 elif it in ("진단", "원인", "기제") and not re.search(CITE, val.group(1)):

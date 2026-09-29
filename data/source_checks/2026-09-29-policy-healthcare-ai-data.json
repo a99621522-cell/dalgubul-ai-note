@@ -551,15 +551,15 @@
   },
   {
    "title": "A comparison of institutional review board models and study efficiency in the Environmental influences on Child Health Outcomes Cohort Consortium (Contemporary Clinical Trials)",
-   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12666723/",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:41232754%20AND%20SRC:MED&format=json&resultType=lite",
    "date": "2025-11-11",
    "kind": "report",
-   "status": 200,
-   "page_title": "브라우저 확인 중 - reCAPTCHA",
+   "status": null,
+   "page_title": "",
    "title_match": 0.0,
    "date_found": false,
    "ok": false,
-   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+   "note": "ReadTimeout"
   },
   {
    "title": "보건의료데이터표준 선도병원 1→4개소 확대 의료현장 실증·확산 본격화 (네이트뉴스)",

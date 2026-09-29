@@ -1,11 +1,13 @@
 {
  "file": "src/content/posts/2026-09-29-policy-healthcare-ai-data.md",
  "checked": "2026-09-29",
- "ok": 46,
+ "ok": 44,
  "total": 49,
- "ratio": 0.94,
- "official_bad": [],
- "pass": true,
+ "ratio": 0.9,
+ "official_bad": [
+  "보건복지부, 「의료데이터 활용 확대, 'AI 기본의료 앞당긴다'」 — 2025년 보건의료데이터 정책심의위원회"
+ ],
+ "pass": false,
  "sources": [
   {
    "title": "MarketsandMarkets, Artificial Intelligence in Healthcare Market worth $194.79 billion by 2031 (PR Newswire)",
@@ -96,12 +98,12 @@
    "url": "https://mohw.go.kr/board.es?act=view&bid=0027&list_no=1488181&mid=a10503000000",
    "date": "2025-12-10",
    "kind": "gov",
-   "status": 200,
-   "page_title": "의료데이터 활용 확대, “AI 기본의료 앞당긴다” &lt; 보도자료 &lt; 알림 : 힘이 되는 평생 친구, 보건복지부",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "보건소·취약지 의원에도…전국 'AI 기본의료' 시대 연다 — AI 기본의료 전략 확정 (아시아경제)",
@@ -312,12 +314,12 @@
    "url": "https://www.etnews.com/20260528000252",
    "date": "2026-05-28",
    "kind": "news",
-   "status": 200,
-   "page_title": "日, AI 위해 의료기록·전과까지 푼다…“동의 없이 활용 가능” 논란 - 전자신문",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "대구시, '2026년 의료데이터 중개 사업' 본격 추진 — 포털 25만 건, 4차년도 (뉴스핌)",

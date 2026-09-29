@@ -132,7 +132,7 @@ export async function reportDocx(meta: ReportMeta, bodyMd: string): Promise<Buff
   const children: (Paragraph | Table)[] = [
     new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: meta.date.toISOString().slice(0, 10), font: FONT, size: 20, color: '595959' })], spacing: { after: 120 } }),
     new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun({ text: meta.title.replace(/^\[정책제안\]\s*/, ''), font: FONT, size: 36, bold: true })], spacing: { after: 160 } }),
-    new Paragraph({ children: [new TextRun({ text: `정책제안 리포트${meta.area ? ` · ${meta.area}` : ''} · ${dateStr} · 다잇다 노트`, font: FONT, size: 20, color: '595959' })], spacing: { after: 60 } }),
+    new Paragraph({ children: [new TextRun({ text: `정책제안 리포트${meta.area ? ` · ${meta.area}` : ''} · ${dateStr}`, font: FONT, size: 20, color: '595959' })], spacing: { after: 60 } }),
     new Paragraph({ children: [new TextRun({ text: '원문: ', font: FONT, size: 20, color: '595959' }), new ExternalHyperlink({ link: meta.url, children: [new TextRun({ text: meta.url, font: FONT, size: 20, style: 'Hyperlink' })] })], spacing: { after: 240 } }),
   ];
   if (meta.format === 'insight') {
@@ -158,10 +158,10 @@ export async function reportDocx(meta: ReportMeta, bodyMd: string): Promise<Buff
       children: [new TextRun({ text: `${n + 1}. `, font: FONT, size: 20 }), new ExternalHyperlink({ link: s.url, children: [new TextRun({ text: s.title, font: FONT, size: 20, style: 'Hyperlink' })] }), new TextRun({ text: s.date ? ` (${s.date})` : '', font: FONT, size: 20, color: '595959' })],
     })));
   }
-  children.push(new Paragraph({ spacing: { before: 360 }, children: [new TextRun({ text: '이 문서는 다잇다 노트(note.daitda.co.kr)의 정책제안 리포트를 내려받은 것입니다. 공개 자료를 근거로 작성했고 평가·순위·추천은 하지 않습니다. 수치는 출처의 원문 확인을 권합니다. 개인 의견은 소속 기관의 입장이 아닙니다.', font: FONT, size: 18, color: '595959' })] }));
+  children.push(new Paragraph({ spacing: { before: 360 }, children: [new TextRun({ text: '이 문서는 note.daitda.co.kr 의 정책제안 리포트를 내려받은 것입니다. 공개 자료를 근거로 작성했고 평가·순위·추천은 하지 않습니다. 수치는 출처의 원문 확인을 권합니다. 개인 의견은 소속 기관의 입장이 아닙니다.', font: FONT, size: 18, color: '595959' })] }));
 
   const doc = new Document({
-    creator: '다잇다 노트', title: meta.title, description: meta.description ?? meta.summary ?? '',
+    creator: '다잇다', title: meta.title, description: meta.description ?? meta.summary ?? '',
     styles: { default: { document: { run: { font: FONT, size: SIZE } } } },
     numbering: {
       config: [
@@ -171,7 +171,7 @@ export async function reportDocx(meta: ReportMeta, bodyMd: string): Promise<Buff
     },
     sections: [{
       properties: { page: { margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 } } },
-      footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '다잇다 노트 · ', font: FONT, size: 18, color: '595959' }), new TextRun({ children: [PageNumber.CURRENT], font: FONT, size: 18, color: '595959' })] })] }) },
+      footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'note.daitda.co.kr · ', font: FONT, size: 18, color: '595959' }), new TextRun({ children: [PageNumber.CURRENT], font: FONT, size: 18, color: '595959' })] })] }) },
       children,
     }],
   });
@@ -181,7 +181,7 @@ export async function reportDocx(meta: ReportMeta, bodyMd: string): Promise<Buff
 /** 내려받기용 마크다운(프론트매터 대신 사람이 읽는 머리말) */
 export function reportMarkdown(meta: ReportMeta, bodyMd: string): string {
   const dateStr = meta.date.toISOString().slice(0, 10);
-  const head = [`# ${meta.title}`, '', `정책제안 리포트${meta.area ? ` · ${meta.area}` : ''} · ${dateStr} · 다잇다 노트 · ${meta.url}`, ''];
+  const head = [`# ${meta.title}`, '', `정책제안 리포트${meta.area ? ` · ${meta.area}` : ''} · ${dateStr} · ${meta.url}`, ''];
   if (meta.description) head.push(`> ${meta.description}`, '');
   const faq = meta.faq.length ? ['', '## 자주 묻는 질문', '', ...meta.faq.flatMap(f => [`**Q. ${f.q}**`, '', f.a, ''])] : [];
   const src = meta.sources.length ? ['', `## 출처 (${meta.sources.length}건)`, '', ...meta.sources.map((s, n) => `${n + 1}. [${s.title}](${s.url})${s.date ? ` (${s.date})` : ''}`)] : [];

@@ -31,7 +31,7 @@ import Base from '../../layouts/Base.astro';
   const cnt = (id: string, n: number) => { $(id).textContent = n ? `${n.toLocaleString('ko-KR')}건` : ''; };
   async function run() {
     if (!q) return;
-    document.title = `${q} — 통합 검색 — 다잇다 노트`;
+    document.title = `${q} — 통합 검색 — 다잇다`;
     $('s-status').textContent = '찾는 중…';
     const [ci, si] = await Promise.all([fetch('/companies-index.json').then(r => r.json()), fetch('/search-index.json').then(r => r.json())]);
     const co = (ci.rows as any[]).filter(r => hit(r.n, r.s, r.d, r.e, r.c, r.g, (r.k ?? []).join(' '))).sort((a, b) => a.n.localeCompare(b.n, 'ko'));

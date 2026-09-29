@@ -4,7 +4,7 @@ import { NAV } from '../nav';
 import { latestMonth, monthLabel } from '../lib/stats';
 interface Props { title?: string; seoTitle?: string; description?: string; current?: string; tags?: string[]; jsonld?: object[]; ogType?: string }
 const { title, seoTitle, description = '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고', current = '', tags = [], jsonld = [], ogType = 'website' } = Astro.props;
-const fullTitle = (seoTitle || title) ? `${seoTitle || title} — 다잇다 노트` : '다잇다 노트 — 대구 산업·기업 현황';
+const fullTitle = (seoTitle || title) ? `${seoTitle || title} — 다잇다` : '다잇다 — 대구 산업·기업 현황';
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
 const lm = latestMonth();
 const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -22,17 +22,17 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content={ogType} />
-  <meta property="og:site_name" content="다잇다 노트" />
+  <meta property="og:site_name" content="다잇다" />
   <meta property="og:locale" content="ko_KR" />
   <link rel="stylesheet" href="/fonts/pretendard/pretendard.css" />
-  <link rel="alternate" type="application/rss+xml" title="다잇다 노트" href="/rss.xml" />
+  <link rel="alternate" type="application/rss+xml" title="다잇다" href="/rss.xml" />
   {jsonld.map(obj => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
   <header class="site-head">
     <div class="wrap row">
-      <a class="brand" href="/">다잇다 노트<span class="tagline">대구 산업·기업 자료</span></a>
+      <a class="brand" href="/">다잇다<span class="tagline">대구 산업·기업 자료</span></a>
       <a class="nav-search" href="/search/" aria-label="통합 검색" aria-current={current === 'search' ? 'page' : undefined}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg></a>
       <nav class="nav" aria-label="주요 메뉴">
         {NAV.map(n => <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.name}</a>)}

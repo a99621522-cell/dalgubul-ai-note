@@ -504,7 +504,7 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
         for i, s_ in enumerate(srcs, 1):
             d = str(s_.get("date") or "")[:10]
             add(para(ids, "src", [(f"{i}. ", "src"), (inline(str(s_.get("title", ""))) + (f" ({d})" if d else "") + f" — {s_.get('url', '')}", "src")]))
-    add(para(ids, "caption", [("다잇다 노트 · note.daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
+    add(para(ids, "caption", [("note.daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
     preview = "\n".join(["정책제안 리포트" + (f" · {area}" if area else ""), title] + outline)
     out.parent.mkdir(parents=True, exist_ok=True)

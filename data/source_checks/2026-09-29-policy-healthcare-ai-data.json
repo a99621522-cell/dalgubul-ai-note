@@ -1,11 +1,14 @@
 {
  "file": "src/content/posts/2026-09-29-policy-healthcare-ai-data.md",
  "checked": "2026-09-29",
- "ok": 34,
- "total": 38,
- "ratio": 0.89,
- "official_bad": [],
- "pass": true,
+ "ok": 35,
+ "total": 40,
+ "ratio": 0.88,
+ "official_bad": [
+  "한국데이터산업진흥원, 동향리포트 2025년 7호 「AI 학습용 데이터의 생태계 및 법제도 변화」",
+  "한국데이터산업진흥원, 동향리포트 2025년 6호 「합성데이터 생성과 활용, 향후 과제」"
+ ],
+ "pass": false,
  "sources": [
   {
    "title": "MarketsandMarkets, Artificial Intelligence in Healthcare Market worth $194.79 billion by 2031 (PR Newswire)",
@@ -300,12 +303,12 @@
    "url": "https://m.news.nate.com/view/20260710n19926",
    "date": "2026-07-10",
    "kind": "news",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectionError"
+   "status": 200,
+   "page_title": "에이팜건강, 27개국 보건데이터 허브 구축 나선 유럽 'EHDS' 공략…\"유럽이 2029년 도달하려는 미래, 한국엔 이미 현실이다\" : 네이트 뉴스",
+   "title_match": 0.86,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "日, AI 위해 의료기록·전과까지 푼다…\\\"동의 없이 활용 가능\\\" 논란 (전자신문)",
@@ -462,6 +465,30 @@
    "date_found": true,
    "ok": true,
    "note": ""
+  },
+  {
+   "title": "한국데이터산업진흥원, 동향리포트 2025년 7호 「AI 학습용 데이터의 생태계 및 법제도 변화」",
+   "url": "https://www.kdata.or.kr/kr/board/info_01/boardList.do",
+   "date": "2025-11-28",
+   "kind": "report",
+   "status": 200,
+   "page_title": "한국데이터산업진흥원 - 정보마당 | 조사&amp;middot;연구보고서",
+   "title_match": 0.25,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "한국데이터산업진흥원, 동향리포트 2025년 6호 「합성데이터 생성과 활용, 향후 과제」",
+   "url": "https://www.kdata.or.kr/kr/board/info_01/boardList.do",
+   "date": "2025-10-30",
+   "kind": "report",
+   "status": 200,
+   "page_title": "한국데이터산업진흥원 - 정보마당 | 조사&amp;middot;연구보고서",
+   "title_match": 0.25,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   }
  ]
 }

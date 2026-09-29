@@ -133,6 +133,9 @@ article.post .body figcaption { font-size: var(--small); color: var(--muted); ma
 .tags { margin-top: var(--s3); font-size: var(--small); color: var(--muted); display: flex; flex-wrap: wrap; gap: var(--s1); }
 .faq, .sources { margin-top: var(--s4); border-top: 1px solid var(--line); padding-top: var(--s2); }
 .sources ol { padding-left: 1.4em; } .sources li { margin: 4px 0; overflow-wrap: anywhere; }
+.footnotes { margin-top: var(--s4); border-top: 1px solid var(--line); padding-top: var(--s2); font-size: var(--small); color: var(--muted); }   /* 마크다운 각주(remark-gfm, 2026-09-29) */
+.footnotes h2 { font-size: var(--h3); color: var(--ink); } .footnotes ol { padding-left: 1.4em; } .footnotes li { margin: 4px 0; overflow-wrap: anywhere; }
+sup a[data-footnote-ref] { text-decoration: none; padding: 0 1px; }
 .faq h2 { margin-bottom: var(--s1); }
 .faq details { border-bottom: 1px solid var(--line); padding: var(--s1) 0; }
 .faq summary { cursor: pointer; font-weight: 600; min-height: var(--touch); display: flex; align-items: center; }

@@ -1,10 +1,9 @@
 ---
 /** 첫 화면 머리: 두 줄 표제 → 인기 검색어 → 큰 검색창(통합 검색 /search/) → 사업 DB 건수.
  *  기업마당(bizinfo.go.kr) 첫 화면을 본보기로 한 배치(운영자 지시 2026-09-27). 숫자는 빌드 때 사업 DB 에서 센다. */
-import { programs, cityPrograms } from '../lib/csv';
+import { programs } from '../lib/csv';
 const national = programs().filter(p => p.corp).length;
-const city = cityPrograms().filter(p => !p.admin).length;
-const total = national + city;
+const total = national;
 const asOf = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\.\s?/g, (m, i, s) => (i === s.length - 1 ? '' : '. '));
 const HOT = ['자동차부품', '성서산단', '달성군', '의료기기', '로봇', '섬유'];
 ---
@@ -23,6 +22,6 @@ const HOT = ['자동차부품', '성서산단', '달성군', '의료기기', '�
   <div class="home-stat">
     <p class="label">찾아볼 수 있는 기업 지원 사업 <span class="asof">({asOf} 기준)</span></p>
     <p class="num"><a href="/programs/">{total.toLocaleString('ko-KR')}<span class="unit">건</span></a></p>
-    <p class="sub">부처 사업설명자료 {national.toLocaleString('ko-KR')}건 · <a href="/programs/daegu/">대구시 사업설명서 {city.toLocaleString('ko-KR')}건</a> · 예산 숫자는 자료 값 그대로, 평가·순위 없음</p>
+    <p class="sub">부처 사업설명자료 {national.toLocaleString('ko-KR')}건 · 예산 숫자는 자료 값 그대로, 평가·순위 없음</p>
   </div>
 </section>

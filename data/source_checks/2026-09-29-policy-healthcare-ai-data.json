@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-09-29-policy-healthcare-ai-data.md",
  "checked": "2026-09-30",
- "ok": 28,
+ "ok": 29,
  "total": 29,
- "ratio": 0.97,
+ "ratio": 1.0,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -120,12 +120,12 @@
    "url": "https://www.newspim.com/news/view/20260324000709",
    "date": "2026-03-24",
    "kind": "news",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "AI 키운다더니 데이터는 묶였다…감사원, 의료·저작권 허점 동시 지적",
+   "title_match": 1.0,
    "date_found": false,
-   "ok": false,
-   "note": "ReadTimeout"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "개인정보보호위원회, (보도설명) 개인정보위는 가명정보 제공·결합 기간 단축 및 활용 확대를 위해 적극 노력하고 있습니다 (네이트뉴스 전재)",

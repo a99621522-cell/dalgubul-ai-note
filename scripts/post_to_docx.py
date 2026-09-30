@@ -260,6 +260,26 @@ def add_block(doc, el, tmp):
             add_block(doc, ch, tmp)
 
 
+def split_footnotes(body: str) -> tuple[str, list[tuple[str, str]]]:
+    """각주([^n] 참조와 '[^n]: 설명' 정의)를 정의 순서대로 번호를 매겨 위첨자 [n] 과 '주석' 목록으로 바꾼다.
+    숫자 각주는 그 번호(=출처 목록 번호)를 그대로 쓰고, 이름 각주([^corp] 등)는 뒤 번호를 이어 붙인다."""
+    defs = re.findall(r"^\[\^([^\]\s]+)\]:[ \t]*(.*)$", body, re.M)
+    if not defs:
+        return body, []
+    nums = [int(k) for k, _ in defs if k.isdigit()]
+    nxt = max(nums, default=0) + 1
+    label: dict[str, str] = {}
+    for k, _ in defs:
+        if k.isdigit():
+            label[k] = k
+        else:
+            label[k] = str(nxt)
+            nxt += 1
+    body = re.sub(r"^\[\^([^\]\s]+)\]:[ \t]*.*\n?", "", body, flags=re.M)
+    body = re.sub(r"\[\^([^\]\s]+)\]", lambda m: f"<sup>[{label.get(m.group(1), m.group(1))}]</sup>", body)
+    return body, [(label[k], v) for k, v in defs]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("post_id")
@@ -272,6 +292,7 @@ def main():
     fm, body = yaml.safe_load(m.group(1)), m.group(2)
     # 본문의 '<참고 1>' 같은 꺾쇠 글자를 태그로 읽지 않게
     body = re.sub(rf"<(?!/?(?:{KNOWN_TAGS})\b)", "&lt;", body)
+    body, notes = split_footnotes(body)
     html = markdown.markdown(body, extensions=["tables", "md_in_html"])
     soup = BeautifulSoup(html, "html.parser")
 
@@ -298,6 +319,11 @@ def main():
         for el in soup.children:
             add_block(doc, el, tmp)
 
+        if notes:
+            doc.add_heading("주석", level=1)
+            for n, v in notes:
+                p = doc.add_paragraph()
+                set_font(p.add_run(f"[{n}] {v}"), size=9.5)
         if fm.get("faq") and not args.public:
             doc.add_heading("자주 묻는 질문", level=1)
             for qa in fm["faq"]:

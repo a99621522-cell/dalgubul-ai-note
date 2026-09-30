@@ -2,6 +2,7 @@ name: 커스텀 도메인 확인·연결 (Cloudflare Pages)
 
 # 이 세션 환경은 Cloudflare 에 접속할 수 없어, Pages 프로젝트에 note.daitda.co.kr 이 붙어 있는지 확인하고(check)
 # 없으면 붙이는(add) 일을 Actions 가 대신 한다. 토큰(CLOUDFLARE_API_TOKEN)에 Pages 편집 권한이 없으면 응답 그대로 출력하고 끝낸다.
+# 최상위 주소(daitda.co.kr)도 domain 에 넣어 붙일 수 있다(존을 도메인 자체부터 찾음, 2026-09-30).
 # daitda.co.kr → note.daitda.co.kr 리다이렉트는 존(daitda.co.kr) 규칙이라 토큰에 Zone 권한이 있을 때만 시도한다.
 
 on:
@@ -39,7 +40,10 @@ jobs:
           echo "== 도메인 목록"; api "$base/domains" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("ok" if d.get("success") else d.get("errors")); [print(" ", x.get("name"), "status:", x.get("status"), "cert:", (x.get("certificate_authority") or ""), "validation:", (x.get("validation_data") or {}).get("status")) for x in d.get("result") or []]'
           if [ "$MODE" = "add" ] && [ -n "$DOMAIN" ]; then
             echo "== 도메인 추가 $DOMAIN"; api -X POST "$base/domains" --data "{\"name\":\"$DOMAIN\"}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(json.dumps(d.get("result") if d.get("success") else d.get("errors"), ensure_ascii=False))'
-            echo "== 존(DNS) 확인"; zone=$(api "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN#*.}" | python3 -c 'import sys,json; d=json.load(sys.stdin); r=d.get("result") or []; print(r[0]["id"] if r else "")')
+            echo "== $DOMAIN 상태(검증·DNS 안내)"; api "$base/domains/$DOMAIN" | python3 -c 'import sys,json; d=json.load(sys.stdin); r=d.get("result") or {}; print(json.dumps({k: r.get(k) for k in ("name","status","verification_data","validation_data","zone_tag")}, ensure_ascii=False))'
+            # 존 찾기: 도메인 자체(daitda.co.kr 같은 최상위 주소) → 한 단계 위(note.daitda.co.kr → daitda.co.kr) 순서
+            zid() { api "https://api.cloudflare.com/client/v4/zones?name=$1" | python3 -c 'import sys,json; d=json.load(sys.stdin); r=d.get("result") or []; print(r[0]["id"] if r else "")'; }
+            echo "== 존(DNS) 확인"; zone=$(zid "$DOMAIN"); [ -z "$zone" ] && zone=$(zid "${DOMAIN#*.}")
             if [ -n "$zone" ]; then
               echo "zone $zone 있음 — CNAME $DOMAIN → dalgubul-ai-note.pages.dev 확인·생성"
               have=$(api "https://api.cloudflare.com/client/v4/zones/$zone/dns_records?name=$DOMAIN" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(len(d.get("result") or []))')

@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-09-27-policy-healthcare-medical-data.md",
- "checked": "2026-09-28",
- "ok": 32,
+ "checked": "2026-09-29",
+ "ok": 34,
  "total": 36,
- "ratio": 0.89,
+ "ratio": 0.94,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -204,12 +204,12 @@
    "url": "https://mohw.go.kr/board.es?act=view&bid=0027&list_no=1491534&mid=a10503010100&nPage=1&tag=",
    "date": "2026-08-06",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "우리 동네 보건소에서도 대학병원급 AI 진료, 전국에 AI 진료지원 도구 보급한다 &lt; 전체 &lt; 보도자료 &lt; 알림 : 힘이 되는 평생 친구, 보건복지부",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "보건소부터 공공병원까지 AI로 연결…'한국형 소버린 의료AI'도 개발 — 국가 보건의료 데이터 허브 (전자신문)",
@@ -228,24 +228,24 @@
    "url": "https://www.mohw.go.kr/board.es?mid=a10503000000&bid=0027&list_no=1488181&act=view",
    "date": "2025-12-10",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "의료데이터 활용 확대, “AI 기본의료 앞당긴다” &lt; 보도자료 &lt; 알림 : 힘이 되는 평생 친구, 보건복지부",
+   "title_match": 0.57,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "「보건의료데이터 활용 가이드라인」 개정 안내 — 5차 개정, 영상정보 단일화·공용 DRB (보건복지부 공지)",
    "url": "https://www.mohw.go.kr/board.es?mid=a10501010100&bid=0003&act=view&list_no=1483933",
    "date": "2025-12",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "「보건의료데이터 활용 가이드라인」개정 안내 &lt; 전체 &lt; 공지사항 &lt; 알림 : 힘이 되는 평생 친구, 보건복지부",
+   "title_match": 1.0,
    "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "[마이데이터 가이드] 의료 마이데이터 이용률 14% 원인 분석과 해외 사례 비교 — 참여 의료기관 1,363곳 (한국데이터경제신문)",
@@ -420,11 +420,11 @@
    "url": "https://www.ddaily.co.kr/page/view/2026081111425999992",
    "date": "2026-08-11",
    "kind": "",
-   "status": 200,
-   "page_title": "AI가 바꾼 디지털헬스케어 인력구조&hellip;&ldquo;주니어 줄고 시니어&middot;융합형 인재 뜬다&rdquo; - 디지털데일리",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
+   "status": 403,
+   "page_title": "403 Forbidden",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
    "note": ""
   },
   {

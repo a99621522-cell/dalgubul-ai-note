@@ -1,11 +1,11 @@
 {
  "file": "src/content/posts/2026-09-28-policy-mobility-sdv.md",
- "checked": "2026-09-28",
- "ok": 14,
+ "checked": "2026-09-29",
+ "ok": 15,
  "total": 18,
- "ratio": 0.78,
+ "ratio": 0.83,
  "official_bad": [],
- "pass": false,
+ "pass": true,
  "sources": [
   {
    "title": "현대차 'SDV 더는 안 미뤄…2028년 초 출시' (ZDNet Korea)",
@@ -72,12 +72,12 @@
    "url": "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/172238/view?mno=&pageIndex=1",
    "date": "2026-09-23",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "(참고자료) EU 산업가속화법 관련 유럽의회 핵심인사 대상 우리측 입장 적극 전달 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "동성로에 무인 셔틀, 산단에 자율주행 화물차…대구 미래모빌리티 실증사업 가동 (서울신문)",
@@ -108,12 +108,12 @@
    "url": "https://www.g-enews.com/article/General-News/2026/09/202609141650159047d2e64277d7_1",
    "date": "2026-09-14",
    "kind": "",
-   "status": 200,
-   "page_title": "“대구 자동차부품, AI로 다시 뛴다”…미래모빌리티 대전환 시동 - 글로벌이코노믹",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectionError"
   },
   {
    "title": "경남도, 자동차부품산업 미래 전환사업 확보 총력 (브릿지경제)",
@@ -180,20 +180,20 @@
    "url": "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/172231/view?mno=&pageIndex=1",
    "date": "2026-09-22",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "AI 시대, 기업과 산업의 미래를 위한 민간의 지혜를 모은다 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
-   "title": "미래모빌리티·자동차부품: 50인 미만 부품사 621곳, 제조AI 확산의 첫 대상 (다잇다 노트, 지난 회차)",
+   "title": "미래모빌리티·자동차부품: 50인 미만 부품사 621곳, 제조AI 확산의 첫 대상 (지난 회차)",
    "url": "https://note.daitda.co.kr/posts/2026-09-24-policy-mobility-auto-parts/",
    "date": "2026-09-24",
    "kind": "",
    "status": 404,
-   "page_title": "페이지를 찾을 수 없습니다 — 다잇다 노트",
+   "page_title": "페이지를 찾을 수 없습니다 — 다잇다",
    "title_match": 0.0,
    "date_found": true,
    "ok": false,

@@ -6,7 +6,7 @@
 ## 구조
 
 - `src/content/posts/*.md` — 글. 프론트매터 스키마는 `src/content.config.ts`. `draft: true` 면 미노출
-- `src/pages/` — index(첫 화면), `dashboard/`(현황판: 입지·구군·단지·태그), `industry/`(산업 그룹 11개 목록·`[key]`·`compare`), `stats/[month]`(월간 통계표), `companies/`(기업 사전·카드), `support/`(지원받은 기업), `programs/`, `policy/`(메뉴 이름 '리포트': 운영자가 올린 자료 내려받기만 — 파일은 `public/files/`, 목록은 페이지의 `FILES`. 정책제안 리포트 목록·산업 정책 글·국비↔시비 매칭 표는 뺐다, 운영자 지시 2026-09-30), `posts/`(글 목록)·`posts/[...id]`, `category/[cat]`, `rss.xml.ts`. 메뉴는 `src/nav.ts`
+- `src/pages/` — index(첫 화면), `dashboard/`(현황판: 입지·구군·단지·태그), `industry/`(산업 그룹 11개 목록·`[key]`·`compare`), `stats/[month]`(월간 통계표), `companies/`(기업 사전·카드), `support/`(지원받은 기업), `programs/`, `policy/`(메뉴 이름 '리포트': 운영자가 올린 자료 내려받기만 — 파일은 `public/files/`, 목록은 페이지의 `FILES`, 파일마다 한글(HWPX)·Word — HWPX 는 `scripts/hwpx_report.py <md> --public -o public/files/<이름>.hwpx`(머리 글자 '리포트', FAQ·요약본 없음). 정책제안 리포트 목록·산업 정책 글·국비↔시비 매칭 표는 뺐다, 운영자 지시 2026-09-30), `posts/`(글 목록)·`posts/[...id]`, `category/[cat]`, `rss.xml.ts`. 메뉴는 `src/nav.ts`
 - `src/pages/search/` + `src/pages/search-index.json.ts` — 통합 검색(/search/?q=). 기업 색인(/companies-index.json)과 글·리포트·부처 사업·대구시 사업 색인(/search-index.json)을 받아 브라우저에서 거른다(서버·AI 호출 없음). 첫 화면 큰 검색창·헤더 돋보기·인기 검색어 칩이 여기로 온다. 첫 화면은 `src/components/HomeHero.astro`(표제·인기 검색어·검색창·사업 DB 건수)와 `ReportCarousel.astro`(최근 리포트 5편 회전 카드, 6초 자동 넘김·움직임 줄이기 존중) — 기업마당 첫 화면을 본보기로(운영자 지시 2026-09-27)
 - `src/layouts/Base.astro` — 공통 레이아웃과 SEO 메타. `src/styles/global.css` — 전체 스타일
 - `src/categories.ts` — 카테고리 3개: `economy` 기업 동향 / `grants` 공모·지원사업 / `policy` 산업 정책. AI 동향·공무원 AI 글은 이 사이트에서 다루지 않는다(별도 사이트 예정, 초안은 docs/archive-ai-notes)

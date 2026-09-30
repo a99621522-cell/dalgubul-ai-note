@@ -1,23 +1,33 @@
 ---
 import Base from '../../layouts/Base.astro';
 /** /policy/ — 리포트(메뉴 이름 '리포트', 운영자 지시 2026-09-30): 운영자가 올린 자료의 내려받기만 둔다.
- *  파일은 public/files/ 에 두고 아래 FILES 에 한 줄씩 더한다. 정책제안 리포트 목록·산업 정책 글·국비↔시비 매칭 표는 이 페이지에서 뺐다. */
+ *  파일은 public/files/ 에 두고 아래 FILES 에 한 줄씩 더한다. 한글(HWPX)은 scripts/hwpx_report.py <md> --public 으로 만든다(운영자 지시 2026-09-30: 한글 파일로 받게).
+ *  정책제안 리포트 목록·산업 정책 글·국비↔시비 매칭 표는 이 페이지에서 뺐다. */
 const FILES = [
-  { href: '/files/daegu-industry-structure.docx', download: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판.docx',
-    title: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)', meta: 'Word, 1.7MB' },
-  { href: '/files/supply-chain-map-guide.docx', download: '주요 제조업 공급망 지도 해설.docx',
-    title: '주요 제조업 공급망 지도 해설', meta: 'Word, 11.4MB' },
+  { title: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)', name: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판',
+    hwpx: { href: '/files/daegu-industry-structure.hwpx', size: '1.8MB' }, docx: { href: '/files/daegu-industry-structure.docx', size: '1.7MB' } },
+  { title: '주요 제조업 공급망 지도 해설', name: '주요 제조업 공급망 지도 해설',
+    hwpx: { href: '/files/supply-chain-map-guide.hwpx', size: '10.5MB' }, docx: { href: '/files/supply-chain-map-guide.docx', size: '11.4MB' } },
 ];
 ---
-<Base title="리포트" description={`리포트 자료 내려받기 ${FILES.length}건.`} current="policy">
+<Base title="리포트" description={`리포트 자료 내려받기 ${FILES.length}건(한글·Word).`} current="policy">
   <div class="section-head"><h1>리포트</h1><span class="meta">자료 {FILES.length}건</span></div>
   <ul class="files">
     {FILES.map(f => (
-      <li><a href={f.href} download={f.download}>{f.title}</a> <span class="meta">({f.meta})</span></li>
+      <li>
+        <span class="t">{f.title}</span>
+        <span class="dl">
+          <a href={f.hwpx.href} download={`${f.name}.hwpx`}>한글(HWPX)</a> <span class="meta">{f.hwpx.size}</span>
+          <span class="meta"> · </span>
+          <a href={f.docx.href} download={`${f.name}.docx`}>Word</a> <span class="meta">{f.docx.size}</span>
+        </span>
+      </li>
     ))}
   </ul>
   <style>
-    ul.files { padding-left: 1.2em; }
-    ul.files li { margin: var(--s2) 0; }
+    ul.files { list-style: none; padding: 0; }
+    ul.files li { padding: var(--s2) 0; border-bottom: 1px solid var(--line); }
+    ul.files .t { display: block; font-weight: 600; }
+    ul.files .dl { display: block; margin-top: .3em; }
   </style>
 </Base>

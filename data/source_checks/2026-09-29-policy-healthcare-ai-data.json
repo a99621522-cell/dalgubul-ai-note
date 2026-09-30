@@ -84,12 +84,12 @@
    "url": "https://view.asiae.co.kr/article/2026020912002152004",
    "date": "2026-02-09",
    "kind": "news",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectionError"
+   "status": 200,
+   "page_title": "&quot;AI, 바이오헬스 산업 게임체인저&quot;…한은, '국가 승인형 데이터 개방' 제안한 이유는",
+   "title_match": 0.67,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "보건복지부, 「의료데이터 활용 확대, 'AI 기본의료 앞당긴다'」 — 2025년 보건의료데이터 정책심의위원회(대한민국 정책브리핑 게재 보도자료)",
@@ -120,12 +120,12 @@
    "url": "https://www.newspim.com/news/view/20260324000709",
    "date": "2026-03-24",
    "kind": "news",
-   "status": 200,
-   "page_title": "AI 키운다더니 데이터는 묶였다…감사원, 의료·저작권 허점 동시 지적",
-   "title_match": 1.0,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
-   "note": ""
+   "ok": false,
+   "note": "ReadTimeout"
   },
   {
    "title": "개인정보보호위원회, (보도설명) 개인정보위는 가명정보 제공·결합 기간 단축 및 활용 확대를 위해 적극 노력하고 있습니다 (네이트뉴스 전재)",

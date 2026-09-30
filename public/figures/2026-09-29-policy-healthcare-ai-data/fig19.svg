@@ -1,39 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="321" viewBox="0 0 800 321" role="img" aria-label="다기관 데이터 요청의 심의: 현행과 방안 2">
-<rect width="800" height="321" fill="#ffffff"/>
-<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >다기관 데이터 요청의 심의: 현행과 방안 2</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="289" viewBox="0 0 800 289" role="img" aria-label="다기관 요청의 심의: 현행과 방안 2">
+<rect width="800" height="289" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >다기관 요청의 심의: 현행과 방안 2</text>
 <rect x="24" y="56" width="752" height="36" fill="#f5f6f8" stroke="#e0e0e0"/>
 <text x="106.7" y="79.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >구분</text>
-<text x="336.1" y="79.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >현행(병원별 심의)</text>
-<text x="629.4" y="79.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >방안 2(공동 심의 인정)</text>
-<rect x="24" y="92" width="752" height="35" fill="#ffffff" stroke="#e0e0e0"/>
-<text x="36.0" y="116.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >심의 횟수</text>
-<text x="336.1" y="116.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >요청 병원 수만큼</text>
-<line x1="189.44" y1="92" x2="189.44" y2="127" stroke="#e0e0e0"/>
-<text x="629.4" y="116.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >1회</text>
-<line x1="482.72" y1="92" x2="482.72" y2="127" stroke="#e0e0e0"/>
-<rect x="24" y="127" width="752" height="35" fill="#ffffff" stroke="#e0e0e0"/>
-<text x="36.0" y="151.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >기간</text>
-<text x="336.1" y="151.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >병원별 30일 이상</text>
-<line x1="189.44" y1="127" x2="189.44" y2="162" stroke="#e0e0e0"/>
-<text x="629.4" y="151.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >통합 20일 이내(목표)</text>
-<line x1="482.72" y1="127" x2="482.72" y2="162" stroke="#e0e0e0"/>
-<rect x="24" y="162" width="752" height="35" fill="#ffffff" stroke="#e0e0e0"/>
-<text x="36.0" y="186.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >승인 효력</text>
-<text x="336.1" y="186.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >각 병원 승인만 유효</text>
-<line x1="189.44" y1="162" x2="189.44" y2="197" stroke="#e0e0e0"/>
-<text x="629.4" y="186.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >참여 병원이 공동 승인 인정</text>
-<line x1="482.72" y1="162" x2="482.72" y2="197" stroke="#e0e0e0"/>
-<rect x="24" y="197" width="752" height="35" fill="#ffffff" stroke="#e0e0e0"/>
-<text x="36.0" y="221.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >가명처리 기준</text>
-<text x="336.1" y="221.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >병원별 판단</text>
-<line x1="189.44" y1="197" x2="189.44" y2="232" stroke="#e0e0e0"/>
-<text x="629.4" y="221.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >위험도 공통 기준</text>
-<line x1="482.72" y1="197" x2="482.72" y2="232" stroke="#e0e0e0"/>
-<rect x="24" y="232" width="752" height="35" fill="#ffffff" stroke="#e0e0e0"/>
-<text x="36.0" y="256.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >창구</text>
-<text x="336.1" y="256.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >병원별 IRB·DRB</text>
-<line x1="189.44" y1="232" x2="189.44" y2="267" stroke="#e0e0e0"/>
-<text x="629.4" y="256.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >협의체 공동 IRB·DRB(공용 DRB)</text>
-<line x1="482.72" y1="232" x2="482.72" y2="267" stroke="#e0e0e0"/>
-<text x="24.0" y="307.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 케이메디허브·KAIRB 협력 보도(2026-08), 보건의료데이터 활용 가이드라인 개정 보도(2025-12-31)</text>
+<text x="336.1" y="79.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >현행</text>
+<text x="629.4" y="79.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >방안 2</text>
+<rect x="24" y="92" width="752" height="54" fill="#ffffff" stroke="#e0e0e0"/>
+<text x="36.0" y="116.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >IRB(연구 윤리 심의)</text>
+<text x="336.1" y="116.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >병원마다 따로, 병원별 30일 이상</text>
+<line x1="189.44" y1="92" x2="189.44" y2="146" stroke="#e0e0e0"/>
+<text x="629.4" y="116.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >공동 IRB 1회, 참여 병원이 승인</text>
+<text x="629.4" y="135.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >인정(목표 20일)</text>
+<line x1="482.72" y1="92" x2="482.72" y2="146" stroke="#e0e0e0"/>
+<rect x="24" y="146" width="752" height="54" fill="#ffffff" stroke="#e0e0e0"/>
+<text x="36.0" y="170.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >DRB(데이터 반출</text>
+<text x="36.0" y="189.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >심의)</text>
+<text x="336.1" y="170.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >병원마다 따로</text>
+<line x1="189.44" y1="146" x2="189.44" y2="200" stroke="#e0e0e0"/>
+<text x="629.4" y="170.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >병원 책임 유지, 공용 DRB 인정은 협의</text>
+<text x="629.4" y="189.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >과제</text>
+<line x1="482.72" y1="146" x2="482.72" y2="200" stroke="#e0e0e0"/>
+<rect x="24" y="200" width="752" height="35" fill="#ffffff" stroke="#e0e0e0"/>
+<text x="36.0" y="224.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >창구</text>
+<text x="336.1" y="224.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >병원별</text>
+<line x1="189.44" y1="200" x2="189.44" y2="235" stroke="#e0e0e0"/>
+<text x="629.4" y="224.0" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >협의체 공동 창구(케이메디허브)</text>
+<line x1="482.72" y1="200" x2="482.72" y2="235" stroke="#e0e0e0"/>
+<text x="24.0" y="275.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 케이메디허브·KAIRB 협력 보도(2026-08), 보건의료데이터 활용 가이드라인 개정 보도(2025-12-31)</text>
 </svg>

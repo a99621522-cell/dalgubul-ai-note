@@ -5,7 +5,7 @@
 그대로 옮긴다. 그림(public/figures/.../*.svg)은 rsvg-convert 로 PNG 로 바꿔 넣고,
 그림마다 대체 텍스트에 원래 파일 경로를 적어 되돌릴 때 어느 그림인지 알 수 있게 한다.
 
-  python3 scripts/post_to_docx.py 2026-09-30-policy-structure-daegu [-o out.docx]
+  python3 scripts/post_to_docx.py 2026-09-30-policy-structure-daegu [-o out.docx] [--public]   # --public: 게시용(초안 표시·FAQ 없음)
 
 필요: python-docx, markdown, beautifulsoup4, rsvg-convert(librsvg2-bin)
 """
@@ -264,6 +264,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("post_id")
     ap.add_argument("-o", "--out")
+    ap.add_argument("--public", action="store_true", help="게시용: 초안 표시·파일 id 줄과 FAQ 를 빼고 날짜만 적는다")
     args = ap.parse_args()
     src = ROOT / "src/content/posts" / f"{args.post_id}.md"
     raw = src.read_text(encoding="utf-8")
@@ -285,7 +286,8 @@ def main():
     t = doc.add_paragraph(style="Title")
     set_font(t.add_run(fm.get("title", args.post_id)), size=18, bold=True)
     meta = doc.add_paragraph()
-    set_font(meta.add_run(f"{fm.get('date', '')} · 초안(편집용) · 파일 id {args.post_id}"), size=9, color="666666")
+    meta_text = str(fm.get('date', '')) if args.public else f"{fm.get('date', '')} · 초안(편집용) · 파일 id {args.post_id}"
+    set_font(meta.add_run(meta_text), size=9, color="666666")
     if fm.get("description"):
         p = doc.add_paragraph()
         set_font(p.add_run("핵심 문장  "), size=10, bold=True)
@@ -296,7 +298,7 @@ def main():
         for el in soup.children:
             add_block(doc, el, tmp)
 
-        if fm.get("faq"):
+        if fm.get("faq") and not args.public:
             doc.add_heading("자주 묻는 질문", level=1)
             for qa in fm["faq"]:
                 p = doc.add_paragraph()

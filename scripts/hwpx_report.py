@@ -11,6 +11,7 @@ LG경영연구원 리포트 형식(운영자 지시 2026-09-27 「이 파일처�
 사용: python3 scripts/hwpx_report.py src/content/posts/<파일>.md [-o public/hwpx/<id>.hwpx]
       python3 scripts/hwpx_report.py --all        # 발행된 정책제안 리포트 전부 → public/hwpx/<id>.hwpx
       python3 scripts/hwpx_report.py --check <hwpx>  # XML 이 잘 열리는지
+      python3 scripts/hwpx_report.py <md> --public -o public/files/<이름>.hwpx   # 리포트 메뉴 게시용(FAQ·요약본 없음)
 """
 import argparse, copy, io, re, shutil, struct, subprocess, sys, zipfile
 import xml.etree.ElementTree as ET
@@ -25,6 +26,7 @@ OUT_DIR = ROOT / "public" / "hwpx"
 PUBLIC = ROOT / "public"
 PX_UNIT = 75            # 96dpi 픽셀 1 = 75 HWPUNIT(1/7200인치)
 MAX_IMG_W = 46000       # 본문 그림 최대 너비(≈162mm, 본문 폭 48188 안)
+MAX_IMG_H = 60000       # 본문 그림 최대 높이(≈212mm) — 세로로 긴 쪽 사진이 한 쪽을 넘지 않게
 LEAD_COLOR = "#C00000"  # 핵심(리드) 문장 색 — LG경영연구원 리포트의 붉은 굵은 글씨
 ROMAN = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ"]
 NS: dict[str, str] = {}
@@ -33,12 +35,15 @@ HP = ""
 
 # ───────── 마크다운 → 블록 ─────────
 def inline(s: str) -> str:
-    s = re.sub(r"<[^>]+>", "", s)
+    # 마크다운 역슬래시 이스케이프(\* \_ …)를 먼저 자리표시로 감싸 굵게·기울임 규칙이 먹지 않게 하고 끝에 글자로 되돌린다
+    s = re.sub(r"\\([\\`*_{}\[\]()#+\-.!|<>~])", lambda m: f"\x00{ord(m[1])}\x00", s)
+    s = re.sub(r"</?[A-Za-z][^>]*>", "", s)   # HTML 태그만(〈참고 1〉 같은 한글 꺾쇠 글은 남긴다)
     s = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", s)
     s = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", s)
     s = re.sub(r"\*\*(.+?)\*\*", r"\1", s)
     s = re.sub(r"(?<!\w)\*(.+?)\*(?!\w)", r"\1", s)
     s = s.replace("`", "").replace("&nbsp;", " ").replace("&amp;", "&")
+    s = re.sub(r"\x00(\d+)\x00", lambda m: chr(int(m[1])), s)
     return re.sub(r"\s+", " ", s).strip()
 
 
@@ -117,7 +122,7 @@ def body_blocks(md: str) -> list[tuple[str, object]]:
             lead, rest = inline(m[1]), [m[2]] if m[2].strip() else []
             while i + 1 < len(lines) and lines[i + 1].strip() and not re.match(r"^(#|\||<|>|\s*[-*]\s|---)", lines[i + 1]):
                 i += 1; rest.append(lines[i].strip())
-            if not rest and re.match(r"^표\s*\d", lead):
+            if not rest and re.match(r"^[〈<]?표\s*[\d부]", lead):
                 out.append(("caption", lead))
             else:
                 out.append(("lead", (lead, inline(" ".join(rest)))))
@@ -241,8 +246,8 @@ class Images:
 
 def pic_paragraph(ids: dict, bid: str, px_w: int, px_h: int, comment: str):
     """가운데 정렬 문단 하나에 그림(글자처럼 취급)을 넣는다."""
-    w = min(px_w * PX_UNIT, MAX_IMG_W)
-    h = int(px_h * PX_UNIT * (w / (px_w * PX_UNIT)))
+    scale = min(1.0, MAX_IMG_W / (px_w * PX_UNIT), MAX_IMG_H / (px_h * PX_UNIT))
+    w, h = int(px_w * PX_UNIT * scale), int(px_h * PX_UNIT * scale)
     xml = (f'<hp:run xmlns:hp="{NS["hp"]}" xmlns:hc="{NS["hc"]}" charPrIDRef="{ids["char"]["caption"]}"><hp:pic id="{2000000000 + hash(bid) % 100000000}" zOrder="{10 + int(bid[5:])}" numberingType="PICTURE" '
            f'textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" href="" groupLevel="0" instid="{1100000000 + int(bid[5:])}" reverse="0">'
            f'<hp:offset x="0" y="0"/><hp:orgSz width="{w}" height="{h}"/><hp:curSz width="{w}" height="{h}"/><hp:flip horizontal="0" vertical="0"/>'
@@ -355,8 +360,15 @@ def para(ids: dict, pname: str, segs: list[tuple[str, str]]):
     for text, cname in segs or [("", "body")]:
         r = ET.SubElement(p, HP + "run", {"charPrIDRef": ids["char"][cname]})
         ET.SubElement(r, HP + "t").text = text
-    ET.SubElement(ET.SubElement(p, HP + "linesegarray"), HP + "lineseg", {"textpos": "0", "vertpos": "0", "vertsize": "1000", "textheight": "1000", "baseline": "850", "spacing": "600", "horzpos": "0", "horzsize": str(TEXT_W), "flags": "393216"})
     return p
+
+
+def drop_linesegs(root) -> None:
+    """줄 배치 캐시(hp:linesegarray)를 모두 뺀다. 한글은 이 값을 그대로 믿어, 모든 문단에 같은 값(세로 위치 0·한 줄)을 넣으면
+    문단들이 한 자리에 겹쳐 그려진다(운영자 확인 2026-09-30: 글자가 겹치고 그림 양옆이 검게 뭉침). 없으면 한글이 열 때 줄을 새로 계산한다."""
+    for parent in root.iter():
+        for ch in [c for c in parent if c.tag == HP + "linesegarray"]:
+            parent.remove(ch)
 
 
 def design_table(proto, ids: dict, rows: list[list[str]], head: bool = True, widths: list[int] | None = None, fill_key: str | None = None, margin: int = 320):
@@ -411,7 +423,7 @@ def design_table(proto, ids: dict, rows: list[list[str]], head: bool = True, wid
     return p
 
 
-def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> None:
+def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "", kicker: str | None = None, faq_on: bool = True) -> None:
     """LG경영연구원 리포트를 본보기로 한 편집: 머리말(분야) → 제목 → 남색 선 → 대표 그림 → 요약 상자 → 본문(절 제목·리드 문장·그림·표) → FAQ → 참고 자료."""
     global HP
     z = zipfile.ZipFile(TEMPLATE)
@@ -438,7 +450,8 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
         root.remove(p)
     add = root.append
     # 제목 블록
-    add(para(ids, "kicker", [("정책제안 리포트" + (f"  ·  {area}" if area else ""), "kicker")]))
+    kicker = kicker or ("정책제안 리포트" + (f"  ·  {area}" if area else ""))
+    add(para(ids, "kicker", [(kicker, "kicker")]))
     add(para(ids, "title", [(title, "title")]))
     add(para(ids, "rule", [("", "caption")]))
     # 대표 그림
@@ -492,7 +505,7 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
         elif kind == "table":
             add(design_table(tbl_proto, ids, payload))  # type: ignore[arg-type]
             add(para(ids, "spacer", [("", "caption")]))
-    faq = meta.get("faq") or []
+    faq = (meta.get("faq") or []) if faq_on else []
     if faq:
         add(para(ids, "h2", [("자주 묻는 질문", "h2")]))
         for qa in faq:
@@ -505,8 +518,9 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "") -> 
             d = str(s_.get("date") or "")[:10]
             add(para(ids, "src", [(f"{i}. ", "src"), (inline(str(s_.get("title", ""))) + (f" ({d})" if d else "") + f" — {s_.get('url', '')}", "src")]))
     add(para(ids, "caption", [("note.daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
+    drop_linesegs(root)
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
-    preview = "\n".join(["정책제안 리포트" + (f" · {area}" if area else ""), title] + outline)
+    preview = "\n".join([kicker, title] + outline)
     out.parent.mkdir(parents=True, exist_ok=True)
     manifest = "".join(f'<opf:item id="{bid}" href="BinData/{bid}.{ext}" media-type="image/{"jpeg" if ext == "jpg" else ext}" isEmbeded="1"/>' for bid, _, ext in images.files)
     with zipfile.ZipFile(out, "w") as zo:
@@ -572,6 +586,7 @@ def build_summary(meta: dict, body_md: str, area: str, out: Path, post_id: str) 
             if t.text == old or (t.text and t.text.strip() == old.strip()):
                 t.text = new
                 break
+    drop_linesegs(root)
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
     out.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(out, "w") as zo:
@@ -592,6 +607,7 @@ def main() -> int:
     ap.add_argument("-o", "--out")
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--check")
+    ap.add_argument("--public", action="store_true", help="게시용(리포트 메뉴): 머리 글자 '리포트'(또는 frontmatter kicker), FAQ·한 쪽 요약본 없음")
     a = ap.parse_args()
     if a.check:
         z = zipfile.ZipFile(a.check)
@@ -617,6 +633,9 @@ def main() -> int:
     for f in targets:
         meta, body = split_front(f.read_text(encoding="utf-8"))
         out = Path(a.out) if (a.out and not a.all) else OUT_DIR / f"{f.stem}.hwpx"
+        if a.public:
+            build(meta, body, area_of(meta), out, f.stem, kicker=str(meta.get("kicker") or "리포트"), faq_on=False)
+            continue
         build(meta, body, area_of(meta), out, f.stem)
         build_summary(meta, body, area_of(meta), out.with_name(out.stem + "-요약.hwpx"), f.stem)
     return 0

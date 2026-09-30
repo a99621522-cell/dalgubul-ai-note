@@ -1,8 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import { programs, fmtEok, cityPrograms } from '../../lib/csv';
-const cityCount = cityPrograms().filter(p => !p.admin).length;
+import { programs, fmtEok } from '../../lib/csv';
 /** /programs/ — 부처 사업설명자료에서 뽑은 예산 사업 DB 가운데 수혜자에 기업이 포함된 사업.
  *  부처·신규 여부·2026 예산으로 거른다. 발행 글 가운데 program_code 가 같은 공고가 있으면 '공고 중' 배지와 링크.
  *  평가·순위는 하지 않는다. 숫자는 사업설명자료의 값 그대로(백만 원 → 억 원 환산만). */
@@ -23,7 +22,7 @@ const tidy = (v: string) => (v || '').replace(/\(\s*\)/g, '').replace(/[\s:：(�
 ---
 <Base title="사업 예산" description={`부처 사업설명자료에서 수혜자에 기업이 포함된 예산 사업 ${list.length}건 — 부처·신규 여부·2026년 예산으로 찾고, 공고가 나온 사업은 글로 연결`} current="programs">
   <div class="section-head"><h1>사업 예산</h1><span class="meta">기업 수혜 사업 {list.length}건 · 전체 {all.length}건</span></div>
-  <p class="lede">부처가 국회에 낸 사업설명자료에서 수혜자에 기업이 들어 있는 사업만 모았습니다. 예산 숫자는 자료의 값 그대로이며(백만 원 → 억 원 환산), 평가나 순위는 하지 않습니다. 공고가 나온 사업에는 <span class="badge">공고 중</span> 표시와 글 링크가 붙습니다.{cityCount > 0 && <> 대구시 본예산 세부사업은 <a href="/programs/daegu/">대구시 사업 예산</a>({cityCount}건)에 따로 있습니다.</>} 예산요구서·결산서 검토 근거가 되는 법령·고시·조례와 검토표는 <a href="/programs/guidelines/">사업 지침 창고</a>에 있습니다.</p>
+  <p class="lede">부처가 국회에 낸 사업설명자료에서 수혜자에 기업이 들어 있는 사업만 모았습니다. 예산 숫자는 자료의 값 그대로이며(백만 원 → 억 원 환산), 평가나 순위는 하지 않습니다. 공고가 나온 사업에는 <span class="badge">공고 중</span> 표시와 글 링크가 붙습니다. 예산요구서·결산서 검토 근거가 되는 법령·고시·조례와 검토표는 <a href="/programs/guidelines/">사업 지침 창고</a>에 있습니다.</p>
   <div class="tools">
     <input id="q" type="search" placeholder="사업명·수행기관 검색" aria-label="검색" />
     <select id="mi" aria-label="부처"><option value="">모든 부처</option>{ministries.map(([m, n]) => <option value={m}>{m} ({n})</option>)}</select>

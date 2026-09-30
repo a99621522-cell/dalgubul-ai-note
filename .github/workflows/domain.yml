@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "check | add"
+        description: "check | add | zone (zone: domain 을 Cloudflare 존으로 등록하고 네임서버·DNS 기록 출력)"
         required: true
         default: "check"
       domain:
@@ -56,6 +56,27 @@ jobs:
               fi
             else
               echo "존 없음 또는 토큰에 Zone 권한 없음 — DNS 는 Cloudflare 대시보드(또는 등록기관)에서 CNAME $DOMAIN → dalgubul-ai-note.pages.dev"
+            fi
+          fi
+          if [ "$MODE" = "zone" ] && [ -n "$DOMAIN" ]; then
+            # 존 등록(운영자 지시 2026-09-30: daitda.co.kr 네임서버를 Cloudflare 로). 기존 DNS 기록은 jump_start 로 읽어 온다.
+            # 실제 전환은 운영자가 등록업체에서 네임서버를 바꿀 때 일어난다. 그 전까지 여기서 만든 기록은 인터넷에 보이지 않는다.
+            zq() { api "https://api.cloudflare.com/client/v4/zones?name=$1" | python3 -c 'import sys,json; d=json.load(sys.stdin); r=d.get("result") or []; print(r[0]["id"] if r else ("ERR " + json.dumps(d.get("errors"), ensure_ascii=False) if not d.get("success") else ""))'; }
+            zone=$(zq "$DOMAIN"); echo "== 존 조회: ${zone:-없음}"
+            if [ -z "$zone" ] || [ "${zone#ERR}" != "$zone" ]; then
+              echo "== 존 등록 $DOMAIN"
+              api -X POST "https://api.cloudflare.com/client/v4/zones" --data "{\"name\":\"$DOMAIN\",\"account\":{\"id\":\"$CF_ACCOUNT\"},\"type\":\"full\",\"jump_start\":true}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(json.dumps({k: (d.get("result") or {}).get(k) for k in ("id","status","name_servers","original_name_servers","original_registrar")} if d.get("success") else d.get("errors"), ensure_ascii=False))'
+              zone=$(zq "$DOMAIN")
+            fi
+            if [ -n "$zone" ] && [ "${zone#ERR}" = "$zone" ]; then
+              echo "== 존 상태·네임서버"; api "https://api.cloudflare.com/client/v4/zones/$zone" | python3 -c 'import sys,json; r=json.load(sys.stdin).get("result") or {}; print(json.dumps({k: r.get(k) for k in ("status","name_servers","original_name_servers","original_registrar")}, ensure_ascii=False))'
+              for n in "$DOMAIN" "www.$DOMAIN" "note.$DOMAIN"; do
+                have=$(api "https://api.cloudflare.com/client/v4/zones/$zone/dns_records?name=$n" | python3 -c 'import sys,json; print(len(json.load(sys.stdin).get("result") or []))')
+                if [ "$have" = "0" ]; then
+                  api -X POST "https://api.cloudflare.com/client/v4/zones/$zone/dns_records" --data "{\"type\":\"CNAME\",\"name\":\"$n\",\"content\":\"dalgubul-ai-note.pages.dev\",\"proxied\":true}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("CNAME '"$n"' →  pages.dev", "ok" if d.get("success") else d.get("errors"))'
+                else echo "$n 기록 있음 — 그대로 둠"; fi
+              done
+              echo "== DNS 기록 목록"; api "https://api.cloudflare.com/client/v4/zones/$zone/dns_records?per_page=100" | python3 -c 'import sys,json; [print(" ", x.get("type"), x.get("name"), "→", x.get("content"), "proxied" if x.get("proxied") else "") for x in json.load(sys.stdin).get("result") or []]'
             fi
           fi
           echo "== 응답 확인"; for h in "https://dalgubul-ai-note.pages.dev/" "https://$DOMAIN/" ${FROM:+"https://$FROM/"}; do printf '%s ' "$h"; curl -s -o /dev/null -m 20 -w '%{http_code} %{redirect_url}\n' "$h"; done

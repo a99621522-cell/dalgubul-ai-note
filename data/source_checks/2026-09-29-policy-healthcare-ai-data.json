@@ -1,13 +1,11 @@
 {
  "file": "src/content/posts/2026-09-29-policy-healthcare-ai-data.md",
- "checked": "2026-09-29",
- "ok": 44,
+ "checked": "2026-09-30",
+ "ok": 45,
  "total": 49,
- "ratio": 0.9,
- "official_bad": [
-  "보건복지부, 「의료데이터 활용 확대, 'AI 기본의료 앞당긴다'」 — 2025년 보건의료데이터 정책심의위원회"
- ],
- "pass": false,
+ "ratio": 0.92,
+ "official_bad": [],
+ "pass": true,
  "sources": [
   {
    "title": "MarketsandMarkets, Artificial Intelligence in Healthcare Market worth $194.79 billion by 2031 (PR Newswire)",
@@ -94,16 +92,16 @@
    "note": ""
   },
   {
-   "title": "보건복지부, 「의료데이터 활용 확대, 'AI 기본의료 앞당긴다'」 — 2025년 보건의료데이터 정책심의위원회",
-   "url": "https://mohw.go.kr/board.es?act=view&bid=0027&list_no=1488181&mid=a10503000000",
+   "title": "보건복지부, 「의료데이터 활용 확대, 'AI 기본의료 앞당긴다'」 — 2025년 보건의료데이터 정책심의위원회(대한민국 정책브리핑 게재 보도자료)",
+   "url": "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156734392",
    "date": "2025-12-10",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "의료데이터 활용 확대, &quot;AI 기본의료 앞당긴다&quot; - 보도자료 | 브리핑룸 | 대한민국 정책브리핑",
+   "title_match": 0.7,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "보건소·취약지 의원에도…전국 'AI 기본의료' 시대 연다 — AI 기본의료 전략 확정 (아시아경제)",

@@ -360,8 +360,15 @@ def para(ids: dict, pname: str, segs: list[tuple[str, str]]):
     for text, cname in segs or [("", "body")]:
         r = ET.SubElement(p, HP + "run", {"charPrIDRef": ids["char"][cname]})
         ET.SubElement(r, HP + "t").text = text
-    ET.SubElement(ET.SubElement(p, HP + "linesegarray"), HP + "lineseg", {"textpos": "0", "vertpos": "0", "vertsize": "1000", "textheight": "1000", "baseline": "850", "spacing": "600", "horzpos": "0", "horzsize": str(TEXT_W), "flags": "393216"})
     return p
+
+
+def drop_linesegs(root) -> None:
+    """줄 배치 캐시(hp:linesegarray)를 모두 뺀다. 한글은 이 값을 그대로 믿어, 모든 문단에 같은 값(세로 위치 0·한 줄)을 넣으면
+    문단들이 한 자리에 겹쳐 그려진다(운영자 확인 2026-09-30: 글자가 겹치고 그림 양옆이 검게 뭉침). 없으면 한글이 열 때 줄을 새로 계산한다."""
+    for parent in root.iter():
+        for ch in [c for c in parent if c.tag == HP + "linesegarray"]:
+            parent.remove(ch)
 
 
 def design_table(proto, ids: dict, rows: list[list[str]], head: bool = True, widths: list[int] | None = None, fill_key: str | None = None, margin: int = 320):
@@ -511,6 +518,7 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "", kic
             d = str(s_.get("date") or "")[:10]
             add(para(ids, "src", [(f"{i}. ", "src"), (inline(str(s_.get("title", ""))) + (f" ({d})" if d else "") + f" — {s_.get('url', '')}", "src")]))
     add(para(ids, "caption", [("note.daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
+    drop_linesegs(root)
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
     preview = "\n".join([kicker, title] + outline)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -578,6 +586,7 @@ def build_summary(meta: dict, body_md: str, area: str, out: Path, post_id: str) 
             if t.text == old or (t.text and t.text.strip() == old.strip()):
                 t.text = new
                 break
+    drop_linesegs(root)
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
     out.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(out, "w") as zo:

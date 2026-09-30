@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "check | add | zone | retry (zone: domain 을 Cloudflare 존으로 등록하고 네임서버·DNS 기록 출력, retry: pending 도메인 검증 다시 시도)"
+        description: "check | add | zone | retry | readd (zone: domain 을 Cloudflare 존으로 등록하고 네임서버·DNS 기록 출력, retry: pending 도메인 검증 다시 시도, readd: 도메인을 지웠다 다시 추가)"
         required: true
         default: "check"
       domain:
@@ -63,6 +63,18 @@ jobs:
             for n in "$DOMAIN" ${FROM:+"$FROM"}; do
               echo "== 검증 재시도 $n"; api -X PATCH "$base/domains/$n" | python3 -c 'import sys,json; d=json.load(sys.stdin); r=d.get("result") or {}; print(json.dumps({k: r.get(k) for k in ("name","status","verification_data","validation_data")} if d.get("success") else d.get("errors"), ensure_ascii=False))'
             done
+          fi
+          if [ "$MODE" = "readd" ] && [ -n "$DOMAIN" ]; then
+            # DNS 를 연결하기 전에 추가해 검증이 error/pending 에 멈춘 도메인을 지우고 다시 추가(2026-09-30). note 처럼 active 인 도메인에는 쓰지 않는다
+            for n in "$DOMAIN" ${FROM:+"$FROM"}; do
+              st=$(api "$base/domains/$n" | python3 -c 'import sys,json; print((json.load(sys.stdin).get("result") or {}).get("status",""))')
+              if [ "$st" = "active" ]; then echo "$n 은 active — 건너뜀"; continue; fi
+              echo "== 삭제 $n ($st)"; api -X DELETE "$base/domains/$n" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("ok" if d.get("success") else d.get("errors"))'
+              sleep 3
+              echo "== 다시 추가 $n"; api -X POST "$base/domains" --data "{\"name\":\"$n\"}" | python3 -c 'import sys,json; d=json.load(sys.stdin); r=d.get("result") or {}; print(json.dumps({k: r.get(k) for k in ("name","status","verification_data","validation_data")} if d.get("success") else d.get("errors"), ensure_ascii=False))'
+            done
+            sleep 20
+            echo "== 20초 뒤 상태"; api "$base/domains" | python3 -c 'import sys,json; [print(" ", x.get("name"), "status:", x.get("status"), "validation:", (x.get("validation_data") or {}).get("status"), (x.get("verification_data") or {}).get("error_message") or "") for x in json.load(sys.stdin).get("result") or []]'
           fi
           if [ "$MODE" = "zone" ] && [ -n "$DOMAIN" ]; then
             # 존 등록(운영자 지시 2026-09-30: daitda.co.kr 네임서버를 Cloudflare 로). 기존 DNS 기록은 jump_start 로 읽어 온다.

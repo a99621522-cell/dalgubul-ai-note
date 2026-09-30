@@ -310,6 +310,3 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
 .nav-search { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch); margin-left: auto; color: var(--ink); border-radius: 50%; }
 .nav-search:hover, .nav-search:focus-visible { background: var(--surface); color: var(--primary); }
 @media (min-width: 720px) { .nav-search { margin-left: 4px; } }
-
-/* 글 본문에서 원문 그림 자리를 알리는 줄(그림을 싣지 않고 원문 쪽수만 적을 때) */
-.fig-ref { font-size: var(--small); color: var(--muted); border-left: 3px solid var(--line-strong); padding-left: var(--s2); margin: var(--s2) 0; }

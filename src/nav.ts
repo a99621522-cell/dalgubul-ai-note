@@ -6,5 +6,5 @@ export const NAV = [
   { key: 'companies', name: '기업 사전', href: '/companies/' },
   { key: 'programs', name: '사업·예산', href: '/programs/' },
   { key: 'support', name: '지원 기업', href: '/support/' },
-  { key: 'policy', name: '정책', href: '/policy/' },
+  { key: 'policy', name: '리포트', href: '/policy/' },
 ] as const;

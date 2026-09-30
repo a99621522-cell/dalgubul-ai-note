@@ -1,54 +1,23 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PostList from '../../components/PostList.astro';
-import ReportList from '../../components/ReportList.astro';
-import { getCollection } from 'astro:content';
-import { readCsv, cityPrograms } from '../../lib/csv';
-import fs from 'node:fs';
-/** /policy/ — 정책 부문: 격주 정책제안 리포트(승인·발행된 것만), 산업 정책 글, 국비 사업 ↔ 대구시 예산 매칭 표.
- *  리포트는 자동 초안(draft)으로 만들어지고 사람이 승인해야 여기에 나온다. 평가·비판 없음, 사실과 대구 접점만. */
-const all = (await getCollection('posts', p => !p.data.draft && p.data.category === 'policy')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const reports = all.filter(p => (p.data.tags ?? []).includes('정책제안'));
-const others = all.filter(p => !(p.data.tags ?? []).includes('정책제안'));
-const match = fs.existsSync('scripts/data/match_daegu_national.csv') ? readCsv('scripts/data/match_daegu_national.csv').filter(r => r['국비 사업']) : [];
-const cityN = cityPrograms().filter(p => !p.admin).length;
-const ROTATION = ['미래모빌리티·자동차부품', '로봇·피지컬AI', '반도체·소부장', '전통제조 AX(섬유 포함)', '헬스케어·의료기기', 'AI·SW·창업', '기계', '자동차', '섬유', '뿌리산업'];
+/** /policy/ — 리포트(메뉴 이름 '리포트', 운영자 지시 2026-09-30): 운영자가 올린 자료의 내려받기만 둔다.
+ *  파일은 public/files/ 에 두고 아래 FILES 에 한 줄씩 더한다. 정책제안 리포트 목록·산업 정책 글·국비↔시비 매칭 표는 이 페이지에서 뺐다. */
+const FILES = [
+  { href: '/files/daegu-industry-structure.docx', download: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판.docx',
+    title: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)', meta: 'Word, 1.7MB' },
+  { href: '/files/supply-chain-map-guide.docx', download: '주요 제조업 공급망 지도 해설.docx',
+    title: '주요 제조업 공급망 지도 해설', meta: 'Word, 11.4MB' },
+];
 ---
-<Base title="정책" description={`대구 산업 정책 부문: 산업별 정책제안 리포트 ${reports.length}건, 산업 정책 글 ${others.length}건. 공개 자료 근거, 평가 없음. 정책제안 리포트는 예산을 참조하지 않는다.`} current="policy">
-  <div class="section-head"><h1>정책</h1><span class="meta">리포트 {reports.length}건 · 글 {others.length}건</span></div>
-  <p class="lede">중앙부처·대구시 정책 발표, 연구기관 발간물, 기업 사전 숫자를 근거로 산업별 정책제안 리포트를 분야마다 매주 한 편씩(10개 분야, 주 10편) 만듭니다. 리포트는 자동 초안으로 만들어지고 운영자가 승인한 것만 여기에 나옵니다. 정책 평가·비판은 하지 않고, 사실과 대구 산업의 접점만 정리합니다. 정책제안서이므로 예산액·사업코드는 인용하지 않습니다.</p>
-
-  <div class="section-head"><h2>산업별 정책제안 리포트</h2><span class="meta">10개 분야 · 분야마다 주 1편</span></div>
-  <p class="meta">분야: {ROTATION.join(' · ')}. 리포트는 대표 그림·요약 상자·절 4~6개의 산문형(2026-09-28 부터)으로, 기업 사전 숫자 → 글로벌·정부 변화 → 연구기관 시각 → 제안 3개(시·정부 건의·기업·기관) → 반론 순서입니다. 이전 글은 1~9절 개조식입니다. <strong>Word</strong> 는 한글·Word 에서 바로 열어 편집하는 문서(본문·FAQ·출처 포함), <strong>MD</strong> 는 마크다운 원문입니다.</p>
-  {reports.length ? <ReportList posts={reports} /> : <p class="empty">승인·발행된 리포트가 아직 없습니다. 초안은 저장소 <code>src/content/posts/*-policy-*.md</code>에 있고 <code>python3 scripts/approve.py</code>로 발행합니다.</p>}
-
-  <div class="section-head"><h2>산업 정책 글</h2><a href="/category/policy/">분류 페이지</a></div>
-  <PostList posts={others} />
-
-  {match.length > 0 && (
-    <section aria-labelledby="city-match">
-      <div class="section-head"><h2 id="city-match">국비 사업 ↔ 대구시 세부사업 매칭</h2><span class="meta">{match.length}건 · 이름 대조</span></div>
-      <p class="meta">대구시 본예산 사업설명서의 세부사업 {cityN}건과 부처 사업설명자료의 사업을 이름 유사도로 이은 표입니다. '확인 필요' 는 이름이 비슷할 뿐 같은 사업이 아닐 수 있습니다. 금액은 <a href="/programs/daegu/">대구시 사업 예산</a>·<a href="/programs/">사업 예산</a>에서 봅니다.</p>
-      <div class="scroll-x"><table class="data-table">
-        <thead><tr><th>대구시 세부사업</th><th class="col-opt">부서</th><th>국비 사업</th><th class="col-opt">부처</th><th>판정</th></tr></thead>
-        <tbody>{match.map(r => (<tr><td>{r['대구시 세부사업']}{r['대구시 상태'] === '신규' && <span class="meta"> (신규)</span>}</td><td class="col-opt">{r['대구시 실국']} {r['부서']}</td><td><a href={`/programs/#p-${r['코드']}`}>{r['국비 사업']}</a></td><td class="col-opt">{r['부처']}</td><td>{r['판정']}</td></tr>))}</tbody>
-      </table></div>
-    </section>
-  )}
-  <div class="section-head"><h2 id="files">자료 내려받기</h2></div>
-  <ul class="plain">
-    <li><a href="/files/daegu-industry-structure.docx" download="지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판.docx">지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)</a> <span class="meta">(Word, 1.7MB)</span> — 17개 시도 지역소득(2015~2024년)으로 입지계수·산업집중도·산업구조 변화속도를 계산해 대구의 위치를 정리</li>
-    <li><a href="/files/supply-chain-map-guide.docx" download="주요 제조업 공급망 지도 해설.docx">주요 제조업 공급망 지도 해설</a> <span class="meta">(Word, 11.4MB)</span> — 한국은행 「우리나라 주요 제조업 생산 및 공급망 지도」(2026.7)를 업종·권역별로 풀어 쓴 해설</li>
-  </ul>
-
-  <div class="section-head"><h2>근거 자료</h2></div>
-  <ul class="plain">
-    <li><a href="/programs/">사업·예산</a> — 부처 사업설명자료 DB(2026 예산·신규 여부){cityN > 0 && <> · <a href="/programs/daegu/">대구시 사업 예산</a> — 본예산 사업설명서 세부사업 {cityN}건</>}</li>
-    <li><a href="/industry/">산업별</a> · <a href="/dashboard/">현황</a> — 기업 사전 집계(기업·고용·단지·규모)</li>
-    <li><a href="/support/">지원 기업</a> — 공개 자료에서 확인된 지원사업 수혜 이력</li>
-    <li><a href="/stats/kosis/">KOSIS 통계표</a> — 17개 시도 산업구조 지표(입지계수·집중도·변화속도), 대구 부문별 부가가치, 산업별 기업·종사자, 월간 고용·생산</li>
+<Base title="리포트" description={`리포트 자료 내려받기 ${FILES.length}건.`} current="policy">
+  <div class="section-head"><h1>리포트</h1><span class="meta">자료 {FILES.length}건</span></div>
+  <ul class="files">
+    {FILES.map(f => (
+      <li><a href={f.href} download={f.download}>{f.title}</a> <span class="meta">({f.meta})</span></li>
+    ))}
   </ul>
   <style>
-    ul.plain { padding-left: 1.2em; }
+    ul.files { padding-left: 1.2em; }
+    ul.files li { margin: var(--s2) 0; }
   </style>
 </Base>

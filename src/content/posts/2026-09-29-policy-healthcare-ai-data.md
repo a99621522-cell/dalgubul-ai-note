@@ -25,7 +25,7 @@ sources:
   - { title: "의료기기 생산·수출 2년 연속 반등…무역수지 3억3000만달러 흑자 — 식약처 2025년 실적 (아시아경제)", url: "https://view.asiae.co.kr/article/2026052810064976900", date: "2026-05-28", kind: news }
   - { title: "한국은행, BOK 이슈노트 제2026-4호 「첨단 바이오헬스 산업 육성방안: 바이오 데이터 활용 기반 구축을 중심으로」", url: "https://www.bok.or.kr/portal/bbs/P0002353/view.do?nttId=10096398&menuNo=200433&programType=newsData&relate=Y&depth=200433", date: "2026-02-09", kind: report }
   - { title: "\"AI, 바이오헬스 산업 게임체인저\"…한은, '국가 승인형 데이터 개방' 제안한 이유는 (아시아경제)", url: "https://view.asiae.co.kr/article/2026020912002152004", date: "2026-02-09", kind: news }
-  - { title: "보건복지부, 「의료데이터 활용 확대, 'AI 기본의료 앞당긴다'」 — 2025년 보건의료데이터 정책심의위원회", url: "https://mohw.go.kr/board.es?act=view&bid=0027&list_no=1488181&mid=a10503000000", date: "2025-12-10", kind: gov }
+  - { title: "보건복지부, 「의료데이터 활용 확대, 'AI 기본의료 앞당긴다'」 — 2025년 보건의료데이터 정책심의위원회(대한민국 정책브리핑 게재 보도자료)", url: "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156734392", date: "2025-12-10", kind: gov }
   - { title: "보건소·취약지 의원에도…전국 'AI 기본의료' 시대 연다 — AI 기본의료 전략 확정 (아시아경제)", url: "https://view.asiae.co.kr/article/2026080609271082424", date: "2026-08-06", kind: news }
   - { title: "AI 키운다더니 데이터는 묶였다…감사원, 의료·저작권 허점 동시 지적 — 인공지능 대비실태 감사 (뉴스핌)", url: "https://www.newspim.com/news/view/20260324000709", date: "2026-03-24", kind: news }
   - { title: "개인정보보호위원회, (보도설명) 개인정보위는 가명정보 제공·결합 기간 단축 및 활용 확대를 위해 적극 노력하고 있습니다 (네이트뉴스 전재)", url: "https://news.nate.com/view/20260508n29100", date: "2026-05-08", kind: gov }

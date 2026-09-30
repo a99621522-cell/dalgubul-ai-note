@@ -61,8 +61,11 @@ def export() -> dict:
             continue
         data = header_xml.encode("utf-8") if n == "Contents/header.xml" else z.read(n)
         files[n] = base64.b64encode(data).decode("ascii")
+    nolseg = lambda x: re.sub(r"<hp:linesegarray>.*?</hp:linesegarray>", "", x, flags=re.S)
+    sec_open, tbl_open, tbl_close, tc = nolseg(sec_open), nolseg(tbl_open), nolseg(tbl_close), nolseg(tc)
     return {"ids": ids, "text_w": H.TEXT_W, "sec_open": sec_open, "sec_close": "</hs:sec>", "tbl_open": tbl_open, "tbl_close": tbl_close, "tc": tc,
-            "lineseg": '<hp:linesegarray><hp:lineseg textpos="0" vertpos="0" vertsize="1000" textheight="1000" baseline="850" spacing="600" horzpos="0" horzsize="%d" flags="393216"/></hp:linesegarray>' % H.TEXT_W,
+            # 줄 배치 캐시(linesegarray)는 넣지 않는다 — 같은 값을 모든 문단에 넣으면 한글이 문단을 한 자리에 겹쳐 그린다(2026-09-30). 한글이 열 때 새로 계산
+            "lineseg": "",
             "files": files}
 
 

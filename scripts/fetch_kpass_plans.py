@@ -155,22 +155,33 @@ def main() -> int:
         soup = BeautifulSoup(v.text, "html.parser")
         body = re.sub(r"\s+", " ", (soup.select_one(".view, .board_view, .bbs_view, #contents") or soup).get_text(" ", strip=True))
         print(f"  [{r['potmId']}] 상세 HTTP {v.status_code}: {body[:300]}")
-        cands = find_downloads(v.text, v.url)
+        cands = []
+        # 첨부 이름 주변 HTML(내려받기 함수·인자 확인용)
+        for m in re.finditer(r".{0,300}\.(?:pdf|hwp|hwpx|zip)\b.{0,200}", v.text, re.I):
+            if "FileDown" in m.group(0) or "onclick" in m.group(0) or "href" in m.group(0):
+                print("    첨부 HTML:", m.group(0).replace("\n", " ")[:500])
+                break
         if not shown_js:
-            for js in scripts_with(soup, v.url, "fileDownPopup")[:2]:
+            for js in scripts_with(soup, v.url, "FileDown")[:3]:
                 print("    js:", js[:900])
             shown_js = True
-        # 첨부 팝업(목록의 fileDownPopup(id,'2'))도 열어 본다
-        for pop in (f"{BASE}/site/achive/fileDownPopup.do?potmId={r['potmId']}&boardTypeID=H03",
-                    f"{BASE}/common/fileDownPopup.do?potmId={r['potmId']}&fileGubun=2"):
-            try:
-                pv = get(pop)
-                if pv.ok and len(pv.text) > 200:
-                    found = find_downloads(pv.text, pv.url)
-                    print(f"    팝업 {pop.split(BASE)[1][:60]} HTTP {pv.status_code} 링크 {len(found)}")
-                    cands += found
-            except Exception:  # noqa: BLE001
-                pass
+        # 목록의 fileDownPopup(potmId, posbId) → /cmm/fileDownPopup.do (common.js)
+        pop = f"{BASE}/cmm/fileDownPopup.do?potmId={r['potmId']}&posbId=2"
+        try:
+            pv = get(pop)
+            print(f"    팝업 HTTP {pv.status_code} {len(pv.text)}자")
+            for m in re.finditer(r".{0,250}(?:FileDown|atchFileId|fileSn|\.pdf).{0,250}", pv.text, re.I):
+                print("    팝업 HTML:", m.group(0).replace("\n", " ")[:500])
+            for m in re.finditer(r"atchFileId=([\w\-]+)(?:&(?:amp;)?fileSn=(\d+))?", pv.text + v.text):
+                cands.append(f"{BASE}/cmm/FileDown.do?posbId=2&potmId={r['potmId']}&atchFileId={m.group(1)}" + (f"&fileSn={m.group(2)}" if m.group(2) else ""))
+            for m in re.finditer(r"\w*[Dd]own\w*\(\s*'([^']+)'(?:\s*,\s*'([^']*)')?(?:\s*,\s*'([^']*)')?", pv.text + v.text):
+                args = [x for x in m.groups() if x]
+                print("    호출 인자:", m.group(0)[:120])
+                if args and args[0] not in (r["potmId"],) and re.fullmatch(r"[\w\-]{4,}", args[0]):
+                    cands.append(f"{BASE}/cmm/FileDown.do?posbId=2&potmId={r['potmId']}&atchFileId={args[0]}" + (f"&fileSn={args[1]}" if len(args) > 1 and args[1].isdigit() else ""))
+            cands += [u for u in find_downloads(pv.text, pv.url) if "atchFileId=" in u and not u.endswith("atchFileId=")]
+        except Exception as e:  # noqa: BLE001
+            print(f"    팝업 실패: {e}")
         cands = list(dict.fromkeys(cands))
         print(f"    내려받기 후보 {len(cands)}: {cands[:5]}")
         files = []

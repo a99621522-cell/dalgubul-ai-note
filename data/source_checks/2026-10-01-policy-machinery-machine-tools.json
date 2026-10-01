@@ -1,0 +1,160 @@
+{
+ "file": "src/content/posts/2026-10-01-policy-machinery-machine-tools.md",
+ "checked": "2026-10-01",
+ "ok": 7,
+ "total": 12,
+ "ratio": 0.58,
+ "official_bad": [
+  "중소벤처기업부, 「중소기업기본통계 — 시도별·산업중분류별·기업규모별 기업수」 KOSIS DT_BR_A001(2023년)",
+  "중소벤처기업부, 「중소기업기본통계 — 시도별·산업중분류별·기업규모별 종사자수」 KOSIS DT_BR_B001(2023년)",
+  "국가데이터처, 「전국사업체조사 — 시도·산업·사업체구분별 사업체수·종사자수('20~)」 KOSIS DT_1K52D01(2020~2023년)",
+  "국가데이터처, 「광업제조업동향조사 — 광공업생산지수(시도)」 KOSIS INH_1F02001(2026년 8월)"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "한국경제, 「공작기계 상반기 수주 8년 만에 최대」(한국공작기계산업협회 통계 인용)",
+   "url": "https://www.hankyung.com/article/2026081642071",
+   "date": "2026-08-16",
+   "kind": "news",
+   "status": 200,
+   "page_title": "공작기계 상반기 수주 8년 만에 최대 | 한국경제",
+   "title_match": 0.67,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "한국경제, 「수주물량 70%가 반도체…공작기계 공장 풀가동」",
+   "url": "https://www.hankyung.com/article/2026081641641",
+   "date": "2026-08-16",
+   "kind": "news",
+   "status": 200,
+   "page_title": "수주물량 70%가 반도체…공작기계 공장 풀가동 | 한국경제",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」 보도자료",
+   "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
+   "date": "2026-09-15",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "대구본부세관",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "쿠키뉴스, 「대구 건설수주 115.2% 급증·경북 56.2% 급감…8월 대구·경북 산업활동 '희비'」(동북지방데이터청 발표 인용)",
+   "url": "https://www.kukinews.com/article/view/kuk202609300033",
+   "date": "2026-09-30",
+   "kind": "news",
+   "status": 403,
+   "page_title": "Attention Required! | Cloudflare",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": ""
+  },
+  {
+   "title": "한국무역협회, 「美 232조 관세조치 동향 및 기업 대응전략」",
+   "url": "https://www.kita.net/researchTrade/report/reportMain/reportMainList.do",
+   "date": "2026-08-26",
+   "kind": "report",
+   "status": 200,
+   "page_title": "보고서 전체-한국무역협회",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "경향신문, 「미, 철강·알루미늄 파생상품 관세 8일부터 15%로 인하」",
+   "url": "https://www.khan.co.kr/article/202606032317015",
+   "date": "2026-06-03",
+   "kind": "news",
+   "status": 200,
+   "page_title": "미, 철강·알루미늄 파생상품 관세 8일부터 15%로 인하 - 경향신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "한국산업기술기획평가원(KEIT), 「KEIT 이슈픽 2026년 1-2월 특집호: 2025년 주요 성과 및 2026년 추진 계획」",
+   "url": "https://srome.keit.re.kr/srome/biz/info/keitPub/retrieveKeitIssuListView.do?prgmId=XPG404010000",
+   "date": "2026-02-01",
+   "kind": "report",
+   "status": 200,
+   "page_title": "KEIT 이슈픽 | KEIT 간행물 및 콘텐츠 | 정보",
+   "title_match": 0.5,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "중소벤처기업부, 「중소기업기본통계 — 시도별·산업중분류별·기업규모별 기업수」 KOSIS DT_BR_A001(2023년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001",
+   "date": "2026-09-28",
+   "kind": "official",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.14,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "중소벤처기업부, 「중소기업기본통계 — 시도별·산업중분류별·기업규모별 종사자수」 KOSIS DT_BR_B001(2023년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_B001",
+   "date": "2026-09-28",
+   "kind": "official",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "국가데이터처, 「전국사업체조사 — 시도·산업·사업체구분별 사업체수·종사자수('20~)」 KOSIS DT_1K52D01(2020~2023년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01",
+   "date": "2026-09-28",
+   "kind": "official",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "국가데이터처, 「광업제조업동향조사 — 광공업생산지수(시도)」 KOSIS INH_1F02001(2026년 8월)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=INH_1F02001",
+   "date": "2026-10-01",
+   "kind": "official",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.17,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·생산품·종사자 신고값)과 지원사업 수혜 이력(최근 3년)",
+   "url": "https://note.daitda.co.kr/companies/",
+   "date": "2026-09-28",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

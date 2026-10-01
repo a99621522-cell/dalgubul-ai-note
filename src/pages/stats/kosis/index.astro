@@ -9,6 +9,7 @@ const C = (name: string) => kosisChart(name);
 const sections: { title: string; desc: string; tables: string[]; charts: string[] }[] = [
   { title: '대구 연간 주요 지표', desc: '주민등록인구, 경제활동인구조사(연간 취업자·고용률·실업률), 지역내총생산, 관세청 기업무역활동통계(수출입 활동기업)의 대구 값을 연도별로 한 표에.', tables: ['daegu_annual', 'gu_population'], charts: ['population'] },
   { title: '대구 고용·생산·인구이동 (월간)', desc: '경제활동인구조사(취업자·고용률·실업률), 광공업생산지수, 국내인구이동통계의 대구 월간 값.', tables: [], charts: ['employed', 'rates', 'mfg-index', 'migration'] },
+  { title: '대구 업종별 생산·출하·재고 (광공업생산지수, 월간)', desc: '광업제조업동향조사의 대구 업종별 생산·출하·재고지수(원지수, 2020=100)와 전년 같은 달 대비 증감. 주요 업종 생산지수 추이.', tables: ['mfg_index_industry'], charts: ['mfg-index-industry'] },
   { title: '대구 경제활동별 지역내총생산', desc: 'KOSIS 지역소득의 대구 경제활동별 명목·실질 지역내총생산과 실질 기여도.', tables: ['grdp_daegu'], charts: [] },
   { title: '산업구조 지표 — 17개 시도 비교', desc: 'KOSIS 지역소득(시도별 경제활동별 총부가가치, 24개 부문)으로 이 사이트가 계산한 입지계수·산업집중도·산업구조 변화속도. 정의는 저장소 scripts/structure_index.py 에 있습니다.', tables: ['structure17'], charts: ['hhi17'] },
   { title: '대구 부문별 부가가치와 입지계수', desc: '대구 총부가가치 24개 부문의 비중과 전국 대비 입지계수(2015년 대비). 고부가 3부문 비중 추이.', tables: ['daegu_sectors'], charts: ['lq-daegu', 'high-share'] },

@@ -104,7 +104,8 @@ tables:
     areas: [manufacturing-ax, machinery, automotive, textile, root]
   - key: mfg-production-index-industry
     name: 광공업생산지수 — 시도·산업중분류별(월간, 기계장비·자동차 등 업종별)
-    tbl_id: ""   # INH_1F02001 은 시도별 총지수만(2026-10-01) — discover 로 업종별 표를 찾는다
+    tbl_id: "DT_1F02001"   # 2026-10-01 discover: 시도/산업별 광공업생산지수(2020=100). INH_1F02001 은 시도별 총지수만
+    min_levels: 2
     search: ["광공업생산지수 시도 산업별", "시도별 광업제조업동향 산업별 생산지수", "광공업생산 시도 산업중분류 생산지수"]
     prd_se: M
     years: 3

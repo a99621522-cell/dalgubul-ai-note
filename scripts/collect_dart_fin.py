@@ -77,12 +77,17 @@ def main(argv: list[str]) -> int:
                 rows.append({c: rec.get(c, "") for c in COLS})
                 break
         print(f"[dart_fin] {meta['name']}: {sum(1 for r in rows if r['corp_code'] == code)}개 연도")
+    # 이번에 받지 못한 기업·연도(접속 실패 등)는 기존 행을 남긴다 — 2026-10-01: DART 접속이 모두 실패해 6행이 0행으로 지워졌다
+    new_keys = {(r["corp_code"], str(r["year"])) for r in rows}
+    old = list(csv.DictReader(open(OUT, encoding="utf-8"))) if OUT.exists() else []
+    kept = [r for r in old if (r.get("corp_code"), str(r.get("year"))) not in new_keys]
+    out = sorted(kept + rows, key=lambda r: (r["corp_code"], str(r["year"])))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT, "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=COLS)
+        w = csv.DictWriter(f, fieldnames=COLS, extrasaction="ignore")
         w.writeheader()
-        w.writerows(rows)
-    print(f"저장: {OUT.relative_to(ROOT)} ({len(rows)}행, 기업 {len(corps)}곳)")
+        w.writerows(out)
+    print(f"저장: {OUT.relative_to(ROOT)} ({len(out)}행 — 새로 받음 {len(rows)} · 기존 유지 {len(kept)}, 기업 {len(corps)}곳)")
     return 0
 
 

@@ -12,7 +12,7 @@ const HOT = ['자동차부품', '성서산단', '달성군', '의료기기', '�
   <h1 id="h-hero">대구 산업 데이터와 정책을 연결합니다</h1>
   <div class="hot" aria-label="인기 검색어">
     <span class="label">인기 검색어</span>
-    <span class="chips">{HOT.map(w => <a class="chip" href={`/search/?q=${encodeURIComponent(w)}`}>#{w}</a>)}</span>
+    <span class="chips">{HOT.map(w => <a class="chip" href={`/search/?q=${encodeURIComponent(w)}`}>#{w}</a>)}<a class="chip" href="/support/star/">#스타기업</a></span>
   </div>
   <form class="big-search" action="/search/" method="get" role="search">
     <label for="home-q" class="visually-hidden">검색어</label>

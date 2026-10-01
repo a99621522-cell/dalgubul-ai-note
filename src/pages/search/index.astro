@@ -33,7 +33,10 @@ import Base from '../../layouts/Base.astro';
     document.title = `${q} — 통합 검색 — 다잇다`;
     $('s-status').textContent = '찾는 중…';
     const [ci, si] = await Promise.all([fetch('/companies-index.json').then(r => r.json()), fetch('/search-index.json').then(r => r.json())]);
-    const co = (ci.rows as any[]).filter(r => hit(r.n, r.s, r.d, r.e, r.c, r.g, (r.k ?? []).join(' '))).sort((a, b) => a.n.localeCompare(b.n, 'ko'));
+    // 태그 key(star 등)를 한글 이름으로도 찾게 — '스타기업'·'프리스타'·'벤처' 같은 검색어(2026-10-01)
+    const TAGN: Record<string, string> = { star: '스타기업 대구스타기업', prestar: 'Pre-스타기업 프리스타기업 프리스타', k3030: '3030기업', venture: '벤처기업', innobiz: '이노비즈', kmedi: '첨복단지 입주', startup: '창업기업', ccei: '창경센터', labfirm: '연구소기업' };
+    const tagText = (k: string[] = []) => k.map(t => `${t} ${TAGN[t] ?? ''}`).join(' ');
+    const co = (ci.rows as any[]).filter(r => hit(r.n, r.s, r.d, r.e, r.c, r.g, tagText(r.k))).sort((a, b) => a.n.localeCompare(b.n, 'ko'));
     const po = (si.posts as any[]).filter(p => hit(p.t, p.d, p.g.join(' '), p.c));
     const pr = (si.programs as any[]).filter(p => hit(p.n, p.m, p.e));
     fill('s-co-list', co.map(r => `<li><a href="/companies/${r.i}/">${esc(r.n)}</a><span class="meta"> · ${esc(r.d)} ${esc(r.e || '')} · ${esc(r.s || '')}${r.c ? ' · ' + esc(r.c) : ''}${r.w ? ' · ' + esc(r.w) : ''}</span></li>`), 12);
@@ -44,6 +47,7 @@ import Base from '../../layouts/Base.astro';
     ($('s-explore') as HTMLAnchorElement).href = `/explore/?q=${encodeURIComponent(q)}`;
     const total = co.length + po.length + pr.length;
     $('s-status').textContent = total ? `'${q}' 검색 결과 ${total.toLocaleString('ko-KR')}건 — 기업 ${co.length.toLocaleString('ko-KR')} · 글 ${po.length} · 부처 사업 ${pr.length} (기업 사전 ${ci.as_of} 기준)` : `'${q}' 에 맞는 항목이 없습니다. 다른 낱말이나 업종·구군 이름으로 찾아보세요.`;
+    if (/스타|3030/.test(q)) $('s-status').insertAdjacentHTML('beforeend', ' · <a href="/support/star/">대구 스타기업·Pre-스타기업·3030기업 명단 보기</a>');
     $('s-results').hidden = false;
   }
   run().catch(() => { $('s-status').textContent = '색인을 받지 못했습니다. 잠시 뒤 다시 시도해 주세요.'; });

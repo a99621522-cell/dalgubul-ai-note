@@ -1,0 +1,181 @@
+{
+ "file": "src/content/posts/2026-10-02-policy-textile-root-energy.md",
+ "checked": "2026-10-01",
+ "ok": 12,
+ "total": 14,
+ "ratio": 0.86,
+ "official_bad": [
+  "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "정책브리핑, 「산업용 전기요금, 11개 지역별 차등 반영…남부 최대 10% 저렴」",
+   "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148970678",
+   "date": "2026-08-26",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "산업용 전기요금, 11개 지역별 차등 반영…남부 최대 10% 저렴 - 정책뉴스 | 뉴스 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "아시아경제, 「정부, 산업용 전기요금 '지역별 차등'…비수도권 최대 10% 인하」",
+   "url": "https://view.asiae.co.kr/article/2026082613270801945",
+   "date": "2026-08-26",
+   "kind": "news",
+   "status": 200,
+   "page_title": "정부, 산업용 전기요금 '지역별 차등'…비수도권 최대 10% 인하",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "데일리안, 「남부권 산업용 전기료 최대 10%↓…11개 지역 차등」",
+   "url": "https://www.dailian.co.kr/news/view/1682542/%EB%82%A8%EB%B6%80%EA%B6%8C-%EC%82%B0%EC%97%85%EC%9A%A9-%EC%A0%84%EA%B8%B0%EB%A3%8C-%EC%B5%9C%EB%8C%80-1011%EA%B0%9C-2026",
+   "date": "2026-08-26",
+   "kind": "news",
+   "status": 200,
+   "page_title": "남부권 산업용 전기료 최대 10%↓…11개 지역 차등",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "머니투데이, 「영·호남 산업용 전기요금 최대 10% 싸진다…'기업 부담 2.8조 감소'」",
+   "url": "https://www.mt.co.kr/economy/2026/08/26/2026082611153329112",
+   "date": "2026-08-26",
+   "kind": "news",
+   "status": 200,
+   "page_title": "영·호남 산업용 전기요금 최대 10% 싸진다…&quot;기업 부담 2.8조 감소&quot; - 머니투데이",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "서울신문, 「산업용 전기요금, 생산 많은 계절·시간대 최대 16.9원 인하…계시별 전기요금제 공개」",
+   "url": "https://www.seoul.co.kr/news/society/2026/03/13/20260313500184",
+   "date": "2026-03-13",
+   "kind": "news",
+   "status": 200,
+   "page_title": "산업용 전기요금, 생산 많은 계절·시간대 최대 16.9원 인하…계시별 전기요금제 공개 | 서울신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "영남일보, 「산업용 전기료 개편 놓고 대구경북 셈법 복잡…'생산지·밤 할증 관건'」",
+   "url": "https://www.yeongnam.com/web/view.php?key=20260211023396163",
+   "date": "2026-02-11",
+   "kind": "news",
+   "status": 200,
+   "page_title": "영남일보 - 사람과 지역의 가치를 생각합니다.",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "아시아경제, 「중기중앙회, 뿌리산업위원회 개최…'뿌리산업 지원 확대 필요'」",
+   "url": "https://view.asiae.co.kr/article/2026052615170418849",
+   "date": "2026-05-26",
+   "kind": "news",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectionError"
+  },
+  {
+   "title": "전자신문, 「분산에너지특구 '경북·울산·충남' 추가 지정…송전망 부족 대안 기대」",
+   "url": "https://www.etnews.com/20251224000391",
+   "date": "2025-12-24",
+   "kind": "news",
+   "status": 200,
+   "page_title": "분산에너지특구 '경북·울산·충남' 추가 지정…송전망 부족 대안 기대 - 전자신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "뉴스핌, 「이철우 경북지사 '기업 움직이려면 산업용 전기요금 30% 이상 차등 필요'」",
+   "url": "https://www.newspim.com/news/view/20260830000185",
+   "date": "2026-08-30",
+   "kind": "news",
+   "status": 200,
+   "page_title": "이철우 경북지사 &quot;기업 움직이려면 산업용 전기요금 30% 이상 차등 필요&quot;",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "UK Government, 「British Industrial Competitiveness Scheme: consultation on scheme eligibility and approach — government response」",
+   "url": "https://assets.publishing.service.gov.uk/media/69dfe1fdf5069cdc548688aa/british-industrial-competitiveness-scheme-consultation-on-scheme-eligibility-approach-government-response.pdf",
+   "date": "2026-04-16",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "",
+   "title_match": 0.55,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
+   "date": "2026-10-01",
+   "kind": "official",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·종사자 신고값)과 사업 DB·대구시 세부사업(사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-09-28",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.2,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "경북매일, 「산업용 전기료 소폭 인하로 기업 유인책 될까」",
+   "url": "https://www.kbmaeil.com/article/20260827500254",
+   "date": "2026-08-27",
+   "kind": "news",
+   "status": 200,
+   "page_title": "산업용 전기료 소폭 인하로 기업 유인책 될까 - 경북매일",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "매일신문, 「원전지역 산업용 전기요금 10%↓…대구경북 1㎾당 13~18원 인하」",
+   "url": "https://www.imaeil.com/page/view/2026082613280462157",
+   "date": "2026-08-26",
+   "kind": "news",
+   "status": 200,
+   "page_title": "원전지역 산업용 전기요금 10%↓…대구경북 1㎾당 13~18원 인하 - 매일신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

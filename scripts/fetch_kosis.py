@@ -183,7 +183,13 @@ def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
 
 
 def discover(t: dict, key: str) -> None:
-    q = t.get("search") or t["name"]
+    qs = t.get("search") or t["name"]
+    for q in (qs if isinstance(qs, list) else [qs]):   # search 는 낱말 묶음 하나 또는 여럿(목록)
+        _discover_one(t, key, q)
+        time.sleep(0.5)
+
+
+def _discover_one(t: dict, key: str, q: str) -> None:
     try:
         r = requests.get(API_SEARCH, params={"method": "getList", "apiKey": key, "searchNm": q, "format": "json", "jsonVD": "Y", "resultCount": 15},
                          headers={"User-Agent": UA}, timeout=60)
@@ -325,6 +331,10 @@ def main() -> int:
         for t in load():
             if t["key"] == a.probe:
                 probe(t, key)
+        return 0
+    if a.discover:   # tbl_id 가 있어도 search 로 후보를 찍는다(옛 표 번호를 새 표로 바꿀 때, 2026-10-01: DT_1F1610 은 1999~2014 만)
+        for t in tables:
+            discover(t, key); time.sleep(0.5)
         return 0
     metas = []
     for t in tables:

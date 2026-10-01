@@ -26,8 +26,8 @@ tables:
     note: 산업 그룹의 공식 기준값(사업체·종사자)과 scripts/structure_index.py 의 종사자 기준 LQ. 40,000셀을 넘는 표라 연도×시도별로 나눠 받고, 메타(<key>.meta.json, --meta)의 분류 코드로 대·중분류만 남긴다. 표 번호는 KOSIS 통계표 주소(statHtml.do?tblId=…)에서 확인
   - key: mining-mfg-survey-sido
     name: 광업·제조업조사 — 시도·산업중분류별 사업체 수·종사자·출하액·부가가치(10인 이상)
-    tbl_id: "DT_1F1610"
-    search: "광업제조업조사 시도 산업중분류 출하액 부가가치"
+    tbl_id: "DT_1F1610"   # 1999~2014 만 수록(2026-10-01 probe) — discover 로 2015 이후 표를 찾아 바꾼다
+    search: ["광업제조업조사 시도 산업", "시도 산업중분류 출하액 부가가치", "광업 제조업조사 시도별 주요지표", "제조업 시도 산업분류별 사업체수 종사자수 출하액"]
     prd_se: Y
     area_col: C1
     areas: [manufacturing-ax, machinery, automotive, textile, root, semiconductor]

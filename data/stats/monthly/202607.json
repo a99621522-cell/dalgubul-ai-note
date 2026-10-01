@@ -1,6 +1,6 @@
 {
  "month": "2026-07",
- "generated": "2026-09-28 07:30",
+ "generated": "2026-10-01 06:44",
  "basis": "nps",
  "basis_label": "국민연금 가입자수",
  "sources": {
@@ -14,7 +14,7 @@
    "matched": 6111
   },
   "dart": {
-   "corps_daegu": 2,
+   "corps_daegu": 5,
    "note": "collect_dart.py 가 확인한 대구 본사 공시 기업만. 재무(매출)는 미연결"
   }
  },
@@ -33,7 +33,7 @@
   "nps_loss": 3398,
   "new_firms": 5,
   "closed_firms": 26,
-  "dart_firms": 0,
+  "dart_firms": 3,
   "dart_revenue": null,
   "projects_12m": null,
   "support_3y": {
@@ -253,7 +253,7 @@
    "nps_loss": 254,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 3,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -440,7 +440,7 @@
    "nps_loss": 709,
    "new_firms": 1,
    "closed_firms": 12,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -471,7 +471,7 @@
    "nps_loss": 1164,
    "new_firms": 4,
    "closed_firms": 2,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -533,7 +533,7 @@
    "nps_loss": 146,
    "new_firms": 0,
    "closed_firms": 2,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1149,7 +1149,7 @@
    "nps_loss": 908,
    "new_firms": 1,
    "closed_firms": 12,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1242,7 +1242,7 @@
    "nps_loss": 276,
    "new_firms": 0,
    "closed_firms": 2,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1273,7 +1273,7 @@
    "nps_loss": 360,
    "new_firms": 1,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1553,7 +1553,7 @@
    "nps_loss": 1723,
    "new_firms": 1,
    "closed_firms": 16,
-   "dart_firms": 0,
+   "dart_firms": 2,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1584,7 +1584,7 @@
    "nps_loss": 1420,
    "new_firms": 4,
    "closed_firms": 7,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1660,6 +1660,100 @@
     "by_layer": {
      "국비": 71,
      "시비": 5
+    }
+   },
+   "mom": null,
+   "yoy": null
+  },
+  "3030기업": {
+   "firms": 156,
+   "employment": 8095,
+   "covered": 131,
+   "avg_employment": 61.8,
+   "size_bands": {
+    "1~9": 9,
+    "10~49": 75,
+    "50~299": 45,
+    "300+": 2
+   },
+   "nps_gain": 140,
+   "nps_loss": 217,
+   "new_firms": 0,
+   "closed_firms": 0,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "support_3y": {
+    "firms": 156,
+    "records": 204,
+    "amount_won": null,
+    "amount_known_records": 0,
+    "by_layer": {
+     "시비": 183,
+     "국비": 21
+    }
+   },
+   "mom": null,
+   "yoy": null
+  },
+  "Pre-스타기업": {
+   "firms": 125,
+   "employment": 2710,
+   "covered": 102,
+   "avg_employment": 26.6,
+   "size_bands": {
+    "1~9": 7,
+    "10~49": 86,
+    "50~299": 9,
+    "300+": 0
+   },
+   "nps_gain": 106,
+   "nps_loss": 98,
+   "new_firms": 0,
+   "closed_firms": 0,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "support_3y": {
+    "firms": 125,
+    "records": 165,
+    "amount_won": 190000000,
+    "amount_known_records": 1,
+    "by_layer": {
+     "시비": 127,
+     "국비": 36,
+     "구비": 2
+    }
+   },
+   "mom": null,
+   "yoy": null
+  },
+  "대구 스타기업": {
+   "firms": 89,
+   "employment": 7339,
+   "covered": 79,
+   "avg_employment": 92.9,
+   "size_bands": {
+    "1~9": 0,
+    "10~49": 26,
+    "50~299": 50,
+    "300+": 3
+   },
+   "nps_gain": 149,
+   "nps_loss": 183,
+   "new_firms": 0,
+   "closed_firms": 0,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "support_3y": {
+    "firms": 89,
+    "records": 157,
+    "amount_won": 517000000,
+    "amount_known_records": 4,
+    "by_layer": {
+     "시비": 113,
+     "국비": 44
     }
    },
    "mom": null,

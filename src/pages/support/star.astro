@@ -1,0 +1,93 @@
+---
+import Base from '../../layouts/Base.astro';
+import { companies, supportHistory, shortComplex, byName, type Company } from '../../lib/csv';
+/** /support/star/ — 대구광역시 스타기업·Pre-스타기업·3030기업 명단(대구시 공개 현황, 공공데이터포털 15130932).
+ *  scripts/star_tags.py 가 같은 명단으로 기업 사전 태그(star·prestar·k3030)를 붙인다. 가나다순, 평가·순위 없음.
+ *  기업 사전과 이름이 맞지 않은 기업은 이름만(명단만). 종사자는 공장등록 신고값. */
+const KINDS = [
+  { program: '스타기업', tag: 'star', name: '대구 스타기업' },
+  { program: 'Pre-스타기업', tag: 'prestar', name: 'Pre-스타기업' },
+  { program: '3030기업', tag: 'k3030', name: '3030기업' },
+];
+const co = new Map(companies().map(c => [c.id, c]));
+const rows = supportHistory().filter(r => (r.source_url || '').includes('15130932'));
+const source = rows[0]?.source ?? '대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털)';
+const sourceUrl = rows[0]?.source_url ?? 'https://www.data.go.kr/data/15130932/fileData.do';
+const asOf = rows[0]?.as_of ?? '';
+type Item = { name: string; c?: Company };
+const lists = KINDS.map(k => {
+  const seen = new Set<string>();
+  const items: Item[] = [];
+  for (const r of rows.filter(r => r.program === k.program)) {
+    const key = r.id || `n:${r.name}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const c = r.id ? co.get(r.id) : undefined;
+    if (r.id && !c) continue;   // 목록에서 제외된 기업(개인 성명 등)
+    items.push({ name: c?.name ?? r.name, c });
+  }
+  items.sort((a, b) => byName(a.name, b.name));
+  return { ...k, items, linked: items.filter(i => i.c).length };
+});
+const fmt = (n: number) => n.toLocaleString('ko-KR');
+const workers = (c?: Company) => { const n = Number(c?.workers); return c?.workers && Number.isFinite(n) ? n : null; };
+const sumW = (items: Item[]) => items.reduce((s, i) => s + (workers(i.c) ?? 0), 0);
+const cross = (key: (c: Company) => string) => {
+  const m = new Map<string, number[]>();
+  lists.forEach((l, j) => l.items.forEach(i => { if (!i.c) return; const k = key(i.c) || '—'; (m.get(k) ?? m.set(k, KINDS.map(() => 0)).get(k)!)[j]++; }));
+  return [...m.entries()].sort((a, b) => b[1].reduce((s, v) => s + v, 0) - a[1].reduce((s, v) => s + v, 0) || a[0].localeCompare(b[0], 'ko'));
+};
+const byGroup = cross(c => c.sector_group);
+const byDistrict = cross(c => c.district);
+const total = lists.reduce((s, l) => s + l.items.length, 0);
+---
+<Base title="대구 스타기업·Pre-스타기업" description={`대구광역시가 공개한 스타기업 ${lists[0].items.length}곳·Pre-스타기업 ${lists[1].items.length}곳·3030기업 ${lists[2].items.length}곳 명단(${asOf} 기준)을 기업 사전과 이어 산업·구·군·단지·종사자로 정리했습니다.`} current="support">
+  <p class="meta"><a href="/support/">지원받은 기업</a> › 스타기업·Pre-스타기업</p>
+  <div class="section-head"><h1>대구 스타기업·Pre-스타기업</h1><span class="meta">명단 {asOf} 기준 · {fmt(total)}곳</span></div>
+  <p class="lede">대구광역시가 공공데이터포털에 공개한 스타기업·Pre-스타기업·3030기업 현황을 기업 사전과 이름으로 이었습니다. 이어진 기업은 기업 사전 페이지로 연결되고, 기업 사전에서 <a href="/companies/?tag=star">스타기업</a>·<a href="/companies/?tag=prestar">Pre-스타기업</a>·<a href="/companies/?tag=k3030">3030기업</a> 태그로도 거를 수 있습니다. 가나다순이며 평가·순위가 아닙니다. 명단 공개 뒤 새로 선정된 기업(2026년 선정 등)은 대구시 공개 자료가 갱신되면 반영합니다.</p>
+
+  <section>
+    <div class="section-head"><h2>구분별 기업 수</h2></div>
+    <div class="scroll-x"><table class="data-table" data-title="대구 스타기업·Pre-스타기업·3030기업 구분별 기업 수">
+      <thead><tr><th>구분</th><th class="n">명단 기업(곳)</th><th class="n">기업 사전 연결(곳)</th><th class="n">연결 기업 종사자 신고 합계(명)</th></tr></thead>
+      <tbody>{lists.map(l => <tr><th scope="row"><a href={`#${l.tag}`}>{l.name}</a></th><td class="n">{fmt(l.items.length)}</td><td class="n">{fmt(l.linked)}</td><td class="n">{fmt(sumW(l.items))}</td></tr>)}</tbody>
+    </table></div>
+    <p class="meta">출처: <a href={sourceUrl}>{source}</a>({asOf}), 기업 사전(팩토리온 공장등록). 한 기업이 두 구분에 함께 실린 경우 각 구분에서 셉니다. 종사자는 공장등록 신고값이며 값 없는 기업은 합계에서 빠집니다.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>산업별·구·군별</h2></div>
+          <div class="scroll-x"><table class="data-table" data-title="스타기업·Pre-스타기업·3030기업 산업 그룹별 기업 수">
+        <thead><tr><th>산업 그룹</th>{lists.map(l => <th class="n">{l.name}</th>)}</tr></thead>
+        <tbody>{byGroup.map(([k, v]) => <tr><th scope="row">{k}</th>{v.map(n => <td class="n">{n || '—'}</td>)}</tr>)}</tbody>
+      </table></div>
+      <div class="scroll-x"><table class="data-table" data-title="스타기업·Pre-스타기업·3030기업 구·군별 기업 수">
+        <thead><tr><th>구·군</th>{lists.map(l => <th class="n">{l.name}</th>)}</tr></thead>
+        <tbody>{byDistrict.map(([k, v]) => <tr><th scope="row">{k}</th>{v.map(n => <td class="n">{n || '—'}</td>)}</tr>)}</tbody>
+      </table></div>
+    <p class="meta">기업 사전에 연결된 기업만 셉니다. 산업 그룹은 기업 사전 규칙(config/industry_groups.yml)으로 판정했습니다. 정렬은 기업 수 크기순일 뿐입니다.</p>
+  </section>
+
+  {lists.map(l => (
+    <section id={l.tag}>
+      <div class="section-head"><h2>{l.name}</h2><span class="meta">{fmt(l.items.length)}곳(기업 사전 연결 {fmt(l.linked)}곳)</span></div>
+      <div class="scroll-x"><table class="data-table" data-title={`${l.name} 명단(${asOf})`}>
+        <thead><tr><th>기업</th><th>구·군</th><th>산업 그룹</th><th class="col-opt">단지·입지</th><th class="n">종사자(명)</th><th class="col-opt">생산품</th></tr></thead>
+        <tbody>{l.items.map(i => (
+          <tr>
+            <td>{i.c ? <a href={`/companies/${i.c.id}/`}>{i.name}</a> : <span>{i.name}<span class="meta"> (명단만)</span></span>}</td>
+            <td class="nw">{i.c?.district || '—'}</td>
+            <td class="nw">{i.c?.sector_group || '—'}</td>
+            <td class="col-opt">{i.c ? shortComplex(i.c.complex) : '—'}</td>
+            <td class="n">{workers(i.c) != null ? fmt(workers(i.c)!) : '—'}</td>
+            <td class="col-opt">{i.c?.product ? (i.c.product.length > 40 ? i.c.product.slice(0, 40) + '…' : i.c.product) : '—'}</td>
+          </tr>
+        ))}</tbody>
+      </table></div>
+      <p class="meta">(명단만): 기업 사전(공장등록 제조업)에서 같은 이름을 찾지 못한 기업 — 공장등록이 없거나 서비스업이거나 상호 표기가 다를 수 있습니다.</p>
+    </section>
+  ))}
+  <style>
+    .nw { white-space: nowrap; }
+  </style>
+</Base>

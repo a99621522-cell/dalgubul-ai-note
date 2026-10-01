@@ -82,6 +82,7 @@ jobs:
           # 변환 파일(portal_<번호>.csv)은 저장소에 남긴다: 다음에 다른 데이터셋만 받아도 앞서 받은 것이 지워지지 않도록
           python3 scripts/import_public_support.py data/raw
           ls scripts/data/support/portal_*.csv >/dev/null 2>&1 && python3 scripts/import_support.py --replace-source '공공데이터포털'
+          python3 scripts/star_tags.py   # 대구시 스타기업·Pre-스타기업·3030기업 명단 → 기업 사전 태그
           ls scripts/data/extra/portal_*.csv >/dev/null 2>&1 && python3 scripts/import_extra.py --replace-inputs
           true
           # 기업지원기관(대구TP·DIP·DMI·케이메디허브·창경센터·로봇산업진흥원·ETRI·생기원·경북대 …)별 지원 기업: 대구 / 역외 구분

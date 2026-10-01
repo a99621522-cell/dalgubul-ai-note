@@ -53,8 +53,36 @@ def load() -> tuple[list[dict], list[dict], str, str]:
     return dg, gb, as_dg, as_gb
 
 
+def refine_gb_groups(dg: list[dict], gb: list[dict]) -> int:
+    """경북은 업종 코드가 없어 생산품 낱말 규칙만으로는 절반이 '미분류'다(2026-10-01: 33,028곳 중 16,122곳).
+    대구 기업의 생산품 낱말 → 산업 그룹(업종 코드로 정한 그룹)을 표로 만들어, 낱말이 대구 2곳 이상에 나오고 한 그룹이 60% 이상일 때만
+    그 그룹 표를 받는다. 받은 표가 가장 많은 그룹을 쓴다. 짐작이라 참고용."""
+    votes: dict[str, Counter] = defaultdict(Counter)
+    for c in dg:
+        if c["group"] in ("미분류", "기타 서비스"):
+            continue
+        for t in c["toks"]:
+            if len(t) >= 2:
+                votes[t][c["group"]] += 1
+    changed = 0
+    for c in gb:
+        if c["group"] != "미분류":
+            continue
+        tally = Counter()
+        for t in c["toks"]:
+            v = votes.get(t)
+            if v:
+                n = sum(v.values()); g, k = v.most_common(1)[0]
+                if n >= 2 and k / n >= 0.6:
+                    tally[g] += 1
+        if tally:
+            c["group"] = tally.most_common(1)[0][0]; changed += 1
+    return changed
+
+
 def main() -> int:
     dg, gb, as_dg, as_gb = load()
+    refined = refine_gb_groups(dg, gb)
     OUT.mkdir(parents=True, exist_ok=True)
     dep = list(csv.DictReader(open(DATA / "bok_dependency.csv", encoding="utf-8")))
     items, seen = [], set()
@@ -67,7 +95,7 @@ def main() -> int:
         hd = [c for c in dg if c["prod"] and hit(kws, c["prod"], c["toks"])]
         hg = [c for c in gb if c["prod"] and hit(kws, c["prod"], c["toks"])]
         status = "대구·경북" if hd and hg else "대구만" if hd else "경북만" if hg else "없음"
-        ex = lambda hs: "; ".join(f"{c['name']}({c['area']})" for c in [c for c in hs if c["name"]][:3])
+        ex = lambda hs: "; ".join(list(dict.fromkeys(f"{c['name']}({c['area']})" for c in hs if c["name"]))[:3])   # 같은 회사 여러 공장은 한 번만
         items.append({"industry": r["industry"], "section": r["section"], "country": r["country"], "item": r["item"], "hs_code": r["hs_code"],
                       "amount_musd": r["amount_musd"], "share_pct": r["share_pct"], "keywords": " ".join(kws),
                       "daegu_n": len(hd), "gb_n": len(hg), "status": status, "daegu_ex": ex(hd), "gb_ex": ex(hg), "page": r["page"]})
@@ -92,6 +120,7 @@ def main() -> int:
 
     st = Counter(i["status"] for i in items)
     summary = {"as_of_daegu": as_dg, "as_of_gb": as_gb, "n_daegu": len(dg), "n_gb": len(gb), "items": len(items), "status": dict(st),
+               "gb_unclassified": sum(1 for c in gb if c["group"] == "미분류"), "gb_refined_by_daegu": refined,
                "sources": {"daegu": "팩토리온 전국(개별·계획) 입주업체현황 월간 엑셀(한국산업단지공단)",
                            "gb": "한국산업단지공단_전국등록공장현황_등록공장현황자료(공공데이터포털 15105482)",
                            "gb_url": "https://www.data.go.kr/data/15105482/fileData.do",

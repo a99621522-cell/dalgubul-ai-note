@@ -59,7 +59,7 @@ const areaRows = (sido: string): Area[] => [...areaMap.values()].filter(a => a.s
       <thead><tr><th>산업 그룹</th><th class="n">대구(곳)</th><th class="n">경북(곳)</th></tr></thead>
       <tbody>{groups.map(g => <tr><th scope="row">{g.group}</th><td class="n">{fmt(g.daegu_n)}</td><td class="n">{gbReady ? fmt(g.gb_n) : '—'}</td></tr>)}</tbody>
     </table></div>
-    <p class="meta">대구는 업종 코드와 생산품으로, 경북은 생산품 낱말만으로 그룹을 정해(config/industry_groups.yml) 경북 쪽은 '미분류'가 많습니다. 정렬은 기업 수 크기순일 뿐입니다.</p>
+    <p class="meta">대구는 업종 코드와 생산품으로 그룹을 정했습니다. 경북은 업종 코드가 없어 생산품 낱말 규칙(config/industry_groups.yml)으로 먼저 짐작하고, 못 정한 곳은 대구 기업의 '생산품 낱말 → 업종' 관계로 한 번 더 짐작했습니다({fmt(S?.gb_refined_by_daegu ?? 0)}곳). 그래도 못 정한 {fmt(S?.gb_unclassified ?? 0)}곳은 '미분류'입니다. 짐작이므로 참고용이며, 정렬은 기업 수 크기순일 뿐입니다.</p>
   </section>
 
   <section>
@@ -87,7 +87,7 @@ const areaRows = (sido: string): Area[] => [...areaMap.values()].filter(a => a.s
       <thead><tr><th>업종</th><th>품목</th><th>의존국</th><th class="n">비중(%)</th><th class="n">대구(곳)</th><th class="n">경북(곳)</th><th class="col-opt">예(생산품 등록 기업)</th></tr></thead>
       <tbody>{items.map(r => (
         <tr data-ind={r.industry} data-st={r.status} data-q={`${r.item} ${r.keywords}`}>
-          <td>{r.industry}</td><td>{r.item}{r.hs_code && <span class="meta"> HS {r.hs_code}</span>}</td><td>{r.country}</td><td class="n">{r.share_pct}</td>
+          <td class="nw">{r.industry}</td><td>{r.item}{r.hs_code && <span class="meta"> HS {r.hs_code}</span>}</td><td>{r.country}</td><td class="n">{r.share_pct}</td>
           <td class="n">{fmt(r.daegu_n)}</td><td class="n">{gbReady ? fmt(r.gb_n) : '—'}</td>
           <td class="col-opt">{[r.daegu_ex, r.gb_ex].filter(Boolean).join('; ') || '—'}</td>
         </tr>))}</tbody>
@@ -96,6 +96,7 @@ const areaRows = (sido: string): Area[] => [...areaMap.values()].filter(a => a.s
   </section>
   <style>
     .note-box { background: var(--surface); border-left: 4px solid var(--primary); padding: var(--s2); }
+    .nw { white-space: nowrap; }
   </style>
   <script is:inline>
     (() => {

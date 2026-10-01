@@ -1,0 +1,132 @@
+# 참여 사업별 기업 분류(운영자 지시 2026-10-01: '모터 소부장 참여기업·규제샌드박스 참여기업 등으로 분류, 구역별로 하지 말 것').
+# 특구를 단지·입지로 근사하던 zones(site_types.yml)와 달리, 공개된 참여·선정 명단에 이름이 실린 기업만 센다.
+# 읽는 코드: scripts/participation.py → data/participation/members.csv·summary.json, company_tags.csv(태그 = key).
+# from:
+#   static  — 보도·공고에 이름이 실린 명단(members). source_url 필수
+#   portal  — data/participation/raw/<dataset>.csv (participation_raw.py 가 공공데이터포털에서 받은 원본)
+#             name_col: 이름 열, sub: 세부 구분 열, where: {열: 낱말} 이 든 행만, region: 주소 열(대구/역외 구분),
+#             org_when: {열: [값…]} 이면 기관(대학·연구기관·지자체)으로 표시, daegu_only_by_name: 지역 열이 없어 대구 기업 사전 이름이 맞는 곳만
+#   history — scripts/data/support_history.csv 에서 source(또는 source_url)에 낱말이 든 행(program 열이 sub)
+# 평가·순위 없음. 명단 그대로, 기준일·출처를 함께 적는다. 이름 대조라 동명 다른 회사가 섞일 수 있다(페이지에 적음).
+groups:
+  - key: zone
+    name: 특구·특화단지 참여
+  - key: reg
+    name: 규제 특례
+  - key: city
+    name: 대구시·국가 지정 기업
+
+programs:
+  - key: motor
+    group: zone
+    name: 모터 소부장 특화단지 앵커기업
+    short: 모터 소부장 앵커
+    desc: 산업통상자원부 지정(2023-07) 대구 전기차 모터 소재·부품·장비 특화단지의 투자협약 앵커기업
+    from: static
+    # 유림테크는 성서산단에 같은 이름의 다른 공장 기록이 있어 기사(구동모듈 하우징, 달성 구지)에 맞춰 달성군만 잇는다
+    members: [경창산업, 대동모빌리티, 보그워너, 성림첨단산업, { name: 유림테크, district: 달성군 }, 이래AMS, 코아오토모티브]
+    as_of: 2023-09
+    source: 서울경제TV 「대구 전기차 모터 소부장 특화단지 출범 닻 올렸다」(2023-09-07), 한국산업기술기획평가원 소재부품장비 특화단지 지정현황(공공데이터포털 15121625)
+    source_url: https://m.sentv.co.kr/article/view/sentv202309070074
+    note: 협력기업 100여 곳의 명단은 공개 자료에서 찾지 못해 앵커기업 7곳만 셉니다
+
+  - key: rfz
+    group: zone
+    name: 규제자유특구 특구사업자
+    short: 규제자유특구
+    desc: 대구 스마트웰니스(1차)·이동식 협동로봇(3차) 규제자유특구에 특구사업자로 등록한 기업·기관
+    from: portal
+    dataset: "15124790"
+    where: { 지역: 대구 }
+    name_col: 기업명
+    sub: 특구명
+    org_when: { 기업규모: [비영리, 기관, 공공기관, 지자체, 대학] }
+    source: 중소벤처기업진흥공단 규제자유특구 참여기업 현황(공공데이터포털 15124790)
+    source_url: https://www.data.go.kr/data/15124790/fileData.do
+    note: 2024년 지정 이노덴탈 특구는 포털 파일에 아직 없습니다
+
+  - key: grfz
+    group: zone
+    name: AI로봇 글로벌 혁신특구 특구사업자
+    short: AI로봇 글로벌혁신특구
+    desc: 대구 AI로봇 글로벌 혁신 규제자유특구(2025-05 지정)의 특구사업자
+    from: portal
+    dataset: "15134916"
+    where: { 특구명: 대구 }
+    name_col: 특구사업자명
+    sub: 특구사업자 등록 형태
+    region: 주소
+    org_when: { 기업규모: [지자체, 기타(기관), 기타공공기관] }
+    source: 중소벤처기업진흥공단 글로벌 혁신 규제자유특구 참여기업 현황(공공데이터포털 15134916, 2025-09)
+    source_url: https://www.data.go.kr/data/15134916/fileData.do
+    as_of: 2025-09
+    note: 주소가 대구 밖인 특구사업자는 '역외'로 표시합니다
+
+  - key: kmedi
+    group: zone
+    name: 첨단의료복합단지 입주기업
+    short: 첨복단지 입주
+    desc: 대구경북첨단의료복합단지 입주(분양·임대) 기업
+    from: portal
+    dataset: "15036286"
+    name_col: 업체명
+    sub: 업종
+    source: 대구광역시 첨단의료복합단지 입주기업 현황(공공데이터포털 15036286)
+    source_url: https://www.data.go.kr/data/15036286/fileData.do
+
+  - key: sandbox
+    group: reg
+    name: 산업융합 규제샌드박스 특례 기업
+    short: 규제샌드박스
+    desc: 산업융합 규제샌드박스 실증특례·임시허가 기업(전국) 가운데 대구 기업 사전에 같은 이름이 있는 회사 — 후보
+    from: portal
+    dataset: "15145229"
+    name_col: 회사명
+    sub: 과제명
+    daegu_only_by_name: true
+    candidates_only: true   # 주소가 없어 이름만 같은 다른 회사일 수 있다 → 태그하지 않고 '후보'로만 보인다
+    source: 한국산업기술진흥원 특례부여현황(공공데이터포털 15145229)
+    source_url: https://www.data.go.kr/data/15145229/fileData.do
+    note: 전국 명단에 주소가 없어 대구 기업 사전과 회사 이름만 맞춘 후보입니다. 이름이 같은 다른 회사일 수 있고, 같은 회사라도 특례 과제가 대구에서 진행됐다는 뜻은 아닙니다. 기업 사전 태그는 붙이지 않습니다. ICT·금융 등 다른 부처 샌드박스 명단은 아직 넣지 못했습니다
+
+  - key: labfirm
+    group: city
+    name: 연구소기업
+    short: 연구소기업
+    desc: 연구개발특구진흥재단에 등록된 대구 연구소기업
+    from: history
+    match: 연구소기업
+    source: 연구개발특구진흥재단 연구소기업 운영현황(공공데이터포털)
+
+  - key: star
+    group: city
+    name: 대구 스타기업
+    short: 스타기업
+    desc: 대구광역시 스타기업 육성사업 선정 기업
+    from: history
+    match: "15130932"
+    program: 스타기업
+    link: /support/star/
+    source: 대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)
+
+  - key: prestar
+    group: city
+    name: Pre-스타기업
+    short: Pre-스타기업
+    desc: 대구광역시 Pre-스타기업 육성사업 선정 기업
+    from: history
+    match: "15130932"
+    program: Pre-스타기업
+    link: /support/star/
+    source: 대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)
+
+  - key: k3030
+    group: city
+    name: 3030기업
+    short: 3030기업
+    desc: 대구광역시 3030기업 육성사업 선정 기업
+    from: history
+    match: "15130932"
+    program: 3030기업
+    link: /support/star/
+    source: 대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)

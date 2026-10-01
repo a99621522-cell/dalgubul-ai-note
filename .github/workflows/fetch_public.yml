@@ -91,6 +91,7 @@ jobs:
           true
           # 기업지원기관(대구TP·DIP·DMI·케이메디허브·창경센터·로봇산업진흥원·ETRI·생기원·경북대 …)별 지원 기업: 대구 / 역외 구분
           python3 scripts/institution_support.py data/raw || true
+          python3 scripts/participation.py   # 참여 사업별 기업(모터 소부장·규제자유특구·글로벌혁신특구·첨복·샌드박스·연구소기업) → data/participation·태그
           python3 scripts/sites.py
           python3 scripts/build_stats.py --backfill
           python3 scripts/render_charts.py

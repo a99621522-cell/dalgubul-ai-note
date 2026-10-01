@@ -1,11 +1,13 @@
 ---
-/** 첫 화면 '산업단지·특구별 기업'(운영자 지시 2026-09-29: 가시성·편의).
- *  ① 산단 안/밖 비중 막대 ② 탭: 특구별 카드 / 산업단지별 가로 막대(기업 수·고용 정렬) / 표로 보기(한글 표 복사·HWP)
- *  특구 판정 규칙은 config/site_types.yml 의 zones(단지·입지 유형·태그로 근사, 상한값). 카드·막대를 누르면 기업 사전 목록으로 간다.
+/** 첫 화면 '산업단지·참여 사업별 기업'(운영자 지시 2026-09-29: 가시성·편의).
+ *  ① 산단 안/밖 비중 막대 ② 탭: 참여 사업별 카드 / 산업단지별 가로 막대(기업 수·고용 정렬) / 표로 보기(한글 표 복사·PDF)
+ *  참여 사업별(운영자 지시 2026-10-01: 구역별 근사 대신 모터 소부장·규제자유특구·규제샌드박스 등 공개 명단에 실린 기업으로)은
+ *  scripts/participation.py 산출물(config/participation.yml). 카드를 누르면 기업 사전(태그) 또는 명단 페이지로 간다.
  *  스크립트가 없으면 세 패널이 모두 펼쳐진다. */
 import { companies, shortComplex } from '../lib/csv';
-import { OUTSIDE, zones, zoneCountable, zonesOf } from '../lib/sites';
+import { OUTSIDE } from '../lib/sites';
 import { companyStats } from '../lib/stats';
+import { programs, programGroups, members } from '../lib/participation';
 
 const list = companies();
 const emp = (companyStats()?.companies ?? {}) as Record<string, { e: number | null }>;
@@ -25,16 +27,19 @@ const byComplex = [...inside.reduce((m, c) => m.set(c.complex, [...(m.get(c.comp
   .sort((a, b) => b.n - a.n);
 const maxN = Math.max(...byComplex.map(r => r.n), 1), maxW = Math.max(...byComplex.map(r => r.w), 1);
 
-const zoneRows = zones().map(z => {
-  if (!zoneCountable(z)) return { z, n: null as number | null, w: null as number | null };
-  const rs = list.filter(c => zonesOf(c).includes(z.key));
-  return { z, n: rs.length, w: sum(rs) };
+// 참여 사업별: 기업 사전과 이어진 회사의 고용(국민연금 가입자수, 같은 회사 여러 공장은 가장 큰 기록 하나)
+const progs = programs().map(p => {
+  const ms = members(p.key).filter(m => m.ids);
+  const w = ms.reduce((a, m) => a + Math.max(...m.ids.split(';').map(e)), 0);
+  return { p, w };
 });
+const groupsOf = programGroups().map(g => ({ g, rows: progs.filter(r => r.p.group === g.key) })).filter(x => x.rows.length);
+const progHref = (p: { key: string; link: string; candidates_only: boolean }) => p.candidates_only ? `/support/participation/#${p.key}` : `/companies/?tag=${p.key}`;
 const asOf = list[0]?.as_of ?? '';
 const cxHref = (name: string) => `/companies/?complex=${encodeURIComponent(name)}`;
 ---
 <section aria-labelledby="h-zone" class="section zone">
-  <div class="section-head"><h2 id="h-zone">산업단지·특구별 기업</h2><span class="meta">{asOf} 기준 · 기업 사전 {nf(total)}곳</span></div>
+  <div class="section-head"><h2 id="h-zone">산업단지·참여 사업별 기업</h2><span class="meta">{asOf} 기준 · 기업 사전 {nf(total)}곳</span></div>
 
   <div class="split" role="img" aria-label={`산업단지 안 ${nf(inside.length)}곳(${inPct}%), 산업단지 밖 ${nf(outside.length)}곳(${outPct}%)`}>
     <div class="split-legend">
@@ -45,33 +50,38 @@ const cxHref = (name: string) => `/companies/?complex=${encodeURIComponent(name)
   </div>
 
   <div class="tabs" role="tablist" aria-label="보기 방식" hidden>
-    <button type="button" role="tab" id="zt-zone" aria-controls="zp-zone" aria-selected="true">특구별</button>
+    <button type="button" role="tab" id="zt-zone" aria-controls="zp-zone" aria-selected="true">참여 사업별</button>
     <button type="button" role="tab" id="zt-cx" aria-controls="zp-cx" aria-selected="false" tabindex="-1">산업단지별</button>
     <button type="button" role="tab" id="zt-table" aria-controls="zp-table" aria-selected="false" tabindex="-1">표로 보기</button>
   </div>
 
   <div id="zp-zone" role="tabpanel" aria-labelledby="zt-zone" class="panel">
-    <h3 class="panel-title">대구에 지정된 특구별</h3>
-    <ul class="zone-cards">
-      {zoneRows.map(({ z, n, w }) => (
-        <li class:list={['zcard', { off: n === null }]}>
-          <p class="zname">{z.name}</p>
-          {n === null ? (
-            <p class="znum na">집계 불가</p>
-          ) : (
-            <p class="znum"><a href={`/companies/?zone=${z.key}`} aria-label={`${z.name} 기업 ${nf(n)}곳 목록 보기`}>{nf(n)}<span class="unit">곳</span></a></p>
-          )}
-          {n !== null && <div class="zbar" aria-hidden="true"><span style={`width:${Math.max(share(n, total), 1)}%`}></span></div>}
-          {n !== null && <p class="zsub">대구 기업의 {share(n, total)}% · 고용 {nf(w ?? 0)}명</p>}
-          <p class="zarea"><span class="when">{z.designated}</span> {z.areas}</p>
-          {z.note && <p class="znote">{z.note}</p>}
-          <p class="zlinks">
-            {n !== null && <a href={`/companies/?zone=${z.key}`}>기업 목록 →</a>}
-            <a href={z.source} rel="noopener" class="src">지정 보도</a>
-          </p>
-        </li>
-      ))}
-    </ul>
+    <h3 class="panel-title">참여 사업별(공개 명단에 이름이 실린 기업)</h3>
+    {groupsOf.map(({ g, rows }) => (
+      <>
+        <p class="zgroup">{g.name}</p>
+        <ul class="zone-cards">
+          {rows.map(({ p, w }) => (
+            <li class="zcard">
+              <p class="zname">{p.short}</p>
+              <p class="znum"><a href={progHref(p)} aria-label={`${p.name} ${nf(p.candidates_only ? p.n_linked : p.n_firm)}곳 보기`}>{nf(p.candidates_only ? p.n_linked : p.n_firm)}<span class="unit">곳{p.candidates_only ? ' 후보' : ''}</span></a></p>
+              <p class="zsub">
+                {p.candidates_only
+                  ? <>전국 특례 기업 중 대구 기업 사전과 이름이 같은 회사</>
+                  : <>{p.n_org > 0 && <>기관 {nf(p.n_org)}곳 별도 · </>}{p.n_outside > 0 && <>역외 {nf(p.n_outside)}곳 포함 · </>}기업 사전 연결 {nf(p.n_linked)}곳{w > 0 && <> · 고용 {nf(w)}명</>}</>}
+              </p>
+              <p class="zarea">{p.as_of && <span class="when">{p.as_of}</span>} {p.desc}</p>
+              {p.note && <p class="znote">{p.note}</p>}
+              <p class="zlinks">
+                {!p.candidates_only && <a href={`/companies/?tag=${p.key}`}>기업 사전 →</a>}
+                <a href={p.link || `/support/participation/#${p.key}`}>명단</a>
+                {p.source_url && <a href={p.source_url} rel="noopener" class="src">출처</a>}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </>
+    ))}
   </div>
 
   <div id="zp-cx" role="tabpanel" aria-labelledby="zt-cx" class="panel">
@@ -109,12 +119,12 @@ const cxHref = (name: string) => `/companies/?complex=${encodeURIComponent(name)
       </table>
     </div>
     <div class="scroll-x">
-      <table class="data-table zone-table">
-        <caption class="sr-only">대구 지정 특구별 기업 수와 고용 인원</caption>
-        <thead><tr><th scope="col">특구</th><th scope="col">지정</th><th scope="col">포함한 구역</th><th scope="col" class="n">기업 수</th><th scope="col" class="n">고용 인원</th></tr></thead>
+      <table class="data-table zone-table" data-title="참여 사업별 기업 수">
+        <caption class="sr-only">참여 사업별 명단 기업 수와 기업 사전 연결 수</caption>
+        <thead><tr><th scope="col">참여 사업</th><th scope="col">명단 기준</th><th scope="col" class="n">명단 기업</th><th scope="col" class="n">기관</th><th scope="col" class="n">기업 사전 연결</th><th scope="col" class="n">고용 인원</th><th scope="col">출처</th></tr></thead>
         <tbody>
-          {zoneRows.map(({ z, n, w }) => (
-            <tr><th scope="row">{z.name}</th><td>{z.designated}</td><td class="small">{z.areas}{z.note && ` (${z.note})`}</td><td class="n">{n === null ? '—' : nf(n)}</td><td class="n">{w === null ? '—' : nf(w)}</td></tr>
+          {progs.map(({ p, w }) => (
+            <tr><th scope="row">{p.name}{p.candidates_only && ' (이름 일치 후보)'}</th><td>{p.as_of || '—'}</td><td class="n">{p.candidates_only ? '—' : nf(p.n_firm)}</td><td class="n">{nf(p.n_org)}</td><td class="n">{nf(p.n_linked)}</td><td class="n">{nf(w)}</td><td class="small">{p.source}</td></tr>
           ))}
         </tbody>
       </table>
@@ -128,7 +138,7 @@ const cxHref = (name: string) => `/companies/?complex=${encodeURIComponent(name)
     </div>
   </div>
 
-  <p class="meta zone-note">산업단지 밖은 팩토리온 개별입지와 팩토리온 밖 목록(국민연금 사업장·수성알파시티 등)입니다. 고용 인원은 통계 기준월 값이 있는 기업만 더했습니다. 특구는 경계 도면이 공개되지 않아 산업단지·입지 유형으로 가렸고, 특구에 걸친 단지는 통째로 세어 대부분 실제보다 큰 값입니다. 한 기업이 여러 특구에 들 수 있어 특구끼리 더하지 않습니다.</p>
+  <p class="meta zone-note">산업단지 밖은 팩토리온 개별입지와 팩토리온 밖 목록(국민연금 사업장·수성알파시티 등)입니다. 고용 인원은 통계 기준월 값이 있는 기업만 더했습니다. 참여 사업별은 지역(구역)이 아니라 공개된 참여·선정 명단에 이름이 실린 기업 수입니다(기관·대학은 따로). 기업 사전과는 회사 이름으로 이어 동명 다른 회사가 섞일 수 있고, 한 기업이 여러 사업에 들 수 있어 사업끼리 더하지 않습니다. 평가·순위가 아닙니다.</p>
 </section>
 
 <script>
@@ -183,6 +193,7 @@ const cxHref = (name: string) => `/companies/?complex=${encodeURIComponent(name)
   .panel { margin-bottom: var(--s2); }
   .panel-title { font-size: var(--h3); margin: var(--s3) 0 var(--s1); }
 
+  .zgroup { font-weight: 700; color: var(--muted); font-size: var(--small); margin: var(--s2) 0 var(--s1); }
   .zone-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: var(--s2); }
   @media (min-width: 560px) { .zone-cards { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 900px) { .zone-cards { grid-template-columns: repeat(3, 1fr); } }

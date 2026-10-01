@@ -158,9 +158,32 @@ export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: b
   return new Blob([bytes as BlobPart], { type: 'application/pdf' });
 }
 
+/** 내려받기. 컴퓨터는 바로 저장하고, 휴대폰(터치 화면)·앱 안 브라우저는 자동 저장이 막히는 경우가 많아
+ *  화면 아래에 「PDF 열기」 단추를 띄워 사용자가 한 번 더 누르게 한다(누를 때 새 창으로 열리거나 저장됨, 2026-10-01). */
 export function downloadPdf(name: string, blob: Blob): void {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = name.endsWith('.pdf') ? name : `${name}.pdf`;
-  document.body.appendChild(a); a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);   // 바로 지우면 파일 이름(download 속성)이 무시되는 브라우저가 있다
+  const file = name.endsWith('.pdf') ? name : `${name}.pdf`;
+  const url = URL.createObjectURL(blob);
+  const touch = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+  if (!touch) {
+    const a = document.createElement('a');
+    a.href = url; a.download = file;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => a.remove(), 4000);   // 바로 지우면 파일 이름(download 속성)이 무시되는 브라우저가 있다
+  }
+  document.getElementById('pdf-ready')?.remove();
+  const box = document.createElement('div');
+  box.id = 'pdf-ready'; box.setAttribute('role', 'status');
+  box.style.cssText = 'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:1000;display:flex;gap:8px;align-items:center;max-width:calc(100vw - 32px);padding:10px 12px;background:#fff;border:1px solid #bdbdbd;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.15);font-size:15px';
+  const msg = document.createElement('span'); msg.textContent = touch ? 'PDF 준비됨' : '내려받기가 안 되면'; msg.style.whiteSpace = 'nowrap';
+  const open = document.createElement('a');
+  open.href = url; open.download = file; open.target = '_blank'; open.rel = 'noopener';
+  open.textContent = 'PDF 열기'; open.className = 'btn';
+  open.style.cssText = 'white-space:nowrap';
+  const close = document.createElement('button');
+  close.type = 'button'; close.textContent = '닫기'; close.className = 'btn secondary';
+  const done = () => { box.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000); };
+  close.addEventListener('click', done);
+  box.append(msg, open, close);
+  document.body.appendChild(box);
+  setTimeout(() => { if (box.isConnected) done(); }, 120000);
 }

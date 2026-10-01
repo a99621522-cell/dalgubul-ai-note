@@ -1,11 +1,13 @@
 {
  "file": "src/content/posts/2026-09-30-policy-structure-daegu.md",
- "checked": "2026-09-29",
- "ok": 9,
+ "checked": "2026-10-01",
+ "ok": 8,
  "total": 9,
- "ratio": 1.0,
- "official_bad": [],
- "pass": true,
+ "ratio": 0.89,
+ "official_bad": [
+  "대구광역시, 「2026년도 본예산 사업설명서」(사업명·부서·신규 여부만, 사업 DB)"
+ ],
+ "pass": false,
  "sources": [
   {
    "title": "국가데이터처, 「지역소득 — 시도별 경제활동별 지역내총생산(명목·실질)」 KOSIS DT_1C91(2014~2024년, 2024년 잠정)",
@@ -93,23 +95,23 @@
   },
   {
    "title": "대구광역시, 「2026년도 본예산 사업설명서」(사업명·부서·신규 여부만, 사업 DB)",
-   "url": "https://note.daitda.co.kr/programs/daegu/",
+   "url": "https://daitda.co.kr/programs/daegu/",
    "date": "2026-09-28",
    "kind": "gov",
-   "status": 200,
-   "page_title": "대구시 사업 예산 — 다잇다",
-   "title_match": 0.67,
+   "status": 404,
+   "page_title": "페이지를 찾을 수 없습니다 — 다잇다",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
+   "ok": false,
    "note": ""
   },
   {
    "title": "「KOSIS 통계표 — 산업구조 지표」 자체 계산 결과(structure_index.csv·structure_report.json)",
-   "url": "https://note.daitda.co.kr/stats/kosis/",
+   "url": "https://daitda.co.kr/stats/kosis/",
    "date": "2026-09-30",
    "kind": "data",
    "status": 200,
-   "page_title": "KOSIS 통계표 — 다잇다",
+   "page_title": "통계청 통계 — 다잇다",
    "title_match": 0.6,
    "date_found": true,
    "ok": true,

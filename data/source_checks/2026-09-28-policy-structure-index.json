@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-09-28-policy-structure-index.md",
- "checked": "2026-09-29",
- "ok": 5,
+ "checked": "2026-10-01",
+ "ok": 4,
  "total": 10,
- "ratio": 0.5,
+ "ratio": 0.4,
  "official_bad": [],
  "pass": false,
  "sources": [
@@ -101,31 +101,31 @@
    "title_match": 0.0,
    "date_found": false,
    "ok": false,
-   "note": "ConnectionError"
+   "note": "SSLError"
   },
   {
    "title": "SDV 양산 2028년, 대구 전장 부품 76곳의 준비 ",
-   "url": "https://note.daitda.co.kr/posts/2026-09-28-policy-mobility-sdv/",
+   "url": "https://daitda.co.kr/posts/2026-09-28-policy-mobility-sdv/",
    "date": "2026-09-28",
    "kind": "",
    "status": 404,
    "page_title": "페이지를 찾을 수 없습니다 — 다잇다",
    "title_match": 0.0,
-   "date_found": true,
+   "date_found": false,
    "ok": false,
    "note": ""
   },
   {
    "title": "대구 기업 사전 — 산업 그룹별 기업·고용(2026-08 기준)",
-   "url": "https://note.daitda.co.kr/industry/",
+   "url": "https://daitda.co.kr/industry/",
    "date": "2026-09-28",
    "kind": "",
    "status": 200,
    "page_title": "산업별 현황 — 다잇다",
    "title_match": 0.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   }
  ]
 }

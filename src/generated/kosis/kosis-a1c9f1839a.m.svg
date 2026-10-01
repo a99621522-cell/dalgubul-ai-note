@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구 제조업 출하액·부가가치(10명 이상). 2020부터 2024까지 5개월. 출하액 최근 388,201억원; 부가가치 최근 133,953억원" style="max-width:360px;height:auto;font-size:14px">
+<title>대구 제조업 출하액·부가가치(10명 이상)</title>
+<line x1="60" x2="262" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">0</text>
+<line x1="60" x2="262" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="207.0" text-anchor="end" fill="#767676">100,000</text>
+<line x1="60" x2="262" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="153.0" text-anchor="end" fill="#767676">200,000</text>
+<line x1="60" x2="262" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="99.0" text-anchor="end" fill="#767676">300,000</text>
+<line x1="60" x2="262" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">400,000</text>
+<text x="110.5" y="280" text-anchor="middle" fill="#767676">2021</text>
+<text x="262.0" y="280" text-anchor="middle" fill="#767676">2024</text>
+<line x1="60" x2="262" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
+<path d="M60.0,103.0 L110.5,76.9 L161.0,44.5 L211.5,34.9 L262.0,46.4" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="262.0" cy="46.4" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="270.0" y="55.0" fill="#1a1a1a" font-weight="600">388,201억원</text>
+<text x="270.0" y="72.0" fill="#1a1a1a">출하액</text>
+<path d="M60.0,198.1 L110.5,191.1 L161.0,180.5 L211.5,182.5 L262.0,183.7" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="262.0" cy="183.7" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="270.0" y="181.7" fill="#1a1a1a" font-weight="600">133,953억원</text>
+<text x="270.0" y="198.7" fill="#1a1a1a">부가가치</text>
+<text x="8" y="16" fill="#767676">KOSIS 시도/산업분류별 출하액생산액부가가치 및 주요생산비(10명 이상)</text></svg>

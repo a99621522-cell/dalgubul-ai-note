@@ -277,6 +277,31 @@ def main() -> int:
                            "rows": [[codes[s], s] + [v.get((yy, s, "사업체수")) for yy in ys] + [v.get((yy, s, "종사자수")) for yy in ys] for s in mf],
                            "source": src("biz-census-sido-industry-all"), "latest": ys[-1], "note": "사업체 구분 '계'. 사업체 수(개)·종사자 수(명)"})
 
+    # 13) 광업·제조업조사(10명 이상) — 대구 제조업 중분류별 사업체·출하액·생산액·부가가치
+    mm = [r for r in rows("mining-mfg-survey-sido") if r["C1_NM"].startswith("대구")]
+    if mm:
+        ys = sorted({r["PRD_DE"] for r in mm})
+        y1, y0 = ys[-1], ys[0]
+        v = {(r["PRD_DE"], r["C2_NM"], r["ITM_NM"]): num(r["DT"]) for r in mm}
+        secs = list(dict.fromkeys(r["C2_NM"] for r in mm))
+        eok = lambda x: round(x / 100) if x is not None else None   # 백만원 → 억원
+        def chg(sec, item):
+            a, b = v.get((y1, sec, item)), v.get((y0, sec, item))
+            return round((a / b - 1) * 100, 1) + 0.0 if a and b else None
+        tables.append({"id": "mining_mfg_daegu", "title": f"대구 제조업 중분류별 출하액·부가가치 ({y1}년, 광업·제조업조사 10명 이상)", "unit": "",
+                       "columns": ["산업", f"사업체 {y1}(개)", f"출하액 {y1}(억원)", f"생산액 {y1}(억원)", f"부가가치 {y1}(억원)", f"부가가치 {y0}(억원)", f"부가가치 증감 {y0}→{y1}(%)"],
+                       "rows": [[sec, v.get((y1, sec, "사업체수")), eok(v.get((y1, sec, "출하액 계"))), eok(v.get((y1, sec, "생산액"))), eok(v.get((y1, sec, "부가가치"))),
+                                 eok(v.get((y0, sec, "부가가치"))), chg(sec, "부가가치")] for sec in secs],
+                       "source": src("mining-mfg-survey-sido"), "latest": y1, "note": "종사자 10명 이상 사업체. 원자료 백만원을 억원으로 반올림. 증감은 명목값 비교(이 사이트 계산). — 는 KOSIS 원자료 값 없음(사업체가 적어 비공개 처리된 칸 포함)"})
+        mf = [sec for sec in secs if ("제조업" in sec and "(" not in sec and sec != "광업 및 제조업") or sec == "산업용 기계 및 장비 수리업"]   # 합계 행 제외
+        top = sorted([(sec, eok(v.get((y1, sec, "부가가치")))) for sec in mf if v.get((y1, sec, "부가가치"))], key=lambda x: -x[1])[:12]
+        if top:
+            rc.write("kosis", "mfg-value-added", rc.bar_chart, f"대구 제조업 중분류별 부가가치({y1}년, 10명 이상, 억원)", top, index=index, unit="억원", note="광업·제조업조사, 값 큰 순 12개")
+        tot = "제조업(10~34)"
+        if any(v.get((yy, tot, "부가가치")) for yy in ys):
+            rc.write("kosis", "mfg-total-years", rc.line_chart, "대구 제조업 출하액·부가가치(10명 이상)", ys,
+                     [("출하액", [eok(v.get((yy, tot, "출하액 계"))) for yy in ys]), ("부가가치", [eok(v.get((yy, tot, "부가가치"))) for yy in ys])], index=index, unit="억원", note=short("mining-mfg-survey-sido"))
+
     (OUT / "index.json").write_text(json.dumps({"tables": tables, "charts": index.get("kosis", {}), "generated": __import__("datetime").date.today().isoformat()}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"표 {len(tables)}개, 그래프 {len(index.get('kosis', {}))}개 → {OUT.relative_to(ROOT)}")
     return 0

@@ -302,6 +302,26 @@ def main() -> int:
             rc.write("kosis", "mfg-total-years", rc.line_chart, "대구 제조업 출하액·부가가치(10명 이상)", ys,
                      [("출하액", [eok(v.get((yy, tot, "출하액 계"))) for yy in ys]), ("부가가치", [eok(v.get((yy, tot, "부가가치"))) for yy in ys])], index=index, unit="억원", note=short("mining-mfg-survey-sido"))
 
+    # 14) 광업제조업동향조사 — 대구 업종별 생산·출하·재고지수(원지수, 2020=100), 최근 달과 전년 같은 달
+    pi = [r for r in rows("mfg-production-index-industry") if r["C1_NM"].startswith("대구")]
+    if pi:
+        p1 = max(r["PRD_DE"] for r in pi); p0 = str(int(p1[:4]) - 1) + p1[4:]
+        v = {(r["PRD_DE"], r["C2_NM"], r["ITM_NM"]): num(r["DT"]) for r in pi}
+        inds = list(dict.fromkeys(r["C2_NM"] for r in pi))
+        P, S, I = "생산지수(원지수)", "생산자제품 출하지수(원지수)", "생산자제품 재고지수(원지수)"
+        def yoy(ind, item):
+            a, b = v.get((p1, ind, item)), v.get((p0, ind, item))
+            return round((a / b - 1) * 100, 1) + 0.0 if a and b else None
+        tables.append({"id": "mfg_index_industry", "title": f"대구 업종별 광공업생산·출하·재고지수 ({ym(p1)}, 원지수 2020=100)", "unit": "",
+                       "columns": ["업종", f"생산 {ym(p1)}", f"생산 {ym(p0)}", "생산 전년동월비(%)", f"출하 {ym(p1)}", "출하 전년동월비(%)", f"재고 {ym(p1)}", "재고 전년동월비(%)"],
+                       "rows": [[ind, v.get((p1, ind, P)), v.get((p0, ind, P)), yoy(ind, P), v.get((p1, ind, S)), yoy(ind, S), v.get((p1, ind, I)), yoy(ind, I)] for ind in inds],
+                       "source": src("mfg-production-index-industry"), "latest": p1, "note": "원지수 기준. 전년동월비는 같은 달 원지수 비교(이 사이트 계산). 월간 잠정치는 다음 달 공표 때 바뀔 수 있음"})
+        months = sorted({r["PRD_DE"] for r in pi})[-24:]
+        pick = ["기타 기계 및 장비 제조업", "자동차 및 트레일러 제조업", "금속 가공제품 제조업; 기계 및 가구 제외", "섬유제품 제조업; 의복 제외"]
+        ser = [(n.split(" 제조업")[0].split(";")[0], [v.get((m, n, P)) for m in months]) for n in pick if any(v.get((m, n, P)) for m in months)]
+        if ser:
+            rc.write("kosis", "mfg-index-industry", rc.line_chart, "대구 주요 업종 생산지수(원지수, 2020=100)", [ym(m) for m in months], ser, index=index, unit="", note=short("mfg-production-index-industry"))
+
     (OUT / "index.json").write_text(json.dumps({"tables": tables, "charts": index.get("kosis", {}), "generated": __import__("datetime").date.today().isoformat()}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"표 {len(tables)}개, 그래프 {len(index.get('kosis', {}))}개 → {OUT.relative_to(ROOT)}")
     return 0

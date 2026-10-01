@@ -1,6 +1,16 @@
 {
- "checked": "2026-09-28",
+ "checked": "2026-10-01",
  "sites": [
+  {
+   "key": "daegu_data",
+   "name": "대구광역시 기업현황 자료(공공데이터포털 파일데이터)",
+   "url": "https://www.data.go.kr/tcs/dss/selectDataSetList.do?keyword=대구광역시+기업",
+   "status": "HTTP 200",
+   "title": "공공데이터포털",
+   "robots": "robots allow",
+   "links": [],
+   "note": "→ https://www.data.go.kr/tcs/dss/selectDataSetList.do?keyword=%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C+%EA%B8%B0%EC%9"
+  },
   {
    "key": "factoryon",
    "name": "팩토리온(한국산업단지공단 공장등록·입주업체현황)",
@@ -27,7 +37,7 @@
    "url": "https://www.dip.or.kr",
    "status": "HTTP 200",
    "title": "대구디지털혁신진흥원",
-   "robots": "robots 실패(ConnectionError)",
+   "robots": "robots allow",
    "links": [],
    "note": "→ https://www.dip.or.kr/home/main.ubs"
   },
@@ -111,9 +121,9 @@
    "key": "dgfez",
    "name": "대구경북경제자유구역청",
    "url": "https://www.dgfez.go.kr",
-   "status": "실패 ConnectTimeout",
-   "title": "",
-   "robots": "robots 실패(ConnectTimeout)",
+   "status": "HTTP 200",
+   "title": "대구경북경제자유구역청",
+   "robots": "robots 404(없음)",
    "links": [],
    "note": ""
   },
@@ -141,10 +151,43 @@
    "key": "daegu",
    "name": "대구광역시청(경제·기업지원 안내)",
    "url": "https://www.daegu.go.kr",
-   "status": "실패 ConnectTimeout",
-   "title": "",
-   "robots": "robots 실패(ConnectTimeout)",
-   "links": [],
+   "status": "HTTP 200",
+   "title": "대구광역시",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "알림정보",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00000853"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00000854"
+    },
+    {
+     "text": "고시공고",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00000855"
+    },
+    {
+     "text": "입찰정보",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00000130"
+    },
+    {
+     "text": "계약정보 공지사항",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00933630"
+    },
+    {
+     "text": "고시공고",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00940170"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.daegu.go.kr/cts/index.do?menu_id=00000864"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.daegu.go.kr/tra/index.do?menu_id=00000336"
+    }
+   ],
    "note": ""
   },
   {
@@ -196,27 +239,27 @@
    "links": [
     {
      "text": "입주기업모집",
-     "url": "https://www.kiria.org/portal/bizsupt/portalBsuptComRecru.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+     "url": "https://www.kiria.org/portal/bizsupt/portalBsuptComRecru.do;jsessionid=3200BD60B7F68FCCF064455615F9E57D"
     },
     {
      "text": "알림마당",
-     "url": "https://www.kiria.org/portal/info/portalInfoNotiList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+     "url": "https://www.kiria.org/portal/info/portalInfoNotiList.do;jsessionid=3200BD60B7F68FCCF064455615F9E57D"
     },
     {
      "text": "사업공고",
-     "url": "https://www.kiria.org/portal/info/portalInfoBusinessList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+     "url": "https://www.kiria.org/portal/info/portalInfoBusinessList.do;jsessionid=3200BD60B7F68FCCF064455615F9E57D"
     },
     {
      "text": "입찰공고",
-     "url": "https://www.kiria.org/portal/info/portalInfoTenderList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+     "url": "https://www.kiria.org/portal/info/portalInfoTenderList.do;jsessionid=3200BD60B7F68FCCF064455615F9E57D"
     },
     {
      "text": "채용공고",
-     "url": "https://www.kiria.org/portal/info/portalInfoJobList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+     "url": "https://www.kiria.org/portal/info/portalInfoJobList.do;jsessionid=3200BD60B7F68FCCF064455615F9E57D"
     },
     {
      "text": "보도자료",
-     "url": "https://www.kiria.org/portal/info/portalInfoNewsClipSideList.do;jsessionid=59BBEAA3C43577A9B53BA4C74AD55DDF"
+     "url": "https://www.kiria.org/portal/info/portalInfoNewsClipSideList.do;jsessionid=3200BD60B7F68FCCF064455615F9E57D"
     }
    ],
    "note": ""
@@ -288,7 +331,7 @@
    "url": "https://www.kotmi.re.kr",
    "status": "HTTP 200",
    "title": "한국섬유기계융합연구원",
-   "robots": "robots 실패(ConnectionError)",
+   "robots": "robots allow",
    "links": [
     {
      "text": "알림마당",
@@ -449,10 +492,10 @@
    "name": "중소벤처기업진흥공단 대구지역본부",
    "url": "https://www.kosmes.or.kr",
    "status": "HTTP 200",
-   "title": "Áß¼Òº¥Ã³±â¾÷ÁøÈï°ø´Ü",
+   "title": "ì¤ìë²¤ì²ê¸°ì ì§í¥ê³µë¨",
    "robots": "robots allow",
    "links": [],
-   "note": ""
+   "note": "→ https://www.kosmes.or.kr/intro/intro.html"
   },
   {
    "key": "semas",
@@ -468,11 +511,11 @@
    "key": "kibo",
    "name": "기술보증기금 대구지역본부",
    "url": "https://www.kibo.or.kr",
-   "status": "실패 ConnectTimeout",
-   "title": "",
-   "robots": "robots 실패(ConnectTimeout)",
+   "status": "HTTP 200",
+   "title": "기술보증기금",
+   "robots": "robots allow",
    "links": [],
-   "note": ""
+   "note": "→ https://www.kibo.or.kr/index.do"
   },
   {
    "key": "kodit",
@@ -748,10 +791,43 @@
    "key": "gu",
    "name": "대구 9개 구·군청(고시·공고)",
    "url": "https://www.daegu.go.kr",
-   "status": "실패 ConnectTimeout",
-   "title": "",
-   "robots": "robots 실패(ConnectTimeout)",
-   "links": [],
+   "status": "HTTP 200",
+   "title": "대구광역시",
+   "robots": "robots allow",
+   "links": [
+    {
+     "text": "알림정보",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00000853"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00000854"
+    },
+    {
+     "text": "고시공고",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00000855"
+    },
+    {
+     "text": "입찰정보",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00000130"
+    },
+    {
+     "text": "계약정보 공지사항",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00933630"
+    },
+    {
+     "text": "고시공고",
+     "url": "https://www.daegu.go.kr/index.do?menu_id=00940170"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.daegu.go.kr/cts/index.do?menu_id=00000864"
+    },
+    {
+     "text": "공지사항",
+     "url": "https://www.daegu.go.kr/tra/index.do?menu_id=00000336"
+    }
+   ],
    "note": ""
   }
  ]

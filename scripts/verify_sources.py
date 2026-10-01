@@ -20,7 +20,7 @@ import requests
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "source_checks"
-UA = "Mozilla/5.0 (compatible; daitda-note/1.0; +https://note.daitda.co.kr)"
+UA = "Mozilla/5.0 (compatible; daitda-note/1.0; +https://daitda.co.kr)"
 
 
 def parse_sources(fm: str) -> list[dict]:

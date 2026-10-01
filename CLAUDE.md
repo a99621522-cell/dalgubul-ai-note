@@ -114,7 +114,7 @@ python3 scripts/approve.py            # 초안 승인
 - 문서: docs/DESIGN.md, docs/ROUTINE_PROMPT.md, scripts/data/institutions.yml
 
 ### 1단계 — 배포·가동 (이번 주)
-1. Cloudflare Pages 배포, 커스텀 도메인 note.daitda.co.kr. (2026-09-30 완료) daitda.co.kr 네임서버를 가비아 → Cloudflare(alla·osmar.ns.cloudflare.com)로 옮겨 존을 운영자 계정에 두고, daitda.co.kr·www·note 세 주소 모두 CNAME → dalgubul-ai-note.pages.dev(Proxied)로 같은 사이트를 연다(대표 주소 `site` 는 note 그대로). 도메인 작업은 `.github/workflows/domain.yml`(check·add·zone·retry·readd). 사이트 토큰에는 존 생성 권한이 없다
+1. Cloudflare Pages 배포, 커스텀 도메인 note.daitda.co.kr. (2026-09-30 완료) daitda.co.kr 네임서버를 가비아 → Cloudflare(alla·osmar.ns.cloudflare.com)로 옮겨 존을 운영자 계정에 두고, daitda.co.kr·www·note 세 주소 모두 CNAME → dalgubul-ai-note.pages.dev(Proxied)로 같은 사이트를 연다. 대표 주소(`astro.config.mjs` 의 `site`, canonical·사이트맵·내려받은 문서의 출처 줄)는 daitda.co.kr(운영자 지시 2026-10-01: 노트 말고 사이트 주소로). 도메인 작업은 `.github/workflows/domain.yml`(check·add·zone·retry·readd). 사이트 토큰에는 존 생성 권한이 없다
 2. GitHub Secrets: BIZINFO_KEY, GEMINI_KEY → Actions 첫 실행 확인
 3. Claude Code 루틴 등록: 주간 기관 공고 수집, 월간 팩토리온 갱신 (docs/ROUTINE_PROMPT.md)
 

@@ -40,7 +40,7 @@ sources:
   - { title: "車산업 SDV 전환 속도내지만…SW·AI 인력 확보는 '난항' — SPRi 보고서 (ZDNet Korea)", url: "https://zdnet.co.kr/view/?no=20260510101415", date: "2026-05-10" }
   - { title: "2026년 글로벌 자동차 산업 'AI·하이브리드·공급망 재편의 변곡점' — 한국자동차연구원 5대 이슈 (기계신문)", url: "https://www.mtnews.net/news/articleView.html?idxno=23928", date: "2026-02" }
   - { title: "AI 시대, 기업과 산업의 미래를 위한 민간의 지혜를 모은다 (산업통상부)", url: "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/172231/view?mno=&pageIndex=1", date: "2026-09-22" }
-  - { title: "미래모빌리티·자동차부품: 50인 미만 부품사 621곳, 제조AI 확산의 첫 대상 (지난 회차)", url: "https://note.daitda.co.kr/posts/2026-09-24-policy-mobility-auto-parts/", date: "2026-09-24" }
+  - { title: "미래모빌리티·자동차부품: 50인 미만 부품사 621곳, 제조AI 확산의 첫 대상 (지난 회차)", url: "https://daitda.co.kr/posts/2026-09-24-policy-mobility-auto-parts/", date: "2026-09-24" }
   - { title: "2026년도 자동차산업기술개발사업(1차) 신규지원 대상과제 공고 (한국산업기술기획평가원)", url: "https://srome.keit.re.kr/srome/biz/perform/opnnPrpsl/retrieveTaskAnncmInfoView.do?prgmId=XPG201040000&ancmId=I18835&bsnsYy=2026", date: "2026-02-06" }
   - { title: "대구시, '미래모빌리티 선도기술 개발' 참여기업 모집 (뉴스핌)", url: "https://www.newspim.com/news/view/20260331000567", date: "2026-03-31" }
 ---

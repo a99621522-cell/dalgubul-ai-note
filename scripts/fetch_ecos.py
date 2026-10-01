@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CFG = ROOT / "config" / "ecos_tables.yml"
 OUT = ROOT / "data" / "ecos"
 API = "https://ecos.bok.or.kr/api"
-UA = "daitda-note-bot/1.0 (+https://note.daitda.co.kr)"
+UA = "daitda-note-bot/1.0 (+https://daitda.co.kr)"
 PAGE = 1000
 
 

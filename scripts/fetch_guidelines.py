@@ -34,7 +34,7 @@ OUT = ROOT / "data" / "guidelines"
 INDEX = OUT / "index.json"
 OC = os.environ.get("LAW_OC", "test").strip() or "test"
 BASE = "https://www.law.go.kr/DRF"
-UA = "Mozilla/5.0 daitda-note-bot/1.0 (+https://note.daitda.co.kr)"
+UA = "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"
 TODAY = date.today().isoformat()
 # 검색 결과에서 항목·일련번호·이름·현행 여부를 읽는 태그 (target 별). 이름은 공백을 뺀 뒤 비교한다.
 FIELDS = {

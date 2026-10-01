@@ -25,7 +25,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 CFG = ROOT / "config" / "daegu_institutions.yml"
 OUT = ROOT / "data" / "institutions"
-UA = "Mozilla/5.0 (compatible; daitda-note/1.0; +https://note.daitda.co.kr)"
+UA = "Mozilla/5.0 (compatible; daitda-note/1.0; +https://daitda.co.kr)"
 GROUPS = {"data": "기초 자료", "city": "대구시 출연·출자·산하", "national": "국가 연구·전문기관(대구 소재)", "branch": "중앙부처·공공기관 대구경북 지역본부",
           "univ": "대학 산학협력·창업", "business": "경제단체·산단관리공단·협회", "gu": "구·군"}
 LINK_PAT = re.compile(r"공고|공지|알림|사업안내|모집|선정|입찰|보도자료")

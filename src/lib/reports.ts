@@ -3,7 +3,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import type { ReportMeta } from './docx';
 import fs from 'node:fs';
 
-export const SITE = 'https://note.daitda.co.kr';
+export const SITE = 'https://daitda.co.kr';
 export async function policyReports(): Promise<CollectionEntry<'posts'>[]> {
   const all = await getCollection('posts', p => !p.data.draft && p.data.category === 'policy' && (p.data.tags ?? []).includes('정책제안'));
   return all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());

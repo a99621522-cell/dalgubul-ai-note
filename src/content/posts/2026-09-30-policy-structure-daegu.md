@@ -22,8 +22,8 @@ sources:
   - { title: "행정안전부, 「주민등록인구현황 — 행정구역(시군구)별 성별 인구수」 KOSIS DT_1B040A3(2014~2025년)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3", date: "2026-09-28", kind: data }
   - { title: "국가데이터처, 「서비스업동향조사 — 시도별 소매판매액지수(2020=100)」 KOSIS DT_1K41018(2014~2025년)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K41018", date: "2026-09-28", kind: data }
   - { title: "관세청, 「기업무역활동통계 — 지역별 수출현황」 KOSIS DT_134006_N007(2016~2025년)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N007", date: "2026-09-28", kind: data }
-  - { title: "대구광역시, 「2026년도 본예산 사업설명서」(사업명·부서·신규 여부만, 사업 DB)", url: "https://note.daitda.co.kr/programs/daegu/", date: "2026-09-28", kind: gov }
-  - { title: "「KOSIS 통계표 — 산업구조 지표」 자체 계산 결과(structure_index.csv·structure_report.json)", url: "https://note.daitda.co.kr/stats/kosis/", date: "2026-09-30", kind: data }
+  - { title: "대구광역시, 「2026년도 본예산 사업설명서」(사업명·부서·신규 여부만, 사업 DB)", url: "https://daitda.co.kr/programs/daegu/", date: "2026-09-28", kind: gov }
+  - { title: "「KOSIS 통계표 — 산업구조 지표」 자체 계산 결과(structure_index.csv·structure_report.json)", url: "https://daitda.co.kr/stats/kosis/", date: "2026-09-30", kind: data }
 ---
 
 > 지역 산업구조를 입지계수·산업집중도·산업구조 변화속도로 진단하는 보고서 형식을 빌려 **대구**를 같은 방법으로 계산한 보고서다. 자료는 KOSIS 의 지역소득·경제활동인구조사·전국사업체조사·지역별고용조사·소매판매액지수·주민등록인구현황과 관세청 기업무역활동통계를 활용했다.

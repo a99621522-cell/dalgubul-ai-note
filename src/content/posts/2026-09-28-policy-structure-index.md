@@ -33,8 +33,8 @@ sources:
   - { title: "대구, AI 대전환…로봇·바이오로 미래 산업지도 바꾼다 (글로벌이코노믹)", url: "https://www.g-enews.com/article/General-News/2026/09/202609180836006747d2e64277d7_1", date: "2026-09-18" }
   - { title: "대구광역시, 2026년 디지털·AI 협의체 3차 회의 개최…산·학·연 전문가 집결 (국제뉴스)", url: "https://www.gukjenews.com/news/articleView.html?idxno=3702414", date: "2026-09" }
   - { title: "대구정책브리프 제32호 — 2026년 대구경제 전망과 정책 시사점 (대구정책연구원)", url: "https://www.dpi.re.kr/board/view?menuId=MENU002020100000000&titleId=ec7TUKOGNN&boardId=BOARD00077", date: "2026-01-26" }
-  - { title: "SDV 양산 2028년, 대구 전장 부품 76곳의 준비 ", url: "https://note.daitda.co.kr/posts/2026-09-28-policy-mobility-sdv/", date: "2026-09-28" }
-  - { title: "대구 기업 사전 — 산업 그룹별 기업·고용(2026-08 기준)", url: "https://note.daitda.co.kr/industry/", date: "2026-09-28" }
+  - { title: "SDV 양산 2028년, 대구 전장 부품 76곳의 준비 ", url: "https://daitda.co.kr/posts/2026-09-28-policy-mobility-sdv/", date: "2026-09-28" }
+  - { title: "대구 기업 사전 — 산업 그룹별 기업·고용(2026-08 기준)", url: "https://daitda.co.kr/industry/", date: "2026-09-28" }
 ---
 
 **2026년 9월은 대구시가 산업구조 전환을 전략 문서로 다루기 시작한 달이다.** 9월 17일 대구시는 시장을 의장으로 외부 전문가 10명과 지역 산업연구기관장 11명 등 22명이 참여하는 자문회의를 열어 전통산업 중심의 구조를 첨단산업 중심으로 바꾸는 산업 대전환 전략 마련에 들어갔다(쿠키뉴스 9월 17일, 요지). 나흘 뒤인 9월 21일에는 대구디지털혁신진흥원에서 2026년 지역 디지털·AI 협의체 3차 회의가 열려 에이전트 AI·피지컬 AI·데이터 3개 분과의 과제를 국책사업으로 연결하는 기획을 점검했고, 4차 회의에서 중장기 전략을 반영한 상세기획서를 만들기로 했다(국제뉴스 9월, 요지). 전략이 문서가 되기 전에 필요한 것은 지금 대구 산업구조가 숫자로 어디에 있는지다.

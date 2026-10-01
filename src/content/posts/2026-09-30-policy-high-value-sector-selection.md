@@ -19,10 +19,10 @@ faq:
 sources:
   - { title: "국가데이터처, 「지역소득 — 시도별 경제활동별 지역내총생산(실질·명목, 24개 부문)」 KOSIS DT_1C91(2015~2024년, 2024년 잠정)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91", date: "2026-09-28", kind: official }
   - { title: "국가데이터처, 「지역별고용조사 — 시도/산업별 취업자(반기)」 KOSIS DT_1ES3B05S(2014년~2024년 상반기)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3B05S", date: "2026-09-28", kind: official }
-  - { title: "「지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)」(자체 계산 보고서, 초안)", url: "https://note.daitda.co.kr/posts/2026-09-30-policy-structure-daegu/", date: "2026-09-30", kind: report }
-  - { title: "대구광역시, 「2026년도 본예산 사업설명서」(사업명·부서·신규 여부만, 사업 DB)", url: "https://note.daitda.co.kr/programs/daegu/", date: "2026-09-28", kind: gov }
-  - { title: "사업 DB — 부처 사업(산업통상부·과학기술정보통신부·중소벤처기업부 사업설명자료, 사업명만)", url: "https://note.daitda.co.kr/programs/", date: "2026-09-28", kind: gov }
-  - { title: "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·생산품·종사자 신고값)", url: "https://note.daitda.co.kr/companies/", date: "2026-09-28", kind: data }
+  - { title: "「지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)」(자체 계산 보고서, 초안)", url: "https://daitda.co.kr/posts/2026-09-30-policy-structure-daegu/", date: "2026-09-30", kind: report }
+  - { title: "대구광역시, 「2026년도 본예산 사업설명서」(사업명·부서·신규 여부만, 사업 DB)", url: "https://daitda.co.kr/programs/daegu/", date: "2026-09-28", kind: gov }
+  - { title: "사업 DB — 부처 사업(산업통상부·과학기술정보통신부·중소벤처기업부 사업설명자료, 사업명만)", url: "https://daitda.co.kr/programs/", date: "2026-09-28", kind: gov }
+  - { title: "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·생산품·종사자 신고값)", url: "https://daitda.co.kr/companies/", date: "2026-09-28", kind: data }
 ---
 
 ## 요약

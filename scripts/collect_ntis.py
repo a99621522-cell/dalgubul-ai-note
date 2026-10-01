@@ -15,7 +15,7 @@ import requests, yaml
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "scripts" / "data" / "support" / "ntis.csv"
 CFG = yaml.safe_load((ROOT / "scripts" / "sources.yml").read_text(encoding="utf-8")).get("ntis") or {}
-UA = "daitda-note-bot/1.0 (+https://note.daitda.co.kr)"
+UA = "daitda-note-bot/1.0 (+https://daitda.co.kr)"
 PERSONAL = re.compile(r"MANAGER|RESEARCHER|PERSON|MGR|LEADER|EMAIL|TEL|PHONE", re.I)
 DAEGU = re.compile(r"대구")
 

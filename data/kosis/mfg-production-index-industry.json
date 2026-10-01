@@ -1,0 +1,26 @@
+{
+ "key": "mfg-production-index-industry",
+ "name": "광공업생산지수 — 시도·산업중분류별(월간, 기계장비·자동차 등 업종별)",
+ "tbl_nm": "시도/산업별 광공업생산지수(2020＝100)",
+ "org_id": "101",
+ "tbl_id": "DT_1F02001",
+ "prd_se": "M",
+ "period": [
+  "202301",
+  "202612"
+ ],
+ "rows_total": 87800,
+ "rows_kept": 3540,
+ "latest": "202608",
+ "unit": "2020＝100",
+ "areas": [
+  "manufacturing-ax",
+  "machinery",
+  "automotive",
+  "textile",
+  "root"
+ ],
+ "fetched": "2026-10-01",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
+ "note": ""
+}

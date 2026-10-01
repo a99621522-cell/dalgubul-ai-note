@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-01 · 표 20개 · 설정 config/kosis_tables.yml
+갱신 2026-10-01 · 표 21개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -12,6 +12,7 @@
 | grdp-sido-industry | [시도별 경제활동별 지역내총생산](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91) | Y 2020~2026 | 2024 | 495 | 백만원 %p |
 | labor-force-sido-annual-all | [행정구역(시도)별 경제활동인구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S) | Y 2014~2026 | 2025 | 1953 | 천명 |
 | labor-force-sido | [행정구역(시도)별 경제활동인구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S) | M 202301~202612 | 202608 | 396 | 천명 |
+| mfg-production-index-industry | [시도/산업별 광공업생산지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001) | M 202301~202612 | 202608 | 3540 | 2020＝100 |
 | mfg-production-index-sido | [광공업생산지수(시도)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=INH_1F02001) | M 202301~202612 | 202608 | 44 | 2020＝100 |
 | migration-age-sido | [시군구/성/연령(5세)별 순이동자수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26002) | Y 2020~2026 | 2025 | 720 | 명 |
 | migration-sido | [시군구별 이동자수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26001_A01) | M 202301~202612 | 202608 | 704 | 명 |

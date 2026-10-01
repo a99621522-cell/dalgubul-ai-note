@@ -9,7 +9,7 @@
  * PDF 글자 추출은 pdf.js(pdfjs-dist, 빌드에 묶임)를 파일을 고른 뒤에만 불러 쓴다. HWPX 는 zip 을 DecompressionStream 으로 풀어 section*.xml 의 글자를 모은다.
  */
 import { attach } from './table_tools';
-import { buildHwpx, download, p, table, safeName, today, type Block } from './hwpx';
+import { buildPdf, downloadPdf, p, table, safeName, today, type Block } from './pdf';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 type Item = { id: string; stage: string; item: string; check: string; basis: string; quote: string; doc: string };
@@ -166,7 +166,7 @@ function render(): void {
   out.innerHTML = `<div class="section-head"><h2>검토 결과 · ${esc(fileName)}</h2><span class="meta">${esc(meta?.name || check.name)} · 시행 ${esc(meta?.eff || check.eff)} · ${stages.join('·')} ${check.items.filter(i => stages.includes(i.stage)).length}항목</span></div>
     <p class="summary"><strong>고칠 곳 ${todo}건</strong>(보완 필요 ${counts.fix}, 검토 필요 ${counts.review}) · 계획에 있음 ${counts.ok} · 계획에 없음 ${counts.none} · 집행 때 확인 ${counts.manual} · 해당 없음 ${counts.na}</p>
     <p class="meta">판정은 계획서 글자에 규칙을 맞춘 참고용입니다. 「계획에 없음」은 관련 낱말을 못 찾은 것이므로 계획서에 그 절차를 적거나 별도 서류로 갖추면 되고, 「집행 때 확인」은 계획서만으로 판정할 수 없어 집행·정산 단계에서 볼 항목입니다. 조문(근거 열)은 지침 본문을 그대로 옮긴 것이며 최종 판단은 담당자가 합니다.</p>
-    <div class="tools co-actions"><button class="btn" id="bc-hwp" type="button">검토 의견서 HWP</button><button class="btn secondary" id="bc-print" type="button">인쇄·PDF</button></div>` + sections.join('');
+    <div class="tools co-actions"><button class="btn" id="bc-hwp" type="button">검토 의견서 PDF</button><button class="btn secondary" id="bc-print" type="button">인쇄</button></div>` + sections.join('');
   out.querySelectorAll<HTMLTableElement>('table.data-table').forEach(attach);
   $('bc-hwp')!.addEventListener('click', hwp); $('bc-print')!.addEventListener('click', () => window.print());
   out.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -187,9 +187,9 @@ async function hwp(): Promise<void> {
       blocks.push(p('spacer', ['', 'caption']));
     }
     blocks.push(p('src', [`출처: ${meta?.name || check.name} 본문(국가법령정보센터). daitda.co.kr/programs/guidelines/check/ 에서 ${today()} 만듦. 파일은 브라우저 안에서만 읽었고 서버로 보내지 않았다.`, 'src']));
-    download(`지침검토 ${safeName(fileName.replace(/\.[^.]+$/, ''))}.hwpx`, await buildHwpx(blocks, `지침 검토 의견서 · ${fileName}`));
-  } catch { btn.textContent = '만들기 실패'; setTimeout(() => { btn.textContent = '검토 의견서 HWP'; }, 1800); }
-  finally { btn.disabled = false; if (btn.textContent === '만드는 중…') btn.textContent = '검토 의견서 HWP'; }
+    downloadPdf(`지침검토 ${safeName(fileName.replace(/\.[^.]+$/, ''))}.pdf`, await buildPdf(blocks, `지침 검토 의견서 · ${fileName}`, { landscape: true }));
+  } catch { btn.textContent = '만들기 실패'; setTimeout(() => { btn.textContent = '검토 의견서 PDF'; }, 1800); }
+  finally { btn.disabled = false; if (btn.textContent === '만드는 중…') btn.textContent = '검토 의견서 PDF'; }
 }
 
 async function onFile(file: File): Promise<void> {

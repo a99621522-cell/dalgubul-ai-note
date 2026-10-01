@@ -1,9 +1,10 @@
 /**
- * 표 도구 — 사이트의 모든 통계표(table.data-table) 아래에 「한글 표 복사」「HWP 내려받기」 단추를 붙인다.
- * 공무원 문서는 대부분 한글(HWP)이라 표를 바로 붙여넣거나 한글 파일로 받게 한다(운영자 지시 2026-09-27).
- * 복사는 클립보드에 HTML 표(한글·워드·엑셀에 표로 붙음)와 탭 구분 글을 같이 넣는다. HWP 는 hwpx.ts 로 브라우저에서 만든다.
+ * 표 도구 — 사이트의 모든 통계표(table.data-table) 아래에 「한글 표 복사」「PDF 내려받기」 단추를 붙인다.
+ * 공무원 문서는 대부분 한글(HWP)이라 표를 바로 붙여넣게 한다(운영자 지시 2026-09-27).
+ * 복사는 클립보드에 HTML 표(한글·워드·엑셀에 표로 붙음)와 탭 구분 글을 같이 넣는다. 파일은 pdf.ts 로 브라우저에서 만든 PDF
+ * (HWPX 내려받기는 한글에서 깨져 PDF 로 바꿈, 운영자 지시 2026-10-01).
  */
-import { buildHwpx, download, p, table, safeName, today, type Block } from './hwpx';
+import { buildPdf, downloadPdf, p, table, safeName, today, type Block } from './pdf';
 
 const clean = (s: string) => s.replace(/\s+/g, ' ').trim();
 
@@ -80,7 +81,7 @@ export function attach(tbl: HTMLTableElement): void {
   const bar = document.createElement('div'); bar.className = 'table-tools';
   const mk = (label: string, title: string) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn secondary'; b.textContent = label; b.title = title; bar.appendChild(b); return b; };
   const copy = mk('한글 표 복사', '한글(HWP)·워드·엑셀에 붙여넣으면 표로 들어갑니다');
-  const hwp = mk('HWP 내려받기', '이 표를 한글 파일(.hwpx)로 받습니다');
+  const hwp = mk('PDF 내려받기', '이 표를 PDF 파일로 받습니다');
   copy.addEventListener('click', async () => {
     const g = grid(tbl);
     if (!g.body.length) return flash(copy, '표가 비어 있음');
@@ -99,8 +100,8 @@ export function attach(tbl: HTMLTableElement): void {
     ];
     try {
       hwp.disabled = true; hwp.textContent = '만드는 중…';
-      download(`${safeName(title)}.hwpx`, await buildHwpx(blocks, title));
-      hwp.textContent = 'HWP 내려받기'; hwp.disabled = false;
+      downloadPdf(`${safeName(title)}.pdf`, await buildPdf(blocks, title));
+      hwp.textContent = 'PDF 내려받기'; hwp.disabled = false;
     } catch { hwp.disabled = false; flash(hwp, '만들기 실패'); }
   });
   anchor.insertAdjacentElement('afterend', bar);

@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../../../layouts/Base.astro';
 /** /programs/guidelines/ — 사업 지침 창고: 예산요구서·결산서 검토 근거가 되는 법령·행정규칙·자치법규 목록(data/guidelines/index.json)과
- *  지침별 검토표(data/guidelines/checks/*.json). 조문을 그대로 옮기며 지침을 평가하지 않는다. 표마다 「한글 표 복사」「HWP 내려받기」가 붙는다(table_tools). */
+ *  지침별 검토표(data/guidelines/checks/*.json). 조문을 그대로 옮기며 지침을 평가하지 않는다. 표마다 「한글 표 복사」「PDF 내려받기」가 붙는다(table_tools). */
 type Entry = { key: string; name: string; kind: string; issuer: string; found?: string; found_kind?: string; found_issuer?: string; date?: string; eff?: string; url?: string; status: string; chars?: number; articles?: number; annexes?: string[]; review: string[]; applies?: Record<string, any>; candidates?: string[] };
 type Item = { id: string; stage: string; item: string; check: string; basis: string; quote: string; doc: string };
 type Check = { key: string; name: string; eff: string; status: string; added: string; note?: string; items: Item[] };
@@ -21,7 +21,7 @@ const ok = entries.filter(e => e.status === 'OK').length;
 <Base title="사업 지침 창고" description={`지원사업 예산요구서·결산서 검토 근거가 되는 법령·고시·조례 ${entries.length}개(본문 확보 ${ok}개)와 지침별 검토표. 조문을 그대로 옮기며 평가하지 않습니다.`} current="programs">
   <p class="meta"><a href="/programs/">사업 예산</a> › 사업 지침</p>
   <div class="section-head"><h1>사업 지침 창고</h1><span class="meta">지침 {entries.length}개 · 본문 확보 {ok}개 · 갱신 {idx.fetched}</span></div>
-  <p class="lede">기업지원기관이 낸 예산요구서·집행 서류·결산서(정산보고서)가 지침대로 작성·집행됐는지 볼 때 근거가 되는 법령·행정규칙·자치법규입니다. 국가법령정보센터에서 현행 본문을 받아 두고, 지침별로 <strong>예산요구서 → 집행 → 결산서</strong> 단계의 검토 항목에 근거 조문을 붙였습니다. 조문을 그대로 옮긴 것이며 지침에 대한 해석이나 평가는 하지 않습니다. 검토표는 표 아래 단추로 한글에 붙여넣거나 HWP 로 받을 수 있습니다. 예산을 집행하는 사업계획서 파일을 올려 검토표와 바로 대조하려면 <a href="/programs/guidelines/check/"><strong>사업계획서 지침 검토기</strong></a>를 씁니다(파일은 브라우저 안에서만 읽습니다).</p>
+  <p class="lede">기업지원기관이 낸 예산요구서·집행 서류·결산서(정산보고서)가 지침대로 작성·집행됐는지 볼 때 근거가 되는 법령·행정규칙·자치법규입니다. 국가법령정보센터에서 현행 본문을 받아 두고, 지침별로 <strong>예산요구서 → 집행 → 결산서</strong> 단계의 검토 항목에 근거 조문을 붙였습니다. 조문을 그대로 옮긴 것이며 지침에 대한 해석이나 평가는 하지 않습니다. 검토표는 표 아래 단추로 한글에 붙여넣거나 PDF 로 받을 수 있습니다. 예산을 집행하는 사업계획서 파일을 올려 검토표와 바로 대조하려면 <a href="/programs/guidelines/check/"><strong>사업계획서 지침 검토기</strong></a>를 씁니다(파일은 브라우저 안에서만 읽습니다).</p>
 
   <div class="section-head"><h2>지침 목록</h2></div>
   {groups.map(g => {

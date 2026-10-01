@@ -102,6 +102,14 @@ tables:
     min_levels: 2   # objL1 만 보내면 시도별 총지수만 온다(2026-10-01) — 산업(objL2)까지
     area_col: C1
     areas: [manufacturing-ax, machinery, automotive, textile, root]
+  - key: mfg-production-index-industry
+    name: 광공업생산지수 — 시도·산업중분류별(월간, 기계장비·자동차 등 업종별)
+    tbl_id: ""   # INH_1F02001 은 시도별 총지수만(2026-10-01) — discover 로 업종별 표를 찾는다
+    search: ["광공업생산지수 시도 산업별", "시도별 광업제조업동향 산업별 생산지수", "광공업생산 시도 산업중분류 생산지수"]
+    prd_se: M
+    years: 3
+    area_col: C1
+    areas: [manufacturing-ax, machinery, automotive, textile, root]
   - key: migration-sido
     name: 국내인구이동통계 — 시도별 전입·전출·순이동(월간)
     tbl_id: "DT_1B26001_A01"

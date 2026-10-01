@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-09-28-policy-robot-physical-ai-data.md",
- "checked": "2026-09-29",
- "ok": 22,
+ "checked": "2026-10-01",
+ "ok": 21,
  "total": 22,
- "ratio": 1.0,
+ "ratio": 0.95,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -213,14 +213,14 @@
   },
   {
    "title": "로봇·피지컬AI: 공공 로봇 파운드리, 테스트필드 옆 시제·파일럿 센터 (지난 회차)",
-   "url": "https://note.daitda.co.kr/posts/2026-09-26-policy-robot-physical-ai-foundry/",
+   "url": "https://daitda.co.kr/posts/2026-09-26-policy-robot-physical-ai-foundry/",
    "date": "2026-09-26",
    "kind": "",
-   "status": 200,
-   "page_title": "로봇·피지컬AI: 공공 로봇 파운드리, 테스트필드 옆 시제·파일럿 센터 — 다잇다 노트",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
+   "status": 404,
+   "page_title": "페이지를 찾을 수 없습니다 — 다잇다",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
    "note": ""
   },
   {

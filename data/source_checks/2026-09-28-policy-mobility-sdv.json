@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-09-28-policy-mobility-sdv.md",
- "checked": "2026-09-29",
- "ok": 15,
+ "checked": "2026-10-01",
+ "ok": 16,
  "total": 18,
- "ratio": 0.83,
+ "ratio": 0.89,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -60,8 +60,8 @@
    "url": "https://www.acea.auto/news/europes-battery-capacity-wont-meet-iaa-localisation-demand-new-study-shows/",
    "date": "2026-09-14",
    "kind": "",
-   "status": 403,
-   "page_title": "403 - Forbidden",
+   "status": 202,
+   "page_title": "",
    "title_match": 0.0,
    "date_found": false,
    "ok": false,
@@ -108,12 +108,12 @@
    "url": "https://www.g-enews.com/article/General-News/2026/09/202609141650159047d2e64277d7_1",
    "date": "2026-09-14",
    "kind": "",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectionError"
+   "status": 200,
+   "page_title": "“대구 자동차부품, AI로 다시 뛴다”…미래모빌리티 대전환 시동 - 글로벌이코노믹",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "경남도, 자동차부품산업 미래 전환사업 확보 총력 (브릿지경제)",
@@ -189,13 +189,13 @@
   },
   {
    "title": "미래모빌리티·자동차부품: 50인 미만 부품사 621곳, 제조AI 확산의 첫 대상 (지난 회차)",
-   "url": "https://note.daitda.co.kr/posts/2026-09-24-policy-mobility-auto-parts/",
+   "url": "https://daitda.co.kr/posts/2026-09-24-policy-mobility-auto-parts/",
    "date": "2026-09-24",
    "kind": "",
    "status": 404,
    "page_title": "페이지를 찾을 수 없습니다 — 다잇다",
    "title_match": 0.0,
-   "date_found": true,
+   "date_found": false,
    "ok": false,
    "note": ""
   },

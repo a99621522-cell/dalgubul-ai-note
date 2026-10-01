@@ -95,7 +95,7 @@ export function attach(tbl: HTMLTableElement): void {
       p('title', [title, 'title']), p('rule', ['', 'caption']),
       table([...g.head.slice(0, 1), ...g.body], { head: g.head.length > 0 }),
       p('spacer', ['', 'caption']),
-      p('src', [`출처: note.daitda.co.kr${location.pathname}, ${today()} 내려받음. ${src || '공개 자료를 같은 형식으로 집계한 것이며 평가·순위·추천이 아닙니다.'}`, 'src']),
+      p('src', [`출처: daitda.co.kr${location.pathname}, ${today()} 내려받음. ${src || '공개 자료를 같은 형식으로 집계한 것이며 평가·순위·추천이 아닙니다.'}`, 'src']),
     ];
     try {
       hwp.disabled = true; hwp.textContent = '만드는 중…';

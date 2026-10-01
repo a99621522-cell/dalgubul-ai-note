@@ -38,7 +38,7 @@ const jsonld = [{ '@context': 'https://schema.org', '@type': 'Organization', nam
   location: { '@type': 'Place', name: c.complex } }];
 // 기업 카드 한 장(HWP·인쇄) — 화면과 같은 값만 담는다(src/scripts/company_card.ts). 대표자 등 개인정보 없음
 const card = {
-  id: c.id, name: c.name, district: c.district, desc, url: `https://note.daitda.co.kr/companies/${c.id}/`,
+  id: c.id, name: c.name, district: c.district, desc, url: `https://daitda.co.kr/companies/${c.id}/`,
   rows: ([
     ['소재', `${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''} · ${c.complex}`],
     ['업종', `${c.sector}${[c.sector_code, c.sector_group].filter(Boolean).length ? ` (${[c.sector_code, c.sector_group].filter(Boolean).join(', ')})` : ''}`],

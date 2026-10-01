@@ -25,10 +25,10 @@ sources:
   - { title: "중소벤처기업부, 「중소기업기본통계 — 시도별·산업중분류별·기업규모별 종사자수」 KOSIS DT_BR_B001(2023년)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_B001", date: "2026-09-28", kind: official }
   - { title: "한국은행, 「AI와 지역 노동시장 — 지역간 격차 확대 위험과 새로운 기회」 BOK 이슈노트 제2026-25호(집필자 견해)", url: "https://www.bok.or.kr/portal/main/contents.do?menuNo=200433", date: "2026-09-15", kind: report }
   - { title: "한국산업기술기획평가원(KEIT), 「테크 포커스(Tech Focus)」 2026년 8월호 Vol.34 — AI 반도체 특집", url: "https://www.techfocus.kr/index_vol34.php", date: "2026-08-01", kind: official }
-  - { title: "사업 DB — 부처 사업(산업통상부 사업설명자료, 사업명·신규 여부만)", url: "https://note.daitda.co.kr/programs/", date: "2026-09-28", kind: gov }
-  - { title: "대구광역시, 「2026년도 본예산 사업설명서」(사업명·부서·상태만, 사업 DB)", url: "https://note.daitda.co.kr/programs/daegu/", date: "2026-09-28", kind: gov }
-  - { title: "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·생산품·종사자 신고값)과 지원사업 수혜 이력(최근 3년)", url: "https://note.daitda.co.kr/companies/", date: "2026-09-28", kind: data }
-  - { title: "「대구 고부가 산업 선정 — 앵커 부문과 유치 부문(KSIC 소분류)」(정책 브리프, 초안)", url: "https://note.daitda.co.kr/posts/2026-09-30-policy-high-value-sector-selection/", date: "2026-09-30", kind: report }
+  - { title: "사업 DB — 부처 사업(산업통상부 사업설명자료, 사업명·신규 여부만)", url: "https://daitda.co.kr/programs/", date: "2026-09-28", kind: gov }
+  - { title: "대구광역시, 「2026년도 본예산 사업설명서」(사업명·부서·상태만, 사업 DB)", url: "https://daitda.co.kr/programs/daegu/", date: "2026-09-28", kind: gov }
+  - { title: "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·생산품·종사자 신고값)과 지원사업 수혜 이력(최근 3년)", url: "https://daitda.co.kr/companies/", date: "2026-09-28", kind: data }
+  - { title: "「대구 고부가 산업 선정 — 앵커 부문과 유치 부문(KSIC 소분류)」(정책 브리프, 초안)", url: "https://daitda.co.kr/posts/2026-09-30-policy-high-value-sector-selection/", date: "2026-09-30", kind: report }
 ---
 
 ## 요약

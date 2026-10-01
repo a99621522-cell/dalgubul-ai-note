@@ -9,7 +9,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
-UA = "Mozilla/5.0 daitda-note-bot/1.0 (+https://note.daitda.co.kr)"
+UA = "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"
 
 
 def main():

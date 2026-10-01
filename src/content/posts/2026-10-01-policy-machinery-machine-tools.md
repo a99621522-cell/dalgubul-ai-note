@@ -28,7 +28,7 @@ sources:
   - { title: "중소벤처기업부, 「중소기업기본통계 — 시도별·산업중분류별·기업규모별 종사자수」 KOSIS DT_BR_B001(2023년)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_B001", date: "2026-09-28", kind: official }
   - { title: "국가데이터처, 「전국사업체조사 — 시도·산업·사업체구분별 사업체수·종사자수('20~)」 KOSIS DT_1K52D01(2020~2023년)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01", date: "2026-09-28", kind: official }
   - { title: "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)", url: "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001", date: "2026-10-01", kind: official }
-  - { title: "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·생산품·종사자 신고값)과 지원사업 수혜 이력(최근 3년)", url: "https://note.daitda.co.kr/companies/", date: "2026-09-28", kind: data }
+  - { title: "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·생산품·종사자 신고값)과 지원사업 수혜 이력(최근 3년)", url: "https://daitda.co.kr/companies/", date: "2026-09-28", kind: data }
 ---
 
 ## 요약

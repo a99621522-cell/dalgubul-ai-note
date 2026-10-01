@@ -33,7 +33,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "data" / "nps"
 SOURCES = ROOT / "scripts" / "sources.yml"
-UA = {"User-Agent": "daitda-note/1.0 (+https://note.daitda.co.kr)"}
+UA = {"User-Agent": "daitda-note/1.0 (+https://daitda.co.kr)"}
 
 # 표준 열(build_stats.py NPS_COLS 가 읽는 이름) ← 포털 열 이름 후보
 COLS = {

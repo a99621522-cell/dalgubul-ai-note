@@ -33,7 +33,7 @@ BASE = "https://alphacity.or.kr/"
 LIST = BASE + "boardList?type=1&stx_cd=0&stx=&page={page}"
 SOURCE = "수성알파시티 홈페이지 기업현황(alphacity.or.kr)"
 ADDRESS = "대구광역시 수성구 (수성알파시티 입주, 상세 주소는 목록에 없음)"
-UA = {"User-Agent": "Mozilla/5.0 (compatible; daitda-note/1.0; +https://note.daitda.co.kr)"}
+UA = {"User-Agent": "Mozilla/5.0 (compatible; daitda-note/1.0; +https://daitda.co.kr)"}
 COLS = ["회사명", "주소", "업종", "사업내용", "종사자수", "설립연도", "태그", "출처", "기준월"]
 
 

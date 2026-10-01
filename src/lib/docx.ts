@@ -37,7 +37,7 @@ function imagePara(src: string, caption: string): Paragraph[] {
 }
 
 const FONT = '맑은 고딕';
-const SITE_URL = 'https://note.daitda.co.kr';
+const SITE_URL = 'https://daitda.co.kr';
 const SIZE = 22; // half-points → 11pt
 
 /** 인라인: **굵게**, *기울임*, `코드`, [글자](주소) */
@@ -158,7 +158,7 @@ export async function reportDocx(meta: ReportMeta, bodyMd: string): Promise<Buff
       children: [new TextRun({ text: `${n + 1}. `, font: FONT, size: 20 }), new ExternalHyperlink({ link: s.url, children: [new TextRun({ text: s.title, font: FONT, size: 20, style: 'Hyperlink' })] }), new TextRun({ text: s.date ? ` (${s.date})` : '', font: FONT, size: 20, color: '595959' })],
     })));
   }
-  children.push(new Paragraph({ spacing: { before: 360 }, children: [new TextRun({ text: '이 문서는 note.daitda.co.kr 의 정책제안 리포트를 내려받은 것입니다. 공개 자료를 근거로 작성했고 평가·순위·추천은 하지 않습니다. 수치는 출처의 원문 확인을 권합니다. 개인 의견은 소속 기관의 입장이 아닙니다.', font: FONT, size: 18, color: '595959' })] }));
+  children.push(new Paragraph({ spacing: { before: 360 }, children: [new TextRun({ text: '이 문서는 daitda.co.kr 의 정책제안 리포트를 내려받은 것입니다. 공개 자료를 근거로 작성했고 평가·순위·추천은 하지 않습니다. 수치는 출처의 원문 확인을 권합니다. 개인 의견은 소속 기관의 입장이 아닙니다.', font: FONT, size: 18, color: '595959' })] }));
 
   const doc = new Document({
     creator: '다잇다', title: meta.title, description: meta.description ?? meta.summary ?? '',
@@ -171,7 +171,7 @@ export async function reportDocx(meta: ReportMeta, bodyMd: string): Promise<Buff
     },
     sections: [{
       properties: { page: { margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 } } },
-      footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'note.daitda.co.kr · ', font: FONT, size: 18, color: '595959' }), new TextRun({ children: [PageNumber.CURRENT], font: FONT, size: 18, color: '595959' })] })] }) },
+      footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'daitda.co.kr · ', font: FONT, size: 18, color: '595959' }), new TextRun({ children: [PageNumber.CURRENT], font: FONT, size: 18, color: '595959' })] })] }) },
       children,
     }],
   });

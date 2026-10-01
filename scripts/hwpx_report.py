@@ -517,7 +517,7 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "", kic
         for i, s_ in enumerate(srcs, 1):
             d = str(s_.get("date") or "")[:10]
             add(para(ids, "src", [(f"{i}. ", "src"), (inline(str(s_.get("title", ""))) + (f" ({d})" if d else "") + f" — {s_.get('url', '')}", "src")]))
-    add(para(ids, "caption", [("note.daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
+    add(para(ids, "caption", [("daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
     drop_linesegs(root)
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
     preview = "\n".join([kicker, title] + outline)
@@ -579,7 +579,7 @@ def build_summary(meta: dict, body_md: str, area: str, out: Path, post_id: str) 
              ("수요조사 : 00억원 ", "정책제안서이므로 예산액·사업코드를 인용하지 않는다"), ("시스템개발 : 00억원 ", ""), ("시스템 안정화 : 00억원", ""),
              ("OO부서의 협력 필요 ", counter[0] if counter else ""), ("환율 문제로 인한 리스크 대응 필요 ", counter[1] if len(counter) > 1 else ""),
              ("서비스 오픈을 위한 일정 준수 필요", counter[2] if len(counter) > 2 else ""),
-             ("붙임1 참고", f"전체 리포트: https://note.daitda.co.kr/posts/{post_id}/"),
+             ("붙임1 참고", f"전체 리포트: https://daitda.co.kr/posts/{post_id}/"),
              ("사업 추진일정", "전체 리포트(본문·그림·출처)"), ("개요", "요약 상자"), ("추진체계", "제안 3개(시 · 정부 건의 · 기업·기관)"), ("일정", "반론")]
     for old, new in fills:
         for t in root.iter(HP + "t"):

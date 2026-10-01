@@ -20,7 +20,7 @@ OUT = ROOT / "data" / "kosis"
 API_DATA = "https://kosis.kr/openapi/Param/statisticsParameterData.do"
 API_SEARCH = "https://kosis.kr/openapi/statisticsSearch.do"
 API_LIST = "https://kosis.kr/openapi/statisticsList.do"      # 통계목록(주제별 트리) — 검색 API 가 못 찾는 표 번호를 트리에서 찾는다
-UA = "daitda-note-bot/1.0 (+https://note.daitda.co.kr)"
+UA = "daitda-note-bot/1.0 (+https://daitda.co.kr)"
 
 
 def load():

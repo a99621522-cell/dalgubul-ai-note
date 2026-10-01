@@ -32,11 +32,12 @@ def meta(key: str) -> dict:
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
-def num(v: str) -> float | None:
+def num(v: str) -> float | int | None:
     try:
-        return float(v.replace(",", ""))
+        f = float(v.replace(",", ""))
     except (ValueError, AttributeError):
         return None
+    return int(f) if f.is_integer() and "." not in v else f
 
 
 def ym(p: str) -> str:
@@ -154,6 +155,127 @@ def main() -> int:
         top = sorted([r for r in elq.values() if int(r["workers"]) >= 1000], key=lambda r: -float(r["lq"]))[:15]
         if top:
             rc.write("kosis", "lq-employment", rc.bar_chart, f"대구 산업 중분류 종사자 기준 입지계수 상위({y}년, 종사자 1,000명 이상)", [(r["sector"][3:], float(r["lq"])) for r in top], index=index, unit="", note="전국사업체조사 종사자 기준, 값 큰 순")
+
+    # 6) 대구 연간 주요 지표 — 인구·고용·GRDP·수출(표마다 받은 연도만, 없는 칸은 빈칸)
+    SIDO_END = ("광역시", "특별시", "특별자치시", "특별자치도", "도")
+    pop, gu_pop = {}, defaultdict(dict)
+    cur = None
+    for r in rows("population-sido"):
+        if r["ITM_NM"] != "총인구수":
+            continue
+        n = r["C1_NM"]
+        if n.endswith(SIDO_END) and not n.endswith(("구", "군")):
+            cur = n
+        if cur == "대구광역시":
+            if n == "대구광역시":
+                pop[r["PRD_DE"]] = num(r["DT"])
+            else:
+                gu_pop[n][r["PRD_DE"]] = num(r["DT"])
+    lfa = [r for r in rows("labor-force-sido-annual-all") if r["C1_NM"] == "대구광역시"]
+    lfv = {(r["PRD_DE"], r["ITM_NM"]): num(r["DT"]) for r in lfa}
+    gd = {(r["PRD_DE"], r["ITM_NM"]): num(r["DT"]) for r in rows("grdp-sido-industry") if r["C2_NM"] == "지역내총생산(시장가격)"}
+    ex = {(r["PRD_DE"], r["ITM_NM"]): num(r["DT"]) for r in rows("export-region") if r["C1_NM"] == "대구" and r["C2_NM"] == "활동기업"}
+    yrs = sorted({y for y in pop} | {y for y, _ in lfv} | {y for y, _ in gd} | {y for y, _ in ex})
+    yrs = [y for y in yrs if y >= "2016"]
+    if yrs:
+        def growth(y):
+            a, b = gd.get((y, "실질")), gd.get((str(int(y) - 1), "실질"))
+            return round((a / b - 1) * 100, 1) + 0.0 if a and b else None
+        tables.append({"id": "daegu_annual", "title": f"대구 연간 주요 지표 ({yrs[0]}~{yrs[-1]}년)", "unit": "",
+                       "columns": ["연도", "주민등록인구(명)", "취업자(천명)", "고용률(%)", "실업률(%)", "지역내총생산 명목(억원)", "실질 성장률(%)", "수출입 활동기업(개)", "수출입 교역액(백만달러)"],
+                       "rows": [[y, pop.get(y), lfv.get((y, "취업자")), lfv.get((y, "고용률")), lfv.get((y, "실업률")),
+                                 round(gd[(y, "명목")] / 100) if gd.get((y, "명목")) else None, growth(y), ex.get((y, "업체수")), ex.get((y, "교역액"))] for y in reversed(yrs)],
+                       "source": "; ".join(src(k) for k in ("population-sido", "labor-force-sido-annual-all", "grdp-sido-industry", "export-region")),
+                       "latest": yrs[-1], "note": "실질 성장률은 실질 지역내총생산의 전년 대비 증감(이 사이트 계산). 수출입은 관세청 기업무역활동통계 활동기업 기준. 자료 없는 칸은 —"})
+        py = [y for y in yrs if pop.get(y)]
+        if py:
+            rc.write("kosis", "population", rc.line_chart, "대구 주민등록인구(연말)", py, [("총인구", [pop[y] for y in py])], index=index, unit="명", note=short("population-sido"))
+    if gu_pop:
+        gys = sorted({y for d in gu_pop.values() for y in d})
+        y1, y0 = gys[-1], gys[0]
+        tables.append({"id": "gu_population", "title": f"대구 구·군별 주민등록인구 ({y0}·{y1}년)", "unit": "명",
+                       "columns": ["구·군", f"{y0}년(명)", f"{y1}년(명)", "증감(명)"],
+                       "rows": [[g, d.get(y0), d.get(y1), (d[y1] - d[y0]) if d.get(y1) is not None and d.get(y0) is not None else None] for g, d in gu_pop.items()],
+                       "source": src("population-sido"), "latest": y1, "note": "군위군은 2023년 7월 대구 편입(그 전 값은 경북 소속 때 값이 없을 수 있음)"})
+
+    # 7) 대구 GRDP 경제활동별 — 실질 성장률·실질 기여도(최근 연도)
+    g = rows("grdp-sido-industry")
+    if g:
+        y = max(r["PRD_DE"] for r in g); yp = str(int(y) - 1)
+        val = {(r["PRD_DE"], r["ITM_NM"], r["C2_NM"]): num(r["DT"]) for r in g}
+        secs = list(dict.fromkeys(r["C2_NM"] for r in g))
+        def gr(sec):
+            a, b = val.get((y, "실질", sec)), val.get((yp, "실질", sec))
+            return round((a / b - 1) * 100, 1) + 0.0 if a and b else None
+        tables.append({"id": "grdp_daegu", "title": f"대구 경제활동별 지역내총생산 ({y}년 잠정)", "unit": "",
+                       "columns": ["경제활동", f"명목 {y}(억원)", f"실질 {y}(억원)", "실질 성장률(%)", "실질 기여도(%p)"],
+                       "rows": [[sec, round(val[(y, "명목", sec)] / 100) if val.get((y, "명목", sec)) else None,
+                                 round(val[(y, "실질", sec)] / 100) if val.get((y, "실질", sec)) else None, gr(sec), val.get((y, "실질기여도", sec))] for sec in secs],
+                       "source": src("grdp-sido-industry"), "latest": y, "note": "실질은 2020년 기준 연쇄가격. 성장률은 실질의 전년 대비 증감(이 사이트 계산), 기여도는 KOSIS 값. 군위군은 2023년 7월 대구 편입 — 농림어업·광업처럼 규모가 작은 부문은 증감이 크게 나올 수 있음"})
+
+    # 8) 관세청 기업무역활동통계 — 17개 시도 수출입 활동기업(최근 연도) + 대구 추이
+    er, ei = rows("export-region"), rows("export-region-index")
+    if er:
+        y = max(r["PRD_DE"] for r in er)
+        v = {(r["C1_NM"], r["C2_NM"], r["ITM_NM"]): num(r["DT"]) for r in er if r["PRD_DE"] == y}
+        vi = {(r["C1_NM"], r["ITM_NM"]): num(r["DT"]) for r in ei if r["PRD_DE"] == y}
+        regs = sorted({k[0] for k in v}, key=lambda s: -(v.get((s, "활동기업", "교역액")) or 0))
+        tables.append({"id": "export17", "title": f"17개 시도 수출입 활동기업·교역액 ({y}년, 관세청 기업무역활동통계)", "unit": "",
+                       "columns": ["시도", "활동기업(개)", "교역액(백만달러)", "진입기업(개)", "업체수 진입률(%)", "퇴출기업(개)", "업체수 퇴출률(%)", "기여율(%)", "기여도(%p)"],
+                       "rows": [[s, v.get((s, "활동기업", "업체수")), v.get((s, "활동기업", "교역액")), v.get((s, "진입기업", "업체수")), v.get((s, "진입기업", "업체수 진입률")),
+                                 v.get((s, "퇴출기업", "업체수")), v.get((s, "퇴출기업", "업체수 퇴출률")), vi.get((s, "기여율")), vi.get((s, "기여도"))] for s in regs],
+                       "source": src("export-region") + "; " + src("export-region-index"), "latest": y, "note": "정렬은 교역액 크기순일 뿐. 기여율·기여도는 KOSIS 지역별 수출지표 값"})
+        dy = sorted({r["PRD_DE"] for r in er if r["C1_NM"] == "대구"})
+        dv = {(r["PRD_DE"], r["ITM_NM"]): num(r["DT"]) for r in er if r["C1_NM"] == "대구" and r["C2_NM"] == "활동기업"}
+        rc.write("kosis", "export-daegu", rc.line_chart, "대구 수출입 활동기업 교역액(연간)", dy, [("교역액", [dv.get((yy, "교역액")) for yy in dy])], index=index, unit="백만달러", note=short("export-region"))
+
+    # 9) 소매판매액지수 — 대구 업태별(불변, 2020=100)
+    rs = [r for r in rows("retail-sales-index-sido") if r["C1_NM"] == "대구광역시"]
+    if rs:
+        ys = sorted({r["PRD_DE"] for r in rs})[-6:]
+        kinds = list(dict.fromkeys(r["C2_NM"] for r in rs))
+        kinds = ["총지수"] + [k for k in kinds if k != "총지수"]
+        v = {(r["PRD_DE"], r["C2_NM"]): num(r["DT"]) for r in rs}
+        tables.append({"id": "retail_daegu", "title": f"대구 업태별 소매판매액지수 ({ys[0]}~{ys[-1]}년, 불변지수 2020=100)", "unit": "",
+                       "columns": ["업태"] + [f"{yy}년" for yy in ys], "rows": [[k] + [v.get((yy, k)) for yy in ys] for k in kinds],
+                       "source": src("retail-sales-index-sido"), "latest": ys[-1], "note": "값 없음은 —(해당 업태가 대구에 없거나 비공개)"})
+
+    # 10) 국내인구이동 — 대구 연령별 순이동(최근 연도)
+    ma = [r for r in rows("migration-age-sido") if r["C1_NM"] == "대구광역시"]
+    if ma:
+        y = max(r["PRD_DE"] for r in ma)
+        v = {(r["C2_NM"], r["C3_NM"]): num(r["DT"]) for r in ma if r["PRD_DE"] == y}
+        ages = sorted({k[1] for k in v if k[1] and k[1][0].isdigit()}, key=lambda a: int(re.match(r"\d+", a).group()))
+        rest = [a for a in dict.fromkeys(k[1] for k in v) if a not in ages]
+        order = rest + ages
+        tables.append({"id": "migration_age", "title": f"대구 연령별 순이동 ({y}년)", "unit": "명",
+                       "columns": ["연령", "계(명)", "남자(명)", "여자(명)"], "rows": [[a, v.get(("계", a)), v.get(("남자", a)), v.get(("여자", a))] for a in order],
+                       "source": src("migration-age-sido"), "latest": y, "note": "순이동 = 전입 − 전출. 음수는 전출이 많음"})
+
+    # 11) 지역별고용조사 — 대구 제조업 중분류 취업자와 전국 대비 비중(최근 반기)
+    ei2 = [r for r in rows("employed-industry-sido") if r["ITM_NM"].startswith("취업자")]
+    if ei2:
+        p = max(r["PRD_DE"] for r in ei2)
+        dv = {r["C2_NM"].strip(): num(r["DT"]) for r in ei2 if r["PRD_DE"] == p and r["C1_NM"] == "대구광역시"}
+        nv = {r["C2_NM"].strip(): num(r["DT"]) for r in ei2 if r["PRD_DE"] == p and r["C1_NM"] == "계"}
+        mfg = [k for k in dict.fromkeys(r["C2_NM"].strip() for r in ei2) if ("제조업" in k and "(" not in k) or k == "산업용 기계 및 장비 수리업"]
+        if mfg:
+            tables.append({"id": "employed_mfg", "title": f"대구 제조업 중분류별 취업자 ({p[:4]}년 {'상' if p.endswith('01') else '하'}반기, 지역별고용조사)", "unit": "천명",
+                           "columns": ["산업 중분류", "대구 취업자(천명)", "전국 취업자(천명)", "대구 비중(%)"],
+                           "rows": [[k, dv.get(k), nv.get(k), round(dv[k] / nv[k] * 100, 1) if dv.get(k) and nv.get(k) else None] for k in mfg],
+                           "source": src("employed-industry-sido"), "latest": p, "note": "표본조사 추정값(천명). '-' 는 —. 비중은 대구 ÷ 전국(이 사이트 계산)"})
+
+    # 12) 전국사업체조사 — 대구 제조업 중분류 사업체·종사자 연도별(2020~)
+    if bc and mp.exists():
+        ys = sorted({r["PRD_DE"] for r in bc})
+        v = {(r["PRD_DE"], r["C2_NM"], r["ITM_NM"]): num(r["DT"]) for r in bc}
+        mf = sorted([s for s, c in codes.items() if len(c) == 3 and c[0] == "C"], key=lambda s: codes[s])
+        mf = [s for s in mf if any(v.get((yy, s, "사업체수")) for yy in ys)]
+        if mf:
+            tables.append({"id": "census_mfg_years", "title": f"대구 제조업 중분류별 사업체·종사자 ({ys[0]}~{ys[-1]}년, 전국사업체조사)", "unit": "",
+                           "columns": ["코드", "산업"] + [f"사업체 {yy}" for yy in ys] + [f"종사자 {yy}" for yy in ys],
+                           "rows": [[codes[s], s] + [v.get((yy, s, "사업체수")) for yy in ys] + [v.get((yy, s, "종사자수")) for yy in ys] for s in mf],
+                           "source": src("biz-census-sido-industry-all"), "latest": ys[-1], "note": "사업체 구분 '계'. 사업체 수(개)·종사자 수(명)"})
 
     (OUT / "index.json").write_text(json.dumps({"tables": tables, "charts": index.get("kosis", {}), "generated": __import__("datetime").date.today().isoformat()}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"표 {len(tables)}개, 그래프 {len(index.get('kosis', {}))}개 → {OUT.relative_to(ROOT)}")

@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import { companies, shortComplex, byName, looksLikePersonName, type Company } from '../../lib/csv';
+import { programs, programGroups, members, type Member } from '../../lib/participation';
+/** /support/participation/ — 참여 사업별 기업 명단(운영자 지시 2026-10-01: 모터 소부장 앵커·규제자유특구·글로벌혁신특구·첨복 입주·
+ *  규제샌드박스·연구소기업 등, 구역이 아니라 공개 명단 기준). scripts/participation.py 산출물. 가나다순, 평가·순위 없음.
+ *  기업 사전과 이름이 맞으면 기업 페이지로 잇는다. 스타기업·Pre-스타·3030 명단은 /support/star/ 에 있어 여기서는 수만. */
+const co = new Map(companies().map(c => [c.id, c]));
+const fmt = (n: number) => n.toLocaleString('ko-KR');
+const bare = (s: string) => s.replace(/\(주\)|㈜|주식회사|\s/g, '');   // 법인 표기만 다르면 '명단:' 을 따로 적지 않는다
+const workers = (c?: Company) => { const n = Number(c?.workers); return c?.workers && Number.isFinite(n) ? n : null; };
+const ps = programs();
+const groups = programGroups();
+type Row = Member & { c?: Company; shown: string };
+const listOf = (key: string): Row[] => members(key)
+  .map(m => { const c = m.id ? co.get(m.id) : undefined; return { ...m, c, shown: c?.name ?? (m.kind === '기업' && looksLikePersonName(m.name) ? '(개인 성명으로 보여 생략)' : m.name) }; })
+  .sort((a, b) => (a.sub || '').localeCompare(b.sub || '', 'ko') || (a.kind === b.kind ? 0 : a.kind === '기업' ? -1 : 1) || byName(a.shown, b.shown));
+const listed = ps.filter(p => !p.link);   // 스타기업류는 /support/star/ 에 명단
+---
+<Base title="참여 사업별 기업" description={`모터 소부장 특화단지 앵커기업, 규제자유특구·AI로봇 글로벌혁신특구 특구사업자, 첨복단지 입주기업, 규제샌드박스 특례 기업, 연구소기업 등 공개 명단에 실린 대구 기업을 사업별로 모았습니다.`} current="support">
+  <p class="meta"><a href="/support/">지원받은 기업</a> › 참여 사업별 기업</p>
+  <nav class="sub-tabs" aria-label="지원 기업 보기">
+    <a href="/support/">전체 지원 기업</a>
+    <a href="/support/participation/" aria-current="page">특구·특화단지·샌드박스 참여</a>
+    <a href="/support/star/">대구 스타기업·Pre-스타기업·3030기업</a>
+  </nav>
+  <div class="section-head"><h1>참여 사업별 기업</h1></div>
+  <p class="lede">지역(구역)으로 짐작하지 않고, 공개된 참여·선정 명단에 이름이 실린 기업만 사업별로 모았습니다. 기업 사전과 회사 이름으로 이어진 기업은 기업 페이지로 연결되고, 기업 사전에서 태그(예: <a href="/companies/?tag=motor">모터 소부장 앵커</a>·<a href="/companies/?tag=rfz">규제자유특구</a>·<a href="/companies/?tag=grfz">AI로봇 글로벌혁신특구</a>)로도 거를 수 있습니다. 이름 대조라 같은 이름의 다른 회사가 섞일 수 있습니다. 평가·순위가 아닙니다.</p>
+
+  <section>
+    <div class="section-head"><h2>사업별 기업 수</h2></div>
+    <div class="scroll-x"><table class="data-table" data-title="참여 사업별 기업 수">
+      <thead><tr><th>구분</th><th>참여 사업</th><th class="n">명단 기업(곳)</th><th class="n">기관(곳)</th><th class="n">역외(곳)</th><th class="n">기업 사전 연결(곳)</th><th>명단 기준</th></tr></thead>
+      <tbody>{ps.map(p => (
+        <tr>
+          <td class="nw">{groups.find(g => g.key === p.group)?.name}</td>
+          <th scope="row"><a href={p.link || `#${p.key}`}>{p.name}</a>{p.candidates_only && <span class="meta"> (이름 일치 후보)</span>}</th>
+          <td class="n">{p.candidates_only ? '—' : fmt(p.n_firm)}</td><td class="n">{fmt(p.n_org)}</td><td class="n">{fmt(p.n_outside)}</td>
+          <td class="n">{fmt(p.n_linked)}</td><td class="nw">{p.as_of || '—'}</td>
+        </tr>
+      ))}</tbody>
+    </table></div>
+    <p class="meta">명단 기업: 명단에 실린 회사 수(같은 회사가 세부 사업 여럿에 실리면 한 번). 기관: 대학·연구기관·지자체 등. 역외: 주소가 대구 밖인 특구사업자. 기업 사전 연결: 대구 기업 사전(공장등록·산단 외 목록)에서 같은 이름을 찾은 회사. 한 기업이 여러 사업에 들 수 있어 사업끼리 더하지 않습니다.</p>
+  </section>
+
+  {listed.map(p => {
+    const rows = listOf(p.key);
+    return (
+      <section id={p.key}>
+        <div class="section-head"><h2>{p.name}</h2><span class="meta">{p.candidates_only ? `이름 일치 후보 ${fmt(p.n_linked)}곳` : `기업 ${fmt(p.n_firm)}곳${p.n_org ? ` · 기관 ${fmt(p.n_org)}곳` : ''} · 기업 사전 연결 ${fmt(p.n_linked)}곳`}</span></div>
+        <p>{p.desc}</p>
+        {p.note && <p class="note-box">{p.note}</p>}
+        <div class="scroll-x"><table class="data-table" data-title={`${p.name} 명단${p.as_of ? `(${p.as_of})` : ''}`}>
+          <thead><tr><th>이름</th><th>구분</th><th>세부</th><th>소재</th><th class="col-opt">산업 그룹</th><th class="col-opt">단지·입지</th><th class="n">종사자(명)</th></tr></thead>
+          <tbody>{rows.map(r => (
+            <tr>
+              <td>{r.c ? <a href={`/companies/${r.c.id}/`}>{r.shown}</a> : <span>{r.shown}{r.kind === '기업' && <span class="meta"> (명단만)</span>}</span>}{r.c && bare(r.c.name) !== bare(r.name) && <span class="meta"> — 명단: {r.name}</span>}</td>
+              <td class="nw">{r.kind}</td>
+              <td>{r.sub || '—'}</td>
+              <td class="nw">{[r.region, r.district].filter(Boolean).join(' ') || '—'}</td>
+              <td class="col-opt nw">{r.c?.sector_group || '—'}</td>
+              <td class="col-opt">{r.c ? shortComplex(r.c.complex) : '—'}</td>
+              <td class="n">{workers(r.c) != null ? fmt(workers(r.c)!) : '—'}</td>
+            </tr>
+          ))}</tbody>
+        </table></div>
+        <p class="meta">출처: {p.source_url ? <a href={p.source_url} rel="noopener">{p.source}</a> : p.source}{p.as_of && ` (${p.as_of})`}. (명단만): 기업 사전(공장등록 제조업·산단 외 목록)에서 같은 이름을 찾지 못한 회사. 종사자는 공장등록 신고값(같은 회사 여러 공장이면 가장 큰 기록).</p>
+      </section>
+    );
+  })}
+
+  <section>
+    <div class="section-head"><h2>대구 스타기업·Pre-스타기업·3030기업</h2></div>
+    <p>명단은 <a href="/support/star/">대구 스타기업·Pre-스타기업·3030기업</a> 페이지에 있습니다.</p>
+  </section>
+  <style>
+    .nw { white-space: nowrap; }
+    .note-box { background: var(--surface); border-left: 4px solid var(--primary); padding: var(--s1) var(--s2); font-size: var(--small); }
+  </style>
+</Base>

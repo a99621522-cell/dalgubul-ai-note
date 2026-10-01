@@ -1,0 +1,263 @@
+{
+ "groups": [
+  {
+   "key": "zone",
+   "name": "특구·특화단지 참여"
+  },
+  {
+   "key": "reg",
+   "name": "규제 특례"
+  },
+  {
+   "key": "city",
+   "name": "대구시·국가 지정 기업"
+  }
+ ],
+ "programs": [
+  {
+   "key": "motor",
+   "group": "zone",
+   "name": "모터 소부장 특화단지 앵커기업",
+   "short": "모터 소부장 앵커",
+   "desc": "산업통상자원부 지정(2023-07) 대구 전기차 모터 소재·부품·장비 특화단지의 투자협약 앵커기업",
+   "n": 7,
+   "n_firm": 7,
+   "n_org": 0,
+   "n_outside": 0,
+   "n_linked": 5,
+   "workers": 1330,
+   "subs": [],
+   "as_of": "2023-09",
+   "source": "서울경제TV 「대구 전기차 모터 소부장 특화단지 출범 닻 올렸다」(2023-09-07), 한국산업기술기획평가원 소재부품장비 특화단지 지정현황(공공데이터포털 15121625)",
+   "source_url": "https://m.sentv.co.kr/article/view/sentv202309070074",
+   "note": "협력기업 100여 곳의 명단은 공개 자료에서 찾지 못해 앵커기업 7곳만 셉니다",
+   "link": "",
+   "candidates_only": false,
+   "n_national": null
+  },
+  {
+   "key": "rfz",
+   "group": "zone",
+   "name": "규제자유특구 특구사업자",
+   "short": "규제자유특구",
+   "desc": "대구 스마트웰니스(1차)·이동식 협동로봇(3차) 규제자유특구에 특구사업자로 등록한 기업·기관",
+   "n": 39,
+   "n_firm": 29,
+   "n_org": 10,
+   "n_outside": 0,
+   "n_linked": 19,
+   "workers": 2019,
+   "subs": [
+    [
+     "스마트 웰니스",
+     22
+    ],
+    [
+     "이동식 협동로봇",
+     17
+    ]
+   ],
+   "as_of": "",
+   "source": "중소벤처기업진흥공단 규제자유특구 참여기업 현황(공공데이터포털 15124790)",
+   "source_url": "https://www.data.go.kr/data/15124790/fileData.do",
+   "note": "2024년 지정 이노덴탈 특구는 포털 파일에 아직 없습니다",
+   "link": "",
+   "candidates_only": false,
+   "n_national": null
+  },
+  {
+   "key": "grfz",
+   "group": "zone",
+   "name": "AI로봇 글로벌 혁신특구 특구사업자",
+   "short": "AI로봇 글로벌혁신특구",
+   "desc": "대구 AI로봇 글로벌 혁신 규제자유특구(2025-05 지정)의 특구사업자",
+   "n": 19,
+   "n_firm": 14,
+   "n_org": 5,
+   "n_outside": 2,
+   "n_linked": 8,
+   "workers": 202,
+   "subs": [
+    [
+     "최초",
+     19
+    ]
+   ],
+   "as_of": "2025-09",
+   "source": "중소벤처기업진흥공단 글로벌 혁신 규제자유특구 참여기업 현황(공공데이터포털 15134916, 2025-09)",
+   "source_url": "https://www.data.go.kr/data/15134916/fileData.do",
+   "note": "주소가 대구 밖인 특구사업자는 '역외'로 표시합니다",
+   "link": "",
+   "candidates_only": false,
+   "n_national": null
+  },
+  {
+   "key": "kmedi",
+   "group": "zone",
+   "name": "첨단의료복합단지 입주기업",
+   "short": "첨복단지 입주",
+   "desc": "대구경북첨단의료복합단지 입주(분양·임대) 기업",
+   "n": 76,
+   "n_firm": 76,
+   "n_org": 0,
+   "n_outside": 0,
+   "n_linked": 60,
+   "workers": 903,
+   "subs": [
+    [
+     "의료기기",
+     58
+    ],
+    [
+     "제약,바이오",
+     18
+    ]
+   ],
+   "as_of": "2025-05",
+   "source": "대구광역시 첨단의료복합단지 입주기업 현황(공공데이터포털 15036286)",
+   "source_url": "https://www.data.go.kr/data/15036286/fileData.do",
+   "note": "",
+   "link": "",
+   "candidates_only": false,
+   "n_national": null
+  },
+  {
+   "key": "sandbox",
+   "group": "reg",
+   "name": "산업융합 규제샌드박스 특례 기업",
+   "short": "규제샌드박스",
+   "desc": "산업융합 규제샌드박스 실증특례·임시허가 기업(전국) 가운데 대구 기업 사전에 같은 이름이 있는 회사 — 후보",
+   "n": 10,
+   "n_firm": 10,
+   "n_org": 0,
+   "n_outside": 0,
+   "n_linked": 10,
+   "workers": 4785,
+   "subs": [
+    [
+     "친환경 동물건조장 장비를 활용한 도심형 동물장례서비스",
+     1
+    ],
+    [
+     "이동식 반려동물 화장 및 찾아가는 장례 서비스",
+     1
+    ],
+    [
+     "커피박(커피찌꺼기) 발효 재자원화 축사 깔개 실증사업",
+     1
+    ],
+    [
+     "200kg급 수소연료전지 무인비행체 충전 및 비행 실증",
+     1
+    ],
+    [
+     "수소연료전지 휠로더의 수소 충전 및 운용시험",
+     1
+    ],
+    [
+     "수소연료전지 트랙터의 수소 충전 및 운용시험",
+     1
+    ],
+    [
+     "다차종·동시·고속 충전 수소스테이션 운영 실증",
+     1
+    ],
+    [
+     "수소튜브트레일러(T/T)를 활용한 제조식 수소충전소 운영",
+     1
+    ]
+   ],
+   "as_of": "",
+   "source": "한국산업기술진흥원 특례부여현황(공공데이터포털 15145229)",
+   "source_url": "https://www.data.go.kr/data/15145229/fileData.do",
+   "note": "전국 명단에 주소가 없어 대구 기업 사전과 회사 이름만 맞춘 후보입니다. 이름이 같은 다른 회사일 수 있고, 같은 회사라도 특례 과제가 대구에서 진행됐다는 뜻은 아닙니다. 기업 사전 태그는 붙이지 않습니다. ICT·금융 등 다른 부처 샌드박스 명단은 아직 넣지 못했습니다",
+   "link": "",
+   "candidates_only": true,
+   "n_national": 477
+  },
+  {
+   "key": "labfirm",
+   "group": "city",
+   "name": "연구소기업",
+   "short": "연구소기업",
+   "desc": "연구개발특구진흥재단에 등록된 대구 연구소기업",
+   "n": 139,
+   "n_firm": 139,
+   "n_org": 0,
+   "n_outside": 0,
+   "n_linked": 29,
+   "workers": 174,
+   "subs": [],
+   "as_of": "2026-07",
+   "source": "연구개발특구진흥재단 연구소기업 운영현황(공공데이터포털)",
+   "source_url": "",
+   "note": "",
+   "link": "",
+   "candidates_only": false,
+   "n_national": null
+  },
+  {
+   "key": "star",
+   "group": "city",
+   "name": "대구 스타기업",
+   "short": "스타기업",
+   "desc": "대구광역시 스타기업 육성사업 선정 기업",
+   "n": 91,
+   "n_firm": 91,
+   "n_org": 0,
+   "n_outside": 0,
+   "n_linked": 89,
+   "workers": 8074,
+   "subs": [],
+   "as_of": "2025-03",
+   "source": "대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)",
+   "source_url": "",
+   "note": "",
+   "link": "/support/star/",
+   "candidates_only": false,
+   "n_national": null
+  },
+  {
+   "key": "prestar",
+   "group": "city",
+   "name": "Pre-스타기업",
+   "short": "Pre-스타기업",
+   "desc": "대구광역시 Pre-스타기업 육성사업 선정 기업",
+   "n": 126,
+   "n_firm": 126,
+   "n_org": 0,
+   "n_outside": 0,
+   "n_linked": 125,
+   "workers": 3083,
+   "subs": [],
+   "as_of": "2025-03",
+   "source": "대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)",
+   "source_url": "",
+   "note": "",
+   "link": "/support/star/",
+   "candidates_only": false,
+   "n_national": null
+  },
+  {
+   "key": "k3030",
+   "group": "city",
+   "name": "3030기업",
+   "short": "3030기업",
+   "desc": "대구광역시 3030기업 육성사업 선정 기업",
+   "n": 168,
+   "n_firm": 168,
+   "n_org": 0,
+   "n_outside": 0,
+   "n_linked": 156,
+   "workers": 11959,
+   "subs": [],
+   "as_of": "2025-03",
+   "source": "대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)",
+   "source_url": "",
+   "note": "",
+   "link": "/support/star/",
+   "candidates_only": false,
+   "n_national": null
+  }
+ ]
+}

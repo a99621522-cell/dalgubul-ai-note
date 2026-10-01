@@ -75,8 +75,8 @@ def refine_gb_groups(dg: list[dict], gb: list[dict]) -> int:
                 n = sum(v.values()); g, k = v.most_common(1)[0]
                 if n >= 2 and k / n >= 0.6:
                     tally[g] += 1
-        if tally:
-            c["group"] = tally.most_common(1)[0][0]; changed += 1
+        if tally:   # 동률이면 그룹 이름순(set 순서가 실행마다 달라 결과가 흔들리지 않게)
+            c["group"] = min(tally.items(), key=lambda kv: (-kv[1], kv[0]))[0]; changed += 1
     return changed
 
 

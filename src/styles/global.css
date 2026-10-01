@@ -310,3 +310,9 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
 .nav-search { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch); margin-left: auto; color: var(--ink); border-radius: 50%; }
 .nav-search:hover, .nav-search:focus-visible { background: var(--surface); color: var(--primary); }
 @media (min-width: 720px) { .nav-search { margin-left: 4px; } }
+
+/* 하위 보기 탭(지원 기업 ↔ 스타기업 명단 등) */
+.sub-tabs { display: flex; flex-wrap: wrap; gap: var(--s1); margin: 0 0 var(--s3); }
+.sub-tabs a { display: inline-flex; align-items: center; min-height: var(--touch); padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--bg); }
+.sub-tabs a:hover { background: var(--surface); }
+.sub-tabs a[aria-current="page"] { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 700; }

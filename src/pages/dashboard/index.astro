@@ -59,7 +59,7 @@ const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.
           <div class="section-head"><h2 id="h-tag">공개 명단 태그별</h2></div>
           <div class="scroll-x"><table class="data-table">
             <thead><tr><th>태그</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">집계 대상</th><th class="n">지원 이력(3년)</th></tr></thead>
-            <tbody>{tags.map(([k, v]) => <tr><th scope="row">{tagName(k)}</th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n">{fmt(v.covered)}</td><td class="n">{v.support_3y ? `${fmt(v.support_3y.firms)}곳` : '—'}</td></tr>)}</tbody>
+            <tbody>{tags.map(([k, v]) => <tr><th scope="row"><a href={['star', 'prestar', 'k3030'].includes(k) ? `/support/star/#${k}` : `/companies/?tag=${k}`}>{tagName(k)}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td><td class="n">{fmt(v.covered)}</td><td class="n">{v.support_3y ? `${fmt(v.support_3y.firms)}곳` : '—'}</td></tr>)}</tbody>
           </table></div>
           <p class="meta">벤처기업은 중기부 벤처기업명단, 창업기업은 국민연금 적용일 기준 설립 7년 이내, 첨복단지 입주는 케이메디허브 공개 현황입니다.</p>
         </section>

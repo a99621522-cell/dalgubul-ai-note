@@ -43,6 +43,10 @@ const total = lists.reduce((s, l) => s + l.items.length, 0);
 ---
 <Base title="대구 스타기업·Pre-스타기업" description={`대구광역시가 공개한 스타기업 ${lists[0].items.length}곳·Pre-스타기업 ${lists[1].items.length}곳·3030기업 ${lists[2].items.length}곳 명단(${asOf} 기준)을 기업 사전과 이어 산업·구·군·단지·종사자로 정리했습니다.`} current="support">
   <p class="meta"><a href="/support/">지원받은 기업</a> › 스타기업·Pre-스타기업</p>
+  <nav class="sub-tabs" aria-label="지원 기업 보기">
+    <a href="/support/">전체 지원 기업</a>
+    <a href="/support/star/" aria-current="page">대구 스타기업·Pre-스타기업·3030기업</a>
+  </nav>
   <div class="section-head"><h1>대구 스타기업·Pre-스타기업</h1><span class="meta">명단 {asOf} 기준 · {fmt(total)}곳</span></div>
   <p class="lede">대구광역시가 공공데이터포털에 공개한 스타기업·Pre-스타기업·3030기업 현황을 기업 사전과 이름으로 이었습니다. 이어진 기업은 기업 사전 페이지로 연결되고, 기업 사전에서 <a href="/companies/?tag=star">스타기업</a>·<a href="/companies/?tag=prestar">Pre-스타기업</a>·<a href="/companies/?tag=k3030">3030기업</a> 태그로도 거를 수 있습니다. 가나다순이며 평가·순위가 아닙니다. 명단 공개 뒤 새로 선정된 기업(2026년 선정 등)은 대구시 공개 자료가 갱신되면 반영합니다.</p>
 

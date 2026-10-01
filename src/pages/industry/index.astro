@@ -12,7 +12,7 @@ const description = m ? `대구 산업 그룹 11개의 기업 수·고용 인원
 ---
 <Base title="산업별 현황" description={description} current="industry">
   <div class="section-head"><h1>산업별 현황</h1><span class="meta">{ym} 기준 · {m?.basis_label}</span></div>
-  <p class="lede">표준산업분류(KSIC) 코드와 생산품 키워드로 11개 그룹으로 나눈 대구 기업 {fmt(m?.total.firms ?? null)}곳의 현황입니다. 고용 인원은 {m?.basis_label ?? '국민연금 가입자수'}이며 값이 있는 기업만 집계합니다. 순위나 평가는 하지 않습니다.</p>
+  <p class="lede">표준산업분류(KSIC) 코드와 생산품 키워드로 11개 그룹으로 나눈 대구 기업 {fmt(m?.total.firms ?? null)}곳의 현황입니다. 고용 인원은 {m?.basis_label ?? '국민연금 가입자수'}이며 값이 있는 기업만 집계합니다. 순위나 평가는 하지 않습니다. 대구·경북 기업이 만드는 품목을 특정국 의존 품목과 맞춰 본 <a href="/supply-map/">대구·경북 품목 지도</a>도 있습니다.</p>
   {m ? (
     <>
       <IndustryTable />

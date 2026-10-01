@@ -1,0 +1,114 @@
+---
+import fs from 'node:fs';
+import Base from '../../layouts/Base.astro';
+import { readCsv } from '../../lib/csv';
+/** /supply-map/ — 대구·경북 품목 지도(운영자 지시 2026-10-01, 1안: 경북은 이 지도에만, 기업 사전은 대구 그대로).
+ *  누가 무엇을 만드는가(공장등록 생산품) × 한국은행 특정국 의존 품목. scripts/supply_map.py 산출물(data/supply/)을 빌드 때 읽는다.
+ *  생산품 낱말 대조라 '생산 역량·거래 관계'가 아니라 '그 품목을 생산품으로 등록한 기업'이다. 평가·순위 없음. */
+const has = (p: string) => fs.existsSync(p);
+const S = has('data/supply/summary.json') ? JSON.parse(fs.readFileSync('data/supply/summary.json', 'utf-8')) : null;
+const items = has('data/supply/items.csv') ? readCsv('data/supply/items.csv') : [];
+const groups = has('data/supply/groups.csv') ? readCsv('data/supply/groups.csv') : [];
+const areas = has('data/supply/areas.csv') ? readCsv('data/supply/areas.csv') : [];
+const fmt = (n: number | string) => Number(n || 0).toLocaleString('ko-KR');
+const gbReady = !!S?.n_gb;
+const ST = ['대구·경북', '대구만', '경북만', '없음'];
+const stLabel: Record<string, string> = { '대구·경북': '대구·경북 모두 있음', '대구만': '대구에만 있음', '경북만': '경북에만 있음', '없음': '둘 다 없음' };
+// 업종(한국은행 장)별 품목 상태 집계
+const byInd = new Map<string, Record<string, number>>();
+for (const r of items) { const m = byInd.get(r.industry) ?? Object.fromEntries(ST.map(s => [s, 0])); m[r.status]++; byInd.set(r.industry, m); }
+const inds = [...byInd.keys()];
+// 시·군 / 구·군 합계와 많은 그룹 3개
+type Area = { sido: string; area: string; total: number; top: string };
+const areaMap = new Map<string, { sido: string; area: string; total: number; g: [string, number][] }>();
+for (const r of areas) { const k = `${r.sido}|${r.area}`; const a = areaMap.get(k) ?? { sido: r.sido, area: r.area, total: 0, g: [] }; a.total += +r.n; a.g.push([r.group, +r.n]); areaMap.set(k, a); }
+const areaRows = (sido: string): Area[] => [...areaMap.values()].filter(a => a.sido === sido).sort((a, b) => b.total - a.total)
+  .map(a => ({ sido: a.sido, area: a.area, total: a.total, top: a.g.sort((x, y) => y[1] - x[1]).slice(0, 3).map(([g, n]) => `${g} ${fmt(n)}`).join(' · ') }));
+---
+<Base title="대구·경북 품목 지도" description={`대구 ${fmt(S?.n_daegu ?? 0)}곳·경북 ${fmt(S?.n_gb ?? 0)}곳의 공장등록 생산품을 한국은행 특정국 의존 품목 ${items.length}개와 맞춰, 품목마다 대구·경북에 그 품목을 등록한 기업이 있는지 보여 줍니다.`} current="industry">
+  <p class="meta"><a href="/industry/">산업별</a> › 대구·경북 품목 지도</p>
+  <div class="section-head"><h1>대구·경북 품목 지도</h1><span class="meta">대구 {S?.as_of_daegu ?? '—'} · 경북 {S?.as_of_gb || '준비 중'} 기준</span></div>
+  <p class="lede">대구·경북 공장등록 기업이 <strong>무엇을 만드는지</strong>(생산품)를 모아, 한국은행 「우리나라 주요 제조업 생산 및 공급망 지도」(2026.7)가 정리한 특정국 의존 품목과 맞춰 봤습니다. 품목마다 대구·경북에 그 품목을 생산품으로 등록한 기업이 있는지 알 수 있습니다. 생산품 낱말을 맞춘 것이라 <strong>생산 역량이나 거래 관계를 뜻하지 않으며</strong>, 확인은 조사로 합니다. 평가·순위가 아닙니다.</p>
+  {!gbReady && <p class="note-box">경북 자료(공공데이터포털 전국 등록공장 현황)를 받는 중입니다. 지금은 대구만 표시합니다.</p>}
+
+  <section>
+    <div class="section-head"><h2>한눈에</h2></div>
+    <div class="scroll-x"><table class="data-table" data-title="대구·경북 품목 지도 요약">
+      <thead><tr><th>구분</th><th class="n">값</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">대구 공장등록 기업</th><td class="n">{fmt(S?.n_daegu ?? 0)}곳</td><td>팩토리온 월간 자료({S?.as_of_daegu}), 업종 코드 있음</td></tr>
+        <tr><th scope="row">경북 공장등록 공장</th><td class="n">{gbReady ? `${fmt(S.n_gb)}곳` : '—'}</td><td>공공데이터포털 전국 등록공장 현황({S?.as_of_gb || '준비 중'}), 업종 코드 없음 — 산업 그룹은 생산품 낱말로 짐작</td></tr>
+        <tr><th scope="row">특정국 의존 품목</th><td class="n">{fmt(items.length)}개</td><td>한국은행 공급망 지도의 업종별 의존 품목(중복 제외)</td></tr>
+        {ST.map(s => <tr><th scope="row">　{stLabel[s]}</th><td class="n">{fmt(S?.status?.[s] ?? 0)}개</td><td>{s === '없음' ? '대구·경북에 그 품목을 생산품으로 등록한 기업을 찾지 못함' : '생산품 등록 기준'}</td></tr>)}
+      </tbody>
+    </table></div>
+    <p class="meta">출처: {S?.sources?.daegu}; <a href={S?.sources?.gb_url}>{S?.sources?.gb}</a>; {S?.sources?.bok}. 기준일이 서로 다릅니다(대구 월간, 경북 연 1회).</p>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>업종별 의존 품목과 대구·경북 생산품 등록</h2></div>
+    <div class="scroll-x"><table class="data-table" data-title="업종별 특정국 의존 품목 × 대구·경북 생산품 등록">
+      <thead><tr><th>업종(한국은행 장)</th><th class="n">품목</th>{ST.map(s => <th class="n">{stLabel[s]}</th>)}</tr></thead>
+      <tbody>{inds.map(i => { const m = byInd.get(i)!; return <tr><th scope="row"><a href={`#items?ind=${encodeURIComponent(i)}`} class="ind-link" data-ind={i}>{i}</a></th><td class="n">{fmt(ST.reduce((a, s) => a + m[s], 0))}</td>{ST.map(s => <td class="n">{fmt(m[s])}</td>)}</tr>; })}</tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>산업 그룹별 기업 수</h2></div>
+    <div class="scroll-x"><table class="data-table" data-title="산업 그룹별 대구·경북 공장등록 기업 수">
+      <thead><tr><th>산업 그룹</th><th class="n">대구(곳)</th><th class="n">경북(곳)</th></tr></thead>
+      <tbody>{groups.map(g => <tr><th scope="row">{g.group}</th><td class="n">{fmt(g.daegu_n)}</td><td class="n">{gbReady ? fmt(g.gb_n) : '—'}</td></tr>)}</tbody>
+    </table></div>
+    <p class="meta">대구는 업종 코드와 생산품으로, 경북은 생산품 낱말만으로 그룹을 정해(config/industry_groups.yml) 경북 쪽은 '미분류'가 많습니다. 정렬은 기업 수 크기순일 뿐입니다.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>지역별</h2></div>
+    {gbReady && <><h3>경북 시·군</h3>
+    <div class="scroll-x"><table class="data-table" data-title="경북 시·군별 공장등록 공장 수">
+      <thead><tr><th>시·군</th><th class="n">공장(곳)</th><th>많은 산업 그룹</th></tr></thead>
+      <tbody>{areaRows('경북').map(a => <tr><th scope="row">{a.area}</th><td class="n">{fmt(a.total)}</td><td>{a.top}</td></tr>)}</tbody>
+    </table></div></>}
+    <h3>대구 구·군</h3>
+    <div class="scroll-x"><table class="data-table" data-title="대구 구·군별 공장등록 기업 수">
+      <thead><tr><th>구·군</th><th class="n">기업(곳)</th><th>많은 산업 그룹</th></tr></thead>
+      <tbody>{areaRows('대구').map(a => <tr><th scope="row">{a.area}</th><td class="n">{fmt(a.total)}</td><td>{a.top}</td></tr>)}</tbody>
+    </table></div>
+  </section>
+
+  <section id="items">
+    <div class="section-head"><h2>품목별 목록</h2><span class="meta" id="it-count"></span></div>
+    <div class="tools">
+      <select id="it-ind" aria-label="업종"><option value="">업종 전체</option>{inds.map(i => <option value={i}>{i}</option>)}</select>
+      <select id="it-st" aria-label="상태"><option value="">상태 전체</option>{ST.map(s => <option value={s}>{stLabel[s]}</option>)}</select>
+      <input id="it-q" type="search" placeholder="품목 검색" aria-label="품목 검색" />
+    </div>
+    <div class="scroll-x"><table class="data-table" id="it-tbl" data-title="특정국 의존 품목별 대구·경북 생산품 등록 기업">
+      <thead><tr><th>업종</th><th>품목</th><th>의존국</th><th class="n">비중(%)</th><th class="n">대구(곳)</th><th class="n">경북(곳)</th><th class="col-opt">예(생산품 등록 기업)</th></tr></thead>
+      <tbody>{items.map(r => (
+        <tr data-ind={r.industry} data-st={r.status} data-q={`${r.item} ${r.keywords}`}>
+          <td>{r.industry}</td><td>{r.item}{r.hs_code && <span class="meta"> HS {r.hs_code}</span>}</td><td>{r.country}</td><td class="n">{r.share_pct}</td>
+          <td class="n">{fmt(r.daegu_n)}</td><td class="n">{gbReady ? fmt(r.gb_n) : '—'}</td>
+          <td class="col-opt">{[r.daegu_ex, r.gb_ex].filter(Boolean).join('; ') || '—'}</td>
+        </tr>))}</tbody>
+    </table></div>
+    <p class="meta">품목명에서 핵심 낱말(예: '반도체 웨이퍼 레이저 다이싱기' → '다이싱기')을 뽑아 공장등록 생산품과 맞췄습니다. 같은 낱말을 쓰는 다른 제품이 섞이거나, 다른 이름으로 등록한 기업이 빠질 수 있습니다. 비중·의존국은 한국은행 자료 값 그대로입니다(쪽 번호는 CSV data/supply/items.csv).</p>
+  </section>
+  <style>
+    .note-box { background: var(--surface); border-left: 4px solid var(--primary); padding: var(--s2); }
+  </style>
+  <script is:inline>
+    (() => {
+      const ind = document.getElementById('it-ind'), st = document.getElementById('it-st'), q = document.getElementById('it-q'), cnt = document.getElementById('it-count');
+      const trs = [...document.querySelectorAll('#it-tbl tbody tr')];
+      function apply() {
+        const v = (q.value || '').trim(); let n = 0;
+        for (const tr of trs) { const ok = (!ind.value || tr.dataset.ind === ind.value) && (!st.value || tr.dataset.st === st.value) && (!v || tr.dataset.q.includes(v)); tr.hidden = !ok; if (ok) n++; }
+        cnt.textContent = `${n.toLocaleString('ko-KR')}개 품목`;
+      }
+      [ind, st].forEach(e => e.addEventListener('change', apply)); q.addEventListener('input', apply);
+      document.querySelectorAll('.ind-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); ind.value = a.dataset.ind; st.value = ''; apply(); document.getElementById('items').scrollIntoView({ behavior: 'smooth' }); }));
+      apply();
+    })();
+  </script>
+</Base>

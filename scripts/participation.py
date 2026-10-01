@@ -3,7 +3,7 @@
 규제샌드박스·연구소기업·스타기업 등) → data/participation/members.csv·summary.json + 기업 사전 태그(company_tags.csv, 태그 = 사업 key).
 
 운영자 지시 2026-10-01: 특구를 단지·입지로 근사하던 방식(구역별) 대신 공개 명단에 이름이 실린 기업으로 나눈다.
-기업 사전과는 회사 이름(법인 표기·'○○공장' 제거)으로 잇는다. 같은 이름의 공장 여러 곳은 모두 태그하고, 셀 때는 한 회사로 센다.
+기업 사전과는 회사 이름(법인 표기·'○○공장' 제거)으로 잇는다. 같은 이름의 공장 기록이 여럿이면 종사자가 가장 큰 기록 하나에만 태그한다(통계의 기업 수가 부풀지 않게).
 동명 다른 회사가 섞일 수 있어 페이지에 적는다. 대표자·주소 번지는 저장하지 않는다(주소는 대구/역외와 구·군만).
 사용: python3 scripts/participation.py   (fetch_public.yml 이 명단을 받은 뒤 실행)
 """
@@ -138,7 +138,9 @@ def main() -> int:
             members.append({"program": p["key"], "name": r["name"], "kind": "기관" if r["org"] else "기업", "sub": r["sub"],
                             "region": region, "district": district, "id": cs[0]["id"] if cs else "",
                             "ids": ";".join(c["id"] for c in cs), "as_of": ym(r["as_of"])})
-            for c in ([] if p.get("candidates_only") else cs):   # 이름만 같은 후보(전국 명단)는 태그하지 않는다
+            # 태그는 대표 기록 하나(종사자가 가장 큰 공장)에만 — 지원 이력과 같은 규칙. 공장마다 붙이면 통계의 기업 수가 부푼다.
+            # 이름만 같은 후보(전국 명단)와 다른 스크립트가 태그를 맡는 사업(tag: false)은 붙이지 않는다
+            for c in ([] if p.get("candidates_only") or p.get("tag") is False else cs[:1]):
                 tags[(c["id"], p["key"])] = {"id": c["id"], "tag": p["key"], "source": f"{TAG_SOURCE}: {p['name']}", "as_of": r["as_of"]}
         mine = [m for m in members if m["program"] == p["key"]]
         names = {norm(m["name"]) for m in mine}

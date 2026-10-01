@@ -107,6 +107,7 @@ programs:
     match: "15130932"
     program: 스타기업
     link: /support/star/
+    tag: false   # 태그는 star_tags.py 가 붙인다
     source: 대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)
 
   - key: prestar
@@ -118,6 +119,7 @@ programs:
     match: "15130932"
     program: Pre-스타기업
     link: /support/star/
+    tag: false   # 태그는 star_tags.py 가 붙인다
     source: 대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)
 
   - key: k3030
@@ -129,4 +131,5 @@ programs:
     match: "15130932"
     program: 3030기업
     link: /support/star/
+    tag: false   # 태그는 star_tags.py 가 붙인다
     source: 대구광역시 스타기업·PRE-스타기업·3030기업 현황(공공데이터포털 15130932)

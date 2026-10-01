@@ -1,6 +1,6 @@
 {
  "month": "2026-07",
- "generated": "2026-10-01 23:20",
+ "generated": "2026-10-01 23:36",
  "basis": "nps",
  "basis_label": "국민연금 가입자수",
  "sources": {
@@ -1760,31 +1760,153 @@
    "yoy": null
   },
   "첨복단지 입주": {
-   "firms": 71,
-   "employment": 616,
-   "covered": 22,
-   "avg_employment": 28.0,
+   "firms": 82,
+   "employment": 727,
+   "covered": 29,
+   "avg_employment": 25.1,
    "size_bands": {
-    "1~9": 7,
-    "10~49": 12,
-    "50~299": 3,
+    "1~9": 11,
+    "10~49": 14,
+    "50~299": 4,
     "300+": 0
    },
-   "nps_gain": 24,
-   "nps_loss": 18,
+   "nps_gain": 25,
+   "nps_loss": 22,
    "new_firms": 0,
    "closed_firms": 0,
    "dart_firms": 0,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
-    "firms": 21,
-    "records": 31,
-    "amount_won": 4311333000,
-    "amount_known_records": 8,
+    "firms": 25,
+    "records": 39,
+    "amount_won": 4828333000,
+    "amount_known_records": 12,
     "by_layer": {
-     "국비": 20,
-     "시비": 11
+     "시비": 15,
+     "국비": 24
+    }
+   },
+   "mom": null,
+   "yoy": null
+  },
+  "연구소기업": {
+   "firms": 29,
+   "employment": 172,
+   "covered": 19,
+   "avg_employment": 9.1,
+   "size_bands": {
+    "1~9": 16,
+    "10~49": 3,
+    "50~299": 0,
+    "300+": 0
+   },
+   "nps_gain": 5,
+   "nps_loss": 3,
+   "new_firms": 0,
+   "closed_firms": 0,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "support_3y": {
+    "firms": 10,
+    "records": 12,
+    "amount_won": null,
+    "amount_known_records": 0,
+    "by_layer": {
+     "국비": 12
+    }
+   },
+   "mom": null,
+   "yoy": null
+  },
+  "규제자유특구": {
+   "firms": 19,
+   "employment": 2077,
+   "covered": 16,
+   "avg_employment": 129.8,
+   "size_bands": {
+    "1~9": 3,
+    "10~49": 6,
+    "50~299": 5,
+    "300+": 2
+   },
+   "nps_gain": 43,
+   "nps_loss": 22,
+   "new_firms": 0,
+   "closed_firms": 0,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "support_3y": {
+    "firms": 7,
+    "records": 12,
+    "amount_won": 120000000,
+    "amount_known_records": 2,
+    "by_layer": {
+     "시비": 5,
+     "국비": 7
+    }
+   },
+   "mom": null,
+   "yoy": null
+  },
+  "AI로봇 글로벌혁신특구": {
+   "firms": 8,
+   "employment": 219,
+   "covered": 6,
+   "avg_employment": 36.5,
+   "size_bands": {
+    "1~9": 1,
+    "10~49": 4,
+    "50~299": 1,
+    "300+": 0
+   },
+   "nps_gain": 5,
+   "nps_loss": 4,
+   "new_firms": 0,
+   "closed_firms": 0,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "support_3y": {
+    "firms": 3,
+    "records": 4,
+    "amount_won": null,
+    "amount_known_records": 0,
+    "by_layer": {
+     "시비": 1,
+     "국비": 3
+    }
+   },
+   "mom": null,
+   "yoy": null
+  },
+  "모터 소부장 앵커": {
+   "firms": 5,
+   "employment": 1538,
+   "covered": 3,
+   "avg_employment": 512.7,
+   "size_bands": {
+    "1~9": 0,
+    "10~49": 0,
+    "50~299": 2,
+    "300+": 1
+   },
+   "nps_gain": 32,
+   "nps_loss": 8,
+   "new_firms": 0,
+   "closed_firms": 0,
+   "dart_firms": 0,
+   "dart_revenue": null,
+   "projects_12m": null,
+   "support_3y": {
+    "firms": 3,
+    "records": 5,
+    "amount_won": null,
+    "amount_known_records": 0,
+    "by_layer": {
+     "국비": 5
     }
    },
    "mom": null,

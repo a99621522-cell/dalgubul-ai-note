@@ -232,7 +232,7 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
   article.post .lede { font-size: 10.5pt; }
 }
 
-/* ---------- 표 도구(한글 표 복사·HWP 내려받기, 모든 통계표 아래) ---------- */
+/* ---------- 표 도구(한글 표 복사·PDF 내려받기, 모든 통계표 아래) ---------- */
 .table-tools { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; margin: 4px 0 var(--s2); }
 .table-tools .btn { min-height: 32px; padding: 0 10px; font-size: var(--small); font-weight: 600; }
 .co-actions { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s2); }

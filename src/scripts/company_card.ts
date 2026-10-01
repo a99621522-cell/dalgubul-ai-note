@@ -1,9 +1,9 @@
 /**
- * 기업 카드 한 장 — 기업 페이지(/companies/<id>/)의 「기업 카드 HWP」「인쇄·PDF」 단추.
- * 페이지에 박힌 JSON(#card-data: 개요·고용·지원 이력·재무·협업 후보·출처)을 hwpx.ts 로 한글 파일로 만든다.
+ * 기업 카드 한 장 — 기업 페이지(/companies/<id>/)의 「기업 카드 PDF」「인쇄」 단추.
+ * 페이지에 박힌 JSON(#card-data: 개요·고용·지원 이력·재무·협업 후보·출처)을 pdf.ts 로 PDF 한 장으로 만든다(HWPX 는 한글에서 깨져 바꿈, 2026-10-01).
  * 기업 방문·간담회·보고 전에 담당자가 만드는 한 장 자료를 대신한다(운영자 지시 2026-09-27). 공개 자료만, 평가·추천 없음.
  */
-import { buildHwpx, download, p, table, safeName, today, type Block } from './hwpx';
+import { buildPdf, downloadPdf, p, table, safeName, today, type Block } from './pdf';
 
 type Card = {
   id: string; name: string; district: string; desc: string; url: string;
@@ -56,9 +56,9 @@ export function init(): void {
   hwp.addEventListener('click', async () => {
     try {
       hwp.disabled = true; hwp.textContent = '만드는 중…';
-      download(`기업카드 ${safeName(c.name)}.hwpx`, await buildHwpx(blocks(c), `기업 카드 · ${c.name}`));
-    } catch { hwp.textContent = '만들기 실패'; setTimeout(() => { hwp.textContent = '기업 카드 HWP'; }, 1800); }
-    finally { hwp.disabled = false; if (hwp.textContent === '만드는 중…') hwp.textContent = '기업 카드 HWP'; }
+      downloadPdf(`기업카드 ${safeName(c.name)}.pdf`, await buildPdf(blocks(c), `기업 카드 · ${c.name}`, { landscape: false }));
+    } catch { hwp.textContent = '만들기 실패'; setTimeout(() => { hwp.textContent = '기업 카드 PDF'; }, 1800); }
+    finally { hwp.disabled = false; if (hwp.textContent === '만드는 중…') hwp.textContent = '기업 카드 PDF'; }
   });
   prt?.addEventListener('click', () => window.print());
 }

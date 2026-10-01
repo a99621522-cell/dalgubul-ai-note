@@ -2,7 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import { kosisIndex, kosisTable, kosisChart, fmtCell } from '../../../lib/kosis';
 /** /stats/kosis/ — 국가데이터처 KOSIS 통계표(대구·17개 시도)와 이 사이트가 계산한 산업구조 지표. render_kosis.py 산출물을 빌드 때 읽는다.
- *  값은 KOSIS 그대로, 평가·순위 표현 없음. 모든 표는 table.data-table 이라 「한글 표 복사」·「HWP 내려받기」가 붙는다. */
+ *  값은 KOSIS 그대로, 평가·순위 표현 없음. 모든 표는 table.data-table 이라 「한글 표 복사」·「PDF 내려받기」가 붙는다. */
 const idx = kosisIndex();
 const T = (id: string) => kosisTable(id);
 const C = (name: string) => kosisChart(name);

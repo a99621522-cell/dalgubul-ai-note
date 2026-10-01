@@ -64,11 +64,11 @@ def _err(data) -> str:
     return f"KOSIS 오류 {data.get('err')}: {data.get('errMsg')}" if isinstance(data, dict) and data.get("err") else ""
 
 
-def _get_rows(base: dict, start: str, end: str) -> list:
+def _get_rows(base: dict, start: str, end: str, min_levels: int = 1) -> list:
     """분류 단계 수(objL1..objL8)는 표마다 달라 API 가 '잘못된 요청 변수'(21)를 돌려주므로 1단계부터 늘려 가며 맞춘다.
     한 번에 받을 수 있는 양을 넘기면(오류 메시지에 '초과') 기간을 1년씩 나눠 받는다."""
     last = ""
-    for n in range(1, 9):
+    for n in range(min_levels, 9):   # min_levels: 1단계만으로도 응답은 오지만 하위 분류(산업 등)가 빠지는 표(광공업생산지수 시도 → 총지수만, 2026-10-01)
         params = {**base, "startPrdDe": start, "endPrdDe": end, **{f"objL{i}": "ALL" for i in range(1, n + 1)}}
         data = _call(params)
         e = _err(data)
@@ -153,7 +153,7 @@ def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
     if dry:
         print(f"[dry] {t['key']}: {API_DATA}?" + "&".join(f"{k}={'***' if k == 'apiKey' else v}" for k, v in {**base, "objL1": "ALL", "startPrdDe": start, "endPrdDe": end}.items()))
         return None
-    rows = _get_rows(base, start, end)
+    rows = _get_rows(base, start, end, int(t.get("min_levels", 1)))
     area_words = t["area"] if "area" in t and t["area"] is not None else ["대구"]   # area: [] 이면 전 지역 행을 남긴다
     col = t.get("area_col")
     keep = []

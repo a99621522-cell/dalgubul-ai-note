@@ -7,6 +7,7 @@
 #   area_col 행정구역이 든 분류 열(C1..C4). 없으면 '대구' 낱말이 든 행을 전부 남긴다
 #   area     남길 지역 이름 조각(대구 = 시도, 구·군 이름은 대구 아래 하위 행으로 온다)
 #   areas    리포트 분야 key(config/pledge_areas.yml) — report_context 가 분야 근거로 먼저 보여 준다
+#   min_levels 처음부터 보낼 분류 단계 수(objL1..n). 1단계만으로 응답이 오지만 하위 분류가 빠지는 표에
 #   keep     저장 전 거르기 {C2_level: [1,2], C2_also: [...], C3: [...]}: 분류 코드 길이(메타 <key>.meta.json 필요)·값. 큰 표를 줄일 때
 version: 2026-09-28
 defaults: { org_id: "101", area: ["대구"], years: 6 }
@@ -98,6 +99,7 @@ tables:
     search: "광공업생산지수 시도 산업별"
     prd_se: M
     years: 3
+    min_levels: 2   # objL1 만 보내면 시도별 총지수만 온다(2026-10-01) — 산업(objL2)까지
     area_col: C1
     areas: [manufacturing-ax, machinery, automotive, textile, root]
   - key: migration-sido

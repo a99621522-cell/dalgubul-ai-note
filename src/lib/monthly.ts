@@ -10,7 +10,7 @@ import { readCsv } from './csv';
 export type Pt = { m: string; v: number; yoy?: number | null; mom?: number | null };
 export type Series = {
   key: string; group: string; name: string; unit: string; change: '%' | '%p' | 'p'; digits: number;
-  pts: Pt[]; source: string; url: string; note?: string; quarterly?: boolean;
+  pts: Pt[]; source: string; url: string; note?: string; quarterly?: boolean; compiled?: boolean;
 };
 
 const ym = (s: string) => (/^\d{6}$/.test(s) ? `${s.slice(0, 4)}-${s.slice(4)}` : s);
@@ -48,8 +48,6 @@ function dpi(name: string): Pt[] {
   return [...by.values()].sort((a, b) => a.m.localeCompare(b.m));
 }
 
-const DPI_SRC = '대구정책연구원 「월간 대구경제동향」';
-const DPI_URL = 'https://www.dpi.re.kr/board/list?menuId=MENU002020501000000&boardId=BOARD00082';
 
 export function monthlySeries(): Series[] {
   const mi = meta('data/kosis', 'mfg-production-index-industry');
@@ -68,29 +66,29 @@ export function monthlySeries(): Series[] {
     { key: 'ip', group: '생산', name: '광공업 생산지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
     { key: 'ship', group: '생산', name: '광공업 출하지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산자제품 출하지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
     { key: 'inv', group: '생산', name: '광공업 재고지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산자제품 재고지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
-    { key: 'svc', group: '생산', name: '서비스업 생산지수(분기)', unit: '2020=100', change: '%', digits: 1, pts: dpi('대구 서비스업 생산지수(분기)'), source: DPI_SRC, url: DPI_URL, note: '분기 값, 기준월은 분기 끝 달', quarterly: true },
+    { key: 'svc', group: '생산', name: '서비스업 생산지수(분기)', unit: '2020=100', change: '%', digits: 1, pts: dpi('대구 서비스업 생산지수(분기)'), compiled: true, source: '국가데이터처 서비스업동향조사', url: '', note: '분기 값, 기준월은 분기 끝 달', quarterly: true },
     { key: 'emp', group: '고용·인구', name: '취업자', unit: '천 명', change: '%', digits: 1, pts: lab('취업자'), source: kSrc(lf), url: lf.source_url ?? '' },
     { key: 'er', group: '고용·인구', name: '고용률', unit: '%', change: '%p', digits: 1, pts: lab('고용률'), source: kSrc(lf), url: lf.source_url ?? '', note: '15세 이상' },
     { key: 'ur', group: '고용·인구', name: '실업률', unit: '%', change: '%p', digits: 1, pts: lab('실업률'), source: kSrc(lf), url: lf.source_url ?? '' },
     { key: 'mig', group: '고용·인구', name: '순이동(전입−전출)', unit: '명', change: 'p', digits: 0, pts: kosis('migration-sido', r => r.ITM_NM === '순이동' && r.C1_NM === '대구광역시'), source: kSrc(mg), url: mg.source_url ?? '', note: '증감은 명' },
     { key: 'csi', group: '소비·투자', name: '소비자심리지수(대구경북)', unit: '지수', change: 'p', digits: 1, pts: ecos('ccsi-region', r => r.ITEM_NAME1 === '소비자심리지수'), source: eSrc(cs), url: cs.source_url ?? '' },
-    { key: 'retail', group: '소비·투자', name: '대형소매점 판매액지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('대형소매점 판매액지수'), source: DPI_SRC, url: DPI_URL, note: '불변지수, 원 통계 국가데이터처' },
-    { key: 'car', group: '소비·투자', name: '자동차 신규등록', unit: '대', change: '%', digits: 0, pts: dpi('자동차 신규등록대수'), source: DPI_SRC, url: DPI_URL, note: '원 통계 국토교통부' },
-    { key: 'capm', group: '소비·투자', name: '자본재 수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('자본재 수입액'), source: DPI_SRC, url: DPI_URL, note: '원 통계 국가데이터처' },
-    { key: 'cons', group: '소비·투자', name: '건설수주액', unit: '억 원', change: '%', digits: 0, pts: dpi('건설수주액'), source: DPI_SRC, url: DPI_URL, note: '원 통계 국가데이터처' },
-    { key: 'exp', group: '수출입', name: '수출액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수출액'), source: DPI_SRC, url: DPI_URL, note: '원 통계 한국무역협회' },
-    { key: 'imp', group: '수출입', name: '수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수입액'), source: DPI_SRC, url: DPI_URL, note: '원 통계 한국무역협회' },
-    { key: 'bal', group: '수출입', name: '무역수지', unit: '백만 달러', change: 'p', digits: 1, pts: dpi('무역수지'), source: DPI_SRC, url: DPI_URL, note: '증감은 백만 달러 차' },
+    { key: 'retail', group: '소비·투자', name: '대형소매점 판매액지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('대형소매점 판매액지수'), compiled: true, source: '국가데이터처 서비스업동향조사', url: '', note: '불변지수' },
+    { key: 'car', group: '소비·투자', name: '자동차 신규등록', unit: '대', change: '%', digits: 0, pts: dpi('자동차 신규등록대수'), compiled: true, source: '국토교통부 자동차 등록 통계', url: '' },
+    { key: 'capm', group: '소비·투자', name: '자본재 수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('자본재 수입액'), compiled: true, source: '국가데이터처', url: '' },
+    { key: 'cons', group: '소비·투자', name: '건설수주액', unit: '억 원', change: '%', digits: 0, pts: dpi('건설수주액'), compiled: true, source: '국가데이터처 건설경기동향조사', url: '' },
+    { key: 'exp', group: '수출입', name: '수출액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수출액'), compiled: true, source: '한국무역협회', url: '' },
+    { key: 'imp', group: '수출입', name: '수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수입액'), compiled: true, source: '한국무역협회', url: '' },
+    { key: 'bal', group: '수출입', name: '무역수지', unit: '백만 달러', change: 'p', digits: 1, pts: dpi('무역수지'), compiled: true, source: '한국무역협회', url: '', note: '증감은 백만 달러 차' },
     { key: 'hhd', group: '금융', name: '가계대출 연체율', unit: '%', change: '%p', digits: 2, pts: dlq('가계대출 연체율(전체1M)'), source: eSrc(dq), url: dq.source_url ?? '', note: '국내은행' },
     { key: 'cod', group: '금융', name: '기업대출 연체율', unit: '%', change: '%p', digits: 2, pts: dlq('기업대출 연체율(전체1M)'), source: eSrc(dq), url: dq.source_url ?? '', note: '국내은행' },
     { key: 'smed', group: '금융', name: '중소기업대출 연체율', unit: '%', change: '%p', digits: 2, pts: dlq('중소기업대출 연체율(전체1M)'), source: eSrc(dq), url: dq.source_url ?? '', note: '국내은행' },
-    { key: 'loan', group: '금융', name: '원화대출금(예금은행)', unit: '십억 원', change: '%', digits: 1, pts: ecos('bank-loans-region', r => r.ITEM_NAME1 === '원화대출금' && r.ITEM_NAME2 === '대구'), source: eSrc(ln), url: ln.source_url ?? '' },
+    { key: 'loan', group: '금융', name: '원화대출금(예금은행)', unit: '조 원', change: '%', digits: 1, pts: ecos('bank-loans-region', r => r.ITEM_NAME1 === '원화대출금' && r.ITEM_NAME2 === '대구').map(p => ({ ...p, v: p.v / 1000 })), source: eSrc(ln), url: ln.source_url ?? '' },
     { key: 'dft', group: '금융', name: '어음부도율', unit: '%', change: '%p', digits: 2, pts: ecos('default-rate-region', r => r.ITEM_NAME1 === '대구'), source: eSrc(df), url: df.source_url ?? '' },
-    { key: 'biz', group: '창업·경기', name: '창업기업 수', unit: '개', change: '%', digits: 0, pts: dpi('창업기업 수'), source: DPI_SRC, url: DPI_URL, note: '원 통계 중소벤처기업부 창업기업동향' },
-    { key: 'cci', group: '창업·경기', name: '경기동행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기동행지수'), source: DPI_SRC, url: DPI_URL, note: '대구정책연구원 작성' },
-    { key: 'cli', group: '창업·경기', name: '경기선행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기선행지수'), source: DPI_SRC, url: DPI_URL, note: '대구정책연구원 작성' },
-    { key: 'mbsi', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('제조업 업황 BSI'), source: DPI_SRC, url: DPI_URL, note: '원 통계 한국은행 대구경북본부' },
-    { key: 'nbsi', group: '창업·경기', name: '비제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('비제조업 업황 BSI'), source: DPI_SRC, url: DPI_URL, note: '원 통계 한국은행 대구경북본부' },
+    { key: 'biz', group: '창업·경기', name: '창업기업 수', unit: '개', change: '%', digits: 0, pts: dpi('창업기업 수'), compiled: true, source: '중소벤처기업부 창업기업동향', url: '' },
+    { key: 'cci', group: '창업·경기', name: '경기동행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기동행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
+    { key: 'cli', group: '창업·경기', name: '경기선행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기선행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
+    { key: 'mbsi', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
+    { key: 'nbsi', group: '창업·경기', name: '비제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('비제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
   ];
   return S.filter(s => s.pts.length);
 }
@@ -150,4 +148,40 @@ export function industryRows(): { latest: string; rows: { name: string; ip: numb
     return { name, ip, ipYoy: yoy(ip, val('생산지수(원지수)', name, prevY)), sh, shYoy: yoy(sh, val('생산자제품 출하지수(원지수)', name, prevY)), inv, invYoy: yoy(inv, val('생산자제품 재고지수(원지수)', name, prevY)) };
   });
   return { latest: ym(lastM), rows, source: `국가데이터처 KOSIS 「${mi.tbl_nm ?? ''}」`, url: mi.source_url ?? '' };
+}
+
+/** 추세 그림(운영자 지시 2026-10-02: 1월부터, 값 표시). 한 지표 = 한 그림, 선 + 점 + 점마다 값. 가로축은 from~to 의 모든 달(값 없는 달은 비움).
+ *  색은 currentColor(페이지 CSS 가 --primary), 글자는 잉크 색. 세로축은 값 범위에 맞춰 위아래 여백을 둔다(0 기준 아님 — 막대가 아니라 선이라). */
+export function trendChart(s: Series, from: string, to: string): string {
+  const months: string[] = [];
+  for (let m = from; m <= to; m = shift(m, 1)) months.push(m);
+  const pts = months.map((m, i) => ({ i, m, p: s.pts.find(q => q.m === m) })).filter(x => x.p) as { i: number; m: string; p: Pt }[];
+  if (!pts.length) return '';
+  const W = 340, H = 180, L = 14, R = 14, T = 26, B = 26;
+  const vs = pts.map(x => x.p.v);
+  let lo = Math.min(...vs), hi = Math.max(...vs);
+  if (hi === lo) { lo -= Math.abs(lo) * 0.05 || 1; hi += Math.abs(hi) * 0.05 || 1; }
+  const pad = (hi - lo) * 0.12; lo -= pad; hi += pad;
+  const x = (i: number) => L + (months.length === 1 ? (W - L - R) / 2 : (i * (W - L - R)) / (months.length - 1));
+  const y = (v: number) => T + ((hi - v) * (H - T - B)) / (hi - lo);
+  const label = (v: number) => {
+    const d = Math.abs(v) >= 1000 ? 0 : s.digits;
+    return v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  };
+  // 이어진 달끼리만 선으로 잇는다(빈 달은 끊는다)
+  let d = '';
+  pts.forEach((x0, k) => { d += `${k && pts[k - 1].i === x0.i - 1 ? 'L' : 'M'}${x(x0.i).toFixed(1)},${y(x0.p.v).toFixed(1)}`; });
+  const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const axis = months.map((m, i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="tc-ax">${Number(m.slice(5))}월</text>`).join('');
+  const dots = pts.map((x0, k) => {
+    const cx = x(x0.i), cy = y(x0.p.v);
+    // 값 글자는 점 위에, 앞 점보다 낮으면(=선이 내려오면) 아래로 — 선과 겹침을 줄인다
+    const prev = pts[k - 1]?.p.v, next = pts[k + 1]?.p.v;
+    const valley = (prev == null || x0.p.v <= prev) && (next == null || x0.p.v <= next) && pts.length > 2;
+    const ty = valley ? cy + 17 : cy - 9;
+    const anchor = x0.i === 0 ? 'start' : x0.i === months.length - 1 ? 'end' : 'middle';
+    const tx = anchor === 'start' ? cx - 4 : anchor === 'end' ? cx + 4 : cx;
+    return `<g><title>${esc(`${x0.m} ${label(x0.p.v)} ${s.unit}`)}</title><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4" class="tc-dot"/><text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${anchor}" class="tc-val">${label(x0.p.v)}</text></g>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" class="trend" role="img" aria-label="${esc(`${s.name} ${from}~${to} 추이`)}"><line x1="${L}" x2="${W - R}" y1="${H - B + 4}" y2="${H - B + 4}" class="tc-base"/>${axis}<path d="${d}" class="tc-line"/>${dots}</svg>`;
 }

@@ -1,0 +1,78 @@
+---
+import fs from 'node:fs';
+import Base from '../../../layouts/Base.astro';
+/** /stats/trade/ — 월간 수출입: 전국(산업통상부 「월 수출입 동향」)과 대구·경북(대구본부세관 「대구·경북지역 수출입 현황」) 비교표.
+ *  운영자 지시 2026-10-02. 값은 data/trade/<YYYYMM>.json(두 보도자료 원문에서 옮긴 값, 원문 글자는 data/trade/raw/). 평가·순위 표현 없음.
+ *  세관은 백만 달러(업체 소재지 기준), 산업통상부는 억 달러(통관기준 잠정치)라 두 기관 값이 조금 다를 수 있어 출처를 칸마다 밝힌다. */
+type Row = Record<string, any>;
+const months: Row[] = fs.readdirSync('data/trade').filter(f => /^\d{6}\.json$/.test(f)).sort().reverse()
+  .map(f => JSON.parse(fs.readFileSync(`data/trade/${f}`, 'utf-8')));
+const n = (v: number | null | undefined, d = 0) => v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const p = (v: number | null | undefined) => v == null ? '—' : `${v > 0 ? '+' : v < 0 ? '△' : ''}${Math.abs(v).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}`;
+const eok = (mil: number | null | undefined) => mil == null ? null : mil / 100;   // 백만 달러 → 억 달러(÷100)
+const ym = (m: string) => `${m.slice(0, 4)}년 ${Number(m.slice(5))}월`;
+---
+<Base title="월간 수출입 — 전국·대구·경북" description="산업통상부 월간 수출입 동향과 대구본부세관 대구·경북지역 수출입 현황을 같은 달 기준으로 나란히 놓은 비교표(수출·수입·무역수지, 품목별, 국가별)." current="stats">
+  <p class="meta"><a href="/stats/kosis/">통계</a> › 월간 수출입</p>
+  <div class="section-head"><h1>월간 수출입 — 전국·대구·경북</h1>{months[0] && <span class="meta">최근 {ym(months[0].month)}</span>}</div>
+  <p class="lede">산업통상부가 매달 1일 내는 「수출입 동향」(전국)과 대구본부세관이 매달 15일쯤 내는 「대구·경북지역 수출입 현황」을 같은 달로 맞춰 놓았습니다. 값은 두 보도자료 원문 그대로이고, 세관 값(백만 달러)은 억 달러로 바꿀 때 100으로 나누기만 했습니다. 두 기관은 집계 기준(세관: 업체 소재지·신고수리일, 산업통상부: 통관기준 잠정치)이 달라 전국 값이 조금 다를 수 있습니다. 평가·순위가 아닙니다.</p>
+  {months.length > 1 && <nav class="toc" aria-label="달"><ol>{months.map(m => <li><a href={`#m${m.month}`}>{ym(m.month)}</a></li>)}</ol></nav>}
+
+  {months.map(m => {
+    const cs = m.customs_summary.rows as Row[];
+    const dg = cs.find(r => r.area === '대구');
+    const nat = cs.find(r => r.area.startsWith('전국'));
+    return (
+    <section id={`m${m.month}`}>
+      <div class="section-head"><h2>{ym(m.month)} 수출입</h2></div>
+
+      <h3>총괄</h3>
+      <div class="scroll-x"><table class="data-table" data-title={`${ym(m.month)} 수출입 총괄 — 전국·대구·경북`}>
+        <thead><tr><th>구분</th><th>출처</th><th class="n">수출(억 달러)</th><th class="n">증감률(%)</th><th class="n">수입(억 달러)</th><th class="n">증감률(%)</th><th class="n">무역수지(억 달러)</th><th class="n">누계 수출(억 달러)</th><th class="n">누계 증감률(%)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">전국</th><td>산업통상부</td><td class="n">{n(m.motir_summary.export, 1)}</td><td class="n">{p(m.motir_summary.export_yoy)}</td><td class="n">{n(m.motir_summary.import, 1)}</td><td class="n">{p(m.motir_summary.import_yoy)}</td><td class="n">{n(m.motir_summary.balance, 1)}</td><td class="n">{n(m.motir_summary.ytd_export, 0)}</td><td class="n">{p(m.motir_summary.ytd_export_yoy)}</td></tr>
+          {cs.map(r => (
+            <tr><th scope="row">{r.area}</th><td>대구본부세관</td><td class="n">{n(eok(r.export), 1)}</td><td class="n">{p(r.export_yoy)}</td><td class="n">{n(eok(r.import), 1)}</td><td class="n">{p(r.import_yoy)}</td><td class="n">{n(r.balance_eok, 1)}</td><td class="n">{n(eok(r.ytd_export), 1)}</td><td class="n">{p(r.ytd_export_yoy)}</td></tr>
+          ))}
+        </tbody>
+      </table></div>
+      <p class="meta">증감률은 전년 같은 달(누계는 전년 같은 기간) 대비. 누계는 그해 1월부터 그달까지. 무역수지는 보도자료에 적힌 값(세관 표의 전국 행은 무역수지가 없어 —). 산업통상부 {ym(m.month)} 자료에는 누계 수출이 없어 —(누계 무역수지 {n(m.motir_summary.ytd_balance, 1)}억 달러). 대구 수출은 세관 표의 전국 수출의 {dg && nat ? ((dg.export / nat.export) * 100).toFixed(2) : '—'}%(같은 표 안의 나눗셈). 출처: <a href={m.sources.motir.url} rel="noopener">{m.sources.motir.name}</a>, <a href={m.sources.customs.url} rel="noopener">{m.sources.customs.name}</a>.</p>
+
+      <h3>국가별 수출</h3>
+      <div class="scroll-x"><table class="data-table" data-title={`${ym(m.month)} 국가별 수출 — 대구·경북·전국`}>
+        <thead><tr><th>국가·지역</th><th class="n">대구(백만 달러)</th><th class="n">증감률(%)</th><th class="n">대구 누계(백만 달러)</th><th class="n">누계 증감률(%)</th><th class="n">경북(백만 달러)</th><th class="n">증감률(%)</th><th class="n">전국(억 달러)</th><th class="n">증감률(%)</th></tr></thead>
+        <tbody>{(m.countries.rows as Row[]).map(r => (
+          <tr><th scope="row">{r.country}</th><td class="n">{n(r.daegu[0])}</td><td class="n">{p(r.daegu[1])}</td><td class="n">{n(r.daegu_ytd[0])}</td><td class="n">{p(r.daegu_ytd[1])}</td><td class="n">{n(r.gb[0])}</td><td class="n">{p(r.gb[1])}</td><td class="n">{n(r.national[0], Number.isInteger(r.national[0]) ? 0 : 1)}</td><td class="n">{p(r.national[1])}</td></tr>
+        ))}</tbody>
+      </table></div>
+      <p class="meta">대구·경북은 대구본부세관, 전국은 산업통상부 값. {m.countries.note}.</p>
+
+      <h3>대구 품목별 수출 (세관, MTI 성질별)</h3>
+      <div class="scroll-x"><table class="data-table" data-title={`${ym(m.month)} 대구 품목별 수출`}>
+        <thead><tr><th>품목(MTI 성질별)</th><th class="n">전년 같은 달(백만 달러)</th><th class="n">이번 달(백만 달러)</th><th class="n">증감률(%)</th><th class="n">누계(백만 달러)</th><th class="n">누계 증감률(%)</th></tr></thead>
+        <tbody>{(m.daegu_export_items.rows as any[]).map(r => (
+          <tr><th scope="row">{String(r[0]).startsWith('  ') ? <span class="sub">└ {r[0].trim()}</span> : r[0]}</th><td class="n">{n(r[1] / 1000, 1)}</td><td class="n">{n(r[2] / 1000, 1)}</td><td class="n">{p(r[3])}</td><td class="n">{n(r[4] / 1000, 1)}</td><td class="n">{p(r[5])}</td></tr>
+        ))}</tbody>
+      </table></div>
+
+      <h3>경북 품목별 수출 (세관, MTI 성질별)</h3>
+      <div class="scroll-x"><table class="data-table" data-title={`${ym(m.month)} 경북 품목별 수출`}>
+        <thead><tr><th>품목(MTI 성질별)</th><th class="n">전년 같은 달(백만 달러)</th><th class="n">이번 달(백만 달러)</th><th class="n">증감률(%)</th><th class="n">누계(백만 달러)</th><th class="n">누계 증감률(%)</th></tr></thead>
+        <tbody>{(m.gb_export_items.rows as any[]).map(r => (
+          <tr><th scope="row">{String(r[0]).startsWith('  ') ? <span class="sub">└ {r[0].trim()}</span> : r[0]}</th><td class="n">{n(r[1] / 1000, 1)}</td><td class="n">{n(r[2] / 1000, 1)}</td><td class="n">{p(r[3])}</td><td class="n">{n(r[4] / 1000, 1)}</td><td class="n">{p(r[5])}</td></tr>
+        ))}</tbody>
+      </table></div>
+
+      <h3>전국 20대 품목 수출 (산업통상부)</h3>
+      <div class="scroll-x"><table class="data-table" data-title={`${ym(m.month)} 전국 20대 품목 수출`}>
+        <thead><tr><th>품목</th><th class="n">수출(억 달러)</th><th class="n">증감률(%)</th></tr></thead>
+        <tbody>{(m.national_items.rows as any[]).map(r => <tr><th scope="row">{r[0]}</th><td class="n">{n(r[1], Number.isInteger(r[1]) ? 0 : 1)}</td><td class="n">{p(r[2])}</td></tr>)}</tbody>
+      </table></div>
+      <p class="meta">세관(MTI 성질별 분류)과 산업통상부(20대 주력품목)는 품목 분류가 달라 같은 이름이어도 1:1로 대응하지 않습니다. 그래서 품목 표를 나란히 두되 한 표로 합치지 않았습니다. 세관 값은 천 달러를 1,000으로 나눠 백만 달러로 적었습니다.</p>
+    </section>
+  ); })}
+  <style>
+    .sub { font-weight: 400; color: var(--muted); }
+    h3 { margin-top: var(--s3); }
+  </style>
+</Base>

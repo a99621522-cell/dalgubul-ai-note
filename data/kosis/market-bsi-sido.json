@@ -1,0 +1,20 @@
+{
+ "key": "market-bsi-sido",
+ "name": "소상공인시장경기동향조사 — 전통시장 지역별 실적·전망 체감경기지수(BSI, 월간)",
+ "tbl_nm": "전통시장 지역별 실적 및 전망",
+ "org_id": "142",
+ "tbl_id": "DT_S0001N_006",
+ "prd_se": "M",
+ "period": [
+  "202301",
+  "202612"
+ ],
+ "rows_total": 1513,
+ "rows_kept": 89,
+ "latest": "202609",
+ "unit": "BSI",
+ "areas": [],
+ "fetched": "2026-10-02",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_S0001N_006",
+ "note": ""
+}

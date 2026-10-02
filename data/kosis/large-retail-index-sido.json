@@ -1,0 +1,20 @@
+{
+ "key": "large-retail-index-sido",
+ "name": "서비스업동향조사 — 시도별 대형소매점 판매액지수(월간, 2020=100)",
+ "tbl_nm": "시도별 대형소매점 판매액지수(2020＝100.0)",
+ "org_id": "101",
+ "tbl_id": "DT_1K41015",
+ "prd_se": "M",
+ "period": [
+  "202301",
+  "202612"
+ ],
+ "rows_total": 3902,
+ "rows_kept": 264,
+ "latest": "202608",
+ "unit": "2020＝100",
+ "areas": [],
+ "fetched": "2026-10-02",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K41015",
+ "note": ""
+}

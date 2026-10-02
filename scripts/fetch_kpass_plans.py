@@ -104,9 +104,12 @@ def find_downloads(html: str, base: str) -> list[str]:
 def save(resp, potm: str) -> dict | None:
     cd = resp.headers.get("Content-Disposition", "")
     m = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
-    if not m:
-        return None
-    raw = m.group(1)
+    if not m:   # 이름 머리가 없으면 PDF 일 때만 번호로 저장
+        if not resp.content.startswith(b"%PDF"):
+            return None
+        raw = re.sub(r".*atchFileId=(\d+).*", r"file\1.pdf", resp.url)
+    else:
+        raw = m.group(1)
     for enc in ("utf-8", "euc-kr"):
         try:
             name = unquote(raw.encode("latin-1").decode(enc)) if "%" not in raw else unquote(raw)
@@ -170,16 +173,11 @@ def main() -> int:
         try:
             pv = get(pop)
             print(f"    팝업 HTTP {pv.status_code} {len(pv.text)}자")
-            for m in re.finditer(r".{0,250}(?:FileDown|atchFileId|fileSn|\.pdf).{0,250}", pv.text, re.I):
-                print("    팝업 HTML:", m.group(0).replace("\n", " ")[:500])
-            for m in re.finditer(r"atchFileId=([\w\-]+)(?:&(?:amp;)?fileSn=(\d+))?", pv.text + v.text):
-                cands.append(f"{BASE}/cmm/FileDown.do?posbId=2&potmId={r['potmId']}&atchFileId={m.group(1)}" + (f"&fileSn={m.group(2)}" if m.group(2) else ""))
-            for m in re.finditer(r"\w*[Dd]own\w*\(\s*'([^']+)'(?:\s*,\s*'([^']*)')?(?:\s*,\s*'([^']*)')?", pv.text + v.text):
-                args = [x for x in m.groups() if x]
-                print("    호출 인자:", m.group(0)[:120])
-                if args and args[0] not in (r["potmId"],) and re.fullmatch(r"[\w\-]{4,}", args[0]):
-                    cands.append(f"{BASE}/cmm/FileDown.do?posbId=2&potmId={r['potmId']}&atchFileId={args[0]}" + (f"&fileSn={args[1]}" if len(args) > 1 and args[1].isdigit() else ""))
-            cands += [u for u in find_downloads(pv.text, pv.url) if "atchFileId=" in u and not u.endswith("atchFileId=")]
+            # 첨부: <a onclick="fn_egov_downFile('N')">파일명</a> → /cmm/FileDown.do?posbId=2&potmId=..&atchFileId=N&type=BOARD
+            for m in re.finditer(r"fn_egov_downFile\('(\d+)'\)\"[^>]*>(?:<i[^>]*></i>)?\s*([^<]+)</a>", pv.text):
+                n, fname = m.group(1), m.group(2).strip()
+                if re.search(r"\.(pdf|hwp|hwpx|zip|docx?)$", fname, re.I):
+                    cands.append(f"{BASE}/cmm/FileDown.do?posbId=2&potmId={r['potmId']}&atchFileId={n}&type=BOARD")
         except Exception as e:  # noqa: BLE001
             print(f"    팝업 실패: {e}")
         cands = list(dict.fromkeys(cands))
@@ -191,7 +189,8 @@ def main() -> int:
             except Exception as e:  # noqa: BLE001
                 print(f"    받기 실패 {u[:80]}: {e}")
                 continue
-            got = save(d, r["potmId"]) if d.ok else None
+            ok_type = not re.search(r"image/|text/html", d.headers.get("Content-Type", ""))
+            got = save(d, r["potmId"]) if d.ok and ok_type and len(d.content) > 10000 else None
             if got:
                 files.append(got)
             else:

@@ -137,24 +137,46 @@ def customs(month: str) -> None:
         pg.get_by_text(hit.get_text(" ", strip=True)[:20], exact=False).first.click()
         pg.wait_for_load_state("networkidle", timeout=60000)
         html, cur = pg.content(), pg.url
-        # 첨부(HWPX 먼저, 없으면 HWP·PDF)는 눌러서 받는다 — 주소가 스크립트로 만들어진다
+        # 첨부: <a class="fdown" href="#none"> 를 누르면 스크립트가 /common/nttFileDownload.do?fileKey=… 로 보낸다.
+        # 스크립트에서 fileKey 를 만드는 방식을 찾아 같은 브라우저 세션(쿠키 유지)으로 직접 받는다
         files = []
-        for ext in (".hwpx", ".pdf", ".hwp"):
-            loc = pg.locator("a", has_text=ext)
-            for i in range(loc.count()):
-                t = loc.nth(i).inner_text().strip()
-                if not t.lower().rstrip().split("[")[0].strip().endswith(ext) or "바로보기" in t:
-                    continue
-                print(f"  첨부 링크 HTML: {loc.nth(i).evaluate('e => e.outerHTML')[:300]}")
-                try:
-                    with pg.expect_download(timeout=60000) as dl:
-                        loc.nth(i).click()
-                    d = dl.value
-                    files.append((d.suggested_filename or t, Path(d.path()).read_bytes()))
-                except Exception as e:  # noqa: BLE001
-                    print(f"  첨부 받기 실패 {t[:40]}: {e}")
-            if files:
+        for m_ in re.finditer(r".{0,400}fdown.{0,600}", html.replace("\n", " ")):
+            if "nttFileDownload" in m_.group(0) or "function" in m_.group(0):
+                print("  fdown 스크립트:", m_.group(0)[:900])
                 break
+        info = pg.evaluate("""() => [...document.querySelectorAll('a.fdown')].map(a => ({t: a.innerText.trim(),
+            attrs: [...a.attributes].map(x => x.name + '=' + x.value), parent: a.parentElement.outerHTML.slice(0, 600)}))""")
+        for it in info:
+            print("  첨부:", it["t"][:60], it["attrs"], it["parent"][:400].replace("\n", " "))
+        keys = re.findall(r"nttFileDownload\.do\?fileKey=['\"]?\s*\+?\s*['\"]?([A-Za-z0-9_\-]{8,})", html)
+        cand = re.findall(r"(?:data-[a-z]+|fileKey|fileSn|value)=['\"]([A-Za-z0-9_\-]{16,})['\"]", " ".join(i["parent"] for i in info))
+        for key in dict.fromkeys(keys + cand):
+            url = f"{CUSTOMS}/common/nttFileDownload.do?fileKey={key}"
+            try:
+                r_ = pg.request.get(url, headers={"Referer": cur})
+                body_ = r_.body()
+                cd = r_.headers.get("content-disposition", "")
+                print(f"  시도 {url} → {r_.status}, {len(body_):,} bytes, {cd[:80]}")
+                if r_.ok and len(body_) > 5000 and not body_[:200].lstrip().startswith(b"<"):
+                    mm = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
+                    nm = mm.group(1) if mm else key
+                    try:
+                        nm = nm.encode("latin-1").decode("utf-8")
+                    except (UnicodeEncodeError, UnicodeDecodeError):
+                        pass
+                    files.append((nm, body_))
+            except Exception as e:  # noqa: BLE001
+                print(f"  시도 실패 {key}: {e}")
+        if not files:   # 마지막 수단: 눌러서 새 창·내려받기 이벤트 기다리기
+            for i in range(pg.locator("a.fdown").count()):
+                el = pg.locator("a.fdown").nth(i)
+                try:
+                    with pg.expect_download(timeout=30000) as dl:
+                        el.click(modifiers=[])
+                    d = dl.value
+                    files.append((d.suggested_filename, Path(d.path()).read_bytes()))
+                except Exception as e:  # noqa: BLE001
+                    print(f"  눌러 받기 실패: {str(e)[:100]}")
         b.close()
     for k, (name, data) in enumerate(files, 1):
         txt = file_text(name, data)

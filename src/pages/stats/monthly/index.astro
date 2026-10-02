@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { monthlySeries, change, latest, groups, fmt, fmtChg, trendChart, industryRows } from '../../../lib/monthly';
+import { monthlySeries, change, latest, groups, fmt, fmtChg, trendChart, industryRows, CYCLES, CYCLE_DESC, cycleSentence } from '../../../lib/monthly';
 /** /stats/monthly/ — 월간 대구 경제지표(운영자 지시 2026-10-02). 원 통계(KOSIS·ECOS)에서 직접 읽고, 원 통계를 아직 받지 않는 지표만
  *  data/refs/dpi-*.json 정리값을 쓴다(src/lib/monthly.ts). 지표마다 원 통계 기관을 출처로 적는다 — 페이지에 자료 정리 기관·간행물 이름은 쓰지 않는다
  *  (운영자 지시 2026-10-02, 경기종합지수는 작성 기관이라 그 지표의 출처로만). 그 해 1월부터 추세 그림(값 표시). 값 그대로, 평가 없음. */
@@ -21,12 +21,31 @@ const srcText = (s: typeof S[number]) => s.source;
   <div class="section-head"><h1>월간 대구 경제지표</h1><span class="meta">최근 기준월 {newest}</span></div>
   <p class="lede">대구 경제를 매달 보는 지표 {S.length}개를 한 화면에 모았습니다. {from.slice(0, 4)}년 1월부터의 추세를 그래프로, 최근 값과 증감을 표로 보여 줍니다. 지표마다 원 통계 기관을 출처로 적었습니다. 월간 값은 잠정치라 나중에 고쳐질 수 있습니다. 평가·전망이 아닙니다.</p>
   <nav class="toc" aria-label="차례"><ol>
+    <li><a href="#cycle">경기 국면별 지표 — 선행·동행·후행</a></li>
     <li><a href="#trend">{from.slice(0, 4)}년 1월부터 추세</a></li>
     <li><a href="#summary">한눈에 — 지표별 최근 값</a></li>
     <li><a href="#industry">업종별 생산·출하·재고</a></li>
     {G.map((g, i) => <li><a href={`#g${i}`}>{g} — 월별 값</a></li>)}
     <li><a href="#sources">출처와 읽는 법</a></li>
   </ol></nav>
+
+  <section id="cycle">
+    <div class="section-head"><h2>경기 국면별 지표 — 선행·동행·후행</h2></div>
+    <p class="meta">국가데이터처 경기종합지수는 구성지표를 경기보다 먼저 움직이는 선행(재고순환지표·경제심리지수·기계류내수출하지수·건설수주액·수출입물가비율·코스피·장단기금리차), 같은 때 움직이는 동행(광공업생산지수·서비스업생산지수·건설기성액·소매판매액지수·내수출하지수·수입액·비농림어업취업자수), 늦게 움직이는 후행(생산자제품재고지수 등)으로 나눕니다. 이 페이지의 대구 지표 가운데 그 구성지표와 같거나 비슷한 것을 같은 기준으로 나눴습니다. 나머지 지표는 아래 부문별 그래프·표에 있습니다. 문장은 증감 방향의 개수만 센 것이며 경기 판단이 아닙니다.</p>
+    {CYCLES.map(c => { const ss = S.filter(s => s.cycle === c).sort((a, b) => Number(b.key === 'cci' || b.key === 'cli') - Number(a.key === 'cci' || a.key === 'cli')); return ss.length > 0 && (
+      <>
+        <h3 class="tg">{c} 지표 <span class="u">— {CYCLE_DESC[c]}</span></h3>
+        <p class="csent">{cycleSentence(S, c)}</p>
+        <div class="scroll-x"><table class="data-table" data-title={`대구 ${c} 지표`}>
+          <thead><tr><th>지표</th><th>경기종합지수 구성지표와의 관계</th><th>기준월</th><th class="n">값</th><th>단위</th><th class="n">전년 같은 달 대비</th><th class="n">전월 대비</th></tr></thead>
+          <tbody>{ss.map(s => { const p = latest(s); const y = change(s, p, 12), m = change(s, p, 1); const d = s.change === '%p' ? Math.max(1, s.digits) : 1; return (
+            <tr><th scope="row">{s.name}</th><td class="src">{s.rel}</td><td class="nw">{p.m}</td><td class="n">{fmt(p.v, s.digits)}</td><td>{s.unit}</td>
+              <td class="n">{fmtChg(y, s.unit, d)}{y != null && <span class="u">{unitChg(s)}</span>}</td>
+              <td class="n">{fmtChg(m, s.unit, d)}{m != null && <span class="u">{unitChg(s)}</span>}</td></tr>); })}</tbody>
+        </table></div>
+      </>); })}
+    <p class="meta">재고순환지표는 KOSIS 대구 제조업 출하지수 전년동월비에서 재고지수 전년동월비를 뺀 값(이 사이트 계산, %p)입니다. 구성지표 가운데 대구 값을 이 사이트가 받지 않는 것(기계류내수출하지수·수출입물가비율·코스피·장단기금리차·건설기성액 등)은 표에 없습니다.</p>
+  </section>
 
   <section id="trend">
     <div class="section-head"><h2>{from.slice(0, 4)}년 1월부터 추세</h2></div>
@@ -37,7 +56,7 @@ const srcText = (s: typeof S[number]) => s.source;
         <div class="trend-grid">
           {S.filter(s => s.group === g).map(s => { const svg = trendChart(s, from, newest); return svg && (
             <figure class="tcard">
-              <figcaption><strong>{s.name}</strong> <span class="u">({s.unit})</span></figcaption>
+              <figcaption>{s.cycle && <span class="ctag">{s.cycle}</span>}<strong>{s.name}</strong> <span class="u">({s.unit})</span></figcaption>
               <div set:html={svg} />
               <p class="tsrc">출처: {srcText(s)}{s.note && ` · ${s.note}`}</p>
             </figure>); })}
@@ -112,6 +131,8 @@ const srcText = (s: typeof S[number]) => s.source;
     .tcard :global(.tc-val) { fill: var(--ink); font-size: 11px; font-variant-numeric: tabular-nums; }
     .tcard :global(.tc-ax) { fill: var(--muted); font-size: 10.5px; }
     .tcard :global(.tc-base) { stroke: var(--line); stroke-width: 1; }
+    .ctag { display: inline-block; font-size: 11px; line-height: 1; padding: 3px 5px; margin-right: 5px; border: 1px solid var(--line-strong); border-radius: 4px; color: var(--muted); vertical-align: 1px; }
+    .csent { margin: 0 0 var(--s1); }
     .tsrc { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
   </style>
 </Base>

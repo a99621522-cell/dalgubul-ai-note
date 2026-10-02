@@ -1,8 +1,13 @@
 ---
+import fs from 'node:fs';
 import Base from '../../layouts/Base.astro';
 /** /policy/ — 리포트(메뉴 이름 '리포트', 운영자 지시 2026-09-30): 운영자가 올린 자료의 PDF·Word 내려받기만 둔다.
  *  파일은 public/files/ 에 두고 아래 FILES 에 한 줄씩 더한다. 한글(HWPX)판은 한글에서 제대로 열리지 않아 내렸다(운영자 확인 2026-09-30). PDF 는 Word 를 LibreOffice 로 변환(맑은 고딕 → Pretendard, 운영자 지시 2026-10-01).
  *  정책제안 리포트 목록·산업 정책 글·국비↔시비 매칭 표는 이 페이지에서 뺐다. */
+// 대구 지역산업진흥계획(대구광역시 수립, KIAT 과제관리시스템 자료실 공개본 원문 그대로) — scripts/fetch_kpass_plans.py·regional_plan.yml 이 받는다
+const PLANS: { year: string; title: string; orig: string; file: string; bytes: number; pages: number | null; posted: string; source_url: string }[] =
+  fs.existsSync('data/regional_plan/index.json') ? JSON.parse(fs.readFileSync('data/regional_plan/index.json', 'utf-8')) : [];
+const mb = (b: number) => `${(b / 1048576).toFixed(1)}MB`;
 const FILES = [
   { title: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)', name: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판',
     href: '/files/daegu-industry-structure.docx', size: '1.7MB', pdf: '/files/daegu-industry-structure.pdf', pdfSize: '2.2MB' },
@@ -10,7 +15,7 @@ const FILES = [
     href: '/files/supply-chain-map-guide.docx', size: '11.4MB', pdf: '/files/supply-chain-map-guide.pdf', pdfSize: '15MB' },
 ];
 ---
-<Base title="리포트" description={`리포트 자료 내려받기 ${FILES.length}건(PDF·Word).`} current="policy">
+<Base title="리포트" description={`리포트 자료 내려받기 ${FILES.length}건(PDF·Word)과 대구 지역산업진흥계획 ${PLANS.length}개 연도(PDF).`} current="policy">
   <div class="section-head"><h1>리포트</h1><span class="meta">자료 {FILES.length}건</span></div>
   <ul class="files">
     {FILES.map(f => (
@@ -20,6 +25,19 @@ const FILES = [
       </li>
     ))}
   </ul>
+
+  {PLANS.length > 0 && <section id="regional-plan">
+    <div class="section-head"><h2>대구 지역산업진흥계획</h2><span class="meta">{PLANS.length}개 연도 · PDF</span></div>
+    <p class="meta">대구광역시가 해마다 수립해 한국산업기술진흥원(KIAT) 과제관리시스템 자료실에 공개한 계획서 원문입니다(손대지 않은 원본). 자료실의 대구 계획은 {PLANS[PLANS.length - 1].year}~{PLANS[0].year}년분이며, 그 뒤 연도의 계획은 공개된 원문을 찾지 못했습니다.</p>
+    <ul class="files">
+      {PLANS.map(p => (
+        <li>
+          <span class="t">{p.title}</span>
+          <span class="dl"><a href={p.file} download={`${p.year}년 대구 지역산업진흥계획.pdf`}>PDF 내려받기</a> <span class="meta">{mb(p.bytes)}{p.pages ? ` · ${p.pages}쪽` : ''} · 자료실 게시 {p.posted} · <a href={p.source_url} rel="noopener">원문 게시글</a></span></span>
+        </li>
+      ))}
+    </ul>
+  </section>}
   <style>
     ul.files { list-style: none; padding: 0; }
     ul.files li { padding: var(--s2) 0; border-bottom: 1px solid var(--line); }

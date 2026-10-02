@@ -1,0 +1,46 @@
+name: 월간 수출입 보도자료 받기 (산업통상부·대구본부세관)
+
+# 전국 「YYYY년 M월 수출입 동향」(산업통상부)과 「YYYY년 M월 대구·경북지역 수출입 현황」(대구본부세관) 본문·첨부 글자를
+# data/trade/raw/ 에 커밋한다(비교표 원문 대조용). 이 세션 환경은 두 사이트가 막혀 있어 러너가 받는다.
+on:
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "대상 월(YYYY-MM)"
+        required: true
+      only:
+        description: "customs,motir 중 일부만"
+        default: "customs,motir"
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["data/trade/fetch_month.txt"]
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils
+      - run: pip install -q -r scripts/requirements.txt pyhwp openpyxl playwright && python -m playwright install --with-deps chromium
+      - name: 받기
+        env:
+          MONTH_IN: ${{ inputs.month }}
+          ONLY_IN: ${{ inputs.only }}
+        run: |
+          M="${MONTH_IN:-$(head -1 data/trade/fetch_month.txt)}"
+          python3 scripts/fetch_trade_press.py --month "$M" --only "${ONLY_IN:-customs,motir}"
+      - name: 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          [ -d data/trade/raw ] && git add -A data/trade/raw
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 수출입 보도자료 원문 받기 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

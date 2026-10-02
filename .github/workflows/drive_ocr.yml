@@ -20,6 +20,10 @@ on:
         description: "tesseract 언어(기본 kor+eng)"
         required: false
         default: "kor+eng"
+      echo:
+        description: "뽑은 글자를 로그에도 찍기(true) — 세션 환경에서 아티팩트 저장소(blob)가 막혀 있을 때 get_job_logs 로 읽는다"
+        required: false
+        default: "false"
       parse_budget:
         description: "대구시 본예산 사업설명서면 true — 글자를 뽑은 뒤 scripts/parse_city_budget.py --append 로 city_programs.csv 를 갱신하고 main 에 커밋(원문 txt 는 커밋하지 않음)"
         required: false
@@ -32,6 +36,8 @@ jobs:
   ocr:
     runs-on: ubuntu-latest
     timeout-minutes: 300
+    env:
+      OMP_THREAD_LIMIT: "1"   # tesseract 여러 개를 나란히 돌릴 때 OpenMP 스레드끼리 다투어 몇 배 느려지는 것을 막는다
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -46,7 +52,7 @@ jobs:
       - name: 받기 + OCR
         env:
           FILES: ${{ inputs.files }}
-        run: python3 scripts/drive_ocr.py --files "$FILES" --dpi "${{ inputs.dpi }}" --lang "${{ inputs.lang }}" --out ocr
+        run: python3 scripts/drive_ocr.py --files "$FILES" --dpi "${{ inputs.dpi }}" --lang "${{ inputs.lang }}" --out ocr $([ "${{ inputs.echo }}" = true ] && echo --echo)
       - name: 결과 요약
         if: always()
         run: |

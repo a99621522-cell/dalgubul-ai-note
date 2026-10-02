@@ -87,16 +87,28 @@ def process_pdf(pdf: Path, out: Path, dpi: int, lang: str, workers: int, batch: 
         txt.write_text(head + "\n".join(f"=== 쪽 {i} ===\n{t.strip()}\n" for i, t in enumerate(texts, 1)), encoding="utf-8")
 
     save(0)
-    for s in range(0, len(need), batch):
-        chunk = need[s:s + batch]
-        shutil.rmtree(work, ignore_errors=True); work.mkdir(parents=True, exist_ok=True)
-        subprocess.run(["pdftoppm", "-r", str(dpi), "-gray", "-png", "-f", str(chunk[0]), "-l", str(chunk[-1]), str(pdf), str(work / "p")], check=True)
-        pngs = {int(m.group(1)): p for p in work.glob("p-*.png") if (m := re.search(r"-(\d+)\.png$", p.name))}
-        with ThreadPoolExecutor(max_workers=workers) as ex:
-            for i, t in zip(chunk, ex.map(lambda i: ocr_page(pngs[i], lang) if i in pngs else "", chunk)):
-                texts[i - 1] = t
-        save(chunk[-1])
-        print(f"  … {chunk[-1]}/{n} ({time.time() - t0:.0f}s)", flush=True)
+    work.mkdir(parents=True, exist_ok=True)
+
+    def one(i: int) -> tuple[int, str, float, float]:
+        """한 쪽씩 렌더→OCR(쪽마다 따로 돌려 렌더도 병렬로). 벡터로 그린 글자(한글 문서를 PDF 로 내보내며 글자를 그림으로 바꾼 쪽)는
+        렌더가 느려 배치로 한 번에 렌더하면 그동안 OCR 이 놀았다(2026-10-02: 37쪽에 2시간 가까이)."""
+        t = time.time()
+        base = work / f"p{i}"
+        subprocess.run(["pdftoppm", "-r", str(dpi), "-gray", "-png", "-singlefile", "-f", str(i), "-l", str(i), str(pdf), str(base)], check=False)
+        png = base.with_suffix(".png")
+        tr = time.time() - t
+        text = ocr_page(png, lang) if png.exists() else ""
+        png.unlink(missing_ok=True)
+        return i, text, tr, time.time() - t - tr
+
+    done = 0
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for i, text, tr, to in ex.map(one, need):
+            texts[i - 1] = text
+            done += 1
+            print(f"  쪽 {i}: 렌더 {tr:.0f}s · OCR {to:.0f}s · {len(text):,}자 ({done}/{len(need)}, {time.time() - t0:.0f}s)", flush=True)
+            if done % batch == 0:
+                save(i)
     shutil.rmtree(work, ignore_errors=True)
     save(n)
     body = txt.read_text(encoding="utf-8")
@@ -111,6 +123,7 @@ def main():
     ap.add_argument("--lang", default="kor+eng")
     ap.add_argument("--out", default="ocr")
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2)))
+    ap.add_argument("--echo", action="store_true", help="뽑은 글자를 로그에 찍는다(세션이 아티팩트를 못 받을 때 로그로 읽는다)")
     a = ap.parse_args()
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     dl = Path("_drive_dl")
@@ -128,6 +141,11 @@ def main():
     (out / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
     for r in index:
         print(f"{r['file']}: {r['pages']}쪽 · OCR {r['ocr_pages']}쪽 · {r['chars']:,}자 · 빈 쪽 {r['empty_pages']} · {r['seconds']}s → {r['txt']}")
+    if a.echo:
+        for r in index:
+            print(f"\n##### {r['txt']} 시작 #####")
+            print((out / r["txt"]).read_text(encoding="utf-8"))
+            print(f"##### {r['txt']} 끝 #####", flush=True)
     if not index:
         print("::error::처리한 PDF 가 없다"); sys.exit(1)
 

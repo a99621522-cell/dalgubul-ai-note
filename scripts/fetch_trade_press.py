@@ -69,8 +69,13 @@ def fetch_attachments(html: str, base: str, prefix: str, referer: str) -> None:
     for a in soup.find_all("a"):
         href = a.get("href") or ""
         label = a.get_text(" ", strip=True)
-        if not re.search(r"(nttFileDownload|fileDown|FileDown|download|atchFile)", href, re.I) and not re.search(r"\.(pdf|hwpx?)\b", label, re.I):
+        if not re.search(r"(nttFileDownload|fileDown|FileDown|download|atchFile)", href + " " + (a.get("onclick") or ""), re.I) and not re.search(r"\.(pdf|hwpx?)\b", label, re.I):
             continue
+        onclick = a.get("onclick") or ""
+        if (not href or href.startswith(("#", "javascript"))) and onclick:
+            mk = re.search(r"['\"]([A-Za-z0-9_\-]{8,})['\"]", onclick)
+            href = f"/common/nttFileDownload.do?fileKey={mk.group(1)}" if mk else ""
+            print(f"  첨부 onclick: {onclick[:120]} → {href}")
         if not href or href.startswith(("#", "javascript")):
             continue
         url = urljoin(base, href)
@@ -123,13 +128,23 @@ def customs(month: str) -> None:
     if not sn:
         print("[세관] 글 번호(nttSn) 못 찾음")
         return
-    data = {"bbsId": "1525", "nttSn": sn, "mi": "3867"}
-    v = S.post(CUSTOMS_VIEW, data=data, timeout=60, headers={"Referer": CUSTOMS_LIST})
-    if v.status_code != 200 or len(v.text) < 2000:
-        v = get(f"{CUSTOMS_VIEW}?bbsId=1525&nttSn={sn}&mi=3867")
-    print(f"[세관] 상세 HTTP {v.status_code}, {len(v.text):,}자 (nttSn {sn})")
+    # 상세는 목록의 글 제목을 누르면 스크립트가 폼을 POST 한다(직접 POST 는 '시스템안내' 오류) → 브라우저로 누른다
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        b = p.chromium.launch()
+        pg = b.new_page(user_agent=UA["User-Agent"])
+        pg.goto(CUSTOMS_LIST, wait_until="networkidle", timeout=60000)
+        pg.get_by_text(hit.get_text(" ", strip=True)[:20], exact=False).first.click()
+        pg.wait_for_load_state("networkidle", timeout=60000)
+        html, cur = pg.content(), pg.url
+        b.close()
+
+    class V:  # requests 응답처럼 쓰기
+        text, url = html, cur
+    v = V()
+    print(f"[세관] 상세 {cur}, {len(html):,}자 (nttSn {sn})")
     body = text_of(v.text)
-    save(f"customs_{y}{m}.txt", f"# 대구본부세관 보도자료 nttSn={sn}\n# 주소: {CUSTOMS_VIEW}?bbsId=1525&nttSn={sn}&mi=3867\n\n{body}")
+    save(f"customs_{y}{m}.txt", f"# 대구본부세관 보도자료 nttSn={sn}\n# 목록: {CUSTOMS_LIST}\n\n{body}")
     fetch_attachments(v.text, v.url, f"customs_{y}{m}", v.url)
 
 

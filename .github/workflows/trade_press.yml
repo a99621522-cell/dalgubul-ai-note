@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils
-      - run: pip install -q -r scripts/requirements.txt pyhwp openpyxl
+      - run: pip install -q -r scripts/requirements.txt pyhwp openpyxl playwright && python -m playwright install --with-deps chromium
       - name: 받기
         env:
           MONTH_IN: ${{ inputs.month }}

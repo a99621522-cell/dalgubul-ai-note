@@ -316,3 +316,25 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
 .sub-tabs a { display: inline-flex; align-items: center; min-height: var(--touch); padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--bg); }
 .sub-tabs a:hover { background: var(--surface); }
 .sub-tabs a[aria-current="page"] { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 700; }
+
+/* 추세 그래프 카드(src/lib/monthly.ts trendChart) — 통계 경기 동향·서비스업 페이지 */
+.trend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--s2); }
+.tcard { margin: 0; padding: 12px 12px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); min-width: 0; }
+.tcard figcaption { font-size: var(--small); margin-bottom: 4px; }
+.tcard svg.trend { display: block; width: 100%; height: auto; color: var(--primary); overflow: visible; max-width: none; }
+.tcard .tc-line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.tcard .tc-dot { fill: currentColor; stroke: var(--bg); stroke-width: 2; }
+.tcard .tc-val { fill: var(--ink); font-size: 11px; font-variant-numeric: tabular-nums; }
+.tcard .tc-ax { fill: var(--muted); font-size: 10.5px; }
+.tcard .tc-base { stroke: var(--line); stroke-width: 1; }
+.tcard .tsrc { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+.stat-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); margin: var(--s2) 0 var(--s3); }
+@media (min-width: 640px) { .stat-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.stat-tiles .tile { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); text-decoration: none; }
+.stat-tiles .tile:hover { background: var(--surface); }
+.stat-tiles .tl { font-size: var(--small); color: var(--muted); }
+.stat-tiles .tv { font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.stat-tiles .tv small { font-size: var(--small); font-weight: 400; color: var(--muted); }
+.stat-tiles .ty { font-size: 12px; color: var(--muted); }
+.stat-details { margin: var(--s1) 0 var(--s3); }
+.stat-details > summary { cursor: pointer; color: var(--primary); padding: 6px 0; }

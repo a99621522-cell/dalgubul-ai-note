@@ -132,7 +132,8 @@ def customs(month: str) -> None:
     from playwright.sync_api import sync_playwright
     with sync_playwright() as p:
         b = p.chromium.launch()
-        pg = b.new_page(user_agent=UA["User-Agent"])
+        pg = b.new_page(user_agent=UA["User-Agent"], accept_downloads=True)
+        pg.on("dialog", lambda d: (print(f"  대화상자: {d.message[:80]} → 확인"), d.accept()))   # 내려받기 확인 창을 받아들인다
         pg.goto(CUSTOMS_LIST, wait_until="networkidle", timeout=60000)
         pg.get_by_text(hit.get_text(" ", strip=True)[:20], exact=False).first.click()
         pg.wait_for_load_state("networkidle", timeout=60000)
@@ -185,8 +186,10 @@ def customs(month: str) -> None:
                 if ".hwpx" not in fd.nth(i).inner_text() and i < fd.count() - 1:
                     continue
                 try:
-                    fd.nth(i).click()
-                    pg.wait_for_timeout(15000)
+                    with pg.expect_download(timeout=30000) as dl:
+                        fd.nth(i).click()
+                    d = dl.value
+                    files.append((d.suggested_filename, Path(d.path()).read_bytes()))
                 except Exception as e:  # noqa: BLE001
                     print(f"  누르기 실패: {str(e)[:100]}")
                 break

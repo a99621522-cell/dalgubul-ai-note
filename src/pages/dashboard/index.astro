@@ -64,7 +64,7 @@ const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.
           <p class="meta">벤처기업은 중기부 벤처기업명단, 창업기업은 국민연금 적용일 기준 설립 7년 이내, 첨복단지 입주는 케이메디허브 공개 현황입니다.</p>
         </section>
       )}
-      <p class="meta">출처: 팩토리온 입주업체현황({m.sources.factoryon.as_of}), 국민연금 가입 사업장 내역({m.month}, {fmt(m.sources.nps?.rows ?? null)}행 중 {fmt(m.sources.nps?.matched ?? null)}곳 매칭). 이달 통계표: <a href={`/stats/${m.month}/`}>{ym}</a>. 국가데이터처 통계표(산업구조 지표·산업별 기업·취업자·월간 고용): <a href="/stats/kosis/">KOSIS 통계표</a>.</p>
+      <p class="meta">출처: 팩토리온 입주업체현황({m.sources.factoryon.as_of}), 국민연금 가입 사업장 내역({m.month}, {fmt(m.sources.nps?.rows ?? null)}행 중 {fmt(m.sources.nps?.matched ?? null)}곳 매칭). 이달 통계표: <a href={`/stats/${m.month}/`}>{ym}</a>. 국가데이터처·한국은행 통계(주제별): <a href="/stats/">통계</a>.</p>
     </>
   ) : <p class="empty">통계가 아직 없습니다. scripts/build_stats.py 를 먼저 실행하세요.</p>}
 </Base>

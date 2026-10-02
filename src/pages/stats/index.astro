@@ -1,0 +1,66 @@
+---
+import Base from '../../layouts/Base.astro';
+import StatsNav from '../../components/StatsNav.astro';
+import { TOPICS, KOSIS_TOPICS } from '../../lib/statsTopics';
+import { kosisTable, kosisChart } from '../../lib/kosis';
+import { monthlySeries, latest, change, fmt, fmtChg } from '../../lib/monthly';
+import fs from 'node:fs';
+/** /stats/ — 통계 허브(운영자 지적 2026-10-02: 통계가 복잡하고 분류가 없다). 주제 6개 카드 + 경기 동향 핵심 숫자. 값 그대로, 평가 없음. */
+const S = monthlySeries();
+const pick = (k: string) => S.find(s => s.key === k);
+const heads = ['ip', 'er', 'exp', 'csi'].map(pick).filter(Boolean) as typeof S;
+const tradeMonths = fs.readdirSync('data/trade').filter(f => /^\d{6}\.json$/.test(f)).sort();
+const count = (key: string) => {
+  const ss = KOSIS_TOPICS[key] ?? [];
+  return { t: ss.flatMap(s => s.tables).filter(id => kosisTable(id)).length, c: ss.flatMap(s => s.charts).filter(n => kosisChart(n)).length };
+};
+---
+<Base title="통계" description="대구 통계를 주제 6개로: 경기 동향(월간), 수출입(월간), 제조업, 산업 구조, 기업·사업체, 인구·고용. 국가데이터처 KOSIS·한국은행 ECOS·세관 자료, 값 그대로." current="stats">
+  <div class="section-head"><h1>통계</h1></div>
+  <p class="lede">대구 통계를 주제 6개로 나눴습니다. 매달 바뀌는 <strong>경기 동향·수출입</strong>은 위에, 해마다 바뀌는 <strong>제조업·산업 구조·기업·인구</strong>는 아래에 있습니다. 값은 원 통계 그대로이고 평가·순위가 아닙니다.</p>
+  <StatsNav current="hub" />
+
+  {heads.length > 0 && (
+  <section aria-labelledby="h-now">
+    <div class="section-head"><h2 id="h-now">이번 달 핵심 숫자</h2><a href="/stats/monthly/">경기 동향 전체</a></div>
+    <div class="tiles">
+      {heads.map(s => { const p = latest(s); const y = change(s, p, 12); return (
+        <a class="tile" href="/stats/monthly/">
+          <span class="tl">{s.name}</span>
+          <span class="tv">{fmt(p.v, s.digits)}<small> {s.unit === '2020=100' ? '' : s.unit}</small></span>
+          <span class="ty">{p.m} · 전년 같은 달 대비 {fmtChg(y, s.unit, s.change === '%p' ? 1 : 1)}{y != null && (s.change === '%' ? '%' : s.change === '%p' ? '%p' : 'p')}</span>
+        </a>); })}
+    </div>
+  </section>)}
+
+  <section aria-labelledby="h-topics">
+    <div class="section-head"><h2 id="h-topics">주제별 통계</h2></div>
+    <div class="cards">
+      {TOPICS.map(t => { const n = count(t.key); return (
+        <a class="card" href={t.href}>
+          <span class="cp">{t.period}</span>
+          <strong class="cn">{t.name}</strong>
+          <span class="cd">{t.desc}</span>
+          <span class="cm">{t.key === 'monthly' ? `지표 ${S.length}개` : t.key === 'trade' ? `${tradeMonths.length}개월 비교표` : `표 ${n.t}개 · 그래프 ${n.c}개`}</span>
+        </a>); })}
+    </div>
+  </section>
+  <p class="meta more">기업 사전으로 집계한 달별 기업 수·고용 통계표는 <a href="/dashboard/">현황판</a>에 있습니다.</p>
+  <style>
+    .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s2); margin-bottom: var(--s3); }
+    .tile { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); text-decoration: none; }
+    .tile:hover { background: var(--surface); }
+    .tl { font-size: var(--small); color: var(--muted); }
+    .tv { font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+    .tv small { font-size: var(--small); font-weight: 400; color: var(--muted); }
+    .ty { font-size: 12px; color: var(--muted); }
+    .more { margin-top: var(--s2); }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--s2); }
+    .card { display: flex; flex-direction: column; gap: 6px; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); text-decoration: none; }
+    .card:hover { background: var(--surface); border-color: var(--line-strong); }
+    .cp { align-self: flex-start; font-size: 11px; padding: 2px 6px; border: 1px solid var(--line-strong); border-radius: 4px; color: var(--muted); }
+    .cn { font-size: 1.15rem; }
+    .cd { font-size: var(--small); color: var(--muted); }
+    .cm { font-size: 12px; color: var(--primary); margin-top: auto; }
+  </style>
+</Base>

@@ -1,0 +1,41 @@
+---
+import { kosisTable, kosisChart, fmtCell } from '../lib/kosis';
+import type { KosisSection } from '../lib/statsTopics';
+/** KOSIS 표·그래프 묶음을 그린다(render_kosis.py 산출물). 값은 KOSIS 그대로, 평가·순위 없음. 표는 table.data-table(한글 표 복사·PDF). */
+interface Props { sections: KosisSection[] }
+const { sections } = Astro.props;
+const has = (s: KosisSection) => s.tables.some(t => kosisTable(t)) || s.charts.some(c => kosisChart(c));
+const shown = sections.filter(has);
+---
+{shown.length > 1 && <nav class="toc" aria-label="차례"><ol>{shown.map((s, i) => <li><a href={`#k${i}`}>{s.title}</a></li>)}</ol></nav>}
+{shown.map((s, i) => (
+  <section id={`k${i}`}>
+    <div class="section-head"><h2>{s.title}</h2></div>
+    <p class="meta">{s.desc}</p>
+    {s.charts.map(name => { const c = kosisChart(name); return c && (
+      <figure class="chart">
+        <div class="chart-wide" set:html={c.wide} />
+        <div class="chart-narrow" set:html={c.narrow} />
+        <figcaption>{c.table?.title}{c.table?.note && ` · ${c.table.note}`}</figcaption>
+      </figure>
+    ); })}
+    {s.tables.map(id => { const t = kosisTable(id); return t && (
+      <details class="tbl" open={s.charts.length === 0}>
+        <summary>{t.title} <span class="meta">— 표 {t.rows.length}행</span></summary>
+        <div class="scroll-x"><table class="data-table" data-title={t.title}>
+          <thead><tr>{t.columns.map((h, j) => <th class={j ? 'n' : ''}>{h}</th>)}</tr></thead>
+          <tbody>{t.rows.map(r => <tr>{r.map((v, j) => j === 0 ? <th scope="row">{v}</th> : <td class="n">{fmtCell(v)}</td>)}</tr>)}</tbody>
+        </table></div>
+        <p class="meta">출처: {t.source}{t.note && ` · ${t.note}`}</p>
+      </details>
+    ); })}
+  </section>
+))}
+<style>
+  .tbl { margin: 0.8rem 0 1.4rem; }
+  .tbl > summary { cursor: pointer; font-weight: 700; padding: 6px 0; }
+  .chart { margin: 0.6rem 0 1.2rem; }
+  .chart :global(svg) { max-width: 100%; height: auto; }
+  .chart-narrow { display: none; }
+  @media (max-width: 600px) { .chart-wide { display: none; } .chart-narrow { display: block; } }
+</style>

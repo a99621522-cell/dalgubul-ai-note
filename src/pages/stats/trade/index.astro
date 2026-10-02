@@ -13,7 +13,7 @@ const eok = (mil: number | null | undefined) => mil == null ? null : mil / 100; 
 const ym = (m: string) => `${m.slice(0, 4)}년 ${Number(m.slice(5))}월`;
 ---
 <Base title="월간 수출입 — 전국·대구·경북" description="산업통상부 월간 수출입 동향과 대구본부세관 대구·경북지역 수출입 현황을 같은 달 기준으로 나란히 놓은 비교표(수출·수입·무역수지, 품목별, 국가별)." current="stats">
-  <p class="meta"><a href="/stats/kosis/">통계</a> › 월간 수출입</p>
+  <p class="meta"><a href="/stats/kosis/">통계</a> › 월간 수출입 · <a href="/stats/monthly/">월간 대구 경제지표</a></p>
   <div class="section-head"><h1>월간 수출입 — 전국·대구·경북</h1>{months[0] && <span class="meta">최근 {ym(months[0].month)}</span>}</div>
   <p class="lede">산업통상부가 매달 1일 내는 「수출입 동향」(전국)과 대구본부세관이 매달 15일쯤 내는 「대구·경북지역 수출입 현황」을 같은 달로 맞춰 놓았습니다. 값은 두 보도자료 원문 그대로이고, 세관 값(백만 달러)은 억 달러로 바꿀 때 100으로 나누기만 했습니다. 두 기관은 집계 기준(세관: 업체 소재지·신고수리일, 산업통상부: 통관기준 잠정치)이 달라 전국 값이 조금 다를 수 있습니다. 평가·순위가 아닙니다.</p>
   {months.length > 1 && <nav class="toc" aria-label="달"><ol>{months.map(m => <li><a href={`#m${m.month}`}>{ym(m.month)}</a></li>)}</ol></nav>}

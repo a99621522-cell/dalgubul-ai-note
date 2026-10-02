@@ -167,16 +167,37 @@ def customs(month: str) -> None:
                     files.append((nm, body_))
             except Exception as e:  # noqa: BLE001
                 print(f"  시도 실패 {key}: {e}")
-        if not files:   # 마지막 수단: 눌러서 새 창·내려받기 이벤트 기다리기
-            for i in range(pg.locator("a.fdown").count()):
-                el = pg.locator("a.fdown").nth(i)
+        if not files:   # 눌러서 오가는 요청을 지켜보고, 첨부(content-disposition) 응답을 그대로 담는다
+            got = []
+
+            def on_resp(r):
                 try:
-                    with pg.expect_download(timeout=30000) as dl:
-                        el.click(modifiers=[])
-                    d = dl.value
-                    files.append((d.suggested_filename, Path(d.path()).read_bytes()))
+                    cd = r.headers.get("content-disposition", "")
+                    if "attachment" in cd.lower() or "filename" in cd.lower():
+                        got.append((cd, r.body()))
                 except Exception as e:  # noqa: BLE001
-                    print(f"  눌러 받기 실패: {str(e)[:100]}")
+                    print(f"  응답 읽기 실패: {str(e)[:80]}")
+            pg.on("request", lambda q: print(f"  요청 {q.method} {q.url[:160]}") if "customs.go.kr" in q.url and not re.search(r"\.(css|js|png|gif|jpg|woff2?)(\?|$)", q.url) else None)
+            pg.on("response", on_resp)
+            pg.context.on("page", lambda np: (np.on("response", on_resp), print(f"  새 창 {np.url[:160]}")))
+            fd = pg.locator("a.fdown")
+            for i in range(fd.count()):
+                if ".hwpx" not in fd.nth(i).inner_text() and i < fd.count() - 1:
+                    continue
+                try:
+                    fd.nth(i).click()
+                    pg.wait_for_timeout(15000)
+                except Exception as e:  # noqa: BLE001
+                    print(f"  누르기 실패: {str(e)[:100]}")
+                break
+            for cd, body_ in got:
+                mm = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
+                nm = mm.group(1) if mm else "attach"
+                try:
+                    nm = nm.encode("latin-1").decode("utf-8")
+                except (UnicodeEncodeError, UnicodeDecodeError):
+                    pass
+                files.append((nm, body_))
         b.close()
     for k, (name, data) in enumerate(files, 1):
         txt = file_text(name, data)

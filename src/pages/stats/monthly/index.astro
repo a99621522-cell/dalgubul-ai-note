@@ -1,0 +1,89 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { monthlySeries, change, latest, groups, fmt, fmtChg, ymLabel, spark, industryRows, dpiIssues } from '../../../lib/monthly';
+/** /stats/monthly/ — 월간 대구 경제지표(운영자 지시 2026-10-02). 원 통계(KOSIS·ECOS)에서 직접 읽고, 원 통계를 아직 받지 않는 지표만
+ *  대구정책연구원 「월간 대구경제동향」 정리값(data/refs/dpi-*.json)을 쓴다. 지표마다 출처를 적는다. 값 그대로, 평가 없음. */
+const S = monthlySeries();
+const G = groups(S);
+const ind = industryRows();
+const issues = dpiIssues();
+const lastIssue = issues.at(-1);
+const newest = S.map(s => latest(s).m).sort().at(-1) ?? '';
+const unitChg = (s: typeof S[number]) => (s.change === '%' ? '%' : s.change === '%p' ? '%p' : s.unit === '명' ? '명' : s.unit === '백만 달러' ? '백만 달러' : 'p');
+/** 부문별 월별 표: 최근 13개월(그 부문 계열의 달을 합쳐서), 최근 달이 위. */
+const monthsOf = (ss: typeof S) => [...new Set(ss.flatMap(s => s.pts.map(p => p.m)))].sort().reverse().slice(0, 13);
+const KEY_IND = ['자동차 및 트레일러 제조업', '기타 기계 및 장비 제조업', '금속 가공제품 제조업; 기계 및 가구 제외', '1차 금속 제조업', '섬유제품 제조업; 의복 제외', '전기장비 제조업', '의료 정밀 광학 기기 및 시계 제조업', '전자 부품 컴퓨터 영상 음향 및 통신장비 제조업', '고무 및 플라스틱제품 제조업', '화학 물질 및 화학제품 제조업; 의약품 제외', '식료품 제조업'];
+const indRows = [...ind.rows].sort((a, b) => (KEY_IND.indexOf(a.name) + 1 || 99) - (KEY_IND.indexOf(b.name) + 1 || 99));
+---
+<Base title="월간 대구 경제지표" description={`대구의 생산·고용·인구이동·소비·투자·수출입·금융·창업·경기 지표 ${S.length}개를 원 통계(국가데이터처 KOSIS·한국은행 ECOS)와 대구정책연구원 「월간 대구경제동향」으로 한 화면에. 최근 기준월 ${newest}, 전년 같은 달·전월 대비와 최근 13개월 흐름.`} current="stats">
+  <p class="meta"><a href="/stats/kosis/">통계</a> › 월간 대구 경제지표</p>
+  <div class="section-head"><h1>월간 대구 경제지표</h1><span class="meta">최근 기준월 {newest}</span></div>
+  <p class="lede">대구 경제를 매달 보는 지표를 한 화면에 모았습니다. 원 통계로 받을 수 있는 지표는 <strong>원 통계에서 직접</strong>(국가데이터처 KOSIS, 한국은행 ECOS) 읽고, 원 통계를 아직 받지 않는 지표(경기종합지수·자동차 신규등록·건설수주·창업기업·기업경기실사지수 등)만 대구정책연구원 「월간 대구경제동향」에 실린 값을 옮겼습니다. 지표마다 출처를 적었습니다. 월간 값은 잠정치라 나중에 고쳐질 수 있습니다. 평가·전망이 아닙니다.</p>
+  <nav class="toc" aria-label="차례"><ol>
+    <li><a href="#summary">한눈에 — 지표별 최근 값</a></li>
+    <li><a href="#industry">업종별 생산·출하·재고</a></li>
+    {G.map((g, i) => <li><a href={`#g${i}`}>{g} — 월별 값</a></li>)}
+    <li><a href="#sources">출처와 읽는 법</a></li>
+  </ol></nav>
+
+  <section id="summary">
+    <div class="section-head"><h2>한눈에 — 지표별 최근 값</h2></div>
+    <div class="scroll-x"><table class="data-table" data-title="월간 대구 경제지표 — 지표별 최근 값">
+      <thead><tr><th>지표</th><th>기준월</th><th class="n">값</th><th>단위</th><th class="n">전년 같은 달 대비</th><th class="n">전월 대비</th><th class="print-hide">최근 흐름</th><th>출처</th></tr></thead>
+      {G.map(g => <tbody><tr class="grp"><th colspan="8" scope="colgroup">{g}</th></tr>{S.filter(s => s.group === g).map(s => { const p = latest(s); return (
+        <tr>
+          <th scope="row">{s.name}</th>
+          <td class="nw">{p.m}</td>
+          <td class="n">{fmt(p.v, s.digits)}</td>
+          <td>{s.unit}</td>
+          <td class="n">{fmtChg(change(s, p, 12), s.unit, s.change === '%p' ? Math.max(1, s.digits) : 1)}{change(s, p, 12) != null && <span class="u">{unitChg(s)}</span>}</td>
+          <td class="n">{fmtChg(change(s, p, 1), s.unit, s.change === '%p' ? Math.max(1, s.digits) : 1)}{change(s, p, 1) != null && <span class="u">{unitChg(s)}</span>}</td>
+          <td class="print-hide spark-cell" set:html={spark(s)} />
+          <td class="src">{s.url ? <a href={s.url} rel="noopener">{s.source}</a> : s.source}{s.note && <span class="meta"> · {s.note}</span>}</td>
+        </tr>); })}</tbody>)}
+    </table></div>
+    <p class="meta">증감: 지수·금액·건수는 증감률(%), 비율(고용률·실업률·연체율 등)은 %p 차, 소비자심리지수·BSI 는 포인트 차, 순이동은 명 차, 무역수지는 백만 달러 차. △는 감소. 원 통계 계열은 같은 계열의 전년 같은 달·전월 값으로 계산했고, 연구원 자료 계열은 그 호에 적힌 증감을 옮기되 적혀 있지 않으면 실린 값끼리 계산했습니다. '최근 흐름'은 최근 13개월(연구원 자료는 실린 달만) 값의 모양이며 세로 눈금은 지표마다 다릅니다.</p>
+  </section>
+
+  {ind.rows.length > 0 && (
+  <section id="industry">
+    <div class="section-head"><h2>업종별 생산·출하·재고 ({ind.latest})</h2></div>
+    <div class="scroll-x"><table class="data-table" data-title={`대구 업종별 생산·출하·재고지수 ${ind.latest}`}>
+      <thead><tr><th>업종(산업중분류)</th><th class="n">생산지수</th><th class="n">전년 같은 달 대비(%)</th><th class="n">출하지수</th><th class="n">전년 같은 달 대비(%)</th><th class="n">재고지수</th><th class="n">전년 같은 달 대비(%)</th></tr></thead>
+      <tbody>{indRows.map(r => (
+        <tr><th scope="row">{r.name}</th><td class="n">{fmt(r.ip, 1)}</td><td class="n">{fmtChg(r.ipYoy, '')}</td><td class="n">{fmt(r.sh, 1)}</td><td class="n">{fmtChg(r.shYoy, '')}</td><td class="n">{fmt(r.inv, 1)}</td><td class="n">{fmtChg(r.invYoy, '')}</td></tr>
+      ))}</tbody>
+    </table></div>
+    <p class="meta">원지수(2020=100). 표에 없는 칸(—)은 KOSIS 가 그 업종의 재고지수 등을 내지 않거나 값이 없는 경우입니다. 위쪽은 대구 비중이 큰 업종 순으로 놓았을 뿐 순위가 아닙니다. 출처: <a href={ind.url} rel="noopener">{ind.source}</a>. 연도별·업종별 추이는 <a href="/stats/kosis/">통계청 통계</a> 페이지에 있습니다.</p>
+  </section>)}
+
+  {G.map((g, i) => { const ss = S.filter(s => s.group === g); const ms = monthsOf(ss); return (
+  <section id={`g${i}`}>
+    <div class="section-head"><h2>{g} — 월별 값</h2></div>
+    <div class="scroll-x"><table class="data-table" data-title={`대구 ${g} 월별 값`}>
+      <thead><tr><th>기준월</th>{ss.map(s => <th class="n">{s.name}<br /><span class="u">({s.unit})</span></th>)}</tr></thead>
+      <tbody>{ms.map(m => (
+        <tr><th scope="row">{m}</th>{ss.map(s => { const p = s.pts.find(q => q.m === m); return <td class="n">{p ? fmt(p.v, s.digits) : '—'}</td>; })}</tr>
+      ))}</tbody>
+    </table></div>
+    <p class="meta">출처: {[...new Map(ss.map(s => [s.source, s])).values()].map((s, k) => <>{k > 0 && ', '}{s.url ? <a href={s.url} rel="noopener">{s.source}</a> : s.source}</>)}. — 는 그 달 값이 없음(아직 공표 전이거나 연구원 자료에 실리지 않은 달).</p>
+  </section>); })}
+
+  <section id="sources">
+    <div class="section-head"><h2>출처와 읽는 법</h2></div>
+    <ul>
+      <li>원 통계: 국가데이터처 KOSIS(광공업생산지수, 경제활동인구조사, 국내인구이동통계)는 매월 9일, 한국은행 ECOS(소비자동향조사, 지역별 연체율·대출금·어음부도율)는 매월 10일 이 사이트가 받아 갱신합니다.</li>
+      <li>대구정책연구원 「월간 대구경제동향」: 운영자가 받은 호({issues.length}개 호, 마지막 {lastIssue?.title ?? '—'})에서 원 통계로 받지 않는 지표만 옮겼습니다. 글자를 그림으로 내보낸 PDF 라 글자 인식으로 읽었고, 요약·본문·세부 표 중 두 곳 이상에서 맞는 값만 썼습니다. 같은 달 값이 여러 호에 실리면 늦은 호의 값입니다. 해설·전망 문장은 옮기지 않았습니다. 원문은 <a href="https://www.dpi.re.kr/board/list?menuId=MENU002020501000000&boardId=BOARD00082" rel="noopener">대구정책연구원 대구경제동향 게시판</a>.</li>
+      <li>기업경기실사지수(BSI)는 한국은행 ECOS 지역 표를 받고 있으나 이 사이트가 받은 값이 2025년 9월에서 멈춰 있어, 2026년 값은 연구원 자료를 씁니다.</li>
+      <li>월간 수출입의 품목·국가별 비교(대구본부세관·산업통상부)는 <a href="/stats/trade/">월간 수출입</a> 페이지에 있습니다.</li>
+    </ul>
+  </section>
+  <style>
+    .u { color: var(--muted); font-size: var(--small); font-weight: 400; margin-left: 2px; }
+    .spark-cell { color: var(--primary); padding-top: 8px; padding-bottom: 4px; min-width: 120px; }
+    .spark-cell :global(svg) { display: block; width: 104px; height: 28px; max-width: none; }
+    .nw { white-space: nowrap; }
+    tr.grp th { background: var(--surface); font-size: var(--small); color: var(--muted); padding-top: 6px; padding-bottom: 6px; }
+    td.src { font-size: var(--small); min-width: 12rem; }
+  </style>
+</Base>

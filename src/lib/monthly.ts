@@ -21,8 +21,10 @@ const meta = (dir: string, key: string): { source_url?: string; tbl_nm?: string;
   return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf-8')) : {};
 };
 
-function kosis(key: string, pick: (r: Record<string, string>) => boolean): Pt[] {
-  return readCsv(`data/kosis/${key}.csv`).filter(pick).map(r => ({ m: ym(r.PRD_DE), v: Number(r.DT) }))
+/** KOSIS 분기 시점(YYYY0Q)을 분기 끝 달(YYYY-03·06·09·12)로. */
+const qm = (s: string) => (/^\d{4}0[1-4]$/.test(s) ? `${s.slice(0, 4)}-${String(Number(s.slice(5)) * 3).padStart(2, '0')}` : s);
+export function kosis(key: string, pick: (r: Record<string, string>) => boolean, quarterly = false): Pt[] {
+  return readCsv(`data/kosis/${key}.csv`).filter(pick).map(r => ({ m: quarterly ? qm(r.PRD_DE) : ym(r.PRD_DE), v: Number(r.DT) }))
     .filter(p => /^\d{4}-\d{2}$/.test(p.m) && Number.isFinite(p.v)).sort((a, b) => a.m.localeCompare(b.m));
 }
 function ecos(key: string, pick: (r: Record<string, string>) => boolean): Pt[] {
@@ -32,6 +34,7 @@ function ecos(key: string, pick: (r: Record<string, string>) => boolean): Pt[] {
 
 type DpiInd = { name: string; ref_month: string; value: number | null; unit: string; yoy: number | null; mom: number | null; change_unit?: string; note?: string };
 type DpiRef = { slug: string; title: string; published: string; public_url: string; indicators?: DpiInd[] };
+export { meta as kosisMeta };
 export const dpiIssues = (): DpiRef[] => {
   const dir = 'data/refs';
   if (!fs.existsSync(dir)) return [];
@@ -59,6 +62,10 @@ export function monthlySeries(): Series[] {
   const dq = meta('data/ecos', 'bank-delinquency-region');
   const df = meta('data/ecos', 'default-rate-region');
   const ln = meta('data/ecos', 'bank-loans-region');
+  const sv = meta('data/kosis', 'service-index-sido');
+  const lr = meta('data/kosis', 'large-retail-index-sido');
+  const se = meta('data/kosis', 'self-employed-sido');
+  const mb = meta('data/kosis', 'market-bsi-sido');
   const kSrc = (m: typeof mi) => `국가데이터처 KOSIS 「${m.tbl_nm ?? ''}」`;
   const eSrc = (m: typeof cs) => `한국은행 ECOS 「${(m.stat_name ?? '').replace(/^[\d.]+\s*/, '')}」`;
   const mfg = (itm: string) => kosis('mfg-production-index-industry', r => r.ITM_NM === itm && r.C2_NM === '총지수' && r.C1_NM.startsWith('대구'));
@@ -80,13 +87,14 @@ export function monthlySeries(): Series[] {
     { key: 'ship', cycle: '동행', rel: '내수출하지수와 비슷(이 표는 내수·수출 합계)', group: '생산', name: '광공업 출하지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산자제품 출하지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
     { key: 'inv', cycle: '후행', rel: '구성지표와 같음(생산자제품재고지수)', group: '생산', name: '광공업 재고지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산자제품 재고지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
     { key: 'icy', cycle: '선행', rel: '구성지표와 같은 정의(재고순환지표)', group: '생산', name: '재고순환지표(제조업)', unit: '%p', change: '%p', digits: 1, pts: invCycle(), source: kSrc(mi), url: mi.source_url ?? '', note: '출하 전년동월비 − 재고 전년동월비, 이 사이트 계산' },
-    { key: 'svc', cycle: '동행', rel: '구성지표와 같음(서비스업생산지수, 분기)', group: '생산', name: '서비스업 생산지수(분기)', unit: '2020=100', change: '%', digits: 1, pts: dpi('대구 서비스업 생산지수(분기)'), compiled: true, source: '국가데이터처 서비스업동향조사', url: '', note: '분기 값, 기준월은 분기 끝 달', quarterly: true },
+    { key: 'svc', cycle: '동행', rel: '구성지표와 같음(서비스업생산지수, 분기)', group: '생산', name: '서비스업 생산지수(분기)', unit: '2020=100', change: '%', digits: 1, pts: kosis('service-index-sido', r => r.ITM_NM === '불변지수' && r.C2_NM === '총지수', true), source: kSrc(sv), url: sv.source_url ?? '', note: '불변지수, 기준월은 분기 끝 달', quarterly: true },
     { key: 'emp', cycle: '동행', rel: '비농림어업취업자수와 비슷(이 표는 전 산업)', group: '고용·인구', name: '취업자', unit: '천 명', change: '%', digits: 1, pts: lab('취업자'), source: kSrc(lf), url: lf.source_url ?? '' },
+    { key: 'self', group: '고용·인구', name: '자영업자', unit: '천 명', change: '%', digits: 1, pts: kosis('self-employed-sido', r => r.C2_NM === '*자영업자'), source: kSrc(se), url: se.source_url ?? '', note: '고용원 있는·없는 자영업자 합계' },
     { key: 'er', group: '고용·인구', name: '고용률', unit: '%', change: '%p', digits: 1, pts: lab('고용률'), source: kSrc(lf), url: lf.source_url ?? '', note: '15세 이상' },
     { key: 'ur', group: '고용·인구', name: '실업률', unit: '%', change: '%p', digits: 1, pts: lab('실업률'), source: kSrc(lf), url: lf.source_url ?? '' },
     { key: 'mig', group: '고용·인구', name: '순이동(전입−전출)', unit: '명', change: 'p', digits: 0, pts: kosis('migration-sido', r => r.ITM_NM === '순이동' && r.C1_NM === '대구광역시'), source: kSrc(mg), url: mg.source_url ?? '', note: '증감은 명' },
     { key: 'csi', cycle: '선행', rel: '경제심리지수를 이루는 지수(소비자심리)', group: '소비·투자', name: '소비자심리지수(대구경북)', unit: '지수', change: 'p', digits: 1, pts: ecos('ccsi-region', r => r.ITEM_NAME1 === '소비자심리지수'), source: eSrc(cs), url: cs.source_url ?? '' },
-    { key: 'retail', cycle: '동행', rel: '소매판매액지수의 일부(대형소매점)', group: '소비·투자', name: '대형소매점 판매액지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('대형소매점 판매액지수'), compiled: true, source: '국가데이터처 서비스업동향조사', url: '', note: '불변지수' },
+    { key: 'retail', cycle: '동행', rel: '소매판매액지수의 일부(대형소매점)', group: '소비·투자', name: '대형소매점 판매액지수', unit: '2020=100', change: '%', digits: 1, pts: kosis('large-retail-index-sido', r => r.ITM_NM === '대형소매점 불변지수'), source: kSrc(lr), url: lr.source_url ?? '', note: '불변지수' },
     { key: 'car', group: '소비·투자', name: '자동차 신규등록', unit: '대', change: '%', digits: 0, pts: dpi('자동차 신규등록대수'), compiled: true, source: '국토교통부 자동차 등록 통계', url: '' },
     { key: 'capm', group: '소비·투자', name: '자본재 수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('자본재 수입액'), compiled: true, source: '국가데이터처', url: '' },
     { key: 'cons', cycle: '선행', rel: '구성지표와 같음(건설수주액, 통계청은 실질)', group: '소비·투자', name: '건설수주액', unit: '억 원', change: '%', digits: 0, pts: dpi('건설수주액'), compiled: true, source: '국가데이터처 건설경기동향조사', url: '' },
@@ -103,11 +111,12 @@ export function monthlySeries(): Series[] {
     { key: 'cli', cycle: '선행', rel: '대구 선행종합지수', group: '창업·경기', name: '경기선행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기선행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
     { key: 'mbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
     { key: 'nbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '비제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('비제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
+    { key: 'mkt', group: '창업·경기', name: '전통시장 체감경기(BSI)', unit: '지수', change: 'p', digits: 1, pts: kosis('market-bsi-sido', r => r.ITM_NM === '체감' && r.C1_NM === '대구'), source: `소상공인시장진흥공단 「${mb.tbl_nm ?? ''}」(KOSIS)`, url: mb.source_url ?? '', note: '100 넘으면 전월보다 좋다는 응답이 많음' },
   ];
   return S.filter(s => s.pts.length);
 }
 
-const shift = (m: string, k: number) => {
+export const shift = (m: string, k: number) => {
   const [y, mo] = m.split('-').map(Number);
   const t = y * 12 + (mo - 1) + k;
   return `${Math.floor(t / 12)}-${String((t % 12) + 1).padStart(2, '0')}`;
@@ -166,9 +175,9 @@ export function industryRows(): { latest: string; rows: { name: string; ip: numb
 
 /** 추세 그림(운영자 지시 2026-10-02: 1월부터, 값 표시). 한 지표 = 한 그림, 선 + 점 + 점마다 값. 가로축은 from~to 의 모든 달(값 없는 달은 비움).
  *  색은 currentColor(페이지 CSS 가 --primary), 글자는 잉크 색. 세로축은 값 범위에 맞춰 위아래 여백을 둔다(0 기준 아님 — 막대가 아니라 선이라). */
-export function trendChart(s: Series, from: string, to: string): string {
+export function trendChart(s: Series, from: string, to: string, step = 1): string {
   const months: string[] = [];
-  for (let m = from; m <= to; m = shift(m, 1)) months.push(m);
+  for (let m = from; m <= to; m = shift(m, step)) months.push(m);   // step 3 = 분기 계열(분기 끝 달만)
   const pts = months.map((m, i) => ({ i, m, p: s.pts.find(q => q.m === m) })).filter(x => x.p) as { i: number; m: string; p: Pt }[];
   if (!pts.length) return '';
   const W = 340, H = 180, L = 14, R = 14, T = 26, B = 26;
@@ -186,7 +195,7 @@ export function trendChart(s: Series, from: string, to: string): string {
   let d = '';
   pts.forEach((x0, k) => { d += `${k && pts[k - 1].i === x0.i - 1 ? 'L' : 'M'}${x(x0.i).toFixed(1)},${y(x0.p.v).toFixed(1)}`; });
   const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  const axis = months.map((m, i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="tc-ax">${Number(m.slice(5))}월</text>`).join('');
+  const axis = months.map((m, i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="tc-ax">${step === 3 ? `${m.slice(2, 4)}.${Number(m.slice(5)) / 3}Q` : `${Number(m.slice(5))}월`}</text>`).join('');
   const dots = pts.map((x0, k) => {
     const cx = x(x0.i), cy = y(x0.p.v);
     // 값 글자는 점 위에, 앞 점보다 낮으면(=선이 내려오면) 아래로 — 선과 겹침을 줄인다

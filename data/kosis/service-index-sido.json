@@ -1,0 +1,20 @@
+{
+ "key": "service-index-sido",
+ "name": "서비스업동향조사 — 시도·업종별 서비스업생산지수(분기, 2020=100)",
+ "tbl_nm": "시도별 서비스업생산지수(2020＝100.0)",
+ "org_id": "101",
+ "tbl_id": "DT_1KC2023",
+ "prd_se": "Q",
+ "period": [
+  "202201",
+  "202604"
+ ],
+ "rows_total": 8568,
+ "rows_kept": 504,
+ "latest": "202602",
+ "unit": "2020＝100",
+ "areas": [],
+ "fetched": "2026-10-02",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1KC2023",
+ "note": ""
+}

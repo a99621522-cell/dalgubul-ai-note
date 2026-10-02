@@ -168,3 +168,41 @@ tables:
     years: 12
     area_col: C1
     area: []
+  # ── 서비스업·자영업 (운영자 지시 2026-10-02: 서비스업·관광·자영업 통계 추가, 1단계 KOSIS). 고용보험 피보험자 시도·산업 표는 KOSIS 에 국가 표가 없고 구·군 기관 표뿐이라 뺐다(2026-10-03 discover)
+  - key: service-index-sido
+    name: 서비스업동향조사 — 시도·업종별 서비스업생산지수(분기, 2020=100)
+    tbl_id: "DT_1KC2023"   # 2026-10-03 discover
+    search: ["시도 서비스업생산지수", "시도별 서비스업동향조사 생산지수", "서비스업생산지수 시도 산업별"]
+    prd_se: Q
+    years: 4
+    area_col: C1
+  - key: large-retail-index-sido
+    name: 서비스업동향조사 — 시도별 대형소매점 판매액지수(월간, 2020=100)
+    tbl_id: "DT_1K41015"   # 2026-10-03 discover
+    search: ["시도 대형소매점 판매액지수", "시도별 대형소매점 상품군별 판매액지수", "대형소매점 판매액지수 시도"]
+    prd_se: M
+    years: 3
+    area_col: C1
+  - key: self-employed-sido
+    name: 경제활동인구조사 — 시도·종사상지위별 취업자(자영업자·무급가족종사자, 월간)
+    tbl_id: "DT_1DA7035S"   # 2026-10-03 discover
+    search: ["시도 종사상지위별 취업자"]
+    prd_se: M
+    years: 3
+    area_col: C1
+  - key: market-bsi-sido
+    name: 소상공인시장경기동향조사 — 전통시장 지역별 실적·전망 체감경기지수(BSI, 월간)
+    org_id: "142"
+    tbl_id: "DT_S0001N_006"   # 2026-10-03 discover
+    search: ["전통시장 지역별 실적 및 전망"]
+    prd_se: M
+    years: 3
+    area_col: C1
+  - key: smb-bsi-sido
+    name: 소상공인시장경기동향조사 — 소상공인 지역별 실적·전망 체감경기지수(BSI, 월간)
+    org_id: "142"
+    tbl_id: ""
+    search: ["소상공인 지역별 실적 및 전망", "소상공인 부문별 실적 및 전망", "소상공인 업종별 실적 및 전망"]
+    prd_se: M
+    years: 3
+    area_col: C1

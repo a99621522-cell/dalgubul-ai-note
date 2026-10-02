@@ -11,6 +11,8 @@ export type Pt = { m: string; v: number; yoy?: number | null; mom?: number | nul
 export type Series = {
   key: string; group: string; name: string; unit: string; change: '%' | '%p' | 'p'; digits: number;
   pts: Pt[]; source: string; url: string; note?: string; quarterly?: boolean; compiled?: boolean;
+  /** 경기종합지수 구성지표 기준 분류(국가데이터처 선행 7·동행 7·후행 5). rel: 구성지표와의 관계 */
+  cycle?: '선행' | '동행' | '후행'; rel?: string;
 };
 
 const ym = (s: string) => (/^\d{6}$/.test(s) ? `${s.slice(0, 4)}-${s.slice(4)}` : s);
@@ -62,22 +64,34 @@ export function monthlySeries(): Series[] {
   const mfg = (itm: string) => kosis('mfg-production-index-industry', r => r.ITM_NM === itm && r.C2_NM === '총지수' && r.C1_NM.startsWith('대구'));
   const lab = (itm: string) => kosis('labor-force-sido', r => r.ITM_NM === itm && r.C1_NM.startsWith('대구'));
   const dlq = (itm: string) => ecos('bank-delinquency-region', r => r.ITEM_NAME1 === itm && r.ITEM_NAME2 === '대구');
+  /** 재고순환지표 = 제조업 출하지수 전년동월비(%) − 재고지수 전년동월비(%). 같은 KOSIS 표 안의 계산. */
+  const invCycle = (): Pt[] => {
+    const get = (itm: string) => new Map(kosis('mfg-production-index-industry', r => r.ITM_NM === itm && r.C2_NM === '제조업' && r.C1_NM.startsWith('대구')).map(p => [p.m, p.v]));
+    const sh = get('생산자제품 출하지수(원지수)'), iv = get('생산자제품 재고지수(원지수)');
+    const out: Pt[] = [];
+    for (const [m, v] of sh) {
+      const m0 = shift(m, -12), s0 = sh.get(m0), i1 = iv.get(m), i0 = iv.get(m0);
+      if (s0 && i1 != null && i0) out.push({ m, v: Math.round(((v / s0 - 1) * 100 - (i1 / i0 - 1) * 100) * 10) / 10 });
+    }
+    return out.sort((a, b) => a.m.localeCompare(b.m));
+  };
   const S: Series[] = [
-    { key: 'ip', group: '생산', name: '광공업 생산지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
-    { key: 'ship', group: '생산', name: '광공업 출하지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산자제품 출하지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
-    { key: 'inv', group: '생산', name: '광공업 재고지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산자제품 재고지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
-    { key: 'svc', group: '생산', name: '서비스업 생산지수(분기)', unit: '2020=100', change: '%', digits: 1, pts: dpi('대구 서비스업 생산지수(분기)'), compiled: true, source: '국가데이터처 서비스업동향조사', url: '', note: '분기 값, 기준월은 분기 끝 달', quarterly: true },
-    { key: 'emp', group: '고용·인구', name: '취업자', unit: '천 명', change: '%', digits: 1, pts: lab('취업자'), source: kSrc(lf), url: lf.source_url ?? '' },
+    { key: 'ip', cycle: '동행', rel: '구성지표와 같음(광공업생산지수)', group: '생산', name: '광공업 생산지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
+    { key: 'ship', cycle: '동행', rel: '내수출하지수와 비슷(이 표는 내수·수출 합계)', group: '생산', name: '광공업 출하지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산자제품 출하지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
+    { key: 'inv', cycle: '후행', rel: '구성지표와 같음(생산자제품재고지수)', group: '생산', name: '광공업 재고지수', unit: '2020=100', change: '%', digits: 1, pts: mfg('생산자제품 재고지수(원지수)'), source: kSrc(mi), url: mi.source_url ?? '', note: '총지수, 원지수' },
+    { key: 'icy', cycle: '선행', rel: '구성지표와 같은 정의(재고순환지표)', group: '생산', name: '재고순환지표(제조업)', unit: '%p', change: '%p', digits: 1, pts: invCycle(), source: kSrc(mi), url: mi.source_url ?? '', note: '출하 전년동월비 − 재고 전년동월비, 이 사이트 계산' },
+    { key: 'svc', cycle: '동행', rel: '구성지표와 같음(서비스업생산지수, 분기)', group: '생산', name: '서비스업 생산지수(분기)', unit: '2020=100', change: '%', digits: 1, pts: dpi('대구 서비스업 생산지수(분기)'), compiled: true, source: '국가데이터처 서비스업동향조사', url: '', note: '분기 값, 기준월은 분기 끝 달', quarterly: true },
+    { key: 'emp', cycle: '동행', rel: '비농림어업취업자수와 비슷(이 표는 전 산업)', group: '고용·인구', name: '취업자', unit: '천 명', change: '%', digits: 1, pts: lab('취업자'), source: kSrc(lf), url: lf.source_url ?? '' },
     { key: 'er', group: '고용·인구', name: '고용률', unit: '%', change: '%p', digits: 1, pts: lab('고용률'), source: kSrc(lf), url: lf.source_url ?? '', note: '15세 이상' },
     { key: 'ur', group: '고용·인구', name: '실업률', unit: '%', change: '%p', digits: 1, pts: lab('실업률'), source: kSrc(lf), url: lf.source_url ?? '' },
     { key: 'mig', group: '고용·인구', name: '순이동(전입−전출)', unit: '명', change: 'p', digits: 0, pts: kosis('migration-sido', r => r.ITM_NM === '순이동' && r.C1_NM === '대구광역시'), source: kSrc(mg), url: mg.source_url ?? '', note: '증감은 명' },
-    { key: 'csi', group: '소비·투자', name: '소비자심리지수(대구경북)', unit: '지수', change: 'p', digits: 1, pts: ecos('ccsi-region', r => r.ITEM_NAME1 === '소비자심리지수'), source: eSrc(cs), url: cs.source_url ?? '' },
-    { key: 'retail', group: '소비·투자', name: '대형소매점 판매액지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('대형소매점 판매액지수'), compiled: true, source: '국가데이터처 서비스업동향조사', url: '', note: '불변지수' },
+    { key: 'csi', cycle: '선행', rel: '경제심리지수를 이루는 지수(소비자심리)', group: '소비·투자', name: '소비자심리지수(대구경북)', unit: '지수', change: 'p', digits: 1, pts: ecos('ccsi-region', r => r.ITEM_NAME1 === '소비자심리지수'), source: eSrc(cs), url: cs.source_url ?? '' },
+    { key: 'retail', cycle: '동행', rel: '소매판매액지수의 일부(대형소매점)', group: '소비·투자', name: '대형소매점 판매액지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('대형소매점 판매액지수'), compiled: true, source: '국가데이터처 서비스업동향조사', url: '', note: '불변지수' },
     { key: 'car', group: '소비·투자', name: '자동차 신규등록', unit: '대', change: '%', digits: 0, pts: dpi('자동차 신규등록대수'), compiled: true, source: '국토교통부 자동차 등록 통계', url: '' },
     { key: 'capm', group: '소비·투자', name: '자본재 수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('자본재 수입액'), compiled: true, source: '국가데이터처', url: '' },
-    { key: 'cons', group: '소비·투자', name: '건설수주액', unit: '억 원', change: '%', digits: 0, pts: dpi('건설수주액'), compiled: true, source: '국가데이터처 건설경기동향조사', url: '' },
+    { key: 'cons', cycle: '선행', rel: '구성지표와 같음(건설수주액, 통계청은 실질)', group: '소비·투자', name: '건설수주액', unit: '억 원', change: '%', digits: 0, pts: dpi('건설수주액'), compiled: true, source: '국가데이터처 건설경기동향조사', url: '' },
     { key: 'exp', group: '수출입', name: '수출액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수출액'), compiled: true, source: '한국무역협회', url: '' },
-    { key: 'imp', group: '수출입', name: '수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수입액'), compiled: true, source: '한국무역협회', url: '' },
+    { key: 'imp', cycle: '동행', rel: '구성지표와 같음(수입액)', group: '수출입', name: '수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수입액'), compiled: true, source: '한국무역협회', url: '' },
     { key: 'bal', group: '수출입', name: '무역수지', unit: '백만 달러', change: 'p', digits: 1, pts: dpi('무역수지'), compiled: true, source: '한국무역협회', url: '', note: '증감은 백만 달러 차' },
     { key: 'hhd', group: '금융', name: '가계대출 연체율', unit: '%', change: '%p', digits: 2, pts: dlq('가계대출 연체율(전체1M)'), source: eSrc(dq), url: dq.source_url ?? '', note: '국내은행' },
     { key: 'cod', group: '금융', name: '기업대출 연체율', unit: '%', change: '%p', digits: 2, pts: dlq('기업대출 연체율(전체1M)'), source: eSrc(dq), url: dq.source_url ?? '', note: '국내은행' },
@@ -85,10 +99,10 @@ export function monthlySeries(): Series[] {
     { key: 'loan', group: '금융', name: '원화대출금(예금은행)', unit: '조 원', change: '%', digits: 1, pts: ecos('bank-loans-region', r => r.ITEM_NAME1 === '원화대출금' && r.ITEM_NAME2 === '대구').map(p => ({ ...p, v: p.v / 1000 })), source: eSrc(ln), url: ln.source_url ?? '' },
     { key: 'dft', group: '금융', name: '어음부도율', unit: '%', change: '%p', digits: 2, pts: ecos('default-rate-region', r => r.ITEM_NAME1 === '대구'), source: eSrc(df), url: df.source_url ?? '' },
     { key: 'biz', group: '창업·경기', name: '창업기업 수', unit: '개', change: '%', digits: 0, pts: dpi('창업기업 수'), compiled: true, source: '중소벤처기업부 창업기업동향', url: '' },
-    { key: 'cci', group: '창업·경기', name: '경기동행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기동행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
-    { key: 'cli', group: '창업·경기', name: '경기선행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기선행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
-    { key: 'mbsi', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
-    { key: 'nbsi', group: '창업·경기', name: '비제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('비제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
+    { key: 'cci', cycle: '동행', rel: '대구 동행종합지수', group: '창업·경기', name: '경기동행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기동행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
+    { key: 'cli', cycle: '선행', rel: '대구 선행종합지수', group: '창업·경기', name: '경기선행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기선행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
+    { key: 'mbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
+    { key: 'nbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '비제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('비제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
   ];
   return S.filter(s => s.pts.length);
 }
@@ -184,4 +198,22 @@ export function trendChart(s: Series, from: string, to: string): string {
     return `<g><title>${esc(`${x0.m} ${label(x0.p.v)} ${s.unit}`)}</title><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4" class="tc-dot"/><text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${anchor}" class="tc-val">${label(x0.p.v)}</text></g>`;
   }).join('');
   return `<svg viewBox="0 0 ${W} ${H}" class="trend" role="img" aria-label="${esc(`${s.name} ${from}~${to} 추이`)}"><line x1="${L}" x2="${W - R}" y1="${H - B + 4}" y2="${H - B + 4}" class="tc-base"/>${axis}<path d="${d}" class="tc-line"/>${dots}</svg>`;
+}
+
+export const CYCLES = ['선행', '동행', '후행'] as const;
+export const CYCLE_DESC: Record<string, string> = {
+  '선행': '경기 흐름보다 먼저 움직이는 지표(수주·심리·재고순환 등)',
+  '동행': '경기와 같은 때 움직이는 지표(생산·판매·수입·취업자 등)',
+  '후행': '경기보다 늦게 움직이는 지표(재고 등)',
+};
+/** 국면별 요약 문장 — 최근 기준월 값의 증감 방향만 센다(높다·낮다, 평가어 없음). */
+export function cycleSentence(S: Series[], c: string): string {
+  const ss = S.filter(s => s.cycle === c && s.key !== 'cci' && s.key !== 'cli');   // 종합지수 자체는 세지 않는다
+  if (!ss.length) return '';
+  const yoy = ss.map(s => change(s, latest(s), 12)).filter((v): v is number => v != null);
+  const mom = ss.map(s => change(s, latest(s), 1)).filter((v): v is number => v != null);
+  const up = (a: number[]) => a.filter(v => v > 0).length, dn = (a: number[]) => a.filter(v => v < 0).length;
+  const ms = [...new Set(ss.map(s => latest(s).m))].sort();
+  const span = ms.length > 1 ? `${ms[0]}~${ms.at(-1)}` : ms[0];
+  return `${c} 지표(종합지수 제외) ${ss.length}개(최근 기준월 ${span}) 가운데 전년 같은 달보다 높은 지표 ${up(yoy)}개·낮은 지표 ${dn(yoy)}개, 전월보다 높은 지표 ${up(mom)}개·낮은 지표 ${dn(mom)}개입니다.`;
 }

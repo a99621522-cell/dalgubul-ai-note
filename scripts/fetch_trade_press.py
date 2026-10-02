@@ -137,7 +137,30 @@ def customs(month: str) -> None:
         pg.get_by_text(hit.get_text(" ", strip=True)[:20], exact=False).first.click()
         pg.wait_for_load_state("networkidle", timeout=60000)
         html, cur = pg.content(), pg.url
+        # 첨부(HWPX 먼저, 없으면 HWP·PDF)는 눌러서 받는다 — 주소가 스크립트로 만들어진다
+        files = []
+        for ext in (".hwpx", ".pdf", ".hwp"):
+            loc = pg.locator("a", has_text=ext)
+            for i in range(loc.count()):
+                t = loc.nth(i).inner_text().strip()
+                if not t.lower().rstrip().split("[")[0].strip().endswith(ext) or "바로보기" in t:
+                    continue
+                print(f"  첨부 링크 HTML: {loc.nth(i).evaluate('e => e.outerHTML')[:300]}")
+                try:
+                    with pg.expect_download(timeout=60000) as dl:
+                        loc.nth(i).click()
+                    d = dl.value
+                    files.append((d.suggested_filename or t, Path(d.path()).read_bytes()))
+                except Exception as e:  # noqa: BLE001
+                    print(f"  첨부 받기 실패 {t[:40]}: {e}")
+            if files:
+                break
         b.close()
+    for k, (name, data) in enumerate(files, 1):
+        txt = file_text(name, data)
+        print(f"  첨부 {name} → {len(data):,} bytes, 글자 {len(txt):,}")
+        if txt.strip():
+            save(f"customs_{y}{m}_att{k}.txt", f"# 첨부: {name}\n\n{txt}")
 
     class V:  # requests 응답처럼 쓰기
         text, url = html, cur
@@ -145,7 +168,6 @@ def customs(month: str) -> None:
     print(f"[세관] 상세 {cur}, {len(html):,}자 (nttSn {sn})")
     body = text_of(v.text)
     save(f"customs_{y}{m}.txt", f"# 대구본부세관 보도자료 nttSn={sn}\n# 목록: {CUSTOMS_LIST}\n\n{body}")
-    fetch_attachments(v.text, v.url, f"customs_{y}{m}", v.url)
 
 
 def motir(month: str) -> None:

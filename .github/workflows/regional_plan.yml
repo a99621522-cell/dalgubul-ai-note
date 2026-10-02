@@ -1,11 +1,8 @@
 name: 대구 지역산업진흥계획 받기 (KIAT k-pass 자료실)
 
-# 시·도가 수립해 KIAT 과제관리시스템 자료실에 공개한 '[대구] ○○년 지역산업진흥계획' 첨부를 받아 docs/sources/kpass/ 에 커밋한다.
+# 시·도가 수립해 KIAT 과제관리시스템 자료실에 공개한 '[대구] ○○년 지역산업진흥계획' 첨부(PDF)를 받아 public/files/regional-plan/ + data/regional_plan/index.json 에 커밋한다(/policy/ 리포트 페이지에서 내려받기).
 # 이 세션 환경은 k-pass.kr 이 막혀 있어 러너가 받는다. 작업 브랜치에서는 스크립트·워크플로 푸시 때도 돈다.
 on:
-  push:
-    branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: [".github/workflows/regional_plan.yml", "scripts/fetch_kpass_plans.py"]
   workflow_dispatch:
     inputs:
       keyword:
@@ -13,7 +10,7 @@ on:
         default: "대구"
       match:
         description: "받을 글 제목 낱말(쉼표)"
-        default: "지역산업진흥계획,지역산업육성,진흥계획"
+        default: "지역산업진흥계획"
 
 permissions:
   contents: write
@@ -32,12 +29,12 @@ jobs:
         env:
           KW: ${{ inputs.keyword }}
           MATCH: ${{ inputs.match }}
-        run: python3 scripts/fetch_kpass_plans.py --keyword "${KW:-대구}" --match "${MATCH:-지역산업진흥계획,지역산업육성,진흥계획}"
+        run: python3 scripts/fetch_kpass_plans.py --keyword "${KW:-대구}" --match "${MATCH:-지역산업진흥계획}"
       - name: 커밋
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          [ -d docs/sources/kpass ] && git add -A docs/sources/kpass
+          git add -A public/files/regional-plan data/regional_plan
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: KIAT 자료실 대구 지역산업진흥계획 받기 $(date -u +%Y-%m-%d)"
           git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
           git push

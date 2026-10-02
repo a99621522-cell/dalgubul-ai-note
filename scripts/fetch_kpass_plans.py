@@ -3,8 +3,10 @@
 대구 지역산업육성계획을 찾아 사이트에서 내려받게). 시·도가 수립해 KIAT 자료실에 공개한 계획서(공개 자료)만.
 
 1) 자료실 목록을 '대구'로 검색해 제목·등록일·글 번호(potmId)를 찍는다
-2) 제목에 '지역산업진흥계획'·'지역산업육성' 이 든 글의 상세 화면·첨부 팝업에서 내려받기 주소를 찾아 받는다
-   → docs/sources/kpass/<글번호>_<파일명> (원본 그대로) + index.json(제목·등록일·원문 링크·파일·크기)
+2) 제목에 '지역산업진흥계획' 이 든 글의 첨부 팝업(/cmm/fileDownPopup.do → fn_egov_downFile(번호) → /cmm/FileDown.do)에서 PDF 를 받는다
+   → public/files/regional-plan/daegu-regional-industry-plan-<연도>.pdf (원본 그대로, /policy/ 리포트 페이지에서 내려받기)
+     + data/regional_plan/index.json(연도·제목·원 파일명·크기·쪽수·게시일·원문 링크)
+   KIAT 자료실의 대구 진흥계획은 2017~2022년분(2022-01-05 게시가 마지막, 2026-10-02 확인). 같은 글의 성과보고서 첨부는 받지 않는다.
 robots.txt 존중(전체 허용 확인), 요청 사이 1초. 이 세션 환경은 k-pass.kr 이 막혀 있어 워크플로(regional_plan.yml)로 돌린다.
 사용: python3 scripts/fetch_kpass_plans.py [--keyword 대구] [--match 지역산업진흥계획,지역산업육성] [--max 10]
 """
@@ -20,7 +22,8 @@ import requests
 from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "docs" / "sources" / "kpass"
+OUT = ROOT / "public" / "files" / "regional-plan"
+INDEX = ROOT / "data" / "regional_plan" / "index.json"
 BASE = "https://www.k-pass.kr"
 LIST = BASE + "/site/achive/achiveList.do"
 VIEW = BASE + "/site/notice/noticeView.do"
@@ -101,33 +104,41 @@ def find_downloads(html: str, base: str) -> list[str]:
     return list(dict.fromkeys(urls))
 
 
-def save(resp, potm: str) -> dict | None:
+def save(resp, potm: str, info: dict) -> dict | None:
+    """진흥계획 PDF 만 연도 이름으로 저장한다(성과보고서 등 다른 첨부는 건너뜀)."""
     cd = resp.headers.get("Content-Disposition", "")
     m = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
-    if not m:   # 이름 머리가 없으면 PDF 일 때만 번호로 저장
-        if not resp.content.startswith(b"%PDF"):
-            return None
-        raw = re.sub(r".*atchFileId=(\d+).*", r"file\1.pdf", resp.url)
-    else:
-        raw = m.group(1)
-    for enc in ("utf-8", "euc-kr"):
-        try:
-            name = unquote(raw.encode("latin-1").decode(enc)) if "%" not in raw else unquote(raw)
-            break
-        except Exception:  # noqa: BLE001
-            name = unquote(raw)
-    name = re.sub(r"[\\/:*?\"<>|]", "_", name).strip()
+    raw = unquote(m.group(1)) if m else ""
+    try:   # 서버가 UTF-8 바이트를 그대로 보내 requests 가 latin-1 로 읽는다
+        raw = raw.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass
+    if not resp.content.startswith(b"%PDF") or "진흥계획" not in raw.replace(" ", ""):
+        print(f"    건너뜀(진흥계획 PDF 아님): {raw or resp.url[-40:]}")
+        return None
+    y = re.search(r"(20\d{2})년", raw) or re.search(r"(20\d{2})", info["title"])
+    if not y:
+        return None
     OUT.mkdir(parents=True, exist_ok=True)
-    p = OUT / f"{potm}_{name}"
+    p = OUT / f"daegu-regional-industry-plan-{y.group(1)}.pdf"
     p.write_bytes(resp.content)
-    print(f"    저장 {p.relative_to(ROOT)} ({len(resp.content):,} bytes, {resp.headers.get('Content-Type', '')})")
-    return {"file": p.name, "bytes": len(resp.content)}
+    pages = None
+    try:
+        import subprocess
+        out = subprocess.run(["pdfinfo", str(p)], capture_output=True, text=True).stdout
+        pages = int((re.search(r"Pages:\s+(\d+)", out) or [0, 0])[1]) or None
+    except Exception:  # noqa: BLE001
+        pass
+    print(f"    저장 {p.relative_to(ROOT)} ({len(resp.content):,} bytes, {pages}쪽) ← {raw}")
+    return {"year": y.group(1), "title": f"{y.group(1)}년 대구 지역산업진흥계획" + ("(안)" if "(안)" in raw else ""), "orig": raw,
+            "file": "/files/regional-plan/" + p.name, "bytes": len(resp.content), "pages": pages,
+            "posted": info["date"], "source_title": info["title"], "source_url": info["url"]}
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--keyword", default="대구")
-    ap.add_argument("--match", default="지역산업진흥계획,지역산업육성,진흥계획")
+    ap.add_argument("--match", default="지역산업진흥계획")
     ap.add_argument("--max", type=int, default=10)
     a = ap.parse_args()
     try:
@@ -145,8 +156,7 @@ def main() -> int:
     pats = [p for p in a.match.split(",") if p]
     want = [r for r in rows if any(p in r["title"].replace(" ", "") for p in pats)][: a.max]
     print(f"[kpass] 받을 글 {len(want)}개")
-    index_p = OUT / "index.json"
-    index = json.loads(index_p.read_text(encoding="utf-8")) if index_p.exists() else {}
+    index = {x["year"]: x for x in (json.loads(INDEX.read_text(encoding="utf-8")) if INDEX.exists() else [])}
     shown_js = False
     for r in want:
         url = f"{VIEW}?boardTypeID=H03&menuID=2&potmId={r['potmId']}"
@@ -190,17 +200,16 @@ def main() -> int:
                 print(f"    받기 실패 {u[:80]}: {e}")
                 continue
             ok_type = not re.search(r"image/|text/html", d.headers.get("Content-Type", ""))
-            got = save(d, r["potmId"]) if d.ok and ok_type and len(d.content) > 10000 else None
+            got = save(d, r["potmId"], {**r, "url": url}) if d.ok and ok_type and len(d.content) > 10000 else None
             if got:
                 files.append(got)
+                index[got["year"]] = got
             else:
                 print(f"    파일 아님 {u[:80]} HTTP {d.status_code} {d.headers.get('Content-Type', '')}")
-        if files:
-            index[r["potmId"]] = {"title": r["title"], "date": r["date"], "url": url, "files": files}
     if index:
-        OUT.mkdir(parents=True, exist_ok=True)
-        index_p.write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
-        print(f"[kpass] index {len(index)}건 → {index_p.relative_to(ROOT)}")
+        INDEX.parent.mkdir(parents=True, exist_ok=True)
+        INDEX.write_text(json.dumps(sorted(index.values(), key=lambda x: x["year"], reverse=True), ensure_ascii=False, indent=1), encoding="utf-8")
+        print(f"[kpass] 진흥계획 {len(index)}건 → {INDEX.relative_to(ROOT)}")
     return 0
 
 

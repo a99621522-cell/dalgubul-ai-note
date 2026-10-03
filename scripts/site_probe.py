@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """소스 추가 전 확인용: robots.txt 와 첫 화면의 메뉴·게시판 링크를 찍는다(첫 화면 1회, 그 밖의 쪽은 열지 않는다).
 이 세션 환경은 외부 사이트가 막혀 있어 GitHub Actions(site_probe.yml)로 돌리고 로그로 본다.
-사용: python3 scripts/site_probe.py <url> [--render] [--dump] [--text] [--raw]
+사용: python3 scripts/site_probe.py <url> [--render] [--dump] [--text] [--raw] [--xhr [--click 글자1,글자2]]
+--xhr: 브라우저로 열어 화면이 숫자를 받아 오는 내부 요청(XHR·fetch)의 주소·방식·보낸 값·응답 앞 600자를 찍는다.
+  --click 은 연 뒤 그 글자가 든 요소를 차례로 누른다(지역·메뉴 고르기). 화면 하나 확인용이지 수집기가 아니다.
 --text: 운영자가 준 기사·공지 한 쪽의 제목·날짜·본문 글자만 찍는다(robots.txt 가 그 경로를 막으면 본문은 찍지 않는다). 수집기가 아니라 한 번 읽기용.
 """
 import re, sys
@@ -24,6 +26,8 @@ def main():
         if re.match(r"(?i)disallow:\s*/\s*$", line.strip()):
             print(f"!! robots 가 전체 차단(Disallow: /). 첫 화면 외 수집 불가")
     html = ""
+    if "--xhr" in sys.argv:
+        return xhr(url)
     if render:
         from playwright.sync_api import sync_playwright
         with sync_playwright() as p:
@@ -80,6 +84,50 @@ def main():
         print(f"== 스크립트·속성 속 주소 {len(urls)}개: " + " | ".join(urls[:60]))
         for i, sc in enumerate([x for x in soup.find_all("script") if x.string and re.search(r"ajax|fetch|XMLHttpRequest|\.do", x.string)][:6]):
             print(f"== script[{i}] 앞 600자: " + re.sub(r"\s+", " ", sc.string)[:600])
+
+
+def xhr(url):
+    from playwright.sync_api import sync_playwright
+    clicks = []
+    if "--click" in sys.argv:
+        i = sys.argv.index("--click")
+        clicks = [c.strip() for c in (sys.argv[i + 1] if i + 1 < len(sys.argv) else "").split(",") if c.strip()]
+    seen = set()
+
+    def on_resp(resp):
+        req = resp.request
+        if req.resource_type not in ("xhr", "fetch"): return
+        key = (req.method, req.url, req.post_data or "")
+        if key in seen: return
+        seen.add(key)
+        ct = resp.headers.get("content-type", "")
+        try: body = resp.text()
+        except Exception: body = ""
+        print(f"\n## {req.method} {resp.status} {req.url}\n   type={ct[:60]} len={len(body)}")
+        if req.post_data: print(f"   post={req.post_data[:600]}")
+        print("   body=" + re.sub(r"\s+", " ", body[:600]))
+
+    with sync_playwright() as p:
+        b = p.chromium.launch(); pg = b.new_page(user_agent=UA, viewport={"width": 1400, "height": 1000})
+        pg.on("response", on_resp)
+        print(f"== XHR: {url}")
+        pg.goto(url, wait_until="networkidle", timeout=90000); pg.wait_for_timeout(3000)
+        print(f"== title: {pg.title()}  최종 주소: {pg.url}")
+        for c in clicks:
+            print(f"\n==== 누름: {c}")
+            try:
+                pg.get_by_text(c, exact=False).first.click(timeout=10000)
+                pg.wait_for_load_state("networkidle", timeout=30000); pg.wait_for_timeout(3000)
+                print(f"   주소: {pg.url}")
+            except Exception as e:
+                print(f"   못 누름: {str(e)[:200]}")
+        soup = BeautifulSoup(pg.content(), "html.parser")
+        links = sorted({urljoin(pg.url, a["href"]) for a in soup.find_all("a", href=True) if not a["href"].startswith("javascript")})
+        print(f"\n== 화면 링크 {len(links)}개: " + " | ".join(links[:120]))
+        txt = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+        print(f"== 화면 글자 앞 2,000자: {txt[:2000]}")
+        b.close()
+    print(f"\n== 요청 {len(seen)}개")
 
 
 if __name__ == "__main__":

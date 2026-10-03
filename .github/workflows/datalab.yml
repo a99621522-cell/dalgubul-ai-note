@@ -1,0 +1,39 @@
+name: 관광 방문자·소비 받기 (한국관광 데이터랩 화면)
+
+# scripts/fetch_datalab.py — 한국관광 데이터랩 「지역별 관광 현황」(로그인 없이 열리는 화면)의 대구·구군 방문자 수(외지인)와
+# 신용카드 관광소비를 받아 data/tourism/datalab_*.csv 로 커밋한다. 키 필요 없음. 이 세션 환경은 외부 사이트가 막혀 Actions 가 대신 돈다.
+on:
+  schedule:
+    - cron: "41 21 21 * *"     # 매월 22일 06:41 KST
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "2020-01 부터 모두 다시 받기(true)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q playwright && python -m playwright install --with-deps chromium
+      - name: 받기
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python3 scripts/fetch_datalab.py $([ "${{ inputs.full }}" = "true" ] && echo --full)
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/tourism
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 한국관광 데이터랩 대구 방문자·관광소비 갱신 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

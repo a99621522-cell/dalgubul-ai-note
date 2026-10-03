@@ -9,6 +9,8 @@ const PLANS: { year: string; title: string; orig: string; file: string; bytes: n
   fs.existsSync('data/regional_plan/index.json') ? JSON.parse(fs.readFileSync('data/regional_plan/index.json', 'utf-8')) : [];
 const mb = (b: number) => `${(b / 1048576).toFixed(1)}MB`;
 const FILES = [
+  { title: '휴머노이드 부품, 대구 기업의 검증 데이터가 없다 — 부품 시제·평가·인증 한 경로 제안(2026-09-29)', name: '휴머노이드 부품, 대구 기업의 검증 데이터가 없다',
+    href: '/files/humanoid-parts-verification.docx', size: '0.3MB', pdf: '/files/humanoid-parts-verification.pdf', pdfSize: '0.5MB' },
   { title: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)', name: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판',
     href: '/files/daegu-industry-structure.docx', size: '1.7MB', pdf: '/files/daegu-industry-structure.pdf', pdfSize: '2.2MB' },
   { title: '주요 제조업 공급망 지도 해설', name: '주요 제조업 공급망 지도 해설',

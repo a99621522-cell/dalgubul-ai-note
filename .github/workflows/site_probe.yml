@@ -23,6 +23,14 @@ on:
         description: "응답 본문 앞 3,000자를 그대로 찍기(true) — XML·JSON 오픈API 확인용"
         required: false
         default: "false"
+      xhr:
+        description: "화면이 숫자를 받아 오는 내부 요청(XHR)을 찍기(true, 브라우저로 연다)"
+        required: false
+        default: "false"
+      click:
+        description: "xhr 때 연 뒤 차례로 누를 글자(쉼표로 구분, 예: 지역,대구)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -36,6 +44,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -q -r scripts/requirements.txt
-      - if: inputs.render == 'true'
+      - if: inputs.render == 'true' || inputs.xhr == 'true'
         run: pip install -q playwright && python -m playwright install --with-deps chromium
-      - run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)
+      - if: inputs.xhr == 'true'
+        env:
+          URL: ${{ inputs.url }}
+          CLICK: ${{ inputs.click }}
+        run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK"
+      - if: inputs.xhr != 'true'
+        run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)

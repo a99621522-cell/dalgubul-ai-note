@@ -5,7 +5,7 @@ export const TOPICS: StatsTopic[] = [
   { key: 'monthly', name: '경기 동향', href: '/stats/monthly/', period: '월간', desc: '생산·고용·소비·투자·금융·경기지수를 한 화면에. 선행·동행·후행 구분과 1월부터 추세.' },
   { key: 'trade', name: '수출입', href: '/stats/trade/', period: '월간', desc: '대구·경북(세관)과 전국(산업통상부) 수출입을 같은 달로 비교. 품목·국가별.' },
   { key: 'manufacturing', name: '제조업', href: '/stats/manufacturing/', period: '월간·연간', desc: '업종별 생산·출하·재고지수, 업종별 출하액·부가가치, 사업체·종사자·취업자.' },
-  { key: 'services', name: '서비스업·자영업', href: '/stats/services/', period: '분기·월간', desc: '업종별 서비스업 생산지수, 대형소매점 판매, 자영업자 수·비중, 소상공인·전통시장 체감경기.' },
+  { key: 'services', name: '서비스업·자영업', href: '/stats/services/', period: '분기·월간', desc: '업종별 서비스업 생산지수, 대형소매점 판매, 자영업자 수·비중, 소상공인·전통시장 체감경기, 관광 방문자·소비, 카드 사용액.' },
   { key: 'industry', name: '산업 구조', href: '/stats/industry/', period: '연간', desc: '지역내총생산, 부문별 부가가치·입지계수, 17개 시도 산업구조 지표.' },
   { key: 'business', name: '기업·사업체', href: '/stats/business/', period: '연간', desc: '산업별 사업체·종사자, 중소기업·소상공인, 수출입 활동기업.' },
   { key: 'population', name: '인구·고용', href: '/stats/population/', period: '연간', desc: '인구·취업자·고용률 연간 추이, 구·군별 인구·취업자, 연령별 순이동, 소매판매.' },

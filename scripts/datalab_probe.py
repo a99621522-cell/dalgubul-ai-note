@@ -3,6 +3,7 @@
 화면을 열고 화면 스크립트 속 qid 이름을 모은 뒤, 같은 화면 안에서 지역 코드만 바꿔(대구) 몇 개를 다시 불러 응답 앞부분을 찍는다.
 로그인 화면으로 넘어가는 메뉴(이동통신 방문자수·신용카드 관광지출액)는 다루지 않는다(로그인 뒤 자료 수집 금지).
 사용: python3 scripts/datalab_probe.py <화면 주소> [지역코드=27] [최대 qid 수=40]
+  최대 qid 수가 0 이면 qid 를 다시 부르지 않고, 화면이 보내는 요청의 지역만 바꿔(대구) 화면이 그린 글자(단위·표)를 찍는다.
 """
 import json, re, sys, time
 from playwright.sync_api import sync_playwright
@@ -20,9 +21,21 @@ def main():
         if "getTempleteData" in req.url and req.post_data:
             posts.append(req.post_data)
 
+    from urllib.parse import quote
+    nm = {"27": "대구광역시"}.get(sgg, "")
+
+    def swap(route):   # 화면이 고른 기본 지역을 대구로 바꿔 보낸다(화면이 대구를 그리게)
+        d = route.request.post_data or ""
+        if cap == 0 and "SGG_CD=" in d:
+            d = re.sub(r"SGG_CD=\d+", f"SGG_CD={sgg}", d)
+            d = re.sub(r"SGG_NM=[^&]*", "SGG_NM=" + quote(nm), d)
+            return route.continue_(post_data=d)
+        route.continue_()
+
     with sync_playwright() as p:
         b = p.chromium.launch(); pg = b.new_page(user_agent=UA, viewport={"width": 1400, "height": 1000})
         pg.on("request", on_req)
+        pg.route("**/visualize/getTempleteData.do", swap)
         pg.goto(url, wait_until="networkidle", timeout=90000); pg.wait_for_timeout(5000)
         print(f"== {pg.title()} | {pg.url}")
         if "Login" in pg.url:
@@ -33,6 +46,15 @@ def main():
         # 화면이 보낸 요청(기본 지역)
         print(f"== 화면이 보낸 getTempleteData {len(posts)}개")
         for d in posts[:30]: print("   " + d[:400])
+        if cap == 0:
+            pg.wait_for_timeout(8000)
+            main = pg.evaluate("""() => { const c = document.querySelector('#contents, .contents, #container, main') || document.body;
+                return c.innerText; }""")
+            i = main.find("지역별 관광 현황", 200)
+            print("== 화면 글자(대구로 바꿔 그린 것) ==\n" + main[max(0, i - 200):][:15000])
+            for t in pg.query_selector_all("table")[:20]:
+                print("== 표: " + re.sub(r"\s+", " ", t.inner_text())[:800])
+            b.close(); return
         # 화면 스크립트 속 qid
         srcs = pg.evaluate("() => Array.from(document.scripts).map(s => s.src).filter(Boolean)")
         text = pg.content()

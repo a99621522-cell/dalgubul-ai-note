@@ -28,7 +28,7 @@ on:
         required: false
         default: "false"
       datalab:
-        description: "한국관광 데이터랩 화면이면 true — 스크립트 속 qid 를 모아 지역 코드(click 칸, 기본 27=대구)로 다시 불러 본다"
+        description: "한국관광 데이터랩 화면이면 true — 스크립트 속 qid 를 모아 지역 코드로 다시 불러 본다. click 칸에 '27:40'(지역:qid 수, 27=대구) — qid 수 0 이면 화면을 대구로 그려 글자를 찍는다"
         required: false
         default: "false"
       click:
@@ -54,7 +54,7 @@ jobs:
         env:
           URL: ${{ inputs.url }}
           SGG: ${{ inputs.click }}
-        run: python3 scripts/datalab_probe.py "$URL" "${SGG:-27}"
+        run: python3 scripts/datalab_probe.py "$URL" "${SGG%%:*}" "${SGG#*:}"
       - if: inputs.xhr == 'true' && inputs.datalab != 'true'
         env:
           URL: ${{ inputs.url }}

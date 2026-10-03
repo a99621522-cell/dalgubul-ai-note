@@ -1,0 +1,20 @@
+{
+ "key": "card-region",
+ "name": "지역별 소비유형별 개인 신용카드",
+ "stat_name": "7.5.2. 지역별 소비유형별 개인 신용카드",
+ "stat_code": "601Y002",
+ "cycle": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 20000,
+ "rows_kept": 1148,
+ "latest": "202302",
+ "unit": "백만원",
+ "areas": [],
+ "fetched": "2026-10-03",
+ "source_url": "https://ecos.bok.or.kr/#/Short/601Y002",
+ "source_note": "한국은행 ECOS 통계표 601Y002",
+ "note": "대구 개인 신용카드 사용액(소비유형·업종별). 카드 소비 지표"
+}

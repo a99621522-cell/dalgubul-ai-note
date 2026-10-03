@@ -201,29 +201,24 @@ tables:
   - key: smb-bsi-sido
     name: 소상공인시장경기동향조사 — 소상공인 지역별 실적·전망 체감경기지수(BSI, 월간)
     org_id: "142"
-    tbl_id: ""
+    tbl_id: "DT_S0001N_005"   # 2026-10-03 discover
     search: ["소상공인 지역별 실적 및 전망", "소상공인 부문별 실적 및 전망", "소상공인 업종별 실적 및 전망"]
     prd_se: M
     years: 3
     area_col: C1
-  # ── 관광 (운영자 지시 2026-10-03: 관광 통계) ── tbl_id 는 discover 로 확인해 채움
+  # ── 관광 (운영자 지시 2026-10-03: 관광 통계). 외래관광객조사 방문 지역 표는 KOSIS 에 없음(2026-10-03 discover)
   - key: travel-domestic-sido
     name: 국민여행조사 — 여행지(시도)별 국내여행 횟수·지출
-    tbl_id: ""
+    org_id: "113"
+    tbl_id: "DT_113_STBL_1025841"   # 2026-10-03 discover
     search: ["국민여행조사 시도별 여행 횟수", "국민여행조사 여행지 시도 국내여행", "국내여행 방문지 시도별 여행횟수"]
-    prd_se: Y
-    years: 6
-    area_col: C1
-  - key: inbound-visit-sido
-    name: 외래관광객조사 — 방문 지역(시도)별 외래관광객 방문 비율
-    tbl_id: ""
-    search: ["외래관광객조사 방문지역", "외래관광객 방문 지역 시도", "외래관광객실태조사 방문지역별"]
     prd_se: Y
     years: 6
     area_col: C1
   - key: tourist-spot-visitors
     name: 주요관광지점 입장객 — 시도·관광지별(월간)
-    tbl_id: ""
+    org_id: "113"
+    tbl_id: "DT_113005_FILE2025"   # 2026-10-03 discover
     search: ["주요관광지점 입장객", "관광지점 입장객 통계", "관광지 입장객 수 시도"]
     prd_se: M
     years: 3

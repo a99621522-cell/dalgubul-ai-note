@@ -5,12 +5,12 @@ import { TOPICS, KOSIS_TOPICS } from '../../lib/statsTopics';
 import { kosisTable, kosisChart } from '../../lib/kosis';
 import { monthlySeries, latest, change, fmt, fmtChg } from '../../lib/monthly';
 import fs from 'node:fs';
-import { serviceSeries, retailSeries, selfEmployedSeries, marketSeries } from '../../lib/services';
+import { serviceSeries, retailSeries, selfEmployedSeries, marketSeries, cardSeries, tourismSeries } from '../../lib/services';
 /** /stats/ — 통계 허브(운영자 지적 2026-10-02: 통계가 복잡하고 분류가 없다). 주제 6개 카드 + 경기 동향 핵심 숫자. 값 그대로, 평가 없음. */
 const S = monthlySeries();
 const pick = (k: string) => S.find(s => s.key === k);
 const heads = ['ip', 'er', 'exp', 'csi'].map(pick).filter(Boolean) as typeof S;
-const svcN = serviceSeries().length + retailSeries().length + selfEmployedSeries().length + marketSeries().length;
+const svcN = serviceSeries().length + retailSeries().length + selfEmployedSeries().length + marketSeries().length + cardSeries().length + tourismSeries().length;
 const tradeMonths = fs.readdirSync('data/trade').filter(f => /^\d{6}\.json$/.test(f)).sort();
 const count = (key: string) => {
   const ss = KOSIS_TOPICS[key] ?? [];

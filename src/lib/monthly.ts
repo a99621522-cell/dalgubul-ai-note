@@ -66,6 +66,7 @@ export function monthlySeries(): Series[] {
   const lr = meta('data/kosis', 'large-retail-index-sido');
   const se = meta('data/kosis', 'self-employed-sido');
   const mb = meta('data/kosis', 'market-bsi-sido');
+  const sb = meta('data/kosis', 'smb-bsi-sido');
   const kSrc = (m: typeof mi) => `국가데이터처 KOSIS 「${m.tbl_nm ?? ''}」`;
   const eSrc = (m: typeof cs) => `한국은행 ECOS 「${(m.stat_name ?? '').replace(/^[\d.]+\s*/, '')}」`;
   const mfg = (itm: string) => kosis('mfg-production-index-industry', r => r.ITM_NM === itm && r.C2_NM === '총지수' && r.C1_NM.startsWith('대구'));
@@ -111,6 +112,7 @@ export function monthlySeries(): Series[] {
     { key: 'cli', cycle: '선행', rel: '대구 선행종합지수', group: '창업·경기', name: '경기선행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기선행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
     { key: 'mbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
     { key: 'nbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '비제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('비제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
+    { key: 'smb', group: '창업·경기', name: '소상공인 체감경기(BSI)', unit: '지수', change: 'p', digits: 1, pts: kosis('smb-bsi-sido', r => r.ITM_NM === '체감' && r.C1_NM === '대구'), source: `소상공인시장진흥공단 「${sb.tbl_nm ?? ''}」(KOSIS)`, url: sb.source_url ?? '', note: '100 넘으면 전월보다 좋다는 응답이 많음' },
     { key: 'mkt', group: '창업·경기', name: '전통시장 체감경기(BSI)', unit: '지수', change: 'p', digits: 1, pts: kosis('market-bsi-sido', r => r.ITM_NM === '체감' && r.C1_NM === '대구'), source: `소상공인시장진흥공단 「${mb.tbl_nm ?? ''}」(KOSIS)`, url: mb.source_url ?? '', note: '100 넘으면 전월보다 좋다는 응답이 많음' },
   ];
   return S.filter(s => s.pts.length);

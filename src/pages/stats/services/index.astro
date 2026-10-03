@@ -17,14 +17,14 @@ const blocks: { id: string; title: string; desc: string; ss: Ser[]; from: string
   { id: 'svc', title: '서비스업 생산 (분기)', desc: '서비스업동향조사의 대구 업종별 서비스업생산지수(불변지수, 2020=100). 최근 8개 분기.', ss: SV, from: qFrom(SV), step: 3 },
   { id: 'retail', title: '대형소매점 판매 (월간)', desc: '대형소매점(백화점·대형마트) 판매액지수(불변지수, 2020=100).', ss: RT, from: yearFrom(RT), step: 1 },
   { id: 'self', title: '자영업 (월간)', desc: '경제활동인구조사의 대구 종사상지위별 취업자 가운데 자영업자·무급가족종사자와 자영업자 비중.', ss: SE, from: yearFrom(SE), step: 1 },
-  { id: 'market', title: '전통시장 체감경기 (월간)', desc: '소상공인시장경기동향조사의 대구 전통시장 체감(이번 달)·전망(다음 달) 경기지수. 100이 넘으면 전월보다 좋다는 응답이 많다는 뜻입니다.', ss: MK, from: yearFrom(MK), step: 1 },
+  { id: 'market', title: '소상공인·전통시장 체감경기 (월간)', desc: '소상공인시장경기동향조사의 대구 소상공인·전통시장 체감(이번 달)·전망(다음 달) 경기지수. 100이 넘으면 전월보다 좋다는 응답이 많다는 뜻입니다.', ss: MK, from: yearFrom(MK), step: 1 },
 ].filter(b => b.ss.length);
 ---
-<Base title="서비스업·자영업 통계" description="대구 서비스업 생산지수(업종별, 분기), 대형소매점 판매액지수, 자영업자 수·비중, 전통시장 체감경기(BSI) — 국가데이터처·소상공인시장진흥공단 KOSIS 원 통계." current="stats">
+<Base title="서비스업·자영업 통계" description="대구 서비스업 생산지수(업종별, 분기), 대형소매점 판매액지수, 자영업자 수·비중, 소상공인·전통시장 체감경기(BSI) — 국가데이터처·소상공인시장진흥공단 KOSIS 원 통계." current="stats">
   <p class="meta"><a href="/stats/">통계</a> › 서비스업·자영업</p>
   <StatsNav current="services" />
   <div class="section-head"><h1>서비스업·자영업</h1><span class="meta">분기·월간 · KOSIS</span></div>
-  <p class="lede">대구 서비스업 생산, 대형소매점 판매, 자영업자, 전통시장 체감경기입니다. 모두 KOSIS 원 통계 그대로이고, 평가·전망이 아닙니다. 그래프마다 점에 그 달(분기) 값을 적었고, 표는 펼쳐서 봅니다.</p>
+  <p class="lede">대구 서비스업 생산, 대형소매점 판매, 자영업자, 소상공인·전통시장 체감경기입니다. 모두 KOSIS 원 통계 그대로이고, 평가·전망이 아닙니다. 그래프마다 점에 그 달(분기) 값을 적었고, 표는 펼쳐서 봅니다.</p>
 
   <div class="stat-tiles">
     {heads.map(s => { const p = latest(s); const y = change(s, p, 12); return (
@@ -69,5 +69,5 @@ const blocks: { id: string; title: string; desc: string; ss: Ser[]; from: string
       )}
     </section>
   ))}
-  <p class="meta">관광 방문자 수(구·군별), 100대 생활업종 사업자 수, 상가 점포 수는 공공데이터포털 자료로 다음 단계에 더합니다. 월간 경기 지표 전체는 <a href="/stats/monthly/">경기 동향</a>에 있습니다.</p>
+  <p class="meta">관광 방문자 수(구·군별, 한국관광공사)는 공공데이터포털 인증키 등록 뒤 더합니다. 월간 경기 지표 전체는 <a href="/stats/monthly/">경기 동향</a>에 있습니다.</p>
 </Base>

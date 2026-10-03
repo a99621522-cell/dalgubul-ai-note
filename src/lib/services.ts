@@ -55,10 +55,15 @@ export function selfEmployedSeries(): Series[] {
   return list.filter(x => x.pts.length);
 }
 
+/** 소상공인시장경기동향조사(소상공인 DT_S0001N_005·전통시장 DT_S0001N_006)의 대구 체감(이번 달)·전망(다음 달) BSI. */
 export function marketSeries(): Series[] {
-  const s = src('market-bsi-sido', '소상공인시장진흥공단');
-  return [['체감', '전통시장 체감경기(BSI)'], ['전망', '전통시장 다음 달 전망(BSI)']].map(([itm, name], i) => ({
-    key: `mk${i}`, group: '전통시장', name, unit: '지수', change: 'p' as const, digits: 1,
-    pts: kosis('market-bsi-sido', r => r.ITM_NM === itm && r.C1_NM === '대구'), ...s, note: '100 넘으면 전월보다 좋다는 응답이 많음',
-  })).filter(x => x.pts.length);
+  const out: Series[] = [];
+  for (const [key, who] of [['smb-bsi-sido', '소상공인'], ['market-bsi-sido', '전통시장']] as const) {
+    const s = src(key, '소상공인시장진흥공단');
+    for (const [itm, label] of [['체감', '체감경기'], ['전망', '다음 달 전망']] as const) {
+      out.push({ key: `mk-${key}-${itm}`, group: '소상공인·전통시장', name: `${who} ${label}(BSI)`, unit: '지수', change: 'p', digits: 1,
+        pts: kosis(key, r => r.ITM_NM === itm && r.C1_NM === '대구'), ...s, note: '100 넘으면 전월보다 좋다는 응답이 많음' });
+    }
+  }
+  return out.filter(x => x.pts.length);
 }

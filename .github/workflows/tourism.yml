@@ -1,0 +1,47 @@
+name: 관광 방문자 수 받기 (한국관광공사 관광빅데이터)
+
+# scripts/fetch_tourism.py — 공공데이터포털 한국관광공사 관광빅데이터 오픈API 로 대구 광역·구군 방문자 수(월 합계)를 받아
+# data/tourism/ 에 커밋한다. 키는 Secrets DATA_GO_KR_KEY(이 API 활용신청 필요). 이 세션 환경은 apis.data.go.kr 이 막혀 있어 Actions 가 대신 돈다.
+on:
+  schedule:
+    - cron: "23 20 19 * *"     # 매월 20일 05:23 KST
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "응답 형태만 찍기(true)"
+        required: false
+        default: "false"
+      start:
+        description: "받기 시작할 달(YYYY-MM)"
+        required: false
+        default: "2024-01"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          if [ "${{ inputs.probe }}" = "true" ]; then python3 scripts/fetch_tourism.py --probe --start "${{ inputs.start || '2024-01' }}"; exit 0; fi
+          python3 scripts/fetch_tourism.py --start "${{ inputs.start || '2024-01' }}"
+      - name: 커밋
+        if: inputs.probe != 'true'
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/tourism
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 관광 방문자 수 갱신 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

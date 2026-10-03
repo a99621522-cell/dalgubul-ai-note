@@ -22,8 +22,11 @@ def main():
     print(f"== robots.txt ({r.status_code}) ==")
     print(r.text[:3000] if r.ok else "(없음)")
     path = urlparse(url).path or "/"
+    agent = ""   # User-agent: * 묶음만 본다(특정 봇만 막은 줄은 우리와 무관)
     for line in r.text.splitlines():
-        if re.match(r"(?i)disallow:\s*/\s*$", line.strip()):
+        m = re.match(r"(?i)user-agent:\s*(\S+)", line.strip())
+        if m: agent = m.group(1); continue
+        if agent == "*" and re.match(r"(?i)disallow:\s*/\s*$", line.strip()):
             print(f"!! robots 가 전체 차단(Disallow: /). 첫 화면 외 수집 불가")
     html = ""
     if "--xhr" in sys.argv:
@@ -116,7 +119,9 @@ def xhr(url):
         for c in clicks:
             print(f"\n==== 누름: {c}")
             try:
-                pg.get_by_text(c, exact=False).first.click(timeout=10000)
+                el = pg.get_by_text(c, exact=True).first if pg.get_by_text(c, exact=True).count() else pg.get_by_text(c, exact=False).first
+                try: el.click(timeout=5000)
+                except Exception: el.evaluate("e => e.click()")   # 접힌 메뉴 속 항목
                 pg.wait_for_load_state("networkidle", timeout=30000); pg.wait_for_timeout(3000)
                 print(f"   주소: {pg.url}")
             except Exception as e:

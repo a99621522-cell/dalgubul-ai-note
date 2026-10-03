@@ -2,7 +2,7 @@
 """한국관광 데이터랩(datalab.visitkorea.or.kr) 로그인 없이 열리는 화면의 내부 요청(qid) 확인용(한 번 실행, 수집기 아님).
 화면을 열고 화면 스크립트 속 qid 이름을 모은 뒤, 같은 화면 안에서 지역 코드만 바꿔(대구) 몇 개를 다시 불러 응답 앞부분을 찍는다.
 로그인 화면으로 넘어가는 메뉴(이동통신 방문자수·신용카드 관광지출액)는 다루지 않는다(로그인 뒤 자료 수집 금지).
-사용: python3 scripts/datalab_probe.py <화면 주소> [지역코드=27] [최대 qid 수=40]
+사용: python3 scripts/datalab_probe.py <화면 주소> [지역코드=27] [최대 qid 수=40] [누를 탭(쉼표)]
   최대 qid 수가 0 이면 qid 를 다시 부르지 않고, 화면이 보내는 요청의 지역만 바꿔(대구) 화면이 그린 글자(단위·표)를 찍는다.
 """
 import json, re, sys, time
@@ -16,6 +16,12 @@ def main():
     sgg = sys.argv[2] if len(sys.argv) > 2 else "27"
     cap = int(sys.argv[3]) if len(sys.argv) > 3 else 40
     posts = []
+    got = []
+
+    def on_resp(resp):
+        if "getTempleteData" in resp.url:
+            try: got.append((resp.request.post_data or "", resp.text()))
+            except Exception: pass
 
     def on_req(req):
         if "getTempleteData" in req.url and req.post_data:
@@ -35,6 +41,7 @@ def main():
     with sync_playwright() as p:
         b = p.chromium.launch(); pg = b.new_page(user_agent=UA, viewport={"width": 1400, "height": 1000})
         pg.on("request", on_req)
+        pg.on("response", on_resp)
         pg.route("**/visualize/getTempleteData.do", swap)
         pg.goto(url, wait_until="networkidle", timeout=90000); pg.wait_for_timeout(5000)
         print(f"== {pg.title()} | {pg.url}")
@@ -54,6 +61,23 @@ def main():
             print("== 화면 글자(대구로 바꿔 그린 것) ==\n" + main[max(0, i - 200):][:15000])
             for t in pg.query_selector_all("table")[:20]:
                 print("== 표: " + re.sub(r"\s+", " ", t.inner_text())[:800])
+            for tab in (sys.argv[4].split(",") if len(sys.argv) > 4 and sys.argv[4] else []):
+                got.clear()
+                print(f"\n==== 탭: {tab}")
+                try:
+                    el = pg.get_by_text(tab, exact=True).first
+                    try: el.click(timeout=5000)
+                    except Exception: el.evaluate("e => e.click()")
+                    pg.wait_for_load_state("networkidle", timeout=60000); pg.wait_for_timeout(6000)
+                except Exception as e:
+                    print(f"   못 누름: {str(e)[:200]}"); continue
+                for d, body in got:
+                    q = re.search(r"qid=([^&]+)", d); dn = re.search(r"dnname=([^&]+)", d)
+                    from urllib.parse import unquote_plus
+                    print(f"## qid={q.group(1) if q else ''} dn={unquote_plus(dn.group(1)) if dn else ''} len={len(body)}\n   post={d[:300]}\n   " + re.sub(r"\s+", " ", body[:1500]))
+                main = pg.evaluate("() => (document.querySelector('#contents, .contents, #container, main') || document.body).innerText")
+                i = main.find("전년동기")
+                print("== 탭 글자 ==\n" + re.sub(r"\n\s*\n", "\n", main[max(0, i - 300):])[:6000])
             b.close(); return
         # 화면 스크립트 속 qid
         srcs = pg.evaluate("() => Array.from(document.scripts).map(s => s.src).filter(Boolean)")

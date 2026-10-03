@@ -66,3 +66,10 @@ tables:
     search: "부도율"
     cycle: M
     years: 4
+  # ── 카드 소비 (운영자 지시 2026-10-03: 카드 데이터 필요) ── stat_code 는 discover 로 확인해 채움
+  - key: card-region
+    name: 지역별 신용카드 등 승인액
+    stat_code: ""
+    search: "카드"
+    cycle: M
+    years: 4

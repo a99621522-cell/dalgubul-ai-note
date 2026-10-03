@@ -6,6 +6,7 @@
 #   cycle   주기 A 연간 / S 반년 / Q 분기 / M 월간 / D 일별
 #   years   받을 기간 길이(연도 수)
 #   area    남길 항목 이름 조각(ITEM_NAME1~4 가운데 하나라도 들어 있으면 남긴다). 지역 항목이 없는 전국 표면 [] 로 두면 전부 남긴다
+#   max_pages 한 번에 받는 쪽 수 상한(기본 20쪽 = 2만 행). 큰 표는 늘린다
 #   areas   리포트 분야 key(config/pledge_areas.yml) — report_context 가 분야 근거로 먼저 보여 준다
 version: 2026-09-28
 defaults: { area: ["대구"], years: 6 }
@@ -73,4 +74,5 @@ tables:
     search: "카드"
     cycle: M
     years: 4
+    max_pages: 120   # 17개 시도×업종 42개×총액·일평균 → 4년이면 6만 행 넘음(기본 20쪽이면 2023-02 에서 잘림)
     note: 대구 개인 신용카드 사용액(소비유형·업종별). 카드 소비 지표

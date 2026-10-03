@@ -79,7 +79,7 @@ def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
     if dry:
         print(f"[dry] {t['key']}: {API}/StatisticSearch/***/json/kr/1/{PAGE}/{tail}")
         return None
-    rows = paged(key, "StatisticSearch", tail)
+    rows = paged(key, "StatisticSearch", tail, int(t.get("max_pages", 20)))   # 큰 표(전 지역×여러 항목)는 max_pages 를 늘린다 — 기본 20쪽에서 잘리면 최근 달이 빠진다(2026-10-03 card-region)
     words = t.get("area") if t.get("area") is not None else ["대구"]
     keep = [r for r in rows if not words or any(w in " ".join(r.get(f"ITEM_NAME{i}", "") or "" for i in range(1, 5)) for w in words)]
     fields = ["TIME", "ITEM_NAME1", "ITEM_NAME2", "ITEM_NAME3", "ITEM_NAME4", "DATA_VALUE", "UNIT_NAME"]

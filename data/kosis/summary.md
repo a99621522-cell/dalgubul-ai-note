@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-02 · 표 25개 · 설정 config/kosis_tables.yml
+갱신 2026-10-03 · 표 26개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -24,5 +24,6 @@
 | retail-sales-index-sido | [시도별 소매판매액지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K41018) | Y 2014~2026 | 2025 | 1156 | 2020＝100 |
 | self-employed-sido | [행정구역(시도)/종사상지위별 취업자](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7035S) | M 202301~202612 | 202608 | 440 | 천명 |
 | service-index-sido | [시도별 서비스업생산지수(2020＝100.0)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1KC2023) | Q 202201~202604 | 202602 | 504 | 2020＝100 |
+| smb-bsi-sido | [소상공인 지역별 실적 및 전망](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_S0001N_005) | M 202301~202612 | 202609 | 89 | BSI |
 | sme-stats-sido | [시도별·산업중분류별·기업규모별 기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001) | Y 2020~2026 | 2023 | 45863 | 개 |
 | sme-workers-sido | [시도별·산업중분류별·기업규모별 종사자수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_B001) | Y 2020~2026 | 2023 | 45864 | 명 |

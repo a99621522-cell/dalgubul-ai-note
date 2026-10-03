@@ -27,6 +27,10 @@ on:
         description: "화면이 숫자를 받아 오는 내부 요청(XHR)을 찍기(true, 브라우저로 연다)"
         required: false
         default: "false"
+      datalab:
+        description: "한국관광 데이터랩 화면이면 true — 스크립트 속 qid 를 모아 지역 코드(click 칸, 기본 27=대구)로 다시 불러 본다"
+        required: false
+        default: "false"
       click:
         description: "xhr 때 연 뒤 차례로 누를 글자(쉼표로 구분, 예: 지역,대구)"
         required: false
@@ -44,12 +48,17 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -q -r scripts/requirements.txt
-      - if: inputs.render == 'true' || inputs.xhr == 'true'
+      - if: inputs.render == 'true' || inputs.xhr == 'true' || inputs.datalab == 'true'
         run: pip install -q playwright && python -m playwright install --with-deps chromium
-      - if: inputs.xhr == 'true'
+      - if: inputs.datalab == 'true'
+        env:
+          URL: ${{ inputs.url }}
+          SGG: ${{ inputs.click }}
+        run: python3 scripts/datalab_probe.py "$URL" "${SGG:-27}"
+      - if: inputs.xhr == 'true' && inputs.datalab != 'true'
         env:
           URL: ${{ inputs.url }}
           CLICK: ${{ inputs.click }}
         run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK"
-      - if: inputs.xhr != 'true'
+      - if: inputs.xhr != 'true' && inputs.datalab != 'true'
         run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)

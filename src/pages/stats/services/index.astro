@@ -2,9 +2,10 @@
 import Base from '../../../layouts/Base.astro';
 import StatsNav from '../../../components/StatsNav.astro';
 import { change, latest, fmt, fmtChg, trendChart, shift } from '../../../lib/monthly';
-import { serviceSeries, serviceIndustryRows, retailSeries, selfEmployedSeries, marketSeries } from '../../../lib/services';
+import { serviceSeries, serviceIndustryRows, retailSeries, selfEmployedSeries, marketSeries, cardSeries, cardRows } from '../../../lib/services';
 /** /stats/services/ — 서비스업·자영업(운영자 지시 2026-10-02). KOSIS 원 통계만(src/lib/services.ts). 값 그대로, 평가 없음. */
-const SV = serviceSeries(), RT = retailSeries(), SE = selfEmployedSeries(), MK = marketSeries();
+const SV = serviceSeries(), RT = retailSeries(), SE = selfEmployedSeries(), MK = marketSeries(), CD = cardSeries();
+const card = cardRows();
 const ind = serviceIndustryRows();
 type Ser = typeof SV[number];
 const unitChg = (s: Ser) => (s.change === '%' ? '%' : s.change === '%p' ? '%p' : 'p');
@@ -18,13 +19,14 @@ const blocks: { id: string; title: string; desc: string; ss: Ser[]; from: string
   { id: 'retail', title: '대형소매점 판매 (월간)', desc: '대형소매점(백화점·대형마트) 판매액지수(불변지수, 2020=100).', ss: RT, from: yearFrom(RT), step: 1 },
   { id: 'self', title: '자영업 (월간)', desc: '경제활동인구조사의 대구 종사상지위별 취업자 가운데 자영업자·무급가족종사자와 자영업자 비중.', ss: SE, from: yearFrom(SE), step: 1 },
   { id: 'market', title: '소상공인·전통시장 체감경기 (월간)', desc: '소상공인시장경기동향조사의 대구 소상공인·전통시장 체감(이번 달)·전망(다음 달) 경기지수. 100이 넘으면 전월보다 좋다는 응답이 많다는 뜻입니다.', ss: MK, from: yearFrom(MK), step: 1 },
+  { id: 'card', title: `카드 소비 (월간, ${card.m.slice(0, 4)}년 ${Number(card.m.slice(5))}월까지)`, desc: `한국은행 「지역별 소비유형별 개인 신용카드」의 대구 월 사용액(억 원). 이 표는 ${card.m.slice(0, 4)}년 ${Number(card.m.slice(5))}월에서 멈춰 그 뒤 값이 없습니다. 지금 공개된 대구 카드 통계는 이 표뿐입니다.`, ss: CD, from: shift(lastM(CD), -11), step: 1 },
 ].filter(b => b.ss.length);
 ---
-<Base title="서비스업·자영업 통계" description="대구 서비스업 생산지수(업종별, 분기), 대형소매점 판매액지수, 자영업자 수·비중, 소상공인·전통시장 체감경기(BSI) — 국가데이터처·소상공인시장진흥공단 KOSIS 원 통계." current="stats">
+<Base title="서비스업·자영업 통계" description="대구 서비스업 생산지수(업종별, 분기), 대형소매점 판매액지수, 자영업자 수·비중, 소상공인·전통시장 체감경기(BSI), 업종별 카드 사용액 — 국가데이터처·소상공인시장진흥공단(KOSIS)·한국은행(ECOS) 원 통계." current="stats">
   <p class="meta"><a href="/stats/">통계</a> › 서비스업·자영업</p>
   <StatsNav current="services" />
-  <div class="section-head"><h1>서비스업·자영업</h1><span class="meta">분기·월간 · KOSIS</span></div>
-  <p class="lede">대구 서비스업 생산, 대형소매점 판매, 자영업자, 소상공인·전통시장 체감경기입니다. 모두 KOSIS 원 통계 그대로이고, 평가·전망이 아닙니다. 그래프마다 점에 그 달(분기) 값을 적었고, 표는 펼쳐서 봅니다.</p>
+  <div class="section-head"><h1>서비스업·자영업</h1><span class="meta">분기·월간 · KOSIS·ECOS</span></div>
+  <p class="lede">대구 서비스업 생산, 대형소매점 판매, 자영업자, 소상공인·전통시장 체감경기, 업종별 카드 사용액입니다. 모두 원 통계 그대로이고, 평가·전망이 아닙니다. 그래프마다 점에 그 달(분기) 값을 적었고, 표는 펼쳐서 봅니다.</p>
 
   <div class="stat-tiles">
     {heads.map(s => { const p = latest(s); const y = change(s, p, 12); return (
@@ -47,7 +49,17 @@ const blocks: { id: string; title: string; desc: string; ss: Ser[]; from: string
             <p class="tsrc">전년 같은 {s.quarterly ? '분기' : '달'} 대비 {chg(s, 12)}{s.note && ` · ${s.note}`}</p>
           </figure>); })}
       </div>
-      {b.id === 'svc' && ind.rows.length > 0 ? (
+      {b.id === 'card' ? (
+        <details class="stat-details" open>
+          <summary>업종별 카드 사용액 ({card.m.slice(0, 4)}년 {Number(card.m.slice(5))}월)</summary>
+          <div class="scroll-x"><table class="data-table" data-title={`대구 업종별 개인 신용카드 사용액 ${card.m}`}>
+            <thead><tr><th>업종(소비유형)</th><th class="n">사용액(억 원)</th><th class="n">합계 대비 비중(%)</th><th class="n">전년 같은 달 대비(%)</th></tr></thead>
+            <tbody>{card.rows.map(r => <tr><th scope="row">{r.name}</th><td class="n">{fmt(r.v, 0)}</td><td class="n">{fmt(r.share, 1)}</td><td class="n">{fmtChg(r.yoy, '', 1)}</td></tr>)}
+              <tr><th scope="row">합계</th><td class="n">{fmt(card.total, 0)}</td><td class="n">—</td><td class="n">—</td></tr></tbody>
+          </table></div>
+          <p class="meta">업종은 표의 대분류 13개이며, 사용액이 큰 순서로 놓았을 뿐 순위가 아닙니다. 대분류 합과 합계는 표에서 조금 다를 수 있습니다. 백만 원을 100으로 나눠 억 원으로 적었습니다. 출처: <a href={card.url} rel="noopener">{card.source}</a></p>
+        </details>
+      ) : b.id === 'svc' && ind.rows.length > 0 ? (
         <details class="stat-details">
           <summary>업종별 서비스업 생산지수 표 ({ind.q.slice(0, 4)}년 {Number(ind.q.slice(5)) / 3}분기)</summary>
           <div class="scroll-x"><table class="data-table" data-title={`대구 업종별 서비스업생산지수 ${ind.q.slice(0, 4)}년 ${Number(ind.q.slice(5)) / 3}분기`}>

@@ -1,0 +1,67 @@
+{
+ "slug": "kdata-2025-09-vector-db",
+ "file": "동향리포트+5호_벡터DB의+주요+기술+및+도전+과제.pdf",
+ "drive_id": "11ZPeee2AiS4iXod-0PSh--0IJittdAke",
+ "title": "벡터DB의 주요 기술 및 도전 과제 (월간 동향 리포트 2025년 5호)",
+ "publisher": "한국데이터산업진흥원(K-DATA) 데이터정책실 정책기획팀, 월간 동향 리포트 2025년 5호",
+ "published": "2025-09-30",
+ "pages": 35,
+ "doc_type": "월간 동향 리포트(해외 보고서 요약)",
+ "areas": [
+  "ai-sw-startup"
+ ],
+ "keywords": [
+  "벡터 데이터베이스",
+  "샤딩",
+  "파티셔닝",
+  "캐싱",
+  "복제",
+  "근사 최근접 이웃 탐색",
+  "HNSW",
+  "양자화",
+  "RAG",
+  "하이브리드 검색",
+  "LLM 장기 기억",
+  "VDBMS 보안"
+ ],
+ "toc": [
+  "Ⅰ. 서론 — 개요",
+  "Ⅱ. 벡터DB 주요 기술(저장 기술: 샤딩·파티셔닝·캐싱·복제 / 검색 기술: NNS·ANNS — 해시·트리·그래프·양자화)",
+  "Ⅲ. 주요 벡터DB 비교 및 LLM과의 관계(7개 제품 비교, LLM을 위한 벡터DB·벡터DB를 위한 LLM·통합 프레임워크)",
+  "Ⅳ. 벡터DB의 한계 및 도전 과제",
+  "Ⅴ. 결론",
+  "참고 문헌"
+ ],
+ "summary": "한국데이터산업진흥원 월간 동향 리포트 2025년 5호로, 텍스트·이미지·음성 등 비정형 데이터를 고차원 벡터로 바꿔 의미 유사도로 찾는 벡터 데이터베이스의 저장·검색 기술과 과제를 해외 조사 논문 두 편('A Comprehensive Survey on Vector Database: Storage and Retrieval Technique, Challenge', 'Survey of Vector Database Management Systems')을 바탕으로 정리했다. 서론은 전통적 DB가 정확 일치 검색에 머무는 반면 벡터DB는 의미 기반 검색, 비정형 데이터 저장, 수평 확장과 실시간 처리에 강하다고 비교한다. 저장 기술 편은 범위·해시(일관 해싱)·지리 기반 샤딩, 범위·목록·K-평균·해시 파티셔닝, FIFO·LRU·MRU·LFU·파티션 캐시, 리더-팔로워·멀티 리더·리더리스 복제를 장단점과 함께 설명한다. 검색 기술 편은 전수 탐색과 트리 기반(KD·Ball·R·M-Tree) 정확 탐색, 정확도를 조금 내주고 속도를 얻는 근사 탐색의 해시(LSH 등)·트리(Annoy 등)·그래프(NSW·HNSW)·양자화(IVF·PQ·OPQ·ScaNN 등) 방식을 표로 비교하며, HNSW를 가장 널리 쓰이는 최신 기법으로 소개한다. 제품 비교 편은 PgVector·Qdrant Cloud·Weaviate Cloud·Zilliz Cloud·Milvus·Elastic Cloud·Pinecone 7개를 거리 함수, 인덱싱 방식, 수평·수직 확장, 복제·샤딩·파티셔닝, 최대 차원으로 대조한다. LLM 관계 편은 벡터DB가 RAG의 외부 지식 저장소, 유사 질의 캐시, 장기 기억 역할로 환각·망각을 줄이고, 반대로 LLM이 DB 진단·자연어 질의 변환·설정 추천으로 벡터DB 관리를 돕는다고 보고, 사용자·모델·AI 데이터베이스·데이터 네 층의 통합 구조를 제시한다. 한계로는 모호한 검색 기준, 차원에 비례하는 비교 비용, 큰 저장 크기, 정렬 구조 부재, 속성 조건과의 결합 어려움을 들고, 도전 과제로 고차원 인덱스, 이질적 벡터 유형 지원, 분산 병렬 처리, ML 프레임워크 연동, 키워드·벡터 하이브리드 검색, 보안·프라이버시를, 연구 과제로 유사도 점수 선택·하이브리드 연산자·점진적 탐색·다중 벡터 탐색을 든다. 시장 규모나 국내 도입 수치는 없다.",
+ "key_figures": [
+  {
+   "text": "비교 대상 벡터DB 7종: PgVector·Qdrant Cloud·Weaviate Cloud·Zilliz Cloud·Milvus·Elastic Cloud·Pinecone",
+   "page": 17
+  },
+  {
+   "text": "Pinecone을 제외한 모든 비교 대상이 그래프 기반 인덱싱 지원, 다수가 내적·코사인·유클리드 거리 지원",
+   "page": 17
+  },
+  {
+   "text": "확장 방식: PgVector·Qdrant Cloud·Pinecone은 수평·수직 모두, Weaviate Cloud·Milvus·Elastic Cloud는 수평만, Zilliz Cloud는 수직만 지원",
+   "page": 18
+  },
+  {
+   "text": "최대 벡터 차원: PgVector 16,000, Qdrant·Weaviate 65,535, Zilliz·Milvus 32,768(Elastic·Pinecone 정보 없음)",
+   "page": 19
+  },
+  {
+   "text": "RAG 워크플로 3단계: 데이터 저장(청크·임베딩)→정보 검색→콘텐츠 생성",
+   "page": 20
+  },
+  {
+   "text": "도전 과제 6가지: 고차원 인덱스·이질적 벡터 유형·분산 병렬 처리·ML 프레임워크 통합·신규 응용(하이브리드 검색)·보안·프라이버시",
+   "page": 27
+  }
+ ],
+ "daegu_notes": [],
+ "public_url": "",
+ "added": "2026-10-05",
+ "read_status": "full",
+ "note": "Drive PDF 전체(본문 35쪽, 글자 층 있음)를 커넥터로 읽음. 쪽 번호는 본문 아래 표기 기준, 발행일은 끝면 2025.09.30. 원문은 IEEE와 칭화대학 발행 보고서라고 본문이 밝힌다. 대구 언급은 없다. public_url 은 비움: 진흥원 누리집(kdata.or.kr)은 이 세션에서 접속이 막혀 있고, 웹 검색으로 이 호의 공개 페이지를 찾지 못했다(2026-10-04)."
+}

@@ -3,10 +3,34 @@
  "name": "IDC Press Releases",
  "group": "해외 컨설팅",
  "home": "https://www.idc.com",
- "fetched": "2026-09-27",
+ "fetched": "2026-10-04",
  "status": "OK",
  "method": "rss(/feed)",
  "items": [
+  {
+   "title": "AI Strategy Is Easier to Define Than to Deliver. IDC’s Benchmark Shows the Gap",
+   "url": "https://www.idc.com/resource-center/blog/ai-strategy-is-easier-to-define-than-to-deliver-idcs-benchmark-shows-the-gap/",
+   "date": "2026-10-02",
+   "summary": "About six in ten organizations say their AI strategy is transforming the business. IDC&#8217;s 2026 MaturityScape Benchmark AI Survey measured whether their capabilities match that claim, and for roughly five in six they do not yet. How did IDC measure AI maturity? The May 2026 survey covers 1,900 o"
+  },
+  {
+   "title": "Stop Trusting the Model: The AI Enforcement Layer Every Organization Needs",
+   "url": "https://www.idc.com/resource-center/blog/stop-trusting-the-model-the-ai-enforcement-layer-every-organization-needs/",
+   "date": "2026-09-30",
+   "summary": "Any organization that lets an AI system touch real data or real decisions needs an enforcement layer that sits outside the model, where the model cannot reach it or argue with it. The same holds for a mid-sized manufacturer using generative AI to draft procurement contracts and a healthcare provider"
+  },
+  {
+   "title": "The Architecture Bet Nobody Benchmarks Until It’s Too Late",
+   "url": "https://www.idc.com/resource-center/blog/the-architecture-bet-nobody-benchmarks-until-its-too-late/",
+   "date": "2026-09-29",
+   "summary": "Most CTOs can describe their technology roadmap with total confidence. Fewer can say, with real evidence, whether that roadmap is ahead of the market or just ahead of last year&#8217;s version of itself. IDC&#8217;s research on AI maturity puts a number on that gap. Across the organizations IDC trac"
+  },
+  {
+   "title": "You Don’t Choose a Model, You Govern a Constellation",
+   "url": "https://www.idc.com/resource-center/blog/you-dont-choose-a-model-you-govern-a-constellation/",
+   "date": "2026-09-28",
+   "summary": "A CTO explaining, for the third time this quarter, why the company runs five different models across four teams describes most enterprise AI programs heading into the new year. No one outside the AI group can name all five with confidence. Eighteen months ago, the question was simple: which frontier"
+  },
   {
    "title": "Meta Connect 2026: More Glasses on More Faces",
    "url": "https://www.idc.com/resource-center/blog/meta-connect-2026-more-glasses-on-more-faces/",
@@ -42,30 +66,6 @@
    "url": "https://www.idc.com/resource-center/blog/saaspocalypse-catchy-title-flawed-premise/",
    "date": "2026-09-23",
    "summary": "The worldwide enterprise application market is approaching $700 billion, and blended growth has held near 13% through the first half of 2026, the third consecutive year of double-digit expansion. Yet, none of that has stopped the industry from convincing itself that the ground beneath it is about to"
-  },
-  {
-   "title": "IDC On the Ground: At IFA 2026, AI Set the Design Agenda for Every Device Category",
-   "url": "https://www.idc.com/resource-center/blog/idc-on-the-ground-at-ifa-2026-ai-set-the-design-agenda-for-every-device-category/",
-   "date": "2026-09-22",
-   "summary": "Berlin once again became the European center of consumer technology from September 4 to 8, 2026. According to IFA 2026 organizers, the event brought together approximately 240,000 attendees from 155 countries, more than 2,000 exhibitors, and over 5,200 media representatives. As IDC walked the show f"
-  },
-  {
-   "title": "Defending a Security Budget on Evidence, Not Faith",
-   "url": "https://www.idc.com/resource-center/blog/defending-a-security-budget-on-evidence-not-faith/",
-   "date": "2026-09-21",
-   "summary": "You know the investment is right. You&#8217;ve watched the threat shift, you&#8217;ve read the incident reports. But conviction isn&#8217;t a line item. When you ask for budget, the board isn&#8217;t asking whether you&#8217;re right. They&#8217;re asking how you know, and whether anyone outside you"
-  },
-  {
-   "title": "What META services buyers really want from their partners in 2026",
-   "url": "https://www.idc.com/resource-center/blog/what-meta-services-buyers-really-want-from-their-partners-in-2026/",
-   "date": "2026-09-21",
-   "summary": "IT services buyers across the Middle East, Turkey and Africa (META region) are making big decisions right now about their technology partners. Their business models are under pressure to transform, their technology budgets are flowing toward AI and automation, and IT services vendor partnerships are"
-  },
-  {
-   "title": "Your Buyer Has Moved. Has Your GTM? What IDC’s 2026 Data Means for Your Sales Funnel",
-   "url": "https://www.idc.com/resource-center/blog/your-buyer-has-moved-has-your-gtm-what-idcs-2026-data-means-for-your-sales-funnel/",
-   "date": "2026-09-18",
-   "summary": "If it feels like buyers are bypassing your branded content, you&#8217;d be right. Until recently, technology company websites were key stops for buyers on the information superhighway. That stopped being true the moment AI tools became buyers&#8217; default starting point. Your traffic is being rero"
   }
  ],
  "note": "",

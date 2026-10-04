@@ -3,10 +3,22 @@
  "name": "국회예산정책처(NABO)",
  "group": "국내 연구",
  "home": "https://www.nabo.go.kr",
- "fetched": "2026-09-27",
+ "fetched": "2026-10-04",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
+  {
+   "title": "2027년 NABO 경제전망 2026~2030 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9456&key=2509250001",
+   "date": "2026-09-30",
+   "summary": ""
+  },
+  {
+   "title": "2026 공공기관 현황과 이슈 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9446&key=2509250001",
+   "date": "2026-09-29",
+   "summary": ""
+  },
   {
    "title": "2026 대한민국 지방재정 N",
    "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9442&key=2509250001",

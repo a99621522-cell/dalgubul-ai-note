@@ -3,10 +3,17 @@
  "name": "과학기술정책연구원(STEPI)",
  "group": "국내 연구",
  "home": "https://www.stepi.re.kr",
- "fetched": "2026-09-27",
+ "fetched": "2026-10-04",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
+  {
+   "title": "STI Policy Review: Sep 2026 Vol.16",
+   "url": "https://www.stepi.re.kr/site/stepiko/report/View.do?reIdx=18&pageIndex=1&cateCont=&searchYear=&searchCondition=&searchKeyword=&searchSort=",
+   "date": "2026-09-30",
+   "summary": "",
+   "excerpt": "요청하신 페이지를 찾을 수 없습니다. 이전페이지"
+  },
   {
    "title": "누리호의 국민 체감 가치는 연 2.3조 원, 국민 인식을 반영한 R&D 사업의 경제·사회적 편익 추정 체계 마련 필요",
    "url": "https://www.stepi.re.kr/site/stepiko/report/View.do?reIdx=72&pageIndex=1&cateCont=&searchYear=&searchCondition=&searchKeyword=&searchSort=",
@@ -60,19 +67,12 @@
    "title": "AI전환기,디지털헬스케어 사례로 본 기술인력 수요변화의 특징과 대응전략",
    "url": "https://www.stepi.re.kr/site/stepiko/report/View.do?reIdx=374&pageIndex=1&cateCont=&searchYear=&searchCondition=&searchKeyword=&searchSort=",
    "date": "2026-08-06",
-   "summary": "",
-   "excerpt": "요청하신 페이지를 찾을 수 없습니다. 이전페이지"
+   "summary": ""
   },
   {
    "title": "이공계 롤 모델 구축을 위한 과학기술자 지원 제도 설계 및 운영 방안 연구",
    "url": "https://www.stepi.re.kr/site/stepiko/report/View.do?reIdx=1422&pageIndex=1&cateCont=&searchYear=&searchCondition=&searchKeyword=&searchSort=",
    "date": "2026-07-31",
-   "summary": ""
-  },
-  {
-   "title": "5극3특 초광역 메가특구 추진을 위한 혁신특구 개선방안",
-   "url": "https://www.stepi.re.kr/site/stepiko/report/View.do?reIdx=373&pageIndex=1&cateCont=&searchYear=&searchCondition=&searchKeyword=&searchSort=",
-   "date": "2026-07-24",
    "summary": ""
   }
  ],

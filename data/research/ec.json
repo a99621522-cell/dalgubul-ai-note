@@ -3,69 +3,69 @@
  "name": "EU 집행위 Press corner",
  "group": "해외 정부",
  "home": "https://ec.europa.eu",
- "fetched": "2026-09-27",
+ "fetched": "2026-10-04",
  "status": "OK",
  "method": "rss(/commission/presscorner/api/rss?language)",
  "items": [
   {
-   "title": "Wystąpienie komisarza Piotra Serafina podczas XXVI Międzynarodowej Konferencji „Rola chrześcijan w procesie integracji europejskiej” pt. „Europa skazana na podział czy zjednoczenie?”",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1989",
-   "date": "2026-09-26",
-   "summary": "European Commission Speech Krakow, 26 Sep 2026 Szanowni Państwo, Pytacie Państwo czy „Europa jest skazana na podział czy na jedność?”. Chce udzielić na to pytanie optymistycznej i prawdziwej odpowiedzi: przy..."
+   "title": "Statement by Commissioner Lahbib on the siege of Oleshky, Ukraine",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2063",
+   "date": "2026-10-02",
+   "summary": "European Commission Statement Brussels, 02 Oct 2026 What is happening in Oleshky, Ukraine, is appalling. Civilians are trapped under siege by Russian forces without access to food, medicine, clean water and basic..."
   },
   {
-   "title": "President von der Leyen announces €710 million to support displaced people in Africa and global crisis relief",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1985",
-   "date": "2026-09-25",
-   "summary": "European Commission Press release New York, 26 Sep 2026 As the 81st UN General Assembly High Level Week draws to a close in New York, President of the European Commission Ursula von der Leyen announced almost €710 million in EU support to displaced people and communities in Sub-Saharan Africa, as we"
+   "title": "G7 Leaders' Statement on global energy security and market stability",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2057",
+   "date": "2026-10-02",
+   "summary": "European Commission Statement Brussels, 02 Oct 2026 Today, we, the Leaders of the G7, convened a virtual meeting to address the deepening challenges to our energy security. Facing unprecedented volatility in oil ..."
   },
   {
-   "title": "Speech by Commissioner Albuquerque at the Interparliamentary Conference on Stability, Economic Coordination and Governance in the EU",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1986",
-   "date": "2026-09-25",
-   "summary": "European Commission Speech Dublin, 25 Sep 2026 Good morning, ladies and gentlemen. It is a pleasure to join you today for this Interparliamentary Conference. National parliaments have an essential role in sh..."
+   "title": "Statement by President von der Leyen with Prime Minister of North Macedonia Mickoski",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2053",
+   "date": "2026-10-02",
+   "summary": "European Commission Statement Skopje, 02 Oct 2026 Prime Minister, dear Hristijan, It is very good to be back in Skopje. Thank you very much for the very warm welcome. North Macedonia has shown time and again th..."
   },
   {
-   "title": "Daily News 25 / 09 / 2026",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/mex_26_1982",
-   "date": "2026-09-25",
-   "summary": "European Commission Daily news Brussels, 25 Sep 2026 Commission takes action to ensure complete and timely transposition of EU directives The European Commission is taking action against several EU Member States t..."
+   "title": "Daily News 02 / 10 / 2026",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/mex_26_2050",
+   "date": "2026-10-02",
+   "summary": "European Commission Daily news Brussels, 02 Oct 2026 Commission disburses €2.9 billion under Ukraine Facility to support financial stability and reforms Today, the European Commission has released €2.9 billion to ..."
   },
   {
-   "title": "Commission greenlights Luxembourg's third payment request for €92.2 million under NextGenerationEU",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1981",
-   "date": "2026-09-25",
-   "summary": "European Commission Press release Brussels, 25 Sep 2026 Today, the European Commission positively assessed Luxembourg's third payment request for €92.2 million under the Recovery and Resilience Facility, the centrepiece of NextGenerationEU."
+   "title": "Factsheet - EU solidarity with Ukraine",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/fs_22_3862",
+   "date": "2026-10-01",
+   "summary": "European Commission Factsheet Brussels, 02 Oct 2026 Factsheet - EU solidarity with Ukraine Factsheet - EU solidarity with Ukraine"
   },
   {
-   "title": "Commission takes action to ensure complete and timely transposition of EU directives",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/inf_26_1834",
-   "date": "2026-09-24",
-   "summary": "European Commission Infringement decisions Brussels, 25 Sep 2026 The European Commission is taking action against several EU Member States that have failed to notify the Commission of measures they have adopted to transpose E..."
+   "title": "Commission approves €170 million Bulgarian State aid for farmers facing increased fuel and fertiliser prices",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2019",
+   "date": "2026-10-01",
+   "summary": "European Commission Press release Brussels, 02 Oct 2026 The European Commission has approved a €170 million Bulgarian State aid scheme for farmers facing increased fuel and fertiliser prices due to the Middle East crisis."
   },
   {
-   "title": "Speech by Commissioner Lahbib on Haiti during the UN General Assembly",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1975",
-   "date": "2026-09-24",
-   "summary": "European Commission Speech New York, 24 Sep 2026 In Haiti today, childhood is being stolen. Children are being recruited by gangs. Families are trapped behind walls of violence. Humanitarian workers risk their..."
+   "title": "Commission disburses €2.9 billion under Ukraine Facility to support financial stability and reforms",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2047",
+   "date": "2026-10-01",
+   "summary": "European Commission Press release Brussels, 02 Oct 2026 Today, the European Commission has released €2.9 billion to Ukraine to support financing needs and maintain the functioning of the country's public administration, as it continues to defend itself against Russia's war of aggression. This amount"
   },
   {
-   "title": "Speech by Commissioner Lahbib at the G20 High Level Independent Panel on Financing Pandemic Preparedness and Response",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1973",
-   "date": "2026-09-24",
-   "summary": "European Commission Speech New York, 24 Sep 2026 In June, I was in Bunia, at the epicentre of the Ebola outbreak. I met nurses, doctors, and local health workers fighting the virus on the front line. They knew..."
+   "title": "Statement by President von der Leyen with Prime Minister of Montenegro Spajić",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2049",
+   "date": "2026-10-01",
+   "summary": "European Commission Statement Podgorica, 02 Oct 2026 Prime Minister, Dear Milojko, Thank you for welcoming me to Podgorica. Tomorrow morning, we will inaugurate the new National Coordination Centre. And I am looki..."
   },
   {
-   "title": "EU Powering Global Health Resilience",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1972",
-   "date": "2026-09-24",
-   "summary": "European Commission Speech New York, 24 Sep 2026 Excellencies, Distinguished guests, It's a pleasure to welcome you this morning. Since we assembled here in New York last year, global challenges have deepened..."
+   "title": "Joint statement by the European Commission and Ukraine",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2045",
+   "date": "2026-10-01",
+   "summary": "European Commission Statement Brussels, 01 Oct 2026 Today through coordinated joint efforts, we have identified the means to cover Ukraine's budget and defence needs for 2026. We have also reconfirmed the steps n..."
   },
   {
-   "title": "Opening remarks by Commissioner Hansen at the “EU AgRI 2040” Agricultural Research and Innovation Conference",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_1968",
-   "date": "2026-09-24",
-   "summary": "European Commission Speech Brussels, 24 Sep 2026 Commissioner Zaharieva, dear Ekaterina, Distinguished speakers and panellists, Dear participants, It is a real pleasure to open with you all, the fourth EU Agri..."
+   "title": "Keynote speech by Commissioner Piotr Serafin at the 8th Annual EC-EIB-ESM Capital Markets Seminar, 1 October 2026, Luxembourg",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_2043",
+   "date": "2026-10-01",
+   "summary": "European Commission Speech Luxembourg, 01 Oct 2026 Ladies and gentlemen, I want to start by welcoming you on behalf of the European Commission to the second day of this Seminar. I am pleased to see that this Sem..."
   }
  ],
  "note": "",

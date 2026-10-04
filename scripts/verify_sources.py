@@ -51,6 +51,9 @@ def check(src: dict, sess: requests.Session) -> dict:
     try:
         r = sess.get(src["url"], headers={"User-Agent": UA, "Accept-Language": "ko,en;q=0.8,zh;q=0.6"}, timeout=(15, 20), allow_redirects=True)
         rec["status"] = r.status_code
+        if "charset" not in r.headers.get("Content-Type", "").lower():   # 머리에 charset 이 없으면 requests 가 ISO-8859-1 로 읽어 일본어·한국어 제목이 깨진다(2026-10-05)
+            m = re.search(rb"""<meta[^>]+charset=["']?([\w-]+)""", r.content[:4000], re.I)
+            r.encoding = m.group(1).decode() if m else (r.apparent_encoding or "utf-8")
         html = r.text[:400000]
     except Exception as e:  # noqa: BLE001
         rec["note"] = f"{type(e).__name__}"

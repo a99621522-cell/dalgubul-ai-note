@@ -1,0 +1,170 @@
+{
+ "file": "src/content/posts/2026-10-05-policy-automotive-tariff.md",
+ "checked": "2026-10-04",
+ "ok": 11,
+ "total": 13,
+ "ratio": 0.85,
+ "official_bad": [
+  "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
+  "U.S. Federal Register 2026-15280, 「Procedures To Administer Import Adjustment Offset Amounts for Certain Imports of Automobile and Medium- and Heavy-Duty Vehicle Parts for Automobile and Medium- and Heavy-Duty Vehicle Engine Manufacturers」"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "경향신문, 「관세 근거 세 번 바뀌어도 자동차는 15%…10조원 부담, 부품사로 번지나」",
+   "url": "https://www.khan.co.kr/article/202610041552001/",
+   "date": "2026-10-04",
+   "kind": "news",
+   "status": 200,
+   "page_title": "관세 근거 세 번 바뀌어도 자동차는 15%…10조원 부담, 부품사로 번지나 - 경향신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "데일리안, 「현대차·기아, 관세 10조에 곳간 5조 줄었다…부품사에 번지는 관세 청구서」",
+   "url": "https://www.dailian.co.kr/news/view/1695874",
+   "date": "2026-09-29",
+   "kind": "news",
+   "status": 200,
+   "page_title": "현대차·기아, 관세 10조에 곳간 5조 줄었다…부품사에 번지는 관세 청구서",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "헤럴드경제, 「미국, 60개국에 '301조 강제노동 관세'…한국은 12.5%」",
+   "url": "https://www.heraldk.com/article/2026072314504451079",
+   "date": "2026-07-23",
+   "kind": "news",
+   "status": 200,
+   "page_title": "미국, 60개국에 ‘301조 강제노동 관세’…한국은 12.5% - 헤럴드경제 미주판",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "뉴시스, 「미 무역법 301조 관세, 대구기업 대미 수출 영향 제한적일 듯」",
+   "url": "https://www.newsis.com/view/NISX20260727_0003724767",
+   "date": "2026-07-27",
+   "kind": "news",
+   "status": 200,
+   "page_title": "미 무역법 301조 관세, 대구기업 대미 수출 영향 제한적일 듯 :: 공감언론 뉴시스 ::",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "한국무역협회, 「美 232조 관세조치 동향 및 기업 대응전략」(Trade Focus)",
+   "url": "https://kita.net/researchTrade/report/tradeFocus/tradeFocusDetail.do?no=2977",
+   "date": "2026-08-26",
+   "kind": "report",
+   "status": 200,
+   "page_title": "美 232조 관세조치 동향 및 기업 대응전략",
+   "title_match": 0.67,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」",
+   "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
+   "date": "2026-09-15",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "대구본부세관",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "산업통상부, 「2026년 8월 수출입 동향」",
+   "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172145/view",
+   "date": "2026-09-01",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "2026년 8월 수출입동향 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
+   "date": "2026-10-01",
+   "kind": "official",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "U.S. Federal Register 2025-22845, Section 232 automobile parts inclusions process — January 2026 window",
+   "url": "https://www.govinfo.gov/content/pkg/FR-2025-12-16/pdf/2025-22845.pdf",
+   "date": "2025-12-16",
+   "kind": "law",
+   "status": 200,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "U.S. Federal Register 2026-15280, 「Procedures To Administer Import Adjustment Offset Amounts for Certain Imports of Automobile and Medium- and Heavy-Duty Vehicle Parts for Automobile and Medium- and Heavy-Duty Vehicle Engine Manufacturers」",
+   "url": "https://www.federalregister.gov/documents/2026/07/29/2026-15280/procedures-to-administer-import-adjustment-offset-amounts-for-certain-imports-of-automobile-and",
+   "date": "2026-07-29",
+   "kind": "law",
+   "status": 200,
+   "page_title": "Federal Register :: Request Access",
+   "title_match": 0.09,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "愛知県, 「愛知県米国関税対策本部 第4回会議」(米国の関税措置に対する愛知県の対策パッケージ)",
+   "url": "https://www.pref.aichi.jp/press-release/kanzei-portal/kanzei-kaigi4.html",
+   "date": "2026-03-05",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "「愛知県米国関税対策本部」第4回会議の開催について - 愛知県米国関税対策ポータルサイト - 愛知県",
+   "title_match": 1.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "経済産業省, 「価格交渉促進月間(2026年3月)フォローアップ調査の結果」",
+   "url": "https://www.meti.go.jp/press/2026/06/20260626003/20260626003.html",
+   "date": "2026-06-26",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "価格交渉促進月間（2026年3月）フォローアップ調査の結果を公表します（METI/経済産業省）",
+   "title_match": 1.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·종사자 신고값)·지원 이력·사업 DB(사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-09-28",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

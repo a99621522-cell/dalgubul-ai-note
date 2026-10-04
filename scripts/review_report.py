@@ -473,6 +473,9 @@ def main(argv: list[str]) -> int:
     if "--published" in argv:
         files = [p for p in sorted(POSTS.glob("*-policy-*.md")) if re.search(r"^draft:\s*false", p.read_text(encoding="utf-8"), re.M)]
     if not files:
+        if "--published" in argv:   # 발행본이 하나도 없을 때(워크플로가 JSON 을 읽는다)
+            print("[]" if as_json else "발행된 정책제안 리포트 없음")
+            return 0
         print(__doc__)
         return 2
     results = [review(p) for p in files]

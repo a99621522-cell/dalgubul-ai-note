@@ -135,3 +135,36 @@ export function structureCalc(region = '대구광역시') {
     report: '/posts/2026-09-30-policy-structure-daegu/',
   };
 }
+
+/** '몇 명 늘면 GRDP 얼마' 계산기(GrowthQuick, 운영자 지시 2026-10-05)의 1인당 값 — 공표 자료의 나눗셈만.
+ *  외지인 관광: 데이터랩 외지인 관광소비(신용카드, 백만원) ÷ 외지인 방문자(이동통신, 연인원) — 12달이 다 있는 같은 해.
+ *  데이터랩은 총량보다 추세로 보라고 안내하므로 1인당 값도 근사로 쓴다. */
+export function tourismPerVisit() {
+  const vis = new Map<string, { n: number; v: number }>(), sp = new Map<string, { n: number; v: number }>();
+  for (const r of readCsv('data/tourism/datalab_visitors.csv')) {
+    if (r.code !== '27') continue;
+    const y = r.ym.slice(0, 4), o = vis.get(y) ?? { n: 0, v: 0 }; o.n++; o.v += Number(r.visitors) || 0; vis.set(y, o);
+  }
+  for (const r of readCsv('data/tourism/datalab_spend_share.csv')) {
+    if (r.group !== '외지인') continue;
+    const y = r.ym.slice(0, 4), o = sp.get(y) ?? { n: 0, v: 0 }; o.n++; o.v += Number(r.region_mil_won) || 0; sp.set(y, o);
+  }
+  const y = [...vis.keys()].filter(k => vis.get(k)!.n === 12 && sp.get(k)?.n === 12).sort().at(-1);
+  if (!y) return null;
+  const visitors = vis.get(y)!.v, spendEok = sp.get(y)!.v / 100;
+  return { year: y, visitors, spendEok, perWon: spendEok * 1e8 / visitors };
+}
+
+/** 다른 지역 환자(국민건강보험공단 「지역별 의료이용통계」, KOSIS TX_35003_A004·A006·A007, 건강보험 급여 진료비):
+ *  유입 = 대구 소재 의료기관 − (대구 거주자 − 대구 거주자의 대구 밖 이용). 진료비(천원)와 진료실인원(명) 각각 같은 식, 1인당 = 진료비 ÷ 인원.
+ *  진료실인원은 의료기관 소재 시도마다 세므로 두 지역을 다닌 사람은 양쪽에 잡힌다(근사). */
+export function medicalInflow() {
+  const P = readCsv('data/kosis/medical-use-sido-provider.csv'), R = readCsv('data/kosis/medical-use-sido-resident.csv'), O = readCsv('data/kosis/medical-use-sido-outside.csv');
+  if (!P.length || !R.length || !O.length) return null;
+  const g = (rs: Record<string, string>[], y: string, it: string, c2: string) => { const r = rs.find(x => x.PRD_DE === y && x.ITM_NM === it && x.C1_NM === '대구광역시' && x.C2_NM === c2); return r ? Number(r.DT) : NaN; };
+  const y = [...new Set(P.map(r => r.PRD_DE))].sort().at(-1)!;
+  const f = (it: string) => g(P, y, it, '합계') - (g(R, y, it, '합계') - g(O, y, it, '계'));
+  const costEok = f('진료비') / 1e5, persons = f('진료실인원수');
+  if (!Number.isFinite(costEok) || !Number.isFinite(persons) || persons <= 0) return null;
+  return { year: y, costEok, persons, perWon: costEok * 1e8 / persons, providerEok: g(P, y, '진료비', '합계') / 1e5 };
+}

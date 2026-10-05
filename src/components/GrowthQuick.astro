@@ -1,0 +1,134 @@
+---
+import { structureCalc, tourismPerVisit, medicalInflow } from '../lib/grdp';
+/** '몇 명·몇 % 늘면 GRDP 얼마' 계산기(/growth/, 운영자 지시 2026-10-05: 관광객·의료관광객이 몇 명 늘면 GRDP 몇 %,
+ *  제조업 가운데 집중도 높은 업종이 성장하면 GRDP·산업구조가 어떻게 되는지).
+ *  ① 관광객·② 의료관광객: 늘어난 사람 × 1인 지출(공표 자료 나눗셈, 바꿀 수 있음) = 새 지출 → × 대구 부가가치 계수 k(한국은행 2020 지역산업연관표, 수입품 몫 뺌)
+ *     ÷ 명목 GRDP = GRDP 성장률에 더해지는 몫(그 해 가격 근사). ③ 제조업 업종: 업종 기여 = 비중 × 추가 성장(산업구조와 성장 계산기와 같은 식),
+ *     다음 해 산업집중도·고부가 비중은 비중 × (1+성장률)로 다시 나눈 근사. 전망·평가가 아니라 가정에 따른 계산. */
+const S = structureCalc();
+const T = tourismPerVisit();
+const M = medicalInflow();
+const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const n0 = (v: number) => Math.round(v).toLocaleString('ko-KR');
+const mfg = S ? S.rows.filter(r => r.mfg).map(r => ({ ...r, c: r.share ** 2 })).sort((a, b) => b.lq - a.lq) : [];
+const data = S && S.k != null ? { k: S.k, gdpEok: S.gdpEok, base: S.base, hhiCoef: S.hhiCoef, highNat: S.highNat,
+  rows: S.rows.map(r => ({ key: r.key, name: r.name, share: r.share, g: r.g, high: r.high, mfg: r.mfg, lq: r.lq, va: r.va })) } : null;
+---
+{S && data && (
+<section id="gq">
+  <h2>몇 명·몇 % 늘면 GRDP는 얼마나</h2>
+  <p class="meta">사람 수나 업종 성장률을 넣으면 대구 실질 GRDP 성장률에 더해지는 몫을 계산합니다. 출발 성장률은 위 계산기와 같은 {S.y0}→{S.y1}년 연평균 {S.base.toFixed(2)}%, 명목 GRDP는 {S.y1}년 {f1(S.gdpEok / 10000)}조 원입니다. 새로 생긴 지출은 한국은행 「2020년 지역산업연관표」의 대구 부가가치유발계수에서 수입품 몫을 뺀 {S.k.toFixed(3)}을 곱해 대구 부가가치로 바꿉니다. 대구 안에서 옮겨 간 소비가 아니라 대구 밖에서 새로 들어온 지출일 때의 계산입니다.</p>
+
+  <div class="gq-grid">
+    {T && (
+    <div class="gq-card" id="gq-tour">
+      <h3>관광객이 늘면</h3>
+      <label>외지인 방문자 증가 <input id="gqt-n" type="number" step="100" value="1000" inputmode="decimal" /> 만 명(연인원)</label>
+      <label>1인 1회 관광소비 <input id="gqt-p" type="number" step="1000" value={Math.round(T.perWon / 100) * 100} inputmode="decimal" /> 원</label>
+      <p class="tiny muted">기본값 = {T.year}년 외지인 관광소비 {f1(T.spendEok / 10000)}조 원 ÷ 외지인 방문자 {n0(T.visitors / 10000)}만 명(연인원, 한국관광 데이터랩). 외국인 관광객처럼 1인 지출이 다르면 바꿔 넣으세요.</p>
+      <div class="gq-out" aria-live="polite"><b data-o="t-g">—</b><span data-o="t-t"></span></div>
+    </div>)}
+
+    {M && (
+    <div class="gq-card" id="gq-med">
+      <h3>의료관광객(환자)이 늘면</h3>
+      <label>대구 밖 환자 증가 <input id="gqm-n" type="number" step="1000" value="10000" inputmode="decimal" /> 명</label>
+      <label>1인 진료비 <input id="gqm-p" type="number" step="10" value={Math.round(M.perWon / 10000)} inputmode="decimal" /> 만 원</label>
+      <label>1인 체류·동반 지출 <input id="gqm-s" type="number" step="10" value="0" inputmode="decimal" /> 만 원</label>
+      <p class="tiny muted">기본 진료비 = {M.year}년 다른 지역 거주자가 대구 의료기관에서 쓴 건강보험 진료비 약 {f1(M.costEok / 10000)}조 원 ÷ 약 {n0(M.persons / 10000)}만 명(국민건강보험공단 「지역별 의료이용통계」, 비급여 제외). 외국인 환자 1인 진료비는 이 사이트에 자료가 없어(한국보건산업진흥원 「외국인환자 유치실적」 조사 항목) 직접 넣으세요. 체류·동반 지출은 숙박·식사 등 진료 밖 지출입니다.</p>
+      <div class="gq-out" aria-live="polite"><b data-o="m-g">—</b><span data-o="m-t"></span></div>
+    </div>)}
+  </div>
+
+  <div class="gq-card gq-wide" id="gq-mfg">
+    <h3>제조업 업종이 더 성장하면 — 산업집중도와 함께</h3>
+    <p class="meta">제조업 7개 업종을 입지계수(전국 대비 특화 정도, 1 이상이면 대구에 몰려 있음) 순으로 보였습니다. '집중도 기여'는 그 업종 비중의 제곱으로, 산업집중도(업종 비중 제곱합 {S.hhi})에 보태는 몫입니다. 업종을 고르고 추세보다 더 성장할 몫을 넣으세요.</p>
+    <div class="scroll-x"><table class="data-table compact" data-title="대구 제조업 업종 비중·입지계수·산업집중도 기여">
+      <thead><tr><th>업종</th><th class="n">비중(%)</th><th class="n">입지계수</th><th class="n">집중도 기여</th><th class="n">10년 성장(%)</th><th class="n">부가가치(억 원)</th></tr></thead>
+      <tbody>{mfg.map(r => <tr><th scope="row">{r.name}{r.high && <span class="tiny muted"> 고부가</span>}</th><td class="n">{f1(r.share)}</td><td class="n">{r.lq.toFixed(2)}</td><td class="n">{n0(r.c)}</td><td class="n">{f1(r.g)}</td><td class="n">{n0(r.va)}</td></tr>)}</tbody>
+    </table></div>
+    <div class="gq-row">
+      <label>업종 <select id="gqf-k">
+        <option value="spec">특화 제조업 모두(입지계수 1 이상)</option>
+        {mfg.map((r, i) => <option value={r.key} selected={i === 0}>{r.name}(입지계수 {r.lq.toFixed(2)})</option>)}
+        <option value="all">제조업 7개 모두</option>
+      </select></label>
+      <label>추세보다 더 <input id="gqf-d" type="number" step="0.5" value="5" inputmode="decimal" /> %p</label>
+    </div>
+    <div class="gq-out" aria-live="polite"><b data-o="f-g">—</b><span data-o="f-t"></span></div>
+    <p class="tiny muted" data-o="f-r"></p>
+  </div>
+  <p class="tiny muted">계산은 한 해 기준이며 업종 사이 파급·가격 변화는 넣지 않았습니다(그 해 가격 근사). 관광·환자 수는 이동통신·건강보험 집계라 같은 사람이 여러 번 잡힐 수 있습니다. 데이터랩은 방문자·소비 총량보다 추세로 보라고 안내합니다.</p>
+  <script type="application/json" id="gq-data" set:html={JSON.stringify(data)} />
+</section>)}
+<script>
+  type R = { key: string; name: string; share: number; g: number; high: boolean; mfg: boolean; lq: number; va: number };
+  const el = document.getElementById('gq-data');
+  if (el) {
+    const D = JSON.parse(el.textContent || '{}') as { k: number; gdpEok: number; base: number; hhiCoef: number | null; highNat: number | null; rows: R[] };
+    const $ = (id: string) => document.getElementById(id) as HTMLInputElement | null;
+    const num = (id: string) => Number($(id)?.value) || 0;
+    const o = (k: string) => document.querySelector<HTMLElement>(`#gq [data-o="${k}"]`);
+    const fmt = (v: number, d = 1) => v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const sg = (v: number, d = 2) => (v > 0 ? '+' : '') + fmt(v, d);
+    const S0 = D.rows.reduce((a, r) => a + r.share, 0);
+    const spendLine = (eok: number) => {
+      const va = eok * D.k, pp = va / D.gdpEok * 100;
+      return { pp, text: `새 지출 ${fmt(eok, 0)}억 원 × ${D.k.toFixed(3)} = 대구 부가가치 ${fmt(va, 0)}억 원 ÷ 명목 GRDP ${fmt(D.gdpEok / 10000)}조 원 → 성장률 ${fmt(D.base, 2)}% + ${fmt(pp, 2)}%p = ${fmt(D.base + pp, 2)}%.` };
+    };
+    const need = (per: number) => per > 0 ? 0.1 / 100 * D.gdpEok / D.k / per : 0;   // +0.1%p 에 필요한 사람 수(억 원 단위 1인 지출 per)
+    const next = (gs: Map<string, number>) => {
+      const w = D.rows.map(r => ({ r, x: r.share * (1 + (gs.get(r.key) ?? r.g) / 100) }));
+      const t = w.reduce((a, b) => a + b.x, 0);
+      const sh = w.map(({ r, x }) => ({ r, s: x / t * 100 }));
+      return { hhi: sh.reduce((a, b) => a + b.s ** 2, 0), high: sh.filter(z => z.r.high).reduce((a, b) => a + b.s, 0) };
+    };
+    const calc = () => {
+      if ($('gqt-n')) {
+        const n = num('gqt-n') * 10000, p = num('gqt-p');
+        const eok = n * p / 1e8, L = spendLine(eok);
+        o('t-g')!.textContent = `GRDP 성장률 ${sg(L.pp)}%p`;
+        o('t-t')!.textContent = `${L.text} 성장률을 0.1%p 올리려면 외지인 방문자가 약 ${fmt(need(p / 1e8) / 10000, 0)}만 명(연인원) 더 와야 하는 셈입니다.`;
+      }
+      if ($('gqm-n')) {
+        const n = num('gqm-n'), p = (num('gqm-p') + num('gqm-s')) * 10000;
+        const eok = n * p / 1e8, L = spendLine(eok);
+        o('m-g')!.textContent = `GRDP 성장률 ${sg(L.pp)}%p`;
+        o('m-t')!.textContent = `${L.text} 1인 ${fmt(p / 10000, 0)}만 원이면 0.1%p 에 환자 약 ${fmt(need(p / 1e8), 0)}명이 더 필요합니다.`;
+      }
+      const sel = (document.getElementById('gqf-k') as HTMLSelectElement | null)?.value ?? '';
+      const dlt = num('gqf-d');
+      const pick = D.rows.filter(r => r.mfg && (sel === 'all' || (sel === 'spec' ? r.lq >= 1 : r.key === sel)));
+      if (pick.length) {
+        const sh = pick.reduce((a, r) => a + r.share, 0) / S0 * 100;
+        const pp = sh / 100 * dlt, eok = pick.reduce((a, r) => a + r.va, 0) * dlt / 100;
+        const gs = new Map(pick.map(r => [r.key, r.g + dlt] as [string, number]));
+        const A = next(gs), B = next(new Map());
+        const names = pick.map(r => r.name).join('·');
+        o('f-g')!.textContent = `GRDP 성장률 ${sg(pp)}%p → ${fmt(D.base + pp, 2)}%`;
+        o('f-t')!.textContent = `${names} (비중 ${fmt(sh)}%)이 추세보다 ${fmt(dlt)}%p 더 성장: ${fmt(sh)} ÷ 100 × ${fmt(dlt)} = ${fmt(pp, 2)}%p, 부가가치 한 해 약 ${fmt(eok, 0)}억 원 더.`;
+        const dl = Math.log(A.hhi / B.hhi) * 100;
+        o('f-r')!.textContent = `다음 해 산업집중도 ${Math.round(A.hhi)}(추세대로면 ${Math.round(B.hhi)}) · 고부가 3부문 비중 ${fmt(A.high)}%(추세대로면 ${fmt(B.high)}%${D.highNat != null ? `, 전국 ${fmt(D.highNat)}%` : ''}).`
+          + (D.hhiCoef != null && Math.abs(dl) > 0.01 ? ` 산업구조지수 리포트의 패널 추정으로는 집중도 ${sg(dl, 2)}% 변화가 성장률 ${sg(D.hhiCoef * dl, 2)}%p 와 함께 움직인 크기입니다(연관이지 인과가 아니며 위 성장률에 더하지 않음).` : '');
+      }
+    };
+    document.querySelectorAll<HTMLInputElement | HTMLSelectElement>('#gq input, #gq select').forEach(i => i.addEventListener('input', calc));
+    calc();
+  }
+</script>
+<style>
+  #gq { margin-top: var(--s4); }
+  #gq h2 { margin-bottom: 4px; }
+  .gq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s2); margin: var(--s2) 0; }
+  .gq-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; background: var(--bg); display: flex; flex-direction: column; gap: 6px; }
+  .gq-wide { margin: var(--s2) 0; }
+  .gq-card h3 { font-size: 1.02rem; margin: 0 0 2px; }
+  .gq-card label { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: var(--small); }
+  .gq-card input, .gq-card select { padding: 4px 6px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; }
+  .gq-card input { width: 7em; text-align: right; }
+  .gq-card select { max-width: 100%; }
+  .gq-row { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  .gq-out { border-top: 1px solid var(--line); padding-top: 6px; display: flex; flex-direction: column; gap: 2px; }
+  .gq-out b { font-size: 1.25rem; color: var(--primary); font-variant-numeric: tabular-nums; }
+  .gq-out span { font-size: var(--small); color: var(--ink-2, var(--ink)); }
+</style>

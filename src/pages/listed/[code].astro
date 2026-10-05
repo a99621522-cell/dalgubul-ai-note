@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, ymd, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode } from '../../lib/dart';
+import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/<corp_code>/ — 대구시 상장기업 회사별 페이지(운영자 지시 2026-10-05). DART 공시 값만: 재무(최근 3개 사업연도)·직원·연구개발비·타법인 출자·
  *  미래 산업 관련 공시. 원 → 억 원 나눗셈만, 비율·순위·평가 없음. 대표자 등 개인 정보 없음. corp_code 는 DART 고유번호라 바뀌지 않는다. */
@@ -53,9 +53,11 @@ const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
     {finYears.length === 0 ? <p class="meta">사업보고서 주요계정을 받지 못했습니다(코넥스·신규 상장 회사는 없을 수 있음). DART 원문을 확인하세요.</p> : (
     <div class="scroll-x"><table class="data-table" data-title={`${c.name} 재무 ${finYears[0]}~${finYears.at(-1)}`}>
       <thead><tr><th>계정</th>{finYears.map(y => <th class="n">{y}</th>)}</tr></thead>
-      <tbody>{ACC.map(([k, label]) => <tr><th scope="row">{label}</th>{finYears.map(y => <td class="n">{f(c.years[y][k] as string)}</td>)}</tr>)}</tbody>
+      <tbody>{ACC.map(([k, label]) => <tr><th scope="row">{label}</th>{finYears.map(y => <td class="n">{f(c.years[y][k] as string)}</td>)}</tr>)}
+        <tr><th scope="row">매출액 증가율(%)</th>{finYears.map((y, i) => <td class="n">{i ? pct1(revGrowth(c.years[y], c.years[finYears[i - 1]])) : '—'}</td>)}</tr>
+        <tr><th scope="row">영업이익률(%)</th>{finYears.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}</tr></tbody>
     </table></div>)}
-    {finYears.length > 0 && <p class="meta">원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
+    {finYears.length > 0 && <p class="meta">매출액 증가율 = (그해 ÷ 전년 − 1) × 100, 영업이익률 = 영업이익 ÷ 매출액 × 100 — 공시 값을 나눈 것(기준이 다른 해끼리는 계산하지 않음). 원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
   </section>
 
   <section>

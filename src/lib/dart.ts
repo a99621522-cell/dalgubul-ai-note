@@ -12,6 +12,13 @@ export type DartCorp = {
   ksicName: string; factoryProduct: string;
 };
 export const eok = (won?: string) => { const n = Number(won); return won && Number.isFinite(n) ? n / 1e8 : null; };
+/** 영업이익률(%) = 영업이익 ÷ 매출액 × 100, 매출액 증가율(%) = (올해 ÷ 전년 − 1) × 100 — 공시 값의 나눗셈만(운영자 지시 2026-10-05).
+ *  매출액이 0 이하이거나 없으면, 증가율은 두 해의 재무제표 기준(연결·개별)이 다르면 계산하지 않는다(—). 순위·정렬에 쓰지 않는다. */
+export const opMargin = (f?: Financial) => { const r = Number(f?.revenue), o = Number(f?.operating_income); return f?.revenue && f?.operating_income && r > 0 && Number.isFinite(o) ? (o / r) * 100 : null; };
+export const revGrowth = (cur?: Financial, prev?: Financial) => { const a = Number(cur?.revenue), b = Number(prev?.revenue); return cur?.revenue && prev?.revenue && b > 0 && a > 0 && cur.fs === prev.fs ? (a / b - 1) * 100 : null; };
+export const pct1 = (v: number | null) => (v == null ? '—' : `${v > 0 ? '+' : ''}${v.toFixed(1)}`);
+export const pct1n = (v: number | null) => (v == null ? '—' : v.toFixed(1));
+
 /** 기업개황 상장 구분(corp_cls) → 이름. 코넥스도 상장(시장)으로 센다 */
 export const CLS_NAME: Record<string, string> = { Y: '유가증권', K: '코스닥', N: '코넥스', E: '기타' };
 export const isListed = (cls: string) => cls === '유가증권' || cls === '코스닥' || cls === '코넥스';
@@ -119,6 +126,6 @@ export function makesOf(c: DartCorp): { text: string; kind: 'dart' | 'factory' |
     const names = [...new Set(sorted.map(p => p.product.replace(/\s+/g, ' ').trim()))].slice(0, 3);
     return { text: names.join(' · ') + (new Set(ps.map(p => p.product)).size > 3 ? ' 등' : ''), kind: 'dart' };
   }
-  if (c.factoryProduct) { const t = c.factoryProduct.replace(/\s+/g, ' '); return { text: t.length > 50 ? t.slice(0, 50).replace(/[,\s]+[^,\s]*$/, '') + ' 등' : t, kind: 'factory' }; }
+  if (c.factoryProduct) { const t = c.factoryProduct.replace(/\s+/g, ' '); const cut = t.length > 50 ? t.slice(0, 50).replace(/[,\s]+[^,\s]*$/, '').replace(/\s*등$/, '') + ' 등' : t; return { text: cut, kind: 'factory' }; }
   return { text: '', kind: '' };
 }

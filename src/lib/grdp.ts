@@ -27,7 +27,7 @@ export function grdpCalcData(side: 'prod' | 'exp' = 'prod', region = '대구광�
   const V = new Map<string, number>();
   for (const r of readCsv(f)) if (r.C1_NM === region && r.DT !== '' && Number.isFinite(Number(r.DT))) V.set(`${r.ITM_NM}|${r.C2_NM}|${r.PRD_DE}`, Number(r.DT));
   const years = [...new Set([...V.keys()].map(k => Number(k.split('|')[2])))].sort();
-  const y1 = years.at(-1) ?? 0, y0 = Math.max(years[0] ?? 0, y1 - 10);
+  const y1 = years.at(-1) ?? 0, y0 = Math.max(years[0] ?? 0, y1 - 9);   // 2015→2024: 산업구조지수 리포트와 같은 기간
   const n = y1 - y0;
   const v = (i: string, k: string, y: number) => V.get(`${i}|${k}|${y}`);
   const nom = v('명목', TOT, y1) ?? 0;
@@ -78,74 +78,60 @@ export function tourismOutsider() {
   } catch { return null; }
 }
 
-/** 제조업 업종별 시나리오(지역소득 제조업 7개 업종). 기여(%p) = 최근 연도 GRDP 대비 명목 비중 × 가정한 실질 성장률.
- *  가정: 대구 10년 추세 / 감소 멈춤(마이너스 업종 0%) / 전국 같은 업종 10년 성장률 / 대구 추세·전국 중 높은 쪽(감소는 0) /
- *  17개 시도 가운데 그 업종 10년 성장률 상위 3곳 평균 / 대구 그 업종의 10년 중 가장 높았던 해. 순위·평가가 아니라 비교 기준이다. */
-export const MFG_SUB: [string, string][] = [
-  ['음식료품 및 담배제조업', '음식료품·담배'], ['섬유 의복 및 가죽 제품 제조업', '섬유·의복·가죽'], ['목재종이인쇄 및 복제업', '목재·종이·인쇄'],
-  ['석탄 및 석유 화학제품 제조업', '석유·화학'], ['비금속광물 및 금속제품 제조업', '비금속광물·금속'], ['전기 전자 및 정밀기기 제조업', '전기·전자·정밀기기'],
-  ['기계 운송장비 및 기타 제품 제조업', '기계·운송장비·기타'],
+/** 산업구조와 성장 계산기(/growth/, 운영자 지시 2026-10-05: 산업구조지수 리포트와 논리적으로 같은 계산기).
+ *  리포트(src/content/posts/2026-09-30-policy-structure-daegu.md, scripts/structure_index.py·structure_report.json)와 같은 정의:
+ *  기간 2015→2024(리포트 years), 부문은 지역소득 경제활동별 말단 25개 부문(순생산물세 제외), 비중 = 부문 명목 총부가가치 ÷ 25개 부문 합,
+ *  LQ = 대구 비중 ÷ 전국 비중, 특화 = LQ ≥ 1, 고부가 3부문 = 전기·전자·정밀기기·정보통신·금융보험, HHI = Σ(비중×100)², 변화속도 = ½Σ|비중 변화|.
+ *  출발 성장률은 리포트의 대구 실질 GRDP 연평균 성장률(2015→2024)이고, 업종 가정의 변화분 = 비중 × (가정 성장률 − 업종 10년 연평균 실질 성장률). */
+export const LEAVES: [string, string][] = [
+  ['농업 임업 및 어업', '농림어업'], ['광업', '광업'], ['음식료품 및 담배제조업', '음식료품·담배'], ['섬유 의복 및 가죽 제품 제조업', '섬유·의복·가죽'],
+  ['목재종이인쇄 및 복제업', '목재·종이·인쇄'], ['석탄 및 석유 화학제품 제조업', '석탄·석유·화학'], ['비금속광물 및 금속제품 제조업', '비금속·금속'],
+  ['전기 전자 및 정밀기기 제조업', '전기·전자·정밀기기'], ['기계 운송장비 및 기타 제품 제조업', '기계·운송장비·기타'], ['전기 가스 증기 및 공기 조절 공급업', '전기·가스'],
+  ['수도 하수 및 폐기물 처리 원료 재생업', '수도·폐기물'], ['건설업', '건설업'], ['도매 및 소매업', '도소매'], ['운수 및 창고업', '운수·창고'], ['숙박 및 음식점업', '숙박·음식점'],
+  ['정보통신업', '정보통신'], ['금융 및 보험업', '금융·보험'], ['부동산업', '부동산'], ['전문 과학 및 기술 서비스업', '전문·과학·기술'],
+  ['사업시설 관리 사업 지원 및 임대 서비스업', '사업시설·지원'], ['공공 행정 국방 및 사회보장 행정', '공공행정'], ['교육 서비스업', '교육'],
+  ['보건업 및 사회복지 서비스업', '보건·사회복지'], ['예술 스포츠 및 여가관련 서비스', '예술·스포츠·여가'], ['협회 및 단체 수리 및 기타 개인 서비스업', '협회·수리·개인'],
 ];
-export function mfgScenarios(region = '대구광역시') {
+export const HIGH = ['전기 전자 및 정밀기기 제조업', '정보통신업', '금융 및 보험업'];
+const MFG = LEAVES.slice(2, 9).map(x => x[0]);
+export type StructRow = { key: string; name: string; share: number; nat: number; lq: number; va: number; g: number; gn: number; t3: number; high: boolean; spec: boolean; mfg: boolean };
+export function structureCalc(region = '대구광역시') {
+  let rep: any = {};
+  try { rep = JSON.parse(fs.readFileSync('data/kosis/structure_report.json', 'utf-8')); } catch { /* 없음 */ }
+  const [y0, y1] = (rep.years as number[] | undefined) ?? [2015, 2024];
   const V = new Map<string, number>();
   const regions = new Set<string>();
   for (const r of readCsv('data/kosis/grdp-sido-industry-all.csv')) {
     if (r.DT === '' || !Number.isFinite(Number(r.DT))) continue;
     V.set(`${r.ITM_NM}|${r.C1_NM}|${r.C2_NM}|${r.PRD_DE}`, Number(r.DT)); regions.add(r.C1_NM);
   }
-  const years = [...new Set([...V.keys()].map(k => Number(k.split('|')[3])))].sort();
-  const y1 = years.at(-1) ?? 0, y0 = Math.max(years[0] ?? 0, y1 - 10), n = y1 - y0;
   const v = (i: string, reg: string, k: string, y: number) => V.get(`${i}|${reg}|${k}|${y}`);
-  const cagr = (reg: string, k: string) => { const a = v('실질', reg, k, y0), b = v('실질', reg, k, y1); return a && b ? ((b / a) ** (1 / n) - 1) * 100 : null; };
-  const nom = v('명목', region, '지역내총생산(시장가격)', y1);
-  if (!nom) return null;
-  const sido = [...regions].filter(r => r !== '전국');
-  const rows = MFG_SUB.map(([k, name]) => {
-    const share = ((v('명목', region, k, y1) ?? 0) / nom) * 100;
-    const g = cagr(region, k) ?? 0, gn = cagr('전국', k) ?? 0;
-    const cs = sido.map(r => cagr(r, k)).filter((x): x is number => x != null).sort((a, b) => b - a);
-    const top3 = cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length || 1);
-    const yy = Array.from({ length: n }, (_, j) => { const a = v('실질', region, k, y0 + j), b = v('실질', region, k, y0 + j + 1); return a && b ? (b / a - 1) * 100 : -Infinity; });
-    const best = Math.max(...yy);
-    const c = (x: number) => share * x / 100;
-    return { key: k, name, share, g, gn, top3, best, trend: c(g), stop: c(Math.max(g, 0)), nat: c(gn), mix: c(Math.max(g, gn, 0)), top: c(top3), bestC: c(best), need01: 0.1 / share * 100 };
-  });
-  const sum = (f: (r: typeof rows[number]) => number) => rows.reduce((a, r) => a + f(r), 0);
-  const mfgShare = sum(r => r.share);
-  return { rows, y0, y1, mfgShare, mfgCagr: cagr(region, '제조업') ?? 0, natMfgCagr: cagr('전국', '제조업') ?? 0,
-    tot: { trend: sum(r => r.trend), stop: sum(r => r.stop), nat: sum(r => r.nat), mix: sum(r => r.mix), top: sum(r => r.top), bestC: sum(r => r.bestC) } };
-}
-
-/** 목표 달성 경로(테크트리, /growth/ GrowthPath)용 업종별 기준값. 경제활동 18개(제조업 대신 제조업 7개 업종) + 순생산물세는 추세 그대로.
- *  업종마다 최근 연도 GRDP 대비 명목 비중·명목 부가가치(va, 억 원), 대구·전국 10년 실질 연평균 성장, 17개 시도 가운데 그 업종 10년 성장률이 높았던 세 곳의 평균. */
-export const PATH_FIELDS: Record<string, string> = {
-  '섬유 의복 및 가죽 제품 제조업': 'base', '비금속광물 및 금속제품 제조업': 'base', '목재종이인쇄 및 복제업': 'base', '음식료품 및 담배제조업': 'base',
-  '기계 운송장비 및 기타 제품 제조업': 'core', '전기 전자 및 정밀기기 제조업': 'core', '석탄 및 석유 화학제품 제조업': 'core',
-  '보건업 및 사회복지 서비스업': 'ext', '교육 서비스업': 'ext', '숙박 및 음식점업': 'ext', '예술 스포츠 및 여가관련 서비스': 'ext',
-  '전문 과학 및 기술 서비스업': 'know', '사업시설 관리 사업 지원 및 임대 서비스업': 'know', '정보통신업': 'know', '금융 및 보험업': 'know',
-};
-export function pathBench(region = '대구광역시') {
-  const V = new Map<string, number>();
-  const regions = new Set<string>();
-  for (const r of readCsv('data/kosis/grdp-sido-industry-all.csv')) {
-    if (r.DT === '' || !Number.isFinite(Number(r.DT))) continue;
-    V.set(`${r.ITM_NM}|${r.C1_NM}|${r.C2_NM}|${r.PRD_DE}`, Number(r.DT)); regions.add(r.C1_NM);
-  }
-  const years = [...new Set([...V.keys()].map(k => Number(k.split('|')[3])))].sort();
-  const y1 = years.at(-1) ?? 0, y0 = Math.max(years[0] ?? 0, y1 - 10), n = y1 - y0;
-  const v = (i: string, reg: string, k: string, y: number) => V.get(`${i}|${reg}|${k}|${y}`);
+  const n = y1 - y0;
   const cagr = (reg: string, k: string) => { const a = v('실질', reg, k, y0), b = v('실질', reg, k, y1); return a && b && a > 0 && b > 0 ? ((b / a) ** (1 / n) - 1) * 100 : null; };
-  const nom = v('명목', region, '지역내총생산(시장가격)', y1);
-  if (!nom) return null;
+  const sum = (reg: string) => LEAVES.reduce((a, [k]) => a + (v('명목', reg, k, y1) ?? 0), 0);
+  const tot = sum(region), natTot = sum('전국');
+  if (!tot) return null;
   const sido = [...regions].filter(r => r !== '전국');
-  const names = new Map([...GRDP_COMP, ...MFG_SUB]);
-  const keys = [...MFG_SUB.map(m => m[0]), ...GRDP_COMP.map(c => c[0]).filter(k => k !== '제조업' && k !== '순생산물세')];
-  const rows = keys.map(k => {
+  const rows: StructRow[] = LEAVES.map(([k, name]) => {
+    const va = v('명목', region, k, y1) ?? 0, share = va / tot * 100, nat = (v('명목', '전국', k, y1) ?? 0) / natTot * 100;
+    const g = cagr(region, k) ?? 0;
     const cs = sido.map(r => cagr(r, k)).filter((x): x is number => x != null).sort((a, b) => b - a);
-    const g = cagr(region, k);
-    return { key: k, name: names.get(k) ?? k, mfg: MFG_SUB.some(m => m[0] === k), field: PATH_FIELDS[k] ?? 'life',
-      share: ((v('명목', region, k, y1) ?? 0) / nom) * 100, va: (v('명목', region, k, y1) ?? 0) / 100, g: g ?? 0, gn: cagr('전국', k) ?? g ?? 0, t3: cs.length ? cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length) : g ?? 0 };
+    return { key: k, name, share, nat, lq: nat ? share / nat : 0, va: va / 100, g, gn: cagr('전국', k) ?? g,
+      t3: cs.length ? cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length) : g, high: HIGH.includes(k), spec: nat > 0 && share / nat >= 1, mfg: MFG.includes(k) };
   }).filter(r => r.share > 0);
-  const sidoTot = sido.map(r => ({ r, g: cagr(r, '지역내총생산(시장가격)') })).filter((x): x is { r: string; g: number } => x.g != null).sort((a, b) => b.g - a.g);
-  return { rows, y0, y1, gdpEok: nom / 100, natTot: cagr('전국', '지역내총생산(시장가격)') ?? 0, top3Tot: sidoTot.slice(0, 3).reduce((a, b) => a + b.g, 0) / 3, bestTot: sidoTot[0]?.g ?? 0 };
+  const d = rep.data ?? {}, short = '대구';
+  const io = ioDaegu();
+  return {
+    y0, y1, rows,
+    base: d.grdp_growth?.[short] ?? cagr(region, '지역내총생산(시장가격)') ?? 0,
+    natGrowth: d.grdp_growth?.['전국'] ?? cagr('전국', '지역내총생산(시장가격)') ?? 0,
+    metro6: d.metro6_avg?.grdp ?? null,
+    hhi: d.hhi_2024?.[short] ?? Math.round(rows.reduce((a, r) => a + r.share ** 2, 0)), hhiAvg: d.hhi_avg ?? null,
+    high: d.daegu?.high_share?.[String(y1)] ?? rows.filter(r => r.high).reduce((a, r) => a + r.share, 0), highNat: d.daegu?.high_share_nat?.[String(y1)] ?? null,
+    scih: d.scih_avg?.[short] ?? null, scihAvg: d.scih_avg_all ?? null,
+    hhiCoef: d.panel?.GRDP?.['Δln(산업집중도)']?.coef ?? null,
+    gdpEok: (v('명목', region, '지역내총생산(시장가격)', y1) ?? 0) / 100, gvaEok: tot / 100,
+    k: io && io.vaIn != null ? (1 - (io.importShare ?? 0) / 100) * io.vaIn : null, io,
+    report: '/posts/2026-09-30-policy-structure-daegu/',
+  };
 }

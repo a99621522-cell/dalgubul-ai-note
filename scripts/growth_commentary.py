@@ -32,31 +32,27 @@ GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_M
 REGION, TOT = "대구광역시", "지역내총생산(시장가격)"
 
 # src/lib/grdp.ts 의 GRDP_COMP·MFG_SUB·PATH_FIELDS 와 같게 유지
-GRDP_COMP = [("농업 임업 및 어업", "농림어업"), ("광업", "광업"), ("제조업", "제조업"), ("전기 가스 증기 및 공기 조절 공급업", "전기·가스·증기"),
-             ("수도 하수 및 폐기물 처리 원료 재생업", "수도·하수·폐기물"), ("건설업", "건설업"), ("도매 및 소매업", "도매·소매"), ("운수 및 창고업", "운수·창고"),
-             ("숙박 및 음식점업", "숙박·음식점"), ("정보통신업", "정보통신"), ("금융 및 보험업", "금융·보험"), ("부동산업", "부동산"),
-             ("전문 과학 및 기술 서비스업", "전문·과학·기술"), ("사업시설 관리 사업 지원 및 임대 서비스업", "사업시설관리·지원·임대"),
-             ("공공 행정 국방 및 사회보장 행정", "공공행정·국방"), ("교육 서비스업", "교육"), ("보건업 및 사회복지 서비스업", "보건·사회복지"),
-             ("예술 스포츠 및 여가관련 서비스", "예술·스포츠·여가"), ("협회 및 단체 수리 및 기타 개인 서비스업", "협회·수리·개인서비스"), ("순생산물세", "순생산물세")]
-MFG_SUB = [("음식료품 및 담배제조업", "음식료품·담배"), ("섬유 의복 및 가죽 제품 제조업", "섬유·의복·가죽"), ("목재종이인쇄 및 복제업", "목재·종이·인쇄"),
-           ("석탄 및 석유 화학제품 제조업", "석유·화학"), ("비금속광물 및 금속제품 제조업", "비금속광물·금속"), ("전기 전자 및 정밀기기 제조업", "전기·전자·정밀기기"),
-           ("기계 운송장비 및 기타 제품 제조업", "기계·운송장비·기타")]
-FIELDS = {"base": ["섬유 의복 및 가죽 제품 제조업", "비금속광물 및 금속제품 제조업", "목재종이인쇄 및 복제업", "음식료품 및 담배제조업"],
-          "core": ["기계 운송장비 및 기타 제품 제조업", "전기 전자 및 정밀기기 제조업", "석탄 및 석유 화학제품 제조업"],
-          "ext": ["보건업 및 사회복지 서비스업", "교육 서비스업", "숙박 및 음식점업", "예술 스포츠 및 여가관련 서비스"],
-          "know": ["전문 과학 및 기술 서비스업", "사업시설 관리 사업 지원 및 임대 서비스업", "정보통신업", "금융 및 보험업"]}
-FIELD_NM = {"mfg": "제조업", "ext": "역외 수요 서비스(보건·교육·관광)", "know": "지식·생산자 서비스(전문·사업지원·정보통신·금융)", "life": "생활·기반 산업(도소매·부동산·건설·운수·공공 등)"}
+# src/lib/grdp.ts 의 LEAVES·HIGH 와 같게 유지(산업구조지수 리포트 scripts/structure_index.py 와 같은 25개 부문)
+LEAVES = [("농업 임업 및 어업", "농림어업"), ("광업", "광업"), ("음식료품 및 담배제조업", "음식료품·담배"), ("섬유 의복 및 가죽 제품 제조업", "섬유·의복·가죽"),
+          ("목재종이인쇄 및 복제업", "목재·종이·인쇄"), ("석탄 및 석유 화학제품 제조업", "석탄·석유·화학"), ("비금속광물 및 금속제품 제조업", "비금속·금속"),
+          ("전기 전자 및 정밀기기 제조업", "전기·전자·정밀기기"), ("기계 운송장비 및 기타 제품 제조업", "기계·운송장비·기타"), ("전기 가스 증기 및 공기 조절 공급업", "전기·가스"),
+          ("수도 하수 및 폐기물 처리 원료 재생업", "수도·폐기물"), ("건설업", "건설업"), ("도매 및 소매업", "도소매"), ("운수 및 창고업", "운수·창고"), ("숙박 및 음식점업", "숙박·음식점"),
+          ("정보통신업", "정보통신"), ("금융 및 보험업", "금융·보험"), ("부동산업", "부동산"), ("전문 과학 및 기술 서비스업", "전문·과학·기술"),
+          ("사업시설 관리 사업 지원 및 임대 서비스업", "사업시설·지원"), ("공공 행정 국방 및 사회보장 행정", "공공행정"), ("교육 서비스업", "교육"),
+          ("보건업 및 사회복지 서비스업", "보건·사회복지"), ("예술 스포츠 및 여가관련 서비스", "예술·스포츠·여가"), ("협회 및 단체 수리 및 기타 개인 서비스업", "협회·수리·개인")]
+HIGH = ["전기 전자 및 정밀기기 제조업", "정보통신업", "금융 및 보험업"]
+MFG = [k for k, _ in LEAVES[2:9]]
 
 
 def f1(v: float) -> str:
     return f"{v:.1f}"
 
 
-def won(v: float) -> str:
-    return f"{round(v):,}"
-
-
 def facts() -> dict:
+    """페이지(src/components/GrowthStructure.astro)와 같은 계산"""
+    rep = json.loads((ROOT / "data/kosis/structure_report.json").read_text(encoding="utf-8"))
+    y0, y1 = rep["years"]
+    d = rep["data"]
     V: dict[tuple, float] = {}
     regions = set()
     for r in csv.DictReader(open(ROOT / "data/kosis/grdp-sido-industry-all.csv", encoding="utf-8")):
@@ -65,161 +61,110 @@ def facts() -> dict:
             regions.add(r["C1_NM"])
         except ValueError:
             pass
-    years = sorted({k[3] for k in V})
-    y1 = years[-1]
-    y0 = max(years[0], y1 - 10)
     n = y1 - y0
 
     def cagr(reg, k):
         a, b = V.get(("실질", reg, k, y0)), V.get(("실질", reg, k, y1))
         return ((b / a) ** (1 / n) - 1) * 100 if a and b and a > 0 and b > 0 else None
-    nom = V[("명목", REGION, TOT, y1)]
-    base = sum(sum(V.get(("실질기여도", REGION, k, y), 0) for y in range(y0 + 1, y1 + 1)) / n for k, _ in GRDP_COMP)
+    tot = sum(V.get(("명목", REGION, k, y1), 0) for k, _ in LEAVES)
+    ntot = sum(V.get(("명목", "전국", k, y1), 0) for k, _ in LEAVES)
     sido = [r for r in regions if r != "전국"]
-    names = dict(GRDP_COMP + MFG_SUB)
-    keys = [k for k, _ in MFG_SUB] + [k for k, _ in GRDP_COMP if k not in ("제조업", "순생산물세")]
     rows = []
-    for k in keys:
-        cs = sorted([c for c in (cagr(r, k) for r in sido) if c is not None], reverse=True)
-        g = cagr(REGION, k) or 0.0
+    for k, nm in LEAVES:
         va = V.get(("명목", REGION, k, y1), 0)
         if va <= 0:
             continue
-        mfg = any(k == m for m, _ in MFG_SUB)
-        field = "mfg" if mfg else next((f for f, ks in FIELDS.items() if k in ks), "life")
-        rows.append({"key": k, "name": names[k], "mfg": mfg, "field": field, "share": va / nom * 100, "va": va / 100, "g": g,
-                     "gn": cagr("전국", k) if cagr("전국", k) is not None else g, "t3": sum(cs[:3]) / min(3, len(cs)) if cs else g})
+        s, ns = va / tot * 100, V.get(("명목", "전국", k, y1), 0) / ntot * 100
+        cs = sorted([c for c in (cagr(r, k) for r in sido) if c is not None], reverse=True)
+        g = cagr(REGION, k) or 0.0
+        rows.append({"key": k, "name": nm, "s": s, "lq": s / ns if ns else 0, "g": g, "gn": cagr("전국", k) if cagr("전국", k) is not None else g,
+                     "t3": sum(cs[:3]) / min(3, len(cs)) if cs else g, "high": k in HIGH, "mfg": k in MFG, "spec": ns > 0 and s / ns >= 1})
+    base = d["grdp_growth"]["대구"]
     io = json.loads((ROOT / "scripts/data/bok_io_daegu.json").read_text(encoding="utf-8"))
     va_in = next(r["within"] for r in io["final_demand"] if r["region"] == "대구" and r["type"] == "부가가치유발계수" and r["year"] == 2020)
     imp = float(re.search(r"수입\s*([\d.]+)%", next(f["text"] for f in io["facts"] if re.search(r"표 IV-7.*대구", f["text"]))).group(1))
     k_eff = (1 - imp / 100) * va_in
-    gdp_eok = nom / 100
+    gdp = V[("명목", REGION, TOT, y1)] / 100   # 억 원
+    growth = lambda gs: base + sum(r["s"] / 100 * (gs[i] - r["g"]) for i, r in enumerate(rows))
 
-    steps = [lambda r, c: max(c, 0) if r["mfg"] else c, lambda r, c: max(c, r["gn"]) if r["mfg"] else c,
-             lambda r, c: max(c, r["gn"]) if not r["mfg"] else c, lambda r, c: max(c, r["t3"]) if r["mfg"] else c,
-             lambda r, c: max(c, r["t3"]) if not r["mfg"] else c]
-    stage_nm = ["제조업 감소 멈춤", "제조업 전국 수준", "서비스·기타 산업 전국 수준", "제조업 상위 3개 시도 수준", "서비스·기타 산업 상위 3개 시도 수준"]
-    contrib = lambda cur: sum(r["share"] * (cur[i] - r["g"]) / 100 for i, r in enumerate(rows))
+    def nxt(gs):
+        w = [r["s"] * (1 + gs[i] / 100) for i, r in enumerate(rows)]
+        t = sum(w)
+        return [x / t * 100 for x in w]
 
-    def solve(T):
-        cur, cum = [r["g"] for r in rows], base
-        if cum >= T:
-            return cur, 0, 1.0, 0.0
-        for k, f in enumerate(steps):
-            nxt = [f(r, cur[i]) for i, r in enumerate(rows)]
-            add = contrib(nxt) - contrib(cur)
-            if cum + add >= T:
-                fr = (T - cum) / add if add > 0 else 1.0
-                return [cur[i] + fr * (nxt[i] - cur[i]) for i in range(len(rows))], k + 1, fr, 0.0
-            cum += add
-            cur = nxt
-        rest = T - cum
-        return [c + rest for c in cur], -1, 1.0, rest
+    def high_share(gs):
+        return sum(x for x, r in zip(nxt(gs), rows) if r["high"])
 
-    def fg(fin, f):
-        xs = [(r, fin[i]) for i, r in enumerate(rows) if r["field"] == f]
-        sh = sum(r["share"] for r, _ in xs)
-        return sum(r["share"] * x for r, x in xs) / sh if sh else 0
-    stages, cur, cum = [], [r["g"] for r in rows], base
-    for k, f in enumerate(steps):
-        nxt = [f(r, cur[i]) for i, r in enumerate(rows)]
-        add = contrib(nxt) - contrib(cur)
-        cum += add
-        stages.append({"stage": k + 1, "name": stage_nm[k], "add": f1(add), "cum": f1(cum)})
-        cur = nxt
-    g0 = [r["g"] for r in rows]
-    trend_fields = {FIELD_NM[f]: f1(fg(g0, f)) for f in FIELD_NM}
-    scen = []
+    def years_to_nat(gs):
+        sh = [r["s"] for r in rows]
+        for y in range(1, 61):
+            w = [x * (1 + gs[i] / 100) for i, x in enumerate(sh)]
+            t = sum(w)
+            sh = [x / t * 100 for x in w]
+            if sum(x for x, r in zip(sh, rows) if r["high"]) >= d["daegu"]["high_share_nat"][str(y1)]:
+                return y
+        return None
+    P = {"추세 그대로": lambda r: r["g"], "감소 업종 멈춤": lambda r: max(r["g"], 0), "전국보다 낮은 업종 → 전국 수준": lambda r: max(r["g"], r["gn"]),
+         "고부가 3부문 → 상위 3개 시도 수준": lambda r: max(r["g"], r["t3"]) if r["high"] else r["g"],
+         "제조업 → 상위 3개 시도 수준": lambda r: max(r["g"], r["t3"]) if r["mfg"] else r["g"], "모든 업종 → 상위 3개 시도 수준": lambda r: max(r["g"], r["t3"])}
+    presets = []
+    for nm, f in P.items():
+        gs = [f(r) for r in rows]
+        y = years_to_nat(gs)
+        presets.append({"시나리오": nm, "성장률": f"{growth(gs):.2f}" if nm == "추세 그대로" else f1(growth(gs)), "다음 해 고부가 비중": f1(high_share(gs)),
+                        "고부가 비중 전국 수준까지": f"{y}년" if y else "60년 넘음"})
+    groups = {"모든 업종": lambda r: True, "고부가 3부문만": lambda r: r["high"], "제조업만": lambda r: r["mfg"], "특화 부문만": lambda r: r["spec"]}
+    route = []
     for T in (2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0):
-        fin, at, fr, rest = solve(T)
-        scen.append({"target": f1(T), "stage": at, "stage_share_pct": round(fr * 100), "rest": f1(rest),
-                     "fields": {FIELD_NM[f]: f1(fg(fin, f)) for f in FIELD_NM},
-                     "grdp_increase_jo": f1(gdp_eok * T / 100 / 10000), "more_than_trend_jo": f1(gdp_eok * (T - base) / 100 / 10000),
-                     "final_demand_needed_jo": f1(gdp_eok * (T - base) / 100 / k_eff / 10000) if T > base else "0.0",
-                     "field_more_eok": {FIELD_NM[f]: won(sum(r["va"] * (fin[i] - r["g"]) / 100 for i, r in enumerate(rows) if r["field"] == f)) for f in FIELD_NM}})
-    # 제조업 경로
-    M = [r for r in rows if r["mfg"]]
-    msh = sum(r["share"] for r in M)
-    mg = lambda cur: sum(r["share"] * cur[i] for i, r in enumerate(M)) / msh
-    msteps = [lambda r, c: max(c, 0), lambda r, c: max(c, r["gn"]), lambda r, c: max(c, r["t3"])]
-
-    def msolve(T):
-        cur = [r["g"] for r in M]
-        if mg(cur) >= T:
-            return cur, 0, 0.0
-        for k, f in enumerate(msteps):
-            nxt = [f(r, cur[i]) for i, r in enumerate(M)]
-            if mg(nxt) >= T:
-                fr = (T - mg(cur)) / (mg(nxt) - mg(cur)) if mg(nxt) > mg(cur) else 1
-                return [cur[i] + fr * (nxt[i] - cur[i]) for i in range(len(M))], k + 1, 0.0
-            cur = nxt
-        rest = T - mg(cur)
-        return [c + rest for c in cur], -1, rest
-    mscen = []
-    for T in (1.0, 2.0, 3.0, 4.0, 5.0):
-        fin, at, rest = msolve(T)
-        more = sum(r["va"] * (fin[i] - r["g"]) / 100 for i, r in enumerate(M))
-        mscen.append({"mfg_target": f1(T), "stage": at, "rest": f1(rest),
-                      "sectors": {r["name"]: f1(fin[i]) for i, r in enumerate(M)},
-                      "va_increase_eok": won(sum(r["va"] * fin[i] / 100 for i, r in enumerate(M))), "more_than_trend_eok": won(more),
-                      "final_demand_eok": won(more / k_eff), "grdp_contrib_pp": f1(msh * T / 100)})
-    return {
-        "기준": {"자료": "국가데이터처 「시도별 경제활동별 지역내총생산」(KOSIS), 한국은행 「2020년 지역산업연관표」", "기간": f"{y0}→{y1}년",
-               "명목 GRDP(조 원)": f1(gdp_eok / 10000), "지난 10년 추세(%)": f1(base),
-               "전국 GRDP 10년 연평균(%)": f1(cagr("전국", TOT) or 0),
-               "17개 시도 GRDP 10년 성장 상위 세 곳 평균(%)": f1(sum(sorted([c for c in (cagr(r, TOT) for r in sido) if c], reverse=True)[:3]) / 3),
-               "부가가치유발계수(수입품 제외 후)": f"{k_eff:.3f}", "제조업 GRDP 비중(%)": f1(msh),
-               "제조업 업종 가중 10년 성장(%)": f1(mg([r["g"] for r in M])), "분야별 10년 추세 성장(%)": trend_fields},
-        "단계(누적 GRDP 성장률)": stages,
-        "목표별 시나리오": scen,
-        "업종(비중·10년 성장·전국·상위3)": [{"업종": r["name"], "비중": f1(r["share"]), "10년": f1(r["g"]), "전국": f1(r["gn"]), "상위3": f1(r["t3"]),
-                                     "부가가치 억 원": won(r["va"])} for r in rows],
-        "제조업 목표별": mscen,
-    }
+        E = T - base
+        cells = {}
+        for gname, f in groups.items():
+            rs = [r for r in rows if f(r)]
+            sh = sum(r["s"] for r in rs)
+            avg = sum(r["s"] * r["g"] for r in rs) / sh
+            cells[gname] = {"필요 성장률": f1(avg + E / sh * 100), "추세보다": f1(E / sh * 100)}
+        route.append({"목표": f1(T), "길": cells, "GRDP 한 해 증가(조 원)": f1(gdp * T / 100 / 10000), "추세보다 더(조 원)": f1(gdp * E / 100 / 10000),
+                      "필요 최종수요(조 원)": f1(gdp * E / 100 / k_eff / 10000)})
+    sh = lambda f: f1(sum(r["s"] for r in rows if f(r)))
+    return {"기간": f"{y0}→{y1}년", "추세(연평균, %)": f"{base:.2f}", "전국(%)": f"{d['grdp_growth']['전국']:.2f}", "6개 광역시 평균(%)": f"{d['metro6_avg']['grdp']:.2f}",
+            "17개 시도 GRDP 성장 상위 3곳 평균(%)": f1(sum(sorted([v for k, v in d["grdp_growth"].items() if k != "전국"], reverse=True)[:3]) / 3),
+            "명목 GRDP(조 원)": f1(gdp / 10000), "고부가 3부문 비중(%)": f1(d["daegu"]["high_share"][str(y1)]), "전국 고부가 비중(%)": f1(d["daegu"]["high_share_nat"][str(y1)]),
+            "산업집중도": d["hhi_2024"]["대구"], "17개 시도 산업집중도 평균": d["hhi_avg"], "패널 추정 산업집중도 계수": f"{d['panel']['GRDP']['Δln(산업집중도)']['coef']:.2f}",
+            "묶음 비중(%)": {"고부가 3부문": sh(lambda r: r["high"]), "제조업": sh(lambda r: r["mfg"]), "특화 부문": sh(lambda r: r["spec"])},
+            "부가가치유발계수(수입품 제외 후)": f"{k_eff:.3f}", "시나리오": presets, "목표별 길": route}
 
 
 def render(fx: dict) -> str:
-    """사실 묶음을 사람이 읽는 문장 줄로 — Gemini 가 열 이름을 그대로 옮기지 않게."""
-    b = fx["기준"]
-    L = [f"자료: {b['자료']} · 기간 {b['기간']}",
-         f"- 대구 명목 GRDP {b['명목 GRDP(조 원)']}조 원. 지난 10년 실질 성장 추세 연 {b['지난 10년 추세(%)']}%. 같은 기간 전국 연 {b['전국 GRDP 10년 연평균(%)']}%, 17개 시도 가운데 GRDP 성장이 높았던 세 곳 평균 연 {b['17개 시도 GRDP 10년 성장 상위 세 곳 평균(%)']}%.",
-         "- 분야별 지난 10년 성장(2024년 비중 가중): " + ", ".join(f"{k} {v}%" for k, v in b["분야별 10년 추세 성장(%)"].items()),
-         "- 경로(추세에서 출발해 업종 성장률을 비교 기준으로 한 단계씩 올림, 누적 GRDP 성장률):"]
-    L += [f"  {x['stage']}단계 {x['name']}: +{x['add']}%p → {x['cum']}%" for x in fx["단계(누적 GRDP 성장률)"]]
-    L.append("- 목표별(GRDP 성장률 목표 → 닿는 단계, 분야별 필요 성장률, 금액):")
-    for x in fx["목표별 시나리오"]:
-        st = "추세 안" if x["stage"] == 0 else (f"{x['stage']}단계의 {x['stage_share_pct']}%에서 닿음" if x["stage"] > 0 else f"5단계를 넘어 {x['rest']}%p 남음")
-        L.append(f"  목표 {x['target']}%: {st}. 필요 성장 " + ", ".join(f"{k} {v}%" for k, v in x["fields"].items())
-                 + f". GRDP 한 해 {x['grdp_increase_jo']}조 원 증가(추세보다 {x['more_than_trend_jo']}조 원 더), 이를 새 지출로 만들 때 필요한 대구 최종수요 {x['final_demand_needed_jo']}조 원."
-                 + " 추세보다 더 늘릴 부가가치: " + ", ".join(f"{k} {v}억 원" for k, v in x["field_more_eok"].items()))
-    L.append(f"- 제조업: GRDP 비중 {b['제조업 GRDP 비중(%)']}%, 업종 가중 10년 성장 {b['제조업 업종 가중 10년 성장(%)']}%. 제조업 목표별(업종 필요 성장률, 금액):")
-    for x in fx["제조업 목표별"]:
-        st = "추세 안" if x["stage"] == 0 else (f"{x['stage']}단계(1 감소 멈춤, 2 전국 수준, 3 상위 3개 시도 수준)에서 닿음" if x["stage"] > 0 else f"3단계를 넘어 {x['rest']}%p 남음")
-        L.append(f"  제조업 {x['mfg_target']}%: {st}. " + ", ".join(f"{k} {v}%" for k, v in x["sectors"].items())
-                 + f". 제조업 부가가치 한 해 {x['va_increase_eok']}억 원 증가(추세보다 {x['more_than_trend_eok']}억 원 더), 필요한 최종수요 {x['final_demand_eok']}억 원, GRDP 기여 {x['grdp_contrib_pp']}%p.")
-    L.append("- 업종 기준값(비중 %, 대구 10년 %, 전국 %, 상위 3개 시도 평균 %, 2024년 부가가치 억 원):")
-    L += [f"  {r['업종']}: {r['비중']}, {r['10년']}, {r['전국']}, {r['상위3']}, {r['부가가치 억 원']}" for r in fx["업종(비중·10년 성장·전국·상위3)"]]
-    L.append(f"- 금액 환산 계수: 대구 부가가치유발계수(수입품 제외 후) {b['부가가치유발계수(수입품 제외 후)']}")
+    L = [f"자료: 국가데이터처 지역소득(KOSIS), 산업구조지수 리포트와 같은 정의 · 기간 {fx['기간']}",
+         f"- 대구 실질 GRDP 연평균 성장률(추세) {fx['추세(연평균, %)']}%. 같은 기간 전국 {fx['전국(%)']}%, 6개 광역시 평균 {fx['6개 광역시 평균(%)']}%, 17개 시도 가운데 성장이 높았던 세 곳 평균 {fx['17개 시도 GRDP 성장 상위 3곳 평균(%)']}%. 명목 GRDP {fx['명목 GRDP(조 원)']}조 원.",
+         f"- 산업구조: 고부가 3부문(전기·전자·정밀기기, 정보통신, 금융보험) 비중 {fx['고부가 3부문 비중(%)']}%(전국 {fx['전국 고부가 비중(%)']}%), 산업집중도 {fx['산업집중도']}(17개 시도 평균 {fx['17개 시도 산업집중도 평균']}). 리포트 패널 추정에서 산업집중도 1% 상승은 성장률 +{fx['패널 추정 산업집중도 계수']}%p 와 함께 움직였다(연관).",
+         "- 묶음 비중(부가가치): " + ", ".join(f"{k} {v}%" for k, v in fx["묶음 비중(%)"].items()),
+         "- 시나리오(단추, 추세에서 새로 시작 → 한 해 성장률, 다음 해 고부가 비중, 같은 성장률이 이어질 때 고부가 비중이 전국 수준에 닿는 데 걸리는 해):"]
+    L += [f"  {x['시나리오']}: 성장률 {x['성장률']}%, 다음 해 고부가 비중 {x['다음 해 고부가 비중']}%, 전국 수준까지 {x['고부가 비중 전국 수준까지']}" for x in fx["시나리오"]]
+    L.append("- 목표에 닿는 길(추세와 목표의 차이를 한 묶음만 더 성장해 메울 때 그 묶음의 필요 성장률(추세보다 더할 몫), 금액):")
+    for x in fx["목표별 길"]:
+        L.append(f"  목표 {x['목표']}%: " + ", ".join(f"{g} {c['필요 성장률']}%(+{c['추세보다']}%p)" for g, c in x["길"].items())
+                 + f". GRDP 한 해 {x['GRDP 한 해 증가(조 원)']}조 원 증가(추세보다 {x['추세보다 더(조 원)']}조 원 더), 새 지출로 만든다면 필요한 대구 최종수요 {x['필요 최종수요(조 원)']}조 원.")
+    L.append(f"- 금액 환산 계수: 대구 부가가치유발계수(수입품 제외 후) {fx['부가가치유발계수(수입품 제외 후)']}")
     return "\n".join(L)
 
 
-PROMPT = """너는 대구 산업 통계를 정리하는 공무원용 자료 사이트의 해설 작성자다. 아래 [계산 결과]는 '성장 계산기' 페이지가 보여 주는 값이다.
-읽는 사람은 대구시·구청 공무원이다. 표를 다 읽지 않아도 '무엇을 얼마나 해야 몇 %가 되는지'를 바로 알게 써라.
+PROMPT = """너는 대구 산업 통계를 정리하는 공무원용 자료 사이트의 해설 작성자다. 아래 [계산 결과]는 '성장 계산기' 페이지가 보여 주는 값이며, 정의는 같은 사이트의 산업구조지수 리포트와 같다.
+읽는 사람은 대구시·구청 공무원이다. '어느 업종 묶음이 몇 % 성장해야 목표가 되는지'와 '그때 산업구조(고부가 비중·집중도)가 어떻게 되는지'를 바로 알게 써라.
 JSON 하나로만 답하라. 다른 문장 금지.
-형식: {"headline": "...", "sections": [{"title": "한눈에", "points": [...]}, {"title": "목표별로 보면", "points": [...]}, {"title": "제조업", "points": [...]}, {"title": "금액으로", "points": [...]}, {"title": "읽을 때 주의", "points": [...]}]}
+형식: {"headline": "...", "sections": [{"title": "한눈에", "points": [...]}, {"title": "목표별로 보면", "points": [...]}, {"title": "산업구조로 보면", "points": [...]}, {"title": "금액으로", "points": [...]}, {"title": "읽을 때 주의", "points": [...]}]}
 쓰는 법:
-- headline: 45자 이내. 가장 중요한 결론 하나(예: 목표 5%가 어느 단계·어떤 조건에서 닿는지).
-- points: 섹션마다 3~4개, 각 90자 이내, 개조식 명사형 종결('…에서 닿음', '…가 필요함', '…임').
-- 숫자 나열이 아니라 '조건 → 결과' 또는 '비교'로 쓴다. 좋은 예: '목표 3.0%는 4단계(제조업 상위 3개 시도 수준)의 80%에서 닿음', '제조업이 5.0% 성장해도 GRDP 기여는 1.0%p — 비중이 19.8%이기 때문'.
-- '한눈에'에는 추세와 목표의 차이, 5%가 닿는 조건, 다른 시도 실제 성장과의 비교를 넣는다.
-- '제조업'에는 감소 업종(섬유·금속)의 감소 멈춤 효과와, 목표 3.0%·5.0%에서 성장률이 크게 올라야 하는 업종을 넣는다.
-- '금액으로'에는 목표별 GRDP 증가액, 추세보다 더 늘릴 금액, 필요한 최종수요를 넣는다.
-- 숫자는 [계산 결과]에 적힌 값을 그대로만 쓴다(새로 더하거나 나누어 만든 숫자 금지). 단위는 %, %p, 조 원, 억 원. 'pp', '(%)' 같은 표기는 쓰지 않는다.
+- headline: 45자 이내. 가장 중요한 결론 하나.
+- points: 섹션마다 3~4개, 각 90자 이내, 개조식 명사형 종결('…가 필요함', '…임'). '조건 → 결과' 또는 비교로 쓴다(숫자 나열 금지).
+- '한눈에': 추세와 전국·6개 광역시 비교, '모든 업종 → 상위 3개 시도 수준' 시나리오의 성장률.
+- '목표별로 보면': 목표 3.0%·5.0%에서 묶음별 필요 성장률 비교(비중이 작은 묶음일수록 높음).
+- '산업구조로 보면': 고부가 비중(지금·전국)과 시나리오별 전국 수준까지 걸리는 해, 산업집중도와 리포트 패널 추정은 '연관'이라고 쓴다.
+- '금액으로': 목표별 GRDP 증가액, 추세보다 더, 필요한 최종수요.
+- 숫자는 [계산 결과]에 적힌 값을 그대로만 쓴다(새로 더하거나 나누어 만든 숫자 금지). 단위는 %, %p, 조 원, 년. 'pp', '(%)' 표기 금지.
 - '상위 3개 시도'는 17개 시도 가운데 그 업종 성장률이 높았던 세 곳의 평균인 비교 기준이며 순위·평가가 아님을 한 번 밝힌다.
-- 정책·기관에 대한 평가·비판·칭찬, 전망, 달성 가능성 판단('어렵다', '가능하다', '현실적'), 권고('해야 한다', '바람직')를 쓰지 않는다. 계산상 필요한 값은 '필요'로만 쓴다. 특정 기업을 쓰지 않는다.
-- '읽을 때 주의': 업종 사이 파급을 넣지 않은 계산, 2024년 가격 근사, 비중이 작은 업종과 기반이 작은 시도(예: 세종)의 값이 크게 흔들림, 가정에 따른 계산이지 전망이 아님.
+- 정책·기관 평가·비판·칭찬, 전망, 달성 가능성 판단('어렵다', '가능하다', '현실적'), 권고('해야 한다', '바람직')를 쓰지 않는다. 특정 기업을 쓰지 않는다.
+- '읽을 때 주의': 업종 사이 파급을 넣지 않은 계산, 그 해 가격 근사, 비중이 작은 업종과 기반이 작은 시도의 값이 크게 흔들림, 가정에 따른 계산이지 전망이 아님.
 """
-
 
 def allowed_numbers(s: str) -> set[str]:
     out = set()

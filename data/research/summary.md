@@ -4,7 +4,7 @@
 
 | 구분 | 기관 | 상태 | 방법 | 건수 | 최신 항목 |
 |---|---|---|---|---|---|
-| 국내 연구 | [IBK기업은행 경제연구소](https://research.ibk.co.kr) | OK | 목록 페이지(날짜 없음, 목록 순서) | 10 |  [PDF 미리보기](https://research.ibk.co.kr/research/board/ceo/details/252088?url=L2JvYXJkL2Nlby9saXN0) |
+| 국내 연구 | [IBK기업은행 경제연구소](https://research.ibk.co.kr) | OK | 목록 페이지(날짜 없음, 목록 순서)(쪽 3개) | 29 |  [2026년 하반기 경제환경 전망](https://research.ibk.co.kr/research/board/economic/details/252043?url=L2JvYXJkL2Vjb25vbWljL2xpc3Q=) |
 | 국내 연구 | [KDB 미래전략연구소](https://rd.kdb.co.kr) | OK | 목록 페이지 | 4 | 2026-09-21 [KDB리포트(2026.9.21)](https://rd.kdb.co.kr/fileView?groupId=AB4D7578-657A-E2E5-9650-1F0666DE9358&fileId=24DB0356-3E76-E4E2-0F82-9C4AE94BCC5E) |
 | 국내 연구 | [KDI 경제정보센터(정책자료)](https://eiec.kdi.re.kr) | OK | 목록 페이지 | 24 | 2026-10-02 [제14회 한-OECD 국제재정포럼 및 OECD 수석 이코노미스트 양자면담](https://eiec.kdi.re.kr/policy/materialView.do?num=287750&pg=&pp=&device=&search_txt=&topic=&type=&depth1=&depth2=) |
 | 국내 연구 | [KOTRA 해외시장뉴스](https://dream.kotra.or.kr) | 차단 | robots.txt 차단 | 0 | — |
@@ -18,7 +18,7 @@
 | 국내 연구 | [한국개발연구원(KDI)](https://www.kdi.re.kr) | OK | 첫 화면 | 11 | 2026-10-01 [언론기고 반도체 호황의 결실과 청년 창의력 경제성장률 '5년·1%포인트 ](https://www.kdi.re.kr/share/pressContriView?bd_no=53516) |
 | 국내 연구 | [한국과학기술기획평가원(KISTEP)](https://www.kistep.re.kr) | OK | 목록 페이지 | 16 | 2026-09-15 [국가 단위 과학기술 협력 전략 도출 프레임워크 탐색](https://www.kistep.re.kr/board.es?mid=a10306040000&bid=0031&b_list=10&act=view&list_no=94859&nPage=1&keyField=&orderby=) |
 | 국내 연구 | [한국무역협회(KITA) 보고서](https://www.kita.net) | OK | 목록 페이지 | 8 | 2026-09-30 [상호무역협정을 통한 미국의 대중국 견제 강화와 기업의 대응](https://www.kita.net/researchTrade/report/reportMain/reportMainList.do#상호무역협정을-통한-미국의-대중국-견제-강화와-기업의-대응) |
-| 국내 연구 | [한국수출입은행 해외경제연구소](https://keri.koreaexim.go.kr) | 접속 실패 |  | 0 | — |
+| 국내 연구 | [한국수출입은행 해외경제연구소](https://keri.koreaexim.go.kr) | OK | 공공데이터포털 보고서 파일 15045163,15045162,15045158 | 3 | 2026-07-07 [한국수출입은행 자동차산업동향 (2026-07-07 판)](https://www.data.go.kr/data/15045163/fileData.do) |
 | 국내 연구 | [한국은행(지역경제보고서·조사통계)](https://www.bok.or.kr) | 차단 | robots.txt 차단 | 0 | — |
 | 규제·건의 | [대구상공회의소 보도자료(대한상의 지역상의 게시판)](https://www.korcham.net) | 최근 없음 | 목록 페이지(행)(쪽 12개) | 0 | — |
 | 규제·건의 | [대한상공회의소 보도자료(정책건의·규제개선)](https://www.korcham.net) | OK | 목록 페이지(keep_pattern) | 2 | 2026-09-30 [소비자 안심 유통환경 조성 및 유통산업 협력을 위한 업...](https://www.korcham.net/nCham/Service/Economy/appl/KcciReportList.asp#소비자-안심-유통환경-조성-및-유통산업-협력을-위한-업-) |

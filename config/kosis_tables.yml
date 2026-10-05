@@ -73,8 +73,7 @@ tables:
     note: 입지계수·산업집중도·산업구조 변화속도(scripts/structure_index.py)는 전국 대비 비교라 모든 시도 행이 필요하다
   - key: grdp-sido-expenditure
     name: 지역내총생산에 대한 지출(GRDE) — 시도별 민간소비·정부소비·건설투자·설비투자·순이출(운영자 지시 2026-10-05, 성장 목표 계산기 지출 측)
-    tbl_id: ""
-    search: ["지역내총생산에 대한 지출", "지역내총생산 지출 시도", "지역내 총지출"]
+    tbl_id: "DT_1C93"   # 2026-10-05 discover: 101 DT_1C93 시도별 지역내총생산에 대한 지출(지역소득)
     prd_se: Y
     years: 12
     area_col: C1

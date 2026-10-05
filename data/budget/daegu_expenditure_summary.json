@@ -1,0 +1,317 @@
+{
+ "source": "공공데이터포털 15133534 대구광역시_주민참여예산 (신)이호조 대구시청 세출 데이터",
+ "url": "https://www.data.go.kr/data/15133534/fileData.do",
+ "rows": 43407,
+ "years": [
+  "2008",
+  "2009",
+  "2010",
+  "2011",
+  "2012",
+  "2013",
+  "2014",
+  "2015",
+  "2016",
+  "2017",
+  "2018",
+  "2019",
+  "2020",
+  "2021",
+  "2022",
+  "2023",
+  "2024",
+  "2025"
+ ],
+ "by_path": {
+  "가계 이전": {
+   "n": 1195,
+   "budget_thousand": 1465602966900,
+   "national_thousand": 1738799000,
+   "city_thousand": 3730895000,
+   "spent_thousand": 1464958325,
+   "grdp_item": "민간소비(가계가 받아 씀)"
+  },
+  "운영·서비스": {
+   "n": 24916,
+   "budget_thousand": 34967026873656,
+   "national_thousand": 11904065510,
+   "city_thousand": 203119619820,
+   "spent_thousand": 30486824169,
+   "grdp_item": "정부소비(시가 직접 쓰는 행정·서비스)"
+  },
+  "건설": {
+   "n": 7848,
+   "budget_thousand": 13266540994097,
+   "national_thousand": 51920670252,
+   "city_thousand": 174777015541,
+   "spent_thousand": 11693814056,
+   "grdp_item": "건설투자"
+  },
+  "기업·산업 지원": {
+   "n": 8447,
+   "budget_thousand": 14504641934799,
+   "national_thousand": -17146994500,
+   "city_thousand": 26201747000,
+   "spent_thousand": 12493382071,
+   "grdp_item": "설비·지식재산 투자 유도(기업이 받아 투자)"
+  },
+  "정부 간 전출": {
+   "n": 1001,
+   "budget_thousand": 1446625241023,
+   "national_thousand": 0,
+   "city_thousand": 6279356000,
+   "spent_thousand": 1242735884,
+   "grdp_item": "대구 GRDP 직접 항목 아님(받는 기관이 다시 씀)"
+  }
+ },
+ "by_field": {
+  "사회복지": {
+   "n": 7195,
+   "budget_thousand": 14626693006850,
+   "national_thousand": 5251998000,
+   "city_thousand": 63415455030,
+   "spent_thousand": 14700422855
+  },
+  "교통및물류": {
+   "n": 1405,
+   "budget_thousand": 4027040469018,
+   "national_thousand": 17646309510,
+   "city_thousand": 120679183909,
+   "spent_thousand": 3393332743
+  },
+  "산업ㆍ중소기업및에너지": {
+   "n": 2001,
+   "budget_thousand": 3372967182859,
+   "national_thousand": -12873969923,
+   "city_thousand": 60329539025,
+   "spent_thousand": 3040774126
+  },
+  "공공질서및안전": {
+   "n": 3147,
+   "budget_thousand": 3208128028520,
+   "national_thousand": 15317026690,
+   "city_thousand": 46412096060,
+   "spent_thousand": 2509064445
+  },
+  "보건": {
+   "n": 3179,
+   "budget_thousand": 2768245577160,
+   "national_thousand": -1923445000,
+   "city_thousand": 5902666000,
+   "spent_thousand": 2766923331
+  },
+  "문화및관광": {
+   "n": 4153,
+   "budget_thousand": 4868935452428,
+   "national_thousand": 10546517260,
+   "city_thousand": 22990550340,
+   "spent_thousand": 3971599874
+  },
+  "일반공공행정": {
+   "n": 4977,
+   "budget_thousand": 7605165694491,
+   "national_thousand": 428225000,
+   "city_thousand": 29538925000,
+   "spent_thousand": 6575926554
+  },
+  "기타": {
+   "n": 2879,
+   "budget_thousand": 4363514250000,
+   "national_thousand": -925000,
+   "city_thousand": -2079236000,
+   "spent_thousand": 4107037719
+  },
+  "국토및지역개발": {
+   "n": 3241,
+   "budget_thousand": 4154895746647,
+   "national_thousand": 9123266045,
+   "city_thousand": 34382201797,
+   "spent_thousand": 2871637406
+  },
+  "환경": {
+   "n": 814,
+   "budget_thousand": 1204885558610,
+   "national_thousand": 520000000,
+   "city_thousand": 27552671200,
+   "spent_thousand": 841741095
+  },
+  "농림해양수산": {
+   "n": 3038,
+   "budget_thousand": 1043872583060,
+   "national_thousand": 810682000,
+   "city_thousand": -283953000,
+   "spent_thousand": 870607006
+  },
+  "교육": {
+   "n": 467,
+   "budget_thousand": 729254594272,
+   "national_thousand": 3720855680,
+   "city_thousand": 5325434000,
+   "spent_thousand": 629546527
+  },
+  "과학기술": {
+   "n": 694,
+   "budget_thousand": 742524915200,
+   "national_thousand": -150000000,
+   "city_thousand": -56900000,
+   "spent_thousand": 647732122
+  },
+  "수송및교통": {
+   "n": 1949,
+   "budget_thousand": 7161398882870,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 5717594466
+  },
+  "산업ㆍ중소기업": {
+   "n": 2947,
+   "budget_thousand": 4299749712250,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 3665823925
+  },
+  "환경보호": {
+   "n": 1317,
+   "budget_thousand": 1351031371240,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 1071950311
+  },
+  "예비비": {
+   "n": 4,
+   "budget_thousand": 122134985000,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 0
+  }
+ },
+ "by_year": {
+  "2025": {
+   "n": 320,
+   "budget_thousand": 251860330408,
+   "national_thousand": 33803571507,
+   "city_thousand": 217843484941,
+   "spent_thousand": 914295603
+  },
+  "2024": {
+   "n": 3478,
+   "budget_thousand": 226286462765,
+   "national_thousand": 14612968755,
+   "city_thousand": 196265148420,
+   "spent_thousand": 712947401
+  },
+  "2008": {
+   "n": 1595,
+   "budget_thousand": 39853040450042,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 33511866676
+  },
+  "2009": {
+   "n": 1870,
+   "budget_thousand": 9446645448330,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 8132152332
+  },
+  "2010": {
+   "n": 1880,
+   "budget_thousand": 4720177580343,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 4104973124
+  },
+  "2011": {
+   "n": 1957,
+   "budget_thousand": 3005987784792,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 2677268755
+  },
+  "2012": {
+   "n": 1974,
+   "budget_thousand": 2006838129250,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 1787258396
+  },
+  "2013": {
+   "n": 2020,
+   "budget_thousand": 1473173407362,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 1328920226
+  },
+  "2014": {
+   "n": 1248,
+   "budget_thousand": 702975983289,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 628944035
+  },
+  "2015": {
+   "n": 2325,
+   "budget_thousand": 1042327288154,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 946572876
+  },
+  "2016": {
+   "n": 2577,
+   "budget_thousand": 842535838520,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 757614846
+  },
+  "2017": {
+   "n": 2839,
+   "budget_thousand": 657779018800,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 595149986
+  },
+  "2018": {
+   "n": 2931,
+   "budget_thousand": 488679951680,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 442054220
+  },
+  "2019": {
+   "n": 3091,
+   "budget_thousand": 350821180970,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 318196480
+  },
+  "2020": {
+   "n": 3095,
+   "budget_thousand": 246349692340,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 223023130
+  },
+  "2021": {
+   "n": 3290,
+   "budget_thousand": 169669527400,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 152945993
+  },
+  "2022": {
+   "n": 3575,
+   "budget_thousand": 112654105140,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 100864756
+  },
+  "2023": {
+   "n": 3342,
+   "budget_thousand": 52635830890,
+   "national_thousand": 0,
+   "city_thousand": 0,
+   "spent_thousand": 46665670
+  }
+ },
+ "note": "지출 경로는 사업명 낱말로 짐작한 근사 분류다. 예산현액·국비·시도비·지출액 단위는 천 원."
+}

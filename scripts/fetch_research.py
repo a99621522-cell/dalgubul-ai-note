@@ -356,6 +356,30 @@ def date_from_title(title: str, year_cell: str = "") -> str:
     return f"{m.group(1)}-01-01" if m else ""
 
 
+def from_datago_docs(pks: list, sess: requests.Session) -> list[dict]:
+    """공공데이터포털 '보고서 파일' 데이터셋(PDF·HWP 를 판마다 바꿔 올리는 것) → 데이터셋마다 최신 판 1건.
+    /catalog/<번호>/fileData.json 의 alternateName(…_YYYYMMDD)·dateModified·description 만 쓴다(파일 본문은 받지 않음).
+    수출입은행 해외경제연구소 자동차·ICT 산업동향 등(운영자 지시 2026-10-05) — 기관 누리집은 미국 러너에서 막혀도 포털은 열린다."""
+    items = []
+    for pk in pks:
+        try:
+            r = sess.get(f"https://www.data.go.kr/catalog/{pk}/fileData.json", headers={"User-Agent": UA}, timeout=30)
+            j = r.json()
+        except Exception as e:  # noqa: BLE001
+            print(f"    포털 catalog 실패 {pk}: {str(e)[:60]}")
+            continue
+        alt = str(j.get("alternateName") or j.get("name") or "")
+        m = re.search(r"_(20\d{2})(\d{2})(\d{2})$", alt)
+        d = f"{m.group(1)}-{m.group(2)}-{m.group(3)}" if m else str(j.get("dateModified") or "")[:10]
+        name = str(j.get("name") or alt).replace("_", " ")
+        desc = re.sub(r"\s+", " ", str(j.get("description") or "")).split("* 자세한")[0].strip()
+        items.append({"title": f"{name} ({d} 판)" if d else name, "url": f"https://www.data.go.kr/data/{pk}/fileData.do", "date": d,
+                      "summary": desc[:300], "format": str(j.get("encodingFormat") or "")})
+        print(f"    {pk}: {alt} · 수정 {j.get('dateModified')}")
+    items.sort(key=lambda i: i["date"], reverse=True)
+    return [i for i in items if not i["date"] or (TODAY - date.fromisoformat(i["date"])).days <= 400]
+
+
 def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
     key, name = org["key"], org["name"]
     LATEST_SEEN["date"] = ""
@@ -366,6 +390,7 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
         res["items"] = from_datago(str(org["datago"]), sess)
         if res["items"]:
             res["method"] = f"공공데이터포털 {org['datago']}"
+    docs: list[dict] = from_datago_docs(org["datago_docs"], sess) if org.get("datago_docs") else []   # 목록 페이지 결과 뒤에 붙인다
     feeds = [] if res["items"] else [u for u in [org.get("rss")] if u] + list(org.get("rss_candidates") or [])
     host_root = f"{urlparse(org.get('home') or org.get('list')).scheme}://{urlparse(org.get('home') or org.get('list')).netloc}"
     feeds += [host_root + c for c in RSS_CANDIDATES[:4]]
@@ -384,6 +409,8 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
         for page in (org.get("lists") or []) + [org.get("list"), org.get("home")]:
             if not page or reqs >= (12 + len(org.get("lists") or []) if org.get("paginate") else 12) or res["items"]:
                 continue
+            if org.get("paginate") and acc and page not in (org.get("lists") or []):
+                continue   # 쪽을 합친 결과가 있으면 list·home 한 쪽 결과로 덮어쓰지 않는다(2026-10-05)
             if not robots_ok(page, robots):
                 res["note"] = "robots.txt 차단"
                 print("  robots 차단:", page)
@@ -438,6 +465,13 @@ def fetch_org(org: dict, sess: requests.Session, robots: dict) -> dict:
                 break
         if acc and not res["items"]:
             res["items"] = sorted(acc, key=lambda i: i.get("date") or "", reverse=True)[:MAX_ITEMS]
+    if org.get("datago_docs"):
+        seen_u = {i["url"] for i in res["items"]}
+        add = [i for i in docs if i["url"] not in seen_u]
+        if add:
+            res["items"] = res["items"] + add
+            res["method"] = (res["method"] + " + " if res["method"] else "") + "공공데이터포털 보고서 파일 " + ",".join(map(str, org["datago_docs"]))
+            res["note"] = ""
     if not res["items"] and LATEST_SEEN["date"] and not res["note"]:
         res["note"] = f"최신 항목 {LATEST_SEEN['date']} (최근 {MAX_DAYS}일 밖)"
         res["status"] = "최근 없음"

@@ -4,7 +4,7 @@
 
 | 구분 | 기관 | 상태 | 방법 | 건수 | 최신 항목 |
 |---|---|---|---|---|---|
-| 국내 연구 | [IBK기업은행 경제연구소](https://research.ibk.co.kr) | OK | 목록 페이지(날짜 없음, 목록 순서)(쪽 3개) | 29 |  [2026년 하반기 경제환경 전망](https://research.ibk.co.kr/research/board/economic/details/252043?url=L2JvYXJkL2Vjb25vbWljL2xpc3Q=) |
+| 국내 연구 | [IBK기업은행 경제연구소](https://research.ibk.co.kr) | OK | 목록 페이지(행)(쪽 3개) | 3 | 2026-10-01 [2026년도 10월호](https://research.ibk.co.kr/research/board/ceo/details/252088?url=L2JvYXJkL2Nlby9saXN0) |
 | 국내 연구 | [KDB 미래전략연구소](https://rd.kdb.co.kr) | OK | 목록 페이지 | 4 | 2026-09-21 [KDB리포트(2026.9.21)](https://rd.kdb.co.kr/fileView?groupId=AB4D7578-657A-E2E5-9650-1F0666DE9358&fileId=24DB0356-3E76-E4E2-0F82-9C4AE94BCC5E) |
 | 국내 연구 | [KDI 경제정보센터(정책자료)](https://eiec.kdi.re.kr) | OK | 목록 페이지 | 24 | 2026-10-02 [제14회 한-OECD 국제재정포럼 및 OECD 수석 이코노미스트 양자면담](https://eiec.kdi.re.kr/policy/materialView.do?num=287750&pg=&pp=&device=&search_txt=&topic=&type=&depth1=&depth2=) |
 | 국내 연구 | [KOTRA 해외시장뉴스](https://dream.kotra.or.kr) | 차단 | robots.txt 차단 | 0 | — |

@@ -3,7 +3,7 @@
  "name": "McKinsey Insights",
  "group": "해외 컨설팅",
  "home": "https://www.mckinsey.com",
- "fetched": "2026-10-04",
+ "fetched": "2026-10-05",
  "status": "OK",
  "method": "rss(/insights/rss)",
  "items": [
@@ -56,16 +56,16 @@
    "summary": "With a more coordinated approach, smaller cities in the middle of the country could generate trillions of dollars in added economic output."
   },
   {
-   "title": "How to drive transformations with rigor",
-   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/how-to-drive-transformations-with-rigor",
-   "date": "2026-09-30",
-   "summary": "McKinsey research finds that companies executing transformations with rigor are much more likely to meet overall organizational transformation goals. Chris Hagedorn, Preeya Mody, and Michel Morenville join us to discuss what rigor really means in the context of transformation and how to embed it thr"
-  },
-  {
    "title": "Global Economics Intelligence executive summary, August 2026",
    "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/global-economics-intelligence",
    "date": "2026-09-30",
    "summary": "Public debt and search for growth exercise minds of economists and policymakers as US debt hits record high; inflation fueled by energy supply uncertainty limits room for maneuver on interest rates."
+  },
+  {
+   "title": "How to drive transformations with rigor",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/how-to-drive-transformations-with-rigor",
+   "date": "2026-09-30",
+   "summary": "McKinsey research finds that companies executing transformations with rigor are much more likely to meet overall organizational transformation goals. Chris Hagedorn, Preeya Mody, and Michel Morenville join us to discuss what rigor really means in the context of transformation and how to embed it thr"
   },
   {
    "title": "The CEO’s singular impact on the success—or failure—of AI in organizations",
@@ -110,16 +110,16 @@
    "summary": "Mikhail Lomtadze, cofounder and CEO of Kaspi, believes the only measure that matters is whether Kaspi makes customers’ lives better or not—and why that single conviction changes everything else."
   },
   {
-   "title": "Leading when change feels threatening",
-   "url": "https://www.mckinsey.com/capabilities/people-and-organization/our-insights/leading-when-change-feels-threatening",
-   "date": "2026-09-29",
-   "summary": "Fear and change can go hand in hand. Executives who understand this can significantly improve their odds of transformation success, while the executives who don’t risk sabotaging their change programs."
-  },
-  {
    "title": "How leaders are turning AI into growth",
    "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/how-leaders-are-turning-ai-into-growth",
    "date": "2026-09-29",
    "summary": "Nearly 90 percent of companies are investing in AI, but only 6 percent see material impact. The difference is in how they approach it."
+  },
+  {
+   "title": "Leading when change feels threatening",
+   "url": "https://www.mckinsey.com/capabilities/people-and-organization/our-insights/leading-when-change-feels-threatening",
+   "date": "2026-09-29",
+   "summary": "Fear and change can go hand in hand. Executives who understand this can significantly improve their odds of transformation success, while the executives who don’t risk sabotaging their change programs."
   },
   {
    "title": "Navigating the new normal: Building resilience in fuel retail trading",
@@ -164,28 +164,28 @@
    "summary": "At Cannes Lions 2026, LinkedIn CMO Jessica Jensen and McKinsey senior partner Dianne Esber discussed what it takes to turn AI from experimentation into a catalyst for growth."
   },
   {
-   "title": "Harnessing AI to make mining safer",
-   "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/harnessing-ai-to-make-mining-safer",
-   "date": "2026-09-23",
-   "summary": "AI could improve both safety and productivity by anticipating problems before they arise, detecting worker fatigue, and automating dangerous tasks."
-  },
-  {
    "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
    "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
    "date": "2026-09-23",
    "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
   },
   {
-   "title": "Author Talks: The business of owning a sports team",
-   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-the-business-of-owning-a-sports-team",
+   "title": "Harnessing AI to make mining safer",
+   "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/harnessing-ai-to-make-mining-safer",
    "date": "2026-09-23",
-   "summary": "How does business ownership compare with owning a sports team? Baltimore Orioles owner David M. Rubenstein explains the leadership mindset, culture building, and long-term thinking that team ownership requires."
+   "summary": "AI could improve both safety and productivity by anticipating problems before they arise, detecting worker fatigue, and automating dangerous tasks."
   },
   {
    "title": "India’s new insurance track: The marathon becomes an AI-led decathlon",
    "url": "https://www.mckinsey.com/industries/financial-services/our-insights/indias-new-insurance-track-the-marathon-becomes-an-ai-led-decathlon",
    "date": "2026-09-23",
    "summary": "As India’s economy continues to ramp up, insurers have an opportunity to capture value by improving productivity, modernizing operating models, and scaling technology and AI across the enterprise."
+  },
+  {
+   "title": "Author Talks: The business of owning a sports team",
+   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-the-business-of-owning-a-sports-team",
+   "date": "2026-09-23",
+   "summary": "How does business ownership compare with owning a sports team? Baltimore Orioles owner David M. Rubenstein explains the leadership mindset, culture building, and long-term thinking that team ownership requires."
   },
   {
    "title": "Rewiring procurement in resources: Making judgment an enduring asset",
@@ -236,16 +236,16 @@
    "summary": "AI is getting more expensive for companies. As rising token usage and workflow complexity make costs harder to predict, leaders need new ways to manage AI economics."
   },
   {
-   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
-   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
-   "date": "2026-09-21",
-   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
-  },
-  {
    "title": "AI drug discovery: Focusing on what matters most",
    "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/ai-drug-discovery-focusing-on-what-matters-most",
    "date": "2026-09-21",
    "summary": "AI is accelerating drug discovery, but investment has concentrated in molecule design—the stage with the best data and clearest tools. The industry’s real constraint lies elsewhere: identifying and validating the right disease mechanism."
+  },
+  {
+   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
+   "date": "2026-09-21",
+   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
   }
  ],
  "note": "",

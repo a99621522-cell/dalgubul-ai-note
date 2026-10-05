@@ -1,12 +1,11 @@
 {
  "file": "src/content/posts/2026-10-05-policy-automotive-tariff.md",
- "checked": "2026-10-04",
- "ok": 11,
+ "checked": "2026-10-05",
+ "ok": 12,
  "total": 13,
- "ratio": 0.85,
+ "ratio": 0.92,
  "official_bad": [
-  "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
-  "U.S. Federal Register 2026-15280, 「Procedures To Administer Import Adjustment Offset Amounts for Certain Imports of Automobile and Medium- and Heavy-Duty Vehicle Parts for Automobile and Medium- and Heavy-Duty Vehicle Engine Manufacturers」"
+  "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)"
  ],
  "pass": false,
  "sources": [
@@ -124,11 +123,11 @@
    "date": "2026-07-29",
    "kind": "law",
    "status": 200,
-   "page_title": "Federal Register :: Request Access",
-   "title_match": 0.09,
+   "page_title": "Federal Register :: Procedures To Administer Import Adjustment Offset Amounts for Certain Imports of Automobile and Medi",
+   "title_match": 1.0,
    "date_found": false,
-   "ok": false,
-   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "愛知県, 「愛知県米国関税対策本部 第4回会議」(米国の関税措置に対する愛知県の対策パッケージ)",

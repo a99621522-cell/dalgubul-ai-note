@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-06-policy-manufacturing-ax-sewing.md",
  "checked": "2026-10-05",
- "ok": 8,
+ "ok": 10,
  "total": 10,
- "ratio": 0.8,
+ "ratio": 1.0,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -96,24 +96,24 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
    "date": "2026-10-01",
    "kind": "data",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
    "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "국가데이터처, 「전국사업체조사 — 시도·산업·사업체구분별 사업체수·종사자수」 KOSIS DT_1K52D01(2020~2023년)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01",
    "date": "2026-09-28",
    "kind": "data",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
    "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·종사자 신고값)·지원 이력·사업 DB(사업명만)",

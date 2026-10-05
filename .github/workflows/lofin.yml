@@ -1,0 +1,35 @@
+name: 지방재정365 대구 세출 받기
+
+# scripts/fetch_lofin.py — 재정 데이터셋(성질별·기능별 세출결산, 구조별 기능별 세출예산)의 대구 행 → data/lofin/. 내부 계산용(사이트 미게시).
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/factorion-file-repair-tyqnlb]
+    paths: [scripts/fetch_lofin.py, .github/workflows/lofin.yml]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lofin
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - run: python scripts/fetch_lofin.py
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/lofin || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 지방재정365 대구 세출 $(date +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done

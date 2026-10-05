@@ -1,0 +1,131 @@
+---
+import { pathBench } from '../lib/grdp';
+/** 제조업 경로(/growth/, 운영자 지시 2026-10-05: 제조업은 별도로, 2%·3%·5% 등 여러 시나리오를 소수점 한 자리까지).
+ *  제조업 7개 업종만으로 제조업 실질 성장률 목표에 닿는 단계(감소 멈춤 → 전국 같은 업종 → 17개 시도 상위 3곳 평균 → 남은 차이)를 계산하고,
+ *  목표별 업종 필요 성장률·GRDP 기여 표와 업종별 정책 수단 예시를 보여 준다. 업종 성장률은 2024년 GRDP 비중으로 가중. 평가·권고가 아니다. */
+const B = pathBench();
+const rows = (B?.rows ?? []).filter(r => r.mfg);
+const TOOLS: Record<string, string[]> = {
+  '기계 운송장비 및 기타 제품 제조업': ['미래차(전기·자율주행) 부품으로 품목 전환', '로봇·자동화 장비', '수출 시장 다변화'],
+  '전기 전자 및 정밀기기 제조업': ['반도체·전력반도체 소재부품', '의료기기·센서', '시험·인증·실증'],
+  '석탄 및 석유 화학제품 제조업': ['2차전지 소재·특수화학', '친환경 소재'],
+  '비금속광물 및 금속제품 제조업': ['뿌리 공정(주조·금형·표면처리) 자동화', '경량·고기능 소재로 전환'],
+  '섬유 의복 및 가죽 제품 제조업': ['산업용·기능성 섬유로 전환', '공정 디지털화·소량 다품종'],
+  '목재종이인쇄 및 복제업': ['친환경 포장재'],
+  '음식료품 및 담배제조업': ['식품 가공 고부가화', '바이오·건강기능식품 연계'],
+};
+const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const mShare = rows.reduce((a, r) => a + r.share, 0);
+const mBase = rows.reduce((a, r) => a + r.share * r.g, 0) / (mShare || 1);
+const data = { rows, tools: TOOLS, mShare, mBase };
+---
+{rows.length > 0 && (
+<section id="mfgpath">
+  <div class="section-head"><h2>제조업 경로</h2><span class="meta">제조업 7개 업종 · GRDP 의 {f1(mShare)}%</span></div>
+  <p class="meta">제조업 실질 성장률 목표를 넣으면 7개 업종이 각각 몇 % 성장해야 하는지, 그때 GRDP 에 얼마를 보태는지 계산합니다. 출발점은 업종별 10년 연평균 성장률을 {B?.y1}년 비중으로 가중한 {f1(mBase)}%입니다(제조업 전체 실질 연평균은 업종 비중이 해마다 바뀌어 이보다 낮게 나옵니다). 제조업이 1% 더 성장하면 GRDP 는 약 {(mShare / 100).toFixed(2)}%p 늘어납니다.</p>
+  <label class="tp-target">제조업 목표 성장률 <input id="mft" type="number" step="0.1" value="3.0" inputmode="decimal" /> %</label>
+  <p id="mfsum" class="calc-sum" aria-live="polite"></p>
+  <ol class="tp-tree" id="mftree"></ol>
+
+  <h3 class="tp-h">제조업 목표별 업종 필요 성장률</h3>
+  <p class="meta">칸은 그 목표에서 업종의 필요 실질 성장률(%)입니다. 위 칸에 다른 목표를 넣으면 그 열이 더해지고 굵게 표시됩니다.</p>
+  <div class="scroll-x"><table class="data-table compact" id="mfmx" data-title="대구 제조업 목표별 업종 필요 성장률">
+    <thead></thead><tbody></tbody>
+  </table></div>
+
+  <h3 class="tp-h">업종별 — 목표 <span id="mft2">3.0</span>%에서</h3>
+  <div id="mfcards" class="mf-cards"></div>
+  <p class="meta">비교 기준: 전국 같은 업종 10년 성장률, 17개 시도 가운데 그 업종 10년 성장률이 높았던 세 곳의 평균(순위·평가가 아니라 다른 지역에서 실제 나온 성장률). 기여 = {B?.y1}년 명목 비중 × 성장률. 업종 사이 파급은 넣지 않았습니다. 정책 수단은 검토할 수 있는 예시입니다. 지표는 통계 › 제조업의 업종별 생산·출하·재고지수와 기업 사전 › 공시 기업의 시설투자 공시로 볼 수 있습니다.</p>
+  <script type="application/json" id="mf-data" set:html={JSON.stringify(data)} />
+</section>)}
+<script>
+  type R = { key: string; name: string; share: number; g: number; gn: number; t3: number };
+  const el = document.getElementById('mf-data');
+  if (el) {
+    const D = JSON.parse(el.textContent || '{}') as { rows: R[]; tools: Record<string, string[]>; mShare: number; mBase: number };
+    const fmt = (v: number, d = 1) => v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const sg = (v: number, d = 1) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
+    const STAGES: [string, string, (r: R, c: number) => number][] = [
+      ['감소 멈춤', '10년 성장이 마이너스인 업종(섬유·금속·목재종이)이 0%', (r, c) => Math.max(c, 0)],
+      ['전국 수준', '대구가 낮은 업종만 전국 같은 업종 10년 성장률로', (r, c) => Math.max(c, r.gn)],
+      ['상위 3개 시도 수준', '대구가 낮은 업종만 17개 시도 상위 세 곳 평균으로', (r, c) => Math.max(c, r.t3)],
+    ];
+    const mg = (cur: number[]) => D.rows.reduce((a, r, i) => a + r.share * cur[i], 0) / D.mShare;
+    const solve = (T: number) => {
+      let cur = D.rows.map(r => r.g), at = mg(cur) >= T ? 0 : -1, frac = 1, fin: number[] | null = at === 0 ? cur.slice() : null;
+      const steps: { add: number; cum: number; prev: number[]; next: number[] }[] = [];
+      STAGES.forEach(([, , f], k) => {
+        const prev = cur.slice(), next = D.rows.map((r, i) => f(r, prev[i]));
+        const before = mg(prev), after = mg(next);
+        steps.push({ add: after - before, cum: after, prev, next });
+        if (!fin && after >= T) { frac = after > before ? (T - before) / (after - before) : 1; fin = D.rows.map((_, i) => prev[i] + frac * (next[i] - prev[i])); at = k + 1; }
+        cur = next;
+      });
+      let rest = 0;
+      if (!fin) { rest = T - mg(cur); fin = cur.map(c => c + rest); }
+      return { fin, at, frac, rest, steps, last: mg(cur) };
+    };
+    const calc = () => {
+      const T = Math.round((Number((document.getElementById('mft') as HTMLInputElement).value) || 0) * 10) / 10;
+      const r = solve(T);
+      const tree = document.getElementById('mftree');
+      if (tree) tree.innerHTML = `<li class="tp-node tp-root"><div class="tp-dot"></div><div class="tp-body"><div class="tp-head"><strong>출발: 업종별 10년 추세</strong><span class="tp-cum">${fmt(D.mBase)}%</span></div></div></li>`
+        + r.steps.map((s, k) => {
+          const reach = r.at === k + 1, after = r.at >= 0 && k + 1 > r.at;
+          const rowsHtml = D.rows.map((x, i) => ({ x, p: s.prev[i], n: s.next[i] })).filter(o => Math.abs(o.n - o.p) > 0.001).map(o => `${o.x.name} ${fmt(o.p)}→${fmt(o.n)}%`).join(' · ') || '바뀌는 업종 없음';
+          return `<li class="tp-node${reach ? ' reach' : ''}${after ? ' after' : ''}"><div class="tp-dot"></div><div class="tp-body"><div class="tp-head"><strong>${k + 1}단계 · ${STAGES[k][0]}</strong><span class="tp-add">제조업 ${sg(s.add)}%p</span><span class="tp-cum">${fmt(s.cum)}%</span></div><div class="meta">${STAGES[k][1]}</div>${reach ? `<div class="tp-flag">여기서 제조업 목표 ${fmt(T)}%에 닿음 — 이 단계의 ${fmt(r.frac * 100, 0)}%만큼</div>` : ''}<div class="tiny muted">${rowsHtml}</div></div></li>`;
+        }).join('')
+        + `<li class="tp-node${r.rest <= 0.05 ? ' after' : ''}"><div class="tp-dot"></div><div class="tp-body"><div class="tp-head"><strong>남은 차이</strong><span class="tp-cum">${r.rest > 0.05 ? sg(r.rest) + '%p' : '없음'}</span></div><div class="meta">${r.rest > 0.05 ? `7개 업종이 상위 3개 시도 수준에 더해 해마다 ${fmt(r.rest)}%p씩 더 성장해야 ${fmt(T)}%가 됩니다.` : '위 단계 안에서 닿습니다.'}</div></div></li>`;
+      const gAdd = D.rows.reduce((a, x, i) => a + x.share * (r.fin[i] - x.g) / 100, 0);
+      const s = document.getElementById('mfsum');
+      if (s) s.textContent = `제조업 ${fmt(T)}% 성장 → 제조업 GRDP 기여 ${fmt(D.mShare * T / 100)}%p, 추세보다 ${sg(gAdd)}%p. ` + (r.at === 0 ? '업종별 추세 안입니다.' : r.at > 0 ? `${r.at}단계에서 닿습니다.` : `3단계를 모두 거쳐도 ${fmt(r.last)}%라 ${fmt(r.rest)}%p가 남습니다.`);
+      const t2 = document.getElementById('mft2'); if (t2) t2.textContent = fmt(T);
+      // 목표별 표(열 = 목표)
+      const ts = [1.0, 2.0, 3.0, 4.0, 5.0];
+      if (!ts.some(x => Math.abs(x - T) < 0.05)) { ts.push(T); ts.sort((a, b) => a - b); }
+      const sols = ts.map(t => ({ t, r: solve(t) }));
+      const cls = (t: number) => Math.abs(t - T) < 0.05 ? ' class="n tp-curc"' : ' class="n"';
+      const th = document.querySelector('#mfmx thead'), tb = document.querySelector('#mfmx tbody');
+      if (th) th.innerHTML = `<tr><th>업종 <span class="tiny">(비중 · 10년)</span></th>${sols.map(o => `<th${cls(o.t)}>${fmt(o.t)}%</th>`).join('')}</tr>`;
+      if (tb) tb.innerHTML = D.rows.map((x, i) => `<tr><th scope="row">${x.name}<div class="tiny muted">${fmt(x.share)}% · ${fmt(x.g)}%</div></th>${sols.map(o => `<td${cls(o.t)}>${fmt(o.r.fin[i])}</td>`).join('')}</tr>`).join('')
+        + `<tr class="mf-sum"><th scope="row">닿는 단계</th>${sols.map(o => `<td${cls(o.t)}>${o.r.at === 0 ? '추세' : o.r.at > 0 ? `${o.r.at}단계` : `3단계+${fmt(o.r.rest)}%p`}</td>`).join('')}</tr>`
+        + `<tr class="mf-sum"><th scope="row">GRDP 기여(%p)</th>${sols.map(o => `<td${cls(o.t)}>${fmt(D.mShare * o.t / 100)}</td>`).join('')}</tr>`
+        + `<tr class="mf-sum"><th scope="row">추세 대비 GRDP(%p)</th>${sols.map(o => `<td${cls(o.t)}>${sg(D.rows.reduce((a, x, i) => a + x.share * (o.r.fin[i] - x.g) / 100, 0))}</td>`).join('')}</tr>`;
+      const cards = document.getElementById('mfcards');
+      if (cards) cards.innerHTML = D.rows.map((x, i) => ({ x, need: r.fin[i], add: x.share * (r.fin[i] - x.g) / 100 })).sort((a, b) => b.add - a.add).map(o =>
+        `<div class="mf-card"><div class="tp-fh"><strong>${o.x.name}</strong><span>${sg(o.add)}%p</span></div>
+         <div class="meta">비중 ${fmt(o.x.share)}% · 성장 ${fmt(o.x.g)}% → <strong>${fmt(o.need)}%</strong> <span class="tiny">(전국 ${fmt(o.x.gn)} · 상위3 ${fmt(o.x.t3)})</span></div>
+         <ul class="meta">${(D.tools[o.x.key] ?? []).map(t => `<li>${t}</li>`).join('')}</ul></div>`).join('');
+    };
+    document.getElementById('mft')?.addEventListener('input', calc);
+    calc();
+  }
+</script>
+<style>
+  .tp-target input { width: 4.5em; padding: 4px 6px; text-align: right; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); color: var(--ink); }
+  #mftree { list-style: none; margin: var(--s2) 0; padding: 0; }
+  #mftree :global(.tp-node) { position: relative; display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding-bottom: 12px; }
+  #mftree :global(.tp-node::before) { content: ''; position: absolute; left: 10px; top: 16px; bottom: -2px; width: 2px; background: var(--line-strong); }
+  #mftree :global(.tp-node:last-child::before) { display: none; }
+  #mftree :global(.tp-dot) { width: 14px; height: 14px; margin: 4px 0 0 4px; border-radius: 50%; background: var(--bg); border: 3px solid var(--primary); position: relative; z-index: 1; }
+  #mftree :global(.tp-root .tp-dot) { background: var(--primary); }
+  #mftree :global(.reach .tp-dot) { background: var(--chart-2); border-color: var(--chart-2); }
+  #mftree :global(.after) { opacity: 0.5; }
+  #mftree :global(.tp-body) { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; background: var(--bg); }
+  #mftree :global(.reach .tp-body) { border-color: var(--chart-2); box-shadow: 0 0 0 1px var(--chart-2); }
+  #mftree :global(.tp-head) { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+  #mftree :global(.tp-head strong) { flex: 1 1 12em; }
+  #mftree :global(.tp-add) { font-variant-numeric: tabular-nums; color: var(--muted); }
+  #mftree :global(.tp-cum) { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--primary); font-size: 1.1rem; }
+  #mftree :global(.tp-flag) { font-weight: 600; font-size: var(--small); }
+  .tp-h { font-size: 1.05rem; margin: var(--s3) 0 6px; }
+  #mfmx { min-width: 520px; }
+  #mfmx :global(tbody th) { font-weight: 500; min-width: 9em; }
+  #mfmx :global(.tp-curc) { background: var(--surface); font-weight: 700; }
+  #mfmx :global(tr.mf-sum th), #mfmx :global(tr.mf-sum td) { border-top: 1px solid var(--line-strong); font-size: var(--small); }
+  .mf-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin: 8px 0 var(--s2); }
+  .mf-cards :global(.mf-card) { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; }
+  .mf-cards :global(.tp-fh) { display: flex; justify-content: space-between; gap: 8px; }
+  .mf-cards :global(.tp-fh span) { font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .mf-cards :global(ul) { margin: 4px 0 0; padding-left: 1.2em; }
+</style>

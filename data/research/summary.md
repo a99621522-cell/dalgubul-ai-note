@@ -4,7 +4,7 @@
 
 | 구분 | 기관 | 상태 | 방법 | 건수 | 최신 항목 |
 |---|---|---|---|---|---|
-| 국내 연구 | [IBK기업은행 경제연구소](https://research.ibk.co.kr) | OK | 목록 페이지(날짜 없음, 목록 순서) | 10 |  [2025년 중소기업 지원정책 수요조사](https://research.ibk.co.kr/research/board/corporate/details/251943?url=L2JvYXJkL2NvcnBvcmF0ZS9saXN0) |
+| 국내 연구 | [IBK기업은행 경제연구소](https://research.ibk.co.kr) | OK | 목록 페이지(날짜 없음, 목록 순서) | 10 |  [PDF 미리보기](https://research.ibk.co.kr/research/board/ceo/details/252088?url=L2JvYXJkL2Nlby9saXN0) |
 | 국내 연구 | [KDB 미래전략연구소](https://rd.kdb.co.kr) | OK | 목록 페이지 | 4 | 2026-09-21 [KDB리포트(2026.9.21)](https://rd.kdb.co.kr/fileView?groupId=AB4D7578-657A-E2E5-9650-1F0666DE9358&fileId=24DB0356-3E76-E4E2-0F82-9C4AE94BCC5E) |
 | 국내 연구 | [KDI 경제정보센터(정책자료)](https://eiec.kdi.re.kr) | OK | 목록 페이지 | 24 | 2026-10-02 [제14회 한-OECD 국제재정포럼 및 OECD 수석 이코노미스트 양자면담](https://eiec.kdi.re.kr/policy/materialView.do?num=287750&pg=&pp=&device=&search_txt=&topic=&type=&depth1=&depth2=) |
 | 국내 연구 | [KOTRA 해외시장뉴스](https://dream.kotra.or.kr) | 차단 | robots.txt 차단 | 0 | — |
@@ -35,16 +35,16 @@
 | 기업지원기관 | [한국지능정보사회진흥원(NIA)](https://www.nia.or.kr) | 최근 없음 | 최신 항목 2026-07-13 (최근 70일 밖) | 0 | — |
 | 대구 기관 | [대구경북첨단의료산업진흥재단(케이메디허브)](https://www.kmedihub.re.kr) | OK | 첫 화면 | 7 | 2026-09-28 [9월 16일 명사초청강연-김영희 코미디언(말자할매) 등록일 : 2026.](https://www.kmedihub.re.kr/index.do?menu_id=00000058&menu_link=/icms/bbs/selectBoardArticle.do&bbsId=BBS_00031&nttId=16420&bbsTyCode=BBST07&bbsAttrbCode=BBSA03) |
 | 대구 기관 | [대구광역시 북구 보도자료(공공데이터포털)](https://www.buk.daegu.kr) | OK | 공공데이터포털 15149016 | 40 | 2026-08-14 [대백인터빌 전체에 물결친 애국심, 광복의 감동을 재현하다]() |
-| 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | 접속 실패 |  | 0 | — |
+| 대구 기관 | [대구광역시 주요뉴스(시청 첫 화면)](https://www.daegu.go.kr) | OK | 목록 페이지 | 5 | 2026-09-30 [가을엔 걷자! 대구시, 10~11월 ‘걷기 좋은 달’ 운영 2026.09](https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=1&aid=279066) |
 | 대구 기관 | [대구기계부품연구원(DMI)](https://www.dmi.re.kr) | 접속 실패 |  | 0 | — |
 | 대구 기관 | [대구산업경제동향 온라인 시스템(대구광역시)](https://distat.daegu.go.kr) | OK | 목록 페이지 | 15 | 2026-09-30 [낡은 규제 허물고 없는 법도 만들어 혁신한 대구, 메가특구 잡는다](https://distat.daegu.go.kr/site/bbs/BoardControll.do?bbsId=BBSMSTR_000000000011#낡은-규제-허물고-없는-법도-만들어-혁신한-대구-메가특구-잡는다) |
 | 대구 기관 | [대구테크노파크](https://www.ttp.org) | 접속 실패 |  | 0 | — |
 | 분야 기관 | [국가뿌리산업진흥센터(KPIC)](https://www.kpic.re.kr) | 차단 | robots.txt 차단 | 0 | — |
 | 분야 기관 | [다이텍연구원(DYETEC)](https://www.dyetec.or.kr) | 차단 | robots.txt 차단 | 0 | — |
 | 분야 기관 | [소프트웨어정책연구소(SPRi) 이슈리포트](https://spri.kr) | OK | 목록 페이지 | 5 | 2026-09-10 [기업가형 AI 인재 육성 전략 연구](https://spri.kr/posts/view/24021?code=research&study_type=&board_type=research&flg=0) |
-| 분야 기관 | [한국AI·로봇산업협회(KRIA)](https://www.korearobot.or.kr) | OK | 목록 페이지(행) | 10 | 2026-10-02 [자동차 부품 기업의 로봇 산업 진출 전략과 성공 사례 세미나(10/22,](https://www.korearobot.or.kr/information/notice.htm#자동차-부품-기업의-로봇-산업-진출-전략과-성공-사례-세미나-10-22-) |
+| 분야 기관 | [한국AI·로봇산업협회(KRIA)](https://www.korearobot.or.kr) | 항목 없음 |  | 0 | — |
 | 분야 기관 | [한국기계연구원(KIMM) 기계기술정책](https://www.kimm.re.kr) | OK | 목록 페이지 | 10 | 2026-10-02 [행사 2026-10-02 기계연, 초등학생 대상 과학문화 확산 프로그램 ](https://www.kimm.re.kr/sub0504/view/id/21468) |
-| 분야 기관 | [한국바이오협회 이슈브리핑](https://koreabio.org) | OK | 목록 페이지 | 12 | 2026-10-04 [Facebook](https://www.facebook.com/koreabio.org) |
+| 분야 기관 | [한국바이오협회 이슈브리핑](https://koreabio.org) | OK | 목록 페이지 | 12 | 2026-10-05 [Facebook](https://www.facebook.com/koreabio.org) |
 | 분야 기관 | [한국반도체산업협회(KSIA)](https://www.ksia.or.kr) | 접속 실패 |  | 0 | — |
 | 분야 기관 | [한국생산기술연구원(KITECH)](https://www.kitech.re.kr) | OK | 첫 화면 | 4 | 2026-10-02 [2026년 제33차 직원 (육아휴직대체) 공개채용](https://recruit.kitech.re.kr/announcement/detail/125) |
 | 분야 기관 | [한국섬유개발연구원(KTDI)](https://www.textile.or.kr) | OK | 첫 화면 | 17 | 2026-10-01 [「휴머노이드 로봇용 스마트 스킨 복합소재 기술개발사업」 수요조사(기간연장](https://www.textile.or.kr/contents/bbs/selectBbsView.do?menuId=33&bbsinfo_tcd=1&selectedId=56085) |
@@ -56,7 +56,7 @@
 | 분야 기관 | [한국탄소산업진흥원](https://www.kcarbon.or.kr) | OK | 목록 페이지 | 3 | 2026-09-09 [[보도자료] 한국탄소산업진흥원, 중국 최대 복합소재 전시회 CCE2026](https://www.kcarbon.or.kr/bbs/board.php?bo_id=press&wr_id=5085) |
 | 정부 | [과학기술정보통신부 보도자료](https://www.msit.go.kr) | OK | rss(/user/rss/rss.do?bbsSeqNo=94) | 40 | 2026-10-02 [국산 인공지능 반도체 성능지표 &#039;K-Perf&#039;,  공공](https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187843) |
 | 정부 | [산업통상부 보도자료](https://www.motie.go.kr) | OK | 목록 페이지 | 10 | 2026-10-02 [(참고자료)한국, 국제표준화기구(ISO) 이사국 연임 성공](https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/172263/view?mno=&pageIndex=1) |
-| 정부 | [정책브리핑(korea.kr) 정책뉴스](https://www.korea.kr) | OK | 목록 페이지 | 15 | 2026-10-04 [기획예산처 [보도설명] 정부는 국회와 법률의 통제 하에서 미래대응기금을 ](https://www.korea.kr/briefing/actuallyView.do?newsId=148972995&pWise=main&pWiseMain=B1) |
+| 정부 | [정책브리핑(korea.kr) 정책뉴스](https://www.korea.kr) | OK | 목록 페이지 | 15 | 2026-10-05 [고용노동부 (설명) 한국경제, "인건비 공포에…자영업자 60% "감원하거](https://www.korea.kr/briefing/actuallyView.do?newsId=148972998&pWise=main&pWiseMain=B1) |
 | 정부 | [중소벤처기업부 보도자료](https://www.mss.go.kr) | OK | 목록 페이지 | 6 | 2026-10-02 [글로벌 시장에서 K-브랜드 보호를 위한 중기부-지재처 협업 체계 가동 담](https://www.mss.go.kr/site/smba/ex/bbs/List.do?cbIdx=86#글로벌-시장에서-K-브랜드-보호를-위한-중기부-지재처-협업-체계-가동-담) |
 | 해외 정부 | [EU 집행위 Press corner](https://ec.europa.eu) | OK | rss(/commission/presscorner/api/rss?language) | 10 | 2026-10-02 [Statement by Commissioner Lahbib on the ](https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2063) |
 | 해외 정부 | [中 공업정보화부(MIIT)](https://www.miit.gov.cn) | OK | 목록 페이지 | 24 | 2026-09-30 [工业和信息化部举行升国旗仪式 庆祝中华人民共和国成立77周年](https://www.miit.gov.cn/xwfb/bldhd/art/2026/art_c37cffd9af9a4b3aa6379d153ed83620.html) |

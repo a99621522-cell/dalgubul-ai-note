@@ -3,7 +3,7 @@
  "name": "EU 집행위 Press corner",
  "group": "해외 정부",
  "home": "https://ec.europa.eu",
- "fetched": "2026-10-04",
+ "fetched": "2026-10-05",
  "status": "OK",
  "method": "rss(/commission/presscorner/api/rss?language)",
  "items": [

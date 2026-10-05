@@ -12,8 +12,8 @@
   "title": "한국보건산업진흥원 연도별 지역별 외국인환자 유치의료기관 현황",
   "file": "연도별 지역별 외국인환자 유치의료기관 현황.CSV",
   "rows_all": 17,
-  "rows_kept": 1,
-  "mode": "대구·합계 행",
+  "rows_kept": 17,
+  "mode": "전체",
   "fetched": "2026-10-05",
   "source_url": "https://www.data.go.kr/data/15125603/fileData.do"
  }

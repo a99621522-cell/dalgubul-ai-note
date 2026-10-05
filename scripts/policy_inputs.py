@@ -68,7 +68,8 @@ def main(argv: list[str]) -> int:
             head = rows[0]
             keep_cols = [i for i, h in enumerate(head) if not any(x in h for x in DROP)]
             dg = [r for r in rows[1:] if any("대구" in c for c in r) or any(c.strip() in TOTAL for c in r[:3])]
-            body = dg if any(any("대구" in c for c in r) for r in dg) else (rows[1:] if len(rows) <= 3001 else [])
+            small = len(rows) <= 201   # 시도별 표처럼 작은 표는 전국 비교를 위해 통째로
+            body = rows[1:] if small else (dg if any(any("대구" in c for c in r) for r in dg) else (rows[1:] if len(rows) <= 3001 else []))
             out = OUT / f"{pk}.csv"
             with open(out, "w", encoding="utf-8", newline="") as fo:
                 w = csv.writer(fo)
@@ -76,7 +77,7 @@ def main(argv: list[str]) -> int:
                 for r in body:
                     w.writerow([r[i] if i < len(r) else "" for i in keep_cols])
             index[pk] = {"title": title, "file": f.name, "rows_all": len(rows) - 1, "rows_kept": len(body),
-                         "mode": "대구·합계 행" if body is dg else "전체", "fetched": date.today().isoformat(),
+                         "mode": "전체" if body is not dg else "대구·합계 행", "fetched": date.today().isoformat(),
                          "source_url": f"https://www.data.go.kr/data/{pk}/fileData.do"}
             print(f"[policy_inputs] {pk} {f.name}: {len(rows) - 1}행 → {len(body)}행 ({index[pk]['mode']})")
             print("   머리: " + " | ".join(head[i] for i in keep_cols)[:400])

@@ -32,7 +32,7 @@ GEMINI_MODEL = (os.environ.get("GEMINI_MODEL", "") or "gemini-3.5-flash-lite").s
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 
 BANNED = ["획기적", "혁신적", "대폭", "부족하다", "미흡", "실패", "잘못", "바람직", "정부 건의", "시급", "반드시 해야"]
-NUM = r"-?\d[\d,]*(?:\.\d+)?"
+NUM = r"-?\d(?:[\d,]*\d)?(?:\.\d+)?"
 
 
 def nums(s: str) -> set[str]:
@@ -49,11 +49,30 @@ def _f(x: str) -> float:
     return float(x.replace(",", ""))
 
 
-def calc_checks(text: str) -> tuple[set[str], list[str]]:
-    """'a × b ÷ c = d' 꼴을 다시 계산한다. 맞는 식의 결과 d 는 허용 숫자, 어긋나면 목록."""
+def assumptions(text: str) -> set[str]:
+    """대안 표의 '겨냥 성장' 칸 값 — 모델이 고른 가정이라 [자료]에 없어도 피연산자로 허용한다."""
+    out, col = set(), None
+    for line in text.splitlines():
+        if not line.strip().startswith("|"):
+            col = None if not line.strip() else col
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if any("겨냥" in c for c in cells):
+            col = next(i for i, c in enumerate(cells) if "겨냥" in c)
+            continue
+        if col is not None and col < len(cells):
+            out |= nums(cells[col])
+    return out
+
+
+EXPR = re.compile(rf"((?:{NUM}\s*(?:%p|%|조 원|억 원|조|억)?\s*[×÷*/+\-−]\s*)+{NUM})\s*(?:%p|%|조 원|억 원|조|억)?\s*[=≈]\s*\+?({NUM})")
+
+
+def calc_checks(text: str, base: set[str] | None = None) -> tuple[set[str], list[str]]:
+    """'a × b ÷ c = d' 꼴을 앞에서부터 다시 계산한다. 맞는 식의 결과 d 는 허용 숫자가 되고, 어긋나면 목록.
+    base(허용 숫자)를 주면 피연산자가 그 안에 없는 식도 '근거 없는 값으로 계산'으로 적는다(식은 맞아도 출발 값이 지어낸 것)."""
     ok, bad = set(), []
-    pat = re.compile(rf"((?:{NUM}\s*(?:%p|%|조 원|억 원|조|억)?\s*[×÷*/+\-−]\s*)+{NUM})\s*(?:%p|%|조 원|억 원|조|억)?\s*[=≈]\s*\+?({NUM})")
-    for m in pat.finditer(text):
+    for m in EXPR.finditer(text):
         expr, res = m.group(1), m.group(2)
         e = re.sub(r"%p|%|조 원|억 원|조|억", "", expr).replace("×", "*").replace("÷", "/").replace("−", "-").replace(",", "")
         if not re.fullmatch(r"[\d.\s*/+\-()]+", e):
@@ -63,16 +82,24 @@ def calc_checks(text: str) -> tuple[set[str], list[str]]:
         except Exception:  # noqa: BLE001
             continue
         r = _f(res)
-        ok.add(res.replace(",", "").lstrip("-"))
+        if base is not None:
+            ops = [o.replace(",", "").lstrip("-") for o in re.findall(NUM, expr)]
+            miss = [o for o in ops if o not in base | ok and o.rstrip("0").rstrip(".") not in base | ok and o not in ("100",)]
+            if miss:
+                bad.append(f"{expr.strip()} = {res} (근거 없는 값 {', '.join(miss)})")
+                continue
         # 결과는 단위가 바뀌어 적히기도 한다(비중 % × 성장 %p ÷ 100). 그대로·×100·÷100 가운데 하나가 맞으면 통과
         if not any(abs(c - r) <= max(0.05 * abs(r), 0.011) for c in (v, v * 100, v / 100)):
             bad.append(f"{expr.strip()} = {res} (다시 계산 {v:,.4g})")
+            continue
+        w = res.replace(",", "").lstrip("-")
+        ok |= {w, w.rstrip("0").rstrip(".") if "." in w else w}
     return ok, bad
 
 
 def number_check(answer: str, prompt: str) -> list[str]:
-    allowed = nums(prompt)
-    ok, _ = calc_checks(answer)
+    allowed = nums(prompt) | assumptions(answer)
+    ok, _ = calc_checks(answer, allowed)
     allowed |= ok
     out = []
     for m in re.findall(NUM, answer):
@@ -106,16 +133,18 @@ def run(area: str) -> int:
     if not answer:
         print(f"[levers] {area}: 답 없음")
         return 0
+    base = lambda a: nums(prompt) | assumptions(a)
     bad = number_check(answer, prompt)
-    if len(bad) > 5:
-        print(f"[levers] {area}: [자료]에 없는 숫자 {len(bad)}개 → 다시 쓰게 함: {bad[:15]}")
-        again = gemini(prompt + "\n\n---\n앞선 답에 [자료]에도 계산식 결과에도 없는 숫자가 있었다: " + ", ".join(bad[:30])
-                       + ".\n이 숫자를 빼거나 [자료] 값으로 계산식을 적어 다시 써라. 값이 없으면 '조사 뒤 정함'.")
+    calc_bad = calc_checks(answer, base(answer))[1]
+    if len(bad) > 3 or calc_bad:
+        print(f"[levers] {area}: 확인할 숫자 {len(bad)}개·식 {len(calc_bad)}개 → 다시 쓰게 함: {bad[:15]} {calc_bad[:5]}")
+        again = gemini(prompt + "\n\n---\n앞선 답의 문제:\n- [자료]에도 계산식 결과에도 없는 숫자: " + (", ".join(bad[:30]) or "없음")
+                       + "\n- 틀리거나 근거 없는 값으로 계산한 식: " + ("; ".join(calc_bad[:10]) or "없음")
+                       + "\n이 숫자를 빼거나 [자료] 값에서 출발하는 계산식으로 다시 써라. 합계는 표의 값을 그대로 더한 식으로. 값이 없으면 '조사 뒤 정함'.")
         if again:
-            bad2 = number_check(again, prompt)
-            if len(bad2) <= len(bad):
-                answer, bad = again, bad2
-    _, calc_bad = calc_checks(answer)
+            bad2, calc2 = number_check(again, prompt), calc_checks(again, base(again))[1]
+            if len(bad2) + 3 * len(calc2) <= len(bad) + 3 * len(calc_bad):
+                answer, bad, calc_bad = again, bad2, calc2
     banned = [w for w in BANNED if w in answer]
     head = [f"<!-- scripts/policy_lever_run.py 가 만든 초안. 사이트에 싣지 않는다. 사람 검토 전 -->",
             f"# {'서비스업' if area == 'service' else '제조업'} 성장 정책 대안 — Gemini 초안({date.today().isoformat()})", "",
@@ -123,7 +152,7 @@ def run(area: str) -> int:
             "- 상태: **초안(검토 전)**. 숫자·계산·표현은 아래 자동 검사와 사람 검토를 거쳐 쓴다.", "",
             "## 자동 검사", "",
             f"- [자료]·계산식에 없는 숫자({len(bad)}개): {', '.join(bad) if bad else '없음'}",
-            f"- 다시 계산해 어긋난 식({len(calc_bad)}개): {'; '.join(calc_bad) if calc_bad else '없음'}",
+            f"- 어긋나거나 근거 없는 값으로 계산한 식({len(calc_bad)}개): {'; '.join(calc_bad) if calc_bad else '없음'}",
             f"- 금지·주의 표현: {', '.join(banned) if banned else '없음'}", "", "---", ""]
     out = ROOT / "docs/drafts" / f"policy-levers-{area}.md"
     out.parent.mkdir(parents=True, exist_ok=True)

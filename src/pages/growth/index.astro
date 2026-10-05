@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import GrowthCommentary from '../../components/GrowthCommentary.astro';
 import GrowthStructure from '../../components/GrowthStructure.astro';
 import GrdpCalculator from '../../components/GrdpCalculator.astro';
-import GrowthQuick from '../../components/GrowthQuick.astro';
+import GrowthPolicy from '../../components/GrowthPolicy.astro';
 /** /growth/ — 성장 계산기(메뉴, 운영자 지시 2026-10-05). 위: 산업구조와 성장 계산기(산업구조지수 리포트와 같은 정의, 한 화면).
  *  아래: 목표 계산기(생산 측·지출 측, 예산·사업 규모). 모두 공표 통계와 가정에 따른 계산이며 전망·평가가 아니다. 대구시 예산액은 싣지 않는다. */
 ---
@@ -12,6 +12,6 @@ import GrowthQuick from '../../components/GrowthQuick.astro';
   <p class="lede">업종별 성장률을 바꾸면 대구 경제성장률과 산업구조 지표(고부가 3부문 비중·산업집중도)가 한 화면에서 함께 바뀝니다. 기간·부문·지표 정의는 산업구조지수 리포트와 같습니다. 가정에 따른 계산이지 전망이나 평가가 아닙니다.</p>
   <GrowthCommentary />
   <GrowthStructure />
-  <GrowthQuick />
+  <GrowthPolicy />
   <GrdpCalculator />
 </Base>

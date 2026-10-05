@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, countBy } from '../../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd } from '../../lib/dart';
 /** /companies/dart/ — 대구 본사 공시 기업 재무(운영자 지시 2026-10-05: DART 에서 대구 본사 기업의 최근 3년 경영 정보).
  *  scripts/collect_dart_fin.py 가 사업보고서를 낸 회사 중 기업개황 본사 주소가 대구인 곳의 주요계정을 받는다.
  *  값은 공시 그대로(원 → 억 원 나눗셈만), 가나다순, 평가·순위·비율 계산 없음. */
@@ -11,6 +11,9 @@ const byCls = countBy(corps, c => c.cls).sort((a, b) => CLS_ORDER.indexOf(a[0]) 
 const byGroup = countBy(corps, c => c.group).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
 const byDist = countBy(corps, c => c.district).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
 const groups = byGroup.map(g => g[0]);
+const fut = futureDisclosures();
+const futFields = countBy(fut.flatMap(d => d.fields.split('·').filter(Boolean)), x => x).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+const coId = new Map(corps.map(c => [c.code, c.companyId]));
 const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
 ---
 <Base title="대구 본사 공시 기업 재무" description={`DART 사업보고서를 낸 대구 본사 기업 ${corps.length}곳의 최근 3개 사업연도 매출액·영업이익·당기순이익과 자산·부채·자본(공시 값 그대로).`} current="companies">
@@ -48,6 +51,19 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   </table></div>
   <p class="meta">— 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다. 회사 이름이 기업 사전(공장등록)과 같으면 기업 페이지로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
 
+  {fut.length > 0 && (
+  <section id="future">
+    <div class="section-head"><h2>미래 산업 관련 공시</h2><span class="meta">최근 12개월 · {fut.length}건</span></div>
+    <p class="meta">위 회사들의 시설투자·공급계약·지분 취득·특허·주요경영사항 공시 가운데, 공시 원문에 미래 산업 낱말(반도체·2차전지·전기차·자율주행·로봇·인공지능·수소·바이오·방산 등)이 나온 것입니다. 분야는 원문에 나온 낱말로 붙인 것이라 그 사업의 주력이라는 뜻은 아닙니다. 근거 구절은 원문에서 낱말이 처음 나온 곳입니다.</p>
+    <p class="meta">분야별: {futFields.map(([k, n], i) => <>{i ? ' · ' : ''}{k} {n}건</>)}</p>
+    <div class="scroll-x"><table class="data-table" data-title="대구 본사 기업 미래 산업 관련 공시">
+      <thead><tr><th>접수일</th><th>회사</th><th>공시</th><th>분야</th><th>근거 구절</th></tr></thead>
+      <tbody>{fut.map(d => { const id = coId.get(d.corp_code); return (
+        <tr><td class="nw">{ymd(d.rcept_dt)}</td><td>{id ? <a href={`/companies/${id}/`}>{d.name}</a> : d.name}</td>
+          <td><a href={d.url} rel="noopener">{d.report_nm}</a></td><td>{d.fields}</td><td class="ex">{d.excerpt}</td></tr>); })}</tbody>
+    </table></div>
+  </section>)}
+
   <section>
     <div class="section-head"><h2>분포</h2></div>
     <div class="two">
@@ -62,7 +78,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
     </div>
   </section>
   </>)}
-  <p class="meta">출처: 금융감독원 전자공시시스템(DART) OpenDART — 공시검색(사업보고서 제출 회사), 기업개황(본사 주소·업종 코드·상장 구분), 단일회사 주요계정(사업보고서). 사업보고서를 내지 않는 비상장 기업은 들어 있지 않습니다. 대표자 등 개인 정보는 받지 않습니다.</p>
+  <p class="meta">출처: 금융감독원 전자공시시스템(DART) OpenDART — 공시검색(사업보고서 제출 회사, 확장 공시), 공시서류원본(미래 산업 낱말 확인), 기업개황(본사 주소·업종 코드·상장 구분), 단일회사 주요계정(사업보고서). 사업보고서를 내지 않는 비상장 기업은 들어 있지 않습니다. 대표자 등 개인 정보는 받지 않습니다.</p>
 </Base>
 <script>
   const q = document.getElementById('q') as HTMLInputElement | null;
@@ -89,5 +105,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   .tools input, .tools select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
   .tools input { flex: 1 1 200px; }
   th.c { text-align: center; }
+  td.nw { white-space: nowrap; }
+  td.ex { font-size: var(--small); color: var(--muted); min-width: 16em; }
   .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3); }
 </style>

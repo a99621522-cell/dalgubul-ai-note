@@ -27,7 +27,7 @@ API = "https://opendart.fss.or.kr/api"
 UA = {"User-Agent": "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"}
 KEY = os.environ.get("DART_KEY", "").strip()
 COLS = ["corp_code", "name", "year", "employees", "regular", "contract", "male", "female", "avg_tenure", "salary_total", "avg_salary",
-        "avg_method", "rows", "rcept_no", "source_url", "as_of"]
+        "avg_salary_reported", "avg_method", "unit_note", "rows", "rcept_no", "source_url", "as_of"]
 
 
 def num(s) -> float | None:
@@ -78,6 +78,9 @@ def is_total(x: dict) -> bool:
 def summarize(code: str, name: str, y: int, lst: list[dict]) -> dict | None:
     if not lst:
         return None
+    for x in lst:   # 합계(sm)가 비어 있으면 정규직 + 기간제
+        if num(x.get("sm")) is None and (num(x.get("rgllbr_co")) is not None or num(x.get("cnttk_co")) is not None):
+            x["sm"] = str((num(x.get("rgllbr_co")) or 0) + (num(x.get("cnttk_co")) or 0))
     tot = [x for x in lst if is_total(x)]
     parts = [x for x in lst if not is_total(x)]
     rec = {"corp_code": code, "name": name, "year": y, "rows": len(lst), "rcept_no": lst[0].get("rcept_no", ""), "as_of": date.today().isoformat()}
@@ -101,7 +104,17 @@ def summarize(code: str, name: str, y: int, lst: list[dict]) -> dict | None:
         wt = sum(a for a, _, c in w if c is not None)
         rec["avg_tenure"] = sum(a * c for a, _, c in w if c is not None) / wt if wt else None
         rec["avg_method"] = "가중"
-    for k in ("avg_salary", "avg_tenure"):
+    # 1인 평균 급여: 공시 행 값은 회사마다 단위(원·천원)·기준(월·연)이 섞여 있어 연간 급여 총액 ÷ 직원 수를 쓴다(공시 행 값은 avg_salary_reported 로 남김).
+    # 총액 ÷ 직원 수가 100만 원 아래면 총액이 천원 단위로 공시된 것으로 보고 ×1,000 (unit_note 에 적음)
+    rec["avg_salary_reported"], rec["unit_note"] = rec.get("avg_salary"), ""
+    if rec.get("salary_total") and rec.get("employees"):
+        per = rec["salary_total"] / rec["employees"]
+        if per < 1_000_000:
+            rec["salary_total"] *= 1000
+            per *= 1000
+            rec["unit_note"] = "총액 천원 단위로 공시 → 원으로 바꿈"
+        rec["avg_salary"], rec["avg_method"] = per, "총액÷직원 수"
+    for k in ("avg_salary", "avg_salary_reported", "avg_tenure"):
         if isinstance(rec.get(k), float):
             rec[k] = round(rec[k], 2)
     for k in ("employees", "regular", "contract", "male", "female", "salary_total"):

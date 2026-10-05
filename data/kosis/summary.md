@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-03 · 표 26개 · 설정 config/kosis_tables.yml
+갱신 2026-10-05 · 표 27개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -8,6 +8,7 @@
 | employed-industry-sido | [시도/산업별 취업자](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3B05S) | H 201401~202602 | 202401 | 42895 | 천명 |
 | export-region-index | [지역별 수출지표 현황](https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N015) | Y 2014~2026 | 2025 | 459 | % |
 | export-region | [지역별 수출현황](https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N007) | Y 2014~2026 | 2025 | 1700 | 개 |
+| grdp-sido-expenditure | [시도별 지역내총생산에 대한 지출](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C93) | Y 2014~2026 | 2024 | 1830 | 백만원 %p |
 | grdp-sido-industry-all | [시도별 경제활동별 지역내총생산](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91) | Y 2014~2026 | 2024 | 19602 | 백만원 %p |
 | grdp-sido-industry | [시도별 경제활동별 지역내총생산](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91) | Y 2020~2026 | 2024 | 495 | 백만원 %p |
 | labor-force-sido-annual-all | [행정구역(시도)별 경제활동인구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S) | Y 2014~2026 | 2025 | 1953 | 천명 |

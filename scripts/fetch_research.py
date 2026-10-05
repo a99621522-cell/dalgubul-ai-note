@@ -121,7 +121,7 @@ def from_feed(feed_url: str, sess: requests.Session) -> list[dict]:
         if not d and e.get("published_parsed"):
             d = time.strftime("%Y-%m-%d", e.published_parsed)
         summary = re.sub(r"<[^>]+>", " ", e.get("summary", "") or "")
-        items.append({"title": (e.get("title") or "").strip(), "url": e.get("link", ""), "date": d, "summary": re.sub(r"\s+", " ", summary).strip()[:300]})
+        items.append({"title": (e.get("title") or "").strip(), "url": urljoin(feed_url, e.get("link", "")), "date": d, "summary": re.sub(r"\s+", " ", summary).strip()[:300]})
     return [i for i in items if i["title"] and recent(i["date"])][:MAX_ITEMS]
 
 

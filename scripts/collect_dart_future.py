@@ -5,7 +5,7 @@
 1) 공시검색(list.json, 회사별): 제목에 EVENT_WORDS 가 든 공시만(정기보고서·지분 공시 제외).
 2) 공시서류원본(document.xml): zip 안 XML 의 글자에서 FIELDS 낱말을 찾아 분야를 붙이고, 처음 나온 곳 앞뒤 짧은 구절(60자 안)을 근거로 남긴다.
    분야 낱말이 하나도 없으면 버린다. 이미 본 접수번호(csv 에 있는 것, scripts/state/dart_future_seen.json)는 다시 받지 않는다.
-공시 사실·제목·링크와 근거 구절만 — 평가·전망 없음. DART 에는 회사 보도자료가 없다(공시만).
+공시 사실·제목·링크와 근거 구절만 — 평가·전망 없음. 유상증자는 뺀다(투자자 이름에 분야 낱말이 걸림), 정정본은 최근 것 하나만. DART 에는 회사 보도자료가 없다(공시만).
 키: DART_KEY. 사용: python3 scripts/collect_dart_future.py [--months 12] [--max-docs 400]
 """
 from __future__ import annotations
@@ -38,7 +38,7 @@ EVENT_WORDS = [
     ("타법인주식및출자증권취득", "지분취득"), ("타법인 주식 및 출자증권 취득", "지분취득"),
     ("단일판매ㆍ공급계약", "공급계약"), ("단일판매·공급계약", "공급계약"), ("공급계약", "공급계약"),
     ("특허권취득", "특허"), ("특허권 취득", "특허"), ("투자판단관련주요경영사항", "주요경영사항"), ("투자판단 관련 주요경영사항", "주요경영사항"),
-    ("영업양수", "영업양수"), ("자산양수", "자산양수"), ("회사합병", "합병"), ("회사분할", "분할"), ("유상증자결정", "유상증자"),
+    ("영업양수", "영업양수"), ("자산양수", "자산양수"), ("회사합병", "합병"), ("회사분할", "분할"),
     ("기술도입", "기술"), ("기술이전", "기술"), ("신규사업", "신규사업"),
 ]
 # 미래 산업 분야 낱말(원문 글자에서 찾음). 영문 약어는 앞뒤가 영문자가 아닐 때만
@@ -168,13 +168,21 @@ def main(argv: list[str]) -> int:
         fields, kws, excerpt = find_fields(text)
         if fields:
             new.append({"rcept_dt": r.get("rcept_dt", ""), "corp_code": code, "name": name, "report_nm": " ".join(r["report_nm"].split()),
-                        "event": ev, "fields": "·".join(fields), "keywords": "·".join(dict.fromkeys(kws)), "excerpt": excerpt,
+                        "event": ev, "fields": ", ".join(fields), "keywords": ", ".join(dict.fromkeys(kws)), "excerpt": excerpt,
                         "rcept_no": r["rcept_no"], "url": f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={r['rcept_no']}"})
         if i % 50 == 0:
             print(f"[dart_future] 원문 {i}건 확인, 미래 산업 낱말 있음 {len(new)}건")
     cut = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
     rows = [r for r in old if r["rcept_dt"] >= cut] + new
+    rows = [r for r in rows if r.get("event") != "유상증자"]   # 2026-10-05: 투자자 이름(○○바이오 조합)에 걸려 분야가 잘못 붙어 뺐다
     rows.sort(key=lambda r: (r["rcept_dt"], r["rcept_no"]), reverse=True)
+    # 같은 공시의 정정본은 가장 최근 것 하나만(제목에서 [기재정정] 등 머리를 떼고 회사·제목·근거 구절이 같으면 같은 공시)
+    seen_k, uniq = set(), []
+    for r in rows:
+        k = (r["corp_code"], re.sub(r"^\[[^\]]*\]\s*", "", r["report_nm"]), r["excerpt"])
+        if k not in seen_k:
+            seen_k.add(k); uniq.append(r)
+    rows = uniq
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=COLS)

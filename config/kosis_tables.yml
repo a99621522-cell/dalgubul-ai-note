@@ -214,28 +214,47 @@ tables:
     years: 3
     area_col: C1
   # ── 관광 (운영자 지시 2026-10-03: 관광 통계). 외래관광객조사 방문 지역 표는 KOSIS 에 없음, 주요관광지점 입장객은 KOSIS 에 '(파일)' 표뿐이라 API 로 값이 안 옴, 국민여행조사 여행지(시도)별 표는 2017년까지뿐(2026-10-03) — 관광은 한국관광공사 방문자 수(scripts/fetch_tourism.py)로
-  # ── 정책 대안 프롬프트 조사 항목(운영자 지시 2026-10-05, scripts/policy_lever_prompt.py) — tbl_id 는 discover 로 채운다 ──
-  - key: foreign-students-sido
-    name: 외국인 유학생 — 시도별(고등교육기관 유학생 또는 체류자격 유학 등록외국인)
-    tbl_id: ""
-    search: ["외국인 유학생 시도", "고등교육기관 외국인 유학생 지역", "유학생 현황 시도별", "등록외국인 체류자격 시도", "체류외국인 시도별 체류자격"]
+  # ── 정책 대안 프롬프트 조사 항목(운영자 지시 2026-10-05, scripts/policy_lever_prompt.py). 2026-10-05 discover 로 표 번호 확인 ──
+  #    외국인 환자 유치실적은 KOSIS 에 지역 표가 없어 공공데이터포털 파일(scripts/policy_inputs.py)로 받는다
+  - key: foreign-residents-sido
+    name: 지방자치단체 외국인주민 현황 — 시도별(유형: 외국인근로자·결혼이민자·유학생 등)
+    org_id: "110"
+    tbl_id: "TX_11025_A000_A"
     prd_se: Y
-    area_col: C1
-  - key: foreign-patients-sido
-    name: 외국인환자 유치실적 — 지역별 외국인 환자 수
-    tbl_id: ""
-    search: ["외국인환자 지역별", "외국인환자 유치 시도", "외국인 환자 유치실적", "외국인환자 의료기관 소재지"]
+    area: []
+  - key: mice-conference-sido
+    name: 국제회의현황조사 — 국제회의의 지역별 현황
+    org_id: "314"
+    tbl_id: "DT_314005_A001"
     prd_se: Y
-    area_col: C1
-  - key: mice-sido
-    name: MICE 산업통계 — 지역별 국제회의·전시회 개최 실적
-    tbl_id: ""
-    search: ["국제회의 개최 지역별", "MICE 지역별", "국제회의 개최 건수 시도", "전시회 개최 지역별", "MICE 산업 통계"]
+    area: []
+  - key: mice-exhibition-sido
+    name: 전시산업통계조사 — 지역별·시설별 전시회 개최건수
+    org_id: "430"
+    tbl_id: "DT_430001_05_003"
     prd_se: Y
-    area_col: C1
-  - key: medical-use-region
-    name: 지역별 의료이용통계 — 시도별 관내·관외 진료(다른 지역 환자 유입)
-    tbl_id: ""
-    search: ["지역별 의료이용 관외", "관내 관외 진료비 시도", "의료기관 소재지 진료 환자 거주지", "지역별 의료이용통계 시도", "타지역 의료이용"]
+    area: []
+  - key: medical-use-sido-resident
+    name: 지역별 의료이용통계 — 시도별 진료현황(거주지 기준, 전체)
+    org_id: "350"
+    tbl_id: "TX_35003_A004"
     prd_se: Y
-    area_col: C1
+    area: []
+  - key: medical-use-sido-outside
+    name: 지역별 의료이용통계 — 시도별 진료현황(관외: 거주 시도 밖 의료기관 이용)
+    org_id: "350"
+    tbl_id: "TX_35003_A006"
+    prd_se: Y
+    area: []
+  - key: medical-use-sido-provider
+    name: 지역별 의료이용통계 — 의료기관 시도별 진료현황(의료기관 소재지 기준, 전체)
+    org_id: "350"
+    tbl_id: "TX_35003_A007"
+    prd_se: Y
+    area: []
+  - key: medical-use-sgg-provider-outside
+    name: 지역별 의료이용통계 — 의료기관 시군구(부산·대구·울산·경북·경남)별 관외 진료현황(다른 지역 환자, 전체)
+    org_id: "350"
+    tbl_id: "DT_35003_A36"
+    prd_se: Y
+    area: []

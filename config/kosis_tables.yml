@@ -214,3 +214,28 @@ tables:
     years: 3
     area_col: C1
   # ── 관광 (운영자 지시 2026-10-03: 관광 통계). 외래관광객조사 방문 지역 표는 KOSIS 에 없음, 주요관광지점 입장객은 KOSIS 에 '(파일)' 표뿐이라 API 로 값이 안 옴, 국민여행조사 여행지(시도)별 표는 2017년까지뿐(2026-10-03) — 관광은 한국관광공사 방문자 수(scripts/fetch_tourism.py)로
+  # ── 정책 대안 프롬프트 조사 항목(운영자 지시 2026-10-05, scripts/policy_lever_prompt.py) — tbl_id 는 discover 로 채운다 ──
+  - key: foreign-students-sido
+    name: 외국인 유학생 — 시도별(고등교육기관 유학생 또는 체류자격 유학 등록외국인)
+    tbl_id: ""
+    search: ["외국인 유학생 시도", "고등교육기관 외국인 유학생 지역", "유학생 현황 시도별", "등록외국인 체류자격 시도", "체류외국인 시도별 체류자격"]
+    prd_se: Y
+    area_col: C1
+  - key: foreign-patients-sido
+    name: 외국인환자 유치실적 — 지역별 외국인 환자 수
+    tbl_id: ""
+    search: ["외국인환자 지역별", "외국인환자 유치 시도", "외국인 환자 유치실적", "외국인환자 의료기관 소재지"]
+    prd_se: Y
+    area_col: C1
+  - key: mice-sido
+    name: MICE 산업통계 — 지역별 국제회의·전시회 개최 실적
+    tbl_id: ""
+    search: ["국제회의 개최 지역별", "MICE 지역별", "국제회의 개최 건수 시도", "전시회 개최 지역별", "MICE 산업 통계"]
+    prd_se: Y
+    area_col: C1
+  - key: medical-use-region
+    name: 지역별 의료이용통계 — 시도별 관내·관외 진료(다른 지역 환자 유입)
+    tbl_id: ""
+    search: ["지역별 의료이용 관외", "관내 관외 진료비 시도", "의료기관 소재지 진료 환자 거주지", "지역별 의료이용통계 시도", "타지역 의료이용"]
+    prd_se: Y
+    area_col: C1

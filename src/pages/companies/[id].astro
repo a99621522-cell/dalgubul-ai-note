@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon, normName } from '../../lib/csv';
-import { futureDisclosures, ymd } from '../../lib/dart';
+import { futureDisclosures, ymd, employeesOf, n0, mil } from '../../lib/dart';
 import { partners } from '../../lib/partners';
 import { tagName, tagDesc } from '../../lib/sites';
 import { companyStats, monthly, monthLabel, fmt } from '../../lib/stats';
@@ -15,6 +15,7 @@ const pt = partners(c);
 const supportAll = supportOf(c.id);
 const support3y = recentSupport(supportAll, 3);
 const fin = financialsOf(c.name).slice(0, 3);
+const dartEmp = employeesOf(c.name).slice(0, 3);
 const fut = fin.length ? futureDisclosures().filter(d => normName(d.name) === normName(c.name)).slice(0, 8) : [];
 const Row = (x: any) => x;
 const related = (await getCollection('posts', p => !p.data.draft))
@@ -125,14 +126,24 @@ const card = {
         </table></div>
       )}
     </section>)}
-    {fin.length > 0 && (
+    {(fin.length > 0 || dartEmp.length > 0) && (
       <section class="fin" aria-label="공시 재무">
+        {fin.length > 0 && (<>
         <div class="section-head"><h2>재무 (DART 공시)</h2><span class="meta">{fin[0].fs} 기준</span></div>
         <div class="scroll-x"><table class="data-table">
           <thead><tr><th>사업연도</th><th class="n">매출액</th><th class="n">영업이익</th><th class="n">당기순이익</th><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th><th>원문</th></tr></thead>
           <tbody>{fin.map(f => (<tr><td>{f.year}</td><td class="n">{fmtEokWon(f.revenue)}</td><td class="n">{fmtEokWon(f.operating_income)}</td><td class="n">{fmtEokWon(f.net_income)}</td><td class="n">{fmtEokWon(f.total_assets ?? '')}</td><td class="n">{fmtEokWon(f.total_liabilities ?? '')}</td><td class="n">{fmtEokWon(f.total_equity ?? '')}</td><td>{f.source_url ? <a href={f.source_url} rel="noopener">사업보고서</a> : '—'}</td></tr>))}</tbody>
         </table></div>
         <p class="meta">금융감독원 전자공시 사업보고서의 값을 억 원으로 나눠 표시. 상장·공시대상 기업만 자료가 있습니다. 대구 본사 공시 기업 전체는 <a href="/companies/dart/">공시 기업 재무</a>에.</p>
+        </>)}
+        {dartEmp.length > 0 && (<>
+          <h3>직원 현황 (DART 사업보고서)</h3>
+          <div class="scroll-x"><table class="data-table">
+            <thead><tr><th>사업연도</th><th class="n">직원 수</th><th class="n">정규직</th><th class="n">기간제</th><th class="n">남</th><th class="n">여</th><th class="n">평균 근속(년)</th><th class="n">1인 평균 급여(백만 원)</th><th>원문</th></tr></thead>
+            <tbody>{dartEmp.map(e => (<tr><td>{e.year}</td><td class="n">{n0(e.employees)}</td><td class="n">{n0(e.regular)}</td><td class="n">{n0(e.contract)}</td><td class="n">{n0(e.male)}</td><td class="n">{n0(e.female)}</td><td class="n">{e.avg_tenure ? Number(e.avg_tenure).toFixed(1) : '—'}</td><td class="n">{mil(e.avg_salary)}</td><td>{e.source_url ? <a href={e.source_url} rel="noopener">사업보고서</a> : '—'}</td></tr>))}</tbody>
+          </table></div>
+          <p class="meta">사업보고서 '직원 등의 현황'(회사 단위 집계). 1인 평균 급여는 연간 급여 총액 ÷ 직원 수, 평균 근속은 사업부문·성별 행을 직원 수로 가중한 값입니다.</p>
+        </>)}
         {fut.length > 0 && (<>
           <h3>미래 산업 관련 공시 (최근 12개월)</h3>
           <ul class="fut">{fut.map(d => <li><span class="meta">{ymd(d.rcept_dt)}</span> <a href={d.url} rel="noopener">{d.report_nm}</a> <span class="meta">· {d.fields}</span></li>)}</ul>

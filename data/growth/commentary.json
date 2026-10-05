@@ -50,5 +50,6 @@
  "model": "gemini-3.5-flash-lite",
  "generated": "2026-10-05",
  "facts_hash": "acae274c1a64242b",
- "approved": false
+ "approved": true,
+ "approved_on": "2026-10-05"
 }

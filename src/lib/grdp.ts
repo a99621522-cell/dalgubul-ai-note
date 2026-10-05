@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { readCsv } from './csv';
 
-/** 대구 GRDP 성장 목표 계산기(/stats/industry/, 운영자 지시 2026-10-05) 데이터.
+/** 대구 GRDP 성장 계산기(/growth/ — 처음엔 /stats/industry/, 운영자 지시 2026-10-05) 데이터.
  *  KOSIS 「시도별 경제활동별 지역내총생산」(data/kosis/grdp-sido-industry-all.csv): 명목·실질·실질기여도.
  *  겹치지 않는 경제활동 19개 + 순생산물세. 비중은 최근 연도 명목, 추세는 최근 10년(실질 연평균 성장, 공표 실질기여도 평균). */
 export const GRDP_COMP: [string, string][] = [
@@ -59,7 +59,7 @@ export function ioDaegu() {
 }
 
 /** 외지인 관광소비(한국관광 데이터랩, data/tourism/datalab_spend_share.csv 의 '외지인' 대구 값) — 12달이 다 있는 최근 해 합계.
- *  계산기 '관광 외지인 소비로 보기'가 쓴다. 데이터랩은 총량보다 추세로 보라고 안내한다. */
+ *  성장 계산기 시나리오(GrowthLevers)가 쓴다. 데이터랩은 총량보다 추세로 보라고 안내한다. */
 export function tourismOutsider() {
   try {
     const by = new Map<string, { n: number; v: number; nat: number }>();

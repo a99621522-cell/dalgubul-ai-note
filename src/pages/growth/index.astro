@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+import GrowthLevers from '../../components/GrowthLevers.astro';
+import GrdpCalculator from '../../components/GrdpCalculator.astro';
+/** /growth/ — 성장 계산기(메뉴, 운영자 지시 2026-10-05: 보고서가 아니라 계산기 형태로 메뉴에).
+ *  위: 업종·관광소비·지출 가정을 넣으면 성장률이 나오는 시나리오 계산기. 아래: 목표 성장률에서 거꾸로 필요한 기여를 계산하는 목표 계산기.
+ *  모두 공표 통계와 가정에 따른 계산이며 전망·평가가 아니다. 대구시 예산액은 싣지 않는다. */
+---
+<Base title="성장 계산기" description="대구 GRDP 실질 성장률을 업종별 성장률·외지인 관광소비·새 지출 가정으로 계산하고, 목표 성장률에 필요한 산업별·지출 항목별 기여를 거꾸로 계산하는 계산기." current="growth">
+  <div class="section-head"><h1>성장 계산기</h1><span class="meta">대구 GRDP · 국가데이터처·한국은행·한국관광공사 자료</span></div>
+  <p class="lede">어느 업종이 얼마나 성장하면 대구 경제성장률이 몇 %가 되는지 계산합니다. 숫자를 바꾸면 바로 다시 계산되고, 아래 '목표 계산기'는 목표 성장률에서 거꾸로 업종별로 필요한 몫을 보여 줍니다. 가정에 따른 계산이지 전망이나 평가가 아닙니다.</p>
+  <h2 class="lv-h">시나리오 계산기 — 가정을 넣으면 성장률</h2>
+  <GrowthLevers />
+  <GrdpCalculator />
+</Base>
+<style>
+  .lv-h { margin: var(--s4) 0 var(--s2); }
+</style>

@@ -115,3 +115,37 @@ export function mfgScenarios(region = '대구광역시') {
   return { rows, y0, y1, mfgShare, mfgCagr: cagr(region, '제조업') ?? 0, natMfgCagr: cagr('전국', '제조업') ?? 0,
     tot: { trend: sum(r => r.trend), stop: sum(r => r.stop), nat: sum(r => r.nat), mix: sum(r => r.mix), top: sum(r => r.top), bestC: sum(r => r.bestC) } };
 }
+
+/** 목표 달성 경로(테크트리, /growth/ GrowthPath)용 업종별 기준값. 경제활동 18개(제조업 대신 제조업 7개 업종) + 순생산물세는 추세 그대로.
+ *  업종마다 최근 연도 GRDP 대비 명목 비중, 대구·전국 10년 실질 연평균 성장, 17개 시도 가운데 그 업종 10년 성장률이 높았던 세 곳의 평균. */
+export const PATH_FIELDS: Record<string, string> = {
+  '섬유 의복 및 가죽 제품 제조업': 'base', '비금속광물 및 금속제품 제조업': 'base', '목재종이인쇄 및 복제업': 'base', '음식료품 및 담배제조업': 'base',
+  '기계 운송장비 및 기타 제품 제조업': 'core', '전기 전자 및 정밀기기 제조업': 'core', '석탄 및 석유 화학제품 제조업': 'core',
+  '보건업 및 사회복지 서비스업': 'ext', '교육 서비스업': 'ext', '숙박 및 음식점업': 'ext', '예술 스포츠 및 여가관련 서비스': 'ext',
+  '전문 과학 및 기술 서비스업': 'know', '사업시설 관리 사업 지원 및 임대 서비스업': 'know', '정보통신업': 'know', '금융 및 보험업': 'know',
+};
+export function pathBench(region = '대구광역시') {
+  const V = new Map<string, number>();
+  const regions = new Set<string>();
+  for (const r of readCsv('data/kosis/grdp-sido-industry-all.csv')) {
+    if (r.DT === '' || !Number.isFinite(Number(r.DT))) continue;
+    V.set(`${r.ITM_NM}|${r.C1_NM}|${r.C2_NM}|${r.PRD_DE}`, Number(r.DT)); regions.add(r.C1_NM);
+  }
+  const years = [...new Set([...V.keys()].map(k => Number(k.split('|')[3])))].sort();
+  const y1 = years.at(-1) ?? 0, y0 = Math.max(years[0] ?? 0, y1 - 10), n = y1 - y0;
+  const v = (i: string, reg: string, k: string, y: number) => V.get(`${i}|${reg}|${k}|${y}`);
+  const cagr = (reg: string, k: string) => { const a = v('실질', reg, k, y0), b = v('실질', reg, k, y1); return a && b && a > 0 && b > 0 ? ((b / a) ** (1 / n) - 1) * 100 : null; };
+  const nom = v('명목', region, '지역내총생산(시장가격)', y1);
+  if (!nom) return null;
+  const sido = [...regions].filter(r => r !== '전국');
+  const names = new Map([...GRDP_COMP, ...MFG_SUB]);
+  const keys = [...MFG_SUB.map(m => m[0]), ...GRDP_COMP.map(c => c[0]).filter(k => k !== '제조업' && k !== '순생산물세')];
+  const rows = keys.map(k => {
+    const cs = sido.map(r => cagr(r, k)).filter((x): x is number => x != null).sort((a, b) => b - a);
+    const g = cagr(region, k);
+    return { key: k, name: names.get(k) ?? k, mfg: MFG_SUB.some(m => m[0] === k), field: PATH_FIELDS[k] ?? 'life',
+      share: ((v('명목', region, k, y1) ?? 0) / nom) * 100, g: g ?? 0, gn: cagr('전국', k) ?? g ?? 0, t3: cs.length ? cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length) : g ?? 0 };
+  }).filter(r => r.share > 0);
+  const sidoTot = sido.map(r => ({ r, g: cagr(r, '지역내총생산(시장가격)') })).filter((x): x is { r: string; g: number } => x.g != null).sort((a, b) => b.g - a.g);
+  return { rows, y0, y1, natTot: cagr('전국', '지역내총생산(시장가격)') ?? 0, top3Tot: sidoTot.slice(0, 3).reduce((a, b) => a + b.g, 0) / 3, bestTot: sidoTot[0]?.g ?? 0 };
+}

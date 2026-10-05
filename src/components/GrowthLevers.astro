@@ -172,11 +172,11 @@ const GROUPS: [Row['group'], string, string][] = [
   .lv-break { margin: var(--s3) 0 var(--s2); }
   .lv-break h3 { font-size: 1rem; margin-bottom: 6px; }
   #lvlist { list-style: none; margin: 0; padding: 0; }
-  #lvlist li { display: grid; grid-template-columns: minmax(7em, 11em) 1fr 4.5em; gap: 8px; align-items: center; margin: 3px 0; font-size: var(--small); }
-  #lvlist .bw { background: var(--surface); height: 12px; border-radius: 0 3px 3px 0; }
-  #lvlist .b { display: block; height: 100%; background: var(--primary); border-radius: 0 3px 3px 0; }
-  #lvlist .b.neg { background: var(--muted-2); }
-  #lvlist .v { text-align: right; font-variant-numeric: tabular-nums; }
+  #lvlist :global(li) { display: grid; grid-template-columns: minmax(7em, 11em) 1fr 4.5em; gap: 8px; align-items: center; margin: 3px 0; font-size: var(--small); }
+  #lvlist :global(.bw) { background: var(--surface); height: 12px; border-radius: 0 3px 3px 0; }
+  #lvlist :global(.b) { display: block; height: 100%; background: var(--primary); border-radius: 0 3px 3px 0; }
+  #lvlist :global(.b.neg) { background: var(--muted-2); }
+  #lvlist :global(.v) { text-align: right; font-variant-numeric: tabular-nums; }
   @media (max-width: 600px) {
     .lv-result { flex-wrap: nowrap; gap: 10px; padding: 8px 10px; }
     .lv-big { font-size: 2.1rem; }

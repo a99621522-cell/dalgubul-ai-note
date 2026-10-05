@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-02-policy-textile-root-energy.md",
- "checked": "2026-10-04",
- "ok": 13,
+ "checked": "2026-10-05",
+ "ok": 12,
  "total": 14,
- "ratio": 0.93,
+ "ratio": 0.86,
  "official_bad": [
   "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)"
  ],
@@ -86,12 +86,12 @@
    "url": "https://view.asiae.co.kr/article/2026052615170418849",
    "date": "2026-05-26",
    "kind": "news",
-   "status": 200,
-   "page_title": "중기중앙회, 뿌리산업위원회 개최…&quot;뿌리산업 지원 확대 필요&quot;",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectionError"
   },
   {
    "title": "전자신문, 「분산에너지특구 '경북·울산·충남' 추가 지정…송전망 부족 대안 기대」",

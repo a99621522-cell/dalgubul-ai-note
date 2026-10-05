@@ -2,9 +2,10 @@
 import Base from '../../../layouts/Base.astro';
 import StatsNav from '../../../components/StatsNav.astro';
 import KosisSections from '../../../components/KosisSections.astro';
+import MedicalDeviceStats from '../../../components/MedicalDeviceStats.astro';
 import { TOPICS, KOSIS_TOPICS } from '../../../lib/statsTopics';
 import { kosisIndex } from '../../../lib/kosis';
-/** /stats/manufacturing/ — 통계 주제 페이지(src/lib/statsTopics.ts). KOSIS 표·그래프만, 값 그대로, 평가 없음. */
+/** /stats/manufacturing/ — 통계 주제 페이지(src/lib/statsTopics.ts). KOSIS 표·그래프 + 식약처 의료기기 지역별 실적(MedicalDeviceStats), 값 그대로, 평가 없음. */
 const t = TOPICS.find(x => x.key === 'manufacturing')!;
 const idx = kosisIndex();
 ---
@@ -12,6 +13,7 @@ const idx = kosisIndex();
   <p class="meta"><a href="/stats/">통계</a> › {t.name}</p>
   <StatsNav current={t.key} />
   <div class="section-head"><h1>{t.name}</h1><span class="meta">{t.period} · 국가데이터처 KOSIS · 갱신 {idx.generated}</span></div>
-  <p class="lede">{t.desc} 그래프 아래 표는 눌러서 펼칩니다. 값은 KOSIS 그대로이고 평가·순위가 아닙니다.</p>
+  <p class="lede">{t.desc} 그래프 아래 표는 눌러서 펼칩니다. 값은 원 통계(KOSIS·식약처) 그대로이고 평가·순위가 아닙니다.</p>
   <KosisSections sections={KOSIS_TOPICS[t.key]} />
+  <MedicalDeviceStats />
 </Base>

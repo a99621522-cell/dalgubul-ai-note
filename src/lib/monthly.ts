@@ -179,7 +179,7 @@ export function industryRows(): { latest: string; rows: { name: string; ip: numb
  *  색은 currentColor(페이지 CSS 가 --primary), 글자는 잉크 색. 세로축은 값 범위에 맞춰 위아래 여백을 둔다(0 기준 아님 — 막대가 아니라 선이라). */
 export function trendChart(s: Series, from: string, to: string, step = 1): string {
   const months: string[] = [];
-  for (let m = from; m <= to; m = shift(m, step)) months.push(m);   // step 3 = 분기 계열(분기 끝 달만)
+  for (let m = from; m <= to; m = shift(m, step)) months.push(m);   // step 3 = 분기 계열(분기 끝 달만), 12 = 연간(YYYY-12)
   const pts = months.map((m, i) => ({ i, m, p: s.pts.find(q => q.m === m) })).filter(x => x.p) as { i: number; m: string; p: Pt }[];
   if (!pts.length) return '';
   const W = 340, H = 180, L = 14, R = 14, T = 26, B = 26;
@@ -197,7 +197,10 @@ export function trendChart(s: Series, from: string, to: string, step = 1): strin
   let d = '';
   pts.forEach((x0, k) => { d += `${k && pts[k - 1].i === x0.i - 1 ? 'L' : 'M'}${x(x0.i).toFixed(1)},${y(x0.p.v).toFixed(1)}`; });
   const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  const axis = months.map((m, i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="tc-ax">${step === 3 ? `${m.slice(2, 4)}.${Number(m.slice(5)) / 3}Q` : `${Number(m.slice(5))}월`}</text>`).join('');
+  const axis = months.map((m, i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="tc-ax">${step === 12 ? m.slice(0, 4) : step === 3 ? `${m.slice(2, 4)}.${Number(m.slice(5)) / 3}Q` : `${Number(m.slice(5))}월`}</text>`).join('');
+  // 연간 계열이 8점을 넘으면 값 글자는 처음·끝·최고·최저만(나머지는 점의 툴팁) — 글자 겹침을 피한다
+  const sparse = step === 12 && pts.length > 8;
+  const keep = new Set([0, pts.length - 1, vs.indexOf(Math.max(...vs)), vs.indexOf(Math.min(...vs))]);
   const dots = pts.map((x0, k) => {
     const cx = x(x0.i), cy = y(x0.p.v);
     // 값 글자는 점 위에, 앞 점보다 낮으면(=선이 내려오면) 아래로 — 선과 겹침을 줄인다
@@ -206,7 +209,7 @@ export function trendChart(s: Series, from: string, to: string, step = 1): strin
     const ty = valley ? cy + 17 : cy - 9;
     const anchor = x0.i === 0 ? 'start' : x0.i === months.length - 1 ? 'end' : 'middle';
     const tx = anchor === 'start' ? cx - 4 : anchor === 'end' ? cx + 4 : cx;
-    return `<g><title>${esc(`${x0.m} ${label(x0.p.v)} ${s.unit}`)}</title><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4" class="tc-dot"/><text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${anchor}" class="tc-val">${label(x0.p.v)}</text></g>`;
+    return `<g><title>${esc(`${x0.m} ${label(x0.p.v)} ${s.unit}`)}</title><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4" class="tc-dot"/>${sparse && !keep.has(k) ? '' : `<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${anchor}" class="tc-val">${label(x0.p.v)}</text>`}</g>`;
   }).join('');
   return `<svg viewBox="0 0 ${W} ${H}" class="trend" role="img" aria-label="${esc(`${s.name} ${from}~${to} 추이`)}"><line x1="${L}" x2="${W - R}" y1="${H - B + 4}" y2="${H - B + 4}" class="tc-base"/>${axis}<path d="${d}" class="tc-line"/>${dots}</svg>`;
 }

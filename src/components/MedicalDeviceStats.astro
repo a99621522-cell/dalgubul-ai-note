@@ -1,0 +1,55 @@
+---
+import { fmt, trendChart } from '../lib/monthly';
+import { deviceSeries, deviceYearRows, deviceRegionRows, deviceLatest, DEVICE_YEARS, DEVICE_SRC, DEVICE_URL } from '../lib/mfds';
+/** 대구 의료기기 생산·수출입(식약처 연간 통계, src/lib/mfds.ts). 값은 원문 그대로, 단위만 바꿈. 평가·순위 없음. */
+const S = deviceSeries(), years = deviceYearRows(), ivd = deviceYearRows('대구', '체외진단'), reg = deviceRegionRows();
+const first = DEVICE_YEARS[0], last = deviceLatest;
+const yoy = (s: (typeof S)[number]) => {
+  const a = s.pts.find(p => p.m === `${last}-12`)?.v, b = s.pts.find(p => p.m === `${last - 1}-12`)?.v;
+  if (a == null || b == null || !b) return '—';
+  if (s.unit === '%') { const d = a - b; return `${d > 0 ? '+' : d < 0 ? '△' : ''}${Math.abs(d).toFixed(2)}%p`; }
+  const r = (a / b - 1) * 100; return `${r > 0 ? '+' : r < 0 ? '△' : ''}${Math.abs(r).toFixed(1)}%`;
+};
+---
+{S.length > 0 && (
+<section id="device">
+  <div class="section-head"><h2>의료기기 생산·수출입 (연간)</h2><span class="meta">식품의약품안전처 · {first}~{last}년</span></div>
+  <p class="meta">식약처가 해마다 내는 의료기기 생산·수출입 실적 통계의 지역별 표에서 대구 값을 옮겼습니다. 업체가 식약처에 보고한 실적이며, 생산액은 천 원을 억 원으로, 수출입액은 달러를 백만 달러로 바꿔 적었습니다. 비율은 원문의 전국 대비 비율입니다.</p>
+  <div class="trend-grid">
+    {S.map(s => { const svg = trendChart(s, `${first}-12`, `${last}-12`, 12); return svg && (
+      <figure class="tcard">
+        <figcaption><strong>{s.name}</strong> <span class="meta">({s.unit})</span></figcaption>
+        <div set:html={svg} />
+        <p class="tsrc">전년 대비 {yoy(s)}{s.note && ` · ${s.note}`}</p>
+      </figure>); })}
+  </div>
+  <details class="stat-details" open>
+    <summary>대구 의료기기 연도별 생산·수출입 (체외진단 포함)</summary>
+    <div class="scroll-x"><table class="data-table" data-title="대구 의료기기 연도별 생산·수출입 실적">
+      <thead><tr><th>연도</th><th class="n">생산 업체(개소)</th><th class="n">생산 인원(명)</th><th class="n">생산액(억 원)</th><th class="n">생산액 전국 대비(%)</th><th class="n">수출 업체(개소)</th><th class="n">수출액(백만 달러)</th><th class="n">수출액 전국 대비(%)</th><th class="n">수입액(백만 달러)</th></tr></thead>
+      <tbody>{years.map(r => <tr><th scope="row">{r.y}</th><td class="n">{fmt(r.pf, 0)}</td><td class="n">{fmt(r.ps, 0)}</td><td class="n">{fmt(r.pa, 0)}</td><td class="n">{fmt(r.psh, 2)}</td><td class="n">{fmt(r.ef, 0)}</td><td class="n">{fmt(r.ea, 1)}</td><td class="n">{fmt(r.esh, 2)}</td><td class="n">{fmt(r.ia, 1)}</td></tr>)}</tbody>
+    </table></div>
+    <p class="meta">한 해 자료에 전년·당해 값이 함께 실리며, 두 자료에 같은 해 값이 있으면 늦게 나온 자료 값을 썼습니다. 빈 해는 자료를 받지 못한 해입니다. 인원은 업체가 보고한 운영 인원입니다.</p>
+  </details>
+  <details class="stat-details">
+    <summary>지역별 의료기기 생산·수출 ({last}년)</summary>
+    <div class="scroll-x"><table class="data-table" data-title={`지역별 의료기기 생산·수출 실적 ${last}년`}>
+      <thead><tr><th>지역</th><th class="n">생산 업체(개소)</th><th class="n">생산 인원(명)</th><th class="n">생산액(억 원)</th><th class="n">생산액 비율(%)</th><th class="n">수출 업체(개소)</th><th class="n">수출액(백만 달러)</th><th class="n">수출액 비율(%)</th></tr></thead>
+      <tbody>{reg.map(r => <tr class={r.region === '대구' ? 'hl' : ''}><th scope="row">{r.region}</th><td class="n">{fmt(r.pf, 0)}</td><td class="n">{fmt(r.ps, 0)}</td><td class="n">{fmt(r.pa, 0)}</td><td class="n">{fmt(r.psh, 2)}</td><td class="n">{fmt(r.ef, 0)}</td><td class="n">{fmt(r.ea, 1)}</td><td class="n">{fmt(r.esh, 2)}</td></tr>)}</tbody>
+    </table></div>
+    <p class="meta">지역 순서와 구분(경기 북부·남부)은 원문 그대로이며 순위가 아닙니다.</p>
+  </details>
+  {ivd.length > 0 && (
+  <details class="stat-details">
+    <summary>대구 체외진단 의료기기 (위 전체에 포함)</summary>
+    <div class="scroll-x"><table class="data-table" data-title="대구 체외진단 의료기기 생산·수출입 실적">
+      <thead><tr><th>연도</th><th class="n">생산 업체(개소)</th><th class="n">생산액(억 원)</th><th class="n">수출 업체(개소)</th><th class="n">수출액(백만 달러)</th><th class="n">수입액(백만 달러)</th></tr></thead>
+      <tbody>{ivd.map(r => <tr><th scope="row">{r.y}</th><td class="n">{fmt(r.pf, 0)}</td><td class="n">{fmt(r.pa, 1)}</td><td class="n">{fmt(r.ef, 0)}</td><td class="n">{fmt(r.ea, 2)}</td><td class="n">{fmt(r.ia, 2)}</td></tr>)}</tbody>
+    </table></div>
+    <p class="meta">체외진단 의료기기 지역별 표는 2020년부터 실립니다.</p>
+  </details>)}
+  <p class="meta">출처: <a href={DEVICE_URL} rel="noopener">{DEVICE_SRC}</a>(식약처 통계자료 게시판). 원문 표 글자는 저장소 data/mfds/raw/ 에 있습니다.</p>
+</section>)}
+<style>
+  tr.hl > * { font-weight: 700; }
+</style>

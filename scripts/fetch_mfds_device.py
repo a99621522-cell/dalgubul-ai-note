@@ -100,7 +100,7 @@ def parse(sec, pub, url):
         h = re.search(r"(생산|수출|수입)액", l)
         if h and not kind:   # 엑셀 시트는 '(1) 지역별 …' 머리 대신 칸 이름으로
             kind = h.group(1)
-        if re.match(r"20\d\d\s*년", l):
+        if re.search(r"20\d\d\s*년", l) and l.split()[0] not in REGIONS and not re.search(r"\d,\d{3}", l):   # '2024년 2025년' · 엑셀은 '지역 2018년 2019년
             years = [int(y) for y in re.findall(r"(20\d\d)\s*년", l)][:2]; continue
         name = l.split()[0]
         if kind and not scope:

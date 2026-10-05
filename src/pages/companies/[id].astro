@@ -1,7 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
-import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon } from '../../lib/csv';
+import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon, normName } from '../../lib/csv';
+import { futureDisclosures, ymd } from '../../lib/dart';
 import { partners } from '../../lib/partners';
 import { tagName, tagDesc } from '../../lib/sites';
 import { companyStats, monthly, monthLabel, fmt } from '../../lib/stats';
@@ -14,6 +15,7 @@ const pt = partners(c);
 const supportAll = supportOf(c.id);
 const support3y = recentSupport(supportAll, 3);
 const fin = financialsOf(c.name).slice(0, 3);
+const fut = fin.length ? futureDisclosures().filter(d => normName(d.name) === normName(c.name)).slice(0, 8) : [];
 const Row = (x: any) => x;
 const related = (await getCollection('posts', p => !p.data.draft))
   .filter(p => p.data.title.includes(c.name) || p.data.summary.includes(c.name) || p.data.tags.includes(c.name))
@@ -131,6 +133,11 @@ const card = {
           <tbody>{fin.map(f => (<tr><td>{f.year}</td><td class="n">{fmtEokWon(f.revenue)}</td><td class="n">{fmtEokWon(f.operating_income)}</td><td class="n">{fmtEokWon(f.net_income)}</td><td class="n">{fmtEokWon(f.total_assets ?? '')}</td><td class="n">{fmtEokWon(f.total_liabilities ?? '')}</td><td class="n">{fmtEokWon(f.total_equity ?? '')}</td><td>{f.source_url ? <a href={f.source_url} rel="noopener">사업보고서</a> : '—'}</td></tr>))}</tbody>
         </table></div>
         <p class="meta">금융감독원 전자공시 사업보고서의 값을 억 원으로 나눠 표시. 상장·공시대상 기업만 자료가 있습니다. 대구 본사 공시 기업 전체는 <a href="/companies/dart/">공시 기업 재무</a>에.</p>
+        {fut.length > 0 && (<>
+          <h3>미래 산업 관련 공시 (최근 12개월)</h3>
+          <ul class="fut">{fut.map(d => <li><span class="meta">{ymd(d.rcept_dt)}</span> <a href={d.url} rel="noopener">{d.report_nm}</a> <span class="meta">· {d.fields}</span></li>)}</ul>
+          <p class="meta">공시 원문에 미래 산업 낱말이 나온 투자·계약·지분·특허 공시입니다(분야는 낱말 기준이며 주력 사업이라는 뜻이 아님).</p>
+        </>)}
       </section>
     )}
     {related.length > 0 ? <div class="print-hide"><section class="section-head"><h2>관련 글</h2></section><PostList posts={related} /></div> : <p class="meta empty-line print-hide"><strong>관련 글</strong> 아직 이 기업을 다룬 글 없음 · 공개된 뉴스·공시가 수집되면 여기에 쌓입니다.</p>}

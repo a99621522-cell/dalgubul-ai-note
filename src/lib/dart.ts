@@ -1,4 +1,4 @@
-import { financials, companies, normName, byName, type Financial, type Company } from './csv';
+import { financials, companies, normName, byName, readCsv, type Financial, type Company } from './csv';
 import { classify } from './industry';
 
 /** DART 대구 본사 공시 기업 재무(scripts/collect_dart_fin.py → scripts/data/company_financials.csv, 운영자 지시 2026-10-05).
@@ -36,3 +36,9 @@ export const countBy = <T,>(xs: T[], f: (x: T) => string) => {
   for (const x of xs) { const k = f(x) || '미상'; m.set(k, (m.get(k) ?? 0) + 1); }
   return [...m.entries()];
 };
+
+/** 미래 산업 관련 공시(scripts/collect_dart_future.py → data/dart/future.csv): 대구 본사 기업의 투자·계약·지분·특허 공시 중
+ *  원문에 미래 산업 낱말이 나온 것. 공시 사실·제목·링크와 근거 구절만. */
+export type FutureDisclosure = { rcept_dt: string; corp_code: string; name: string; report_nm: string; event: string; fields: string; keywords: string; excerpt: string; rcept_no: string; url: string };
+export const futureDisclosures = () => readCsv('data/dart/future.csv') as FutureDisclosure[];
+export const ymd = (s: string) => (s && s.length === 8 ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6)}` : s);

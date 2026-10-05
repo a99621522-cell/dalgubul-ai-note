@@ -1,0 +1,39 @@
+name: DART 미래 산업 관련 공시(대구 본사 기업)
+
+# scripts/collect_dart_future.py — 대구 본사 공시 기업의 최근 12개월 투자·계약·지분·특허 공시 중 원문에 미래 산업 낱말이 있는 것만
+# data/dart/future.csv 로 커밋한다. 대구 본사 판정 캐시는 dart_fin.yml(collect_dart_fin.py)이 채운다. 키 DART_KEY.
+on:
+  schedule:
+    - cron: "47 21 * * 0"     # 매주 월 06:47 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-future
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+        run: python3 scripts/collect_dart_future.py --months 12
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dart scripts/state/dart_future_seen.json 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 미래 산업 관련 공시 갱신 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

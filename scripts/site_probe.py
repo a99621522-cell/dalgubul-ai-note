@@ -83,6 +83,8 @@ def main():
             print(f"== table[{i}] caption={cap.get_text(strip=True) if cap else ''} rows={len(rows)}")
             for tr in rows[:4]:
                 print("   " + " | ".join(re.sub(r"\s+", " ", c.get_text(" ", strip=True))[:30] for c in tr.find_all(["th", "td"])[:10]))
+            if len(rows) > 1:   # 첫 데이터 행의 HTML(링크·제목이 어떻게 들었는지)
+                print("   html: " + re.sub(r"\s+", " ", str(rows[1]))[:1200])
         urls = sorted(set(re.findall(r"""['"]([^'"]*?\.(?:do|json|xml|csv|xlsx?)(?:\?[^'"]*)?)['"]""", html)))
         print(f"== 스크립트·속성 속 주소 {len(urls)}개: " + " | ".join(urls[:60]))
         for i, sc in enumerate([x for x in soup.find_all("script") if x.string and re.search(r"ajax|fetch|XMLHttpRequest|\.do", x.string)][:6]):

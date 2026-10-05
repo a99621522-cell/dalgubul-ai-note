@@ -1,68 +1,85 @@
 ---
 import { grdpCalcData } from '../lib/grdp';
-/** 대구 GRDP 성장 목표 계산기(운영자 지시 2026-10-05). 목표 성장률을 넣으면 경제활동별로 필요한 기여도(%p)·성장률(%)을 가정별로 계산한다.
- *  기여도 = 최근 연도 명목 비중 × 실질 성장률(근사). 전망·달성 가능성 판단이 아니라 가정에 따른 계산이다. 브라우저 안에서만 계산. */
-const d = grdpCalcData();
+/** 대구 GRDP 성장 목표 계산기(운영자 지시 2026-10-05). 목표 성장률을 넣으면 생산 측(경제활동별) 또는 지출 측(소비·투자·순이출)
+ *  항목별로 필요한 기여도(%p)·성장률(%)을 가정별로 계산한다. 기여도 = 최근 연도 명목 비중 × 실질 성장률(근사).
+ *  전망·달성 가능성 판단이 아니라 가정에 따른 계산이다. 브라우저 안에서만 계산. */
+const P = grdpCalcData('prod'), E = grdpCalcData('exp');
+const d = P;
 const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const over5 = d.growth.filter(x => x.g >= 5).length;
 const best = [...d.growth].sort((a, b) => b.g - a.g)[0];
+const net = E.items.find(i => i.key === '재화와 서비스 순이출');
+const cons = E.items.filter(i => i.key.endsWith('최종소비지출')).reduce((a, i) => a + i.share, 0);
+const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '설비투자' } };
 ---
 {d.items.length > 0 && (
 <section id="calc">
   <div class="section-head"><h2>성장 목표 계산기</h2><span class="meta">대구 GRDP · {d.y1}년 기준</span></div>
-  <p class="meta">목표 실질 성장률을 넣으면 산업(경제활동)마다 몇 %p를 보태야 합이 목표가 되는지 계산합니다. 기여도 = {d.y1}년 명목 비중 × 실질 성장률입니다. 가정에 따른 계산일 뿐 전망이나 달성 가능성 판단이 아닙니다.</p>
+  <p class="meta">목표 실질 성장률을 넣으면 항목마다 몇 %p를 보태야 합이 목표가 되는지 계산합니다. 기여도 = {d.y1}년 명목 비중 × 실질 성장률입니다. 가정에 따른 계산일 뿐 전망이나 달성 가능성 판단이 아닙니다.</p>
   <p class="meta">참고: {d.y0}→{d.y1}년 연평균 실질 성장률 {f1(d.cagr)}% · 가장 높았던 해 {best?.y}년 {f1(best?.g ?? 0)}% · 5% 이상인 해 {over5}번 · {d.y1}년 명목 GRDP {f1(d.nomTrillion)}조 원</p>
 
   <div class="calc-tools">
+    {E.items.length > 0 && <div class="seg" role="radiogroup" aria-label="나누는 방법">
+      <label><input type="radio" name="gside" value="prod" checked /> 생산 측(산업별)</label>
+      <label><input type="radio" name="gside" value="exp" /> 지출 측(소비·투자·순이출)</label>
+    </div>}
     <label>목표 성장률 <input id="gt" type="number" step="0.1" value="5" inputmode="decimal" /> %</label>
     <label>가정 <select id="gs">
       <option value="even">고른 성장</option>
       <option value="trend">추세 확대</option>
-      <option value="fill">한 산업이 차이를 메움</option>
+      <option value="fill">한 항목이 차이를 메움</option>
       <option value="custom">직접 입력</option>
     </select></label>
-    <label id="gfw" hidden>메울 산업 <select id="gf">{d.items.map(i => <option value={i.key} selected={i.key === '제조업'}>{i.name}</option>)}</select></label>
+    <label id="gfw" hidden>메울 항목 <select id="gf"></select></label>
   </div>
   <p id="gsum" class="calc-sum" aria-live="polite"></p>
   <div class="scroll-x"><table class="data-table compact" id="gtab" data-title="대구 GRDP 성장 목표 계산">
-    <thead><tr><th>산업</th><th class="n">필요 기여(%p)</th><th class="n">필요 성장(%)</th><th class="n">비중(%)</th><th class="n">10년 평균 성장(%)</th></tr></thead>
-    <tbody>{d.items.map(i => (
-      <tr data-key={i.key}><th scope="row">{i.name}</th><td class="n c"></td><td class="n g"></td><td class="n">{f1(i.share)}</td><td class="n">{f1(i.cagr)}</td></tr>))}</tbody>
+    <thead><tr><th id="gcol">산업</th><th class="n">필요 기여(%p)</th><th class="n">필요 성장(%)</th><th class="n">비중(%)</th><th class="n">10년 평균 성장(%)</th></tr></thead>
+    <tbody></tbody>
     <tfoot><tr><th scope="row">합계</th><td class="n" id="gtc"></td><td class="n"></td><td class="n">100.0</td><td class="n">{f1(d.cagr)}</td></tr></tfoot>
   </table></div>
+  {E.items.length > 0 && net && (
+    <p class="meta" id="gexpnote" hidden>지출 측은 같은 GRDP 를 누가 썼는지로 나눈 것입니다. 대구는 {E.y1}년 소비(민간+정부)가 GRDP 의 {f1(cons)}%이고, 순이출(대구 밖으로 판 것 − 대구 밖에서 사 온 것)이 {f1(net.share)}%로 마이너스입니다. 순이출은 금액이 마이너스라 '필요 성장'을 적지 않고 기여도만 봅니다. 순이출 기여가 플러스라는 것은 역외 적자가 줄어든다는 뜻입니다.</p>
+  )}
   <details class="stat-details">
     <summary>계산 방법과 주의</summary>
     <ul class="meta">
-      <li>가정 — 고른 성장: 모든 산업이 목표와 같은 비율로 성장. 추세 확대·한 산업이 메움은 아래 설명. 직접 입력: 산업별 성장률을 넣어 합계를 봅니다.</li>
-      <li>산업은 겹치지 않는 경제활동 19개와 순생산물세(제품에 붙는 세금 − 보조금)입니다. 모두 더하면 GRDP 입니다.</li>
-      <li>필요 성장(%) = 필요 기여(%p) ÷ 명목 비중 × 100. 비중이 아주 작은 산업(광업·농림어업)은 성장률이 크게 흔들리니 참고만 하세요.</li>
-      <li>추세 확대: 지난 10년 공표 실질기여도 평균이 플러스인 산업만 같은 배율로 키우고, 마이너스인 산업은 추세 그대로 둡니다.</li>
-      <li>한 산업이 차이를 메움: 나머지 산업은 지난 10년 평균 기여도를 내고, 목표와의 차이를 고른 산업이 모두 냅니다.</li>
+      <li><strong>생산 측</strong>은 어느 산업이 부가가치를 만들었는지(경제활동 19개 + 순생산물세), <strong>지출 측</strong>은 그 생산물을 누가 썼는지(민간·정부 소비, 건설·설비·지식재산 투자, 재고, 순이출)로 같은 GRDP 를 나눈 것입니다. 두 쪽 합계는 같습니다.</li>
+      <li>가정 — 고른 성장: 모든 항목이 목표와 같은 비율로 성장. 추세 확대: 지난 10년 공표 실질기여도 평균이 플러스인 항목만 같은 배율로 키우고 마이너스인 항목은 추세 그대로. 한 항목이 차이를 메움: 나머지는 지난 10년 평균 기여, 차이는 고른 항목이 냄. 직접 입력: 항목별 성장률을 넣어 합계를 봅니다.</li>
+      <li>필요 성장(%) = 필요 기여(%p) ÷ 명목 비중 × 100. 비중이 아주 작거나 마이너스인 항목(광업·재고·순이출·통계상 불일치)은 성장률을 적지 않거나 크게 흔들리니 참고만 하세요.</li>
       <li>{d.y1}년 비중으로 다음 한 해를 계산한 근사입니다. 실질 값이 연쇄가중이라 공표 방식과 소수점 아래가 조금 다를 수 있고, {d.y1}년 값은 다음 공표에서 고쳐질 수 있습니다.</li>
     </ul>
   </details>
-  <p class="meta">출처: {d.url ? <a href={d.url} rel="noopener">{d.source}</a> : d.source} · 계산: 다잇다</p>
-  <script type="application/json" id="grdp-data" set:html={JSON.stringify(d.items)} />
+  <p class="meta">출처: {d.url ? <a href={d.url} rel="noopener">{d.source}</a> : d.source}{E.url && <> · <a href={E.url} rel="noopener">{E.source}</a></>} · 계산: 다잇다</p>
+  <script type="application/json" id="grdp-data" set:html={JSON.stringify(data)} />
 </section>)}
 <script>
-  type Item = { key: string; name: string; share: number; cagr: number; avgc: number };
+  type Item = { key: string; name: string; share: number; cagr: number | null; avgc: number };
   const el = document.getElementById('grdp-data');
   if (el) {
-    const items: Item[] = JSON.parse(el.textContent || '[]');
-    const gt = document.getElementById('gt') as HTMLInputElement;
-    const gs = document.getElementById('gs') as HTMLSelectElement;
-    const gf = document.getElementById('gf') as HTMLSelectElement;
-    const gfw = document.getElementById('gfw') as HTMLElement;
-    const sum = document.getElementById('gsum') as HTMLElement;
-    const tc = document.getElementById('gtc') as HTMLElement;
-    const rows = new Map([...document.querySelectorAll<HTMLTableRowElement>('#gtab tbody tr')].map(r => [r.dataset.key || '', r]));
-    const fmt = (v: number, d = 1) => Number.isFinite(v) ? v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d }) : '—';
-    const custom: Record<string, number> = Object.fromEntries(items.map(i => [i.key, Math.round(i.cagr * 10) / 10]));
+    const D = JSON.parse(el.textContent || '{}') as { prod: Item[]; exp: Item[]; defFill: Record<string, string> };
+    const $ = (id: string) => document.getElementById(id) as any;
+    const gt = $('gt') as HTMLInputElement, gs = $('gs') as HTMLSelectElement, gf = $('gf') as HTMLSelectElement;
+    const gfw = $('gfw') as HTMLElement, sum = $('gsum') as HTMLElement, tc = $('gtc') as HTMLElement;
+    const tbody = document.querySelector('#gtab tbody') as HTMLElement;
+    const fmt = (v: number | null, d = 1) => v != null && Number.isFinite(v) ? v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d }) : '—';
+    let side: 'prod' | 'exp' = 'prod';
+    const custom: Record<string, Record<string, number>> = { prod: {}, exp: {} };
+    for (const s of ['prod', 'exp'] as const) for (const i of D[s] || []) custom[s][i.key] = i.cagr != null ? Math.round(i.cagr * 10) / 10 : 0;
+    const growthOk = (i: Item) => i.share >= 0.5;   // 비중이 아주 작거나 마이너스인 항목(광업·농림어업·재고·순이출·통계상 불일치)은 성장률을 적지 않는다
+    const build = () => {
+      const items = D[side];
+      $('gcol').textContent = side === 'prod' ? '산업' : '지출 항목';
+      const note = document.getElementById('gexpnote'); if (note) note.hidden = side !== 'exp';
+      gf.innerHTML = items.map(i => `<option value="${i.key}"${i.key === D.defFill[side] ? ' selected' : ''}>${i.name}</option>`).join('');
+      tbody.innerHTML = items.map(i => `<tr data-key="${i.key}"><th scope="row">${i.name}</th><td class="n c"></td><td class="n g"></td><td class="n">${fmt(i.share)}</td><td class="n">${fmt(i.cagr)}</td></tr>`).join('');
+      calc();
+    };
     const calc = () => {
-      const T = Number(gt.value);
-      const mode = gs.value;
+      const items = D[side];
+      const T = Number(gt.value), mode = gs.value;
       gfw.hidden = mode !== 'fill';
-      let c: Record<string, number> = {};
+      const c: Record<string, number> = {};
       if (mode === 'even') items.forEach(i => (c[i.key] = i.share * T / 100));
       else if (mode === 'trend') {
         const pos = items.filter(i => i.avgc > 0).reduce((a, i) => a + i.avgc, 0);
@@ -70,52 +87,53 @@ const best = [...d.growth].sort((a, b) => b.g - a.g)[0];
         const k = pos > 0 ? (T - neg) / pos : NaN;
         items.forEach(i => (c[i.key] = i.avgc > 0 ? i.avgc * k : i.avgc));
       } else if (mode === 'fill') {
-        const x = gf.value;
-        const others = items.filter(i => i.key !== x).reduce((a, i) => a + i.avgc, 0);
-        items.forEach(i => (c[i.key] = i.key === x ? T - others : i.avgc));
-      } else items.forEach(i => (c[i.key] = i.share * (custom[i.key] ?? 0) / 100));
+        const others = items.filter(i => i.key !== gf.value).reduce((a, i) => a + i.avgc, 0);
+        items.forEach(i => (c[i.key] = i.key === gf.value ? T - others : i.avgc));
+      } else items.forEach(i => (c[i.key] = i.share * (custom[side][i.key] ?? 0) / 100));
       let total = 0;
-      for (const i of items) {
-        const r = rows.get(i.key); if (!r) continue;
+      for (const r of tbody.querySelectorAll<HTMLTableRowElement>('tr')) {
+        const i = items.find(x => x.key === r.dataset.key)!;
         total += c[i.key];
         (r.querySelector('.c') as HTMLElement).textContent = fmt(c[i.key], 2);
         const g = r.querySelector('.g') as HTMLElement;
-        if (mode === 'custom') {
+        if (mode === 'custom' && growthOk(i)) {
           if (!g.querySelector('input')) {
             g.innerHTML = '';
             const inp = document.createElement('input');
-            inp.type = 'number'; inp.step = '0.1'; inp.value = String(custom[i.key]); inp.setAttribute('aria-label', `${i.name} 성장률`);
-            inp.addEventListener('input', () => { custom[i.key] = Number(inp.value) || 0; calc(); });
+            inp.type = 'number'; inp.step = '0.1'; inp.value = String(custom[side][i.key]); inp.setAttribute('aria-label', `${i.name} 성장률`);
+            inp.addEventListener('input', () => { custom[side][i.key] = Number(inp.value) || 0; calc(); });
             g.appendChild(inp);
           }
-        } else g.textContent = i.share >= 0.05 ? fmt(c[i.key] / i.share * 100) : '—';
+        } else g.textContent = growthOk(i) ? fmt(c[i.key] / i.share * 100) : '—';
       }
       tc.textContent = fmt(total, 2);
       if (mode === 'custom') {
         const gap = T - total;
-        sum.textContent = `넣은 성장률로 계산한 GRDP 성장률은 ${fmt(total, 2)}%입니다. 목표 ${fmt(T)}%와 ${fmt(Math.abs(gap), 2)}%p ${gap > 0 ? '모자랍니다' : gap < 0 ? '넘습니다' : '같습니다'}. (처음 값은 각 산업의 10년 연평균 실질 성장률)`;
+        sum.textContent = `넣은 성장률로 계산한 GRDP 성장률은 ${fmt(total, 2)}%입니다. 목표 ${fmt(T)}%와 ${fmt(Math.abs(gap), 2)}%p ${gap > 0 ? '모자랍니다' : gap < 0 ? '넘습니다' : '같습니다'}. (처음 값은 각 항목의 10년 연평균 실질 성장률)`;
       } else if (mode === 'fill') {
         const x = items.find(i => i.key === gf.value)!;
-        sum.textContent = `${x.name}이(가) ${fmt(c[x.key], 2)}%p, 곧 실질 ${fmt(c[x.key] / x.share * 100)}% 성장해야 합계가 ${fmt(T)}%가 됩니다(나머지 산업은 지난 10년 평균 기여).`;
-      } else if (mode === 'trend') sum.textContent = `지난 10년 기여가 플러스인 산업을 같은 배율로 키워 합계 ${fmt(T)}%를 맞춘 값입니다.`;
-      else sum.textContent = `모든 산업이 ${fmt(T)}% 성장할 때 산업별 기여입니다(기여 = 비중 × ${fmt(T)}%).`;
+        sum.textContent = `${x.name}이(가) ${fmt(c[x.key], 2)}%p${growthOk(x) ? `, 곧 실질 ${fmt(c[x.key] / x.share * 100)}% 성장` : ''}을 내야 합계가 ${fmt(T)}%가 됩니다(나머지는 지난 10년 평균 기여).`;
+      } else if (mode === 'trend') sum.textContent = `지난 10년 기여가 플러스인 항목을 같은 배율로 키워 합계 ${fmt(T)}%를 맞춘 값입니다.`;
+      else sum.textContent = `모든 항목이 ${fmt(T)}% 성장할 때의 기여입니다(기여 = 비중 × ${fmt(T)}%).`;
     };
+    document.querySelectorAll<HTMLInputElement>('input[name="gside"]').forEach(r => r.addEventListener('change', () => { side = r.value as 'prod' | 'exp'; build(); }));
     [gt, gs, gf].forEach(x => x.addEventListener('input', () => {
-      if (gs.value !== 'custom') rows.forEach(r => { const g = r.querySelector('.g'); if (g?.querySelector('input')) g.innerHTML = ''; });
+      if (gs.value !== 'custom') tbody.querySelectorAll('.g').forEach(g => { if (g.querySelector('input')) g.innerHTML = ''; });
       calc();
     }));
-    calc();
+    build();
   }
 </script>
 <style>
   .calc-tools { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: var(--s2) 0; }
-  .calc-tools input, .calc-tools select, #gtab input { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
-  .calc-tools input { width: 5em; }
   .calc-tools label { display: flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; }
-  .calc-tools select { min-width: 0; max-width: 100%; }
   .calc-tools label[hidden] { display: none; }
+  .calc-tools input[type=number], .calc-tools select, #gtab input { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+  .calc-tools input[type=number] { width: 5em; }
+  .calc-tools select { min-width: 0; max-width: 100%; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px 12px; width: 100%; }
+  #gtab input { width: 5em; text-align: right; }
   #gtab.compact th, #gtab.compact td { padding-top: 5px; padding-bottom: 5px; }
   #gtab tbody th { font-weight: 500; }
-  #gtab input { width: 5em; text-align: right; }
   .calc-sum { font-weight: 600; margin: 6px 0; }
 </style>

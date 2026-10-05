@@ -143,10 +143,11 @@ export const recentSupport = (rows: Support[], years = 3) => { const y = new Dat
 export const fmtAmount = (s: Support) => (s.amount ? `${Number(s.amount).toLocaleString('ko-KR')} ${s.amount_unit || '원'}` : '금액 미공개');
 
 /** DART 재무(scripts/data/company_financials.csv, collect_dart_fin.py). 상장·공시대상 기업만. */
-export type Financial = { corp_code: string; name: string; year: string; fs: string; revenue: string; operating_income: string; net_income: string; unit: string; rcept_no: string; source_url: string; as_of: string };
+export type Financial = { corp_code: string; name: string; year: string; fs: string; revenue: string; operating_income: string; net_income: string; unit: string; rcept_no: string; source_url: string; as_of: string;
+  total_assets?: string; total_liabilities?: string; total_equity?: string; corp_cls?: string; stock_code?: string; induty_code?: string; region?: string };
 let _fin: Financial[] | null = null;
 export const financials = () => (_fin ??= readCsv('scripts/data/company_financials.csv') as Financial[]);
-const normName = (s: string) => (s || '').replace(/\(주\)|㈜|\(유\)|주식회사|유한회사/g, '').replace(/[\s\-_.,·ㆍ&/()\[\]'"]/g, '').toLowerCase();
+export const normName = (s: string) => (s || '').replace(/\(주\)|㈜|\(유\)|주식회사|유한회사/g, '').replace(/[\s\-_.,·ㆍ&/()\[\]'"]/g, '').toLowerCase();
 export const financialsOf = (name: string) => financials().filter(f => normName(f.name) === normName(name)).sort((a, b) => b.year.localeCompare(a.year));
 /** 원 → 억 원 표시 (공시 값 그대로 나눈 것) */
 export const fmtEokWon = (won: string) => { const n = Number(won); return won && Number.isFinite(n) ? `${(n / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원` : '—'; };

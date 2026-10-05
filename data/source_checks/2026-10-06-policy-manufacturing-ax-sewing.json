@@ -1,0 +1,131 @@
+{
+ "file": "src/content/posts/2026-10-06-policy-manufacturing-ax-sewing.md",
+ "checked": "2026-10-05",
+ "ok": 8,
+ "total": 10,
+ "ratio": 0.8,
+ "official_bad": [],
+ "pass": true,
+ "sources": [
+  {
+   "title": "경향신문, 「대구, '패션봉제산업' 인공지능 전환 속도···'섬유산업 대전환' 추진」",
+   "url": "https://www.khan.co.kr/article/202606231404001/",
+   "date": "2026-06-23",
+   "kind": "news",
+   "status": 200,
+   "page_title": "대구, ‘패션봉제산업’ 인공지능 전환 속도···‘섬유산업 대전환’ 추진 - 경향신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "매일신문, 「대구 패션봉제산업에 AI 입힌다…자율제조센터 구축」",
+   "url": "https://www.imaeil.com/page/view/2026062308342818839",
+   "date": "2026-06-23",
+   "kind": "news",
+   "status": 200,
+   "page_title": "대구 패션봉제산업에 AI 입힌다…자율제조센터 구축 - 매일신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "한국섬유소재연구원, 「AX 기반 실증 테스트베드 구축 기술지도(컨설팅) 지원 참여기업 모집」",
+   "url": "https://www.koteri.re.kr/board/content.asp?board_id=koteri_notice&ref=4670&step=1&re_level=1&page=1",
+   "date": "2026-10-02",
+   "kind": "official",
+   "status": 200,
+   "page_title": "한국섬유소재연구원",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "한국섬유소재연구원, 「지능형 염색공정 데이터 수집 인프라 및 ERP/SCADA 기반 구축 용역 입찰 공고」",
+   "url": "https://www.koteri.re.kr/board/content.asp?board_id=koteri_notice&ref=4669&step=1&re_level=1&page=1",
+   "date": "2026-09-16",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "한국섬유소재연구원",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "산업연구원(KIET), 「제조 AX를 위한 피지컬 AI 생태계 발전 전략」",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=867&skey=&sval=&pg=1&pp=10",
+   "date": "2026-09-15",
+   "kind": "report",
+   "status": 200,
+   "page_title": "제조 AX를 위한 피지컬 AI 생태계 발전 전략 - KIET 산업연구원 - 연구 - 이슈 분석 - i-KIET 산업경제이슈",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "뉴시스, 「중기중앙회, 스마트공장 구축 중소기업 AI 도입 의견조사(502개사)」",
+   "url": "https://www.newsis.com/view/NISX20251017_0003367189",
+   "date": "2025-10-17",
+   "kind": "news",
+   "status": 200,
+   "page_title": "&#039;스마트공장&#039; 구축 중소기업 80% &quot;제조 AI 도입 필요해&quot; :: 공감언론 뉴시스 ::",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "파이낸셜뉴스, 「구미·포항 국가산단, 산업부 AX 실증 산단 공모 선정」",
+   "url": "https://www.fnnews.com/news/202607131821120800",
+   "date": "2026-07-13",
+   "kind": "news",
+   "status": 200,
+   "page_title": "구미·포항, AX 실증산단 선정… 4년간 481억 투입 - 파이낸셜뉴스",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
+   "date": "2026-10-01",
+   "kind": "data",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "국가데이터처, 「전국사업체조사 — 시도·산업·사업체구분별 사업체수·종사자수」 KOSIS DT_1K52D01(2020~2023년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01",
+   "date": "2026-09-28",
+   "kind": "data",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·종사자 신고값)·지원 이력·사업 DB(사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-09-28",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

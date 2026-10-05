@@ -217,7 +217,7 @@ tables:
   # ── 정책 대안 프롬프트 조사 항목(운영자 지시 2026-10-05, scripts/policy_lever_prompt.py). 2026-10-05 discover 로 표 번호 확인 ──
   #    외국인 환자 유치실적은 KOSIS 에 지역 표가 없어 공공데이터포털 파일(scripts/policy_inputs.py)로 받는다
   - key: foreign-residents-sido
-    name: 지방자치단체 외국인주민 현황 — 시도별(유형: 외국인근로자·결혼이민자·유학생 등)
+    name: 지방자치단체 외국인주민 현황 — 시도별(유형 — 외국인근로자·결혼이민자·유학생 등)
     org_id: "110"
     tbl_id: "TX_11025_A000_A"
     prd_se: Y
@@ -241,7 +241,7 @@ tables:
     prd_se: Y
     area: []
   - key: medical-use-sido-outside
-    name: 지역별 의료이용통계 — 시도별 진료현황(관외: 거주 시도 밖 의료기관 이용)
+    name: 지역별 의료이용통계 — 시도별 진료현황(관외 — 거주 시도 밖 의료기관 이용)
     org_id: "350"
     tbl_id: "TX_35003_A006"
     prd_se: Y

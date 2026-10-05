@@ -23,7 +23,8 @@ VIEW = BASE + "/brd/m_386/view.do?seq={seq}"
 UA = "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"
 # 게시판 목록에서 못 찾을 때 쓰는 글 번호(2026-10-05 목록 확인: 자료 연도 → seq)
 KNOWN = {2025: 33118, 2024: 33116, 2023: 33114, 2022: 33112, 2021: 33109, 2020: 33106, 2019: 33103, 2018: 33100}
-REGIONS = ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "경기", "강원", "충북", "충남",
+# 표의 지역 칸은 지방식약청 관할 순서이고 경기는 북부·남부로 나뉜다(원문 그대로 둔다)
+REGIONS = ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "경기북부", "경기남부", "강원", "충북", "충남",
            "전북", "전남", "경북", "경남", "제주", "합계"]
 KINDS = {"생산": "천원", "수출": "USD", "수입": "USD"}
 FIELDS = ["year", "scope", "kind", "region", "firms", "firms_share", "staff", "staff_share", "amount", "amount_share", "unit",
@@ -54,6 +55,31 @@ def section7(text):
     return text[s: s + e.start()] if e else text[s: s + 40000]
 
 
+def xlsx_text(data):
+    """엑셀 첨부(옛 자료)는 '지역별' 이 든 시트를 표 글자처럼 한 행 한 줄로(칸 사이 두 칸 띄움). 숫자는 원래 값(비율은 소수 둘째 자리)."""
+    import io, openpyxl
+    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+    out = []
+    for ws in wb.worksheets:
+        lines = []
+        for row in ws.iter_rows(values_only=True):
+            cells = []
+            for c in row:
+                if c is None or str(c).strip() == "":
+                    continue
+                if isinstance(c, float):
+                    c = f"{int(c):,}" if c == int(c) and abs(c) >= 1 else f"{c:,.2f}"
+                elif isinstance(c, int):
+                    c = f"{c:,}"
+                cells.append(re.sub(r"\s+", " ", str(c)).strip())
+            if cells:
+                lines.append("  ".join(cells))
+        body = "\n".join(lines)
+        if "지역별" in ws.title or "지역별" in body[:600]:
+            out.append(f"## 시트 {ws.title}\n{body}")
+    return "\n".join(out)
+
+
 def num(t):
     t = t.replace(",", "")
     return "" if t in ("-", "") else t
@@ -69,14 +95,15 @@ def parse(sec, pub, url):
         if re.match(r"7-2\.", l): scope = "체외진단"; continue
         m = re.match(r"\(\d\)\s*지역별\s*(생산|수출|수입)\s*실적", l)
         if m: kind = m.group(1); years = None; continue
-        ys = re.findall(r"(20\d\d)\s*년", l)
-        if len(ys) >= 2 and not re.match(r"\S+\s+\d", l):
-            years = [int(y) for y in ys[:2]]; continue
+        if re.match(r"20\d\d\s*년", l):
+            years = [int(y) for y in re.findall(r"(20\d\d)\s*년", l)][:2]; continue
         name = l.split()[0]
+        if kind and not scope:
+            scope = "전체"   # 2017년도 자료처럼 7-1 머리가 없으면 전체
         if name not in REGIONS or not (scope and kind and years):
             continue
         toks = [t for t in l.split()[1:] if re.fullmatch(r"-|-?[\d,]+(\.\d+)?%?", t)]
-        if len(toks) < 12:
+        if len(toks) < 6 * len(years):
             print(f"  ? {pub} {scope} {kind} {name}: 칸 {len(toks)}개 — 건너뜀 | {l[:160]}")
             continue
         for i, y in enumerate(years):
@@ -109,12 +136,19 @@ def fetch():
                 r = sess.get(url, timeout=120); time.sleep(1)
             except Exception as e:
                 print(f"  ! {year} file_seq={fs}: {str(e)[:120]}"); continue
-            if r.status_code != 200 or r.content[:4] != b"%PDF":
-                print(f"  - {year} file_seq={fs}: {r.status_code} {r.content[:8]!r} (PDF 아님)"); continue
-            with tempfile.NamedTemporaryFile(suffix=".pdf") as t:
-                t.write(r.content); t.flush()
-                text = subprocess.run(["pdftotext", "-layout", t.name, "-"], capture_output=True, text=True).stdout
-            sec = section7(text)
+            if r.status_code != 200 or r.content[:4] not in (b"%PDF", b"PK\x03\x04"):
+                print(f"  - {year} file_seq={fs}: {r.status_code} {r.content[:8]!r} (PDF·엑셀 아님)"); continue
+            if r.content[:4] == b"%PDF":
+                with tempfile.NamedTemporaryFile(suffix=".pdf") as t:
+                    t.write(r.content); t.flush()
+                    text = subprocess.run(["pdftotext", "-layout", t.name, "-"], capture_output=True, text=True).stdout
+                sec = section7(text)
+            else:
+                try:
+                    text = xlsx_text(r.content)
+                except Exception as e:
+                    print(f"  - {year} file_seq={fs}: 엑셀 아님·못 읽음 {str(e)[:100]}"); continue
+                sec = section7(text) or text
             if not sec:
                 print(f"  - {year} file_seq={fs}: 7절(지역별) 없음"); continue
             (RAW / f"device_{year}.txt").write_text(sec, encoding="utf-8")

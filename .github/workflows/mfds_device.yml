@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: sudo apt-get install -y -qq poppler-utils >/dev/null && pip install -q -r scripts/requirements.txt
+      - run: sudo apt-get install -y -qq poppler-utils >/dev/null && pip install -q -r scripts/requirements.txt openpyxl
       - name: 받기
         env:
           PYTHONUNBUFFERED: "1"

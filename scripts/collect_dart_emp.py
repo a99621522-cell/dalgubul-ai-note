@@ -56,7 +56,8 @@ def get(path: str, **params) -> dict | None:
         r.raise_for_status()
         j = r.json()
     except Exception as e:  # noqa: BLE001
-        print(f"[dart_emp] {path} 실패: {re.sub(r'crtfc_key=[^&\\s]+', 'crtfc_key=***', str(e))[:160]}")
+        msg = re.sub(r"crtfc_key=[^&\s]+", "crtfc_key=***", str(e))
+        print(f"[dart_emp] {path} 실패: {msg[:160]}")
         return None
     st = j.get("status")
     if st == "013":

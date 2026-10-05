@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n } from '../../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
  *  본사 주소가 대구인 유가증권·코스닥·코넥스 상장 회사의 재무·직원·연구개발비·출자·미래 산업 공시, 회사별 상세는 /listed/<corp_code>/.
@@ -48,6 +48,8 @@ const invCorps = [...new Set(INV.map(r => r.corp_code))].map(code => {
   const rs = INV.filter(r => r.corp_code === code).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));
   const c = byCodeCorp.get(code); return { code, name: c?.name ?? rs[0].name, companyId: c?.companyId ?? null, rs, year: rs[0].year, url: rs[0].source_url };
 }).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+const rndCode = new Map(RND.filter(r => r.year === rndLast).map(r => [r.corp_code, r]));
+const empCode = new Map(empLastRows.map(e => [e.corp_code, e]));
 const invPurpose = countBy(INV, r => purposeOf(r.purpose)).sort((a, b) => b[1] - a[1]);
 const invLocal = INV.filter(r => local.has(normName(r.inv_name))).length;
 const eokS = (won?: string) => { const v = Number(won); return won && Number.isFinite(v) && v > 0 ? (v / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—'; };
@@ -73,10 +75,10 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
     <thead>
       <tr><th rowspan="2">회사</th><th rowspan="2">분야(업종)</th><th rowspan="2">무엇을 만드나</th><th rowspan="2">시장</th><th rowspan="2">종목코드</th><th rowspan="2">구·군</th>
         <th colspan={years.length} class="c">매출액(억 원)</th><th colspan={years.length - 1} class="c">매출액 증가율(%)</th><th colspan={years.length} class="c">영업이익(억 원)</th><th colspan={years.length} class="c">영업이익률(%)</th>
-        <th colspan="4" class="c">{last}년(억 원)</th><th rowspan="2">공시</th></tr>
-      <tr>{years.map(y => <th class="n">{y}</th>)}{years.slice(1).map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익</th><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th></tr>
+        <th colspan="5" class="c">{last}년 재무상태</th><th colspan="2" class="c">연구개발비({rndLast}년)</th><th rowspan="2" class="n">직원 수<br />({empLast}년)</th><th rowspan="2">공시</th></tr>
+      <tr>{years.map(y => <th class="n">{y}</th>)}{years.slice(1).map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익<br />(억 원)</th><th class="n">자산총계<br />(억 원)</th><th class="n">부채총계<br />(억 원)</th><th class="n">자본총계<br />(억 원)</th><th class="n">부채비율<br />(%)</th><th class="n">억 원</th><th class="n">매출 대비<br />(%)</th></tr>
     </thead>
-    <tbody>{corps.map(c => { const L = c.years[last]; const mk = makesOf(c); return (
+    <tbody>{corps.map(c => { const L = c.years[last]; const mk = makesOf(c); const rd = rndCode.get(c.code); const em = empCode.get(c.code); return (
       <tr data-name={`${c.name} ${c.ksicName} ${mk.text}`} data-cls={c.cls} data-grp={c.group}>
         <th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a></th>
         <td class="wrap">{c.ksicName || c.group}{c.ksicName && <span class="meta"> · {c.group}</span>}</td>
@@ -87,10 +89,13 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
         {years.map(y => <td class="n">{f(c.years[y]?.operating_income)}</td>)}
         {years.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}
         <td class="n">{f(L?.net_income)}</td><td class="n">{f(L?.total_assets)}</td><td class="n">{f(L?.total_liabilities)}</td><td class="n">{f(L?.total_equity)}</td>
+        <td class="n">{pct1n(debtRatio(L))}</td>
+        <td class="n">{rd ? eokS(rd.rnd_won) : '—'}</td><td class="n">{rd?.ratio_pct ? Number(rd.ratio_pct).toFixed(1) : '—'}</td>
+        <td class="n">{em ? n0(em.employees) : '—'}</td>
         <td><a href={c.url} rel="noopener">DART</a>{L?.fs === '개별' ? <span class="meta"> 개별</span> : ''}</td>
       </tr>); })}</tbody>
   </table></div>
-  <p class="meta">매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100 으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
+  <p class="meta">매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 연구개발비·직원 수는 아래 '연구개발비'·'직원 현황'과 같은 사업보고서 값입니다(표를 못 찾은 회사는 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
 
   {fut.length > 0 && (
   <section id="future">

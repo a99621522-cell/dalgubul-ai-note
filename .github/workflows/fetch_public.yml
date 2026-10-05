@@ -9,7 +9,7 @@ on:
   # 작업 브랜치에서는 push 로도 돈다(기본 브랜치에 없는 워크플로는 수동 실행 API 에 안 잡히므로). 그때는 probe 모드
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: [".github/workflows/fetch_public.yml", "scripts/fetch_datago.py", "scripts/collect_dart_fin.py", "data/fetch_mode.txt"]
+    paths: [".github/workflows/fetch_public.yml", "scripts/fetch_datago.py", "data/fetch_mode.txt"]
   workflow_dispatch:
     inputs:
       mode:
@@ -63,13 +63,6 @@ jobs:
           if [ "$MODE" = "save" ]; then FLAG=--save; elif [ "$MODE" = "search" ]; then FLAG=--search; else FLAG=--probe; fi
           python3 scripts/fetch_datago.py $FLAG $IDS ${PICK:+--pick "$PICK"} --max 3
           echo "fetch exit=$?"
-      - name: DART 재무 (DART_KEY 가 있을 때)
-        env:
-          DART_KEY: ${{ secrets.DART_KEY }}
-        run: |
-          set +e
-          python3 scripts/collect_dart_fin.py --years 3
-          echo "dart_fin exit=$?"
       - name: 받은 파일 처리 (save 일 때)
         if: env.MODE == 'save'
         run: |

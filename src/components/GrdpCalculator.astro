@@ -1,5 +1,5 @@
 ---
-import { grdpCalcData, ioDaegu, tourismOutsider, mfgScenarios } from '../lib/grdp';
+import { grdpCalcData, ioDaegu } from '../lib/grdp';
 /** 대구 GRDP 성장 목표 계산기(운영자 지시 2026-10-05). 목표 성장률을 넣으면 생산 측(경제활동별) 또는 지출 측(소비·투자·순이출)
  *  항목별로 필요한 기여도(%p)·성장률(%)을 가정별로 계산한다. 기여도 = 최근 연도 명목 비중 × 실질 성장률(근사).
  *  전망·달성 가능성 판단이 아니라 가정에 따른 계산이다. 브라우저 안에서만 계산. */
@@ -12,14 +12,11 @@ const net = E.items.find(i => i.key === '재화와 서비스 순이출');
 const cons = E.items.filter(i => i.key.endsWith('최종소비지출')).reduce((a, i) => a + i.share, 0);
 const IO = ioDaegu();
 const trendSum = P.items.reduce((a, i) => a + i.avgc, 0);
-const TOUR = tourismOutsider();
-const MS = mfgScenarios();
-const f2 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const data = { tour: TOUR, prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '설비투자' }, nom: P.nomTrillion, trendSum, io: IO };
+const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '설비투자' }, nom: P.nomTrillion, trendSum, io: IO };
 ---
 {d.items.length > 0 && (
 <section id="calc">
-  <div class="section-head"><h2>성장 목표 계산기</h2><span class="meta">대구 GRDP · {d.y1}년 기준</span></div>
+  <div class="section-head"><h2>목표 계산기 — 목표에서 거꾸로</h2><span class="meta">대구 GRDP · {d.y1}년 기준</span></div>
   <p class="meta">목표 실질 성장률을 넣으면 항목마다 몇 %p를 보태야 합이 목표가 되는지 계산합니다. 기여도 = {d.y1}년 명목 비중 × 실질 성장률입니다. 가정에 따른 계산일 뿐 전망이나 달성 가능성 판단이 아닙니다.</p>
   <p class="meta">참고: {d.y0}→{d.y1}년 연평균 실질 성장률 {f1(d.cagr)}% · 가장 높았던 해 {best?.y}년 {f1(best?.g ?? 0)}% · 5% 이상인 해 {over5}번 · {d.y1}년 명목 GRDP {f1(d.nomTrillion)}조 원</p>
 
@@ -57,32 +54,6 @@ const data = { tour: TOUR, prod: P.items, exp: E.items, defFill: { prod: '제조
     <ul class="budget-out" id="gbo" aria-live="polite"></ul>
     <p class="meta">유발계수 {IO.vaIn}(대구 안)·{IO.vaOut}(다른 지역)은 대구 최종수요(소비·투자·수출 전체) 1단위의 평균으로, 지출 성격별 계수는 공표 책에 없습니다. 건설·소비·기업 지원은 실제 값이 다를 수 있어 계수 칸을 바꿔 볼 수 있습니다. 대구 최종수요는 {IO.localShare}%가 대구 생산, {IO.inflowShare}%가 다른 지역 생산, {IO.importShare}%가 수입품이며, 계수는 국산품 1단위 기준이라 수입품 몫({IO.importShare}%)을 빼고 곱합니다. 한 번 쓴 지출은 그 해 GRDP 수준을 올릴 뿐이라, 성장률로 이어지려면 다음 해에 그보다 더 늘어나야 합니다. 이미 해 오던 지출은 지난 10년 추세에 들어 있으므로 새로 늘어나는 몫만 넣습니다. 출처: <a href={IO.url} rel="noopener">{IO.source}</a> {IO.vaPage}·{IO.empPage}쪽.</p>
   </div>)}
-  {IO && IO.vaIn != null && TOUR && (
-  <div class="budget-box" id="gtour">
-    <h3>관광 외지인 소비로 보기</h3>
-    <p class="meta">대구 밖에 사는 사람이 대구에서 쓴 관광소비는 대구 밖에서 들어오는 돈입니다. {TOUR.year}년 외지인 관광소비는 {f2(TOUR.eok / 10000)}조 원(전국 대비 {f1(TOUR.share)}%){TOUR.prevEok != null && <>, {TOUR.prevYear}년 {f2(TOUR.prevEok / 10000)}조 원</>}입니다. 늘어나는 비율을 넣으면 위와 같은 유발계수로 GRDP 기여를 계산합니다.</p>
-    <div class="calc-tools">
-      <label>외지인 관광소비 증가 <input id="gtr" type="number" step="1" value="10" inputmode="decimal" /> %</label>
-    </div>
-    <ul class="budget-out" id="gtro" aria-live="polite"></ul>
-    <p class="meta">신용카드 결제 기반 집계라 현금·다른 결제 수단은 빠지고, 데이터랩은 총량보다 추세로 보라고 안내합니다. 소비액은 매출이지 부가가치가 아니어서 유발계수를 곱해 부가가치로 바꿉니다. 출처: {TOUR.url ? <a href={TOUR.url} rel="noopener">{TOUR.source}</a> : TOUR.source}.</p>
-  </div>)}
-  {MS && (
-  <details class="stat-details" id="gmfg">
-    <summary>제조업 업종별로 보기 — 업종마다 얼마나 성장하면 GRDP 에 얼마를 보태나</summary>
-    <p class="meta">제조업은 {MS.y1}년 GRDP 의 {f1(MS.mfgShare)}%라, 제조업 전체가 1% 더 성장하면 GRDP 는 약 {f2(MS.mfgShare / 100)}%p 늘어납니다. {MS.y0}→{MS.y1}년 대구 제조업 실질 연평균 성장은 {f1(MS.mfgCagr)}%(전국 {f1(MS.natMfgCagr)}%)입니다. 아래는 업종마다 성장률을 가정했을 때의 GRDP 기여(%p)입니다.</p>
-    <div class="scroll-x"><table class="data-table compact" data-title="대구 제조업 업종별 GRDP 기여 시나리오">
-      <thead><tr><th>업종</th><th class="n">GRDP 비중(%)</th><th class="n">대구 10년 성장(%)</th><th class="n">전국 10년 성장(%)</th><th class="n">추세 기여</th><th class="n">감소 멈춤</th><th class="n">전국 성장률</th><th class="n">추세·전국 중 높은 쪽</th><th class="n">상위 3개 시도 평균 성장</th><th class="n">+0.1%p 에 필요한 추가 성장(%p)</th></tr></thead>
-      <tbody>{MS.rows.map(r => <tr><th scope="row">{r.name}</th><td class="n">{f1(r.share)}</td><td class="n">{f1(r.g)}</td><td class="n">{f1(r.gn)}</td><td class="n">{f2(r.trend)}</td><td class="n">{f2(r.stop)}</td><td class="n">{f2(r.nat)}</td><td class="n">{f2(r.mix)}</td><td class="n">{f2(r.top)} <span class="meta">({f1(r.top3)}%)</span></td><td class="n">{f1(r.need01)}</td></tr>)}</tbody>
-      <tfoot><tr><th scope="row">합계</th><td class="n">{f1(MS.mfgShare)}</td><td class="n">{f1(MS.mfgCagr)}</td><td class="n">{f1(MS.natMfgCagr)}</td><td class="n">{f2(MS.tot.trend)}</td><td class="n">{f2(MS.tot.stop)}</td><td class="n">{f2(MS.tot.nat)}</td><td class="n">{f2(MS.tot.mix)}</td><td class="n">{f2(MS.tot.top)}</td><td class="n"></td></tr></tfoot>
-    </table></div>
-    <ul class="meta">
-      <li>기여(%p) = {MS.y1}년 GRDP 대비 명목 비중 × 가정한 연 실질 성장률. 추세 대비 늘어나는 몫: 감소 멈춤 +{f2(MS.tot.stop - MS.tot.trend)}%p · 전국 성장률 +{f2(MS.tot.nat - MS.tot.trend)}%p · 추세·전국 중 높은 쪽 +{f2(MS.tot.mix - MS.tot.trend)}%p · 상위 3개 시도 평균 +{f2(MS.tot.top - MS.tot.trend)}%p.</li>
-      <li>감소 멈춤: 10년 성장이 마이너스인 업종이 0%에 머문다고 가정. 상위 3개 시도 평균: 17개 시도 가운데 그 업종 10년 연평균 성장률이 높았던 세 곳의 평균(비교 기준일 뿐 순위·평가가 아닙니다).</li>
-      <li>+0.1%p 에 필요한 추가 성장: 그 업종 하나로 GRDP 를 0.1%p 더 올리려면 추세보다 해마다 몇 %p 더 성장해야 하는지(= 0.1 ÷ 비중 × 100). 비중이 작은 업종일수록 큽니다.</li>
-      <li>추세 기여는 {MS.y1}년 비중 × 10년 연평균 성장이라, 해마다 비중을 바꿔 쓴 공표 실질기여도 평균과 조금 다릅니다.</li>
-    </ul>
-  </details>)}
   <details class="stat-details">
     <summary>계산 방법과 주의</summary>
     <ul class="meta">
@@ -177,21 +148,6 @@ const data = { tour: TOUR, prod: P.items, exp: E.items, defFill: { prod: '제조
         Number.isFinite(need) ? `차이 ${fmt(gap, 2)}%p를 새 지출만으로 메운다면 한 해 약 <strong>${fmt(need / 10000, 1)}조 원</strong>이 더 필요합니다(같은 계수 가정)` : '',
       ].filter(Boolean).map(x => `<li>${x}</li>`).join('');
     };
-    const gtr = document.getElementById('gtr') as HTMLInputElement | null, gtro = document.getElementById('gtro');
-    const tour = () => {
-      const io = (D as any).io, t = (D as any).tour; if (!gtr || !gtro || !io || !t) return;
-      const r = Number(gtr.value) || 0, T = Number(gt.value), nomEok = (D as any).nom * 10000;
-      const dom = 1 - (io.importShare ?? 0) / 100, add = t.eok * r / 100, va = add * dom * io.vaIn, pp = va / nomEok * 100;
-      const gap = T - (D as any).trendSum;
-      gtro.innerHTML = [
-        `늘어나는 외지인 관광소비 <strong>${fmt(add / 10000, 2)}조 원</strong> (${t.year}년 ${fmt(t.eok / 10000)}조 원의 ${fmt(r)}%)`,
-        `대구 안 부가가치 약 ${fmt(va, 0)}억 원 → 대구 GRDP 기여 <strong>${fmt(pp, 2)}%p</strong>`,
-        gap > 0 ? `목표 ${fmt(T)}%와 지난 10년 추세의 차이 ${fmt(gap, 2)}%p 가운데 <strong>${fmt(pp / gap * 100)}%</strong>` : '',
-        `해마다 이만큼 기여하려면 외지인 관광소비가 해마다 ${fmt(r)}%씩 계속 늘어야 합니다`,
-      ].filter(Boolean).map(x => `<li>${x}</li>`).join('');
-    };
-    gtr?.addEventListener('input', tour);
-    gt.addEventListener('input', tour);
     [gb, gk].forEach(x => x?.addEventListener('input', budget));
     gt.addEventListener('input', budget);
     document.querySelectorAll<HTMLInputElement>('input[name="gside"]').forEach(r => r.addEventListener('change', () => { side = r.value as 'prod' | 'exp'; build(); }));
@@ -201,7 +157,6 @@ const data = { tour: TOUR, prod: P.items, exp: E.items, defFill: { prod: '제조
     }));
     build();
     budget();
-    tour();
   }
 </script>
 <style>

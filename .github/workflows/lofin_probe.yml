@@ -1,0 +1,23 @@
+name: 지방재정365 요청 확인 (로그만)
+
+# scripts/lofin_probe.py — 지방재정365 대구 세출예산 요청 주소·지역 코드·데이터셋 확인. 저장소 변경 없음.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/factorion-file-repair-tyqnlb]
+    paths: [scripts/lofin_probe.py, .github/workflows/lofin_probe.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt playwright && python -m playwright install --with-deps chromium
+      - run: python scripts/lofin_probe.py

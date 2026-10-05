@@ -8,6 +8,8 @@ import { classify } from './industry';
 export type DartCorp = {
   code: string; name: string; cls: string; stock: string; district: string; ksic: string; group: string; years: Record<string, Financial>;
   latest: Financial | undefined; companyId: string | null; url: string;
+  /** 업종 이름(KSIC — 공장등록 자료에 같은 코드가 있을 때)·공장등록 생산품(기업 사전과 이름이 같을 때) */
+  ksicName: string; factoryProduct: string;
 };
 export const eok = (won?: string) => { const n = Number(won); return won && Number.isFinite(n) ? n / 1e8 : null; };
 /** 기업개황 상장 구분(corp_cls) → 이름. 코넥스도 상장(시장)으로 센다 */
@@ -27,7 +29,11 @@ function build() {
     fs.existsSync(cache) ? JSON.parse(fs.readFileSync(cache, 'utf-8')) : {};
   const codes = new Set([...byCode.keys(), ...Object.entries(meta).filter(([, m]) => m.daegu).map(([k]) => k)]);
   const coByName = new Map<string, Company>();
-  for (const c of companies()) { const k = normName(c.name); const o = coByName.get(k); if (!o || Number(c.workers || 0) > Number(o.workers || 0)) coByName.set(k, c); }
+  const ksicNames = new Map<string, string>();
+  for (const c of companies()) {
+    const k = normName(c.name); const o = coByName.get(k); if (!o || Number(c.workers || 0) > Number(o.workers || 0)) coByName.set(k, c);
+    if (c.sector_code && !ksicNames.has(c.sector_code)) ksicNames.set(c.sector_code, c.sector.replace(/\s*외\s*\d+\s*종$/, '').trim());
+  }
   const corps = [...codes].map(code => {
     const rs = byCode.get(code) ?? [];
     const m = meta[code];
@@ -40,6 +46,7 @@ function build() {
       code, name, cls: latest?.corp_cls || CLS_NAME[m?.corp_cls ?? ''] || '', stock: latest?.stock_code || m?.stock_code || '',
       district: (latest?.region || m?.region || '').split(' ')[1] ?? '', ksic,
       group: classify(ksic, '', ''), years: ys, latest, companyId: co?.id ?? null,
+      ksicName: ksicNames.get(ksic) ?? '', factoryProduct: (co?.product ?? '').trim(),
       url: latest?.source_url || `https://dart.fss.or.kr/dsab007/main.do?option=corp&textCrpNm=${encodeURIComponent(name)}`,
     };
   }).sort((a, b) => byName(a.name, b.name));
@@ -99,3 +106,19 @@ export const empByCode = (code: string) => dartEmployees().filter(e => e.corp_co
 export const rndByCode = (code: string) => dartRnd().filter(r => r.corp_code === code).sort((a, b) => b.year.localeCompare(a.year));
 export const invByCode = (code: string) => dartInvest().filter(r => r.corp_code === code).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));
 export const futByCode = (code: string) => futureDisclosures().filter(d => d.corp_code === code).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));
+
+/** 주요 제품(scripts/collect_dart_extra.py → scripts/data/company_products.csv): 사업보고서 '주요 제품(및 서비스)' 표의 사업부문·품목·용도·매출 비율 — 표 글자 그대로 */
+export type DartProduct = { corp_code: string; name: string; year: string; segment: string; product: string; use: string; share_pct: string; source_url: string };
+export const dartProducts = memo(() => readCsv('scripts/data/company_products.csv') as DartProduct[]);
+export const productsByCode = (code: string) => dartProducts().filter(p => p.corp_code === code);
+/** 목록에 쓰는 '무엇을 만드나' 한 줄: 사업보고서 품목(매출 비율 큰 순 3개) → 없으면 공장등록 생산품. 출처 표시용 kind 를 함께 */
+export function makesOf(c: DartCorp): { text: string; kind: 'dart' | 'factory' | '' } {
+  const ps = productsByCode(c.code);
+  if (ps.length) {
+    const sorted = [...ps].sort((a, b) => (Number(b.share_pct) || 0) - (Number(a.share_pct) || 0));
+    const names = [...new Set(sorted.map(p => p.product.replace(/\s+/g, ' ').trim()))].slice(0, 3);
+    return { text: names.join(' · ') + (new Set(ps.map(p => p.product)).size > 3 ? ' 등' : ''), kind: 'dart' };
+  }
+  if (c.factoryProduct) { const t = c.factoryProduct.replace(/\s+/g, ' '); return { text: t.length > 50 ? t.slice(0, 50).replace(/[,\s]+[^,\s]*$/, '') + ' 등' : t, kind: 'factory' }; }
+  return { text: '', kind: '' };
+}

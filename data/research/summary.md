@@ -18,6 +18,7 @@
 | 국내 연구 | [한국개발연구원(KDI)](https://www.kdi.re.kr) | OK | 첫 화면 | 11 | 2026-10-01 [언론기고 반도체 호황의 결실과 청년 창의력 경제성장률 '5년·1%포인트 ](https://www.kdi.re.kr/share/pressContriView?bd_no=53516) |
 | 국내 연구 | [한국과학기술기획평가원(KISTEP)](https://www.kistep.re.kr) | OK | 목록 페이지 | 16 | 2026-09-15 [국가 단위 과학기술 협력 전략 도출 프레임워크 탐색](https://www.kistep.re.kr/board.es?mid=a10306040000&bid=0031&b_list=10&act=view&list_no=94859&nPage=1&keyField=&orderby=) |
 | 국내 연구 | [한국무역협회(KITA) 보고서](https://www.kita.net) | OK | 목록 페이지 | 8 | 2026-09-30 [상호무역협정을 통한 미국의 대중국 견제 강화와 기업의 대응](https://www.kita.net/researchTrade/report/reportMain/reportMainList.do#상호무역협정을-통한-미국의-대중국-견제-강화와-기업의-대응) |
+| 국내 연구 | [한국보건산업진흥원(KHIDI) 바이오헬스산업 브리프](https://www.khidi.or.kr) | OK | rss(/rss?menuId=MENU01783) | 10 |  [[Vol.490] NAMs(동물대체시험법) 최신 국제 규제과학 동향과 국](https://www.khidi.or.kr/board/view?pageNum=1&rowCnt=10&linkId=48949293&menuId=MENU01783) |
 | 국내 연구 | [한국수출입은행 해외경제연구소](https://keri.koreaexim.go.kr) | OK | 공공데이터포털 보고서 파일 15045163,15045162,15045158 | 3 | 2026-07-07 [한국수출입은행 자동차산업동향 (2026-07-07 판)](https://www.data.go.kr/data/15045163/fileData.do) |
 | 국내 연구 | [한국은행(지역경제보고서·조사통계)](https://www.bok.or.kr) | 차단 | robots.txt 차단 | 0 | — |
 | 규제·건의 | [대구상공회의소 보도자료(대한상의 지역상의 게시판)](https://www.korcham.net) | 최근 없음 | 목록 페이지(행)(쪽 12개) | 0 | — |

@@ -6,6 +6,8 @@ import { serviceSeries, serviceIndustryRows, retailSeries, selfEmployedSeries, m
 /** /stats/services/ — 서비스업·자영업(운영자 지시 2026-10-02). KOSIS 원 통계만(src/lib/services.ts). 값 그대로, 평가 없음. */
 const SV = serviceSeries(), RT = retailSeries(), SE = selfEmployedSeries(), MK = marketSeries(), CD = cardSeries(), TR = tourismSeries();
 const tInd = tourismIndustryRows(), tDist = tourismDistrictRows();
+// 방문자 구분 설명 표의 예시 값(각 계열의 최근 달)
+const tLast = (k: string, d: number) => { const s = TR.find(x => x.key === k), p = s?.pts.at(-1); return p ? `${fmt(p.v, d)}만 명(${p.m.slice(0, 4)}년 ${Number(p.m.slice(5))}월)` : '—'; };
 const ymKo = (m: string) => `${m.slice(0, 4)}년 ${Number(m.slice(5))}월`;
 const card = cardRows();
 const ind = serviceIndustryRows();
@@ -44,6 +46,26 @@ const blocks: { id: string; title: string; desc: string; ss: Ser[]; from: string
     <section id={b.id}>
       <div class="section-head"><h2>{b.title}</h2></div>
       <p class="meta">{b.desc}</p>
+      {b.id === 'tour' && (
+        <details class="stat-details" open>
+          <summary>방문자 수 읽는 법 — 외지인·외국인·현지인</summary>
+          <div class="scroll-x"><table class="data-table" data-title="대구 방문자 수 구분">
+            <thead><tr><th>구분</th><th>뜻(대구광역시 기준)</th><th class="n">최근 값</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">외지인</th><td>대구 밖(다른 시·도)에 사는 국내 거주자가 대구에 온 수</td><td class="n">{tLast('tvis', 0)}</td></tr>
+              <tr><th scope="row">외국인</th><td>대구를 찾은 외국인 방문자 수</td><td class="n">{tLast('tfor', 1)}</td></tr>
+              <tr><th scope="row">현지인</th><td>대구에 사는 사람이 대구 안에서 다닌 수</td><td class="n">{tLast('tloc', 0)}</td></tr>
+            </tbody>
+          </table></div>
+          <ul class="meta">
+            <li><strong>사람 수가 아니라 연인원입니다.</strong> 같은 사람이 사흘 머물면 3번 셉니다. 날마다 센 방문을 한 달 동안 더한 값입니다.</li>
+            <li><strong>휴대전화 이동통신 위치로 추정한 값입니다.</strong> 실제로 센 값이 아니어서 데이터랩은 총량보다 증감 추세를 보라고 안내합니다.</li>
+            <li><strong>방문 목적은 구분하지 않습니다.</strong> 관광·출장·통근 등 목적별 값이 아닙니다.</li>
+            <li><strong>구·군 표의 외지인은 그 구·군 밖에 사는 사람입니다.</strong> 예를 들어 중구 외지인에는 대구의 다른 구·군 주민도 들어가므로, 구·군 값을 더해도 대구 외지인 값이 되지 않습니다.</li>
+            <li>외지인은 데이터랩 화면 값, 외국인·현지인은 같은 관광빅데이터의 오픈API 값입니다. 같은 달 외지인 값이 두 경로에서 일치합니다.</li>
+          </ul>
+        </details>
+      )}
       <div class="trend-grid">
         {b.ss.map(s => { const svg = trendChart(s, b.from, lastM(b.ss), b.step); return svg && (
           <figure class="tcard">

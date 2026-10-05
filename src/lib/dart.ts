@@ -1,29 +1,46 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { financials, companies, normName, byName, readCsv, type Financial, type Company } from './csv';
 import { classify } from './industry';
 
 /** DART 대구 본사 공시 기업 재무(scripts/collect_dart_fin.py → scripts/data/company_financials.csv, 운영자 지시 2026-10-05).
  *  사업보고서 주요계정(연결 우선) 값 그대로. 원 → 억 원은 나눗셈만, 비율·순위는 계산하지 않는다. */
 export type DartCorp = {
-  code: string; name: string; cls: string; district: string; group: string; years: Record<string, Financial>;
-  latest: Financial; companyId: string | null; url: string;
+  code: string; name: string; cls: string; stock: string; district: string; ksic: string; group: string; years: Record<string, Financial>;
+  latest: Financial | undefined; companyId: string | null; url: string;
 };
 export const eok = (won?: string) => { const n = Number(won); return won && Number.isFinite(n) ? n / 1e8 : null; };
+/** 기업개황 상장 구분(corp_cls) → 이름. 코넥스도 상장(시장)으로 센다 */
+export const CLS_NAME: Record<string, string> = { Y: '유가증권', K: '코스닥', N: '코넥스', E: '기타' };
+export const isListed = (cls: string) => cls === '유가증권' || cls === '코스닥' || cls === '코넥스';
 
-export function dartCorps(): { corps: DartCorp[]; years: string[]; asOf: string } {
+/** 대구 본사 공시 기업 전체: 기업개황 캐시(scripts/state/dart_corp.json, daegu: true)를 기준으로 재무가 없는 회사도 넣는다
+ *  (사업보고서 재무를 못 받은 코넥스·비상장 회사도 직원·연구개발비·출자 자료가 있을 수 있다). */
+export const dartCorps = (() => { let v: { corps: DartCorp[]; years: string[]; asOf: string } | undefined; return () => (v ??= build()); })();
+function build() {
   const rows = financials().filter(r => r.region || r.corp_cls);   // 새 형식(본사 시군구·상장 구분이 있는 행)
   const years = [...new Set(rows.map(r => r.year))].sort().slice(-3);
   const byCode = new Map<string, Financial[]>();
   for (const r of rows) byCode.set(r.corp_code, [...(byCode.get(r.corp_code) ?? []), r]);
+  const cache = path.resolve('scripts/state/dart_corp.json');
+  const meta: Record<string, { name: string; corp_cls: string; stock_code: string; region: string; induty_code: string; daegu: boolean }> =
+    fs.existsSync(cache) ? JSON.parse(fs.readFileSync(cache, 'utf-8')) : {};
+  const codes = new Set([...byCode.keys(), ...Object.entries(meta).filter(([, m]) => m.daegu).map(([k]) => k)]);
   const coByName = new Map<string, Company>();
   for (const c of companies()) { const k = normName(c.name); const o = coByName.get(k); if (!o || Number(c.workers || 0) > Number(o.workers || 0)) coByName.set(k, c); }
-  const corps = [...byCode.entries()].map(([code, rs]) => {
+  const corps = [...codes].map(code => {
+    const rs = byCode.get(code) ?? [];
+    const m = meta[code];
     const ys = Object.fromEntries(rs.map(r => [r.year, r]));
     const latest = [...rs].sort((a, b) => b.year.localeCompare(a.year))[0];
-    const co = coByName.get(normName(latest.name));
+    const name = (latest?.name || m?.name || code).replace(/\s+/g, ' ').trim();
+    const ksic = latest?.induty_code || m?.induty_code || '';
+    const co = coByName.get(normName(name));
     return {
-      code, name: latest.name, cls: latest.corp_cls || '', district: (latest.region || '').split(' ')[1] ?? '',
-      group: classify(latest.induty_code || '', '', ''), years: ys, latest, companyId: co?.id ?? null,
-      url: latest.source_url || `https://dart.fss.or.kr/dsab007/main.do?option=corp&textCrpNm=${encodeURIComponent(latest.name)}`,
+      code, name, cls: latest?.corp_cls || CLS_NAME[m?.corp_cls ?? ''] || '', stock: latest?.stock_code || m?.stock_code || '',
+      district: (latest?.region || m?.region || '').split(' ')[1] ?? '', ksic,
+      group: classify(ksic, '', ''), years: ys, latest, companyId: co?.id ?? null,
+      url: latest?.source_url || `https://dart.fss.or.kr/dsab007/main.do?option=corp&textCrpNm=${encodeURIComponent(name)}`,
     };
   }).sort((a, b) => byName(a.name, b.name));
   const asOf = rows.map(r => r.as_of).sort().at(-1) ?? '';
@@ -76,3 +93,9 @@ export const purposeOf = (p: string) => {
 };
 export const dartInvest = memo(() => readCsv('scripts/data/company_investments.csv') as DartInvest[]);
 export const investOf = (name: string) => dartInvest().filter(r => normName(r.name) === normName(name)).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));
+
+/** 회사 코드(corp_code)로 고르기 — 상장기업 상세 페이지(/listed/<code>/) */
+export const empByCode = (code: string) => dartEmployees().filter(e => e.corp_code === code).sort((a, b) => b.year.localeCompare(a.year));
+export const rndByCode = (code: string) => dartRnd().filter(r => r.corp_code === code).sort((a, b) => b.year.localeCompare(a.year));
+export const invByCode = (code: string) => dartInvest().filter(r => r.corp_code === code).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));
+export const futByCode = (code: string) => futureDisclosures().filter(d => d.corp_code === code).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));

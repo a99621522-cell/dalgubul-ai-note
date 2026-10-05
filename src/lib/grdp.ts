@@ -57,3 +57,61 @@ export function ioDaegu() {
       importShare: m(/수입\s*([\d.]+)%/), inflowShare: m(/타지역 이입\s*([\d.]+)%/), localShare: m(/지역내 생산\s*([\d.]+)%/), source: d.source as string, url: d.url as string };
   } catch { return null; }
 }
+
+/** 외지인 관광소비(한국관광 데이터랩, data/tourism/datalab_spend_share.csv 의 '외지인' 대구 값) — 12달이 다 있는 최근 해 합계.
+ *  계산기 '관광 외지인 소비로 보기'가 쓴다. 데이터랩은 총량보다 추세로 보라고 안내한다. */
+export function tourismOutsider() {
+  try {
+    const by = new Map<string, { n: number; v: number; nat: number }>();
+    for (const r of readCsv('data/tourism/datalab_spend_share.csv')) {
+      if (r.group !== '외지인') continue;
+      const y = r.ym.slice(0, 4), o = by.get(y) ?? { n: 0, v: 0, nat: 0 };
+      o.n++; o.v += Number(r.region_mil_won) || 0; o.nat += Number(r.nation_mil_won) || 0; by.set(y, o);
+    }
+    const full = [...by.entries()].filter(([, o]) => o.n === 12).sort((a, b) => a[0].localeCompare(b[0]));
+    const [y, o] = full.at(-1) ?? [];
+    if (!y || !o) return null;
+    const prev = full.at(-2);
+    const meta = (() => { try { return JSON.parse(fs.readFileSync('data/tourism/datalab_meta.json', 'utf-8')); } catch { return {}; } })();
+    return { year: y, eok: o.v / 100, share: (o.v / o.nat) * 100, prevYear: prev?.[0], prevEok: prev ? prev[1].v / 100 : null,
+      source: (meta.source as string) ?? '한국관광공사 한국관광 데이터랩', url: (meta.page as string) ?? '' };
+  } catch { return null; }
+}
+
+/** 제조업 업종별 시나리오(지역소득 제조업 7개 업종). 기여(%p) = 최근 연도 GRDP 대비 명목 비중 × 가정한 실질 성장률.
+ *  가정: 대구 10년 추세 / 감소 멈춤(마이너스 업종 0%) / 전국 같은 업종 10년 성장률 / 대구 추세·전국 중 높은 쪽(감소는 0) /
+ *  17개 시도 가운데 그 업종 10년 성장률 상위 3곳 평균 / 대구 그 업종의 10년 중 가장 높았던 해. 순위·평가가 아니라 비교 기준이다. */
+export const MFG_SUB: [string, string][] = [
+  ['음식료품 및 담배제조업', '음식료품·담배'], ['섬유 의복 및 가죽 제품 제조업', '섬유·의복·가죽'], ['목재종이인쇄 및 복제업', '목재·종이·인쇄'],
+  ['석탄 및 석유 화학제품 제조업', '석유·화학'], ['비금속광물 및 금속제품 제조업', '비금속광물·금속'], ['전기 전자 및 정밀기기 제조업', '전기·전자·정밀기기'],
+  ['기계 운송장비 및 기타 제품 제조업', '기계·운송장비·기타'],
+];
+export function mfgScenarios(region = '대구광역시') {
+  const V = new Map<string, number>();
+  const regions = new Set<string>();
+  for (const r of readCsv('data/kosis/grdp-sido-industry-all.csv')) {
+    if (r.DT === '' || !Number.isFinite(Number(r.DT))) continue;
+    V.set(`${r.ITM_NM}|${r.C1_NM}|${r.C2_NM}|${r.PRD_DE}`, Number(r.DT)); regions.add(r.C1_NM);
+  }
+  const years = [...new Set([...V.keys()].map(k => Number(k.split('|')[3])))].sort();
+  const y1 = years.at(-1) ?? 0, y0 = Math.max(years[0] ?? 0, y1 - 10), n = y1 - y0;
+  const v = (i: string, reg: string, k: string, y: number) => V.get(`${i}|${reg}|${k}|${y}`);
+  const cagr = (reg: string, k: string) => { const a = v('실질', reg, k, y0), b = v('실질', reg, k, y1); return a && b ? ((b / a) ** (1 / n) - 1) * 100 : null; };
+  const nom = v('명목', region, '지역내총생산(시장가격)', y1);
+  if (!nom) return null;
+  const sido = [...regions].filter(r => r !== '전국');
+  const rows = MFG_SUB.map(([k, name]) => {
+    const share = ((v('명목', region, k, y1) ?? 0) / nom) * 100;
+    const g = cagr(region, k) ?? 0, gn = cagr('전국', k) ?? 0;
+    const cs = sido.map(r => cagr(r, k)).filter((x): x is number => x != null).sort((a, b) => b - a);
+    const top3 = cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length || 1);
+    const yy = Array.from({ length: n }, (_, j) => { const a = v('실질', region, k, y0 + j), b = v('실질', region, k, y0 + j + 1); return a && b ? (b / a - 1) * 100 : -Infinity; });
+    const best = Math.max(...yy);
+    const c = (x: number) => share * x / 100;
+    return { key: k, name, share, g, gn, top3, best, trend: c(g), stop: c(Math.max(g, 0)), nat: c(gn), mix: c(Math.max(g, gn, 0)), top: c(top3), bestC: c(best), need01: 0.1 / share * 100 };
+  });
+  const sum = (f: (r: typeof rows[number]) => number) => rows.reduce((a, r) => a + f(r), 0);
+  const mfgShare = sum(r => r.share);
+  return { rows, y0, y1, mfgShare, mfgCagr: cagr(region, '제조업') ?? 0, natMfgCagr: cagr('전국', '제조업') ?? 0,
+    tot: { trend: sum(r => r.trend), stop: sum(r => r.stop), nat: sum(r => r.nat), mix: sum(r => r.mix), top: sum(r => r.top), bestC: sum(r => r.bestC) } };
+}

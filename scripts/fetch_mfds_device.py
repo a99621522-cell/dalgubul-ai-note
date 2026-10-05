@@ -75,7 +75,8 @@ def xlsx_text(data):
             if cells:
                 lines.append("  ".join(cells))
         body = "\n".join(lines)
-        if "지역별" in ws.title or "지역별" in body[:600]:
+        print(f"    시트 「{ws.title}」 {len(lines)}줄{' ← 지역 표' if '경기북부' in body else ''}")
+        if "경기북부" in body:   # 지역 표만(목차·품목 표 제외)
             out.append(f"## 시트 {ws.title}\n{body}")
     return "\n".join(out)
 
@@ -91,10 +92,14 @@ def parse(sec, pub, url):
         l = line.strip()
         if not l:
             continue
+        if l.startswith("## 시트"): kind = None; years = None; continue
         if re.match(r"7-1\.", l): scope = "전체"; continue
         if re.match(r"7-2\.", l): scope = "체외진단"; continue
         m = re.match(r"\(\d\)\s*지역별\s*(생산|수출|수입)\s*실적", l)
         if m: kind = m.group(1); years = None; continue
+        h = re.search(r"(생산|수출|수입)액", l)
+        if h and not kind:   # 엑셀 시트는 '(1) 지역별 …' 머리 대신 칸 이름으로
+            kind = h.group(1)
         if re.match(r"20\d\d\s*년", l):
             years = [int(y) for y in re.findall(r"(20\d\d)\s*년", l)][:2]; continue
         name = l.split()[0]

@@ -1,0 +1,49 @@
+name: DART 대구 본사 기업 연구개발비·출자 현황 받기
+
+# scripts/collect_dart_extra.py — 대구 본사 공시 기업의 최근 사업보고서에서 타법인 출자 현황(API)과 연구개발비(원문 '연구개발 활동' 표)
+# → scripts/data/company_investments.csv · company_rnd.csv. 키 DART_KEY. 이 세션 환경은 opendart 가 막혀 러너가 돈다.
+on:
+  schedule:
+    - cron: "47 22 15 4,5,6,9,12 *"   # dart_emp 다음(16일 07:47 KST)
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: "회사명 하나만 연구개발 표 찾기를 자세히 찍기(저장 안 함)"
+        required: false
+        default: ""
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/collect_dart_extra.py", ".github/workflows/dart_extra.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-extra
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+          DEBUG_NAME: ${{ inputs.debug }}
+        run: |
+          if [ -n "$DEBUG_NAME" ]; then python3 scripts/collect_dart_extra.py --only rnd --debug "$DEBUG_NAME"; else python3 scripts/collect_dart_extra.py; fi
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add scripts/data/company_investments.csv scripts/data/company_rnd.csv 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 대구 본사 기업 연구개발비·출자 현황 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

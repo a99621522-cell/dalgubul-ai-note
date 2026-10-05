@@ -12,7 +12,7 @@ const byGroup = countBy(corps, c => c.group).sort((a, b) => a[0].localeCompare(b
 const byDist = countBy(corps, c => c.district).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
 const groups = byGroup.map(g => g[0]);
 const fut = futureDisclosures();
-const futFields = countBy(fut.flatMap(d => d.fields.split('·').filter(Boolean)), x => x).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+const futFields = countBy(fut.flatMap(d => d.fields.split(', ').filter(Boolean)), x => x).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
 const coId = new Map(corps.map(c => [c.code, c.companyId]));
 const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
 ---

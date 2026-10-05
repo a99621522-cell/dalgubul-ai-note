@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon, normName } from '../../lib/csv';
-import { futureDisclosures, ymd, employeesOf, n0, mil } from '../../lib/dart';
+import { futureDisclosures, ymd, employeesOf, n0, mil, rndOf, investOf, purposeOf } from '../../lib/dart';
 import { partners } from '../../lib/partners';
 import { tagName, tagDesc } from '../../lib/sites';
 import { companyStats, monthly, monthLabel, fmt } from '../../lib/stats';
@@ -16,6 +16,8 @@ const supportAll = supportOf(c.id);
 const support3y = recentSupport(supportAll, 3);
 const fin = financialsOf(c.name).slice(0, 3);
 const dartEmp = employeesOf(c.name).slice(0, 3);
+const dartRndRows = rndOf(c.name).slice(0, 3);
+const dartInv = investOf(c.name);
 const fut = fin.length ? futureDisclosures().filter(d => normName(d.name) === normName(c.name)).slice(0, 8) : [];
 const Row = (x: any) => x;
 const related = (await getCollection('posts', p => !p.data.draft))
@@ -126,7 +128,7 @@ const card = {
         </table></div>
       )}
     </section>)}
-    {(fin.length > 0 || dartEmp.length > 0) && (
+    {(fin.length > 0 || dartEmp.length > 0 || dartRndRows.length > 0 || dartInv.length > 0) && (
       <section class="fin" aria-label="공시 재무">
         {fin.length > 0 && (<>
         <div class="section-head"><h2>재무 (DART 공시)</h2><span class="meta">{fin[0].fs} 기준</span></div>
@@ -143,6 +145,22 @@ const card = {
             <tbody>{dartEmp.map(e => (<tr><td>{e.year}</td><td class="n">{n0(e.employees)}</td><td class="n">{n0(e.regular)}</td><td class="n">{n0(e.contract)}</td><td class="n">{n0(e.male)}</td><td class="n">{n0(e.female)}</td><td class="n">{e.avg_tenure ? Number(e.avg_tenure).toFixed(1) : '—'}</td><td class="n">{mil(e.avg_salary)}</td><td>{e.source_url ? <a href={e.source_url} rel="noopener">사업보고서</a> : '—'}</td></tr>))}</tbody>
           </table></div>
           <p class="meta">사업보고서 '직원 등의 현황'(회사 단위 집계). 1인 평균 급여는 연간 급여 총액 ÷ 직원 수, 평균 근속은 사업부문·성별 행을 직원 수로 가중한 값입니다.</p>
+        </>)}
+        {dartRndRows.length > 0 && (<>
+          <h3>연구개발비 (DART 사업보고서)</h3>
+          <div class="scroll-x"><table class="data-table">
+            <thead><tr><th>사업연도</th><th class="n">연구개발비(억 원)</th><th class="n">매출액 대비(%)</th></tr></thead>
+            <tbody>{dartRndRows.map(r => <tr><td>{r.year}</td><td class="n">{(Number(r.rnd_won) / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1, minimumFractionDigits: 1 })}</td><td class="n">{r.ratio_pct ? Number(r.ratio_pct).toFixed(2) : '—'}</td></tr>)}</tbody>
+          </table></div>
+          <p class="meta">사업보고서 원문 '연구개발 활동' 표의 연구개발비용 합계·매출액 대비 비율(공시 값). <a href={dartRndRows[0].source_url} rel="noopener">원문</a></p>
+        </>)}
+        {dartInv.length > 0 && (<>
+          <h3>타법인 출자 현황 (DART 사업보고서, {dartInv[0].year}년)</h3>
+          <div class="scroll-x"><table class="data-table">
+            <thead><tr><th>피출자 법인</th><th>목적</th><th class="n">기말 지분율(%)</th><th>최초 취득</th></tr></thead>
+            <tbody>{dartInv.slice(0, 15).map(r => <tr><td>{r.inv_name}</td><td>{purposeOf(r.purpose)}</td><td class="n">{r.end_share_pct || '—'}</td><td>{r.first_acq_date || '—'}</td></tr>)}</tbody>
+          </table></div>
+          <p class="meta">기말 지분율 높은 순{dartInv.length > 15 && ` 15건(전체 ${dartInv.length}건은 원문)`}. 장부가액은 공시 단위가 회사마다 달라 싣지 않았습니다. <a href={dartInv[0].source_url} rel="noopener">원문</a></p>
         </>)}
         {fut.length > 0 && (<>
           <h3>미래 산업 관련 공시 (최근 12개월)</h3>

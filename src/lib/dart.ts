@@ -40,15 +40,39 @@ export const countBy = <T,>(xs: T[], f: (x: T) => string) => {
 /** 미래 산업 관련 공시(scripts/collect_dart_future.py → data/dart/future.csv): 대구 본사 기업의 투자·계약·지분·특허 공시 중
  *  원문에 미래 산업 낱말이 나온 것. 공시 사실·제목·링크와 근거 구절만. */
 export type FutureDisclosure = { rcept_dt: string; corp_code: string; name: string; report_nm: string; event: string; fields: string; keywords: string; excerpt: string; rcept_no: string; url: string };
-export const futureDisclosures = () => readCsv('data/dart/future.csv') as FutureDisclosure[];
+/** 기업 페이지 1만여 곳이 빌드 때 같은 CSV 를 부르므로 한 번만 읽는다 */
+const memo = <T,>(f: () => T) => { let v: T | undefined; return () => (v ??= f()); };
+export const futureDisclosures = memo(() => readCsv('data/dart/future.csv') as FutureDisclosure[]);
 export const ymd = (s: string) => (s && s.length === 8 ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6)}` : s);
 
 /** 직원 현황(scripts/collect_dart_emp.py → scripts/data/company_employees.csv): 사업보고서 '직원 등의 현황' 회사 단위 집계.
  *  직원 수·정규직·기간제·남녀·평균 근속연수 값 그대로, 1인 평균 급여는 연간 급여 총액 ÷ 직원 수(avg_method). 순위·평가 없음. */
 export type DartEmployee = { corp_code: string; name: string; year: string; employees: string; regular: string; contract: string; male: string; female: string;
   avg_tenure: string; salary_total: string; avg_salary: string; avg_salary_reported: string; avg_method: string; unit_note: string; rcept_no: string; source_url: string; as_of: string };
-export const dartEmployees = () => readCsv('scripts/data/company_employees.csv') as DartEmployee[];
+export const dartEmployees = memo(() => readCsv('scripts/data/company_employees.csv') as DartEmployee[]);
 export const employeesOf = (name: string) => dartEmployees().filter(e => normName(e.name) === normName(name)).sort((a, b) => b.year.localeCompare(a.year));
 /** 숫자 칸 → 표시(빈칸·0 은 —) */
 export const n0 = (s?: string) => { const v = Number(s); return s && Number.isFinite(v) && v !== 0 ? Math.round(v).toLocaleString('ko-KR') : '—'; };
 export const mil = (s?: string) => { const v = Number(s); return s && Number.isFinite(v) && v > 0 ? (v / 1e6).toLocaleString('ko-KR', { maximumFractionDigits: 0 }) : '—'; };
+
+/** 연구개발비(scripts/collect_dart_extra.py → scripts/data/company_rnd.csv): 사업보고서 원문 '연구개발 활동' 표의 연구개발비용 계(원으로 환산)와
+ *  매출액 대비 비율(공시 값). 표를 못 찾은 회사는 없다. 비율이 50% 를 넘는 값은 표 읽기 오류로 보고 비운다. */
+export type DartRnd = { corp_code: string; name: string; report_year: string; year: string; rnd_won: string; ratio_pct: string; unit: string; source_url: string };
+export const dartRnd = memo(() => (readCsv('scripts/data/company_rnd.csv') as DartRnd[]).map(r => ({ ...r, ratio_pct: Number(r.ratio_pct) > 50 ? '' : r.ratio_pct })));
+export const rndOf = (name: string) => dartRnd().filter(r => normName(r.name) === normName(name)).sort((a, b) => b.year.localeCompare(a.year));
+
+/** 타법인 출자 현황(scripts/data/company_investments.csv): 사업보고서 '타법인 출자 현황'. 장부가액 등 금액은 공시 표 단위가 회사마다 달라 페이지에 싣지 않고
+ *  피출자 법인·출자 목적(공시 문구를 경영참여·사업 관련·단순·일반투자·조합 출자·지분 취득·출자로 묶음)·최초 취득일·기말 지분율만. */
+export type DartInvest = { corp_code: string; name: string; year: string; inv_name: string; purpose: string; first_acq_date: string; end_share_pct: string; source_url: string };
+export const purposeOf = (p: string) => {
+  const t = (p || '').replace(/\s+/g, '');
+  if (!t) return '미기재';
+  if (/경영|종속/.test(t)) return '경영참여';
+  if (/조합/.test(t)) return '조합 출자';
+  if (/사업|전략|협력|관계|시장|진출|거점|점유율|생산|개발|마케팅|경쟁력|운영|제조|연구|업$|업등/.test(t)) return '사업 관련';
+  if (/단순|일반|투자/.test(t)) return '단순·일반투자';
+  if (/지분|증자|출자|주식|분할|전환/.test(t)) return '지분 취득·출자';
+  return '기타';
+};
+export const dartInvest = memo(() => readCsv('scripts/data/company_investments.csv') as DartInvest[]);
+export const investOf = (name: string) => dartInvest().filter(r => normName(r.name) === normName(name)).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));

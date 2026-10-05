@@ -1,0 +1,20 @@
+{
+ "key": "medical-use-sgg-provider-outside",
+ "name": "지역별 의료이용통계 — 의료기관 시군구(부산·대구·울산·경북·경남)별 관외 진료현황(다른 지역 환자, 전체)",
+ "tbl_nm": "의료기관 시군구(부산대구울산경북경남)별 관외 진료현황-전체",
+ "org_id": "350",
+ "tbl_id": "DT_35003_A36",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 2000,
+ "rows_kept": 2000,
+ "latest": "2024",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-05",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=DT_35003_A36",
+ "note": ""
+}

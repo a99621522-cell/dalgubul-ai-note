@@ -1,0 +1,20 @@
+{
+ "key": "foreign-residents-sido",
+ "name": "지방자치단체 외국인주민 현황 — 시도별(유형 — 외국인근로자·결혼이민자·유학생 등)",
+ "tbl_nm": "시도별 외국인주민 현황",
+ "org_id": "110",
+ "tbl_id": "TX_11025_A000_A",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 2700,
+ "rows_kept": 2700,
+ "latest": "2024",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-05",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=110&tblId=TX_11025_A000_A",
+ "note": ""
+}

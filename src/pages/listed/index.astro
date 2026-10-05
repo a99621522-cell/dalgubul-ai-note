@@ -1,21 +1,25 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf } from '../../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
-/** /companies/dart/ — 대구 본사 공시 기업 재무(운영자 지시 2026-10-05: DART 에서 대구 본사 기업의 최근 3년 경영 정보).
- *  scripts/collect_dart_fin.py 가 사업보고서를 낸 회사 중 기업개황 본사 주소가 대구인 곳의 주요계정을 받는다.
- *  값은 공시 그대로(원 → 억 원 나눗셈만), 가나다순, 평가·순위·비율 계산 없음. */
-const { corps, years, asOf } = dartCorps();
+/** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
+ *  본사 주소가 대구인 유가증권·코스닥·코넥스 상장 회사의 재무·직원·연구개발비·출자·미래 산업 공시, 회사별 상세는 /listed/<corp_code>/.
+ *  사업보고서를 내는 비상장 회사는 맨 아래 따로. 값은 공시 그대로(원 → 억 원 나눗셈만), 가나다순, 평가·순위·비율 계산 없음. */
+const all = dartCorps();
+const { years, asOf } = all;
+const corps = all.corps.filter(c => isListed(c.cls));
+const unlisted = all.corps.filter(c => !isListed(c.cls));
+const listedCodes = new Set(corps.map(c => c.code));
 const last = years.at(-1) ?? '';
-const CLS_ORDER = ['유가증권', '코스닥', '코넥스', '기타'];
+const CLS_ORDER = ['유가증권', '코스닥', '코넥스'];
 const byCls = countBy(corps, c => c.cls).sort((a, b) => CLS_ORDER.indexOf(a[0]) - CLS_ORDER.indexOf(b[0]));
 const byGroup = countBy(corps, c => c.group).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
 const byDist = countBy(corps, c => c.district).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
 const groups = byGroup.map(g => g[0]);
-const fut = futureDisclosures();
+const fut = futureDisclosures().filter(d => listedCodes.has(d.corp_code));
 const futFields = countBy(fut.flatMap(d => d.fields.split(', ').filter(Boolean)), x => x).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
 const coId = new Map(corps.map(c => [c.code, c.companyId]));
-const EMP = dartEmployees();
+const EMP = dartEmployees().filter(e => listedCodes.has(e.corp_code));
 const empYears = [...new Set(EMP.map(e => e.year))].sort().slice(-3);
 const empLast = empYears.at(-1) ?? '';
 const byCodeCorp = new Map(corps.map(c => [c.code, c]));
@@ -30,7 +34,7 @@ const empLastRows = EMP.filter(e => e.year === empLast);
 const empSum = empLastRows.reduce((a, e) => a + (Number(e.employees) || 0), 0);
 const empF = empLastRows.reduce((a, e) => a + (Number(e.female) || 0), 0);
 const empC = empLastRows.reduce((a, e) => a + (Number(e.contract) || 0), 0);
-const RND = dartRnd();
+const RND = dartRnd().filter(r => listedCodes.has(r.corp_code));
 const rndYears = [...new Set(RND.map(r => r.year))].sort().slice(-3);
 const rndLast = rndYears.at(-1) ?? '';
 const rndCorps = [...new Set(RND.map(r => r.corp_code))].map(code => {
@@ -38,8 +42,8 @@ const rndCorps = [...new Set(RND.map(r => r.corp_code))].map(code => {
   const c = byCodeCorp.get(code); return { code, name: c?.name ?? rs[0].name, companyId: c?.companyId ?? null, y, url: rs[0].source_url };
 }).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 const rndSum = RND.filter(r => r.year === rndLast).reduce((a, r) => a + (Number(r.rnd_won) || 0), 0);
-const INV = dartInvest();
-const local = new Set([...companies().map(c => normName(c.name)), ...corps.map(c => normName(c.name))]);
+const INV = dartInvest().filter(r => listedCodes.has(r.corp_code));
+const local = new Set([...companies().map(c => normName(c.name)), ...all.corps.map(c => normName(c.name))]);
 const invCorps = [...new Set(INV.map(r => r.corp_code))].map(code => {
   const rs = INV.filter(r => r.corp_code === code).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));
   const c = byCodeCorp.get(code); return { code, name: c?.name ?? rs[0].name, companyId: c?.companyId ?? null, rs, year: rs[0].year, url: rs[0].source_url };
@@ -49,14 +53,14 @@ const invLocal = INV.filter(r => local.has(normName(r.inv_name))).length;
 const eokS = (won?: string) => { const v = Number(won); return won && Number.isFinite(v) && v > 0 ? (v / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—'; };
 const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
 ---
-<Base title="대구 본사 공시 기업 재무" description={`DART 사업보고서를 낸 대구 본사 기업 ${corps.length}곳의 최근 3개 사업연도 매출액·영업이익·당기순이익과 자산·부채·자본(공시 값 그대로).`} current="companies">
-  <p class="meta"><a href="/companies/">기업 사전</a> › 공시 기업 재무</p>
-  <div class="section-head"><h1>대구 본사 공시 기업 재무</h1><span class="meta">{corps.length}곳 · {years[0]}~{last} 사업연도 · {asOf} 받음</span></div>
-  <p class="lede">금융감독원 전자공시(DART)에 사업보고서를 낸 회사 가운데 본사 주소가 대구인 {corps.length}곳의 주요 재무 계정입니다. 연결재무제표가 있으면 연결, 없으면 개별 값이고, 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>
+<Base title="대구시 상장기업" description={`본사가 대구인 상장 회사 ${corps.length}곳(유가증권·코스닥·코넥스)의 최근 3개 사업연도 매출액·영업이익·직원·연구개발비·타법인 출자·미래 산업 관련 공시(DART 공시 값 그대로).`} current="listed">
+  <div class="section-head"><h1>대구시 상장기업</h1><span class="meta">{corps.length}곳 · {years[0]}~{last} 사업연도 · {asOf} 받음 · 금융감독원 DART</span></div>
+  <p class="lede">금융감독원 전자공시(DART) 기업개황의 본사 주소가 대구인 상장 회사 {corps.length}곳입니다. 회사 이름을 누르면 재무·직원·연구개발비·출자·공시를 한 페이지에서 봅니다. 재무는 연결재무제표가 있으면 연결, 없으면 개별 값이고 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>
+  <nav class="jump meta"><a href="#fin">재무</a> · <a href="#employees">직원</a> · <a href="#rnd">연구개발비</a> · <a href="#invest">출자</a> · <a href="#future">미래 산업 공시</a> · <a href="#dist">분포</a> · <a href="#unlisted">비상장 공시 회사</a></nav>
 
   {corps.length === 0 ? <p class="meta">아직 받은 자료가 없습니다.</p> : (<>
   <div class="cards">
-    {byCls.map(([k, n]) => <div class="card"><div class="big">{n}</div><div class="meta">{k === '기타' ? '비상장(공시 대상)' : `${k} 상장`}</div></div>)}
+    {byCls.map(([k, n]) => <div class="card"><div class="big">{n}</div><div class="meta">{k}</div></div>)}
   </div>
 
   <div class="tools">
@@ -65,34 +69,34 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
     <select id="grp" aria-label="산업"><option value="">모든 산업</option>{groups.map(g => <option value={g}>{g}</option>)}</select>
     <span id="count" class="meta">{corps.length}곳</span>
   </div>
-  <div class="scroll-x"><table class="data-table" id="fin" data-title={`대구 본사 공시 기업 재무 ${years[0]}~${last}`}>
+  <div class="scroll-x" id="fin-wrap"><table class="data-table" id="fin" data-title={`대구시 상장기업 재무 ${years[0]}~${last}`}>
     <thead>
-      <tr><th rowspan="2">회사</th><th rowspan="2">구분</th><th rowspan="2">구·군</th><th rowspan="2">산업</th>
+      <tr><th rowspan="2">회사</th><th rowspan="2">시장</th><th rowspan="2">종목코드</th><th rowspan="2">구·군</th><th rowspan="2">산업</th>
         <th colspan={years.length} class="c">매출액(억 원)</th><th colspan={years.length} class="c">영업이익(억 원)</th>
         <th colspan="4" class="c">{last}년(억 원)</th><th rowspan="2">공시</th></tr>
       <tr>{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익</th><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th></tr>
     </thead>
     <tbody>{corps.map(c => { const L = c.years[last]; return (
       <tr data-name={c.name} data-cls={c.cls} data-grp={c.group}>
-        <th scope="row">{c.companyId ? <a href={`/companies/${c.companyId}/`}>{c.name}</a> : c.name}</th>
-        <td>{c.cls}</td><td>{c.district}</td><td>{c.group}</td>
+        <th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a></th>
+        <td>{c.cls}</td><td class="nw">{c.stock || '—'}</td><td>{c.district}</td><td>{c.group}</td>
         {years.map(y => <td class="n">{f(c.years[y]?.revenue)}</td>)}
         {years.map(y => <td class="n">{f(c.years[y]?.operating_income)}</td>)}
         <td class="n">{f(L?.net_income)}</td><td class="n">{f(L?.total_assets)}</td><td class="n">{f(L?.total_liabilities)}</td><td class="n">{f(L?.total_equity)}</td>
         <td><a href={c.url} rel="noopener">DART</a>{L?.fs === '개별' ? <span class="meta"> 개별</span> : ''}</td>
       </tr>); })}</tbody>
   </table></div>
-  <p class="meta">— 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다. 회사 이름이 기업 사전(공장등록)과 같으면 기업 페이지로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
+  <p class="meta">— 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
 
   {fut.length > 0 && (
   <section id="future">
     <div class="section-head"><h2>미래 산업 관련 공시</h2><span class="meta">최근 12개월 · {fut.length}건</span></div>
     <p class="meta">위 회사들의 시설투자·공급계약·지분 취득·특허·주요경영사항 공시 가운데, 공시 원문에 미래 산업 낱말(반도체·2차전지·전기차·자율주행·로봇·인공지능·수소·바이오·방산 등)이 나온 것입니다. 분야는 원문에 나온 낱말로 붙인 것이라 그 사업의 주력이라는 뜻은 아닙니다. 근거 구절은 원문에서 낱말이 처음 나온 곳입니다.</p>
     <p class="meta">분야별: {futFields.map(([k, n], i) => <>{i ? ' · ' : ''}{k} {n}건</>)}</p>
-    <div class="scroll-x"><table class="data-table" data-title="대구 본사 기업 미래 산업 관련 공시">
+    <div class="scroll-x"><table class="data-table" data-title="대구시 상장기업 미래 산업 관련 공시">
       <thead><tr><th>접수일</th><th>회사</th><th>공시</th><th>분야</th><th>근거 구절</th></tr></thead>
       <tbody>{fut.map(d => { const id = coId.get(d.corp_code); return (
-        <tr><td class="nw">{ymd(d.rcept_dt)}</td><td>{id ? <a href={`/companies/${id}/`}>{d.name}</a> : d.name}</td>
+        <tr><td class="nw">{ymd(d.rcept_dt)}</td><td><a href={`/listed/${d.corp_code}/`}>{d.name}</a></td>
           <td><a href={d.url} rel="noopener">{d.report_nm}</a></td><td>{d.fields}</td><td class="ex">{d.excerpt}</td></tr>); })}</tbody>
     </table></div>
   </section>)}
@@ -105,14 +109,14 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
       <div class="card"><div class="big">{empC.toLocaleString('ko-KR')}</div><div class="meta">그 가운데 기간제</div></div>
       <div class="card"><div class="big">{empF.toLocaleString('ko-KR')}</div><div class="meta">그 가운데 여성</div></div>
     </div>
-    <div class="scroll-x"><table class="data-table" id="emp" data-title={`대구 본사 공시 기업 직원 현황 ${empYears[0]}~${empLast}`}>
+    <div class="scroll-x"><table class="data-table" id="emp" data-title={`대구시 상장기업 직원 현황 ${empYears[0]}~${empLast}`}>
       <thead>
         <tr><th rowspan="2">회사</th><th colspan={empYears.length} class="c">직원 수(명)</th><th colspan="5" class="c">{empLast}년</th><th rowspan="2">공시</th></tr>
         <tr>{empYears.map(y => <th class="n">{y}</th>)}<th class="n">정규직</th><th class="n">기간제</th><th class="n">여성</th><th class="n">평균 근속(년)</th><th class="n">1인 평균 급여(백만 원)</th></tr>
       </thead>
       <tbody>{empCorps.map(c => (
         <tr>
-          <th scope="row">{c.companyId ? <a href={`/companies/${c.companyId}/`}>{c.name}</a> : c.name}{c.cls && <span class="meta"> {c.cls}</span>}</th>
+          <th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a>{c.cls && <span class="meta"> {c.cls}</span>}</th>
           {empYears.map(y => <td class="n">{n0(c.y[y]?.employees)}</td>)}
           <td class="n">{n0(c.L.regular)}</td><td class="n">{n0(c.L.contract)}</td><td class="n">{n0(c.L.female)}</td>
           <td class="n">{c.L.avg_tenure ? Number(c.L.avg_tenure).toFixed(1) : '—'}</td><td class="n">{mil(c.L.avg_salary)}</td>
@@ -128,11 +132,11 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
     <div class="cards">
       <div class="card"><div class="big">{(rndSum / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 0 })}억</div><div class="meta">{rndLast}년 연구개발비 합계({RND.filter(r => r.year === rndLast).length}곳)</div></div>
     </div>
-    <div class="scroll-x"><table class="data-table" data-title={`대구 본사 공시 기업 연구개발비 ${rndYears[0]}~${rndLast}`}>
+    <div class="scroll-x"><table class="data-table" data-title={`대구시 상장기업 연구개발비 ${rndYears[0]}~${rndLast}`}>
       <thead><tr><th rowspan="2">회사</th><th colspan={rndYears.length} class="c">연구개발비(억 원)</th><th colspan={rndYears.length} class="c">매출액 대비(%)</th><th rowspan="2">공시</th></tr>
         <tr>{rndYears.map(y => <th class="n">{y}</th>)}{rndYears.map(y => <th class="n">{y}</th>)}</tr></thead>
       <tbody>{rndCorps.map(c => (
-        <tr><th scope="row">{c.companyId ? <a href={`/companies/${c.companyId}/`}>{c.name}</a> : c.name}</th>
+        <tr><th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a></th>
           {rndYears.map(y => <td class="n">{eokS(c.y[y]?.rnd_won)}</td>)}
           {rndYears.map(y => <td class="n">{c.y[y]?.ratio_pct ? Number(c.y[y].ratio_pct).toFixed(2) : '—'}</td>)}
           <td><a href={c.url} rel="noopener">DART</a></td></tr>))}</tbody>
@@ -154,23 +158,29 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
           <thead><tr><th>피출자 법인</th><th>목적</th><th class="n">기말 지분율(%)</th><th>최초 취득</th></tr></thead>
           <tbody>{c.rs.map(r => <tr><td>{r.inv_name}{local.has(normName(r.inv_name)) && <span class="meta"> · 대구</span>}</td><td>{purposeOf(r.purpose)}</td><td class="n">{r.end_share_pct || '—'}</td><td class="nw">{r.first_acq_date || '—'}</td></tr>)}</tbody>
         </table></div>
-        <p class="meta">{c.companyId && <><a href={`/companies/${c.companyId}/`}>기업 페이지</a> · </>}<a href={c.url} rel="noopener">사업보고서 원문</a></p>
+        <p class="meta"><a href={`/listed/${c.code}/`}>회사 페이지</a> · <a href={c.url} rel="noopener">사업보고서 원문</a></p>
       </details>))}</div>
   </section>)}
 
-  <section>
+  <section id="dist">
     <div class="section-head"><h2>분포</h2></div>
     <div class="two">
-      <div class="scroll-x"><table class="data-table" data-title="대구 본사 공시 기업 산업별 수">
+      <div class="scroll-x"><table class="data-table" data-title="대구시 상장기업 산업별 수">
         <thead><tr><th>산업</th><th class="n">회사 수</th></tr></thead>
         <tbody>{byGroup.map(([k, n]) => <tr><th scope="row">{k}</th><td class="n">{n}</td></tr>)}</tbody>
       </table></div>
-      <div class="scroll-x"><table class="data-table" data-title="대구 본사 공시 기업 구·군별 수">
+      <div class="scroll-x"><table class="data-table" data-title="대구시 상장기업 구·군별 수">
         <thead><tr><th>구·군</th><th class="n">회사 수</th></tr></thead>
         <tbody>{byDist.map(([k, n]) => <tr><th scope="row">{k}</th><td class="n">{n}</td></tr>)}</tbody>
       </table></div>
     </div>
   </section>
+  {unlisted.length > 0 && (
+  <section id="unlisted">
+    <div class="section-head"><h2>사업보고서를 내는 비상장 회사</h2><span class="meta">{unlisted.length}곳</span></div>
+    <p class="meta">상장하지 않았지만 사업보고서를 DART 에 내는 대구 본사 회사입니다(위 표·합계에는 넣지 않음). 상장 폐지된 회사가 들어 있을 수 있습니다.</p>
+    <p>{unlisted.map((c, i) => <>{i ? ' · ' : ''}<a href={`/listed/${c.code}/`}>{c.name}</a></>)}</p>
+  </section>)}
   </>)}
   <p class="meta">출처: 금융감독원 전자공시시스템(DART) OpenDART — 공시검색(사업보고서 제출 회사, 확장 공시), 공시서류원본(미래 산업 낱말 확인), 사업보고서 직원 현황·타법인 출자 현황·연구개발 활동 표, 기업개황(본사 주소·업종 코드·상장 구분), 단일회사 주요계정(사업보고서). 사업보고서를 내지 않는 비상장 기업은 들어 있지 않습니다. 대표자 등 개인 정보는 받지 않습니다.</p>
 </Base>
@@ -201,5 +211,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   th.c { text-align: center; }
   td.nw { white-space: nowrap; }
   td.ex { font-size: var(--small); color: var(--muted); min-width: 16em; }
+  .jump { margin: var(--s2) 0; }
+  #fin th, #fin td { white-space: nowrap; }
   .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3); }
 </style>

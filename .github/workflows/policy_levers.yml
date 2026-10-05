@@ -1,0 +1,44 @@
+name: 성장 정책 대안(Gemini 초안)
+
+# scripts/policy_lever_prompt.py 프롬프트 → scripts/policy_lever_run.py 가 Gemini 에 보내 docs/drafts/policy-levers-<area>.md(내부 초안, 사이트 미게시).
+on:
+  workflow_dispatch:
+    inputs:
+      area:
+        description: "service | mfg | all"
+        required: false
+        default: "all"
+      model:
+        description: "Gemini 모델(비우면 기본)"
+        required: false
+        default: ""
+  push:
+    branches: [claude/factorion-file-repair-tyqnlb]
+    paths: [scripts/policy_lever_run.py, .github/workflows/policy_levers.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+          GEMINI_MODEL: ${{ inputs.model }}
+          PYTHONUNBUFFERED: "1"
+        run: python scripts/policy_lever_run.py --area "${{ inputs.area || 'all' }}"
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/drafts docs/prompts || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 성장 정책 대안 Gemini 초안(검토 전)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done

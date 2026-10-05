@@ -1,0 +1,20 @@
+{
+ "key": "medical-use-sido-outside",
+ "name": "지역별 의료이용통계 — 시도별 진료현황(관외 — 거주 시도 밖 의료기관 이용)",
+ "tbl_nm": "시도별 진료현황-관외",
+ "org_id": "350",
+ "tbl_id": "TX_35003_A006",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 1275,
+ "rows_kept": 1275,
+ "latest": "2024",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-05",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A006",
+ "note": ""
+}

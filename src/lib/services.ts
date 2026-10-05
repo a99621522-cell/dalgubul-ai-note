@@ -69,36 +69,6 @@ export function marketSeries(): Series[] {
   return out.filter(x => x.pts.length);
 }
 
-/** 카드 소비(운영자 지시 2026-10-03: 카드 데이터 필요) — 한국은행 ECOS 601Y002 지역별 소비유형별 개인 신용카드(월).
- *  공개된 대구 카드 통계는 이 표뿐이고 2023-08 에서 멈췄다(KOSIS·공공데이터포털에 대구 카드 표·파일 없음, 2026-10-03 검색).
- *  백만 원을 100으로 나눠 억 원으로. 업종 비중은 같은 표 안의 나눗셈. */
-export const CARD_TOP = ['종합소매', '숙박/음식', '의료/보건', '연료', '기타', '교육', '여행/교통', '공과금/개인 및 전문 서비스', '식료품', '자동차', '오락/문화', '의류/잡화', '가구/가전'];
-const cardMeta = () => { const f = 'data/ecos/card-region.json'; return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf-8')) : {}; };
-const cardPts = (item: string): Pt[] => readCsv('data/ecos/card-region.csv')
-  .filter(r => r.ITEM_NAME1 === '대구' && r.ITEM_NAME2 === item && r.ITEM_NAME3 === '총액')
-  .map(r => ({ m: `${r.TIME.slice(0, 4)}-${r.TIME.slice(4)}`, v: Math.round(Number(r.DATA_VALUE) / 10) / 10 }))
-  .filter(p => Number.isFinite(p.v)).sort((a, b) => a.m.localeCompare(b.m));
-export function cardSeries(): Series[] {
-  const m = cardMeta();
-  return [['합계', '카드 사용액 합계'], ['숙박/음식', '숙박·음식'], ['의료/보건', '의료·보건'], ['종합소매', '종합소매(백화점·마트·편의점 등)']].map(([item, name], i) => ({
-    key: `card${i}`, group: '카드 소비', name, unit: '억 원', change: '%' as const, digits: 0,
-    pts: cardPts(item), source: `한국은행 「${String(m.stat_name ?? '').replace(/^[\d.]+\s*/, '')}」(ECOS)`, url: m.source_url ?? '', note: '개인 신용카드, 월 총액',
-  })).filter(x => x.pts.length);
-}
-export function cardRows(): { m: string; total: number | null; rows: { name: string; v: number; share: number | null; yoy: number | null }[]; source: string; url: string } {
-  const meta = cardMeta();
-  const tot = cardPts('합계');
-  const m = tot.at(-1)?.m ?? '';
-  const prev = shift(m, -12);
-  const total = tot.at(-1)?.v ?? null;
-  const rows = CARD_TOP.map(name => {
-    const pts = cardPts(name);
-    const v = pts.find(p => p.m === m)?.v ?? 0, v0 = pts.find(p => p.m === prev)?.v ?? 0;
-    return { name: name.replace(/\//g, '·'), v, share: total ? (v / total) * 100 : null, yoy: v0 ? (v / v0 - 1) * 100 : null };
-  }).sort((a, b) => b.v - a.v);
-  return { m, total, rows, source: `한국은행 「${String(meta.stat_name ?? '').replace(/^[\d.]+\s*/, '')}」(ECOS)`, url: meta.source_url ?? '' };
-}
-
 /** 관광(운영자 지시 2026-10-03: '화면에서 볼 수 있으면 가져오라') — 한국관광 데이터랩 「지역별 관광 현황」 화면 값(scripts/fetch_datalab.py).
  *  방문자: 이동통신, 외지인(그 지역 밖 거주자) 연인원, 명 → 만 명(÷10,000). 관광소비: 신용카드, 천원 → 억 원(÷100,000).
  *  데이터랩 안내대로 총량이 아니라 추세용으로 적는다. 구·군 값은 그 구·군 밖 방문자 기준이라 더해도 대구 값이 아니다. */

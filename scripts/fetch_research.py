@@ -44,7 +44,7 @@ RSS_CANDIDATES = ["/rss", "/feed", "/rss.xml", "/feed.xml", "/index.xml", "/rss/
 DATE_RE = re.compile(r"(20\d{2})[.\-/년年]\s?(\d{1,2})[.\-/월月]\s?(\d{1,2})")
 MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
 DATE_EN = re.compile(r"\b([A-Z][a-z]{2,8})\.?\s+(\d{1,2}),?\s+(20\d{2})\b|\b(\d{1,2})\s+([A-Z][a-z]{2,8})\.?,?\s+(20\d{2})\b")
-JUNK = re.compile(r"바로가기|건너뛰기|건더뛰기|메뉴|배너|skip to|본문|로그인|회원가입|sitemap|cookie|다운로드|download|열지않기|더보기|상세보기", re.I)
+JUNK = re.compile(r"바로가기|건너뛰기|건더뛰기|메뉴|배너|skip to|본문|로그인|회원가입|sitemap|cookie|다운로드|download|열지않기|더보기|상세보기|미리보기", re.I)
 
 
 def get(url: str, sess: requests.Session, timeout: int = 40) -> requests.Response | None:

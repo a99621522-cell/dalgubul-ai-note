@@ -1,5 +1,5 @@
 ---
-import { grdpCalcData, pathBench } from '../lib/grdp';
+import { grdpCalcData, pathBench, ioDaegu } from '../lib/grdp';
 /** 목표 달성 경로(테크트리, /growth/, 운영자 지시 2026-10-05: 분야별로 어떤 섹터가 얼마 기여하고 몇 % 성장해야 하는지, 어떤 전략인지 테크트리·표로).
  *  지난 10년 추세에서 출발해 비교 기준(전국 같은 업종 → 17개 시도 상위 3곳 평균)으로 단계마다 업종 성장률을 올려 누적 성장률을 계산하고,
  *  목표에 닿는 단계와 그때 업종별 필요 성장·추가 기여를 보여 준다. 정책 수단은 검토할 수 있는 예시이고 평가·권고가 아니다. */
@@ -21,7 +21,9 @@ const STAGES = [
   { key: 's5', title: '서비스·기타 산업 상위 3개 시도 수준', desc: '제조업 밖 업종도 그 업종 상위 세 곳 평균만큼' },
 ];
 const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-const data = { base, rows: B?.rows ?? [], fields: FIELDS };
+const IO = ioDaegu();
+const k = IO && IO.vaIn != null ? (1 - (IO.importShare ?? 0) / 100) * IO.vaIn : null;
+const data = { base, rows: B?.rows ?? [], fields: FIELDS, gdp: B?.gdpEok ?? 0, k };
 ---
 {B && B.rows.length > 0 && (
 <section id="path">
@@ -29,6 +31,7 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
   <p class="meta">지난 10년 추세({f1(base)}%)에서 출발해 업종 성장률을 비교 기준에 맞춰 한 단계씩 올렸을 때 성장률이 어떻게 쌓이는지 보여 줍니다. 비교 기준은 전국 같은 업종과 17개 시도 가운데 그 업종 성장률이 높았던 세 곳의 평균입니다(순위·평가가 아니라 다른 지역에서 실제 나온 성장률). 참고로 같은 10년 GRDP 연평균 성장률은 전국 {f1(B.natTot)}%, 17개 시도 상위 세 곳 평균 {f1(B.top3Tot)}%, 가장 높은 시도 {f1(B.bestTot)}%였습니다.</p>
   <label class="tp-target">목표 성장률 <input id="tpt" type="number" step="0.1" value="5" inputmode="decimal" /> %</label>
   <p id="tpsum" class="calc-sum" aria-live="polite"></p>
+  <p id="tpamt" class="meta" aria-live="polite"></p>
 
   <ol class="tp-tree">
     <li class="tp-node tp-root"><div class="tp-dot"></div><div class="tp-body"><div class="tp-head"><strong>출발: 지난 10년 추세</strong><span class="tp-cum">{f1(base)}%</span></div><div class="meta">경제활동별 공표 실질기여도 평균의 합</div></div></li>
@@ -48,17 +51,17 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
   <h3 class="tp-h">목표별 시나리오 — 2.0%에서 5.0%까지</h3>
   <p class="meta">같은 경로로 목표 성장률마다 어느 단계에서 닿는지, 그때 분야별 성장률이 몇 %여야 하는지입니다(성장률은 2024년 GRDP 비중으로 가중한 분야 평균). 위 칸에 다른 목표(소수점 한 자리)를 넣으면 맨 아래 줄에 더해집니다.</p>
   <div class="scroll-x"><table class="data-table compact" id="tpmx" data-title="대구 GRDP 목표별 시나리오 — 분야별 필요 성장률">
-    <thead><tr><th>목표 GRDP 성장률</th><th>닿는 단계</th><th class="n">제조업</th><th class="n">역외 수요 서비스</th><th class="n">지식·생산자 서비스</th><th class="n">생활·기반 산업</th><th class="n">남은 차이(%p)</th></tr></thead>
+    <thead><tr><th>목표 GRDP 성장률</th><th>닿는 단계</th><th class="n">제조업</th><th class="n">역외 수요 서비스</th><th class="n">지식·생산자 서비스</th><th class="n">생활·기반 산업</th><th class="n">남은 차이(%p)</th><th class="n">GRDP 한 해 증가(조 원)</th><th class="n">추세보다 더(조 원)</th></tr></thead>
     <tbody></tbody>
   </table></div>
-  <p class="meta">각 칸은 그 분야의 필요 실질 성장률(%)입니다. 10년 추세는 제조업 <span id="mx0m"></span>% · 역외 수요 서비스 <span id="mx0e"></span>% · 지식·생산자 서비스 <span id="mx0k"></span>% · 생활·기반 산업 <span id="mx0l"></span>%. 제조업 업종별로는 아래 '제조업 경로'에서 따로 봅니다.</p>
+  <p class="meta">분야 칸은 필요 실질 성장률(%)이고, 금액은 2024년 명목 GRDP {f1((B?.gdpEok ?? 0) / 10000)}조 원에 성장률을 곱한 한 해 부가가치 증가액(2024년 가격 근사)입니다. 10년 추세는 제조업 <span id="mx0m"></span>% · 역외 수요 서비스 <span id="mx0e"></span>% · 지식·생산자 서비스 <span id="mx0k"></span>% · 생활·기반 산업 <span id="mx0l"></span>%. 제조업 업종별로는 아래 '제조업 경로'에서 따로 봅니다.</p>
 
   <h3 class="tp-h">목표 <span id="tpt2">5.0</span>%에 맞춘 분야별 필요 성장·기여와 정책 수단</h3>
   <p class="meta">위 경로에서 목표에 닿는 지점까지의 업종 성장률입니다(마지막 단계는 필요한 만큼만). 기여 = 비중 × 필요 성장. 정책 수단은 검토할 수 있는 예시입니다.</p>
   <div id="tpfields"></div>
   <details class="stat-details"><summary>업종별 표 보기</summary>
   <div class="scroll-x"><table class="data-table compact" id="tptab" data-title="대구 GRDP 목표 달성 경로 — 업종별 필요 성장">
-    <thead><tr><th>업종</th><th class="n">비중(%)</th><th class="n">10년 성장(%)</th><th class="n">필요 성장(%)</th><th class="n">기여(%p)</th><th class="n">추세 대비(%p)</th></tr></thead>
+    <thead><tr><th>업종</th><th class="n">비중(%)</th><th class="n">10년 성장(%)</th><th class="n">필요 성장(%)</th><th class="n">기여(%p)</th><th class="n">추세 대비(%p)</th><th class="n">부가가치 2024(억 원)</th><th class="n">한 해 증가(억 원)</th><th class="n">추세보다 더(억 원)</th></tr></thead>
     <tbody></tbody>
   </table></div></details>
   <p class="meta">계산: 업종 기여 변화 = {B.y1}년 명목 비중 × (가정 성장률 − 대구 10년 연평균 성장률). 업종 사이 파급은 넣지 않았고, 비중이 아주 작은 업종(광업·농림어업 등)의 상위 세 곳 값은 크게 흔들립니다. 세종처럼 기반이 작은 시도가 상위에 들 수 있습니다. 전망이나 달성 가능성 판단이 아닙니다. 출처: {P.url ? <a href={P.url} rel="noopener">{P.source}</a> : P.source} · 계산: 다잇다</p>
@@ -70,6 +73,7 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
   if (el) {
     const D = JSON.parse(el.textContent || '{}') as { base: number; rows: R[]; fields: Record<string, { name: string; tools: string[]; kpi: string[] }> };
     const fmt = (v: number, d = 1) => v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const won = (v: number) => Math.round(v).toLocaleString('ko-KR');
     const sg = (v: number, d = 1) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
     const STEP: ((r: R, c: number) => number)[] = [
       (r, c) => r.mfg ? Math.max(c, 0) : c,
@@ -115,19 +119,23 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
       if (s) s.textContent = reachedAt === -0.5 ? `목표 ${fmt(T)}%는 지난 10년 추세(${fmt(D.base)}%) 이하입니다.`
         : reachedAt >= 0 ? `목표 ${fmt(T)}%는 ${reachedAt + 1}단계에서 닿습니다.` : `5단계를 모두 거쳐도 ${fmt(cum)}%이고, ${fmt(rest)}%p가 남습니다.`;
       const t2 = $('#tpt2'); if (t2) t2.textContent = fmt(T);
+      const am = $('#tpamt');
+      if (am) { const inc = D.gdp * T / 100, tr = D.gdp * D.base / 100, more = inc - tr;
+        am.textContent = `금액으로: 목표 ${fmt(T)}%면 대구 GRDP 가 한 해 약 ${fmt(inc / 10000)}조 원 늘어야 합니다(추세 ${fmt(D.base)}%면 ${fmt(tr / 10000)}조 원) — 추세보다 ${fmt(more / 10000)}조 원 더.`
+          + (D.k && more > 0 ? ` 이 차이를 새 지출(소비·투자·이출)로 만든다면 대구 최종수요가 한 해 약 ${fmt(more / D.k / 10000)}조 원 더 늘어야 합니다(한국은행 지역산업연관표 대구 계수, 수입품 제외 후 ${fmt(D.k, 3)}).` : ''); }
       // 분야별 표
       const order = ['core', 'base', 'ext', 'know', 'life'];
       const rows = D.rows.map((r, i) => ({ r, need: final![i], add: r.share * (final![i] - r.g) / 100 }));
       const tb = document.querySelector('#tptab tbody');
-      if (tb) tb.innerHTML = order.map(f => `<tr class="tp-grp"><th colspan="6" scope="rowgroup">${D.fields[f].name}</th></tr>` + rows.filter(x => x.r.field === f).sort((a, b) => b.add - a.add).map(x =>
-        `<tr><th scope="row">${x.r.name}</th><td class="n">${fmt(x.r.share)}</td><td class="n">${fmt(x.r.g)}</td><td class="n">${fmt(x.need)}</td><td class="n">${fmt(x.r.share * x.need / 100)}</td><td class="n">${sg(x.add)}</td></tr>`).join('')).join('');
+      if (tb) tb.innerHTML = order.map(f => `<tr class="tp-grp"><th colspan="9" scope="rowgroup">${D.fields[f].name}</th></tr>` + rows.filter(x => x.r.field === f).sort((a, b) => b.add - a.add).map(x =>
+        `<tr><th scope="row">${x.r.name}</th><td class="n">${fmt(x.r.share)}</td><td class="n">${fmt(x.r.g)}</td><td class="n">${fmt(x.need)}</td><td class="n">${fmt(x.r.share * x.need / 100)}</td><td class="n">${sg(x.add)}</td><td class="n">${won(x.r.va)}</td><td class="n">${won(x.r.va * x.need / 100)}</td><td class="n">${won(x.r.va * (x.need - x.r.g) / 100)}</td></tr>`).join('')).join('');
       const fb = document.getElementById('tpfields');
       if (fb) fb.innerHTML = order.map(f => {
         const xs = rows.filter(x => x.r.field === f), add = xs.reduce((a, x) => a + x.add, 0), sh = xs.reduce((a, x) => a + x.r.share, 0);
         const g0 = xs.reduce((a, x) => a + x.r.share * x.r.g, 0) / (sh || 1), g1 = xs.reduce((a, x) => a + x.r.share * x.need, 0) / (sh || 1);
         const F = D.fields[f];
         return `<div class="tp-field"><div class="tp-fh"><strong>${F.name}</strong><span>${sg(add)}%p</span></div>
-          <div class="meta">GRDP 비중 ${fmt(sh)}% · 성장 ${fmt(g0)}% → <strong>${fmt(g1)}%</strong></div>
+          <div class="meta">GRDP 비중 ${fmt(sh)}% · 성장 ${fmt(g0)}% → <strong>${fmt(g1)}%</strong></div><div class="meta">부가가치 한 해 +${won(xs.reduce((a, x) => a + x.r.va * x.need, 0) / 100)}억 원 · 추세보다 +${won(xs.reduce((a, x) => a + x.r.va * (x.need - x.r.g), 0) / 100)}억 원</div>
           <details><summary>정책 수단 예시 · 볼 지표</summary><ul class="meta">${F.tools.map(t => `<li>${t}</li>`).join('')}</ul><p class="meta">지표: ${F.kpi.join(' · ')}</p></details></div>`;
       }).join('');
     };
@@ -156,7 +164,7 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
       if (tb) tb.innerHTML = ts.map(t => {
         const r = solve(t);
         const st = r.at === 0 ? '추세 안' : r.at > 0 ? `${r.at}단계 (${fmt(r.frac * 100, 0)}%)` : '5단계 넘음';
-        return `<tr${Math.abs(t - T) < 0.05 ? ' class="tp-cur"' : ''}><th scope="row">${fmt(t)}%</th><td>${st}</td>${FG.map(fs => `<td class="n">${fmt(fieldG(r.fin, fs))}</td>`).join('')}<td class="n">${r.rest > 0.05 ? fmt(r.rest) : '—'}</td></tr>`;
+        return `<tr${Math.abs(t - T) < 0.05 ? ' class="tp-cur"' : ''}><th scope="row">${fmt(t)}%</th><td>${st}</td>${FG.map(fs => `<td class="n">${fmt(fieldG(r.fin, fs))}</td>`).join('')}<td class="n">${r.rest > 0.05 ? fmt(r.rest) : '—'}</td><td class="n">${fmt(D.gdp * t / 100 / 10000)}</td><td class="n">${fmt(D.gdp * (t - D.base) / 100 / 10000)}</td></tr>`;
       }).join('');
     };
     document.getElementById('tpt')?.addEventListener('input', () => { calc(); matrix(); });
@@ -186,7 +194,7 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
   .tp-tab :global(th), .tp-tab :global(td) { padding-top: 4px; padding-bottom: 4px; font-size: var(--small); }
   .tp-tab :global(tbody th) { font-weight: 500; }
   .tp-h { font-size: 1.05rem; margin: var(--s3) 0 6px; }
-  #tpmx { min-width: 600px; }
+  #tpmx { min-width: 760px; }
   #tpmx :global(tr.tp-cur) { background: var(--surface); font-weight: 700; }
   #tpfields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin: 8px 0 var(--s2); }
   #tpfields :global(.tp-field) { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; }
@@ -194,7 +202,7 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
   #tpfields :global(.tp-fh span) { font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
   #tpfields :global(summary) { font-size: var(--small); cursor: pointer; margin-top: 4px; }
   #tpfields :global(ul) { margin: 4px 0; padding-left: 1.2em; }
-  #tptab { min-width: 540px; }
+  #tptab { min-width: 820px; }
   #tptab :global(tbody th[scope="row"]) { font-weight: 500; min-width: 9em; }
   #tptab :global(.tp-grp th) { background: var(--surface); font-size: var(--small); color: var(--muted); }
 </style>

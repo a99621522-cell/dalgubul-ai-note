@@ -117,7 +117,7 @@ export function mfgScenarios(region = '대구광역시') {
 }
 
 /** 목표 달성 경로(테크트리, /growth/ GrowthPath)용 업종별 기준값. 경제활동 18개(제조업 대신 제조업 7개 업종) + 순생산물세는 추세 그대로.
- *  업종마다 최근 연도 GRDP 대비 명목 비중, 대구·전국 10년 실질 연평균 성장, 17개 시도 가운데 그 업종 10년 성장률이 높았던 세 곳의 평균. */
+ *  업종마다 최근 연도 GRDP 대비 명목 비중·명목 부가가치(va, 억 원), 대구·전국 10년 실질 연평균 성장, 17개 시도 가운데 그 업종 10년 성장률이 높았던 세 곳의 평균. */
 export const PATH_FIELDS: Record<string, string> = {
   '섬유 의복 및 가죽 제품 제조업': 'base', '비금속광물 및 금속제품 제조업': 'base', '목재종이인쇄 및 복제업': 'base', '음식료품 및 담배제조업': 'base',
   '기계 운송장비 및 기타 제품 제조업': 'core', '전기 전자 및 정밀기기 제조업': 'core', '석탄 및 석유 화학제품 제조업': 'core',
@@ -144,8 +144,8 @@ export function pathBench(region = '대구광역시') {
     const cs = sido.map(r => cagr(r, k)).filter((x): x is number => x != null).sort((a, b) => b - a);
     const g = cagr(region, k);
     return { key: k, name: names.get(k) ?? k, mfg: MFG_SUB.some(m => m[0] === k), field: PATH_FIELDS[k] ?? 'life',
-      share: ((v('명목', region, k, y1) ?? 0) / nom) * 100, g: g ?? 0, gn: cagr('전국', k) ?? g ?? 0, t3: cs.length ? cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length) : g ?? 0 };
+      share: ((v('명목', region, k, y1) ?? 0) / nom) * 100, va: (v('명목', region, k, y1) ?? 0) / 100, g: g ?? 0, gn: cagr('전국', k) ?? g ?? 0, t3: cs.length ? cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length) : g ?? 0 };
   }).filter(r => r.share > 0);
   const sidoTot = sido.map(r => ({ r, g: cagr(r, '지역내총생산(시장가격)') })).filter((x): x is { r: string; g: number } => x.g != null).sort((a, b) => b.g - a.g);
-  return { rows, y0, y1, natTot: cagr('전국', '지역내총생산(시장가격)') ?? 0, top3Tot: sidoTot.slice(0, 3).reduce((a, b) => a + b.g, 0) / 3, bestTot: sidoTot[0]?.g ?? 0 };
+  return { rows, y0, y1, gdpEok: nom / 100, natTot: cagr('전국', '지역내총생산(시장가격)') ?? 0, top3Tot: sidoTot.slice(0, 3).reduce((a, b) => a + b.g, 0) / 3, bestTot: sidoTot[0]?.g ?? 0 };
 }

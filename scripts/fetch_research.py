@@ -136,7 +136,14 @@ def from_list(page_url: str, html: str, item_pat: str | None, org_names: tuple =
         title = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
         href = urljoin(page_url, a["href"])
         is_js = href.startswith("javascript") or a["href"].strip() in ("#", "")
-        if JUNK.search(title) and re.search(r"fileView|fileDown|download|\.pdf", href, re.I) and not is_js:
+        if JUNK.search(title) and pat and pat.search(href) and not is_js:
+            # 항목 주소인데 링크 글자가 '미리보기' 같은 정크(IBK CEO REPORT 최신호, 2026-10-05): 같은 칸 글에서 제목. 'YYYY년도 N월호' 가 있으면 그것
+            blk = (a.find_parent(["li", "tr", "article", "div"]) or a.parent).get_text("\n", strip=True)
+            issue = re.search(r"20\d{2}년도?\s*\d{1,2}월호", blk)
+            title = issue.group(0) if issue else block_title(a)
+            if not title:
+                continue
+        elif JUNK.search(title) and re.search(r"fileView|fileDown|download|\.pdf", href, re.I) and not is_js:
             # 첨부 링크만 있고 제목은 글자로만 있는 목록(KDB 등): 같은 칸의 글에서 제목을 뽑는다
             title = block_title(a)
             if not title:

@@ -65,7 +65,7 @@ jobs:
         env:
           URL: ${{ inputs.url }}
           WORDS: ${{ inputs.click }}
-        run: pip install -q openpyxl && python3 scripts/file_probe.py "$URL" "$WORDS"
+        run: sudo apt-get install -y -qq poppler-utils >/dev/null && pip install -q openpyxl && python3 scripts/file_probe.py "$URL" "$WORDS"
       - if: inputs.xhr == 'true' && inputs.datalab != 'true' && inputs.file != 'true'
         env:
           URL: ${{ inputs.url }}

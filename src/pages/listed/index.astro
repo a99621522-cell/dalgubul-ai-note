@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed } from '../../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
  *  본사 주소가 대구인 유가증권·코스닥·코넥스 상장 회사의 재무·직원·연구개발비·출자·미래 산업 공시, 회사별 상세는 /listed/<corp_code>/.
@@ -64,29 +64,33 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   </div>
 
   <div class="tools">
-    <input id="q" type="search" placeholder="회사명 검색" aria-label="회사명 검색" />
+    <input id="q" type="search" placeholder="회사명·제품 검색 (예: 변속기, 렌즈)" aria-label="회사명·제품 검색" />
     <select id="cls" aria-label="상장 구분"><option value="">모든 구분</option>{byCls.map(([k]) => <option value={k}>{k}</option>)}</select>
     <select id="grp" aria-label="산업"><option value="">모든 산업</option>{groups.map(g => <option value={g}>{g}</option>)}</select>
     <span id="count" class="meta">{corps.length}곳</span>
   </div>
   <div class="scroll-x" id="fin-wrap"><table class="data-table" id="fin" data-title={`대구시 상장기업 재무 ${years[0]}~${last}`}>
     <thead>
-      <tr><th rowspan="2">회사</th><th rowspan="2">시장</th><th rowspan="2">종목코드</th><th rowspan="2">구·군</th><th rowspan="2">산업</th>
-        <th colspan={years.length} class="c">매출액(억 원)</th><th colspan={years.length} class="c">영업이익(억 원)</th>
+      <tr><th rowspan="2">회사</th><th rowspan="2">분야(업종)</th><th rowspan="2">무엇을 만드나</th><th rowspan="2">시장</th><th rowspan="2">종목코드</th><th rowspan="2">구·군</th>
+        <th colspan={years.length} class="c">매출액(억 원)</th><th colspan={years.length - 1} class="c">매출액 증가율(%)</th><th colspan={years.length} class="c">영업이익(억 원)</th><th colspan={years.length} class="c">영업이익률(%)</th>
         <th colspan="4" class="c">{last}년(억 원)</th><th rowspan="2">공시</th></tr>
-      <tr>{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익</th><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th></tr>
+      <tr>{years.map(y => <th class="n">{y}</th>)}{years.slice(1).map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익</th><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th></tr>
     </thead>
-    <tbody>{corps.map(c => { const L = c.years[last]; return (
-      <tr data-name={c.name} data-cls={c.cls} data-grp={c.group}>
+    <tbody>{corps.map(c => { const L = c.years[last]; const mk = makesOf(c); return (
+      <tr data-name={`${c.name} ${c.ksicName} ${mk.text}`} data-cls={c.cls} data-grp={c.group}>
         <th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a></th>
-        <td>{c.cls}</td><td class="nw">{c.stock || '—'}</td><td>{c.district}</td><td>{c.group}</td>
+        <td class="wrap">{c.ksicName || c.group}{c.ksicName && <span class="meta"> · {c.group}</span>}</td>
+        <td class="wrap">{mk.text || '—'}{mk.kind === 'factory' && <span class="meta"> (공장등록)</span>}</td>
+        <td>{c.cls}</td><td class="nw">{c.stock || '—'}</td><td>{c.district}</td>
         {years.map(y => <td class="n">{f(c.years[y]?.revenue)}</td>)}
+        {years.slice(1).map((y, i) => <td class="n">{pct1(revGrowth(c.years[y], c.years[years[i]]))}</td>)}
         {years.map(y => <td class="n">{f(c.years[y]?.operating_income)}</td>)}
+        {years.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}
         <td class="n">{f(L?.net_income)}</td><td class="n">{f(L?.total_assets)}</td><td class="n">{f(L?.total_liabilities)}</td><td class="n">{f(L?.total_equity)}</td>
         <td><a href={c.url} rel="noopener">DART</a>{L?.fs === '개별' ? <span class="meta"> 개별</span> : ''}</td>
       </tr>); })}</tbody>
   </table></div>
-  <p class="meta">— 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
+  <p class="meta">매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100 으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
 
   {fut.length > 0 && (
   <section id="future">
@@ -212,6 +216,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   td.nw { white-space: nowrap; }
   td.ex { font-size: var(--small); color: var(--muted); min-width: 16em; }
   .jump { margin: var(--s2) 0; }
-  #fin th, #fin td { white-space: nowrap; }
+  #fin th, #fin td { white-space: nowrap; vertical-align: top; }
+  #fin td.wrap { white-space: normal; min-width: 12em; max-width: 22em; font-size: var(--small); }
   .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3); }
 </style>

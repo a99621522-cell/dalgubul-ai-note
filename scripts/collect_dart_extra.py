@@ -5,8 +5,10 @@
    → scripts/data/company_investments.csv. 피출자 법인명·출자 목적·최초 취득일·기말 수량·지분율·장부가액(공시 표 단위 그대로)·피출자 법인 총자산·당기순손익.
 2) 연구개발비: 사업보고서 원문(document.xml)의 '연구개발 활동' 표에서 '연구개발비용 (총)계' 행과 '매출액 대비 비율' 행을 읽어
    → scripts/data/company_rnd.csv (사업연도 3개 열: 당기·전기·전전기, 단위는 표 위 '단위' 글자로 원 환산). 표를 못 찾으면 그 회사는 건너뛴다(값을 만들지 않음).
+3) 주요 제품(운영자 지시 2026-10-05: '자동차 부품' 같은 분야 말고 무엇을 만드는지): 사업보고서 원문 'II. 사업의 내용'의 '주요 제품(및 서비스)' 표에서
+   사업부문·품목(제품)·용도·매출 비율 → scripts/data/company_products.csv. 표 글자 그대로(80자까지), 합계·소계 행은 뺀다.
 대상 보고서는 scripts/data/company_employees.csv 의 회사별 최근 사업연도 접수번호. 공시 값과 링크만 — 평가·순위 없음. 키: DART_KEY.
-사용: python3 scripts/collect_dart_extra.py [--only inv|rnd] [--debug 회사명]
+사용: python3 scripts/collect_dart_extra.py [--only inv|rnd|prod] [--debug 회사명]
 """
 from __future__ import annotations
 
@@ -34,6 +36,8 @@ UA = {"User-Agent": "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"}
 KEY = os.environ.get("DART_KEY", "").strip()
 INV_COLS = ["corp_code", "name", "year", "inv_name", "purpose", "first_acq_date", "end_qty", "end_share_pct", "end_book_amount",
             "inv_total_assets", "inv_net_income", "rcept_no", "source_url", "as_of"]
+OUT_PROD = ROOT / "scripts" / "data" / "company_products.csv"
+PROD_COLS = ["corp_code", "name", "year", "segment", "product", "use", "share_pct", "rcept_no", "source_url", "as_of"]
 RND_COLS = ["corp_code", "name", "report_year", "year", "rnd_won", "ratio_pct", "unit", "rcept_no", "source_url", "as_of"]
 
 
@@ -219,6 +223,86 @@ def rnd(reps: dict[str, dict], debug_name: str = "") -> None:
     print(f"[dart_extra] 연구개발 저장: {OUT_RND.relative_to(ROOT)} ({len(rows)}행, {len({r['corp_code'] for r in rows})}곳)")
 
 
+# ---------- 주요 제품 ----------
+SKIP_ROW = re.compile(r"^(합\s*계|총\s*계|소\s*계|계|합계\s*\(.*\)|내부거래.*|연결조정.*|조정.*|단위.*)$")
+
+
+def table_rows(tbl: str) -> list[list[str]]:
+    rows = [[cell_text(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, flags=re.S | re.I)]
+            for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", tbl, flags=re.S | re.I)]
+    return [r for r in rows if any(r)]
+
+
+def products_from_doc(xml: str, debug: bool = False) -> list[dict]:
+    """'주요 제품' 제목 다음의 표 가운데 머리에 품목·제품·품명이 있는 첫 표 → [{segment, product, use, share_pct}]"""
+    starts = [m.start() for m in re.finditer(r"주요\s*(제품|상품|품목)", xml)]
+    for st in starts[:12]:
+        seg = xml[st: st + 40000]
+        for tm in list(re.finditer(r"<TABLE[^>]*>(.*?)</TABLE>", seg, flags=re.S | re.I))[:3]:
+            rows = table_rows(tm.group(1))
+            if len(rows) < 2:
+                continue
+            hi = next((i for i, r in enumerate(rows[:3]) if any(re.search(r"품\s*목|제\s*품|품\s*명|상\s*품|주요\s*서비스", c) for c in r)), None)
+            if hi is None:
+                continue
+            head = rows[hi]
+            def col(pat, excl=None):
+                return next((i for i, c in enumerate(head) if re.search(pat, c) and not (excl and re.search(excl, c))), None)
+            pc = col(r"품\s*목|주요\s*제품|제\s*품\s*명?|품\s*명|상\s*품|주요\s*서비스", r"매출|비\s*율|비\s*중")
+            if pc is None:
+                continue
+            sc = col(r"부\s*문|사업|구\s*분", r"매출")
+            uc = col(r"용\s*도|내\s*용|설\s*명|특\s*징")
+            rc = col(r"비\s*율|비\s*중|%")
+            out, last_seg = [], ""
+            for r in rows[hi + 1:]:
+                if len(r) < len(head):   # rowspan 으로 앞 칸(사업부문)이 빠진 행 → 왼쪽부터 채워 맞춘다
+                    r = [""] * (len(head) - len(r)) + r
+                segv = r[sc] if sc is not None and sc < len(r) else ""
+                last_seg = segv or last_seg
+                prod_v = r[pc] if pc < len(r) else ""
+                if not prod_v or SKIP_ROW.match(prod_v) or SKIP_ROW.match(segv or "x") or re.fullmatch(r"[\d,.\s%()-]+", prod_v):
+                    continue
+                share = ""
+                if rc is not None and rc < len(r):
+                    v = nums([r[rc]])[0]
+                    share = v if v is not None and 0 <= v <= 100 else ""
+                out.append({"segment": last_seg[:60], "product": prod_v[:80], "use": (r[uc] if uc is not None and uc < len(r) else "")[:80], "share_pct": share})
+            if debug:
+                print("   [제품 표] 머리", head[:7], "→", [(o["segment"], o["product"], o["share_pct"]) for o in out[:6]])
+            if out:
+                return out[:20]
+    return []
+
+
+def products(reps: dict[str, dict], debug_name: str = "") -> None:
+    rows, miss = [], []
+    for i, (code, rep) in enumerate(sorted(reps.items()), 1):
+        if debug_name and debug_name not in rep["name"]:
+            continue
+        xml = doc_xml(rep["rcept_no"])
+        time.sleep(0.3)
+        res = products_from_doc(xml, debug=bool(debug_name) or i <= 5) if xml else []
+        if not res:
+            miss.append(rep["name"])
+            continue
+        for o in res:
+            rows.append({"corp_code": code, "name": rep["name"], "year": rep["year"], **o, "rcept_no": rep["rcept_no"],
+                         "source_url": f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rep['rcept_no']}", "as_of": date.today().isoformat()})
+    print(f"[dart_extra] 주요 제품 표를 못 찾은 회사 {len(miss)}곳: {', '.join(miss[:40])}")
+    if debug_name:
+        print(json.dumps(rows, ensure_ascii=False, indent=1)[:3000])
+        return
+    if not rows:
+        print("[dart_extra] 주요 제품 행 없음 — 저장 안 함")
+        return
+    with open(OUT_PROD, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=PROD_COLS, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(rows)
+    print(f"[dart_extra] 주요 제품 저장: {OUT_PROD.relative_to(ROOT)} ({len(rows)}행, {len({r['corp_code'] for r in rows})}곳)")
+
+
 def main(argv: list[str]) -> int:
     if not KEY:
         print("DART_KEY 없음")
@@ -229,8 +313,10 @@ def main(argv: list[str]) -> int:
     print(f"[dart_extra] 대상 {len(reps)}곳")
     if only in ("", "inv") and not dbg:
         investments(reps)
-    if only in ("", "rnd"):
+    if only in ("", "rnd") and not (dbg and only == "prod"):
         rnd(reps, dbg)
+    if only in ("", "prod"):
+        products(reps, dbg)
     return 0
 
 

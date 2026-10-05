@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, ymd, n0, mil, purposeOf, isListed, empByCode, rndByCode, invByCode, futByCode } from '../../lib/dart';
+import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/<corp_code>/ — 대구시 상장기업 회사별 페이지(운영자 지시 2026-10-05). DART 공시 값만: 재무(최근 3개 사업연도)·직원·연구개발비·타법인 출자·
  *  미래 산업 관련 공시. 원 → 억 원 나눗셈만, 비율·순위·평가 없음. 대표자 등 개인 정보 없음. corp_code 는 DART 고유번호라 바뀌지 않는다. */
@@ -11,6 +11,7 @@ const { code } = Astro.params;
 const { corps, years } = dartCorps();
 const c = corps.find(x => x.code === code)!;
 const listed = isListed(c.cls);
+const prods = productsByCode(c.code);
 const emp = empByCode(c.code);
 const empYears = [...emp].reverse().slice(-3);
 const rnd = rndByCode(c.code);
@@ -28,7 +29,7 @@ const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
   <div class="section-head"><h1>{c.name}</h1><span class="meta">{listed ? `${c.cls} 상장` : '비상장(사업보고서 제출)'}{c.stock && ` · 종목코드 ${c.stock}`}</span></div>
   <dl class="facts">
     <div><dt>본사</dt><dd>대구 {c.district || '—'}</dd></div>
-    <div><dt>업종 코드</dt><dd>{c.ksic || '—'}</dd></div>
+    <div><dt>분야(업종)</dt><dd>{c.ksicName || c.group}<span class="meta"> · {c.ksic || '—'}</span></dd></div>
     <div><dt>산업 그룹</dt><dd>{c.group}</dd></div>
     <div><dt>DART</dt><dd><a href={`https://dart.fss.or.kr/dsab007/main.do?option=corp&textCrpNm=${encodeURIComponent(c.name)}`} rel="noopener">공시 목록</a></dd></div>
     {c.companyId && <div><dt>기업 사전</dt><dd><a href={`/companies/${c.companyId}/`}>공장등록 기업 페이지</a></dd></div>}
@@ -36,13 +37,27 @@ const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
   {c.companyId && <p class="meta">기업 사전 연결은 회사 이름이 공장등록 이름과 같은 경우입니다. 같은 이름의 다른 사업장일 수 있습니다.</p>}
 
   <section>
+    <div class="section-head"><h2>무엇을 만드나</h2><span class="meta">{prods.length ? `${prods[0].year}년 사업보고서 '주요 제품' 표` : '공장등록 생산품'}</span></div>
+    {prods.length ? (<>
+    <div class="scroll-x"><table class="data-table" data-title={`${c.name} 주요 제품`}>
+      <thead><tr><th>사업부문</th><th>품목(제품)</th><th>용도</th><th class="n">매출 비율(%)</th></tr></thead>
+      <tbody>{prods.map(p => <tr><td>{p.segment || '—'}</td><td>{p.product}</td><td>{p.use || '—'}</td><td class="n">{p.share_pct || '—'}</td></tr>)}</tbody>
+    </table></div>
+    <p class="meta">사업보고서 'II. 사업의 내용'의 주요 제품 표 글자 그대로(80자까지)입니다. <a href={prods[0].source_url} rel="noopener">사업보고서 원문</a></p>
+    </>) : c.factoryProduct ? <p>{c.factoryProduct} <span class="meta">— 공장등록(팩토리온) 생산품. 사업보고서 주요 제품 표는 아직 읽지 못했습니다.</span></p>
+      : <p class="meta">사업보고서 주요 제품 표를 아직 읽지 못했습니다. <a href={`https://dart.fss.or.kr/dsab007/main.do?option=corp&textCrpNm=${encodeURIComponent(c.name)}`} rel="noopener">DART 원문</a>의 'II. 사업의 내용'을 보세요.</p>}
+  </section>
+
+  <section>
     <div class="section-head"><h2>재무</h2><span class="meta">사업보고서 주요계정 · 억 원{fsKind && ` · ${fsKind}`}</span></div>
     {finYears.length === 0 ? <p class="meta">사업보고서 주요계정을 받지 못했습니다(코넥스·신규 상장 회사는 없을 수 있음). DART 원문을 확인하세요.</p> : (
     <div class="scroll-x"><table class="data-table" data-title={`${c.name} 재무 ${finYears[0]}~${finYears.at(-1)}`}>
       <thead><tr><th>계정</th>{finYears.map(y => <th class="n">{y}</th>)}</tr></thead>
-      <tbody>{ACC.map(([k, label]) => <tr><th scope="row">{label}</th>{finYears.map(y => <td class="n">{f(c.years[y][k] as string)}</td>)}</tr>)}</tbody>
+      <tbody>{ACC.map(([k, label]) => <tr><th scope="row">{label}</th>{finYears.map(y => <td class="n">{f(c.years[y][k] as string)}</td>)}</tr>)}
+        <tr><th scope="row">매출액 증가율(%)</th>{finYears.map((y, i) => <td class="n">{i ? pct1(revGrowth(c.years[y], c.years[finYears[i - 1]])) : '—'}</td>)}</tr>
+        <tr><th scope="row">영업이익률(%)</th>{finYears.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}</tr></tbody>
     </table></div>)}
-    {finYears.length > 0 && <p class="meta">원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
+    {finYears.length > 0 && <p class="meta">매출액 증가율 = (그해 ÷ 전년 − 1) × 100, 영업이익률 = 영업이익 ÷ 매출액 × 100 — 공시 값을 나눈 것(기준이 다른 해끼리는 계산하지 않음). 원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
   </section>
 
   <section>

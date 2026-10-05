@@ -39,17 +39,18 @@ FORMAT = """## 출력 형식(마크다운)
 | 번호 | 분야(업종) | 대구 밖 수요/생산성 중 무엇을 늘리나 | 정책 수단(대구가 하는 일) | 겨냥 성장(추세보다 +%p) | 계산상 GRDP 기여(%p) | 금액(억 원) | 추적 지표(출처) |
 
 ### 2. 대안별 논증(대안마다)
-- **목표**: 무엇을 얼마나(업종 성장률 +%p, 계산기 식)
+- **목표**: 무엇을 얼마나(업종 성장률 +%p, 계산기 식). 겨냥 성장은 '상위 3개 시도 평균 − 대구 연평균'을 넘지 않게 잡는다. 넘기면 '상한 초과'라고 쓰고 [자료]에 있는 근거를 댄다
 - **진단**: 지금 값(비중·입지계수·연평균 성장·전국·상위 3개 시도, [자료]에서)
-- **원인**: 왜 지금 이 수준인지 — 근거 출처가 있는 문장만
+- **원인**: 왜 지금 이 수준인지 — [자료]의 값(예: 전국 대비 비중, 증감)을 들어 쓴다. 출처 이름만 적는 것은 원인이 아니다. 근거가 없으면 '원인 조사 필요'
 - **기제**: 정책 수단 → 어떤 수요·생산이 늘어 → 그 업종 부가가치로 잡히는 경로(돈이 대구 밖에서 들어오는지, 대구 안에서 옮겨 가는지 구분)
 - **수단**: 대구가 할 수 있는 일(제도·사업 유형 이름까지). 국비·공모가 필요하면 그 이름과 '응모' 표현
-- **기대효과**: 계산기 식으로 계산한 기여(%p)·금액. 계산식을 함께 적는다
+- **기대효과**: 계산기 식으로 계산한 기여(%p)·금액. 계산식을 함께 적는다(예: 9.9 ÷ 100 × 2.0 = 0.198)
 - **한계·조사할 것**: 확인 안 된 전제, 필요한 자료(기관·자료명)
 
 ### 3. 묶음 합계와 계산기 연결
 - 대안을 모두 이뤘을 때의 기여 합(%p)과 추세 1.15% 에 더한 성장률. 목표 3.0%·5.0%까지 남는 차이.
-- 계산기(/growth/)에서 같은 값을 넣는 방법(어느 업종 칸에 몇 %).
+- 합계·차이는 반드시 식으로 적는다: 'a + b + c = 합', '1.15 + 합 = 성장률', '5.0 − 성장률 = 차이'. 0절의 합계도 3절 식과 같은 값.
+- 계산기(/growth/)에서 같은 값을 넣는 방법: 계산기 업종 칸은 '업종 성장률'이므로 '대구 연평균 성장 + 겨냥 성장'을 식으로 적어 넣는다(예: 보건·사회복지 5.3 + 2.0 = 7.3).
 
 ### 4. 조사 항목
 - [자료]에 없어 숫자를 비워 둔 항목과 받을 곳(기관·통계명)."""
@@ -111,6 +112,100 @@ def tourism_block() -> str:
             f"- 외지인 관광소비가 10% 늘면 계산기 식으로 {t / 1e9 * 0.1:.2f}조 원 × 0.415 ÷ 명목 GRDP 74.5조 원 ≈ GRDP +{t / 1e9 * 0.1 * 0.415 / 74.5 * 100:.2f}%p.")
 
 
+def _kosis(key: str) -> list[dict]:
+    p = ROOT / "data" / "kosis" / f"{key}.csv"
+    return list(csv.DictReader(open(p, encoding="utf-8"))) if p.exists() else []
+
+
+def _v(rows, y, **kw):
+    for r in rows:
+        if r["PRD_DE"] == y and all(r.get(k) == v for k, v in kw.items()):
+            try:
+                return float(r["DT"])
+            except ValueError:
+                return None
+    return None
+
+
+def foreign_patient_line() -> str:
+    """공공데이터포털 파일(scripts/policy_inputs.py → data/policy_inputs/): 외국인환자 유치실적(전국)·지역별 유치의료기관 수."""
+    base = ROOT / "data" / "policy_inputs"
+    parts = []
+    p = base / "15137813.csv"
+    if p.exists():
+        rs = [r for r in csv.DictReader(open(p, encoding="utf-8")) if r.get("실환자")]
+        if rs:
+            L = rs[-1]
+            parts.append(f"전국 외국인 환자(실환자) {L['연도']}년 {int(L['실환자']):,}명(2019년 {int(next(r['실환자'] for r in rs if r['연도'] == '2019')):,}명) — 지역별 값은 이 파일에 없음")
+    p = base / "15125603.csv"
+    if p.exists():
+        rs = list(csv.reader(open(p, encoding="utf-8")))
+        head, rows = rs[0], rs[1:]
+        dg = next((r for r in rows if r and "대구" in r[0]), None)
+        tot = [sum(float(r[i] or 0) for r in rows if r and r[0] not in ("합계", "전국", "계")) for i in range(1, len(head))] if len(rows) > 5 else None
+        if dg:
+            y = head[-1]
+            s = f"대구 외국인환자 유치의료기관 {y} {float(dg[-1]):,.0f}곳(2019년 {float(dg[head.index('2019년')]):,.0f}곳)" if "2019년" in head else f"대구 외국인환자 유치의료기관 {y} {float(dg[-1]):,.0f}곳"
+            if tot:
+                s += f", 전국 {tot[-1]:,.0f}곳의 {float(dg[-1]) / tot[-1] * 100:.1f}%"
+            parts.append(s)
+    src = "한국보건산업진흥원, 공공데이터포털 15137813·15125603"
+    if not parts:
+        return "- 외국인 환자 수(대구): 자료 없음 — 조사 항목(한국보건산업진흥원 「외국인환자 유치실적」 지역별)."
+    return f"- 외국인 환자({src}): " + "; ".join(parts) + ". 대구 외국인 환자 수·진료 수입은 자료 없음 — 조사 항목(한국보건산업진흥원 「외국인환자 유치실적 통계」 지역별)."
+
+
+def survey_block() -> str:
+    """조사 항목(운영자 지시 2026-10-05)을 KOSIS 로 받은 값으로 채운다. 값은 표 그대로, 비중·증가율은 같은 표 안의 나눗셈만."""
+    out = []
+    fr = _kosis("foreign-residents-sido")
+    if fr:
+        ys = sorted({r["PRD_DE"] for r in fr})
+        y0, y1 = ys[0], ys[-1]
+        d0, d1 = _v(fr, y0, C1_NM="대구광역시", C2_NM="유학생", C3_NM="합계"), _v(fr, y1, C1_NM="대구광역시", C2_NM="유학생", C3_NM="합계")
+        n0, n1 = _v(fr, y0, C1_NM="합계", C2_NM="유학생", C3_NM="합계"), _v(fr, y1, C1_NM="합계", C2_NM="유학생", C3_NM="합계")
+        pd, pn = _v(fr, y1, C1_NM="대구광역시", C2_NM="총인구", C3_NM="합계"), _v(fr, y1, C1_NM="합계", C2_NM="총인구", C3_NM="합계")
+        if None not in (d0, d1, n0, n1, pd, pn):
+            out.append(f"- 외국인 유학생(행정안전부 「지방자치단체 외국인주민 현황」, KOSIS TX_11025_A000_A, 대구 거주): {y1}년 {d1:,.0f}명 — 전국 {n1:,.0f}명의 {d1 / n1 * 100:.1f}%"
+                       f"(대구 인구 비중 {pd / pn * 100:.1f}%). {y0}년 {d0:,.0f}명 → {y1}년 {d1:,.0f}명({(d1 / d0 - 1) * 100:+.0f}%, 같은 기간 전국 {(n1 / n0 - 1) * 100:+.0f}%). "
+                       "유학생 1인 지출액·학교별 수는 자료 없음 — 조사 항목(교육부 「고등교육기관 외국인 유학생 현황」, 한국교육개발원).")
+    mc = _kosis("mice-conference-sido")
+    if mc:
+        y = max(r["PRD_DE"] for r in mc)
+        dn, nn = _v(mc, y, C1_NM="대구", C2_NM="빈도"), _v(mc, y, C1_NM="전체", C2_NM="빈도")
+        dp, df = _v(mc, y, C1_NM="대구", C2_NM="전체 참가자 수"), _v(mc, y, C1_NM="대구", C2_NM="외국인 참가자 수")
+        np_, nf = _v(mc, y, C1_NM="전체", C2_NM="전체 참가자 수"), _v(mc, y, C1_NM="전체", C2_NM="외국인 참가자 수")
+        prev = str(int(y) - 1)
+        dprev = _v(mc, prev, C1_NM="대구", C2_NM="빈도")
+        if None not in (dn, nn, dp, df, np_, nf):
+            out.append(f"- 국제회의(한국관광공사 「국제회의현황조사」, KOSIS DT_314005_A001): 대구 {y}년 {dn:,.0f}건(전국 {nn:,.0f}건의 {dn / nn * 100:.1f}%"
+                       + (f", {prev}년 {dprev:,.0f}건" if dprev else "") + f"), 참가자 {dp:,.0f}명(외국인 {df:,.0f}명 — 전국 외국인 참가자 {nf:,.0f}명의 {df / nf * 100:.1f}%).")
+    ex = _kosis("mice-exhibition-sido")
+    if ex:
+        ys = sorted({r["PRD_DE"] for r in ex})
+        ser = [(y, _v(ex, y, C1_NM="EXCO", C2_NM="전체"), _v(ex, y, C1_NM="전체", C2_NM="전체")) for y in ys]
+        ser = [x for x in ser if x[1] is not None and x[2]]
+        if ser:
+            out.append("- 전시회(「전시산업통계조사」, KOSIS DT_430001_05_003, 대구 전시장 EXCO 개최 건수): "
+                       + " · ".join(f"{y}년 {e:,.0f}건(전국 {t:,.0f}건의 {e / t * 100:.1f}%)" for y, e, t in ser[-3:]) + ". 전시회 참관객·지출액은 자료 없음 — 조사 항목.")
+    P, R, O = _kosis("medical-use-sido-provider"), _kosis("medical-use-sido-resident"), _kosis("medical-use-sido-outside")
+    if P and R and O:
+        ys = sorted({r["PRD_DE"] for r in P})
+        def inflow(y):
+            p = _v(P, y, ITM_NM="진료비", C1_NM="대구광역시", C2_NM="합계")
+            r = _v(R, y, ITM_NM="진료비", C1_NM="대구광역시", C2_NM="합계")
+            o = _v(O, y, ITM_NM="진료비", C1_NM="대구광역시", C2_NM="계")
+            return None if None in (p, r, o) else (p, r, o, p - (r - o))
+        a, b = inflow(ys[0]), inflow(ys[-1])
+        if a and b:
+            p, r, o, inn = (x / 1e9 for x in b)   # 천원 → 조 원
+            out.append(f"- 다른 지역 환자(국민건강보험공단 「지역별 의료이용통계」, KOSIS TX_35003_A004·A006·A007, 건강보험 진료비): {ys[-1]}년 대구 소재 의료기관 진료비 {p:.2f}조 원, "
+                       f"대구 거주자 진료비 {r:.2f}조 원 가운데 대구 밖 의료기관 {o:.2f}조 원. 계산: 대구 의료기관 진료비 − (대구 거주자 진료비 − 대구 밖 이용분) = 다른 지역 거주자의 대구 진료비 약 {inn:.2f}조 원"
+                       f"(대구 의료기관 진료비의 {inn / p * 100:.1f}%, {ys[0]}년 {a[3] / 1e9:.2f}조 원). 순유입(유입 − 유출) 약 {inn - o:.2f}조 원. 진료비는 건강보험 급여 진료분(비급여 제외).")
+    out.append(foreign_patient_line())
+    return "\n".join(out)
+
+
 def service_data(fx, rows) -> str:
     svc = [r for r in rows if not r["mfg"]]
     return f"""[자료] — 성장 계산기(/growth/)와 같은 정의(산업구조지수 리포트 기준, 2015→2024년, 지역소득 25개 부문)
@@ -124,10 +219,7 @@ def service_data(fx, rows) -> str:
 ### 분야별로 받아 둔 자료
 {tourism_block()}
 - 의료기기(제조) 대구 생산은 제조업 프롬프트 [자료]에 있음. 보건·사회복지는 위 표(입지계수·성장).
-- 외국인 유학생 수(대구 소재 대학): 자료 없음 — 조사 항목(교육부 「국내 고등교육기관 외국인 유학생 현황」, 대학알리미).
-- 외국인 환자 수(대구): 자료 없음 — 조사 항목(한국보건산업진흥원 「외국인환자 유치실적」 지역별).
-- 국제회의·MICE 개최 실적(대구): 자료 없음 — 조사 항목(한국관광공사 「MICE 산업통계」, 문화체육관광부).
-- 다른 지역 환자 유입 비율: 자료 없음 — 조사 항목(국민건강보험공단 「지역별 의료이용통계」).
+{survey_block()}
 
 ### 이미 정리된 방향(같은 사이트 계산 결과, 평가 아님)
 - 대구 밖 돈을 들여오는 서비스: 관광·MICE·의료(외국인·다른 지역 환자)·대학(유학생·다른 지역 학생)·역외로 파는 사업·전문 서비스.

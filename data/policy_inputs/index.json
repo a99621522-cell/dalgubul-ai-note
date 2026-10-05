@@ -1,1 +1,20 @@
-{}
+{
+ "15137813": {
+  "title": "한국보건산업진흥원 외국인 환자 유치실적 정보",
+  "file": "한국보건산업진흥원_GHI외국인환자유치실적데이터.csv",
+  "rows_all": 14,
+  "rows_kept": 14,
+  "mode": "전체",
+  "fetched": "2026-10-05",
+  "source_url": "https://www.data.go.kr/data/15137813/fileData.do"
+ },
+ "15125603": {
+  "title": "한국보건산업진흥원 연도별 지역별 외국인환자 유치의료기관 현황",
+  "file": "연도별 지역별 외국인환자 유치의료기관 현황.CSV",
+  "rows_all": 17,
+  "rows_kept": 17,
+  "mode": "전체",
+  "fetched": "2026-10-05",
+  "source_url": "https://www.data.go.kr/data/15125603/fileData.do"
+ }
+}

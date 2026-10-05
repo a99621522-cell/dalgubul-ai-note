@@ -1,0 +1,20 @@
+{
+ "key": "mice-exhibition-sido",
+ "name": "전시산업통계조사 — 지역별·시설별 전시회 개최건수",
+ "tbl_nm": "지역별 시설별 전시회 개최건수",
+ "org_id": "430",
+ "tbl_id": "DT_430001_05_003",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 488,
+ "rows_kept": 488,
+ "latest": "2024",
+ "unit": "건",
+ "areas": [],
+ "fetched": "2026-10-05",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=430&tblId=DT_430001_05_003",
+ "note": ""
+}

@@ -1,0 +1,20 @@
+{
+ "key": "medical-use-sido-resident",
+ "name": "지역별 의료이용통계 — 시도별 진료현황(거주지 기준, 전체)",
+ "tbl_nm": "시도별 진료현황-전체",
+ "org_id": "350",
+ "tbl_id": "TX_35003_A004",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 1800,
+ "rows_kept": 1800,
+ "latest": "2024",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-05",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A004",
+ "note": ""
+}

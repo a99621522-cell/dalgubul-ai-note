@@ -1,0 +1,37 @@
+name: 의료기기 지역별 생산·수출입 받기 (식약처 통계자료)
+
+# scripts/fetch_mfds_device.py — 식약처 「의료기기 생산 및 수·출입 실적 통계 자료」 PDF 의 지역별 표(7절)를 받아
+# data/mfds/ 에 커밋한다. 자료는 해마다 5월쯤 나온다. 이 세션 환경은 mfds.go.kr 이 막혀 러너가 받는다.
+on:
+  schedule:
+    - cron: "17 22 9 6,7 *"    # 6·7월 10일 07:17 KST
+  workflow_dispatch:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/fetch_mfds_device.py", ".github/workflows/mfds_device.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get install -y -qq poppler-utils >/dev/null && pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python3 scripts/fetch_mfds_device.py
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/mfds
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 식약처 의료기기 지역별 생산·수출입 실적 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

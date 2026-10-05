@@ -135,7 +135,8 @@ def facts() -> dict:
         scen.append({"target": f1(T), "stage": at, "stage_share_pct": round(fr * 100), "rest": f1(rest),
                      "fields": {FIELD_NM[f]: f1(fg(fin, f)) for f in FIELD_NM},
                      "grdp_increase_jo": f1(gdp_eok * T / 100 / 10000), "more_than_trend_jo": f1(gdp_eok * (T - base) / 100 / 10000),
-                     "final_demand_needed_jo": f1(gdp_eok * (T - base) / 100 / k_eff / 10000) if T > base else "0.0"})
+                     "final_demand_needed_jo": f1(gdp_eok * (T - base) / 100 / k_eff / 10000) if T > base else "0.0",
+                     "field_more_eok": {FIELD_NM[f]: won(sum(r["va"] * (fin[i] - r["g"]) / 100 for i, r in enumerate(rows) if r["field"] == f)) for f in FIELD_NM}})
     # 제조업 경로
     M = [r for r in rows if r["mfg"]]
     msh = sum(r["share"] for r in M)
@@ -177,21 +178,50 @@ def facts() -> dict:
     }
 
 
+def render(fx: dict) -> str:
+    """사실 묶음을 사람이 읽는 문장 줄로 — Gemini 가 열 이름을 그대로 옮기지 않게."""
+    b = fx["기준"]
+    L = [f"자료: {b['자료']} · 기간 {b['기간']}",
+         f"- 대구 명목 GRDP {b['명목 GRDP(조 원)']}조 원. 지난 10년 실질 성장 추세 연 {b['지난 10년 추세(%)']}%. 같은 기간 전국 연 {b['전국 GRDP 10년 연평균(%)']}%, 17개 시도 가운데 GRDP 성장이 높았던 세 곳 평균 연 {b['17개 시도 GRDP 10년 성장 상위 세 곳 평균(%)']}%.",
+         "- 분야별 지난 10년 성장(2024년 비중 가중): " + ", ".join(f"{k} {v}%" for k, v in b["분야별 10년 추세 성장(%)"].items()),
+         "- 경로(추세에서 출발해 업종 성장률을 비교 기준으로 한 단계씩 올림, 누적 GRDP 성장률):"]
+    L += [f"  {x['stage']}단계 {x['name']}: +{x['add']}%p → {x['cum']}%" for x in fx["단계(누적 GRDP 성장률)"]]
+    L.append("- 목표별(GRDP 성장률 목표 → 닿는 단계, 분야별 필요 성장률, 금액):")
+    for x in fx["목표별 시나리오"]:
+        st = "추세 안" if x["stage"] == 0 else (f"{x['stage']}단계의 {x['stage_share_pct']}%에서 닿음" if x["stage"] > 0 else f"5단계를 넘어 {x['rest']}%p 남음")
+        L.append(f"  목표 {x['target']}%: {st}. 필요 성장 " + ", ".join(f"{k} {v}%" for k, v in x["fields"].items())
+                 + f". GRDP 한 해 {x['grdp_increase_jo']}조 원 증가(추세보다 {x['more_than_trend_jo']}조 원 더), 이를 새 지출로 만들 때 필요한 대구 최종수요 {x['final_demand_needed_jo']}조 원."
+                 + " 추세보다 더 늘릴 부가가치: " + ", ".join(f"{k} {v}억 원" for k, v in x["field_more_eok"].items()))
+    L.append(f"- 제조업: GRDP 비중 {b['제조업 GRDP 비중(%)']}%, 업종 가중 10년 성장 {b['제조업 업종 가중 10년 성장(%)']}%. 제조업 목표별(업종 필요 성장률, 금액):")
+    for x in fx["제조업 목표별"]:
+        st = "추세 안" if x["stage"] == 0 else (f"{x['stage']}단계(1 감소 멈춤, 2 전국 수준, 3 상위 3개 시도 수준)에서 닿음" if x["stage"] > 0 else f"3단계를 넘어 {x['rest']}%p 남음")
+        L.append(f"  제조업 {x['mfg_target']}%: {st}. " + ", ".join(f"{k} {v}%" for k, v in x["sectors"].items())
+                 + f". 제조업 부가가치 한 해 {x['va_increase_eok']}억 원 증가(추세보다 {x['more_than_trend_eok']}억 원 더), 필요한 최종수요 {x['final_demand_eok']}억 원, GRDP 기여 {x['grdp_contrib_pp']}%p.")
+    L.append("- 업종 기준값(비중 %, 대구 10년 %, 전국 %, 상위 3개 시도 평균 %, 2024년 부가가치 억 원):")
+    L += [f"  {r['업종']}: {r['비중']}, {r['10년']}, {r['전국']}, {r['상위3']}, {r['부가가치 억 원']}" for r in fx["업종(비중·10년 성장·전국·상위3)"]]
+    L.append(f"- 금액 환산 계수: 대구 부가가치유발계수(수입품 제외 후) {b['부가가치유발계수(수입품 제외 후)']}")
+    return "\n".join(L)
+
+
 PROMPT = """너는 대구 산업 통계를 정리하는 공무원용 자료 사이트의 해설 작성자다. 아래 [계산 결과]는 '성장 계산기' 페이지가 보여 주는 값이다.
-이 값만 근거로 페이지 맨 위에 둘 해설을 JSON 하나로만 써라. 다른 문장 금지.
-형식: {"headline": "40자 이내 결론 한 줄", "sections": [{"title": "전체 경로", "points": ["...", ...]}, {"title": "목표별로 보면", "points": [...]}, {"title": "제조업", "points": [...]}, {"title": "금액", "points": [...]}, {"title": "읽을 때 주의", "points": [...]}]}
-규칙:
-- 각 points 는 3~5개, 각 80자 이내, 개조식 명사형 종결(예: '…에 닿음', '…가 필요함'). 결론을 먼저.
-- 숫자는 [계산 결과]에 있는 값을 그대로만 쓴다. 더하기·빼기·나누기로 새 숫자를 만들지 않는다. 단위(%, %p, 조 원, 억 원)를 붙인다.
-- '상위 3개 시도'는 17개 시도 가운데 그 업종 10년 성장률이 높았던 세 곳의 평균이며 비교 기준이지 순위·평가가 아니라고 쓴다.
-- 정책·기관·지자체에 대한 평가·비판·칭찬, 전망, 달성 가능성 판단('어렵다', '가능하다', '충분하다'), 권고('해야 한다')를 쓰지 않는다. 계산상 필요한 값은 '필요'로 쓴다.
-- 특정 기업을 언급하지 않는다. 모르는 것은 쓰지 않는다.
-- '읽을 때 주의'에는 업종 사이 파급을 넣지 않은 계산이라는 점, 2024년 가격 근사라는 점, 비중이 작은 업종·기반이 작은 시도의 값이 흔들린다는 점을 넣는다.
+읽는 사람은 대구시·구청 공무원이다. 표를 다 읽지 않아도 '무엇을 얼마나 해야 몇 %가 되는지'를 바로 알게 써라.
+JSON 하나로만 답하라. 다른 문장 금지.
+형식: {"headline": "...", "sections": [{"title": "한눈에", "points": [...]}, {"title": "목표별로 보면", "points": [...]}, {"title": "제조업", "points": [...]}, {"title": "금액으로", "points": [...]}, {"title": "읽을 때 주의", "points": [...]}]}
+쓰는 법:
+- headline: 45자 이내. 가장 중요한 결론 하나(예: 목표 5%가 어느 단계·어떤 조건에서 닿는지).
+- points: 섹션마다 3~4개, 각 90자 이내, 개조식 명사형 종결('…에서 닿음', '…가 필요함', '…임').
+- 숫자 나열이 아니라 '조건 → 결과' 또는 '비교'로 쓴다. 좋은 예: '목표 3.0%는 4단계(제조업 상위 3개 시도 수준)의 80%에서 닿음', '제조업이 5.0% 성장해도 GRDP 기여는 1.0%p — 비중이 19.8%이기 때문'.
+- '한눈에'에는 추세와 목표의 차이, 5%가 닿는 조건, 다른 시도 실제 성장과의 비교를 넣는다.
+- '제조업'에는 감소 업종(섬유·금속)의 감소 멈춤 효과와, 목표 3.0%·5.0%에서 성장률이 크게 올라야 하는 업종을 넣는다.
+- '금액으로'에는 목표별 GRDP 증가액, 추세보다 더 늘릴 금액, 필요한 최종수요를 넣는다.
+- 숫자는 [계산 결과]에 적힌 값을 그대로만 쓴다(새로 더하거나 나누어 만든 숫자 금지). 단위는 %, %p, 조 원, 억 원. 'pp', '(%)' 같은 표기는 쓰지 않는다.
+- '상위 3개 시도'는 17개 시도 가운데 그 업종 성장률이 높았던 세 곳의 평균인 비교 기준이며 순위·평가가 아님을 한 번 밝힌다.
+- 정책·기관에 대한 평가·비판·칭찬, 전망, 달성 가능성 판단('어렵다', '가능하다', '현실적'), 권고('해야 한다', '바람직')를 쓰지 않는다. 계산상 필요한 값은 '필요'로만 쓴다. 특정 기업을 쓰지 않는다.
+- '읽을 때 주의': 업종 사이 파급을 넣지 않은 계산, 2024년 가격 근사, 비중이 작은 업종과 기반이 작은 시도(예: 세종)의 값이 크게 흔들림, 가정에 따른 계산이지 전망이 아님.
 """
 
 
-def allowed_numbers(fx: dict) -> set[str]:
-    s = json.dumps(fx, ensure_ascii=False)
+def allowed_numbers(s: str) -> set[str]:
     out = set()
     for m in re.findall(r"-?\d[\d,]*(?:\.\d+)?", s):
         v = m.replace(",", "").lstrip("-")
@@ -240,7 +270,7 @@ def main(argv: list[str]) -> int:
         print("승인함 — 페이지에 보입니다")
         return 0
     fx = facts()
-    fx_text = json.dumps(fx, ensure_ascii=False, indent=1)
+    fx_text = render(fx)
     h = hashlib.sha256(fx_text.encode()).hexdigest()[:16]
     if "--facts-only" in argv:
         print(fx_text)
@@ -252,7 +282,7 @@ def main(argv: list[str]) -> int:
     if not GEMINI_KEY:
         print("GEMINI_KEY 없음")
         return 0
-    ok = allowed_numbers(fx)
+    ok = allowed_numbers(fx_text)
     res, bad = None, []
     for attempt in range(2):
         extra = "" if not bad else f"\n\n앞선 답에 [계산 결과]에 없는 숫자가 있었다: {', '.join(bad[:10])}. 그 숫자를 빼고 다시 써라."

@@ -1,6 +1,6 @@
 {
  "month": "2026-07",
- "generated": "2026-10-05 12:45",
+ "generated": "2026-10-05 16:22",
  "basis": "nps",
  "basis_label": "국민연금 가입자수",
  "sources": {
@@ -14,7 +14,7 @@
    "matched": 6057
   },
   "dart": {
-   "corps_daegu": 5,
+   "corps_daegu": 68,
    "note": "collect_dart.py 가 확인한 대구 본사 공시 기업만. 재무(매출)는 미연결"
   }
  },
@@ -33,7 +33,7 @@
   "nps_loss": 3245,
   "new_firms": 5,
   "closed_firms": 26,
-  "dart_firms": 3,
+  "dart_firms": 71,
   "dart_revenue": null,
   "projects_12m": null,
   "support_3y": {
@@ -66,7 +66,7 @@
    "nps_loss": 32,
    "new_firms": 1,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 2,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -97,7 +97,7 @@
    "nps_loss": 476,
    "new_firms": 2,
    "closed_firms": 2,
-   "dart_firms": 0,
+   "dart_firms": 10,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -128,7 +128,7 @@
    "nps_loss": 90,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 9,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -159,7 +159,7 @@
    "nps_loss": 313,
    "new_firms": 1,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -222,7 +222,7 @@
    "nps_loss": 369,
    "new_firms": 0,
    "closed_firms": 2,
-   "dart_firms": 0,
+   "dart_firms": 12,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -253,7 +253,7 @@
    "nps_loss": 254,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 3,
+   "dart_firms": 10,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -284,7 +284,7 @@
    "nps_loss": 139,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 2,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -315,7 +315,7 @@
    "nps_loss": 861,
    "new_firms": 1,
    "closed_firms": 12,
-   "dart_firms": 0,
+   "dart_firms": 20,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -346,7 +346,7 @@
    "nps_loss": 219,
    "new_firms": 0,
    "closed_firms": 3,
-   "dart_firms": 0,
+   "dart_firms": 3,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -377,7 +377,7 @@
    "nps_loss": 241,
    "new_firms": 0,
    "closed_firms": 5,
-   "dart_firms": 0,
+   "dart_firms": 2,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -440,7 +440,7 @@
    "nps_loss": 709,
    "new_firms": 1,
    "closed_firms": 12,
-   "dart_firms": 1,
+   "dart_firms": 20,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -471,7 +471,7 @@
    "nps_loss": 1011,
    "new_firms": 4,
    "closed_firms": 2,
-   "dart_firms": 1,
+   "dart_firms": 4,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -502,7 +502,7 @@
    "nps_loss": 311,
    "new_firms": 0,
    "closed_firms": 5,
-   "dart_firms": 0,
+   "dart_firms": 5,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -533,7 +533,7 @@
    "nps_loss": 146,
    "new_firms": 0,
    "closed_firms": 2,
-   "dart_firms": 1,
+   "dart_firms": 2,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -564,7 +564,7 @@
    "nps_loss": 128,
    "new_firms": 0,
    "closed_firms": 4,
-   "dart_firms": 0,
+   "dart_firms": 2,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -595,7 +595,7 @@
    "nps_loss": 67,
    "new_firms": 0,
    "closed_firms": 1,
-   "dart_firms": 0,
+   "dart_firms": 2,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -626,7 +626,7 @@
    "nps_loss": 166,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 8,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -657,7 +657,7 @@
    "nps_loss": 105,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 4,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -688,7 +688,7 @@
    "nps_loss": 160,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 5,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -781,7 +781,7 @@
    "nps_loss": 78,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 6,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -812,7 +812,7 @@
    "nps_loss": 106,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 6,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -843,7 +843,7 @@
    "nps_loss": 78,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 5,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -935,7 +935,7 @@
    "nps_loss": 37,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -965,7 +965,7 @@
    "nps_loss": 20,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1149,7 +1149,7 @@
    "nps_loss": 876,
    "new_firms": 1,
    "closed_firms": 12,
-   "dart_firms": 1,
+   "dart_firms": 21,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1180,7 +1180,7 @@
    "nps_loss": 428,
    "new_firms": 1,
    "closed_firms": 7,
-   "dart_firms": 0,
+   "dart_firms": 4,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1211,7 +1211,7 @@
    "nps_loss": 1021,
    "new_firms": 2,
    "closed_firms": 3,
-   "dart_firms": 0,
+   "dart_firms": 30,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1242,7 +1242,7 @@
    "nps_loss": 273,
    "new_firms": 0,
    "closed_firms": 2,
-   "dart_firms": 1,
+   "dart_firms": 3,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1273,7 +1273,7 @@
    "nps_loss": 346,
    "new_firms": 1,
    "closed_firms": 0,
-   "dart_firms": 1,
+   "dart_firms": 11,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1304,7 +1304,7 @@
    "nps_loss": 151,
    "new_firms": 0,
    "closed_firms": 1,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1336,7 +1336,7 @@
    "nps_loss": 82,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1459,7 +1459,7 @@
    "nps_loss": 68,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1491,7 +1491,7 @@
    "nps_loss": 78,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 6,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1522,7 +1522,7 @@
    "nps_loss": 104,
    "new_firms": 0,
    "closed_firms": 3,
-   "dart_firms": 0,
+   "dart_firms": 3,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1553,7 +1553,7 @@
    "nps_loss": 1723,
    "new_firms": 1,
    "closed_firms": 16,
-   "dart_firms": 2,
+   "dart_firms": 52,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1584,7 +1584,7 @@
    "nps_loss": 1272,
    "new_firms": 4,
    "closed_firms": 7,
-   "dart_firms": 1,
+   "dart_firms": 9,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1617,7 +1617,7 @@
    "nps_loss": 618,
    "new_firms": 0,
    "closed_firms": 2,
-   "dart_firms": 0,
+   "dart_firms": 13,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1680,7 +1680,7 @@
    "nps_loss": 217,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 4,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1711,7 +1711,7 @@
    "nps_loss": 98,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 4,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1743,7 +1743,7 @@
    "nps_loss": 183,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 6,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1774,7 +1774,7 @@
    "nps_loss": 22,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 2,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1835,7 +1835,7 @@
    "nps_loss": 22,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 3,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1897,7 +1897,7 @@
    "nps_loss": 8,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {

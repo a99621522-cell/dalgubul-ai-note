@@ -67,3 +67,18 @@ tables:
     search: "부도율"
     cycle: M
     years: 4
+  # ── 지역산업연관표 계수(운영자 지시 2026-10-05: 예산·정책 → GRDP 기여 계산용 대구 지역내 부가가치유발계수). 코드는 discover 로 확인
+  - key: io-region-va
+    name: 지역산업연관표 부가가치유발계수
+    stat_code: ""
+    search: "지역산업연관표"
+    cycle: A
+    years: 6
+    note: 대구 지역내 부가가치·생산 유발계수(33부문). 계산기 정책 시나리오가 읽는다
+  - key: io-region-coef
+    name: 지역산업연관 유발계수
+    stat_code: ""
+    search: "유발계수"
+    cycle: A
+    years: 6
+    note: 후보 찾기용

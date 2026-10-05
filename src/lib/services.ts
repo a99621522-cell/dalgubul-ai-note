@@ -109,6 +109,16 @@ const dlYm = (s: string) => `${s.slice(0, 4)}-${s.slice(4)}`;
 const dlVisit = () => readCsv('data/tourism/datalab_visitors.csv');
 const dlSpend = () => readCsv('data/tourism/datalab_spend.csv');
 const toEok = (v: string) => Math.round(Number(v) / 1000) / 100;   // 천원 → 억 원(소수 둘째 자리)
+/** 관광빅데이터 정보서비스 오픈API(scripts/fetch_tourism.py, 키 DATA_GO_KR_KEY) — 현지인·외지인·외국인 일별 방문자를 달마다 더한 값(연인원).
+ *  그 달 날짜가 다 있는 달만 쓴다(덜 찬 달은 합계가 작게 나온다). */
+export const TOUR_API_SRC = '한국관광공사 관광빅데이터 정보서비스(공공데이터포털 오픈API)';
+export const TOUR_API_URL = 'https://www.data.go.kr/data/15101972/openapi.do';
+const apiVisit = () => readCsv('data/tourism/visitors_monthly.csv').filter(r => {
+  const [y, m] = r.month.split('-').map(Number);
+  return Number(r.days) === new Date(y, m, 0).getDate();
+});
+const apiPts = (code: string, div: string): Pt[] => apiVisit().filter(r => r.code === code && r.tou_div.startsWith(div))
+  .map(r => ({ m: r.month, v: Math.round(Number(r.visitors) / 1000) / 10 })).sort((a, b) => a.m.localeCompare(b.m));
 export function tourismMeta(): { latest: string; fetched: string } {
   const f = 'data/tourism/datalab_meta.json';
   const m = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf-8')) : {};
@@ -123,6 +133,8 @@ export function tourismSeries(): Series[] {
   return [
     { ...base, key: 'tvis', name: '외지인 방문자 수', unit: '만 명', change: '%' as const, digits: 0, note: '이동통신, 연인원',
       pts: V.map(r => ({ m: dlYm(r.ym), v: Math.round(Number(r.visitors) / 1000) / 10, yoy: r.yoy_pct === '' ? null : Number(r.yoy_pct) })).sort((a, b) => a.m.localeCompare(b.m)) },
+    { ...base, key: 'tfor', name: '외국인 방문자 수', unit: '만 명', change: '%' as const, digits: 1, note: '이동통신, 연인원', source: TOUR_API_SRC, url: TOUR_API_URL, pts: apiPts('27', '외국인') },
+    { ...base, key: 'tloc', name: '현지인 방문자 수', unit: '만 명', change: '%' as const, digits: 0, note: '대구 주민의 대구 안 이동, 이동통신, 연인원', source: TOUR_API_SRC, url: TOUR_API_URL, pts: apiPts('27', '현지인') },
     { ...base, key: 'tsp', name: '관광소비(내국인)', unit: '억 원', change: '%' as const, digits: 0, note: '신용카드', pts: spend('내국인') },
     { ...base, key: 'tspo', name: '외지인 관광소비', unit: '억 원', change: '%' as const, digits: 0, note: '신용카드', pts: spend('외지인') },
     { ...base, key: 'tshare', name: '관광소비 전국 대비 비중', unit: '%', change: '%p' as const, digits: 1, note: '내국인, 데이터랩 계산값',
@@ -142,7 +154,7 @@ export function tourismIndustryRows(): { m: string; total: number | null; rows: 
   return { m: dlYm(last), total, rows };
 }
 /** 구·군별(최근 달): 외지인 방문자(만 명, 전년 같은 달 대비는 데이터랩 값)·관광소비(내국인, 억 원) */
-export function tourismDistrictRows(): { m: string; rows: { name: string; vis: number | null; visYoy: number | null; sp: number | null; spYoy: number | null }[] } {
+export function tourismDistrictRows(): { m: string; rows: { name: string; vis: number | null; visYoy: number | null; fr: number | null; sp: number | null; spYoy: number | null }[] } {
   const V = dlVisit(), S = dlSpend().filter(r => r.group === '내국인' && r.industry === '전체');
   const last = V.map(r => r.ym).sort().at(-1) ?? '';
   const prev = last ? `${Number(last.slice(0, 4)) - 1}${last.slice(4)}` : '';
@@ -151,7 +163,8 @@ export function tourismDistrictRows(): { m: string; rows: { name: string; vis: n
     const v = V.find(r => r.code === c && r.ym === last);
     const s = S.find(r => r.code === c && r.ym === last), s0 = S.find(r => r.code === c && r.ym === prev);
     const sp = s ? toEok(s.amount_thousand_won) : null, sp0 = s0 ? toEok(s0.amount_thousand_won) : null;
-    return { name: v?.region ?? c, vis: v ? Math.round(Number(v.visitors) / 1000) / 10 : null, visYoy: v && v.yoy_pct !== '' ? Number(v.yoy_pct) : null,
+    const fr = last ? apiPts(c, '외국인').find(p => p.m === dlYm(last))?.v ?? null : null;
+    return { name: v?.region ?? c, vis: v ? Math.round(Number(v.visitors) / 1000) / 10 : null, visYoy: v && v.yoy_pct !== '' ? Number(v.yoy_pct) : null, fr,
       sp, spYoy: sp != null && sp0 ? (sp / sp0 - 1) * 100 : null };
   });
   return { m: last ? dlYm(last) : '', rows };

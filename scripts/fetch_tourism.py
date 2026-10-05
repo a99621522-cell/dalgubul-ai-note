@@ -120,14 +120,20 @@ def main() -> int:
     print(f"[tourism] 달 {len(ms)}개 중 받을 달 {len(todo)}개: {todo[:3]}…{todo[-3:]}")
     new: list[dict] = []
     done = set()
+    fails = 0
     for ym in todo:
+        if fails >= 3:   # 연결이 연달아 안 되면(러너→apis.data.go.kr 시간 초과) 남은 달을 기다리지 않는다
+            print(f"[tourism] 연결 실패 {fails}번 연속 — 남은 {len(todo) - todo.index(ym)}달은 다음 실행에")
+            break
         rows_m = []
         for op, level in (("metcoRegnVisitrDDList", "광역"), ("locgoRegnVisitrDDList", "기초")):
             items, err = month_rows(op, key, ym)
             if err:
                 print(f"[tourism] {ym} {op}: {err} — 이 달은 건너뜀")
+                fails = fails + 1 if ("timed out" in err or "Connection" in err or "요청 실패" in err) else fails
                 rows_m = []
                 break
+            fails = 0
             agg = aggregate(ym, level, items)
             print(f"[tourism] {ym} {level}: 전국 {len(items)}행 → 대구 {len(agg)}행")
             rows_m += agg
@@ -136,6 +142,9 @@ def main() -> int:
             done.add(ym)
         elif ym == ms[-1] or ym == ms[-2]:
             print(f"[tourism] {ym}: 자료 없음(아직 공개 전일 수 있음)")
+    if not new:
+        print("[tourism] 새로 받은 달 없음 — 파일을 바꾸지 않는다")
+        return 0
     rows = [r for r in old if r["month"] not in done] + new
     rows.sort(key=lambda r: (r["month"], r["level"] != "광역", r["code"], r["tou_div"]))
     OUT.mkdir(parents=True, exist_ok=True)

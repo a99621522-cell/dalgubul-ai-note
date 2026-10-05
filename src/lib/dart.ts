@@ -16,6 +16,8 @@ export const eok = (won?: string) => { const n = Number(won); return won && Numb
  *  매출액이 0 이하이거나 없으면, 증가율은 두 해의 재무제표 기준(연결·개별)이 다르면 계산하지 않는다(—). 순위·정렬에 쓰지 않는다. */
 export const opMargin = (f?: Financial) => { const r = Number(f?.revenue), o = Number(f?.operating_income); return f?.revenue && f?.operating_income && r > 0 && Number.isFinite(o) ? (o / r) * 100 : null; };
 export const revGrowth = (cur?: Financial, prev?: Financial) => { const a = Number(cur?.revenue), b = Number(prev?.revenue); return cur?.revenue && prev?.revenue && b > 0 && a > 0 && cur.fs === prev.fs ? (a / b - 1) * 100 : null; };
+/** 부채비율(%) = 부채총계 ÷ 자본총계 × 100 — 자본총계가 0 이하(자본잠식)면 계산하지 않는다 */
+export const debtRatio = (f?: Financial) => { const l = Number(f?.total_liabilities), e = Number(f?.total_equity); return f?.total_liabilities && f?.total_equity && e > 0 && Number.isFinite(l) ? (l / e) * 100 : null; };
 export const pct1 = (v: number | null) => (v == null ? '—' : `${v > 0 ? '+' : ''}${v.toFixed(1)}`);
 export const pct1n = (v: number | null) => (v == null ? '—' : v.toFixed(1));
 

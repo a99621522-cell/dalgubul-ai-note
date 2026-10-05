@@ -45,6 +45,14 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
     <li class="tp-node tp-rest"><div class="tp-dot"></div><div class="tp-body"><div class="tp-head"><strong>남은 차이</strong><span class="tp-cum" id="tprest"></span></div><div class="meta" id="tpresttxt"></div></div></li>
   </ol>
 
+  <h3 class="tp-h">목표별 시나리오 — 2.0%에서 5.0%까지</h3>
+  <p class="meta">같은 경로로 목표 성장률마다 어느 단계에서 닿는지, 그때 분야별 성장률이 몇 %여야 하는지입니다(성장률은 2024년 GRDP 비중으로 가중한 분야 평균). 위 칸에 다른 목표(소수점 한 자리)를 넣으면 맨 아래 줄에 더해집니다.</p>
+  <div class="scroll-x"><table class="data-table compact" id="tpmx" data-title="대구 GRDP 목표별 시나리오 — 분야별 필요 성장률">
+    <thead><tr><th>목표 GRDP 성장률</th><th>닿는 단계</th><th class="n">제조업</th><th class="n">역외 수요 서비스</th><th class="n">지식·생산자 서비스</th><th class="n">생활·기반 산업</th><th class="n">남은 차이(%p)</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <p class="meta">각 칸은 그 분야의 필요 실질 성장률(%)입니다. 10년 추세는 제조업 <span id="mx0m"></span>% · 역외 수요 서비스 <span id="mx0e"></span>% · 지식·생산자 서비스 <span id="mx0k"></span>% · 생활·기반 산업 <span id="mx0l"></span>%. 제조업 업종별로는 아래 '제조업 경로'에서 따로 봅니다.</p>
+
   <h3 class="tp-h">목표 <span id="tpt2">5.0</span>%에 맞춘 분야별 필요 성장·기여와 정책 수단</h3>
   <p class="meta">위 경로에서 목표에 닿는 지점까지의 업종 성장률입니다(마지막 단계는 필요한 만큼만). 기여 = 비중 × 필요 성장. 정책 수단은 검토할 수 있는 예시입니다.</p>
   <div id="tpfields"></div>
@@ -62,7 +70,7 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
   if (el) {
     const D = JSON.parse(el.textContent || '{}') as { base: number; rows: R[]; fields: Record<string, { name: string; tools: string[]; kpi: string[] }> };
     const fmt = (v: number, d = 1) => v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
-    const sg = (v: number, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
+    const sg = (v: number, d = 1) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
     const STEP: ((r: R, c: number) => number)[] = [
       (r, c) => r.mfg ? Math.max(c, 0) : c,
       (r, c) => r.mfg ? Math.max(c, r.gn) : c,
@@ -101,18 +109,18 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
       if (!final) { rest = T - cum; final = cur.map(c => c + rest); }
       const rr = $('#tprest'), rt = $('#tpresttxt'), rn = $('.tp-rest');
       if (rr) rr.textContent = rest > 0.005 ? `${sg(rest)}%p` : '없음';
-      if (rt) rt.textContent = rest > 0.005 ? `모든 업종이 상위 3개 시도 수준에 더해 해마다 ${fmt(rest, 2)}%p씩 더 성장해야 ${fmt(T)}%가 됩니다.` : '위 단계 안에서 목표에 닿습니다.';
+      if (rt) rt.textContent = rest > 0.005 ? `모든 업종이 상위 3개 시도 수준에 더해 해마다 ${fmt(rest)}%p씩 더 성장해야 ${fmt(T)}%가 됩니다.` : '위 단계 안에서 목표에 닿습니다.';
       rn?.classList.toggle('after', rest <= 0.005);
       const s = $('#tpsum');
       if (s) s.textContent = reachedAt === -0.5 ? `목표 ${fmt(T)}%는 지난 10년 추세(${fmt(D.base)}%) 이하입니다.`
-        : reachedAt >= 0 ? `목표 ${fmt(T)}%는 ${reachedAt + 1}단계에서 닿습니다.` : `5단계를 모두 거쳐도 ${fmt(cum)}%이고, ${fmt(rest, 2)}%p가 남습니다.`;
+        : reachedAt >= 0 ? `목표 ${fmt(T)}%는 ${reachedAt + 1}단계에서 닿습니다.` : `5단계를 모두 거쳐도 ${fmt(cum)}%이고, ${fmt(rest)}%p가 남습니다.`;
       const t2 = $('#tpt2'); if (t2) t2.textContent = fmt(T);
       // 분야별 표
       const order = ['core', 'base', 'ext', 'know', 'life'];
       const rows = D.rows.map((r, i) => ({ r, need: final![i], add: r.share * (final![i] - r.g) / 100 }));
       const tb = document.querySelector('#tptab tbody');
       if (tb) tb.innerHTML = order.map(f => `<tr class="tp-grp"><th colspan="6" scope="rowgroup">${D.fields[f].name}</th></tr>` + rows.filter(x => x.r.field === f).sort((a, b) => b.add - a.add).map(x =>
-        `<tr><th scope="row">${x.r.name}</th><td class="n">${fmt(x.r.share)}</td><td class="n">${fmt(x.r.g)}</td><td class="n">${fmt(x.need)}</td><td class="n">${fmt(x.r.share * x.need / 100, 2)}</td><td class="n">${sg(x.add)}</td></tr>`).join('')).join('');
+        `<tr><th scope="row">${x.r.name}</th><td class="n">${fmt(x.r.share)}</td><td class="n">${fmt(x.r.g)}</td><td class="n">${fmt(x.need)}</td><td class="n">${fmt(x.r.share * x.need / 100)}</td><td class="n">${sg(x.add)}</td></tr>`).join('')).join('');
       const fb = document.getElementById('tpfields');
       if (fb) fb.innerHTML = order.map(f => {
         const xs = rows.filter(x => x.r.field === f), add = xs.reduce((a, x) => a + x.add, 0), sh = xs.reduce((a, x) => a + x.r.share, 0);
@@ -123,8 +131,37 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
           <details><summary>정책 수단 예시 · 볼 지표</summary><ul class="meta">${F.tools.map(t => `<li>${t}</li>`).join('')}</ul><p class="meta">지표: ${F.kpi.join(' · ')}</p></details></div>`;
       }).join('');
     };
-    document.getElementById('tpt')?.addEventListener('input', calc);
+    const solve = (T: number) => {
+      let cur = D.rows.map(r => r.g), cum = D.base, at = cum >= T ? 0 : -1, fin: number[] | null = cum >= T ? cur.slice() : null, frac = 1;
+      STEP.forEach((f, k) => {
+        if (fin) return;
+        const prev = cur.slice(), next = D.rows.map((r, i) => f(r, prev[i]));
+        const add = contrib(next) - contrib(prev);
+        if (cum + add >= T) { frac = add > 0 ? (T - cum) / add : 1; fin = D.rows.map((_, i) => prev[i] + frac * (next[i] - prev[i])); at = k + 1; cum = T; }
+        else { cum += add; cur = next; }
+      });
+      let rest = 0;
+      if (!fin) { rest = T - cum; fin = cur.map(c => c + rest); }
+      return { fin, at, frac, rest };
+    };
+    const fieldG = (fin: number[], fs: string[]) => { let a = 0, b = 0; D.rows.forEach((r, i) => { if (fs.includes(r.field)) { a += r.share * fin[i]; b += r.share; } }); return b ? a / b : 0; };
+    const FG = [['core', 'base'], ['ext'], ['know'], ['life']];
+    const g0 = D.rows.map(r => r.g);
+    [['mx0m', 0], ['mx0e', 1], ['mx0k', 2], ['mx0l', 3]].forEach(([id, j]) => { const e = document.getElementById(id as string); if (e) e.textContent = fmt(fieldG(g0, FG[j as number])); });
+    const matrix = () => {
+      const T = Number((document.getElementById('tpt') as HTMLInputElement).value) || 0;
+      const ts = [2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
+      if (!ts.some(x => Math.abs(x - T) < 0.05)) ts.push(Math.round(T * 10) / 10);
+      const tb = document.querySelector('#tpmx tbody');
+      if (tb) tb.innerHTML = ts.map(t => {
+        const r = solve(t);
+        const st = r.at === 0 ? '추세 안' : r.at > 0 ? `${r.at}단계 (${fmt(r.frac * 100, 0)}%)` : '5단계 넘음';
+        return `<tr${Math.abs(t - T) < 0.05 ? ' class="tp-cur"' : ''}><th scope="row">${fmt(t)}%</th><td>${st}</td>${FG.map(fs => `<td class="n">${fmt(fieldG(r.fin, fs))}</td>`).join('')}<td class="n">${r.rest > 0.05 ? fmt(r.rest) : '—'}</td></tr>`;
+      }).join('');
+    };
+    document.getElementById('tpt')?.addEventListener('input', () => { calc(); matrix(); });
     calc();
+    matrix();
   }
 </script>
 <style>
@@ -149,6 +186,8 @@ const data = { base, rows: B?.rows ?? [], fields: FIELDS };
   .tp-tab :global(th), .tp-tab :global(td) { padding-top: 4px; padding-bottom: 4px; font-size: var(--small); }
   .tp-tab :global(tbody th) { font-weight: 500; }
   .tp-h { font-size: 1.05rem; margin: var(--s3) 0 6px; }
+  #tpmx { min-width: 600px; }
+  #tpmx :global(tr.tp-cur) { background: var(--surface); font-weight: 700; }
   #tpfields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin: 8px 0 var(--s2); }
   #tpfields :global(.tp-field) { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; }
   #tpfields :global(.tp-fh) { display: flex; justify-content: space-between; gap: 8px; }

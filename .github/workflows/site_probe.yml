@@ -31,6 +31,10 @@ on:
         description: "한국관광 데이터랩 화면이면 true — 스크립트 속 qid 를 모아 지역 코드로 다시 불러 본다. click 칸에 '27:40'(지역:qid 수, 27=대구) — qid 수 0 이면 화면을 대구로 그려 글자를 찍고, '27:0:방문자,관광소비' 처럼 탭을 누른다"
         required: false
         default: "false"
+      file:
+        description: "주소가 첨부 파일이면 true — 받아서 형식·시트·표 머리와 click 칸 낱말(기본 대구,지역,시도)이 든 줄을 찍는다"
+        required: false
+        default: "false"
       click:
         description: "xhr 때 연 뒤 차례로 누를 글자(쉼표로 구분, 예: 지역,대구)"
         required: false
@@ -57,10 +61,15 @@ jobs:
         run: |
           IFS=: read -r A B C <<< "$SGG"
           python3 scripts/datalab_probe.py "$URL" "${A:-27}" "${B:-40}" "$C"
-      - if: inputs.xhr == 'true' && inputs.datalab != 'true'
+      - if: inputs.file == 'true'
+        env:
+          URL: ${{ inputs.url }}
+          WORDS: ${{ inputs.click }}
+        run: pip install -q openpyxl && python3 scripts/file_probe.py "$URL" "$WORDS"
+      - if: inputs.xhr == 'true' && inputs.datalab != 'true' && inputs.file != 'true'
         env:
           URL: ${{ inputs.url }}
           CLICK: ${{ inputs.click }}
         run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK"
-      - if: inputs.xhr != 'true' && inputs.datalab != 'true'
+      - if: inputs.xhr != 'true' && inputs.datalab != 'true' && inputs.file != 'true'
         run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)

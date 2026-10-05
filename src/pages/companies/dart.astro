@@ -1,0 +1,93 @@
+---
+import Base from '../../layouts/Base.astro';
+import { dartCorps, eok, countBy } from '../../lib/dart';
+/** /companies/dart/ — 대구 본사 공시 기업 재무(운영자 지시 2026-10-05: DART 에서 대구 본사 기업의 최근 3년 경영 정보).
+ *  scripts/collect_dart_fin.py 가 사업보고서를 낸 회사 중 기업개황 본사 주소가 대구인 곳의 주요계정을 받는다.
+ *  값은 공시 그대로(원 → 억 원 나눗셈만), 가나다순, 평가·순위·비율 계산 없음. */
+const { corps, years, asOf } = dartCorps();
+const last = years.at(-1) ?? '';
+const CLS_ORDER = ['유가증권', '코스닥', '코넥스', '기타'];
+const byCls = countBy(corps, c => c.cls).sort((a, b) => CLS_ORDER.indexOf(a[0]) - CLS_ORDER.indexOf(b[0]));
+const byGroup = countBy(corps, c => c.group).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+const byDist = countBy(corps, c => c.district).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+const groups = byGroup.map(g => g[0]);
+const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
+---
+<Base title="대구 본사 공시 기업 재무" description={`DART 사업보고서를 낸 대구 본사 기업 ${corps.length}곳의 최근 3개 사업연도 매출액·영업이익·당기순이익과 자산·부채·자본(공시 값 그대로).`} current="companies">
+  <p class="meta"><a href="/companies/">기업 사전</a> › 공시 기업 재무</p>
+  <div class="section-head"><h1>대구 본사 공시 기업 재무</h1><span class="meta">{corps.length}곳 · {years[0]}~{last} 사업연도 · {asOf} 받음</span></div>
+  <p class="lede">금융감독원 전자공시(DART)에 사업보고서를 낸 회사 가운데 본사 주소가 대구인 {corps.length}곳의 주요 재무 계정입니다. 연결재무제표가 있으면 연결, 없으면 개별 값이고, 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>
+
+  {corps.length === 0 ? <p class="meta">아직 받은 자료가 없습니다.</p> : (<>
+  <div class="cards">
+    {byCls.map(([k, n]) => <div class="card"><div class="big">{n}</div><div class="meta">{k === '기타' ? '비상장(공시 대상)' : `${k} 상장`}</div></div>)}
+  </div>
+
+  <div class="tools">
+    <input id="q" type="search" placeholder="회사명 검색" aria-label="회사명 검색" />
+    <select id="cls" aria-label="상장 구분"><option value="">모든 구분</option>{byCls.map(([k]) => <option value={k}>{k}</option>)}</select>
+    <select id="grp" aria-label="산업"><option value="">모든 산업</option>{groups.map(g => <option value={g}>{g}</option>)}</select>
+    <span id="count" class="meta">{corps.length}곳</span>
+  </div>
+  <div class="scroll-x"><table class="data-table" id="fin" data-title={`대구 본사 공시 기업 재무 ${years[0]}~${last}`}>
+    <thead>
+      <tr><th rowspan="2">회사</th><th rowspan="2">구분</th><th rowspan="2">구·군</th><th rowspan="2">산업</th>
+        <th colspan={years.length} class="c">매출액(억 원)</th><th colspan={years.length} class="c">영업이익(억 원)</th>
+        <th colspan="4" class="c">{last}년(억 원)</th><th rowspan="2">공시</th></tr>
+      <tr>{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익</th><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th></tr>
+    </thead>
+    <tbody>{corps.map(c => { const L = c.years[last]; return (
+      <tr data-name={c.name} data-cls={c.cls} data-grp={c.group}>
+        <th scope="row">{c.companyId ? <a href={`/companies/${c.companyId}/`}>{c.name}</a> : c.name}</th>
+        <td>{c.cls}</td><td>{c.district}</td><td>{c.group}</td>
+        {years.map(y => <td class="n">{f(c.years[y]?.revenue)}</td>)}
+        {years.map(y => <td class="n">{f(c.years[y]?.operating_income)}</td>)}
+        <td class="n">{f(L?.net_income)}</td><td class="n">{f(L?.total_assets)}</td><td class="n">{f(L?.total_liabilities)}</td><td class="n">{f(L?.total_equity)}</td>
+        <td><a href={c.url} rel="noopener">DART</a>{L?.fs === '개별' ? <span class="meta"> 개별</span> : ''}</td>
+      </tr>); })}</tbody>
+  </table></div>
+  <p class="meta">— 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다. 회사 이름이 기업 사전(공장등록)과 같으면 기업 페이지로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
+
+  <section>
+    <div class="section-head"><h2>분포</h2></div>
+    <div class="two">
+      <div class="scroll-x"><table class="data-table" data-title="대구 본사 공시 기업 산업별 수">
+        <thead><tr><th>산업</th><th class="n">회사 수</th></tr></thead>
+        <tbody>{byGroup.map(([k, n]) => <tr><th scope="row">{k}</th><td class="n">{n}</td></tr>)}</tbody>
+      </table></div>
+      <div class="scroll-x"><table class="data-table" data-title="대구 본사 공시 기업 구·군별 수">
+        <thead><tr><th>구·군</th><th class="n">회사 수</th></tr></thead>
+        <tbody>{byDist.map(([k, n]) => <tr><th scope="row">{k}</th><td class="n">{n}</td></tr>)}</tbody>
+      </table></div>
+    </div>
+  </section>
+  </>)}
+  <p class="meta">출처: 금융감독원 전자공시시스템(DART) OpenDART — 공시검색(사업보고서 제출 회사), 기업개황(본사 주소·업종 코드·상장 구분), 단일회사 주요계정(사업보고서). 사업보고서를 내지 않는 비상장 기업은 들어 있지 않습니다. 대표자 등 개인 정보는 받지 않습니다.</p>
+</Base>
+<script>
+  const q = document.getElementById('q') as HTMLInputElement | null;
+  const cls = document.getElementById('cls') as HTMLSelectElement | null;
+  const grp = document.getElementById('grp') as HTMLSelectElement | null;
+  const count = document.getElementById('count');
+  const rows = [...document.querySelectorAll<HTMLTableRowElement>('#fin tbody tr')];
+  const apply = () => {
+    const t = (q?.value || '').trim().toLowerCase();
+    let n = 0;
+    for (const r of rows) {
+      const ok = (!t || (r.dataset.name || '').toLowerCase().includes(t)) && (!cls?.value || r.dataset.cls === cls.value) && (!grp?.value || r.dataset.grp === grp.value);
+      r.hidden = !ok; if (ok) n++;
+    }
+    if (count) count.textContent = `${n}곳`;
+  };
+  [q, cls, grp].forEach(el => el?.addEventListener('input', apply));
+</script>
+<style>
+  .cards { display: flex; flex-wrap: wrap; gap: var(--s2); margin: var(--s2) 0; }
+  .card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; min-width: 120px; background: var(--bg); }
+  .card .big { font-size: 1.5rem; font-weight: 700; }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: var(--s2) 0; }
+  .tools input, .tools select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+  .tools input { flex: 1 1 200px; }
+  th.c { text-align: center; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3); }
+</style>

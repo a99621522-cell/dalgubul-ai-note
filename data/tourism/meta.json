@@ -1,0 +1,9 @@
+{
+ "source": "한국관광공사 관광빅데이터(한국관광 데이터랩) 지자체 방문자 수",
+ "api": "https://apis.data.go.kr/B551011/DataLabService",
+ "portal": "https://www.data.go.kr/data/15101972/openapi.do",
+ "datalab": "https://datalab.visitkorea.or.kr",
+ "note": "이동통신 데이터로 추정한 방문자 수의 일별 값을 달마다 더한 값(연인원)",
+ "months": [],
+ "fetched": "2026-10-05"
+}

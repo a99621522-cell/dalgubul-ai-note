@@ -1,0 +1,38 @@
+name: 성장 계산기 해설(Gemini)
+
+# scripts/growth_commentary.py — 계산값만 주고 Gemini 가 쓴 해설 → data/growth/commentary.json(approved: false). 운영자 승인 뒤 페이지에 보인다.
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "계산값이 같아도 다시 쓰기(true)"
+        required: false
+        default: "false"
+  push:
+    branches: [claude/factorion-file-repair-tyqnlb]
+    paths: [scripts/growth_commentary.py, .github/workflows/growth_commentary.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+        run: python scripts/growth_commentary.py ${{ inputs.force == 'true' && '--force' || '' }}
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/growth || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 성장 계산기 해설 초안(승인 전)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done

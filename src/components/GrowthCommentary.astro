@@ -1,0 +1,23 @@
+---
+import fs from 'node:fs';
+/** 성장 계산기 해설(scripts/growth_commentary.py 가 계산값만 주고 Gemini 로 쓴 개조식 해설, data/growth/commentary.json).
+ *  원칙 5: 자동 생성 글은 운영자 승인(approved: true) 뒤에만 보인다. 숫자는 스크립트가 계산값과 대조해 통과한 것만 저장. */
+let C: { headline?: string; sections?: { title: string; points: string[] }[]; generated?: string; approved?: boolean } = {};
+try { C = JSON.parse(fs.readFileSync('data/growth/commentary.json', 'utf-8')); } catch { /* 없음 */ }
+---
+{C.approved && C.sections && C.sections.length > 0 && (
+<section class="gc" aria-label="해설">
+  <p class="gc-head">{C.headline}</p>
+  <div class="gc-grid">
+    {C.sections.map(s => <div><h3>{s.title}</h3><ul>{s.points.map(p => <li>{p}</li>)}</ul></div>)}
+  </div>
+  <p class="meta">이 해설은 계산 결과 값만 넣어 AI(Gemini)가 쓰고 운영자가 확인한 것입니다({C.generated}). 숫자는 아래 계산기와 같습니다.</p>
+</section>)}
+<style>
+  .gc { border: 1px solid var(--line); border-left: 4px solid var(--primary); border-radius: var(--radius); padding: var(--s2) var(--s3); margin: var(--s2) 0 var(--s3); background: var(--surface); }
+  .gc-head { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+  .gc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 4px 20px; }
+  .gc h3 { font-size: 0.95rem; margin: 6px 0 2px; }
+  .gc ul { margin: 0 0 6px; padding-left: 1.1em; font-size: var(--small); }
+  .gc li { margin: 2px 0; }
+</style>

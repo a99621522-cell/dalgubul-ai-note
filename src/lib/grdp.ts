@@ -43,3 +43,17 @@ export function grdpCalcData(side: 'prod' | 'exp' = 'prod', region = '대구광�
   if (!nom) return { items: [] as GrdpItem[], growth, cagr: 0, y0, y1, nomTrillion: 0, source: '', url: '' };
   return { items, growth, cagr, y0, y1, nomTrillion: nom / 1e6, source: `국가데이터처 「${meta.tbl_nm ?? (exp ? '시도별 지역내총생산에 대한 지출' : '시도별 경제활동별 지역내총생산')}」(KOSIS)`, url: meta.source_url ?? '' };
 }
+
+/** 한국은행 「2020년 지역산업연관표」에서 뽑은 대구 유발계수(scripts/data/bok_io_daegu.json). 최종수요 전체(소비·투자·수출) 1단위 기준이며
+ *  지출 항목별 계수는 책에 없다(ECOS 세부 계수표 몫). 계산기 '예산·사업 규모로 보기'가 쓴다. */
+export function ioDaegu() {
+  try {
+    const d = JSON.parse(fs.readFileSync('scripts/data/bok_io_daegu.json', 'utf-8'));
+    const pick = (type: string) => (d.final_demand as any[]).find(r => r.region === '대구' && r.type === type && r.year === 2020);
+    const va = pick('부가가치유발계수'), emp = pick('취업유발계수');
+    const fd = (d.facts as any[]).find(f => /표 IV-7.*대구/.test(f.text))?.text ?? '';
+    const m = (re: RegExp) => { const x = fd.match(re); return x ? Number(x[1]) : null; };
+    return { vaIn: va?.within ?? null, vaOut: va?.other ?? null, vaPage: va?.page, empIn: emp?.within ?? null, empOut: emp?.other ?? null, empPage: emp?.page,
+      importShare: m(/수입\s*([\d.]+)%/), inflowShare: m(/타지역 이입\s*([\d.]+)%/), localShare: m(/지역내 생산\s*([\d.]+)%/), source: d.source as string, url: d.url as string };
+  } catch { return null; }
+}

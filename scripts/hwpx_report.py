@@ -113,7 +113,7 @@ def body_blocks(md: str) -> list[tuple[str, object]]:
             while i + 1 < len(lines) and re.match(r"^\s+\S", lines[i + 1]) and not re.match(r"^\s*([-*]|\d+[.)])\s+", lines[i + 1]):
                 i += 1; text += " " + lines[i].strip()
             num = li[2] if re.match(r"\d", li[2]) else ""
-            out.append(("dash", (num + " " if num else "") + inline(text))); i += 1; continue
+            out.append(("dash2" if len(li[1]) >= 2 else "dash", (num + " " if num else "") + inline(text))); i += 1; continue   # 들여쓴 항목은 dash2(양식의 '-' 단계), 첫 단계는 ○
         # 문단: 굵은 첫 문장(인사이트 형식의 핵심 문장)은 붉은 굵은 리드 + 같은 문단의 나머지(LG 리포트 식).
         # '**표 1. 제목**' 처럼 표 제목만 있는 줄은 표 캡션.
         m = re.match(r"^\*\*(.+?)\*\*\s*(.*)$", l.strip())
@@ -432,122 +432,72 @@ def design_table(proto, ids: dict, rows: list[list[str]], head: bool = True, wid
 
 
 def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "", kicker: str | None = None, faq_on: bool = True) -> None:
-    """LG경영연구원 리포트를 본보기로 한 편집: 머리말(분야) → 제목 → 남색 선 → 대표 그림 → 요약 상자 → 본문(절 제목·리드 문장·그림·표) → FAQ → 참고 자료."""
-    global HP
-    z = zipfile.ZipFile(TEMPLATE)
-    names = z.namelist()
-    sec_xml = z.read("Contents/section0.xml").decode("utf-8")
-    NS.clear(); NS.update(dict(re.findall(r'xmlns:(\w+)="([^"]+)"', sec_xml[:3000])))
-    for k, v in NS.items():
-        ET.register_namespace(k, v)
-    HP = "{%s}" % NS["hp"]
-    root = ET.fromstring(sec_xml)
-    top = list(root)
-    header_xml, ids = add_design_styles(z.read("Contents/header.xml").decode("utf-8"))
-    images = Images()
+    """운영자 공무원 양식 그대로(2026-10-06 '안 바뀌었어' — 리포트도 디자인 판이 아니라 양식 복제로): 표지(제목·머리 글자) → Ⅰ 요약(○ 핵심 문장, - 요약 항목)
+    → 본문 절마다 절 머리표(Ⅱ Ⅲ …)·□ 소제목·○ 문단·- 목록·※ 주석·표·그림 → 자주 묻는 질문(□ Q / ○ A) → 참고 자료(※). 실제 조립은 hwpx_blocks.build_hwpx(form=True)."""
+    import hwpx_blocks as B
     post_id = post_id or out.stem
     title = re.sub(r"^\[정책제안\]\s*", "", str(meta.get("title", "")))
-    tbl_proto = top[64]
-    # 첫 문단(용지·쪽 번호 설정)은 두고 머리말의 자리표시 로고는 뺀다. 나머지 양식 문단은 모두 지운다.
-    first = top[0]
-    for run in first.findall(HP + "run"):
-        for ctrl in run.findall(HP + "ctrl"):
-            if ctrl.find(HP + "header") is not None or ctrl.find(HP + "footer") is not None:
-                run.remove(ctrl)
-    for p in top[1:]:
-        root.remove(p)
-    add = root.append
-    # 제목 블록
     kicker = kicker or ("정책제안 리포트" + (f"  ·  {area}" if area else ""))
-    add(para(ids, "kicker", [(kicker, "kicker")]))
-    add(para(ids, "title", [(title, "title")]))
-    add(para(ids, "rule", [("", "caption")]))
-    # 대표 그림
-    hero = meta.get("hero") if isinstance(meta.get("hero"), dict) else {}
-    hero_path = f"/figures/{post_id}/hero.png"
-    img = load_image(hero_path)
-    if img:
-        data, ext, pw, ph = img
-        add(pic_paragraph(ids, images.add(data, ext), pw, ph, "대표 그림"))
-        add(para(ids, "caption", [(inline(str(hero.get("caption") or "대표 그림 (AI 생성 이미지)")), "caption")]))
-    # 요약 상자
+    P = lambda name, text: {"p": name, "segs": [[text, name]]}
+    blocks: list[dict] = [P("kicker", kicker), P("title", title)]
+    # 요약: 핵심 문장 + 요약 항목(+ 대표 그림)
     desc = inline(str(meta.get("description") or meta.get("summary") or ""))
     outline = [inline(str(o)) for o in (meta.get("outline") or [])]
-    box: list = [para(ids, "box_title", [("요약", "box_title")])]
-    if desc:
-        box.append(para(ids, "box_body", [(desc, "box_body")]))
-    for o in outline:
-        box.append(para(ids, "box_item", [("▪  ", "box_mark"), (o, "box_item")]))
-    if len(box) > 1:
-        add(design_table(tbl_proto, ids, [[box]], head=False, widths=[TEXT_W], fill_key="box", margin=760))
-        add(para(ids, "spacer", [("", "caption")]))
-    # 본문
+    hero = meta.get("hero") if isinstance(meta.get("hero"), dict) else {}
+    hero_path = f"/figures/{post_id}/hero.png"
+    body_kinds = body_blocks(body_md)
+    has_summary = any(k == "section" and str(v).strip() in ("요약", "핵심 요약") for k, v in body_kinds)
+    if (desc or outline) and not has_summary:
+        blocks.append(P("h2", "요약"))
+        if desc:
+            blocks.append(P("body", desc))
+        for o in outline:
+            blocks.append(P("bullet", o))
+    if (PUBLIC / hero_path.lstrip("/")).exists():
+        blocks.append({"pic": hero_path, "caption": inline(str(hero.get("caption") or "대표 그림 (AI 생성 이미지)"))})
     fig_n = 0
-    for kind, payload in body_blocks(body_md):
+    for kind, payload in body_kinds:
         if kind == "section":
-            add(para(ids, "h2", [(str(payload), "h2")]))
+            blocks.append(P("h2", str(payload)))
         elif kind == "sub":
-            add(para(ids, "h3", [(str(payload), "h3")]))
+            blocks.append(P("h3", str(payload)))
         elif kind == "lead":
             lead, rest = payload  # type: ignore[misc]
-            add(para(ids, "body", [(lead, "lead")] + ([(" " + rest, "body")] if rest else [])))
-        elif kind == "o" or kind == "box":
-            add(para(ids, "body", [(str(payload), "body")]))
-        elif kind == "dash":
-            txt = str(payload)
-            m = re.match(r"^(\d+[.)])\s+(.*)$", txt)
-            add(para(ids, "bullet", [((m[1] + " ") if m else "•  ", "bullet_mark"), (m[2] if m else txt, "body")]))
+            blocks.append(P("body", (lead + (" " + rest if rest else "")).strip()))
+        elif kind in ("o", "box"):
+            blocks.append(P("body", str(payload)))
+        elif kind in ("dash", "dash2"):
+            txt = str(payload); m = re.match(r"^(\d+[.)])\s+(.*)$", txt)
+            blocks.append(P("body" if kind == "dash" else "bullet", (m[1] + " " + m[2]) if m else txt))   # 마크다운 첫 단계 항목 = ○, 들여쓴 항목 = -
         elif kind == "note":
-            add(para(ids, "note", [(str(payload), "note")]))
+            blocks.append(P("note", str(payload)))
         elif kind == "caption":
-            add(para(ids, "caption", [(str(payload), "caption")]))
+            blocks.append(P("caption", str(payload)))
         elif kind == "figure":
             src, cap = payload  # type: ignore[misc]
-            img = load_image(src) if src else None
-            if img is None:
-                add(para(ids, "note", [(f"[그림] {cap}", "note")]))
+            if src and (PUBLIC / str(src).lstrip("/")).exists():
+                fig_n += 1
+                blocks.append({"pic": src, "caption": cap or f"그림 {fig_n}"})
             else:
-                data, ext, pw, ph = img; fig_n += 1
-                add(pic_paragraph(ids, images.add(data, ext), pw, ph, f"그림 {fig_n}"))
-                add(para(ids, "caption", [(cap, "caption")]))
+                blocks.append(P("note", f"[그림] {cap}"))
         elif kind == "table":
-            add(design_table(tbl_proto, ids, payload))  # type: ignore[arg-type]
-            add(para(ids, "spacer", [("", "caption")]))
+            blocks.append({"table": payload, "head": True})
     faq = (meta.get("faq") or []) if faq_on else []
     if faq:
-        add(para(ids, "h2", [("자주 묻는 질문", "h2")]))
+        blocks.append(P("h2", "자주 묻는 질문"))
         for qa in faq:
-            add(para(ids, "faq_q", [("Q. " + inline(str(qa.get("q", ""))), "faq_q")]))
-            add(para(ids, "body", [(inline(str(qa.get("a", ""))), "body")]))
+            blocks.append(P("h3", "Q. " + inline(str(qa.get("q", "")))))
+            blocks.append(P("body", inline(str(qa.get("a", "")))))
     srcs = [s_ for s_ in (meta.get("sources") or []) if isinstance(s_, dict)]
     if srcs:
-        add(para(ids, "h2", [("참고 자료", "h2")]))
+        blocks.append(P("h2", "참고 자료"))
         for i, s_ in enumerate(srcs, 1):
             d = str(s_.get("date") or "")[:10]
-            add(para(ids, "src", [(f"{i}. ", "src"), (inline(str(s_.get("title", ""))) + (f" ({d})" if d else "") + f" — {s_.get('url', '')}", "src")]))
-    add(para(ids, "caption", [("daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
-    drop_linesegs(root)
-    # 루트의 네임스페이스 선언은 양식 그대로(ET 는 쓰인 것만 남긴다 — 진단 항목 ⑩, 2026-10-06)
-    sec_out = re.sub(r"^<hs:sec\b[^>]*>", re.search(r"<hs:sec\b[^>]*>", sec_xml).group(0), ET.tostring(root, encoding="unicode"), count=1)
-    new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + sec_out
+            blocks.append(P("note", f"{i}. " + inline(str(s_.get("title", ""))) + (f" ({d})" if d else "") + f" — {s_.get('url', '')}"))
+    blocks.append(P("note", "daitda.co.kr · 공개 자료만 인용, 평가·순위 없음"))
     preview = "\n".join([kicker, title] + outline)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    manifest = "".join(f'<opf:item id="{bid}" href="BinData/{bid}.{ext}" media-type="image/{"jpeg" if ext == "jpg" else ext}" isEmbeded="1"/>' for bid, _, ext in images.files)
-    with zipfile.ZipFile(out, "w") as zo:
-        for n in names:
-            data = z.read(n)
-            if n == "Contents/section0.xml":
-                data = new_sec.encode("utf-8")
-            elif n == "Contents/header.xml":
-                data = header_xml.encode("utf-8")
-            elif n == "Contents/content.hpf":
-                data = data.decode("utf-8").replace("</opf:manifest>", manifest + "</opf:manifest>", 1).encode("utf-8")
-            elif n == "Preview/PrvText.txt":
-                data = preview.encode("utf-8")
-            zo.writestr(zipfile.ZipInfo(n), data, compress_type=zipfile.ZIP_STORED if n == "mimetype" else zipfile.ZIP_DEFLATED)
-        for bid, data, ext in images.files:
-            zo.writestr(zipfile.ZipInfo(f"BinData/{bid}.{ext}"), data, compress_type=zipfile.ZIP_DEFLATED)
-    print(f"→ {out} ({out.stat().st_size:,} bytes, 그림 {len(images.files)}개)")
+    B.build_hwpx(blocks, out, preview=preview, form=True, cover=True)
+    print(f"→ {out} ({out.stat().st_size:,} bytes, 양식 복제)")
 
 
 SUMMARY_TEMPLATE = ROOT / "scripts" / "data" / "hwpx" / "report_summary.hwpx"

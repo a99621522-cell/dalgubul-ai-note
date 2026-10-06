@@ -301,7 +301,7 @@ def build_hwpx(blocks: list[dict], out: Path, preview: str = "", all_ns: bool = 
             ctx.root.append(form_cover(ctx, title, kick))
         for b in blocks:
             if cover and b.get("p") == "title":
-                b = {"p": "title", "segs": b.get("segs")}
+                continue   # 표지에 넣었으므로 절 머리표로 또 만들지 않는다
             for e in block_elems(ctx, b):
                 ctx.root.append(e)
     else:

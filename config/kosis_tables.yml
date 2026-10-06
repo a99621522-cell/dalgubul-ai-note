@@ -40,19 +40,28 @@ tables:
     area_col: C1
     areas: [ai-sw-startup]
   - key: startup-trend-sido
-    name: 창업기업동향(중소벤처기업부) — 시도별 창업기업 수(전체·기술기반업종, 월간)
+    name: 창업기업동향(중소벤처기업부) — 지역별·업종별 창업기업 수(월간)
     org_id: "142"
-    tbl_id: ""
+    tbl_id: "DT_142N_G205"   # 2026-10-06 discover: 지역별·업종별 창업기업수(G 계열이 최신, F 계열 DT_142N_F205 는 옛 기준; 지역별 합계만은 DT_142N_G204, 국가데이터처 요약표 101 DT_1YL20551E_1)
     search: ["창업기업동향 시도별 창업기업", "시도별 기술기반업종 창업기업", "창업기업 시도 업종별", "창업기업동향"]
     prd_se: M
     years: 4
     area_col: C1
     areas: [ai-sw-startup]
     note: 운영자 지시 2026-10-06 '창업기업은 스타트업을 의미' — 기업생멸행정통계의 신생기업(개인사업자 포함)과 따로, 중기부 창업기업동향(사업자등록 기준 창업, 기술기반업종 구분)을 받는다
-  - key: venture-sido
-    name: 벤처기업 — 시도별 벤처확인기업 수
+  - key: new-corp-sido
+    name: 창업기업동향(중소벤처기업부) — 지역별 신설법인 수(월간)
     org_id: "142"
-    tbl_id: ""
+    tbl_id: "DT_142N_A10251_A"   # 2026-10-06 discover
+    search: ["지역별 신설법인수"]
+    prd_se: M
+    years: 4
+    area_col: C1
+    areas: [ai-sw-startup]
+  - key: venture-sido
+    name: 벤처기업정밀실태조사(중소벤처기업부) — 벤처기업의 지역별 분포
+    org_id: "142"
+    tbl_id: "TX_14203_A097"   # 2026-10-06 discover: 벤처기업의 지역별 분포(실태조사 표본 가중치 기준, 벤처확인 공시 수와 다를 수 있음)
     search: ["벤처기업 시도별", "벤처확인기업 지역별", "벤처기업정밀실태조사 지역별 기업수", "시도별 벤처기업 수"]
     prd_se: Y
     area_col: C1

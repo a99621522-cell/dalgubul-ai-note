@@ -55,15 +55,6 @@ const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '
     <ul class="budget-out" id="gbo" aria-live="polite"></ul>
     <p class="meta">유발계수 {IO.vaIn}(대구 안)·{IO.vaOut}(다른 지역)은 대구 최종수요(소비·투자·수출 전체) 1단위의 평균으로, 지출 성격별 계수는 공표 책에 없습니다. 건설·소비·기업 지원은 실제 값이 다를 수 있어 계수 칸을 바꿔 볼 수 있습니다. 대구 최종수요는 {IO.localShare}%가 대구 생산, {IO.inflowShare}%가 다른 지역 생산, {IO.importShare}%가 수입품이며, 계수는 국산품 1단위 기준이라 수입품 몫({IO.importShare}%)을 빼고 곱합니다. 한 번 쓴 지출은 그 해 GRDP 수준을 올릴 뿐이라, 성장률로 이어지려면 다음 해에 그보다 더 늘어나야 합니다. 이미 해 오던 지출은 지난 10년 추세에 들어 있으므로 새로 늘어나는 몫만 넣습니다. 출처: <a href={IO.url} rel="noopener">{IO.source}</a> {IO.vaPage}·{IO.empPage}쪽.</p>
   </div>)}
-  <details class="stat-details">
-    <summary>계산 방법과 주의</summary>
-    <ul class="meta">
-      <li><strong>생산 측</strong>은 어느 산업이 부가가치를 만들었는지(경제활동 19개 + 순생산물세), <strong>지출 측</strong>은 그 생산물을 누가 썼는지(민간·정부 소비, 건설·설비·지식재산 투자, 재고, 순이출)로 같은 GRDP 를 나눈 것입니다. 두 쪽 합계는 같습니다.</li>
-      <li>가정 — 고른 성장: 모든 항목이 목표와 같은 비율로 성장. 추세 확대: 지난 10년 공표 실질기여도 평균이 플러스인 항목만 같은 배율로 키우고 마이너스인 항목은 추세 그대로. 한 항목이 차이를 메움: 나머지는 지난 10년 평균 기여, 차이는 고른 항목이 냄. 직접 입력: 항목별 성장률을 넣어 합계를 봅니다.</li>
-      <li>필요 성장(%) = 필요 기여(%p) ÷ 명목 비중 × 100. 비중이 아주 작거나 마이너스인 항목(광업·재고·순이출·통계상 불일치)은 성장률을 적지 않거나 크게 흔들리니 참고만 하세요.</li>
-      <li>{d.y1}년 비중으로 다음 한 해를 계산한 근사입니다. 실질 값이 연쇄가중이라 공표 방식과 소수점 아래가 조금 다를 수 있고, {d.y1}년 값은 다음 공표에서 고쳐질 수 있습니다.</li>
-    </ul>
-  </details>
   <p class="meta">출처: {d.url ? <a href={d.url} rel="noopener">{d.source}</a> : d.source}{E.url && <> · <a href={E.url} rel="noopener">{E.source}</a></>} · 계산: 다잇다</p>
   <script type="application/json" id="grdp-data" set:html={JSON.stringify(data)} />
 </section>)}

@@ -1,0 +1,25 @@
+---
+import { structureCalc } from '../lib/grdp';
+/** /growth/ 첫 화면(운영자 지시 2026-10-07 '성장 계산기가 너무 복잡' → 5가지 단순화 ①): 질문 하나(목표 성장률)와 표 하나(목표에 닿는 길).
+ *  표의 계산·칠은 GrowthStructure 의 스크립트가 한다(#gst·#gsroute·#gsroutenote 를 문서 전체에서 찾음). 평가 아님. */
+const S = structureCalc();
+const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+---
+{S && (
+<section id="ask" class="gs-ask">
+  <h2 class="ask-q">목표 성장률 <label><input id="gst" type="number" step="0.1" value="5.0" inputmode="decimal" /> %</label>에 닿으려면 — 어디를 몇 % 키워야 하나</h2>
+  <p class="meta">추세 {S.base.toFixed(2)}%({S.y0}→{S.y1}년 대구 실질 GRDP 연평균)와 목표의 차이를 한 묶음의 업종만 더 성장해 메울 때 그 묶음의 필요 성장률. 괄호는 추세보다 더해야 하는 몫, 금액은 {S.y1}년 명목 GRDP {f1(S.gdpEok / 10000)}조 원 기준 한 해 증가액. 회색 칸은 17개 시도 어디서도 관측되지 않은 값. 가정에 따른 계산이지 전망·평가가 아닙니다.</p>
+  <div class="scroll-x"><table class="data-table compact" id="gsroute" data-title="대구 GRDP 목표에 닿는 길별 필요 성장률">
+    <thead><tr><th>목표</th><th class="n">모든 업종</th><th class="n">고부가 3부문만</th><th class="n">제조업만</th><th class="n">특화 부문만</th><th class="n">GRDP 한 해 증가(조 원)</th><th class="n">추세보다 더(조 원)</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <p class="tiny muted" id="gsroutenote"></p>
+</section>)}
+<style>
+  .gs-ask { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin: var(--s2) 0; background: var(--surface); }
+  .ask-q { font-size: 1.15rem; margin: 0 0 6px; }
+  .ask-q input { width: 4.6em; padding: 4px 6px; text-align: right; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-weight: 700; }
+  #gsroute { min-width: 640px; }
+  #gsroute :global(tr.gs-cur) { background: var(--bg); font-weight: 700; }
+  #gsroute :global(td.gs-out) { color: var(--muted); background: var(--bg); }
+</style>

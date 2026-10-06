@@ -2,23 +2,25 @@
 <title>대구 고용률·실업률(월간)</title>
 <line x1="60" x2="304" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">0</text>
-<line x1="60" x2="304" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="189.0" text-anchor="end" fill="#767676">20</text>
-<line x1="60" x2="304" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="117.0" text-anchor="end" fill="#767676">40</text>
+<line x1="60" x2="304" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="207.0" text-anchor="end" fill="#767676">20</text>
+<line x1="60" x2="304" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="153.0" text-anchor="end" fill="#767676">40</text>
+<line x1="60" x2="304" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="99.0" text-anchor="end" fill="#767676">60</text>
 <line x1="60" x2="304" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">60</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">80</text>
 <text x="113.0" y="280" text-anchor="middle" fill="#767676">2025.2</text>
 <text x="176.7" y="280" text-anchor="middle" fill="#767676">2025.8</text>
 <text x="240.3" y="280" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="304.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="304" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,47.2 L70.6,47.2 L81.2,46.8 L91.8,51.5 L102.4,52.2 L113.0,50.4 L123.7,46.5 L134.3,45.8 L144.9,44.7 L155.5,45.8 L166.1,47.9 L176.7,47.6 L187.3,45.4 L197.9,46.8 L208.5,45.0 L219.1,50.1 L229.7,53.7 L240.3,47.6 L251.0,47.2 L261.6,45.8 L272.2,44.7 L282.8,45.4 L293.4,45.0 L304.0,46.1" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="304.0" cy="46.1" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="312.0" y="55.0" fill="#1a1a1a" font-weight="600">58.3%</text>
-<text x="312.0" y="72.0" fill="#1a1a1a">고용률</text>
-<path d="M60.0,245.9 L70.6,245.2 L81.2,245.6 L91.8,243.4 L102.4,241.6 L113.0,242.7 L123.7,245.9 L134.3,242.7 L144.9,244.5 L155.5,244.5 L166.1,245.6 L176.7,248.4 L187.3,245.9 L197.9,245.2 L208.5,245.6 L219.1,238.4 L229.7,237.6 L240.3,244.5 L251.0,244.1 L261.6,246.6 L272.2,245.9 L282.8,245.2 L293.4,247.0 L304.0,248.4" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="304.0" cy="248.4" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<path d="M60.0,99.4 L70.6,99.4 L81.2,99.1 L91.8,102.6 L102.4,103.2 L113.0,101.8 L123.7,98.9 L134.3,98.3 L144.9,97.5 L155.5,98.3 L166.1,99.9 L176.7,99.7 L187.3,98.1 L197.9,99.1 L208.5,97.8 L219.1,101.6 L229.7,104.3 L240.3,99.7 L251.0,99.4 L261.6,98.3 L272.2,97.5 L282.8,98.1 L293.4,97.8 L304.0,98.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="304.0" cy="98.6" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="312.0" y="85.3" fill="#1a1a1a" font-weight="600">58.3%</text>
+<text x="312.0" y="102.3" fill="#1a1a1a">고용률</text>
+<path d="M60.0,248.4 L70.6,247.9 L81.2,248.2 L91.8,246.6 L102.4,245.2 L113.0,246.0 L123.7,248.4 L134.3,246.0 L144.9,247.4 L155.5,247.4 L166.1,248.2 L176.7,250.3 L187.3,248.4 L197.9,247.9 L208.5,248.2 L219.1,242.8 L229.7,242.2 L240.3,247.4 L251.0,247.1 L261.6,249.0 L272.2,248.4 L282.8,247.9 L293.4,249.2 L304.0,250.3" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="304.0" cy="250.3" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
 <text x="312.0" y="237.0" fill="#1a1a1a" font-weight="600">2.1%</text>
 <text x="312.0" y="254.0" fill="#1a1a1a">실업률</text>
 <text x="8" y="16" fill="#767676">KOSIS 행정구역(시도)별 경제활동인구</text></svg>

@@ -2,24 +2,26 @@
 <title>대구 제조업 출하액·부가가치(10명 이상)</title>
 <line x1="72" x2="558" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
-<line x1="72" x2="558" y1="232.0" y2="232.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="237.0" text-anchor="end" fill="#767676">100,000</text>
-<line x1="72" x2="558" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="173.0" text-anchor="end" fill="#767676">200,000</text>
-<line x1="72" x2="558" y1="104.0" y2="104.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="109.0" text-anchor="end" fill="#767676">300,000</text>
+<line x1="72" x2="558" y1="244.8" y2="244.8" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="249.8" text-anchor="end" fill="#767676">100,000</text>
+<line x1="72" x2="558" y1="193.6" y2="193.6" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="198.6" text-anchor="end" fill="#767676">200,000</text>
+<line x1="72" x2="558" y1="142.4" y2="142.4" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="147.4" text-anchor="end" fill="#767676">300,000</text>
+<line x1="72" x2="558" y1="91.2" y2="91.2" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="96.2" text-anchor="end" fill="#767676">400,000</text>
 <line x1="72" x2="558" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="45.0" text-anchor="end" fill="#767676">400,000</text>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">500,000</text>
 <text x="72.0" y="320" text-anchor="middle" fill="#767676">2020</text>
 <text x="193.5" y="320" text-anchor="middle" fill="#767676">2021</text>
 <text x="315.0" y="320" text-anchor="middle" fill="#767676">2022</text>
 <text x="436.5" y="320" text-anchor="middle" fill="#767676">2023</text>
 <text x="558.0" y="320" text-anchor="middle" fill="#767676">2024</text>
 <line x1="72" x2="558" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,114.7 L193.5,83.7 L315.0,45.3 L436.5,33.9 L558.0,47.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="558.0" cy="47.6" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="566.0" y="52.6" fill="#1a1a1a" font-weight="600">388,201억원 출하액</text>
-<path d="M72.0,227.4 L193.5,219.0 L315.0,206.6 L436.5,208.8 L558.0,210.3" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="558.0" cy="210.3" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="566.0" y="215.3" fill="#1a1a1a" font-weight="600">133,953억원 부가가치</text>
+<path d="M72.0,150.9 L193.5,126.2 L315.0,95.4 L436.5,86.3 L558.0,97.2" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="558.0" cy="97.2" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="566.0" y="102.2" fill="#1a1a1a" font-weight="600">388,201억원 출하액</text>
+<path d="M72.0,241.1 L193.5,234.4 L315.0,224.4 L436.5,226.3 L558.0,227.4" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="558.0" cy="227.4" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="566.0" y="232.4" fill="#1a1a1a" font-weight="600">133,953억원 부가가치</text>
 <text x="72" y="16" fill="#767676">KOSIS 시도/산업분류별 출하액생산액부가가치 및 주요생산비(10명 이상)</text></svg>

@@ -1,31 +1,62 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="주력 산업 기업 수 추이. 2023-12부터 2026-08까지 14개월. 기계·금속 최근 4,351곳; 자동차·부품 최근 985곳; 화학·에너지 최근 847곳; 전기·전자 최근 1,366곳; 소프트웨어·IT 최근 781곳" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="주력 산업 기업 수 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 기계·금속 최근 4,351곳; 자동차·부품 최근 985곳; 화학·에너지 최근 847곳; 전기·전자 최근 1,366곳; 소프트웨어·IT 최근 781곳" style="max-width:720px;height:auto;font-size:14px">
 <title>주력 산업 기업 수 추이</title>
 <line x1="72" x2="566" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
-<line x1="72" x2="566" y1="158.0" y2="158.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="163.0" text-anchor="end" fill="#767676">2,000</text>
+<line x1="72" x2="566" y1="204.0" y2="204.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="209.0" text-anchor="end" fill="#767676">2,000</text>
+<line x1="72" x2="566" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="117.0" text-anchor="end" fill="#767676">4,000</text>
 <line x1="72" x2="566" y1="20.0" y2="20.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="25.0" text-anchor="end" fill="#767676">4,000</text>
-<text x="110.0" y="320" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="186.0" y="320" text-anchor="middle" fill="#767676">2024.6</text>
-<text x="262.0" y="320" text-anchor="middle" fill="#767676">2024.10</text>
-<text x="338.0" y="320" text-anchor="middle" fill="#767676">2024.12</text>
-<text x="414.0" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="490.0" y="320" text-anchor="middle" fill="#767676">2026.1</text>
+<text x="64" y="25.0" text-anchor="end" fill="#767676">6,000</text>
+<text x="102.9" y="320" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="195.5" y="320" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="288.1" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="380.8" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="473.4" y="320" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="566.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="566" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,-4.2 L110.0,-4.2 L148.0,-4.2 L186.0,-4.2 L224.0,-4.2 L262.0,-4.2 L300.0,-4.2 L338.0,-4.2 L376.0,-4.2 L414.0,-4.2 L452.0,-4.2 L490.0,-4.2 L528.0,-4.2 L566.0,-4.2" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="566.0" cy="-4.2" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="574.0" y="32.0" fill="#1a1a1a" font-weight="600">4,351곳 기계·금속</text>
-<path d="M72.0,228.0 L110.0,228.0 L148.0,228.0 L186.0,228.0 L224.0,228.0 L262.0,228.0 L300.0,228.0 L338.0,228.0 L376.0,228.0 L414.0,228.0 L452.0,228.0 L490.0,228.0 L528.0,228.0 L566.0,228.0" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="566.0" cy="228.0" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="574.0" y="233.0" fill="#1a1a1a" font-weight="600">985곳 자동차·부품</text>
-<path d="M72.0,237.6 L110.0,237.6 L148.0,237.6 L186.0,237.6 L224.0,237.6 L262.0,237.6 L300.0,237.6 L338.0,237.6 L376.0,237.6 L414.0,237.6 L452.0,237.6 L490.0,237.6 L528.0,237.6 L566.0,237.6" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="566.0" cy="237.6" r="3.5" style="fill:var(--chart-3,#009E73)"/>
-<text x="574.0" y="249.0" fill="#1a1a1a" font-weight="600">847곳 화학·에너지</text>
-<path d="M72.0,201.7 L110.0,201.7 L148.0,201.7 L186.0,201.7 L224.0,201.7 L262.0,201.7 L300.0,201.7 L338.0,201.7 L376.0,201.7 L414.0,201.7 L452.0,201.7 L490.0,201.7 L528.0,201.7 L566.0,201.7" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="566.0" cy="201.7" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
-<text x="574.0" y="206.7" fill="#1a1a1a" font-weight="600">1,366곳 전기·전자</text>
-<path d="M72.0,242.1 L110.0,242.1 L148.0,242.1 L186.0,242.1 L224.0,242.1 L262.0,242.1 L300.0,242.1 L338.0,242.1 L376.0,242.1 L414.0,242.1 L452.0,242.1 L490.0,242.1 L528.0,242.1 L566.0,242.1" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="566.0" cy="242.1" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
-<text x="574.0" y="265.0" fill="#1a1a1a" font-weight="600">781곳 소프트웨어·IT</text></svg>
+<path d="M72.0,95.9 L87.4,95.9" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="133.8" cy="95.9" r="4" style="fill:var(--chart-1,#1B4F9B)"/>
+<path d="M164.6,95.9 L180.1,95.9" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M226.4,95.9 L241.8,95.9 L257.2,95.9 L272.7,95.9 L288.1,95.9" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="349.9" cy="95.9" r="4" style="fill:var(--chart-1,#1B4F9B)"/>
+<circle cx="457.9" cy="95.9" r="4" style="fill:var(--chart-1,#1B4F9B)"/>
+<path d="M550.6,95.9 L566.0,95.9" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="566.0" cy="95.9" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="574.0" y="100.9" fill="#1a1a1a" font-weight="600">4,351곳 기계·금속</text>
+<path d="M72.0,250.7 L87.4,250.7" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="133.8" cy="250.7" r="4" style="fill:var(--chart-2,#E69F00)"/>
+<path d="M164.6,250.7 L180.1,250.7" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M226.4,250.7 L241.8,250.7 L257.2,250.7 L272.7,250.7 L288.1,250.7" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="349.9" cy="250.7" r="4" style="fill:var(--chart-2,#E69F00)"/>
+<circle cx="457.9" cy="250.7" r="4" style="fill:var(--chart-2,#E69F00)"/>
+<path d="M550.6,250.7 L566.0,250.7" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="566.0" cy="250.7" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="574.0" y="255.7" fill="#1a1a1a" font-weight="600">985곳 자동차·부품</text>
+<path d="M72.0,257.0 L87.4,257.0" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="133.8" cy="257.0" r="4" style="fill:var(--chart-3,#009E73)"/>
+<path d="M164.6,257.0 L180.1,257.0" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M226.4,257.0 L241.8,257.0 L257.2,257.0 L272.7,257.0 L288.1,257.0" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="349.9" cy="257.0" r="4" style="fill:var(--chart-3,#009E73)"/>
+<circle cx="457.9" cy="257.0" r="4" style="fill:var(--chart-3,#009E73)"/>
+<path d="M550.6,257.0 L566.0,257.0" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="566.0" cy="257.0" r="3.5" style="fill:var(--chart-3,#009E73)"/>
+<text x="574.0" y="271.7" fill="#1a1a1a" font-weight="600">847곳 화학·에너지</text>
+<path d="M72.0,233.2 L87.4,233.2" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="133.8" cy="233.2" r="4" style="fill:var(--chart-4,#D55E00)"/>
+<path d="M164.6,233.2 L180.1,233.2" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M226.4,233.2 L241.8,233.2 L257.2,233.2 L272.7,233.2 L288.1,233.2" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="349.9" cy="233.2" r="4" style="fill:var(--chart-4,#D55E00)"/>
+<circle cx="457.9" cy="233.2" r="4" style="fill:var(--chart-4,#D55E00)"/>
+<path d="M550.6,233.2 L566.0,233.2" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="566.0" cy="233.2" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
+<text x="574.0" y="238.2" fill="#1a1a1a" font-weight="600">1,366곳 전기·전자</text>
+<path d="M72.0,260.1 L87.4,260.1" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="133.8" cy="260.1" r="4" style="fill:var(--chart-5,#CC79A7)"/>
+<path d="M164.6,260.1 L180.1,260.1" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M226.4,260.1 L241.8,260.1 L257.2,260.1 L272.7,260.1 L288.1,260.1" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="349.9" cy="260.1" r="4" style="fill:var(--chart-5,#CC79A7)"/>
+<circle cx="457.9" cy="260.1" r="4" style="fill:var(--chart-5,#CC79A7)"/>
+<path d="M550.6,260.1 L566.0,260.1" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="566.0" cy="260.1" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
+<text x="574.0" y="287.7" fill="#1a1a1a" font-weight="600">781곳 소프트웨어·IT</text></svg>

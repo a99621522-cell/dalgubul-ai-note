@@ -4,7 +4,7 @@ import { monthly, timeseries } from '../lib/stats';
 import { allTags } from '../lib/sites';
 
 /** /explore/ 데이터 탐색이 받는 집계 묶음(빌드 때 생성, /explore-data.json).
- *  monthly(YYYYMM.json) 의 산업·구군·단지·입지·태그별 지표 + 24개월 시계열. 기업 단위 계산은 /companies-index.json 으로 한다. */
+ *  monthly(YYYYMM.json) 의 산업·구군·단지·입지·태그별 지표 + 월별 시계열(자료 있는 달). 기업 단위 계산은 /companies-index.json 으로 한다. */
 type Lite = { firms: number; employment: number; covered: number; avg_employment: number | null; size_bands: Record<string, number>;
   nps_gain: number | null; nps_loss: number | null; new_firms: number | null; closed_firms: number | null; support_firms: number | null; support_records: number | null };
 const lite = (m: any): Lite => ({

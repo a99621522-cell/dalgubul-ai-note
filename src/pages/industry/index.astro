@@ -8,7 +8,7 @@ import { industryGroups } from '../../lib/industry';
 const m = monthly();
 const ym = m ? monthLabel(m.month) : '';
 const groups = industryGroups().filter(g => m?.by_industry[g.name]);
-const description = m ? `대구 산업 그룹 11개의 기업 수·고용 인원(${ym}, ${m.basis_label})과 24개월 추이. 그룹별 단지 분포·지원 이력·기업 목록으로 이어집니다.` : '대구 산업별 기업·고용 통계';
+const description = m ? `대구 산업 그룹 11개의 기업 수·고용 인원(${ym}, ${m.basis_label})과 월별 추이. 그룹별 단지 분포·지원 이력·기업 목록으로 이어집니다.` : '대구 산업별 기업·고용 통계';
 ---
 <Base title="산업별 현황" description={description} current="industry">
   <div class="section-head"><h1>산업별 현황</h1><span class="meta">{ym} 기준 · {m?.basis_label}</span></div>

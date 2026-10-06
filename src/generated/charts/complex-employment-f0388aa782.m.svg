@@ -1,16 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="성서산단 고용 인원 추이. 2023-12부터 2026-08까지 14개월. 성서산단 최근 42,438명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="성서산단 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 성서산단 최근 42,438명" style="max-width:360px;height:auto;font-size:14px">
 <title>성서산단 고용 인원 추이</title>
 <line x1="60" x2="284" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">38,000</text>
-<line x1="60" x2="284" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="153.0" text-anchor="end" fill="#767676">40,000</text>
+<line x1="60" x2="284" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="189.0" text-anchor="end" fill="#767676">40,000</text>
+<line x1="60" x2="284" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="117.0" text-anchor="end" fill="#767676">42,000</text>
 <line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">42,000</text>
-<text x="77.2" y="280" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="180.6" y="280" text-anchor="middle" fill="#767676">2024.12</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">44,000</text>
+<text x="74.0" y="280" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="116.0" y="280" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="158.0" y="280" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="200.0" y="280" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="242.0" y="280" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="284.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,148.5 L77.2,156.5 L94.5,153.7 L111.7,172.8 L128.9,165.1 L146.2,180.2 L163.4,178.7 L180.6,186.3 L197.8,194.6 L215.1,202.9 L232.3,1.7 L249.5,33.1 L266.8,11.2 L284.0,16.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="284.0" cy="16.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="292.0" y="52.0" fill="#1a1a1a" font-weight="600">42,438명</text>
+<path d="M60.0,184.3 L67.0,189.7" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="88.0" cy="187.8" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M102.0,200.5 L109.0,195.4" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M130.0,205.5 L137.0,204.5 L144.0,209.6 L151.0,215.1 L158.0,220.6" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="186.0" cy="86.5" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="235.0" cy="107.4" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M277.0,92.8 L284.0,96.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="284.0" cy="96.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="292.0" y="101.2" fill="#1a1a1a" font-weight="600">42,438명</text>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

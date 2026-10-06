@@ -33,7 +33,7 @@ const tiles: Tile[] = m ? [
   { label: '지원사업 수혜 기업 (최근 3년)', value: hasSupport ? supportedFirms : null, unit: '곳', sub: hasSupport ? `NTIS·대구시 보조금 공개·기관 선정 공고 기준 · 이력 ${sup3.length.toLocaleString('ko-KR')}건` : '공개 자료(NTIS·보조금 공개·선정 공고) 투입 전', href: '/programs/' },
 ] : [];
 const description = m
-  ? `대구 공장등록 기업 ${m.total.firms.toLocaleString('ko-KR')}곳, 고용 인원 ${m.total.employment.toLocaleString('ko-KR')}명(${ym}, ${m.basis_label}). 산업별 기업 수·고용과 24개월 추이, 기업 사전, 지원사업 공고.`
+  ? `대구 공장등록 기업 ${m.total.firms.toLocaleString('ko-KR')}곳, 고용 인원 ${m.total.employment.toLocaleString('ko-KR')}명(${ym}, ${m.basis_label}). 산업별 기업 수·고용과 월별 추이, 기업 사전, 지원사업 공고.`
   : '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고';
 ---
 <Base description={description}>
@@ -54,7 +54,7 @@ const description = m
       <section aria-labelledby="h-trend">
         <div class="section-head"><h2 id="h-trend">고용 인원 추이</h2><a href={`/stats/${m.month}/`}>이달 통계표</a></div>
         {nMonths >= 2
-          ? <Chart kind="total" name="employment" caption="대구 전체 고용 인원, 최근 24개월" />
+          ? <Chart kind="total" name="employment" caption="대구 전체 고용 인원 추이" />
           : <p class="meta note-box">월간 자료가 {ym} 1개월뿐이라 추이 그래프는 다음 달부터 그립니다. 지금 값은 위 큰 숫자와 <a href={`/stats/${m.month}/`}>이달 통계표</a>에 있습니다.</p>}
       </section>
     </>

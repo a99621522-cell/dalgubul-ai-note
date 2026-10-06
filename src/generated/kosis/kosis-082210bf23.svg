@@ -2,10 +2,12 @@
 <title>고부가 3부문(전기·전자·정밀기기, 정보통신, 금융보험) 부가가치 비중</title>
 <line x1="72" x2="630" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">10</text>
-<line x1="72" x2="630" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="173.0" text-anchor="end" fill="#767676">15</text>
+<line x1="72" x2="630" y1="210.7" y2="210.7" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="215.7" text-anchor="end" fill="#767676">15</text>
+<line x1="72" x2="630" y1="125.3" y2="125.3" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="130.3" text-anchor="end" fill="#767676">20</text>
 <line x1="72" x2="630" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="45.0" text-anchor="end" fill="#767676">20</text>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">25</text>
 <text x="72.0" y="320" text-anchor="middle" fill="#767676">2014</text>
 <text x="183.6" y="320" text-anchor="middle" fill="#767676">2016</text>
 <text x="295.2" y="320" text-anchor="middle" fill="#767676">2018</text>
@@ -13,10 +15,10 @@
 <text x="518.4" y="320" text-anchor="middle" fill="#767676">2022</text>
 <text x="630.0" y="320" text-anchor="middle" fill="#767676">2024</text>
 <line x1="72" x2="630" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,206.4 L127.8,211.5 L183.6,201.3 L239.4,178.2 L295.2,188.5 L351.0,211.5 L406.8,211.5 L462.6,201.3 L518.4,173.1 L574.2,191.0 L630.0,193.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="630.0" cy="193.6" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="638.0" y="198.6" fill="#1a1a1a" font-weight="600">14.0% 대구</text>
-<path d="M72.0,63.0 L127.8,70.7 L183.6,73.3 L239.4,40.0 L295.2,22.1 L351.0,52.8 L406.8,34.9 L462.6,11.8 L518.4,14.4 L574.2,60.5 L630.0,34.9" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="630.0" cy="34.9" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="638.0" y="52.0" fill="#1a1a1a" font-weight="600">20.2% 전국</text>
+<path d="M72.0,236.3 L127.8,239.7 L183.6,232.9 L239.4,217.5 L295.2,224.3 L351.0,239.7 L406.8,239.7 L462.6,232.9 L518.4,214.1 L574.2,226.0 L630.0,227.7" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="630.0" cy="227.7" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="638.0" y="232.7" fill="#1a1a1a" font-weight="600">14.0% 대구</text>
+<path d="M72.0,140.7 L127.8,145.8 L183.6,147.5 L239.4,125.3 L295.2,113.4 L351.0,133.9 L406.8,121.9 L462.6,106.6 L518.4,108.3 L574.2,139.0 L630.0,121.9" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="630.0" cy="121.9" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="638.0" y="126.9" fill="#1a1a1a" font-weight="600">20.2% 전국</text>
 <text x="72" y="16" fill="#767676">명목 총부가가치 기준</text></svg>

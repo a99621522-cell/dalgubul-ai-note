@@ -1,18 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="북구검단산단 고용 인원 추이. 2023-12부터 2026-08까지 14개월. 북구검단산단 최근 3,301명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="북구검단산단 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 북구검단산단 최근 3,301명" style="max-width:360px;height:auto;font-size:14px">
 <title>북구검단산단 고용 인원 추이</title>
 <line x1="60" x2="292" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">2,800</text>
-<line x1="60" x2="292" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="189.0" text-anchor="end" fill="#767676">3,000</text>
-<line x1="60" x2="292" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="117.0" text-anchor="end" fill="#767676">3,200</text>
+<line x1="60" x2="292" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="207.0" text-anchor="end" fill="#767676">3,000</text>
+<line x1="60" x2="292" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="153.0" text-anchor="end" fill="#767676">3,200</text>
+<line x1="60" x2="292" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="99.0" text-anchor="end" fill="#767676">3,400</text>
 <line x1="60" x2="292" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">3,400</text>
-<text x="77.8" y="280" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="184.9" y="280" text-anchor="middle" fill="#767676">2024.12</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">3,600</text>
+<text x="74.5" y="280" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="118.0" y="280" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="161.5" y="280" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="205.0" y="280" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="248.5" y="280" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="292.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="292" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,163.1 L77.8,162.0 L95.7,172.8 L113.5,181.1 L131.4,174.6 L149.2,200.2 L167.1,198.0 L184.9,197.3 L202.8,200.6 L220.6,195.9 L238.5,27.8 L256.3,62.3 L274.2,76.4 L292.0,75.6" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="292.0" cy="75.6" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="300.0" y="80.6" fill="#1a1a1a" font-weight="600">3,301명</text>
+<path d="M60.0,186.3 L67.2,185.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="89.0" cy="193.6" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M103.5,199.8 L110.8,195.0" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M132.5,214.2 L139.8,212.5 L147.0,212.0 L154.2,214.4 L161.5,210.9" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="190.5" cy="84.8" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="241.2" cy="110.7" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M284.8,121.3 L292.0,120.7" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="292.0" cy="120.7" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="300.0" y="125.7" fill="#1a1a1a" font-weight="600">3,301명</text>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

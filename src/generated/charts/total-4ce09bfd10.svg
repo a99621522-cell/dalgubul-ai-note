@@ -1,20 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구 고용 인원 추이. 2023-12부터 2026-08까지 14개월. 전체 최근 156,098명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 전체 최근 156,098명" style="max-width:720px;height:auto;font-size:14px">
 <title>대구 고용 인원 추이</title>
 <line x1="72" x2="636" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">130,000</text>
-<line x1="72" x2="636" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="173.0" text-anchor="end" fill="#767676">140,000</text>
+<line x1="72" x2="636" y1="210.7" y2="210.7" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="215.7" text-anchor="end" fill="#767676">140,000</text>
+<line x1="72" x2="636" y1="125.3" y2="125.3" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="130.3" text-anchor="end" fill="#767676">150,000</text>
 <line x1="72" x2="636" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="45.0" text-anchor="end" fill="#767676">150,000</text>
-<text x="115.4" y="320" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="202.2" y="320" text-anchor="middle" fill="#767676">2024.6</text>
-<text x="288.9" y="320" text-anchor="middle" fill="#767676">2024.10</text>
-<text x="375.7" y="320" text-anchor="middle" fill="#767676">2024.12</text>
-<text x="462.5" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="549.2" y="320" text-anchor="middle" fill="#767676">2026.1</text>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">160,000</text>
+<text x="107.2" y="320" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="213.0" y="320" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="318.8" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="424.5" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="530.2" y="320" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="636.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="636" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,93.7 L115.4,104.3 L158.8,94.9 L202.2,151.4 L245.5,143.5 L288.9,152.0 L332.3,150.6 L375.7,153.4 L419.1,162.7 L462.5,155.2 L505.8,0.3 L549.2,1.3 L592.6,-38.6 L636.0,-38.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="636.0" cy="-38.1" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="644.0" y="52.0" fill="#1a1a1a" font-weight="600">156,098명</text>
+<path d="M72.0,161.2 L89.6,168.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="142.5" cy="162.0" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M177.8,199.6 L195.4,194.4" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M248.2,200.0 L265.9,199.1 L283.5,200.9 L301.1,207.2 L318.8,202.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="389.2" cy="98.8" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="512.6" cy="99.5" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M618.4,73.0 L636.0,73.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="636.0" cy="73.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="644.0" y="78.3" fill="#1a1a1a" font-weight="600">156,098명</text>
 <text x="72" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

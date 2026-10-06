@@ -1,19 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="소프트웨어·IT 기업 수 추이. 2023-12부터 2026-08까지 14개월. 소프트웨어·IT 최근 781곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="소프트웨어·IT 기업 수 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 소프트웨어·IT 최근 781곳" style="max-width:360px;height:auto;font-size:14px">
 <title>소프트웨어·IT 기업 수 추이</title>
 <line x1="60" x2="308" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">740</text>
-<line x1="60" x2="308" y1="197.0" y2="197.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="202.0" text-anchor="end" fill="#767676">760</text>
-<line x1="60" x2="308" y1="138.0" y2="138.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="143.0" text-anchor="end" fill="#767676">780</text>
-<line x1="60" x2="308" y1="79.0" y2="79.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="84.0" text-anchor="end" fill="#767676">800</text>
+<line x1="60" x2="308" y1="208.8" y2="208.8" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="213.8" text-anchor="end" fill="#767676">760</text>
+<line x1="60" x2="308" y1="161.6" y2="161.6" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="166.6" text-anchor="end" fill="#767676">780</text>
+<line x1="60" x2="308" y1="114.4" y2="114.4" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="119.4" text-anchor="end" fill="#767676">800</text>
+<line x1="60" x2="308" y1="67.2" y2="67.2" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="72.2" text-anchor="end" fill="#767676">820</text>
 <line x1="60" x2="308" y1="20.0" y2="20.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="25.0" text-anchor="end" fill="#767676">820</text>
-<text x="79.1" y="280" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="193.5" y="280" text-anchor="middle" fill="#767676">2024.12</text>
+<text x="52" y="25.0" text-anchor="end" fill="#767676">840</text>
+<text x="75.5" y="280" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="122.0" y="280" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="168.5" y="280" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="215.0" y="280" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="261.5" y="280" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="308.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="308" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,135.1 L79.1,135.1 L98.2,135.1 L117.2,135.1 L136.3,135.1 L155.4,135.1 L174.5,135.1 L193.5,135.1 L212.6,135.1 L231.7,135.1 L250.8,135.1 L269.8,135.1 L288.9,135.1 L308.0,135.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="308.0" cy="135.1" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="316.0" y="140.1" fill="#1a1a1a" font-weight="600">781곳</text></svg>
+<path d="M60.0,159.2 L67.8,159.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="91.0" cy="159.2" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M106.5,159.2 L114.2,159.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M137.5,159.2 L145.2,159.2 L153.0,159.2 L160.8,159.2 L168.5,159.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="199.5" cy="159.2" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="253.8" cy="159.2" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M300.2,159.2 L308.0,159.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="308.0" cy="159.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="316.0" y="164.2" fill="#1a1a1a" font-weight="600">781곳</text></svg>

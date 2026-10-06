@@ -2,22 +2,24 @@
 <title>대구 신생기업·소멸기업</title>
 <line x1="60" x2="284" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">25,000</text>
-<line x1="60" x2="284" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="189.0" text-anchor="end" fill="#767676">30,000</text>
-<line x1="60" x2="284" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="117.0" text-anchor="end" fill="#767676">35,000</text>
+<line x1="60" x2="284" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="207.0" text-anchor="end" fill="#767676">30,000</text>
+<line x1="60" x2="284" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="153.0" text-anchor="end" fill="#767676">35,000</text>
+<line x1="60" x2="284" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="99.0" text-anchor="end" fill="#767676">40,000</text>
 <line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">40,000</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">45,000</text>
 <text x="116.0" y="280" text-anchor="middle" fill="#767676">2018</text>
 <text x="200.0" y="280" text-anchor="middle" fill="#767676">2021</text>
 <text x="284.0" y="280" text-anchor="middle" fill="#767676">2024</text>
 <line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,56.6 L88.0,54.5 L116.0,71.4 L144.0,39.9 L172.0,19.8 L200.0,50.6 L228.0,88.2 L256.0,85.4 L284.0,113.5" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="284.0" cy="113.5" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="292.0" y="111.5" fill="#1a1a1a" font-weight="600">34,899개</text>
-<text x="292.0" y="128.5" fill="#1a1a1a">신생기업</text>
-<path d="M60.0,209.7 L88.0,175.8 L116.0,174.1 L144.0,155.5 L172.0,157.8 L200.0,159.2 L228.0,178.4 L256.0,153.0" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="256.0" cy="153.0" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="264.0" y="151.0" fill="#1a1a1a" font-weight="600">32,150개</text>
-<text x="264.0" y="168.0" fill="#1a1a1a">소멸기업</text>
+<path d="M60.0,106.5 L88.0,104.8 L116.0,117.5 L144.0,94.0 L172.0,78.8 L200.0,102.0 L228.0,130.1 L256.0,128.1 L284.0,149.1" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="284.0" cy="149.1" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="292.0" y="147.1" fill="#1a1a1a" font-weight="600">34,899개</text>
+<text x="292.0" y="164.1" fill="#1a1a1a">신생기업</text>
+<path d="M60.0,221.2 L88.0,195.8 L116.0,194.5 L144.0,180.6 L172.0,182.3 L200.0,183.4 L228.0,197.8 L256.0,178.8" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="256.0" cy="178.8" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="264.0" y="181.1" fill="#1a1a1a" font-weight="600">32,150개</text>
+<text x="264.0" y="198.1" fill="#1a1a1a">소멸기업</text>
 <text x="8" y="16" fill="#767676">KOSIS 시도별 산업대분류별 기업규모별 기업 수(활동/신생/소멸)</text></svg>

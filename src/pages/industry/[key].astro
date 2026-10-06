@@ -6,7 +6,7 @@ import { monthly, monthLabel, fmt, statMonths } from '../../lib/stats';
 const nMonths = statMonths().length;
 import { industryGroups } from '../../lib/industry';
 import { supportHistory, recentSupport, companies } from '../../lib/csv';
-/** /industry/<key>/ — 산업 그룹 하나: 큰 숫자 → 24개월 추이(고용·기업 수) → 단지·입지 분포 → 지원 이력(3년) 요약 → 기업 목록 링크. 평가·순위 없음. */
+/** /industry/<key>/ — 산업 그룹 하나: 큰 숫자 → 월별 추이(고용·기업 수, 자료 있는 달만) → 단지·입지 분포 → 지원 이력(3년) 요약 → 기업 목록 링크. 평가·순위 없음. */
 export async function getStaticPaths() {
   return industryGroups().map(g => ({ params: { key: g.key }, props: { g } }));
 }
@@ -27,7 +27,7 @@ const tiles: Tile[] = s ? [
   { label: '기업당 평균 고용', value: s.avg_employment === null ? null : Math.round(s.avg_employment), unit: '명', sub: '집계 대상 기업 기준' },
   { label: '지원 이력 있는 기업 (3년)', value: sup3.length ? new Set(sup3.map(r => r.id)).size : 0, unit: '곳', sub: `공개 자료 이력 ${sup3.length}건`, href: `/support/?group=${encodeURIComponent(g.name)}` },
 ] : [];
-const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 ${fmt(s.employment)}명(${ym}). 24개월 추이, 단지·입지 분포, 최근 3년 지원 이력.` : `${g.name} 산업 현황`;
+const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 ${fmt(s.employment)}명(${ym}). 월별 추이, 단지·입지 분포, 최근 3년 지원 이력.` : `${g.name} 산업 현황`;
 ---
 <Base title={g.name} description={description} current="industry" crumb={g.name}>
   <div class="section-head"><h1>{g.name}</h1><span class="meta">{ym} 기준</span></div>
@@ -36,7 +36,7 @@ const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 
       <StatTiles tiles={tiles} />
       {nMonths >= 2 ? (
       <section aria-labelledby="h-trend">
-        <div class="section-head"><h2 id="h-trend">24개월 추이</h2><a href="/industry/compare/">다른 산업과 비교</a></div>
+        <div class="section-head"><h2 id="h-trend">월별 추이</h2><a href="/industry/compare/">다른 산업과 비교</a></div>
           <div class="chart-pair">
             <Chart kind="industry-employment" name={g.key} caption={`${g.name} 고용 인원 추이`} />
             <Chart kind="industry-firms" name={g.key} caption={`${g.name} 기업 수 추이`} />

@@ -150,8 +150,13 @@ def add_linesegs(ctx: Ctx) -> None:
         y += size + spacing
 
 
-def build_hwpx(blocks: list[dict], out: Path, preview: str = "", all_ns: bool = True, lineseg: bool = False) -> Path:
+def build_hwpx(blocks: list[dict], out: Path, preview: str = "", all_ns: bool = True, lineseg: bool = False, plain: bool = False) -> Path:
+    """plain=True: 덧붙인 테두리·채움 모양에서 채움(hc:fillBrush)을 모두 빼고 글자 모양의 테두리 참조를 양식 기본(id 3)으로 — 채움·테두리 참조가 깨짐 원인인지 가르는 실험(2026-10-06 운영자 화면: 본문 전체가 검게 칠해짐)"""
     ctx = Ctx()
+    if plain:
+        ctx.header_xml = re.sub(r"<hc:fillBrush>.*?</hc:fillBrush>", "", ctx.header_xml, flags=re.S)
+        none_id = ctx.ids["border"]["none"]
+        ctx.header_xml = ctx.header_xml.replace(f'borderFillIDRef="{none_id}"', 'borderFillIDRef="3"')
     for b in blocks:
         ctx.root.append(block_elem(ctx, b))
     H.drop_linesegs(ctx.root)

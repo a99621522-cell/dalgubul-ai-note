@@ -141,6 +141,14 @@ tables:
     years: 12
     area_col: C1
     area: []
+  - key: population-sigungu-monthly
+    name: 주민등록인구 — 시군구별 월간 인구(구·군 표의 '최근 월' 칸용, 운영자 지시 2026-10-06 '현재로')
+    tbl_id: "DT_1B040A3"
+    search: "주민등록인구현황 행정구역 시군구 성별 인구수 월"
+    prd_se: M
+    years: 2
+    area_col: C1
+    area: []
   - key: employed-industry-sido
     name: 지역별고용조사 — 시도·산업별 취업자(산업별 취업자 비중·제조업 노동생산성용, 반기)
     tbl_id: "DT_1ES3B05S"

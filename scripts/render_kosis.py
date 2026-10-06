@@ -191,12 +191,31 @@ def main() -> int:
         if py:
             rc.write("kosis", "population", rc.line_chart, "대구 주민등록인구(연말)", py, [("총인구", [pop[y] for y in py])], index=index, unit="명", note=short("population-sido"))
     if gu_pop:
+        # 운영자 지시 2026-10-06 '2014·2025년이 아니라 현재로': 최신 연말 + 10년 전·5년 전·전년 + (월간 표를 받았으면) 최근 월. 2014 는 수집 시작 연도였을 뿐이라 뺐다
         gys = sorted({y for d in gu_pop.values() for y in d})
-        y1, y0 = gys[-1], gys[0]
-        tables.append({"id": "gu_population", "title": f"대구 구·군별 주민등록인구 ({y0}·{y1}년)", "unit": "명",
-                       "columns": ["구·군", f"{y0}년(명)", f"{y1}년(명)", "증감(명)"],
-                       "rows": [[g, d.get(y0), d.get(y1), (d[y1] - d[y0]) if d.get(y1) is not None and d.get(y0) is not None else None] for g, d in gu_pop.items()],
-                       "source": src("population-sido"), "latest": y1, "note": "군위군은 2023년 7월 대구 편입(그 전 값은 경북 소속 때 값이 없을 수 있음)"})
+        y1 = gys[-1]; pick = [y for y in (str(int(y1) - 10), str(int(y1) - 5), str(int(y1) - 1)) if y in gys]
+        gu_m, mlatest, cur_m = defaultdict(dict), "", None
+        for r in rows("population-sigungu-monthly"):
+            if r["ITM_NM"] != "총인구수":
+                continue
+            n = r["C1_NM"]
+            if n.endswith(SIDO_END) and not n.endswith(("구", "군")):
+                cur_m = n
+            elif cur_m == "대구광역시" and n in gu_pop:
+                gu_m[n][r["PRD_DE"]] = num(r["DT"])
+        if gu_m:
+            mlatest = max(m for d in gu_m.values() for m in d)
+        mlabel = f"{mlatest[:4]}-{mlatest[4:6]}" if mlatest else ""
+        cols = ["구·군"] + [f"{y}년(명)" for y in pick] + [f"{y1}년 연말(명)"] + ([f"{mlabel}(명)"] if mlatest else []) + [f"{pick[0]}→{y1} 증감(명)" if pick else "증감(명)"]
+        def _row(g, d):
+            base = d.get(pick[0]) if pick else None
+            out = [g] + [d.get(y) for y in pick] + [d.get(y1)] + ([gu_m.get(g, {}).get(mlatest)] if mlatest else [])
+            out.append((d[y1] - base) if d.get(y1) is not None and base is not None else None)
+            return out
+        tables.append({"id": "gu_population", "title": f"대구 구·군별 주민등록인구 (연말 {y1}년" + (f", 최근 {mlabel}" if mlatest else "") + ")", "unit": "명",
+                       "columns": cols, "rows": [_row(g, d) for g, d in gu_pop.items()],
+                       "source": src("population-sido") + (f"; {src('population-sigungu-monthly')}" if mlatest else ""), "latest": mlabel or y1,
+                       "note": "연도 칸은 그해 12월 말 주민등록인구, " + (f"최근 월 칸은 {mlabel} 말. " if mlatest else "최근 월 값은 월간 표를 받은 뒤 붙는다. ") + "군위군은 2023년 7월 대구 편입(그 전 값은 경북 소속 때 값이 없을 수 있음)"})
 
     # 7) 대구 GRDP 경제활동별 — 실질 성장률·실질 기여도(최근 연도)
     g = rows("grdp-sido-industry")

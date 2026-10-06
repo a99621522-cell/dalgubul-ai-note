@@ -1,57 +1,45 @@
 ---
 import Base from '../../layouts/Base.astro';
 import GrowthCommentary from '../../components/GrowthCommentary.astro';
+import GrowthAsk from '../../components/GrowthAsk.astro';
 import GrowthStructure from '../../components/GrowthStructure.astro';
 import GrdpCalculator from '../../components/GrdpCalculator.astro';
 import GrowthPolicy from '../../components/GrowthPolicy.astro';
-/** /growth/ — 성장 계산기(메뉴, 운영자 지시 2026-10-05). 위: 산업구조와 성장 계산기(산업구조지수 리포트와 같은 정의, 한 화면).
- *  아래: 목표 계산기(생산 측·지출 측, 예산·사업 규모). 모두 공표 통계와 가정에 따른 계산이며 전망·평가가 아니다. 대구시 예산액은 싣지 않는다. */
+import GrowthMethod from '../../components/GrowthMethod.astro';
+/** /growth/ — 성장 계산기(메뉴, 운영자 지시 2026-10-05). 2026-10-07 단순화(운영자 지시 '5가지 그대로 해'): ① 첫 화면은 질문 하나(목표 성장률)와 표 하나(GrowthAsk)
+ *  ② 계산기 셋은 탭(업종별 가정 / 정책 과제 / 목표에서 거꾸로) ③ 정책 과제는 5개만 보이고 나머지는 '더 보기', 과제마다 세부 칸은 '자세히'
+ *  ④ 설명은 한 줄 요약 + 맨 아래 '계산 방법' 한 곳(GrowthMethod) ⑤ 머리 숫자 넷만 크게, 폭·범위·검산은 작게/자세히. 계산은 그대로. 전망·평가가 아니다. 대구시 예산액은 싣지 않는다. */
 ---
 <Base title="성장 계산기" description="대구 업종별 성장률 가정으로 실질 GRDP 성장률과 고부가 3부문 비중·산업집중도를 함께 계산하고, 목표 성장률에 닿으려면 어느 업종 묶음이 몇 % 성장해야 하는지 보여 주는 계산기(산업구조지수 리포트와 같은 정의)." current="growth">
   <div class="section-head"><h1>성장 계산기</h1><span class="meta">대구 GRDP · 2015→2024년 · 국가데이터처·한국은행·한국관광공사 자료</span></div>
-  <p class="lede">업종별 성장률이나 대구시 정책 과제를 넣으면 대구 경제성장률·고용과 산업구조 지표(고부가 3부문 비중·산업집중도)가 함께 바뀝니다. 기간·부문·지표 정의는 산업구조지수 리포트와 같습니다. 가정에 따른 계산이지 전망이나 평가가 아닙니다.</p>
-  <GrowthCommentary />
-  <section class="start" id="start">
-    <h2>시작하기 — 세 가지만 정하면</h2>
-    <ol>
-      <li><b>목표 성장률</b> <label><input id="st-t" type="number" step="0.1" value="5.0" inputmode="decimal" /> %</label> — 아래 계산기의 목표 칸에 같이 들어갑니다.</li>
-      <li><b>무엇을 넣어 볼까</b> — <a href="#gs">업종별 성장률</a>(산업구조와 함께) · <a href="#gp">대구시 정책 과제</a>(연차·고용·순증) · <a href="#calc">목표에서 거꾸로</a>(항목별 필요 기여)</li>
-      <li><b>얼마 동안</b> — 정책 과제 계산기는 2026~2030년 해마다 경로를, 업종 계산기는 한 해 성장률을 보여 줍니다.</li>
-    </ol>
-    <details class="stat-details"><summary>용어 한 줄 풀이</summary>
-      <dl class="gloss">
-        <div><dt>실질 GRDP 성장률</dt><dd>대구 안에서 한 해 만든 부가가치가 가격 변화를 뺀 뒤 얼마나 늘었나. 2015→2024년 연평균 1.15%.</dd></div>
-        <div><dt>부가가치 비중</dt><dd>25개 부문의 명목 부가가치 가운데 그 업종이 차지하는 몫(%). 성장 기여도 이 비중으로 계산(순생산물세는 부가가치에 비례한다고 봄).</dd></div>
-        <div><dt>입지계수(LQ)</dt><dd>대구 비중 ÷ 전국 비중. 1보다 크면 대구에 더 몰려 있는(특화) 업종.</dd></div>
-        <div><dt>산업집중도(HHI)</dt><dd>업종 비중(%)의 제곱을 모두 더한 값. 소수 업종에 몰릴수록 커짐. 대구 619, 17개 시도 평균 809.</dd></div>
-        <div><dt>고부가 3부문</dt><dd>전기·전자·정밀기기, 정보통신, 금융·보험. 리포트가 고부가가치 산업으로 정의한 묶음. 대구 14.0%, 전국 20.2%.</dd></div>
-        <div><dt>고부가 변화속도</dt><dd>고부가 3부문 비중이 한 해에 얼마나 움직였나(½Σ|비중 변화|). 빠른 지역이 대체로 성장률이 높았음.</dd></div>
-        <div><dt>부가가치유발계수</dt><dd>대구에서 1원을 새로 쓰면 대구 안에 생기는 부가가치(한국은행 지역산업연관표, 수입품 몫을 뺀 0.415).</dd></div>
-        <div><dt>순증 비율</dt><dd>정책이 없어도 생겼을 몫과 대구 안에서 옮겨 온 몫을 뺀 뒤 진짜 늘어난 비율.</dd></div>
-        <div><dt>상위 3개 시도</dt><dd>17개 시도 가운데 그 업종 성장률이 높았던 세 곳의 평균. 비교 기준이지 순위·평가가 아님.</dd></div>
-      </dl>
-    </details>
-  </section>
-  <GrowthStructure />
-  <GrowthPolicy />
-  <details class="stat-details calc-wrap" id="calc-wrap"><summary>목표 계산기 — 목표에서 거꾸로(항목별 필요 기여) 펼치기</summary>
-  <GrdpCalculator />
-  </details>
+  <p class="lede">목표 성장률을 넣으면 어느 업종 묶음이 몇 % 성장해야 하는지 보이고, 아래 탭에서 업종별 가정·대구시 정책 과제·목표에서 거꾸로를 따로 넣어 볼 수 있습니다. 정의는 산업구조지수 리포트와 같고, 가정에 따른 계산이지 전망이나 평가가 아닙니다.</p>
+  <GrowthAsk />
+  <details class="gc-wrap"><summary>AI 해설(운영자 확인본) 펼치기 — 계산값이 바뀌면 다시 쓰고 운영자가 다시 확인한 뒤 갱신됩니다</summary><GrowthCommentary /></details>
+  <nav class="gtabs" role="tablist" aria-label="계산기 고르기">
+    <button type="button" role="tab" data-tab="gs" aria-selected="true">업종별 가정</button>
+    <button type="button" role="tab" data-tab="gp" aria-selected="false">대구시 정책 과제</button>
+    <button type="button" role="tab" data-tab="calc" aria-selected="false">목표에서 거꾸로</button>
+  </nav>
+  <div class="gpanel" data-panel="gs"><GrowthStructure /></div>
+  <div class="gpanel" data-panel="gp" hidden><GrowthPolicy /></div>
+  <div class="gpanel" data-panel="calc" hidden><GrdpCalculator /></div>
+  <GrowthMethod />
   <script>
-    const t = document.getElementById('st-t') as HTMLInputElement | null;
-    t?.addEventListener('input', () => { for (const id of ['gst', 'gt']) { const x = document.getElementById(id) as HTMLInputElement | null; if (x) { x.value = t.value; x.dispatchEvent(new Event('input', { bubbles: true })); } } });
-    if (location.hash === '#calc') (document.getElementById('calc-wrap') as HTMLDetailsElement | null)?.setAttribute('open', '');
-    document.querySelectorAll('a[href="#calc"]').forEach(a => a.addEventListener('click', () => (document.getElementById('calc-wrap') as HTMLDetailsElement | null)?.setAttribute('open', '')));
+    // 탭: 패널은 모두 DOM 에 있고(각 계산기 스크립트는 그대로 동작) 보이기만 바꾼다. 해시 #gs·#gp·#calc 로 열 수 있다
+    const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.gtabs [data-tab]'));
+    const show = (k: string) => { tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === k))); document.querySelectorAll<HTMLElement>('.gpanel').forEach(p => { p.hidden = p.dataset.panel !== k; }); };
+    tabs.forEach(b => b.addEventListener('click', () => { show(b.dataset.tab!); history.replaceState(null, '', '#' + b.dataset.tab); }));
+    const h = location.hash.replace('#', ''); if (['gs', 'gp', 'calc'].includes(h)) show(h); else if (h.startsWith('gp=')) show('gp');
+    document.querySelectorAll<HTMLAnchorElement>('a[href^="#gs"], a[href^="#gp"], a[href^="#calc"]').forEach(a => a.addEventListener('click', () => show(a.getAttribute('href')!.slice(1))));
+    // 첫 화면 목표 칸 → 목표 계산기의 목표 칸에도 같은 값
+    const t = document.getElementById('gst') as HTMLInputElement | null;
+    t?.addEventListener('input', () => { const x = document.getElementById('gt') as HTMLInputElement | null; if (x) { x.value = t.value; x.dispatchEvent(new Event('input', { bubbles: true })); } });
   </script>
   <style>
-    .start { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; margin: var(--s2) 0; background: var(--bg); }
-    .start h2 { font-size: 1.05rem; margin: 0 0 6px; }
-    .start ol { margin: 0; padding-left: 1.2em; }
-    .start li { margin: 3px 0; }
-    .start input { width: 4.6em; padding: 3px 6px; text-align: right; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; }
-    .gloss { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px 14px; margin: 6px 0 0; font-size: var(--small); }
-    .gloss dt { font-weight: 700; }
-    .gloss dd { margin: 0; color: var(--muted); }
-    .calc-wrap { margin-top: var(--s4); }
+    .gtabs { display: flex; gap: 6px; flex-wrap: wrap; margin: var(--s3) 0 var(--s2); border-bottom: 1px solid var(--line); }
+    .gtabs button { border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; background: var(--surface); color: var(--ink); padding: 8px 14px; font: inherit; font-weight: 600; cursor: pointer; min-height: 40px; }
+    .gtabs button[aria-selected="true"] { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .gpanel { margin-top: 0; }
+    .gc-wrap { margin: var(--s2) 0; } .gc-wrap > summary { cursor: pointer; font-size: var(--small); color: var(--muted); }
   </style>
 </Base>

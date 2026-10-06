@@ -109,6 +109,14 @@ MAPPINGS: dict[str, dict] = {
     "15084581": {"kind": "tag", "tag": "venture", "source": "중소벤처기업부 벤처기업명단(공공데이터포털)",
                  "name": ["기업명", "업체명", "회사명"], "address": ["주소", "간략주소", "소재지"], "region": ("지역", "대구"),
                  "sector": ["업종", "업종명", "산업분류"], "product": ["주요제품", "주생산품"], "founded": []},
+    # 열: 구분,소재지,센터명,기관명,기업명,대표자명,창업일,입주일,기업형태,업종,주생산품 — 소재지 '대구' 행만. 대표자명은 읽지 않는다. 예비창업(기업형태)은 아직 기업이 아니라 뺀다.
+    # 주소가 없어 센터명 → 구·군(district_by, 대구시 창업보육센터 현황 3074616 의 센터 소재지)으로 보완. 운영자 지시 2026-10-06 '이 창업공간(창업보육센터)에 가면 알 수 있지 않을까'
+    "15122804": {"kind": "tag", "tag": "bi", "source": "중소벤처기업부 창업보육센터 입주기업현황(공공데이터포털)",
+                 "name": ["기업명", "업체명"], "address": ["주소", "소재지"], "region": ("소재지", "대구"),
+                 "sector": ["업종"], "product": ["주생산품", "주요제품"], "founded": ["창업일", "설립일"], "skip": ("기업형태", r"예비"),
+                 "district_by": ("센터명", {"경북대": "북구", "대구보건대": "북구", "계명대학교": "남구", "영남이공대": "남구", "계명문화대": "달서구", "달서구": "달서구",
+                                           "대구경북지방중소벤처기업청": "달서구", "대구공업대": "달서구", "중소벤처기업진흥공단": "달서구", "중진공": "달서구",
+                                           "국가물산업": "달성군", "물산업": "달성군", "디지스타트업": "중구", "스케일업허브": "동구", "DASH": "동구", "수성": "수성구"})},
     "3033893": {"kind": "tag", "tag": "innobiz", "source": "중소벤처기업부 혁신형중소기업 현황(공공데이터포털)",
                 "name": ["기업명", "업체명", "회사명"], "address": ["주소", "소재지"], "region": ("지역", "대구"),
                 "sector": ["업종", "업종명"], "product": ["주요제품", "주생산품"], "founded": []},
@@ -250,7 +258,14 @@ def main(argv: list[str]) -> int:
                 else:  # tag → import_extra 형식
                     if re.search(r"연구기관|공공행정|보건 및 복지행정|종합병원|한방병원|고등교육기관|교육훈련|바이오 연구 인프라|정책연구", pick(r, m["sector"])):
                         continue  # 업종 열로 보아 기관
+                    if m.get("skip") and re.search(m["skip"][1], pick(r, m["skip"][0])):
+                        continue  # 예비창업자 등 기업이 아닌 행
                     addr = pick(r, m["address"])
+                    if m.get("district_by") and not re.search(r"대구(?:광역시)?\s*\S+?[구군]", addr):
+                        key = pick(r, m["district_by"][0])
+                        d = next((v for k, v in m["district_by"][1].items() if k in key), "")
+                        if d:
+                            addr = f"대구광역시 {d} ({key} 입주)"   # 센터 소재지로 구·군만 판정, 상세 주소 없음
                     if m.get("default_district") and not re.search(r"대구(?:광역시)?\s*\S+?[구군]", addr):
                         addr = f"대구광역시 {m['default_district']} " + re.sub(r"^대구(?:광역시)?\s*", "", addr)  # 단지 소재지(첨복단지=동구)로 구·군 보완
                     out.append({"회사명": names[0], "주소": addr, "업종": pick(r, m["sector"]), "사업내용": pick(r, m["product"]),

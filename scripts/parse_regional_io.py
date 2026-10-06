@@ -87,9 +87,12 @@ def parse_matrix(ws, label: str) -> dict[str, dict[str, float]]:
     out: dict[str, dict[str, float]] = {}
     cur = None
     for i in range(name_row + 1, nrow):
-        rr = region_of(cell(i, reg_col))
+        rv = cell(i, reg_col)
+        rr = region_of(rv)
         if rr:
             cur = rr
+        elif rv is not None and str(rv).strip():   # '전국'·'합계' 같은 집계 블록은 지역이 아니다 — 17개 시도 행만 더한다(2026-10-06: 전국 블록이 타지역에 더해져 합이 1.6 이 됐다)
+            cur = None
         sec = str(cell(i, name_col)).strip() if cell(i, name_col) is not None else ""
         if not cur or not sec or NORM(sec) in ("합계", "계", "총계", "전부문", "부문계", "전품목", "None"):
             continue
@@ -125,7 +128,9 @@ def main() -> int:
     res = {k: (parse_matrix(v, k) if v else {}) for k, v in sheets.items()}
     imp = parse_matrix(pick(["수입유발"]), "imp") if pick(["수입유발"]) else {}
     for k, d in res.items():
-        print(f"[{k}] 대구 열 {len(d)}개 부문", {s: (round(x['within'], 3), round(x['other'], 3)) for s, x in list(d.items())[:6]})
+        print(f"[{k}] 대구 열 {len(d)}개 부문")
+        for s, x in d.items():
+            print(f"   {s}: 지역내 {x['within']:.4f} 타지역 {x['other']:.4f} 합 {x['col_total']:.4f}")
     for s, x in res["va"].items():   # 검산: 부가가치유발(지역내+타지역) + 수입유발(전 지역) ≈ 1
         tot = x["col_total"] + (imp.get(s, {}).get("col_total", 0))
         if abs(tot - 1) > 0.02:

@@ -269,7 +269,9 @@ export function policyLeversData() {
   // 투자액 → 연 매출(2026-10-07): 자본회전율 = 출하액 ÷ 유형자산(연말잔액). 유형자산 표(mfg-tangible-sido)는 kosis_tables.yml 에 넣었고 tbl_id 를 채워 받으면 여기서 읽힌다
   let turnover: Record<string, number | null> = {}, turnoverYear = '';
   try {
-    const ta = readCsv('data/kosis/mfg-tangible-sido.csv').filter(r => r.C1_NM === '대구광역시' && /유형자산/.test(r.ITM_NM));
+    const ta0 = readCsv('data/kosis/mfg-tangible-sido.csv').filter(r => r.C1_NM === '대구광역시');
+    const itm = [...new Set(ta0.map(r => r.ITM_NM))].find(n => /연말/.test(n)) ?? [...new Set(ta0.map(r => r.ITM_NM))].find(n => /유형자산/.test(n));   // 항목 이름은 '연말잔액' 또는 '유형자산…' — 받은 표의 이름에 맞춤
+    const ta = itm ? ta0.filter(r => r.ITM_NM === itm) : [];
     const ty = [...new Set(ta.map(r => r.PRD_DE))].filter(y => myears.includes(y)).sort().at(-1);
     if (ty) { turnoverYear = ty; const tv = (mid: string) => { const r = ta.find(x => x.PRD_DE === ty && x.C2_NM === mid); const v = r ? gy(mid, '출하액 계', ty) / Number(r.DT) : NaN; return Number.isFinite(v) && v > 0 ? v : null; };
       turnover = { semi: tv('전자부품 컴퓨터 영상 음향 및 통신장비 제조업'), auto: tv('자동차 및 트레일러 제조업'), med: tv('의료 정밀 광학기기 및 시계 제조업'), mach: tv('기타 기계 및 장비 제조업'), elec: tv('전기장비 제조업'),

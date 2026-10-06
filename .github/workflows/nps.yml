@@ -59,12 +59,13 @@ jobs:
         run: |
           python3 scripts/build_stats.py --backfill
           python3 scripts/render_charts.py
+          python3 scripts/effect_table.py          # 지원 전후 고용 변화표(data/effects)
           python3 scripts/write_monthly_report.py   # 월보 초안(draft) — 발행은 approve.py 로
       - name: 커밋
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/nps data/stats src/generated src/content/posts scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/company_facts.csv
+          git add data/nps data/stats data/effects src/generated src/content/posts scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/company_facts.csv
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 국민연금 사업장 수집·월간 통계 $(date -u +%Y-%m-%d)"
           git push
 

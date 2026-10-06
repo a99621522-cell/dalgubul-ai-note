@@ -1,0 +1,1065 @@
+{
+ "generated": "2026-10-06",
+ "min_n": 10,
+ "nps_months": [
+  "2023-12",
+  "2024-01",
+  "2024-04",
+  "2024-06",
+  "2024-07",
+  "2024-10",
+  "2024-11",
+  "2024-12",
+  "2025-01",
+  "2025-02",
+  "2025-06",
+  "2026-01",
+  "2026-07",
+  "2026-08"
+ ],
+ "method": "지원 연도 Y 의 전 = Y-1년 12월까지 가장 늦은 국민연금 자료, 후 = Y+1년 1월부터 가장 이른 자료. 두 달 모두 매칭되고 전 가입자 1명 이상인 기업만. 비교군 = 같은 산업 그룹·같은 규모 띠(전 가입자 수)에서 Y-1~Y+1 지원 이력이 없는 기업. 합계 증감률 = 후 합 ÷ 전 합 − 1, 중앙값 증감률 = 기업별 증감률의 중앙값. 관찰이지 효과 평가가 아니다(선정 편향, 사업장 단위 합계, 지원 시점·금액 미반영).",
+ "cohorts": [
+  {
+   "year": 2024,
+   "before": "2023-12",
+   "after": "2025-01",
+   "treated_n": 111,
+   "comparison_pool_n": 4235,
+   "support_rows_n": 245,
+   "blocks": [
+    {
+     "kind": "all",
+     "label": "전체",
+     "treated": {
+      "n": 111,
+      "before_sum": 13695,
+      "after_sum": 13330,
+      "sum_change_pct": -2.7,
+      "before_median": 22,
+      "after_median": 22,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 38.7,
+      "down_share_pct": 46.8
+     },
+     "comparison": {
+      "n": 3577,
+      "before_sum": 91217,
+      "after_sum": 89575,
+      "sum_change_pct": -1.8,
+      "before_median": 11,
+      "after_median": 10,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 31.6,
+      "down_share_pct": 42.3
+     }
+    },
+    {
+     "kind": "group",
+     "label": "기계·금속",
+     "treated": {
+      "n": 26,
+      "before_sum": 2361,
+      "after_sum": 2177,
+      "sum_change_pct": -7.8,
+      "before_median": 15.5,
+      "after_median": 11.5,
+      "median_rate_pct": -4.7,
+      "up_share_pct": 23.1,
+      "down_share_pct": 57.7
+     },
+     "comparison": {
+      "n": 1227,
+      "before_sum": 21922,
+      "after_sum": 21563,
+      "sum_change_pct": -1.6,
+      "before_median": 9,
+      "after_median": 9,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 30.0,
+      "down_share_pct": 39.8
+     }
+    },
+    {
+     "kind": "group",
+     "label": "기타 서비스",
+     "treated": {
+      "n": 3
+     },
+     "comparison": {
+      "n": 366,
+      "before_sum": 4253,
+      "after_sum": 4240,
+      "sum_change_pct": -0.3,
+      "before_median": 8.0,
+      "after_median": 8.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 32.0,
+      "down_share_pct": 38.5
+     }
+    },
+    {
+     "kind": "group",
+     "label": "기타 제조",
+     "treated": {
+      "n": 3
+     },
+     "comparison": {
+      "n": 152,
+      "before_sum": 2828,
+      "after_sum": 2745,
+      "sum_change_pct": -2.9,
+      "before_median": 16.0,
+      "after_median": 14.5,
+      "median_rate_pct": -1.2,
+      "up_share_pct": 32.2,
+      "down_share_pct": 50.0
+     }
+    },
+    {
+     "kind": "group",
+     "label": "섬유·패션",
+     "treated": {
+      "n": 10,
+      "before_sum": 323,
+      "after_sum": 314,
+      "sum_change_pct": -2.8,
+      "before_median": 22.0,
+      "after_median": 20.0,
+      "median_rate_pct": -2.9,
+      "up_share_pct": 20.0,
+      "down_share_pct": 60.0
+     },
+     "comparison": {
+      "n": 234,
+      "before_sum": 5749,
+      "after_sum": 5243,
+      "sum_change_pct": -8.8,
+      "before_median": 17.0,
+      "after_median": 16.0,
+      "median_rate_pct": -7.4,
+      "up_share_pct": 21.4,
+      "down_share_pct": 63.2
+     }
+    },
+    {
+     "kind": "group",
+     "label": "소프트웨어·IT",
+     "treated": {
+      "n": 11,
+      "before_sum": 324,
+      "after_sum": 318,
+      "sum_change_pct": -1.9,
+      "before_median": 19,
+      "after_median": 19,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 36.4,
+      "down_share_pct": 45.5
+     },
+     "comparison": {
+      "n": 367,
+      "before_sum": 5406,
+      "after_sum": 5216,
+      "sum_change_pct": -3.5,
+      "before_median": 9,
+      "after_median": 8,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 35.4,
+      "down_share_pct": 37.9
+     }
+    },
+    {
+     "kind": "group",
+     "label": "식품",
+     "treated": {
+      "n": 1
+     },
+     "comparison": {
+      "n": 62,
+      "before_sum": 1231,
+      "after_sum": 1132,
+      "sum_change_pct": -8.0,
+      "before_median": 18.0,
+      "after_median": 16.5,
+      "median_rate_pct": -4.9,
+      "up_share_pct": 32.3,
+      "down_share_pct": 51.6
+     }
+    },
+    {
+     "kind": "group",
+     "label": "의료·바이오",
+     "treated": {
+      "n": 4
+     },
+     "comparison": {
+      "n": 114,
+      "before_sum": 2380,
+      "after_sum": 2301,
+      "sum_change_pct": -3.3,
+      "before_median": 10.0,
+      "after_median": 9.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 35.1,
+      "down_share_pct": 43.0
+     }
+    },
+    {
+     "kind": "group",
+     "label": "자동차·부품",
+     "treated": {
+      "n": 20,
+      "before_sum": 4412,
+      "after_sum": 4224,
+      "sum_change_pct": -4.3,
+      "before_median": 55.5,
+      "after_median": 60.5,
+      "median_rate_pct": -0.3,
+      "up_share_pct": 45.0,
+      "down_share_pct": 50.0
+     },
+     "comparison": {
+      "n": 353,
+      "before_sum": 18289,
+      "after_sum": 18130,
+      "sum_change_pct": -0.9,
+      "before_median": 19,
+      "after_median": 18,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 36.3,
+      "down_share_pct": 43.6
+     }
+    },
+    {
+     "kind": "group",
+     "label": "전기·전자",
+     "treated": {
+      "n": 25,
+      "before_sum": 3475,
+      "after_sum": 3612,
+      "sum_change_pct": 3.9,
+      "before_median": 18,
+      "after_median": 22,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 44.0,
+      "down_share_pct": 40.0
+     },
+     "comparison": {
+      "n": 445,
+      "before_sum": 11561,
+      "after_sum": 11218,
+      "sum_change_pct": -3.0,
+      "before_median": 9,
+      "after_median": 9,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 31.2,
+      "down_share_pct": 42.0
+     }
+    },
+    {
+     "kind": "group",
+     "label": "화학·에너지",
+     "treated": {
+      "n": 8
+     },
+     "comparison": {
+      "n": 257,
+      "before_sum": 17598,
+      "after_sum": 17787,
+      "sum_change_pct": 1.1,
+      "before_median": 8,
+      "after_median": 8,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 34.2,
+      "down_share_pct": 38.5
+     }
+    },
+    {
+     "kind": "band",
+     "label": "1~9명",
+     "treated": {
+      "n": 24,
+      "before_sum": 144,
+      "after_sum": 166,
+      "sum_change_pct": 15.3,
+      "before_median": 6.0,
+      "after_median": 6.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 45.8,
+      "down_share_pct": 25.0
+     },
+     "comparison": {
+      "n": 1579,
+      "before_sum": 8984,
+      "after_sum": 9198,
+      "sum_change_pct": 2.4,
+      "before_median": 6,
+      "after_median": 5,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 28.5,
+      "down_share_pct": 30.2
+     }
+    },
+    {
+     "kind": "band",
+     "label": "10~49명",
+     "treated": {
+      "n": 55,
+      "before_sum": 1276,
+      "after_sum": 1263,
+      "sum_change_pct": -1.0,
+      "before_median": 19,
+      "after_median": 19,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 34.5,
+      "down_share_pct": 49.1
+     },
+     "comparison": {
+      "n": 1744,
+      "before_sum": 34466,
+      "after_sum": 33298,
+      "sum_change_pct": -3.4,
+      "before_median": 17.0,
+      "after_median": 16.0,
+      "median_rate_pct": -3.8,
+      "up_share_pct": 32.6,
+      "down_share_pct": 51.9
+     }
+    },
+    {
+     "kind": "band",
+     "label": "50~299명",
+     "treated": {
+      "n": 21,
+      "before_sum": 2591,
+      "after_sum": 2573,
+      "sum_change_pct": -0.7,
+      "before_median": 120,
+      "after_median": 115,
+      "median_rate_pct": -1.4,
+      "up_share_pct": 38.1,
+      "down_share_pct": 61.9
+     },
+     "comparison": {
+      "n": 230,
+      "before_sum": 22106,
+      "after_sum": 21571,
+      "sum_change_pct": -2.4,
+      "before_median": 82.5,
+      "after_median": 77.5,
+      "median_rate_pct": -1.0,
+      "up_share_pct": 43.9,
+      "down_share_pct": 51.7
+     }
+    },
+    {
+     "kind": "band",
+     "label": "300명 이상",
+     "treated": {
+      "n": 11,
+      "before_sum": 9684,
+      "after_sum": 9328,
+      "sum_change_pct": -3.7,
+      "before_median": 632,
+      "after_median": 651,
+      "median_rate_pct": -3.3,
+      "up_share_pct": 45.5,
+      "down_share_pct": 54.5
+     },
+     "comparison": {
+      "n": 24,
+      "before_sum": 25661,
+      "after_sum": 25508,
+      "sum_change_pct": -0.6,
+      "before_median": 600.0,
+      "after_median": 580.0,
+      "median_rate_pct": -0.6,
+      "up_share_pct": 41.7,
+      "down_share_pct": 50.0
+     }
+    },
+    {
+     "kind": "type",
+     "label": "R&D",
+     "treated": {
+      "n": 106,
+      "before_sum": 13536,
+      "after_sum": 13172,
+      "sum_change_pct": -2.7,
+      "before_median": 22.0,
+      "after_median": 21.5,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 39.6,
+      "down_share_pct": 46.2
+     },
+     "comparison": {
+      "n": 3565,
+      "before_sum": 90047,
+      "after_sum": 88456,
+      "sum_change_pct": -1.8,
+      "before_median": 11,
+      "after_median": 10,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 31.6,
+      "down_share_pct": 42.2
+     }
+    },
+    {
+     "kind": "type",
+     "label": "선정",
+     "treated": {
+      "n": 2
+     },
+     "comparison": {
+      "n": 599,
+      "before_sum": 16887,
+      "after_sum": 16597,
+      "sum_change_pct": -1.7,
+      "before_median": 18,
+      "after_median": 18,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 33.7,
+      "down_share_pct": 49.2
+     }
+    },
+    {
+     "kind": "type",
+     "label": "인증",
+     "treated": {
+      "n": 5
+     },
+     "comparison": {
+      "n": 863,
+      "before_sum": 17522,
+      "after_sum": 16985,
+      "sum_change_pct": -3.1,
+      "before_median": 16,
+      "after_median": 16,
+      "median_rate_pct": -2.1,
+      "up_share_pct": 33.1,
+      "down_share_pct": 50.6
+     }
+    },
+    {
+     "kind": "type",
+     "label": "참여",
+     "treated": {
+      "n": 1
+     },
+     "comparison": {
+      "n": 528,
+      "before_sum": 10333,
+      "after_sum": 10065,
+      "sum_change_pct": -2.6,
+      "before_median": 16.0,
+      "after_median": 16.0,
+      "median_rate_pct": -1.4,
+      "up_share_pct": 31.1,
+      "down_share_pct": 50.0
+     }
+    },
+    {
+     "kind": "layer",
+     "label": "구비",
+     "treated": {
+      "n": 1
+     },
+     "comparison": {
+      "n": 145,
+      "before_sum": 2495,
+      "after_sum": 2415,
+      "sum_change_pct": -3.2,
+      "before_median": 15,
+      "after_median": 14,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 43.4,
+      "down_share_pct": 44.8
+     }
+    },
+    {
+     "kind": "layer",
+     "label": "국비",
+     "treated": {
+      "n": 111,
+      "before_sum": 13695,
+      "after_sum": 13330,
+      "sum_change_pct": -2.7,
+      "before_median": 22,
+      "after_median": 22,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 38.7,
+      "down_share_pct": 46.8
+     },
+     "comparison": {
+      "n": 3577,
+      "before_sum": 91217,
+      "after_sum": 89575,
+      "sum_change_pct": -1.8,
+      "before_median": 11,
+      "after_median": 10,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 31.6,
+      "down_share_pct": 42.3
+     }
+    }
+   ]
+  },
+  {
+   "year": 2025,
+   "before": "2024-12",
+   "after": "2026-01",
+   "treated_n": 335,
+   "comparison_pool_n": 4341,
+   "support_rows_n": 574,
+   "blocks": [
+    {
+     "kind": "all",
+     "label": "전체",
+     "treated": {
+      "n": 335,
+      "before_sum": 22989,
+      "after_sum": 23332,
+      "sum_change_pct": 1.5,
+      "before_median": 31,
+      "after_median": 31,
+      "median_rate_pct": -1.2,
+      "up_share_pct": 37.3,
+      "down_share_pct": 51.3
+     },
+     "comparison": {
+      "n": 4299,
+      "before_sum": 104367,
+      "after_sum": 102940,
+      "sum_change_pct": -1.4,
+      "before_median": 9,
+      "after_median": 9,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 29.7,
+      "down_share_pct": 41.1
+     }
+    },
+    {
+     "kind": "group",
+     "label": "기계·금속",
+     "treated": {
+      "n": 84,
+      "before_sum": 5449,
+      "after_sum": 5463,
+      "sum_change_pct": 0.3,
+      "before_median": 38.0,
+      "after_median": 37.5,
+      "median_rate_pct": -3.9,
+      "up_share_pct": 31.0,
+      "down_share_pct": 61.9
+     },
+     "comparison": {
+      "n": 1243,
+      "before_sum": 23436,
+      "after_sum": 22825,
+      "sum_change_pct": -2.6,
+      "before_median": 9,
+      "after_median": 9,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 28.0,
+      "down_share_pct": 41.3
+     }
+    },
+    {
+     "kind": "group",
+     "label": "기타 서비스",
+     "treated": {
+      "n": 12,
+      "before_sum": 345,
+      "after_sum": 329,
+      "sum_change_pct": -4.6,
+      "before_median": 18.0,
+      "after_median": 15.5,
+      "median_rate_pct": -5.3,
+      "up_share_pct": 25.0,
+      "down_share_pct": 50.0
+     },
+     "comparison": {
+      "n": 408,
+      "before_sum": 6881,
+      "after_sum": 6682,
+      "sum_change_pct": -2.9,
+      "before_median": 8.0,
+      "after_median": 8.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 30.9,
+      "down_share_pct": 41.2
+     }
+    },
+    {
+     "kind": "group",
+     "label": "기타 제조",
+     "treated": {
+      "n": 19,
+      "before_sum": 869,
+      "after_sum": 890,
+      "sum_change_pct": 2.4,
+      "before_median": 19,
+      "after_median": 21,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 47.4,
+      "down_share_pct": 31.6
+     },
+     "comparison": {
+      "n": 427,
+      "before_sum": 7482,
+      "after_sum": 7393,
+      "sum_change_pct": -1.2,
+      "before_median": 8,
+      "after_median": 8,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 31.4,
+      "down_share_pct": 36.1
+     }
+    },
+    {
+     "kind": "group",
+     "label": "로봇",
+     "treated": {
+      "n": 3
+     },
+     "comparison": {
+      "n": 22,
+      "before_sum": 1394,
+      "after_sum": 1444,
+      "sum_change_pct": 3.6,
+      "before_median": 19.0,
+      "after_median": 19.0,
+      "median_rate_pct": -4.1,
+      "up_share_pct": 27.3,
+      "down_share_pct": 59.1
+     }
+    },
+    {
+     "kind": "group",
+     "label": "섬유·패션",
+     "treated": {
+      "n": 31,
+      "before_sum": 1153,
+      "after_sum": 1094,
+      "sum_change_pct": -5.1,
+      "before_median": 23,
+      "after_median": 21,
+      "median_rate_pct": -5.9,
+      "up_share_pct": 32.3,
+      "down_share_pct": 54.8
+     },
+     "comparison": {
+      "n": 459,
+      "before_sum": 6520,
+      "after_sum": 6192,
+      "sum_change_pct": -5.0,
+      "before_median": 10,
+      "after_median": 8,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 22.0,
+      "down_share_pct": 47.9
+     }
+    },
+    {
+     "kind": "group",
+     "label": "소프트웨어·IT",
+     "treated": {
+      "n": 31,
+      "before_sum": 1202,
+      "after_sum": 1102,
+      "sum_change_pct": -8.3,
+      "before_median": 25,
+      "after_median": 23,
+      "median_rate_pct": -2.5,
+      "up_share_pct": 38.7,
+      "down_share_pct": 51.6
+     },
+     "comparison": {
+      "n": 406,
+      "before_sum": 5622,
+      "after_sum": 5639,
+      "sum_change_pct": 0.3,
+      "before_median": 8.0,
+      "after_median": 8.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 31.8,
+      "down_share_pct": 35.2
+     }
+    },
+    {
+     "kind": "group",
+     "label": "식품",
+     "treated": {
+      "n": 11,
+      "before_sum": 413,
+      "after_sum": 428,
+      "sum_change_pct": 3.6,
+      "before_median": 36,
+      "after_median": 38,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 45.5,
+      "down_share_pct": 45.5
+     },
+     "comparison": {
+      "n": 158,
+      "before_sum": 2974,
+      "after_sum": 2955,
+      "sum_change_pct": -0.6,
+      "before_median": 8.0,
+      "after_median": 9.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 38.6,
+      "down_share_pct": 41.1
+     }
+    },
+    {
+     "kind": "group",
+     "label": "의료·바이오",
+     "treated": {
+      "n": 24,
+      "before_sum": 1083,
+      "after_sum": 1149,
+      "sum_change_pct": 6.1,
+      "before_median": 30.0,
+      "after_median": 35.5,
+      "median_rate_pct": 6.1,
+      "up_share_pct": 62.5,
+      "down_share_pct": 33.3
+     },
+     "comparison": {
+      "n": 114,
+      "before_sum": 2394,
+      "after_sum": 2370,
+      "sum_change_pct": -1.0,
+      "before_median": 9.0,
+      "after_median": 10.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 37.7,
+      "down_share_pct": 41.2
+     }
+    },
+    {
+     "kind": "group",
+     "label": "자동차·부품",
+     "treated": {
+      "n": 45,
+      "before_sum": 4640,
+      "after_sum": 4607,
+      "sum_change_pct": -0.7,
+      "before_median": 54,
+      "after_median": 55,
+      "median_rate_pct": -1.9,
+      "up_share_pct": 37.8,
+      "down_share_pct": 51.1
+     },
+     "comparison": {
+      "n": 348,
+      "before_sum": 17939,
+      "after_sum": 17788,
+      "sum_change_pct": -0.8,
+      "before_median": 19.0,
+      "after_median": 18.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 30.2,
+      "down_share_pct": 46.6
+     }
+    },
+    {
+     "kind": "group",
+     "label": "전기·전자",
+     "treated": {
+      "n": 57,
+      "before_sum": 4564,
+      "after_sum": 4721,
+      "sum_change_pct": 3.4,
+      "before_median": 24,
+      "after_median": 26,
+      "median_rate_pct": -4.7,
+      "up_share_pct": 33.3,
+      "down_share_pct": 56.1
+     },
+     "comparison": {
+      "n": 460,
+      "before_sum": 11614,
+      "after_sum": 11619,
+      "sum_change_pct": 0.0,
+      "before_median": 9.0,
+      "after_median": 9.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 32.0,
+      "down_share_pct": 39.8
+     }
+    },
+    {
+     "kind": "group",
+     "label": "화학·에너지",
+     "treated": {
+      "n": 18,
+      "before_sum": 2781,
+      "after_sum": 3024,
+      "sum_change_pct": 8.7,
+      "before_median": 28.0,
+      "after_median": 27.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 33.3,
+      "down_share_pct": 38.9
+     },
+     "comparison": {
+      "n": 254,
+      "before_sum": 18111,
+      "after_sum": 18033,
+      "sum_change_pct": -0.4,
+      "before_median": 9.0,
+      "after_median": 8.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 29.5,
+      "down_share_pct": 38.6
+     }
+    },
+    {
+     "kind": "band",
+     "label": "1~9명",
+     "treated": {
+      "n": 41,
+      "before_sum": 258,
+      "after_sum": 269,
+      "sum_change_pct": 4.3,
+      "before_median": 6,
+      "after_median": 6,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 31.7,
+      "down_share_pct": 36.6
+     },
+     "comparison": {
+      "n": 2263,
+      "before_sum": 12596,
+      "after_sum": 13119,
+      "sum_change_pct": 4.2,
+      "before_median": 5,
+      "after_median": 5,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 27.5,
+      "down_share_pct": 30.4
+     }
+    },
+    {
+     "kind": "band",
+     "label": "10~49명",
+     "treated": {
+      "n": 185,
+      "before_sum": 4831,
+      "after_sum": 4785,
+      "sum_change_pct": -1.0,
+      "before_median": 25,
+      "after_median": 25,
+      "median_rate_pct": -2.9,
+      "up_share_pct": 37.3,
+      "down_share_pct": 53.0
+     },
+     "comparison": {
+      "n": 1711,
+      "before_sum": 33931,
+      "after_sum": 32834,
+      "sum_change_pct": -3.2,
+      "before_median": 17,
+      "after_median": 16,
+      "median_rate_pct": -4.3,
+      "up_share_pct": 31.5,
+      "down_share_pct": 52.1
+     }
+    },
+    {
+     "kind": "band",
+     "label": "50~299명",
+     "treated": {
+      "n": 98,
+      "before_sum": 10725,
+      "after_sum": 10738,
+      "sum_change_pct": 0.1,
+      "before_median": 90.5,
+      "after_median": 86.5,
+      "median_rate_pct": -1.3,
+      "up_share_pct": 39.8,
+      "down_share_pct": 53.1
+     },
+     "comparison": {
+      "n": 301,
+      "before_sum": 30191,
+      "after_sum": 29567,
+      "sum_change_pct": -2.1,
+      "before_median": 79,
+      "after_median": 76,
+      "median_rate_pct": -2.1,
+      "up_share_pct": 35.2,
+      "down_share_pct": 56.5
+     }
+    },
+    {
+     "kind": "band",
+     "label": "300명 이상",
+     "treated": {
+      "n": 11,
+      "before_sum": 7175,
+      "after_sum": 7540,
+      "sum_change_pct": 5.1,
+      "before_median": 595,
+      "after_median": 565,
+      "median_rate_pct": -0.6,
+      "up_share_pct": 36.4,
+      "down_share_pct": 63.6
+     },
+     "comparison": {
+      "n": 24,
+      "before_sum": 27649,
+      "after_sum": 27420,
+      "sum_change_pct": -0.8,
+      "before_median": 631.0,
+      "after_median": 570.0,
+      "median_rate_pct": -2.3,
+      "up_share_pct": 33.3,
+      "down_share_pct": 66.7
+     }
+    },
+    {
+     "kind": "type",
+     "label": "R&D",
+     "treated": {
+      "n": 85,
+      "before_sum": 8866,
+      "after_sum": 9456,
+      "sum_change_pct": 6.7,
+      "before_median": 20,
+      "after_median": 23,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 49.4,
+      "down_share_pct": 34.1
+     },
+     "comparison": {
+      "n": 3866,
+      "before_sum": 92265,
+      "after_sum": 91008,
+      "sum_change_pct": -1.4,
+      "before_median": 9.0,
+      "after_median": 9.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 29.5,
+      "down_share_pct": 41.5
+     }
+    },
+    {
+     "kind": "type",
+     "label": "등록",
+     "treated": {
+      "n": 1
+     },
+     "comparison": {
+      "n": 677,
+      "before_sum": 3897,
+      "after_sum": 4082,
+      "sum_change_pct": 4.7,
+      "before_median": 6,
+      "after_median": 5,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 26.7,
+      "down_share_pct": 30.6
+     }
+    },
+    {
+     "kind": "type",
+     "label": "선정",
+     "treated": {
+      "n": 266,
+      "before_sum": 15612,
+      "after_sum": 15415,
+      "sum_change_pct": -1.3,
+      "before_median": 36.0,
+      "after_median": 36.5,
+      "median_rate_pct": -2.9,
+      "up_share_pct": 34.6,
+      "down_share_pct": 56.0
+     },
+     "comparison": {
+      "n": 4120,
+      "before_sum": 82316,
+      "after_sum": 80738,
+      "sum_change_pct": -1.9,
+      "before_median": 9.0,
+      "after_median": 9.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 29.7,
+      "down_share_pct": 41.5
+     }
+    },
+    {
+     "kind": "type",
+     "label": "인증",
+     "treated": {
+      "n": 4
+     },
+     "comparison": {
+      "n": 1257,
+      "before_sum": 15320,
+      "after_sum": 15250,
+      "sum_change_pct": -0.5,
+      "before_median": 9,
+      "after_median": 9,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 28.9,
+      "down_share_pct": 39.7
+     }
+    },
+    {
+     "kind": "layer",
+     "label": "국비",
+     "treated": {
+      "n": 91,
+      "before_sum": 8966,
+      "after_sum": 9555,
+      "sum_change_pct": 6.6,
+      "before_median": 19,
+      "after_median": 21,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 48.4,
+      "down_share_pct": 36.3
+     },
+     "comparison": {
+      "n": 3866,
+      "before_sum": 92265,
+      "after_sum": 91008,
+      "sum_change_pct": -1.4,
+      "before_median": 9.0,
+      "after_median": 9.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 29.5,
+      "down_share_pct": 41.5
+     }
+    },
+    {
+     "kind": "layer",
+     "label": "시비",
+     "treated": {
+      "n": 265,
+      "before_sum": 15606,
+      "after_sum": 15411,
+      "sum_change_pct": -1.2,
+      "before_median": 36,
+      "after_median": 37,
+      "median_rate_pct": -2.8,
+      "up_share_pct": 34.7,
+      "down_share_pct": 55.8
+     },
+     "comparison": {
+      "n": 4120,
+      "before_sum": 82316,
+      "after_sum": 80738,
+      "sum_change_pct": -1.9,
+      "before_median": 9.0,
+      "after_median": 9.0,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 29.7,
+      "down_share_pct": 41.5
+     }
+    }
+   ]
+  }
+ ]
+}

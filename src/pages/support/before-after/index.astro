@@ -1,0 +1,65 @@
+---
+import fs from 'node:fs';
+import Base from '../../../layouts/Base.astro';
+/** /support/before-after/ — 지원 전후 고용 변화(관찰, 평가 아님). 추세·비교·효과 보강 3단계(2026-10-06).
+ *  scripts/effect_table.py 가 지원사업 이력(공개 명단) × 국민연금 가입자 수(지원 전해 12월 ↔ 다음 해 1월)로 묶음별 집계만 낸다(data/effects/summary.json).
+ *  기업 이름 없음, 묶음 기업 수가 min_n 미만이면 값 없음. 비교군은 같은 산업 그룹·규모 띠의 지원 이력 없는 기업. 인과·효과 판단 표현을 쓰지 않는다. */
+type Stat = { n: number; before_sum?: number; after_sum?: number; sum_change_pct?: number | null; before_median?: number; after_median?: number; median_rate_pct?: number | null; up_share_pct?: number; down_share_pct?: number };
+type Block = { kind: string; label: string; treated: Stat; comparison: Stat | null };
+type Cohort = { year: number; before: string; after: string; treated_n: number; comparison_pool_n: number; support_rows_n: number; blocks: Block[] };
+const P = 'data/effects/summary.json';
+const doc: { generated: string; min_n: number; nps_months: string[]; method: string; cohorts: Cohort[] } | null = fs.existsSync(P) ? JSON.parse(fs.readFileSync(P, 'utf-8')) : null;
+const fmt = (v: number | null | undefined, d = 0) => v === null || v === undefined ? '—' : v.toLocaleString('ko-KR', { maximumFractionDigits: d, minimumFractionDigits: d });
+const pct = (v: number | null | undefined) => v === null || v === undefined ? '—' : `${v > 0 ? '+' : ''}${v.toLocaleString('ko-KR', { maximumFractionDigits: 1, minimumFractionDigits: 1 })}%`;
+const full = (s: Stat | null) => !!s && s.before_sum !== undefined;
+const KIND = { all: '전체', group: '산업 그룹', band: '지원 전 규모', type: '지원 유형', layer: '재원' } as Record<string, string>;
+const cohorts = doc?.cohorts ?? [];
+---
+<Base title="지원 전후 고용 변화" description="공개 명단에 이름이 실린 대구 기업의 국민연금 가입자 수를 지원 연도 전후로 나란히 놓고, 같은 산업·규모의 지원 이력 없는 기업과 비교합니다. 관찰 표이며 효과 평가가 아닙니다." current="support" crumb="지원 전후 고용 변화" wide>
+  <nav class="sub-tabs" aria-label="지원 기업 보기">
+    <a href="/support/">전체 지원 기업</a>
+    <a href="/support/participation/">특구·특화단지·샌드박스 참여</a>
+    <a href="/support/star/">대구 스타기업·Pre-스타기업·3030기업</a>
+    <a href="/support/before-after/" aria-current="page">지원 전후 고용 변화</a>
+  </nav>
+  <div class="section-head"><h1>지원 전후 고용 변화</h1>{doc && <span class="meta">국민연금 자료 {doc.nps_months.length}개월 · 갱신 {doc.generated}</span>}</div>
+  <p class="lede">공개 명단에 이름이 실린 기업(지원군)의 국민연금 가입자 수를 지원 연도 전해 12월과 다음 해 1월 자료로 나란히 놓고, 같은 산업 그룹·같은 규모 띠에서 그 기간 지원 이력이 없는 기업(비교군)의 같은 값을 옆에 둡니다. 묶음별 집계만 있고 기업 이름은 없습니다.</p>
+  <div class="callout" role="note">
+    <strong>읽을 때 주의.</strong> 이 표는 전후 변화를 그대로 옮긴 관찰이지 지원사업의 효과를 재는 것이 아닙니다. 선정 자체가 성장 가능성이 큰 기업을 고른 결과일 수 있고, 가입자 수는 사업장 단위 합계이며, 지원 시점·금액·사업 내용은 반영하지 않았습니다. 묶음 기업 수가 {doc?.min_n ?? 10}곳 미만이면 값을 비웁니다.
+  </div>
+  {!cohorts.length && <p class="meta">아직 전후 두 시점이 모두 있는 지원 연도가 없습니다. 국민연금 월별 자료가 더 쌓이면 표가 생깁니다.</p>}
+  {cohorts.map(c => (
+    <section id={`y${c.year}`}>
+      <div class="section-head"><h2>{c.year}년 지원 기업</h2><span class="meta">전 {c.before} → 후 {c.after} · 지원군 {fmt(c.treated_n)}곳(명단 {fmt(c.support_rows_n)}건 중 두 시점 모두 매칭) · 비교군 풀 {fmt(c.comparison_pool_n)}곳</span></div>
+      <div class="scroll-x"><table class="data-table" data-title={`${c.year}년 지원 기업의 지원 전후 국민연금 가입자 수 (전 ${c.before}, 후 ${c.after})`}>
+        <thead>
+          <tr><th rowspan="2">묶음</th><th rowspan="2">구분</th><th colspan="6">지원군</th><th colspan="4">비교군(같은 산업·규모, 지원 이력 없음)</th></tr>
+          <tr><th class="n">기업 수</th><th class="n">전 합계(명)</th><th class="n">후 합계(명)</th><th class="n">합계 증감률</th><th class="n">중앙값 증감률</th><th class="n">늘어난 기업 비율</th><th class="n">기업 수</th><th class="n">합계 증감률</th><th class="n">중앙값 증감률</th><th class="n">늘어난 기업 비율</th></tr>
+        </thead>
+        <tbody>
+          {c.blocks.map(b => (
+            <tr>
+              <th scope="row">{KIND[b.kind] ?? b.kind}</th>
+              <td>{b.label}</td>
+              <td class="n">{fmt(b.treated.n)}</td>
+              {full(b.treated) ? (<>
+                <td class="n">{fmt(b.treated.before_sum)}</td><td class="n">{fmt(b.treated.after_sum)}</td><td class="n">{pct(b.treated.sum_change_pct)}</td><td class="n">{pct(b.treated.median_rate_pct)}</td><td class="n">{fmt(b.treated.up_share_pct, 1)}%</td>
+              </>) : (<td class="n" colspan="5"><span class="meta">기업 수가 {doc?.min_n}곳 미만이라 값 없음</span></td>)}
+              <td class="n">{b.comparison ? fmt(b.comparison.n) : '—'}</td>
+              {full(b.comparison) ? (<>
+                <td class="n">{pct(b.comparison!.sum_change_pct)}</td><td class="n">{pct(b.comparison!.median_rate_pct)}</td><td class="n">{fmt(b.comparison!.up_share_pct, 1)}%</td>
+              </>) : (<td class="n" colspan="3">—</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table></div>
+      <p class="meta">합계 증감률 = 후 합 ÷ 전 합 − 1. 중앙값 증감률 = 기업별 증감률의 중앙값(절반의 기업이 이 값 아래). 늘어난 기업 비율 = 후가 전보다 큰 기업의 비율. 출처: 지원 이력은 공공데이터포털 공개 명단(<a href="/support/">지원받은 기업</a>), 고용은 국민연금공단 국민연금 가입 사업장 내역(공공데이터포털 15083277).</p>
+    </section>
+  ))}
+  {doc && <details><summary>계산 방법</summary><p class="meta">{doc.method}</p><p class="meta">국민연금 자료가 있는 달: {doc.nps_months.join(', ')}. 지원 연도 전에 자료가 없는 해(예: 2023년 이전)와 다음 해 자료가 아직 없는 해(2026년)는 표에 없습니다. 자료가 쌓이면 <code>scripts/effect_table.py</code>가 다시 만듭니다.</p></details>}
+</Base>
+<style>
+  section { margin: 1.4rem 0 2rem; }
+  .callout { margin: 0.6rem 0 1.2rem; }
+  td[colspan] { text-align: center; }
+</style>

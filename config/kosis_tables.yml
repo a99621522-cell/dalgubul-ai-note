@@ -32,9 +32,10 @@ tables:
     area_col: C1
     areas: [manufacturing-ax, machinery, automotive, textile, root, semiconductor]
   - key: biz-birth-death-sido
-    name: 기업생멸행정통계 — 시도·산업별 신생기업·소멸기업·활동기업
-    tbl_id: ""
-    search: "기업생멸행정통계 시도별 활동기업"
+    name: 기업생멸행정통계 — 시도·산업대분류·기업규모별 기업 수(활동·신생·소멸)
+    tbl_id: "DT_6BD1105"   # 2026-10-06 discover: 시도별 산업대분류별 기업규모별 기업 수(활동/신생/소멸). 같은 통계의 시도별 산업중분류 표는 DT_6BD1101, 시군구별 산업대분류는 DT_6BD1132
+    years: 10
+    search: ["기업생멸행정통계 시도별 활동기업", "기업생멸", "시도별 신생기업", "활동기업 신생기업 소멸기업 시도", "기업생멸행정통계 지역별"]
     prd_se: Y
     area_col: C1
     areas: [ai-sw-startup]

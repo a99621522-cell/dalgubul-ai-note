@@ -1,0 +1,22 @@
+{
+ "key": "biz-birth-death-sido",
+ "name": "기업생멸행정통계 — 시도·산업대분류·기업규모별 기업 수(활동·신생·소멸)",
+ "tbl_nm": "시도별 산업대분류별 기업규모별 기업 수(활동/신생/소멸)",
+ "org_id": "101",
+ "tbl_id": "DT_6BD1105",
+ "prd_se": "Y",
+ "period": [
+  "2016",
+  "2026"
+ ],
+ "rows_total": 115788,
+ "rows_kept": 6398,
+ "latest": "2024",
+ "unit": "개%",
+ "areas": [
+  "ai-sw-startup"
+ ],
+ "fetched": "2026-10-06",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_6BD1105",
+ "note": ""
+}

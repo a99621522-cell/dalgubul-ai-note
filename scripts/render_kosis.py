@@ -217,34 +217,53 @@ def main() -> int:
                        "source": src("population-sido") + (f"; {src('population-sigungu-monthly')}" if mlatest and src("population-sigungu-monthly") != src("population-sido") else " (연간·월간)"), "latest": mlabel or y1,
                        "note": "연도 칸은 그해 12월 말 주민등록인구, " + (f"최근 월 칸은 {mlabel} 말. " if mlatest else "최근 월 값은 월간 표를 받은 뒤 붙는다. ") + "군위군은 2023년 7월 대구 편입(그 전 값은 경북 소속 때 값이 없을 수 있음)"})
 
-    # 6b) 기업생멸행정통계 — 대구 활동기업·신생기업·소멸기업(연도별, 창업기업 통계; 운영자 지적 2026-10-06 '창업기업은 빠져있네'). 표를 받기 전에는 비어 있다
+    # 6b) 기업생멸행정통계 — 대구 활동기업·신생기업·소멸기업(연도별, 창업기업 통계; 운영자 지적 2026-10-06 '창업기업은 빠져있네').
+    #     DT_6BD1105 시도별 산업대분류별 기업규모별 기업 수(활동/신생/소멸): ITM 활동·신생·소멸·신생률·소멸률, C2 산업대분류('전체' 포함), C3 기업규모('계' 포함). 표를 받기 전에는 비어 있다
     bb = [r for r in rows("biz-birth-death-sido") if r.get("C1_NM") == "대구광역시"]
     if bb:
         def _pick(items, keys):
             for k in keys:
                 for it in items:
-                    if k in it: return it
+                    if it == k: return it
+            for k in keys:
+                for it in items:
+                    if it.startswith(k) and not it.endswith("률"): return it
             return None
-        inds = sorted({r.get("C2_NM", "") for r in bb}); itms = sorted({r["ITM_NM"] for r in bb})
-        ind_all = _pick(inds, ("전산업", "전체", "합계", "계")) or (inds[0] if inds else "")
-        i_act, i_birth, i_death = _pick(itms, ("활동기업",)), _pick(itms, ("신생기업",)), _pick(itms, ("소멸기업",))
+        inds = []
+        for r in bb:
+            if r.get("C2_NM", "") not in inds: inds.append(r.get("C2_NM", ""))   # KOSIS 산업 순서 유지
+        sizes = []
+        for r in bb:
+            if r.get("C3_NM", "") not in sizes: sizes.append(r.get("C3_NM", ""))
+        itms = sorted({r["ITM_NM"] for r in bb})
+        ind_all = _pick(inds, ("전체", "전산업", "합계", "계")) or (inds[0] if inds else "")
+        size_all = _pick(sizes, ("계", "전체", "합계")) or (sizes[0] if sizes else "")
+        i_act, i_birth, i_death = _pick(itms, ("활동기업", "활동")), _pick(itms, ("신생기업", "신생")), _pick(itms, ("소멸기업", "소멸"))
         i_brate, i_drate = _pick(itms, ("신생률",)), _pick(itms, ("소멸률",))
-        val = {(r["PRD_DE"], r["ITM_NM"], r.get("C2_NM", "")): num(r["DT"]) for r in bb}
+        val = {(r["PRD_DE"], r["ITM_NM"], r.get("C2_NM", ""), r.get("C3_NM", "")): num(r["DT"]) for r in bb}
+        v = lambda y, i, ind=ind_all, sz=size_all: val.get((y, i, ind, sz)) if i else None
         bys = sorted({r["PRD_DE"] for r in bb})
         pct = lambda a, b: round(a / b * 100, 1) if a is not None and b else None
         rws = []
         for y in reversed(bys):
-            a, b_, d = val.get((y, i_act, ind_all)), val.get((y, i_birth, ind_all)), val.get((y, i_death, ind_all))
-            rws.append([y, a, b_, val.get((y, i_brate, ind_all)) if i_brate else pct(b_, a), d, val.get((y, i_drate, ind_all)) if i_drate else pct(d, a)])
+            a, b_, d = v(y, i_act), v(y, i_birth), v(y, i_death)
+            rws.append([y, a, b_, v(y, i_brate) if i_brate else pct(b_, a), d, v(y, i_drate) if i_drate else pct(d, a)])
         tables.append({"id": "biz_birth", "title": f"대구 활동기업·신생기업·소멸기업 ({bys[0]}~{bys[-1]}년, 기업생멸행정통계)", "unit": "개",
                        "columns": ["연도", "활동기업(개)", "신생기업(개)", "신생률(%)", "소멸기업(개)", "소멸률(%)"], "rows": rws, "source": src("biz-birth-death-sido"), "latest": bys[-1],
-                       "note": "신생률·소멸률은 KOSIS 값이 있으면 그 값, 없으면 활동기업 대비 이 사이트 나눗셈. 소멸기업은 통계 확정이 1년 늦어 최근 해가 비어 있을 수 있음"})
-        yl = bys[-1]; ind_rows = [[i, val.get((yl, i_act, i)), val.get((yl, i_birth, i)), pct(val.get((yl, i_birth, i)), val.get((yl, i_act, i)))] for i in inds if i != ind_all and val.get((yl, i_act, i))]
+                       "note": "전체 산업·전체 규모. 신생률·소멸률은 KOSIS 값(활동기업 대비 %). 소멸기업은 통계 확정이 1년 늦어 최근 해가 비어 있을 수 있음. 개인사업자 포함"})
+        yl = bys[-1]
+        ind_rows = [[i, v(yl, i_act, i), v(yl, i_birth, i), v(yl, i_brate, i) if i_brate else pct(v(yl, i_birth, i), v(yl, i_act, i)), v(yl, i_death, i), v(yl, i_drate, i) if i_drate else pct(v(yl, i_death, i), v(yl, i_act, i))]
+                    for i in inds if i != ind_all and v(yl, i_act, i)]
         if ind_rows:
-            tables.append({"id": "biz_birth_industry", "title": f"대구 산업별 활동기업·신생기업 ({yl}년)", "unit": "개", "columns": ["산업", "활동기업(개)", "신생기업(개)", "신생률(%)"],
-                           "rows": ind_rows, "source": src("biz-birth-death-sido"), "latest": yl, "note": "가나다순이 아니라 KOSIS 산업 순서. 순위·평가가 아님"})
+            tables.append({"id": "biz_birth_industry", "title": f"대구 산업별 활동기업·신생기업·소멸기업 ({yl}년)", "unit": "개", "columns": ["산업(대분류)", "활동기업(개)", "신생기업(개)", "신생률(%)", "소멸기업(개)", "소멸률(%)"],
+                           "rows": ind_rows, "source": src("biz-birth-death-sido"), "latest": yl, "note": "KOSIS 산업 순서(가나다순 아님). 소멸기업 칸이 비면 그 해 값이 아직 확정되지 않은 것. 순위·평가가 아님"})
+        size_rows = [[sz, v(yl, i_act, ind_all, sz), v(yl, i_birth, ind_all, sz), v(yl, i_brate, ind_all, sz) if i_brate else pct(v(yl, i_birth, ind_all, sz), v(yl, i_act, ind_all, sz)), v(yl, i_death, ind_all, sz), v(yl, i_drate, ind_all, sz) if i_drate else None]
+                     for sz in sizes if sz != size_all and v(yl, i_act, ind_all, sz)]
+        if size_rows:
+            tables.append({"id": "biz_birth_size", "title": f"대구 기업규모별 활동기업·신생기업·소멸기업 ({yl}년, 전체 산업)", "unit": "개", "columns": ["기업규모", "활동기업(개)", "신생기업(개)", "신생률(%)", "소멸기업(개)", "소멸률(%)"],
+                           "rows": size_rows, "source": src("biz-birth-death-sido"), "latest": yl, "note": "KOSIS 규모 구분 순서. 대기업은 상호출자제한기업·기타 대기업을 합한 것. 소멸기업 칸이 비면 그 해 값이 아직 확정되지 않은 것"})
         if len(bys) >= 3:
-            rc.write("kosis", "biz-birth", rc.line_chart, "대구 신생기업·소멸기업", bys, [("신생기업", [val.get((y, i_birth, ind_all)) for y in bys]), ("소멸기업", [val.get((y, i_death, ind_all)) for y in bys])], index=index, unit="개", note=short("biz-birth-death-sido"))
+            rc.write("kosis", "biz-birth", rc.line_chart, "대구 신생기업·소멸기업", bys, [("신생기업", [v(y, i_birth) for y in bys]), ("소멸기업", [v(y, i_death) for y in bys])], index=index, unit="개", note=short("biz-birth-death-sido"))
 
     # 7) 대구 GRDP 경제활동별 — 실질 성장률·실질 기여도(최근 연도)
     g = rows("grdp-sido-industry")

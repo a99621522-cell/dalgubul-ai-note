@@ -160,7 +160,7 @@ function responsive(tbl: HTMLTableElement, bar: HTMLElement): void {
     if (cls) { th.classList.add(cls); rows.forEach(tr => tr.cells[i]?.classList.add(cls)); }
   });
   if (tbl.dataset.stack === 'off' || (ths.length < 5 && tbl.dataset.stack !== 'on')) return;
-  const labels = ths.map(c => clean((c as HTMLElement).innerText));
+  const labels = ths.map(c => clean(c.textContent ?? ''));   // innerText 는 접힌 <details> 안에서 빈 문자열(카드 항목 이름이 비던 원인, 2026-10-07)
   rows.forEach(tr => Array.from(tr.cells).forEach((c, i) => { if (c.tagName === 'TD' && !c.dataset.label) c.dataset.label = labels[i] ?? ''; }));
   tbl.classList.add('stackable');
   const b = document.createElement('button'); b.type = 'button'; b.className = 'btn secondary stack-toggle'; b.textContent = '표로 보기'; b.setAttribute('aria-pressed', 'false');

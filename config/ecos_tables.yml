@@ -86,7 +86,7 @@ tables:
   - key: regional-io-daegu
     name: 지역산업연관표 — 대구 부문별 부가가치유발계수·취업유발계수(2020년 표)
     stat_code: ""
-    search: ["지역산업연관표", "지역 산업연관표 유발계수", "지역간 산업연관표"]
+    search: ["산업연관", "유발계수", "지역산업", "지역간", "연관표"]
     cycle: A
     years: 10
     area: ["대구"]

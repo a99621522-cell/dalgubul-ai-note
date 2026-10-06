@@ -17,7 +17,7 @@ on:
         default: ""
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: ["scripts/collect_dart_extra.py", ".github/workflows/dart_extra.yml"]
+    paths: ["scripts/collect_dart_extra.py"]
 
 permissions:
   contents: write
@@ -29,7 +29,7 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

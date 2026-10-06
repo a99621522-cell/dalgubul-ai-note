@@ -519,7 +519,9 @@ def build(meta: dict, body_md: str, area: str, out: Path, post_id: str = "", kic
             add(para(ids, "src", [(f"{i}. ", "src"), (inline(str(s_.get("title", ""))) + (f" ({d})" if d else "") + f" — {s_.get('url', '')}", "src")]))
     add(para(ids, "caption", [("daitda.co.kr · 공개 자료만 인용, 평가·순위 없음", "caption")]))
     drop_linesegs(root)
-    new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
+    # 루트의 네임스페이스 선언은 양식 그대로(ET 는 쓰인 것만 남긴다 — 진단 항목 ⑩, 2026-10-06)
+    sec_out = re.sub(r"^<hs:sec\b[^>]*>", re.search(r"<hs:sec\b[^>]*>", sec_xml).group(0), ET.tostring(root, encoding="unicode"), count=1)
+    new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + sec_out
     preview = "\n".join([kicker, title] + outline)
     out.parent.mkdir(parents=True, exist_ok=True)
     manifest = "".join(f'<opf:item id="{bid}" href="BinData/{bid}.{ext}" media-type="image/{"jpeg" if ext == "jpg" else ext}" isEmbeded="1"/>' for bid, _, ext in images.files)
@@ -587,7 +589,7 @@ def build_summary(meta: dict, body_md: str, area: str, out: Path, post_id: str) 
                 t.text = new
                 break
     drop_linesegs(root)
-    new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + ET.tostring(root, encoding="unicode")
+    new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + re.sub(r"^<hs:sec\b[^>]*>", re.search(r"<hs:sec\b[^>]*>", sec_xml).group(0), ET.tostring(root, encoding="unicode"), count=1)   # 네임스페이스 선언은 양식 그대로
     out.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(out, "w") as zo:
         for n in z.namelist():
@@ -609,17 +611,13 @@ def main() -> int:
     ap.add_argument("--check")
     ap.add_argument("--public", action="store_true", help="게시용(리포트 메뉴): 머리 글자 '리포트'(또는 frontmatter kicker), FAQ·한 쪽 요약본 없음")
     a = ap.parse_args()
-    if a.check:
-        z = zipfile.ZipFile(a.check)
-        for n in z.namelist():
-            if n.endswith(".xml") or n.endswith(".hpf"):
-                ET.fromstring(z.read(n))
-        sec = z.read("Contents/section0.xml").decode("utf-8"); hpf = z.read("Contents/content.hpf").decode("utf-8")
-        refs = set(re.findall(r'binaryItemIDRef="([^"]+)"', sec))
-        missing = [r for r in refs if f'id="{r}"' not in hpf or not any(n.startswith(f"BinData/{r}.") for n in z.namelist())]
-        if missing:
-            print("그림 참조 오류:", missing); return 1
-        print("ok:", a.check, f"그림 {len(refs)}개"); return 0
+    if a.check:   # 구조 검사는 hwpx_check.py 로 옮겼다(2026-10-06): zip 순서·참조 무결성·표 격자·그림 manifest·개인정보
+        import hwpx_check
+        r = hwpx_check.check_file(Path(a.check))
+        for i in r.items:
+            if i["level"] != "PASS":
+                print(f'   {i["level"]:4} {i["rule"]:12} {i["where"]}  {i["msg"]}')
+        print(("FAIL: " if r.failed else "ok: ") + a.check); return 1 if r.failed else 0
     targets = []
     if a.all:
         for f in sorted(POSTS.glob("*.md")):

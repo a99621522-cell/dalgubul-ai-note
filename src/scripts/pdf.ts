@@ -42,7 +42,7 @@ function measure(font: PDFFont, t: string, size: number): number {
   return w * size;
 }
 
-const cellText = (c: Cell): string => (typeof c === 'string' ? c : c.map(b => ('segs' in b ? b.segs.map(s => s[0]).join('') : '')).join(' '));
+const cellText = (c: Cell): string => (typeof c === 'string' ? c : Array.isArray(c) ? c.map(b => ('segs' in b ? b.segs.map(s => s[0]).join('') : '')).join(' ') : c.t ?? '');
 
 /** 폭에 맞춰 줄 나누기 — 띄어쓰기에서 먼저 끊고, 한 낱말이 폭보다 길면 글자 단위로 */
 function wrap(text: string, font: PDFFont, size: number, width: number): string[] {
@@ -94,6 +94,7 @@ export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: b
   const ensure = (h: number) => { if (y - h < BOTTOM) newPage(); };
 
   for (const b of blocks) {
+    if ('pic' in b) continue;   // 그림 블록(HWPX 전용)은 PDF 에 넣지 않는다
     if ('segs' in b) {
       const st = STYLES[b.p];
       if (b.p === 'spacer') { y -= 6; continue; }

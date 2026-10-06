@@ -24,3 +24,9 @@ description: 한글(HWPX) 양식을 채워 문서를 만든다. 정책제안 리
 - 표지의 부서·담당·연락처 표·부서 이름 상자·날짜는 지운다(운영자 지시 2026-09-27). 표지는 제목 두 줄과 목차만. 한 쪽 요약의 소속부서 칸도 비운다. 어떤 칸에도 사람 이름·연락처를 넣지 않는다.
 - 그림은 LG경영연구원 리포트처럼 본문에 넣는다(운영자 지시 2026-09-27): SVG 는 `rsvg-convert -w 1600` 으로 PNG 로, 400KB 넘는 PNG 는 JPEG(폭 1400)로 줄여 `BinData/imageN.<ext>` 에 넣고 `Contents/content.hpf` 의 `<opf:manifest>` 에 `<opf:item id="imageN" href="BinData/imageN.png" media-type="image/png" isEmbeded="1"/>` 를 더한다. 문단에는 `<hp:run><hp:pic …><hc:img binaryItemIDRef="imageN"/>…</hp:pic><hp:t/></hp:run>` (treatAsChar=1, 크기 HWPUNIT = 픽셀×75, 최대 너비 42000, 가운데 정렬 paraPr). 캡션은 그림 아래 가운데 정렬 11pt. rsvg-convert 가 없으면 캡션만 ※ 줄로 남긴다. `--check` 가 그림 참조와 BinData·manifest 를 대조한다.
 - 양식 파일: `scripts/data/hwpx/report_basic.hwpx`(보고서 기본), `report_summary.hwpx`(한 쪽 요약). 양식이 바뀌면 파일만 갈아끼우고 문단 역할 인덱스(top[3]·[8]·[12]·[15]·[17]·[19]~[24]·[64])를 다시 확인한다.
+
+# 2026-10-06 추가(docs/prompts/site_hwpx_skill.md 실행)
+- Block 목록에서 HWPX 를 만들 때는 `scripts/hwpx_blocks.py`(Python: `build_hwpx(blocks, out, all_ns=True, lineseg=False)`, 병합 표 `{"t","cs","rs"}`·그림 `{"pic"}`)를 쓰고, 브라우저는 `src/scripts/hwpx.ts` v2(DOMParser cloneNode)가 같은 입력을 받는다. 문자열 템플릿으로 `hp:p`·`hp:tc` 를 쓰지 않는다.
+- 만든 파일은 반드시 `python3 scripts/hwpx_check.py <파일>` 로 검사한다(zip 순서·manifest·스타일 참조·표 격자·그림·개인정보). section 루트의 네임스페이스 선언은 양식 그대로 14개를 둔다.
+- 양식을 바꾸면 `python3 scripts/hwpx_template.py --detect <양식>` 으로 역할 후보를 보고 `config/hwpx_forms.yml` 을 고친 뒤 `python3 scripts/hwpx_template.py` 로 `public/hwpx/template.json` 을 다시 내보낸다.
+- 사이트 노출은 `data/hwpx/compat.json` 의 `approved`(운영자 실물 시험, `docs/design/hwpx-compat.md`) 뒤에만. 시험 파일은 `python3 scripts/hwpx_test.py` → `public/hwpx/test/`.

@@ -1,0 +1,36 @@
+name: hwpx-check
+# 한글(HWPX) 구조 검사(docs/prompts/site_hwpx_skill.md 2절): public/hwpx 전체 + 시험 파일을 한글 없이 검사한다. FAIL 이면 실패.
+on:
+  push:
+    paths:
+      - "public/hwpx/**"
+      - "scripts/hwpx_*.py"
+      - "scripts/hwpx_browser.mjs"
+      - "src/scripts/hwpx.ts"
+      - "config/hwpx_forms.yml"
+      - ".github/workflows/hwpx_check.yml"
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: pip install pyyaml
+      - name: 양식 묶음(template.json)이 최신인지
+        run: |
+          python3 scripts/hwpx_template.py --check
+          python3 scripts/hwpx_template.py
+          git diff --stat --exit-code public/hwpx/template.json || { echo "::error::template.json 이 오래됨 — python3 scripts/hwpx_template.py 를 돌려 커밋"; exit 1; }
+      - name: 시험 파일 다시 만들기(Python 경로 + 브라우저 경로 — hwpx.ts 를 실제 크로미움에서)
+        run: |
+          npm ci
+          npm i --no-save playwright
+          npx playwright install chromium --with-deps
+          python3 scripts/hwpx_test.py
+      - name: 구조 검사
+        run: python3 scripts/hwpx_check.py public/hwpx scripts/data/hwpx --quiet

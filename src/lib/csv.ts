@@ -136,6 +136,19 @@ export function byDistrict() {
 export type Support = { id: string; name: string; district: string; year: string; layer: string; funder: string; program: string; type: string; amount: string; amount_unit: string; source: string; source_url: string; as_of: string };
 let _support: Support[] | null = null;
 export const supportHistory = () => (_support ??= readCsv('scripts/data/support_history.csv') as Support[]);
+/** 공개 명단의 부가 정보(scripts/data/company_facts.csv, import_extra.py 가 씀): 벤처 확인 유형·유효 기간(date_from~date_to), 창업보육센터·입주일 등. 기업 페이지 '창업·벤처 정보'. 운영자 지시 2026-10-06 */
+export type Fact = { id: string; tag: string; detail: string; date_from: string; date_to: string; source: string; source_url: string; as_of: string };
+let _facts: Fact[] | null = null;
+export const companyFacts = () => (_facts ??= (() => { try { return readCsv('scripts/data/company_facts.csv') as Fact[]; } catch { return [] as Fact[]; } })());
+export const factsOf = (id: string) => companyFacts().filter(f => f.id === id).sort((a, b) => (b.date_from || '').localeCompare(a.date_from || ''));
+/** 날짜(YYYY-MM-DD)부터 기준일까지 'N년 M개월' — 벤처 확인을 받은 지, 입주한 지. 기준일은 빌드 날짜가 아니라 자료 기준월(as_of)의 말일로 어림 */
+export function sinceLabel(from: string, asOf: string): string {
+  const m = /^(\d{4})-(\d{2})/.exec(from || ''); const a = /^(\d{4})-?(\d{2})/.exec(asOf || '');
+  if (!m || !a) return '';
+  const months = (Number(a[1]) - Number(m[1])) * 12 + (Number(a[2]) - Number(m[2]));
+  if (months < 0) return '';
+  return months < 12 ? `${months}개월` : `${Math.floor(months / 12)}년${months % 12 ? ` ${months % 12}개월` : ''}`;
+}
 export const supportOf = (id: string) => supportHistory().filter(s => s.id === id).sort((a, b) => b.year.localeCompare(a.year));
 /** 최근 n년(올해 포함) 안의 이력만 */
 export const recentSupport = (rows: Support[], years = 3) => { const y = new Date().getFullYear() - years + 1; return rows.filter(r => Number(r.year) >= y); };

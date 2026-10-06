@@ -2,7 +2,7 @@
 import hwpxCompat from '../../../data/hwpx/compat.json';
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
-import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon, normName } from '../../lib/csv';
+import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon, normName, factsOf, sinceLabel } from '../../lib/csv';
 import { futureDisclosures, ymd, employeesOf, n0, mil, rndOf, investOf, purposeOf } from '../../lib/dart';
 import { partners } from '../../lib/partners';
 import { tagName, tagDesc } from '../../lib/sites';
@@ -14,6 +14,16 @@ export async function getStaticPaths() {
 const { c } = Astro.props;
 const pt = partners(c);
 const supportAll = supportOf(c.id);
+// 창업·벤처 정보(공개 명단 부가 정보, company_facts.csv): 벤처 확인 유형·유효 기간·받은 지, 창업보육센터·입주일 등. 평가 없음, 값 그대로
+const facts = factsOf(c.id);
+const factLabel = (f: typeof facts[number]) => {
+  const since = sinceLabel(f.date_from, f.as_of);
+  if (f.tag === 'venture') return { what: '벤처기업 확인', when: f.date_from ? `유효 ${f.date_from}~${f.date_to || ''}${since ? ` · 확인받은 지 ${since}(${f.as_of} 기준)` : ''}` : '' };
+  if (f.tag === 'bi') return { what: '창업보육센터 입주', when: f.date_from ? `입주 ${f.date_from}${since ? ` · 입주한 지 ${since}(${f.as_of} 기준)` : ''}` : '' };
+  return { what: tagName(f.tag), when: f.date_from ? `${f.date_from}${f.date_to ? `~${f.date_to}` : ''}` : '' };
+};
+const factRows = facts.map(f => ({ ...factLabel(f), detail: f.detail, source: f.source, url: f.source_url, asOf: f.as_of }));
+const ventureInvested = facts.some(f => f.tag === 'venture' && /벤처투자유형/.test(f.detail));
 const support3y = recentSupport(supportAll, 3);
 const fin = financialsOf(c.name).slice(0, 3);
 const dartEmp = employeesOf(c.name).slice(0, 3);
@@ -54,6 +64,7 @@ const card = {
     ['고용 인원', emp == null ? '자료 없음' : `${emp.toLocaleString('ko-KR')}명 (${basis}${m ? `, ${monthLabel(m.month)} 기준` : ''}${empDelta != null ? `, 전월 대비 ${empDelta > 0 ? '+' : ''}${empDelta.toLocaleString('ko-KR')}명` : ''})`],
     c.reg_type && ['공장 등록', `${c.reg_type === '등록' ? '등록 완료' : '설립 승인(등록 전)'}${c.first_registered ? ` · 최초 등록 ${c.first_registered}년` : ''}`],
     c.mfg_area_band && ['제조시설 규모', c.mfg_area_band],
+    ...factRows.map(f => [f.what, `${f.when ? f.when + ' · ' : ''}${f.detail}`]),
     [`${fromNps ? '사업장 주소' : '공장 주소'}${Number(c.sites) > 1 ? ` (${c.sites}곳)` : ''}`, c.address],
   ] as any[]).filter(Boolean),
   support: support3y.map(s => [s.year, s.program, `${s.funder}${s.layer ? ` (${s.layer})` : ''}`, s.type || '—', fmtAmount(s)]),
@@ -105,6 +116,14 @@ const card = {
         <tr><th>{fromNps ? '사업장 주소' : '공장 주소'}{Number(c.sites) > 1 && ` (${c.sites}곳)`}</th><td>{c.address.split(' / ').map(a => <div>{a}</div>)}{fromNps && <div class="meta">국민연금 자료는 건물번호 없이 도로명까지만 제공합니다.</div>}</td></tr>
       </tbody>
     </table>
+    {factRows.length > 0 && (
+    <section class="facts" aria-label="창업·벤처 정보">
+      <div class="section-head"><h2>창업·벤처 정보</h2><span class="meta">공개 명단 기준 {factRows.length}건</span></div>
+      <table class="card">
+        <tbody>{factRows.map(f => (<tr><th>{f.what}</th><td>{f.when && <div>{f.when}</div>}<div>{f.detail}</div><div class="meta">출처: {f.url ? <a href={f.url} rel="noopener">{f.source}</a> : f.source}{f.asOf && ` · ${f.asOf} 기준`}</div></td></tr>))}</tbody>
+      </table>
+      <p class="meta">{ventureInvested && <>'벤처투자유형'은 벤처투자(적격 투자기관의 투자)를 받아 벤처기업으로 확인된 유형입니다(벤처기업법 제2조의2). 투자 금액·투자사는 공개 명단에 없습니다. </>}혁신성장유형·연구개발유형은 각각 기술 혁신성·연구개발비 요건으로 확인된 유형이며, 유효 기간은 3년입니다. 값은 공개 명단 그대로이고 평가가 아닙니다.</p>
+    </section>)}
     <section class="partners" aria-label="협업 후보">
       <div class="section-head"><h2>협업 후보 찾기</h2><span class="meta">공정 단계: {pt.stage}</span></div>
       <p class="meta">업종 분류와 생산품으로 추정한 후보입니다. 거래 관계가 아니라 같은 단지·구군 안의 탐색용 목록이며, 확인은 기업이 직접 합니다. 순서는 같은 단지 → 같은 구·군 → 규모 순.</p>
@@ -181,7 +200,7 @@ const card = {
   <script>import '../../scripts/company_card';</script>
 </Base>
 <style>
-  .partners, .support, .fin { margin-top: 1.5rem; }
+  .partners, .support, .fin, .facts { margin-top: 1.5rem; }
   .pt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   @media (max-width: 48rem) { .pt-grid { grid-template-columns: 1fr; } }
   .pt-col h3 { font-size: 0.95rem; margin-bottom: 0.2rem; }

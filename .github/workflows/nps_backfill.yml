@@ -1,0 +1,60 @@
+name: 국민연금 과거 월 되살리기 (웨이백 식별자 → 포털 옛 파일)
+
+# 운영자 지시 2026-10-06 '국민연금은 니가 가져와'. 포털 자료 페이지의 웨이백 스냅샷에서 달마다의 uddi·첨부 id 를 뽑아 교체된 옛 파일을 내려받고
+# collect_nps.py 로 data/nps/YYYYMM.csv 를 만든 뒤 월간 통계를 다시 집계한다. 수동 실행만. 전국 원본은 저장소에 남기지 않는다.
+on:
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "받을 최대 개수(0=전부)"
+        required: false
+        default: "0"
+      force:
+        description: "이미 있는 달도 다시 받기(true)"
+        required: false
+        default: "false"
+      list:
+        description: "식별자만 보기(true, 저장 없음)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nps-collect
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      - name: 과거 월 받기
+        env:
+          MAX: ${{ inputs.max }}
+          FORCE: ${{ inputs.force }}
+          LIST: ${{ inputs.list }}
+        run: |
+          set +e
+          python3 scripts/nps_backfill.py --max "${MAX:-0}" $([ "$FORCE" = "true" ] && echo --force) $([ "$LIST" = "true" ] && echo --list)
+          ls -la data/nps/
+      - name: 월간 통계 집계 · 그래프
+        if: inputs.list != 'true'
+        run: |
+          python3 scripts/build_stats.py --backfill
+          python3 scripts/render_charts.py
+      - name: 커밋
+        if: inputs.list != 'true'
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/nps data/stats src/generated
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 국민연금 과거 월 되살리기 $(date -u +%Y-%m-%d)"
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
+          git push

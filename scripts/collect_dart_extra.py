@@ -224,13 +224,31 @@ def rnd(reps: dict[str, dict], debug_name: str = "") -> None:
 
 
 # ---------- 주요 제품 ----------
-SKIP_ROW = re.compile(r"^(합\s*계|총\s*계|소\s*계|계|합계\s*\(.*\)|내부거래.*|연결조정.*|조정.*|단위.*)$")
+SKIP_ROW = re.compile(r"^(합\s*계|총\s*계|소\s*계|계|합계\s*\(.*\)|내부거래.*|연결조정.*|조정.*|단위.*|제\s*품|상\s*품|용\s*역|기\s*타|서비스|수출|내수|국내|해외)$")
 
 
 def table_rows(tbl: str) -> list[list[str]]:
-    rows = [[cell_text(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, flags=re.S | re.I)]
-            for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", tbl, flags=re.S | re.I)]
-    return [r for r in rows if any(r)]
+    """표를 격자로: rowspan 은 아래 행에 같은 글자를 채우고 colspan 은 옆 칸에 되풀이한다(사업부문·품목이 여러 행에 걸친 '주요 제품' 표, 2026-10-06)."""
+    carry: dict[int, list] = {}
+    rows = []
+    for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", tbl, flags=re.S | re.I):
+        out, col = [], 0
+        for attrs, body in re.findall(r"<T[DHE]([^>]*)>(.*?)</T[DHE]>", tr, flags=re.S | re.I):
+            while col in carry and carry[col][0] > 0:
+                out.append(carry[col][1]); carry[col][0] -= 1; col += 1
+            rs = int((re.search(r"rowspan\s*=\s*\"?(\d+)", attrs, re.I) or [0, "1"])[1] or 1)
+            cs = int((re.search(r"colspan\s*=\s*\"?(\d+)", attrs, re.I) or [0, "1"])[1] or 1)
+            text = cell_text(body)
+            for _ in range(max(1, cs)):
+                out.append(text)
+                if rs > 1:
+                    carry[col] = [rs - 1, text]
+                col += 1
+        while col in carry and carry[col][0] > 0:
+            out.append(carry[col][1]); carry[col][0] -= 1; col += 1
+        if any(out):
+            rows.append(out)
+    return rows
 
 
 def products_from_doc(xml: str, debug: bool = False) -> list[dict]:
@@ -256,8 +274,6 @@ def products_from_doc(xml: str, debug: bool = False) -> list[dict]:
             rc = col(r"비\s*율|비\s*중|%")
             out, last_seg = [], ""
             for r in rows[hi + 1:]:
-                if len(r) < len(head):   # rowspan 으로 앞 칸(사업부문)이 빠진 행 → 왼쪽부터 채워 맞춘다
-                    r = [""] * (len(head) - len(r)) + r
                 segv = r[sc] if sc is not None and sc < len(r) else ""
                 last_seg = segv or last_seg
                 prod_v = r[pc] if pc < len(r) else ""

@@ -13,7 +13,7 @@ const cons = E.items.filter(i => i.key.endsWith('최종소비지출')).reduce((a
 const IO = ioDaegu();
 const trendSum = P.items.reduce((a, i) => a + i.avgc, 0);
 const SC = structureCalc();   // 분모(명목 GRDP)는 위 계산기들과 같은 값(공통 기준)
-const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '설비투자' }, nom: SC ? SC.gdpEok / 10000 : P.nomTrillion, trendSum, io: IO };
+const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '설비투자' }, nom: SC ? SC.gdpEok / 10000 : P.nomTrillion, gva: SC ? SC.gvaEok / 10000 : P.nomTrillion, trendSum, io: IO };   // gva: 지출 상자 분모(공통 기준, 2026-10-07)
 ---
 {d.items.length > 0 && (
 <section id="calc">
@@ -135,7 +135,7 @@ const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '
     const budget = () => {
       const io = (D as any).io; if (!gb || !gk || !gbo || !io) return;
       const amt = Number(gb.value) || 0, k = Number(gk.value) || 0, T = Number(gt.value);
-      const nomEok = (D as any).nom * 10000;                 // 조 원 → 억 원
+      const nomEok = (D as any).gva * 10000;                 // 조 원 → 억 원 — 분모는 명목 총부가가치(위 계산기들과 같은 공통 기준)
       const dom = 1 - (io.importShare ?? 0) / 100;              // 계수는 국산품 최종수요 1단위 기준 — 수입품 몫은 뺀다
       const va = amt * dom * k, out = amt * dom * (io.vaOut ?? 0);
       const pp = va / nomEok * 100, gap = T - (D as any).trendSum;
@@ -143,7 +143,7 @@ const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '
       const jobs = io.empIn != null ? amt * dom / 10 * io.empIn : NaN;     // 10억 원당
       gbo.innerHTML = [
         `대구 안 부가가치 <strong>${fmt(va, 0)}억 원</strong> (다른 지역으로 나가는 부가가치 ${fmt(out, 0)}억 원)`,
-        `대구 GRDP 기여 <strong>${fmt(pp, 3)}%p</strong> (명목 GRDP ${fmt((D as any).nom)}조 원 대비)`,
+        `대구 GRDP 기여 <strong>${fmt(pp, 3)}%p</strong> (명목 총부가가치 ${fmt((D as any).gva)}조 원 대비, 순생산물세는 비례)`,
         gap > 0 ? `목표 ${fmt(T)}%와 지난 10년 추세(${fmt((D as any).trendSum, 2)}%p)의 차이 ${fmt(gap, 2)}%p 가운데 <strong>${fmt(pp / gap * 100)}%</strong>` : `목표가 지난 10년 추세(${fmt((D as any).trendSum, 2)}%p) 이하입니다`,
         Number.isFinite(jobs) ? `대구 안 취업 유발 약 ${fmt(jobs, 0)}명 (10억 원당 ${io.empIn}명)` : '',
         Number.isFinite(need) ? `차이 ${fmt(gap, 2)}%p를 새 지출만으로 메운다면 한 해 약 <strong>${fmt(need / 10000, 1)}조 원</strong>이 더 필요합니다(같은 계수 가정)` : '',

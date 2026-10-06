@@ -36,6 +36,21 @@ def show_text(label, text, words):
             print("  --", " | ".join(x[:120] for x in lines[max(0, i - 2): i + 3]))
 
 
+def csv_columns(txt):
+    """CSV 열마다 값 종류가 30개 이하이면 분포를 찍는다(기업상태·지역 같은 분류 열 확인용)."""
+    import csv as _csv, collections
+    try:
+        rows = list(_csv.reader(io.StringIO(txt)))
+    except Exception:
+        return
+    if len(rows) < 2: return
+    head = rows[0]
+    for ci, name in enumerate(head):
+        vals = collections.Counter(r[ci].strip() for r in rows[1:] if ci < len(r))
+        if 1 < len(vals) <= 30:
+            print(f"== 열 「{name}」 값 {len(vals)}종:", ", ".join(f"{k or '(빈칸)'} {v:,}" for k, v in vals.most_common()))
+
+
 def xlsx(data, words):
     import openpyxl
     wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
@@ -91,7 +106,14 @@ def main():
                 txt = re.sub(r"<hp:p\b", "\n<hp:p", xml)
                 show_text("HWPX 글자", re.sub(r"<[^>]+>", " ", txt), words)
             else:
-                show_text("글자", d.decode("utf-8", "ignore"), words)
+                txt = None
+                for enc in ("utf-8-sig", "cp949", "euc-kr"):   # 포털 CSV 는 cp949 가 많다(2026-10-06: utf-8 로만 읽어 글자가 깨졌음)
+                    try: txt = d.decode(enc); break
+                    except UnicodeDecodeError: pass
+                txt = txt if txt is not None else d.decode("utf-8", "ignore")
+                show_text("글자", txt, words)
+                if low.endswith((".csv", ".txt")) or b"," in d[:200]:
+                    csv_columns(txt)
         except Exception as e:
             print("  ! 읽기 실패:", str(e)[:300])
 

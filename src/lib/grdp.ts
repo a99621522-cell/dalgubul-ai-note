@@ -135,3 +135,72 @@ export function structureCalc(region = '대구광역시') {
     report: '/posts/2026-09-30-policy-structure-daegu/',
   };
 }
+
+/** '몇 명 늘면 GRDP 얼마' 계산기(GrowthQuick, 운영자 지시 2026-10-05)의 1인당 값 — 공표 자료의 나눗셈만.
+ *  외지인 관광: 데이터랩 외지인 관광소비(신용카드, 백만원) ÷ 외지인 방문자(이동통신, 연인원) — 12달이 다 있는 같은 해.
+ *  데이터랩은 총량보다 추세로 보라고 안내하므로 1인당 값도 근사로 쓴다. */
+export function tourismPerVisit() {
+  const vis = new Map<string, { n: number; v: number }>(), sp = new Map<string, { n: number; v: number }>();
+  for (const r of readCsv('data/tourism/datalab_visitors.csv')) {
+    if (r.code !== '27') continue;
+    const y = r.ym.slice(0, 4), o = vis.get(y) ?? { n: 0, v: 0 }; o.n++; o.v += Number(r.visitors) || 0; vis.set(y, o);
+  }
+  for (const r of readCsv('data/tourism/datalab_spend_share.csv')) {
+    if (r.group !== '외지인') continue;
+    const y = r.ym.slice(0, 4), o = sp.get(y) ?? { n: 0, v: 0 }; o.n++; o.v += Number(r.region_mil_won) || 0; sp.set(y, o);
+  }
+  const y = [...vis.keys()].filter(k => vis.get(k)!.n === 12 && sp.get(k)?.n === 12).sort().at(-1);
+  if (!y) return null;
+  const visitors = vis.get(y)!.v, spendEok = sp.get(y)!.v / 100;
+  return { year: y, visitors, spendEok, perWon: spendEok * 1e8 / visitors };
+}
+
+/** 다른 지역 환자(국민건강보험공단 「지역별 의료이용통계」, KOSIS TX_35003_A004·A006·A007, 건강보험 급여 진료비):
+ *  유입 = 대구 소재 의료기관 − (대구 거주자 − 대구 거주자의 대구 밖 이용). 진료비(천원)와 진료실인원(명) 각각 같은 식, 1인당 = 진료비 ÷ 인원.
+ *  진료실인원은 의료기관 소재 시도마다 세므로 두 지역을 다닌 사람은 양쪽에 잡힌다(근사). */
+export function medicalInflow() {
+  const P = readCsv('data/kosis/medical-use-sido-provider.csv'), R = readCsv('data/kosis/medical-use-sido-resident.csv'), O = readCsv('data/kosis/medical-use-sido-outside.csv');
+  if (!P.length || !R.length || !O.length) return null;
+  const g = (rs: Record<string, string>[], y: string, it: string, c2: string) => { const r = rs.find(x => x.PRD_DE === y && x.ITM_NM === it && x.C1_NM === '대구광역시' && x.C2_NM === c2); return r ? Number(r.DT) : NaN; };
+  const y = [...new Set(P.map(r => r.PRD_DE))].sort().at(-1)!;
+  const f = (it: string) => g(P, y, it, '합계') - (g(R, y, it, '합계') - g(O, y, it, '계'));
+  const costEok = f('진료비') / 1e5, persons = f('진료실인원수');
+  if (!Number.isFinite(costEok) || !Number.isFinite(persons) || persons <= 0) return null;
+  return { year: y, costEok, persons, perWon: costEok * 1e8 / persons, providerEok: g(P, y, '진료비', '합계') / 1e5 };
+}
+
+/** 정책 과제별 계산기(GrowthPolicy)에 쓰는 자료 — 공표 자료 그대로·나눗셈만.
+ *  tourMix: 외지인 관광소비(데이터랩 업종별, 12달이 다 있는 최근 해)의 업종 구성 → 지역소득 부문으로 옮김(쇼핑→도소매, 식음료·숙박→숙박·음식점,
+ *  운송→운수·창고, 여가서비스→예술·스포츠·여가, 의료웰니스→보건·사회복지, 여행업→사업시설·지원). vaRatio: 광업·제조업조사 대구 중분류 부가가치 ÷ 출하액(최근 해). */
+const TOUR_TO_LEAF: Record<string, string> = { 쇼핑업: '도매 및 소매업', 식음료업: '숙박 및 음식점업', 숙박업: '숙박 및 음식점업', 운송업: '운수 및 창고업',
+  여가서비스업: '예술 스포츠 및 여가관련 서비스', 의료웰니스업: '보건업 및 사회복지 서비스업', 여행업: '사업시설 관리 사업 지원 및 임대 서비스업' };
+export function policyLeversData() {
+  const by = new Map<string, Map<string, number>>(), months = new Map<string, Set<string>>();
+  for (const r of readCsv('data/tourism/datalab_spend.csv')) {
+    if (r.code !== '27' || r.group !== '외지인' || r.industry === '전체') continue;
+    const y = r.ym.slice(0, 4);
+    const m = by.get(y) ?? new Map<string, number>(); m.set(r.industry, (m.get(r.industry) ?? 0) + (Number(r.amount_thousand_won) || 0)); by.set(y, m);
+    (months.get(y) ?? months.set(y, new Set()).get(y)!).add(r.ym);
+  }
+  const ty = [...by.keys()].filter(y => months.get(y)!.size === 12).sort().at(-1);
+  const tourMix: Record<string, number> = {};
+  if (ty) {
+    const m = by.get(ty)!, t = [...m.values()].reduce((a, b) => a + b, 0);
+    for (const [k, v] of m) { const leaf = TOUR_TO_LEAF[k]; if (leaf && t) tourMix[leaf] = (tourMix[leaf] ?? 0) + v / t; }
+  }
+  const mm = readCsv('data/kosis/mining-mfg-survey-sido.csv').filter(r => r.C1_NM === '대구광역시');
+  const my = [...new Set(mm.map(r => r.PRD_DE))].sort().at(-1) ?? '';
+  const g = (mid: string, it: string) => { const r = mm.find(x => x.PRD_DE === my && x.C2_NM === mid && x.ITM_NM === it); return r ? Number(r.DT) : NaN; };
+  const ratio = (mid: string) => { const v = g(mid, '부가가치') / g(mid, '출하액 계'); return Number.isFinite(v) && v > 0 ? v : null; };
+  const vaRatio = {
+    semi: ratio('전자부품 컴퓨터 영상 음향 및 통신장비 제조업'), auto: ratio('자동차 및 트레일러 제조업'),
+    med: ratio('의료 정밀 광학기기 및 시계 제조업'), mach: ratio('기타 기계 및 장비 제조업'),
+  };
+  let panel: Record<string, number | null> = {};
+  try {
+    const P = JSON.parse(fs.readFileSync('data/kosis/structure_report.json', 'utf-8')).data?.panel ?? {};
+    const c = (dep: string) => P?.[dep]?.['Δln(산업집중도)']?.coef ?? null;
+    panel = { grdp: c('GRDP'), prod: c('노동생산성'), exp: c('수출') };
+  } catch { /* 없음 */ }
+  return { tourYear: ty ?? '', tourMix, mfgYear: my, vaRatio, panel, tour: tourismPerVisit(), med: medicalInflow() };
+}

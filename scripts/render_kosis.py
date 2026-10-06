@@ -265,6 +265,64 @@ def main() -> int:
         if len(bys) >= 3:
             rc.write("kosis", "biz-birth", rc.line_chart, "대구 신생기업·소멸기업", bys, [("신생기업", [v(y, i_birth) for y in bys]), ("소멸기업", [v(y, i_death) for y in bys])], index=index, unit="개", note=short("biz-birth-death-sido"))
 
+    # 6c) 창업기업동향(중소벤처기업부) — 대구 월별 창업기업 수(전체·기술기반업종), 연도별 합계, 업종별(운영자 지시 2026-10-06 '창업기업은 스타트업을 의미').
+    #     DT_142N_G205(2026-01 부터) + DT_142N_F205(그 전) 를 이어 붙인다(겹치는 달은 G 우선). C1=업종(합계·기술기반업종·대분류), C2=지역, ITM=전체. 값은 그대로, 전년동월비만 같은 계열 나눗셈
+    st: dict[tuple[str, str], float | int | None] = {}
+    st_src = []
+    for key in ("startup-trend-sido-prev", "startup-trend-sido"):
+        rr = [r for r in rows(key) if r.get("C2_NM", "").strip() in ("대구", "대구광역시")]
+        if rr:
+            st_src.append(key)
+        for r in rr:
+            st[(r["PRD_DE"], r["C1_NM"].strip())] = num(r["DT"])
+    if st:
+        months = sorted({m for m, _ in st})
+        inds = []
+        for key in ("startup-trend-sido-prev", "startup-trend-sido"):
+            for r in rows(key):
+                nm = r["C1_NM"].strip()
+                if nm not in inds: inds.append(nm)
+        tot = next((i for i in inds if i in ("합계", "전체", "계")), inds[0])
+        tech = next((i for i in inds if "기술기반" in i), None)
+        prev_y = lambda m: f"{int(m[:4]) - 1}{m[4:6]}"
+        yoy = lambda a, b: round((a / b - 1) * 100, 1) if a is not None and b else None
+        g = lambda m, i: st.get((m, i)) if i else None
+        recent = months[-24:]
+        m_rows = [[ym(m), g(m, tot), yoy(g(m, tot), g(prev_y(m), tot)), g(m, tech), yoy(g(m, tech), g(prev_y(m), tech))] for m in reversed(recent)]
+        tables.append({"id": "startup_monthly", "title": f"대구 창업기업 수 (월별, {ym(recent[0])}~{ym(recent[-1])}, 창업기업동향)", "unit": "개",
+                       "columns": ["월", "창업기업(개)", "전년동월비(%)", "기술기반업종 창업기업(개)", "전년동월비(%)"], "rows": m_rows,
+                       "source": "; ".join(src(k) for k in st_src), "latest": ym(months[-1]),
+                       "note": "중소벤처기업부 창업기업동향(사업자등록 기준 창업, 법인·개인 포함). 기술기반업종 구분은 그 통계의 분류 그대로. KOSIS 표가 2026년 1월부터 새 표(DT_142N_G205)로 바뀌어 그 전 달은 옛 표(DT_142N_F205)를 이어 붙였다. 2026년 달의 전년동월비는 새 표 값 ÷ 옛 표 값이라 두 표의 기준이 다르면 어긋날 수 있다(원문 확인 필요)"})
+        years_all = sorted({m[:4] for m in months})
+        def ysum(y, i):
+            ms = [m for m in months if m[:4] == y]
+            vals = [g(m, i) for m in ms]
+            return (sum(v for v in vals if v is not None), len(ms)) if any(v is not None for v in vals) else (None, len(ms))
+        y_rows = []
+        last_m = months[-1][4:6]
+        for y in reversed(years_all):
+            full = ysum(y, tot)[1] >= 12
+            if full:
+                y_rows.append([f"{y}년", ysum(y, tot)[0], ysum(y, tech)[0] if tech else None, round(ysum(y, tech)[0] / ysum(y, tot)[0] * 100, 1) if tech and ysum(y, tot)[0] else None])
+            else:
+                ms = [m for m in months if m[:4] == y]
+                a = sum(v for v in (g(m, tot) for m in ms) if v is not None); b = sum(v for v in (g(m, tech) for m in ms) if v is not None) if tech else None
+                y_rows.append([f"{y}년 1~{int(last_m)}월", a, b, round(b / a * 100, 1) if b is not None and a else None])
+        tables.append({"id": "startup_annual", "title": "대구 창업기업 수 (연도별 합계, 창업기업동향)", "unit": "개",
+                       "columns": ["연도", "창업기업(개)", "기술기반업종(개)", "기술기반 비중(%)"], "rows": y_rows,
+                       "source": "; ".join(src(k) for k in st_src), "latest": ym(months[-1]), "note": "월 값의 합. 올해는 받은 달까지 누계"})
+        # 업종별: 최근 12개월 누계와 그 전 12개월
+        last12 = months[-12:]; prev12 = months[-24:-12]
+        s12 = lambda ms, i: (sum(v for v in (g(m, i) for m in ms) if v is not None) if any(g(m, i) is not None for m in ms) else None)
+        i_rows = [[i, s12(last12, i), s12(prev12, i) if len(prev12) == 12 else None, yoy(s12(last12, i), s12(prev12, i)) if len(prev12) == 12 else None] for i in inds if i != tot and s12(last12, i) is not None]
+        if i_rows:
+            tables.append({"id": "startup_industry", "title": f"대구 업종별 창업기업 수 (최근 12개월 {ym(last12[0])}~{ym(last12[-1])} 누계, 창업기업동향)", "unit": "개",
+                           "columns": ["업종", "최근 12개월(개)", "그 전 12개월(개)", "증감률(%)"], "rows": i_rows,
+                           "source": "; ".join(src(k) for k in st_src), "latest": ym(months[-1]), "note": "KOSIS 업종 순서(기술기반업종은 대분류 합계가 아니라 통계의 별도 구분). 순위·평가가 아님"})
+        if len(months) >= 6:
+            ser = [("창업기업", [g(m, tot) for m in months])] + ([("기술기반업종", [g(m, tech) for m in months])] if tech else [])
+            rc.write("kosis", "startup-monthly", rc.line_chart, "대구 월별 창업기업 수", [ym(m) for m in months], ser, index=index, unit="개", note=short("startup-trend-sido"))
+
     # 7) 대구 GRDP 경제활동별 — 실질 성장률·실질 기여도(최근 연도)
     g = rows("grdp-sido-industry")
     if g:

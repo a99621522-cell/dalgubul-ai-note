@@ -1,0 +1,31 @@
+---
+/** 기업 사전의 창업·벤처 기업(운영자 지시 2026-10-06) — src/lib/startups.ts. 설립 7년 이내(창업지원법 기준)·벤처·창경센터·연구소기업·이노비즈 태그 기업을 산업 그룹·구군별로. 값 그대로, 평가·순위 없음. */
+import { startupFirms, DISTRICTS } from '../lib/startups';
+const S = startupFirms();
+const n = (v: number) => v.toLocaleString('ko-KR');
+const shown = S.tags.filter(t => t.count > 0);
+---
+<section class="sf" id="startups">
+  <div class="section-head"><h2>기업 사전의 창업·벤처 기업</h2><span class="meta">기업 사전 {S.asOf}</span></div>
+  <p class="meta">위 창업기업동향·기업생멸 통계는 사업자등록·행정자료로 센 '새로 생긴 기업'이라 이름을 알 수 없습니다. 이 표는 기업 사전 {n(S.total)}곳 가운데 공개 자료로 확인되는 창업·벤처 기업을 센 것입니다 — 창업기업은 창업지원법 기준 설립 7년 이내(설립·적용일이 있는 {n(S.foundedKnown)}곳만 판정, 공장등록 자료에는 설립일이 없어 산단 기업은 대부분 판정 불가), 벤처기업은 벤처기업확인 공시, 창경센터 보육·연구소기업·이노비즈는 기관 공개 목록. 창업기업이면서 벤처기업인 곳은 {n(S.startupVenture)}곳입니다.</p>
+  <ul class="tiles" aria-label="창업·벤처 기업 핵심 숫자">
+    {shown.map(t => <li><b>{n(t.count)}</b><span>{t.name}(곳)</span></li>)}
+  </ul>
+  <h3>산업 그룹별</h3>
+  <div class="scroll-x"><table class="data-table compact" data-title="대구 기업 사전 창업·벤처 기업 — 산업 그룹별">
+    <thead><tr><th>산업 그룹</th>{shown.map(t => <th class="n">{t.name}(곳)</th>)}</tr></thead>
+    <tbody>{S.groupNames.map(g => <tr><th scope="row">{g}</th>{shown.map(t => <td class="n">{n(t.byGroup[g] ?? 0)}</td>)}</tr>)}
+      <tr><th scope="row">합계</th>{shown.map(t => <td class="n">{n(t.count)}</td>)}</tr></tbody>
+  </table></div>
+  <h3>구·군별</h3>
+  <div class="scroll-x"><table class="data-table compact" data-title="대구 기업 사전 창업·벤처 기업 — 구·군별">
+    <thead><tr><th>구·군</th>{shown.map(t => <th class="n">{t.name}(곳)</th>)}</tr></thead>
+    <tbody>{DISTRICTS.map(d => <tr><th scope="row">{d}</th>{shown.map(t => <td class="n">{n(t.byDistrict[d] ?? 0)}</td>)}</tr>)}</tbody>
+  </table></div>
+  <p class="meta">기업 사전에서 보기: {shown.map((t, i) => <>{i ? ' · ' : ''}<a href={`/companies/?tag=${t.key}`}>{t.name} {n(t.count)}곳</a></>)}</p>
+  <p class="meta">출처: 기업 사전(한국산업단지공단 팩토리온·국민연금 가입 사업장·수성알파시티 기업현황), 벤처기업확인 공시, 대구창조경제혁신센터·연구개발특구·이노비즈협회 공개 목록. 태그 기준은 config/site_types.yml. 순위·평가가 아닙니다.</p>
+</section>
+<style>
+  .sf { margin-top: var(--s5); }
+  .sf h3 { margin: var(--s3) 0 var(--s1); font-size: 1.05rem; }
+</style>

@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import StatsNav from '../../../components/StatsNav.astro';
 import KosisSections from '../../../components/KosisSections.astro';
+import StartupFirms from '../../../components/StartupFirms.astro';
 import { TOPICS, KOSIS_TOPICS } from '../../../lib/statsTopics';
 import { kosisIndex } from '../../../lib/kosis';
 /** /stats/business/ — 통계 주제 페이지(src/lib/statsTopics.ts). KOSIS 표·그래프만, 값 그대로, 평가 없음. */
@@ -12,5 +13,5 @@ const idx = kosisIndex();
   <StatsNav current={t.key} />
   <div class="section-head"><h1>{t.name}</h1><span class="meta">{t.period} · 국가데이터처 KOSIS · 갱신 {idx.generated}</span></div>
   <p class="lede">{t.desc} 그래프 아래 표는 눌러서 펼칩니다. 값은 KOSIS 그대로이고 평가·순위가 아닙니다.</p>
-  <KosisSections sections={KOSIS_TOPICS[t.key]} />
+  <KosisSections sections={KOSIS_TOPICS[t.key]}><StartupFirms slot="after-startup" /></KosisSections>   {/* 기업 사전 창업·벤처 집계는 창업기업동향 절 바로 뒤 */}
 </Base>

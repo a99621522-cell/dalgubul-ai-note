@@ -15,7 +15,7 @@ const posts: Slide[] = reports.map(r => ({
   outline: (r.data.outline ?? []).slice(0, 2), href: `/posts/${r.id}/`, hwpx: downloadUrls(r.id).hwpx,
 }));
 const files: Slide[] = REPORT_FILES.map(f => ({
-  title: f.title, area: '리포트 자료', date: new Date(f.date), img: null, alt: '', outline: ['PDF', 'Word'], href: f.pdf ?? f.href, pdf: f.pdf, docx: f.href, name: f.name,
+  title: f.title, area: '리포트 자료', date: new Date(f.date), img: null, alt: '', outline: f.hwpx ? ['PDF', 'Word', '한글'] : ['PDF', 'Word'], href: f.pdf ?? f.href, pdf: f.pdf, docx: f.href, hwpx: f.hwpx, name: f.name,
 }));
 const slides = [...posts, ...files].slice(0, 5);
 const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -31,7 +31,7 @@ const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month:
         <div class="panel">
           <p class="kicker">{s.area} · {fmt(s.date)}</p>
           <h3><a href={s.href} download={s.pdf ? `${s.name}.pdf` : undefined}>{s.title}</a></h3>
-          <p class="links">{s.pdf ? <><a class="btn" href={s.pdf} download={`${s.name}.pdf`}>PDF 내려받기</a><a class="btn secondary" href={s.docx} download={`${s.name}.docx`}>Word</a></> : <><a class="btn" href={s.href}>읽기</a>{s.hwpx && <a class="btn secondary" href={s.hwpx} download>HWP</a>}</>}</p>
+          <p class="links">{s.pdf ? <><a class="btn" href={s.pdf} download={`${s.name}.pdf`}>PDF 내려받기</a><a class="btn secondary" href={s.docx} download={`${s.name}.docx`}>Word</a>{s.hwpx && <a class="btn secondary" href={s.hwpx} download={`${s.name}.hwpx`}>한글</a>}</> : <><a class="btn" href={s.href}>읽기</a>{s.hwpx && <a class="btn secondary" href={s.hwpx} download>HWP</a>}</>}</p>
         </div>
       </article>
     ))}

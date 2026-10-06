@@ -215,6 +215,9 @@ export function policyLeversData() {
   const vaRatio = {
     semi: ratio('전자부품 컴퓨터 영상 음향 및 통신장비 제조업'), auto: ratio('자동차 및 트레일러 제조업'),
     med: ratio('의료 정밀 광학기기 및 시계 제조업'), mach: ratio('기타 기계 및 장비 제조업'),
+    // 투자유치 항목 확장(운영자 지시 2026-10-06: 반도체·미래차 대기업 말고도 유치 항목을) — 광업·제조업조사 대구 중분류 부가가치 ÷ 출하액
+    elec: ratio('전기장비 제조업'), pharma: ratio('의료용 물질 및 의약품 제조업'), chem: ratio('화학물질 및 화학제품 제조업; 의약품 제외'),
+    metal: ratio('금속가공제품 제조업; 기계 및 가구 제외'), food: ratio('식료품 제조업'), textile: ratio('섬유제품 제조업; 의복제외'), mfg: ratio('제조업(10~34)'),
   };
   let panel: Record<string, number | null> = {};
   try {

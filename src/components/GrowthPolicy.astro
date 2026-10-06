@@ -14,11 +14,23 @@ const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, 
 const MFG = LEAVES.slice(2, 9).map(x => x[0]);
 const pctR = (v: number | null) => (v == null ? '—' : `${(v * 100).toFixed(1)}%`);
 const Y0 = 2026, Y1 = 2030;
-type Item = { id: string; no: string; task: string; lever: string; kind: 'grow' | 'stop' | 'plant' | 'people' | 'spend'; ramp: 'build3' | 'now'; leaves?: string[]; alloc?: 'tour';
+type Item = { id: string; no: string; task: string; lever: string; kind: 'grow' | 'stop' | 'plant' | 'firm' | 'people' | 'spend'; ramp: 'build3' | 'now'; leaves?: string[]; alloc?: 'tour';
   unit?: string; mult?: number; per?: number | null; perUnit?: string; perNote?: string; ratio?: number | null; ratioNote?: string; ex?: number; hx?: number; note?: string; metric?: string };
 const ITEMS: Item[] = [
   { id: 'semi', no: '02', task: '투자유치단 — 반도체 대기업 유치', lever: '반도체·전자부품 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.semi, ratioNote: '전자부품·컴퓨터·통신장비', ex: 10000, hx: 10000, metric: '유치 기업 수·투자액(투자유치단), 전기·전자 부가가치(KOSIS 지역소득)' },
   { id: 'auto', no: '02', task: '투자유치단 — 미래차 대기업 유치', lever: '자동차·전동화 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['기계 운송장비 및 기타 제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.auto, ratioNote: '자동차·트레일러', ex: 5000, metric: '자동차 부품 수출(/stats/trade/), 기계·운송장비 부가가치' },
+  // 투자유치단의 유치 대상은 반도체·미래차 대기업만이 아니다(운영자 지시 2026-10-06): 제조업 공장은 업종 부가가치율(광업·제조업조사), 서비스 기업·시설은 업종별 계수가 없어 대구 평균 부가가치유발계수(한국은행 지역산업연관표)로 — 그 업종 계수는 조사 항목
+  { id: 'battery', no: '02', task: '투자유치단 — 2차전지·전기장비 공장 유치', lever: '전기장비(전지·모터·배전) 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.elec, ratioNote: '전기장비', ex: 3000, metric: '유치 기업 수·투자액(투자유치단), 전기장비 출하액(광업·제조업조사)' },
+  { id: 'robotplant', no: '02', task: '투자유치단 — 로봇·기계 공장 유치', lever: '기계·로봇 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['기계 운송장비 및 기타 제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.mach, ratioNote: '기타 기계·장비', ex: 2000, metric: '로봇·기계 그룹 기업 수·고용(기업 사전)' },
+  { id: 'pharma', no: '02', task: '투자유치단 — 바이오·의약품 공장 유치', lever: '의약품·바이오 생산시설 유치', kind: 'plant', ramp: 'build3', leaves: ['석탄 및 석유 화학제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.pharma, ratioNote: '의료용 물질·의약품', ex: 2000, metric: '의료·바이오 그룹 기업 수(기업 사전), 첨복단지 입주 기업' },
+  { id: 'chem', no: '02', task: '투자유치단 — 화학·소재(2차전지 소재 등) 공장 유치', lever: '화학·소재 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['석탄 및 석유 화학제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.chem, ratioNote: '화학물질·화학제품', ex: 2000, metric: '화학·에너지 그룹 기업 수·고용(기업 사전)' },
+  { id: 'metal', no: '02', task: '투자유치단 — 금속·뿌리산업 공장 유치', lever: '금속가공·뿌리 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['비금속광물 및 금속제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.metal, ratioNote: '금속가공제품', ex: 1000, metric: '기계·금속 그룹 기업 수·고용(기업 사전)' },
+  { id: 'food', no: '02', task: '투자유치단 — 식료품 공장 유치', lever: '식료품 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['음식료품 및 담배제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.food, ratioNote: '식료품', ex: 1000, metric: '음식료품 출하액(광업·제조업조사)' },
+  { id: 'textileplant', no: '02', task: '투자유치단 — 첨단섬유 소재 공장 유치', lever: '섬유 소재 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['섬유 의복 및 가죽 제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.textile, ratioNote: '섬유제품(의복 제외)', ex: 500, metric: '섬유 그룹 기업 수·고용(기업 사전), 섬유 출하액' },
+  { id: 'datacenter', no: '02', task: '투자유치단 — 데이터센터·IT 서비스 기업 유치', lever: '정보통신 기업·시설 유치', kind: 'firm', ramp: 'build3', leaves: ['정보통신업'], unit: '유치 기업 연 매출(억 원)', ex: 1000, metric: '정보통신 부가가치(KOSIS), 수성알파시티 입주 기업(기업 사전)' },
+  { id: 'hq', no: '02', task: '투자유치단 — 기업 본사·연구소 이전 유치', lever: '본사·연구개발 조직 이전', kind: 'firm', ramp: 'now', leaves: ['전문 과학 및 기술 서비스업'], unit: '이전 조직 연 매출(억 원)', ex: 1000, metric: '본사 소재 기업 수(DART 기업개황 대구 본사), 전문·과학·기술 부가가치' },
+  { id: 'logistics', no: '02', task: '투자유치단 — 물류센터 유치', lever: '물류·창고 시설 유치', kind: 'firm', ramp: 'build3', leaves: ['운수 및 창고업'], unit: '시설 연 매출(억 원)', ex: 500, metric: '운수·창고 부가가치(KOSIS)' },
+  { id: 'hotel', no: '02', task: '투자유치단 — 호텔·리조트 유치', lever: '숙박 시설 유치', kind: 'firm', ramp: 'build3', leaves: ['숙박 및 음식점업'], unit: '시설 연 매출(억 원)', ex: 300, metric: '숙박업 사업체·종사자(전국사업체조사), 외지인 방문자(데이터랩)' },
   { id: 'ai', no: '03', task: 'AX 혁신 — 수성알파시티 AI 서비스 거점', lever: '정보통신 부문 성장', kind: 'grow', ramp: 'now', leaves: ['정보통신업'], unit: '추세보다 더(%p)', ex: 3, hx: 5, metric: '정보통신 부가가치(KOSIS), 수성알파시티 입주 기업·고용(기업 사전)' },
   { id: 'ax', no: '03', task: 'AX 혁신 — 산단 제조현장 AI 적용', lever: '제조업 7개 업종 생산성', kind: 'grow', ramp: 'now', leaves: MFG, unit: '추세보다 더(%p)', ex: 1, metric: '광공업생산지수(통계 › 제조업), 제조업 노동생산성' },
   { id: 'robot', no: '04', task: '국가대표 창업도시 — 로봇·모빌리티', lever: '기계·운송장비 부문 성장', kind: 'grow', ramp: 'now', leaves: ['기계 운송장비 및 기타 제품 제조업'], unit: '추세보다 더(%p)', ex: 2, metric: '로봇 그룹 기업 수·고용(기업 사전), 창업기업 수' },
@@ -90,6 +102,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       </div>
       <div class="tiny muted">
         {i.kind === 'plant' && <>× 부가가치율 {pctR(i.ratio ?? null)}({i.ratioNote}, 광업·제조업조사 대구 {P.mfgYear}년){i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
+        {i.kind === 'firm' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}(한국은행 지역산업연관표 평균 — 이 업종 계수는 조사 항목){i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
         {i.kind === 'people' && <>{i.perNote} · × 대구 부가가치 계수 {S.k.toFixed(3)}</>}
         {i.kind === 'spend' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}{i.note ? ` · ${i.note}` : ''}</>}
         {i.kind === 'grow' && <>부문 부가가치 × 추가 성장 — 시작 해부터 해마다</>}
@@ -113,7 +126,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
   </details>
 
   <ul class="tiny muted gp-notes">
-    <li>성장률 몫 = 부가가치 증가 ÷ 명목 GRDP({f1(S.gdpEok / 10000)}조 원, {S.y1}년). 업종 성장은 '부문 부가가치 × 추세보다 더 성장한 몫', 기업 유치는 '연 매출 × 대구 같은 업종 부가가치율'(그 기업 자체의 부가가치 = 직접분; 범위의 위쪽은 평균 계수로 본 직·간접), 사람·지출은 '지출 × 한국은행 지역산업연관표 대구 부가가치 계수(수입품 몫 뺌)'입니다.</li>
+    <li>성장률 몫 = 부가가치 증가 ÷ 명목 GRDP({f1(S.gdpEok / 10000)}조 원, {S.y1}년). 업종 성장은 '부문 부가가치 × 추세보다 더 성장한 몫', 기업 유치는 '연 매출 × 대구 같은 업종 부가가치율'(그 기업 자체의 부가가치 = 직접분; 범위의 위쪽은 평균 계수로 본 직·간접 — 제조업 공장은 광업·제조업조사 중분류 부가가치율, 데이터센터·본사·물류·호텔 같은 서비스 기업·시설은 업종별 자료가 없어 대구 평균 부가가치유발계수), 사람·지출은 '지출 × 한국은행 지역산업연관표 대구 부가가치 계수(수입품 몫 뺌)'입니다.</li>
     <li>순증 비율: 대구 안에서 옮겨 온 소비·정책 없이도 생겼을 몫을 뺀 비율입니다(예비타당성·사업평가의 순증 판단). 기본 100%이며 근거가 있으면 낮춰 넣습니다. 여러 과제가 같은 부문을 키우면 더하고, 같은 기업을 두 번 세는 겹침은 빼지 않았습니다.</li>
     <li>취업 유발 = 부가가치 증가 ÷ 계수 {S.k.toFixed(3)} ÷ 10억 원 × {S.empIn ?? '—'}명(한국은행 2020 지역산업연관표 대구 취업유발계수, 직·간접 근사). {S.employed && `대구 취업자 ${S.employed.year}년 ${f1(S.employed.thousand)}천 명(경제활동인구조사)과 견줍니다.`}</li>
     <li>투입액은 사용자가 넣는 값이며 대구시 예산액을 싣지 않습니다. '억 원당'은 투입 1억 원당 부가가치·취업입니다.</li>
@@ -166,6 +179,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       if (it.kind === 'grow') for (const k of it.leaves) { const r = byKey.get(k); if (r) { parts.set(k, r.va * x.v / 100 * net); growth.push({ key: k, d: x.v * net }); } }
       if (it.kind === 'stop' && x.v) for (const k of it.leaves) { const r = byKey.get(k); if (r && r.g < 0) { parts.set(k, r.va * -r.g / 100 * net); growth.push({ key: k, d: -r.g * net }); } }
       if (it.kind === 'plant' && it.ratio) { const direct = x.v * it.ratio * net; parts.set(it.leaves[0], direct); lo = Math.min(direct, x.v * D.k * net); hi = Math.max(direct, x.v * D.k * net); }
+      if (it.kind === 'firm') { const eok = x.v * D.k * net; parts.set(it.leaves[0], eok); const alt = x.v * (D.kAlt ?? D.k) * net; lo = Math.min(eok, alt); hi = Math.max(eok, alt); }
       if (it.kind === 'people' || it.kind === 'spend') {
         const dem = (it.kind === 'spend' ? x.v : x.v * it.mult * x.p / 1e8) * net;
         const eok = dem * D.k;
@@ -297,7 +311,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
           [`${D.Y1}년 GRDP(조 원, ${D.y1}년 가격)`, fmt(E.end.trend / 10000, 1), fmt(E.end.g / 10000, 1)], ['완성 때 부가가치 증가(억 원)', '0', `${n0(E.total)}${E.hi > E.lo + 0.5 ? ` (범위 ${n0(E.lo)}~${n0(E.hi)})` : ''}`],
           ['취업 유발(명, 직·간접 근사)', '0', n0(E.jobs)], ['고부가 3부문 비중(%)', fmt(E.T.high), fmt(E.A.high)], ['산업집중도', String(Math.round(E.T.hhi)), String(Math.round(E.A.hhi))], ['고부가 집중도', String(Math.round(E.T.hq)), String(Math.round(E.A.hq))]], { widths: [22000, 17000, 18188] }),
         p('h3', ['계산 방법', 'h3']),
-        p('note', [`성장률 몫 = 부가가치 증가 ÷ 명목 GRDP. 업종 성장 = 부문 부가가치 × 추가 성장(해마다 쌓임). 기업 유치 = 연 매출 × 광업·제조업조사 대구 업종 부가가치율(직접분). 사람·지출 = 지출 × 대구 부가가치유발계수 ${D.k.toFixed(3)}(한국은행 2020 지역산업연관표, 수입품 몫 제외). 취업 = 부가가치 ÷ 계수 ÷ 10억 원 × ${D.empIn ?? '—'}명. 순증 비율은 사용자 입력. 구조 지표는 모두 완성된 해 기준이며 리포트 패널 계수는 연관으로만 봅니다.`, 'note']),
+        p('note', [`성장률 몫 = 부가가치 증가 ÷ 명목 GRDP. 업종 성장 = 부문 부가가치 × 추가 성장(해마다 쌓임). 기업 유치 = 연 매출 × 광업·제조업조사 대구 업종 부가가치율(직접분; 서비스 기업·시설은 대구 평균 부가가치유발계수). 사람·지출 = 지출 × 대구 부가가치유발계수 ${D.k.toFixed(3)}(한국은행 2020 지역산업연관표, 수입품 몫 제외). 취업 = 부가가치 ÷ 계수 ÷ 10억 원 × ${D.empIn ?? '—'}명. 순증 비율은 사용자 입력. 구조 지표는 모두 완성된 해 기준이며 리포트 패널 계수는 연관으로만 봅니다.`, 'note']),
         p('src', [`자료: 국가데이터처 지역소득(KOSIS) · 한국은행 2020년 지역산업연관표 · 광업·제조업조사 · 한국관광 데이터랩 · 국민건강보험공단 지역별 의료이용통계 · 대구 열린시장실 주요 추진과제. 계산: daitda.co.kr/growth/`, 'src']),
       ];
       downloadPdf(`성장계산기 정책과제 시나리오 ${today()}.pdf`, await buildPdf(blocks, '성장 계산기 — 정책 과제 시나리오'));

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="주력 산업 고용 인원 추이. 2026-07부터 2026-08까지 2개월. 기계·금속 최근 34,939명; 자동차·부품 최근 27,662명; 화학·에너지 최근 23,157명; 전기·전자 최근 20,165명; 소프트웨어·IT 최근 9,237명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="주력 산업 고용 인원 추이. 2026-07부터 2026-08까지 2개월. 기계·금속 최근 34,939명; 자동차·부품 최근 27,662명; 화학·에너지 최근 23,154명; 전기·전자 최근 20,165명; 소프트웨어·IT 최근 9,227명" style="max-width:360px;height:auto;font-size:14px">
 <title>주력 산업 고용 인원 추이</title>
 <line x1="60" x2="252" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">0</text>
@@ -21,14 +21,14 @@
 <text x="260.0" y="106.0" fill="#1a1a1a">자동차·부품</text>
 <path d="M60.0,89.4 L252.0,89.3" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="252.0" cy="89.3" r="3.5" style="fill:var(--chart-3,#009E73)"/>
-<text x="260.0" y="123.0" fill="#1a1a1a" font-weight="600">23,157명</text>
+<text x="260.0" y="123.0" fill="#1a1a1a" font-weight="600">23,154명</text>
 <text x="260.0" y="140.0" fill="#1a1a1a">화학·에너지</text>
 <path d="M60.0,111.6 L252.0,110.8" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="252.0" cy="110.8" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
 <text x="260.0" y="157.0" fill="#1a1a1a" font-weight="600">20,165명</text>
 <text x="260.0" y="174.0" fill="#1a1a1a">전기·전자</text>
-<path d="M60.0,189.7 L252.0,189.5" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="252.0" cy="189.5" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
-<text x="260.0" y="191.0" fill="#1a1a1a" font-weight="600">9,237명</text>
+<path d="M60.0,189.7 L252.0,189.6" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="252.0" cy="189.6" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
+<text x="260.0" y="191.0" fill="#1a1a1a" font-weight="600">9,227명</text>
 <text x="260.0" y="208.0" fill="#1a1a1a">소프트웨어·IT</text>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 2개월</text></svg>

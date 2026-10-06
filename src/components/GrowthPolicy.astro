@@ -5,7 +5,7 @@ import { structureCalc, policyLeversData, LEAVES } from '../lib/grdp';
  *  입력 → 부문별 부가가치 증가(억 원) × 순증 비율: 업종 성장(부가가치 × 추가 성장) · 기업 유치(연 매출 × 광업·제조업조사 대구 부가가치율, 직접분)
  *  · 사람·지출(사람 × 1인 지출 또는 지출액 × 대구 부가가치 계수 k). 성장률 몫 = 부가가치 증가 ÷ 명목 GRDP(모든 계산기 공통 기준).
  *  2026-10-06 추가: ① 연차(2026~2030) — 시작 연도·단계(공장은 건설 2년 뒤 가동)에 따라 해마다 GRDP 경로를 계산해 첫 해 성장률·5년 연평균·2030년 규모를 따로 보인다
- *  (한 번 올라간 수준은 성장률을 첫 해에만 올린다) ② 순증 비율(대구 안에서 옮겨 온 몫·정책 없이도 생겼을 몫을 뺀 비율) ③ 고용(취업유발계수 10억 원당 6.6명, 직·간접 근사)
+ *  (한 번 올라간 수준은 성장률을 첫 해에만 올린다) ② 순증 비율(대구 안에서 옮겨 온 몫·정책 없이도 생겼을 몫을 뺀 비율) ③ 고용(취업유발계수 10억 원당 6.6명, 직·간접 근사; 공장 유치는 전국 2020 고용표 업종별 취업유발계수를 참고로 병기)
  *  과 대구 취업자 대비 ④ 투입액(사용자 입력, 대구시 예산액은 싣지 않음)당 효과 ⑤ 범위(직접분만 / 평균 계수, 2015·2020년 표 계수) ⑥ 시나리오 A·B 저장·비교·링크
  *  ⑦ 한 쪽 요약 PDF ⑧ 예시 값 표시. 구조 지표는 '모두 완성된 해' 기준, 리포트 패널 계수는 연관으로만. 전망·평가가 아니라 가정에 따른 계산. */
 const S = structureCalc();
@@ -106,14 +106,14 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
         <label>투입액 <input type="number" data-in="c" value="" placeholder="선택" step="any" inputmode="decimal" /> 억 원</label>
       </div>
       <div class="tiny muted">
-        {i.kind === 'plant' && <>× 부가가치율 {pctR(i.ratio ?? null)}({i.ratioNote}, 광업·제조업조사 대구 {P.mfgYear}년) = 직접분{(() => { const io = P.ioByItem[i.id]; return io && io.k != null && io.va != null ? ` + 간접분 × ${Math.max(0, io.k - io.va).toFixed(3)}(${io.sector} 대구 지역내 부가가치유발계수 ${io.k.toFixed(3)} − 직접 부가가치율 ${io.va.toFixed(3)}, 한국은행 2020 지역산업연관표)` : ` · 간접분(${io ? io.sector : '해당 부문'} 대구 지역내 유발계수)은 통계표를 받으면 더해짐 — 지금은 범위 위쪽에 평균 계수만`; })()}{i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
+        {i.kind === 'plant' && <>× 부가가치율 {pctR(i.ratio ?? null)}({i.ratioNote}, 광업·제조업조사 대구 {P.mfgYear}년) = 직접분{(() => { const io = P.ioByItem[i.id]; return io && io.k != null && io.va != null ? ` + 간접분 × ${Math.max(0, io.k - io.va).toFixed(3)}(${io.sector} 대구 지역내 부가가치유발계수 ${io.k.toFixed(3)} − 직접 부가가치율 ${io.va.toFixed(3)}, 한국은행 2020 지역산업연관표)` : ` · 간접분(${io ? io.sector : '해당 부문'} 대구 지역내 유발계수)은 통계표를 받으면 더해짐 — 지금은 범위 위쪽에 평균 계수만`; })()}{(() => { const io = P.ioByItem[i.id]; return io && io.empNat != null ? ` · 참고 취업 = 연 매출 ÷ 10억 원 × ${io.empNat.toFixed(1)}명(${io.sector} 전국 취업유발계수, 취업계수 ${io.empNatDirect?.toFixed(1) ?? '—'}명 — 한국은행 2020년 고용표, 전국 값)` : ''; })()}{i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
         {i.kind === 'firm' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}(한국은행 지역산업연관표 평균 — 이 업종 계수는 조사 항목){i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}{i.note ? ` · ${i.note}` : ''}</>}
         {i.kind === 'people' && <>{i.perNote} · × 대구 부가가치 계수 {S.k.toFixed(3)}</>}
         {i.kind === 'spend' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}{i.note ? ` · ${i.note}` : ''}</>}
         {i.kind === 'grow' && <>부문 부가가치 × 추가 성장 — 시작 해부터 해마다</>}
         {i.kind === 'stop' && <>10년 추세 감소분만큼 덜 줄어듦 — 시작 해부터 해마다</>}
       </div>
-      <div class="gp-r"><span>부가가치 <b data-o="va">0</b>억 원</span><span>성장률 <b data-o="pp">0.00</b>%p</span><span>취업 <b data-o="jb">0</b>명</span><span class="tiny muted" data-o="eff"></span></div>
+      <div class="gp-r"><span>부가가치 <b data-o="va">0</b>억 원</span><span>성장률 <b data-o="pp">0.00</b>%p</span><span>취업 <b data-o="jb">0</b>명<span class="tiny muted" data-o="jbn"></span></span><span class="tiny muted" data-o="eff"></span></div>
       <div class="tiny muted">추적 지표: {i.metric}</div>
     </div>))}</div>
 
@@ -133,7 +133,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
   <ul class="tiny muted gp-notes">
     <li>성장률 몫 = 부가가치 증가 ÷ 명목 GRDP({f1(S.gdpEok / 10000)}조 원, {S.y1}년). 업종 성장은 '부문 부가가치 × 추세보다 더 성장한 몫', 기업 유치는 '연 매출 × 대구 같은 업종 부가가치율'(그 기업 자체의 부가가치 = 직접분; 범위의 위쪽은 평균 계수로 본 직·간접 — 제조업 공장은 광업·제조업조사 중분류 부가가치율, 데이터센터·본사·물류·호텔 같은 서비스 기업·시설은 업종별 자료가 없어 대구 평균 부가가치유발계수), 사람·지출은 '지출 × 한국은행 지역산업연관표 대구 부가가치 계수(수입품 몫 뺌)'입니다. 공장 유치의 <b>간접분</b>(대구 안 공급 부문에 생기는 부가가치)은 그 부문의 대구 지역내 부가가치유발계수에서 직접 부가가치율을 뺀 몫으로 더합니다 — {P.ioFilled ? '업종별 계수는 한국은행 2020년 지역산업연관표 통계표의 대구 열' : '업종별 대구 지역내 계수는 한국은행 지역산업연관표 통계표(엑셀)에만 있어 아직 비어 있고, 채워지기 전에는 직접분만 계산하고 평균 계수를 범위 위쪽으로 보입니다(책자·ECOS 에는 없음, 2026-10-06 확인)'}.</li>
     <li>순증 비율: 대구 안에서 옮겨 온 소비·정책 없이도 생겼을 몫을 뺀 비율입니다(예비타당성·사업평가의 순증 판단). 기본 100%이며 근거가 있으면 낮춰 넣습니다. 여러 과제가 같은 부문을 키우면 더하고, 같은 기업을 두 번 세는 겹침은 빼지 않았습니다.</li>
-    <li>취업 유발 = 부가가치 증가 ÷ 계수 {S.k.toFixed(3)} ÷ 10억 원 × {S.empIn ?? '—'}명(한국은행 2020 지역산업연관표 대구 취업유발계수, 직·간접 근사). {S.employed && `대구 취업자 ${S.employed.year}년 ${f1(S.employed.thousand)}천 명(경제활동인구조사)과 견줍니다.`}</li>
+    <li>취업 유발 = 부가가치 증가 ÷ 계수 {S.k.toFixed(3)} ÷ 10억 원 × {S.empIn ?? '—'}명(한국은행 2020 지역산업연관표 대구 취업유발계수, 직·간접 근사). {S.employed && `대구 취업자 ${S.employed.year}년 ${f1(S.employed.thousand)}천 명(경제활동인구조사)과 견줍니다.`} 공장 유치 항목에는 <b>전국 2020년 고용표의 품목별 취업유발계수</b>(한국은행 보도자료 「2020년 고용표 작성 결과」 2024-06-25, 명/10억 원 — 예: 컴퓨터·전자·광학기기 3.9, 운송장비 6.6, 기계·장비 7.2, 화학제품 5.2, 금속가공제품 7.8)로 본 취업을 '참고'로 나란히 적습니다. 대구 업종별 취업유발계수는 공개 자료(지역산업연관표 통계표에는 고용표가 없음)에 없어 전국 값이며, 대구 안 취업만이 아니라 전국에 생기는 직·간접 취업이라 합계에는 더하지 않습니다.</li>
     <li>투입액은 사용자가 넣는 값이며 대구시 예산액을 싣지 않습니다. '억 원당'은 투입 1억 원당 부가가치·취업입니다.</li>
     <li>관광·환자 수는 이동통신·건강보험 집계라 같은 사람이 여러 번 잡힐 수 있고, 데이터랩은 총량보다 추세로 보라고 안내합니다. 예시 값은 계산을 보여 주기 위한 것이지 목표·전망이 아닙니다.</li>
     <li>리포트 패널 추정({S.y0 + 1}~{S.y1}년 17개 시도)은 산업집중도 변화와 성장률이 함께 움직인 크기(연관)라 위 성장률에 더하지 않습니다.</li>
@@ -142,7 +142,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
 </section>)}
 <script>
   type R = { key: string; name: string; share: number; g: number; high: boolean; va: number };
-  type I = { id: string; task: string; kind: string; ramp: string; leaves: string[]; alloc: string; mult: number; ratio: number | null; ex: number; hx: number; per: number; unit: string; io: { sector: string; va: number | null; k: number | null } | null };
+  type I = { id: string; task: string; kind: string; ramp: string; leaves: string[]; alloc: string; mult: number; ratio: number | null; ex: number; hx: number; per: number; unit: string; io: { sector: string; va: number | null; k: number | null; empNat: number | null; empNatDirect: number | null } | null };
   type St = Record<string, { v: number; p: number; n: number; s: number; c: number }>;
   const el = document.getElementById('gp-data');
   if (el) {
@@ -176,11 +176,11 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       const c = tr.querySelector<HTMLInputElement>('[data-in="c"]'); if (c) c.value = x.c ? String(x.c) : ''; } };
 
     // ── 과제 하나의 효과: 완성 때 부가가치(억 원, 순증 반영)·범위·업종 배분·증가 유형 ──
-    type Eff = { va: number; lo: number; hi: number; parts: Map<string, number>; growth: { key: string; d: number }[]; start: number; ramp: string; cost: number };
+    type Eff = { va: number; lo: number; hi: number; parts: Map<string, number>; growth: { key: string; d: number }[]; start: number; ramp: string; cost: number; jobsNat: number | null };
     const effect = (it: I, x: { v: number; p: number; n: number; s: number; c: number }): Eff => {
       const net = Math.max(0, Math.min(100, x.n)) / 100;
       const parts = new Map<string, number>(); const growth: { key: string; d: number }[] = [];
-      let lo = 0, hi = 0;
+      let lo = 0, hi = 0, jobsNat: number | null = null;
       if (it.kind === 'grow') for (const k of it.leaves) { const r = byKey.get(k); if (r) { parts.set(k, r.va * x.v / 100 * net); growth.push({ key: k, d: x.v * net }); } }
       if (it.kind === 'stop' && x.v) for (const k of it.leaves) { const r = byKey.get(k); if (r && r.g < 0) { parts.set(k, r.va * -r.g / 100 * net); growth.push({ key: k, d: -r.g * net }); } }
       if (it.kind === 'plant' && it.ratio) {
@@ -193,6 +193,8 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
           for (const r of D.rows) if (tot > 0) parts.set(r.key, (parts.get(r.key) ?? 0) + ind * r.va / tot);   // 같은 부문의 공급 기업에도 생기므로 전 부문에 배분(합 = 간접분)
           lo = direct; hi = direct + ind;
         } else { lo = Math.min(direct, x.v * D.k * net); hi = Math.max(direct, x.v * D.k * net); }
+        // 참고 취업(2026-10-06): 전국 2020년 고용표 품목별 취업유발계수(명/10억 원) × 연 매출(억 원 ÷ 10). 대구 업종별 취업유발계수는 공개 자료에 없어 전국 계수를 참고로만 보인다
+        if (it.io && it.io.empNat != null) jobsNat = x.v / 10 * it.io.empNat * net;
       }
       if (it.kind === 'firm') { const eok = x.v * D.k * net; parts.set(it.leaves[0], eok); const alt = x.v * (D.kAlt ?? D.k) * net; lo = Math.min(eok, alt); hi = Math.max(eok, alt); }
       if (it.kind === 'people' || it.kind === 'spend') {
@@ -203,7 +205,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       }
       const va = [...parts.values()].reduce((a, c) => a + c, 0);
       if (it.kind === 'grow' || it.kind === 'stop') { lo = va; hi = va; }
-      return { va, lo, hi, parts, growth, start: x.s, ramp: it.ramp, cost: x.c };
+      return { va, lo, hi, parts, growth, start: x.s, ramp: it.ramp, cost: x.c, jobsNat };
     };
     const rampAt = (e: Eff, y: number) => y < e.start ? 0 : e.ramp === 'build3' ? Math.min(1, (y - e.start) * 0.5) : 1;
     // ── 연차 경로: 추세 경로 + 수준 효과(완성 비율) + 성장 효과(해마다 쌓임) ──
@@ -232,8 +234,8 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
     const evaluate = (st: St) => {
       const effs = new Map<string, Eff>();
       const add = new Map<string, number>();
-      let total = 0, lo = 0, hi = 0, jobs = 0, cost = 0;
-      for (const it of D.items) { const e = effect(it, st[it.id]); effs.set(it.id, e); total += e.va; lo += e.lo; hi += e.hi; jobs += jobsOf(e.va); cost += e.cost; for (const [k, v] of e.parts) add.set(k, (add.get(k) ?? 0) + v); }
+      let total = 0, lo = 0, hi = 0, jobs = 0, cost = 0, jobsNat = 0, jobsNatBase = 0;   // jobsNat: 전국 업종 계수로 본 공장 항목 취업(참고), jobsNatBase: 같은 항목의 대구 평균 계수 취업
+      for (const it of D.items) { const e = effect(it, st[it.id]); effs.set(it.id, e); total += e.va; lo += e.lo; hi += e.hi; jobs += jobsOf(e.va); cost += e.cost; if (e.jobsNat != null && e.va > 0) { jobsNat += e.jobsNat; jobsNatBase += jobsOf(e.va); } for (const [k, v] of e.parts) add.set(k, (add.get(k) ?? 0) + v); }
       const pth = path(effs);
       const starts = D.items.filter(i => effs.get(i.id)!.va > 0).map(i => st[i.id].s);
       const y1 = starts.length ? Math.min(...starts) : D.Y0;
@@ -243,7 +245,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       const yr5 = pth.find(p => p.y === D.Y0 - 1)!, yr9 = pth.find(p => p.y === D.Y1)!;
       const avg5 = ((yr9.g / yr5.g) ** (1 / (D.Y1 - D.Y0 + 1)) - 1) * 100;
       const cum = pth.filter(p => p.y >= D.Y0).reduce((a, p) => a + (p.g - p.trend), 0);
-      return { effs, add, total, lo, hi, jobs, cost, pth, firstYear, first, avg5, end: yr9, cum, A: metrics(add), T: metrics(new Map()), pp: total / D.gdpEok * 100, ppLo: lo / D.gdpEok * 100, ppHi: hi / D.gdpEok * 100 };
+      return { effs, add, total, lo, hi, jobs, cost, jobsNat, jobsNatBase, pth, firstYear, first, avg5, end: yr9, cum, A: metrics(add), T: metrics(new Map()), pp: total / D.gdpEok * 100, ppLo: lo / D.gdpEok * 100, ppHi: hi / D.gdpEok * 100 };
     };
 
     let example = false; let exKind = '';
@@ -254,6 +256,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
         o('va', tr)!.textContent = n0(e.va) + (e.hi > e.lo + 0.5 ? ` (${n0(e.lo)}~${n0(e.hi)})` : '');
         o('pp', tr)!.textContent = fmt(e.va / D.gdpEok * 100, 2);
         o('jb', tr)!.textContent = n0(jobsOf(e.va));
+        o('jbn', tr)!.textContent = e.jobsNat != null && e.va > 0 ? ` (전국 업종 계수로는 ${n0(e.jobsNat)}명, 참고)` : '';
         o('eff', tr)!.textContent = e.cost > 0 && e.va > 0 ? `투입 1억 원당 부가가치 ${fmt(e.va / e.cost, 2)}억 원 · 취업 ${fmt(jobsOf(e.va) / e.cost, 2)}명` : ''; }
       o('exbanner')!.hidden = !example; if (example) o('exbanner')!.textContent = `${exKind || '예시 값'}가 들어 있습니다 — 계산을 보여 주기 위한 값이지 목표·전망이 아닙니다. 값을 고치면 이 표시가 사라집니다.`;
       o('g1')!.textContent = `${fmt(E.first, 2)}%`;
@@ -263,7 +266,8 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       o('lv')!.textContent = `${fmt(E.end.g / 10000, 1)}조`;
       o('lvs')!.textContent = `추세대로면 ${fmt(E.end.trend / 10000, 1)}조 · ${sg((E.end.g / E.end.trend - 1) * 100, 1)}% · ${D.Y0}~${D.Y1} 누적 +${n0(E.cum)}억 원`;
       o('jb')!.textContent = `${n0(E.jobs)}명`;
-      o('jbs')!.textContent = D.employed ? `대구 취업자 ${fmt(D.employed.thousand, 0)}천 명(${D.employed.year})의 ${fmt(E.jobs / (D.employed.thousand * 1000) * 100, 2)}%` + (E.cost > 0 ? ` · 투입 ${n0(E.cost)}억 원 → 1억 원당 ${fmt(E.total / E.cost, 2)}억 원·${fmt(E.jobs / E.cost, 2)}명` : '') : '';
+      o('jbs')!.textContent = (D.employed ? `대구 취업자 ${fmt(D.employed.thousand, 0)}천 명(${D.employed.year})의 ${fmt(E.jobs / (D.employed.thousand * 1000) * 100, 2)}%` + (E.cost > 0 ? ` · 투입 ${n0(E.cost)}억 원 → 1억 원당 ${fmt(E.total / E.cost, 2)}억 원·${fmt(E.jobs / E.cost, 2)}명` : '') : '')
+        + (E.jobsNatBase > 0 ? ` · 공장 유치 항목을 전국 2020년 고용표 업종별 취업유발계수로 보면 ${n0(E.jobsNat)}명(대구 평균 계수로는 ${n0(E.jobsNatBase)}명, 참고)` : '');
       const { A, T } = E;
       o('hi')!.textContent = `${fmt(A.high)}%`; o('hi2')!.textContent = `추세대로면 ${fmt(T.high)}%${D.highNat != null ? ` · 전국 ${fmt(D.highNat)}%` : ''}`;
       o('hh')!.textContent = `${Math.round(A.hhi)}`; o('hh2')!.textContent = `추세대로면 ${Math.round(T.hhi)}${D.hhiAvg != null ? ` · 17개 시도 평균 ${D.hhiAvg}` : ''}`;
@@ -316,7 +320,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
     const pdf = async () => {
       const { buildPdf, downloadPdf, p, table, today } = await import('../scripts/pdf');
       const st = read(), E = evaluate(st);
-      const inRows = D.items.filter(i => E.effs.get(i.id)!.va > 0).map(i => { const x = st[i.id], e = E.effs.get(i.id)!; return [i.task, i.kind === 'stop' ? '감소 멈춤' : `${fmt(x.v, 0)} ${i.unit}${i.kind === 'people' ? ` × 1인 ${n0(x.p)}원` : ''}`, `${x.s}년`, `${x.n}%`, x.c ? n0(x.c) : '—', n0(e.va), fmt(e.va / D.gdpEok * 100, 2), n0(jobsOf(e.va))]; });
+      const inRows = D.items.filter(i => E.effs.get(i.id)!.va > 0).map(i => { const x = st[i.id], e = E.effs.get(i.id)!; return [i.task, i.kind === 'stop' ? '감소 멈춤' : `${fmt(x.v, 0)} ${i.unit}${i.kind === 'people' ? ` × 1인 ${n0(x.p)}원` : ''}`, `${x.s}년`, `${x.n}%`, x.c ? n0(x.c) : '—', n0(e.va), fmt(e.va / D.gdpEok * 100, 2), n0(jobsOf(e.va)) + (e.jobsNat != null ? ` (전국 ${n0(e.jobsNat)})` : '')]; });
       const blocks = [
         p('kicker', ['성장 계산기  ·  정책 과제 시나리오 요약', 'kicker']), p('title', [`대구 GRDP 정책 과제 시나리오 (${today()})`, 'title']),
         p('body', [`출발: ${D.y1 - 9}→${D.y1}년 대구 실질 GRDP 연평균 ${fmt(D.base, 2)}%, ${D.y1}년 명목 GRDP ${fmt(D.gdpEok / 10000)}조 원. 가정에 따른 계산이며 전망·평가가 아닙니다.${example ? ' 예시 값입니다(목표 아님).' : ''}`, 'body']),
@@ -325,9 +329,9 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
         p('h3', ['결과', 'h3']),
         table([['지표', '추세', '시나리오'], ['첫 해 성장률(%)', fmt(D.base, 2), `${fmt(E.first, 2)} (${E.firstYear}년)`], [`${D.Y0}~${D.Y1}년 연평균(%)`, fmt(D.base, 2), fmt(E.avg5, 2)],
           [`${D.Y1}년 GRDP(조 원, ${D.y1}년 가격)`, fmt(E.end.trend / 10000, 1), fmt(E.end.g / 10000, 1)], ['완성 때 부가가치 증가(억 원)', '0', `${n0(E.total)}${E.hi > E.lo + 0.5 ? ` (범위 ${n0(E.lo)}~${n0(E.hi)})` : ''}`],
-          ['취업 유발(명, 직·간접 근사)', '0', n0(E.jobs)], ['고부가 3부문 비중(%)', fmt(E.T.high), fmt(E.A.high)], ['산업집중도', String(Math.round(E.T.hhi)), String(Math.round(E.A.hhi))], ['고부가 집중도', String(Math.round(E.T.hq)), String(Math.round(E.A.hq))]], { widths: [22000, 17000, 18188] }),
+          ['취업 유발(명, 직·간접 근사)', '0', n0(E.jobs)], ...(E.jobsNatBase > 0 ? [['공장 유치 — 전국 업종 계수로 본 취업(명, 참고)', '0', `${n0(E.jobsNat)} (대구 평균 계수 ${n0(E.jobsNatBase)})`]] : []), ['고부가 3부문 비중(%)', fmt(E.T.high), fmt(E.A.high)], ['산업집중도', String(Math.round(E.T.hhi)), String(Math.round(E.A.hhi))], ['고부가 집중도', String(Math.round(E.T.hq)), String(Math.round(E.A.hq))]], { widths: [22000, 17000, 18188] }),
         p('h3', ['계산 방법', 'h3']),
-        p('note', [`성장률 몫 = 부가가치 증가 ÷ 명목 GRDP. 업종 성장 = 부문 부가가치 × 추가 성장(해마다 쌓임). 기업 유치 = 연 매출 × 광업·제조업조사 대구 업종 부가가치율(직접분) + 업종별 대구 지역내 유발계수가 있으면 간접분(서비스 기업·시설은 대구 평균 부가가치유발계수). 사람·지출 = 지출 × 대구 부가가치유발계수 ${D.k.toFixed(3)}(한국은행 2020 지역산업연관표, 수입품 몫 제외). 취업 = 부가가치 ÷ 계수 ÷ 10억 원 × ${D.empIn ?? '—'}명. 순증 비율은 사용자 입력. 구조 지표는 모두 완성된 해 기준이며 리포트 패널 계수는 연관으로만 봅니다.`, 'note']),
+        p('note', [`성장률 몫 = 부가가치 증가 ÷ 명목 GRDP. 업종 성장 = 부문 부가가치 × 추가 성장(해마다 쌓임). 기업 유치 = 연 매출 × 광업·제조업조사 대구 업종 부가가치율(직접분) + 업종별 대구 지역내 유발계수가 있으면 간접분(서비스 기업·시설은 대구 평균 부가가치유발계수). 사람·지출 = 지출 × 대구 부가가치유발계수 ${D.k.toFixed(3)}(한국은행 2020 지역산업연관표, 수입품 몫 제외). 취업 = 부가가치 ÷ 계수 ÷ 10억 원 × ${D.empIn ?? '—'}명(대구 평균). 괄호의 '전국'은 공장 유치 항목을 전국 2020년 고용표 업종별 취업유발계수로 본 참고 값(대구 업종별 값은 공개 자료에 없음)이며 합계에 더하지 않음. 순증 비율은 사용자 입력. 구조 지표는 모두 완성된 해 기준이며 리포트 패널 계수는 연관으로만 봅니다.`, 'note']),
         p('src', [`자료: 국가데이터처 지역소득(KOSIS) · 한국은행 2020년 지역산업연관표 · 광업·제조업조사 · 한국관광 데이터랩 · 국민건강보험공단 지역별 의료이용통계 · 대구 열린시장실 주요 추진과제. 계산: daitda.co.kr/growth/`, 'src']),
       ];
       downloadPdf(`성장계산기 정책과제 시나리오 ${today()}.pdf`, await buildPdf(blocks, '성장 계산기 — 정책 과제 시나리오'));

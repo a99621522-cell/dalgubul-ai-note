@@ -194,6 +194,23 @@ export function medicalInflow() {
  *  운송→운수·창고, 여가서비스→예술·스포츠·여가, 의료웰니스→보건·사회복지, 여행업→사업시설·지원). vaRatio: 광업·제조업조사 대구 중분류 부가가치 ÷ 출하액(최근 해). */
 const TOUR_TO_LEAF: Record<string, string> = { 쇼핑업: '도매 및 소매업', 식음료업: '숙박 및 음식점업', 숙박업: '숙박 및 음식점업', 운송업: '운수 및 창고업',
   여가서비스업: '예술 스포츠 및 여가관련 서비스', 의료웰니스업: '보건업 및 사회복지 서비스업', 여행업: '사업시설 관리 사업 지원 및 임대 서비스업' };
+/** 공장 유치 항목 → 한국은행 지역산업연관표 통합대분류 33부문(scripts/data/bok_io_daegu_sectors.csv, 운영자 지시 2026-10-06 '업종별 유발계수로 간접분').
+ *  의료기기는 통합대분류에서 '컴퓨터, 전자 및 광학기기'(의료·정밀·광학기기 포함), 의약품은 '화학제품'에 든다. */
+export const PLANT_IO_SECTOR: Record<string, string> = {
+  semi: '컴퓨터, 전자 및 광학기기', medtech: '컴퓨터, 전자 및 광학기기', auto: '운송장비', battery: '전기장비', robotplant: '기계 및 장비',
+  pharma: '화학제품', chem: '화학제품', metal: '금속가공제품', food: '음식료품', textileplant: '섬유 및 가죽제품',
+};
+export type IoSector = { sector: string; va: number | null; k: number | null; kOther: number | null; emp: number | null };
+/** 대구 33부문 산업연관 계수(bok_io_daegu_sectors.csv): va = 산업연관표 기준 직접 부가가치율(표 V-2-11 나눗셈), k = 대구 지역내 부가가치유발계수(통계표 엑셀을 받아 채우기 전에는 null). */
+export function ioSectors(): Record<string, IoSector> {
+  const out: Record<string, IoSector> = {};
+  const num = (v: string) => { const n = Number(v); return v !== '' && v != null && Number.isFinite(n) ? n : null; };
+  try {
+    for (const r of readCsv('scripts/data/bok_io_daegu_sectors.csv')) out[r.sector] = { sector: r.sector, va: num(r.va_ratio_io), k: num(r.k_va_within), kOther: num(r.k_va_other), emp: num(r.emp_within) };
+  } catch { /* 없음 */ }
+  return out;
+}
+
 export function policyLeversData() {
   const by = new Map<string, Map<string, number>>(), months = new Map<string, Set<string>>();
   for (const r of readCsv('data/tourism/datalab_spend.csv')) {
@@ -225,5 +242,8 @@ export function policyLeversData() {
     const c = (dep: string) => P?.[dep]?.['Δln(산업집중도)']?.coef ?? null;
     panel = { grdp: c('GRDP'), prod: c('노동생산성'), exp: c('수출'), grdpSe: P?.GRDP?.['Δln(산업집중도)']?.se ?? null };
   } catch { /* 없음 */ }
-  return { tourYear: ty ?? '', tourMix, mfgYear: my, vaRatio, panel, tour: tourismPerVisit(), med: medicalInflow() };
+  const io = ioSectors();
+  const ioByItem: Record<string, IoSector> = {};
+  for (const [id, sec] of Object.entries(PLANT_IO_SECTOR)) if (io[sec]) ioByItem[id] = io[sec];
+  return { tourYear: ty ?? '', tourMix, mfgYear: my, vaRatio, panel, tour: tourismPerVisit(), med: medicalInflow(), ioByItem, ioFilled: Object.values(io).some(x => x.k != null) };
 }

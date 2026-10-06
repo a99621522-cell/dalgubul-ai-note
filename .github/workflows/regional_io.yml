@@ -1,0 +1,36 @@
+name: 지역산업연관표 엑셀 → 대구 33부문 유발계수
+# 수동: 운영자가 Drive DAITDA 에 올린 한국은행 「2020년 지역산업연관표」 통계표 엑셀(지역간 투입산출표, 통합대분류)을 gdown 으로 받아
+# scripts/parse_regional_io.py 로 대구 열의 지역내·타지역 부가가치·취업·생산유발계수를 scripts/data/bok_io_daegu_sectors.csv 에 채우고 커밋한다(엑셀은 커밋 안 함).
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "Drive 파일 id"
+        required: true
+      probe:
+        description: "표 구조만 찍기(true)"
+        required: false
+        default: "false"
+permissions:
+  contents: write
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q gdown openpyxl
+      - name: 읽기
+        env: { PYTHONUNBUFFERED: "1" }
+        run: python3 scripts/parse_regional_io.py --file "${{ inputs.file }}" $([ "${{ inputs.probe }}" = "true" ] && echo --probe)
+      - name: 커밋
+        if: inputs.probe != 'true'
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add scripts/data/bok_io_daegu_sectors.csv
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 대구 33부문 유발계수(한국은행 2020년 지역산업연관표 통계표)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

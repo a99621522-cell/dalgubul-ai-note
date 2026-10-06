@@ -20,14 +20,14 @@ const ITEMS: Item[] = [
   { id: 'semi', no: '02', task: '투자유치단 — 반도체 대기업 유치', lever: '반도체·전자부품 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.semi, ratioNote: '전자부품·컴퓨터·통신장비', ex: 10000, hx: 10000, metric: '유치 기업 수·투자액(투자유치단), 전기·전자 부가가치(KOSIS 지역소득)' },
   { id: 'auto', no: '02', task: '투자유치단 — 미래차 대기업 유치', lever: '자동차·전동화 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['기계 운송장비 및 기타 제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.auto, ratioNote: '자동차·트레일러', ex: 5000, metric: '자동차 부품 수출(/stats/trade/), 기계·운송장비 부가가치' },
   // 투자유치단의 유치 대상은 반도체·미래차 대기업만이 아니다(운영자 지시 2026-10-06): 제조업 공장은 업종 부가가치율(광업·제조업조사), 서비스 기업·시설은 업종별 계수가 없어 대구 평균 부가가치유발계수(한국은행 지역산업연관표)로 — 그 업종 계수는 조사 항목
-  { id: 'battery', no: '02', task: '투자유치단 — 2차전지·전기장비 공장 유치', lever: '전기장비(전지·모터·배전) 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.elec, ratioNote: '전기장비', ex: 3000, metric: '유치 기업 수·투자액(투자유치단), 전기장비 출하액(광업·제조업조사)' },
+  { id: 'battery', no: '02', task: '투자유치단 — 2차전지·전기장비 공장 유치', lever: '전기장비(전지·모터·배전) 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.elec, ratioNote: '전기장비', hx: 3000, ex: 3000, metric: '유치 기업 수·투자액(투자유치단), 전기장비 출하액(광업·제조업조사)' },
   { id: 'robotplant', no: '02', task: '투자유치단 — 로봇·기계 공장 유치', lever: '기계·로봇 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['기계 운송장비 및 기타 제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.mach, ratioNote: '기타 기계·장비', ex: 2000, metric: '로봇·기계 그룹 기업 수·고용(기업 사전)' },
   { id: 'pharma', no: '02', task: '투자유치단 — 바이오·의약품 공장 유치', lever: '의약품·바이오 생산시설 유치', kind: 'plant', ramp: 'build3', leaves: ['석탄 및 석유 화학제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.pharma, ratioNote: '의료용 물질·의약품', ex: 2000, metric: '의료·바이오 그룹 기업 수(기업 사전), 첨복단지 입주 기업' },
   { id: 'chem', no: '02', task: '투자유치단 — 화학·소재(2차전지 소재 등) 공장 유치', lever: '화학·소재 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['석탄 및 석유 화학제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.chem, ratioNote: '화학물질·화학제품', ex: 2000, metric: '화학·에너지 그룹 기업 수·고용(기업 사전)' },
   { id: 'metal', no: '02', task: '투자유치단 — 금속·뿌리산업 공장 유치', lever: '금속가공·뿌리 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['비금속광물 및 금속제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.metal, ratioNote: '금속가공제품', ex: 1000, metric: '기계·금속 그룹 기업 수·고용(기업 사전)' },
   { id: 'food', no: '02', task: '투자유치단 — 식료품 공장 유치', lever: '식료품 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['음식료품 및 담배제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.food, ratioNote: '식료품', ex: 1000, metric: '음식료품 출하액(광업·제조업조사)' },
   { id: 'textileplant', no: '02', task: '투자유치단 — 첨단섬유 소재 공장 유치', lever: '섬유 소재 공장 유치', kind: 'plant', ramp: 'build3', leaves: ['섬유 의복 및 가죽 제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.textile, ratioNote: '섬유제품(의복 제외)', ex: 500, metric: '섬유 그룹 기업 수·고용(기업 사전), 섬유 출하액' },
-  { id: 'datacenter', no: '02', task: '투자유치단 — 데이터센터·IT 서비스 기업 유치', lever: '정보통신 기업·시설 유치', kind: 'firm', ramp: 'build3', leaves: ['정보통신업'], unit: '유치 기업 연 매출(억 원)', ex: 1000, metric: '정보통신 부가가치(KOSIS), 수성알파시티 입주 기업(기업 사전)' },
+  { id: 'datacenter', no: '02', task: '투자유치단 — 데이터센터·IT 서비스 기업 유치', lever: '정보통신 기업·시설 유치', kind: 'firm', ramp: 'build3', leaves: ['정보통신업'], unit: '유치 기업 연 매출(억 원)', hx: 2000, ex: 1000, metric: '정보통신 부가가치(KOSIS), 수성알파시티 입주 기업(기업 사전)' },
   { id: 'hq', no: '02', task: '투자유치단 — 기업 본사·연구소 이전 유치', lever: '본사·연구개발 조직 이전', kind: 'firm', ramp: 'now', leaves: ['전문 과학 및 기술 서비스업'], unit: '이전 조직 연 매출(억 원)', ex: 1000, metric: '본사 소재 기업 수(DART 기업개황 대구 본사), 전문·과학·기술 부가가치' },
   { id: 'logistics', no: '02', task: '투자유치단 — 물류센터 유치', lever: '물류·창고 시설 유치', kind: 'firm', ramp: 'build3', leaves: ['운수 및 창고업'], unit: '시설 연 매출(억 원)', ex: 500, metric: '운수·창고 부가가치(KOSIS)' },
   { id: 'hotel', no: '02', task: '투자유치단 — 호텔·리조트 유치', lever: '숙박 시설 유치', kind: 'firm', ramp: 'build3', leaves: ['숙박 및 음식점업'], unit: '시설 연 매출(억 원)', ex: 300, metric: '숙박업 사업체·종사자(전국사업체조사), 외지인 방문자(데이터랩)' },
@@ -236,7 +236,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       return { effs, add, total, lo, hi, jobs, cost, pth, firstYear, first, avg5, end: yr9, cum, A: metrics(add), T: metrics(new Map()), pp: total / D.gdpEok * 100, ppLo: lo / D.gdpEok * 100, ppHi: hi / D.gdpEok * 100 };
     };
 
-    let example = false;
+    let example = false; let exKind = '';
     const calc = () => {
       const st = read();
       const E = evaluate(st);
@@ -245,7 +245,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
         o('pp', tr)!.textContent = fmt(e.va / D.gdpEok * 100, 2);
         o('jb', tr)!.textContent = n0(jobsOf(e.va));
         o('eff', tr)!.textContent = e.cost > 0 && e.va > 0 ? `투입 1억 원당 부가가치 ${fmt(e.va / e.cost, 2)}억 원 · 취업 ${fmt(jobsOf(e.va) / e.cost, 2)}명` : ''; }
-      o('exbanner')!.hidden = !example;
+      o('exbanner')!.hidden = !example; if (example) o('exbanner')!.textContent = `${exKind || '예시 값'}가 들어 있습니다 — 계산을 보여 주기 위한 값이지 목표·전망이 아닙니다. 값을 고치면 이 표시가 사라집니다.`;
       o('g1')!.textContent = `${fmt(E.first, 2)}%`;
       o('g1s')!.textContent = `${E.firstYear}년 · 추세 ${fmt(D.base, 2)}% ${sg(E.first - D.base)}%p · 모두 완성 때 ${sg(E.pp)}%p${E.ppHi > E.ppLo + 0.005 ? ` (범위 ${sg(E.ppLo)}~${sg(E.ppHi)})` : ''}`;
       o('g5')!.textContent = `${fmt(E.avg5, 2)}%`;
@@ -326,7 +326,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       const f = bt.dataset.fill;
       for (const it of D.items) { const inp = row(it.id)?.querySelector<HTMLInputElement>('[data-in="v"]'); if (!inp) continue;
         if (it.kind === 'stop') inp.checked = f === 'ex' && it.ex > 0; else inp.value = String(f === 'ex' ? it.ex : f === 'hx' ? it.hx : 0); }
-      example = f !== 'zero'; calc();
+      example = f !== 'zero'; exKind = f === 'hx' ? '고부가 3부문(전기·전자·정밀기기, 정보통신, 금융·보험)에 닿는 과제에만 값을 넣은 예시' : f === 'ex' ? '모든 과제에 값을 넣은 예시' : ''; calc();
     }));
     document.querySelectorAll<HTMLInputElement>('#gp .gp-item input, #gp .gp-item select').forEach(i => i.addEventListener('input', () => { example = false; calc(); }));
     const m = location.hash.match(/^#gp=(.+)$/);

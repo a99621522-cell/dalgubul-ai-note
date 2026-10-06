@@ -145,6 +145,17 @@ export function structureCalc(region = '대구광역시') {
   try { backtest = JSON.parse(fs.readFileSync('data/growth/backtest.json', 'utf-8')); } catch { /* 없음 */ }
   let k2015: number | null = null;
   try { const dd = JSON.parse(fs.readFileSync('scripts/data/bok_io_daegu.json', 'utf-8')); const r = (dd.final_demand as any[]).find(x => x.region === '대구' && x.type === '부가가치유발계수' && x.year === 2015); if (r) k2015 = r.within; } catch { /* 없음 */ }
+  // 가중치 검산(운영자 지시 2026-10-07 '7번'): 국가데이터처 실질기여도 = 전년 명목 비중(GRDP 대비) × 실질 성장률. 같은 식으로 y1 을 계산해 공표 값과 견준다
+  // (실질 비중으로 바꿔 보면 공표 값과 더 멀어진다 — 2024년 25부문 합: 공표 −0.52, 전년 명목 비중 −0.52, 실질 비중 −0.33). 순생산물세 기여는 해마다 크게 움직여 '비례' 가정은 근사
+  let contribCheck: { year: number; grdp: number; official25: number; officialTax: number; calc25: number; calcTaxProp: number } | null = null;
+  try {
+    const yp = y1 - 1, gdpP = v('명목', region, '지역내총생산(시장가격)', yp) ?? 0;
+    const sg = (k: string) => { const a = v('실질', region, k, yp), b = v('실질', region, k, y1); return a && b ? (b / a - 1) * 100 : 0; };
+    const calc25 = LEAVES.reduce((a, [k]) => a + ((v('명목', region, k, yp) ?? 0) / gdpP) * sg(k), 0);
+    const gvaP = LEAVES.reduce((a, [k]) => a + (v('명목', region, k, yp) ?? 0), 0);
+    if (gdpP) contribCheck = { year: y1, grdp: sg('지역내총생산(시장가격)'), official25: LEAVES.reduce((a, [k]) => a + (v('실질기여도', region, k, y1) ?? 0), 0),
+      officialTax: v('실질기여도', region, '순생산물세', y1) ?? 0, calc25, calcTaxProp: calc25 * (gdpP - gvaP) / gvaP };
+  } catch { /* 없음 */ }
   const d = rep.data ?? {}, short = '대구';
   const io = ioDaegu();
   return {
@@ -157,10 +168,12 @@ export function structureCalc(region = '대구광역시') {
     scih: d.scih_avg?.[short] ?? null, scihAvg: d.scih_avg_all ?? null,
     hhiCoef: d.panel?.GRDP?.['Δln(산업집중도)']?.coef ?? null,
     gdpEok: (v('명목', region, '지역내총생산(시장가격)', y1) ?? 0) / 100, gvaEok: tot / 100,
+    // k: 한국은행 유발계수는 '국산품 최종수요 1단위' 기준(책자 58쪽, bok_io_daegu.json basis)이라 최종수요 가운데 수입품으로 바로 사는 몫(표 IV-7, 55쪽: 6.2%)을 뺀 뒤 곱한다.
+    // 중간재 수입 누출은 계수 안에 이미 들어 있어(대구 안 0.442 + 다른 지역 0.406 + 수입 유발 ≈ 1) 두 번 빼는 것이 아니다 — 운영자 지시 2026-10-07 '8번' 확인
     k: io && io.vaIn != null ? (1 - (io.importShare ?? 0) / 100) * io.vaIn : null, io,
     /** 자료 차이로 본 계수 범위: 2015년 표 계수(수입품 몫 뺀 값). 취업유발계수(10억 원당, 대구 안) */
     kAlt: io && k2015 != null ? (1 - (io.importShare ?? 0) / 100) * k2015 : null, empIn: io?.empIn ?? null,
-    periods, employed, unemployed, netMig, backtest,
+    periods, employed, unemployed, netMig, backtest, contribCheck,
     report: '/posts/2026-09-30-policy-structure-daegu/',
   };
 }

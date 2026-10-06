@@ -31,7 +31,7 @@ const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month:
   </div>
   <div class="ctrl" role="group" aria-label="카드 넘기기">
     <button type="button" id="rc-prev" aria-label="이전 카드">‹</button>
-    <button type="button" id="rc-pause" aria-label="자동 넘김 멈춤" aria-pressed="false">❚❚</button>
+    <button type="button" id="rc-pause" aria-label="자동 넘김 시작" aria-pressed="true">▶</button>
     <button type="button" id="rc-next" aria-label="다음 카드">›</button>
     <span class="pos" id="rc-pos" aria-live="polite">1 / {slides.length}</span>
   </div>
@@ -47,13 +47,13 @@ const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month:
     track.addEventListener('scroll', () => { pos.textContent = `${cur() + 1} / ${slides.length}`; }, { passive: true });
     document.getElementById('rc-prev')!.addEventListener('click', () => go(cur() - 1));
     document.getElementById('rc-next')!.addEventListener('click', () => go(cur() + 1));
-    let timer: number | null = null;
+    let timer: number | null = null, wants = false;   // wants: 사용자가 자동 넘김을 켰는지(탭 전환 뒤 다시 켤지)
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches || slides.length < 2;
     const start = () => { if (still || timer) return; timer = window.setInterval(() => go(cur() + 1), 6000); pause.textContent = '❚❚'; pause.setAttribute('aria-pressed', 'false'); pause.setAttribute('aria-label', '자동 넘김 멈춤'); };
-    const stop = () => { if (timer) { clearInterval(timer); timer = null; } pause.textContent = '▶'; pause.setAttribute('aria-pressed', 'true'); pause.setAttribute('aria-label', '자동 넘김 다시 시작'); };
-    pause.addEventListener('click', () => (timer ? stop() : start()));
+    const stop = () => { if (timer) { clearInterval(timer); timer = null; } pause.textContent = '▶'; pause.setAttribute('aria-pressed', 'true'); pause.setAttribute('aria-label', '자동 넘김 시작'); };
+    pause.addEventListener('click', () => { wants = !timer; timer ? stop() : start(); });
     track.addEventListener('pointerdown', stop, { passive: true }); track.addEventListener('focusin', stop);
-    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : (pause.getAttribute('aria-pressed') === 'false' && start())));
-    if (still) { pause.hidden = true; } else start();
+    document.addEventListener('visibilitychange', () => (document.hidden ? (timer && stop()) : (wants && start())));
+    if (still) { pause.hidden = true; } else stop();   // 자동 넘김은 누를 때만(WCAG 2.2.2 — 디자인 개선 2026-10-06)
   }
 </script>

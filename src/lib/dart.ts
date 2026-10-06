@@ -121,7 +121,7 @@ export type DartProduct = { corp_code: string; name: string; year: string; segme
 /** 표 머리 글자(품목·제품명)·합계·문장처럼 품목이 아닌 행은 뺀다(collect_dart_extra.good_product 와 같은 규칙) */
 const BAD_PROD = /^(합\s*계|총\s*계|소\s*계|계|단순합계|매출\s*총계|총\s*매\s*출.*|차감.*|품\s*목.*|제\s*품\s*명|주\s*요\s*제\s*품.*|구\s*분|사\s*업\s*부\s*문|부\s*문|제\s*품|상\s*품|용\s*역|기\s*타|매출\s*액)$/;
 const okProduct = (p: DartProduct) => { const t = p.product.trim(); return !!t && t.length <= 60 && !BAD_PROD.test(t) && !/품\s*목|제\s*품\s*명|주\s*요\s*제\s*품|구체적\s*용도/.test(t) && !BAD_PROD.test((p.segment || 'x').trim())
-  && !/^[\d,.\s%()-]+$/.test(t) && !t.startsWith('-') && !t.endsWith('.') && !/(습니다|입니다|있음|진행\s*중)/.test(t) && p.segment.trim() !== t; };
+  && !/^[\d,.\s%()-]+$/.test(t) && !t.startsWith('-') && !t.endsWith('.') && !/(습니다|입니다|있음|진행\s*중)/.test(t); };
 export const dartProducts = memo(() => (readCsv('scripts/data/company_products.csv') as DartProduct[]).filter(okProduct));
 export const productsByCode = (code: string) => dartProducts().filter(p => p.corp_code === code);
 /** 목록에 쓰는 '무엇을 만드나' 한 줄: 사업보고서 품목(매출 비율 큰 순 3개) → 없으면 공장등록 생산품. 출처 표시용 kind 를 함께 */

@@ -236,9 +236,7 @@ def good_product(prod_v: str, segv: str) -> bool:
         return False
     if re.fullmatch(r"[\d,.\s%()-]+", t) or t.startswith("-") or t.endswith(".") or re.search(r"(습니다|입니다|있음|진행\s*중)", t):
         return False
-    if segv and segv.strip() == t:
-        return False
-    return len(t) <= 60
+    return len(t) <= 60   # 부문 이름과 같은 품목(도시가스/도시가스)은 그대로 둔다
 
 
 def table_rows(tbl: str) -> list[list[str]]:

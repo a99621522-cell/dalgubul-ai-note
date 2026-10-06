@@ -12,15 +12,15 @@ const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, 
 const MFG = LEAVES.slice(2, 9).map(x => x[0]);
 const pctR = (v: number | null) => (v == null ? '—' : `${(v * 100).toFixed(1)}%`);
 type Item = { id: string; no: string; task: string; lever: string; kind: 'grow' | 'stop' | 'plant' | 'people' | 'spend'; leaves?: string[]; alloc?: 'tour';
-  unit?: string; mult?: number; per?: number | null; perUnit?: string; perNote?: string; ratio?: number | null; ratioNote?: string; ex?: number; note?: string };
+  unit?: string; mult?: number; per?: number | null; perUnit?: string; perNote?: string; ratio?: number | null; ratioNote?: string; ex?: number; hx?: number; note?: string };
 const ITEMS: Item[] = [
-  { id: 'semi', no: '02', task: '투자유치단 — 반도체 대기업 유치', lever: '반도체·전자부품 공장 유치', kind: 'plant', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.semi, ratioNote: '전자부품·컴퓨터·통신장비', ex: 10000 },
+  { id: 'semi', no: '02', task: '투자유치단 — 반도체 대기업 유치', lever: '반도체·전자부품 공장 유치', kind: 'plant', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.semi, ratioNote: '전자부품·컴퓨터·통신장비', ex: 10000, hx: 10000 },
   { id: 'auto', no: '02', task: '투자유치단 — 미래차 대기업 유치', lever: '자동차·전동화 공장 유치', kind: 'plant', leaves: ['기계 운송장비 및 기타 제품 제조업'], unit: '새 공장 연 매출(억 원)', ratio: P.vaRatio.auto, ratioNote: '자동차·트레일러', ex: 5000 },
-  { id: 'ai', no: '03', task: 'AX 혁신 — 수성알파시티 AI 서비스 거점', lever: '정보통신 부문 성장', kind: 'grow', leaves: ['정보통신업'], unit: '추세보다 더(%p)', ex: 3 },
+  { id: 'ai', no: '03', task: 'AX 혁신 — 수성알파시티 AI 서비스 거점', lever: '정보통신 부문 성장', kind: 'grow', leaves: ['정보통신업'], unit: '추세보다 더(%p)', ex: 3, hx: 5 },
   { id: 'ax', no: '03', task: 'AX 혁신 — 산단 제조현장 AI 적용', lever: '제조업 7개 업종 생산성', kind: 'grow', leaves: MFG, unit: '추세보다 더(%p)', ex: 1 },
   { id: 'robot', no: '04', task: '국가대표 창업도시 — 로봇·모빌리티', lever: '기계·운송장비 부문 성장', kind: 'grow', leaves: ['기계 운송장비 및 기타 제품 제조업'], unit: '추세보다 더(%p)', ex: 2 },
-  { id: 'medtech', no: '04', task: '국가대표 창업도시 — 의료(첨복단지)', lever: '의료기기·정밀기기 매출 증가', kind: 'plant', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '늘어난 연 매출(억 원)', ratio: P.vaRatio.med, ratioNote: '의료·정밀·광학기기', ex: 1000 },
-  { id: 'fin', no: '13', task: '기업은행 본점 등 공공기관 이전', lever: '금융·보험 부문 성장', kind: 'grow', leaves: ['금융 및 보험업'], unit: '추세보다 더(%p)', ex: 2 },
+  { id: 'medtech', no: '04', task: '국가대표 창업도시 — 의료(첨복단지)', lever: '의료기기·정밀기기 매출 증가', kind: 'plant', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '늘어난 연 매출(억 원)', ratio: P.vaRatio.med, ratioNote: '의료·정밀·광학기기', ex: 1000, hx: 3000 },
+  { id: 'fin', no: '13', task: '기업은행 본점 등 공공기관 이전', lever: '금융·보험 부문 성장', kind: 'grow', leaves: ['금융 및 보험업'], unit: '추세보다 더(%p)', ex: 2, hx: 3 },
   { id: 'textile', no: '12', task: '서대구 — 염색산단 첨단복합산단화', lever: '섬유·의복·가죽 감소 멈춤', kind: 'stop', leaves: ['섬유 의복 및 가죽 제품 제조업'], ex: 1 },
   { id: 'tour', no: '07', task: '국립 문화시설 유치 등 문화·관광', lever: '외지인 관광객 증가', kind: 'people', alloc: 'tour', unit: '방문 증가(만 명, 연인원)', mult: 10000, per: P.tour ? Math.round(P.tour.perWon / 100) * 100 : null, perUnit: '원', perNote: P.tour ? `${P.tour.year}년 외지인 관광소비 ÷ 방문자(데이터랩)` : '', ex: 500 },
   { id: 'patient', no: '15', task: '필수의료 영남권 거점', lever: '다른 지역 환자 증가', kind: 'people', leaves: ['보건업 및 사회복지 서비스업'], unit: '환자 증가(명)', mult: 1, per: P.med ? Math.round(P.med.perWon / 10000) * 10000 : null, perUnit: '원', perNote: P.med ? `${P.med.year}년 다른 지역 환자 1인 건강보험 진료비` : '', ex: 20000 },
@@ -30,14 +30,14 @@ const ITEMS: Item[] = [
   { id: 'student', no: '제안', task: '(과제 밖) 외국 유학생 유치', lever: '유학생 증가', kind: 'people', leaves: ['교육 서비스업'], unit: '유학생 증가(명)', mult: 1, per: 0, perUnit: '원', perNote: '1인 연 지출 자료 없음 — 직접 입력(등록금·생활비)' },
 ];
 const leafName = Object.fromEntries(LEAVES);
-const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S.hhiAvg, highNat: S.highNat, scih: S.scih, scihAvg: S.scihAvg, panel: P.panel, tourMix: P.tourMix,
+const data = S && S.k != null ? { semiRatio: P.vaRatio.semi, k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S.hhiAvg, highNat: S.highNat, scih: S.scih, scihAvg: S.scihAvg, panel: P.panel, tourMix: P.tourMix,
   rows: S.rows.map(r => ({ key: r.key, name: r.name, share: r.share, g: r.g, high: r.high, va: r.va })),
-  items: ITEMS.map(i => ({ id: i.id, kind: i.kind, leaves: i.leaves ?? [], alloc: i.alloc ?? '', mult: i.mult ?? 1, ratio: i.ratio ?? null, ex: i.ex ?? 0, per: i.per ?? 0 })) } : null;
+  items: ITEMS.map(i => ({ id: i.id, kind: i.kind, leaves: i.leaves ?? [], alloc: i.alloc ?? '', mult: i.mult ?? 1, ratio: i.ratio ?? null, ex: i.ex ?? 0, hx: i.hx ?? 0, per: i.per ?? 0 })) } : null;
 ---
 {S && data && (
 <section id="gp">
   <h2>정책 과제를 넣으면 — 성장률과 산업구조</h2>
-  <p class="meta">대구 열린시장실 '주요 추진과제'의 산업 관련 과제를 지역소득 부문에 연결했습니다(번호는 과제 번호, '제안'은 과제 밖이지만 대구 밖 돈을 들여오는 항목). 값을 넣으면 그 부문의 부가가치가 늘어난 만큼 성장률이 오르고, 산업구조지수 리포트의 지표(고부가 3부문 비중·산업집중도·고부가 변화속도)가 함께 바뀝니다. 출발은 위 계산기와 같은 {S.y0}→{S.y1}년 연평균 {S.base.toFixed(2)}%, 업종은 각자 10년 추세대로 자란다고 봅니다.</p>
+  <p class="meta">대구 열린시장실 '주요 추진과제'의 산업 관련 과제를 지역소득 부문에 연결했습니다(번호는 과제 번호, '제안'은 과제 밖이지만 대구 밖 돈을 들여오는 항목). 값을 넣으면 그 부문의 부가가치가 늘어난 만큼 성장률이 오르고, 리포트 시사점대로 고부가 부문을 축으로 산업집중도가 오르는지('고부가 집중도'와 문턱 표)와 산업구조지수 리포트의 지표(고부가 3부문 비중·산업집중도·고부가 변화속도)가 함께 바뀝니다. 출발은 위 계산기와 같은 {S.y0}→{S.y1}년 연평균 {S.base.toFixed(2)}%, 업종은 각자 10년 추세대로 자란다고 봅니다.</p>
 
   <div class="gp-res" aria-live="polite">
     <div class="gp-top"><span class="gp-big" data-o="g">{S.base.toFixed(2)}%</span><span class="gp-lab">정책 과제를 넣은 대구 실질 GRDP 성장률(한 해)<br /><span class="meta" data-o="gs"></span></span></div>
@@ -45,12 +45,15 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
       <div><span class="tl">고부가 3부문 비중(다음 해)</span><b data-o="hi">—</b><span class="tiny muted" data-o="hi2"></span></div>
       <div><span class="tl">산업집중도(다음 해)</span><b data-o="hh">—</b><span class="tiny muted" data-o="hh2"></span></div>
       <div><span class="tl">고부가 변화속도(한 해)</span><b data-o="sc">—</b><span class="tiny muted" data-o="sc2"></span></div>
+      <div><span class="tl">고부가 집중도(다음 해)</span><b data-o="hq">—</b><span class="tiny muted" data-o="hq2"></span></div>
     </div>
+    <div class="gp-th"><div class="tl">고부가 부문이 산업집중도를 끌어올리는 문턱(비중이 산업집중도 ÷ 100보다 커야 함)</div><ul data-o="thr"></ul></div>
     <p class="gp-rep" data-o="rep"></p>
   </div>
 
   <div class="gp-btns">
-    <button type="button" class="btn secondary" data-fill="ex">예시 값 넣기</button>
+    <button type="button" class="btn secondary" data-fill="hx">고부가 집중 예시</button>
+    <button type="button" class="btn secondary" data-fill="ex">모든 과제 예시</button>
     <button type="button" class="btn secondary" data-fill="zero">모두 0으로</button>
   </div>
 
@@ -81,10 +84,10 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
 </section>)}
 <script>
   type R = { key: string; name: string; share: number; g: number; high: boolean; va: number };
-  type I = { id: string; kind: string; leaves: string[]; alloc: string; mult: number; ratio: number | null; ex: number; per: number };
+  type I = { id: string; kind: string; leaves: string[]; alloc: string; mult: number; ratio: number | null; ex: number; hx: number; per: number };
   const el = document.getElementById('gp-data');
   if (el) {
-    const D = JSON.parse(el.textContent || '{}') as { k: number; gva: number; base: number; hhiAvg: number | null; highNat: number | null; scih: number | null; scihAvg: number | null;
+    const D = JSON.parse(el.textContent || '{}') as { semiRatio: number | null; k: number; gva: number; base: number; hhiAvg: number | null; highNat: number | null; scih: number | null; scihAvg: number | null;
       panel: { grdp?: number | null; prod?: number | null; exp?: number | null }; tourMix: Record<string, number>; rows: R[]; items: I[] };
     const fmt = (v: number, d = 1) => v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
     const sg = (v: number, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
@@ -100,7 +103,8 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
       const hhi = [...nx.values()].reduce((a, s) => a + s * s, 0);
       const high = D.rows.filter(r => r.high).reduce((a, r) => a + nx.get(r.key)!, 0);
       const sci = D.rows.filter(r => r.high).reduce((a, r) => a + Math.abs(nx.get(r.key)! - now.get(r.key)!) / 100, 0) / 2;
-      return { hhi, high, sci };
+      const hq = D.rows.filter(r => r.high).reduce((a, r) => a + nx.get(r.key)! ** 2, 0);
+      return { hhi, high, sci, hq, nx };
     };
     const calc = () => {
       const add = new Map<string, number>();
@@ -135,9 +139,25 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
       o('hh2')!.textContent = `추세대로면 ${Math.round(T.hhi)}${D.hhiAvg != null ? ` · 17개 시도 평균 ${D.hhiAvg}` : ''}`;
       o('sc')!.textContent = A.sci.toFixed(4);
       o('sc2')!.textContent = `추세대로면 ${T.sci.toFixed(4)}${D.scih != null ? ` · 대구 10년 평균 ${D.scih.toFixed(4)}` : ''}${D.scihAvg != null ? ` · 17개 시도 평균 ${D.scihAvg.toFixed(4)}` : ''}`;
+      const H0 = D.rows.filter(r => r.high).reduce((a, r) => a + now.get(r.key)! ** 2, 0);
+      o('hq')!.textContent = `${Math.round(A.hq)}`;
+      o('hq2')!.textContent = `추세대로면 ${Math.round(T.hq)} · 지금 ${Math.round(H0)} — 산업집중도 가운데 고부가 3부문 몫(비중 제곱합), ${fmt(A.hq / A.hhi * 100)}%`;
+      const t = A.hhi / 100;   // 이 비중보다 큰 부문이 커지면 산업집중도가 오른다
+      const G = D.rows.reduce((a, r) => a + r.va, 0);
+      o('thr')!.innerHTML = D.rows.filter(r => r.high).map(r => {
+        const s0 = now.get(r.key)!, s1 = A.nx.get(r.key)!;
+        const need = Math.max(0, (t / 100 * G - r.va) / (1 - t / 100));
+        const eq = r.key.startsWith('전기 전자') && D.semiRatio ? ` · 전자부품 공장 연 매출로 약 ${fmt(need / D.semiRatio / 10000, 1)}조 원` : '';
+        const st = s1 > t ? '<span class="gp-ok">집중도를 올리는 쪽</span>' : `${Math.round(need).toLocaleString('ko-KR')}억 원(지금 부가가치의 ${fmt(need / r.va, 1)}배${eq})`;
+        return `<li><b>${r.name}</b> 비중 ${fmt(s0)}% → 다음 해 ${fmt(s1)}% (문턱 ${fmt(t)}%) — ${s1 > t ? st : `문턱까지 부가가치 ${st} 더`}</li>`;
+      }).join('');
       const dl = Math.log(A.hhi / T.hhi) * 100;
       const P = D.panel;
       const parts: string[] = [];
+      const dq = A.hq - T.hq;
+      if (dq > 0.5) parts.push(A.hhi > T.hhi
+        ? `고부가 부문을 축으로 산업집중도가 오르는 조합입니다(고부가 집중도 ${Math.round(T.hq)} → ${Math.round(A.hq)}, 산업집중도 ${Math.round(T.hhi)} → ${Math.round(A.hhi)}) — 리포트 시사점의 '고부가 부문 중심 집적'과 같은 방향입니다.`
+        : `고부가 비중은 오르지만(고부가 집중도 ${Math.round(T.hq)} → ${Math.round(A.hq)}) 전체 산업집중도는 ${Math.round(T.hhi)} → ${Math.round(A.hhi)}로 내려갑니다. 고부가 부문이 아직 작아서(문턱 ${fmt(A.hhi / 100)}% 아래) 키울수록 분산되는 단계입니다 — 위 문턱을 넘는 고부가 부문이 생겨야 고부가 중심으로 집중도가 오릅니다.`);
       if (Math.abs(dl) >= 0.01 && P.grdp != null) parts.push(`산업집중도가 추세보다 ${sg(dl, 2)}% 달라집니다. 리포트 패널 추정으로는 집중도 1% 상승이 실질 GRDP ${fmt(P.grdp, 2)}%p${P.prod != null ? `·노동생산성 ${fmt(P.prod, 2)}%p` : ''}${P.exp != null ? `·수출 ${fmt(P.exp, 2)}%p` : ''} 높은 성장과 함께 나타났으므로, 이만큼의 집중도 변화는 성장률 ${sg(P.grdp * dl)}%p${P.exp != null ? `, 수출 증가율 ${sg(P.exp * dl)}%p` : ''}와 함께 움직인 크기입니다(연관, 위 성장률에 더하지 않음).`);
       if (D.scihAvg != null && A.sci > T.sci + 0.00005) parts.push(`고부가 변화속도 ${A.sci.toFixed(4)}는 17개 시도 평균(${D.scihAvg.toFixed(4)})${A.sci.toFixed(4) === D.scihAvg.toFixed(4) ? '과 같은 수준입니다' : A.sci > D.scihAvg ? '을 넘습니다' : '에 못 미칩니다'} — 리포트에서 고부가 변화속도가 빠른 지역은 성장률이 대체로 높았습니다(상관계수 0.43).`);
       if (A.high > T.high + 0.005) parts.push(`고부가 3부문 비중은 추세보다 ${fmt(A.high - T.high, 2)}%p 높아집니다.`);
@@ -147,7 +167,8 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
     document.querySelectorAll<HTMLButtonElement>('#gp [data-fill]').forEach(b => b.addEventListener('click', () => {
       for (const it of D.items) {
         const inp = row(it.id)?.querySelector<HTMLInputElement>('[data-in="v"]'); if (!inp) continue;
-        if (it.kind === 'stop') inp.checked = b.dataset.fill === 'ex' && it.ex > 0; else inp.value = String(b.dataset.fill === 'ex' ? it.ex : 0);
+        const f = b.dataset.fill;
+        if (it.kind === 'stop') inp.checked = f === 'ex' && it.ex > 0; else inp.value = String(f === 'ex' ? it.ex : f === 'hx' ? it.hx : 0);
       }
       calc();
     }));
@@ -162,11 +183,15 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
   .gp-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .gp-big { font-size: var(--num-xl); font-weight: 700; color: var(--primary); line-height: 1; font-variant-numeric: tabular-nums; }
   .gp-lab { font-weight: 600; flex: 1 1 220px; }
-  .gp-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+  .gp-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
   .gp-tiles div { display: flex; flex-direction: column; gap: 1px; border-top: 1px solid var(--line); padding-top: 6px; }
   .gp-tiles .tl { font-size: var(--tiny); color: var(--muted); }
   .gp-tiles b { font-size: 1.1rem; font-variant-numeric: tabular-nums; }
   .gp-rep { margin: 8px 0 0; font-size: var(--small); }
+  .gp-th { margin-top: 8px; font-size: var(--small); border-top: 1px solid var(--line); padding-top: 6px; }
+  .gp-th .tl { font-size: var(--tiny); color: var(--muted); }
+  .gp-th ul { margin: 4px 0 0; padding-left: 1.1em; }
+  .gp-th :global(.gp-ok) { color: var(--primary); font-weight: 700; }
   .gp-btns { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 var(--s2); }
   .gp-btns .btn { min-height: 36px; font-size: var(--small); }
   .gp-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
@@ -179,5 +204,6 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
   .gp-r { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid var(--line); padding-top: 4px; font-size: var(--small); }
   .gp-r b { font-variant-numeric: tabular-nums; }
   .gp-notes { padding-left: 1.1em; margin: 6px 0; }
+  @media (max-width: 760px) { .gp-tiles { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 600px) { .gp-big { font-size: 2.1rem; } .gp-tiles { grid-template-columns: 1fr; } }
 </style>

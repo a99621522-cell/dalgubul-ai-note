@@ -33,7 +33,7 @@ tables:
     areas: [manufacturing-ax, machinery, automotive, textile, root, semiconductor]
   - key: mfg-tangible-sido
     name: 광업·제조업조사 — 시도·산업중분류별 유형자산(연말잔액, 10인 이상) — 자본회전율(출하액 ÷ 유형자산)용, 성장 계산기 '투자액 → 연 매출'(2026-10-07)
-    tbl_id: ""   # 비어 있으면 kosis.yml 이 후보를 로그에 찍는다(discover). 확인해서 채울 것
+    tbl_id: "DT_1FS1106"   # 2026-10-07 discover: 시도/산업분류별 유형자산 증가액·감소액·연말잔액(10명 이상), DT_1FS1104 와 같은 2015 이후 계열. 옛 계열은 DT_1F1612(10명)·DT_1F1512(5명)
     search: ["광업제조업조사 시도 유형자산", "시도 산업분류별 유형자산 연말잔액", "광업 제조업 유형자산 시도별", "제조업 유형자산 증감 시도"]
     prd_se: Y
     area_col: C1

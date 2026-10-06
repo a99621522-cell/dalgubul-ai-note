@@ -1,21 +1,28 @@
 ---
-/** 첫 화면 리포트 회전 카드: 최근 정책제안 리포트 5편. 대표 그림(hero.png)이 있으면 배경으로, 없으면 남색 바탕.
+/** 첫 화면 리포트 회전 카드: 최근 정책제안 리포트 + 리포트 자료(REPORT_FILES, PDF·Word 내려받기) 합쳐 5장. 대표 그림(hero.png)이 있으면 배경으로, 없으면 남색 바탕.
+ *  운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 /policy/ 의 자료 2건을 이 카드 자리로 — 발행 리포트가 없으면 자료 카드만 보인다.
  *  ‹ ❚❚ › 조작 상자, 6초 자동 넘김(움직임 줄이기 설정이면 멈춤). 카드 하나가 화면 폭 전체(휴대폰 기준). */
 import type { CollectionEntry } from 'astro:content';
 import { reportArea, downloadUrls } from '../lib/reports';
 import fs from 'node:fs';
+import { REPORT_FILES } from '../lib/reportFiles';
 interface Props { reports: CollectionEntry<'posts'>[] }
 const { reports } = Astro.props;
-const slides = reports.slice(0, 5).map(r => ({
-  id: r.id, title: r.data.title.replace(/^\[정책제안\]\s*/, ''), area: reportArea(r) ?? '', date: r.data.date,
+type Slide = { title: string; area: string; date: Date; img: string | null; alt: string; outline: string[]; href: string; hwpx?: string; pdf?: string; docx?: string; name?: string };
+const posts: Slide[] = reports.map(r => ({
+  title: r.data.title.replace(/^\[정책제안\]\s*/, ''), area: reportArea(r) ?? '', date: r.data.date,
   img: fs.existsSync(`public/figures/${r.id}/hero.png`) ? `/figures/${r.id}/hero.png` : null, alt: r.data.hero?.alt ?? r.data.hero?.caption ?? '',
-  outline: (r.data.outline ?? []).slice(0, 2), hwpx: downloadUrls(r.id).hwpx,
+  outline: (r.data.outline ?? []).slice(0, 2), href: `/posts/${r.id}/`, hwpx: downloadUrls(r.id).hwpx,
 }));
+const files: Slide[] = REPORT_FILES.map(f => ({
+  title: f.title, area: '리포트 자료', date: new Date(f.date), img: null, alt: '', outline: ['PDF', 'Word'], href: f.pdf ?? f.href, pdf: f.pdf, docx: f.href, name: f.name,
+}));
+const slides = [...posts, ...files].slice(0, 5);
 const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 {slides.length > 0 && (
-<section class="carousel" aria-roledescription="회전 카드" aria-label="이번 주 리포트">
-  <div class="section-head"><h2>이번 주 리포트</h2><a href="/policy/">리포트 전체</a></div>
+<section class="carousel" aria-roledescription="회전 카드" aria-label="리포트">
+  <div class="section-head"><h2>리포트</h2><a href="/policy/">리포트 전체</a></div>
   <div class="track" id="rc-track" tabindex="0">
     {slides.map((s, i) => (
       <article class:list={["slide", { 'has-img': !!s.img }]} aria-roledescription="카드" aria-label={`${i + 1} / ${slides.length}`}>
@@ -23,8 +30,8 @@ const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month:
         {s.outline.length > 0 && <p class="tags">{s.outline.map(o => <span>#{o.replace(/\s+/g, ' ')}</span>)}</p>}
         <div class="panel">
           <p class="kicker">{s.area} · {fmt(s.date)}</p>
-          <h3><a href={`/posts/${s.id}/`}>{s.title}</a></h3>
-          <p class="links"><a class="btn" href={`/posts/${s.id}/`}>읽기</a>{s.hwpx && <a class="btn secondary" href={s.hwpx} download>HWP</a>}</p>
+          <h3><a href={s.href} download={s.pdf ? `${s.name}.pdf` : undefined}>{s.title}</a></h3>
+          <p class="links">{s.pdf ? <><a class="btn" href={s.pdf} download={`${s.name}.pdf`}>PDF 내려받기</a><a class="btn secondary" href={s.docx} download={`${s.name}.docx`}>Word</a></> : <><a class="btn" href={s.href}>읽기</a>{s.hwpx && <a class="btn secondary" href={s.hwpx} download>HWP</a>}</>}</p>
         </div>
       </article>
     ))}

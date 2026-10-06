@@ -1,19 +1,15 @@
 ---
 import fs from 'node:fs';
 import Base from '../../layouts/Base.astro';
+import { REPORT_FILES } from '../../lib/reportFiles';
 /** /policy/ — 리포트(메뉴 이름 '리포트', 운영자 지시 2026-09-30): 운영자가 올린 자료의 PDF·Word 내려받기만 둔다.
- *  파일은 public/files/ 에 두고 아래 FILES 에 한 줄씩 더한다. 한글(HWPX)판은 한글에서 제대로 열리지 않아 내렸다(운영자 확인 2026-09-30). PDF 는 Word 를 LibreOffice 로 변환(맑은 고딕 → Pretendard, 운영자 지시 2026-10-01).
+ *  파일은 public/files/ 에 두고 `src/lib/reportFiles.ts` 의 REPORT_FILES 에 한 줄씩 더한다(첫 화면 회전 카드도 같은 목록). 한글(HWPX)판은 한글에서 제대로 열리지 않아 내렸다(운영자 확인 2026-09-30). PDF 는 Word 를 LibreOffice 로 변환(맑은 고딕 → Pretendard, 운영자 지시 2026-10-01).
  *  정책제안 리포트 목록·산업 정책 글·국비↔시비 매칭 표는 이 페이지에서 뺐다. */
 // 대구 지역산업진흥계획(대구광역시 수립, KIAT 과제관리시스템 자료실 공개본 원문 그대로) — scripts/fetch_kpass_plans.py·regional_plan.yml 이 받는다
 const PLANS: { year: string; title: string; orig: string; file: string; bytes: number; pages: number | null; posted: string; source_url: string }[] =
   fs.existsSync('data/regional_plan/index.json') ? JSON.parse(fs.readFileSync('data/regional_plan/index.json', 'utf-8')) : [];
 const mb = (b: number) => `${(b / 1048576).toFixed(1)}MB`;
-const FILES = [
-  { title: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)', name: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판',
-    href: '/files/daegu-industry-structure.docx', size: '1.7MB', pdf: '/files/daegu-industry-structure.pdf', pdfSize: '2.2MB' },
-  { title: '주요 제조업 공급망 지도 해설', name: '주요 제조업 공급망 지도 해설',
-    href: '/files/supply-chain-map-guide.docx', size: '11.4MB', pdf: '/files/supply-chain-map-guide.pdf', pdfSize: '15MB' },
-];
+const FILES = REPORT_FILES;
 ---
 <Base title="리포트" description={`리포트 자료 내려받기 ${FILES.length}건(PDF·Word)과 대구 지역산업진흥계획 ${PLANS.length}개 연도(PDF).`} current="policy">
   <div class="section-head"><h1>리포트</h1><span class="meta">자료 {FILES.length}건</span></div>

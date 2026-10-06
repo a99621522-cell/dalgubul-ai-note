@@ -200,13 +200,13 @@ export const PLANT_IO_SECTOR: Record<string, string> = {
   semi: '컴퓨터, 전자 및 광학기기', medtech: '컴퓨터, 전자 및 광학기기', auto: '운송장비', battery: '전기장비', robotplant: '기계 및 장비',
   pharma: '화학제품', chem: '화학제품', metal: '금속가공제품', food: '음식료품', textileplant: '섬유 및 가죽제품',
 };
-export type IoSector = { sector: string; va: number | null; k: number | null; kOther: number | null; emp: number | null };
-/** 대구 33부문 산업연관 계수(bok_io_daegu_sectors.csv): va = 산업연관표 기준 직접 부가가치율(표 V-2-11 나눗셈), k = 대구 지역내 부가가치유발계수(통계표 엑셀을 받아 채우기 전에는 null). */
+export type IoSector = { sector: string; va: number | null; k: number | null; kOther: number | null; emp: number | null; empNat: number | null; empNatDirect: number | null };
+/** 대구 33부문 산업연관 계수(bok_io_daegu_sectors.csv): va = 산업연관표 기준 직접 부가가치율(표 V-2-11 나눗셈), k = 대구 지역내 부가가치유발계수(통계표 엑셀을 받아 채우기 전에는 null), empNat·empNatDirect = 전국 2020년 고용표 품목별 취업유발계수(총)·취업계수(직접, 명/10억 원 — 대구 업종별 값은 공개 자료에 없어 참고로만). */
 export function ioSectors(): Record<string, IoSector> {
   const out: Record<string, IoSector> = {};
   const num = (v: string) => { const n = Number(v); return v !== '' && v != null && Number.isFinite(n) ? n : null; };
   try {
-    for (const r of readCsv('scripts/data/bok_io_daegu_sectors.csv')) out[r.sector] = { sector: r.sector, va: num(r.va_ratio_io), k: num(r.k_va_within), kOther: num(r.k_va_other), emp: num(r.emp_within) };
+    for (const r of readCsv('scripts/data/bok_io_daegu_sectors.csv')) out[r.sector] = { sector: r.sector, va: num(r.va_ratio_io), k: num(r.k_va_within), kOther: num(r.k_va_other), emp: num(r.emp_within), empNat: num(r.emp_nat_total_2020), empNatDirect: num(r.emp_nat_direct_2020) };
   } catch { /* 없음 */ }
   return out;
 }

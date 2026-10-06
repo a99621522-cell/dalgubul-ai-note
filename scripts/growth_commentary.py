@@ -80,12 +80,15 @@ def facts() -> dict:
         rows.append({"key": k, "name": nm, "s": s, "lq": s / ns if ns else 0, "g": g, "gn": cagr("전국", k) if cagr("전국", k) is not None else g,
                      "t3": sum(cs[:3]) / min(3, len(cs)) if cs else g, "high": k in HIGH, "mfg": k in MFG, "spec": ns > 0 and s / ns >= 1})
     base = d["grdp_growth"]["대구"]
+    gdp = V[("명목", REGION, TOT, y1)] / 100   # 억 원
     io = json.loads((ROOT / "scripts/data/bok_io_daegu.json").read_text(encoding="utf-8"))
     va_in = next(r["within"] for r in io["final_demand"] if r["region"] == "대구" and r["type"] == "부가가치유발계수" and r["year"] == 2020)
     imp = float(re.search(r"수입\s*([\d.]+)%", next(f["text"] for f in io["facts"] if re.search(r"표 IV-7.*대구", f["text"]))).group(1))
     k_eff = (1 - imp / 100) * va_in
-    gdp = V[("명목", REGION, TOT, y1)] / 100   # 억 원
-    growth = lambda gs: base + sum(r["s"] / 100 * (gs[i] - r["g"]) for i, r in enumerate(rows))
+    # 성장 기여 가중치 = 명목 GRDP 대비 비중(w). 비중 s 는 리포트의 25개 부문 합 기준(입지계수·집중도용). 모든 계산기가 같은 기준(ΔVA ÷ 명목 GRDP)
+    for r in rows:
+        r["w"] = V.get(("명목", REGION, r["key"], y1), 0) / (gdp * 100) * 100
+    growth = lambda gs: base + sum(r["w"] / 100 * (gs[i] - r["g"]) for i, r in enumerate(rows))
 
     def nxt(gs):
         w = [r["s"] * (1 + gs[i] / 100) for i, r in enumerate(rows)]
@@ -120,8 +123,8 @@ def facts() -> dict:
         cells = {}
         for gname, f in groups.items():
             rs = [r for r in rows if f(r)]
-            sh = sum(r["s"] for r in rs)
-            avg = sum(r["s"] * r["g"] for r in rs) / sh
+            sh = sum(r["w"] for r in rs)                       # 필요 성장 = 차이 ÷ 묶음의 GRDP 대비 비중
+            avg = sum(r["s"] * r["g"] for r in rs) / sum(r["s"] for r in rs)
             cells[gname] = {"필요 성장률": f1(avg + E / sh * 100), "추세보다": f1(E / sh * 100)}
         route.append({"목표": f1(T), "길": cells, "GRDP 한 해 증가(조 원)": f1(gdp * T / 100 / 10000), "추세보다 더(조 원)": f1(gdp * E / 100 / 10000),
                       "필요 최종수요(조 원)": f1(gdp * E / 100 / k_eff / 10000)})

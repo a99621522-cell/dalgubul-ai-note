@@ -1,5 +1,5 @@
 ---
-import { grdpCalcData, ioDaegu } from '../lib/grdp';
+import { grdpCalcData, ioDaegu, structureCalc } from '../lib/grdp';
 /** 대구 GRDP 성장 목표 계산기(운영자 지시 2026-10-05). 목표 성장률을 넣으면 생산 측(경제활동별) 또는 지출 측(소비·투자·순이출)
  *  항목별로 필요한 기여도(%p)·성장률(%)을 가정별로 계산한다. 기여도 = 최근 연도 명목 비중 × 실질 성장률(근사).
  *  전망·달성 가능성 판단이 아니라 가정에 따른 계산이다. 브라우저 안에서만 계산. */
@@ -12,7 +12,8 @@ const net = E.items.find(i => i.key === '재화와 서비스 순이출');
 const cons = E.items.filter(i => i.key.endsWith('최종소비지출')).reduce((a, i) => a + i.share, 0);
 const IO = ioDaegu();
 const trendSum = P.items.reduce((a, i) => a + i.avgc, 0);
-const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '설비투자' }, nom: P.nomTrillion, trendSum, io: IO };
+const SC = structureCalc();   // 분모(명목 GRDP)는 위 계산기들과 같은 값(공통 기준)
+const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '설비투자' }, nom: SC ? SC.gdpEok / 10000 : P.nomTrillion, trendSum, io: IO };
 ---
 {d.items.length > 0 && (
 <section id="calc">
@@ -26,7 +27,7 @@ const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '
       <label><input type="radio" name="gside" value="exp" /> 지출 측(소비·투자·순이출)</label>
     </div>}
     <label>목표 성장률 <input id="gt" type="number" step="0.1" value="5" inputmode="decimal" /> %</label>
-    <label>가정 <select id="gs">
+    <label>가정 <select id="gassume">
       <option value="even">고른 성장</option>
       <option value="trend">추세 확대</option>
       <option value="fill">한 항목이 차이를 메움</option>
@@ -46,7 +47,7 @@ const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '
   {IO && IO.vaIn != null && (
   <div class="budget-box" id="gbud">
     <h3>예산·사업 규모로 보기</h3>
-    <p class="meta">한 해 새로 늘어나는 지출(시비·국비·민간 매칭을 합한 금액)을 넣으면, 한국은행 지역산업연관표의 대구 유발계수로 대구 안에 생기는 부가가치와 GRDP 기여를 계산합니다.</p>
+    <p class="meta">한 해 새로 늘어나는 지출(시비·국비·민간 매칭을 합한 금액)을 넣으면, 한국은행 지역산업연관표의 대구 유발계수로 대구 안에 생기는 부가가치와 GRDP 기여를 계산합니다. 위 '정책 과제' 계산기와 같은 계수·분모라 같은 금액이면 같은 %p 가 나옵니다.</p>
     <div class="calc-tools">
       <label>늘어나는 지출 <input id="gb" type="number" step="100" value="1000" inputmode="decimal" /> 억 원</label>
       <label>대구 안 부가가치 유발계수 <input id="gk" type="number" step="0.01" value={IO.vaIn} inputmode="decimal" /></label>
@@ -72,7 +73,7 @@ const data = { prod: P.items, exp: E.items, defFill: { prod: '제조업', exp: '
   if (el) {
     const D = JSON.parse(el.textContent || '{}') as { prod: Item[]; exp: Item[]; defFill: Record<string, string>; nom: number; trendSum: number; io: any };
     const $ = (id: string) => document.getElementById(id) as any;
-    const gt = $('gt') as HTMLInputElement, gs = $('gs') as HTMLSelectElement, gf = $('gf') as HTMLSelectElement;
+    const gt = $('gt') as HTMLInputElement, gs = $('gassume') as HTMLSelectElement, gf = $('gf') as HTMLSelectElement;
     const gfw = $('gfw') as HTMLElement, sum = $('gsum') as HTMLElement, tc = $('gtc') as HTMLElement;
     const tbody = document.querySelector('#gtab tbody') as HTMLElement;
     const fmt = (v: number | null, d = 1) => v != null && Number.isFinite(v) ? v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d }) : '—';

@@ -94,7 +94,11 @@ export const LEAVES: [string, string][] = [
 ];
 export const HIGH = ['전기 전자 및 정밀기기 제조업', '정보통신업', '금융 및 보험업'];
 const MFG = LEAVES.slice(2, 9).map(x => x[0]);
-export type StructRow = { key: string; name: string; share: number; nat: number; lq: number; va: number; g: number; gn: number; t3: number; high: boolean; spec: boolean; mfg: boolean };
+/** share = 25개 부문 부가가치 합 대비 비중(%; 리포트의 입지계수·산업집중도 정의), w = 명목 GRDP 대비 비중(%; 성장 기여 가중치 — GRDP 에는 순생산물세가 더 있어 Σw ≈ 93%).
+ *  성장률 몫·금액은 모든 계산기가 같은 기준(ΔVA ÷ 명목 GRDP)으로 계산한다(운영자 지시 2026-10-06: 상자마다 다른 분모를 쓰지 않게). */
+export type StructRow = { key: string; name: string; share: number; w: number; nat: number; lq: number; va: number; g: number; gn: number; t3: number; high: boolean; spec: boolean; mfg: boolean };
+/** 기준 기간 후보(운영자 평가 2026-10-06: 출발 성장률이 코로나 시기를 포함 — 기간을 바꿔 볼 수 있게). 리포트 기간이 기본 */
+export const PERIODS: [number, number, string][] = [[2015, 2024, '2015→2024 (리포트 기준)'], [2015, 2019, '2015→2019 (코로나 전)'], [2021, 2024, '2021→2024 (코로나 후)']];
 export function structureCalc(region = '대구광역시') {
   let rep: any = {};
   try { rep = JSON.parse(fs.readFileSync('data/kosis/structure_report.json', 'utf-8')); } catch { /* 없음 */ }
@@ -112,13 +116,26 @@ export function structureCalc(region = '대구광역시') {
   const tot = sum(region), natTot = sum('전국');
   if (!tot) return null;
   const sido = [...regions].filter(r => r !== '전국');
+  const gdpNom = v('명목', region, '지역내총생산(시장가격)', y1) ?? tot;
   const rows: StructRow[] = LEAVES.map(([k, name]) => {
     const va = v('명목', region, k, y1) ?? 0, share = va / tot * 100, nat = (v('명목', '전국', k, y1) ?? 0) / natTot * 100;
     const g = cagr(region, k) ?? 0;
     const cs = sido.map(r => cagr(r, k)).filter((x): x is number => x != null).sort((a, b) => b - a);
-    return { key: k, name, share, nat, lq: nat ? share / nat : 0, va: va / 100, g, gn: cagr('전국', k) ?? g,
+    return { key: k, name, share, w: va / gdpNom * 100, nat, lq: nat ? share / nat : 0, va: va / 100, g, gn: cagr('전국', k) ?? g,
       t3: cs.length ? cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length) : g, high: HIGH.includes(k), spec: nat > 0 && share / nat >= 1, mfg: MFG.includes(k) };
   }).filter(r => r.share > 0);
+  // 기준 기간 후보별 업종·전체 성장률(같은 CSV, 같은 식). 리포트 기간은 리포트 값(base) 그대로
+  const cagrP = (reg: string, k: string, a: number, b: number) => { const x = v('실질', reg, k, a), y = v('실질', reg, k, b); return x && y && x > 0 && y > 0 ? ((y / x) ** (1 / (b - a)) - 1) * 100 : null; };
+  const periods = PERIODS.map(([a, b, label]) => ({ a, b, label, base: cagrP(region, '지역내총생산(시장가격)', a, b) ?? 0, nat: cagrP('전국', '지역내총생산(시장가격)', a, b) ?? 0,
+    g: Object.fromEntries(rows.map(r => { const cs = sido.map(x => cagrP(x, r.key, a, b)).filter((x): x is number => x != null).sort((p, q) => q - p);
+      return [r.key, { g: cagrP(region, r.key, a, b) ?? 0, gn: cagrP('전국', r.key, a, b) ?? 0, t3: cs.length ? cs.slice(0, 3).reduce((p, q) => p + q, 0) / Math.min(3, cs.length) : 0 }]; })) }));
+  // 대구 취업자(경제활동인구조사 연간, 천 명) — 고용 효과를 견줄 기준
+  let employed: { year: string; thousand: number } | null = null;
+  try { const e = readCsv('data/kosis/labor-force-sido-annual-all.csv').filter(r => r.C1_NM === '대구광역시' && r.ITM_NM === '취업자' && r.DT).sort((p, q) => p.PRD_DE.localeCompare(q.PRD_DE)).at(-1); if (e) employed = { year: e.PRD_DE, thousand: Number(e.DT) }; } catch { /* 없음 */ }
+  let backtest: any = null;
+  try { backtest = JSON.parse(fs.readFileSync('data/growth/backtest.json', 'utf-8')); } catch { /* 없음 */ }
+  let k2015: number | null = null;
+  try { const dd = JSON.parse(fs.readFileSync('scripts/data/bok_io_daegu.json', 'utf-8')); const r = (dd.final_demand as any[]).find(x => x.region === '대구' && x.type === '부가가치유발계수' && x.year === 2015); if (r) k2015 = r.within; } catch { /* 없음 */ }
   const d = rep.data ?? {}, short = '대구';
   const io = ioDaegu();
   return {
@@ -132,6 +149,9 @@ export function structureCalc(region = '대구광역시') {
     hhiCoef: d.panel?.GRDP?.['Δln(산업집중도)']?.coef ?? null,
     gdpEok: (v('명목', region, '지역내총생산(시장가격)', y1) ?? 0) / 100, gvaEok: tot / 100,
     k: io && io.vaIn != null ? (1 - (io.importShare ?? 0) / 100) * io.vaIn : null, io,
+    /** 자료 차이로 본 계수 범위: 2015년 표 계수(수입품 몫 뺀 값). 취업유발계수(10억 원당, 대구 안) */
+    kAlt: io && k2015 != null ? (1 - (io.importShare ?? 0) / 100) * k2015 : null, empIn: io?.empIn ?? null,
+    periods, employed, backtest,
     report: '/posts/2026-09-30-policy-structure-daegu/',
   };
 }
@@ -200,7 +220,7 @@ export function policyLeversData() {
   try {
     const P = JSON.parse(fs.readFileSync('data/kosis/structure_report.json', 'utf-8')).data?.panel ?? {};
     const c = (dep: string) => P?.[dep]?.['Δln(산업집중도)']?.coef ?? null;
-    panel = { grdp: c('GRDP'), prod: c('노동생산성'), exp: c('수출') };
+    panel = { grdp: c('GRDP'), prod: c('노동생산성'), exp: c('수출'), grdpSe: P?.GRDP?.['Δln(산업집중도)']?.se ?? null };
   } catch { /* 없음 */ }
   return { tourYear: ty ?? '', tourMix, mfgYear: my, vaRatio, panel, tour: tourismPerVisit(), med: medicalInflow() };
 }

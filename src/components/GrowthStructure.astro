@@ -6,7 +6,7 @@ import { structureCalc, tourismOutsider } from '../lib/grdp';
 const S = structureCalc();
 const TOUR = tourismOutsider();
 const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-const data = S ? { ...S, io: undefined, tour: TOUR ? { eok: TOUR.eok, year: TOUR.year } : null } : null;
+const data = S ? { ...S, io: undefined, backtest: undefined, tour: TOUR ? { eok: TOUR.eok, year: TOUR.year } : null } : null;
 const GROUPS: [string, string][] = [['high', '고부가 3부문'], ['mfg', '제조업(고부가 제외)'], ['spec', '특화 부문(입지계수 1 이상, 제조업 제외)'], ['rest', '그 밖의 부문']];
 const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 'high' : r.mfg ? 'mfg' : r.spec ? 'spec' : 'rest';
 ---
@@ -27,6 +27,7 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
 
   <p class="meta">출발점은 <a href={S.report}>산업구조지수 리포트</a>와 같은 {S.y0}→{S.y1}년 대구 실질 GRDP 연평균 성장률 {S.base.toFixed(2)}%입니다(전국 {S.natGrowth.toFixed(2)}%{S.metro6 != null && <>, 6개 광역시 평균 {S.metro6.toFixed(2)}%</>}). 업종 성장률을 바꾸면 성장률과 다음 해 산업구조 지표가 함께 바뀝니다. 리포트처럼 산업집중도는 업종 비중 제곱합, 고부가 3부문은 전기·전자·정밀기기·정보통신·금융보험입니다.</p>
 
+  <div class="gs-per"><label>기준 기간 <select id="gsper" aria-label="기준 기간">{S.periods.map((pd, i) => <option value={i}>{pd.label} · 대구 {pd.base.toFixed(2)}%</option>)}</select></label><span class="tiny muted" id="gspernote"></span></div>
   <div class="gs-presets" role="group" aria-label="시나리오">
     <button type="button" class="btn secondary" data-p="trend">추세 그대로</button>
     <button type="button" class="btn secondary" data-p="stop">감소 업종 멈춤</button>
@@ -38,7 +39,7 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
   <p class="tiny muted">단추는 추세에서 새로 시작합니다. 단추 아래 숫자는 그 시나리오의 성장률입니다. '상위 3개 시도'는 17개 시도 가운데 그 업종 10년 성장률이 높았던 세 곳의 평균으로, 비교 기준이지 순위·평가가 아닙니다.</p>
 
   <h3 class="gs-h">목표에 닿으려면 — 어디를 몇 % 키워야 하나</h3>
-  <p class="meta">추세({S.base.toFixed(2)}%)와 목표의 차이를 한 묶음의 업종만 더 성장해서 메운다고 할 때, 그 묶음의 필요 성장률(비중 가중 평균)입니다. 괄호는 추세보다 더해야 하는 몫. 금액은 {S.y1}년 명목 GRDP {f1(S.gdpEok / 10000)}조 원 기준 한 해 증가액(그 해 가격 근사).</p>
+  <p class="meta">추세({S.base.toFixed(2)}%)와 목표의 차이를 한 묶음의 업종만 더 성장해서 메운다고 할 때, 그 묶음의 필요 성장률(비중 가중 평균)입니다. 괄호는 추세보다 더해야 하는 몫. 금액은 {S.y1}년 명목 GRDP {f1(S.gdpEok / 10000)}조 원 기준 한 해 증가액(그 해 가격 근사). 첫 해 성장률이며, 이어지려면 그 묶음이 해마다 같은 성장률을 내야 합니다.</p>
   <div class="scroll-x"><table class="data-table compact" id="gsroute" data-title="대구 GRDP 목표에 닿는 길별 필요 성장률">
     <thead><tr><th>목표</th><th class="n">모든 업종</th><th class="n">고부가 3부문만</th><th class="n">제조업만</th><th class="n">특화 부문만</th><th class="n">GRDP 한 해 증가(조 원)</th><th class="n">추세보다 더(조 원)</th></tr></thead>
     <tbody></tbody>
@@ -74,7 +75,8 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
     <summary>계산 방법과 주의</summary>
     <ul class="meta">
       <li>정의는 산업구조지수 리포트와 같습니다: 지역소득 경제활동별 말단 25개 부문의 {S.y1}년 명목 총부가가치 비중, 입지계수 = 대구 비중 ÷ 전국 비중(1 이상이 특화), 산업집중도 = Σ(비중×100)², 변화속도 = ½Σ|비중 변화|.</li>
-      <li>성장률 = {S.y0}→{S.y1}년 대구 연평균 {S.base.toFixed(2)}% + Σ 비중 × (가정 성장률 − 그 업종 {S.y0}→{S.y1}년 연평균 실질 성장률). 다음 해 비중은 업종마다 (1 + 가정 성장률)을 곱해 다시 나눈 근사(상대 가격 변화 없음 가정)입니다.</li>
+      <li>성장률 = {S.y0}→{S.y1}년 대구 연평균 {S.base.toFixed(2)}% + Σ GRDP 대비 비중 × (가정 성장률 − 그 업종 {S.y0}→{S.y1}년 연평균 실질 성장률). 비중은 명목(2024년), 성장률은 실질이라 '그 해 가격' 근사입니다. 성장 기여의 가중치는 명목 GRDP 대비 비중(25개 부문 합이 GRDP 의 {f1(S.gvaEok / S.gdpEok * 100)}%, 나머지는 순생산물세)으로, 이 페이지의 모든 계산기가 같은 기준(부가가치 증가 ÷ 명목 GRDP)을 씁니다. 다음 해 비중은 업종마다 (1 + 가정 성장률)을 곱해 다시 나눈 근사(상대 가격 변화 없음 가정)입니다.</li>
+      {S.backtest && <li>되돌려 보기: 같은 방식으로 2015→2019년 추세를 이어 2024년을 맞히면 전체 연평균 {S.backtest.total.fit_cagr_pct}%(실제 2019→2024년 {S.backtest.total.actual_cagr_pct}%, 오차 {S.backtest.total.error_pp}%p), 2024년 GRDP 규모 오차 {S.backtest.total.error_pct}%입니다. 업종별로는 {S.backtest.sectors.slice(0, 3).map((r: any) => `${r.name} ${r.error_pct}%`).join(', ')}처럼 크게 빗나간 업종이 있어(사이에 2020년이 있음) 업종 하나의 값보다 묶음·전체로 보는 편이 낫습니다(scripts/growth_backtest.py).</li>}
       <li>리포트의 패널 추정에서 산업집중도 1% 상승은 성장률 +{S.hhiCoef != null ? S.hhiCoef.toFixed(2) : '—'}%p 와 함께 움직였습니다(연관이며, 위 성장률 계산에 더하지 않고 참고로만 보여 줍니다).</li>
       <li>업종 사이 파급(한 업종이 크면 다른 업종도 커지는 효과)은 넣지 않았고, 비중이 작은 업종(광업·농림어업)과 기반이 작은 시도(세종 등)의 상위 3곳 값은 크게 흔들립니다. 전망이나 달성 가능성 판단이 아닙니다.</li>
     </ul>
@@ -82,10 +84,12 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
   <script type="application/json" id="gs-data" set:html={JSON.stringify(data)} />
 </section>)}
 <script>
-  type R = { key: string; name: string; share: number; va: number; g: number; gn: number; t3: number; high: boolean; spec: boolean; mfg: boolean };
+  type R = { key: string; name: string; share: number; w: number; va: number; g: number; gn: number; t3: number; high: boolean; spec: boolean; mfg: boolean };
   const el = document.getElementById('gs-data');
   if (el) {
-    const D = JSON.parse(el.textContent || '{}') as { base: number; rows: R[]; gdpEok: number; k: number | null; tour: { eok: number; year: string } | null; hhiCoef: number | null; high: number; highNat: number | null; scih: number | null };
+    const D = JSON.parse(el.textContent || '{}') as { base: number; rows: R[]; gdpEok: number; k: number | null; tour: { eok: number; year: string } | null; hhiCoef: number | null; high: number; highNat: number | null; scih: number | null;
+      periods: { a: number; b: number; label: string; base: number; nat: number; g: Record<string, { g: number; gn: number; t3: number }> }[] };
+    const BASE0 = D.base, G0 = new Map(D.rows.map(r => [r.key, { g: r.g, gn: r.gn, t3: r.t3 }]));
     const fmt = (v: number, d = 1) => v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
     const sg = (v: number, d = 1) => (v > 0.0499 ? '+' : v < -0.0499 ? '−' : '') + fmt(Math.abs(v), d);
     const $ = (id: string) => document.getElementById(id) as HTMLInputElement | null;
@@ -100,17 +104,34 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
       return { high: D.rows.reduce((a, r, i) => a + (r.high ? s1[i] : 0), 0) / S0 * 100, hhi: s1.reduce((a, s) => a + (s / S0 * 100) ** 2, 0),
         scih: D.rows.reduce((a, r, i) => a + (r.high ? Math.abs(s1[i] - s0[i]) : 0), 0) / S0 / 2 };
     };
-    const growth = (gs: number[]) => D.base + D.rows.reduce((a, r, i) => a + r.share / S0 * (gs[i] - r.g), 0);
+    // 성장 기여 가중치 = 명목 GRDP 대비 비중 w(모든 계산기 공통 기준: ΔVA ÷ 명목 GRDP). 비중 share 는 구조 지표용
+    const growth = (gs: number[]) => D.base + D.rows.reduce((a, r, i) => a + r.w / 100 * (gs[i] - r.g), 0);
     const trend = D.rows.map(r => r.g);
     const T0 = ind(trend);
     const P: Record<string, (r: R) => number> = {
       trend: r => r.g, stop: r => Math.max(r.g, 0), nat: r => Math.max(r.g, r.gn),
       high3: r => r.high ? Math.max(r.g, r.t3) : r.g, mfg3: r => r.mfg ? Math.max(r.g, r.t3) : r.g, all3: r => Math.max(r.g, r.t3),
     };
-    document.querySelectorAll<HTMLButtonElement>('#gs .gs-presets button').forEach(b => {
+    const labelPresets = () => document.querySelectorAll<HTMLButtonElement>('#gs .gs-presets button').forEach(b => {
       const f = P[b.dataset.p!]; if (!f) return;
-      const gv = growth(D.rows.map(f)); b.innerHTML = `${b.textContent}<span class="pv">${Math.abs(gv - D.base) < 0.005 ? fmt(D.base, 2) : fmt(gv)}%</span>`;
+      const gv = growth(D.rows.map(f)); b.innerHTML = `${b.dataset.label}<span class="pv">${Math.abs(gv - D.base) < 0.005 ? fmt(D.base, 2) : fmt(gv)}%</span>`;
+    });
+    document.querySelectorAll<HTMLButtonElement>('#gs .gs-presets button').forEach(b => {
+      b.dataset.label = b.textContent ?? '';
+      const f = P[b.dataset.p!]; if (!f) return;
       b.addEventListener('click', () => { D.rows.forEach(r => { const i = inputs.get(r.key); if (i) i.value = f(r).toFixed(1); }); calc(); });
+    });
+    labelPresets();
+    // 기준 기간 바꾸기: 업종·전체 성장률을 그 기간 값으로 바꾸고 칸을 추세로 되돌린다(리포트 기간은 리포트 값)
+    const per = document.getElementById('gsper') as HTMLSelectElement | null;
+    per?.addEventListener('change', () => {
+      const i = Number(per.value);
+      const pd = D.periods[i];
+      if (i === 0 || !pd) { D.base = BASE0; D.rows.forEach(r => Object.assign(r, G0.get(r.key))); }
+      else { D.base = pd.base; D.rows.forEach(r => { const x = pd.g[r.key]; if (x) { r.g = x.g; r.gn = x.gn; r.t3 = x.t3; } }); }
+      D.rows.forEach(r => { const x = inputs.get(r.key); if (x) x.value = r.g.toFixed(1); const c = x?.closest('tr')?.querySelector('td'); if (c) c.innerHTML = `${fmt(r.g)}<div class="tiny muted">전국 ${fmt(r.gn)}<br />상위3 ${fmt(r.t3)}</div>`; });
+      const note = document.getElementById('gspernote'); if (note) note.textContent = i === 0 ? '' : `기준 기간을 ${pd.label}로 바꿨습니다: 대구 연평균 ${fmt(pd.base, 2)}%, 전국 ${fmt(pd.nat, 2)}%. 비중·구조 지표는 2024년 값 그대로이고, 해설·리포트는 2015→2024 기준입니다.`;
+      labelPresets(); calc();
     });
     const demand = (eok: number) => D.k ? eok * D.k / D.gdpEok * 100 : 0;
     const calc = () => {
@@ -119,7 +140,7 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
       const gs = D.rows.map(r => { const t = inputs.get(r.key)?.value ?? ''; const v = Number(t); return t === r.g.toFixed(1) || !Number.isFinite(v) ? r.g : v; });
       const parts: { name: string; d: number }[] = [], sums: Record<string, number> = {};
       D.rows.forEach((r, i) => {
-        const d = r.share / S0 * (gs[i] - r.g);
+        const d = r.w / 100 * (gs[i] - r.g);
         const c = document.querySelector(`[data-d="${CSS.escape(r.key)}"]`); if (c) c.textContent = Math.abs(d) < 0.05 ? (Math.abs(d) < 0.005 ? '0.0' : sg(d, 2)) : sg(d);
         sums[grp(r)] = (sums[grp(r)] ?? 0) + d;
         if (Math.abs(d) >= 0.005) parts.push({ name: r.name, d });
@@ -163,7 +184,7 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
       tb.innerHTML = ts.map(t => {
         const E = t - D.base;
         const cells = groups.map(([, f]) => {
-          const rs = D.rows.filter(f), sh = rs.reduce((a, r) => a + r.share, 0) / S0 * 100;
+          const rs = D.rows.filter(f), sh = rs.reduce((a, r) => a + r.w, 0);   // 묶음의 GRDP 대비 비중
           const avg = rs.reduce((a, r) => a + r.share * r.g, 0) / rs.reduce((a, r) => a + r.share, 0);
           if (E <= 0) return `<td class="n">${fmt(avg)}</td>`;
           const add = E / sh * 100;
@@ -191,6 +212,8 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
   .gs-tiles div { display: flex; flex-direction: column; gap: 1px; border-top: 1px solid var(--line); padding-top: 6px; }
   .gs-tiles .tl { font-size: var(--tiny); color: var(--muted); }
   .gs-tiles b { font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+  .gs-per { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: var(--s2) 0 0; font-size: var(--small); }
+  .gs-per select { padding: 4px 6px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; max-width: 100%; }
   .gs-presets { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--s2) 0 4px; }
   .gs-presets .btn { min-height: 40px; padding: 4px 12px; font-size: var(--small); flex-direction: column; line-height: 1.25; white-space: normal; text-align: center; }
   .gs-presets :global(.pv) { font-weight: 700; font-size: 1rem; }

@@ -69,7 +69,8 @@ jobs:
           git config user.email bot@users.noreply.github.com
           python3 scripts/structure_index.py > /dev/null 2>&1 || true
           python3 scripts/render_kosis.py || true
-          git add data/kosis src/generated/kosis
+          python3 scripts/growth_backtest.py > /dev/null 2>&1 || true   # 성장 계산기 되돌려 보기(data/growth/backtest.json)
+          git add data/kosis src/generated/kosis data/growth/backtest.json
           git diff --cached --quiet && { echo "변경 없음"; exit 0; }
           git commit -m "data: KOSIS 통계표 갱신 $(date -u +%Y-%m-%d)"
           # 러너 3개가 같은 표를 받아 동시에 커밋하면 summary.md 가 충돌한다(2026-09-28: 데이터 커밋 2개가 밀려 사라짐).

@@ -1,4 +1,4 @@
-import { kosis, kosisMeta, shift, type Series, type Pt } from './monthly';
+import { kosis, kosisMeta, shift, daeguRow, type Series, type Pt } from './monthly';
 import fs from 'node:fs';
 import { readCsv } from './csv';
 
@@ -33,7 +33,7 @@ export function serviceIndustryRows(): { q: string; rows: { name: string; v: num
   });
   return { q, rows: out, ...s };
 }
-const kosisRows = (key: string) => readCsv(`data/kosis/${key}.csv`);
+const kosisRows = (key: string) => readCsv(`data/kosis/${key}.csv`).filter(daeguRow);
 
 export function retailSeries(): Series[] {
   const s = src('large-retail-index-sido');

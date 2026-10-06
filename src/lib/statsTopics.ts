@@ -10,6 +10,7 @@ export const TOPICS: StatsTopic[] = [
   { key: 'business', name: '기업·사업체', href: '/stats/business/', period: '연간', desc: '산업별 사업체·종사자, 중소기업·소상공인, 창업·벤처기업, 기업 신생·소멸, 수출입 활동기업.',
     links: [{ name: '창업·벤처기업', href: '/stats/business/#startup' }, { name: '기업 사전의 창업·벤처', href: '/stats/business/#startups' }] },   // 운영자 지시 2026-10-06 '통계 허브 카드에 창업·벤처 바로가기'
   { key: 'population', name: '인구·고용', href: '/stats/population/', period: '연간', desc: '인구·취업자·고용률 연간 추이, 구·군별 인구·취업자, 연령별 순이동, 소매판매.' },
+  { key: 'compare', name: '시도 비교', href: '/stats/compare/', period: '연간·월간', desc: '17개 시도의 지역내총생산·성장률·산업구조, 취업자·고용률, 사업체·종사자, 기업 신생·소멸, 수출입 기업, 인구, 소매판매, 월간 지표를 같은 표에 — 대구 값을 다른 시도와 나란히(비교 기준이지 순위가 아님).' },   // 추세·비교·효과 보강 2단계(2026-10-06)
 ];
 
 export type KosisSection = { key?: string; title: string; desc: string; tables: string[]; charts: string[] };   // key: 페이지가 절 뒤에 다른 컴포넌트를 끼울 때 슬롯 이름(after-<key>)
@@ -32,6 +33,16 @@ export const KOSIS_TOPICS: Record<string, KosisSection[]> = {
     { key: 'startup', title: '창업·벤처기업', desc: '중소벤처기업부 창업기업동향의 대구 월별 창업기업 수(전체·기술기반업종)와 전년동월비, 연도별 합계, 업종별 — 사업자등록 기준 창업(법인·개인, 7년 이내 창업기업과는 별개의 흐름 통계)이며 기술기반업종을 따로 보여 줍니다. 이어서 기업 사전에서 확인되는 창업기업(설립 7년 이내)·벤처기업·둘의 교집합(7년 이내 벤처기업)을 셉니다.', tables: ['startup_monthly', 'startup_annual', 'startup_industry'], charts: ['startup-monthly'] },
     { title: '기업 신생·소멸 (기업생멸행정통계)', desc: '대구 활동기업·신생기업·소멸기업 수와 신생률·소멸률, 산업별·기업규모별. 신생기업은 개인사업자를 포함한 새로 생긴 기업 전체라 위 창업기업(스타트업) 통계와 기준이 다릅니다.', tables: ['biz_birth', 'biz_birth_industry', 'biz_birth_size'], charts: ['biz-birth'] },
     { title: '수출입 활동기업 (관세청 기업무역활동통계)', desc: '17개 시도 수출입 활동기업 수·교역액, 진입·퇴출 기업, 수출 기여율·기여도와 대구 교역액 추이.', tables: ['export17'], charts: ['export-daegu'] },
+  ],
+  compare: [
+    { title: '경제 규모·성장·산업구조', desc: '지역소득(시도별 경제활동별 지역내총생산)의 명목 지역내총생산, 실질 성장률(전년 대비), 이 사이트가 계산한 연평균 실질 성장률·제조업 비중·고부가 3부문 비중·산업집중도. 정의는 산업구조지수 리포트·성장 계산기와 같습니다.', tables: ['cmp_grdp'], charts: ['cmp-growth', 'cmp-highshare'] },
+    { title: '취업자·고용률·실업률', desc: '경제활동인구조사 연간 취업자와 5년 전 대비 증감률, 고용률·15~64세 고용률·실업률.', tables: ['cmp_labor'], charts: ['cmp-employed-change'] },
+    { title: '사업체·종사자', desc: '전국사업체조사의 전체 산업 사업체 수·종사자 수, 종사자 증감률, 제조업 종사자 비중.', tables: ['cmp_census'], charts: [] },
+    { title: '기업 신생·소멸', desc: '기업생멸행정통계의 활동기업 수·신생률·소멸률(전체 산업). 소멸률은 확정이 1년 늦습니다.', tables: ['cmp_birth'], charts: ['cmp-birth-rate'] },
+    { title: '수출입 활동기업', desc: '관세청 기업무역활동통계의 수출입 활동기업 수·교역액과 5년 전 대비.', tables: ['cmp_export'], charts: [] },
+    { title: '인구', desc: '주민등록인구(연말)와 5년 전 대비 증감률.', tables: ['cmp_population'], charts: ['cmp-pop-change'] },
+    { title: '소매판매', desc: '시도별 소매판매액지수(불변, 2020=100) 총지수와 5년 전 대비 변화율.', tables: ['cmp_retail'], charts: [] },
+    { title: '월간 지표 (최근 달)', desc: '광공업생산지수 전년동월비, 고용률·실업률, 서비스업생산지수 전년동기비, 자영업자 비중, 최근 12개월 순이동 — 전 지역으로 받은 표만 열이 생깁니다(KOSIS 수집 워크플로가 다음에 돌면 채워짐).', tables: ['cmp_monthly'], charts: [] },
   ],
   population: [
     { title: '연간 주요 지표', desc: '주민등록인구, 경제활동인구조사(취업자·고용률·실업률), 지역내총생산, 수출입 활동기업의 대구 값을 연도별로.', tables: ['daegu_annual'], charts: ['population'] },

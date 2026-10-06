@@ -32,6 +32,7 @@ tables:
     area_col: C1
     areas: [manufacturing-ax, machinery, automotive, textile, root, semiconductor]
   - key: biz-birth-death-sido
+    area: []            # 17개 시도 비교(2026-10-06): 전 지역 행을 받는다. 대구 페이지는 C1_NM 으로 거른다
     name: 기업생멸행정통계 — 시도·산업대분류·기업규모별 기업 수(활동·신생·소멸)
     tbl_id: "DT_6BD1105"   # 2026-10-06 discover: 시도별 산업대분류별 기업규모별 기업 수(활동/신생/소멸). 같은 통계의 시도별 산업중분류 표는 DT_6BD1101, 시군구별 산업대분류는 DT_6BD1132
     years: 10
@@ -115,6 +116,7 @@ tables:
     prd_se: H
     area_col: C1
   - key: labor-force-sido
+    area: []            # 17개 시도 비교(2026-10-06): 전 지역 행을 받는다. 대구 페이지는 C1_NM 으로 거른다
     name: 경제활동인구조사 — 시도별 고용률·실업률
     tbl_id: "DT_1DA7004S"
     search: "경제활동인구조사 시도 고용률 실업률"
@@ -122,6 +124,7 @@ tables:
     years: 3
     area_col: C1
   - key: mfg-production-index-sido
+    area: []            # 17개 시도 비교(2026-10-06): 전 지역 행을 받는다. 대구 페이지는 C1_NM 으로 거른다
     name: 광공업생산지수 — 시도·산업별(월간)
     tbl_id: "INH_1F02001"
     search: "광공업생산지수 시도 산업별"
@@ -140,6 +143,7 @@ tables:
     area_col: C1
     areas: [manufacturing-ax, machinery, automotive, textile, root]
   - key: migration-sido
+    area: []            # 17개 시도 비교(2026-10-06): 전 지역 행을 받는다. 대구 페이지는 C1_NM 으로 거른다
     name: 국내인구이동통계 — 시도별 전입·전출·순이동(월간)
     tbl_id: "DT_1B26001_A01"
     search: "국내인구이동 시도 전입 전출 순이동"
@@ -206,6 +210,7 @@ tables:
     area: []
   # ── 서비스업·자영업 (운영자 지시 2026-10-02: 서비스업·관광·자영업 통계 추가, 1단계 KOSIS). 고용보험 피보험자 시도·산업 표는 KOSIS 에 국가 표가 없고 구·군 기관 표뿐이라 뺐다(2026-10-03 discover)
   - key: service-index-sido
+    area: []            # 17개 시도 비교(2026-10-06): 전 지역 행을 받는다. 대구 페이지는 C1_NM 으로 거른다
     name: 서비스업동향조사 — 시도·업종별 서비스업생산지수(분기, 2020=100)
     tbl_id: "DT_1KC2023"   # 2026-10-03 discover
     search: ["시도 서비스업생산지수", "시도별 서비스업동향조사 생산지수", "서비스업생산지수 시도 산업별"]
@@ -220,6 +225,7 @@ tables:
     years: 3
     area_col: C1
   - key: self-employed-sido
+    area: []            # 17개 시도 비교(2026-10-06): 전 지역 행을 받는다. 대구 페이지는 C1_NM 으로 거른다
     name: 경제활동인구조사 — 시도·종사상지위별 취업자(자영업자·무급가족종사자, 월간)
     tbl_id: "DT_1DA7035S"   # 2026-10-03 discover
     search: ["시도 종사상지위별 취업자"]

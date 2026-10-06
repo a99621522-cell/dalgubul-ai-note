@@ -182,8 +182,9 @@ def line_chart(title: str, months: list[str], series: list[tuple[str, list]], un
 
 
 # ---------------------------------------------------------------- 가로 막대
-def bar_chart(title: str, items: list[tuple[str, int | None]], unit: str = "명", note: str = "", muted_last: bool = False, narrow: bool = False) -> tuple[str, dict]:
+def bar_chart(title: str, items: list[tuple[str, int | None]], unit: str = "명", note: str = "", muted_last: bool = False, narrow: bool = False, highlight: str | None = None) -> tuple[str, dict]:
     """items: [(라벨, 값)] 주어진 순서대로(호출자가 정렬). muted_last 면 마지막 항목('기타' 등)을 회색으로.
+    highlight: 그 라벨만 주색, 나머지는 회색(시도 비교에서 대구). 음수 값은 0 기준선 왼쪽으로 그린다(2026-10-06).
     narrow: 휴대폰 폭(360px) 판 — 라벨을 막대 위 줄에 둔다."""
     W = 360 if narrow else 720
     ml = 8 if narrow else 8 + max((text_w(l) for l, _ in items), default=100)
@@ -192,24 +193,34 @@ def bar_chart(title: str, items: list[tuple[str, int | None]], unit: str = "명"
     row = (FONT + 30) if narrow else 34
     H = mt + row * len(items) + 12
     pw = W - ml - mr
-    vmax = max((v for _, v in items if v is not None), default=0) or 1
+    vals = [v for _, v in items if v is not None]
+    vmax = max(max(vals, default=0), 0)
+    vmin = min(min(vals, default=0), 0)
+    span = (vmax - vmin) or 1
+    x0 = ml + pw * (0 - vmin) / span          # 0 기준선(음수 없으면 ml)
     parts = []
     if note:
         parts.append(f'<text x="8" y="{FONT + 2}" fill="{MUTED}">{escape(note)}</text>')
+    if vmin < 0:
+        parts.append(f'<line x1="{x0:.1f}" x2="{x0:.1f}" y1="{mt}" y2="{mt + row * len(items)}" stroke="{MUTED}" stroke-width="1"/>')
     for i, (label, v) in enumerate(items):
         yy = mt + row * i
-        bw = 0 if v is None else pw * v / vmax
-        color = MUTED if (muted_last and i == len(items) - 1) else PRIMARY
+        bw = 0 if v is None else pw * abs(v) / span
+        bx = x0 if (v is None or v >= 0) else x0 - bw
+        muted = (muted_last and i == len(items) - 1) or (highlight is not None and label != highlight)
+        color = MUTED if muted else PRIMARY
         var = "var(--muted," + MUTED + ")" if color == MUTED else f"var(--primary,{PRIMARY})"
+        lx = (x0 + bw) if (v is None or v >= 0) else x0      # 값 라벨은 양수면 막대 끝, 음수면 기준선 오른쪽
+        weight = ' font-weight="600"' if highlight is not None and label == highlight else ""
         if narrow:
-            parts.append(f'<text x="{ml}" y="{yy + FONT:.1f}" fill="{INK}">{escape(label)}</text>')
+            parts.append(f'<text x="{ml}" y="{yy + FONT:.1f}" fill="{INK}"{weight}>{escape(label)}</text>')
             by = yy + FONT + 6
-            parts.append(f'<rect x="{ml}" y="{by}" width="{bw:.1f}" height="18" fill="{color}" style="fill:{var}"/>')
-            parts.append(f'<text x="{ml + bw + 6:.1f}" y="{by + 14:.1f}" fill="{INK}">{fmt(v)}{unit if v is not None else ""}</text>')
+            parts.append(f'<rect x="{bx:.1f}" y="{by}" width="{bw:.1f}" height="18" fill="{color}" style="fill:{var}"/>')
+            parts.append(f'<text x="{lx + 6:.1f}" y="{by + 14:.1f}" fill="{INK}">{fmt(v)}{unit if v is not None else ""}</text>')
         else:
-            parts.append(f'<text x="{ml - 10}" y="{yy + row / 2 + 5:.1f}" text-anchor="end" fill="{INK}">{escape(label)}</text>')
-            parts.append(f'<rect x="{ml}" y="{yy + 6}" width="{bw:.1f}" height="{row - 12}" fill="{color}" style="fill:{var}"/>')
-            parts.append(f'<text x="{ml + bw + 8:.1f}" y="{yy + row / 2 + 5:.1f}" fill="{INK}">{fmt(v)}{unit if v is not None else ""}</text>')
+            parts.append(f'<text x="{ml - 10}" y="{yy + row / 2 + 5:.1f}" text-anchor="end" fill="{INK}"{weight}>{escape(label)}</text>')
+            parts.append(f'<rect x="{bx:.1f}" y="{yy + 6}" width="{bw:.1f}" height="{row - 12}" fill="{color}" style="fill:{var}"/>')
+            parts.append(f'<text x="{lx + 8:.1f}" y="{yy + row / 2 + 5:.1f}" fill="{INK}">{fmt(v)}{unit if v is not None else ""}</text>')
     desc = f"{title}. " + ", ".join(f"{l} {fmt(v)}{unit}" for l, v in items)
     table = {"title": title, "columns": ["구분", title], "unit": unit, "rows": [[l, v] for l, v in items], "note": note}
     return svg_wrap(W, H, title, desc, "\n".join(parts)), table

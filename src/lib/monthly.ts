@@ -23,8 +23,10 @@ const meta = (dir: string, key: string): { source_url?: string; tbl_nm?: string;
 
 /** KOSIS 분기 시점(YYYY0Q)을 분기 끝 달(YYYY-03·06·09·12)로. */
 const qm = (s: string) => (/^\d{4}0[1-4]$/.test(s) ? `${s.slice(0, 4)}-${String(Number(s.slice(5)) * 3).padStart(2, '0')}` : s);
+/** 시도 열(C1_NM)이 있으면 대구 행만 — 표를 전 지역(area: [])으로 받아도 대구 페이지는 그대로(2026-10-06 시도 비교) */
+export const daeguRow = (r: Record<string, string>) => !r.C1_NM || r.C1_NM.startsWith('대구');
 export function kosis(key: string, pick: (r: Record<string, string>) => boolean, quarterly = false): Pt[] {
-  return readCsv(`data/kosis/${key}.csv`).filter(pick).map(r => ({ m: quarterly ? qm(r.PRD_DE) : ym(r.PRD_DE), v: Number(r.DT) }))
+  return readCsv(`data/kosis/${key}.csv`).filter(daeguRow).filter(pick).map(r => ({ m: quarterly ? qm(r.PRD_DE) : ym(r.PRD_DE), v: Number(r.DT) }))
     .filter(p => /^\d{4}-\d{2}$/.test(p.m) && Number.isFinite(p.v)).sort((a, b) => a.m.localeCompare(b.m));
 }
 function ecos(key: string, pick: (r: Record<string, string>) => boolean): Pt[] {

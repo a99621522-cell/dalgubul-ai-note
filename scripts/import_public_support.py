@@ -9,6 +9,7 @@
 사용: python3 scripts/import_public_support.py [data/raw]
 """
 from __future__ import annotations
+import datetime as dt
 
 import csv
 import io
@@ -118,6 +119,8 @@ MAPPINGS: dict[str, dict] = {
                                            "경북대": "북구", "대구보건대": "북구", "계명대학교": "남구", "영남이공대": "남구", "계명문화대": "달서구", "달서구": "달서구",
                                            "대구공업대": "달서구", "중소벤처기업진흥공단": "달서구", "중진공": "달서구",
                                            "국가물산업": "달성군", "물산업": "달성군", "디지스타트업": "중구", "스케일업허브": "동구", "DASH": "동구", "수성": "수성구"})},
+    # 15063516 한국창업보육협회 창업보육센터 입주기업 현황(번호,지역,센터,기업명,업종,기업상태)은 2026-10-06 확인 결과 기업상태가 전부 '입주'(졸업 행 없음, 대구 284행 = 15122804 와 같은 집합 + 예비창업자)라 읽지 않는다.
+    # 졸업 기업 명단은 포털 파일에 없다 — BI-Net(bi.go.kr, 미국 러너 연결 거부)이나 센터 홈페이지 몫(운영자 지시 2026-10-06 '졸업 기업 붙여' → 자료 없음으로 보고)
     "3033893": {"kind": "tag", "tag": "innobiz", "source": "중소벤처기업부 혁신형중소기업 현황(공공데이터포털)",
                 "name": ["기업명", "업체명", "회사명"], "address": ["주소", "소재지"], "region": ("지역", "대구"),
                 "sector": ["업종", "업종명"], "product": ["주요제품", "주생산품"], "founded": []},
@@ -261,6 +264,8 @@ def main(argv: list[str]) -> int:
                         continue  # 업종 열로 보아 기관
                     if m.get("skip") and re.search(m["skip"][1], pick(r, m["skip"][0])):
                         continue  # 예비창업자 등 기업이 아닌 행
+                    if m.get("keep") and not re.search(m["keep"][1], pick(r, m["keep"][0])):
+                        continue  # 조건(예: 기업상태 졸업)에 맞는 행만
                     addr = pick(r, m["address"])
                     if m.get("district_by") and not re.search(r"대구(?:광역시)?\s*\S+?[구군]", addr):
                         key = pick(r, m["district_by"][0])
@@ -271,7 +276,7 @@ def main(argv: list[str]) -> int:
                         addr = f"대구광역시 {m['default_district']} " + re.sub(r"^대구(?:광역시)?\s*", "", addr)  # 단지 소재지(첨복단지=동구)로 구·군 보완
                     out.append({"회사명": names[0], "주소": addr, "업종": pick(r, m["sector"]), "사업내용": pick(r, m["product"]),
                                 "종사자수": "", "설립연도": pick(r, m["founded"]) if m.get("founded") else "", "태그": m["tag"],
-                                "출처": m["source"], "기준월": as_of_from(f.stem)})
+                                "출처": m["source"], "기준월": as_of_from(f.stem) or (dt.date.today().strftime("%Y-%m") if m.get("as_of_run_month") else "")})   # 파일 이름에 날짜가 없는 자료는 받은 달
             if not out:
                 print(f"[{pk}] 대구·기업 사전 일치 행 없음 ({len(rows):,}행, 열 {cols[:12]})")
                 continue

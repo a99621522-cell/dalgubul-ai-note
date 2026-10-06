@@ -1,9 +1,9 @@
 /**
- * 브라우저에서 한글(HWPX) 파일 만들기 — 서버·라이브러리 없음. v2 양식 복제 방식(docs/prompts/site_hwpx_skill.md 3절, 2026-10-06).
- * public/hwpx/template.json(scripts/hwpx_template.py: 양식의 header.xml·용지 문단·원형 XML 조각)을 받아 DOMParser 로 원형(문단·칸·표·그림)을
- * cloneNode 해 글자·속성만 바꾸고 XMLSerializer 로 section0.xml 을 쓴 뒤 zip 으로 묶는다. 문자열로 hp:p·hp:tc 를 새로 쓰지 않는다(스킬 원칙).
- * 입력 Block 은 scripts/hwpx_blocks.py(Python 판)와 같다. 문단·글자 모양 이름은 hwpx_report.py 의 PARA_SPECS / CHAR_SPECS.
- * 사이트 노출은 data/hwpx/compat.json 의 approved(운영자 실물 시험 통과) 뒤에만 — 그 전에는 단추를 그리지 않는다(2026-10-01 운영자 확인 유지).
+ * 브라우저에서 한글(HWPX) 파일 만들기 — 서버·라이브러리 없음. v3 공무원 양식 복제(운영자 지시 2026-10-06 '내가 올린 공무원 한글 파일 형식으로').
+ * public/hwpx/template.json(scripts/hwpx_template.py: 양식의 header.xml 그대로 + 원형 XML 조각)을 받아 DOMParser 로 원형(절 머리표·□·○·-·※·표·표지·그림)을
+ * cloneNode 해 글자·속성만 바꾸고 XMLSerializer 로 section0.xml 을 쓴 뒤 zip 으로 묶는다. 스타일을 덧붙이지 않는다(id 충돌 없음).
+ * 입력 Block 은 scripts/hwpx_blocks.py(Python 판)와 같다. 문단 이름 → 양식 역할: title/h2 → 절 머리표(Ⅰ Ⅱ …), h3 → □, body → ○, bullet → -, note/caption/src → ※.
+ * 사이트 노출은 data/hwpx/compat.json 의 approved(운영자 실물 시험 통과) 뒤에만.
  */
 export type Seg = [text: string, char: string];
 export type CellObj = { t: string; cs?: number; rs?: number; p?: string; char?: string };
@@ -13,104 +13,109 @@ export type Block =
   | { table: Cell[][]; head?: boolean; headRows?: number; widths?: number[]; fill?: string; margin?: number }
   | { pic: Uint8Array; ext: 'png' | 'jpg'; w: number; h: number; caption?: string };
 
-type Template = { version: number; ids: { para: Record<string, string>; char: Record<string, string>; border: Record<string, string> }; text_w: number; ns: Record<string, string>;
-  sec_open: string; sec_close: string; proto: { p: string; tbl: string; tc: string; pic: string }; hpf: string; files: Record<string, string> };
+type Template = { version: number; text_w: number; ns: Record<string, string>; marks: Record<string, string>; roles: Record<string, string | null>; roman: string[];
+  sec_open: string; sec_close: string; proto: Record<string, string>; hpf: string; files: Record<string, string> };
 
 let tpl: Promise<Template> | null = null;
 const template = () => (tpl ??= fetch('/hwpx/template.json').then(r => { if (!r.ok) throw new Error('template'); return r.json(); }));
 /** 시험 하네스(scripts/hwpx_browser.mjs)가 받은 JSON 을 바로 넣을 때 */
 export function setTemplate(t: Template): void { tpl = Promise.resolve(t); }
 
-const NUMERIC = /^[\d,.%~\-–\s곳명건개년월억원만천+]+$/;
 export const p = (p: string, ...segs: Seg[]): Block => ({ p, segs });
 export const table = (rows: Cell[][], opt: { head?: boolean; headRows?: number; widths?: number[]; fill?: string; margin?: number } = {}): Block => ({ table: rows, ...opt });
 
 /* ---------- DOM 복제 ---------- */
 class Doc {
-  doc: XMLDocument; root: Element; hp: string; tblSeq = 0; images: { id: string; data: Uint8Array; ext: string }[] = [];
+  doc: XMLDocument; root: Element; hp: string; tblSeq = 0; secN = 0; coverOn = false; images: { id: string; data: Uint8Array; ext: string }[] = [];
   constructor(public t: Template) {
     this.hp = t.ns.hp;
     this.doc = new DOMParser().parseFromString(t.sec_open + t.sec_close, 'application/xml');
     if (this.doc.getElementsByTagName('parsererror').length) throw new Error('template xml');
     this.root = this.doc.documentElement;
   }
-  /** 원형 조각을 양식 네임스페이스 안에서 파싱해 이 문서로 들여온다 */
-  proto(xml: string): Element {
+  proto(key: string): Element {
     const decl = Object.entries(this.t.ns).map(([k, v]) => `xmlns:${k}="${v}"`).join(' ');
-    const d = new DOMParser().parseFromString(`<hs:sec ${decl}>${xml}</hs:sec>`, 'application/xml');
-    const el = d.documentElement.firstElementChild!;
-    return this.doc.importNode(el, true) as Element;
+    const d = new DOMParser().parseFromString(`<hs:sec ${decl}>${this.t.proto[key]}</hs:sec>`, 'application/xml');
+    return this.doc.importNode(d.documentElement.firstElementChild!, true) as Element;
   }
   q(el: Element, local: string): Element | null { return el.getElementsByTagNameNS(this.hp, local)[0] ?? null; }
   qa(el: Element, local: string): Element[] { return Array.from(el.getElementsByTagNameNS(this.hp, local)); }
-  para(b: { p: string; segs: Seg[] }): Element {
-    const ids = this.t.ids;
-    const el = this.proto(this.t.proto.p);
-    el.setAttribute('paraPrIDRef', ids.para[b.p] ?? ids.para.body);
-    const runProto = this.q(el, 'run')!; runProto.remove();
-    for (const [text, c] of (b.segs.length ? b.segs : ([['', 'body']] as Seg[]))) {
-      const r = runProto.cloneNode(true) as Element;
-      r.setAttribute('charPrIDRef', ids.char[c] ?? ids.char.body);
-      this.q(r, 't')!.textContent = text;
-      el.appendChild(r);
-    }
+  /** 문단의 글 run 하나만 남기고 글자를 바꾼다(양식 글자 모양 유지) — hwpx_report.set_para_text 와 같은 규칙 */
+  setText(para: Element, text: string): void {
+    const runs = Array.from(para.children).filter(c => c.localName === 'run');
+    let keep = runs.find(r => this.q(r, 't')) ?? runs[0];
+    if (!keep) { keep = this.doc.createElementNS(this.hp, 'hp:run'); para.appendChild(keep); }
+    for (const r of runs) if (r !== keep && this.q(r, 't') && !this.q(r, 'ctrl') && !this.q(r, 'tbl')) r.remove();
+    const ts = this.qa(keep, 't'); ts.slice(1).forEach(x => x.remove());
+    let tEl = ts[0]; if (!tEl) { tEl = this.doc.createElementNS(this.hp, 'hp:t'); keep.appendChild(tEl); }
+    tEl.textContent = text;
+  }
+  para(role: string, text: string): Element {
+    const el = this.proto(role);
+    this.setText(el, text ? (this.t.marks[role] ?? '') + text : '');
     return el;
   }
-  table(b: { table: Cell[][]; head?: boolean; headRows?: number; widths?: number[]; fill?: string; margin?: number }): Element {
-    const t = this.t, ids = t.ids, rows = b.table, margin = b.margin ?? 320;
-    const nhead = b.headRows ?? (b.head !== false ? 1 : 0), head = nhead > 0;
-    const parts = (c: Cell): { text: string; cs: number; rs: number; p?: string; char?: string; blocks?: Block[] } =>
-      typeof c === 'string' ? { text: c, cs: 1, rs: 1 } : Array.isArray(c) ? { text: '', cs: 1, rs: 1, blocks: c } : { text: c.t ?? '', cs: c.cs || 1, rs: c.rs || 1, p: c.p, char: c.char };
-    // 격자 배치(HTML 규칙: 덮이지 않은 칸만 나열)
+  section(title: string, pageBreak = false): Element {
+    this.secN++;
+    const el = this.proto('sec'); const tbl = this.q(el, 'tbl')!; tbl.setAttribute('id', String(2085243000 + ++this.tblSeq));
+    const tcs = this.qa(tbl, 'tc');
+    this.setText(this.q(tcs[0], 'p')!, this.t.roman[(this.secN - 1) % this.t.roman.length]);
+    this.setText(this.q(tcs[2], 'p')!, ' ' + title);
+    el.setAttribute('pageBreak', pageBreak || this.secN > 1 ? '1' : '0');   // 양식처럼 절마다 새 쪽, 첫 절은 표지가 있을 때만
+    return el;
+  }
+  cover(title: string, sub: string): Element {
+    const el = this.proto('cover'); const tbl = this.q(el, 'tbl')!; tbl.setAttribute('id', String(2085243000 + ++this.tblSeq));
+    const mid = this.qa(tbl, 'tr')[1]; const ps = this.qa(this.q(mid, 'tc')!, 'p');
+    this.setText(ps[0], title); if (ps[1]) this.setText(ps[1], sub);
+    return el;
+  }
+  table(b: { table: Cell[][]; head?: boolean; headRows?: number; widths?: number[] }): Element {
+    const rows = b.table, nhead = b.headRows ?? (b.head !== false ? 1 : 0);
+    const parts = (c: Cell): { text: string; cs: number; rs: number; blocks?: Block[] } =>
+      typeof c === 'string' ? { text: c, cs: 1, rs: 1 } : Array.isArray(c) ? { text: '', cs: 1, rs: 1, blocks: c } : { text: c.t ?? '', cs: c.cs || 1, rs: c.rs || 1 };
     const occ = new Set<string>(); let ncol = 0;
-    const placed: { ri: number; ci: number; cs: number; rs: number; cell: Cell }[][] = rows.map((row, ri) => {
-      let col = 0; const rp: { ri: number; ci: number; cs: number; rs: number; cell: Cell }[] = [];
+    const placed = rows.map((row, ri) => { let col = 0; const rp: { ri: number; ci: number; cs: number; rs: number; cell: Cell }[] = [];
       for (const cell of row) { while (occ.has(`${ri},${col}`)) col++; const { cs, rs } = parts(cell);
         for (let dr = 0; dr < rs; dr++) for (let dc = 0; dc < cs; dc++) occ.add(`${ri + dr},${col + dc}`);
         rp.push({ ri, ci: col, cs, rs, cell }); col += cs; }
       ncol = Math.max(ncol, col); return rp; });
     placed.forEach((rp, ri) => { for (let ci = 0; ci < ncol; ci++) if (!occ.has(`${ri},${ci}`)) { rp.push({ ri, ci, cs: 1, rs: 1, cell: '' }); occ.add(`${ri},${ci}`); } rp.sort((a, b2) => a.ci - b2.ci); });
+    const el = this.proto('tbl'); const tbl = this.q(el, 'tbl')!; tbl.setAttribute('id', String(2085243000 + ++this.tblSeq));
+    const W = Number(this.q(tbl, 'sz')!.getAttribute('width'));
     let widths = b.widths && b.widths.length === ncol ? [...b.widths] : null;
-    if (!widths) {
-      const lens = Array.from({ length: ncol }, (_, c) => Math.max(6, ...placed.flat().filter(x => x.ci === c && x.cs === 1).map(x => parts(x.cell).text.length)));
-      const tot = lens.reduce((a, x) => a + x, 0); widths = lens.map(l => Math.max(Math.floor((t.text_w * l) / tot), Math.floor(t.text_w * 0.08)));
-    }
-    const scale = t.text_w / widths.reduce((a, x) => a + x, 0); widths = widths.map(w => Math.floor(w * scale)); widths[ncol - 1] += t.text_w - widths.reduce((a, x) => a + x, 0);
-    const el = this.proto(t.proto.tbl);
-    el.setAttribute('paraPrIDRef', ids.para.body);
-    const tbl = this.q(el, 'tbl')!;
-    tbl.setAttribute('id', String(2085242905 + ++this.tblSeq));
-    this.qa(tbl, 'tr').forEach(tr => tr.remove());
-    tbl.setAttribute('borderFillIDRef', ids.border.none); tbl.setAttribute('repeatHeader', head ? '1' : '0');
-    tbl.setAttribute('rowCnt', String(rows.length)); tbl.setAttribute('colCnt', String(ncol));
-    const sz = this.q(tbl, 'sz')!; sz.setAttribute('width', String(t.text_w)); sz.setAttribute('height', String(Math.max(1, rows.length) * 1460));
-    const im = this.q(tbl, 'inMargin'); if (im) { im.setAttribute('left', String(margin)); im.setAttribute('right', String(margin)); im.setAttribute('top', '230'); im.setAttribute('bottom', '230'); }
-    const tcProto = this.proto(t.proto.tc);
+    if (!widths) { const lens = Array.from({ length: ncol }, (_, c) => Math.max(4, ...placed.flat().filter(x => x.ci === c && x.cs === 1).map(x => parts(x.cell).text.length)));
+      const tot = lens.reduce((a, x) => a + x, 0); widths = lens.map(l => Math.max(Math.floor((W * l) / tot), Math.floor(W * 0.08))); }
+    const scale = W / widths.reduce((a, x) => a + x, 0); widths = widths.map(w => Math.floor(w * scale)); widths[ncol - 1] += W - widths.reduce((a, x) => a + x, 0);
+    const trs = this.qa(tbl, 'tr'); const headTcs = this.qa(trs[0], 'tc'), bodyTcs = this.qa(trs[1], 'tc');
+    trs.forEach(tr => tr.remove());
+    const pick = (protos: Element[], ci: number, cs: number) => { const last = ci + cs >= ncol; return ci === 0 ? protos[0] : last ? protos[protos.length - 1] : protos[1]; };
     placed.forEach((rp, ri) => {
       const tr = this.doc.createElementNS(this.hp, 'hp:tr'); const isHead = ri < nhead;
       for (const { ci, cs, rs, cell } of rp) {
         const c = parts(cell);
-        const tc = tcProto.cloneNode(true) as Element;
+        const tc = pick(isHead ? headTcs : bodyTcs, ci, cs).cloneNode(true) as Element;
         tc.setAttribute('header', isHead ? '1' : '0');
-        tc.setAttribute('borderFillIDRef', ids.border[b.fill ?? (isHead ? 'th' : ri % 2 === 0 ? 'td_alt' : 'td')]);
-        const sl = this.q(tc, 'subList')!; this.qa(sl, 'p').forEach(x => x.remove()); sl.setAttribute('vertAlign', isHead || rs > 1 ? 'CENTER' : 'TOP');
-        if (c.blocks) for (const x of c.blocks) sl.appendChild(this.block(x));
-        else sl.appendChild(this.para({ p: c.p ?? (isHead ? 'th' : NUMERIC.test(c.text || 'x') ? 'tdc' : 'td'), segs: [[c.text, c.char ?? (isHead ? 'th' : 'td')]] }));
+        const sl = this.q(tc, 'subList')!; const ps = this.qa(sl, 'p'); ps.slice(1).forEach(x => x.remove());
+        if (c.blocks) { ps[0].remove(); for (const x of c.blocks) for (const e of this.blocks(x)) sl.appendChild(e); }
+        else this.setText(ps[0], c.text);
+        sl.setAttribute('vertAlign', 'CENTER');
         const addr = this.q(tc, 'cellAddr')!; addr.setAttribute('colAddr', String(ci)); addr.setAttribute('rowAddr', String(ri));
         const span = this.q(tc, 'cellSpan')!; span.setAttribute('colSpan', String(cs)); span.setAttribute('rowSpan', String(rs));
-        const csz = this.q(tc, 'cellSz')!; csz.setAttribute('width', String(widths!.slice(ci, ci + cs).reduce((a, x) => a + x, 0))); csz.setAttribute('height', String(1460 * rs));
-        const cm = this.q(tc, 'cellMargin'); if (cm) { cm.setAttribute('left', String(margin)); cm.setAttribute('right', String(margin)); cm.setAttribute('top', '230'); cm.setAttribute('bottom', '230'); }
+        const csz = this.q(tc, 'cellSz')!; csz.setAttribute('width', String(widths!.slice(ci, ci + cs).reduce((a, x) => a + x, 0))); csz.setAttribute('height', String(1800 * rs));
         tr.appendChild(tc);
       }
       tbl.appendChild(tr);
     });
+    tbl.setAttribute('rowCnt', String(rows.length)); tbl.setAttribute('colCnt', String(ncol)); tbl.setAttribute('repeatHeader', nhead ? '1' : '0');
+    this.q(tbl, 'sz')!.setAttribute('height', String(1800 * rows.length));
     return el;
   }
-  pic(b: { pic: Uint8Array; ext: 'png' | 'jpg'; w: number; h: number; caption?: string }): Element {
+  pic(b: { pic: Uint8Array; ext: 'png' | 'jpg'; w: number; h: number; caption?: string }): Element[] {
     const id = `image${this.images.length + 2}`; this.images.push({ id, data: b.pic, ext: b.ext });
     const PX = 75, MAXW = 46000, MAXH = 60000;
     const scale = Math.min(1, MAXW / (b.w * PX), MAXH / (b.h * PX)); const w = Math.round(b.w * PX * scale), h = Math.round(b.h * PX * scale);
-    const el = this.proto(this.t.proto.pic);
+    const el = this.proto('pic');
     const pic = this.q(el, 'pic')!; pic.setAttribute('id', String(2000000000 + this.images.length)); pic.setAttribute('zOrder', String(10 + this.images.length)); pic.setAttribute('instid', String(1100000000 + this.images.length));
     for (const tag of ['orgSz', 'curSz', 'sz']) { const e = this.q(pic, tag); if (e) { e.setAttribute('width', String(w)); e.setAttribute('height', String(h)); } }
     const rot = this.q(pic, 'rotationInfo'); if (rot) { rot.setAttribute('centerX', String(w >> 1)); rot.setAttribute('centerY', String(h >> 1)); }
@@ -119,9 +124,18 @@ class Doc {
     const clip = this.q(pic, 'imgClip'); if (clip) { clip.setAttribute('right', String(b.w * PX)); clip.setAttribute('bottom', String(b.h * PX)); }
     pic.getElementsByTagNameNS(hc, 'img')[0]?.setAttribute('binaryItemIDRef', id);
     const cm = this.q(pic, 'shapeComment'); if (cm) cm.textContent = b.caption ?? '그림';
-    return el;
+    return b.caption ? [el, this.para('note', b.caption)] : [el];
   }
-  block(b: Block): Element { return 'table' in b ? this.table(b) : 'pic' in b ? this.pic(b) : this.para(b); }
+  blocks(b: Block): Element[] {
+    if ('table' in b) return [this.table(b)];
+    if ('pic' in b) return this.pic(b);
+    const text = b.segs.map(s => s[0]).join('');
+    const role = this.t.roles[b.p] === undefined ? 'o' : this.t.roles[b.p];
+    if (role === null || b.p === 'kicker') return [];
+    if (role === 'sec') return [this.section(text, this.secN === 0 && this.coverOn)];
+    if (role === 'blank' || !text) return [this.para('blank', '')];
+    return [this.para(role, text)];
+  }
   serialize(): string { return '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + new XMLSerializer().serializeToString(this.root); }
 }
 
@@ -151,12 +165,16 @@ export function zip(entries: [string, Uint8Array][]): Blob {
   return new Blob([...parts, ...central, new Uint8Array(eo.buffer)] as BlobPart[], { type: 'application/hwp+zip' });
 }
 
-/** 블록 목록 → HWPX Blob. preview 는 한글 파일 탐색기 미리보기 글(첫 줄들). */
-export async function buildHwpx(blocks: Block[], preview = ''): Promise<Blob> {
+/** 블록 목록 → HWPX Blob. preview 는 한글 파일 탐색기 미리보기 글. cover=true 면 표지(제목·부제) 뒤 새 쪽에서 본문 시작 */
+export async function buildHwpx(blocks: Block[], preview = '', opt: { cover?: boolean } = {}): Promise<Blob> {
   const t = await template();
-  if (t.version !== 2) throw new Error('template v2 필요');
+  if (t.version !== 3) throw new Error('template v3 필요');
   const d = new Doc(t);
-  for (const b of blocks) d.root.appendChild(d.block(b));
+  if (opt.cover) {
+    const txt = (name: string) => { const b = blocks.find(x => 'p' in x && x.p === name) as { segs: Seg[] } | undefined; return b ? b.segs.map(s => s[0]).join('') : ''; };
+    d.coverOn = true; d.root.appendChild(d.cover(txt('title'), txt('kicker')));
+  }
+  for (const b of blocks) for (const e of d.blocks(b)) d.root.appendChild(e);
   const enc = new TextEncoder();
   const entries: [string, Uint8Array][] = [];
   const manifest = d.images.map(i => `<opf:item id="${i.id}" href="BinData/${i.id}.${i.ext}" media-type="image/${i.ext === 'jpg' ? 'jpeg' : i.ext}" isEmbeded="1"/>`).join('');

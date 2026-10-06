@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-"""브라우저용 한글(HWPX) 양식 묶음 → public/hwpx/template.json (v2, 양식 복제 방식 — docs/prompts/site_hwpx_skill.md 3절, 2026-10-06)
+"""브라우저용 한글(HWPX) 양식 묶음 → public/hwpx/template.json (v3, 공무원 양식 복제 — 운영자 지시 2026-10-06)
 
-기업 카드·통계표·검토 의견서를 방문자 브라우저에서 바로 HWPX 로 만들 수 있게(서버 없음, 기업 1만여 곳의 파일을 미리 만들지 않음)
-hwpx_report.py 의 디자인 스타일(문단·글자·테두리 모양)을 더한 header.xml 과 양식에서 뽑은 **원형 XML 조각**(문단·run·표 문단·칸·그림 run)을 JSON 하나로 내보낸다.
-src/scripts/hwpx.ts 가 이 파일을 받아 DOMParser 로 원형을 복제(cloneNode)해 글자만 바꾸고 XMLSerializer 로 section0.xml 을 쓴 뒤 zip 으로 묶는다
-(문자열 템플릿으로 hp:p·hp:tc 를 새로 쓰지 않는다 — 스킬 원칙). 역할 ↔ 양식 문단 인덱스는 config/hwpx_forms.yml.
+기업 카드·통계표·검토 의견서를 방문자 브라우저에서 바로 HWPX 로 만들 수 있게(서버 없음) 운영자 양식(scripts/data/hwpx/report_basic.hwpx)의
+header.xml **그대로**와 양식에서 뽑은 원형 XML 조각(절 머리표·□·○·-·※·빈 문단·표·표지·그림 run)을 JSON 하나로 내보낸다.
+src/scripts/hwpx.ts 가 이 파일을 받아 DOMParser 로 원형을 복제(cloneNode)해 글자만 바꾸고 XMLSerializer 로 section0.xml 을 쓴 뒤 zip 으로 묶는다.
+스타일을 덧붙이지 않으므로 id 충돌이 없다. 역할 ↔ 양식 문단 인덱스는 scripts/hwpx_blocks.py FORM(= config/hwpx_forms.yml).
 
-양식(scripts/data/hwpx/report_basic.hwpx)이나 hwpx_report.py 의 스타일 스펙, hwpx_forms.yml 을 바꾸면 다시 실행해 커밋한다.
-사용: python3 scripts/hwpx_template.py [--check] [--detect <양식.hwpx>]
-  --detect: 양식의 최상위 문단을 훑어 역할 후보(표지·목차·□○-※ 단계·표·그림)를 짐작해 yml 초안을 출력한다(운영자가 확인해 hwpx_forms.yml 에 적는다)
+양식을 바꾸면 다시 실행해 커밋한다. 사용: python3 scripts/hwpx_template.py [--check] [--detect <양식.hwpx>]
 """
 import base64, json, re, sys, zipfile
 import xml.etree.ElementTree as ET
@@ -19,41 +17,37 @@ import hwpx_report as H  # noqa: E402
 import hwpx_blocks as B  # noqa: E402
 
 OUT = H.ROOT / "public" / "hwpx" / "template.json"
-FORMS = H.ROOT / "config" / "hwpx_forms.yml"
-SKIP = ("Preview/PrvImage.png", "Preview/PrvText.txt", "Contents/section0.xml")   # 미리보기 글과 본문은 JS 가 만든다
+SKIP = ("Preview/PrvImage.png", "Preview/PrvText.txt", "Contents/section0.xml")
 NOLSEG = lambda x: re.sub(r"<hp:linesegarray>.*?</hp:linesegarray>", "", x, flags=re.S)
 
 
 def strip_ns_decl(xml: str) -> str:
-    """ET.tostring 이 조각마다 붙이는 xmlns 선언을 뗀다(브라우저는 루트의 선언을 쓴다)."""
-    return re.sub(r'\s+xmlns:\w+="[^"]+"', "", xml, count=20)
+    return re.sub(r'\s+xmlns:\w+="[^"]+"', "", xml, count=30)
+
+
+def frag(el) -> str:
+    return strip_ns_decl(NOLSEG(ET.tostring(el, encoding="unicode")))
 
 
 def export() -> dict:
-    ctx = B.Ctx()
-    HP = H.HP; ids = ctx.ids
+    ctx = B.Ctx(form=True)
     root_tag = ctx.root_tag
     sec_open = ET.tostring(ctx.root, encoding="unicode")
     assert sec_open.endswith("</hs:sec>"), sec_open[-40:]
     sec_open = re.sub(r"^<hs:sec\b[^>]*>", root_tag, NOLSEG(sec_open[: -len("</hs:sec>")]), count=1)
-    # 원형 문단(양식 복제): 글 run 하나 — hwpx.ts 가 cloneNode 뒤 paraPrIDRef·charPrIDRef·hp:t 만 바꾼다
-    p_proto = strip_ns_decl(NOLSEG(ET.tostring(H.para(ids, "body", [("", "body")]), encoding="unicode")))
-    # 원형 표 문단(1×1, 디자인 스타일) — hwpx.ts 가 tr 을 지우고 칸 원형(tc)을 복제해 격자를 만든다
-    t = B.merge_table(ctx, [["원형"]], head=False, widths=[H.TEXT_W], fill="td_alt", margin=320)
-    tbl_proto = strip_ns_decl(NOLSEG(ET.tostring(t, encoding="unicode")))
-    tc_proto = re.search(r"<hp:tc\b.*</hp:tc>", tbl_proto, re.S).group(0)
-    # 원형 그림 문단(1×1 px 자리) — hwpx.ts 가 binaryItemIDRef·크기만 바꾼다
-    pic_proto = strip_ns_decl(ET.tostring(H.pic_paragraph(ids, "image9", 1, 1, "그림"), encoding="unicode"))
+    proto = {k: frag(v) for k, v in ctx.proto.items()}
+    # 그림 run 원형(※ 글자 모양, 빈 문단 모양)
+    note_run = ctx.proto["note"].find(H.HP + "run")
+    ids = {"char": {"caption": note_run.get("charPrIDRef"), "body": note_run.get("charPrIDRef")}, "para": {"fig": ctx.proto["blank"].get("paraPrIDRef")}}
+    proto["pic"] = frag(H.pic_paragraph(ids, "image9", 1, 1, "그림"))
     files = {}
     for n in ctx.z.namelist():
         if n in SKIP:
             continue
-        data = ctx.header_xml.encode("utf-8") if n == "Contents/header.xml" else ctx.z.read(n)
-        files[n] = base64.b64encode(data).decode("ascii")
+        files[n] = base64.b64encode(ctx.z.read(n)).decode("ascii")
     hpf = ctx.z.read("Contents/content.hpf").decode("utf-8")
-    return {"version": 2, "ids": ids, "text_w": H.TEXT_W, "ns": dict(re.findall(r'xmlns:(\w+)="([^"]+)"', root_tag)),
-            "sec_open": sec_open, "sec_close": "</hs:sec>", "proto": {"p": p_proto, "tbl": tbl_proto, "tc": tc_proto, "pic": pic_proto},
-            "hpf": hpf, "files": files}
+    return {"version": 3, "text_w": H.TEXT_W, "ns": dict(re.findall(r'xmlns:(\w+)="([^"]+)"', root_tag)), "marks": B.MARK, "roles": B.ROLE,
+            "roman": B.ROMAN, "sec_open": sec_open, "sec_close": "</hs:sec>", "proto": proto, "hpf": hpf, "files": files}
 
 
 def detect(form: Path) -> str:
@@ -90,7 +84,7 @@ def main() -> int:
         print("ok"); return 0
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"→ {OUT.relative_to(H.ROOT)} ({OUT.stat().st_size:,} bytes, 파일 {len(d['files'])}개)")
+    print(f"→ {OUT.relative_to(H.ROOT)} ({OUT.stat().st_size:,} bytes, 파일 {len(d['files'])}개, 원형 {len(d['proto'])}개)")
     return 0
 
 

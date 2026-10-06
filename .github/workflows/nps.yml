@@ -8,7 +8,8 @@ name: 월간 국민연금 사업장 수집 → 통계 집계 → 그래프 → �
 
 on:
   schedule:
-    - cron: "0 21 5 * *"      # 매월 6일 06:00 KST (포털 월별 갱신 뒤)
+    - cron: "0 21 5 * *"      # 매월 6일 06:00 KST (포털 월별 갱신 뒤, 재시도)
+    - cron: "0 21 27 * *"     # 매월 28일 06:00 KST — 포털은 매달 23~26일쯤 전월 자료로 갈아끼우므로 그때 바로 받아 달마다 빠짐없이 쌓는다(2026-10-06: 포털에는 최신 한 달 파일만 있어 과거 소급 불가)
   workflow_dispatch:
     inputs:
       api_url:
@@ -39,7 +40,21 @@ jobs:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
           API_URL: ${{ inputs.api_url }}
           MONTH: ${{ inputs.month }}
-        run: python3 scripts/collect_nps.py ${API_URL:+--url "$API_URL"} ${MONTH:+--month "$MONTH"}
+        run: |
+          set +e
+          # 키가 있으면 오픈API, 없으면 포털 파일데이터(15083277)를 그대로 받아 대구만 거른다(키 불필요). 파일명의 자료생성년월로 data/nps/YYYYMM.csv 가 정해져 같은 달은 덮어쓰고 새 달은 쌓인다
+          if [ -n "$DATA_GO_KR_KEY" ]; then
+            python3 scripts/collect_nps.py ${API_URL:+--url "$API_URL"} ${MONTH:+--month "$MONTH"}
+          else
+            echo "DATA_GO_KR_KEY 없음 → 포털 파일로 받음"
+            python3 scripts/fetch_datago.py --save 15083277 --max 1
+            for f in data/raw/15083277/*.csv; do [ -f "$f" ] && python3 scripts/collect_nps.py --file "$f" ${MONTH:+--month "$MONTH"}; done
+          fi
+          ls -la data/nps/*.csv
+          # 팩토리온에 없는 사업장 → 산단 외 기업(fetch_public 의 save 단계와 같은 처리)
+          python3 scripts/nps_to_extra.py && python3 scripts/import_extra.py --replace-source '국민연금' && rm -f scripts/data/extra/nps_*.csv
+          python3 scripts/sites.py
+          true
       - name: 월간 통계 집계 · 그래프 생성
         run: |
           python3 scripts/build_stats.py --backfill
@@ -49,7 +64,7 @@ jobs:
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/nps data/stats src/generated src/content/posts
+          git add data/nps data/stats src/generated src/content/posts scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/company_facts.csv
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 국민연금 사업장 수집·월간 통계 $(date -u +%Y-%m-%d)"
           git push
 

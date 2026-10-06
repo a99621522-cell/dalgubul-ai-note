@@ -61,5 +61,17 @@ export function init(): void {
     finally { hwp.disabled = false; if (hwp.textContent === '만드는 중…') hwp.textContent = '기업 카드 PDF'; }
   });
   prt?.addEventListener('click', () => window.print());
+  // Word(.docx): 한글이 바로 열어 편집·HWP 저장할 수 있는 파일(docs/prompts/site_desktop_hwp_ui.md, 2026-10-06). docx 패키지는 누를 때만 받는다
+  const docx = document.getElementById('card-docx') as HTMLButtonElement | null;
+  docx?.addEventListener('click', async () => {
+    try {
+      docx.disabled = true; docx.textContent = '만드는 중…';
+      const { buildDocx } = await import('./company_docx');
+      const blob = await buildDocx(blocks(c), `기업 카드 · ${c.name}`);
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `기업카드 ${safeName(c.name)}.docx`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      docx.textContent = '기업 카드 Word';
+    } catch { docx.textContent = '만들기 실패'; setTimeout(() => { docx.textContent = '기업 카드 Word'; }, 1800); }
+    finally { docx.disabled = false; }
+  });
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

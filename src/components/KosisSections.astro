@@ -22,7 +22,7 @@ const shown = sections.filter(has);
     {s.tables.map(id => { const t = kosisTable(id); return t && (
       <details class="tbl" open={s.charts.length === 0}>
         <summary>{t.title} <span class="meta">— 표 {t.rows.length}행</span></summary>
-        <div class="scroll-x"><table class="data-table" data-title={t.title}>
+        <div class="scroll-x"><table class="data-table" data-grid data-title={t.title}>
           <thead><tr>{t.columns.map((h, j) => <th class={j ? 'n' : ''}>{h}</th>)}</tr></thead>
           <tbody>{t.rows.map(r => <tr>{r.map((v, j) => j === 0 ? <th scope="row">{v}</th> : <td class="n">{fmtCell(v)}</td>)}</tr>)}</tbody>
         </table></div>

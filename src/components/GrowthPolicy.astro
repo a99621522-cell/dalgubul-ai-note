@@ -34,6 +34,7 @@ const ITEMS: Item[] = [
   { id: 'ai', no: '03', task: 'AX 혁신 — 수성알파시티 AI 서비스 거점', lever: '정보통신 부문 성장', kind: 'grow', ramp: 'now', leaves: ['정보통신업'], unit: '추세보다 더(%p)', ex: 3, hx: 5, metric: '정보통신 부가가치(KOSIS), 수성알파시티 입주 기업·고용(기업 사전)' },
   { id: 'ax', no: '03', task: 'AX 혁신 — 산단 제조현장 AI 적용', lever: '제조업 7개 업종 생산성', kind: 'grow', ramp: 'now', leaves: MFG, unit: '추세보다 더(%p)', ex: 1, metric: '광공업생산지수(통계 › 제조업), 제조업 노동생산성' },
   { id: 'robot', no: '04', task: '국가대표 창업도시 — 로봇·모빌리티', lever: '기계·운송장비 부문 성장', kind: 'grow', ramp: 'now', leaves: ['기계 운송장비 및 기타 제품 제조업'], unit: '추세보다 더(%p)', ex: 2, metric: '로봇 그룹 기업 수·고용(기업 사전), 창업기업 수' },
+  { id: 'startup', no: '04', task: '국가대표 창업도시 — 창업기업(스타트업) 유치·성장', lever: '창업기업 매출 증가', kind: 'firm', ramp: 'now', leaves: ['정보통신업'], unit: '창업기업 연 매출 합 증가(억 원)', ex: 500, note: '업종은 정보통신(AI·SW) 가정 — 제조 창업은 위 공장 유치 항목으로', metric: '창업기업 수(기업 사전 태그), 신생기업 수(기업생멸행정통계)' },
   { id: 'medtech', no: '04', task: '국가대표 창업도시 — 의료(첨복단지)', lever: '의료기기·정밀기기 매출 증가', kind: 'plant', ramp: 'now', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '늘어난 연 매출(억 원)', ratio: P.vaRatio.med, ratioNote: '의료·정밀·광학기기', ex: 1000, hx: 3000, metric: '의료기기 생산액(식약처, 통계 › 제조업), 첨복단지 입주 기업' },
   { id: 'fin', no: '13', task: '기업은행 본점 등 공공기관 이전', lever: '금융·보험 부문 성장', kind: 'grow', ramp: 'now', leaves: ['금융 및 보험업'], unit: '추세보다 더(%p)', ex: 2, hx: 3, metric: '금융·보험 부가가치, 예금은행 대구 수신·여신(ECOS)' },
   { id: 'textile', no: '12', task: '서대구 — 염색산단 첨단복합산단화', lever: '섬유·의복·가죽 감소 멈춤', kind: 'stop', ramp: 'now', leaves: ['섬유 의복 및 가죽 제품 제조업'], ex: 1, metric: '섬유 그룹 기업 수·고용(기업 사전), 섬유 부가가치' },
@@ -102,7 +103,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       </div>
       <div class="tiny muted">
         {i.kind === 'plant' && <>× 부가가치율 {pctR(i.ratio ?? null)}({i.ratioNote}, 광업·제조업조사 대구 {P.mfgYear}년){i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
-        {i.kind === 'firm' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}(한국은행 지역산업연관표 평균 — 이 업종 계수는 조사 항목){i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
+        {i.kind === 'firm' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}(한국은행 지역산업연관표 평균 — 이 업종 계수는 조사 항목){i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}{i.note ? ` · ${i.note}` : ''}</>}
         {i.kind === 'people' && <>{i.perNote} · × 대구 부가가치 계수 {S.k.toFixed(3)}</>}
         {i.kind === 'spend' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}{i.note ? ` · ${i.note}` : ''}</>}
         {i.kind === 'grow' && <>부문 부가가치 × 추가 성장 — 시작 해부터 해마다</>}

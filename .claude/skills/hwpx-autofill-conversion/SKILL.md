@@ -30,3 +30,4 @@ description: 한글(HWPX) 양식을 채워 문서를 만든다. 정책제안 리
 - 만든 파일은 반드시 `python3 scripts/hwpx_check.py <파일>` 로 검사한다(zip 순서·manifest·스타일 참조·표 격자·그림·개인정보). section 루트의 네임스페이스 선언은 양식 그대로 14개를 둔다.
 - 양식을 바꾸면 `python3 scripts/hwpx_template.py --detect <양식>` 으로 역할 후보를 보고 `config/hwpx_forms.yml` 을 고친 뒤 `python3 scripts/hwpx_template.py` 로 `public/hwpx/template.json` 을 다시 내보낸다.
 - 사이트 노출은 `data/hwpx/compat.json` 의 `approved`(운영자 실물 시험, `docs/design/hwpx-compat.md`) 뒤에만. 시험 파일은 `python3 scripts/hwpx_test.py` → `public/hwpx/test/`.
+- 2026-10-06 운영자 지시: 사이트 산출물(기업 카드·표·검토 의견서)은 디자인 스타일이 아니라 **공무원 양식 그대로**(절 머리표·□·○·-·※·맑은 고딕 12 표). `hwpx_blocks.py` 는 form=True 가 기본이고 header.xml 에 아무것도 덧붙이지 않는다. 리포트(hwpx_report.py)의 디자인 판은 별도.

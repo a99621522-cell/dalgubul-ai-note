@@ -248,7 +248,7 @@ def pic_paragraph(ids: dict, bid: str, px_w: int, px_h: int, comment: str):
     """가운데 정렬 문단 하나에 그림(글자처럼 취급)을 넣는다."""
     scale = min(1.0, MAX_IMG_W / (px_w * PX_UNIT), MAX_IMG_H / (px_h * PX_UNIT))
     w, h = int(px_w * PX_UNIT * scale), int(px_h * PX_UNIT * scale)
-    xml = (f'<hp:run xmlns:hp="{NS["hp"]}" xmlns:hc="{NS["hc"]}" charPrIDRef="{ids["char"]["caption"]}"><hp:pic id="{2000000000 + hash(bid) % 100000000}" zOrder="{10 + int(bid[5:])}" numberingType="PICTURE" '
+    xml = (f'<hp:run xmlns:hp="{NS["hp"]}" xmlns:hc="{NS["hc"]}" charPrIDRef="{ids["char"]["caption"]}"><hp:pic id="{2000000000 + int(bid[5:])}" zOrder="{10 + int(bid[5:])}" numberingType="PICTURE" '
            f'textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" href="" groupLevel="0" instid="{1100000000 + int(bid[5:])}" reverse="0">'
            f'<hp:offset x="0" y="0"/><hp:orgSz width="{w}" height="{h}"/><hp:curSz width="{w}" height="{h}"/><hp:flip horizontal="0" vertical="0"/>'
            f'<hp:rotationInfo angle="0" centerX="{w // 2}" centerY="{h // 2}" rotateimage="1"/><hp:renderingInfo><hc:transMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/>'

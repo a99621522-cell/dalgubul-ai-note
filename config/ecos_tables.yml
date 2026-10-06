@@ -82,3 +82,12 @@ tables:
     cycle: A
     years: 6
     note: 후보 찾기용
+  # ── 지역산업연관표 세부 계수(운영자 평가 2026-10-06: 승수가 업종 구분 없이 하나뿐 → 업종별 부가가치·취업유발계수). ECOS 에 표가 있는지 discover 로 확인 ──
+  - key: regional-io-daegu
+    name: 지역산업연관표 — 대구 부문별 부가가치유발계수·취업유발계수(2020년 표)
+    stat_code: ""
+    search: ["지역산업연관표", "지역 산업연관표 유발계수", "지역간 산업연관표"]
+    cycle: A
+    years: 10
+    area: ["대구"]
+    note: 표가 있으면 scripts/data/bok_io_daegu_sectors.csv(sector,k_va,emp — 부문별 대구 안 부가가치유발계수·취업유발계수)로 옮겨 성장 계산기가 업종별 계수를 쓴다. 없으면 공표 책의 평균 계수 하나

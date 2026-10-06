@@ -1,0 +1,228 @@
+{
+ "generated": "2026-10-06",
+ "fit": [
+  2015,
+  2019
+ ],
+ "test": [
+  2019,
+  2024
+ ],
+ "source": "국가데이터처 지역소득(KOSIS, 실질)",
+ "total": {
+  "fit_cagr_pct": 1.3,
+  "actual_cagr_pct": 1.02,
+  "error_pp": 0.28,
+  "pred_2024_trillion": 67.55,
+  "actual_2024_trillion": 66.63,
+  "error_pct": 1.4
+ },
+ "by_sector_sum": {
+  "fit_cagr_pct": 1.65,
+  "actual_cagr_pct": 1.29,
+  "error_pp": 0.35
+ },
+ "sectors": [
+  {
+   "name": "광업",
+   "g_fit": -6.04,
+   "g_actual": 40.02,
+   "pred_2024_eok": 10,
+   "actual_2024_eok": 70,
+   "error_pct": -86.4
+  },
+  {
+   "name": "전기·가스",
+   "g_fit": -4.19,
+   "g_actual": 11.86,
+   "pred_2024_eok": 2805,
+   "actual_2024_eok": 6085,
+   "error_pct": -53.9
+  },
+  {
+   "name": "비금속·금속",
+   "g_fit": 0.62,
+   "g_actual": -7.4,
+   "pred_2024_eok": 29582,
+   "actual_2024_eok": 19524,
+   "error_pct": 51.5
+  },
+  {
+   "name": "사업시설·지원",
+   "g_fit": 4.93,
+   "g_actual": -2.46,
+   "pred_2024_eok": 26654,
+   "actual_2024_eok": 18499,
+   "error_pct": 44.1
+  },
+  {
+   "name": "농림어업",
+   "g_fit": 1.56,
+   "g_actual": 8.94,
+   "pred_2024_eok": 1630,
+   "actual_2024_eok": 2314,
+   "error_pct": -29.6
+  },
+  {
+   "name": "전기·전자·정밀기기",
+   "g_fit": 1.91,
+   "g_actual": 8.38,
+   "pred_2024_eok": 19961,
+   "actual_2024_eok": 27153,
+   "error_pct": -26.5
+  },
+  {
+   "name": "예술·스포츠·여가",
+   "g_fit": 6.23,
+   "g_actual": 2.04,
+   "pred_2024_eok": 8750,
+   "actual_2024_eok": 7154,
+   "error_pct": 22.3
+  },
+  {
+   "name": "정보통신",
+   "g_fit": 4.77,
+   "g_actual": 1.09,
+   "pred_2024_eok": 25232,
+   "actual_2024_eok": 21096,
+   "error_pct": 19.6
+  },
+  {
+   "name": "공공행정",
+   "g_fit": -3.09,
+   "g_actual": 1.16,
+   "pred_2024_eok": 37858,
+   "actual_2024_eok": 46897,
+   "error_pct": -19.3
+  },
+  {
+   "name": "보건·사회복지",
+   "g_fit": 7.29,
+   "g_actual": 3.77,
+   "pred_2024_eok": 74938,
+   "actual_2024_eok": 63443,
+   "error_pct": 18.1
+  },
+  {
+   "name": "도소매",
+   "g_fit": 1.98,
+   "g_actual": -1.11,
+   "pred_2024_eok": 62181,
+   "actual_2024_eok": 53299,
+   "error_pct": 16.7
+  },
+  {
+   "name": "건설업",
+   "g_fit": -2.36,
+   "g_actual": 0.12,
+   "pred_2024_eok": 27837,
+   "actual_2024_eok": 31555,
+   "error_pct": -11.8
+  },
+  {
+   "name": "음식료품·담배",
+   "g_fit": 2.19,
+   "g_actual": 0.1,
+   "pred_2024_eok": 5480,
+   "actual_2024_eok": 4942,
+   "error_pct": 10.9
+  },
+  {
+   "name": "기계·운송장비·기타",
+   "g_fit": -0.3,
+   "g_actual": 2.04,
+   "pred_2024_eok": 39324,
+   "actual_2024_eok": 44156,
+   "error_pct": -10.9
+  },
+  {
+   "name": "운수·창고",
+   "g_fit": 3.55,
+   "g_actual": 5.63,
+   "pred_2024_eok": 28347,
+   "actual_2024_eok": 31304,
+   "error_pct": -9.4
+  },
+  {
+   "name": "협회·수리·개인",
+   "g_fit": -1.7,
+   "g_actual": -3.35,
+   "pred_2024_eok": 11132,
+   "actual_2024_eok": 10229,
+   "error_pct": 8.8
+  },
+  {
+   "name": "부동산",
+   "g_fit": 1.96,
+   "g_actual": 0.81,
+   "pred_2024_eok": 74678,
+   "actual_2024_eok": 70535,
+   "error_pct": 5.9
+  },
+  {
+   "name": "전문·과학·기술",
+   "g_fit": 3.22,
+   "g_actual": 4.44,
+   "pred_2024_eok": 22922,
+   "actual_2024_eok": 24316,
+   "error_pct": -5.7
+  },
+  {
+   "name": "교육",
+   "g_fit": 0.85,
+   "g_actual": 2.02,
+   "pred_2024_eok": 44460,
+   "actual_2024_eok": 47101,
+   "error_pct": -5.6
+  },
+  {
+   "name": "석탄·석유·화학",
+   "g_fit": 0.21,
+   "g_actual": 1.25,
+   "pred_2024_eok": 11989,
+   "actual_2024_eok": 12624,
+   "error_pct": -5.0
+  },
+  {
+   "name": "목재·종이·인쇄",
+   "g_fit": -0.68,
+   "g_actual": 0.21,
+   "pred_2024_eok": 5667,
+   "actual_2024_eok": 5927,
+   "error_pct": -4.4
+  },
+  {
+   "name": "금융·보험",
+   "g_fit": 2.02,
+   "g_actual": 2.91,
+   "pred_2024_eok": 41256,
+   "actual_2024_eok": 43098,
+   "error_pct": -4.3
+  },
+  {
+   "name": "수도·폐기물",
+   "g_fit": -0.93,
+   "g_actual": -0.34,
+   "pred_2024_eok": 4338,
+   "actual_2024_eok": 4470,
+   "error_pct": -2.9
+  },
+  {
+   "name": "숙박·음식점",
+   "g_fit": 0.59,
+   "g_actual": 0.9,
+   "pred_2024_eok": 19190,
+   "actual_2024_eok": 19486,
+   "error_pct": -1.5
+  },
+  {
+   "name": "섬유·의복·가죽",
+   "g_fit": -5.4,
+   "g_actual": -5.47,
+   "pred_2024_eok": 10483,
+   "actual_2024_eok": 10448,
+   "error_pct": 0.3
+  }
+ ],
+ "note": "2015→2019 연평균 성장률을 그대로 이어 간 2024년 값과 실제의 차이. 사이에 2020년(코로나)이 있어 오차가 크게 나온 업종이 많다. 앞으로의 정확도가 아니라 방식의 한계를 보여 주는 값."
+}

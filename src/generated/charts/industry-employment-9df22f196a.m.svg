@@ -1,19 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="자동차·부품 고용 인원 추이. 2026-07부터 2026-08까지 2개월. 자동차·부품 최근 28,083명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="자동차·부품 고용 인원 추이. 2023-12부터 2026-08까지 14개월. 자동차·부품 최근 28,083명" style="max-width:360px;height:auto;font-size:14px">
 <title>자동차·부품 고용 인원 추이</title>
 <line x1="60" x2="284" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="261.0" text-anchor="end" fill="#767676">28,070</text>
-<line x1="60" x2="284" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="207.0" text-anchor="end" fill="#767676">28,080</text>
-<line x1="60" x2="284" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="153.0" text-anchor="end" fill="#767676">28,090</text>
-<line x1="60" x2="284" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="99.0" text-anchor="end" fill="#767676">28,100</text>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">25,000</text>
+<line x1="60" x2="284" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="189.0" text-anchor="end" fill="#767676">26,000</text>
+<line x1="60" x2="284" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="117.0" text-anchor="end" fill="#767676">27,000</text>
 <line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">28,110</text>
-<text x="60.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">28,000</text>
+<text x="77.2" y="280" text-anchor="middle" fill="#767676">2024.1</text>
+<text x="180.6" y="280" text-anchor="middle" fill="#767676">2024.12</text>
 <text x="284.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,29.2 L284.0,185.8" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="284.0" cy="185.8" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="292.0" y="190.8" fill="#1a1a1a" font-weight="600">28,083명</text>
-<text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 2개월</text></svg>
+<path d="M60.0,194.4 L77.2,194.5 L94.5,202.1 L111.7,212.2 L128.9,206.8 L146.2,214.2 L163.4,214.4 L180.6,215.0 L197.8,220.6 L215.1,178.0 L232.3,47.1 L249.5,63.8 L266.8,31.9 L284.0,34.0" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="284.0" cy="34.0" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="292.0" y="52.0" fill="#1a1a1a" font-weight="600">28,083명</text>
+<text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

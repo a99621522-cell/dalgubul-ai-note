@@ -4,6 +4,7 @@
  * 기업 방문·간담회·보고 전에 담당자가 만드는 한 장 자료를 대신한다(운영자 지시 2026-09-27). 공개 자료만, 평가·추천 없음.
  */
 import { buildPdf, downloadPdf, p, table, safeName, today, type Block } from './pdf';
+import { buildHwpx, download as downloadBlob } from './hwpx';
 
 type Card = {
   id: string; name: string; district: string; desc: string; url: string;
@@ -61,6 +62,13 @@ export function init(): void {
     finally { hwp.disabled = false; if (hwp.textContent === '만드는 중…') hwp.textContent = '기업 카드 PDF'; }
   });
   prt?.addEventListener('click', () => window.print());
+  // 한글(HWPX): 페이지가 단추를 그릴 때만(data/hwpx/compat.json 승인 뒤) 붙는다
+  const hx = document.getElementById('card-hwpx') as HTMLButtonElement | null;
+  hx?.addEventListener('click', async () => {
+    try { hx.disabled = true; hx.textContent = '만드는 중…'; downloadBlob(`기업카드 ${safeName(c.name)}.hwpx`, await buildHwpx(blocks(c), `기업 카드 · ${c.name}`)); hx.textContent = '기업 카드 HWP'; }
+    catch { hx.textContent = '만들기 실패'; setTimeout(() => { hx.textContent = '기업 카드 HWP'; }, 1800); }
+    finally { hx.disabled = false; }
+  });
   // Word(.docx): 한글이 바로 열어 편집·HWP 저장할 수 있는 파일(docs/prompts/site_desktop_hwp_ui.md, 2026-10-06). docx 패키지는 누를 때만 받는다
   const docx = document.getElementById('card-docx') as HTMLButtonElement | null;
   docx?.addEventListener('click', async () => {

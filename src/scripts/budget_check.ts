@@ -10,6 +10,7 @@
  */
 import { attach } from './table_tools';
 import { buildPdf, downloadPdf, p, table, safeName, today, type Block } from './pdf';
+import { buildHwpx, download as downloadBlob, hwpxEnabled } from './hwpx';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 type Item = { id: string; stage: string; item: string; check: string; basis: string; quote: string; doc: string };
@@ -166,15 +167,15 @@ function render(): void {
   out.innerHTML = `<div class="section-head"><h2>검토 결과 · ${esc(fileName)}</h2><span class="meta">${esc(meta?.name || check.name)} · 시행 ${esc(meta?.eff || check.eff)} · ${stages.join('·')} ${check.items.filter(i => stages.includes(i.stage)).length}항목</span></div>
     <p class="summary"><strong>고칠 곳 ${todo}건</strong>(보완 필요 ${counts.fix}, 검토 필요 ${counts.review}) · 계획에 있음 ${counts.ok} · 계획에 없음 ${counts.none} · 집행 때 확인 ${counts.manual} · 해당 없음 ${counts.na}</p>
     <p class="meta">판정은 계획서 글자에 규칙을 맞춘 참고용입니다. 「계획에 없음」은 관련 낱말을 못 찾은 것이므로 계획서에 그 절차를 적거나 별도 서류로 갖추면 되고, 「집행 때 확인」은 계획서만으로 판정할 수 없어 집행·정산 단계에서 볼 항목입니다. 조문(근거 열)은 지침 본문을 그대로 옮긴 것이며 최종 판단은 담당자가 합니다.</p>
-    <div class="tools co-actions"><button class="btn" id="bc-hwp" type="button">검토 의견서 PDF</button><button class="btn secondary" id="bc-print" type="button">인쇄</button></div>` + sections.join('');
+    <div class="tools co-actions"><button class="btn" id="bc-hwp" type="button">검토 의견서 PDF</button>${hwpxEnabled() ? '<button class="btn secondary" id="bc-hwpx" type="button">검토 의견서 HWP</button>' : ''}<button class="btn secondary" id="bc-print" type="button">인쇄</button></div>` + sections.join('');
   out.querySelectorAll<HTMLTableElement>('table.data-table').forEach(attach);
-  $('bc-hwp')!.addEventListener('click', hwp); $('bc-print')!.addEventListener('click', () => window.print());
+  $('bc-hwp')!.addEventListener('click', () => hwp('pdf')); $('bc-hwpx')?.addEventListener('click', () => hwp('hwpx')); $('bc-print')!.addEventListener('click', () => window.print());
   out.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 const esc = (s: string) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-async function hwp(): Promise<void> {
-  const btn = $<HTMLButtonElement>('bc-hwp')!; const key = ($<HTMLSelectElement>('bc-key')!).value; const meta = data!.index[key]; const check = data!.checks.find(c => c.key === key)!;
+async function hwp(kind: 'pdf' | 'hwpx' = 'pdf'): Promise<void> {
+  const btn = $<HTMLButtonElement>(kind === 'hwpx' ? 'bc-hwpx' : 'bc-hwp')!; const label = kind === 'hwpx' ? '검토 의견서 HWP' : '검토 의견서 PDF'; const key = ($<HTMLSelectElement>('bc-key')!).value; const meta = data!.index[key]; const check = data!.checks.find(c => c.key === key)!;
   try {
     btn.disabled = true; btn.textContent = '만드는 중…';
     const blocks: Block[] = [p('kicker', [`지침 검토 의견서  ·  ${today()}`, 'kicker']), p('title', [`「${meta?.name || check.name}」 대조 결과`, 'title']), p('rule', ['', 'caption']),
@@ -187,9 +188,11 @@ async function hwp(): Promise<void> {
       blocks.push(p('spacer', ['', 'caption']));
     }
     blocks.push(p('src', [`출처: ${meta?.name || check.name} 본문(국가법령정보센터). daitda.co.kr/programs/guidelines/check/ 에서 ${today()} 만듦. 파일은 브라우저 안에서만 읽었고 서버로 보내지 않았다.`, 'src']));
-    downloadPdf(`지침검토 ${safeName(fileName.replace(/\.[^.]+$/, ''))}.pdf`, await buildPdf(blocks, `지침 검토 의견서 · ${fileName}`, { landscape: true }));
-  } catch { btn.textContent = '만들기 실패'; setTimeout(() => { btn.textContent = '검토 의견서 PDF'; }, 1800); }
-  finally { btn.disabled = false; if (btn.textContent === '만드는 중…') btn.textContent = '검토 의견서 PDF'; }
+    const base = `지침검토 ${safeName(fileName.replace(/\.[^.]+$/, ''))}`;
+    if (kind === 'hwpx') downloadBlob(`${base}.hwpx`, await buildHwpx(blocks, `지침 검토 의견서 · ${fileName}`));
+    else downloadPdf(`${base}.pdf`, await buildPdf(blocks, `지침 검토 의견서 · ${fileName}`, { landscape: true }));
+  } catch { btn.textContent = '만들기 실패'; setTimeout(() => { btn.textContent = label; }, 1800); }
+  finally { btn.disabled = false; if (btn.textContent === '만드는 중…') btn.textContent = label; }
 }
 
 async function onFile(file: File): Promise<void> {

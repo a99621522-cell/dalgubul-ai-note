@@ -1,0 +1,140 @@
+{
+ "generated": "2026-10-06",
+ "cases": [
+  {
+   "id": "t01-simple",
+   "desc": "단순 표 9×4(머리 한 줄, 숫자 오른쪽)",
+   "items": [
+    "열림",
+    "테두리",
+    "글꼴",
+    "숫자 정렬"
+   ],
+   "files": [
+    {
+     "path": "py",
+     "file": "t01-simple-py.hwpx"
+    },
+    {
+     "path": "py-lineseg",
+     "file": "t01-simple-py-lineseg.hwpx"
+    },
+    {
+     "path": "js",
+     "file": "t01-simple-js.hwpx"
+    }
+   ]
+  },
+  {
+   "id": "t02-twohead",
+   "desc": "머리 두 줄(colspan 4·rowspan 2) 8×6",
+   "items": [
+    "병합 셀",
+    "머리 행 반복",
+    "열 폭"
+   ],
+   "files": [
+    {
+     "path": "py",
+     "file": "t02-twohead-py.hwpx"
+    },
+    {
+     "path": "js",
+     "file": "t02-twohead-js.hwpx"
+    }
+   ]
+  },
+  {
+   "id": "t03-merged",
+   "desc": "본문 병합(rowspan 3) 10×4",
+   "items": [
+    "병합 셀",
+    "세로 가운데"
+   ],
+   "files": [
+    {
+     "path": "py",
+     "file": "t03-merged-py.hwpx"
+    },
+    {
+     "path": "js",
+     "file": "t03-merged-js.hwpx"
+    }
+   ]
+  },
+  {
+   "id": "t04-long",
+   "desc": "긴 표 60행(쪽 넘김·머리 행 반복)",
+   "items": [
+    "쪽 넘김",
+    "머리 행 반복",
+    "줄바꿈"
+   ],
+   "files": [
+    {
+     "path": "py",
+     "file": "t04-long-py.hwpx"
+    },
+    {
+     "path": "js",
+     "file": "t04-long-js.hwpx"
+    }
+   ]
+  },
+  {
+   "id": "t05-figure",
+   "desc": "그림 1장(PNG BinData) + 캡션",
+   "items": [
+    "그림 삽입",
+    "캡션"
+   ],
+   "files": [
+    {
+     "path": "py",
+     "file": "t05-figure-py.hwpx"
+    },
+    {
+     "path": "js",
+     "file": "t05-figure-js.hwpx"
+    }
+   ]
+  },
+  {
+   "id": "t06-company-card",
+   "desc": "기업 카드 한 장(개요 표 head 없음·소제목·주석)",
+   "items": [
+    "표 head 없음",
+    "소제목",
+    "주석"
+   ],
+   "files": [
+    {
+     "path": "py",
+     "file": "t06-company-card-py.hwpx"
+    },
+    {
+     "path": "js",
+     "file": "t06-company-card-js.hwpx"
+    }
+   ]
+  },
+  {
+   "id": "t07-review",
+   "desc": "지침 검토 의견서(5열, 긴 글 칸 줄바꿈)",
+   "items": [
+    "칸 안 줄바꿈",
+    "열 폭"
+   ],
+   "files": [
+    {
+     "path": "py",
+     "file": "t07-review-py.hwpx"
+    },
+    {
+     "path": "js",
+     "file": "t07-review-js.hwpx"
+    }
+   ]
+  }
+ ]
+}

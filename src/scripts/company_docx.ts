@@ -16,7 +16,7 @@ export async function buildDocx(blocks: Block[], title: string): Promise<Blob> {
   for (const b of blocks) {
     if ('table' in b) {
       const total = 9000;   // twips(DXA) — A4 세로 본문 폭 약 160mm
-      const rowsIn = b.table.map(r => r.map(c => typeof c === 'string' ? c : ''));
+      const rowsIn = b.table.map(r => r.map(c => typeof c === 'string' ? c : Array.isArray(c) ? '' : c.t ?? ''));
       const widths = b.widths?.length ? b.widths : rowsIn[0].map(() => 1);
       const sum = widths.reduce((a, c) => a + c, 0) || 1;
       const w = widths.map(x => Math.round(total * x / sum));
@@ -28,6 +28,7 @@ export async function buildDocx(blocks: Block[], title: string): Promise<Blob> {
       children.push(new Table({ rows, width: { size: total, type: WidthType.DXA }, columnWidths: w }));
       continue;
     }
+    if (!('segs' in b)) continue;   // 그림 블록은 Word 판에 넣지 않는다
     const text = b.segs.map(x => x[0]).join(''), style = b.segs[0]?.[1] ?? 'body';
     if (!text && (b.p === 'rule' || b.p === 'spacer')) { children.push(new Paragraph({ spacing: { after: 80 }, children: [] })); continue; }
     if (style === 'title') { children.push(new Paragraph({ heading: HeadingLevel.TITLE, spacing: { after: 120 }, children: [run(text, { bold: true, size: 32 })] })); continue; }

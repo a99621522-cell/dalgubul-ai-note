@@ -10,6 +10,7 @@
  *  - CSV(UTF-8 BOM, 엑셀·한글 '표 변환'용). 숨긴 열(열 선택기·반응형)은 복사·CSV·PDF 에서 뺀다.
  */
 import { buildPdf, downloadPdf, p, table, safeName, today, type Block } from './pdf';
+import { buildHwpx, hwpxEnabled } from './hwpx';
 
 const clean = (s: string) => s.replace(/\s+/g, ' ').trim();
 const visible = (c: Element) => getComputedStyle(c).display !== 'none' && !c.classList.contains('grid-sel');   // 그리드의 행 체크 열·숨긴 열(.col-off)은 뺀다
@@ -211,6 +212,20 @@ export function attach(tbl: HTMLTableElement): void {
       hwp.textContent = 'PDF 내려받기'; hwp.disabled = false;
     } catch { hwp.disabled = false; flash(hwp, '만들기 실패'); }
   });
+  // 한글 파일(HWPX): data/hwpx/compat.json 승인(실물 시험 통과) 뒤에만 단추를 그린다(docs/prompts/site_hwpx_skill.md 4절 관문)
+  if (hwpxEnabled()) {
+    const hx = mk('HWP 표 내려받기', '한글 파일(.hwpx) — 제목·표·자료 출처 문단');
+    hx.addEventListener('click', async () => {
+      const g = grid(tbl);
+      if (!g.body.length) return flash(hx, '표가 비어 있음');
+      const title = titleOf(tbl, anchor), src = sourceOf(anchor);
+      const rows = [...g.head, ...g.body].map(r => r.map(c => ({ t: c.text, cs: c.cs, rs: c.rs })));
+      const blocks: Block[] = [p('kicker', [document.title.replace(/\s*[|·-]\s*다잇다.*$/, ''), 'kicker']), p('title', [title, 'title']), p('rule', ['', 'caption']),
+        table(rows, { head: g.head.length > 0, headRows: g.head.length, widths: g.widths.map(w => Math.round(w * 48188)) }), p('spacer', ['', 'caption']), p('src', [sourceLine(src), 'src'])];
+      try { hx.disabled = true; hx.textContent = '만드는 중…'; download(`${safeName(title)}.hwpx`, await buildHwpx(blocks, title)); hx.textContent = 'HWP 표 내려받기'; hx.disabled = false; }
+      catch { hx.disabled = false; flash(hx, '만들기 실패'); }
+    });
+  }
   document.addEventListener('click', e => { if (!menu.contains(e.target as Node)) menu.open = false; });
   menu.addEventListener('keydown', e => { if (e.key === 'Escape') { menu.open = false; sum.focus(); } });
   anchor.insertAdjacentElement('afterend', bar);

@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { NAV, NAV_GROUPS, navItem } from '../nav';
 import { latestMonth, monthLabel } from '../lib/stats';
+import hwpxCompat from '../../data/hwpx/compat.json';   // 한글(HWPX) 승인 관문: approved 일 때만 HWP 단추(2026-10-06)
 interface Props { title?: string; seoTitle?: string; description?: string; current?: string; tags?: string[]; jsonld?: object[]; ogType?: string; crumb?: string; nocrumb?: boolean; wide?: boolean }
 const { title, seoTitle, description = '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고', current = '', tags = [], jsonld = [], ogType = 'website', crumb, nocrumb = false, wide = false } = Astro.props;
 /** 브레드크럼(디자인·UI 개선 2차 2026-10-06): 홈 › 묶음 › 메뉴 › (crumb). 첫 화면과 nocrumb 페이지는 없음 */
@@ -14,7 +15,7 @@ const lm = latestMonth();
 const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-hwpx={hwpxCompat.approved ? '1' : undefined}>
 <head>
   <meta charset="utf-8" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

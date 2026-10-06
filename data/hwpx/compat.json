@@ -1,0 +1,8 @@
+{
+  "approved": false,
+  "tested": null,
+  "versions": [],
+  "paths": { "python": null, "browser": null },
+  "fails": [],
+  "note": "운영자가 docs/design/hwpx-compat.md 의 시험표를 채운 뒤 approved 를 true 로 바꾸면 사이트에 HWP 단추가 보인다(Base.astro 가 빌드 때 읽어 <html data-hwpx=\"1\">). paths 는 경로별(python=hwpx_blocks.py 러너, browser=hwpx.ts) 통과 여부."
+}

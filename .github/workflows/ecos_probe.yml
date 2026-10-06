@@ -1,0 +1,30 @@
+name: ECOS 웹 통계표 나무 조사
+# 조사용(수동): ECOS 화면 내부 요청으로 통계표 나무를 받아 낱말이 든 항목을 로그에 찍는다. 저장소 변경 없음. scripts/ecos_probe.py
+on:
+  workflow_dispatch:
+    inputs:
+      words:
+        description: "찾을 낱말(쉼표 구분)"
+        required: false
+        default: "지역산업,연관표,유발계수"
+      trx:
+        description: "trxCd(쉼표 구분)"
+        required: false
+        default: "OSUSD01R01,OSUUA01R01"
+      full:
+        description: "일치 항목을 200개까지(true)"
+        required: false
+        default: "false"
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q requests
+      - run: python3 scripts/ecos_probe.py --words "${{ inputs.words }}" --trx "${{ inputs.trx }}" $([ "${{ inputs.full }}" = "true" ] && echo --full)
+        env: { PYTHONUNBUFFERED: "1" }

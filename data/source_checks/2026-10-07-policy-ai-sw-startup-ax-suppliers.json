@@ -1,0 +1,182 @@
+{
+ "file": "src/content/posts/2026-10-07-policy-ai-sw-startup-ax-suppliers.md",
+ "checked": "2026-10-06",
+ "ok": 12,
+ "total": 14,
+ "ratio": 0.86,
+ "official_bad": [
+  "대구광역시 산업경제동향, 「대구시, '지역거점 AX 혁신 기술개발' 본격 착수」",
+  "Gloucestershire County Council, 「Funded support for south-west manufacturers for digital adoption」(Made Smarter Adoption 2026/27)"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "한국은행, 「BOK 이슈노트 제2026-25호 AI와 지역 노동시장 — 지역간 격차 확대 위험과 새로운 기회」(김보성·정민수·정유정·장수빈)",
+   "url": "https://www.bok.or.kr/portal/main/contents.do?menuNo=200433",
+   "date": "2026-09-15",
+   "kind": "report",
+   "status": 200,
+   "page_title": "| BOK 이슈노트 | 조사연구 | 뉴스/자료 | 한국은행 홈페이지",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "KDI 경제정보센터 정책자료, 「AI와 지역 노동시장 — 지역간 격차 확대 위험과 새로운 기회」(한국은행 이슈노트 게시)",
+   "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=286864",
+   "date": "2026-09-15",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "「2026년 BOK 지역경제 심포지엄」 개최 및 주요 내용 | 경제정책자료 |KDI 경제교육·정보센터",
+   "title_match": 0.6,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "대구광역시 산업경제동향, 「대구시, '지역거점 AX 혁신 기술개발' 본격 착수」",
+   "url": "https://distat.daegu.go.kr/site/bbs/BoardControll.do?bbsId=BBSMSTR_000000000011",
+   "date": "2026-09-18",
+   "kind": "gov",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "뉴스핌, 「대구시, '지역거점 AX 혁신 기술개발' 본격 착수」",
+   "url": "https://www.newspim.com/news/view/20260918000044",
+   "date": "2026-09-18",
+   "kind": "news",
+   "status": 200,
+   "page_title": "대구시, 4207억 규모 '지역거점 AX 혁신 기술개발' 본격 착수",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "전자신문, 「바우처로 기업 'AI 도입·AX' 지원한다」(과기정통부 2026년 AI 통합바우처)",
+   "url": "https://m.etnews.com/20260319000418",
+   "date": "2026-03-19",
+   "kind": "news",
+   "status": 200,
+   "page_title": "625억원 규모 바우처로 기업 'AI 도입·AX' 지원한다 - 전자신문",
+   "title_match": 0.83,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "머니투데이방송, 「AI 청년창업 '동반성장 바우처' 공급기업 선정 보도」(과기정통부 2026 AI 청년창업기업 동반성장 바우처)",
+   "url": "https://news.mtn.co.kr/news-detail/2026051408333794303",
+   "date": "2026-05-14",
+   "kind": "news",
+   "status": 200,
+   "page_title": "“90억 정부 사업 잡았다”... 웜블러드, AI 청년창업 ‘동반성장 바우처’ 공급기업 선정 | MTN 머니투데이방송",
+   "title_match": 0.86,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "KDI 경제정보센터 정책자료, 「경남 제조 AI 센터 본격 운영」(중소벤처기업부 보도자료 게시)",
+   "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=287081",
+   "date": "2026-09-17",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "경남 제조 AI 센터 개소, 지역 제조기업의 전환 본격화 | 경제정책자료 |KDI 경제교육·정보센터",
+   "title_match": 0.5,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "머니투데이방송, 「전남광주-울산, 자동차 생산 현장 'AI·휴머노이드' 도입」",
+   "url": "https://news.mtn.co.kr/news-detail/2026090810073531345",
+   "date": "2026-09-08",
+   "kind": "news",
+   "status": 200,
+   "page_title": "전남광주-울산, 자동차 생산 현장 ‘AI·휴머노이드’ 도입 | MTN 머니투데이방송",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "Gloucestershire County Council, 「Funded support for south-west manufacturers for digital adoption」(Made Smarter Adoption 2026/27)",
+   "url": "https://gloucestershire.gov.uk/business-property-and-economy/business-news/business-news-june-2026/800k-available-to-support-sw-manufacturers-for-digital-adoption/",
+   "date": "2026-06-01",
+   "kind": "gov",
+   "status": 404,
+   "page_title": "HTTP 404 | Gloucestershire County Council",
+   "title_match": 0.21,
+   "date_found": false,
+   "ok": false,
+   "note": ""
+  },
+  {
+   "title": "소프트웨어정책연구소(SPRi), 「이슈리포트 IS-232 AI 교육 혁신과 AI 융합인재 양성 전략」",
+   "url": "https://spri.kr/file_html/is232/index.html",
+   "date": "2026-08-06",
+   "kind": "report",
+   "status": 200,
+   "page_title": "",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "국가데이터처, 「전국사업체조사 — 시도·산업·사업체구분별 사업체수·종사자수」 KOSIS DT_1K52D01(2020~2023년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01",
+   "date": "2026-09-28",
+   "kind": "data",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "중소벤처기업부, 「창업기업동향 — 지역별·업종별 창업기업수」 KOSIS DT_142N_G205(2026년 6월)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_142N_G205",
+   "date": "2026-10-06",
+   "kind": "data",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.17,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-08 공장등록 + 산단 외 사업장 목록, KSIC 코드·입지 유형·종사자 신고값)·사업 DB(사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-10-06",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "SBS Biz, 「AI 일자리 10개 중 8개는 수도권…한은 '지역 AI 허브 키워야'」",
+   "url": "https://biz.sbs.co.kr/amp/article/20000334712",
+   "date": "2026-09-15",
+   "kind": "news",
+   "status": 200,
+   "page_title": "AI 일자리 10개 중 8개는 수도권…한은 &#34;한은 &#34;지역 AI 허브 키워야&#34;",
+   "title_match": 0.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

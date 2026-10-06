@@ -50,7 +50,7 @@ const leafName = Object.fromEntries(LEAVES);
 const data = S && S.k != null ? { k: S.k, kAlt: S.kAlt, empIn: S.empIn, gdpEok: S.gdpEok, y1: S.y1, base: S.base, hhiAvg: S.hhiAvg, highNat: S.highNat, scih: S.scih, scihAvg: S.scihAvg, panel: P.panel, tourMix: P.tourMix,
   employed: S.employed, Y0, Y1,
   rows: S.rows.map(r => ({ key: r.key, name: r.name, share: r.share, g: r.g, high: r.high, va: r.va })),
-  items: ITEMS.map(i => ({ id: i.id, task: i.task, kind: i.kind, ramp: i.ramp, leaves: i.leaves ?? [], alloc: i.alloc ?? '', mult: i.mult ?? 1, ratio: i.ratio ?? null, ex: i.ex ?? 0, hx: i.hx ?? 0, per: i.per ?? 0, unit: i.unit ?? '' })) } : null;
+  items: ITEMS.map(i => ({ id: i.id, task: i.task, kind: i.kind, ramp: i.ramp, leaves: i.leaves ?? [], alloc: i.alloc ?? '', mult: i.mult ?? 1, ratio: i.ratio ?? null, ex: i.ex ?? 0, hx: i.hx ?? 0, per: i.per ?? 0, unit: i.unit ?? '', io: P.ioByItem[i.id] ?? null })) } : null;
 const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
 ---
 {S && data && (
@@ -106,7 +106,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
         <label>투입액 <input type="number" data-in="c" value="" placeholder="선택" step="any" inputmode="decimal" /> 억 원</label>
       </div>
       <div class="tiny muted">
-        {i.kind === 'plant' && <>× 부가가치율 {pctR(i.ratio ?? null)}({i.ratioNote}, 광업·제조업조사 대구 {P.mfgYear}년){i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
+        {i.kind === 'plant' && <>× 부가가치율 {pctR(i.ratio ?? null)}({i.ratioNote}, 광업·제조업조사 대구 {P.mfgYear}년) = 직접분{(() => { const io = P.ioByItem[i.id]; return io && io.k != null && io.va != null ? ` + 간접분 × ${Math.max(0, io.k - io.va).toFixed(3)}(${io.sector} 대구 지역내 부가가치유발계수 ${io.k.toFixed(3)} − 직접 부가가치율 ${io.va.toFixed(3)}, 한국은행 2020 지역산업연관표)` : ` · 간접분(${io ? io.sector : '해당 부문'} 대구 지역내 유발계수)은 통계표를 받으면 더해짐 — 지금은 범위 위쪽에 평균 계수만`; })()}{i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
         {i.kind === 'firm' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}(한국은행 지역산업연관표 평균 — 이 업종 계수는 조사 항목){i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}{i.note ? ` · ${i.note}` : ''}</>}
         {i.kind === 'people' && <>{i.perNote} · × 대구 부가가치 계수 {S.k.toFixed(3)}</>}
         {i.kind === 'spend' && <>× 대구 부가가치 계수 {S.k.toFixed(3)}{i.note ? ` · ${i.note}` : ''}</>}
@@ -131,7 +131,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
   </details>
 
   <ul class="tiny muted gp-notes">
-    <li>성장률 몫 = 부가가치 증가 ÷ 명목 GRDP({f1(S.gdpEok / 10000)}조 원, {S.y1}년). 업종 성장은 '부문 부가가치 × 추세보다 더 성장한 몫', 기업 유치는 '연 매출 × 대구 같은 업종 부가가치율'(그 기업 자체의 부가가치 = 직접분; 범위의 위쪽은 평균 계수로 본 직·간접 — 제조업 공장은 광업·제조업조사 중분류 부가가치율, 데이터센터·본사·물류·호텔 같은 서비스 기업·시설은 업종별 자료가 없어 대구 평균 부가가치유발계수), 사람·지출은 '지출 × 한국은행 지역산업연관표 대구 부가가치 계수(수입품 몫 뺌)'입니다.</li>
+    <li>성장률 몫 = 부가가치 증가 ÷ 명목 GRDP({f1(S.gdpEok / 10000)}조 원, {S.y1}년). 업종 성장은 '부문 부가가치 × 추세보다 더 성장한 몫', 기업 유치는 '연 매출 × 대구 같은 업종 부가가치율'(그 기업 자체의 부가가치 = 직접분; 범위의 위쪽은 평균 계수로 본 직·간접 — 제조업 공장은 광업·제조업조사 중분류 부가가치율, 데이터센터·본사·물류·호텔 같은 서비스 기업·시설은 업종별 자료가 없어 대구 평균 부가가치유발계수), 사람·지출은 '지출 × 한국은행 지역산업연관표 대구 부가가치 계수(수입품 몫 뺌)'입니다. 공장 유치의 <b>간접분</b>(대구 안 공급 부문에 생기는 부가가치)은 그 부문의 대구 지역내 부가가치유발계수에서 직접 부가가치율을 뺀 몫으로 더합니다 — {P.ioFilled ? '업종별 계수는 한국은행 2020년 지역산업연관표 통계표의 대구 열' : '업종별 대구 지역내 계수는 한국은행 지역산업연관표 통계표(엑셀)에만 있어 아직 비어 있고, 채워지기 전에는 직접분만 계산하고 평균 계수를 범위 위쪽으로 보입니다(책자·ECOS 에는 없음, 2026-10-06 확인)'}.</li>
     <li>순증 비율: 대구 안에서 옮겨 온 소비·정책 없이도 생겼을 몫을 뺀 비율입니다(예비타당성·사업평가의 순증 판단). 기본 100%이며 근거가 있으면 낮춰 넣습니다. 여러 과제가 같은 부문을 키우면 더하고, 같은 기업을 두 번 세는 겹침은 빼지 않았습니다.</li>
     <li>취업 유발 = 부가가치 증가 ÷ 계수 {S.k.toFixed(3)} ÷ 10억 원 × {S.empIn ?? '—'}명(한국은행 2020 지역산업연관표 대구 취업유발계수, 직·간접 근사). {S.employed && `대구 취업자 ${S.employed.year}년 ${f1(S.employed.thousand)}천 명(경제활동인구조사)과 견줍니다.`}</li>
     <li>투입액은 사용자가 넣는 값이며 대구시 예산액을 싣지 않습니다. '억 원당'은 투입 1억 원당 부가가치·취업입니다.</li>
@@ -142,7 +142,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
 </section>)}
 <script>
   type R = { key: string; name: string; share: number; g: number; high: boolean; va: number };
-  type I = { id: string; task: string; kind: string; ramp: string; leaves: string[]; alloc: string; mult: number; ratio: number | null; ex: number; hx: number; per: number; unit: string };
+  type I = { id: string; task: string; kind: string; ramp: string; leaves: string[]; alloc: string; mult: number; ratio: number | null; ex: number; hx: number; per: number; unit: string; io: { sector: string; va: number | null; k: number | null } | null };
   type St = Record<string, { v: number; p: number; n: number; s: number; c: number }>;
   const el = document.getElementById('gp-data');
   if (el) {
@@ -183,7 +183,17 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       let lo = 0, hi = 0;
       if (it.kind === 'grow') for (const k of it.leaves) { const r = byKey.get(k); if (r) { parts.set(k, r.va * x.v / 100 * net); growth.push({ key: k, d: x.v * net }); } }
       if (it.kind === 'stop' && x.v) for (const k of it.leaves) { const r = byKey.get(k); if (r && r.g < 0) { parts.set(k, r.va * -r.g / 100 * net); growth.push({ key: k, d: -r.g * net }); } }
-      if (it.kind === 'plant' && it.ratio) { const direct = x.v * it.ratio * net; parts.set(it.leaves[0], direct); lo = Math.min(direct, x.v * D.k * net); hi = Math.max(direct, x.v * D.k * net); }
+      if (it.kind === 'plant' && it.ratio) {
+        const direct = x.v * it.ratio * net; parts.set(it.leaves[0], direct);
+        // 간접분(운영자 지시 2026-10-06): 그 부문의 대구 지역내 부가가치유발계수(k) − 산업연관표 기준 직접 부가가치율(va) = 대구 안 공급 부문에 생기는 부가가치.
+        // 계수가 채워져 있으면 더하고(부가가치 비중대로 다른 부문에 배분), 없으면 직접분만 쓰고 평균 계수를 범위 위쪽으로만 보인다
+        if (it.io && it.io.k != null && it.io.va != null) {
+          const ind = x.v * Math.max(0, it.io.k - it.io.va) * net;
+          const tot = D.rows.reduce((a, r) => a + r.va, 0);
+          for (const r of D.rows) if (tot > 0) parts.set(r.key, (parts.get(r.key) ?? 0) + ind * r.va / tot);   // 같은 부문의 공급 기업에도 생기므로 전 부문에 배분(합 = 간접분)
+          lo = direct; hi = direct + ind;
+        } else { lo = Math.min(direct, x.v * D.k * net); hi = Math.max(direct, x.v * D.k * net); }
+      }
       if (it.kind === 'firm') { const eok = x.v * D.k * net; parts.set(it.leaves[0], eok); const alt = x.v * (D.kAlt ?? D.k) * net; lo = Math.min(eok, alt); hi = Math.max(eok, alt); }
       if (it.kind === 'people' || it.kind === 'spend') {
         const dem = (it.kind === 'spend' ? x.v : x.v * it.mult * x.p / 1e8) * net;
@@ -317,7 +327,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
           [`${D.Y1}년 GRDP(조 원, ${D.y1}년 가격)`, fmt(E.end.trend / 10000, 1), fmt(E.end.g / 10000, 1)], ['완성 때 부가가치 증가(억 원)', '0', `${n0(E.total)}${E.hi > E.lo + 0.5 ? ` (범위 ${n0(E.lo)}~${n0(E.hi)})` : ''}`],
           ['취업 유발(명, 직·간접 근사)', '0', n0(E.jobs)], ['고부가 3부문 비중(%)', fmt(E.T.high), fmt(E.A.high)], ['산업집중도', String(Math.round(E.T.hhi)), String(Math.round(E.A.hhi))], ['고부가 집중도', String(Math.round(E.T.hq)), String(Math.round(E.A.hq))]], { widths: [22000, 17000, 18188] }),
         p('h3', ['계산 방법', 'h3']),
-        p('note', [`성장률 몫 = 부가가치 증가 ÷ 명목 GRDP. 업종 성장 = 부문 부가가치 × 추가 성장(해마다 쌓임). 기업 유치 = 연 매출 × 광업·제조업조사 대구 업종 부가가치율(직접분; 서비스 기업·시설은 대구 평균 부가가치유발계수). 사람·지출 = 지출 × 대구 부가가치유발계수 ${D.k.toFixed(3)}(한국은행 2020 지역산업연관표, 수입품 몫 제외). 취업 = 부가가치 ÷ 계수 ÷ 10억 원 × ${D.empIn ?? '—'}명. 순증 비율은 사용자 입력. 구조 지표는 모두 완성된 해 기준이며 리포트 패널 계수는 연관으로만 봅니다.`, 'note']),
+        p('note', [`성장률 몫 = 부가가치 증가 ÷ 명목 GRDP. 업종 성장 = 부문 부가가치 × 추가 성장(해마다 쌓임). 기업 유치 = 연 매출 × 광업·제조업조사 대구 업종 부가가치율(직접분) + 업종별 대구 지역내 유발계수가 있으면 간접분(서비스 기업·시설은 대구 평균 부가가치유발계수). 사람·지출 = 지출 × 대구 부가가치유발계수 ${D.k.toFixed(3)}(한국은행 2020 지역산업연관표, 수입품 몫 제외). 취업 = 부가가치 ÷ 계수 ÷ 10억 원 × ${D.empIn ?? '—'}명. 순증 비율은 사용자 입력. 구조 지표는 모두 완성된 해 기준이며 리포트 패널 계수는 연관으로만 봅니다.`, 'note']),
         p('src', [`자료: 국가데이터처 지역소득(KOSIS) · 한국은행 2020년 지역산업연관표 · 광업·제조업조사 · 한국관광 데이터랩 · 국민건강보험공단 지역별 의료이용통계 · 대구 열린시장실 주요 추진과제. 계산: daitda.co.kr/growth/`, 'src']),
       ];
       downloadPdf(`성장계산기 정책과제 시나리오 ${today()}.pdf`, await buildPdf(blocks, '성장 계산기 — 정책 과제 시나리오'));

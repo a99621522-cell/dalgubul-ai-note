@@ -6,6 +6,7 @@ import { structureCalc, tourismOutsider } from '../lib/grdp';
 const S = structureCalc();
 const TOUR = tourismOutsider();
 const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const sg2 = (v: number) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2);
 const data = S ? { ...S, io: undefined, backtest: undefined, tour: TOUR ? { eok: TOUR.eok, year: TOUR.year } : null } : null;
 const GROUPS: [string, string][] = [['high', '고부가 3부문'], ['mfg', '제조업(고부가 제외)'], ['spec', '특화 부문(입지계수 1 이상, 제조업 제외)'], ['rest', '그 밖의 부문']];
 const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 'high' : r.mfg ? 'mfg' : r.spec ? 'spec' : 'rest';
@@ -78,7 +79,7 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
         {TOUR && <label>외지인 관광소비 증가 <input id="gstour" type="number" step="1" value="0" inputmode="decimal" /> % <span class="tiny muted">{TOUR.year}년 {(TOUR.eok / 10000).toFixed(2)}조 원</span></label>}
         <label>새로 늘어나는 지출 <input id="gsspend" type="number" step="500" value="0" inputmode="decimal" /> 억 원</label>
       </div>
-      <p class="tiny muted">금액 × 대구 부가가치유발계수(수입품 제외 후 {S.k.toFixed(3)}, 한국은행 2020 지역산업연관표) ÷ 명목 총부가가치. 업종 성장률을 이미 올렸다면 겹쳐 셀 수 있습니다.</p>
+      <p class="tiny muted">금액 × 대구 부가가치유발계수 {S.k.toFixed(3)} ÷ 명목 총부가가치. 계수는 한국은행 2020 지역산업연관표의 대구 안 부가가치유발계수 {S.io?.vaIn}(국산품 최종수요 1단위 기준, 58쪽)에 최종수요 가운데 수입품으로 바로 사는 몫 {S.io?.importShare}%(표 IV-7, 55쪽)를 뺀 값이며, 중간재 수입 누출은 계수 안에 이미 들어 있습니다. 업종 성장률을 이미 올렸다면 겹쳐 셀 수 있습니다.</p>
     </>)}
   </details>
 
@@ -89,7 +90,7 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
     <summary>계산 방법과 주의</summary>
     <ul class="meta">
       <li>정의는 산업구조지수 리포트와 같습니다: 지역소득 경제활동별 말단 25개 부문의 {S.y1}년 명목 총부가가치 비중, 입지계수 = 대구 비중 ÷ 전국 비중(1 이상이 특화), 산업집중도 = Σ(비중×100)², 변화속도 = ½Σ|비중 변화|.</li>
-      <li>성장률 = {S.y0}→{S.y1}년 대구 연평균 {S.base.toFixed(2)}% + Σ 총부가가치 대비 비중 × (가정 성장률 − 그 업종 {S.y0}→{S.y1}년 연평균 실질 성장률). 비중은 명목(2024년), 성장률은 실질이라 '그 해 가격' 근사입니다. 가중치는 25개 부문 합(명목 총부가가치) 대비 비중이라 합이 100%이고, GRDP 의 나머지 {f1((1 - S.gvaEok / S.gdpEok) * 100)}%인 순생산물세는 부가가치에 비례해 함께 는다고 봅니다 — 그래서 모든 업종을 똑같이 1%p 더 키우면 성장률도 1%p 오르고, 아래 목표 계산기의 '고른 성장'과 같은 답이 나옵니다. 이 페이지의 모든 계산기가 같은 기준(부가가치 증가 ÷ 명목 총부가가치)을 씁니다. 다음 해 비중은 업종마다 (1 + 가정 성장률)을 곱해 다시 나눈 근사(상대 가격 변화 없음 가정)입니다.</li>
+      <li>성장률 = {S.y0}→{S.y1}년 대구 연평균 {S.base.toFixed(2)}% + Σ 총부가가치 대비 비중 × (가정 성장률 − 그 업종 {S.y0}→{S.y1}년 연평균 실질 성장률). 이는 국가데이터처가 실질기여도를 내는 방식(전년 명목 비중 × 실질 성장률)과 같습니다{S.contribCheck && <> — 검산: {S.contribCheck.year}년 공표 실질기여도 25개 부문 합 {sg2(S.contribCheck.official25)}%p, 같은 식으로 계산 {sg2(S.contribCheck.calc25)}%p(실질 비중을 쓰면 더 멀어져 쓰지 않음); 순생산물세 기여는 공표 {sg2(S.contribCheck.officialTax)}%p, 비례 가정이면 {sg2(S.contribCheck.calcTaxProp)}%p 라 순생산물세는 근사입니다</>}. 가중치는 25개 부문 합(명목 총부가가치) 대비 비중이라 합이 100%이고, GRDP 의 나머지 {f1((1 - S.gvaEok / S.gdpEok) * 100)}%인 순생산물세는 부가가치에 비례해 함께 는다고 봅니다 — 그래서 모든 업종을 똑같이 1%p 더 키우면 성장률도 1%p 오르고, 아래 목표 계산기의 '고른 성장'과 같은 답이 나옵니다. 이 페이지의 모든 계산기가 같은 기준(부가가치 증가 ÷ 명목 총부가가치)을 씁니다. 다음 해 비중은 업종마다 (1 + 가정 성장률)을 곱해 다시 나눈 근사(상대 가격 변화 없음 가정)입니다.</li>
       {S.backtest && <li>되돌려 보기: 같은 방식으로 2015→2019년 추세를 이어 2024년을 맞히면 전체 연평균 {S.backtest.total.fit_cagr_pct}%(실제 2019→2024년 {S.backtest.total.actual_cagr_pct}%, 오차 {S.backtest.total.error_pp}%p), 2024년 GRDP 규모 오차 {S.backtest.total.error_pct}%입니다. 업종별로는 {S.backtest.sectors.slice(0, 3).map((r: any) => `${r.name} ${r.error_pct}%`).join(', ')}처럼 크게 빗나간 업종이 있어(사이에 2020년이 있음) 업종 하나의 값보다 묶음·전체로 보는 편이 낫습니다(scripts/growth_backtest.py).</li>}
       <li>리포트의 패널 추정에서 산업집중도 1% 상승은 성장률 +{S.hhiCoef != null ? S.hhiCoef.toFixed(2) : '—'}%p 와 함께 움직였습니다(연관이며, 위 성장률 계산에 더하지 않고 참고로만 보여 줍니다).</li>
       <li>업종 사이 파급(한 업종이 크면 다른 업종도 커지는 효과)은 넣지 않았고, 비중이 작은 업종(광업·농림어업)과 기반이 작은 시도(세종 등)의 상위 3곳 값은 크게 흔들립니다. 전망이나 달성 가능성 판단이 아닙니다.</li>

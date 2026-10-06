@@ -22,6 +22,8 @@ const local = new Set([...companies().map(x => normName(x.name)), ...corps.map(x
 const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
 const ACC: [keyof typeof c.years[string], string][] = [['revenue', '매출액'], ['operating_income', '영업이익'], ['net_income', '당기순이익'], ['total_assets', '자산총계'], ['total_liabilities', '부채총계'], ['total_equity', '자본총계']];
 const finYears = years.filter(y => c.years[y]);
+const revAcc = finYears.map(y => c.years[y]?.revenue_account).find(a => a && a !== '매출액');   // 금융회사: 영업수익 등을 매출액 자리에(운영자 지시 2026-10-06)
+if (revAcc) ACC[0] = ['revenue', `매출액(${revAcc})`];
 const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
 ---
 <Base title={`${c.name} — 대구시 상장기업`} description={`${c.name}(${c.cls}${c.stock ? ' ' + c.stock : ''}, 대구 ${c.district}) DART 공시: 최근 3개 사업연도 재무·직원·연구개발비·타법인 출자·미래 산업 관련 공시.`} current="listed" crumb={c.name}>
@@ -59,7 +61,7 @@ const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
         <tr><th scope="row">연구개발비</th>{finYears.map(y => { const r = rnd.find(x => x.year === y); return <td class="n">{r ? f(r.rnd_won) : '—'}</td>; })}</tr>
         <tr><th scope="row">직원 수(명)</th>{finYears.map(y => { const e = emp.find(x => x.year === y); return <td class="n">{e ? n0(e.employees) : '—'}</td>; })}</tr></tbody>
     </table></div>)}
-    {finYears.length > 0 && <p class="meta">매출액 증가율 = (그해 ÷ 전년 − 1) × 100, 영업이익률 = 영업이익 ÷ 매출액 × 100, 부채비율 = 부채총계 ÷ 자본총계 × 100 — 공시 값을 나눈 것. 연구개발비·직원 수는 사업보고서 '연구개발 활동'·'직원 등의 현황' 값(아래 표)(기준이 다른 해끼리는 계산하지 않음). 원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
+    {finYears.length > 0 && <p class="meta">{revAcc && `이 회사는 매출액 계정이 없어(금융업) 사업보고서 손익계산서의 '${revAcc}'을 매출액 자리에 넣었습니다. `}매출액 증가율 = (그해 ÷ 전년 − 1) × 100, 영업이익률 = 영업이익 ÷ 매출액 × 100, 부채비율 = 부채총계 ÷ 자본총계 × 100 — 공시 값을 나눈 것. 연구개발비·직원 수는 사업보고서 '연구개발 활동'·'직원 등의 현황' 값(아래 표)(기준이 다른 해끼리는 계산하지 않음). 원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
   </section>
 
   <section>

@@ -41,7 +41,10 @@ ACCOUNTS = [
     ("total_equity", ("자본총계",)),
 ]
 COLS = ["corp_code", "name", "year", "fs", "revenue", "operating_income", "net_income", "total_assets", "total_liabilities",
-        "total_equity", "unit", "rcept_no", "source_url", "as_of", "corp_cls", "stock_code", "induty_code", "region"]
+        "total_equity", "unit", "rcept_no", "source_url", "as_of", "corp_cls", "stock_code", "induty_code", "region", "revenue_account"]
+# 금융회사(은행·금융지주·증권)는 주요계정에 매출액이 없다(운영자 지시 2026-10-06: 영업수익을 매출액 자리에). 전체 재무제표(fnlttSinglAcntAll)의
+# 손익계산서에서 아래 순서로 찾아 revenue 에 넣고 어떤 계정인지 revenue_account 에 적는다(페이지가 '매출액(영업수익)' 으로 표시).
+REVENUE_FALLBACK = ("영업수익", "수익(매출액)", "매출액", "순영업수익", "이자수익")
 KEY = os.environ.get("DART_KEY", "").strip()
 CALLS = [0]
 
@@ -140,6 +143,22 @@ def to_num(s: str) -> str:
     return s if s.lstrip("-").isdigit() else ""
 
 
+def revenue_fallback(code: str, year: int, fs: str) -> tuple[str, str]:
+    """주요계정에 매출액이 없는 회사(금융업): 전체 재무제표의 손익계산서(IS·CIS)에서 영업수익 → 수익(매출액) → 매출액 → 순영업수익 → 이자수익 순으로 찾는다."""
+    j = get("fnlttSinglAcntAll.json", corp_code=code, bsns_year=year, reprt_code="11011", fs_div=fs)
+    time.sleep(0.15)
+    lst = [x for x in (j or {}).get("list", []) if x.get("sj_div") in ("IS", "CIS")]
+    norm = lambda t: re.sub(r"\s+", "", t or "")
+    for want in REVENUE_FALLBACK:
+        for x in lst:
+            nm = norm(x.get("account_nm"))
+            if nm == want or nm.startswith(want + "("):
+                v = to_num(x.get("thstrm_amount", ""))
+                if v:
+                    return v, want
+    return "", ""
+
+
 def fin_rows(code: str, meta: dict, years: int) -> list[dict]:
     rows = []
     this_year = date.today().year
@@ -161,6 +180,10 @@ def fin_rows(code: str, meta: dict, years: int) -> list[dict]:
                 for col, names in ACCOUNTS:
                     if nm in names and not rec.get(col):
                         rec[col] = to_num(x.get("thstrm_amount", ""))
+                        if col == "revenue":
+                            rec["revenue_account"] = nm
+            if not rec.get("revenue"):
+                rec["revenue"], rec["revenue_account"] = revenue_fallback(code, y, fs)
             rows.append({c: rec.get(c, "") for c in COLS})
             break
     return rows

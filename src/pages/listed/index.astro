@@ -84,7 +84,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
         <td class="wrap">{c.ksicName || c.group}{c.ksicName && <span class="meta"> · {c.group}</span>}</td>
         <td class="wrap">{mk.text || '—'}{mk.kind === 'factory' && <span class="meta"> (공장등록)</span>}</td>
         <td>{c.cls}</td><td class="nw">{c.stock || '—'}</td><td>{c.district}</td>
-        {years.map(y => <td class="n">{f(c.years[y]?.revenue)}</td>)}
+        {years.map(y => <td class="n" title={c.years[y]?.revenue_account && c.years[y]!.revenue_account !== '매출액' ? `${c.years[y]!.revenue_account}(매출액 계정 없음)` : undefined}>{f(c.years[y]?.revenue)}{c.years[y]?.revenue_account && c.years[y]!.revenue_account !== '매출액' ? '※' : ''}</td>)}
         {years.slice(1).map((y, i) => <td class="n">{pct1(revGrowth(c.years[y], c.years[years[i]]))}</td>)}
         {years.map(y => <td class="n">{f(c.years[y]?.operating_income)}</td>)}
         {years.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}
@@ -95,7 +95,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
         <td><a href={c.url} rel="noopener">DART</a>{L?.fs === '개별' ? <span class="meta"> 개별</span> : ''}</td>
       </tr>); })}</tbody>
   </table></div>
-  <p class="meta">매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 연구개발비·직원 수는 아래 '연구개발비'·'직원 현황'과 같은 사업보고서 값입니다(표를 못 찾은 회사는 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
+  <p class="meta">매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 연구개발비·직원 수는 아래 '연구개발비'·'직원 현황'과 같은 사업보고서 값입니다(표를 못 찾은 회사는 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. ※ 는 금융회사(은행·금융지주 등)처럼 매출액 계정이 없어 사업보고서 손익계산서의 영업수익(없으면 순영업수익·이자수익)을 매출액 자리에 넣은 것입니다(운영자 지시 2026-10-06). — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
 
   {fut.length > 0 && (
   <section id="future">

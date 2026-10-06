@@ -144,7 +144,8 @@ export const fmtAmount = (s: Support) => (s.amount ? `${Number(s.amount).toLocal
 
 /** DART 재무(scripts/data/company_financials.csv, collect_dart_fin.py). 상장·공시대상 기업만. */
 export type Financial = { corp_code: string; name: string; year: string; fs: string; revenue: string; operating_income: string; net_income: string; unit: string; rcept_no: string; source_url: string; as_of: string;
-  total_assets?: string; total_liabilities?: string; total_equity?: string; corp_cls?: string; stock_code?: string; induty_code?: string; region?: string };
+  total_assets?: string; total_liabilities?: string; total_equity?: string; corp_cls?: string; stock_code?: string; induty_code?: string; region?: string;
+  revenue_account?: string };   // 매출액 자리에 넣은 계정 이름(금융회사는 영업수익·순영업수익·이자수익, 운영자 지시 2026-10-06)
 let _fin: Financial[] | null = null;
 export const financials = () => (_fin ??= readCsv('scripts/data/company_financials.csv') as Financial[]);
 export const normName = (s: string) => (s || '').replace(/\(주\)|㈜|\(유\)|주식회사|유한회사/g, '').replace(/[\s\-_.,·ㆍ&/()\[\]'"]/g, '').toLowerCase();

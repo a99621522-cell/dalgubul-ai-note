@@ -136,7 +136,7 @@ const card = {
         {fin.length > 0 && (<>
         <div class="section-head"><h2>재무 (DART 공시)</h2><span class="meta">{fin[0].fs} 기준</span></div>
         <div class="scroll-x"><table class="data-table">
-          <thead><tr><th>사업연도</th><th class="n">매출액</th><th class="n">영업이익</th><th class="n">당기순이익</th><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th><th>원문</th></tr></thead>
+          <thead><tr><th>사업연도</th><th class="n">매출액{fin.some(f => f.revenue_account && f.revenue_account !== '매출액') ? `(${fin.find(f => f.revenue_account && f.revenue_account !== '매출액')!.revenue_account})` : ''}</th><th class="n">영업이익</th><th class="n">당기순이익</th><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th><th>원문</th></tr></thead>
           <tbody>{fin.map(f => (<tr><td>{f.year}</td><td class="n">{fmtEokWon(f.revenue)}</td><td class="n">{fmtEokWon(f.operating_income)}</td><td class="n">{fmtEokWon(f.net_income)}</td><td class="n">{fmtEokWon(f.total_assets ?? '')}</td><td class="n">{fmtEokWon(f.total_liabilities ?? '')}</td><td class="n">{fmtEokWon(f.total_equity ?? '')}</td><td>{f.source_url ? <a href={f.source_url} rel="noopener">사업보고서</a> : '—'}</td></tr>))}</tbody>
         </table></div>
         <p class="meta">금융감독원 전자공시 사업보고서의 값을 억 원으로 나눠 표시. 상장·공시대상 기업만 자료가 있습니다. 직원·연구개발비·출자·공시를 모은 <a href={`/listed/${fin[0].corp_code}/`}>회사 공시 페이지</a> · 전체는 <a href="/listed/">대구시 상장기업</a>.</p>

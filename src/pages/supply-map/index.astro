@@ -25,8 +25,7 @@ for (const r of areas) { const k = `${r.sido}|${r.area}`; const a = areaMap.get(
 const areaRows = (sido: string): Area[] => [...areaMap.values()].filter(a => a.sido === sido).sort((a, b) => b.total - a.total)
   .map(a => ({ sido: a.sido, area: a.area, total: a.total, top: a.g.sort((x, y) => y[1] - x[1]).slice(0, 3).map(([g, n]) => `${g} ${fmt(n)}`).join(' · ') }));
 ---
-<Base title="대구·경북 품목 지도" description={`대구 ${fmt(S?.n_daegu ?? 0)}곳·경북 ${fmt(S?.n_gb ?? 0)}곳의 공장등록 생산품을 한국은행 특정국 의존 품목 ${items.length}개와 맞춰, 품목마다 대구·경북에 그 품목을 등록한 기업이 있는지 보여 줍니다.`} current="industry">
-  <p class="meta"><a href="/industry/">산업별</a> › 대구·경북 품목 지도</p>
+<Base title="대구·경북 품목 지도" description={`대구 ${fmt(S?.n_daegu ?? 0)}곳·경북 ${fmt(S?.n_gb ?? 0)}곳의 공장등록 생산품을 한국은행 특정국 의존 품목 ${items.length}개와 맞춰, 품목마다 대구·경북에 그 품목을 등록한 기업이 있는지 보여 줍니다.`} current="industry" crumb="대구·경북 품목 지도">
   <div class="section-head"><h1>대구·경북 품목 지도</h1><span class="meta">대구 {S?.as_of_daegu ?? '—'} · 경북 {S?.as_of_gb || '준비 중'} 기준</span></div>
   <p class="lede">대구·경북 공장등록 기업이 <strong>무엇을 만드는지</strong>(생산품)를 모아, 한국은행 「우리나라 주요 제조업 생산 및 공급망 지도」(2026.7)가 정리한 특정국 의존 품목과 맞춰 봤습니다. 품목마다 대구·경북에 그 품목을 생산품으로 등록한 기업이 있는지 알 수 있습니다. 생산품 낱말을 맞춘 것이라 <strong>생산 역량이나 거래 관계를 뜻하지 않으며</strong>, 확인은 조사로 합니다. 평가·순위가 아닙니다.</p>
   {!gbReady && <p class="note-box">경북 자료(공공데이터포털 전국 등록공장 현황)를 받는 중입니다. 지금은 대구만 표시합니다.</p>}

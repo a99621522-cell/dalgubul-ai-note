@@ -41,8 +41,7 @@ const byGroup = cross(c => c.sector_group);
 const byDistrict = cross(c => c.district);
 const total = lists.reduce((s, l) => s + l.items.length, 0);
 ---
-<Base title="대구 스타기업·Pre-스타기업" description={`대구광역시가 공개한 스타기업 ${lists[0].items.length}곳·Pre-스타기업 ${lists[1].items.length}곳·3030기업 ${lists[2].items.length}곳 명단(${asOf} 기준)을 기업 사전과 이어 산업·구·군·단지·종사자로 정리했습니다.`} current="support">
-  <p class="meta"><a href="/support/">지원받은 기업</a> › 스타기업·Pre-스타기업</p>
+<Base title="대구 스타기업·Pre-스타기업" description={`대구광역시가 공개한 스타기업 ${lists[0].items.length}곳·Pre-스타기업 ${lists[1].items.length}곳·3030기업 ${lists[2].items.length}곳 명단(${asOf} 기준)을 기업 사전과 이어 산업·구·군·단지·종사자로 정리했습니다.`} current="support" crumb="스타기업·Pre-스타기업">
   <nav class="sub-tabs" aria-label="지원 기업 보기">
     <a href="/support/">전체 지원 기업</a>
     <a href="/support/participation/">특구·특화단지·샌드박스 참여</a>

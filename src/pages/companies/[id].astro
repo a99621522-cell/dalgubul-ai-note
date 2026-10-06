@@ -66,7 +66,7 @@ const card = {
   source: `${c.source}, 기준 ${c.as_of}`,
 };
 ---
-<Base title={c.name} description={desc} current="companies" jsonld={jsonld}>
+<Base title={c.name} description={desc} current="companies" jsonld={jsonld} nocrumb>
   <article class="post">
     <header>
       <p class="meta"><a href="/companies/">대구 기업 사전</a> › <a href={`/companies/?district=${encodeURIComponent(c.district)}`}>{c.district}</a> › {c.complex}</p>

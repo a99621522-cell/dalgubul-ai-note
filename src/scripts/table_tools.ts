@@ -74,6 +74,28 @@ function flash(btn: HTMLButtonElement, text: string) {
   setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1800);
 }
 
+/** 좁은 화면 대응(디자인·UI 개선 2차 2026-10-06): ① 머리 칸 data-pri="2"(768px 아래 숨김)·"3"(1024px 아래 숨김) 열 우선순위
+ *  ② 머리가 한 줄이고 병합이 없으며 열이 5개 이상인 표는 600px 아래에서 행마다 카드(td::before 에 머리 글자)로 — DOM 은 그대로라 복사·PDF 는 표 형태.
+ *  data-stack="off" 로 끌 수 있고, 카드일 때 「표로 보기」 단추로 되돌린다. */
+function responsive(tbl: HTMLTableElement, bar: HTMLElement): void {
+  const head = tbl.tHead;
+  if (!head || head.rows.length !== 1) return;
+  const ths = Array.from(head.rows[0].cells);
+  if (ths.some(c => c.colSpan > 1 || c.rowSpan > 1) || tbl.querySelector('tbody [rowspan], tbody [colspan]')) return;
+  const rows = Array.from(tbl.tBodies).flatMap(b => Array.from(b.rows));
+  ths.forEach((th, i) => {
+    const cls = th.dataset.pri === '3' ? 'col-lg' : th.dataset.pri === '2' ? 'col-md' : '';
+    if (cls) { th.classList.add(cls); rows.forEach(tr => tr.cells[i]?.classList.add(cls)); }
+  });
+  if (tbl.dataset.stack === 'off' || (ths.length < 5 && tbl.dataset.stack !== 'on')) return;
+  const labels = ths.map(c => clean((c as HTMLElement).innerText));
+  rows.forEach(tr => Array.from(tr.cells).forEach((c, i) => { if (c.tagName === 'TD' && !c.dataset.label) c.dataset.label = labels[i] ?? ''; }));
+  tbl.classList.add('stackable');
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'btn secondary stack-toggle'; b.textContent = '표로 보기'; b.setAttribute('aria-pressed', 'false');
+  b.addEventListener('click', () => { const on = tbl.classList.toggle('as-table'); b.textContent = on ? '카드로 보기' : '표로 보기'; b.setAttribute('aria-pressed', String(on)); });
+  bar.prepend(b);
+}
+
 export function attach(tbl: HTMLTableElement): void {
   if (tbl.dataset.tools || tbl.closest('.no-tools')) return;
   tbl.dataset.tools = '1';
@@ -105,10 +127,22 @@ export function attach(tbl: HTMLTableElement): void {
     } catch { hwp.disabled = false; flash(hwp, '만들기 실패'); }
   });
   anchor.insertAdjacentElement('afterend', bar);
+  responsive(tbl, bar);
 }
 
+/** 가로로 넘치는 .scroll-x 는 키보드로도 밀 수 있어야 한다(axe scrollable-region-focusable): 넘칠 때만 tabindex=0·role=region */
+function focusableScroll(): void {
+  document.querySelectorAll<HTMLElement>('.scroll-x').forEach(el => {
+    const over = el.scrollWidth > el.clientWidth + 1;
+    if (over) { el.tabIndex = 0; el.setAttribute('role', 'region'); if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', (el.querySelector('table')?.getAttribute('data-title') || '표') + ' — 가로로 밀어 보기'); }
+    else { el.removeAttribute('tabindex'); el.removeAttribute('role'); }
+  });
+}
+let rt = 0;
 export function init(): void {
   document.querySelectorAll<HTMLTableElement>('table.data-table').forEach(attach);
+  focusableScroll();
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(focusableScroll, 150); });
 }
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

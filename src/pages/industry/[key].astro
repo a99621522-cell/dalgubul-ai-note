@@ -29,8 +29,7 @@ const tiles: Tile[] = s ? [
 ] : [];
 const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 ${fmt(s.employment)}명(${ym}). 24개월 추이, 단지·입지 분포, 최근 3년 지원 이력.` : `${g.name} 산업 현황`;
 ---
-<Base title={g.name} description={description} current="industry">
-  <p class="meta"><a href="/industry/">산업별 현황</a> › {g.name}</p>
+<Base title={g.name} description={description} current="industry" crumb={g.name}>
   <div class="section-head"><h1>{g.name}</h1><span class="meta">{ym} 기준</span></div>
   {s ? (
     <>

@@ -9,8 +9,7 @@ import { kosisIndex } from '../../../lib/kosis';
 const t = TOPICS.find(x => x.key === 'manufacturing')!;
 const idx = kosisIndex();
 ---
-<Base title={`${t.name} 통계`} description={`대구 ${t.name} 통계(${t.period}): ${t.desc}`} current="stats">
-  <p class="meta"><a href="/stats/">통계</a> › {t.name}</p>
+<Base title={`${t.name} 통계`} description={`대구 ${t.name} 통계(${t.period}): ${t.desc}`} current="stats" crumb={t.name}>
   <StatsNav current={t.key} />
   <div class="section-head"><h1>{t.name}</h1><span class="meta">{t.period} · 국가데이터처 KOSIS · 갱신 {idx.generated}</span></div>
   <p class="lede">{t.desc} 그래프 아래 표는 눌러서 펼칩니다. 값은 원 통계(KOSIS·식약처) 그대로이고 평가·순위가 아닙니다.</p>

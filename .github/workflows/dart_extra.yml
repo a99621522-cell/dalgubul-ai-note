@@ -15,9 +15,6 @@ on:
         description: "회사명 하나만 표 찾기를 자세히 찍기(저장 안 함)"
         required: false
         default: ""
-  push:
-    branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: ["scripts/collect_dart_extra.py"]
 
 permissions:
   contents: write

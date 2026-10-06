@@ -224,13 +224,43 @@ def rnd(reps: dict[str, dict], debug_name: str = "") -> None:
 
 
 # ---------- 주요 제품 ----------
-SKIP_ROW = re.compile(r"^(합\s*계|총\s*계|소\s*계|계|합계\s*\(.*\)|내부거래.*|연결조정.*|조정.*|단위.*)$")
+SKIP_ROW = re.compile(r"^(합\s*계|총\s*계|소\s*계|계|합계\s*\(.*\)|내부거래.*|연결조정.*|조정.*|단위.*|제\s*품|상\s*품|용\s*역|기\s*타|서비스|수출|내수|국내|해외"
+                      r"|품\s*목.*|제\s*품\s*명|주\s*요\s*제\s*품.*|구\s*분|사\s*업\s*부\s*문|부\s*문|총\s*매\s*출.*|매출\s*총계|단순합계|차감.*|매출\s*액)$")
+HEADERISH = re.compile(r"품\s*목|제\s*품\s*명|주\s*요\s*제\s*품|구체적\s*용도|^\s*구\s*분\s*$")
+
+
+def good_product(prod_v: str, segv: str) -> bool:
+    """표 머리가 두 줄이라 샌 머리 글자·합계·문장(설명 문단을 표로 짠 보고서)은 품목이 아니다"""
+    t = prod_v.strip()
+    if not t or SKIP_ROW.match(t) or HEADERISH.search(t) or SKIP_ROW.match(segv or "x"):
+        return False
+    if re.fullmatch(r"[\d,.\s%()-]+", t) or t.startswith("-") or t.endswith(".") or re.search(r"(습니다|입니다|있음|진행\s*중)", t):
+        return False
+    return len(t) <= 60   # 부문 이름과 같은 품목(도시가스/도시가스)은 그대로 둔다
 
 
 def table_rows(tbl: str) -> list[list[str]]:
-    rows = [[cell_text(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, flags=re.S | re.I)]
-            for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", tbl, flags=re.S | re.I)]
-    return [r for r in rows if any(r)]
+    """표를 격자로: rowspan 은 아래 행에 같은 글자를 채우고 colspan 은 옆 칸에 되풀이한다(사업부문·품목이 여러 행에 걸친 '주요 제품' 표, 2026-10-06)."""
+    carry: dict[int, list] = {}
+    rows = []
+    for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", tbl, flags=re.S | re.I):
+        out, col = [], 0
+        for attrs, body in re.findall(r"<T[DHE]([^>]*)>(.*?)</T[DHE]>", tr, flags=re.S | re.I):
+            while col in carry and carry[col][0] > 0:
+                out.append(carry[col][1]); carry[col][0] -= 1; col += 1
+            rs = int((re.search(r"rowspan\s*=\s*\"?(\d+)", attrs, re.I) or [0, "1"])[1] or 1)
+            cs = int((re.search(r"colspan\s*=\s*\"?(\d+)", attrs, re.I) or [0, "1"])[1] or 1)
+            text = cell_text(body)
+            for _ in range(max(1, cs)):
+                out.append(text)
+                if rs > 1:
+                    carry[col] = [rs - 1, text]
+                col += 1
+        while col in carry and carry[col][0] > 0:
+            out.append(carry[col][1]); carry[col][0] -= 1; col += 1
+        if any(out):
+            rows.append(out)
+    return rows
 
 
 def products_from_doc(xml: str, debug: bool = False) -> list[dict]:
@@ -256,12 +286,10 @@ def products_from_doc(xml: str, debug: bool = False) -> list[dict]:
             rc = col(r"비\s*율|비\s*중|%")
             out, last_seg = [], ""
             for r in rows[hi + 1:]:
-                if len(r) < len(head):   # rowspan 으로 앞 칸(사업부문)이 빠진 행 → 왼쪽부터 채워 맞춘다
-                    r = [""] * (len(head) - len(r)) + r
                 segv = r[sc] if sc is not None and sc < len(r) else ""
                 last_seg = segv or last_seg
                 prod_v = r[pc] if pc < len(r) else ""
-                if not prod_v or SKIP_ROW.match(prod_v) or SKIP_ROW.match(segv or "x") or re.fullmatch(r"[\d,.\s%()-]+", prod_v):
+                if not good_product(prod_v, segv):
                     continue
                 share = ""
                 if rc is not None and rc < len(r):

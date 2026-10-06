@@ -14,7 +14,8 @@ const out = { generated: new Date().toISOString().slice(0, 10), base, pages: [] 
 const browser = await chromium.launch(process.env.PLAYWRIGHT_BROWSERS_PATH ? {} : { executablePath: '/opt/pw-browsers/chromium' }).catch(() => chromium.launch());
 let fail = 0;
 for (const u of PAGES) {
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });   // @axe-core/playwright 는 newContext 의 page 만 받는다
+  const page = await context.newPage();
   await page.goto(base + u, { waitUntil: 'load' });
   await page.waitForTimeout(400);
   const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
@@ -23,7 +24,7 @@ for (const u of PAGES) {
   const header = await page.$eval('.site-head .row', e => Math.round(e.getBoundingClientRect().height)).catch(() => null);
   out.pages.push({ url: u, axe_violations: viol, h_scroll: hscroll, header_px: header });
   if (viol.length || hscroll) fail++;
-  await page.close();
+  await context.close();
 }
 await browser.close();
 if (!noLh) {

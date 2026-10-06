@@ -130,8 +130,19 @@ export function attach(tbl: HTMLTableElement): void {
   responsive(tbl, bar);
 }
 
+/** 가로로 넘치는 .scroll-x 는 키보드로도 밀 수 있어야 한다(axe scrollable-region-focusable): 넘칠 때만 tabindex=0·role=region */
+function focusableScroll(): void {
+  document.querySelectorAll<HTMLElement>('.scroll-x').forEach(el => {
+    const over = el.scrollWidth > el.clientWidth + 1;
+    if (over) { el.tabIndex = 0; el.setAttribute('role', 'region'); if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', (el.querySelector('table')?.getAttribute('data-title') || '표') + ' — 가로로 밀어 보기'); }
+    else { el.removeAttribute('tabindex'); el.removeAttribute('role'); }
+  });
+}
+let rt = 0;
 export function init(): void {
   document.querySelectorAll<HTMLTableElement>('table.data-table').forEach(attach);
+  focusableScroll();
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(focusableScroll, 150); });
 }
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

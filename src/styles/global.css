@@ -405,7 +405,7 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
 @media (max-width: 599px) {
   .stack-toggle { display: inline-flex; }
   .scroll-x:has(> table.stackable:not(.as-table)) { overflow: visible; }
-  table.stackable:not(.as-table) { display: block; min-width: 0; }
+  table.stackable:not(.as-table) { display: block; min-width: 0 !important; }   /* 페이지 안 id 규칙(#gsroute 640px 등)보다 앞서게 */
   table.stackable:not(.as-table) thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   table.stackable:not(.as-table) tbody, table.stackable:not(.as-table) tfoot, table.stackable:not(.as-table) tr { display: block; }
   table.stackable:not(.as-table) tr { border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; margin: 0 0 8px; background: var(--bg); }

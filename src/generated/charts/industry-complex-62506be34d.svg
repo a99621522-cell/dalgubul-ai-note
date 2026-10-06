@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="식품 산단별 고용 인원. 개별입지 1,327명, 성서산단 1,029명, 산단 외 987명, 서대구산단 242명, 대구제3산단 124명, 대구테크노폴리스산단 81명, 달성2차산단 73명, 달성산단 44명, 대구연구개발특구 32명, 대구옥포농공단지 27명, 그 밖의 단지 24명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="식품 산단별 고용 인원. 개별입지 1,327명, 산단 외 1,227명, 성서산단 1,029명, 서대구산단 242명, 대구제3산단 124명, 대구테크노폴리스산단 81명, 달성2차산단 73명, 달성산단 44명, 대구연구개발특구 32명, 대구옥포농공단지 27명, 그 밖의 단지 24명" style="max-width:720px;height:auto;font-size:14px">
 <title>식품 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 2개월</text>
 <text x="138" y="56.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
 <rect x="148" y="40" width="510.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="666.0" y="56.0" fill="#1a1a1a">1,327명</text>
-<text x="138" y="90.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
-<rect x="148" y="74" width="395.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="551.5" y="90.0" fill="#1a1a1a">1,029명</text>
-<text x="138" y="124.0" text-anchor="end" fill="#1a1a1a">산단 외</text>
-<rect x="148" y="108" width="379.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="535.3" y="124.0" fill="#1a1a1a">987명</text>
+<text x="138" y="90.0" text-anchor="end" fill="#1a1a1a">산단 외</text>
+<rect x="148" y="74" width="471.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="627.6" y="90.0" fill="#1a1a1a">1,227명</text>
+<text x="138" y="124.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
+<rect x="148" y="108" width="395.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="551.5" y="124.0" fill="#1a1a1a">1,029명</text>
 <text x="138" y="158.0" text-anchor="end" fill="#1a1a1a">서대구산단</text>
 <rect x="148" y="142" width="93.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="249.0" y="158.0" fill="#1a1a1a">242명</text>

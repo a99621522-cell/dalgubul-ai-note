@@ -28,7 +28,7 @@ export const KOSIS_TOPICS: Record<string, KosisSection[]> = {
   business: [
     { title: '산업별 사업체·종사자 (전국사업체조사)', desc: '대구 산업 대·중분류별 사업체 수·종사자 수와 종사자 비중의 전국 대비 입지계수.', tables: ['census_daegu'], charts: ['lq-employment'] },
     { title: '산업별 기업·종사자 (중소기업기본통계)', desc: '산업중분류별 전체 기업·중소기업·소상공인 수와 종사자 수. 행정통계라 개인사업자를 포함합니다.', tables: ['sme_daegu'], charts: [] },
-    { key: 'startup', title: '창업기업 (중소벤처기업부 창업기업동향)', desc: '대구 월별 창업기업 수(전체·기술기반업종)와 전년동월비, 연도별 합계, 업종별. 사업자등록 기준 창업(법인·개인)이며, 스타트업 지원 대상인 기술기반업종을 따로 보여 줍니다.', tables: ['startup_monthly', 'startup_annual', 'startup_industry'], charts: ['startup-monthly'] },
+    { key: 'startup', title: '창업·벤처기업', desc: '중소벤처기업부 창업기업동향의 대구 월별 창업기업 수(전체·기술기반업종)와 전년동월비, 연도별 합계, 업종별 — 사업자등록 기준 창업(법인·개인, 7년 이내 창업기업과는 별개의 흐름 통계)이며 기술기반업종을 따로 보여 줍니다. 이어서 기업 사전에서 확인되는 창업기업(설립 7년 이내)·벤처기업·둘의 교집합(7년 이내 벤처기업)을 셉니다.', tables: ['startup_monthly', 'startup_annual', 'startup_industry'], charts: ['startup-monthly'] },
     { title: '기업 신생·소멸 (기업생멸행정통계)', desc: '대구 활동기업·신생기업·소멸기업 수와 신생률·소멸률, 산업별·기업규모별. 신생기업은 개인사업자를 포함한 새로 생긴 기업 전체라 위 창업기업(스타트업) 통계와 기준이 다릅니다.', tables: ['biz_birth', 'biz_birth_industry', 'biz_birth_size'], charts: ['biz-birth'] },
     { title: '수출입 활동기업 (관세청 기업무역활동통계)', desc: '17개 시도 수출입 활동기업 수·교역액, 진입·퇴출 기업, 수출 기여율·기여도와 대구 교역액 추이.', tables: ['export17'], charts: ['export-daegu'] },
   ],

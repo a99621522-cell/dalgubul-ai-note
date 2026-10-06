@@ -7,7 +7,7 @@ const shown = S.tags.filter(t => t.count > 0);
 ---
 <section class="sf" id="startups">
   <div class="section-head"><h2>기업 사전의 창업·벤처 기업</h2><span class="meta">기업 사전 {S.asOf}</span></div>
-  <p class="meta">위 창업기업동향·기업생멸 통계는 사업자등록·행정자료로 센 '새로 생긴 기업'이라 이름을 알 수 없습니다. 이 표는 기업 사전 {n(S.total)}곳 가운데 공개 자료로 확인되는 창업·벤처 기업을 센 것입니다 — 창업기업은 창업지원법 기준 설립 7년 이내(설립·적용일이 있는 {n(S.foundedKnown)}곳만 판정, 공장등록 자료에는 설립일이 없어 산단 기업은 대부분 판정 불가), 벤처기업은 벤처기업확인 공시, 창경센터 보육·연구소기업·이노비즈는 기관 공개 목록. 창업기업이면서 벤처기업인 곳은 {n(S.startupVenture)}곳입니다.</p>
+  <p class="meta">위 창업기업동향·기업생멸 통계는 사업자등록·행정자료로 센 '새로 생긴 기업'이라 이름을 알 수 없습니다. 이 표는 기업 사전 {n(S.total)}곳 가운데 공개 자료로 확인되는 창업·벤처 기업을 센 것입니다 — 창업기업은 창업지원법 기준 설립 7년 이내(설립·적용일이 있는 {n(S.foundedKnown)}곳만 판정, 공장등록 자료에는 설립일이 없어 산단 기업은 대부분 판정 불가), 벤처기업은 벤처기업확인 공시, 창경센터 보육·연구소기업·이노비즈는 기관 공개 목록. 창업기업은 나이만, 벤처기업은 혁신성(투자·연구개발·혁신성장 유형 확인)만 보는 정의라 스타트업(법적 정의 없음)과 같지 않으며, 둘을 함께 만족하는 <b>7년 이내 벤처기업</b> {n(S.startupVenture)}곳이 스타트업에 가장 가까운 집합입니다.</p>
   <ul class="tiles" aria-label="창업·벤처 기업 핵심 숫자">
     {shown.map(t => <li><b>{n(t.count)}</b><span>{t.name}(곳)</span></li>)}
   </ul>
@@ -22,7 +22,7 @@ const shown = S.tags.filter(t => t.count > 0);
     <thead><tr><th>구·군</th>{shown.map(t => <th class="n">{t.name}(곳)</th>)}</tr></thead>
     <tbody>{DISTRICTS.map(d => <tr><th scope="row">{d}</th>{shown.map(t => <td class="n">{n(t.byDistrict[d] ?? 0)}</td>)}</tr>)}</tbody>
   </table></div>
-  <p class="meta">기업 사전에서 보기: {shown.map((t, i) => <>{i ? ' · ' : ''}<a href={`/companies/?tag=${t.key}`}>{t.name} {n(t.count)}곳</a></>)}</p>
+  <p class="meta">기업 사전에서 보기: {shown.filter(t => !t.combo).map((t, i) => <>{i ? ' · ' : ''}<a href={`/companies/?tag=${t.key}`}>{t.name} {n(t.count)}곳</a></>)} (7년 이내 벤처기업은 두 태그의 교집합이라 목록 필터는 벤처기업으로 열어 설립 연도를 보세요)</p>
   <p class="meta">출처: 기업 사전(한국산업단지공단 팩토리온·국민연금 가입 사업장·수성알파시티 기업현황), 벤처기업확인 공시, 대구창조경제혁신센터·연구개발특구·이노비즈협회 공개 목록. 태그 기준은 config/site_types.yml. 순위·평가가 아닙니다.</p>
 </section>
 <style>

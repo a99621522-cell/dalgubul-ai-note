@@ -23,7 +23,7 @@ def fetch(item: str) -> Path:
         return p
     d = Path(tempfile.mkdtemp())
     out = d / "io.xlsx"
-    subprocess.run(["gdown", "--id", item, "-O", str(out)], check=True)
+    subprocess.run(["gdown", item, "-O", str(out)], check=True)   # 최신 gdown 은 --id 없이 id 를 바로 받는다
     return out
 
 
@@ -55,47 +55,55 @@ def grid(ws):
     return [list(r) for r in ws.iter_rows(values_only=True)]
 
 
+def num(v):
+    if isinstance(v, (int, float)):
+        return float(v)
+    try:
+        return float(str(v).replace(",", ""))
+    except (TypeError, ValueError):
+        return None
+
+
 def parse_matrix(ws, label: str) -> dict[str, dict[str, float]]:
-    """지역간 계수표 하나 → {부문: {'within': 합, 'other': 합, 'col_total': 합}} (대구 열 기준)."""
+    """지역간 계수표 하나 → {부문명: {'within': 합, 'other': 합, 'col_total': 합}} (대구 열 기준).
+    확인된 구조(2026-10-06 probe): 5행 = 열 지역(서울×33 …), 6행 = 부문 코드, 7행 = '지역'·'부문'·'부문명' + 열 부문명, 8행부터 = 행 지역·코드·부문명·값."""
     g = grid(ws)
     nrow, ncol = len(g), max(len(r) for r in g)
-    # 열 머리: 지역 행과 부문 행 찾기 — 지역 이름이 5개 이상 든 첫 행
-    reg_row = next((i for i, r in enumerate(g[:15]) if sum(1 for v in r if region_of(v)) >= 5), None)
+    cell = lambda i, j: g[i][j] if i < nrow and j < len(g[i]) else None
+    reg_row = next((i for i in range(min(15, nrow)) if sum(1 for v in g[i] if region_of(v)) >= 5), None)
     if reg_row is None:
         raise RuntimeError(f"{label}: 열 머리의 지역 행을 못 찾음")
-    sec_row = reg_row + 1
+    name_row = next((i for i in range(reg_row + 1, min(reg_row + 5, nrow)) if any(NORM(v) == "부문명" for v in g[i] if isinstance(v, str))), reg_row + 1)
+    hdr = [NORM(v) if isinstance(v, str) else "" for v in g[name_row]]
+    reg_col = hdr.index("지역") if "지역" in hdr else 0
+    name_col = hdr.index("부문명") if "부문명" in hdr else reg_col + 2
     col_region, cur = {}, None
     for j in range(ncol):
-        v = g[reg_row][j] if j < len(g[reg_row]) else None
-        r = region_of(v)
+        r = region_of(cell(reg_row, j))
         if r:
             cur = r
         col_region[j] = cur
-    col_sector = {j: (str(g[sec_row][j]).strip() if j < len(g[sec_row]) and g[sec_row][j] is not None else "") for j in range(ncol)}
-    # 행 머리: 지역 열과 부문 열(왼쪽 두 열 중 지역 이름이 든 열, 그다음 열이 부문)
-    reg_col = next((j for j in range(min(4, ncol)) if sum(1 for r in g[sec_row + 1:] if j < len(r) and region_of(r[j])) >= 5), None)
-    if reg_col is None:
-        raise RuntimeError(f"{label}: 행 머리의 지역 열을 못 찾음")
-    sec_col = reg_col + 1
+    col_sector = {j: (str(cell(name_row, j)).strip() if cell(name_row, j) is not None else "") for j in range(ncol)}
     out: dict[str, dict[str, float]] = {}
     cur = None
-    for i in range(sec_row + 1, nrow):
-        r = g[i]
-        rv = r[reg_col] if reg_col < len(r) else None
+    for i in range(name_row + 1, nrow):
+        rv = cell(i, reg_col)
         rr = region_of(rv)
         if rr:
             cur = rr
-        sec = str(r[sec_col]).strip() if sec_col < len(r) and r[sec_col] is not None else ""
-        if not cur or not sec or NORM(sec) in ("합계", "계", "총계", "전부문", "부문계"):
+        elif rv is not None and str(rv).strip():   # '전국'·'합계' 같은 집계 블록은 지역이 아니다 — 17개 시도 행만 더한다(2026-10-06: 전국 블록이 타지역에 더해져 합이 1.6 이 됐다)
+            cur = None
+        sec = str(cell(i, name_col)).strip() if cell(i, name_col) is not None else ""
+        if not cur or not sec or NORM(sec) in ("합계", "계", "총계", "전부문", "부문계", "전품목", "None"):
             continue
-        for j in range(sec_col + 1, ncol):
+        for j in range(name_col + 1, ncol):
             if col_region.get(j) != "대구":
                 continue
             cs = col_sector[j]
-            if not cs or NORM(cs) in ("합계", "계", "총계", "부문계"):
+            if not cs or NORM(cs) in ("합계", "계", "총계", "부문계", "전품목"):
                 continue
-            v = r[j] if j < len(r) else None
-            if not isinstance(v, (int, float)):
+            v = num(cell(i, j))
+            if v is None:
                 continue
             d = out.setdefault(cs, {"within": 0.0, "other": 0.0, "col_total": 0.0})
             d["col_total"] += v
@@ -118,8 +126,15 @@ def main() -> int:
     sheets = {"va": pick(["부가가치유발"]), "emp": pick(["취업유발"]), "prod": pick(["생산유발"])}
     print("시트:", {k: (v.title if v else None) for k, v in sheets.items()})
     res = {k: (parse_matrix(v, k) if v else {}) for k, v in sheets.items()}
+    imp = parse_matrix(pick(["수입유발"]), "imp") if pick(["수입유발"]) else {}
     for k, d in res.items():
-        print(f"[{k}] 대구 열 {len(d)}개 부문", {s: round(x['within'], 3) for s, x in list(d.items())[:5]})
+        print(f"[{k}] 대구 열 {len(d)}개 부문")
+        for s, x in d.items():
+            print(f"   {s}: 지역내 {x['within']:.4f} 타지역 {x['other']:.4f} 합 {x['col_total']:.4f}")
+    for s, x in res["va"].items():   # 검산: 부가가치유발(지역내+타지역) + 수입유발(전 지역) ≈ 1
+        tot = x["col_total"] + (imp.get(s, {}).get("col_total", 0))
+        if abs(tot - 1) > 0.02:
+            print(f"   검산 주의 {s}: 부가가치 {x['col_total']:.3f} + 수입 {imp.get(s, {}).get('col_total', 0):.3f} = {tot:.3f}")
     # CSV 갱신(sector 이름을 공백·쉼표 제거로 맞춤)
     rows = list(csv.DictReader(open(a.out, encoding="utf-8")))
     fields = list(rows[0].keys())

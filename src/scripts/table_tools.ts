@@ -74,6 +74,28 @@ function flash(btn: HTMLButtonElement, text: string) {
   setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1800);
 }
 
+/** 좁은 화면 대응(디자인·UI 개선 2차 2026-10-06): ① 머리 칸 data-pri="2"(768px 아래 숨김)·"3"(1024px 아래 숨김) 열 우선순위
+ *  ② 머리가 한 줄이고 병합이 없으며 열이 5개 이상인 표는 600px 아래에서 행마다 카드(td::before 에 머리 글자)로 — DOM 은 그대로라 복사·PDF 는 표 형태.
+ *  data-stack="off" 로 끌 수 있고, 카드일 때 「표로 보기」 단추로 되돌린다. */
+function responsive(tbl: HTMLTableElement, bar: HTMLElement): void {
+  const head = tbl.tHead;
+  if (!head || head.rows.length !== 1) return;
+  const ths = Array.from(head.rows[0].cells);
+  if (ths.some(c => c.colSpan > 1 || c.rowSpan > 1) || tbl.querySelector('tbody [rowspan], tbody [colspan]')) return;
+  const rows = Array.from(tbl.tBodies).flatMap(b => Array.from(b.rows));
+  ths.forEach((th, i) => {
+    const cls = th.dataset.pri === '3' ? 'col-lg' : th.dataset.pri === '2' ? 'col-md' : '';
+    if (cls) { th.classList.add(cls); rows.forEach(tr => tr.cells[i]?.classList.add(cls)); }
+  });
+  if (tbl.dataset.stack === 'off' || (ths.length < 5 && tbl.dataset.stack !== 'on')) return;
+  const labels = ths.map(c => clean((c as HTMLElement).innerText));
+  rows.forEach(tr => Array.from(tr.cells).forEach((c, i) => { if (c.tagName === 'TD' && !c.dataset.label) c.dataset.label = labels[i] ?? ''; }));
+  tbl.classList.add('stackable');
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'btn secondary stack-toggle'; b.textContent = '표로 보기'; b.setAttribute('aria-pressed', 'false');
+  b.addEventListener('click', () => { const on = tbl.classList.toggle('as-table'); b.textContent = on ? '카드로 보기' : '표로 보기'; b.setAttribute('aria-pressed', String(on)); });
+  bar.prepend(b);
+}
+
 export function attach(tbl: HTMLTableElement): void {
   if (tbl.dataset.tools || tbl.closest('.no-tools')) return;
   tbl.dataset.tools = '1';
@@ -105,6 +127,7 @@ export function attach(tbl: HTMLTableElement): void {
     } catch { hwp.disabled = false; flash(hwp, '만들기 실패'); }
   });
   anchor.insertAdjacentElement('afterend', bar);
+  responsive(tbl, bar);
 }
 
 export function init(): void {

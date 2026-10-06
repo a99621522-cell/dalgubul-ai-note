@@ -12,8 +12,7 @@ const label = monthLabel(m.month);
 const months = statMonths();
 const blocks: [string, Record<string, any>][] = [['산업 그룹', m.by_industry], ['입지 유형', m.by_site], ['구·군', m.by_district], ['단지', m.by_complex], ['태그', m.by_tag]];
 ---
-<Base title={`${label} 통계표`} description={`${label} 대구 기업·고용 통계표: 산업 그룹·입지 유형·구군·단지·태그별 기업 수, 고용 인원, 취득·상실, 전월·전년 대비.`} current="dashboard">
-  <p class="meta"><a href="/dashboard/">현황판</a> › 통계표</p>
+<Base title={`${label} 통계표`} description={`${label} 대구 기업·고용 통계표: 산업 그룹·입지 유형·구군·단지·태그별 기업 수, 고용 인원, 취득·상실, 전월·전년 대비.`} current="dashboard" crumb="통계표">
   <div class="section-head"><h1>{label} 통계표</h1><span class="meta">{m.basis_label} · 생성 {m.generated}</span></div>
   <p class="meta">다른 달: {months.map(x => x === ym ? <strong>{monthLabel(x)}</strong> : <a href={`/stats/${x.slice(0, 4)}-${x.slice(4)}/`}>{monthLabel(x)}</a>).reduce((a: any[], b) => a.length ? [...a, ' · ', b] : [b], [])}</p>
   <div class="scroll-x"><table class="data-table">

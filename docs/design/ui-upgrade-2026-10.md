@@ -49,3 +49,9 @@ URL 은 바꾸지 않는다(검색 색인·링크 유지). 묶음은 `src/nav.ts
 - 390px: 헤더 높이 ≤ 56px, 페이지 가로 스크롤 없음(첫 화면·기업 사전·상장기업·통계·성장 계산기).
 - 1280px: 묶음 펼침 키보드 조작(Tab → Enter → 패널 링크 포커스 → Esc 닫힘).
 - 회전 카드 자동 넘김 없음(초기 `aria-pressed="true"` 정지 상태).
+
+## 7. 2차(2026-10-06, '다음 단계' 구현)
+- **표 반응형**(`src/scripts/table_tools.ts` `responsive`): 머리 칸 `data-pri="2|3"` 열 우선순위(768/1024px 아래 숨김), 머리 한 줄·병합 없음·열 5개 이상인 표는 600px 아래에서 행마다 카드(`td::before` = 머리 글자, DOM 그대로라 복사·PDF 는 표), 「표로 보기」 토글, `data-stack="off|on"`.
+- **자동완성**(`src/scripts/typeahead.ts`, `/typeahead.json`): 첫 화면·통합 검색 입력에 기업 5·글 3·부처 사업 3 + '전체 검색', ARIA combobox/listbox, 화살표·Enter·Esc, 최근 검색 8개(localStorage, × 로 지움). 순서는 시작 일치 → 포함, 가나다순(추천·순위 아님).
+- **브레드크럼 표준**(`Base.astro` `crumb`·`nocrumb`): 홈 › 묶음 › 메뉴 › 현재. 수동 줄 16곳을 prop 으로 바꿈, 복잡한 2곳(기업 페이지·지침 검토기)은 `nocrumb` 으로 기존 줄 유지.
+- **CI 감사**(`scripts/ui_audit.mjs`, `.github/workflows/ui_audit.yml`): axe(WCAG 2.x AA)+Lighthouse(모바일) 8개 페이지, axe 위반·가로 스크롤이면 실패, Job Summary·아티팩트. src 푸시 때 자동.

@@ -1,0 +1,47 @@
+name: UI 감사(axe·Lighthouse)
+
+# scripts/ui_audit.mjs — 빌드한 사이트를 띄워 대표 페이지 8개에 axe(WCAG 2.x AA)와 Lighthouse(모바일)를 돌린다. axe 위반·페이지 가로 스크롤이 있으면 실패.
+# 결과는 Job Summary 와 아티팩트(data/ui_audit/latest.json). 저장소에는 커밋하지 않는다. 디자인·UI 개선 2차(2026-10-06)
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["src/**", "public/**", "scripts/ui_audit.mjs", ".github/workflows/ui_audit.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm i --no-save @axe-core/playwright lighthouse chrome-launcher playwright
+      - run: npx playwright install chromium --with-deps
+      - name: 빌드
+        run: npm run build
+      - name: 띄우기
+        run: (cd dist && python3 -m http.server 4399 >/dev/null 2>&1 &) && sleep 2
+      - name: 측정
+        env:
+          CHROME_PATH: ""
+        run: |
+          export PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright
+          export CHROME_PATH="$(node -e "console.log(require('playwright').chromium.executablePath())")"
+          node scripts/ui_audit.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-audit-${{ github.run_id }}
+          path: data/ui_audit/latest.json
+          retention-days: 30

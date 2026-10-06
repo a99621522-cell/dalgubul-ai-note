@@ -24,8 +24,7 @@ const ACC: [keyof typeof c.years[string], string][] = [['revenue', '매출액'],
 const finYears = years.filter(y => c.years[y]);
 const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
 ---
-<Base title={`${c.name} — 대구시 상장기업`} description={`${c.name}(${c.cls}${c.stock ? ' ' + c.stock : ''}, 대구 ${c.district}) DART 공시: 최근 3개 사업연도 재무·직원·연구개발비·타법인 출자·미래 산업 관련 공시.`} current="listed">
-  <p class="meta"><a href="/listed/">대구시 상장기업</a> › {c.name}</p>
+<Base title={`${c.name} — 대구시 상장기업`} description={`${c.name}(${c.cls}${c.stock ? ' ' + c.stock : ''}, 대구 ${c.district}) DART 공시: 최근 3개 사업연도 재무·직원·연구개발비·타법인 출자·미래 산업 관련 공시.`} current="listed" crumb={c.name}>
   <div class="section-head"><h1>{c.name}</h1><span class="meta">{listed ? `${c.cls} 상장` : '비상장(사업보고서 제출)'}{c.stock && ` · 종목코드 ${c.stock}`}</span></div>
   <dl class="facts">
     <div><dt>본사</dt><dd>대구 {c.district || '—'}</dd></div>

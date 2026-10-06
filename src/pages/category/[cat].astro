@@ -11,8 +11,7 @@ const cat = Astro.params.cat as CategoryKey;
 const info = CATEGORIES[cat];
 const posts = (await getCollection('posts', p => !p.data.draft && p.data.category === cat)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
-<Base title={info.name} description={info.desc} current={cat}>
-  <p class="meta"><a href="/posts/">글</a> › {info.name}</p>
+<Base title={info.name} description={info.desc} current={cat} crumb={info.name}>
   <div class="section-head"><h1>{info.name}</h1><span class="meta">{posts.length}건</span></div>
   <p class="meta">{info.desc}</p>
   {cat === 'grants' && <DeadlineStrip posts={posts} />}

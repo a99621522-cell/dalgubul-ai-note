@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 794" width="100%" role="img" aria-label="17개 시도 주민등록인구 증감률(2020→2025, %). 서울 -3.82%, 부산 -4.43%, 대구 -2.7%, 인천 3.71%, 광주 -4.0%, 대전 -1.58%, 울산 -3.88%, 세종 10.15%, 경기 2.26%, 강원 -2.23%, 충북 -0.27%, 충남 0.74%, 전북 -4.39%, 전남 -3.91%, 경북 -5.04%, 경남 -3.98%, 제주 -1.46%" style="max-width:360px;height:auto;font-size:14px">
+<title>17개 시도 주민등록인구 증감률(2020→2025, %)</title>
+<text x="8" y="16" fill="#767676">주민등록인구 · 행정 순서</text>
+<line x1="106.2" x2="106.2" y1="34" y2="782" stroke="#767676" stroke-width="1"/>
+<text x="8" y="48.0" fill="#1a1a1a">서울</text>
+<rect x="31.8" y="54" width="74.4" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="68.0" fill="#1a1a1a">-3.82%</text>
+<text x="8" y="92.0" fill="#1a1a1a">부산</text>
+<rect x="19.9" y="98" width="86.3" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="112.0" fill="#1a1a1a">-4.43%</text>
+<text x="8" y="136.0" fill="#1a1a1a" font-weight="600">대구</text>
+<rect x="53.6" y="142" width="52.6" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="112.2" y="156.0" fill="#1a1a1a">-2.7%</text>
+<text x="8" y="180.0" fill="#1a1a1a">인천</text>
+<rect x="106.2" y="186" width="72.3" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="184.5" y="200.0" fill="#1a1a1a">3.71%</text>
+<text x="8" y="224.0" fill="#1a1a1a">광주</text>
+<rect x="28.3" y="230" width="77.9" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="244.0" fill="#1a1a1a">-4.0%</text>
+<text x="8" y="268.0" fill="#1a1a1a">대전</text>
+<rect x="75.4" y="274" width="30.8" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="288.0" fill="#1a1a1a">-1.58%</text>
+<text x="8" y="312.0" fill="#1a1a1a">울산</text>
+<rect x="30.6" y="318" width="75.6" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="332.0" fill="#1a1a1a">-3.88%</text>
+<text x="8" y="356.0" fill="#1a1a1a">세종</text>
+<rect x="106.2" y="362" width="197.8" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="310.0" y="376.0" fill="#1a1a1a">10.15%</text>
+<text x="8" y="400.0" fill="#1a1a1a">경기</text>
+<rect x="106.2" y="406" width="44.0" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="156.3" y="420.0" fill="#1a1a1a">2.26%</text>
+<text x="8" y="444.0" fill="#1a1a1a">강원</text>
+<rect x="62.8" y="450" width="43.5" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="464.0" fill="#1a1a1a">-2.23%</text>
+<text x="8" y="488.0" fill="#1a1a1a">충북</text>
+<rect x="101.0" y="494" width="5.3" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="508.0" fill="#1a1a1a">-0.27%</text>
+<text x="8" y="532.0" fill="#1a1a1a">충남</text>
+<rect x="106.2" y="538" width="14.4" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="126.6" y="552.0" fill="#1a1a1a">0.74%</text>
+<text x="8" y="576.0" fill="#1a1a1a">전북</text>
+<rect x="20.7" y="582" width="85.5" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="596.0" fill="#1a1a1a">-4.39%</text>
+<text x="8" y="620.0" fill="#1a1a1a">전남</text>
+<rect x="30.0" y="626" width="76.2" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="640.0" fill="#1a1a1a">-3.91%</text>
+<text x="8" y="664.0" fill="#1a1a1a">경북</text>
+<rect x="8.0" y="670" width="98.2" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="684.0" fill="#1a1a1a">-5.04%</text>
+<text x="8" y="708.0" fill="#1a1a1a">경남</text>
+<rect x="28.7" y="714" width="77.6" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="728.0" fill="#1a1a1a">-3.98%</text>
+<text x="8" y="752.0" fill="#1a1a1a">제주</text>
+<rect x="77.8" y="758" width="28.5" height="18" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="112.2" y="772.0" fill="#1a1a1a">-1.46%</text></svg>

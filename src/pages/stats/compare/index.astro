@@ -1,0 +1,18 @@
+---
+import Base from '../../../layouts/Base.astro';
+import StatsNav from '../../../components/StatsNav.astro';
+import KosisSections from '../../../components/KosisSections.astro';
+import { TOPICS, KOSIS_TOPICS } from '../../../lib/statsTopics';
+import { kosisIndex } from '../../../lib/kosis';
+/** /stats/compare/ — 17개 시도 비교(src/lib/statsTopics.ts, scripts/sido_compare.py). 추세·비교·효과 보강 2단계(2026-10-06).
+ *  값은 KOSIS 그대로이고 비중·증감률은 같은 표 안 나눗셈. 행 순서는 행정 순서라 순위가 아니고, 평가 표현은 쓰지 않는다. */
+const t = TOPICS.find(x => x.key === 'compare')!;
+const idx = kosisIndex();
+---
+<Base title={`${t.name} 통계`} description={`대구와 17개 시도 비교(${t.period}): ${t.desc}`} current="stats" crumb={t.name} wide>
+  <StatsNav current={t.key} />
+  <div class="section-head"><h1>{t.name}</h1><span class="meta">{t.period} · 국가데이터처 KOSIS · 갱신 {idx.generated}</span></div>
+  <p class="lede">{t.desc} 표의 행 순서는 전국 → 행정 순서(서울·부산·대구·…·제주)이고 그래프에서 대구만 진하게 보입니다. 값은 KOSIS 그대로이며 증감률·비중은 같은 표 안에서 나눈 것입니다. 비교 기준을 제공할 뿐 순위·평가가 아닙니다.</p>
+  <p class="meta">산업구조 지표(입지계수·산업집중도·변화속도)의 17개 시도 표는 <a href="/stats/industry/#k2">산업 구조</a>에, 시도별 산업 부문 비중을 바꿔 보는 계산은 <a href="/growth/">성장 계산기</a>에 있습니다.</p>
+  <KosisSections sections={KOSIS_TOPICS[t.key]} />
+</Base>

@@ -160,7 +160,8 @@ def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
     for row in rows:
         names = [row.get(f"{c}_NM", "") for c in ("C1", "C2", "C3", "C4")]
         hay = row.get(f"{col}_NM", "") if col else " ".join(names)
-        if not area_words or any(w in hay for w in area_words):
+        cands = [hay] if col else names
+        if not area_words or any(c.strip().startswith(w) for w in area_words for c in cands if c):   # 앞글자 일치 — '해운대구' 가 '대구' 로 잡히지 않게(2026-10-06)
             keep.append(row)
     if not keep and rows:   # 지역 열이 없는 표(전국 표)면 전부 남긴다
         keep = rows

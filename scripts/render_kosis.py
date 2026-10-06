@@ -447,6 +447,8 @@ def main() -> int:
         if ser:
             rc.write("kosis", "mfg-index-industry", rc.line_chart, "대구 주요 업종 생산지수(원지수, 2020=100)", [ym(m) for m in months], ser, index=index, unit="", note=short("mfg-production-index-industry"))
 
+    import sido_compare  # noqa: E402  — 17개 시도 비교 표·그래프(cmp_*), 자료 없는 것은 건너뜀
+    sido_compare.build(tables, index, rc, src)
     (OUT / "index.json").write_text(json.dumps({"tables": tables, "charts": index.get("kosis", {}), "generated": __import__("datetime").date.today().isoformat()}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"표 {len(tables)}개, 그래프 {len(index.get('kosis', {}))}개 → {OUT.relative_to(ROOT)}")
     return 0

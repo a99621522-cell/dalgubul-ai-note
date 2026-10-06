@@ -49,12 +49,13 @@ jobs:
         run: |
           python3 scripts/build_stats.py --backfill
           python3 scripts/render_charts.py
+          python3 scripts/effect_table.py          # 지원 전후 고용 변화표(data/effects)
       - name: 커밋
         if: inputs.list != 'true'
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/nps data/stats src/generated
+          git add data/nps data/stats data/effects src/generated
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 국민연금 과거 월 되살리기 $(date -u +%Y-%m-%d)"
           git pull -q --rebase origin "${GITHUB_REF_NAME}" || true
           git push

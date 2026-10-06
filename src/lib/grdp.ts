@@ -97,7 +97,7 @@ const MFG = LEAVES.slice(2, 9).map(x => x[0]);
 /** share = 25개 부문 부가가치 합 대비 비중(%; 리포트의 입지계수·산업집중도 정의). w = 성장 기여 가중치 — 2026-10-07 부터 share 와 같다(합 100%):
  *  순생산물세(GRDP 의 약 7%)는 부가가치에 비례해 함께 는다고 보아, 성장률 몫 = ΔVA ÷ 명목 총부가가치(기초가격) 로 모든 계산기가 같은 기준을 쓴다
  *  (운영자 평가 2026-10-07: 이전 w 는 명목 GRDP 대비라 합이 93% 여서 모든 업종을 1%p 더 키워도 0.93%p 만 올라 목표 계산기와 어긋났다). */
-export type StructRow = { key: string; name: string; share: number; w: number; nat: number; lq: number; va: number; g: number; gn: number; t3: number; high: boolean; spec: boolean; mfg: boolean };
+export type StructRow = { key: string; name: string; share: number; w: number; nat: number; lq: number; va: number; g: number; gn: number; t3: number; gmax: number; gmaxReg: string; high: boolean; spec: boolean; mfg: boolean };
 /** 기준 기간 후보(운영자 평가 2026-10-06: 출발 성장률이 코로나 시기를 포함 — 기간을 바꿔 볼 수 있게). 리포트 기간이 기본 */
 export const PERIODS: [number, number, string][] = [[2015, 2024, '2015→2024 (리포트 기준)'], [2015, 2019, '2015→2019 (코로나 전)'], [2021, 2024, '2021→2024 (코로나 후)']];
 export function structureCalc(region = '대구광역시') {
@@ -121,15 +121,18 @@ export function structureCalc(region = '대구광역시') {
   const rows: StructRow[] = LEAVES.map(([k, name]) => {
     const va = v('명목', region, k, y1) ?? 0, share = va / tot * 100, nat = (v('명목', '전국', k, y1) ?? 0) / natTot * 100;
     const g = cagr(region, k) ?? 0;
-    const cs = sido.map(r => cagr(r, k)).filter((x): x is number => x != null).sort((a, b) => b - a);
+    const pairs = sido.map(r => [r, cagr(r, k)] as [string, number | null]).filter((x): x is [string, number] => x[1] != null).sort((a, b) => b[1] - a[1]);
+    const cs = pairs.map(x => x[1]);
     return { key: k, name, share, w: share, nat, lq: nat ? share / nat : 0, va: va / 100, g, gn: cagr('전국', k) ?? g,
-      t3: cs.length ? cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length) : g, high: HIGH.includes(k), spec: nat > 0 && share / nat >= 1, mfg: MFG.includes(k) };
+      t3: cs.length ? cs.slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, cs.length) : g,
+      gmax: cs.length ? cs[0] : g, gmaxReg: pairs.length ? pairs[0][0].replace(/(특별자치|광역|특별)?(시|도)$/, '') : '',   // 실현 가능성 띠(2026-10-07): 17개 시도 가운데 그 업종 10년 성장률이 가장 높았던 값(관측된 범위의 위쪽)
+      high: HIGH.includes(k), spec: nat > 0 && share / nat >= 1, mfg: MFG.includes(k) };
   }).filter(r => r.share > 0);
   // 기준 기간 후보별 업종·전체 성장률(같은 CSV, 같은 식). 리포트 기간은 리포트 값(base) 그대로
   const cagrP = (reg: string, k: string, a: number, b: number) => { const x = v('실질', reg, k, a), y = v('실질', reg, k, b); return x && y && x > 0 && y > 0 ? ((y / x) ** (1 / (b - a)) - 1) * 100 : null; };
   const periods = PERIODS.map(([a, b, label]) => ({ a, b, label, base: cagrP(region, '지역내총생산(시장가격)', a, b) ?? 0, nat: cagrP('전국', '지역내총생산(시장가격)', a, b) ?? 0,
     g: Object.fromEntries(rows.map(r => { const cs = sido.map(x => cagrP(x, r.key, a, b)).filter((x): x is number => x != null).sort((p, q) => q - p);
-      return [r.key, { g: cagrP(region, r.key, a, b) ?? 0, gn: cagrP('전국', r.key, a, b) ?? 0, t3: cs.length ? cs.slice(0, 3).reduce((p, q) => p + q, 0) / Math.min(3, cs.length) : 0 }]; })) }));
+      return [r.key, { g: cagrP(region, r.key, a, b) ?? 0, gn: cagrP('전국', r.key, a, b) ?? 0, t3: cs.length ? cs.slice(0, 3).reduce((p, q) => p + q, 0) / Math.min(3, cs.length) : 0, gmax: cs.length ? cs[0] : 0 }]; })) }));
   // 대구 취업자(경제활동인구조사 연간, 천 명) — 고용 효과를 견줄 기준
   let employed: { year: string; thousand: number } | null = null;
   try { const e = readCsv('data/kosis/labor-force-sido-annual-all.csv').filter(r => r.C1_NM === '대구광역시' && r.ITM_NM === '취업자' && r.DT).sort((p, q) => p.PRD_DE.localeCompare(q.PRD_DE)).at(-1); if (e) employed = { year: e.PRD_DE, thousand: Number(e.DT) }; } catch { /* 없음 */ }
@@ -140,6 +143,14 @@ export function structureCalc(region = '대구광역시') {
   try {
     const ms = readCsv('data/kosis/migration-sido.csv').filter(r => r.C1_NM === '대구광역시' && r.ITM_NM === '순이동' && r.DT !== '').sort((p, q) => p.PRD_DE.localeCompare(q.PRD_DE)).slice(-12);
     if (ms.length === 12) netMig = { from: `${ms[0].PRD_DE.slice(0, 4)}-${ms[0].PRD_DE.slice(4, 6)}`, to: `${ms[11].PRD_DE.slice(0, 4)}-${ms[11].PRD_DE.slice(4, 6)}`, persons: ms.reduce((a, r) => a + Number(r.DT), 0) };
+  } catch { /* 없음 */ }
+  // 1인당 GRDP 과거 참고(운영자 지시 2026-10-07 '다 해봐'): 주민등록 연말 인구(population-sido)로 y0→y1 인구 연평균 증감률을 구해 1인당 실질 GRDP 연평균 ≈ (1+g)/(1+p)−1. 미래 인구는 전망하지 않는다
+  let perCapita: { popCagr: number; pcCagr: number; pop0: number; pop1: number } | null = null;
+  try {
+    const po = readCsv('data/kosis/population-sido.csv').filter(r => r.C1_NM === '대구광역시' && r.ITM_NM === '총인구수');
+    const p0 = Number(po.find(r => r.PRD_DE === String(y0))?.DT), p1 = Number(po.find(r => r.PRD_DE === String(y1))?.DT);
+    const gb = (rep.data?.grdp_growth?.['대구'] as number | undefined) ?? cagr(region, '지역내총생산(시장가격)') ?? 0;
+    if (p0 > 0 && p1 > 0) { const pc = ((p1 / p0) ** (1 / n) - 1) * 100; perCapita = { popCagr: pc, pcCagr: ((1 + gb / 100) / (1 + pc / 100) - 1) * 100, pop0: p0, pop1: p1 }; }
   } catch { /* 없음 */ }
   let backtest: any = null;
   try { backtest = JSON.parse(fs.readFileSync('data/growth/backtest.json', 'utf-8')); } catch { /* 없음 */ }
@@ -173,7 +184,7 @@ export function structureCalc(region = '대구광역시') {
     k: io && io.vaIn != null ? (1 - (io.importShare ?? 0) / 100) * io.vaIn : null, io,
     /** 자료 차이로 본 계수 범위: 2015년 표 계수(수입품 몫 뺀 값). 취업유발계수(10억 원당, 대구 안) */
     kAlt: io && k2015 != null ? (1 - (io.importShare ?? 0) / 100) * k2015 : null, empIn: io?.empIn ?? null,
-    periods, employed, unemployed, netMig, backtest, contribCheck,
+    periods, employed, unemployed, netMig, backtest, contribCheck, perCapita,
     report: '/posts/2026-09-30-policy-structure-daegu/',
   };
 }
@@ -248,9 +259,25 @@ export function policyLeversData() {
     for (const [k, v] of m) { const leaf = TOUR_TO_LEAF[k]; if (leaf && t) tourMix[leaf] = (tourMix[leaf] ?? 0) + v / t; }
   }
   const mm = readCsv('data/kosis/mining-mfg-survey-sido.csv').filter(r => r.C1_NM === '대구광역시');
-  const my = [...new Set(mm.map(r => r.PRD_DE))].sort().at(-1) ?? '';
-  const g = (mid: string, it: string) => { const r = mm.find(x => x.PRD_DE === my && x.C2_NM === mid && x.ITM_NM === it); return r ? Number(r.DT) : NaN; };
+  const myears = [...new Set(mm.map(r => r.PRD_DE))].sort();
+  const my = myears.at(-1) ?? '';
+  const gy = (mid: string, it: string, y: string) => { const r = mm.find(x => x.PRD_DE === y && x.C2_NM === mid && x.ITM_NM === it); return r ? Number(r.DT) : NaN; };
+  const g = (mid: string, it: string) => gy(mid, it, my);
   const ratio = (mid: string) => { const v = g(mid, '부가가치') / g(mid, '출하액 계'); return Number.isFinite(v) && v > 0 ? v : null; };
+  // 민감도(2026-10-07): 부가가치율의 조사 연도별 최저·최고(광업·제조업조사 대구, 받은 해 전부 — 2020~2024)
+  const ratioRange = (mid: string): [number, number] | null => { const vs = myears.map(y => gy(mid, '부가가치', y) / gy(mid, '출하액 계', y)).filter(v => Number.isFinite(v) && v > 0); return vs.length ? [Math.min(...vs), Math.max(...vs)] : null; };
+  // 투자액 → 연 매출(2026-10-07): 자본회전율 = 출하액 ÷ 유형자산(연말잔액). 유형자산 표(mfg-tangible-sido)는 kosis_tables.yml 에 넣었고 tbl_id 를 채워 받으면 여기서 읽힌다
+  let turnover: Record<string, number | null> = {}, turnoverYear = '';
+  try {
+    const ta = readCsv('data/kosis/mfg-tangible-sido.csv').filter(r => r.C1_NM === '대구광역시' && /유형자산/.test(r.ITM_NM));
+    const ty = [...new Set(ta.map(r => r.PRD_DE))].filter(y => myears.includes(y)).sort().at(-1);
+    if (ty) { turnoverYear = ty; const tv = (mid: string) => { const r = ta.find(x => x.PRD_DE === ty && x.C2_NM === mid); const v = r ? gy(mid, '출하액 계', ty) / Number(r.DT) : NaN; return Number.isFinite(v) && v > 0 ? v : null; };
+      turnover = { semi: tv('전자부품 컴퓨터 영상 음향 및 통신장비 제조업'), auto: tv('자동차 및 트레일러 제조업'), med: tv('의료 정밀 광학기기 및 시계 제조업'), mach: tv('기타 기계 및 장비 제조업'), elec: tv('전기장비 제조업'),
+        pharma: tv('의료용 물질 및 의약품 제조업'), chem: tv('화학물질 및 화학제품 제조업; 의약품 제외'), metal: tv('금속가공제품 제조업; 기계 및 가구 제외'), food: tv('식료품 제조업'), textile: tv('섬유제품 제조업; 의복제외') }; }
+  } catch { /* 표 없음 */ }
+  const MIDS: Record<string, string> = { semi: '전자부품 컴퓨터 영상 음향 및 통신장비 제조업', auto: '자동차 및 트레일러 제조업', med: '의료 정밀 광학기기 및 시계 제조업', mach: '기타 기계 및 장비 제조업', elec: '전기장비 제조업',
+    pharma: '의료용 물질 및 의약품 제조업', chem: '화학물질 및 화학제품 제조업; 의약품 제외', metal: '금속가공제품 제조업; 기계 및 가구 제외', food: '식료품 제조업', textile: '섬유제품 제조업; 의복제외' };
+  const vaRange = Object.fromEntries(Object.entries(MIDS).map(([k, mid]) => [k, ratioRange(mid)])) as Record<string, [number, number] | null>;
   const vaRatio = {
     semi: ratio('전자부품 컴퓨터 영상 음향 및 통신장비 제조업'), auto: ratio('자동차 및 트레일러 제조업'),
     med: ratio('의료 정밀 광학기기 및 시계 제조업'), mach: ratio('기타 기계 및 장비 제조업'),
@@ -267,5 +294,5 @@ export function policyLeversData() {
   const io = ioSectors();
   const ioByItem: Record<string, IoSector> = {};
   for (const [id, sec] of Object.entries(PLANT_IO_SECTOR)) if (io[sec]) ioByItem[id] = io[sec];
-  return { tourYear: ty ?? '', tourMix, mfgYear: my, vaRatio, panel, tour: tourismPerVisit(), med: medicalInflow(), ioByItem, ioFilled: Object.values(io).some(x => x.k != null) };
+  return { tourYear: ty ?? '', tourMix, mfgYear: my, mfgYears: myears, vaRatio, vaRange, turnover, turnoverYear, panel, tour: tourismPerVisit(), med: medicalInflow(), ioByItem, ioFilled: Object.values(io).some(x => x.k != null) };
 }

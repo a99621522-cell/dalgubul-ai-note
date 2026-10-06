@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="달서구 고용 인원 추이. 2026-07부터 2026-08까지 2개월. 달서구 최근 50,216명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="달서구 고용 인원 추이. 2026-07부터 2026-08까지 2개월. 달서구 최근 50,312명" style="max-width:360px;height:auto;font-size:14px">
 <title>달서구 고용 인원 추이</title>
 <line x1="60" x2="284" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="261.0" text-anchor="end" fill="#767676">50,200</text>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">50,300</text>
 <line x1="60" x2="284" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="189.0" text-anchor="end" fill="#767676">50,220</text>
+<text x="52" y="189.0" text-anchor="end" fill="#767676">50,320</text>
 <line x1="60" x2="284" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="117.0" text-anchor="end" fill="#767676">50,240</text>
+<text x="52" y="117.0" text-anchor="end" fill="#767676">50,340</text>
 <line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">50,260</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">50,360</text>
 <text x="60.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
 <text x="284.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,36.4 L284.0,198.4" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="284.0" cy="198.4" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="292.0" y="203.4" fill="#1a1a1a" font-weight="600">50,216명</text>
+<path d="M60.0,40.0 L284.0,212.8" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="284.0" cy="212.8" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="292.0" y="217.8" fill="#1a1a1a" font-weight="600">50,312명</text>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 2개월</text></svg>

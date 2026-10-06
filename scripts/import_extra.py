@@ -25,6 +25,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from industry import classify  # noqa: E402
 from sites import EXTRA, TAGS, config as site_config  # noqa: E402
+FACTS = TAGS.parent / "company_facts.csv"   # id,tag,detail,date_from,date_to,source,source_url,as_of — 공개 명단의 부가 정보(벤처 확인 유형·유효 기간, 창업보육센터·입주일 등), 운영자 지시 2026-10-06
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "scripts" / "data"
@@ -44,6 +45,7 @@ IN_COLS = {  # 입력 열 이름 후보 (첫 번째가 표준)
     "source": ["source", "출처"],
     "as_of": ["as_of", "기준일", "기준월"],
     "tags": ["tags", "태그"],
+    "detail": ["detail", "상세"], "date_from": ["date_from", "시작일"], "date_to": ["date_to", "종료일"], "source_url": ["source_url", "출처URL"],   # 공개 명단의 부가 정보 → company_facts.csv(기업 페이지 '창업·벤처 정보')
     "site_hint": ["site_type", "입지", "입지유형"],
 }
 _DIST = re.compile(r"대구(?:광역시)?\s*(\S+?[구군])")
@@ -88,7 +90,8 @@ def read_inputs() -> list[dict]:
                 continue
             rows.append({"name": name, "address": pick(r, "address"), "sector_code": pick(r, "sector_code"), "sector": pick(r, "sector"),
                          "product": pick(r, "product"), "workers": re.sub(r"\D", "", pick(r, "workers")), "founded": pick(r, "founded"),
-                         "source": pick(r, "source") or p.stem, "as_of": pick(r, "as_of"), "tags": pick(r, "tags"), "_file": p.name})
+                         "source": pick(r, "source") or p.stem, "as_of": pick(r, "as_of"), "tags": pick(r, "tags"), "_file": p.name,
+                         "detail": pick(r, "detail"), "date_from": pick(r, "date_from"), "date_to": pick(r, "date_to"), "source_url": pick(r, "source_url")})
     return rows
 
 
@@ -123,6 +126,20 @@ def main(argv: list[str]) -> int:
         live = {r["id"] for r in fo} | {r["id"] for r in extra} | set(old_ids.values())
         tag_rows = [t for t in tag_rows if not replaced(t.get("source", "")) and t["id"] in live]
     have_tags = {(t["id"], t["tag"]) for t in tag_rows}
+    fact_rows = list(csv.DictReader(open(FACTS, encoding="utf-8"))) if FACTS.exists() else []
+    if replace or sources:
+        fact_rows = [t for t in fact_rows if not replaced(t.get("source", ""))]
+    have_facts = {(t["id"], t["tag"], t["source"]) for t in fact_rows}
+
+    def add_fact(cid: str, r: dict) -> None:
+        if not r.get("detail") and not r.get("date_from"):
+            return
+        key = (cid, (r["tags"].split(";")[0] if r["tags"] else ""), r["source"])
+        if key in have_facts:
+            return
+        fact_rows.append({"id": cid, "tag": key[1], "detail": r.get("detail", ""), "date_from": r.get("date_from", ""), "date_to": r.get("date_to", ""),
+                          "source": r["source"], "source_url": r.get("source_url", ""), "as_of": r["as_of"]})
+        have_facts.add(key)
     outside = site_config()["outside_complex"]
 
     added, tagged, skipped = 0, 0, 0
@@ -148,15 +165,18 @@ def main(argv: list[str]) -> int:
                           "sites": "1", "source": r["source"], "as_of": r["as_of"], "founded": r["founded"], "tags": ";".join(tags)})
             by_key[key] = cid
             added += 1
+            add_fact(cid, r)
         else:
             for t in tags:
                 if (cid, t) not in have_tags:
                     tag_rows.append({"id": cid, "tag": t, "source": r["source"], "as_of": r["as_of"]})
                     have_tags.add((cid, t))
-            if r["founded"]:
-                for e in extra:
-                    if e["id"] == cid and not e.get("founded"):
-                        e["founded"] = r["founded"]
+            for e in extra:   # 산단 외 기업(국민연금 자료 등)의 빈 설립일·업종·생산품은 공개 명단 값으로 채운다(팩토리온 기업은 손대지 않음)
+                if e["id"] == cid:
+                    if r["founded"] and not e.get("founded"): e["founded"] = r["founded"]
+                    if r["product"] and not e.get("product"): e["product"] = r["product"]
+                    if r["sector"] and not e.get("sector"): e["sector"] = r["sector"]; e["sector_group"] = classify(e.get("sector_code", ""), r["sector"], e.get("product", ""))
+            add_fact(cid, r)
             tagged += 1
 
     print(f"입력 {len(inputs)}행 → 새 기업 {added}, 기존 기업에 태그 {tagged}, 건너뜀 {skipped}" + (" (dry-run, 저장 안 함)" if dry else ""))
@@ -172,7 +192,12 @@ def main(argv: list[str]) -> int:
         w = csv.DictWriter(f, fieldnames=["id", "tag", "source", "as_of"])
         w.writeheader()
         w.writerows(sorted(tag_rows, key=lambda t: (t["id"], t["tag"])))
-    print(f"저장: {EXTRA.relative_to(ROOT)} ({len(extra)}곳), {TAGS.relative_to(ROOT)} ({len(tag_rows)}건)")
+    fact_rows = [t for t in fact_rows if t["id"] in ids_now]
+    with open(FACTS, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=["id", "tag", "detail", "date_from", "date_to", "source", "source_url", "as_of"])
+        w.writeheader()
+        w.writerows(sorted(fact_rows, key=lambda t: (t["id"], t["tag"], t["source"])))
+    print(f"저장: {EXTRA.relative_to(ROOT)} ({len(extra)}곳), {TAGS.relative_to(ROOT)} ({len(tag_rows)}건), {FACTS.relative_to(ROOT)} ({len(fact_rows)}건)")
     return 0
 
 

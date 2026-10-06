@@ -8,7 +8,7 @@ import { zonesOf } from '../lib/sites';
  *  클라이언트에서 전체를 거른다(11,000곳을 한 페이지에 넣으면 4.5MB 라 휴대폰에서 느렸다).
  *  키를 한 글자로 줄여 크기를 아낀다. companies() 를 그대로 쓰므로 개인 성명 제외 규칙도 같이 적용된다.
  *  i=id n=회사명 d=구군 e=읍면동 c=단지(약칭) g=업종군 s=업종 w=종사자 규모 t=입지 유형 k=태그(있을 때만) p=지원 이력 있음(있을 때만)
- *  z=특구 key 목록(있을 때만, config/site_types.yml zones)
+ *  z=특구 key 목록(있을 때만, config/site_types.yml zones)  x=업종 코드 앞 2자리(있을 때만 — /stats/industry/ 고부가 3부문 → ?ksic=26,27,28 필터)
  *  m=고용 인원(통계 기준월의 국민연금 가입자수 또는 팩토리온 종사자, 없으면 생략 — /explore/ 데이터 탐색이 합산에 쓴다) */
 export const GET: APIRoute = () => {
   const list = companies();
@@ -27,6 +27,7 @@ export const GET: APIRoute = () => {
     ...(c.tags.length ? { k: c.tags } : {}),
     ...(supported.has(c.id) ? { p: 1 } : {}),
     ...((z => (z.length ? { z } : {}))(zonesOf(c))),
+    ...((x => (x.length === 2 ? { x } : {}))((c.sector_code || '').trim().slice(0, 2))),
     ...(emp[c.id]?.e != null ? { m: emp[c.id].e } : {}),
   }));
   const body = JSON.stringify({ as_of: list[0]?.as_of ?? '', total: rows.length, rows });

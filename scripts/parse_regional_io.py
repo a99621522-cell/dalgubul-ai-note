@@ -23,7 +23,7 @@ def fetch(item: str) -> Path:
         return p
     d = Path(tempfile.mkdtemp())
     out = d / "io.xlsx"
-    subprocess.run(["gdown", "--id", item, "-O", str(out)], check=True)
+    subprocess.run(["gdown", item, "-O", str(out)], check=True)   # 최신 gdown 은 --id 없이 id 를 바로 받는다
     return out
 
 

@@ -158,10 +158,22 @@ def form_table(ctx: Ctx, rows, head=True, widths=None, head_rows=None):
     return p
 
 
+def image_size(data: bytes) -> tuple[int, int]:
+    """PNG 는 머리에서, 그 밖(JPEG)은 PIL 이 있으면 PIL 로 픽셀 크기."""
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        return H.png_size(data)
+    try:
+        from PIL import Image
+        import io
+        return Image.open(io.BytesIO(data)).size
+    except Exception:
+        return H.png_size(data)
+
+
 def form_pic(ctx: Ctx, src: str, caption: str):
     img = H.load_image(src) if src.startswith("/") else None
     if img is None and Path(src).exists():
-        data = Path(src).read_bytes(); w, h = H.png_size(data); img = (data, Path(src).suffix.lstrip(".").lower() or "png", w, h)
+        data = Path(src).read_bytes(); w, h = image_size(data); img = (data, Path(src).suffix.lstrip(".").lower() or "png", w, h)
     if img is None:
         return [form_para(ctx, "note", f"[그림] {caption}")]
     data, ext, pw, ph = img
@@ -260,7 +272,7 @@ def design_elem(ctx: Ctx, b: dict):
     if "pic" in b:
         src = str(b["pic"]); img = H.load_image(src) if src.startswith("/") else None
         if img is None and Path(src).exists():
-            data = Path(src).read_bytes(); w, h = H.png_size(data); img = (data, Path(src).suffix.lstrip(".").lower() or "png", w, h)
+            data = Path(src).read_bytes(); w, h = image_size(data); img = (data, Path(src).suffix.lstrip(".").lower() or "png", w, h)
         if img is None:
             return H.para(ctx.ids, "note", [(f"[그림] {b.get('caption', '')}", "note")])
         data, ext, pw, ph = img

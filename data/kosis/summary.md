@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-06 · 표 38개 · 설정 config/kosis_tables.yml
+갱신 2026-10-06 · 표 39개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -23,6 +23,7 @@
 | medical-use-sido-resident | [시도별 진료현황-전체](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A004) | Y 2020~2026 | 2024 | 1800 | 명 |
 | mfg-production-index-industry | [시도/산업별 광공업생산지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001) | M 202301~202612 | 202608 | 2568 | 2020＝100 |
 | mfg-production-index-sido | [광공업생산지수(시도)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=INH_1F02001) | M 202301~202612 | 202608 | 792 | 2020＝100 |
+| mfg-tangible-sido | [시도/산업분류별 유형자산 증가액 감소액 및 연말잔액(10명 이상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1106) | Y 2020~2026 | 2024 | 2164 | 개 |
 | mice-conference-sido | [국제회의의 지역별 현황](https://kosis.kr/statHtml/statHtml.do?orgId=314&tblId=DT_314005_A001) | Y 2020~2026 | 2024 | 216 | 건 |
 | mice-exhibition-sido | [지역별 시설별 전시회 개최건수](https://kosis.kr/statHtml/statHtml.do?orgId=430&tblId=DT_430001_05_003) | Y 2020~2026 | 2024 | 488 | 건 |
 | migration-age-sido | [시군구/성/연령(5세)별 순이동자수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26002) | Y 2020~2026 | 2025 | 360 | 명 |

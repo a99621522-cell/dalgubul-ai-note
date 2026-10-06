@@ -8,16 +8,19 @@ import { companies } from './csv';
 import { industryGroups } from './industry';
 import { tagName, tagDesc } from './sites';
 
-export const STARTUP_TAGS = ['startup', 'venture', 'ccei', 'labfirm', 'innobiz'];
+export const STARTUP_TAGS = ['startup', 'venture', 'startup_venture', 'ccei', 'labfirm', 'innobiz'];
+/** 교집합 열(운영자 지시 2026-10-06 '7년 이내 벤처 열 더해'): 설립 7년 이내이면서 벤처기업확인 — 스타트업(법적 정의 없음)에 가장 가까운 집합 */
+const COMBO: Record<string, { name: string; desc: string; tags: string[] }> = { startup_venture: { name: '7년 이내 벤처기업', desc: '설립 7년 이내(창업기업)이면서 벤처기업확인 — 스타트업에 가장 가까운 집합', tags: ['startup', 'venture'] } };
 export const DISTRICTS = ['중구', '동구', '서구', '남구', '북구', '수성구', '달서구', '달성군', '군위군'];
 
-export type TagCount = { key: string; name: string; desc: string; count: number; byGroup: Record<string, number>; byDistrict: Record<string, number>; workers: number; workersKnown: number };
+export type TagCount = { key: string; name: string; desc: string; count: number; byGroup: Record<string, number>; byDistrict: Record<string, number>; workers: number; workersKnown: number; combo: boolean };
 
 export function startupFirms() {
   const all = companies();
   const groups = industryGroups().map(g => g.name);
   const tags: TagCount[] = STARTUP_TAGS.map(key => {
-    const list = all.filter(c => c.tags.includes(key));
+    const need = COMBO[key]?.tags ?? [key];
+    const list = all.filter(c => need.every(t => c.tags.includes(t)));
     const byGroup: Record<string, number> = {}; const byDistrict: Record<string, number> = {};
     let workers = 0, workersKnown = 0;
     for (const c of list) {
@@ -25,7 +28,7 @@ export function startupFirms() {
       byDistrict[c.district] = (byDistrict[c.district] ?? 0) + 1;
       const w = Number(String(c.workers || '').replace(/,/g, '')); if (Number.isFinite(w) && w > 0) { workers += w; workersKnown++; }
     }
-    return { key, name: tagName(key), desc: tagDesc(key), count: list.length, byGroup, byDistrict, workers, workersKnown };
+    return { key, name: COMBO[key]?.name ?? tagName(key), desc: COMBO[key]?.desc ?? tagDesc(key), count: list.length, byGroup, byDistrict, workers, workersKnown, combo: !!COMBO[key] };
   });
   const foundedKnown = all.filter(c => c.founded).length;
   const startupVenture = all.filter(c => c.tags.includes('startup') && c.tags.includes('venture')).length;

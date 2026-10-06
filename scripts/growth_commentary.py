@@ -85,9 +85,10 @@ def facts() -> dict:
     va_in = next(r["within"] for r in io["final_demand"] if r["region"] == "대구" and r["type"] == "부가가치유발계수" and r["year"] == 2020)
     imp = float(re.search(r"수입\s*([\d.]+)%", next(f["text"] for f in io["facts"] if re.search(r"표 IV-7.*대구", f["text"]))).group(1))
     k_eff = (1 - imp / 100) * va_in
-    # 성장 기여 가중치 = 명목 GRDP 대비 비중(w). 비중 s 는 리포트의 25개 부문 합 기준(입지계수·집중도용). 모든 계산기가 같은 기준(ΔVA ÷ 명목 GRDP)
+    # 성장 기여 가중치 w = 25개 부문 합(명목 총부가가치) 대비 비중 = s(합 100%). 순생산물세는 부가가치에 비례해 함께 는다고 본다 — src/lib/grdp.ts structureCalc 와 같게(운영자 평가 2026-10-07 ①)
+    gva = sum(V.get(("명목", REGION, r["key"], y1), 0) for r in rows) / 100   # 억 원
     for r in rows:
-        r["w"] = V.get(("명목", REGION, r["key"], y1), 0) / (gdp * 100) * 100
+        r["w"] = r["s"]
     growth = lambda gs: base + sum(r["w"] / 100 * (gs[i] - r["g"]) for i, r in enumerate(rows))
 
     def nxt(gs):
@@ -127,7 +128,7 @@ def facts() -> dict:
             avg = sum(r["s"] * r["g"] for r in rs) / sum(r["s"] for r in rs)
             cells[gname] = {"필요 성장률": f1(avg + E / sh * 100), "추세보다": f1(E / sh * 100)}
         route.append({"목표": f1(T), "길": cells, "GRDP 한 해 증가(조 원)": f1(gdp * T / 100 / 10000), "추세보다 더(조 원)": f1(gdp * E / 100 / 10000),
-                      "필요 최종수요(조 원)": f1(gdp * E / 100 / k_eff / 10000)})
+                      "필요 최종수요(조 원)": f1(gva * E / 100 / k_eff / 10000)})   # 성장률 몫 = ΔVA ÷ 명목 총부가가치(공통 기준)
     sh = lambda f: f1(sum(r["s"] for r in rows if f(r)))
     return {"기간": f"{y0}→{y1}년", "추세(연평균, %)": f"{base:.2f}", "전국(%)": f"{d['grdp_growth']['전국']:.2f}", "6개 광역시 평균(%)": f"{d['metro6_avg']['grdp']:.2f}",
             "17개 시도 GRDP 성장 상위 3곳 평균(%)": f1(sum(sorted([v for k, v in d["grdp_growth"].items() if k != "전국"], reverse=True)[:3]) / 3),

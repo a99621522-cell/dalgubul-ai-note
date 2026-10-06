@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구 주요 업종 생산지수(원지수, 2020=100). 2024-09부터 2026-08까지 24개월. 기타 기계 및 장비 최근 133.8; 자동차 및 트레일러 최근 114.9; 금속 가공제품 최근 112.3; 섬유제품 최근 72" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구 주요 업종 생산지수(원지수, 2020=100). 2023-09부터 2026-08까지 36개월(자료 없는 달 12개는 비어 있음). 기타 기계 및 장비 최근 133.8; 자동차 및 트레일러 최근 114.9; 금속 가공제품 최근 112.3; 섬유제품 최근 72" style="max-width:720px;height:auto;font-size:14px">
 <title>대구 주요 업종 생산지수(원지수, 2020=100)</title>
 <line x1="72" x2="530" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">50</text>
@@ -8,21 +8,27 @@
 <text x="64" y="130.3" text-anchor="end" fill="#767676">150</text>
 <line x1="72" x2="530" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">200</text>
-<text x="171.6" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="291.0" y="320" text-anchor="middle" fill="#767676">2025.8</text>
-<text x="410.5" y="320" text-anchor="middle" fill="#767676">2026.2</text>
+<text x="137.4" y="320" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="215.9" y="320" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="294.5" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="373.0" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="451.5" y="320" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="530.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="530" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,208.8 L91.9,167.5 L111.8,142.6 L131.7,165.1 L151.7,222.8 L171.6,182.3 L191.5,178.8 L211.4,150.9 L231.3,141.2 L251.2,149.9 L271.1,162.4 L291.0,201.5 L311.0,171.6 L330.9,219.5 L350.8,140.7 L370.7,108.3 L390.6,182.2 L410.5,221.2 L430.4,156.1 L450.3,138.0 L470.3,176.2 L490.2,149.6 L510.1,143.3 L530.0,153.0" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M72.0,205.9 L85.1,149.9 L98.2,156.1 L111.3,152.3 L124.3,157.9 L137.4,179.3 L150.5,133.0 L163.6,154.0 L176.7,132.7 L189.8,172.1 L202.9,174.7 L215.9,175.9 L229.0,208.8 L242.1,167.5 L255.2,142.6 L268.3,165.1" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M438.4,182.2 L451.5,221.2 L464.6,156.1 L477.7,138.0 L490.7,176.2 L503.8,149.6 L516.9,143.3 L530.0,153.0" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="530.0" cy="153.0" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
 <text x="538.0" y="158.0" fill="#1a1a1a" font-weight="600">133.8 기타 기계 및 장비</text>
-<path d="M72.0,169.4 L91.9,132.8 L111.8,148.4 L131.7,142.2 L151.7,171.6 L171.6,145.8 L191.5,138.6 L211.4,120.0 L231.3,138.8 L251.2,139.5 L271.1,152.8 L291.0,143.3 L311.0,135.7 L330.9,174.1 L350.8,142.2 L370.7,133.7 L390.6,128.7 L410.5,164.8 L430.4,106.2 L450.3,118.2 L470.3,133.0 L490.2,102.1 L510.1,115.1 L530.0,185.2" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M72.0,163.4 L85.1,153.8 L98.2,147.2 L111.3,164.4 L124.3,158.8 L137.4,178.8 L150.5,153.0 L163.6,138.1 L176.7,143.8 L189.8,155.2 L202.9,156.7 L215.9,152.8 L229.0,169.4 L242.1,132.8 L255.2,148.4 L268.3,142.2" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M438.4,128.7 L451.5,164.8 L464.6,106.2 L477.7,118.2 L490.7,133.0 L503.8,102.1 L516.9,115.1 L530.0,185.2" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="530.0" cy="185.2" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
 <text x="538.0" y="190.2" fill="#1a1a1a" font-weight="600">114.9 자동차 및 트레일러</text>
-<path d="M72.0,233.2 L91.9,221.2 L111.8,210.5 L131.7,255.0 L151.7,221.2 L171.6,217.2 L191.5,215.8 L211.4,220.2 L231.3,220.1 L251.2,214.4 L271.1,220.2 L291.0,225.2 L311.0,208.3 L330.9,237.3 L350.8,214.6 L370.7,221.1 L390.6,185.9 L410.5,198.2 L430.4,179.3 L450.3,181.7 L470.3,155.4 L490.2,144.4 L510.1,170.9 L530.0,189.7" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M72.0,210.0 L85.1,218.9 L98.2,198.0 L111.3,200.8 L124.3,190.4 L137.4,216.8 L150.5,185.6 L163.6,185.2 L176.7,203.7 L189.8,210.3 L202.9,219.9 L215.9,222.3 L229.0,233.2 L242.1,221.2 L255.2,210.5 L268.3,255.0" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M438.4,185.9 L451.5,198.2 L464.6,179.3 L477.7,181.7 L490.7,155.4 L503.8,144.4 L516.9,170.9 L530.0,189.7" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="530.0" cy="189.7" r="3.5" style="fill:var(--chart-3,#009E73)"/>
 <text x="538.0" y="206.2" fill="#1a1a1a" font-weight="600">112.3 금속 가공제품</text>
-<path d="M72.0,237.3 L91.9,198.9 L111.8,200.8 L131.7,207.4 L151.7,240.7 L171.6,231.5 L191.5,219.5 L211.4,217.5 L231.3,229.6 L251.2,232.5 L271.1,227.2 L291.0,249.6 L311.0,217.2 L330.9,226.7 L350.8,224.1 L370.7,219.5 L390.6,231.7 L410.5,256.2 L430.4,227.9 L450.3,237.1 L470.3,247.0 L490.2,242.2 L510.1,242.1 L530.0,258.5" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M72.0,219.2 L85.1,203.2 L98.2,200.3 L111.3,212.7 L124.3,213.7 L137.4,226.9 L150.5,202.0 L163.6,202.3 L176.7,205.7 L189.8,220.9 L202.9,214.3 L215.9,229.6 L229.0,237.3 L242.1,198.9 L255.2,200.8 L268.3,207.4" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M438.4,231.7 L451.5,256.2 L464.6,227.9 L477.7,237.1 L490.7,247.0 L503.8,242.2 L516.9,242.1 L530.0,258.5" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="530.0" cy="258.5" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
 <text x="538.0" y="263.5" fill="#1a1a1a" font-weight="600">72 섬유제품</text>
 <text x="72" y="16" fill="#767676">KOSIS 시도/산업별 광공업생산지수(2020＝100)</text></svg>

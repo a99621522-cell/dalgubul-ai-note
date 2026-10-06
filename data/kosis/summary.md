@@ -21,7 +21,7 @@
 | medical-use-sido-outside | [시도별 진료현황-관외](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A006) | Y 2020~2026 | 2024 | 1275 | 명 |
 | medical-use-sido-provider | [의료기관 시도별 진료현황-전체](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A007) | Y 2020~2026 | 2024 | 1350 | 명 |
 | medical-use-sido-resident | [시도별 진료현황-전체](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A004) | Y 2020~2026 | 2024 | 1800 | 명 |
-| mfg-production-index-industry | [시도/산업별 광공업생산지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001) | M 202301~202612 | 202608 | 3540 | 2020＝100 |
+| mfg-production-index-industry | [시도/산업별 광공업생산지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001) | M 202301~202612 | 202608 | 2568 | 2020＝100 |
 | mfg-production-index-sido | [광공업생산지수(시도)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=INH_1F02001) | M 202301~202612 | 202608 | 792 | 2020＝100 |
 | mice-conference-sido | [국제회의의 지역별 현황](https://kosis.kr/statHtml/statHtml.do?orgId=314&tblId=DT_314005_A001) | Y 2020~2026 | 2024 | 216 | 건 |
 | mice-exhibition-sido | [지역별 시설별 전시회 개최건수](https://kosis.kr/statHtml/statHtml.do?orgId=430&tblId=DT_430001_05_003) | Y 2020~2026 | 2024 | 488 | 건 |

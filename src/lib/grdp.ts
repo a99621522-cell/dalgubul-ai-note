@@ -270,7 +270,8 @@ export function policyLeversData() {
   let turnover: Record<string, number | null> = {}, turnoverYear = '';
   try {
     const ta0 = readCsv('data/kosis/mfg-tangible-sido.csv').filter(r => r.C1_NM === '대구광역시');
-    const itm = [...new Set(ta0.map(r => r.ITM_NM))].find(n => /연말/.test(n)) ?? [...new Set(ta0.map(r => r.ITM_NM))].find(n => /유형자산/.test(n));   // 항목 이름은 '연말잔액' 또는 '유형자산…' — 받은 표의 이름에 맞춤
+    const names = [...new Set(ta0.map(r => r.ITM_NM))];
+    const itm = names.find(n => n === '유형자산 연말잔액') ?? names.find(n => /유형자산.*연말/.test(n)) ?? names.find(n => /^연말잔액$/.test(n));   // DT_1FS1106(2026-10-07 수집): '유형자산 연말잔액'(토지·건물·기계 합) — 자산 종류별 연말잔액은 쓰지 않음
     const ta = itm ? ta0.filter(r => r.ITM_NM === itm) : [];
     const ty = [...new Set(ta.map(r => r.PRD_DE))].filter(y => myears.includes(y)).sort().at(-1);
     if (ty) { turnoverYear = ty; const tv = (mid: string) => { const r = ta.find(x => x.PRD_DE === ty && x.C2_NM === mid); const v = r ? gy(mid, '출하액 계', ty) / Number(r.DT) : NaN; return Number.isFinite(v) && v > 0 ? v : null; };

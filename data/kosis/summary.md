@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-06 · 표 36개 · 설정 config/kosis_tables.yml
+갱신 2026-10-06 · 표 38개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -37,3 +37,5 @@
 | smb-bsi-sido | [소상공인 지역별 실적 및 전망](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_S0001N_005) | M 202301~202612 | 202609 | 89 | BSI |
 | sme-stats-sido | [시도별·산업중분류별·기업규모별 기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001) | Y 2020~2026 | 2023 | 45863 | 개 |
 | sme-workers-sido | [시도별·산업중분류별·기업규모별 종사자수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_B001) | Y 2020~2026 | 2023 | 45864 | 명 |
+| startup-trend-sido-prev | [지역별 · 업종별 창업기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_142N_F205) | M 202101~202612 | 202512 | 1140 | 개 |
+| startup-trend-sido | [지역별 · 업종별 창업기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_142N_G205) | M 202201~202612 | 202606 | 114 | 개 |

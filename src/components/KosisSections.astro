@@ -6,9 +6,12 @@ interface Props { sections: KosisSection[] }
 const { sections } = Astro.props;
 const has = (s: KosisSection) => s.tables.some(t => kosisTable(t)) || s.charts.some(c => kosisChart(c));
 const shown = sections.filter(has);
+// 절 뒤에 끼울 슬롯(after-<key>): slot 이름은 정적 문자열만 되므로 Astro.slots 로 미리 그린다
+const after: Record<string, string> = {};
+for (const [i, s] of shown.entries()) { const k = `after-${s.key ?? i}`; if (Astro.slots.has(k)) after[k] = await Astro.slots.render(k); }
 ---
 {shown.length > 1 && <nav class="toc" aria-label="차례"><ol>{shown.map((s, i) => <li><a href={`#k${i}`}>{s.title}</a></li>)}</ol></nav>}
-{shown.map((s, i) => (
+{shown.map((s, i) => (<>
   <section id={`k${i}`}>
     <div class="section-head"><h2>{s.title}</h2></div>
     <p class="meta">{s.desc}</p>
@@ -30,7 +33,8 @@ const shown = sections.filter(has);
       </details>
     ); })}
   </section>
-))}
+  {after[`after-${s.key ?? i}`] && <Fragment set:html={after[`after-${s.key ?? i}`]} />}
+</>))}
 <style>
   .tbl { margin: 0.8rem 0 1.4rem; }
   .tbl > summary { cursor: pointer; font-weight: 700; padding: 6px 0; }

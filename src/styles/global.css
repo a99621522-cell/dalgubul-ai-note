@@ -34,7 +34,7 @@ button, input, select { font: inherit; }
 .brand .tagline { display: none; font-size: var(--small); font-weight: 400; color: var(--muted); }
 @media (min-width: 1024px) { .brand .tagline { display: inline; } }
 .nav { display: none; align-items: center; gap: 2px; }
-@media (min-width: 768px) { .nav { display: flex; } .nav-toggle { display: none; } }
+@media (min-width: 768px) { .nav { display: flex; } .site-head .nav-toggle { display: none; } }
 .nav .ng { position: relative; }
 .nav .ng-btn, .nav .ng-link { display: inline-flex; align-items: center; gap: 4px; min-height: var(--touch); padding: 0 12px; font: inherit; font-weight: 500; color: var(--ink); background: none; border: 0; border-bottom: 3px solid transparent; border-radius: var(--radius) var(--radius) 0 0; text-decoration: none; white-space: nowrap; cursor: pointer; }
 .nav .ng-btn:hover, .nav .ng-link:hover, .nav .ng-btn[aria-expanded="true"] { background: var(--surface); }
@@ -117,7 +117,7 @@ main > .section-head:first-child, main > :first-child > .section-head:first-chil
 .data-table tbody tr:hover { background: var(--surface); }
 .data-table.compact th, .data-table.compact td { padding-top: 6px; padding-bottom: 6px; }
 /* 가로 스크롤 표: 첫 열(회사·항목 이름)을 붙여 두어 숫자를 밀어 봐도 무엇의 값인지 보이게 */
-.scroll-x .data-table th[scope="row"], .scroll-x .data-table thead th:first-child { position: sticky; left: 0; z-index: 1; background: var(--bg); padding-left: 4px; box-shadow: 1px 0 0 var(--line); }
+.scroll-x .data-table th[scope="row"], .scroll-x .data-table thead tr:first-child > th:first-child { position: sticky; left: 0; z-index: 1; background: var(--bg); padding-left: 4px; box-shadow: 1px 0 0 var(--line); }
 .scroll-x .data-table thead th { background: var(--surface); }
 .scroll-x .data-table tbody tr:hover th[scope="row"] { background: var(--surface); }
 .data-table a { color: var(--ink); text-decoration: none; font-weight: 600; }

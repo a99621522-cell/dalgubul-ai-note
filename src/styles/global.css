@@ -405,6 +405,8 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
 @media (max-width: 599px) {
   .stack-toggle { display: inline-flex; }
   .scroll-x:has(> table.stackable:not(.as-table)) { overflow: visible; }
+  .grid-scroll:has(> table.stackable:not(.as-table)) { max-height: none; overflow: visible; }   /* 데이터 그리드 상자(70vh 고정)에서 카드가 넘쳐 다음 내용과 겹치던 것(운영자 화면 2026-10-07) */
+  table.stackable:not(.as-table) td.grid-sel, table.stackable:not(.as-table) th.grid-sel { display: none; }   /* 카드일 때 행 선택 상자는 숨김 */
   table.stackable:not(.as-table) { display: block; min-width: 0 !important; }   /* 페이지 안 id 규칙(#gsroute 640px 등)보다 앞서게 */
   table.stackable:not(.as-table) thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   table.stackable:not(.as-table) tbody, table.stackable:not(.as-table) tfoot, table.stackable:not(.as-table) tr { display: block; }

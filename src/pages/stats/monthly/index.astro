@@ -26,7 +26,7 @@ const GROUP_DESC: Record<string, string> = {
   '창업·경기': '창업기업, 경기동행·선행지수, 기업경기실사지수(BSI)',
 };
 ---
-<Base title="경기 동향" description={`대구 경기 동향(월간) — 생산·고용·소비·투자·수출입·금융·경기지수 ${S.length}개. 핵심 숫자, 선행·동행·후행 구분, ${from.slice(0, 4)}년 1월부터 추세. 최근 기준월 ${newest}.`} current="stats" crumb="경기 동향">
+<Base title="경기 동향" description={`대구 경기 동향(월간) — 생산·고용·소비·투자·수출입·금융·경기지수 ${S.length}개. 핵심 숫자, 선행·동행·후행 구분, ${from.slice(0, 4)}년 1월부터 추세. 최근 기준월 ${newest}.`} current="stats" crumb="경기 동향" wide>
   <StatsNav current="monthly" />
   <div class="section-head"><h1>경기 동향</h1><span class="meta">월간 · 최근 기준월 {newest}</span></div>
   <p class="lede">대구 경제를 매달 보는 지표 {S.length}개입니다. 맨 위 핵심 숫자 6개, 그다음 선행·동행·후행 구분, 아래는 부문별 {from.slice(0, 4)}년 1월부터 추세입니다. 월간 값은 잠정치라 고쳐질 수 있고, 평가·전망이 아닙니다.</p>

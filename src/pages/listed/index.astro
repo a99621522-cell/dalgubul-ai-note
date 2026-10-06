@@ -55,7 +55,7 @@ const invLocal = INV.filter(r => local.has(normName(r.inv_name))).length;
 const eokS = (won?: string) => { const v = Number(won); return won && Number.isFinite(v) && v > 0 ? (v / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—'; };
 const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
 ---
-<Base title="대구시 상장기업" description={`본사가 대구인 상장 회사 ${corps.length}곳(유가증권·코스닥·코넥스)의 최근 3개 사업연도 매출액·영업이익·직원·연구개발비·타법인 출자·미래 산업 관련 공시(DART 공시 값 그대로).`} current="listed">
+<Base title="대구시 상장기업" description={`본사가 대구인 상장 회사 ${corps.length}곳(유가증권·코스닥·코넥스)의 최근 3개 사업연도 매출액·영업이익·직원·연구개발비·타법인 출자·미래 산업 관련 공시(DART 공시 값 그대로).`} current="listed" wide>
   <div class="section-head"><h1>대구시 상장기업</h1><span class="meta">{corps.length}곳 · {years[0]}~{last} 사업연도 · {asOf} 받음 · 금융감독원 DART</span></div>
   <p class="lede">금융감독원 전자공시(DART) 기업개황의 본사 주소가 대구인 상장 회사 {corps.length}곳입니다. 회사 이름을 누르면 재무·직원·연구개발비·출자·공시를 한 페이지에서 봅니다. 재무는 연결재무제표가 있으면 연결, 없으면 개별 값이고 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>
   <nav class="jump meta"><a href="#fin">재무</a> · <a href="#employees">직원</a> · <a href="#rnd">연구개발비</a> · <a href="#invest">출자</a> · <a href="#future">미래 산업 공시</a> · <a href="#dist">분포</a> · <a href="#unlisted">비상장 공시 회사</a></nav>
@@ -71,7 +71,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
     <select id="grp" aria-label="산업"><option value="">모든 산업</option>{groups.map(g => <option value={g}>{g}</option>)}</select>
     <span id="count" class="meta">{corps.length}곳</span>
   </div>
-  <div class="scroll-x" id="fin-wrap"><table class="data-table" id="fin" data-title={`대구시 상장기업 재무 ${years[0]}~${last}`}>
+  <div class="scroll-x" id="fin-wrap"><table class="data-table" id="fin" data-grid data-title={`대구시 상장기업 재무 ${years[0]}~${last}`}>
     <thead>
       <tr><th rowspan="2">회사</th><th rowspan="2">분야(업종)</th><th rowspan="2">무엇을 만드나</th><th rowspan="2">시장</th><th rowspan="2">종목코드</th><th rowspan="2">구·군</th>
         <th colspan={years.length} class="c">매출액(억 원)</th><th colspan={years.length - 1} class="c">매출액 증가율(%)</th><th colspan={years.length} class="c">영업이익(억 원)</th><th colspan={years.length} class="c">영업이익률(%)</th>
@@ -102,7 +102,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
     <div class="section-head"><h2>미래 산업 관련 공시</h2><span class="meta">최근 12개월 · {fut.length}건</span></div>
     <p class="meta">위 회사들의 시설투자·공급계약·지분 취득·특허·주요경영사항 공시 가운데, 공시 원문에 미래 산업 낱말(반도체·2차전지·전기차·자율주행·로봇·인공지능·수소·바이오·방산 등)이 나온 것입니다. 분야는 원문에 나온 낱말로 붙인 것이라 그 사업의 주력이라는 뜻은 아닙니다. 근거 구절은 원문에서 낱말이 처음 나온 곳입니다.</p>
     <p class="meta">분야별: {futFields.map(([k, n], i) => <>{i ? ' · ' : ''}{k} {n}건</>)}</p>
-    <div class="scroll-x"><table class="data-table" data-title="대구시 상장기업 미래 산업 관련 공시">
+    <div class="scroll-x"><table class="data-table" data-grid data-title="대구시 상장기업 미래 산업 관련 공시">
       <thead><tr><th>접수일</th><th>회사</th><th>공시</th><th>분야</th><th>근거 구절</th></tr></thead>
       <tbody>{fut.map(d => { const id = coId.get(d.corp_code); return (
         <tr><td class="nw">{ymd(d.rcept_dt)}</td><td><a href={`/listed/${d.corp_code}/`}>{d.name}</a></td>
@@ -118,7 +118,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
       <div class="card"><div class="big">{empC.toLocaleString('ko-KR')}</div><div class="meta">그 가운데 기간제</div></div>
       <div class="card"><div class="big">{empF.toLocaleString('ko-KR')}</div><div class="meta">그 가운데 여성</div></div>
     </div>
-    <div class="scroll-x"><table class="data-table" id="emp" data-title={`대구시 상장기업 직원 현황 ${empYears[0]}~${empLast}`}>
+    <div class="scroll-x"><table class="data-table" id="emp" data-grid data-title={`대구시 상장기업 직원 현황 ${empYears[0]}~${empLast}`}>
       <thead>
         <tr><th rowspan="2">회사</th><th colspan={empYears.length} class="c">직원 수(명)</th><th colspan="5" class="c">{empLast}년</th><th rowspan="2">공시</th></tr>
         <tr>{empYears.map(y => <th class="n">{y}</th>)}<th class="n">정규직</th><th class="n">기간제</th><th class="n">여성</th><th class="n">평균 근속(년)</th><th class="n">1인 평균 급여(백만 원)</th></tr>
@@ -141,7 +141,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
     <div class="cards">
       <div class="card"><div class="big">{(rndSum / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 0 })}억</div><div class="meta">{rndLast}년 연구개발비 합계({RND.filter(r => r.year === rndLast).length}곳)</div></div>
     </div>
-    <div class="scroll-x"><table class="data-table" data-title={`대구시 상장기업 연구개발비 ${rndYears[0]}~${rndLast}`}>
+    <div class="scroll-x"><table class="data-table" data-grid data-title={`대구시 상장기업 연구개발비 ${rndYears[0]}~${rndLast}`}>
       <thead><tr><th rowspan="2">회사</th><th colspan={rndYears.length} class="c">연구개발비(억 원)</th><th colspan={rndYears.length} class="c">매출액 대비(%)</th><th rowspan="2">공시</th></tr>
         <tr>{rndYears.map(y => <th class="n">{y}</th>)}{rndYears.map(y => <th class="n">{y}</th>)}</tr></thead>
       <tbody>{rndCorps.map(c => (

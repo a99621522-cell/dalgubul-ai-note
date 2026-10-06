@@ -25,7 +25,7 @@ const blocks: { id: string; title: string; desc: string; ss: Ser[]; from: string
   { id: 'tour', title: '관광 방문자·관광소비 (월간)', desc: '한국관광공사 관광빅데이터의 대구 방문자 수 — 외지인(대구 밖 거주자)·외국인·현지인(대구 주민), 이동통신 연인원으로 같은 사람이 여러 날 오면 날마다 셉니다 — 와 신용카드 관광소비액. 데이터랩은 이 값을 총량이 아니라 추세 분석에 쓰라고 안내합니다. 최근 12개월.', ss: TR, from: shift(lastM(TR), -11), step: 1 },
 ].filter(b => b.ss.length);
 ---
-<Base title="서비스업·자영업 통계" description="대구 서비스업 생산지수(업종별, 분기), 대형소매점 판매액지수, 자영업자 수·비중, 소상공인·전통시장 체감경기(BSI), 관광 방문자·관광소비 — 국가데이터처·소상공인시장진흥공단(KOSIS)·한국관광공사(관광빅데이터) 원 통계." current="stats" crumb="서비스업·자영업">
+<Base title="서비스업·자영업 통계" description="대구 서비스업 생산지수(업종별, 분기), 대형소매점 판매액지수, 자영업자 수·비중, 소상공인·전통시장 체감경기(BSI), 관광 방문자·관광소비 — 국가데이터처·소상공인시장진흥공단(KOSIS)·한국관광공사(관광빅데이터) 원 통계." current="stats" crumb="서비스업·자영업" wide>
   <StatsNav current="services" />
   <div class="section-head"><h1>서비스업·자영업</h1><span class="meta">분기·월간 · KOSIS·ECOS·데이터랩</span></div>
   <p class="lede">대구 서비스업 생산, 대형소매점 판매, 자영업자, 소상공인·전통시장 체감경기, 관광 방문자·관광소비입니다. 모두 원 통계 그대로이고, 평가·전망이 아닙니다. 그래프마다 점에 그 달(분기) 값을 적었고, 표는 펼쳐서 봅니다.</p>

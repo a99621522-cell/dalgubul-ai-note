@@ -8,7 +8,7 @@ import { companies } from './csv';
 import { industryGroups } from './industry';
 import { tagName, tagDesc } from './sites';
 
-export const STARTUP_TAGS = ['startup', 'venture', 'startup_venture', 'bi', 'ccei', 'labfirm', 'innobiz'];   // bi: 창업보육센터 입주(공공데이터포털 15122804, 2026-10-06)
+export const STARTUP_TAGS = ['startup', 'venture', 'startup_venture', 'bi', 'bi_grad', 'ccei', 'labfirm', 'innobiz'];   // bi: 창업보육센터 입주(공공데이터포털 15122804), bi_grad: 졸업(15063516), 2026-10-06
 /** 교집합 열(운영자 지시 2026-10-06 '7년 이내 벤처 열 더해'): 설립 7년 이내이면서 벤처기업확인 — 스타트업(법적 정의 없음)에 가장 가까운 집합 */
 const COMBO: Record<string, { name: string; desc: string; tags: string[] }> = { startup_venture: { name: '7년 이내 벤처기업', desc: '설립 7년 이내(창업기업)이면서 벤처기업확인 — 스타트업에 가장 가까운 집합', tags: ['startup', 'venture'] } };
 export const DISTRICTS = ['중구', '동구', '서구', '남구', '북구', '수성구', '달서구', '달성군', '군위군'];

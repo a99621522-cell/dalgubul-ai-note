@@ -22,7 +22,7 @@ const shown = S.tags.filter(t => t.count > 0);
     <thead><tr><th>구·군</th>{shown.map(t => <th class="n">{t.name}(곳)</th>)}</tr></thead>
     <tbody>{DISTRICTS.map(d => <tr><th scope="row">{d}</th>{shown.map(t => <td class="n">{n(t.byDistrict[d] ?? 0)}</td>)}</tr>)}</tbody>
   </table></div>
-  <p class="meta">기업 사전에서 보기: {shown.filter(t => !t.combo).map((t, i) => <>{i ? ' · ' : ''}<a href={`/companies/?tag=${t.key}`}>{t.name} {n(t.count)}곳</a></>)} (7년 이내 벤처기업은 두 태그의 교집합이라 목록 필터는 벤처기업으로 열어 설립 연도를 보세요)</p>
+  <p class="meta">명단 보기(기업 사전): {shown.map((t, i) => <>{i ? ' · ' : ''}<a href={`/companies/?tag=${t.key}`}>{t.name} {n(t.count)}곳</a></>)} — 7년 이내 벤처기업은 두 태그의 교집합 필터(<code>?tag=startup_venture</code>)로 엽니다. 목록에서 표 도구로 한글·CSV 로 옮길 수 있습니다.</p>
   <p class="meta">출처: 기업 사전(한국산업단지공단 팩토리온·국민연금 가입 사업장·수성알파시티 기업현황), 벤처기업확인 공시, 대구창조경제혁신센터·연구개발특구·이노비즈협회 공개 목록. 태그 기준은 config/site_types.yml. 순위·평가가 아닙니다.</p>
 </section>
 <style>

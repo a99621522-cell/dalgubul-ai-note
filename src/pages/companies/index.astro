@@ -14,6 +14,8 @@ const supportedCount = new Set(supportHistory().filter(r => r.id).map(r => r.id)
 // 검색·필터를 쓰면 /companies-index.json(빌드 때 생성되는 경량 색인)을 한 번 받아 클라이언트에서 거른다.
 const FIRST = 60;
 const ZONES = Object.fromEntries(zones().map(z => [z.key, z.name]));   // 첫 화면 특구 표에서 ?zone=key 로 넘어온다
+// 태그 교집합 필터(URL 로만, 선택 상자 없음): ?tag=startup_venture = 설립 7년 이내(startup) ∧ 벤처기업확인(venture) — 통계 '창업·벤처기업' 절의 명단 링크(운영자 지시 2026-10-06)
+const COMBOS: Record<string, { name: string; tags: string[] }> = { startup_venture: { name: '7년 이내 벤처기업', tags: ['startup', 'venture'] } };
 const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
 ---
 <Base title="대구 기업 사전" description={`대구 공장등록 기업 ${list.length.toLocaleString('ko-KR')}곳 — 구·군·단지·업종·생산품·종사자 규모. 팩토리온 공개 자료 ${asOf} 기준`} current="companies">
@@ -47,10 +49,12 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
     ))}
   </ul>
   <div class="more-wrap"><button id="more" type="button" class="more" hidden>더 보기</button></div>
-  <script define:vars={{ total: list.length, FIRST, ZONES }}>
+  <script define:vars={{ total: list.length, FIRST, ZONES, COMBOS }}>
     const iz = new URLSearchParams(location.search).get('zone') || '';   // 특구(선택 상자 없이 URL 로만)
     const ik = (new URLSearchParams(location.search).get('ksic') || '').split(',').map(s => s.trim()).filter(s => /^\d{2}$/.test(s));   // 업종 코드 앞 2자리(통계 고부가 3부문 → URL 로만)
     const ikLabel = ik.length ? '업종 코드 ' + ik.join('·') : '';
+    const combo = COMBOS[new URLSearchParams(location.search).get('tag') || ''];   // 태그 교집합(?tag=startup_venture) — 선택 상자에 없는 값이라 URL 로만
+    const itags = combo ? combo.tags : []; const itagsLabel = combo ? combo.name : '';
     // 색인 행: i=id n=회사명 d=구군 e=읍면동 c=단지 g=업종군 s=업종 w=규모  (companies-index.json.ts 와 맞출 것)
     const q = document.getElementById('q');
     const sel = ['cx', 'sg', 'em', 'st', 'tg'].map(id => document.getElementById(id));
@@ -116,6 +120,7 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
       if (sortSel.value !== 'name') items.push(['정렬: ' + sortSel.options[sortSel.selectedIndex].text, () => { sortSel.value = 'name'; }]);
       if (iz && ZONES[iz]) items.push([ZONES[iz], () => { location.search = ''; }]);
       if (ikLabel) items.push([ikLabel, () => { location.search = ''; }]);
+      if (itagsLabel) items.push([itagsLabel, () => { location.search = ''; }]);
       chips.replaceChildren();
       chips.hidden = !items.length;
       for (const [label, clear] of items) {
@@ -123,21 +128,21 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
         b.addEventListener('click', () => { clear(); apply(); });
         chips.append(b);
       }
-      if (items.length > 1) { const all = el('button', '모두 지우기', 'chip-all'); all.type = 'button'; all.addEventListener('click', () => { q.value = ''; sel.forEach(s => { s.value = ''; }); spBox.checked = false; sortSel.value = 'name'; if (iz || ik.length) { location.search = ''; return; } apply(); }); chips.append(all); }
+      if (items.length > 1) { const all = el('button', '모두 지우기', 'chip-all'); all.type = 'button'; all.addEventListener('click', () => { q.value = ''; sel.forEach(s => { s.value = ''; }); spBox.checked = false; sortSel.value = 'name'; if (iz || ik.length || itags.length) { location.search = ''; return; } apply(); }); chips.append(all); }
     }
     async function apply() {
       drawChips();
       const t = q.value.trim().toLowerCase(); const [c, g, e, st, tg] = sel.map(s => s.value); const sp = spBox.checked; const sorted = sortSel.value !== 'name';
-      if (!t && !c && !g && !e && !st && !tg && !sp && !sorted && !iz && !ik.length) {            // 조건 없음 → 처음 상태(서버가 그려 둔 60곳)로
+      if (!t && !c && !g && !e && !st && !tg && !sp && !sorted && !iz && !ik.length && !itags.length) {            // 조건 없음 → 처음 상태(서버가 그려 둔 60곳)로
         if (rows) { matched = rows; render(0); }
         count.textContent = `${nf.format(total)}곳`; note.hidden = !!rows; return;
       }
       const data = await load(); if (!data) return;
       matched = sortRows(data.filter(r => (!c || r.c === c || r.c === shortComplex(c)) && (!g || r.g === g) && (!e || r.d === e)
-        && (!st || r.t === st) && (!tg || (r.k || []).includes(tg)) && (!sp || r.p) && (!iz || (r.z || []).includes(iz)) && (!ik.length || ik.includes(r.x))
+        && (!st || r.t === st) && (!tg || (r.k || []).includes(tg)) && (!sp || r.p) && (!iz || (r.z || []).includes(iz)) && (!ik.length || ik.includes(r.x)) && (!itags.length || itags.every(x => (r.k || []).includes(x)))
         && (!t || (r.n + ' ' + r.s + ' ' + r.g).toLowerCase().includes(t))));
       note.hidden = true;
-      count.textContent = `${iz && ZONES[iz] ? ZONES[iz] + ' · ' : ''}${ikLabel ? ikLabel + ' · ' : ''}${nf.format(matched.length)}곳`;
+      count.textContent = `${iz && ZONES[iz] ? ZONES[iz] + ' · ' : ''}${ikLabel ? ikLabel + ' · ' : ''}${itagsLabel ? itagsLabel + ' · ' : ''}${nf.format(matched.length)}곳`;
       render(0);
     }
     // 단지 <option> 은 정식 명칭, 색인의 c 는 약칭이라 같은 방식으로 줄여서 비교한다
@@ -151,9 +156,9 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
     const ig = sp.get('group'); if (ig) sel[1].value = ig;      // 산업별 페이지에서 넘어온 산업 그룹
     const iq = sp.get('q'); if (iq) q.value = iq;          // 첫 화면 검색창(/?q=)에서 넘어온 검색어
     const ist = sp.get('site'); if (ist) sel[3].value = ist;
-    const itg = sp.get('tag'); if (itg) sel[4].value = itg;
+    const itg = sp.get('tag'); if (itg && !combo) sel[4].value = itg;
     if (sp.get('support')) spBox.checked = true;
-    if (ic || idn || ig || iq || ist || itg || iz || ik.length || sp.get('support')) apply();
+    if (ic || idn || ig || iq || ist || itg || iz || ik.length || itags.length || sp.get('support')) apply();
   </script>
 </Base>
 <style>

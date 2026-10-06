@@ -1,24 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="군위효령농공단지 고용 인원 추이. 2023-12부터 2026-08까지 14개월. 군위효령농공단지 최근 112명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="군위효령농공단지 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 군위효령농공단지 최근 112명" style="max-width:720px;height:auto;font-size:14px">
 <title>군위효령농공단지 고용 인원 추이</title>
 <line x1="72" x2="668" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">100</text>
-<line x1="72" x2="668" y1="232.0" y2="232.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="237.0" text-anchor="end" fill="#767676">110</text>
-<line x1="72" x2="668" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="173.0" text-anchor="end" fill="#767676">120</text>
-<line x1="72" x2="668" y1="104.0" y2="104.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="109.0" text-anchor="end" fill="#767676">130</text>
+<line x1="72" x2="668" y1="244.8" y2="244.8" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="249.8" text-anchor="end" fill="#767676">110</text>
+<line x1="72" x2="668" y1="193.6" y2="193.6" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="198.6" text-anchor="end" fill="#767676">120</text>
+<line x1="72" x2="668" y1="142.4" y2="142.4" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="147.4" text-anchor="end" fill="#767676">130</text>
+<line x1="72" x2="668" y1="91.2" y2="91.2" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="96.2" text-anchor="end" fill="#767676">140</text>
 <line x1="72" x2="668" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="45.0" text-anchor="end" fill="#767676">140</text>
-<text x="117.8" y="320" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="209.5" y="320" text-anchor="middle" fill="#767676">2024.6</text>
-<text x="301.2" y="320" text-anchor="middle" fill="#767676">2024.10</text>
-<text x="392.9" y="320" text-anchor="middle" fill="#767676">2024.12</text>
-<text x="484.6" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="576.3" y="320" text-anchor="middle" fill="#767676">2026.1</text>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">150</text>
+<text x="109.2" y="320" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="221.0" y="320" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="332.8" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="444.5" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="556.2" y="320" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="668.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="668" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,46.4 L117.8,91.2 L163.7,52.8 L209.5,104.0 L255.4,91.2 L301.2,129.6 L347.1,97.6 L392.9,104.0 L438.8,104.0 L484.6,110.4 L530.5,174.4 L576.3,174.4 L622.2,206.4 L668.0,219.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="668.0" cy="219.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="676.0" y="224.2" fill="#1a1a1a" font-weight="600">112명</text>
+<path d="M72.0,96.3 L90.6,132.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="146.5" cy="101.4" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M183.8,142.4 L202.4,132.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M258.2,162.9 L276.9,137.3 L295.5,142.4 L314.1,142.4 L332.8,147.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="407.2" cy="198.7" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="537.6" cy="198.7" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M649.4,224.3 L668.0,234.6" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="668.0" cy="234.6" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="676.0" y="239.6" fill="#1a1a1a" font-weight="600">112명</text>
 <text x="72" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

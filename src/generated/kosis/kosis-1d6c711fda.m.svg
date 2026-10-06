@@ -2,14 +2,16 @@
 <title>대구 광공업생산지수(원지수, 2020=100)</title>
 <line x1="60" x2="306" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">90</text>
-<line x1="60" x2="306" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="207.0" text-anchor="end" fill="#767676">100</text>
-<line x1="60" x2="306" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="153.0" text-anchor="end" fill="#767676">110</text>
-<line x1="60" x2="306" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="99.0" text-anchor="end" fill="#767676">120</text>
+<line x1="60" x2="306" y1="212.8" y2="212.8" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="217.8" text-anchor="end" fill="#767676">100</text>
+<line x1="60" x2="306" y1="169.6" y2="169.6" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="174.6" text-anchor="end" fill="#767676">110</text>
+<line x1="60" x2="306" y1="126.4" y2="126.4" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="131.4" text-anchor="end" fill="#767676">120</text>
+<line x1="60" x2="306" y1="83.2" y2="83.2" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="88.2" text-anchor="end" fill="#767676">130</text>
 <line x1="60" x2="306" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">130</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">140</text>
 <text x="95.1" y="280" text-anchor="middle" fill="#767676">2024.2</text>
 <text x="137.3" y="280" text-anchor="middle" fill="#767676">2024.8</text>
 <text x="179.5" y="280" text-anchor="middle" fill="#767676">2025.2</text>
@@ -17,7 +19,7 @@
 <text x="263.8" y="280" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="306.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="306" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,164.2 L67.0,112.4 L74.1,85.4 L81.1,110.2 L88.1,82.7 L95.1,154.5 L102.2,65.4 L109.2,57.3 L116.2,74.0 L123.3,112.9 L130.3,133.4 L137.3,153.4 L144.3,190.7 L151.4,85.4 L158.4,91.8 L165.4,127.5 L172.5,175.0 L179.5,124.8 L186.5,95.6 L193.5,65.9 L200.6,107.5 L207.6,99.9 L214.6,105.9 L221.7,149.1 L228.7,74.6 L235.7,181.5 L242.7,92.9 L249.8,66.5 L256.8,82.1 L263.8,176.1 L270.9,40.5 L277.9,41.1 L284.9,81.6 L291.9,28.1 L299.0,41.6 L306.0,128.6" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="306.0" cy="128.6" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="314.0" y="133.6" fill="#1a1a1a" font-weight="600">113.6</text>
+<path d="M60.0,182.6 L67.0,141.1 L74.1,119.5 L81.1,139.4 L88.1,117.3 L95.1,174.8 L102.2,103.5 L109.2,97.0 L116.2,110.4 L123.3,141.5 L130.3,157.9 L137.3,173.9 L144.3,203.7 L151.4,119.5 L158.4,124.7 L165.4,153.2 L172.5,191.2 L179.5,151.0 L186.5,127.7 L193.5,103.9 L200.6,137.2 L207.6,131.2 L214.6,135.9 L221.7,170.5 L228.7,110.8 L235.7,196.4 L242.7,125.5 L249.8,104.4 L256.8,116.9 L263.8,192.1 L270.9,83.6 L277.9,84.1 L284.9,116.5 L291.9,73.7 L299.0,84.5 L306.0,154.0" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="306.0" cy="154.0" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="314.0" y="159.0" fill="#1a1a1a" font-weight="600">113.6</text>
 <text x="8" y="16" fill="#767676">KOSIS 광공업생산지수(시도)</text></svg>

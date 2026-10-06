@@ -2,24 +2,26 @@
 <title>대구 인구이동(월간)</title>
 <line x1="72" x2="594" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
-<line x1="72" x2="594" y1="210.7" y2="210.7" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="215.7" text-anchor="end" fill="#767676">10,000</text>
-<line x1="72" x2="594" y1="125.3" y2="125.3" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="130.3" text-anchor="end" fill="#767676">20,000</text>
+<line x1="72" x2="594" y1="232.0" y2="232.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="237.0" text-anchor="end" fill="#767676">10,000</text>
+<line x1="72" x2="594" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="173.0" text-anchor="end" fill="#767676">20,000</text>
+<line x1="72" x2="594" y1="104.0" y2="104.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="109.0" text-anchor="end" fill="#767676">30,000</text>
 <line x1="72" x2="594" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="45.0" text-anchor="end" fill="#767676">30,000</text>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">40,000</text>
 <text x="185.5" y="320" text-anchor="middle" fill="#767676">2025.2</text>
 <text x="321.7" y="320" text-anchor="middle" fill="#767676">2025.8</text>
 <text x="457.8" y="320" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="594.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="594" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,103.7 L94.7,84.9 L117.4,107.2 L140.1,85.8 L162.8,86.7 L185.5,20.5 L208.2,103.6 L230.9,125.7 L253.6,125.3 L276.3,129.7 L299.0,98.8 L321.7,115.1 L344.3,105.6 L367.0,126.2 L389.7,135.4 L412.4,88.6 L435.1,71.2 L457.8,50.0 L480.5,69.7 L503.2,109.8 L525.9,104.2 L548.6,117.9 L571.3,130.3 L594.0,131.4" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="594.0" cy="131.4" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="602.0" y="133.9" fill="#1a1a1a" font-weight="600">19,288명 총전입</text>
-<path d="M72.0,104.0 L94.7,84.9 L117.4,107.3 L140.1,84.3 L162.8,88.6 L185.5,22.1 L208.2,90.2 L230.9,118.7 L253.6,119.3 L276.3,124.9 L299.0,102.3 L321.7,114.9 L344.3,106.2 L367.0,123.7 L389.7,131.6 L412.4,82.1 L435.1,69.1 L457.8,46.4 L480.5,60.7 L503.2,106.2 L525.9,106.5 L548.6,110.9 L571.3,126.5 L594.0,125.7" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="594.0" cy="125.7" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="602.0" y="117.9" fill="#1a1a1a" font-weight="600">19,961명 총전출</text>
-<path d="M72.0,295.6 L94.7,296.0 L117.4,295.9 L140.1,297.6 L162.8,294.1 L185.5,294.4 L208.2,309.4 L230.9,302.9 L253.6,302.0 L276.3,300.8 L299.0,292.4 L321.7,296.2 L344.3,295.4 L367.0,298.5 L389.7,299.9 L412.4,302.4 L435.1,298.1 L457.8,299.6 L480.5,305.0 L503.2,299.6 L525.9,293.6 L548.6,303.0 L571.3,299.9 L594.0,301.7" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="594.0" cy="301.7" r="3.5" style="fill:var(--chart-3,#009E73)"/>
+<path d="M72.0,151.8 L94.7,137.7 L117.4,154.4 L140.1,138.4 L162.8,139.0 L185.5,89.3 L208.2,151.7 L230.9,168.2 L253.6,168.0 L276.3,171.3 L299.0,148.1 L321.7,160.3 L344.3,153.2 L367.0,168.6 L389.7,175.6 L412.4,140.4 L435.1,127.4 L457.8,111.5 L480.5,126.2 L503.2,156.3 L525.9,152.1 L548.6,162.4 L571.3,171.8 L594.0,172.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="594.0" cy="172.6" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="602.0" y="177.9" fill="#1a1a1a" font-weight="600">19,288명 총전입</text>
+<path d="M72.0,152.0 L94.7,137.7 L117.4,154.5 L140.1,137.2 L162.8,140.4 L185.5,90.5 L208.2,141.7 L230.9,163.0 L253.6,163.5 L276.3,167.7 L299.0,150.8 L321.7,160.2 L344.3,153.6 L367.0,166.8 L389.7,172.7 L412.4,135.6 L435.1,125.8 L457.8,108.8 L480.5,119.5 L503.2,153.6 L525.9,153.9 L548.6,157.2 L571.3,168.9 L594.0,168.2" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="594.0" cy="168.2" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="602.0" y="161.9" fill="#1a1a1a" font-weight="600">19,961명 총전출</text>
+<path d="M72.0,295.7 L94.7,296.0 L117.4,295.9 L140.1,297.2 L162.8,294.6 L185.5,294.8 L208.2,306.1 L230.9,301.2 L253.6,300.5 L276.3,299.6 L299.0,293.3 L321.7,296.1 L344.3,295.6 L367.0,297.8 L389.7,298.9 L412.4,300.8 L435.1,297.6 L457.8,298.7 L480.5,302.7 L503.2,298.7 L525.9,294.2 L548.6,301.3 L571.3,298.9 L594.0,300.3" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="594.0" cy="300.3" r="3.5" style="fill:var(--chart-3,#009E73)"/>
 <text x="602.0" y="294.0" fill="#1a1a1a" font-weight="600">-673명 순이동</text>
 <text x="72" y="16" fill="#767676">KOSIS 시군구별 이동자수</text></svg>

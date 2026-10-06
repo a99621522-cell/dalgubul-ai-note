@@ -1,34 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="주력 산업 고용 인원 추이. 2023-12부터 2026-08까지 14개월. 기계·금속 최근 34,936명; 자동차·부품 최근 28,083명; 화학·에너지 최근 23,163명; 전기·전자 최근 19,737명; 소프트웨어·IT 최근 9,404명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="주력 산업 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 기계·금속 최근 34,936명; 자동차·부품 최근 28,083명; 화학·에너지 최근 23,163명; 전기·전자 최근 19,737명; 소프트웨어·IT 최근 9,404명" style="max-width:720px;height:auto;font-size:14px">
 <title>주력 산업 고용 인원 추이</title>
 <line x1="72" x2="542" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
-<line x1="72" x2="542" y1="210.7" y2="210.7" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="215.7" text-anchor="end" fill="#767676">10,000</text>
-<line x1="72" x2="542" y1="125.3" y2="125.3" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="130.3" text-anchor="end" fill="#767676">20,000</text>
+<line x1="72" x2="542" y1="232.0" y2="232.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="237.0" text-anchor="end" fill="#767676">10,000</text>
+<line x1="72" x2="542" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="173.0" text-anchor="end" fill="#767676">20,000</text>
+<line x1="72" x2="542" y1="104.0" y2="104.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="109.0" text-anchor="end" fill="#767676">30,000</text>
 <line x1="72" x2="542" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="45.0" text-anchor="end" fill="#767676">30,000</text>
-<text x="108.2" y="320" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="180.5" y="320" text-anchor="middle" fill="#767676">2024.6</text>
-<text x="252.8" y="320" text-anchor="middle" fill="#767676">2024.10</text>
-<text x="325.1" y="320" text-anchor="middle" fill="#767676">2024.12</text>
-<text x="397.4" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="469.7" y="320" text-anchor="middle" fill="#767676">2026.1</text>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">40,000</text>
+<text x="101.4" y="320" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="189.5" y="320" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="277.6" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="365.8" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="453.9" y="320" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="542.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="542" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,22.7 L108.2,24.0 L144.3,22.2 L180.5,27.8 L216.6,27.4 L252.8,30.3 L288.9,29.8 L325.1,30.1 L361.2,31.7 L397.4,32.2 L433.5,-0.9 L469.7,4.5 L505.8,-2.7 L542.0,-2.1" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="542.0" cy="-2.1" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="550.0" y="52.0" fill="#1a1a1a" font-weight="600">34,936명 기계·금속</text>
-<path d="M72.0,75.4 L108.2,75.4 L144.3,76.3 L180.5,77.5 L216.6,76.8 L252.8,77.7 L288.9,77.7 L325.1,77.8 L361.2,78.5 L397.4,73.4 L433.5,57.9 L469.7,59.9 L505.8,56.1 L542.0,56.4" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="542.0" cy="56.4" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="550.0" y="68.0" fill="#1a1a1a" font-weight="600">28,083명 자동차·부품</text>
-<path d="M72.0,118.7 L108.2,119.2 L144.3,119.6 L180.5,120.1 L216.6,117.3 L252.8,114.9 L288.9,115.4 L325.1,115.5 L361.2,117.8 L397.4,118.1 L433.5,109.1 L469.7,106.5 L505.8,98.5 L542.0,98.3" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="542.0" cy="98.3" r="3.5" style="fill:var(--chart-3,#009E73)"/>
-<text x="550.0" y="103.3" fill="#1a1a1a" font-weight="600">23,163명 화학·에너지</text>
-<path d="M72.0,142.9 L108.2,145.6 L144.3,145.0 L180.5,145.3 L216.6,144.6 L252.8,145.2 L288.9,145.8 L325.1,145.4 L361.2,144.5 L397.4,144.4 L433.5,136.8 L469.7,134.4 L505.8,128.5 L542.0,127.6" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="542.0" cy="127.6" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
-<text x="550.0" y="132.6" fill="#1a1a1a" font-weight="600">19,737명 전기·전자</text>
-<path d="M72.0,196.6 L108.2,199.0 L144.3,197.1 L180.5,222.7 L216.6,221.9 L252.8,222.4 L288.9,221.9 L325.1,221.7 L361.2,223.6 L397.4,222.4 L433.5,217.8 L469.7,217.3 L505.8,215.9 L542.0,215.8" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="542.0" cy="215.8" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
-<text x="550.0" y="220.8" fill="#1a1a1a" font-weight="600">9,404명 소프트웨어·IT</text>
+<path d="M72.0,91.0 L86.7,92.0" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="130.8" cy="90.6" r="4" style="fill:var(--chart-1,#1B4F9B)"/>
+<path d="M160.1,94.8 L174.8,94.5" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M218.9,96.7 L233.6,96.4 L248.2,96.6 L262.9,97.8 L277.6,98.1" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="336.4" cy="73.4" r="4" style="fill:var(--chart-1,#1B4F9B)"/>
+<circle cx="439.2" cy="77.4" r="4" style="fill:var(--chart-1,#1B4F9B)"/>
+<path d="M527.3,72.0 L542.0,72.4" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="542.0" cy="72.4" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="550.0" y="77.4" fill="#1a1a1a" font-weight="600">34,936명 기계·금속</text>
+<path d="M72.0,130.5 L86.7,130.5" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="130.8" cy="131.2" r="4" style="fill:var(--chart-2,#E69F00)"/>
+<path d="M160.1,132.1 L174.8,131.6" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M218.9,132.3 L233.6,132.3 L248.2,132.4 L262.9,132.9 L277.6,129.1" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="336.4" cy="117.4" r="4" style="fill:var(--chart-2,#E69F00)"/>
+<circle cx="439.2" cy="118.9" r="4" style="fill:var(--chart-2,#E69F00)"/>
+<path d="M527.3,116.1 L542.0,116.3" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="542.0" cy="116.3" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="550.0" y="121.3" fill="#1a1a1a" font-weight="600">28,083명 자동차·부품</text>
+<path d="M72.0,163.0 L86.7,163.4" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="130.8" cy="163.7" r="4" style="fill:var(--chart-3,#009E73)"/>
+<path d="M160.1,164.1 L174.8,162.0" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M218.9,160.2 L233.6,160.5 L248.2,160.6 L262.9,162.3 L277.6,162.6" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="336.4" cy="155.8" r="4" style="fill:var(--chart-3,#009E73)"/>
+<circle cx="439.2" cy="153.8" r="4" style="fill:var(--chart-3,#009E73)"/>
+<path d="M527.3,147.9 L542.0,147.8" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="542.0" cy="147.8" r="3.5" style="fill:var(--chart-3,#009E73)"/>
+<text x="550.0" y="152.8" fill="#1a1a1a" font-weight="600">23,163명 화학·에너지</text>
+<path d="M72.0,181.2 L86.7,183.2" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="130.8" cy="182.7" r="4" style="fill:var(--chart-4,#D55E00)"/>
+<path d="M160.1,183.0 L174.8,182.4" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M218.9,182.9 L233.6,183.3 L248.2,183.1 L262.9,182.4 L277.6,182.3" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="336.4" cy="176.6" r="4" style="fill:var(--chart-4,#D55E00)"/>
+<circle cx="439.2" cy="174.8" r="4" style="fill:var(--chart-4,#D55E00)"/>
+<path d="M527.3,170.4 L542.0,169.7" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="542.0" cy="169.7" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
+<text x="550.0" y="174.7" fill="#1a1a1a" font-weight="600">19,737명 전기·전자</text>
+<path d="M72.0,221.5 L86.7,223.2" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="130.8" cy="221.9" r="4" style="fill:var(--chart-5,#CC79A7)"/>
+<path d="M160.1,241.0 L174.8,240.5" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M218.9,240.8 L233.6,240.4 L248.2,240.2 L262.9,241.7 L277.6,240.8" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="336.4" cy="237.4" r="4" style="fill:var(--chart-5,#CC79A7)"/>
+<circle cx="439.2" cy="237.0" r="4" style="fill:var(--chart-5,#CC79A7)"/>
+<path d="M527.3,235.9 L542.0,235.8" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="542.0" cy="235.8" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
+<text x="550.0" y="240.8" fill="#1a1a1a" font-weight="600">9,404명 소프트웨어·IT</text>
 <text x="72" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

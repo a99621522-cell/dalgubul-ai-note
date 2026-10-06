@@ -1,17 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="전기·전자 기업 수 추이. 2023-12부터 2026-08까지 14개월. 전기·전자 최근 1,366곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="전기·전자 기업 수 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 전기·전자 최근 1,366곳" style="max-width:360px;height:auto;font-size:14px">
 <title>전기·전자 기업 수 추이</title>
 <line x1="60" x2="292" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">1,250</text>
-<line x1="60" x2="292" y1="177.3" y2="177.3" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="182.3" text-anchor="end" fill="#767676">1,300</text>
-<line x1="60" x2="292" y1="98.7" y2="98.7" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="103.7" text-anchor="end" fill="#767676">1,350</text>
+<line x1="60" x2="292" y1="197.0" y2="197.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="202.0" text-anchor="end" fill="#767676">1,300</text>
+<line x1="60" x2="292" y1="138.0" y2="138.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="143.0" text-anchor="end" fill="#767676">1,350</text>
+<line x1="60" x2="292" y1="79.0" y2="79.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="84.0" text-anchor="end" fill="#767676">1,400</text>
 <line x1="60" x2="292" y1="20.0" y2="20.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="25.0" text-anchor="end" fill="#767676">1,400</text>
-<text x="77.8" y="280" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="184.9" y="280" text-anchor="middle" fill="#767676">2024.12</text>
+<text x="52" y="25.0" text-anchor="end" fill="#767676">1,450</text>
+<text x="74.5" y="280" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="118.0" y="280" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="161.5" y="280" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="205.0" y="280" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="248.5" y="280" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="292.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="292" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,73.5 L77.8,73.5 L95.7,73.5 L113.5,73.5 L131.4,73.5 L149.2,73.5 L167.1,73.5 L184.9,73.5 L202.8,73.5 L220.6,73.5 L238.5,73.5 L256.3,73.5 L274.2,73.5 L292.0,73.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="292.0" cy="73.5" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="300.0" y="78.5" fill="#1a1a1a" font-weight="600">1,366곳</text></svg>
+<path d="M60.0,119.1 L67.2,119.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="89.0" cy="119.1" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M103.5,119.1 L110.8,119.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M132.5,119.1 L139.8,119.1 L147.0,119.1 L154.2,119.1 L161.5,119.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="190.5" cy="119.1" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="241.2" cy="119.1" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M284.8,119.1 L292.0,119.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="292.0" cy="119.1" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="300.0" y="124.1" fill="#1a1a1a" font-weight="600">1,366곳</text></svg>

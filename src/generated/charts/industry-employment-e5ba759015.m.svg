@@ -1,20 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="의료·바이오 고용 인원 추이. 2023-12부터 2026-08까지 14개월. 의료·바이오 최근 5,132명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="의료·바이오 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 의료·바이오 최근 5,132명" style="max-width:360px;height:auto;font-size:14px">
 <title>의료·바이오 고용 인원 추이</title>
 <line x1="60" x2="292" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">4,250</text>
-<line x1="60" x2="292" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="207.0" text-anchor="end" fill="#767676">4,500</text>
-<line x1="60" x2="292" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="153.0" text-anchor="end" fill="#767676">4,750</text>
-<line x1="60" x2="292" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="99.0" text-anchor="end" fill="#767676">5,000</text>
+<line x1="60" x2="292" y1="212.8" y2="212.8" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="217.8" text-anchor="end" fill="#767676">4,500</text>
+<line x1="60" x2="292" y1="169.6" y2="169.6" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="174.6" text-anchor="end" fill="#767676">4,750</text>
+<line x1="60" x2="292" y1="126.4" y2="126.4" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="131.4" text-anchor="end" fill="#767676">5,000</text>
+<line x1="60" x2="292" y1="83.2" y2="83.2" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="88.2" text-anchor="end" fill="#767676">5,250</text>
 <line x1="60" x2="292" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">5,250</text>
-<text x="77.8" y="280" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="184.9" y="280" text-anchor="middle" fill="#767676">2024.12</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">5,500</text>
+<text x="74.5" y="280" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="118.0" y="280" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="161.5" y="280" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="205.0" y="280" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="248.5" y="280" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="292.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="292" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,202.2 L77.8,203.5 L95.7,177.8 L113.5,187.1 L131.4,181.9 L149.2,183.4 L167.1,182.1 L184.9,185.6 L202.8,180.8 L220.6,181.0 L238.5,97.7 L256.3,84.7 L274.2,61.0 L292.0,65.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="292.0" cy="65.5" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="300.0" y="70.5" fill="#1a1a1a" font-weight="600">5,132명</text>
+<path d="M60.0,213.0 L67.2,214.0" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="89.0" cy="193.4" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M103.5,200.9 L110.8,196.7" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M132.5,197.9 L139.8,196.9 L147.0,199.7 L154.2,195.9 L161.5,196.0" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="190.5" cy="129.3" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="241.2" cy="119.0" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M284.8,100.0 L292.0,103.6" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="292.0" cy="103.6" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="300.0" y="108.6" fill="#1a1a1a" font-weight="600">5,132명</text>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

@@ -37,6 +37,22 @@ fmt = lambda v: "—" if v is None else f"{v:,}"  # noqa: E731
 slug = lambda s: hashlib.md5(s.encode("utf-8")).hexdigest()[:10]  # noqa: E731
 
 
+def fill_month_gaps(months: list[str], series: list[tuple[str, list]]) -> tuple[list[str], list[tuple[str, list]], int]:
+    """YYYY-MM 달 목록이 띄엄띄엄이면(국민연금 과거 월 소급처럼) 사이 달을 None 으로 채워
+    x 간격이 달력과 같고 선이 빠진 달에서 끊기게 한다. 다른 형식(연도 등)은 그대로. 반환: (달, 계열, 채운 달 수)."""
+    import re as _re
+    if len(months) < 2 or not all(_re.fullmatch(r"\d{4}-\d{2}", m) for m in months):
+        return months, series, 0
+    idx = lambda m: int(m[:4]) * 12 + int(m[5:7]) - 1  # noqa: E731
+    first, last = idx(months[0]), idx(months[-1])
+    if last - first + 1 == len(months):
+        return months, series, 0
+    full = [f"{i // 12:04d}-{i % 12 + 1:02d}" for i in range(first, last + 1)]
+    pos = {m: i for i, m in enumerate(months)}
+    filled = [(name, [s[pos[m]] if m in pos else None for m in full]) for name, s in series]
+    return full, filled, len(full) - len(months)
+
+
 def month_label(m: str) -> str:
     y, mm = m.split("-")
     return f"{y}.{int(mm)}"
@@ -54,6 +70,8 @@ def nice_ticks(lo: float, hi: float, n: int = 4) -> list[float]:
     while t <= hi + step * 0.001:
         ticks.append(round(t, 6))
         t += step
+    if ticks[-1] < hi:  # 마지막 눈금이 최댓값 아래면 한 칸 더 — 값이 그래프 위로 벗어나지 않게(2026-10-06)
+        ticks.append(round(ticks[-1] + step, 6))
     return ticks
 
 
@@ -72,6 +90,7 @@ def line_chart(title: str, months: list[str], series: list[tuple[str, list]], un
     """series: [(이름, [값 또는 None …])]. 최대 6계열. 계열 1개면 주색, 여럿이면 구분색.
     narrow: 휴대폰 폭(360px) 판 — 글자 크기는 그대로 두고 x 라벨을 줄이며 끝 라벨은 값·이름 두 줄."""
     series = series[:6]
+    months, series, gaps = fill_month_gaps(months, series)   # 빠진 달은 None → 선이 끊기고 x 간격은 달력대로
     multi = len(series) > 1
     two_line = multi and narrow
     W, H = (360, 300) if narrow else (720, 340)
@@ -154,10 +173,11 @@ def line_chart(title: str, months: list[str], series: list[tuple[str, list]], un
                 parts.append(f'<text x="{x(last_i) + 8:.1f}" y="{ly + 5:.1f}" fill="{INK}" font-weight="600">{escape(text)}</text>')
     if note:
         parts.append(f'<text x="{ml if not narrow else 8}" y="{FONT + 2}" fill="{MUTED}">{escape(note)}</text>')
-    desc = f"{title}. {months[0]}부터 {months[-1]}까지 {n}개월. " + "; ".join(
+    desc = f"{title}. {months[0]}부터 {months[-1]}까지 {n}개월" + (f"(자료 없는 달 {gaps}개는 비어 있음)" if gaps else "") + ". " + "; ".join(
         f"{name} 최근 {fmt(next((v for v in reversed(s) if v is not None), None))}{unit}" for name, s in series)
     table = {"title": title, "columns": ["월"] + [name for name, _ in series], "unit": unit,
-             "rows": [[m] + [s[i] for _, s in series] for i, m in enumerate(months)], "note": note}
+             "rows": [[m] + [s[i] for _, s in series] for i, m in enumerate(months) if any(s[i] is not None for _, s in series)],
+             "note": (note + (" · " if note else "") + f"자료 없는 달 {gaps}개는 표·그래프에서 비어 있음") if gaps else note}
     return svg_wrap(W, H, title, desc, "\n".join(parts)), table
 
 

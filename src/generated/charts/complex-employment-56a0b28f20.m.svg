@@ -1,18 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="경자구역 수성의료지구 고용 인원 추이. 2023-12부터 2026-08까지 14개월. 경자구역 수성의료지구 최근 888명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="경자구역 수성의료지구 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 경자구역 수성의료지구 최근 888명" style="max-width:360px;height:auto;font-size:14px">
 <title>경자구역 수성의료지구 고용 인원 추이</title>
 <line x1="60" x2="292" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">750</text>
-<line x1="60" x2="292" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="189.0" text-anchor="end" fill="#767676">1,000</text>
-<line x1="60" x2="292" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="117.0" text-anchor="end" fill="#767676">1,250</text>
+<line x1="60" x2="292" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="207.0" text-anchor="end" fill="#767676">1,000</text>
+<line x1="60" x2="292" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="153.0" text-anchor="end" fill="#767676">1,250</text>
+<line x1="60" x2="292" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="99.0" text-anchor="end" fill="#767676">1,500</text>
 <line x1="60" x2="292" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">1,500</text>
-<text x="77.8" y="280" text-anchor="middle" fill="#767676">2024.1</text>
-<text x="184.9" y="280" text-anchor="middle" fill="#767676">2024.12</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">1,750</text>
+<text x="74.5" y="280" text-anchor="middle" fill="#767676">2024.2</text>
+<text x="118.0" y="280" text-anchor="middle" fill="#767676">2024.8</text>
+<text x="161.5" y="280" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="205.0" y="280" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="248.5" y="280" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="292.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="292" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,36.3 L77.8,156.9 L95.7,116.0 L113.5,169.0 L131.4,164.4 L149.2,174.5 L167.1,171.0 L184.9,171.0 L202.8,197.8 L220.6,197.5 L238.5,178.2 L256.3,194.9 L274.2,211.4 L292.0,216.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="292.0" cy="216.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="300.0" y="221.3" fill="#1a1a1a" font-weight="600">888명</text>
+<path d="M60.0,91.2 L67.2,181.7" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="89.0" cy="151.0" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M103.5,190.8 L110.8,187.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M132.5,194.9 L139.8,192.3 L147.0,192.3 L154.2,212.4 L161.5,212.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="190.5" cy="197.7" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="241.2" cy="210.2" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M284.8,222.5 L292.0,226.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="292.0" cy="226.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="300.0" y="231.2" fill="#1a1a1a" font-weight="600">888명</text>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

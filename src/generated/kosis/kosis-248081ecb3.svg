@@ -2,21 +2,23 @@
 <title>대구 주민등록인구(연말)</title>
 <line x1="72" x2="620" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">2,300,000</text>
-<line x1="72" x2="620" y1="232.0" y2="232.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="237.0" text-anchor="end" fill="#767676">2,350,000</text>
-<line x1="72" x2="620" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="173.0" text-anchor="end" fill="#767676">2,400,000</text>
-<line x1="72" x2="620" y1="104.0" y2="104.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="109.0" text-anchor="end" fill="#767676">2,450,000</text>
+<line x1="72" x2="620" y1="244.8" y2="244.8" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="249.8" text-anchor="end" fill="#767676">2,350,000</text>
+<line x1="72" x2="620" y1="193.6" y2="193.6" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="198.6" text-anchor="end" fill="#767676">2,400,000</text>
+<line x1="72" x2="620" y1="142.4" y2="142.4" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="147.4" text-anchor="end" fill="#767676">2,450,000</text>
+<line x1="72" x2="620" y1="91.2" y2="91.2" stroke="#e0e0e0" stroke-width="1"/>
+<text x="64" y="96.2" text-anchor="end" fill="#767676">2,500,000</text>
 <line x1="72" x2="620" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="64" y="45.0" text-anchor="end" fill="#767676">2,500,000</text>
+<text x="64" y="45.0" text-anchor="end" fill="#767676">2,550,000</text>
 <text x="132.9" y="320" text-anchor="middle" fill="#767676">2017</text>
 <text x="254.7" y="320" text-anchor="middle" fill="#767676">2019</text>
 <text x="376.4" y="320" text-anchor="middle" fill="#767676">2021</text>
 <text x="498.2" y="320" text-anchor="middle" fill="#767676">2023</text>
 <text x="620.0" y="320" text-anchor="middle" fill="#767676">2025</text>
 <line x1="72" x2="620" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,59.8 L132.9,71.7 L193.8,88.9 L254.7,119.3 L315.6,144.5 L376.4,186.7 L437.3,214.5 L498.2,200.1 L559.1,214.6 L620.0,228.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="620.0" cy="228.1" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="628.0" y="233.1" fill="#1a1a1a" font-weight="600">2,353,032명</text>
+<path d="M72.0,107.0 L132.9,116.6 L193.8,130.3 L254.7,154.7 L315.6,174.8 L376.4,208.5 L437.3,230.8 L498.2,219.2 L559.1,230.8 L620.0,241.7" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="620.0" cy="241.7" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="628.0" y="246.7" fill="#1a1a1a" font-weight="600">2,353,032명</text>
 <text x="72" y="16" fill="#767676">KOSIS 행정구역(시군구)별 성별 인구수</text></svg>

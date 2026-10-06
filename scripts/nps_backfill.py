@@ -41,8 +41,16 @@ def snapshots(sess: requests.Session, since: str = "2023") -> list[str]:
 
 def ids_from_snapshot(sess: requests.Session, ts: str) -> dict:
     """스냅샷 HTML 에서 uddi·atchFileId·자료 이름 날짜를 뽑는다."""
-    r = sess.get(WB.format(ts=ts), headers=UA, timeout=90)
-    if r.status_code != 200:
+    r = None
+    for i, wait in enumerate((0, 20, 45, 90)):   # 웨이백은 429(요청 제한)를 자주 돌려준다 — 기다렸다 다시
+        if wait:
+            time.sleep(wait)
+        r = sess.get(WB.format(ts=ts), headers=UA, timeout=90)
+        if r.status_code == 200:
+            break
+        if r.status_code not in (429, 503):
+            return {"ts": ts, "error": f"HTTP {r.status_code}"}
+    if r is None or r.status_code != 200:
         return {"ts": ts, "error": f"HTTP {r.status_code}"}
     html = r.text
     uddis = list(dict.fromkeys(re.findall(r"uddi:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", html)))
@@ -109,7 +117,7 @@ def main(argv: list[str]) -> int:
         print(f"  {ts}: {info}")
         if info.get("uddi") and info["uddi"] not in cands:
             cands[info["uddi"]] = info
-        time.sleep(1)
+        time.sleep(6)
     for reg, (uddi, atch) in KNOWN.items():
         cands.setdefault(uddi, {"ts": "", "uddi": uddi, "atch": [atch], "reg": reg})
     print(f"후보 판 {len(cands)}개")

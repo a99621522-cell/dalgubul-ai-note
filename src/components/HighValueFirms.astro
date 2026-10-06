@@ -1,0 +1,48 @@
+---
+/** 대구 고부가 3부문 기업 현황(운영자 지시 2026-10-06) — src/lib/highvalue.ts. 기업 사전(업종 코드 있는 기업) + DART 대구 본사 공시 회사. 값 그대로, 평가·순위 없음. */
+import { highValueFirms, DISTRICTS } from '../lib/highvalue';
+const H = highValueFirms();
+const n = (v: number) => v.toLocaleString('ko-KR');
+/** 규모 띠(팩토리온 1~9·10~49·50~99·100~299·300명 이상, 국민연금 자료는 50~299 한 띠) → 표 열 4개 + 미상 */
+const sizeBands = ['1~9명', '10~49명', '50~299명', '300명 이상', '미상'];
+const bandOf = (k: string) => { const t = k.replace(/\s|,/g, ''); if (t === '1~9명') return '1~9명'; if (t === '10~49명') return '10~49명'; if (/^(50~99|100~299|50~299)명$/.test(t)) return '50~299명'; if (/^300/.test(t)) return '300명 이상'; return '미상'; };
+const sizeOf = (s: Record<string, number>, b: string) => Object.entries(s).filter(([k]) => bandOf(k) === b).reduce((a, [, v]) => a + v, 0);
+const totalFirms = H.sectors.reduce((a, s) => a + s.firms, 0);
+const totalDart = H.sectors.reduce((a, s) => a + s.dart.length, 0);
+---
+<section class="hv" id="highvalue">
+  <div class="section-head"><h2>대구 소재 고부가 3부문 기업 현황</h2><span class="meta">기업 사전 {H.asOf} · DART {H.dartAsOf}</span></div>
+  <p class="meta">고부가 3부문은 <a href="/growth/">성장 계산기</a>·산업구조지수 리포트와 같은 정의(한국은행 자료: OECD 분류를 지역소득 부문에 맞춤)입니다 — 전기·전자·정밀기기(표준산업분류 26·27·28), 정보통신(58~63), 금융·보험(64~66). 기업 사전 {n(H.totalAll)}곳 중 업종 코드가 있는 {n(H.totalCoded)}곳을 코드로 가려 센 것이라, 공장등록이 없는 정보통신·금융 기업(사무실 기업)은 국민연금·수성알파시티 자료로 들어온 곳만 잡힙니다. 종사자는 팩토리온·국민연금 값이 있는 기업만 더한 것입니다. 상장·공시 회사는 DART 기업개황의 업종 코드 기준입니다.</p>
+  <ul class="tiles" aria-label="고부가 3부문 핵심 숫자">
+    {H.sectors.map(s => <li><b>{n(s.firms)}</b><span>{s.name} 기업(곳)</span></li>)}
+    <li><b>{n(totalDart)}</b><span>세 부문 상장·공시 회사(곳)</span></li>
+  </ul>
+  <h3>부문별 기업 수·종사자·규모</h3>
+  <div class="scroll-x"><table class="data-table" data-title="대구 고부가 3부문 기업 수·종사자·규모">
+    <thead><tr><th rowspan="2">부문</th><th rowspan="2" class="n">기업(곳)</th><th rowspan="2" class="n">종사자(명)</th><th rowspan="2" class="n">종사자 있는 기업(곳)</th><th colspan="5" class="c">규모별 기업(곳)</th><th rowspan="2" class="n">상장·공시(곳)</th></tr>
+      <tr>{sizeBands.map(b => <th class="n">{b}</th>)}</tr></thead>
+    <tbody>{H.sectors.map(s => <tr><th scope="row">{s.name}</th><td class="n">{n(s.firms)}</td><td class="n">{n(s.workers)}</td><td class="n">{n(s.workersKnown)}</td>{sizeBands.map(b => <td class="n">{n(sizeOf(s.bySize, b))}</td>)}<td class="n">{n(s.dart.length)}</td></tr>)}
+      <tr><th scope="row">합계</th><td class="n">{n(totalFirms)}</td><td class="n">{n(H.sectors.reduce((a, s) => a + s.workers, 0))}</td><td class="n">{n(H.sectors.reduce((a, s) => a + s.workersKnown, 0))}</td>{sizeBands.map(b => <td class="n">{n(H.sectors.reduce((a, s) => a + sizeOf(s.bySize, b), 0))}</td>)}<td class="n">{n(totalDart)}</td></tr></tbody>
+  </table></div>
+  <p class="meta">기업 사전에서 보기: {H.sectors.map((s, i) => <>{i ? ' · ' : ''}<a href={`/companies/?ksic=${s.codes.join(',')}`}>{s.name} {n(s.firms)}곳</a></>)}</p>
+  <h3>업종(중분류)별 기업 수</h3>
+  <div class="scroll-x"><table class="data-table compact" data-title="대구 고부가 3부문 업종(중분류)별 기업 수">
+    <thead><tr><th>부문</th><th>중분류</th><th class="n">기업(곳)</th><th class="n">종사자(명)</th></tr></thead>
+    <tbody>{H.sectors.flatMap(s => s.byCode.map(c => <tr><td>{s.name}</td><td>{c.code} {c.name}</td><td class="n">{n(c.firms)}</td><td class="n">{n(c.workers)}</td></tr>))}</tbody>
+  </table></div>
+  <h3>구·군별 기업 수</h3>
+  <div class="scroll-x"><table class="data-table compact" data-title="대구 고부가 3부문 구·군별 기업 수">
+    <thead><tr><th>구·군</th>{H.sectors.map(s => <th class="n">{s.name}(곳)</th>)}<th class="n">합계(곳)</th></tr></thead>
+    <tbody>{DISTRICTS.map(d => <tr><th scope="row">{d}</th>{H.sectors.map(s => <td class="n">{n(s.byDistrict[d]?.firms ?? 0)}</td>)}<td class="n">{n(H.sectors.reduce((a, s) => a + (s.byDistrict[d]?.firms ?? 0), 0))}</td></tr>)}</tbody>
+  </table></div>
+  <h3>세 부문의 상장·공시 회사(DART 대구 본사, 가나다순)</h3>
+  <div class="scroll-x"><table class="data-table compact" data-title="대구 고부가 3부문 상장·공시 회사">
+    <thead><tr><th>부문</th><th>회사</th><th>구분</th><th>구·군</th><th>업종 코드</th></tr></thead>
+    <tbody>{H.sectors.flatMap(s => s.dart.map(c => <tr><td>{s.name}</td><td><a href={`/listed/${c.code}/`}>{c.name}</a></td><td>{c.cls}</td><td>{c.district}</td><td class="nw">{c.ksic}</td></tr>))}</tbody>
+  </table></div>
+  <p class="meta">출처: 한국산업단지공단 팩토리온 입주업체현황·국민연금 가입 사업장·수성알파시티 기업현황(기업 사전), 금융감독원 전자공시 기업개황. 가나다순이며 순위·평가가 아닙니다. 종사자 합계는 자료가 있는 기업만의 합이라 부문 전체 고용이 아닙니다.</p>
+</section>
+<style>
+  .hv { margin-top: var(--s5); }
+  .hv h3 { margin: var(--s3) 0 var(--s1); font-size: 1.05rem; }
+</style>

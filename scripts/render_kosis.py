@@ -46,7 +46,7 @@ def ym(p: str) -> str:
 
 def src(key: str) -> str:
     m = meta(key)
-    return f"KOSIS {m.get('tbl_nm') or m.get('name', '')}, 조회 {m.get('fetched', '')}"
+    return f"KOSIS {m.get('tbl_nm') or m.get('name', '')}"   # 받은 날짜는 적지 않는다(운영자 지시 2026-10-06: '코시스에서 받은 날짜는 필요 없다') — 기준 시점은 표 제목·열에
 
 
 def short(key: str) -> str:
@@ -214,7 +214,7 @@ def main() -> int:
             return out
         tables.append({"id": "gu_population", "title": f"대구 구·군별 주민등록인구 (연말 {y1}년" + (f", 최근 {mlabel}" if mlatest else "") + ")", "unit": "명",
                        "columns": cols, "rows": [_row(g, d) for g, d in gu_pop.items()],
-                       "source": src("population-sido") + (f"; {src('population-sigungu-monthly')}" if mlatest else ""), "latest": mlabel or y1,
+                       "source": src("population-sido") + (f"; {src('population-sigungu-monthly')}" if mlatest and src("population-sigungu-monthly") != src("population-sido") else " (연간·월간)"), "latest": mlabel or y1,
                        "note": "연도 칸은 그해 12월 말 주민등록인구, " + (f"최근 월 칸은 {mlabel} 말. " if mlatest else "최근 월 값은 월간 표를 받은 뒤 붙는다. ") + "군위군은 2023년 7월 대구 편입(그 전 값은 경북 소속 때 값이 없을 수 있음)"})
 
     # 7) 대구 GRDP 경제활동별 — 실질 성장률·실질 기여도(최근 연도)

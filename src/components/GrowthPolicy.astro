@@ -38,10 +38,11 @@ const ITEMS: Item[] = [
   { id: 'medtech', no: '04', task: '국가대표 창업도시 — 의료(첨복단지)', lever: '의료기기·정밀기기 매출 증가', kind: 'plant', ramp: 'now', leaves: ['전기 전자 및 정밀기기 제조업'], unit: '늘어난 연 매출(억 원)', ratio: P.vaRatio.med, ratioNote: '의료·정밀·광학기기', ex: 1000, hx: 3000, metric: '의료기기 생산액(식약처, 통계 › 제조업), 첨복단지 입주 기업' },
   { id: 'fin', no: '13', task: '기업은행 본점 등 공공기관 이전', lever: '금융·보험 부문 성장', kind: 'grow', ramp: 'now', leaves: ['금융 및 보험업'], unit: '추세보다 더(%p)', ex: 2, hx: 3, metric: '금융·보험 부가가치, 예금은행 대구 수신·여신(ECOS)' },
   { id: 'textile', no: '12', task: '서대구 — 염색산단 첨단복합산단화', lever: '섬유·의복·가죽 감소 멈춤', kind: 'stop', ramp: 'now', leaves: ['섬유 의복 및 가죽 제품 제조업'], ex: 1, metric: '섬유 그룹 기업 수·고용(기업 사전), 섬유 부가가치' },
-  { id: 'tour', no: '07', task: '국립 문화시설 유치 등 문화·관광', lever: '외지인 관광객 증가', kind: 'people', ramp: 'now', alloc: 'tour', unit: '방문 증가(만 명, 연인원)', mult: 10000, per: P.tour ? Math.round(P.tour.perWon / 100) * 100 : null, perUnit: '원', perNote: P.tour ? `${P.tour.year}년 외지인 관광소비 ÷ 방문자(데이터랩)` : '', ex: 500, metric: '외지인 방문자·관광소비(데이터랩, 통계 › 서비스업)' },
+  { id: 'tour', no: '07', task: '문화·관광 — 관광객 유치(국립 문화시설 유치 등)', lever: '외지인 관광객 증가', kind: 'people', ramp: 'now', alloc: 'tour', unit: '방문 증가(만 명, 연인원)', mult: 10000, per: P.tour ? Math.round(P.tour.perWon / 100) * 100 : null, perUnit: '원', perNote: P.tour ? `${P.tour.year}년 외지인 관광소비 ÷ 방문자(데이터랩)` : '', ex: 500, metric: '외지인 방문자·관광소비(데이터랩, 통계 › 서비스업)' },
   { id: 'patient', no: '15', task: '필수의료 영남권 거점', lever: '다른 지역 환자 증가', kind: 'people', ramp: 'now', leaves: ['보건업 및 사회복지 서비스업'], unit: '환자 증가(명)', mult: 1, per: P.med ? Math.round(P.med.perWon / 10000) * 10000 : null, perUnit: '원', perNote: P.med ? `${P.med.year}년 다른 지역 환자 1인 건강보험 진료비` : '', ex: 20000, metric: '다른 지역 환자 진료비(지역별 의료이용통계)' },
   { id: 'build', no: '08·11', task: 'TK 신공항·도심 공간 대개조', lever: '건설 투자 지출', kind: 'spend', ramp: 'now', leaves: ['건설업'], unit: '한 해 건설 지출(억 원)', ex: 5000, note: '공사 기간 동안만', metric: '건설수주(통계 › 경기 동향)' },
   { id: 'mice', no: '제안', task: '(과제 밖) MICE 국제회의', lever: '국제회의 참가자 체류', kind: 'people', ramp: 'now', alloc: 'tour', unit: '참가자×체류일(명)', mult: 1, per: P.tour ? Math.round(P.tour.perWon / 100) * 100 : null, perUnit: '원', perNote: '기본값은 일반 외지인 1회 관광소비 — 참가자 지출은 조사 항목', metric: '국제회의 건수·참가자(국제회의현황조사)' },
+  { id: 'ftour', no: '제안', task: '(과제 밖) 외국인 관광객 유치', lever: '외국인 관광객 증가', kind: 'people', ramp: 'now', alloc: 'tour', unit: '방문 증가(만 명, 연인원)', mult: 10000, per: 0, perUnit: '원', perNote: '외국인 1인 지출 자료 없음 — 직접 입력(한국관광공사 외래관광객조사 1인 평균 지출은 조사 항목; 비워 두면 0)', metric: '외국인 방문자(데이터랩·관광빅데이터), 외래관광객조사' },
   { id: 'fpatient', no: '제안', task: '(과제 밖) 외국인 환자 유치', lever: '외국인 환자 증가', kind: 'people', ramp: 'now', leaves: ['보건업 및 사회복지 서비스업'], unit: '환자 증가(명)', mult: 1, per: 0, perUnit: '원', perNote: '1인 진료비 자료 없음 — 직접 입력(한국보건산업진흥원 조사 항목)', metric: '외국인 환자 유치실적(보건산업진흥원)' },
   { id: 'student', no: '제안', task: '(과제 밖) 외국 유학생 유치', lever: '유학생 증가', kind: 'people', ramp: 'now', leaves: ['교육 서비스업'], unit: '유학생 증가(명)', mult: 1, per: 0, perUnit: '원', perNote: '1인 연 지출 자료 없음 — 직접 입력(등록금·생활비)', metric: '외국인 유학생 수(외국인주민 현황)' },
 ];
@@ -81,12 +82,15 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
     <button type="button" class="btn secondary" data-fill="ex">모든 과제 예시</button>
     <button type="button" class="btn secondary" data-fill="zero">모두 0으로</button>
     <span class="gp-sep"></span>
-    <button type="button" class="btn secondary" data-scn="saveA">A로 저장</button>
-    <button type="button" class="btn secondary" data-scn="saveB">B로 저장</button>
+    <button type="button" class="btn secondary" data-scn="saveA" title="지금 넣은 값 묶음을 이 브라우저에 'A' 이름으로 기억">지금 값을 A로 기억</button>
+    <button type="button" class="btn secondary" data-scn="saveB" title="지금 넣은 값 묶음을 이 브라우저에 'B' 이름으로 기억">지금 값을 B로 기억</button>
+    <button type="button" class="btn secondary" data-scn="loadA" title="A 로 기억해 둔 값을 다시 불러옴">A 불러오기</button>
+    <button type="button" class="btn secondary" data-scn="loadB" title="B 로 기억해 둔 값을 다시 불러옴">B 불러오기</button>
     <button type="button" class="btn secondary" data-scn="link">링크 복사</button>
     <button type="button" class="btn secondary" data-scn="pdf">한 쪽 요약 PDF</button>
     <span class="tiny muted" data-o="scnmsg"></span>
   </div>
+  <p class="tiny muted">A·B 는 '입력값 묶음 두 개를 이 브라우저에 기억해 두는 자리'입니다. 쓰는 법: ① 과제 몇 개에 값을 넣고 「지금 값을 A로 기억」 ② 다른 조합을 넣고 「B로 기억」 ③ 아래 '시나리오 비교' 표에서 추세·A·B·지금 입력값의 성장률·고용·구조 지표를 나란히 봅니다. 「링크 복사」는 지금 입력값이 든 주소를 복사해 다른 사람에게 보낼 때 씁니다. 서버에 저장되지 않습니다.</p>
 
   <div class="gp-list">{ITEMS.map(i => (
     <div class="gp-item" data-id={i.id}>
@@ -294,7 +298,8 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
     const msg = (t: string) => { const m = o('scnmsg'); if (m) { m.textContent = t; setTimeout(() => { if (m.textContent === t) m.textContent = ''; }, 4000); } };
     document.querySelectorAll<HTMLButtonElement>('#gp [data-scn]').forEach(bt => bt.addEventListener('click', async () => {
       const a = bt.dataset.scn;
-      if (a === 'saveA' || a === 'saveB') { const s = load(); s[a.slice(-1)] = read(); try { localStorage.setItem(KEY, JSON.stringify(s)); msg(`${a.slice(-1)}로 저장했습니다`); } catch { msg('저장할 수 없습니다'); } calc(); }
+      if (a === 'saveA' || a === 'saveB') { const s = load(); s[a.slice(-1)] = read(); try { localStorage.setItem(KEY, JSON.stringify(s)); msg(`지금 값을 ${a.slice(-1)} 로 기억했습니다`); } catch { msg('저장할 수 없습니다'); } calc(); }
+      if (a === 'loadA' || a === 'loadB') { const s = load(); const st = s[a.slice(-1)]; if (!st) { msg(`${a.slice(-1)} 로 기억해 둔 값이 없습니다`); } else { write(st); msg(`${a.slice(-1)} 를 불러왔습니다`); calc(); } }
       if (a === 'link') { const u = new URL(location.href); u.hash = 'gp=' + encodeURIComponent(JSON.stringify(read())); try { await navigator.clipboard.writeText(u.toString()); msg('링크를 복사했습니다'); } catch { history.replaceState(null, '', u.toString()); msg('주소창의 링크를 복사하세요'); } }
       if (a === 'pdf') { try { await pdf(); } catch (e) { msg('PDF 를 만들지 못했습니다'); console.error(e); } }
     }));

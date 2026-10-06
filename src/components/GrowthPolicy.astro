@@ -30,7 +30,7 @@ const ITEMS: Item[] = [
   { id: 'student', no: '제안', task: '(과제 밖) 외국 유학생 유치', lever: '유학생 증가', kind: 'people', leaves: ['교육 서비스업'], unit: '유학생 증가(명)', mult: 1, per: 0, perUnit: '원', perNote: '1인 연 지출 자료 없음 — 직접 입력(등록금·생활비)' },
 ];
 const leafName = Object.fromEntries(LEAVES);
-const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S.hhiAvg, highNat: S.highNat, scih: S.scih, scihAvg: S.scihAvg, panel: P.panel, tourMix: P.tourMix,
+const data = S && S.k != null ? { semiRatio: P.vaRatio.semi, k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S.hhiAvg, highNat: S.highNat, scih: S.scih, scihAvg: S.scihAvg, panel: P.panel, tourMix: P.tourMix,
   rows: S.rows.map(r => ({ key: r.key, name: r.name, share: r.share, g: r.g, high: r.high, va: r.va })),
   items: ITEMS.map(i => ({ id: i.id, kind: i.kind, leaves: i.leaves ?? [], alloc: i.alloc ?? '', mult: i.mult ?? 1, ratio: i.ratio ?? null, ex: i.ex ?? 0, hx: i.hx ?? 0, per: i.per ?? 0 })) } : null;
 ---
@@ -47,10 +47,7 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
       <div><span class="tl">고부가 변화속도(한 해)</span><b data-o="sc">—</b><span class="tiny muted" data-o="sc2"></span></div>
       <div><span class="tl">고부가 집중도(다음 해)</span><b data-o="hq">—</b><span class="tiny muted" data-o="hq2"></span></div>
     </div>
-    <div class="scroll-x"><table class="compact gp-th" aria-label="고부가 부문이 산업집중도를 끌어올리는 문턱">
-      <thead><tr><th>고부가 부문</th><th class="n">지금 비중</th><th class="n">다음 해(입력대로)</th><th class="n">문턱</th><th class="n">문턱까지 더 필요한 부가가치</th></tr></thead>
-      <tbody data-o="thr"></tbody>
-    </table></div>
+    <div class="gp-th"><div class="tl">고부가 부문이 산업집중도를 끌어올리는 문턱(비중이 산업집중도 ÷ 100보다 커야 함)</div><ul data-o="thr"></ul></div>
     <p class="gp-rep" data-o="rep"></p>
   </div>
 
@@ -90,7 +87,7 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
   type I = { id: string; kind: string; leaves: string[]; alloc: string; mult: number; ratio: number | null; ex: number; hx: number; per: number };
   const el = document.getElementById('gp-data');
   if (el) {
-    const D = JSON.parse(el.textContent || '{}') as { k: number; gva: number; base: number; hhiAvg: number | null; highNat: number | null; scih: number | null; scihAvg: number | null;
+    const D = JSON.parse(el.textContent || '{}') as { semiRatio: number | null; k: number; gva: number; base: number; hhiAvg: number | null; highNat: number | null; scih: number | null; scihAvg: number | null;
       panel: { grdp?: number | null; prod?: number | null; exp?: number | null }; tourMix: Record<string, number>; rows: R[]; items: I[] };
     const fmt = (v: number, d = 1) => v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
     const sg = (v: number, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
@@ -150,8 +147,9 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
       o('thr')!.innerHTML = D.rows.filter(r => r.high).map(r => {
         const s0 = now.get(r.key)!, s1 = A.nx.get(r.key)!;
         const need = Math.max(0, (t / 100 * G - r.va) / (1 - t / 100));
-        const st = s1 > t ? '<span class="gp-ok">집중도를 올리는 쪽</span>' : `${Math.round(need).toLocaleString('ko-KR')}억 원(지금 부가가치의 ${fmt(need / r.va, 1)}배)`;
-        return `<tr><th scope="row">${r.name}</th><td class="n">${fmt(s0)}%</td><td class="n">${fmt(s1)}%</td><td class="n">${fmt(t)}%</td><td class="n">${st}</td></tr>`;
+        const eq = r.key.startsWith('전기 전자') && D.semiRatio ? ` · 전자부품 공장 연 매출로 약 ${fmt(need / D.semiRatio / 10000, 1)}조 원` : '';
+        const st = s1 > t ? '<span class="gp-ok">집중도를 올리는 쪽</span>' : `${Math.round(need).toLocaleString('ko-KR')}억 원(지금 부가가치의 ${fmt(need / r.va, 1)}배${eq})`;
+        return `<li><b>${r.name}</b> 비중 ${fmt(s0)}% → 다음 해 ${fmt(s1)}% (문턱 ${fmt(t)}%) — ${s1 > t ? st : `문턱까지 부가가치 ${st} 더`}</li>`;
       }).join('');
       const dl = Math.log(A.hhi / T.hhi) * 100;
       const P = D.panel;
@@ -159,7 +157,7 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
       const dq = A.hq - T.hq;
       if (dq > 0.5) parts.push(A.hhi > T.hhi
         ? `고부가 부문을 축으로 산업집중도가 오르는 조합입니다(고부가 집중도 ${Math.round(T.hq)} → ${Math.round(A.hq)}, 산업집중도 ${Math.round(T.hhi)} → ${Math.round(A.hhi)}) — 리포트 시사점의 '고부가 부문 중심 집적'과 같은 방향입니다.`
-        : `고부가 비중은 오르지만(고부가 집중도 ${Math.round(T.hq)} → ${Math.round(A.hq)}) 전체 산업집중도는 ${Math.round(T.hhi)} → ${Math.round(A.hhi)}로 내려갑니다. 고부가 부문이 아직 작아서(문턱 ${fmt(A.hhi / 100)}% 아래) 키울수록 분산되는 단계입니다 — 아래 표의 문턱을 넘는 부문이 생겨야 고부가 중심으로 집중도가 오릅니다.`);
+        : `고부가 비중은 오르지만(고부가 집중도 ${Math.round(T.hq)} → ${Math.round(A.hq)}) 전체 산업집중도는 ${Math.round(T.hhi)} → ${Math.round(A.hhi)}로 내려갑니다. 고부가 부문이 아직 작아서(문턱 ${fmt(A.hhi / 100)}% 아래) 키울수록 분산되는 단계입니다 — 위 문턱을 넘는 고부가 부문이 생겨야 고부가 중심으로 집중도가 오릅니다.`);
       if (Math.abs(dl) >= 0.01 && P.grdp != null) parts.push(`산업집중도가 추세보다 ${sg(dl, 2)}% 달라집니다. 리포트 패널 추정으로는 집중도 1% 상승이 실질 GRDP ${fmt(P.grdp, 2)}%p${P.prod != null ? `·노동생산성 ${fmt(P.prod, 2)}%p` : ''}${P.exp != null ? `·수출 ${fmt(P.exp, 2)}%p` : ''} 높은 성장과 함께 나타났으므로, 이만큼의 집중도 변화는 성장률 ${sg(P.grdp * dl)}%p${P.exp != null ? `, 수출 증가율 ${sg(P.exp * dl)}%p` : ''}와 함께 움직인 크기입니다(연관, 위 성장률에 더하지 않음).`);
       if (D.scihAvg != null && A.sci > T.sci + 0.00005) parts.push(`고부가 변화속도 ${A.sci.toFixed(4)}는 17개 시도 평균(${D.scihAvg.toFixed(4)})${A.sci.toFixed(4) === D.scihAvg.toFixed(4) ? '과 같은 수준입니다' : A.sci > D.scihAvg ? '을 넘습니다' : '에 못 미칩니다'} — 리포트에서 고부가 변화속도가 빠른 지역은 성장률이 대체로 높았습니다(상관계수 0.43).`);
       if (A.high > T.high + 0.005) parts.push(`고부가 3부문 비중은 추세보다 ${fmt(A.high - T.high, 2)}%p 높아집니다.`);
@@ -190,7 +188,9 @@ const data = S && S.k != null ? { k: S.k, gva: S.gvaEok, base: S.base, hhiAvg: S
   .gp-tiles .tl { font-size: var(--tiny); color: var(--muted); }
   .gp-tiles b { font-size: 1.1rem; font-variant-numeric: tabular-nums; }
   .gp-rep { margin: 8px 0 0; font-size: var(--small); }
-  .gp-th { margin-top: 8px; font-size: var(--small); min-width: 520px; }
+  .gp-th { margin-top: 8px; font-size: var(--small); border-top: 1px solid var(--line); padding-top: 6px; }
+  .gp-th .tl { font-size: var(--tiny); color: var(--muted); }
+  .gp-th ul { margin: 4px 0 0; padding-left: 1.1em; }
   .gp-th :global(.gp-ok) { color: var(--primary); font-weight: 700; }
   .gp-btns { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 var(--s2); }
   .gp-btns .btn { min-height: 36px; font-size: var(--small); }

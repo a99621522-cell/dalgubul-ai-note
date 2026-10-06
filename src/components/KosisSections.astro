@@ -12,7 +12,7 @@ for (const [i, s] of shown.entries()) { const k = `after-${s.key ?? i}`; if (Ast
 ---
 {shown.length > 1 && <nav class="toc" aria-label="차례"><ol>{shown.map((s, i) => <li><a href={`#k${i}`}>{s.title}</a></li>)}</ol></nav>}
 {shown.map((s, i) => (<>
-  <section id={`k${i}`}>
+  <section id={s.key ?? `k${i}`}>   {/* key 가 있으면 고정 앵커(통계 허브 카드 바로가기가 씀), 없으면 자리 번호 */}
     <div class="section-head"><h2>{s.title}</h2></div>
     <p class="meta">{s.desc}</p>
     {s.charts.map(name => { const c = kosisChart(name); return c && (

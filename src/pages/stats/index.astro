@@ -39,12 +39,15 @@ const count = (key: string) => {
     <div class="section-head"><h2 id="h-topics">주제별 통계</h2></div>
     <div class="cards">
       {TOPICS.map(t => { const n = count(t.key); return (
-        <a class="card" href={t.href}>
-          <span class="cp">{t.period}</span>
-          <strong class="cn">{t.name}</strong>
-          <span class="cd">{t.desc}</span>
-          <span class="cm">{t.key === 'monthly' ? `지표 ${S.length}개` : t.key === 'trade' ? `${tradeMonths.length}개월 비교표` : t.key === 'services' ? `지표 ${svcN}개` : `표 ${n.t}개 · 그래프 ${n.c}개`}</span>
-        </a>); })}
+        <div class="card">
+          <a class="cmain" href={t.href}>
+            <span class="cp">{t.period}</span>
+            <strong class="cn">{t.name}</strong>
+            <span class="cd">{t.desc}</span>
+            <span class="cm">{t.key === 'monthly' ? `지표 ${S.length}개` : t.key === 'trade' ? `${tradeMonths.length}개월 비교표` : t.key === 'services' ? `지표 ${svcN}개` : `표 ${n.t}개 · 그래프 ${n.c}개`}</span>
+          </a>
+          {t.links && t.links.length > 0 && <span class="cl">바로가기 {t.links.map(l => <a href={l.href}>{l.name}</a>)}</span>}
+        </div>); })}
     </div>
   </section>
   <p class="meta more">기업 사전으로 집계한 달별 기업 수·고용 통계표는 <a href="/dashboard/">현황판</a>에 있습니다.</p>
@@ -58,8 +61,11 @@ const count = (key: string) => {
     .ty { font-size: 12px; color: var(--muted); }
     .more { margin-top: var(--s2); }
     .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--s2); }
-    .card { display: flex; flex-direction: column; gap: 6px; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); text-decoration: none; }
+    .card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
     .card:hover { background: var(--surface); border-color: var(--line-strong); }
+    .cmain { display: flex; flex-direction: column; flex: 1; gap: 6px; padding: 16px; color: var(--ink); text-decoration: none; }
+    .cl { display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 8px 16px 12px; border-top: 1px dashed var(--line); font-size: 12px; color: var(--muted); }
+    .cl a { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
     .cp { align-self: flex-start; font-size: 11px; padding: 2px 6px; border: 1px solid var(--line-strong); border-radius: 4px; color: var(--muted); }
     .cn { font-size: 1.15rem; }
     .cd { font-size: var(--small); color: var(--muted); }

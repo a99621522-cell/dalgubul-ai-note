@@ -34,8 +34,9 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
     <select id="sort" aria-label="정렬"><option value="name">가나다순</option><option value="size">종사자 규모 큰 순</option><option value="district">구·군순</option></select>
     </div>
     </details>
-    <span id="count" class="meta">{list.length.toLocaleString('ko-KR')}곳</span>
+    <span id="count" class="meta" aria-live="polite">{list.length.toLocaleString('ko-KR')}곳</span>
   </div>
+  <div id="chips" class="chips" hidden></div>
   <p id="note" class="meta">가나다순 처음 {FIRST}곳입니다. 검색하거나 단지·업종·구·군·입지·태그를 고르면 전체 {list.length.toLocaleString('ko-KR')}곳에서 찾습니다. 산단 외 기업 중 국민연금 자료로 넣은 곳은 종사자 대신 가입자 규모입니다.</p>
   <ul class="co-list" id="list">
     {head.map(c => (
@@ -90,6 +91,7 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
         const meta = [r.d + (r.e ? ` ${r.e}` : ''), r.c, r.s].filter(Boolean).join(' · ') + (r.w ? ` · ${r.w}` : '') + (r.t && r.t !== '산업단지' && r.t !== '개별입지' ? ` · ${r.t}` : '') + (r.p ? ' · 지원 이력' : '');
         li.append(a, el('span', meta, 'co-meta')); frag.append(li);
       }
+      if (from === 0 && !matched.length) { const li = el('li', '조건에 맞는 기업이 없습니다. 검색어를 줄이거나 필터를 지워 보세요.', 'empty'); frag.append(li); }
       if (from === 0) list.replaceChildren(frag); else list.append(frag);
       shown = Math.min(matched.length, from + PAGE);
       more.hidden = shown >= matched.length;
@@ -102,7 +104,26 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
       if (k === 'district') return [...arr].sort((a, b) => a.d.localeCompare(b.d, 'ko') || byName(a, b));
       return [...arr].sort(byName);
     }
+    // 적용된 조건을 칩으로 보여 주고 하나씩 지울 수 있게(디자인·UI 개선 2026-10-06)
+    const chips = document.getElementById('chips');
+    function drawChips() {
+      const items = [];
+      if (q.value.trim()) items.push(['검색 "' + q.value.trim() + '"', () => { q.value = ''; }]);
+      sel.forEach(s => { if (s.value) items.push([s.options[s.selectedIndex].text, () => { s.value = ''; }]); });
+      if (spBox.checked) items.push(['지원 이력 있음', () => { spBox.checked = false; }]);
+      if (sortSel.value !== 'name') items.push(['정렬: ' + sortSel.options[sortSel.selectedIndex].text, () => { sortSel.value = 'name'; }]);
+      if (iz && ZONES[iz]) items.push([ZONES[iz], () => { location.search = ''; }]);
+      chips.replaceChildren();
+      chips.hidden = !items.length;
+      for (const [label, clear] of items) {
+        const b = el('button', label + ' ✕', 'chip-x'); b.type = 'button'; b.setAttribute('aria-label', label + ' 조건 지우기');
+        b.addEventListener('click', () => { clear(); apply(); });
+        chips.append(b);
+      }
+      if (items.length > 1) { const all = el('button', '모두 지우기', 'chip-all'); all.type = 'button'; all.addEventListener('click', () => { q.value = ''; sel.forEach(s => { s.value = ''; }); spBox.checked = false; sortSel.value = 'name'; if (iz) { location.search = ''; return; } apply(); }); chips.append(all); }
+    }
     async function apply() {
+      drawChips();
       const t = q.value.trim().toLowerCase(); const [c, g, e, st, tg] = sel.map(s => s.value); const sp = spBox.checked; const sorted = sortSel.value !== 'name';
       if (!t && !c && !g && !e && !st && !tg && !sp && !sorted && !iz) {            // 조건 없음 → 처음 상태(서버가 그려 둔 60곳)로
         if (rows) { matched = rows; render(0); }
@@ -134,6 +155,10 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
 </Base>
 <style>
   .tools { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1.25rem 0 0.5rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 var(--s2); }
+  .chips :global(.chip-x) { font: inherit; font-size: var(--small); min-height: 36px; padding: 0 12px; border: 1px solid var(--primary); border-radius: 999px; background: var(--surface); color: var(--primary); cursor: pointer; }
+  .chips :global(.chip-all) { font: inherit; font-size: var(--small); min-height: 36px; padding: 0 10px; border: 0; background: none; color: var(--muted); text-decoration: underline; cursor: pointer; }
+  .co-list :global(li.empty) { color: var(--muted); padding: var(--s3) 0; border: 0; }
   .tools input, .tools select { font: inherit; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); max-width: 100%; }
   .tools input[type="search"] { flex: 1 1 14rem; }
   .filters { flex: 1 1 100%; }

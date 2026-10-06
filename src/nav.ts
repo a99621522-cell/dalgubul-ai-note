@@ -11,3 +11,12 @@ export const NAV = [
   { key: 'support', name: '지원 기업', href: '/support/' },
   { key: 'policy', name: '리포트', href: '/policy/' },
 ] as const;
+
+/** 헤더 묶음 4개(디자인·UI 개선 2026-10-06: 1단 메뉴 10개 → 묶음 4개 + 펼침, 모바일은 드로어). current 키가 든 묶음이 열린 표시 */
+export const NAV_GROUPS: { key: string; name: string; items: (typeof NAV)[number]['key'][]; href?: string }[] = [
+  { key: 'data', name: '현황·통계', items: ['dashboard', 'explore', 'industry', 'stats'] },
+  { key: 'firms', name: '기업', items: ['companies', 'listed', 'support'] },
+  { key: 'biz', name: '사업·리포트', items: ['programs', 'policy'] },
+  { key: 'growth', name: '성장 계산기', items: ['growth'], href: '/growth/' },
+];
+export const navItem = (key: string) => NAV.find(n => n.key === key)!;

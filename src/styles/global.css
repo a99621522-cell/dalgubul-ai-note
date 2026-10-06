@@ -27,25 +27,51 @@ button, input, select { font: inherit; }
 .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .scroll-x table { min-width: 100%; }
 
-/* ---------- 헤더·메뉴 ---------- */
-.site-head { border-bottom: 1px solid var(--line); background: var(--bg); }
-.site-head .row { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s4); padding-top: var(--s1); }
-.brand { display: inline-flex; align-items: baseline; gap: var(--s1); min-height: var(--touch); padding: var(--s1) 0; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+/* ---------- 헤더·메뉴(묶음 4개 + 펼침, 모바일 드로어 — 디자인·UI 개선 2026-10-06) ---------- */
+.site-head { border-bottom: 1px solid var(--line); background: var(--bg); position: relative; z-index: 20; }
+.site-head .row { display: flex; align-items: center; gap: 0 var(--s2); min-height: 56px; }
+.brand { display: inline-flex; align-items: baseline; gap: var(--s1); min-height: var(--touch); padding: var(--s1) 0; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; margin-right: auto; }
 .brand .tagline { display: none; font-size: var(--small); font-weight: 400; color: var(--muted); }
-@media (min-width: 900px) { .brand .tagline { display: inline; } }
-/* 메뉴: 좁은 화면에서는 가로로 밀어 보고, 오른쪽 끝을 흐리게 해 더 있음을 알린다 */
-.nav { display: flex; flex-wrap: wrap; gap: 2px; margin: 0 calc(-1 * var(--s2)); padding: 0 var(--s1); }   /* 좁은 화면은 두 줄로 — 옆으로 밀어 숨기면 '정책·글'이 있는 줄 모른다 */
-.nav a { display: inline-flex; align-items: center; min-height: var(--touch); padding: 0 12px; white-space: nowrap; color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent; border-radius: var(--radius) var(--radius) 0 0; }
-.nav a[aria-current="page"] { border-bottom-color: var(--primary); color: var(--primary); font-weight: 700; }
-.nav a:hover { background: var(--surface); }
-@media (min-width: 720px) { .site-head .row { padding-top: 0; min-height: 60px; } .nav { flex-wrap: nowrap; margin: 0; padding: 0; margin-left: auto; } }
+@media (min-width: 1024px) { .brand .tagline { display: inline; } }
+.nav { display: none; align-items: center; gap: 2px; }
+@media (min-width: 768px) { .nav { display: flex; } .nav-toggle { display: none; } }
+.nav .ng { position: relative; }
+.nav .ng-btn, .nav .ng-link { display: inline-flex; align-items: center; gap: 4px; min-height: var(--touch); padding: 0 12px; font: inherit; font-weight: 500; color: var(--ink); background: none; border: 0; border-bottom: 3px solid transparent; border-radius: var(--radius) var(--radius) 0 0; text-decoration: none; white-space: nowrap; cursor: pointer; }
+.nav .ng-btn:hover, .nav .ng-link:hover, .nav .ng-btn[aria-expanded="true"] { background: var(--surface); }
+.nav .ng-btn[aria-current="true"], .nav .ng-link[aria-current="page"] { border-bottom-color: var(--primary); color: var(--primary); font-weight: 700; }
+.nav .ng-btn svg { transition: transform var(--dur-1) var(--ease); }
+.nav .ng-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.nav .ng-panel { position: absolute; top: 100%; left: 0; min-width: 200px; padding: 6px; background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--radius); display: flex; flex-direction: column; }
+.nav .ng-panel[hidden] { display: none; }
+.nav .ng-panel a { display: flex; align-items: center; min-height: var(--touch); padding: 0 12px; color: var(--ink); text-decoration: none; border-radius: var(--radius); white-space: nowrap; }
+.nav .ng-panel a:hover { background: var(--surface); }
+.nav .ng-panel a[aria-current="page"] { color: var(--primary); font-weight: 700; background: var(--surface); }
+.nav-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: var(--touch); padding: 0 10px; font: inherit; font-size: var(--small); font-weight: 600; color: var(--ink); background: none; border: 1px solid var(--line-strong); border-radius: var(--radius); cursor: pointer; }
+.nav-toggle[aria-expanded="true"] { background: var(--surface); }
+.drawer { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto; padding: 0 var(--s2) var(--s4); }
+.drawer[hidden] { display: none; }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; min-height: 56px; border-bottom: 1px solid var(--line); font-weight: 800; font-size: 1.25rem; }
+.drawer-close { font: inherit; font-size: 1.1rem; min-width: var(--touch); min-height: var(--touch); background: none; border: 1px solid var(--line-strong); border-radius: var(--radius); cursor: pointer; color: var(--ink); }
+.drawer-g { margin-top: var(--s3); }
+.drawer-g h2 { font-size: var(--small); color: var(--muted); font-weight: 600; margin: 0 0 4px; }
+.drawer-g ul { list-style: none; margin: 0; padding: 0; }
+.drawer-g a { display: flex; align-items: center; min-height: 48px; padding: 0 var(--s1); border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 1.05rem; }
+.drawer-g a[aria-current="page"] { color: var(--primary); font-weight: 700; }
+body.drawer-open { overflow: hidden; }
+@media (min-width: 768px) { .drawer { display: none !important; } }
 
 /* ---------- 본문 공통 ---------- */
 main.wrap { padding-top: var(--s3); padding-bottom: var(--s8); }   /* .wrap 의 padding 이 main 을 덮어써 헤더에 제목이 붙었던 것 */
 @media (min-width: 720px) { main.wrap { padding-top: var(--s4); } }
 .page-head { margin-bottom: var(--s3); }
 .page-head .lede { margin: var(--s1) 0 0; font-size: 1.05rem; }
-.section { margin-top: var(--s6); }
+.section { margin-top: var(--section-gap); }
+/* 상태 안내 상자(시스템 메시지 전용 — 평가 색 아님) */
+.callout { padding: 10px 14px; border-radius: var(--radius); font-size: var(--small); margin: var(--s2) 0; }
+.callout.info { background: var(--status-info-bg); color: var(--status-info-ink); }
+.callout.warn { background: var(--status-warn-bg); color: var(--status-warn-ink); }
+.callout.error { background: var(--status-error-bg); color: var(--status-error-ink); }
+.callout.ok { background: var(--status-ok-bg); color: var(--status-ok-ink); }
 .section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--s1) var(--s2); margin: var(--s6) 0 var(--s2); padding-bottom: var(--s1); border-bottom: 2px solid var(--ink); }
 .section-head h2 { font-size: var(--h2); }
 main > .section-head:first-child, main > :first-child > .section-head:first-child { margin-top: 0; }   /* 페이지 맨 위만. 절마다 첫 자식이라고 위 여백을 없애면 숫자 카드에 제목이 붙는다 */
@@ -87,6 +113,13 @@ main > .section-head:first-child, main > :first-child > .section-head:first-chil
 
 /* ---------- 산업별 표 등 데이터 표 ---------- */
 .data-table th:first-child, .data-table td:first-child { padding-left: 0; }
+.data-table { line-height: var(--lh-table); font-variant-numeric: tabular-nums; }
+.data-table tbody tr:hover { background: var(--surface); }
+.data-table.compact th, .data-table.compact td { padding-top: 6px; padding-bottom: 6px; }
+/* 가로 스크롤 표: 첫 열(회사·항목 이름)을 붙여 두어 숫자를 밀어 봐도 무엇의 값인지 보이게 */
+.scroll-x .data-table th[scope="row"], .scroll-x .data-table thead th:first-child { position: sticky; left: 0; z-index: 1; background: var(--bg); padding-left: 4px; box-shadow: 1px 0 0 var(--line); }
+.scroll-x .data-table thead th { background: var(--surface); }
+.scroll-x .data-table tbody tr:hover th[scope="row"] { background: var(--surface); }
 .data-table a { color: var(--ink); text-decoration: none; font-weight: 600; }
 .data-table a:hover, .data-table a:focus-visible { text-decoration: underline; color: var(--primary); }
 .data-table tr.total td { font-weight: 700; border-top: 2px solid var(--line-strong); }
@@ -306,10 +339,20 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
 .s-list li.empty { color: var(--muted); border-bottom: 0; }
 .s-explore { margin: var(--s4) 0 0; }
 
+/* 첫 화면 진입 타일 3개(기업·통계·사업) — 큰 카운터 대신 */
+.entry { display: grid; grid-template-columns: 1fr; gap: var(--s2); max-width: 960px; margin: var(--s4) auto 0; text-align: left; }
+@media (min-width: 640px) { .entry { grid-template-columns: repeat(3, 1fr); } }
+.entry-tile { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); text-decoration: none; background: var(--bg); transition: background var(--dur-1) var(--ease); }
+.entry-tile:hover, .entry-tile:focus-visible { background: var(--surface); border-color: var(--primary); }
+.entry-tile .et-k { font-weight: 700; color: var(--primary); }
+.entry-tile .et-v { font-size: 1.6rem; font-weight: 800; line-height: 1.15; font-variant-numeric: tabular-nums; color: var(--primary-deep); }
+.entry-tile .et-v small { font-size: var(--small); font-weight: 500; color: var(--muted); margin-left: 2px; }
+.entry-tile .et-s { font-size: var(--tiny); color: var(--muted); }
+
 /* 헤더 검색 아이콘 */
-.nav-search { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch); margin-left: auto; color: var(--ink); border-radius: 50%; }
+.nav-search { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch); color: var(--ink); border-radius: 50%; }
 .nav-search:hover, .nav-search:focus-visible { background: var(--surface); color: var(--primary); }
-@media (min-width: 720px) { .nav-search { margin-left: 4px; } }
+
 
 /* 하위 보기 탭(지원 기업 ↔ 스타기업 명단 등) */
 .sub-tabs { display: flex; flex-wrap: wrap; gap: var(--s1); margin: 0 0 var(--s3); }

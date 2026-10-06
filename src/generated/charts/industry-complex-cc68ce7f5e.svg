@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="기계·금속 산단별 고용 인원. 성서산단 10,130명, 개별입지 5,088명, 산단 외 4,176명, 달성산단 2,901명, 대구제3산단 2,423명, 성서5차산단 2,283명, 달성2차산단 1,690명, 대구국가산단 1,509명, 북구검단산단 1,261명, 대구연구개발특구 1,039명, 그 밖의 단지 2,362명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="기계·금속 산단별 고용 인원. 성서산단 10,130명, 개별입지 5,088명, 산단 외 4,253명, 달성산단 2,901명, 대구제3산단 2,423명, 성서5차산단 2,283명, 달성2차산단 1,690명, 대구국가산단 1,509명, 북구검단산단 1,261명, 대구연구개발특구 1,039명, 그 밖의 단지 2,362명" style="max-width:720px;height:auto;font-size:14px">
 <title>기계·금속 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 2개월</text>
 <text x="110" y="56.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
@@ -8,8 +8,8 @@
 <rect x="120" y="74" width="266.2" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="394.2" y="90.0" fill="#1a1a1a">5,088명</text>
 <text x="110" y="124.0" text-anchor="end" fill="#1a1a1a">산단 외</text>
-<rect x="120" y="108" width="218.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="346.5" y="124.0" fill="#1a1a1a">4,176명</text>
+<rect x="120" y="108" width="222.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="350.5" y="124.0" fill="#1a1a1a">4,253명</text>
 <text x="110" y="158.0" text-anchor="end" fill="#1a1a1a">달성산단</text>
 <rect x="120" y="142" width="151.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="279.8" y="158.0" fill="#1a1a1a">2,901명</text>

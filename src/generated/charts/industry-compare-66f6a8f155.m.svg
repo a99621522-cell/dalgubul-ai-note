@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="주력 산업 기업 수 추이. 2026-07부터 2026-08까지 2개월. 기계·금속 최근 4,318곳; 자동차·부품 최근 977곳; 화학·에너지 최근 828곳; 전기·전자 최근 1,363곳; 소프트웨어·IT 최근 714곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="주력 산업 기업 수 추이. 2026-07부터 2026-08까지 2개월. 기계·금속 최근 4,343곳; 자동차·부품 최근 979곳; 화학·에너지 최근 838곳; 전기·전자 최근 1,371곳; 소프트웨어·IT 최근 747곳" style="max-width:360px;height:auto;font-size:14px">
 <title>주력 산업 기업 수 추이</title>
 <line x1="60" x2="252" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">0</text>
@@ -9,23 +9,23 @@
 <text x="60.0" y="280" text-anchor="middle" fill="#767676">2026.7</text>
 <text x="252.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="60" x2="252" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,1.2 L252.0,1.2" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="252.0" cy="1.2" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="260.0" y="35.0" fill="#1a1a1a" font-weight="600">4,318곳</text>
+<path d="M60.0,-0.2 L252.0,-0.2" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="252.0" cy="-0.2" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="260.0" y="35.0" fill="#1a1a1a" font-weight="600">4,343곳</text>
 <text x="260.0" y="52.0" fill="#1a1a1a">기계·금속</text>
-<path d="M60.0,198.4 L252.0,198.4" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="252.0" cy="198.4" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="260.0" y="169.0" fill="#1a1a1a" font-weight="600">977곳</text>
+<path d="M60.0,198.2 L252.0,198.2" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="252.0" cy="198.2" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="260.0" y="169.0" fill="#1a1a1a" font-weight="600">979곳</text>
 <text x="260.0" y="186.0" fill="#1a1a1a">자동차·부품</text>
-<path d="M60.0,207.1 L252.0,207.1" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="252.0" cy="207.1" r="3.5" style="fill:var(--chart-3,#009E73)"/>
-<text x="260.0" y="203.0" fill="#1a1a1a" font-weight="600">828곳</text>
+<path d="M60.0,206.6 L252.0,206.6" fill="none" stroke="#009E73" style="stroke:var(--chart-3,#009E73)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="252.0" cy="206.6" r="3.5" style="fill:var(--chart-3,#009E73)"/>
+<text x="260.0" y="203.0" fill="#1a1a1a" font-weight="600">838곳</text>
 <text x="260.0" y="220.0" fill="#1a1a1a">화학·에너지</text>
-<path d="M60.0,175.6 L252.0,175.6" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="252.0" cy="175.6" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
-<text x="260.0" y="135.0" fill="#1a1a1a" font-weight="600">1,363곳</text>
+<path d="M60.0,175.1 L252.0,175.1" fill="none" stroke="#D55E00" style="stroke:var(--chart-4,#D55E00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="252.0" cy="175.1" r="3.5" style="fill:var(--chart-4,#D55E00)"/>
+<text x="260.0" y="135.0" fill="#1a1a1a" font-weight="600">1,371곳</text>
 <text x="260.0" y="152.0" fill="#1a1a1a">전기·전자</text>
-<path d="M60.0,213.9 L252.0,213.9" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="252.0" cy="213.9" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
-<text x="260.0" y="237.0" fill="#1a1a1a" font-weight="600">714곳</text>
+<path d="M60.0,211.9 L252.0,211.9" fill="none" stroke="#CC79A7" style="stroke:var(--chart-5,#CC79A7)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="252.0" cy="211.9" r="3.5" style="fill:var(--chart-5,#CC79A7)"/>
+<text x="260.0" y="237.0" fill="#1a1a1a" font-weight="600">747곳</text>
 <text x="260.0" y="254.0" fill="#1a1a1a">소프트웨어·IT</text></svg>

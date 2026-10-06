@@ -1,6 +1,6 @@
 ---
 /** 대구 고부가 3부문 기업 현황(운영자 지시 2026-10-06) — src/lib/highvalue.ts. 기업 사전(업종 코드 있는 기업) + DART 대구 본사 공시 회사. 값 그대로, 평가·순위 없음. */
-import { highValueFirms, DISTRICTS } from '../lib/highvalue';
+import { highValueFirms, DISTRICTS, KSIC2 } from '../lib/highvalue';
 const H = highValueFirms();
 const n = (v: number) => v.toLocaleString('ko-KR');
 /** 규모 띠(팩토리온 1~9·10~49·50~99·100~299·300명 이상, 국민연금 자료는 50~299 한 띠) → 표 열 4개 + 미상 */
@@ -12,7 +12,13 @@ const totalDart = H.sectors.reduce((a, s) => a + s.dart.length, 0);
 ---
 <section class="hv" id="highvalue">
   <div class="section-head"><h2>대구 소재 고부가 3부문 기업 현황</h2><span class="meta">기업 사전 {H.asOf} · DART {H.dartAsOf}</span></div>
-  <p class="meta">고부가 3부문은 <a href="/growth/">성장 계산기</a>·산업구조지수 리포트와 같은 정의(한국은행 자료: OECD 분류를 지역소득 부문에 맞춤)입니다 — 전기·전자·정밀기기(표준산업분류 26·27·28), 정보통신(58~63), 금융·보험(64~66). 기업 사전 {n(H.totalAll)}곳 중 업종 코드가 있는 {n(H.totalCoded)}곳을 코드로 가려 센 것이라, 공장등록이 없는 정보통신·금융 기업(사무실 기업)은 국민연금·수성알파시티 자료로 들어온 곳만 잡힙니다. 종사자는 팩토리온·국민연금 값이 있는 기업만 더한 것입니다. 상장·공시 회사는 DART 기업개황의 업종 코드 기준입니다.</p>
+  <h3>한국은행 자료의 고부가 산업 정의</h3>
+  <p class="meta">한국은행 전북본부 「지역 산업구조 특성이 경제성장에 미치는 영향 — 산업구조지수를 중심으로」(조사연구보고서, 2026-09-08)는 고부가 산업을 <b>OECD 분류(기술집약 제조업·지식집약 서비스업)를 지역소득 경제활동 부문에 맞춰</b> 아래 세 부문으로 정의합니다. 이 표와 <a href="/growth/">성장 계산기</a>·산업구조지수 리포트의 고부가 3부문은 모두 이 정의입니다(OECD 분류의 의약품·항공우주 등은 지역소득 부문에서 따로 떼어낼 수 없어 들어가지 않음).</p>
+  <div class="scroll-x"><table class="data-table compact" data-title="한국은행 자료의 고부가 산업 정의와 대구 기업 수">
+    <thead><tr><th>고부가 부문(지역소득 경제활동 부문)</th><th>포함 산업(한국표준산업분류 중분류)</th><th class="n">대구 기업 사전(곳)</th><th class="n">상장·공시(곳)</th></tr></thead>
+    <tbody>{H.sectors.map(s => <tr><th scope="row">{s.leaf}</th><td class="wrap">{s.codes.map(k => `${k} ${KSIC2[k] ?? ''}`).join(', ')}</td><td class="n">{n(s.firms)}</td><td class="n">{n(s.dart.length)}</td></tr>)}</tbody>
+  </table></div>
+  <p class="meta">대구 기업 수는 기업 사전 {n(H.totalAll)}곳 중 업종 코드가 있는 {n(H.totalCoded)}곳을 코드 앞 2자리로 가려 센 것이라, 공장등록이 없는 정보통신·금융 기업(사무실 기업)은 국민연금·수성알파시티 자료로 들어온 곳만 잡힙니다. 종사자는 팩토리온·국민연금 값이 있는 기업만 더한 것입니다. 상장·공시 회사는 DART 기업개황의 업종 코드 기준입니다.</p>
   <ul class="tiles" aria-label="고부가 3부문 핵심 숫자">
     {H.sectors.map(s => <li><b>{n(s.firms)}</b><span>{s.name} 기업(곳)</span></li>)}
     <li><b>{n(totalDart)}</b><span>세 부문 상장·공시 회사(곳)</span></li>

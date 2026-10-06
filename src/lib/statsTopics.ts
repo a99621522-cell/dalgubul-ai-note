@@ -28,7 +28,7 @@ export const KOSIS_TOPICS: Record<string, KosisSection[]> = {
   business: [
     { title: '산업별 사업체·종사자 (전국사업체조사)', desc: '대구 산업 대·중분류별 사업체 수·종사자 수와 종사자 비중의 전국 대비 입지계수.', tables: ['census_daegu'], charts: ['lq-employment'] },
     { title: '산업별 기업·종사자 (중소기업기본통계)', desc: '산업중분류별 전체 기업·중소기업·소상공인 수와 종사자 수. 행정통계라 개인사업자를 포함합니다.', tables: ['sme_daegu'], charts: [] },
-    { title: '창업기업·소멸기업 (기업생멸행정통계)', desc: '대구 활동기업·신생기업(창업)·소멸기업 수와 신생률·소멸률, 산업별 신생기업. 행정자료 기반 통계로 개인사업자를 포함합니다.', tables: ['biz_birth', 'biz_birth_industry'], charts: ['biz-birth'] },
+    { title: '창업기업·소멸기업 (기업생멸행정통계)', desc: '대구 활동기업·신생기업(창업)·소멸기업 수와 신생률·소멸률, 산업별 신생기업. 행정자료 기반 통계로 개인사업자를 포함합니다.', tables: ['biz_birth', 'biz_birth_industry', 'biz_birth_size'], charts: ['biz-birth'] },
     { title: '수출입 활동기업 (관세청 기업무역활동통계)', desc: '17개 시도 수출입 활동기업 수·교역액, 진입·퇴출 기업, 수출 기여율·기여도와 대구 교역액 추이.', tables: ['export17'], charts: ['export-daegu'] },
   ],
   population: [

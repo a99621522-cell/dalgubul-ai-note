@@ -26,7 +26,11 @@
 | ⑬ | 덧붙인 charPr 의 자식 | 양식 charPr 는 `strikeout shape="3D"` 까지 | fontRef·ratio·spacing·relSz·offset(+bold) | 같음 | 선택 자식이 없는 것은 스키마상 허용 | 하~중 |
 | ⑭ | 표 원형 tbl 의 pos·outMargin | 양식 표마다 다름 | top[64] 복제 | 같은 원형을 JSON 으로 | 없음 | 하 |
 
+| ⑮ | **덧붙인 스타일 id 충돌** | borderFill id 1~32(itemCnt 32), charPr 0~43, paraPr 0~51 | 덧붙인 borderFill id 를 itemCnt(32)부터 매김 → **양식 id 32(진회색 #404040 채움·파란 0.12mm 테두리)와 중복** | 같음(template.json 의 header.xml) | 한글은 같은 id 가 둘이면 앞(양식)의 것을 쓴다 → 'none' 테두리를 참조한 모든 글자·문단·표가 진회색 바탕·파란 테두리로 그려짐 | **확정(2026-10-06 운영자 화면: 본문 전체 검은 바탕·파란 테두리)** |
+
 ## 결론(가능성 순)
+0. **⑮ 스타일 id 충돌 — 확정.** 운영자가 2026-10-06 휴대전화 한컴오피스 뷰어로 연 `t01-simple` 화면이 진회색 바탕에 파란 테두리였고, 그 모양은 양식 borderFill id 32 와 같다. `hwpx_report.py add_design_styles` 가 itemCnt 를 다음 id 로 썼는데 양식의 borderFill 은 1부터 시작해 itemCnt 와 최대 id 가 같았다(charPr·paraPr 는 0부터라 우연히 안 겹침). 고침: 다음 id = 있는 id 의 최댓값 + 1. 검사기에 `header-dupid` 규칙(같은 종류 id 중복 FAIL) 추가 — 고치기 전 파일에서 잡힘. 2026-09-30 '깨짐'도 이 원인(+ lineseg 겹침)이었을 가능성이 크다.
+
 1. **줄 배치(⑧)**: 한글이 값을 믿는 것은 확인됐고, 없을 때의 동작은 미확인. 시험 파일 두 변형으로 가른다. 값을 믿고 없으면 0 으로 보는 경우라면 '모든 문단이 한 자리에 겹침' = 운영자가 본 '깨짐' 과 같은 증상이다.
 2. **네임스페이스(⑩)**: 비용 없이 양식과 같게 할 수 있어 2026-10-06 부터 두 경로 모두 14개를 선언한다.
 3. **캐럿 위치(③)**: settings.xml 의 `CaretPosition paraIDRef` 가 없는 문단을 가리킨다. 다음 단계에서 산출물의 첫 문단 id 로 바꾸는 것을 검토(실물 시험에서 ①~⑩ 이 모두 ○인데 깨지면 이 항목).

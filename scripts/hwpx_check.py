@@ -8,6 +8,7 @@
   container      META-INF/container.xml 의 rootfile 이 실제 파일을 가리킴
   hpf            content.hpf 의 manifest href 가 실제 파일이고 spine idref 가 manifest 에 있으며 section 이 spine 에 있음
   header-count   header.xml 의 itemCnt 가 실제 항목 수와 같음
+  header-dupid   header.xml 안에서 같은 종류의 id 가 두 번 정의되지 않음(2026-10-06 실제 깨짐 원인: 덧붙인 borderFill 이 양식 id 32 와 겹침)
   ns             section 루트의 네임스페이스 선언(hp·hs 는 FAIL, hc·hh·hp10 등 양식이 쓰는 나머지는 WARN)
   secpr          section0 첫 문단에 hp:secPr·hp:pagePr 가 있음
   ref            paraPrIDRef·charPrIDRef·styleIDRef·borderFillIDRef·tabPrIDRef·numberingIDRef 가 header.xml 에 있음
@@ -111,7 +112,11 @@ def check_file(path: Path) -> Report:
         if tag in groups:
             kind = groups[tag]
             found = [e for e in grp if e.tag.split("}")[-1] == kind]
-            for e in found: ids[kind].add(e.get("id", ""))
+            seen: set[str] = set()
+            for e in found:
+                i = e.get("id", "")
+                if i in seen: r.fail("header-dupid", f"Contents/header.xml {kind}", f"id={i} 가 두 번 정의됨(한글은 앞의 것을 써서 모양이 뒤바뀜)")
+                seen.add(i); ids[kind].add(i)
             cnt = grp.get("itemCnt")
             if cnt is not None and int(cnt) != len(found): r.fail("header-count", tag, f"itemCnt={cnt} 인데 항목 {len(found)}개")
     if not ids["style"]: ids["style"] = {"0"}

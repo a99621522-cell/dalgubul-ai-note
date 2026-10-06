@@ -318,7 +318,12 @@ BORDER_SPECS = [
 def add_design_styles(header_xml: str) -> tuple[str, dict]:
     """header.xml 에 위 스펙의 문단·글자·테두리 모양을 덧붙이고 이름 → id 사전을 돌려준다."""
     ids: dict = {"para": {}, "char": {}, "border": {}}
-    bcnt = int(re.search(r'<hh:borderFills itemCnt="(\d+)"', header_xml).group(1))
+    # id 는 itemCnt 가 아니라 '있는 id 의 최댓값 + 1' 부터(2026-10-06 확인: 양식의 borderFill 은 id 1~32 라 itemCnt(32)부터 매기면 양식 id 32(진회색 채움·파란 테두리)와 겹쳐
+    # 모든 문단·글자가 검은 바탕에 파란 테두리로 그려졌다 — 운영자 화면 2026-10-06. charPr·paraPr 는 0부터라 우연히 안 겹쳤을 뿐이다)
+    def next_id(tag: str) -> int:
+        ids_ = [int(x) for x in re.findall(r'<hh:%s id="(\d+)"' % tag, header_xml)]
+        return (max(ids_) + 1) if ids_ else 0
+    bcnt = next_id("borderFill")
     bxml = ""
     for i, (name, l, r, t, b, fill) in enumerate(BORDER_SPECS):
         bid = bcnt + i; ids["border"][name] = str(bid)
@@ -327,8 +332,9 @@ def add_design_styles(header_xml: str) -> tuple[str, dict]:
         bxml += (f'<hh:borderFill id="{bid}" threeD="0" shadow="0" centerLine="NONE" breakCellSeparateLine="0"><hh:slash type="NONE" Crooked="0" isCounter="0"/><hh:backSlash type="NONE" Crooked="0" isCounter="0"/>'
                  + line("leftBorder", l) + line("rightBorder", r) + line("topBorder", t) + line("bottomBorder", b) + '<hh:diagonal type="SOLID" width="0.1 mm" color="#000000"/>'
                  + (f'<hc:fillBrush><hc:winBrush faceColor="{fill}" hatchColor="#000000" alpha="0"/></hc:fillBrush>' if fill else "") + "</hh:borderFill>")
-    header_xml = re.sub(r'<hh:borderFills itemCnt="\d+"', f'<hh:borderFills itemCnt="{bcnt + len(BORDER_SPECS)}"', header_xml, 1).replace("</hh:borderFills>", bxml + "</hh:borderFills>", 1)
-    ccnt = int(re.search(r'<hh:charProperties itemCnt="(\d+)"', header_xml).group(1))
+    nb = int(re.search(r'<hh:borderFills itemCnt="(\d+)"', header_xml).group(1)) + len(BORDER_SPECS)
+    header_xml = re.sub(r'<hh:borderFills itemCnt="\d+"', f'<hh:borderFills itemCnt="{nb}"', header_xml, 1).replace("</hh:borderFills>", bxml + "</hh:borderFills>", 1)
+    ccnt = next_id("charPr")
     cxml = ""
     for i, (name, font, size, color, bold) in enumerate(CHAR_SPECS):
         cid = ccnt + i; ids["char"][name] = str(cid)
@@ -337,8 +343,9 @@ def add_design_styles(header_xml: str) -> tuple[str, dict]:
                  '<hh:ratio hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:spacing hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/>'
                  '<hh:relSz hangul="100" latin="100" hanja="100" japanese="100" other="100" symbol="100" user="100"/><hh:offset hangul="0" latin="0" hanja="0" japanese="0" other="0" symbol="0" user="0"/>'
                  + ("<hh:bold/>" if bold else "") + "</hh:charPr>")
-    header_xml = re.sub(r'<hh:charProperties itemCnt="\d+"', f'<hh:charProperties itemCnt="{ccnt + len(CHAR_SPECS)}"', header_xml, 1).replace("</hh:charProperties>", cxml + "</hh:charProperties>", 1)
-    pcnt = int(re.search(r'<hh:paraProperties itemCnt="(\d+)"', header_xml).group(1))
+    nc = int(re.search(r'<hh:charProperties itemCnt="(\d+)"', header_xml).group(1)) + len(CHAR_SPECS)
+    header_xml = re.sub(r'<hh:charProperties itemCnt="\d+"', f'<hh:charProperties itemCnt="{nc}"', header_xml, 1).replace("</hh:charProperties>", cxml + "</hh:charProperties>", 1)
+    pcnt = next_id("paraPr")
     pxml = ""
     for i, (name, align, ls, prev, nxt, left, intent, keep, border) in enumerate(PARA_SPECS):
         pid = pcnt + i; ids["para"][name] = str(pid)
@@ -350,7 +357,8 @@ def add_design_styles(header_xml: str) -> tuple[str, dict]:
                  '<hh:autoSpacing eAsianEng="1" eAsianNum="1"/>'
                  f'<hh:margin><hc:intent value="{intent}" unit="HWPUNIT"/><hc:left value="{left}" unit="HWPUNIT"/><hc:right value="0" unit="HWPUNIT"/><hc:prev value="{prev}" unit="HWPUNIT"/><hc:next value="{nxt}" unit="HWPUNIT"/></hh:margin>'
                  f'<hh:lineSpacing type="PERCENT" value="{ls}" unit="HWPUNIT"/><hh:border borderFillIDRef="{bf}"{boff} connect="0" ignoreMargin="0"/></hh:paraPr>')
-    header_xml = re.sub(r'<hh:paraProperties itemCnt="\d+"', f'<hh:paraProperties itemCnt="{pcnt + len(PARA_SPECS)}"', header_xml, 1).replace("</hh:paraProperties>", pxml + "</hh:paraProperties>", 1)
+    np_ = int(re.search(r'<hh:paraProperties itemCnt="(\d+)"', header_xml).group(1)) + len(PARA_SPECS)
+    header_xml = re.sub(r'<hh:paraProperties itemCnt="\d+"', f'<hh:paraProperties itemCnt="{np_}"', header_xml, 1).replace("</hh:paraProperties>", pxml + "</hh:paraProperties>", 1)
     return header_xml, ids
 
 

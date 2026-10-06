@@ -116,11 +116,13 @@ def discover(t: dict, key: str) -> None:
         if _TABLES is None:
             _TABLES = paged(key, "StatisticTableList", "", limit=10)
             print(f"[discover] 통계표 목록 {len(_TABLES)}개")
-        words = [w for w in str(t.get("search") or t["name"]).split() if w]
-        cand = [x for x in _TABLES if all(w in (x.get("STAT_NAME") or "") for w in words) and (x.get("SRCH_YN") or "Y") == "Y"]
-        print(f"[discover] {t['key']} ← '{' '.join(words)}' 후보 {len(cand)}개")
-        for x in cand[:15]:
-            print(f"   {x.get('STAT_CODE')} | {x.get('STAT_NAME')} | {x.get('CYCLE', '')} | {x.get('ORG_NAME', '')}")
+        qs = t.get("search") or t["name"]
+        for q in (qs if isinstance(qs, list) else [qs]):   # search 는 낱말 묶음 하나 또는 여럿(목록, 2026-10-06: 목록을 str() 로 바꿔 쪼개면 괄호·따옴표가 낱말이 되어 후보 0개)
+            words = [w for w in str(q).split() if w]
+            cand = [x for x in _TABLES if all(w in (x.get("STAT_NAME") or "") for w in words)]
+            print(f"[discover] {t['key']} ← '{' '.join(words)}' 후보 {len(cand)}개")
+            for x in cand[:25]:
+                print(f"   {x.get('STAT_CODE')} | {x.get('STAT_NAME')} | {x.get('CYCLE', '')} | {x.get('ORG_NAME', '')} | 검색 {x.get('SRCH_YN', '')} | 하위 {x.get('P_STAT_CODE', '')}")
     except Exception as e:  # noqa: BLE001
         print(f"[discover] {t['key']}: 실패 {e}")
 

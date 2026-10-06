@@ -57,23 +57,8 @@ tables:
     years: 5
     area_col: C2
     areas: [ai-sw-startup]
-  - key: new-corp-sido
-    name: 창업기업동향(중소벤처기업부) — 지역별 신설법인 수(월간)
-    org_id: "142"
-    tbl_id: "DT_142N_A10251_A"   # 2026-10-06 discover
-    search: ["지역별 신설법인수"]
-    prd_se: M
-    years: 4
-    area_col: C1
-    areas: [ai-sw-startup]
-  - key: venture-sido
-    name: 벤처기업정밀실태조사(중소벤처기업부) — 벤처기업의 지역별 분포
-    org_id: "142"
-    tbl_id: "TX_14203_A097"   # 2026-10-06 discover: 벤처기업의 지역별 분포(실태조사 표본 가중치 기준, 벤처확인 공시 수와 다를 수 있음)
-    search: ["벤처기업 시도별", "벤처확인기업 지역별", "벤처기업정밀실태조사 지역별 기업수", "시도별 벤처기업 수"]
-    prd_se: Y
-    area_col: C1
-    areas: [ai-sw-startup]
+  # 벤처기업: KOSIS 벤처기업정밀실태조사 '벤처기업의 지역별 분포'(TX_14203_A097)는 2004~2005년 권역(대구경북) 값뿐이라 쓰지 않는다(2026-10-06 probe). 대구 벤처기업 수는 기업 사전 venture 태그(벤처기업확인 공시)로
+  # 신설법인: 창업기업동향 '지역별 신설법인수'(DT_142N_A10251_A)는 2008.03~2019.12 까지만 있어(2026-10-06 probe) 받지 않는다. 2020년 이후 창업 통계는 위 창업기업동향 창업기업 수(법인+개인)로
   - key: corp-stats-sido
     name: 영리법인기업체 행정통계 — 시도·종사자 규모별 기업 수·매출액
     tbl_id: ""

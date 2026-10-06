@@ -224,7 +224,21 @@ def rnd(reps: dict[str, dict], debug_name: str = "") -> None:
 
 
 # ---------- 주요 제품 ----------
-SKIP_ROW = re.compile(r"^(합\s*계|총\s*계|소\s*계|계|합계\s*\(.*\)|내부거래.*|연결조정.*|조정.*|단위.*|제\s*품|상\s*품|용\s*역|기\s*타|서비스|수출|내수|국내|해외)$")
+SKIP_ROW = re.compile(r"^(합\s*계|총\s*계|소\s*계|계|합계\s*\(.*\)|내부거래.*|연결조정.*|조정.*|단위.*|제\s*품|상\s*품|용\s*역|기\s*타|서비스|수출|내수|국내|해외"
+                      r"|품\s*목.*|제\s*품\s*명|주\s*요\s*제\s*품.*|구\s*분|사\s*업\s*부\s*문|부\s*문|총\s*매\s*출.*|매출\s*총계|단순합계|차감.*|매출\s*액)$")
+HEADERISH = re.compile(r"품\s*목|제\s*품\s*명|주\s*요\s*제\s*품|구체적\s*용도|^\s*구\s*분\s*$")
+
+
+def good_product(prod_v: str, segv: str) -> bool:
+    """표 머리가 두 줄이라 샌 머리 글자·합계·문장(설명 문단을 표로 짠 보고서)은 품목이 아니다"""
+    t = prod_v.strip()
+    if not t or SKIP_ROW.match(t) or HEADERISH.search(t) or SKIP_ROW.match(segv or "x"):
+        return False
+    if re.fullmatch(r"[\d,.\s%()-]+", t) or t.startswith("-") or t.endswith(".") or re.search(r"(습니다|입니다|있음|진행\s*중)", t):
+        return False
+    if segv and segv.strip() == t:
+        return False
+    return len(t) <= 60
 
 
 def table_rows(tbl: str) -> list[list[str]]:
@@ -277,7 +291,7 @@ def products_from_doc(xml: str, debug: bool = False) -> list[dict]:
                 segv = r[sc] if sc is not None and sc < len(r) else ""
                 last_seg = segv or last_seg
                 prod_v = r[pc] if pc < len(r) else ""
-                if not prod_v or SKIP_ROW.match(prod_v) or SKIP_ROW.match(segv or "x") or re.fullmatch(r"[\d,.\s%()-]+", prod_v):
+                if not good_product(prod_v, segv):
                     continue
                 share = ""
                 if rc is not None and rc < len(r):

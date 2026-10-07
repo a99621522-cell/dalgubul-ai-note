@@ -118,7 +118,12 @@ def line_chart(title: str, months: list[str], series: list[tuple[str, list]], un
     for t in ticks:  # 눈금선 + y 라벨
         parts.append(f'<line x1="{ml}" x2="{ml + pw}" y1="{y(t):.1f}" y2="{y(t):.1f}" stroke="{LINE}" stroke-width="1"/>')
         parts.append(f'<text x="{ml - 8}" y="{y(t) + 5:.1f}" text-anchor="end" fill="{MUTED}">{fmt(int(t)) if float(t).is_integer() else t}</text>')
-    step = (1 if n <= 4 else (3 if n <= 12 else 6)) if narrow else (1 if n <= 8 else (2 if n <= 16 else 6))
+    # x 라벨 간격: 글자 폭(px)으로 계산해 겹치지 않게 — 휴대폰 판에서 "2024.22024.8" 처럼 붙던 것 수정(2026-10-07).
+    # 라벨 하나 폭 + 여백 12px 가 한 칸(pw/(n-1))의 몇 배인지로 step 을 정하고, 달(YYYY-MM)이면 step 을 3·6·12 의 배수로 올려 분기·반기·연 단위에 맞춘다
+    lw = max((text_w(month_label(m)) for m in months), default=40) + 12
+    step = max(1, math.ceil(lw / (pw / (n - 1)))) if n > 1 else 1
+    if step > 1 and all(re.fullmatch(r"\d{4}-\d{2}", m) for m in months):
+        step = next(k for k in (2, 3, 6, 12, 24, 36) if k >= step)
     shown = set(range(n - 1, -1, -step))
     for i, m in enumerate(months):  # x 라벨
         if i in shown:
@@ -155,12 +160,18 @@ def line_chart(title: str, months: list[str], series: list[tuple[str, list]], un
                 cur.append((x(i), y(v)))
         if cur:
             segs.append(cur)
+        if gaps and len(segs) > 1:
+            # 자료 없는 달을 건너뛰는 구간은 점선으로 이어 추세가 읽히게(2026-10-07). 점선은 자료가 아니라 두 시점을 이은 보조선이다
+            d = " ".join(f"M{seg[-1][0]:.1f},{seg[-1][1]:.1f} L{nxt[0][0]:.1f},{nxt[0][1]:.1f}" for seg, nxt in zip(segs, segs[1:]))
+            parts.append(f'<path d="{d}" fill="none" stroke="{color}" style="stroke:{var}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>')
         for seg in segs:
             if len(seg) == 1:
-                parts.append(f'<circle cx="{seg[0][0]:.1f}" cy="{seg[0][1]:.1f}" r="4" style="fill:{var}"/>')
+                parts.append(f'<circle cx="{seg[0][0]:.1f}" cy="{seg[0][1]:.1f}" r="3.5" style="fill:{var}"/>')
             else:
                 d = "M" + " L".join(f"{px:.1f},{py:.1f}" for px, py in seg)
                 parts.append(f'<path d="{d}" fill="none" stroke="{color}" style="stroke:{var}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>')
+                if gaps:  # 띄엄띄엄한 자료는 점마다 표시해 어느 달에 값이 있는지 보이게
+                    parts.extend(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="3" style="fill:{var}"/>' for px, py in seg)
         last_i = max((i for i, v in enumerate(s) if v is not None), default=None)
         if last_i is not None:
             ly = label_y[k]
@@ -173,11 +184,11 @@ def line_chart(title: str, months: list[str], series: list[tuple[str, list]], un
                 parts.append(f'<text x="{x(last_i) + 8:.1f}" y="{ly + 5:.1f}" fill="{INK}" font-weight="600">{escape(text)}</text>')
     if note:
         parts.append(f'<text x="{ml if not narrow else 8}" y="{FONT + 2}" fill="{MUTED}">{escape(note)}</text>')
-    desc = f"{title}. {months[0]}부터 {months[-1]}까지 {n}개월" + (f"(자료 없는 달 {gaps}개는 비어 있음)" if gaps else "") + ". " + "; ".join(
+    desc = f"{title}. {months[0]}부터 {months[-1]}까지 {n}개월" + (f"(자료 없는 달 {gaps}개는 점선으로 건너뜀)" if gaps else "") + ". " + "; ".join(
         f"{name} 최근 {fmt(next((v for v in reversed(s) if v is not None), None))}{unit}" for name, s in series)
     table = {"title": title, "columns": ["월"] + [name for name, _ in series], "unit": unit,
              "rows": [[m] + [s[i] for _, s in series] for i, m in enumerate(months) if any(s[i] is not None for _, s in series)],
-             "note": (note + (" · " if note else "") + f"자료 없는 달 {gaps}개는 표·그래프에서 비어 있음") if gaps else note}
+             "note": (note + (" · " if note else "") + f"자료 없는 달 {gaps}개는 표에 없고 그래프에서는 점선으로 건너뜀") if gaps else note}
     return svg_wrap(W, H, title, desc, "\n".join(parts)), table
 
 

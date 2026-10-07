@@ -10,9 +10,13 @@
 <text x="64" y="109.0" text-anchor="end" fill="#767676">30,000</text>
 <line x1="72" x2="594" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">40,000</text>
+<text x="117.4" y="320" text-anchor="middle" fill="#767676">2024.11</text>
 <text x="185.5" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="253.6" y="320" text-anchor="middle" fill="#767676">2025.5</text>
 <text x="321.7" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="389.7" y="320" text-anchor="middle" fill="#767676">2025.11</text>
 <text x="457.8" y="320" text-anchor="middle" fill="#767676">2026.2</text>
+<text x="525.9" y="320" text-anchor="middle" fill="#767676">2026.5</text>
 <text x="594.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="594" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M72.0,151.8 L94.7,137.7 L117.4,154.4 L140.1,138.4 L162.8,139.0 L185.5,89.3 L208.2,151.7 L230.9,168.2 L253.6,168.0 L276.3,171.3 L299.0,148.1 L321.7,160.3 L344.3,153.2 L367.0,168.6 L389.7,175.6 L412.4,140.4 L435.1,127.4 L457.8,111.5 L480.5,126.2 L503.2,156.3 L525.9,152.1 L548.6,162.4 L571.3,171.8 L594.0,172.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

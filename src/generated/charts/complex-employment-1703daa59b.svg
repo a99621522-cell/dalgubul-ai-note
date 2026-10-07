@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구테크노폴리스산단 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 비어 있음). 대구테크노폴리스산단 최근 6,530명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구테크노폴리스산단 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 점선으로 건너뜀). 대구테크노폴리스산단 최근 6,530명" style="max-width:720px;height:auto;font-size:14px">
 <title>대구테크노폴리스산단 고용 인원 추이</title>
 <line x1="72" x2="652" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">6,400</text>
@@ -15,13 +15,25 @@
 <text x="543.2" y="320" text-anchor="middle" fill="#767676">2026.2</text>
 <text x="652.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="652" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
+<path d="M90.1,184.2 L144.5,107.4 M144.5,107.4 L180.8,70.7 M198.9,87.8 L253.2,77.5 M325.8,190.2 L398.2,188.5 M398.2,188.5 L525.1,244.8 M525.1,244.8 L633.9,166.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
 <path d="M72.0,149.2 L90.1,184.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="144.5" cy="107.4" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="72.0" cy="149.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="90.1" cy="184.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="144.5" cy="107.4" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
 <path d="M180.8,70.7 L198.9,87.8" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="180.8" cy="70.7" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="198.9" cy="87.8" r="3" style="fill:var(--primary,#1B4F9B)"/>
 <path d="M253.2,77.5 L271.4,119.4 L289.5,116.8 L307.6,161.2 L325.8,190.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="398.2" cy="188.5" r="4" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="525.1" cy="244.8" r="4" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="253.2" cy="77.5" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="271.4" cy="119.4" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="289.5" cy="116.8" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="307.6" cy="161.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="325.8" cy="190.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="398.2" cy="188.5" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="525.1" cy="244.8" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
 <path d="M633.9,166.3 L652.0,185.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="633.9" cy="166.3" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="652.0" cy="185.1" r="3" style="fill:var(--primary,#1B4F9B)"/>
 <circle cx="652.0" cy="185.1" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
 <text x="660.0" y="190.1" fill="#1a1a1a" font-weight="600">6,530명</text>
 <text x="72" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

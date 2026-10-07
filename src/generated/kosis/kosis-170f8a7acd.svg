@@ -10,9 +10,13 @@
 <text x="64" y="109.0" text-anchor="end" fill="#767676">1,220</text>
 <line x1="72" x2="622" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">1,240</text>
+<text x="119.8" y="320" text-anchor="middle" fill="#767676">2024.11</text>
 <text x="191.6" y="320" text-anchor="middle" fill="#767676">2025.2</text>
+<text x="263.3" y="320" text-anchor="middle" fill="#767676">2025.5</text>
 <text x="335.0" y="320" text-anchor="middle" fill="#767676">2025.8</text>
+<text x="406.8" y="320" text-anchor="middle" fill="#767676">2025.11</text>
 <text x="478.5" y="320" text-anchor="middle" fill="#767676">2026.2</text>
+<text x="550.3" y="320" text-anchor="middle" fill="#767676">2026.5</text>
 <text x="622.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
 <line x1="72" x2="622" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M72.0,118.1 L95.9,119.4 L119.8,109.8 L143.7,199.0 L167.7,211.5 L191.6,180.2 L215.5,103.0 L239.4,95.4 L263.3,73.3 L287.2,97.6 L311.1,133.4 L335.0,125.8 L359.0,89.9 L382.9,112.3 L406.8,79.7 L430.7,174.4 L454.6,235.2 L478.5,123.5 L502.4,118.4 L526.3,89.3 L550.3,69.4 L574.2,83.5 L598.1,78.1 L622.0,92.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

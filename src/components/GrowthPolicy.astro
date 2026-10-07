@@ -114,15 +114,19 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       <div class="gp-h"><span class="gp-no">{i.no}</span><b>{i.task}</b></div>
       <div class="tiny muted">{i.lever} → {i.alloc === 'tour' ? '관광소비 업종 구성대로(도소매·숙박음식·운수·여가 등)' : (i.leaves ?? []).length === 7 ? '제조업 7개 업종' : (i.leaves ?? []).map(k => leafName[k]).join('·')}</div>
       <div class="gp-in">
-        {i.kind === 'stop' ? <label class="gp-chk"><input type="checkbox" data-in="v" /> 감소를 멈춤(성장률 0%)</label> : <label>{i.unit} <input type="number" data-in="v" value="0" step="any" inputmode="decimal" /></label>}
+        {i.kind === 'stop' ? <label class="gp-chk"><input type="checkbox" data-in="v" /> 감소를 멈춤(성장률 0%)</label>
+          : i.kind === 'plant' && i.ramp === 'build3' ? <label><select data-in="m" aria-label="입력 종류 — 투자액 또는 새 공장 연 매출"><option value="i" selected={!!(RK[i.id] && P.turnover[RK[i.id]])} disabled={!(RK[i.id] && P.turnover[RK[i.id]])}>투자액</option><option value="v" selected={!(RK[i.id] && P.turnover[RK[i.id]])}>새 공장 연 매출</option></select> <input type="number" data-in="v" value="0" step="any" inputmode="decimal" /> 억 원</label>
+          : <label>{i.unit} <input type="number" data-in="v" value="0" step="any" inputmode="decimal" /></label>}
         {i.kind === 'people' && <label>1인 지출 <input type="number" data-in="p" value={i.per ?? 0} step="any" inputmode="decimal" /> {i.perUnit}</label>}
       </div>
-      <details class="gp-adv"><summary>자세히 — 시작 연도·순증 비율·투입액{i.kind === 'plant' && i.ramp === 'build3' ? '·투자액' : ''}·계산식</summary>
+      {i.kind === 'plant' && i.ramp === 'build3' && <div class="tiny muted">{RK[i.id] && P.turnover[RK[i.id]]
+        ? `투자액은 투자 협약·보도자료의 금액(새 공장 매출은 알기 어려움), 연 매출은 기업 사업계획서 값. 투자액 × 자본회전율 ${P.turnover[RK[i.id]]!.toFixed(2)}(${i.ratioNote} 출하액 ÷ 유형자산, 광업·제조업조사 대구 ${P.turnoverYear}년) = 연 매출`
+        : '자본회전율(출하액 ÷ 유형자산) 자료를 아직 받지 않아 투자액은 환산되지 않습니다 — 연 매출을 넣으세요'}</div>}
+      <details class="gp-adv"><summary>자세히 — 시작 연도·순증 비율·투입액·계산식</summary>
       <div class="gp-in gp-in2">
         <label>시작 <select data-in="s">{years.map(y => <option value={y}>{y}</option>)}</select></label>
         <label>순증 <input type="number" data-in="n" value="100" min="0" max="100" step="5" inputmode="decimal" /> %</label>
         <label>투입액 <input type="number" data-in="c" value="" placeholder="선택" step="any" inputmode="decimal" /> 억 원</label>
-        {i.kind === 'plant' && i.ramp === 'build3' && <label title={RK[i.id] && P.turnover[RK[i.id]] ? `연 매출 칸이 비어 있으면 투자액 × 자본회전율 ${P.turnover[RK[i.id]]!.toFixed(2)}(출하액 ÷ 유형자산, 광업·제조업조사 대구 ${P.turnoverYear}년)로 연 매출을 셈` : '자본회전율(출하액 ÷ 유형자산) 자료를 아직 받지 않아 투자액은 환산되지 않습니다 — 연 매출을 직접 넣으세요'}>또는 투자액 <input type="number" data-in="i" value="0" step="any" inputmode="decimal" /> 억 원</label>}
       </div>
       <div class="tiny muted">
         {i.kind === 'plant' && <>× 부가가치율 {pctR(i.ratio ?? null)}({i.ratioNote}, 광업·제조업조사 대구 {P.mfgYear}년) = 직접분{(() => { const io = P.ioByItem[i.id]; return io && io.k != null && io.va != null ? ` + 간접분 × ${Math.max(0, io.k - io.va).toFixed(3)}(${io.sector} 대구 지역내 부가가치유발계수 ${io.k.toFixed(3)} − 직접 부가가치율 ${io.va.toFixed(3)}, 한국은행 2020 지역산업연관표)` : ` · 간접분(${io ? io.sector : '해당 부문'} 대구 지역내 유발계수)은 통계표를 받으면 더해짐 — 지금은 범위 위쪽에 평균 계수만`; })()}{(() => { const io = P.ioByItem[i.id]; return io && io.empNat != null ? ` · 참고 취업 = 연 매출 ÷ 10억 원 × ${io.empNat.toFixed(1)}명(${io.sector} 전국 취업유발계수, 취업계수 ${io.empNatDirect?.toFixed(1) ?? '—'}명 — 한국은행 2020년 고용표, 전국 값)` : ''; })()}{i.ramp === 'build3' ? ' · 시작 해 건설, 2년째 50%, 3년째 100% 가동' : ''}</>}
@@ -134,7 +138,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       </div>
         <div class="tiny muted">추적 지표: {i.metric}</div>
       </details>
-      <div class="gp-r"><span>부가가치 <b data-o="va">0</b>억 원</span><span>성장률 <b data-o="pp">0.00</b>%p</span><span>취업 <b data-o="jb">0</b>명<span class="tiny muted" data-o="jbn"></span></span><span class="tiny muted" data-o="eff"></span></div>
+      <div class="gp-r"><span>부가가치 <b data-o="va">0</b>억 원</span><span>성장률 <b data-o="pp">0.00</b>%p</span><span>취업 <b data-o="jb">0</b>명<span class="tiny muted" data-o="jbn"></span></span><span class="tiny muted" data-o="eff"></span><span class="tiny muted" data-o="inv"></span></div>
     </div>))}</div>
   </>))}
 
@@ -174,17 +178,20 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
     const read = (): St => Object.fromEntries(D.items.map(it => {
       const tr = row(it.id)!;
       const inp = tr.querySelector<HTMLInputElement>('[data-in="v"]');
-      return [it.id, { v: it.kind === 'stop' ? (inp?.checked ? 1 : 0) : Number(inp?.value) || 0, p: Number(tr.querySelector<HTMLInputElement>('[data-in="p"]')?.value) || 0,
+      // 공장 유치: 선택 상자(투자액/연 매출, 2026-10-07 운영자 지시 '새 공장 매출액은 알기 어렵다')가 '투자액'이면 같은 칸 값을 i 로, 아니면 v 로 — 상태·링크 형식은 이전과 같다
+      const invest = tr.querySelector<HTMLSelectElement>('[data-in="m"]')?.value === 'i', raw = Number(inp?.value) || 0;
+      return [it.id, { v: it.kind === 'stop' ? (inp?.checked ? 1 : 0) : invest ? 0 : raw, p: Number(tr.querySelector<HTMLInputElement>('[data-in="p"]')?.value) || 0,
         n: Number(tr.querySelector<HTMLInputElement>('[data-in="n"]')?.value) || 0, s: Number(tr.querySelector<HTMLSelectElement>('[data-in="s"]')?.value) || D.Y0, c: Number(tr.querySelector<HTMLInputElement>('[data-in="c"]')?.value) || 0,
-        i: Number(tr.querySelector<HTMLInputElement>('[data-in="i"]')?.value) || 0 }];
+        i: invest ? raw : 0 }];
     }));
     const write = (st: St) => { for (const it of D.items) { const tr = row(it.id); const x = st[it.id]; if (!tr || !x) continue;
-      const inp = tr.querySelector<HTMLInputElement>('[data-in="v"]'); if (inp) { if (it.kind === 'stop') inp.checked = x.v > 0; else inp.value = String(x.v); }
+      const inp = tr.querySelector<HTMLInputElement>('[data-in="v"]'), md = tr.querySelector<HTMLSelectElement>('[data-in="m"]');
+      if (inp) { if (it.kind === 'stop') inp.checked = x.v > 0; else if (md && x.i > 0 && !md.options[0].disabled) { md.value = 'i'; inp.value = String(x.i); } else { if (md) md.value = 'v'; inp.value = String(x.v); } }
       const p = tr.querySelector<HTMLInputElement>('[data-in="p"]'); if (p && x.p) p.value = String(x.p);
       const n = tr.querySelector<HTMLInputElement>('[data-in="n"]'); if (n) n.value = String(x.n);
       const s = tr.querySelector<HTMLSelectElement>('[data-in="s"]'); if (s) s.value = String(x.s);
       const c = tr.querySelector<HTMLInputElement>('[data-in="c"]'); if (c) c.value = x.c ? String(x.c) : '';
-      const iv = tr.querySelector<HTMLInputElement>('[data-in="i"]'); if (iv) iv.value = String(x.i ?? 0); } };
+    } };
 
     // ── 과제 하나의 효과: 완성 때 부가가치(억 원, 순증 반영)·범위·업종 배분·증가 유형 ──
     type Eff = { va: number; lo: number; hi: number; parts: Map<string, number>; growth: { key: string; d: number }[]; start: number; ramp: string; cost: number; jobsNat: number | null; fromInvest: number | null };
@@ -269,7 +276,8 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
       const st = read();
       const E = evaluate(st);
       for (const it of D.items) { const tr = row(it.id)!, e = E.effs.get(it.id)!;
-        o('va', tr)!.textContent = n0(e.va) + (e.hi > e.lo + 0.5 ? ` (폭 ${n0(e.lo)}~${n0(e.hi)})` : '') + (e.fromInvest != null ? ` · 투자액 × 회전율 ${(it.turn ?? 0).toFixed(2)} = 연 매출 ${n0(e.fromInvest)}억 원` : '');
+        o('va', tr)!.textContent = n0(e.va) + (e.hi > e.lo + 0.5 ? ` (폭 ${n0(e.lo)}~${n0(e.hi)})` : '');
+        o('inv', tr)!.textContent = e.fromInvest != null ? `투자액 × 회전율 ${(it.turn ?? 0).toFixed(2)} = 연 매출 ${n0(e.fromInvest)}억 원` : '';
         o('pp', tr)!.textContent = fmt(e.va / D.gvaEok * 100, 2);
         o('jb', tr)!.textContent = n0(jobsOf(e.va));
         o('jbn', tr)!.textContent = e.jobsNat != null && e.va > 0 ? ` (전국 업종 계수로는 ${n0(e.jobsNat)}명, 참고)` : '';
@@ -369,7 +377,8 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
     };
     document.querySelectorAll<HTMLButtonElement>('#gp [data-fill]').forEach(bt => bt.addEventListener('click', () => {
       const f = bt.dataset.fill;
-      for (const it of D.items) { const inp = row(it.id)?.querySelector<HTMLInputElement>('[data-in="v"]'); if (!inp) continue;
+      for (const it of D.items) { const tr = row(it.id), inp = tr?.querySelector<HTMLInputElement>('[data-in="v"]'); if (!tr || !inp) continue;
+        const md = tr.querySelector<HTMLSelectElement>('[data-in="m"]'); if (md) md.value = 'v';   // 예시 값은 연 매출
         if (it.kind === 'stop') inp.checked = f === 'ex' && it.ex > 0; else inp.value = String(f === 'ex' ? it.ex : f === 'hx' ? it.hx : 0); }
       example = f !== 'zero'; exKind = f === 'hx' ? '고부가 3부문(전기·전자·정밀기기, 정보통신, 금융·보험)에 닿는 과제에만 값을 넣은 예시' : f === 'ex' ? '모든 과제에 값을 넣은 예시' : ''; calc();
     }));
@@ -418,6 +427,7 @@ const years = Array.from({ length: Y1 - Y0 + 1 }, (_, i) => Y0 + i);
   .gp-in2 label { font-size: var(--tiny); }
   .gp-in input[type="number"], .gp-in select { padding: 3px 6px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; }
   .gp-in input[type="number"] { width: 7.5em; text-align: right; }
+  .gp-in select[data-in="m"] { max-width: 11em; }
   .gp-in2 input[type="number"] { width: 5.5em; }
   .gp-r { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 8px; border-top: 1px solid var(--line); padding-top: 4px; font-size: var(--small); }
   .gp-r b { font-variant-numeric: tabular-nums; }

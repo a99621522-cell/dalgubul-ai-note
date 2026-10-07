@@ -10,14 +10,14 @@
 <text x="64" y="109.0" text-anchor="end" fill="#767676">60</text>
 <line x1="72" x2="616" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">80</text>
-<text x="119.3" y="320" text-anchor="middle" fill="#767676">2024.11</text>
-<text x="190.3" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="261.2" y="320" text-anchor="middle" fill="#767676">2025.5</text>
-<text x="332.2" y="320" text-anchor="middle" fill="#767676">2025.8</text>
-<text x="403.1" y="320" text-anchor="middle" fill="#767676">2025.11</text>
-<text x="474.1" y="320" text-anchor="middle" fill="#767676">2026.2</text>
-<text x="545.0" y="320" text-anchor="middle" fill="#767676">2026.5</text>
-<text x="616.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="119.3" y="320" text-anchor="middle" fill="#767676">24.11</text>
+<text x="190.3" y="320" text-anchor="middle" fill="#767676">25.2</text>
+<text x="261.2" y="320" text-anchor="middle" fill="#767676">25.5</text>
+<text x="332.2" y="320" text-anchor="middle" fill="#767676">25.8</text>
+<text x="403.1" y="320" text-anchor="middle" fill="#767676">25.11</text>
+<text x="474.1" y="320" text-anchor="middle" fill="#767676">26.2</text>
+<text x="545.0" y="320" text-anchor="middle" fill="#767676">26.5</text>
+<text x="616.0" y="320" text-anchor="middle" fill="#767676">26.8</text>
 <line x1="72" x2="616" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M72.0,110.4 L95.7,110.4 L119.3,110.1 L143.0,114.2 L166.6,114.9 L190.3,113.3 L213.9,109.8 L237.6,109.1 L261.2,108.2 L284.9,109.1 L308.5,111.0 L332.2,110.7 L355.8,108.8 L379.5,110.1 L403.1,108.5 L426.8,113.0 L450.4,116.2 L474.1,110.7 L497.7,110.4 L521.4,109.1 L545.0,108.2 L568.7,108.8 L592.3,108.5 L616.0,109.4" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="616.0" cy="109.4" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>

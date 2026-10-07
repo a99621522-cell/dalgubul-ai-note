@@ -10,8 +10,10 @@
 <text x="52" y="99.0" text-anchor="end" fill="#767676">60</text>
 <line x1="60" x2="304" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="45.0" text-anchor="end" fill="#767676">80</text>
-<text x="176.7" y="280" text-anchor="middle" fill="#767676">2025.8</text>
-<text x="304.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="113.0" y="280" text-anchor="middle" fill="#767676">25.2</text>
+<text x="176.7" y="280" text-anchor="middle" fill="#767676">25.8</text>
+<text x="240.3" y="280" text-anchor="middle" fill="#767676">26.2</text>
+<text x="304.0" y="280" text-anchor="middle" fill="#767676">26.8</text>
 <line x1="60" x2="304" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
 <path d="M60.0,99.4 L70.6,99.4 L81.2,99.1 L91.8,102.6 L102.4,103.2 L113.0,101.8 L123.7,98.9 L134.3,98.3 L144.9,97.5 L155.5,98.3 L166.1,99.9 L176.7,99.7 L187.3,98.1 L197.9,99.1 L208.5,97.8 L219.1,101.6 L229.7,104.3 L240.3,99.7 L251.0,99.4 L261.6,98.3 L272.2,97.5 L282.8,98.1 L293.4,97.8 L304.0,98.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="304.0" cy="98.6" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>

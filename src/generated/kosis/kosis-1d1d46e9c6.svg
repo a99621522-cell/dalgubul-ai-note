@@ -8,12 +8,12 @@
 <text x="64" y="130.3" text-anchor="end" fill="#767676">4,000</text>
 <line x1="72" x2="576" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">6,000</text>
-<text x="110.8" y="320" text-anchor="middle" fill="#767676">2021.6</text>
-<text x="203.8" y="320" text-anchor="middle" fill="#767676">2022.6</text>
-<text x="296.9" y="320" text-anchor="middle" fill="#767676">2023.6</text>
-<text x="389.9" y="320" text-anchor="middle" fill="#767676">2024.6</text>
-<text x="483.0" y="320" text-anchor="middle" fill="#767676">2025.6</text>
-<text x="576.0" y="320" text-anchor="middle" fill="#767676">2026.6</text>
+<text x="72.0" y="320" text-anchor="middle" fill="#767676">21년</text>
+<text x="165.0" y="320" text-anchor="middle" fill="#767676">22년</text>
+<text x="258.1" y="320" text-anchor="middle" fill="#767676">23년</text>
+<text x="351.1" y="320" text-anchor="middle" fill="#767676">24년</text>
+<text x="444.2" y="320" text-anchor="middle" fill="#767676">25년</text>
+<text x="537.2" y="320" text-anchor="middle" fill="#767676">26년</text>
 <line x1="72" x2="576" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M72.0,83.0 L79.8,120.7 L87.5,83.4 L95.3,74.9 L103.0,111.2 L110.8,98.0 L118.5,102.5 L126.3,123.2 L134.0,134.5 L141.8,131.5 L149.5,109.6 L157.3,109.2 L165.0,100.5 L172.8,108.4 L180.6,95.7 L188.3,122.6 L196.1,124.7 L203.8,111.9 L211.6,117.8 L219.3,117.7 L227.1,133.9 L234.8,134.1 L242.6,128.3 L250.3,135.8 L258.1,119.9 L265.8,115.0 L273.6,103.7 L281.4,126.4 L289.1,121.0 L296.9,113.3 L304.6,124.8 L312.4,118.9 L320.1,147.8 L327.9,129.9 L335.6,116.3 L343.4,152.2 L351.1,92.2 L358.9,141.1 L366.6,109.5 L374.4,125.8 L382.2,141.8 L389.9,147.1 L397.7,129.0 L405.4,147.2 L413.2,164.4 L420.9,136.3 L428.7,153.6 L436.4,153.3 L444.2,147.9 L451.9,140.1 L459.7,136.3 L467.4,132.5 L475.2,148.2 L483.0,149.4 L490.7,133.7 L498.5,153.1 L506.2,144.5 L514.0,168.3 L521.7,163.9 L529.5,139.1 L537.2,123.7 L545.0,167.6 L552.7,132.9 L560.5,133.7 L568.2,161.1 L576.0,143.8" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="576.0" cy="143.8" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>

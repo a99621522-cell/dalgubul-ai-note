@@ -54,8 +54,12 @@ def fill_month_gaps(months: list[str], series: list[tuple[str, list]]) -> tuple[
 
 
 def month_label(m: str) -> str:
-    y, mm = m.split("-")
-    return f"{y}.{int(mm)}"
+    """x 라벨 짧은 꼴(운영자 지시 2026-10-07 '24년 25년 이렇게, 2024 2025 는 길어'): YYYY-MM → 'YY.M', YYYY → 'YY년', 그 밖은 그대로."""
+    if re.fullmatch(r"\d{4}-\d{2}", m):
+        return f"{m[2:4]}.{int(m[5:7])}"
+    if re.fullmatch(r"\d{4}", m):
+        return f"{m[2:]}년"
+    return m
 
 
 def nice_ticks(lo: float, hi: float, n: int = 4) -> list[float]:
@@ -125,9 +129,14 @@ def line_chart(title: str, months: list[str], series: list[tuple[str, list]], un
     if step > 1 and all(re.fullmatch(r"\d{4}-\d{2}", m) for m in months):
         step = next(k for k in (2, 3, 6, 12, 24, 36) if k >= step)
     shown = set(range(n - 1, -1, -step))
+    label = month_label
+    if step >= 12 and any(m.endswith("-01") for m in months):  # 해 단위면 1월 자리에 '24년' 식으로
+        jan = [i for i, m in enumerate(months) if m.endswith("-01")]
+        shown = set(jan[::-1][::step // 12])
+        label = lambda m: f"{m[2:4]}년"  # noqa: E731
     for i, m in enumerate(months):  # x 라벨
         if i in shown:
-            parts.append(f'<text x="{x(i):.1f}" y="{H - mb + 24}" text-anchor="middle" fill="{MUTED}">{month_label(m)}</text>')
+            parts.append(f'<text x="{x(i):.1f}" y="{H - mb + 24}" text-anchor="middle" fill="{MUTED}">{label(m)}</text>')
     parts.append(f'<line x1="{ml}" x2="{ml + pw}" y1="{mt + ph}" y2="{mt + ph}" stroke="{MUTED}" stroke-width="1"/>')
 
     gap = (FONT * 2 + 6) if two_line else (FONT + 2)

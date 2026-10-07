@@ -8,8 +8,9 @@
 <text x="52" y="117.0" text-anchor="end" fill="#767676">150</text>
 <line x1="60" x2="218" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="45.0" text-anchor="end" fill="#767676">200</text>
-<text x="109.7" y="280" text-anchor="middle" fill="#767676">2024.8</text>
-<text x="218.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="78.1" y="280" text-anchor="middle" fill="#767676">24년</text>
+<text x="132.2" y="280" text-anchor="middle" fill="#767676">25년</text>
+<text x="186.4" y="280" text-anchor="middle" fill="#767676">26년</text>
 <line x1="60" x2="218" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
 <path d="M127.7,145.6 L186.4,160.0" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
 <path d="M60.0,180.0 L64.5,132.7 L69.0,137.9 L73.5,134.8 L78.1,139.5 L82.6,157.5 L87.1,118.5 L91.6,136.2 L96.1,118.2 L100.6,151.5 L105.1,153.6 L109.7,154.6 L114.2,182.4 L118.7,147.6 L123.2,126.5 L127.7,145.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

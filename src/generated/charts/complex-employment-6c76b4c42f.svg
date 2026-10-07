@@ -10,12 +10,17 @@
 <text x="64" y="109.0" text-anchor="end" fill="#767676">0.75</text>
 <line x1="72" x2="684" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">1</text>
-<text x="110.2" y="320" text-anchor="middle" fill="#767676">2024.2</text>
-<text x="225.0" y="320" text-anchor="middle" fill="#767676">2024.8</text>
-<text x="339.8" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="454.5" y="320" text-anchor="middle" fill="#767676">2025.8</text>
-<text x="569.2" y="320" text-anchor="middle" fill="#767676">2026.2</text>
-<text x="684.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="110.2" y="320" text-anchor="middle" fill="#767676">24.2</text>
+<text x="167.6" y="320" text-anchor="middle" fill="#767676">24.5</text>
+<text x="225.0" y="320" text-anchor="middle" fill="#767676">24.8</text>
+<text x="282.4" y="320" text-anchor="middle" fill="#767676">24.11</text>
+<text x="339.8" y="320" text-anchor="middle" fill="#767676">25.2</text>
+<text x="397.1" y="320" text-anchor="middle" fill="#767676">25.5</text>
+<text x="454.5" y="320" text-anchor="middle" fill="#767676">25.8</text>
+<text x="511.9" y="320" text-anchor="middle" fill="#767676">25.11</text>
+<text x="569.2" y="320" text-anchor="middle" fill="#767676">26.2</text>
+<text x="626.6" y="320" text-anchor="middle" fill="#767676">26.5</text>
+<text x="684.0" y="320" text-anchor="middle" fill="#767676">26.8</text>
 <line x1="72" x2="684" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M91.1,296.0 L148.5,296.0 M148.5,296.0 L186.8,296.0 M205.9,296.0 L263.2,296.0 M339.8,296.0 L416.2,296.0 M416.2,296.0 L550.1,296.0 M550.1,296.0 L664.9,296.0" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
 <path d="M72.0,296.0 L91.1,296.0" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

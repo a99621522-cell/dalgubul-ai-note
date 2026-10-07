@@ -12,11 +12,11 @@
 <text x="52" y="88.2" text-anchor="end" fill="#767676">2,500,000</text>
 <line x1="60" x2="260" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="45.0" text-anchor="end" fill="#767676">2,550,000</text>
-<text x="82.2" y="280" text-anchor="middle" fill="#767676">2017</text>
-<text x="126.7" y="280" text-anchor="middle" fill="#767676">2019</text>
-<text x="171.1" y="280" text-anchor="middle" fill="#767676">2021</text>
-<text x="215.6" y="280" text-anchor="middle" fill="#767676">2023</text>
-<text x="260.0" y="280" text-anchor="middle" fill="#767676">2025</text>
+<text x="82.2" y="280" text-anchor="middle" fill="#767676">17년</text>
+<text x="126.7" y="280" text-anchor="middle" fill="#767676">19년</text>
+<text x="171.1" y="280" text-anchor="middle" fill="#767676">21년</text>
+<text x="215.6" y="280" text-anchor="middle" fill="#767676">23년</text>
+<text x="260.0" y="280" text-anchor="middle" fill="#767676">25년</text>
 <line x1="60" x2="260" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
 <path d="M60.0,96.5 L82.2,104.6 L104.4,116.2 L126.7,136.7 L148.9,153.7 L171.1,182.2 L193.3,201.0 L215.6,191.2 L237.8,201.0 L260.0,210.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="260.0" cy="210.2" r="3.5" style="fill:var(--primary,#1B4F9B)"/>

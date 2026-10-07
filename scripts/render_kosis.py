@@ -17,8 +17,7 @@ import render_charts as rc  # noqa: E402
 K = ROOT / "data" / "kosis"
 OUT = ROOT / "src" / "generated" / "kosis"
 rc.OUT = OUT
-_month_label = rc.month_label
-rc.month_label = lambda m: m if "-" not in m else _month_label(m)     # 연도 라벨('2015')은 그대로
+# 연도 라벨('2015')은 rc.month_label 이 '15년' 으로 줄인다(2026-10-07)
 KOSIS = "https://kosis.kr/statHtml/statHtml.do?orgId={org}&tblId={tbl}"
 
 

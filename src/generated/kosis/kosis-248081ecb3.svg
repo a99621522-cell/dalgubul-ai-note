@@ -12,10 +12,15 @@
 <text x="64" y="96.2" text-anchor="end" fill="#767676">2,500,000</text>
 <line x1="72" x2="620" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">2,550,000</text>
+<text x="72.0" y="320" text-anchor="middle" fill="#767676">2016</text>
 <text x="132.9" y="320" text-anchor="middle" fill="#767676">2017</text>
+<text x="193.8" y="320" text-anchor="middle" fill="#767676">2018</text>
 <text x="254.7" y="320" text-anchor="middle" fill="#767676">2019</text>
+<text x="315.6" y="320" text-anchor="middle" fill="#767676">2020</text>
 <text x="376.4" y="320" text-anchor="middle" fill="#767676">2021</text>
+<text x="437.3" y="320" text-anchor="middle" fill="#767676">2022</text>
 <text x="498.2" y="320" text-anchor="middle" fill="#767676">2023</text>
+<text x="559.1" y="320" text-anchor="middle" fill="#767676">2024</text>
 <text x="620.0" y="320" text-anchor="middle" fill="#767676">2025</text>
 <line x1="72" x2="620" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M72.0,107.0 L132.9,116.6 L193.8,130.3 L254.7,154.7 L315.6,174.8 L376.4,208.5 L437.3,230.8 L498.2,219.2 L559.1,230.8 L620.0,241.7" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

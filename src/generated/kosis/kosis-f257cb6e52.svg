@@ -10,15 +10,15 @@
 <text x="64" y="109.0" text-anchor="end" fill="#767676">40,000</text>
 <line x1="72" x2="580" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">45,000</text>
-<text x="72.0" y="320" text-anchor="middle" fill="#767676">2016</text>
-<text x="135.5" y="320" text-anchor="middle" fill="#767676">2017</text>
-<text x="199.0" y="320" text-anchor="middle" fill="#767676">2018</text>
-<text x="262.5" y="320" text-anchor="middle" fill="#767676">2019</text>
-<text x="326.0" y="320" text-anchor="middle" fill="#767676">2020</text>
-<text x="389.5" y="320" text-anchor="middle" fill="#767676">2021</text>
-<text x="453.0" y="320" text-anchor="middle" fill="#767676">2022</text>
-<text x="516.5" y="320" text-anchor="middle" fill="#767676">2023</text>
-<text x="580.0" y="320" text-anchor="middle" fill="#767676">2024</text>
+<text x="72.0" y="320" text-anchor="middle" fill="#767676">16년</text>
+<text x="135.5" y="320" text-anchor="middle" fill="#767676">17년</text>
+<text x="199.0" y="320" text-anchor="middle" fill="#767676">18년</text>
+<text x="262.5" y="320" text-anchor="middle" fill="#767676">19년</text>
+<text x="326.0" y="320" text-anchor="middle" fill="#767676">20년</text>
+<text x="389.5" y="320" text-anchor="middle" fill="#767676">21년</text>
+<text x="453.0" y="320" text-anchor="middle" fill="#767676">22년</text>
+<text x="516.5" y="320" text-anchor="middle" fill="#767676">23년</text>
+<text x="580.0" y="320" text-anchor="middle" fill="#767676">24년</text>
 <line x1="72" x2="580" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M72.0,118.8 L135.5,116.9 L199.0,131.9 L262.5,103.9 L326.0,86.0 L389.5,113.5 L453.0,146.8 L516.5,144.4 L580.0,169.3" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="580.0" cy="169.3" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>

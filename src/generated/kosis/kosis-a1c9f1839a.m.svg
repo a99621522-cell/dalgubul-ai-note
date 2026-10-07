@@ -12,11 +12,11 @@
 <text x="52" y="88.2" text-anchor="end" fill="#767676">400,000</text>
 <line x1="60" x2="262" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="45.0" text-anchor="end" fill="#767676">500,000</text>
-<text x="60.0" y="280" text-anchor="middle" fill="#767676">2020</text>
-<text x="110.5" y="280" text-anchor="middle" fill="#767676">2021</text>
-<text x="161.0" y="280" text-anchor="middle" fill="#767676">2022</text>
-<text x="211.5" y="280" text-anchor="middle" fill="#767676">2023</text>
-<text x="262.0" y="280" text-anchor="middle" fill="#767676">2024</text>
+<text x="60.0" y="280" text-anchor="middle" fill="#767676">20년</text>
+<text x="110.5" y="280" text-anchor="middle" fill="#767676">21년</text>
+<text x="161.0" y="280" text-anchor="middle" fill="#767676">22년</text>
+<text x="211.5" y="280" text-anchor="middle" fill="#767676">23년</text>
+<text x="262.0" y="280" text-anchor="middle" fill="#767676">24년</text>
 <line x1="60" x2="262" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
 <path d="M60.0,133.6 L110.5,112.7 L161.0,86.8 L211.5,79.1 L262.0,88.3" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="262.0" cy="88.3" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>

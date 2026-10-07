@@ -8,12 +8,12 @@
 <text x="52" y="117.0" text-anchor="end" fill="#767676">20</text>
 <line x1="60" x2="306" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="45.0" text-anchor="end" fill="#767676">25</text>
-<text x="60.0" y="280" text-anchor="middle" fill="#767676">2014</text>
-<text x="109.2" y="280" text-anchor="middle" fill="#767676">2016</text>
-<text x="158.4" y="280" text-anchor="middle" fill="#767676">2018</text>
-<text x="207.6" y="280" text-anchor="middle" fill="#767676">2020</text>
-<text x="256.8" y="280" text-anchor="middle" fill="#767676">2022</text>
-<text x="306.0" y="280" text-anchor="middle" fill="#767676">2024</text>
+<text x="60.0" y="280" text-anchor="middle" fill="#767676">14년</text>
+<text x="109.2" y="280" text-anchor="middle" fill="#767676">16년</text>
+<text x="158.4" y="280" text-anchor="middle" fill="#767676">18년</text>
+<text x="207.6" y="280" text-anchor="middle" fill="#767676">20년</text>
+<text x="256.8" y="280" text-anchor="middle" fill="#767676">22년</text>
+<text x="306.0" y="280" text-anchor="middle" fill="#767676">24년</text>
 <line x1="60" x2="306" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
 <path d="M60.0,205.6 L84.6,208.5 L109.2,202.7 L133.8,189.8 L158.4,195.5 L183.0,208.5 L207.6,208.5 L232.2,202.7 L256.8,186.9 L281.4,197.0 L306.0,198.4" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="306.0" cy="198.4" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>

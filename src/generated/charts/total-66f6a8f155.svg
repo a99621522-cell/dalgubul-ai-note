@@ -10,12 +10,17 @@
 <text x="64" y="109.0" text-anchor="end" fill="#767676">14,500</text>
 <line x1="72" x2="644" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">15,000</text>
-<text x="107.8" y="320" text-anchor="middle" fill="#767676">2024.2</text>
-<text x="215.0" y="320" text-anchor="middle" fill="#767676">2024.8</text>
-<text x="322.2" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="429.5" y="320" text-anchor="middle" fill="#767676">2025.8</text>
-<text x="536.8" y="320" text-anchor="middle" fill="#767676">2026.2</text>
-<text x="644.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="107.8" y="320" text-anchor="middle" fill="#767676">24.2</text>
+<text x="161.4" y="320" text-anchor="middle" fill="#767676">24.5</text>
+<text x="215.0" y="320" text-anchor="middle" fill="#767676">24.8</text>
+<text x="268.6" y="320" text-anchor="middle" fill="#767676">24.11</text>
+<text x="322.2" y="320" text-anchor="middle" fill="#767676">25.2</text>
+<text x="375.9" y="320" text-anchor="middle" fill="#767676">25.5</text>
+<text x="429.5" y="320" text-anchor="middle" fill="#767676">25.8</text>
+<text x="483.1" y="320" text-anchor="middle" fill="#767676">25.11</text>
+<text x="536.8" y="320" text-anchor="middle" fill="#767676">26.2</text>
+<text x="590.4" y="320" text-anchor="middle" fill="#767676">26.5</text>
+<text x="644.0" y="320" text-anchor="middle" fill="#767676">26.8</text>
 <line x1="72" x2="644" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M89.9,158.3 L143.5,158.3 M143.5,158.3 L179.2,158.3 M197.1,158.3 L250.8,158.3 M322.2,158.3 L393.8,158.3 M393.8,158.3 L518.9,158.3 M518.9,158.3 L626.1,158.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
 <path d="M72.0,158.3 L89.9,158.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

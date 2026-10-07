@@ -8,12 +8,17 @@
 <text x="64" y="130.3" text-anchor="end" fill="#767676">150,000</text>
 <line x1="72" x2="636" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">160,000</text>
-<text x="107.2" y="320" text-anchor="middle" fill="#767676">2024.2</text>
-<text x="213.0" y="320" text-anchor="middle" fill="#767676">2024.8</text>
-<text x="318.8" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="424.5" y="320" text-anchor="middle" fill="#767676">2025.8</text>
-<text x="530.2" y="320" text-anchor="middle" fill="#767676">2026.2</text>
-<text x="636.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="107.2" y="320" text-anchor="middle" fill="#767676">24.2</text>
+<text x="160.1" y="320" text-anchor="middle" fill="#767676">24.5</text>
+<text x="213.0" y="320" text-anchor="middle" fill="#767676">24.8</text>
+<text x="265.9" y="320" text-anchor="middle" fill="#767676">24.11</text>
+<text x="318.8" y="320" text-anchor="middle" fill="#767676">25.2</text>
+<text x="371.6" y="320" text-anchor="middle" fill="#767676">25.5</text>
+<text x="424.5" y="320" text-anchor="middle" fill="#767676">25.8</text>
+<text x="477.4" y="320" text-anchor="middle" fill="#767676">25.11</text>
+<text x="530.2" y="320" text-anchor="middle" fill="#767676">26.2</text>
+<text x="583.1" y="320" text-anchor="middle" fill="#767676">26.5</text>
+<text x="636.0" y="320" text-anchor="middle" fill="#767676">26.8</text>
 <line x1="72" x2="636" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M89.6,168.2 L142.5,162.0 M142.5,162.0 L177.8,199.6 M195.4,194.4 L248.2,200.0 M318.8,202.2 L389.2,98.8 M389.2,98.8 L512.6,99.5 M512.6,99.5 L618.4,73.0" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
 <path d="M72.0,161.2 L89.6,168.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

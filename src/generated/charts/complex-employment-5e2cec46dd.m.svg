@@ -10,9 +10,9 @@
 <text x="52" y="99.0" text-anchor="end" fill="#767676">10,500</text>
 <line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="45.0" text-anchor="end" fill="#767676">11,000</text>
-<text x="116.0" y="280" text-anchor="middle" fill="#767676">2024.8</text>
-<text x="200.0" y="280" text-anchor="middle" fill="#767676">2025.8</text>
-<text x="284.0" y="280" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="67.0" y="280" text-anchor="middle" fill="#767676">24년</text>
+<text x="151.0" y="280" text-anchor="middle" fill="#767676">25년</text>
+<text x="235.0" y="280" text-anchor="middle" fill="#767676">26년</text>
 <line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
 <path d="M67.0,167.5 L88.0,160.1 M88.0,160.1 L102.0,167.3 M109.0,174.4 L130.0,194.9 M158.0,137.6 L186.0,83.7 M186.0,83.7 L235.0,84.3 M235.0,84.3 L277.0,98.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
 <path d="M60.0,165.6 L67.0,167.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

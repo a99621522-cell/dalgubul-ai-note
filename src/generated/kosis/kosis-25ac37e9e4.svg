@@ -8,12 +8,12 @@
 <text x="64" y="130.3" text-anchor="end" fill="#767676">150</text>
 <line x1="72" x2="530" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">200</text>
-<text x="137.4" y="320" text-anchor="middle" fill="#767676">2024.2</text>
-<text x="215.9" y="320" text-anchor="middle" fill="#767676">2024.8</text>
-<text x="294.5" y="320" text-anchor="middle" fill="#767676">2025.2</text>
-<text x="373.0" y="320" text-anchor="middle" fill="#767676">2025.8</text>
-<text x="451.5" y="320" text-anchor="middle" fill="#767676">2026.2</text>
-<text x="530.0" y="320" text-anchor="middle" fill="#767676">2026.8</text>
+<text x="137.4" y="320" text-anchor="middle" fill="#767676">24.2</text>
+<text x="215.9" y="320" text-anchor="middle" fill="#767676">24.8</text>
+<text x="294.5" y="320" text-anchor="middle" fill="#767676">25.2</text>
+<text x="373.0" y="320" text-anchor="middle" fill="#767676">25.8</text>
+<text x="451.5" y="320" text-anchor="middle" fill="#767676">26.2</text>
+<text x="530.0" y="320" text-anchor="middle" fill="#767676">26.8</text>
 <line x1="72" x2="530" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
 <path d="M268.3,165.1 L438.4,182.2" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
 <path d="M72.0,205.9 L85.1,149.9 L98.2,156.1 L111.3,152.3 L124.3,157.9 L137.4,179.3 L150.5,133.0 L163.6,154.0 L176.7,132.7 L189.8,172.1 L202.9,174.7 L215.9,175.9 L229.0,208.8 L242.1,167.5 L255.2,142.6 L268.3,165.1" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

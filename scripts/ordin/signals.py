@@ -52,6 +52,17 @@ def law_url(name, art=""):
     return f"https://www.law.go.kr/법령/{name.replace(' ', '')}" + (f"/제{art}조" if art and "의" not in art else (f"/제{art.replace('의', '조의')}" if art else ""))
 
 
+STOP = {"등", "및", "의", "관한", "위한", "대한", "따른", "사항", "경우", "특례", "기준", "방법", "절차"}
+
+
+def title_hit(title: str, ctx: str) -> bool:
+    """조문 제목 낱말(2자 이상, 흔한 말 제외)이 인용 구절·자치법규 조 제목에 있으면 True — 낱말 1~2개면 모두, 3개 이상이면 2개 이상."""
+    words = [w for w in re.split(r"[\s,·ㆍ()]+", title or "") if len(w) >= 2 and w not in STOP]
+    words = [re.sub(r"(의|에|을|를|과|와|은|는)$", "", w) for w in words]
+    words = [w for w in words if len(w) >= 2]
+    return bool(words) and sum(w in ctx for w in words) >= min(len(words), 2)
+
+
 def art_sort(a: str):
     return [int(x) for x in a.split("의")] if re.fullmatch(r"\d+(의\d+)?", a or "") else [9999]
 
@@ -200,10 +211,14 @@ def main():
                     h = jh.get(f"{L['law_id']}|{r['art']}")
                     if not h or not prom:
                         continue
-                    later = [x for x in h.get("rows", []) if (x.get("d") or "") > prom and x.get("why") != "제정"]
+                    later = [x for x in h.get("rows", []) if prom < (x.get("d") or "") <= TODAY and x.get("why") != "제정"]   # 시행 예정 개정은 뺀다
                     if not later:
                         continue
                     ren = [x for x in later if re.search(r"전부개정|전문개정|이동", (x.get("why") or "") + (x.get("rev") or ""))]
+                    # 현행 조문 제목의 낱말이 인용 구절이나 자치법규 조 제목에 있으면 같은 내용을 가리키는 것으로 보고 '개정 뒤 미개정'으로만 둔다
+                    if ren and title_hit(la.get("t", ""), r["ctx"] + " " + (a.get("title", "") if a else "")):
+                        ev2["title_match"] = True
+                        ren = []
                     ev2["changes"] = [{"d": ymd(x["d"]), "why": x.get("why", ""), "rev": x.get("rev", "")} for x in later][-6:]
                     ev2["ordin_prom"] = ymd(prom)
                     add(d, a, "article_renumber" if ren else "article_changed", ev=ev2)
@@ -219,15 +234,16 @@ def main():
                         add(d, a, "ministry_outdated", ev={"old": m["old"], "now": m.get("now", ""), "ctx": t[max(0, i - 40): i + 60]},
                             fix={"old": m["old"], "new": m.get("now", "")} if m.get("now") and m["now"] in gov else None)
                 for tm in TERMS.get("terms", []):
-                    pat = re.escape(tm["old"]) + (r"(?!단|재단|센터)" if tm["old"] == "문화재" else "") + (r"(?!환|질)" if tm["old"] == "간질" else "")
+                    pat = r"(?<![가-힣])" + re.escape(tm["old"]) + (r"(?!단|재단|센터)" if tm["old"] == "문화재" else "") + (r"(?!환|질)" if tm["old"] == "간질" else "")
                     mm = re.search(pat, t)
                     if mm:
                         add(d, a, "term_outdated", ev={"old": tm["old"], "new": tm["new"], "basis": tm["basis"], "ctx": t[max(0, mm.start() - 40): mm.end() + 60]})
                 if o["key"] == "gunwi":
-                    mm = re.search(r"경상북도|경북(?!대)|(?<![가-힣])도지사", t)
+                    mm = re.search(r"경상북도(?!\s*(또는|및|산|·|ㆍ))|경북(?!대|지원|지부|지역본부)|(?<![가-힣ㆍ·])도지사", t)
                     if mm:
                         add(d, a, "gunwi_gb", ev={"ctx": t[max(0, mm.start() - 40): mm.end() + 60], "word": mm.group(0)})
-                if "과태료" in (a.get("title") or "") and not re.search(r"「[^」]+」|(?<![가-힣])법\s*제\d+조", t):
+                raw = a.get("text") or ""
+                if "과태료" in (a.get("title") or "") and not re.search(r"삭\s*제", raw[:40]) and not re.search(r"「[^」]+」|(?<![가-힣])(법|영|시행령|시행규칙|규칙|조례)\s*제\s*\d+\s*조", raw):
                     add(d, a, "penalty_basis", ev={"ctx": t[:200]})
             for src in [*(a.get("text") or "" for a in arts), *(x.get("text") or "" for x in d.get("addenda") or [])]:
                 for mm in re.finditer(r"(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일\s*까지\s*(?:그\s*)?(효력을\s*가진다|유효하다|효력이\s*있다)", src):

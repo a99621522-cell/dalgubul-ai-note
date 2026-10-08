@@ -9,7 +9,7 @@ import html
 import re
 
 NAME = r"「([^「」]{2,90})」"
-ART = r"\s*제\s*(\d+)\s*조(?:\s*의\s*(\d+))?(?:\s*제\s*(\d+)\s*항)?(?:\s*제\s*(\d+)\s*호)?"
+ART = r"\s*제\s*(\d+)\s*조(?:\s*의\s*(\d+)(?!\s*호))?(?:\s*제\s*(\d+)\s*항)?(?:\s*제\s*(\d+)\s*호)?"
 ALIAS_DEF = re.compile(NAME + r"[^「」]{0,40}?\(\s*이하\s*[“\"']([^”\"']{1,12})[”\"']\s*(?:이)?라\s*한다\s*\)")
 ALIAS_DEF2 = re.compile(r"같은\s*법\s*(시행령|시행규칙)\s*\(\s*이하\s*[“\"']([^”\"']{1,12})[”\"']\s*(?:이)?라\s*한다\s*\)")
 TOKEN = re.compile(NAME + r"(?:\s*\([^()]{0,60}\))?(?:" + ART + r")?|같은\s*법\s*(시행령|시행규칙)?(?:" + ART + r")?")
@@ -36,34 +36,38 @@ def extract(articles: list[dict]) -> list[dict]:
         for m in ALIAS_DEF2.finditer(text):
             if last:
                 aliases[m.group(2).strip()] = f"{last} {m.group(1)}"
-        # 1) 겹낫표 이름과 '같은 법'
+        # 겹낫표 이름·'같은 법'·약칭('법 제n조')을 글 순서대로 읽는다 — '같은 법'은 바로 앞에 나온 법률(약칭 포함)을 가리킨다
+        toks = [(m.start(), "t", m) for m in TOKEN.finditer(text)]
+        if aliases:
+            pat = re.compile(r"(?<![가-힣「])(" + "|".join(re.escape(k) for k in sorted(aliases, key=len, reverse=True)) + r")" + ART)
+            toks += [(m.start(), "a", m) for m in pat.finditer(text)]
+        toks.sort(key=lambda x: x[0])
         spans = []
-        for m in TOKEN.finditer(text):
-            if m.group(1):
+        for pos, kind, m in toks:
+            if kind == "a":
+                if any(s0 <= pos < e0 for s0, e0 in spans):
+                    continue
+                law = aliases[m.group(1)]
+                no, ui, pa, it = m.group(2), m.group(3), m.group(4), m.group(5)
+                k = "alias"
+            elif m.group(1):
                 law = re.sub(r"\s+", " ", m.group(1).strip())
                 no, ui, pa, it = m.group(2), m.group(3), m.group(4), m.group(5)
-                kind = "named"
+                k = "named"
             else:
                 if not last:
                     continue
                 law = last if not m.group(6) else f"{last} {m.group(6)}"
                 no, ui, pa, it = m.group(7), m.group(8), m.group(9), m.group(10)
-                kind = "same"
-            if not re.search(r"(법|법률|령|규칙|규정|고시|훈령|예규|지침|조례|기준|요령)$", law):
+                k = "same"
+            if not re.search(r"(법|법률|령|규칙|규정|고시|훈령|예규|지침|요령|기준|조례)$", law):
                 continue   # 「 」 안이 법령 이름이 아님(서식 제목·사업명 등)
             if re.search(r"(법|법률)$", law):
                 last = law
-            spans.append(m.span())
-            out.append({"no": a.get("no", ""), "law": law, "art": _art(no, ui), "para": pa or "", "item": it or "", "kind": kind,
+            if kind == "t":
+                spans.append(m.span())
+            out.append({"no": a.get("no", ""), "law": law, "art": _art(no, ui), "para": pa or "", "item": it or "", "kind": k,
                         "ctx": text[max(0, m.start() - 30): m.end() + 50].replace("\n", " ")})
-        # 2) 약칭: '법 제n조', '영 제n조', '시행령 제n조' (겹낫표·같은 법 안의 것은 건너뜀)
-        if aliases:
-            pat = re.compile(r"(?<![가-힣「])(" + "|".join(re.escape(k) for k in sorted(aliases, key=len, reverse=True)) + r")" + ART)
-            for m in pat.finditer(text):
-                if any(s <= m.start() < e for s, e in spans):
-                    continue
-                out.append({"no": a.get("no", ""), "law": aliases[m.group(1)], "art": _art(m.group(2), m.group(3)), "para": m.group(4) or "",
-                            "item": m.group(5) or "", "kind": "alias", "ctx": text[max(0, m.start() - 30): m.end() + 50].replace("\n", " ")})
     return out
 
 

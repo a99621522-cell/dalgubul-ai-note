@@ -1,102 +1,96 @@
 ---
-/** 대구 주력·미래 신산업 묶음(KSIC 세세분류 묶음)별 생산액·부가가치 — 운영자 지시 2026-10-08 '이 내용으로 산업 통계 페이지에 표로 넣어'.
- *  데이터 data/kosis/industry_bundles.json(scripts/industry_bundles.py): 묶음 정의·대구 묶음 값은 대구정책연구원 연구 보고서 표,
- *  전국 값은 KOSIS 광업·제조업조사 전국 세세분류 칸을 같은 코드로 더한 값, 대구 중분류 합은 KOSIS 공개 값. 덧셈·나눗셈만, 평가·순위 없음. */
+/** 대구 주력·미래 신산업 관련 업종(통계청 중분류) — 운영자 지시 2026-10-08 '통계청 자료로 작성하는게 정확할 것 같은데'.
+ *  데이터 data/kosis/industry_bundles.json(scripts/industry_bundles.py): 값은 모두 KOSIS(광업·제조업조사 10인 이상·전국사업체조사 1인 이상)의
+ *  대구·전국 중분류 값. 연구 보고서는 산업 묶음의 업종 코드 정의만 빌린다(보고서의 대구 수치는 공개 통계로 확인할 수 없어 싣지 않는다).
+ *  덧셈·나눗셈(전국 대비 비중·부가가치율)만, 평가·순위 없음. */
 import fs from 'node:fs';
 
 type Num = number | null;
-type Code = { ksic: string; name: string; kosis_name?: string; scope?: string; establishments?: Num; production?: Num; value_added?: Num };
-type Group = {
-  name: string; table: string; role: string; codes_n: number; codes_stated: number | null; survey_out_n: number;
-  report: { est: number; emp: number; prod: number; va: number };
-  report_national: { nat_prod?: number; nat_va?: number };
-  national: { establishments: Num; production: Num; value_added: Num; exact: boolean; missing: string[]; renamed: string[] };
-  national_matches_report: boolean | null;
-  daegu_mid: { codes: string[]; names: string[]; establishments: Num; production: Num; value_added: Num };
-  codes: Code[];
+type Pair = { dg: Num; nat: Num };
+type Row = { code: string; name: string; bundles: string[]; manufacturing: boolean; census: { est: Pair; emp: Pair }; survey: { est: Pair; prod: Pair; va: Pair } | null };
+type Bundle = { name: string; role: string; page: number | null; codes: { ksic: string; name: string }[]; mids: string[] };
+type Data = {
+  survey_year: number | null; census_year: number | null;
+  definition: { publisher: string; title: string; series: string };
+  sources: { name: string; tbl_id: string; url: string }[];
+  mfg_total: { census: { est: Pair; emp: Pair }; survey: { est: Pair; prod: Pair; va: Pair } };
+  rows: Row[]; bundles: Bundle[];
 };
-type Data = { year: number; report: { title: string; publisher: string; series: string; published: string }; kosis: { tbl_id: string; name: string; url: string }; groups: Group[] };
 const D = (() => { try { return JSON.parse(fs.readFileSync('data/kosis/industry_bundles.json', 'utf-8')) as Data; } catch { return null; } })();
 
-const eok = (v: Num | undefined) => v == null ? '—' : Math.round(v / 100).toLocaleString('ko-KR');   // 백만 원 → 억 원
 const n = (v: Num | undefined) => v == null ? '—' : v.toLocaleString('ko-KR');
+const eok = (v: Num | undefined) => v == null ? '—' : Math.round(v / 100).toLocaleString('ko-KR');   // 백만 원 → 억 원
 const pct = (a: Num | undefined, b: Num | undefined) => a == null || !b ? '—' : (a / b * 100).toFixed(1);
-/** 전국 합을 그대로 쓸 수 있는 묶음: 코드가 모두 그 해 표에 있고 이름이 같은 경우. 일부 코드가 없으면 '참고', 절반 가까이 없으면 비움 */
-const natUse = (g: Group) => g.national.exact ? 'ok' : (g.national.missing.length >= 3 ? 'none' : 'ref');
-const ref = (g: Group) => natUse(g) === 'ref' ? '※' : '';
-const src = D ? `${D.report.publisher} 「${D.report.title}」(${D.report.series})` : '';
-const matched = D ? D.groups.filter(g => g.national_matches_report) : [];
-const matchedVa = D ? D.groups.filter(g => g.report_national.nat_va != null && g.report_national.nat_va === g.national.value_added) : [];
-const vaNote = matchedVa.length ? `(전국 부가가치가 실린 ${matchedVa.map(g => g.name).join('·')}은 부가가치도 같음)` : '';
-const refNote = (g: Group) => `업종 ${g.national.missing.length}개(${g.national.missing.join('·')})가 ${D?.year}년 표(한국표준산업분류 11차)에 없는 코드이고`
-  + (g.national.renamed.length ? `, ${g.national.renamed.join('·')}는 보고서 업종 이름과 표의 이름이 다릅니다` : '') + '. 전국 값과 비중은 참고값입니다.';
-const outNote = (g: Group) => `소프트웨어·정보서비스 업종 ${g.survey_out_n}개(${g.codes.filter(c => c.scope === '조사 대상 아님').map(c => c.ksic).join('·')})는 광업·제조업조사 대상이 아니어서 생산액·부가가치에 없고 사업체 수에만 들어갑니다.`
-  + (g.codes_n - g.survey_out_n <= 2 ? ` 생산액은 제조 ${g.codes_n - g.survey_out_n}개 업종만의 값입니다.` : '');
-const mech = D?.groups.find(g => g.name === '기계요소 소재부품');
-const batt = mech ? pct(mech.codes.filter(c => c.ksic === '28202' || c.ksic === '28209').reduce((a, c) => a + (c.production ?? 0), 0), mech.national.production) : '';
+const share = (p: Pair) => pct(p.dg, p.nat);
+const mfg = D ? D.rows.filter(r => r.survey) : [];
+const svc = D ? D.rows.filter(r => !r.survey) : [];
+const def = D ? `${D.definition.publisher} 「${D.definition.title}」(${D.definition.series})` : '';
+const T = D?.mfg_total;
 ---
 {D && <section class="ib" id="bundles">
-  <div class="section-head"><h2>대구 주력·미래 신산업 묶음별 생산액·부가가치</h2><span class="meta">{D.year}년 · 10인 이상 광업·제조업조사</span></div>
-  <p class="meta">{src}이 세세분류(5자리) 업종을 묶어 정한 대구 주력산업 3개·미래 신산업 5개입니다. 대구 묶음 값은 보고서 표 4-4~4-12를 옮겼습니다. 전국 값은 국가데이터처 KOSIS {D.kosis.name}의 전국 세세분류 칸을 같은 업종 코드로 더한 값입니다. 대구 세세분류 값은 KOSIS 에 공개되지 않아(대구는 중분류까지 공개), 묶음이 걸친 중분류 전체의 대구 값을 함께 둡니다.</p>
-  <div class="callout info">전국 값을 이렇게 더하면 보고서에 전국 값이 있는 {matched.length}개 묶음({matched.map(g => g.name).join('·')})의 생산액이 보고서와 백만 원 단위까지 같습니다{vaNote}. 대구 비중은 보고서 대구 값을 이 전국 값으로 나눈 것입니다.</div>
-  <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 묶음별 생산액·부가가치(${D.year})`}>
+  <div class="section-head"><h2>대구 주력·미래 신산업 관련 업종</h2><span class="meta">통계청 중분류 · 광업·제조업조사 {D.survey_year ?? '—'}년 · 전국사업체조사 {D.census_year ?? '—'}년</span></div>
+  <p class="meta">{def}이 세세분류(5자리) 업종을 묶어 정한 대구 주력산업 3개·미래 신산업 5개를, 통계청이 대구 값을 공개하는 가장 세밀한 단계인 <b>중분류(2자리)</b>로 보여 줍니다. 값은 모두 국가데이터처 KOSIS 이고, 묶음 업종이 속한 중분류 <b>전체</b>의 값입니다(묶음보다 넓음). 대구 세세분류 값은 통계청이 공개하지 않아 싣지 않습니다.</p>
+
+  <h3 class="ib-h3">생산액·부가가치(10인 이상, 광업·제조업조사 {D.survey_year ?? ''}년)</h3>
+  <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 관련 제조업 중분류 생산액·부가가치(${D.survey_year ?? ''})`}>
     <thead>
-      <tr><th rowspan="2">산업 묶음</th><th rowspan="2" class="n" data-pri="3">업종 수</th><th colspan="3" class="c">대구 묶음(보고서)</th><th colspan="2" class="c">전국 묶음(KOSIS 세세분류 합)</th><th colspan="2" class="c">대구 비중(%)</th><th colspan="2" class="c">대구 중분류 합(KOSIS)</th></tr>
-      <tr><th class="n" data-pri="2">사업체(곳)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th><th class="n">생산액</th><th class="n">부가가치</th><th class="n" data-pri="3">생산액(억 원)</th><th class="n" data-pri="3">부가가치(억 원)</th></tr>
+      <tr><th rowspan="2">중분류</th><th rowspan="2" data-pri="3">관련 산업 묶음</th><th rowspan="2" class="n" data-pri="2">사업체(곳)</th><th colspan="2" class="c">생산액</th><th colspan="2" class="c">부가가치</th><th colspan="2" class="c" data-pri="2">부가가치율(%)</th></tr>
+      <tr><th class="n">대구(억 원)</th><th class="n">전국 대비(%)</th><th class="n">대구(억 원)</th><th class="n">전국 대비(%)</th><th class="n" data-pri="2">대구</th><th class="n" data-pri="2">전국</th></tr>
     </thead>
-    <tbody>{D.groups.map(g => {
-      const u = natUse(g);
-      return <tr>
-        <th scope="row">{g.name}<div class="tiny muted">{g.role} · {g.table}</div></th>
-        <td class="n">{g.codes_n}{g.codes_stated && g.codes_stated !== g.codes_n ? '/' + g.codes_stated : ''}</td>
-        <td class="n">{n(g.report.est)}</td>
-        <td class="n">{eok(g.report.prod)}</td>
-        <td class="n">{eok(g.report.va)}</td>
-        <td class="n">{u === 'none' ? '—' : ref(g) + eok(g.national.production)}</td>
-        <td class="n">{u === 'none' ? '—' : ref(g) + eok(g.national.value_added)}</td>
-        <td class="n">{u === 'none' ? '—' : ref(g) + pct(g.report.prod, g.national.production)}</td>
-        <td class="n">{u === 'none' ? '—' : ref(g) + pct(g.report.va, g.national.value_added)}</td>
-        <td class="n">{eok(g.daegu_mid.production)}<div class="tiny muted">{g.daegu_mid.codes.join('·')}</div></td>
-        <td class="n">{eok(g.daegu_mid.value_added)}</td>
-      </tr>; })}</tbody>
+    <tbody>
+      {mfg.map(r => { const s = r.survey!; return <tr>
+        <th scope="row">{r.code + " " + r.name}</th>
+        <td class="wrap tiny ib-bund">{r.bundles.join(', ')}</td>
+        <td class="n">{n(s.est.dg)}</td>
+        <td class="n">{eok(s.prod.dg)}</td><td class="n">{share(s.prod)}</td>
+        <td class="n">{eok(s.va.dg)}</td><td class="n">{share(s.va)}</td>
+        <td class="n">{pct(s.va.dg, s.prod.dg)}</td><td class="n">{pct(s.va.nat, s.prod.nat)}</td>
+      </tr>; })}
+      {T && <tr class="total"><th scope="row">제조업 전체(참고)</th><td></td><td class="n">{n(T.survey.est.dg)}</td><td class="n">{eok(T.survey.prod.dg)}</td><td class="n">{share(T.survey.prod)}</td><td class="n">{eok(T.survey.va.dg)}</td><td class="n">{share(T.survey.va)}</td><td class="n">{pct(T.survey.va.dg, T.survey.prod.dg)}</td><td class="n">{pct(T.survey.va.nat, T.survey.prod.nat)}</td></tr>}
+    </tbody>
   </table></div>
-  <h3 class="ib-h3">부가가치율(부가가치 ÷ 생산액)</h3>
-  <p class="meta">위 표의 값을 나눈 것입니다. 묶음 값과 중분류 합은 범위가 달라 같은 줄에서도 차이가 납니다.</p>
-  <div class="scroll-x"><table class="data-table compact" data-title={`대구 주력·미래 신산업 묶음별 부가가치율(${D.year})`}>
-    <thead><tr><th>산업 묶음</th><th class="n">대구 묶음(보고서, %)</th><th class="n">전국 묶음(KOSIS, %)</th><th class="n">대구 중분류 합(KOSIS, %)</th></tr></thead>
-    <tbody>{D.groups.map(g => { const u = natUse(g); return <tr>
-      <th scope="row">{g.name}</th>
-      <td class="n">{pct(g.report.va, g.report.prod)}</td>
-      <td class="n">{u === 'none' ? '—' : ref(g) + pct(g.national.value_added, g.national.production)}</td>
-      <td class="n">{pct(g.daegu_mid.value_added, g.daegu_mid.production)}</td>
-    </tr>; })}</tbody>
+
+  <h3 class="ib-h3">사업체·종사자(1인 이상, 전국사업체조사 {D.census_year ?? ''}년)</h3>
+  <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 관련 중분류 사업체·종사자(${D.census_year ?? ''})`}>
+    <thead><tr><th>중분류</th><th data-pri="3">관련 산업 묶음</th><th class="n">대구 사업체(곳)</th><th class="n">전국 대비(%)</th><th class="n">대구 종사자(명)</th><th class="n">전국 대비(%)</th></tr></thead>
+    <tbody>
+      {D.rows.map(r => <tr>
+        <th scope="row">{r.code + " " + r.name}</th>
+        <td class="wrap tiny ib-bund">{r.bundles.join(', ')}</td>
+        <td class="n">{n(r.census.est.dg)}</td><td class="n">{share(r.census.est)}</td>
+        <td class="n">{n(r.census.emp.dg)}</td><td class="n">{share(r.census.emp)}</td>
+      </tr>)}
+      {T && <tr class="total"><th scope="row">제조업 전체(참고)</th><td></td><td class="n">{n(T.census.est.dg)}</td><td class="n">{share(T.census.est)}</td><td class="n">{n(T.census.emp.dg)}</td><td class="n">{share(T.census.emp)}</td></tr>}
+    </tbody>
   </table></div>
+
   <ul class="meta ib-notes">
-    <li><b>기준이 둘입니다.</b> 사업체 수는 보고서 표 그대로 1인 이상(전국사업체조사)이고, 생산액·부가가치는 10인 이상(광업·제조업조사)입니다. 같은 사업체 집합이 아닙니다.</li>
-    <li><b>대구 중분류 합</b>(생산액·부가가치)은 묶음 업종이 속한 중분류(코드 2자리) 전체의 대구 값을 더한 것이라 묶음 값보다 넓습니다. 여러 묶음이 같은 중분류에 걸쳐 묶음끼리 더하면 겹칩니다(예: 30 자동차 부품은 모빌리티부품·미래모빌리티 양쪽).</li>
-    {D.groups.filter(g => natUse(g) === 'ref').map(g => <li><b>※ {g.name}</b>: {refNote(g)}</li>)}
-    {D.groups.filter(g => natUse(g) === 'none').map(g => <li><b>{g.name}</b>: 업종 코드가 옛 분류(10차) 번호라 {g.national.missing.length}개({g.national.missing.join('·')})가 {D.year}년 표에 없어 전국 값을 더하지 않았습니다.</li>)}
-    {D.groups.filter(g => g.survey_out_n > 0).map(g => <li><b>{g.name}</b>: {outNote(g)}</li>)}
-    {batt && <li><b>기계요소 소재부품</b> 묶음에는 이차전지 2개 업종(28202·28209)이 들어 있습니다(전국 묶음 생산액의 {batt}%).</li>}
+    <li><b>기준이 둘입니다.</b> 생산액·부가가치는 종사자 10인 이상 사업체(광업·제조업조사), 사업체·종사자는 1인 이상 전체(전국사업체조사)라 같은 사업체 집합이 아니고 조사 연도도 다릅니다.</li>
+    <li><b>중분류는 묶음보다 넓습니다.</b> 예를 들어 '27 의료·정밀·광학기기'에는 의료기기 말고 측정·제어기기·안경 등이 함께 들어 있습니다. 한 중분류가 여러 묶음에 걸쳐 있으니 묶음끼리 더하지 마세요.</li>
+    {svc.length > 0 && <li><b>{svc.map(r => r.code + ' ' + r.name).join(', ')}</b>은 서비스업이라 광업·제조업조사 대상이 아니어서 생산액·부가가치 표에 없습니다.</li>}
+    <li>— 는 KOSIS 값이 없거나 사업체가 적어 비공개 처리된 칸입니다. 전국 대비·부가가치율은 이 사이트의 나눗셈이고, 금액은 백만 원을 억 원으로 반올림했습니다.</li>
   </ul>
+
   <details class="ib-codes">
-    <summary>묶음별 업종 코드와 전국 값 보기</summary>
-    <div class="scroll-x"><table class="data-table compact" data-title={`산업 묶음별 업종 코드와 전국 값(${D.year}, 10인 이상)`}>
-      <thead><tr><th>산업 묶음</th><th>업종 코드</th><th>업종(보고서 표기)</th><th class="n">전국 사업체(곳)</th><th class="n">전국 생산액(억 원)</th><th class="n">전국 부가가치(억 원)</th><th>비고</th></tr></thead>
-      <tbody>{D.groups.flatMap(g => g.codes.map(c => <tr>
-        <td>{g.name}</td><td>{c.ksic}</td><td>{c.name}</td>
-        <td class="n">{n(c.establishments)}</td><td class="n">{eok(c.production)}</td><td class="n">{eok(c.value_added)}</td>
-        <td class="wrap">{c.scope ?? (g.national.renamed.includes(c.ksic) ? '표의 이름: ' + (c.kosis_name ?? '') : '')}</td>
-      </tr>))}</tbody>
+    <summary>산업 묶음 정의(세세분류 업종 코드)와 관련 중분류 보기</summary>
+    <div class="scroll-x"><table class="data-table compact" data-title="대구 주력·미래 신산업 묶음 정의">
+      <thead><tr><th>산업 묶음</th><th>구분</th><th class="n">업종 수</th><th>관련 중분류</th><th>세세분류 업종(코드)</th></tr></thead>
+      <tbody>{D.bundles.map(b => <tr>
+        <th scope="row">{b.name}</th><td>{b.role}</td><td class="n">{b.codes.length}</td>
+        <td class="wrap">{b.mids.join('·')}</td>
+        <td class="wrap tiny">{b.codes.map(c => `${c.ksic} ${c.name}`).join(', ')}</td>
+      </tr>)}</tbody>
     </table></div>
+    <p class="meta">업종 코드는 {def}에 실린 것을 옮겼습니다(보고서 표기 그대로, 일부 묶음은 한국표준산업분류 10차·11차 번호가 섞여 있음).</p>
   </details>
-  <p class="meta">출처: {src} 표 4-4~4-12(대구 묶음 사업체·생산액·부가가치, 업종 코드); 국가데이터처 KOSIS <a href={D.kosis.url} rel="noopener">{D.kosis.name}({D.kosis.tbl_id})</a> {D.year}년 전국 세세분류·대구 중분류. 덧셈·나눗셈만 했고 평가·순위가 아닙니다.</p>
+  <p class="meta">출처: 국가데이터처 KOSIS {D.sources.map((s, i) => <>{i ? ', ' : ''}<a href={s.url} rel="noopener">{s.name}({s.tbl_id})</a></>)}. 산업 묶음 정의: {def}. 평가·순위가 아닙니다.</p>
 </section>}
 <style>
   .ib { margin-top: var(--s5); }
+  .ib-h3 { margin: var(--s3) 0 var(--s1); font-size: 1.05rem; }
+  .ib-bund { min-width: 11em; }
   .ib-notes { padding-left: 1.2em; margin: var(--s2) 0; overflow-wrap: anywhere; }
   .ib-notes li { margin: 2px 0; }
   .ib-codes { margin: var(--s2) 0; }
-  .ib-h3 { margin: var(--s3) 0 var(--s1); font-size: 1.05rem; }
   .ib-codes > summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
 </style>

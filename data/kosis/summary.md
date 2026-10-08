@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-06 · 표 39개 · 설정 config/kosis_tables.yml
+갱신 2026-10-08 · 표 41개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -28,7 +28,7 @@
 | mice-exhibition-sido | [지역별 시설별 전시회 개최건수](https://kosis.kr/statHtml/statHtml.do?orgId=430&tblId=DT_430001_05_003) | Y 2020~2026 | 2024 | 488 | 건 |
 | migration-age-sido | [시군구/성/연령(5세)별 순이동자수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26002) | Y 2020~2026 | 2025 | 360 | 명 |
 | migration-sido | [시군구별 이동자수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26001_A01) | M 202301~202612 | 202608 | 96208 | 명 |
-| mining-mfg-survey-sido | [시도/산업분류별 출하액생산액부가가치 및 주요생산비(10명 이상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104) | Y 2020~2026 | 2024 | 2072 | 개 |
+| mining-mfg-survey-sido | [시도/산업분류별 출하액생산액부가가치 및 주요생산비(10명 이상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104) | Y 2020~2026 | 2024 | 64197 | 개 |
 | population-sido | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | Y 2014~2026 | 2025 | 10257 | 명 |
 | population-sigungu-monthly | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | M 202401~202612 | 202609 | 29055 | 명 |
 | regional-employment-sigungu | [시군구/산업별 취업자(10차)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3A05S) | H 202001~202602 | 202401 | 534 | 천명 |

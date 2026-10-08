@@ -1,13 +1,12 @@
 {
  "file": "src/content/posts/2026-10-05-policy-automotive-tariff.md",
  "checked": "2026-10-08",
- "ok": 10,
+ "ok": 11,
  "total": 13,
- "ratio": 0.77,
+ "ratio": 0.85,
  "official_bad": [
-  "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」",
-  "산업통상부, 「2026년 8월 수출입 동향」",
-  "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)"
+  "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
+  "U.S. Federal Register 2026-15280, 「Procedures To Administer Import Adjustment Offset Amounts for Certain Imports of Automobile and Medium- and Heavy-Duty Vehicle Parts for Automobile and Medium- and Heavy-Duty Vehicle Engine Manufacturers」"
  ],
  "pass": false,
  "sources": [
@@ -76,36 +75,36 @@
    "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
    "date": "2026-09-15",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "대구본부세관",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "산업통상부, 「2026년 8월 수출입 동향」",
    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172145/view",
    "date": "2026-09-01",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "2026년 8월 수출입동향 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
    "date": "2026-10-01",
    "kind": "official",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
    "date_found": false,
    "ok": false,
-   "note": "ConnectTimeout"
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   },
   {
    "title": "U.S. Federal Register 2025-22845, Section 232 automobile parts inclusions process — January 2026 window",
@@ -125,11 +124,11 @@
    "date": "2026-07-29",
    "kind": "law",
    "status": 200,
-   "page_title": "Federal Register :: Procedures To Administer Import Adjustment Offset Amounts for Certain Imports of Automobile and Medi",
-   "title_match": 1.0,
+   "page_title": "Federal Register :: Request Access",
+   "title_match": 0.09,
    "date_found": false,
-   "ok": true,
-   "note": ""
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   },
   {
    "title": "愛知県, 「愛知県米国関税対策本部 第4回会議」(米国の関税措置に対する愛知県の対策パッケージ)",
@@ -163,7 +162,7 @@
    "status": 200,
    "page_title": "대구 기업 사전 — 다잇다",
    "title_match": 0.25,
-   "date_found": false,
+   "date_found": true,
    "ok": true,
    "note": ""
   }

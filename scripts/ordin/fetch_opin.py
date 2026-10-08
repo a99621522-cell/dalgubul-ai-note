@@ -122,8 +122,8 @@ def main():
             break
         r, _ = list_page(p, size)
         allrows += r
-        if r and all(x["seq"] in idx for x in r) and len(idx) >= total - len(allrows):
-            break   # 최신순 목록 — 이미 가진 사례만 나오면 그 뒤는 받은 것
+        if r and all(x["seq"] in idx for x in r) and len(idx) >= total:
+            break   # 최신순 목록 — 전부 가졌을 때만 일찍 멈춘다(앞 실행이 시간 예산으로 끊기면 오래된 사례가 뒤에 남는다)
     print(f"[opin] 목록 {len(allrows)}행 (전체 {total}건, {size}건씩 {pages}쪽)", flush=True)
     todo = [r for r in allrows if r["seq"] not in idx]
     print(f"[opin] 상세 받을 것 {len(todo)} (보유 {len(idx)})", flush=True)

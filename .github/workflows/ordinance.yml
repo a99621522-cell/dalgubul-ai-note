@@ -13,19 +13,19 @@ on:
         default: "false"
   push:
     branches: [ccr-a1fc4817-w0vo95]
-    paths: ["scripts/ordin/**", "config/ordinance.yml", ".github/workflows/ordinance.yml", "data/ordinance/run.txt"]
+    paths: ["data/ordinance/run.txt"]
 
 permissions:
   contents: write
 
 concurrency:
   group: ordinance
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -40,10 +40,10 @@ jobs:
           MODE=$(head -1 data/ordinance/run.txt 2>/dev/null || echo fetch)
           [ "$PROBE" = "true" ] && MODE=probe
           echo "mode=$MODE"
-          if [ "$MODE" = "probe" ]; then python3 scripts/ordin/probe.py; exit 0; fi
+          if [ "$MODE" = "probe" ]; then python3 -u scripts/ordin/probe.py; exit 0; fi
           set +e
-          python3 scripts/ordin/fetch.py
-          python3 scripts/ordin/signals.py
+          python3 -u scripts/ordin/fetch.py
+          [ -f scripts/ordin/signals.py ] && python3 -u scripts/ordin/signals.py
           echo "exit=$?"
       - name: 커밋
         run: |

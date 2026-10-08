@@ -1,0 +1,14 @@
+# 자치법규 정비 검토 — 대상 지자체. scripts/ordin/fetch.py 가 읽는다.
+# code: 국가법령정보센터 자치법규 검색 org 인자(지자체 기관코드). names: 검색 결과 '지자체기관명'으로 거를 이름(하나라도 일치).
+# 순서는 행정 순서(화면 표 순서). 순위가 아니다.
+orgs:
+  - {key: daegu,    name: 대구광역시,     code: "6270000", names: [대구광역시]}
+  - {key: jung,     name: 중구,           code: "3220000", names: [대구광역시 중구]}
+  - {key: dong,     name: 동구,           code: "3230000", names: [대구광역시 동구]}
+  - {key: seo,      name: 서구,           code: "3240000", names: [대구광역시 서구]}
+  - {key: nam,      name: 남구,           code: "3250000", names: [대구광역시 남구]}
+  - {key: buk,      name: 북구,           code: "3260000", names: [대구광역시 북구]}
+  - {key: suseong,  name: 수성구,         code: "3270000", names: [대구광역시 수성구]}
+  - {key: dalseo,   name: 달서구,         code: "3280000", names: [대구광역시 달서구]}
+  - {key: dalseong, name: 달성군,         code: "3290000", names: [대구광역시 달성군]}
+  - {key: gunwi,    name: 군위군,         code: "5270000", names: [대구광역시 군위군, 경상북도 군위군]}

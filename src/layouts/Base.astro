@@ -3,8 +3,8 @@ import '../styles/global.css';
 import { NAV, NAV_GROUPS, navItem } from '../nav';
 import { latestMonth, monthLabel } from '../lib/stats';
 import hwpxCompat from '../../data/hwpx/compat.json';   // 한글(HWPX) 승인 관문: approved 일 때만 HWP 단추(2026-10-06)
-interface Props { title?: string; seoTitle?: string; description?: string; current?: string; tags?: string[]; jsonld?: object[]; ogType?: string; crumb?: string; nocrumb?: boolean; wide?: boolean }
-const { title, seoTitle, description = '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고', current = '', tags = [], jsonld = [], ogType = 'website', crumb, nocrumb = false, wide = false } = Astro.props;
+interface Props { title?: string; seoTitle?: string; description?: string; current?: string; tags?: string[]; jsonld?: object[]; ogType?: string; crumb?: string; nocrumb?: boolean; wide?: boolean; noindex?: boolean }
+const { title, seoTitle, description = '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고', current = '', tags = [], jsonld = [], ogType = 'website', crumb, nocrumb = false, wide = false, noindex = false } = Astro.props;
 /** 브레드크럼(디자인·UI 개선 2차 2026-10-06): 홈 › 묶음 › 메뉴 › (crumb). 첫 화면과 nocrumb 페이지는 없음 */
 const crumbMenu = NAV.find(n => n.key === current);
 const crumbGroup = crumbMenu ? NAV_GROUPS.find(g => (g.items as readonly string[]).includes(current)) : undefined;
@@ -22,6 +22,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{fullTitle}</title>
   <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
   {tags.length > 0 && <meta name="keywords" content={tags.join(', ')} />}
   {canonical && <link rel="canonical" href={canonical} />}
   <meta property="og:title" content={fullTitle} />

@@ -1,0 +1,119 @@
+{
+ "file": "src/content/posts/2026-10-09-policy-robot-special-complex.md",
+ "checked": "2026-10-08",
+ "ok": 9,
+ "total": 9,
+ "ratio": 1.0,
+ "official_bad": [],
+ "pass": true,
+ "sources": [
+  {
+   "title": "산업통상부, 「로봇(대구·경북), 방산(경남), 이차전지(전남) 첨단 특화단지를 지역 첨단산업의 신규 거점으로 육성」(제9차 국가첨단전략산업위원회, KDI 경제정보센터 게시)",
+   "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=287613",
+   "date": "2026-09-30",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "로봇(대구·경북), 방산(경남), 이차전지(전남) 첨단 특화단지를 지역 첨단산업의 신규 거점으로 육성 한성숙 국무총리 주재 「제9차 국가첨단전략산업위원회」 개최 | 경제정책자료 |KDI 경제교육·정보센터",
+   "title_match": 0.86,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "SBS Biz, 「韓총리 \\\"2030년까지 민관 합동 로봇 20만대 보급\\\"」",
+   "url": "https://biz.sbs.co.kr/amp/article/20000337611",
+   "date": "2026-09-30",
+   "kind": "news",
+   "status": 200,
+   "page_title": "韓총리 &#34;2030년까지 민관 합동 로봇 20만대 보급&#34;",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "아이뉴스24, 「자동차부품 도시 대구, '휴머노이드 심장' 노린다…12개 기업 2조2000억 투자계획」",
+   "url": "https://www.inews24.com/view/2010625",
+   "date": "2026-09-30",
+   "kind": "news",
+   "status": 200,
+   "page_title": "자동차부품 도시 대구, &lsquo;휴머노이드 심장&rsquo; 노린다&hellip;12개 기업 2조2000억 투자계획",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "아이뉴스24, 「경북·대구, 국가첨단전략산업 '로봇 특화단지' 통합 지정…경북, '로봇 제조벨트' 국가 전략산업 됐다」",
+   "url": "https://www.inews24.com/view/2010627",
+   "date": "2026-09-30",
+   "kind": "news",
+   "status": 200,
+   "page_title": "경북&middot;대구, 국가첨단전략산업 &lsquo;로봇 특화단지&rsquo; 통합 지정&hellip;경북, &lsquo;로봇 제조벨트&rsquo; 국가 전략산업 됐다",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "산업연구원(KIET), 「제조 AX를 위한 피지컬 AI 생태계 발전 전략」(이준영)",
+   "url": "https://www.kiet.re.kr/research/issueView?issue_no=867&skey=&sval=&pg=1&pp=10",
+   "date": "2026-09-15",
+   "kind": "report",
+   "status": 200,
+   "page_title": "제조 AX를 위한 피지컬 AI 생태계 발전 전략 - KIET 산업연구원 - 연구 - 이슈 분석 - i-KIET 산업경제이슈",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "International Federation of Robotics(IFR), 「Five million robots now operate in factories globally」(World Robotics 2026)",
+   "url": "https://ifr.org/ifr-press-releases/five-million-robots-now-operate-in-factories-globally",
+   "date": "2026-09-24",
+   "kind": "official",
+   "status": 200,
+   "page_title": "International Federation of Robotics",
+   "title_match": 0.73,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "파이낸셜뉴스, 경북 구미 반도체 기업협의회 정기총회 — 품목별 상생소위원회 구성",
+   "url": "https://www.fnnews.com/news/202607081726123569",
+   "date": "2026-07-08",
+   "kind": "news",
+   "status": 200,
+   "page_title": "경북 구미 반도체 기업들 &#039;상생&#039;으로 경쟁력 높인다 - 파이낸셜뉴스",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "국가데이터처, 「광업제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2024년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
+   "date": "2026-10-08",
+   "kind": "data",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-09 공장등록, KSIC 코드·단지·종사자 신고값)·지원 이력·사업 DB(사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-10-08",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

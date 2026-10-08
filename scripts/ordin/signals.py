@@ -367,7 +367,11 @@ def main():
                             continue
                         if R.get("not_title") and re.search(R["not_title"], a.get("title") or ""):
                             continue
-                        hitp = next((p for p in paras if all(re.search(x, p) for x in R["all"]) and not any(re.search(x, p) for x in R.get("none", []))), None)
+                        # join_items: 항과 그 아래 호를 한 덩어리로(호에 서류 이름이 따로 적힌 경우), none_article: 조문 전체에 있으면 제외
+                        if R.get("none_article") and any(re.search(x, raw) for x in R["none_article"]):
+                            continue
+                        units_ = [p for p in re.split(r"(?=[①-⑳])", raw) if p.strip()] if R.get("join_items") else paras
+                        hitp = next((p for p in units_ if all(re.search(x, p) for x in R["all"]) and not any(re.search(x, p) for x in R.get("none", []))), None)
                         if hitp and R.get("special") == "rights":
                             # 그 항이 법률(또는 법·영 약칭) 조문을 인용하면 위임이 있는 것으로 보고 넘긴다.
                             if re.search(r"「[^」]+」|(?<![가-힣])(법|영|시행령|시행규칙)\s*(제\s*\d+\s*조|에\s*따라|에서\s*정하는)", hitp):

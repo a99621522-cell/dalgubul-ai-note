@@ -28,6 +28,7 @@ D = Path(os.environ.get("ORDIN_DATA") or ROOT / "data" / "ordinance")
 CFG = yaml.safe_load((ROOT / "config" / "ordinance.yml").read_text(encoding="utf-8"))
 SIG = yaml.safe_load((ROOT / "config" / "ordinance_signals.yml").read_text(encoding="utf-8"))["signals"]
 TERMS = yaml.safe_load((ROOT / "config" / "ordinance_terms.yml").read_text(encoding="utf-8"))
+CRULES = yaml.safe_load((ROOT / "config" / "ordinance_content_rules.yml").read_text(encoding="utf-8"))["rules"]
 TODAY = date.today().strftime("%Y%m%d")
 
 
@@ -351,6 +352,27 @@ def main():
                 raw = a.get("text") or ""
                 if "과태료" in (a.get("title") or "") and not re.search(r"삭\s*제", raw[:40]) and not re.search(r"「[^」]+」|(?<![가-힣])(법|영|시행령|시행규칙|규칙|조례)\s*제\s*\d+\s*조", raw):
                     add(d, a, "penalty_basis", ev={"ctx": t[:200]})
+                # 조례 내용 점검(config/ordinance_content_rules.yml) — 항(①②…·줄) 단위로 규칙의 낱말이 모두 맞으면 후보
+                if not re.search(r"삭\s*제", raw[:40]):
+                    paras = [p for p in re.split(r"(?=[①-⑳])|\n", raw) if p.strip()]
+                    for rk, R in CRULES.items():
+                        if R.get("scope") and not re.search(R["scope"], d["name"]):
+                            continue
+                        if R.get("not_scope") and re.search(R["not_scope"], d["name"]):
+                            continue
+                        if R.get("title") and not re.search(R["title"], a.get("title") or ""):
+                            continue
+                        hitp = next((p for p in paras if all(re.search(x, p) for x in R["all"]) and not any(re.search(x, p) for x in R.get("none", []))), None)
+                        if hitp and R.get("strong"):
+                            # 강한 신호(의무·법정 위원회)가 아니면 숨김 신호로
+                            strong = any(re.search(x, hitp) for x in R["strong"]) or bool(R.get("strong_scope") and re.search(R["strong_scope"], d["name"] + " " + (a.get("title") or "")))
+                            if not strong:
+                                add(d, a, "content_rule_ref", ev={"rule": rk, "rname": R["name"], "level": "참고", "ctx": hitp.strip()[:400],
+                                                                  "basis": R.get("basis", ""), "prec": R.get("prec", []), "rwhy": R["why"], "rhow": R["how"]})
+                                continue
+                        if hitp:
+                            add(d, a, "content_rule", ev={"rule": rk, "rname": R["name"], "level": R["level"], "ctx": hitp.strip()[:400],
+                                                          "basis": R.get("basis", ""), "prec": R.get("prec", []), "rwhy": R["why"], "rhow": R["how"]})
                 # 상위법령 위반 소지 ① 조례로 형벌(징역·벌금)을 정함 — 지방자치법 제28조제1항 단서: 벌칙은 법률의 위임이 있어야 한다
                 if not re.search(r"삭\s*제", raw[:40]):
                     mp = re.search(r"\d+\s*년\s*이하의\s*징역|[\d,]+\s*(?:억|천만|백만|만)?\s*원\s*이하의\s*벌금|(?:징역|벌금)에\s*처한다", raw)
@@ -453,6 +475,11 @@ def main():
         elif sg == "penal_clause":
             why = f"조례 조문이 형벌({ev['word']})을 정하고 있다 — 「지방자치법」 제28조제1항 단서는 벌칙을 정할 때 법률의 위임을 요구하고, 같은 법 제34조는 조례 위반에 과태료만 정할 수 있게 한다."
             how = "법률의 위임 조문을 확인한다. 위임이 없으면 형벌 규정을 삭제하거나 과태료(1천만원 이하)로 바꾸는 것을 검토한다. 법률의 벌칙을 안내만 하는 문장이면 그대로 둔다."
+        elif sg in ("content_rule", "content_rule_ref"):
+            pr = ev.get("prec") or []
+            refs_ = "; ".join(f"{x.get('no') or ('법령해석 ' + x.get('expc', ''))}({x.get('org', '')}): {x.get('concl', '')}" for x in pr[:2])
+            why = f"[{ev['level']}] {ev['rwhy']} 근거: {ev['basis']}." + (f" 법제처 사례 — {refs_}." if refs_ else "")
+            how = ev["rhow"]
         elif sg == "rrn_collect":
             why = "조문이 주민등록번호를 다룬다 — 「개인정보 보호법」 제24조의2는 법률·대통령령·국회규칙 등이 구체적으로 요구·허용한 경우 등에만 주민등록번호 처리를 허용하고, 조례만으로는 근거가 되지 않는다."
             how = "주민등록번호를 요구하는 법령 근거가 있는지 확인하고, 없으면 생년월일 등으로 바꾸거나 삭제한다(서식 포함)."
@@ -482,7 +509,7 @@ def main():
             why, how = "과태료 조문에 법률 근거 인용이 없다.", "부과 근거 법률(「지방자치법」 제34조 또는 개별 법률)을 조문에 밝힌다."
         c["why"], c["how"] = why, how
         # 정비 성격(분류): 상위법령 개정·폐지 / 상위법령 위반 소지 / 법제처 의견 / 자구 정비
-        c["cat"] = ("위반 소지" if sg in ("penal_clause", "fine_over_cap", "opin_conflict", "penalty_basis", "rrn_collect")
+        c["cat"] = ("위반 소지" if sg in ("penal_clause", "fine_over_cap", "opin_conflict", "penalty_basis", "rrn_collect", "content_rule")
                     else "법제처 의견" if sg.startswith(("expc", "opin"))
                     else "상위법령 개정·폐지" if sg in ("law_renamed", "law_not_current", "article_deleted", "article_renumber", "article_changed", "article_missing")
                     else "자구·기한 정비")

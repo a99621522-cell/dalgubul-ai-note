@@ -355,9 +355,33 @@
    "dalseo": 0,
    "dalseong": 1,
    "gunwi": 0
+  },
+  "content_rule": {
+   "daegu": 12,
+   "jung": 7,
+   "dong": 9,
+   "seo": 4,
+   "nam": 4,
+   "buk": 6,
+   "suseong": 15,
+   "dalseo": 7,
+   "dalseong": 7,
+   "gunwi": 3
+  },
+  "content_rule_ref": {
+   "daegu": 5,
+   "jung": 8,
+   "dong": 4,
+   "seo": 5,
+   "nam": 9,
+   "buk": 6,
+   "suseong": 6,
+   "dalseo": 8,
+   "dalseong": 5,
+   "gunwi": 5
   }
  },
- "total": 6768,
+ "total": 6903,
  "expc_held": 8881,
  "expc_linked": 498,
  "expc_daegu": 38,

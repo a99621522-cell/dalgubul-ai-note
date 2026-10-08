@@ -10,7 +10,7 @@ import re
 
 NAME = r"「([^「」]{2,90})」"
 ART = r"\s*제\s*(\d+)\s*조(?:\s*의\s*(\d+)(?!\s*호))?(?:\s*제\s*(\d+)\s*항)?(?:\s*제\s*(\d+)\s*호)?"
-ALIAS_DEF = re.compile(NAME + r"[^「」]{0,40}?\(\s*이하\s*[“\"']([^”\"']{1,12})[”\"']\s*(?:이)?라\s*한다\s*\)")
+ALIAS_DEF = re.compile(NAME + r"(?:(?!같은|및|와|과)[^「」]){0,40}?\(\s*이하\s*[“\"']([^”\"']{1,12})[”\"']\s*(?:이)?라\s*한다\s*\)")
 ALIAS_DEF2 = re.compile(r"같은\s*법\s*(시행령|시행규칙)\s*\(\s*이하\s*[“\"']([^”\"']{1,12})[”\"']\s*(?:이)?라\s*한다\s*\)")
 TOKEN = re.compile(NAME + r"(?:\s*\([^()]{0,60}\))?(?:" + ART + r")?|같은\s*법\s*(시행령|시행규칙)?(?:" + ART + r")?")
 
@@ -34,8 +34,11 @@ def extract(articles: list[dict]) -> list[dict]:
         for m in ALIAS_DEF.finditer(text):
             aliases[m.group(2).strip()] = m.group(1).strip()
         for m in ALIAS_DEF2.finditer(text):
-            if last:
-                aliases[m.group(2).strip()] = f"{last} {m.group(1)}"
+            # '같은 법 시행령(이하 "영")' — 바로 앞에 나온 법률 이름(겹낫표)을 찾는다
+            prev = [x for x in re.finditer(NAME, text[: m.start()]) if re.search(r"(법|법률)$", x.group(1).strip())]
+            base = re.sub(r"\s+", " ", prev[-1].group(1).strip()) if prev else last
+            if base:
+                aliases[m.group(2).strip()] = f"{base} {m.group(1)}"
         # 겹낫표 이름·'같은 법'·약칭('법 제n조')을 글 순서대로 읽는다 — '같은 법'은 바로 앞에 나온 법률(약칭 포함)을 가리킨다
         toks = [(m.start(), "t", m) for m in TOKEN.finditer(text)]
         if aliases:
@@ -56,6 +59,10 @@ def extract(articles: list[dict]) -> list[dict]:
                 k = "named"
             else:
                 if not last:
+                    continue
+                # 앞 인용과 이 '같은 법' 사이에 겹낫표 없이 쓴 법률 인용('지방세징수법 제27조')이 끼면 무엇을 가리키는지 알 수 없어 건너뛴다
+                gap = text[(spans[-1][1] if spans else max(0, m.start() - 80)): m.start()]
+                if re.search(r"[가-힣]+법(률)?\s*제\s*\d+\s*조", gap) and not re.search(r"(?<![가-힣])(법|영)\s*제\s*\d+\s*조", gap):
                     continue
                 law = last if not m.group(6) else f"{last} {m.group(6)}"
                 no, ui, pa, it = m.group(7), m.group(8), m.group(9), m.group(10)

@@ -77,7 +77,7 @@ signals:
   gunwi_gb:
     name: 군위군 편입 전 표기
     conf: check
-    show: true
+    show: false
     rule: 군위군 자치법규 본문(부칙 제외)에 경상북도·도지사·경북 표기가 남아 있음(2023-07-01 대구 편입)
     how: 대구광역시·시장 등으로 고칠 대상인지 문맥 확인
   penalty_basis:

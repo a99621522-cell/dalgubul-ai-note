@@ -24,16 +24,19 @@ const hasSupport = supportHistory().length > 0;
 const m = monthly();
 const nMonths = statMonths().length;
 const ym = m ? monthLabel(m.month) : '';
+// 등록 기업은 팩토리온 기준월(국민연금 달보다 앞설 수 있다 — 운영자 지적 2026-10-08 '8월 기준으로 표시되어 있는데'), 고용은 국민연금 기준월
+const fo = m?.sources?.factoryon?.as_of ? monthLabel(m.sources.factoryon.as_of) : ym;
+const ymHead = fo === ym ? `${ym} 기준` : `기업 등록 ${fo} · 고용 ${ym} 기준`;
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : '—');
 const tiles: Tile[] = m ? [
-  { label: '등록 기업', value: m.total.firms, unit: '곳', sub: `${ym} 기준 · 팩토리온 공장등록`, href: '/companies/' },
+  { label: '등록 기업', value: m.total.firms, unit: '곳', sub: `${fo} 기준 · 팩토리온 공장등록`, href: '/companies/' },
   { label: '고용 인원', value: m.total.employment, unit: '명', delta: m.total.mom?.employment ?? null,
     sub: `${ym} 기준 · ${m.basis_label} · 집계 대상 ${m.total.covered.toLocaleString('ko-KR')}곳(${pct(m.total.covered, m.total.firms)})` },
   { label: '이달 신규 등록 기업', value: m.total.new_firms, unit: '곳', sub: m.total.new_firms === null ? `${ym} 기준 · 전월 자료가 쌓이면 표시` : `${ym} 기준 · 전월 대비 새로 등록` },
   { label: '지원사업 수혜 기업 (최근 3년)', value: hasSupport ? supportedFirms : null, unit: '곳', sub: hasSupport ? `NTIS·대구시 보조금 공개·기관 선정 공고 기준 · 이력 ${sup3.length.toLocaleString('ko-KR')}건` : '공개 자료(NTIS·보조금 공개·선정 공고) 투입 전', href: '/programs/' },
 ] : [];
 const description = m
-  ? `대구 공장등록 기업 ${m.total.firms.toLocaleString('ko-KR')}곳, 고용 인원 ${m.total.employment.toLocaleString('ko-KR')}명(${ym}, ${m.basis_label}). 산업별 기업 수·고용과 월별 추이, 기업 사전, 지원사업 공고.`
+  ? `대구 공장등록 기업 ${m.total.firms.toLocaleString('ko-KR')}곳(${fo}), 고용 인원 ${m.total.employment.toLocaleString('ko-KR')}명(${ym}, ${m.basis_label}). 산업별 기업 수·고용과 월별 추이, 기업 사전, 지원사업 공고.`
   : '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고';
 ---
 <Base description={description}>
@@ -42,7 +45,7 @@ const description = m
   {m ? (
     <>
       <section aria-labelledby="h-now" class="section">
-        <div class="section-head"><h2 id="h-now">대구 산단·기업 현황</h2><span class="meta">{ym} 기준</span></div>
+        <div class="section-head"><h2 id="h-now">대구 산단·기업 현황</h2><span class="meta">{ymHead}</span></div>
         <StatTiles tiles={tiles} />
       </section>
       <ZoneSummary />

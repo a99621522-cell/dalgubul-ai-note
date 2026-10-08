@@ -1,11 +1,10 @@
 {
  "file": "src/content/posts/2026-10-02-policy-textile-root-energy.md",
  "checked": "2026-10-08",
- "ok": 12,
+ "ok": 13,
  "total": 14,
- "ratio": 0.86,
+ "ratio": 0.93,
  "official_bad": [
-  "정책브리핑, 「산업용 전기요금, 11개 지역별 차등 반영…남부 최대 10% 저렴」",
   "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)"
  ],
  "pass": false,
@@ -15,12 +14,12 @@
    "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148970678",
    "date": "2026-08-26",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "산업용 전기요금, 11개 지역별 차등 반영…남부 최대 10% 저렴 - 정책뉴스 | 뉴스 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "아시아경제, 「정부, 산업용 전기요금 '지역별 차등'…비수도권 최대 10% 인하」",
@@ -135,12 +134,12 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
    "date": "2026-10-01",
    "kind": "official",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
    "date_found": false,
    "ok": false,
-   "note": "ConnectTimeout"
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   },
   {
    "title": "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·종사자 신고값)과 사업 DB·대구시 세부사업(사업명만)",
@@ -150,7 +149,7 @@
    "status": 200,
    "page_title": "대구 기업 사전 — 다잇다",
    "title_match": 0.2,
-   "date_found": false,
+   "date_found": true,
    "ok": true,
    "note": ""
   },

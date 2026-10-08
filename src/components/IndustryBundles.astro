@@ -14,6 +14,13 @@ const eok = (v: number | null | undefined) => v == null ? '—' : Math.round(v /
 const i = D ? D.years.length - 1 : 0;
 const Y = D ? D.years[i] : '';
 const src = D ? `${D.source.publisher} 「${D.source.title}」(${D.source.series}, ${D.source.published.replace('-', '.')})` : '';
+/** 산업 이름 밑 한 줄: 몇 개 업종을 묶었는지와 앞 업종 이름 — 운영자 지적 2026-10-09 '로봇산업 수가 너무 많잖아'(로봇 = 산업용 로봇 외 기계·측정기기 등 10개 업종 묶음) */
+const short = (s: string) => s.replace(/ 제조업$| 개발 및 공급업$| 서비스업$/, '').replace(/^그 외 기타 /, '');
+const inc = (b: Bundle) => {
+  const FIRST = ['29280', '29299', '29210'];   // 로봇 묶음은 산업용 로봇과 기업이 많은 기계 업종을 앞에(기업 사전 2026-09: 29299 186곳·29210 121곳·29280 84곳)
+  const lead = [...b.codes.filter(c => FIRST.includes(c.ksic)).sort((x, y) => FIRST.indexOf(x.ksic) - FIRST.indexOf(y.ksic)), ...b.codes.filter(c => !FIRST.includes(c.ksic))];
+  return `${b.codes_stated ?? b.codes.length}개 업종: ${lead.slice(0, 3).map(c => short(c.name)).join('·')} 등`;
+};
 interface Props { heading?: boolean }
 const { heading = true } = Astro.props;
 ---
@@ -23,12 +30,13 @@ const { heading = true } = Astro.props;
   <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 현황(${Y}년, 대구정책연구원)`}>
     <thead><tr><th>산업</th><th data-pri="3">구분</th><th class="n">사업체(개)</th><th class="n">종사자(명)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th></tr></thead>
     <tbody>{D.bundles.map(b => <tr>
-      <th scope="row">{b.name}</th><td>{b.role}</td>
+      <th scope="row">{b.name}<div class="tiny muted">{inc(b)}</div></th><td>{b.role}</td>
       <td class="n">{n(b.daegu.est[i])}</td><td class="n">{n(b.daegu.emp[i])}</td><td class="n">{eok(b.daegu.prod[i])}</td><td class="n">{eok(b.daegu.va[i])}</td>
     </tr>)}</tbody>
   </table></div>
   <ul class="meta ib-notes">
     <li>사업체·종사자는 1인 이상 전체, 생산액·부가가치는 종사자 10인 이상 사업체 기준입니다(보고서 표 주).</li>
+    <li><b>산업 이름은 업종 묶음입니다.</b> 예를 들어 '로봇'은 산업용 로봇 제조업 1개에 특수목적용 기계·농업용 기계·측정·제어기기 등 9개 업종을 더한 값이라 로봇 제조 기업 수가 아닙니다(산업별 업종은 아래 펼쳐 보기).</li>
     <li>산업마다 업종이 일부 겹쳐 산업별 값을 더하면 안 됩니다. ABB 의 생산액·부가가치는 제조 업종만의 값입니다.</li>
   </ul>
   <details class="ib-codes">

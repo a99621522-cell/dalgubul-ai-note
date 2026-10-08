@@ -17,24 +17,24 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91",
    "date": "2026-09-28",
    "kind": "official",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
    "date_found": false,
    "ok": false,
-   "note": "ConnectTimeout"
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   },
   {
    "title": "국가데이터처, 「지역별고용조사 — 시도/산업별 취업자(반기)」 KOSIS DT_1ES3B05S(2014년~2024년 상반기)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3B05S",
    "date": "2026-09-28",
    "kind": "official",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.17,
    "date_found": false,
    "ok": false,
-   "note": "ConnectTimeout"
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
   },
   {
    "title": "「지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)」(자체 계산 보고서, 초안)",
@@ -80,7 +80,7 @@
    "status": 200,
    "page_title": "대구 기업 사전 — 다잇다",
    "title_match": 0.33,
-   "date_found": false,
+   "date_found": true,
    "ok": true,
    "note": ""
   }

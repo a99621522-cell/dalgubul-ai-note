@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-08-policy-machinery-datacenter-cooling.md",
  "checked": "2026-10-08",
- "ok": 15,
+ "ok": 14,
  "total": 15,
- "ratio": 1.0,
+ "ratio": 0.93,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -84,11 +84,11 @@
    "url": "https://www.ddaily.co.kr/page/view/2025121910314122574",
    "date": "2025-12-19",
    "kind": "news",
-   "status": 200,
-   "page_title": "경북&middot;구미, 2029년까지 1.3GW급 AI 데이터센터 클러스터 조성 - 디지털데일리",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
+   "status": 403,
+   "page_title": "403 Forbidden",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
    "note": ""
   },
   {

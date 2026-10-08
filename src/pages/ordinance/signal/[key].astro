@@ -8,7 +8,7 @@ export function getStaticPaths() { return signals().filter(s => s.show).map(s =>
 const { s } = Astro.props;
 const order = new Map(orgs().map((o, i) => [o.key, i]));
 const list = cands().filter(c => c.sig === s.key).sort((a, b) => (order.get(a.org)! - order.get(b.org)!) || a.oname.localeCompare(b.oname, 'ko') || a.no.localeCompare(b.no, 'ko', { numeric: true }));
-const CAP = 400;
+const CAP = 120;
 ---
 <Base title={`${s.name} — 자치법규 정비 검토`} description={s.rule} crumb={s.name} noindex wide>
   <div class="section-head"><h1>{s.name}</h1><span class="meta">{list.length.toLocaleString()}건 · {s.conf === 'auto' ? '사실 대조' : '사람 확인 필요'}</span></div>

@@ -20,7 +20,7 @@ const rate = s && s.refs ? Math.round((s.refs_resolved / s.refs) * 1000) / 10 : 
   <div class="scroll-x"><table class="data-table">
     <thead><tr><th>신호</th><th>확인</th>{os.map(o => <th class="n"><a href={`/ordinance/org/${o.key}/`}>{o.name}</a></th>)}<th class="n">합계</th></tr></thead>
     <tbody>
-      {shown.map(x => <tr><td><a href={`/ordinance/signal/${x.key}/`}>{x.name}</a></td><td>{x.conf === 'auto' ? '사실 대조' : '사람 확인'}</td>{os.map(o => <td class="n">{n(x.key, o.key).toLocaleString()}</td>)}<td class="n">{os.reduce((a, o) => a + n(x.key, o.key), 0).toLocaleString()}</td></tr>)}
+      {shown.map(x => <tr><td><a href={`/ordinance/signal/${x.key}/`}>{x.name}</a></td><td style="white-space:nowrap">{x.conf === 'auto' ? '사실 대조' : '사람 확인'}</td>{os.map(o => <td class="n">{n(x.key, o.key).toLocaleString()}</td>)}<td class="n">{os.reduce((a, o) => a + n(x.key, o.key), 0).toLocaleString()}</td></tr>)}
       <tr><td><strong>후보가 있는 자치법규</strong></td><td></td>{os.map(o => <td class="n"><strong>{ordCount(o.key).toLocaleString()}</strong></td>)}<td class="n"><strong>{byOrdin().size.toLocaleString()}</strong></td></tr>
       <tr><td>현행 자치법규</td><td></td>{os.map(o => <td class="n">{o.count.toLocaleString()}</td>)}<td class="n">{os.reduce((a, o) => a + o.count, 0).toLocaleString()}</td></tr>
     </tbody>

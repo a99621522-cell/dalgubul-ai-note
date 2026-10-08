@@ -4,7 +4,7 @@ import path from 'node:path';
 /** build_stats.py / render_charts.py 산출물을 빌드 때 읽는다. 값이 없는 지표는 null 이며 화면은 '자료 없음'으로 보인다. */
 export type Delta = { diff: number | null; pct: number | null } | null;
 export type Metrics = {
-  firms: number; employment: number; covered: number; avg_employment: number | null;
+  firms: number; employment: number; covered: number; avg_employment: number | null; fo_employment?: number | null; fo_covered?: number;
   size_bands: Record<'1~9' | '10~49' | '50~299' | '300+', number>;
   nps_gain: number | null; nps_loss: number | null; new_firms: number | null; closed_firms: number | null;
   dart_firms: number | null; dart_revenue: number | null; projects_12m: number | null;

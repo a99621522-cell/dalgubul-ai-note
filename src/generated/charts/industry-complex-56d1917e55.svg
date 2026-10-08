@@ -1,36 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="화학·에너지 산단별 고용 인원. 성서산단 6,501명, 산단 외 6,460명, 서대구산단 4,790명, 대구국가산단 2,118명, 달성산단 1,884명, 개별입지 984명, 달성2차산단 152명, 대구제3산단 90명, 대구옥포농공단지 54명, 대구연구개발특구 36명, 그 밖의 단지 94명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="화학·에너지 산단별 고용 인원. 산단 외 6,427명, 대구국가산단 2,118명, 성서산단 1,748명, 달성산단 1,720명, 개별입지 804명, 달성2차산단 89명, 서대구산단 83명, 대구제3산단 79명, 대구옥포농공단지 54명, 군위농공단지 28명, 그 밖의 단지 72명" style="max-width:720px;height:auto;font-size:14px">
 <title>화학·에너지 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
-<text x="110" y="56.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
+<text x="110" y="56.0" text-anchor="end" fill="#1a1a1a">산단 외</text>
 <rect x="120.0" y="40" width="538.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="666.0" y="56.0" fill="#1a1a1a">6,501명</text>
-<text x="110" y="90.0" text-anchor="end" fill="#1a1a1a">산단 외</text>
-<rect x="120.0" y="74" width="534.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="662.6" y="90.0" fill="#1a1a1a">6,460명</text>
-<text x="110" y="124.0" text-anchor="end" fill="#1a1a1a">서대구산단</text>
-<rect x="120.0" y="108" width="396.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="524.4" y="124.0" fill="#1a1a1a">4,790명</text>
-<text x="110" y="158.0" text-anchor="end" fill="#1a1a1a">대구국가산단</text>
-<rect x="120.0" y="142" width="175.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="303.3" y="158.0" fill="#1a1a1a">2,118명</text>
-<text x="110" y="192.0" text-anchor="end" fill="#1a1a1a">달성산단</text>
-<rect x="120.0" y="176" width="155.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="283.9" y="192.0" fill="#1a1a1a">1,884명</text>
-<text x="110" y="226.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
-<rect x="120.0" y="210" width="81.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="209.4" y="226.0" fill="#1a1a1a">984명</text>
-<text x="110" y="260.0" text-anchor="end" fill="#1a1a1a">달성2차산단</text>
-<rect x="120.0" y="244" width="12.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="140.6" y="260.0" fill="#1a1a1a">152명</text>
+<text x="666.0" y="56.0" fill="#1a1a1a">6,427명</text>
+<text x="110" y="90.0" text-anchor="end" fill="#1a1a1a">대구국가산단</text>
+<rect x="120.0" y="74" width="177.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="305.3" y="90.0" fill="#1a1a1a">2,118명</text>
+<text x="110" y="124.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
+<rect x="120.0" y="108" width="146.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="274.3" y="124.0" fill="#1a1a1a">1,748명</text>
+<text x="110" y="158.0" text-anchor="end" fill="#1a1a1a">달성산단</text>
+<rect x="120.0" y="142" width="144.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="272.0" y="158.0" fill="#1a1a1a">1,720명</text>
+<text x="110" y="192.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
+<rect x="120.0" y="176" width="67.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="195.3" y="192.0" fill="#1a1a1a">804명</text>
+<text x="110" y="226.0" text-anchor="end" fill="#1a1a1a">달성2차산단</text>
+<rect x="120.0" y="210" width="7.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="135.5" y="226.0" fill="#1a1a1a">89명</text>
+<text x="110" y="260.0" text-anchor="end" fill="#1a1a1a">서대구산단</text>
+<rect x="120.0" y="244" width="6.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="134.9" y="260.0" fill="#1a1a1a">83명</text>
 <text x="110" y="294.0" text-anchor="end" fill="#1a1a1a">대구제3산단</text>
-<rect x="120.0" y="278" width="7.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="135.4" y="294.0" fill="#1a1a1a">90명</text>
+<rect x="120.0" y="278" width="6.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="134.6" y="294.0" fill="#1a1a1a">79명</text>
 <text x="110" y="328.0" text-anchor="end" fill="#1a1a1a">대구옥포농공단지</text>
 <rect x="120.0" y="312" width="4.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="132.5" y="328.0" fill="#1a1a1a">54명</text>
-<text x="110" y="362.0" text-anchor="end" fill="#1a1a1a">대구연구개발특구</text>
-<rect x="120.0" y="346" width="3.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="131.0" y="362.0" fill="#1a1a1a">36명</text>
+<text x="110" y="362.0" text-anchor="end" fill="#1a1a1a">군위농공단지</text>
+<rect x="120.0" y="346" width="2.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="130.3" y="362.0" fill="#1a1a1a">28명</text>
 <text x="110" y="396.0" text-anchor="end" fill="#1a1a1a">그 밖의 단지</text>
-<rect x="120.0" y="380" width="7.8" height="22" fill="#767676" style="fill:var(--muted,#767676)"/>
-<text x="135.8" y="396.0" fill="#1a1a1a">94명</text></svg>
+<rect x="120.0" y="380" width="6.0" height="22" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="134.0" y="396.0" fill="#1a1a1a">72명</text></svg>

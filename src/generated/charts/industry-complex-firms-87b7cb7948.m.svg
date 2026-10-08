@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464" width="100%" role="img" aria-label="로봇 산단별 기업 수. 산단 외 44곳, 성서산단 34곳, 개별입지 11곳, 대구제3산단 10곳, 성서5차산단 7곳, 서대구산단 6곳, 대구테크노폴리스산단 5곳, 대구국가산단 3곳, 대구이시아폴리스산단 3곳, 북구검단산단 3곳" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 464" width="100%" role="img" aria-label="로봇 산단별 기업 수. 산단 외 44곳, 성서산단 34곳, 개별입지 11곳, 대구제3산단 10곳, 성서5차산단 7곳, 서대구산단 6곳, 대구테크노폴리스산단 5곳, 대구국가산단 3곳, 북구검단산단 3곳, 대구이시아폴리스산단 3곳" style="max-width:360px;height:auto;font-size:14px">
 <title>로봇 산단별 기업 수</title>
 <text x="8" y="26.0" fill="#1a1a1a">산단 외</text>
 <rect x="8.0" y="32" width="314.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
@@ -24,9 +24,9 @@
 <text x="8" y="334.0" fill="#1a1a1a">대구국가산단</text>
 <rect x="8.0" y="340" width="21.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="35.4" y="354.0" fill="#1a1a1a">3곳</text>
-<text x="8" y="378.0" fill="#1a1a1a">대구이시아폴리스산단</text>
+<text x="8" y="378.0" fill="#1a1a1a">북구검단산단</text>
 <rect x="8.0" y="384" width="21.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="35.4" y="398.0" fill="#1a1a1a">3곳</text>
-<text x="8" y="422.0" fill="#1a1a1a">북구검단산단</text>
+<text x="8" y="422.0" fill="#1a1a1a">대구이시아폴리스산단</text>
 <rect x="8.0" y="428" width="21.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="35.4" y="442.0" fill="#1a1a1a">3곳</text></svg>

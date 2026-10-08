@@ -26,6 +26,10 @@
 원칙
   - 고용 인원의 근거(basis)는 달마다 기록한다: "nps" = 국민연금 가입자수 합계, "factoryon" = 공장등록 신고값(국민연금 파일이 없는 달)
   - 국민연금에 매칭되지 않은 기업은 고용 집계에서 빠지므로 모든 집계에 covered(집계 대상 기업 수)/firms(전체 기업 수)를 같이 둔다
+  - 국민연금 사업장 하나는 고용 합계에 한 번만 더한다(2026-10-08 수정: 같은 회사의 공장 기록 여러 개가 같은 사업장에 붙어
+    고용이 겹쳐 더해지던 것 — 2026-08 기준 156,160명 중 39,832명). 같은 사업장에 붙은 기록 중 공장등록 종사자가 가장 큰 기록(primary)에만
+    고용·취득·상실을 두고, 나머지 기록은 '집계 대상'에는 세되(covered) 고용은 다시 더하지 않는다
+  - 국민연금 가입자수와 별도로 공장등록 종사자(팩토리온 신고값) 합계 fo_employment·fo_covered 를 함께 둔다(근거가 달라 더하지 않는다)
   - 자료가 없는 지표는 0 이 아니라 null 로 둔다 (원문에 없는 수치를 만들지 않는다)
   - 평가·순위 표현 없음. 숫자만.
 """
@@ -138,17 +142,41 @@ def load_nps(month: str) -> list[dict] | None:
     return out
 
 
+# 공장 기록 이름 끝의 공장·지점 표시(팩토리온은 공장마다 한 줄 — '(주)우리식품 제2공장', '(주)삼우대구공장', '(주)보광아이엔티 검사동공장').
+# 띄어 쓰거나 괄호에 넣었거나 앞에 번호·지역이 붙은 경우만 뗀다('빵공장' 같은 상호는 그대로)
+_SITE_SUFFIX = re.compile(
+    r"(?:\s+\(?\S*?(?:공장|지점|사업장|사업소|영업소|기숙사)\)?"
+    r"|\((?:[^()]*?)(?:공장|지점|사업장|기숙사)\)"
+    r"|(?:제?\d+|대구|달성|성서|현풍|구지|논공|검사동|본|분|신|제[일이삼])(?:공장|지점|사업장))\s*$")
+
+
+def site_base_name(name: str) -> str:
+    """'(주)우리식품 제2공장' → '(주)우리식품'. 떼고 남은 이름이 2글자 미만이면 빈 문자열."""
+    b = _SITE_SUFFIX.sub("", name or "").strip()
+    return b if b != (name or "").strip() and len(norm_name(b)) >= 2 else ""
+
+
 def match_nps(companies: list[dict], nps: list[dict]) -> dict[str, dict]:
-    """기업 id → {employment, gain, loss, new, closed}. 정규화 회사명 + 구·군 (구·군이 없으면 이름만, 유일할 때)."""
+    """기업 id → {employment, gain, loss, reg_dates, withdraw_dates, primary}. 정규화 회사명 + 구·군 (구·군이 없으면 이름만, 유일할 때).
+    이름이 맞지 않으면 공장·지점 표시를 뗀 이름으로 한 번 더(site_base_name).
+    같은 사업장(행 묶음)에 기록이 여럿 붙으면 공장등록 종사자가 가장 큰 기록 하나만 primary — 축 합계는 primary 만 더한다(중복 합산 방지).
+    employment 는 모든 기록에 그 사업장 값을 둔다(기업 페이지·기업별 시계열용)."""
     by_key: dict[tuple[str, str], list[dict]] = defaultdict(list)
     by_name: dict[str, list[dict]] = defaultdict(list)
     for r in nps:
         by_key[(r["norm"], r["district"])].append(r)
         by_name[r["norm"]].append(r)
+
+    def find(n: str, district: str) -> list[dict]:
+        return by_key.get((n, district)) or ([] if len(by_name.get(n, [])) != 1 else by_name[n])
+
     matched: dict[str, dict] = {}
+    owners: dict[frozenset, list[dict]] = defaultdict(list)
     for c in companies:
-        n = norm_name(c["name"])
-        rows = by_key.get((n, c["district"])) or ([] if len(by_name.get(n, [])) != 1 else by_name[n])
+        rows = find(norm_name(c["name"]), c["district"])
+        if not rows:
+            base = site_base_name(c["name"])
+            rows = find(norm_name(base), c["district"]) if base else []
         if not rows:
             continue
         emp = sum(r["employment"] or 0 for r in rows)
@@ -158,7 +186,12 @@ def match_nps(companies: list[dict], nps: list[dict]) -> dict[str, dict]:
             "loss": sum(r["loss"] or 0 for r in rows) if any(r["loss"] is not None for r in rows) else None,
             "reg_dates": [r["reg_date"] for r in rows if r["reg_date"]],
             "withdraw_dates": [r["withdraw_date"] for r in rows if r["withdraw_date"]],
+            "primary": False,
         }
+        owners[frozenset(id(r) for r in rows)].append(c)
+    for cs in owners.values():
+        top = max(cs, key=lambda c: (c["fo_workers"] if c.get("fo_workers") is not None else -1, c["id"].startswith("c"), [-ord(ch) for ch in c["id"]]))
+        matched[top["id"]]["primary"] = True
     return matched
 
 
@@ -234,10 +267,12 @@ def metrics(cs: list[dict], nps: dict[str, dict] | None, prev: dict[str, list] |
     """한 집합의 지표. prev 는 전월 id → [산업, 단지, 구군]; axis/value 는 이 집합이 어느 축의 어느 값인지 (소멸 기업 계산용)."""
     firms = len(cs)
     if nps is not None:
-        emp_rows = [(c, nps[c["id"]]["employment"]) for c in cs if c["id"] in nps]
+        covered = sum(1 for c in cs if c["id"] in nps)
+        emp_rows = [(c, nps[c["id"]]["employment"]) for c in cs if c["id"] in nps and nps[c["id"]].get("primary", True)]
     else:
         emp_rows = [(c, c["fo_workers"]) for c in cs if c["fo_workers"] is not None]
-    covered = len(emp_rows)
+        covered = len(emp_rows)
+    fo = [c["fo_workers"] for c in cs if c["fo_workers"] is not None]
     employment = sum(e for _, e in emp_rows)
     bands = {b: 0 for b, _, _ in SIZE_BANDS}
     for _, e in emp_rows:
@@ -248,11 +283,12 @@ def metrics(cs: list[dict], nps: dict[str, dict] | None, prev: dict[str, list] |
     gain = loss = None
     new_firms = closed_firms = None
     if nps is not None:
-        gs = [nps[c["id"]]["gain"] for c in cs if c["id"] in nps and nps[c["id"]]["gain"] is not None]
-        ls = [nps[c["id"]]["loss"] for c in cs if c["id"] in nps and nps[c["id"]]["loss"] is not None]
+        prim = [nps[c["id"]] for c in cs if c["id"] in nps and nps[c["id"]].get("primary", True)]
+        gs = [x["gain"] for x in prim if x["gain"] is not None]
+        ls = [x["loss"] for x in prim if x["loss"] is not None]
         gain, loss = (sum(gs) if gs else None), (sum(ls) if ls else None)
-        new_firms = sum(1 for c in cs if c["id"] in nps and any(in_month(d, month) for d in nps[c["id"]]["reg_dates"]))
-        closed_firms = sum(1 for c in cs if c["id"] in nps and any(in_month(d, month) for d in nps[c["id"]]["withdraw_dates"]))
+        new_firms = sum(1 for x in prim if any(in_month(d, month) for d in x["reg_dates"]))
+        closed_firms = sum(1 for x in prim if any(in_month(d, month) for d in x["withdraw_dates"]))
     if prev is not None:  # 전월 id 목록이 있으면 그것이 우선 (팩토리온 등록·소멸 기준)
         ids = {c["id"] for c in cs}
         new_firms = len(ids - prev.keys())
@@ -262,7 +298,9 @@ def metrics(cs: list[dict], nps: dict[str, dict] | None, prev: dict[str, list] |
         "firms": firms,
         "employment": employment,
         "covered": covered,
-        "avg_employment": round(employment / covered, 1) if covered else None,
+        "avg_employment": round(employment / len(emp_rows), 1) if emp_rows else None,
+        "fo_employment": sum(fo) if fo else None,   # 공장등록 종사자(신고값) 합 — 국민연금과 근거가 달라 employment 와 더하지 않는다
+        "fo_covered": len(fo),
         "size_bands": bands,
         "nps_gain": gain,
         "nps_loss": loss,
@@ -383,7 +421,7 @@ def build_month(month: str, companies: list[dict], dart: set[str], as_of: date) 
         row: dict[str, dict] = defaultdict(lambda: {"firms": 0, "employment": 0, "covered": 0})
         for c in cs:
             cx = c["complex"] or "개별입지"
-            e = nps[c["id"]]["employment"] if nps is not None and c["id"] in nps else (None if nps is not None else c["fo_workers"])
+            e = (nps[c["id"]]["employment"] if nps[c["id"]].get("primary", True) else 0) if nps is not None and c["id"] in nps else (None if nps is not None else c["fo_workers"])
             row[cx]["firms"] += 1
             if e is not None:
                 row[cx]["employment"] += e
@@ -393,7 +431,7 @@ def build_month(month: str, companies: list[dict], dart: set[str], as_of: date) 
     for g, cs in by_ind.items():
         row2: dict[str, dict] = defaultdict(lambda: {"firms": 0, "employment": 0, "covered": 0})
         for c in cs:
-            e = nps[c["id"]]["employment"] if nps is not None and c["id"] in nps else (None if nps is not None else c["fo_workers"])
+            e = (nps[c["id"]]["employment"] if nps[c["id"]].get("primary", True) else 0) if nps is not None and c["id"] in nps else (None if nps is not None else c["fo_workers"])
             row2[c["site_type"]]["firms"] += 1
             if e is not None:
                 row2[c["site_type"]]["employment"] += e
@@ -468,6 +506,7 @@ def rebuild_companies_json(companies: list[dict]) -> None:
     months = sorted(p.stem for p in MONTHLY.glob("??????.json"))[-12:]
     # 기업별 12개월 고용은 국민연금이 있는 달만. 매칭 결과는 각 달 문서에 싣지 않으므로 다시 계산한다
     series: dict[str, list] = defaultdict(list)
+    prim: dict[str, list] = defaultdict(list)
     any_nps = False
     for m in months:
         rows = load_nps(m)
@@ -475,11 +514,15 @@ def rebuild_companies_json(companies: list[dict]) -> None:
         any_nps = any_nps or rows is not None
         for c in companies:
             series[c["id"]].append(matched.get(c["id"], {}).get("employment"))
-    out = {"months": [f"{m[:4]}-{m[4:]}" for m in months], "basis_note": "g 산업 그룹, t 입지 유형, k 태그, e 최신 달 고용 인원(국민연금 매칭 시 가입자수, 아니면 공장등록 신고값), s 최근 12개월 국민연금 가입자수(매칭 기업만)", "companies": {}}
+            prim[c["id"]].append(matched.get(c["id"], {}).get("primary", True))
+    out = {"months": [f"{m[:4]}-{m[4:]}" for m in months], "basis_note": "g 산업 그룹, t 입지 유형, k 태그, e 최신 달 고용 인원(국민연금 매칭 시 가입자수, 아니면 공장등록 신고값), d 1 이면 같은 국민연금 사업장에 붙은 다른 공장 기록(합계에서 뺀다), s 최근 12개월 국민연금 가입자수(매칭 기업만)", "companies": {}}
     for c in companies:
         s = series[c["id"]]
-        latest = next((v for v in reversed(s) if v is not None), None)
+        li = next((i for i in range(len(s) - 1, -1, -1) if s[i] is not None), None)
+        latest = s[li] if li is not None else None
         entry = {"g": c["group"], "t": c["site_type"], "e": latest if latest is not None else c["fo_workers"], "b": "nps" if latest is not None else "factoryon"}
+        if li is not None and not prim[c["id"]][li]:
+            entry["d"] = 1   # 같은 국민연금 사업장에 붙은 다른 공장 기록 — 합계를 낼 때는 빼야 겹치지 않는다
         if c["tags"]:
             entry["k"] = sorted(c["tags"])
         if any_nps and any(v is not None for v in s):

@@ -1,6 +1,6 @@
 /** /explore/ 데이터 탐색 — 브라우저에서 질문을 조건으로 바꾸고(규칙), 기업 색인·월간 집계로 표와 SVG 그래프를 그린다.
  *  외부 라이브러리·서버·AI 호출 없음. 그래프는 dataviz 규칙: 막대 24px 이하·끝 4px 둥글게, 선 2px, 격자 hairline, 값 라벨은 12개 이하일 때만, 표는 항상 함께. */
-type Row = { i: string; n: string; d: string; e: string; c: string; g: string; s: string; w: string; t: string; k?: string[]; p?: 1; m?: number };
+type Row = { i: string; n: string; d: string; e: string; c: string; g: string; s: string; w: string; t: string; k?: string[]; p?: 1; m?: number; md?: 1 };
 type Lite = { firms: number; employment: number; covered: number; nps_gain: number | null; nps_loss: number | null; new_firms: number | null; closed_firms: number | null; support_firms: number | null; support_records: number | null };
 type Data = {
   stats_month: string | null; basis_label: string; companies_as_of: string; total: Lite | null;
@@ -159,7 +159,7 @@ export function compute(q: Q, data: Data, rows: Row[]): Result {
   // 기업 단위: 기업 수 / 고용 인원
   const sub = applyFilters(rows, q);
   const acc = new Map<string, { firms: number; emp: number; covered: number }>();
-  for (const r of sub) for (const k of keyOf(r, q.x)) { const a = acc.get(k) ?? { firms: 0, emp: 0, covered: 0 }; a.firms++; if (r.m != null) { a.emp += r.m; a.covered++; } acc.set(k, a); }
+  for (const r of sub) for (const k of keyOf(r, q.x)) { const a = acc.get(k) ?? { firms: 0, emp: 0, covered: 0 }; a.firms++; if (r.m != null) { if (!r.md) a.emp += r.m; a.covered++; } acc.set(k, a); }
   let entries = [...acc.entries()];
   const isEmp = q.m === 'employment';
   if (q.x === 'size') entries.sort((a, b) => SIZE_ORDER.indexOf(a[0]) - SIZE_ORDER.indexOf(b[0]));
@@ -173,7 +173,7 @@ export function compute(q: Q, data: Data, rows: Row[]): Result {
   }
   const label = (k: string) => (q.x === 'size' ? SIZE_LABEL[k] ?? k : q.x === 'tag' ? data.tag_names[k] ?? k : k);
   const rows2 = entries.map(([k, v]) => ({ label: label(k), v: [isEmp ? v.emp : v.firms] }));
-  const totalFirms = sub.length, totalEmp = sub.reduce((s, r) => s + (r.m ?? 0), 0), covered = sub.filter(r => r.m != null).length;
+  const totalFirms = sub.length, totalEmp = sub.reduce((s, r) => s + (r.md ? 0 : r.m ?? 0), 0), covered = sub.filter(r => r.m != null).length;
   const title = `${scope} ${AXIS_NAME[q.x]}별 ${isEmp ? '고용 인원' : '기업 수'}`;
   const read = isEmp
     ? `${scope} 기업 ${fmt(totalFirms)}곳 중 고용 값이 있는 ${fmt(covered)}곳(${totalFirms ? Math.round(covered / totalFirms * 100) : 0}%)의 합 ${fmt(totalEmp)}명(${data.basis_label} ${data.stats_month}). 값 없는 기업은 0 으로 셉니다. ${extraNote}`

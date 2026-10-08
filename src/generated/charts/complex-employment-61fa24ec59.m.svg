@@ -1,38 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="개별입지 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 점선으로 건너뜀). 개별입지 최근 13,397명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="개별입지 고용 인원 추이. 2023-12부터 2026-08까지 33개월(자료 없는 달 19개는 점선으로 건너뜀). 개별입지 최근 11,015명" style="max-width:360px;height:auto;font-size:14px">
 <title>개별입지 고용 인원 추이</title>
 <line x1="60" x2="284" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="261.0" text-anchor="end" fill="#767676">11,000</text>
-<line x1="60" x2="284" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="207.0" text-anchor="end" fill="#767676">12,000</text>
-<line x1="60" x2="284" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="153.0" text-anchor="end" fill="#767676">13,000</text>
-<line x1="60" x2="284" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="99.0" text-anchor="end" fill="#767676">14,000</text>
+<text x="52" y="261.0" text-anchor="end" fill="#767676">9,000</text>
+<line x1="60" x2="284" y1="184.0" y2="184.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="189.0" text-anchor="end" fill="#767676">10,000</text>
+<line x1="60" x2="284" y1="112.0" y2="112.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="117.0" text-anchor="end" fill="#767676">11,000</text>
 <line x1="60" x2="284" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">15,000</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">12,000</text>
 <text x="67.0" y="280" text-anchor="middle" fill="#767676">24년</text>
 <text x="151.0" y="280" text-anchor="middle" fill="#767676">25년</text>
 <text x="235.0" y="280" text-anchor="middle" fill="#767676">26년</text>
 <line x1="60" x2="284" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M67.0,163.2 L88.0,162.1 M88.0,162.1 L102.0,188.1 M109.0,186.7 L130.0,195.6 M158.0,193.3 L186.0,97.6 M186.0,97.6 L235.0,105.8 M235.0,105.8 L277.0,124.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
-<path d="M60.0,170.8 L67.0,163.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="60.0" cy="170.8" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="67.0" cy="163.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="88.0" cy="162.1" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<path d="M102.0,188.1 L109.0,186.7" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="102.0" cy="188.1" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="109.0" cy="186.7" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<path d="M130.0,195.6 L137.0,193.5 L144.0,192.2 L151.0,197.9 L158.0,193.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="130.0" cy="195.6" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="137.0" cy="193.5" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="144.0" cy="192.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="151.0" cy="197.9" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="158.0" cy="193.3" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="186.0" cy="97.6" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="235.0" cy="105.8" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<path d="M277.0,124.5 L284.0,126.6" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="277.0" cy="124.5" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="284.0" cy="126.6" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="284.0" cy="126.6" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="292.0" y="131.6" fill="#1a1a1a" font-weight="600">13,397명</text>
+<path d="M67.0,177.1 L88.0,175.9 M88.0,175.9 L102.0,183.3 M109.0,185.2 L130.0,198.0 M158.0,192.2 L186.0,82.0 M186.0,82.0 L235.0,87.8 M235.0,87.8 L277.0,108.6" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
+<path d="M60.0,164.1 L67.0,177.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="60.0" cy="164.1" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="67.0" cy="177.1" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="88.0" cy="175.9" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M102.0,183.3 L109.0,185.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="102.0" cy="183.3" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="109.0" cy="185.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M130.0,198.0 L137.0,194.5 L144.0,191.3 L151.0,197.8 L158.0,192.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="130.0" cy="198.0" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="137.0" cy="194.5" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="144.0" cy="191.3" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="151.0" cy="197.8" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="158.0" cy="192.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="186.0" cy="82.0" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="235.0" cy="87.8" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M277.0,108.6 L284.0,110.9" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="277.0" cy="108.6" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="284.0" cy="110.9" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="284.0" cy="110.9" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="292.0" y="115.9" fill="#1a1a1a" font-weight="600">11,015명</text>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text></svg>

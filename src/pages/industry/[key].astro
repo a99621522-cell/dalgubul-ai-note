@@ -23,8 +23,9 @@ const sup3 = recentSupport(supportHistory().filter(r => r.id && ids.has(r.id)), 
 const supFunders = [...sup3.reduce((mm, r) => mm.set(r.funder, (mm.get(r.funder) ?? 0) + 1), new Map<string, number>())].sort((a, b) => b[1] - a[1]);
 const tiles: Tile[] = s ? [
   { label: '기업 수', value: s.firms, unit: '곳', sub: `${ym} 기준 · 팩토리온 + 산단 외 목록`, href: `/companies/?group=${encodeURIComponent(g.name)}` },
-  { label: '고용 인원', value: s.employment, unit: '명', delta: s.mom?.employment ?? null, sub: `${ym} 기준 · ${m!.basis_label} · 집계 대상 ${fmt(s.covered)}곳` },
-  { label: '기업당 평균 고용', value: s.avg_employment === null ? null : Math.round(s.avg_employment), unit: '명', sub: '집계 대상 기업 기준' },
+  { label: '고용 인원', value: s.employment, unit: '명', delta: s.mom?.employment ?? null, sub: `${ym} 기준 · ${m!.basis_label} · 국민연금 집계 대상 ${fmt(s.covered)}곳 / ${fmt(s.firms)}곳` },
+  ...(m!.basis === 'nps' && s.fo_employment != null ? [{ label: '공장등록 종사자', value: s.fo_employment, unit: '명', sub: `팩토리온 신고값 · ${fmt(s.fo_covered ?? 0)}곳 · 국민연금과 근거가 달라 더하지 않음` }] : []),
+  { label: '기업당 평균 고용', value: s.avg_employment === null ? null : Math.round(s.avg_employment), unit: '명', sub: '국민연금 집계 대상 기준' },
   { label: '지원 이력 있는 기업 (3년)', value: sup3.length ? new Set(sup3.map(r => r.id)).size : 0, unit: '곳', sub: `공개 자료 이력 ${sup3.length}건`, href: `/support/?group=${encodeURIComponent(g.name)}` },
 ] : [];
 const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 ${fmt(s.employment)}명(${ym}). 월별 추이, 단지·입지 분포, 최근 3년 지원 이력.` : `${g.name} 산업 현황`;

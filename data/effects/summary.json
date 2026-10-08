@@ -24,7 +24,7 @@
    "before": "2023-12",
    "after": "2025-01",
    "treated_n": 111,
-   "comparison_pool_n": 4238,
+   "comparison_pool_n": 3616,
    "support_rows_n": 245,
    "blocks": [
     {
@@ -42,15 +42,15 @@
       "down_share_pct": 46.8
      },
      "comparison": {
-      "n": 3579,
-      "before_sum": 91238,
-      "after_sum": 89597,
-      "sum_change_pct": -1.8,
-      "before_median": 11,
+      "n": 3009,
+      "before_sum": 59697,
+      "after_sum": 58267,
+      "sum_change_pct": -2.4,
+      "before_median": 10,
       "after_median": 10,
       "median_rate_pct": 0.0,
-      "up_share_pct": 31.6,
-      "down_share_pct": 42.3
+      "up_share_pct": 31.1,
+      "down_share_pct": 41.8
      }
     },
     {
@@ -68,15 +68,15 @@
       "down_share_pct": 57.7
      },
      "comparison": {
-      "n": 1227,
-      "before_sum": 21999,
-      "after_sum": 21631,
-      "sum_change_pct": -1.7,
-      "before_median": 9,
-      "after_median": 9,
+      "n": 985,
+      "before_sum": 15669,
+      "after_sum": 15216,
+      "sum_change_pct": -2.9,
+      "before_median": 8,
+      "after_median": 8,
       "median_rate_pct": 0.0,
-      "up_share_pct": 30.0,
-      "down_share_pct": 39.8
+      "up_share_pct": 28.3,
+      "down_share_pct": 39.3
      }
     },
     {
@@ -86,15 +86,15 @@
       "n": 3
      },
      "comparison": {
-      "n": 365,
-      "before_sum": 4249,
-      "after_sum": 4236,
-      "sum_change_pct": -0.3,
+      "n": 301,
+      "before_sum": 3273,
+      "after_sum": 3272,
+      "sum_change_pct": -0.0,
       "before_median": 8,
-      "after_median": 8,
+      "after_median": 7,
       "median_rate_pct": 0.0,
-      "up_share_pct": 32.1,
-      "down_share_pct": 38.6
+      "up_share_pct": 31.6,
+      "down_share_pct": 37.2
      }
     },
     {
@@ -104,15 +104,15 @@
       "n": 3
      },
      "comparison": {
-      "n": 152,
-      "before_sum": 2828,
-      "after_sum": 2745,
-      "sum_change_pct": -2.9,
-      "before_median": 16.0,
+      "n": 138,
+      "before_sum": 2508,
+      "after_sum": 2403,
+      "sum_change_pct": -4.2,
+      "before_median": 15.5,
       "after_median": 14.5,
-      "median_rate_pct": -1.2,
-      "up_share_pct": 32.2,
-      "down_share_pct": 50.0
+      "median_rate_pct": 0.0,
+      "up_share_pct": 32.6,
+      "down_share_pct": 49.3
      }
     },
     {
@@ -130,15 +130,15 @@
       "down_share_pct": 60.0
      },
      "comparison": {
-      "n": 234,
-      "before_sum": 5749,
-      "after_sum": 5243,
-      "sum_change_pct": -8.8,
-      "before_median": 17.0,
-      "after_median": 16.0,
-      "median_rate_pct": -7.4,
-      "up_share_pct": 21.4,
-      "down_share_pct": 63.2
+      "n": 201,
+      "before_sum": 4817,
+      "after_sum": 4383,
+      "sum_change_pct": -9.0,
+      "before_median": 18,
+      "after_median": 16,
+      "median_rate_pct": -7.7,
+      "up_share_pct": 21.9,
+      "down_share_pct": 64.2
      }
     },
     {
@@ -156,15 +156,15 @@
       "down_share_pct": 45.5
      },
      "comparison": {
-      "n": 365,
-      "before_sum": 5373,
-      "after_sum": 5169,
-      "sum_change_pct": -3.8,
-      "before_median": 9,
+      "n": 341,
+      "before_sum": 5018,
+      "after_sum": 4812,
+      "sum_change_pct": -4.1,
+      "before_median": 8,
       "after_median": 8,
       "median_rate_pct": 0.0,
-      "up_share_pct": 35.1,
-      "down_share_pct": 38.1
+      "up_share_pct": 34.9,
+      "down_share_pct": 37.5
      }
     },
     {
@@ -174,15 +174,15 @@
       "n": 1
      },
      "comparison": {
-      "n": 62,
-      "before_sum": 1231,
-      "after_sum": 1132,
-      "sum_change_pct": -8.0,
+      "n": 56,
+      "before_sum": 1121,
+      "after_sum": 1047,
+      "sum_change_pct": -6.6,
       "before_median": 18.0,
-      "after_median": 16.5,
-      "median_rate_pct": -4.9,
-      "up_share_pct": 32.3,
-      "down_share_pct": 51.6
+      "after_median": 17.0,
+      "median_rate_pct": -2.1,
+      "up_share_pct": 33.9,
+      "down_share_pct": 50.0
      }
     },
     {
@@ -192,15 +192,15 @@
       "n": 4
      },
      "comparison": {
-      "n": 115,
-      "before_sum": 2436,
-      "after_sum": 2355,
-      "sum_change_pct": -3.3,
-      "before_median": 10,
-      "after_median": 9,
+      "n": 102,
+      "before_sum": 1750,
+      "after_sum": 1736,
+      "sum_change_pct": -0.8,
+      "before_median": 9.0,
+      "after_median": 9.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 34.8,
-      "down_share_pct": 43.5
+      "up_share_pct": 37.3,
+      "down_share_pct": 39.2
      }
     },
     {
@@ -218,15 +218,15 @@
       "down_share_pct": 50.0
      },
      "comparison": {
-      "n": 352,
-      "before_sum": 18156,
-      "after_sum": 18008,
-      "sum_change_pct": -0.8,
-      "before_median": 19.0,
-      "after_median": 18.0,
+      "n": 279,
+      "before_sum": 9498,
+      "after_sum": 9436,
+      "sum_change_pct": -0.7,
+      "before_median": 16,
+      "after_median": 16,
       "median_rate_pct": 0.0,
-      "up_share_pct": 36.4,
-      "down_share_pct": 43.5
+      "up_share_pct": 35.5,
+      "down_share_pct": 43.7
      }
     },
     {
@@ -244,15 +244,15 @@
       "down_share_pct": 40.0
      },
      "comparison": {
-      "n": 450,
-      "before_sum": 11619,
-      "after_sum": 11291,
-      "sum_change_pct": -2.8,
-      "before_median": 9.0,
-      "after_median": 9.0,
+      "n": 379,
+      "before_sum": 7030,
+      "after_sum": 6820,
+      "sum_change_pct": -3.0,
+      "before_median": 9,
+      "after_median": 8,
       "median_rate_pct": 0.0,
-      "up_share_pct": 31.6,
-      "down_share_pct": 41.8
+      "up_share_pct": 29.6,
+      "down_share_pct": 42.0
      }
     },
     {
@@ -262,15 +262,15 @@
       "n": 8
      },
      "comparison": {
-      "n": 257,
-      "before_sum": 17598,
-      "after_sum": 17787,
-      "sum_change_pct": 1.1,
+      "n": 227,
+      "before_sum": 9013,
+      "after_sum": 9142,
+      "sum_change_pct": 1.4,
       "before_median": 8,
-      "after_median": 8,
+      "after_median": 9,
       "median_rate_pct": 0.0,
-      "up_share_pct": 34.2,
-      "down_share_pct": 38.5
+      "up_share_pct": 37.4,
+      "down_share_pct": 37.4
      }
     },
     {
@@ -288,15 +288,15 @@
       "down_share_pct": 25.0
      },
      "comparison": {
-      "n": 1580,
-      "before_sum": 8993,
-      "after_sum": 9205,
-      "sum_change_pct": 2.4,
+      "n": 1400,
+      "before_sum": 7977,
+      "after_sum": 8221,
+      "sum_change_pct": 3.1,
       "before_median": 6.0,
       "after_median": 5.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 28.5,
-      "down_share_pct": 30.3
+      "up_share_pct": 28.1,
+      "down_share_pct": 30.4
      }
     },
     {
@@ -314,15 +314,15 @@
       "down_share_pct": 49.1
      },
      "comparison": {
-      "n": 1745,
-      "before_sum": 34478,
-      "after_sum": 33313,
-      "sum_change_pct": -3.4,
-      "before_median": 17,
-      "after_median": 16,
+      "n": 1448,
+      "before_sum": 28092,
+      "after_sum": 27059,
+      "sum_change_pct": -3.7,
+      "before_median": 16.0,
+      "after_median": 16.0,
       "median_rate_pct": -3.7,
-      "up_share_pct": 32.6,
-      "down_share_pct": 51.9
+      "up_share_pct": 32.7,
+      "down_share_pct": 51.5
      }
     },
     {
@@ -340,15 +340,15 @@
       "down_share_pct": 61.9
      },
      "comparison": {
-      "n": 230,
-      "before_sum": 22106,
-      "after_sum": 21571,
-      "sum_change_pct": -2.4,
-      "before_median": 82.5,
-      "after_median": 77.5,
+      "n": 149,
+      "before_sum": 14087,
+      "after_sum": 13583,
+      "sum_change_pct": -3.6,
+      "before_median": 81,
+      "after_median": 76,
       "median_rate_pct": -1.0,
-      "up_share_pct": 43.9,
-      "down_share_pct": 51.7
+      "up_share_pct": 42.3,
+      "down_share_pct": 53.7
      }
     },
     {
@@ -366,15 +366,15 @@
       "down_share_pct": 54.5
      },
      "comparison": {
-      "n": 24,
-      "before_sum": 25661,
-      "after_sum": 25508,
-      "sum_change_pct": -0.6,
-      "before_median": 600.0,
-      "after_median": 580.0,
-      "median_rate_pct": -0.6,
-      "up_share_pct": 41.7,
-      "down_share_pct": 50.0
+      "n": 12,
+      "before_sum": 9541,
+      "after_sum": 9404,
+      "sum_change_pct": -1.4,
+      "before_median": 547.0,
+      "after_median": 527.5,
+      "median_rate_pct": -2.2,
+      "up_share_pct": 33.3,
+      "down_share_pct": 58.3
      }
     },
     {
@@ -392,15 +392,15 @@
       "down_share_pct": 46.2
      },
      "comparison": {
-      "n": 3566,
-      "before_sum": 90012,
-      "after_sum": 88424,
-      "sum_change_pct": -1.8,
-      "before_median": 11.0,
-      "after_median": 10.0,
+      "n": 3001,
+      "before_sum": 59028,
+      "after_sum": 57611,
+      "sum_change_pct": -2.4,
+      "before_median": 10,
+      "after_median": 10,
       "median_rate_pct": 0.0,
-      "up_share_pct": 31.6,
-      "down_share_pct": 42.2
+      "up_share_pct": 31.1,
+      "down_share_pct": 41.8
      }
     },
     {
@@ -410,15 +410,15 @@
       "n": 2
      },
      "comparison": {
-      "n": 599,
-      "before_sum": 16964,
-      "after_sum": 16665,
-      "sum_change_pct": -1.8,
-      "before_median": 18,
-      "after_median": 18,
+      "n": 441,
+      "before_sum": 11585,
+      "after_sum": 11219,
+      "sum_change_pct": -3.2,
+      "before_median": 17,
+      "after_median": 17,
       "median_rate_pct": 0.0,
-      "up_share_pct": 33.7,
-      "down_share_pct": 49.2
+      "up_share_pct": 32.2,
+      "down_share_pct": 49.7
      }
     },
     {
@@ -428,15 +428,15 @@
       "n": 5
      },
      "comparison": {
-      "n": 865,
-      "before_sum": 17590,
-      "after_sum": 17054,
-      "sum_change_pct": -3.0,
+      "n": 687,
+      "before_sum": 13302,
+      "after_sum": 12825,
+      "sum_change_pct": -3.6,
       "before_median": 16,
-      "after_median": 16,
-      "median_rate_pct": -2.1,
+      "after_median": 15,
+      "median_rate_pct": 0.0,
       "up_share_pct": 33.2,
-      "down_share_pct": 50.6
+      "down_share_pct": 49.5
      }
     },
     {
@@ -446,15 +446,15 @@
       "n": 1
      },
      "comparison": {
-      "n": 528,
-      "before_sum": 10333,
-      "after_sum": 10065,
-      "sum_change_pct": -2.6,
-      "before_median": 16.0,
-      "after_median": 16.0,
-      "median_rate_pct": -1.4,
-      "up_share_pct": 31.1,
-      "down_share_pct": 50.0
+      "n": 397,
+      "before_sum": 7550,
+      "after_sum": 7303,
+      "sum_change_pct": -3.3,
+      "before_median": 16,
+      "after_median": 15,
+      "median_rate_pct": 0.0,
+      "up_share_pct": 30.7,
+      "down_share_pct": 49.4
      }
     },
     {
@@ -464,15 +464,15 @@
       "n": 1
      },
      "comparison": {
-      "n": 143,
-      "before_sum": 2462,
-      "after_sum": 2368,
-      "sum_change_pct": -3.8,
-      "before_median": 15,
-      "after_median": 14,
+      "n": 130,
+      "before_sum": 2214,
+      "after_sum": 2118,
+      "sum_change_pct": -4.3,
+      "before_median": 14.5,
+      "after_median": 14.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 42.7,
-      "down_share_pct": 45.5
+      "up_share_pct": 43.1,
+      "down_share_pct": 43.8
      }
     },
     {
@@ -490,15 +490,15 @@
       "down_share_pct": 46.8
      },
      "comparison": {
-      "n": 3579,
-      "before_sum": 91238,
-      "after_sum": 89597,
-      "sum_change_pct": -1.8,
-      "before_median": 11,
+      "n": 3009,
+      "before_sum": 59697,
+      "after_sum": 58267,
+      "sum_change_pct": -2.4,
+      "before_median": 10,
       "after_median": 10,
       "median_rate_pct": 0.0,
-      "up_share_pct": 31.6,
-      "down_share_pct": 42.3
+      "up_share_pct": 31.1,
+      "down_share_pct": 41.8
      }
     }
    ]
@@ -508,7 +508,7 @@
    "before": "2024-12",
    "after": "2026-01",
    "treated_n": 335,
-   "comparison_pool_n": 4345,
+   "comparison_pool_n": 3742,
    "support_rows_n": 574,
    "blocks": [
     {
@@ -526,15 +526,15 @@
       "down_share_pct": 51.3
      },
      "comparison": {
-      "n": 4303,
-      "before_sum": 104400,
-      "after_sum": 102981,
-      "sum_change_pct": -1.4,
+      "n": 3707,
+      "before_sum": 70163,
+      "after_sum": 68647,
+      "sum_change_pct": -2.2,
       "before_median": 9,
-      "after_median": 9,
+      "after_median": 8,
       "median_rate_pct": 0.0,
-      "up_share_pct": 29.7,
-      "down_share_pct": 41.0
+      "up_share_pct": 29.1,
+      "down_share_pct": 40.5
      }
     },
     {
@@ -552,15 +552,15 @@
       "down_share_pct": 61.9
      },
      "comparison": {
-      "n": 1244,
-      "before_sum": 23504,
-      "after_sum": 22910,
-      "sum_change_pct": -2.5,
-      "before_median": 9.0,
-      "after_median": 9.0,
+      "n": 1016,
+      "before_sum": 17383,
+      "after_sum": 16881,
+      "sum_change_pct": -2.9,
+      "before_median": 8.0,
+      "after_median": 8.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 28.1,
-      "down_share_pct": 41.2
+      "up_share_pct": 27.5,
+      "down_share_pct": 40.3
      }
     },
     {
@@ -578,15 +578,15 @@
       "down_share_pct": 50.0
      },
      "comparison": {
-      "n": 407,
-      "before_sum": 6877,
-      "after_sum": 6678,
-      "sum_change_pct": -2.9,
+      "n": 337,
+      "before_sum": 5054,
+      "after_sum": 4877,
+      "sum_change_pct": -3.5,
       "before_median": 8,
-      "after_median": 8,
+      "after_median": 7,
       "median_rate_pct": 0.0,
-      "up_share_pct": 31.0,
-      "down_share_pct": 41.3
+      "up_share_pct": 31.2,
+      "down_share_pct": 40.1
      }
     },
     {
@@ -604,15 +604,15 @@
       "down_share_pct": 31.6
      },
      "comparison": {
-      "n": 427,
-      "before_sum": 7482,
-      "after_sum": 7393,
-      "sum_change_pct": -1.2,
-      "before_median": 8,
-      "after_median": 8,
+      "n": 400,
+      "before_sum": 6407,
+      "after_sum": 6312,
+      "sum_change_pct": -1.5,
+      "before_median": 7.0,
+      "after_median": 7.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 31.4,
-      "down_share_pct": 36.1
+      "up_share_pct": 31.0,
+      "down_share_pct": 35.5
      }
     },
     {
@@ -622,15 +622,15 @@
       "n": 3
      },
      "comparison": {
-      "n": 22,
-      "before_sum": 1394,
-      "after_sum": 1444,
-      "sum_change_pct": 3.6,
+      "n": 16,
+      "before_sum": 316,
+      "after_sum": 301,
+      "sum_change_pct": -4.7,
       "before_median": 19.0,
-      "after_median": 19.0,
+      "after_median": 17.0,
       "median_rate_pct": -4.1,
-      "up_share_pct": 27.3,
-      "down_share_pct": 59.1
+      "up_share_pct": 25.0,
+      "down_share_pct": 56.2
      }
     },
     {
@@ -648,15 +648,15 @@
       "down_share_pct": 54.8
      },
      "comparison": {
-      "n": 459,
-      "before_sum": 6520,
-      "after_sum": 6192,
-      "sum_change_pct": -5.0,
-      "before_median": 10,
+      "n": 413,
+      "before_sum": 5596,
+      "after_sum": 5300,
+      "sum_change_pct": -5.3,
+      "before_median": 9,
       "after_median": 8,
       "median_rate_pct": 0.0,
-      "up_share_pct": 22.0,
-      "down_share_pct": 47.9
+      "up_share_pct": 21.5,
+      "down_share_pct": 47.0
      }
     },
     {
@@ -674,15 +674,15 @@
       "down_share_pct": 51.6
      },
      "comparison": {
-      "n": 404,
-      "before_sum": 5576,
-      "after_sum": 5600,
-      "sum_change_pct": 0.4,
-      "before_median": 8.0,
-      "after_median": 7.5,
+      "n": 379,
+      "before_sum": 5194,
+      "after_sum": 5206,
+      "sum_change_pct": 0.2,
+      "before_median": 8,
+      "after_median": 7,
       "median_rate_pct": 0.0,
-      "up_share_pct": 31.7,
-      "down_share_pct": 35.1
+      "up_share_pct": 30.6,
+      "down_share_pct": 35.9
      }
     },
     {
@@ -700,15 +700,15 @@
       "down_share_pct": 45.5
      },
      "comparison": {
-      "n": 159,
-      "before_sum": 2982,
-      "after_sum": 2965,
-      "sum_change_pct": -0.6,
+      "n": 151,
+      "before_sum": 2786,
+      "after_sum": 2746,
+      "sum_change_pct": -1.4,
       "before_median": 8,
       "after_median": 9,
       "median_rate_pct": 0.0,
-      "up_share_pct": 39.0,
-      "down_share_pct": 40.9
+      "up_share_pct": 37.1,
+      "down_share_pct": 41.7
      }
     },
     {
@@ -726,15 +726,15 @@
       "down_share_pct": 33.3
      },
      "comparison": {
-      "n": 115,
-      "before_sum": 2448,
-      "after_sum": 2418,
-      "sum_change_pct": -1.2,
+      "n": 101,
+      "before_sum": 1783,
+      "after_sum": 1748,
+      "sum_change_pct": -2.0,
       "before_median": 9,
-      "after_median": 10,
+      "after_median": 9,
       "median_rate_pct": 0.0,
-      "up_share_pct": 37.4,
-      "down_share_pct": 41.7
+      "up_share_pct": 36.6,
+      "down_share_pct": 41.6
      }
     },
     {
@@ -752,15 +752,15 @@
       "down_share_pct": 51.1
      },
      "comparison": {
-      "n": 347,
-      "before_sum": 17820,
-      "after_sum": 17661,
-      "sum_change_pct": -0.9,
-      "before_median": 19,
-      "after_median": 18,
+      "n": 278,
+      "before_sum": 9236,
+      "after_sum": 9178,
+      "sum_change_pct": -0.6,
+      "before_median": 15.5,
+      "after_median": 16.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 30.0,
-      "down_share_pct": 46.7
+      "up_share_pct": 28.8,
+      "down_share_pct": 46.8
      }
     },
     {
@@ -778,15 +778,15 @@
       "down_share_pct": 56.1
      },
      "comparison": {
-      "n": 465,
-      "before_sum": 11686,
-      "after_sum": 11687,
-      "sum_change_pct": 0.0,
-      "before_median": 9,
-      "after_median": 9,
+      "n": 394,
+      "before_sum": 7236,
+      "after_sum": 6926,
+      "sum_change_pct": -4.3,
+      "before_median": 8.5,
+      "after_median": 8.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 32.3,
-      "down_share_pct": 39.6
+      "up_share_pct": 31.2,
+      "down_share_pct": 39.1
      }
     },
     {
@@ -804,15 +804,15 @@
       "down_share_pct": 38.9
      },
      "comparison": {
-      "n": 254,
-      "before_sum": 18111,
-      "after_sum": 18033,
-      "sum_change_pct": -0.4,
+      "n": 222,
+      "before_sum": 9172,
+      "after_sum": 9172,
+      "sum_change_pct": 0.0,
       "before_median": 9.0,
       "after_median": 8.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 29.5,
-      "down_share_pct": 38.6
+      "up_share_pct": 28.8,
+      "down_share_pct": 39.6
      }
     },
     {
@@ -830,15 +830,15 @@
       "down_share_pct": 36.6
      },
      "comparison": {
-      "n": 2266,
-      "before_sum": 12614,
-      "after_sum": 13143,
-      "sum_change_pct": 4.2,
-      "before_median": 5.0,
-      "after_median": 5.0,
+      "n": 2053,
+      "before_sum": 11392,
+      "after_sum": 11791,
+      "sum_change_pct": 3.5,
+      "before_median": 5,
+      "after_median": 5,
       "median_rate_pct": 0.0,
-      "up_share_pct": 27.6,
-      "down_share_pct": 30.4
+      "up_share_pct": 27.1,
+      "down_share_pct": 30.3
      }
     },
     {
@@ -856,15 +856,15 @@
       "down_share_pct": 53.0
      },
      "comparison": {
-      "n": 1712,
-      "before_sum": 33946,
-      "after_sum": 32851,
-      "sum_change_pct": -3.2,
-      "before_median": 17.0,
+      "n": 1438,
+      "before_sum": 27908,
+      "after_sum": 26866,
+      "sum_change_pct": -3.7,
+      "before_median": 16.0,
       "after_median": 16.0,
-      "median_rate_pct": -4.3,
-      "up_share_pct": 31.5,
-      "down_share_pct": 52.1
+      "median_rate_pct": -4.5,
+      "up_share_pct": 30.9,
+      "down_share_pct": 52.5
      }
     },
     {
@@ -882,15 +882,15 @@
       "down_share_pct": 53.1
      },
      "comparison": {
-      "n": 301,
-      "before_sum": 30191,
-      "after_sum": 29567,
-      "sum_change_pct": -2.1,
-      "before_median": 79,
-      "after_median": 76,
-      "median_rate_pct": -2.1,
-      "up_share_pct": 35.2,
-      "down_share_pct": 56.5
+      "n": 205,
+      "before_sum": 20550,
+      "after_sum": 19975,
+      "sum_change_pct": -2.8,
+      "before_median": 78,
+      "after_median": 74,
+      "median_rate_pct": -2.9,
+      "up_share_pct": 35.6,
+      "down_share_pct": 56.6
      }
     },
     {
@@ -908,15 +908,15 @@
       "down_share_pct": 63.6
      },
      "comparison": {
-      "n": 24,
-      "before_sum": 27649,
-      "after_sum": 27420,
-      "sum_change_pct": -0.8,
-      "before_median": 631.0,
-      "after_median": 570.0,
-      "median_rate_pct": -2.3,
-      "up_share_pct": 33.3,
-      "down_share_pct": 66.7
+      "n": 11,
+      "before_sum": 10313,
+      "after_sum": 10015,
+      "sum_change_pct": -2.9,
+      "before_median": 569,
+      "after_median": 560,
+      "median_rate_pct": -1.6,
+      "up_share_pct": 27.3,
+      "down_share_pct": 72.7
      }
     },
     {
@@ -934,15 +934,15 @@
       "down_share_pct": 34.1
      },
      "comparison": {
-      "n": 3868,
-      "before_sum": 92236,
-      "after_sum": 90991,
-      "sum_change_pct": -1.3,
-      "before_median": 9.0,
-      "after_median": 9.0,
+      "n": 3321,
+      "before_sum": 61014,
+      "after_sum": 59603,
+      "sum_change_pct": -2.3,
+      "before_median": 9,
+      "after_median": 9,
       "median_rate_pct": 0.0,
-      "up_share_pct": 29.6,
-      "down_share_pct": 41.5
+      "up_share_pct": 28.8,
+      "down_share_pct": 41.2
      }
     },
     {
@@ -952,15 +952,15 @@
       "n": 1
      },
      "comparison": {
-      "n": 678,
-      "before_sum": 3900,
-      "after_sum": 4088,
-      "sum_change_pct": 4.8,
+      "n": 592,
+      "before_sum": 3387,
+      "after_sum": 3511,
+      "sum_change_pct": 3.7,
       "before_median": 6.0,
       "after_median": 5.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 26.8,
-      "down_share_pct": 30.5
+      "up_share_pct": 26.2,
+      "down_share_pct": 30.1
      }
     },
     {
@@ -978,15 +978,15 @@
       "down_share_pct": 56.0
      },
      "comparison": {
-      "n": 4124,
-      "before_sum": 82349,
-      "after_sum": 80779,
-      "sum_change_pct": -1.9,
+      "n": 3546,
+      "before_sum": 60601,
+      "after_sum": 59297,
+      "sum_change_pct": -2.2,
       "before_median": 9.0,
-      "after_median": 9.0,
+      "after_median": 8.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 29.7,
-      "down_share_pct": 41.4
+      "up_share_pct": 29.1,
+      "down_share_pct": 40.8
      }
     },
     {
@@ -996,15 +996,15 @@
       "n": 4
      },
      "comparison": {
-      "n": 1258,
-      "before_sum": 15323,
-      "after_sum": 15256,
-      "sum_change_pct": -0.4,
-      "before_median": 9.0,
-      "after_median": 9.0,
+      "n": 1049,
+      "before_sum": 12170,
+      "after_sum": 12030,
+      "sum_change_pct": -1.2,
+      "before_median": 8,
+      "after_median": 8,
       "median_rate_pct": 0.0,
-      "up_share_pct": 28.9,
-      "down_share_pct": 39.7
+      "up_share_pct": 28.5,
+      "down_share_pct": 38.9
      }
     },
     {
@@ -1022,15 +1022,15 @@
       "down_share_pct": 36.3
      },
      "comparison": {
-      "n": 3868,
-      "before_sum": 92236,
-      "after_sum": 90991,
-      "sum_change_pct": -1.3,
-      "before_median": 9.0,
-      "after_median": 9.0,
+      "n": 3321,
+      "before_sum": 61014,
+      "after_sum": 59603,
+      "sum_change_pct": -2.3,
+      "before_median": 9,
+      "after_median": 9,
       "median_rate_pct": 0.0,
-      "up_share_pct": 29.6,
-      "down_share_pct": 41.5
+      "up_share_pct": 28.8,
+      "down_share_pct": 41.2
      }
     },
     {
@@ -1048,15 +1048,15 @@
       "down_share_pct": 55.8
      },
      "comparison": {
-      "n": 4124,
-      "before_sum": 82349,
-      "after_sum": 80779,
-      "sum_change_pct": -1.9,
+      "n": 3546,
+      "before_sum": 60601,
+      "after_sum": 59297,
+      "sum_change_pct": -2.2,
       "before_median": 9.0,
-      "after_median": 9.0,
+      "after_median": 8.0,
       "median_rate_pct": 0.0,
-      "up_share_pct": 29.7,
-      "down_share_pct": 41.4
+      "up_share_pct": 29.1,
+      "down_share_pct": 40.8
      }
     }
    ]

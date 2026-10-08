@@ -13,7 +13,7 @@ import { zonesOf } from '../lib/sites';
 export const GET: APIRoute = () => {
   const list = companies();
   const supported = new Set(supportHistory().filter(r => r.id).map(r => r.id));
-  const emp = (companyStats()?.companies ?? {}) as Record<string, { e: number | null }>;
+  const emp = (companyStats()?.companies ?? {}) as Record<string, { e: number | null; d?: 1 }>;
   const rows = list.map(c => ({
     i: c.id,
     n: c.name,
@@ -29,6 +29,7 @@ export const GET: APIRoute = () => {
     ...((z => (z.length ? { z } : {}))(zonesOf(c))),
     ...((x => (x.length === 2 ? { x } : {}))((c.sector_code || '').trim().slice(0, 2))),
     ...(emp[c.id]?.e != null ? { m: emp[c.id].e } : {}),
+    ...(emp[c.id]?.d ? { md: 1 } : {}),   // 같은 국민연금 사업장에 붙은 다른 공장 기록 — 고용 합계에서 뺀다(build_stats.py, 2026-10-08)
   }));
   const body = JSON.stringify({ as_of: list[0]?.as_of ?? '', total: rows.length, rows });
   return new Response(body, { headers: { 'Content-Type': 'application/json; charset=utf-8' } });

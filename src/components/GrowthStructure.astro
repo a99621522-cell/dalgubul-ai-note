@@ -181,21 +181,51 @@ const groupOf = (r: { high: boolean; mfg: boolean; spec: boolean }) => r.high ? 
       if (!ts.some(x => Math.abs(x - T) < 0.05)) { ts.push(Math.round(T * 10) / 10); ts.sort((a, b) => a - b); }
       const tb = document.querySelector('#gsroute tbody');
       if (!tb) return;
-      let outCount = 0;
-      tb.innerHTML = ts.map(t => {
+      // 머리 글자를 칸마다 data-label 로 — 표를 다시 그릴 때마다 붙인다(휴대폰 카드 보기에서 '모든 업종' 같은 이름이 빠지던 것, 운영자 지적 2026-10-08)
+      const heads = Array.from(document.querySelectorAll('#gsroute thead th')).map(th => (th.textContent ?? '').trim());
+      const one = (t: number) => {   // 목표 t 에 대해 묶음마다 [지금 추세, 필요 성장률, 더할 몫, 시도 최고, 범위 밖]
         const E = t - D.base;
-        const cells = groups.map(([, f]) => {
+        return groups.map(([, f]) => {
           const rs = D.rows.filter(f), sh = rs.reduce((a, r) => a + r.w, 0);   // 묶음의 총부가가치 대비 비중(모든 업종 = 100)
           const ss = rs.reduce((a, r) => a + r.share, 0);
           const avg = rs.reduce((a, r) => a + r.share * r.g, 0) / ss;
           const cap = rs.reduce((a, r) => a + r.share * r.gmax, 0) / ss;   // 실현 가능성 띠: 묶음 업종마다 17개 시도 최고 10년 성장률의 비중 가중 평균(관측된 범위의 위쪽)
-          if (E <= 0) return `<td class="n">${fmt(avg)}</td>`;
-          const add = E / sh * 100, need = avg + add, out = need > cap + 0.05;
-          if (out) outCount++;
-          return `<td class="n${out ? ' gs-out' : ''}">${fmt(need)}<div class="tiny muted">(+${fmt(add)}%p)${out ? `<br>관측 범위 밖 · 시도 최고 ${fmt(cap)}%` : ''}</div></td>`;
+          const add = E > 0 ? E / sh * 100 : 0, need = avg + add;
+          return { avg, need, add, cap, out: E > 0 && need > cap + 0.05 };
+        });
+      };
+      let outCount = 0;
+      tb.innerHTML = ts.map(t => {
+        const E = t - D.base;
+        const cells = one(t).map((c, i) => {
+          const lab = heads[i + 1] ?? '';
+          if (E <= 0) return `<td class="n" data-label="${lab}">${fmt(c.avg)}</td>`;
+          if (c.out) outCount++;
+          return `<td class="n${c.out ? ' gs-out' : ''}" data-label="${lab}">${fmt(c.need)}<div class="tiny muted">(+${fmt(c.add)}%p)${c.out ? `<br>관측 범위 밖 · 시도 최고 ${fmt(c.cap)}%` : ''}</div></td>`;
         }).join('');
-        return `<tr${Math.abs(t - T) < 0.05 ? ' class="gs-cur"' : ''}><th scope="row">${fmt(t)}%</th>${cells}<td class="n">${fmt(D.gdpEok * t / 100 / 10000)}</td><td class="n">${E > 0 ? fmt(D.gdpEok * E / 100 / 10000) : '—'}</td></tr>`;
+        return `<tr${Math.abs(t - T) < 0.05 ? ' class="gs-cur"' : ''}><th scope="row">${fmt(t)}%</th>${cells}<td class="n" data-label="${heads[5] ?? ''}">${fmt(D.gdpEok * t / 100 / 10000)}</td><td class="n" data-label="${heads[6] ?? ''}">${E > 0 ? fmt(D.gdpEok * E / 100 / 10000) : '—'}</td></tr>`;
       }).join('');
+      // 쉬운 답(고른 목표 하나): 운영자 지적 2026-10-08 '이게 무슨 말이야? 어려워'
+      const pl = document.getElementById('gsplain');
+      if (pl) {
+        const E = T - D.base, cs = one(T);
+        const NAMES: [string, string][] = [
+          ['모든 업종이 함께', '농업·제조업·서비스업 전부'],
+          ['고부가 3부문만', '전기·전자·정밀기기, 정보통신, 금융·보험'],
+          ['제조업만', '공장에서 물건을 만드는 업종'],
+          ['특화 부문만', '대구가 전국보다 비중이 큰 업종(입지계수 1 이상)'],
+        ];
+        if (E <= 0) {
+          pl.innerHTML = `<p class="ap-gap">목표 ${fmt(T)}%는 지금 추세(${fmt(D.base, 2)}%)보다 낮거나 같습니다. 지금 속도만 이어져도 닿는 값입니다.</p>`;
+        } else {
+          pl.innerHTML = `<p class="ap-gap">목표 ${fmt(T)}%까지 해마다 <span class="ap-num"><b>${fmt(E, 2)}%p</b></span> 모자랍니다. 이 차이를 누가 메우느냐에 따라 키워야 할 속도가 달라집니다.</p><ul>`
+            + cs.map((c, i) => `<li><span class="ap-name">${NAMES[i][0]} 키우면</span><span class="ap-what">${NAMES[i][1]}</span>`
+              + `<span class="ap-num">지금 해마다 ${fmt(c.avg)}% → <b>${fmt(c.need)}%</b>로</span>`
+              + (c.out ? `<span class="ap-out">17개 시도 어디서도 10년 동안 이 속도로 큰 적이 없습니다(시도 최고 ${fmt(c.cap)}%).</span>` : '')
+              + (i === 0 && Math.abs(c.avg - D.base) >= 0.05 ? `<span class="ap-out">업종을 모두 더한 부가가치는 해마다 ${fmt(c.avg)}% 컸고, 세금(순생산물세)까지 넣은 GRDP 는 ${fmt(D.base, 2)}% 컸습니다. 그래서 두 숫자가 다릅니다.</span>` : '') + `</li>`).join('')
+            + `</ul><p class="ap-money">금액으로는 대구 GRDP 가 한 해 약 ${fmt(D.gdpEok * T / 100 / 10000)}조 원 늘어야 합니다. 지금 추세보다 ${fmt(D.gdpEok * E / 100 / 10000)}조 원 더입니다(${pl.dataset.y1 ?? ""}년 명목 GRDP 기준).</p>`;
+        }
+      }
       const sh = (f: (r: R) => boolean) => fmt(D.rows.filter(f).reduce((a, r) => a + r.share, 0) / S0 * 100);
       const n = document.getElementById('gsroutenote');
       if (n) n.textContent = `묶음 비중: 고부가 3부문 ${sh(r => r.high)}% · 제조업 ${sh(r => r.mfg)}% · 특화 부문 ${sh(r => r.spec)}%(부가가치 기준). 비중이 작은 묶음일수록 같은 차이를 메우는 데 높은 성장률이 필요합니다.`

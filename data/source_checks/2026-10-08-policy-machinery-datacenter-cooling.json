@@ -1,25 +1,23 @@
 {
  "file": "src/content/posts/2026-10-08-policy-machinery-datacenter-cooling.md",
  "checked": "2026-10-08",
- "ok": 12,
+ "ok": 15,
  "total": 15,
- "ratio": 0.8,
- "official_bad": [
-  "정책브리핑(korea.kr), 「정부, 550조 AI 데이터센터 투자 견인…'1인 1 AI 에이전트' 시대 연다」(과기정통부·우주항공청 2026년 하반기 업무계획)"
- ],
- "pass": false,
+ "ratio": 1.0,
+ "official_bad": [],
+ "pass": true,
  "sources": [
   {
    "title": "정책브리핑(korea.kr), 「정부, 550조 AI 데이터센터 투자 견인…'1인 1 AI 에이전트' 시대 연다」(과기정통부·우주항공청 2026년 하반기 업무계획)",
    "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148968284",
    "date": "2026-07-16",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "정부, 550조 AI 데이터센터 투자 견인…&#039;1인 1 AI 에이전트&#039; 시대 연다 - 정책뉴스 | 뉴스 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "과학기술정보통신부, 「2027년도 과기정통부 예산안」 보도자료(KDI 경제정보센터 정책자료)",
@@ -158,24 +156,24 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
    "date": "2026-09-28",
    "kind": "data",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
    "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
    "date": "2026-10-01",
    "kind": "data",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
    "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "ok": true,
+   "note": ""
   },
   {
    "title": "기업 사전(팩토리온 2026-08 공장등록, KSIC 코드·단지·종사자 신고값)·지원 이력·사업 DB(사업명만)",
@@ -185,7 +183,7 @@
    "status": 200,
    "page_title": "대구 기업 사전 — 다잇다",
    "title_match": 0.25,
-   "date_found": false,
+   "date_found": true,
    "ok": true,
    "note": ""
   }

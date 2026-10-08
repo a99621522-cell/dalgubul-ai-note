@@ -4,6 +4,7 @@
  *  그냥 대구정책연구원 자료만 올려': 통계청 중분류 대조표는 빼고, 보고서의 최근 연도(2023) 대구 값만 한 표로. 전국 값·연도별 추이는 싣지 않는다.
  *  데이터 data/dpi/university_industry.json(보고서 4장 표 값 그대로). 단위 바꿈(백만 원 → 억 원)만, 평가·순위 없음. */
 import fs from 'node:fs';
+import { companies } from '../lib/csv';
 
 type S = (number | null)[];
 type Bundle = { name: string; role: string; page: number; codes: { ksic: string; name: string }[]; codes_stated: number | null; daegu: { est: S; emp: S; prod: S; va: S } };
@@ -14,12 +15,25 @@ const eok = (v: number | null | undefined) => v == null ? '—' : Math.round(v /
 const i = D ? D.years.length - 1 : 0;
 const Y = D ? D.years[i] : '';
 const src = D ? `${D.source.publisher} 「${D.source.title}」(${D.source.series}, ${D.source.published.replace('-', '.')})` : '';
-/** 산업 이름 밑 한 줄: 몇 개 업종을 묶었는지와 앞 업종 이름 — 운영자 지적 2026-10-09 '로봇산업 수가 너무 많잖아'(로봇 = 산업용 로봇 외 기계·측정기기 등 10개 업종 묶음) */
+/** 산업 이름 밑 두 줄 — 운영자 지적 2026-10-09 '로봇산업 수가 너무 많잖아' → '다른 산업도 다시 검토해'.
+ *  ① 묶은 업종 수와 대구 공장등록 기업이 많은 업종 3개(기업 사전으로 순서만 정함, 숫자는 싣지 않음)
+ *  ② 산업 이름과 다른 업종이 섞인 점(보고서 업종 목록을 그대로 읽은 사실). 검토 근거: 업종별 대구 공장등록 수(2026-09)·전국 세세분류 생산액(KOSIS 2023) */
+const cnt = new Map<string, number>();
+for (const c of companies()) { const k = (c.sector_code || '').trim().slice(0, 5); if (k) cnt.set(k, (cnt.get(k) ?? 0) + 1); }
 const short = (s: string) => s.replace(/ 제조업$| 개발 및 공급업$| 서비스업$/, '').replace(/^그 외 기타 /, '');
 const inc = (b: Bundle) => {
-  const FIRST = ['29280', '29299', '29210'];   // 로봇 묶음은 산업용 로봇과 기업이 많은 기계 업종을 앞에(기업 사전 2026-09: 29299 186곳·29210 121곳·29280 84곳)
-  const lead = [...b.codes.filter(c => FIRST.includes(c.ksic)).sort((x, y) => FIRST.indexOf(x.ksic) - FIRST.indexOf(y.ksic)), ...b.codes.filter(c => !FIRST.includes(c.ksic))];
+  const lead = [...b.codes].sort((x, y) => (cnt.get(y.ksic) ?? 0) - (cnt.get(x.ksic) ?? 0));
   return `${b.codes_stated ?? b.codes.length}개 업종: ${lead.slice(0, 3).map(c => short(c.name)).join('·')} 등`;
+};
+const NOTE: Record<string, string> = {
+  '전기·자율 모빌리티부품': '일반 자동차 부품(엔진·차체·동력전달·그 외)·전동기·시스템 소프트웨어를 묶음 — 자동차용 전기장치 업종은 들어 있지 않음',
+  '기계요소 소재부품': '절삭가공·도금 업종이 기업 수의 대부분, 이차전지 2개 업종이 함께 들어 있음',
+  '디지털 의료기기': '의료기기 업종 외에 안경·응용 소프트웨어·기타 직물제품 업종이 들어 있음',
+  '미래모빌리티': '자동차 부품 외에 배전반·전기장비·화학제품·비철금속·항공기 부품 업종이 들어 있음, 전기·자율 모빌리티부품 6개 업종 중 4개와 겹침',
+  '로봇': '산업용 로봇 제조업 1개에 특수목적용 기계·농업용 기계·측정·제어기기 등 9개 업종을 더한 값 — 로봇 제조 기업 수가 아님',
+  '헬스케어': '의료기기·의약품 업종, 업종 번호는 옛 분류(10차) 기준',
+  '반도체': '반도체 소자 외에 반도체·디스플레이 제조용 기계와 발광 다이오드 업종이 들어 있음',
+  'ABB': '소프트웨어·IT 서비스 10개와 전자부품·무선 통신장비 2개 업종 — 생산액·부가가치는 제조 2개 업종만',
 };
 interface Props { heading?: boolean }
 const { heading = true } = Astro.props;
@@ -30,14 +44,14 @@ const { heading = true } = Astro.props;
   <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 현황(${Y}년, 대구정책연구원)`}>
     <thead><tr><th>산업</th><th data-pri="3">구분</th><th class="n">사업체(개)</th><th class="n">종사자(명)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th></tr></thead>
     <tbody>{D.bundles.map(b => <tr>
-      <th scope="row">{b.name}<div class="tiny muted">{inc(b)}</div></th><td>{b.role}</td>
+      <th scope="row">{b.name}<div class="tiny muted">{inc(b)}</div>{NOTE[b.name] && <div class="tiny ib-warn">{NOTE[b.name]}</div>}</th><td class="ib-role">{b.role}</td>
       <td class="n">{n(b.daegu.est[i])}</td><td class="n">{n(b.daegu.emp[i])}</td><td class="n">{eok(b.daegu.prod[i])}</td><td class="n">{eok(b.daegu.va[i])}</td>
     </tr>)}</tbody>
   </table></div>
   <ul class="meta ib-notes">
     <li>사업체·종사자는 1인 이상 전체, 생산액·부가가치는 종사자 10인 이상 사업체 기준입니다(보고서 표 주).</li>
-    <li><b>산업 이름은 업종 묶음입니다.</b> 예를 들어 '로봇'은 산업용 로봇 제조업 1개에 특수목적용 기계·농업용 기계·측정·제어기기 등 9개 업종을 더한 값이라 로봇 제조 기업 수가 아닙니다(산업별 업종은 아래 펼쳐 보기).</li>
-    <li>산업마다 업종이 일부 겹쳐 산업별 값을 더하면 안 됩니다. ABB 의 생산액·부가가치는 제조 업종만의 값입니다.</li>
+    <li><b>산업 이름은 보고서가 정한 업종 묶음입니다.</b> 이름과 다른 업종이 함께 들어 있는 경우가 많아, 산업 이름 밑에 묶은 업종(대구 공장등록 기업이 많은 순)과 섞인 업종을 적었습니다. 전체 목록은 아래 펼쳐 보기.</li>
+    <li>산업마다 업종이 일부 겹쳐 산업별 값을 더하면 안 됩니다.</li>
   </ul>
   <details class="ib-codes">
     <summary>산업별 업종(세세분류 코드) 보기</summary>
@@ -52,6 +66,9 @@ const { heading = true } = Astro.props;
   .ib { margin-top: var(--s5); }
   .ib-notes { padding-left: 1.2em; margin: var(--s2) 0; overflow-wrap: anywhere; }
   .ib-notes li { margin: 2px 0; }
+  .ib th[scope="row"] { white-space: normal; min-width: 14em; max-width: 30em; }
+  .ib-role { white-space: nowrap; }
+  .ib-warn { color: var(--ink); margin-top: 2px; font-weight: 400; }
   .ib-codes { margin: var(--s2) 0; }
   .ib-codes > summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
 </style>

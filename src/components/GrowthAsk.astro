@@ -1,24 +1,48 @@
 ---
 import { structureCalc } from '../lib/grdp';
 /** /growth/ 첫 화면(운영자 지시 2026-10-07 '성장 계산기가 너무 복잡' → 5가지 단순화 ①): 질문 하나(목표 성장률)와 표 하나(목표에 닿는 길).
- *  표의 계산·칠은 GrowthStructure 의 스크립트가 한다(#gst·#gsroute·#gsroutenote 를 문서 전체에서 찾음). 평가 아님. */
+ *  표의 계산·칠은 GrowthStructure 의 스크립트가 한다(#gst·#gsplain·#gsroute·#gsroutenote 를 문서 전체에서 찾음). 평가 아님.
+ *  운영자 지적 2026-10-08 '이게 무슨 말이야? 어려워' — 고른 목표 하나에 대한 쉬운 문장 답(#gsplain)을 먼저, 목표별 표는 펼쳐 보기로. */
 const S = structureCalc();
 const f1 = (v: number) => v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 ---
 {S && (
 <section id="ask" class="gs-ask">
   <h2 class="ask-q">목표 성장률 <label><input id="gst" type="number" step="0.1" value="5.0" inputmode="decimal" /> %</label>에 닿으려면 — 어디를 몇 % 키워야 하나</h2>
-  <p class="meta">추세 {S.base.toFixed(2)}%({S.y0}→{S.y1}년 대구 실질 GRDP 연평균)와 목표의 차이를 한 묶음의 업종만 더 성장해 메울 때 그 묶음의 필요 성장률. 괄호는 추세보다 더해야 하는 몫, 금액은 {S.y1}년 명목 GRDP {f1(S.gdpEok / 10000)}조 원 기준 한 해 증가액. 회색 칸은 17개 시도 어디서도 관측되지 않은 값. 가정에 따른 계산이지 전망·평가가 아닙니다.</p>
+  <p class="ask-lead">대구 경제(지역내총생산, GRDP)는 {S.y0}→{S.y1}년에 해마다 평균 <b>{S.base.toFixed(2)}%</b> 컸습니다. 목표까지 모자라는 만큼을 어떤 업종이 더 크면 메울 수 있는지 계산합니다.</p>
+  <div id="gsplain" class="ask-plain" aria-live="polite" data-y1={S.y1}></div>
+  <p class="tiny muted">가정에 따른 계산이지 전망·평가가 아닙니다. '키워야 할 속도'는 그 업종 묶음만 더 클 때 해마다 필요한 실질 성장률입니다.</p>
+  <details class="ask-more" id="gsroute-wrap">
+  <summary>목표 2.0~5.0% 전부 표로 보기</summary>
+  <p class="meta">칸 값 = 그 묶음의 업종만 더 클 때 필요한 해마다 성장률(%). 괄호는 지금 추세보다 더해야 하는 몫, 금액은 {S.y1}년 명목 GRDP {f1(S.gdpEok / 10000)}조 원 기준 한 해 증가액. 회색 칸은 17개 시도 어디서도 나온 적 없는 값.</p>
   <div class="scroll-x"><table class="data-table compact" id="gsroute" data-title="대구 GRDP 목표에 닿는 길별 필요 성장률">
     <thead><tr><th>목표</th><th class="n">모든 업종</th><th class="n">고부가 3부문만</th><th class="n">제조업만</th><th class="n">특화 부문만</th><th class="n">GRDP 한 해 증가(조 원)</th><th class="n">추세보다 더(조 원)</th></tr></thead>
     <tbody></tbody>
   </table></div>
   <p class="tiny muted" id="gsroutenote"></p>
+  </details>
 </section>)}
+<script>
+  // 넓은 화면은 표를 펼친 채로, 휴대폰은 접어 둔다(쉬운 답이 먼저 보이게)
+  const w = document.getElementById('gsroute-wrap') as HTMLDetailsElement | null;
+  if (w && window.matchMedia('(min-width: 768px)').matches) w.open = true;
+</script>
 <style>
   .gs-ask { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin: var(--s2) 0; background: var(--surface); }
   .ask-q { font-size: 1.15rem; margin: 0 0 6px; }
   .ask-q input { width: 4.6em; padding: 4px 6px; text-align: right; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-weight: 700; }
+  .ask-lead { margin: 4px 0 10px; line-height: 1.6; }
+  .ask-plain :global(.ap-gap) { margin: 0 0 8px; font-weight: 600; }
+  .ask-plain :global(ul) { list-style: none; padding: 0; margin: 0 0 6px; }
+  .ask-plain :global(li) { border: 1px solid var(--line); border-radius: 8px; background: var(--bg); padding: 8px 12px; margin: 0 0 6px; }
+  .ask-plain :global(.ap-name) { font-weight: 700; display: block; }
+  .ask-plain :global(.ap-what) { color: var(--muted); font-size: var(--small); display: block; margin-bottom: 2px; }
+  .ask-plain :global(.ap-num) { font-variant-numeric: tabular-nums; }
+  .ask-plain :global(.ap-num b) { color: var(--primary); font-size: 1.15rem; }
+  .ask-plain :global(.ap-out) { color: var(--muted); font-size: var(--small); display: block; }
+  .ask-plain :global(.ap-money) { font-size: var(--small); margin: 4px 0 0; }
+  .ask-more { margin-top: 8px; }
+  .ask-more > summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
   #gsroute { min-width: 640px; }
   #gsroute :global(tr.gs-cur) { background: var(--bg); font-weight: 700; }
   #gsroute :global(td.gs-out) { color: var(--muted); background: var(--bg); }

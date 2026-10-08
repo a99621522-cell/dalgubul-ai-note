@@ -124,6 +124,7 @@ def main():
     ap.add_argument("--out", default="ocr")
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2)))
     ap.add_argument("--echo", action="store_true", help="뽑은 글자를 로그에 찍는다(세션이 아티팩트를 못 받을 때 로그로 읽는다)")
+    ap.add_argument("--echo-pages", default="", help="--echo 때 이 쪽만 찍는다(예: 61-116). 세션의 get_job_logs 는 로그 끝 5,000줄만 돌려줘 긴 문서는 나눠 찍는다(2026-10-08)")
     a = ap.parse_args()
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     dl = Path("_drive_dl")
@@ -143,8 +144,14 @@ def main():
         print(f"{r['file']}: {r['pages']}쪽 · OCR {r['ocr_pages']}쪽 · {r['chars']:,}자 · 빈 쪽 {r['empty_pages']} · {r['seconds']}s → {r['txt']}")
     if a.echo:
         for r in index:
-            print(f"\n##### {r['txt']} 시작 #####")
-            print((out / r["txt"]).read_text(encoding="utf-8"))
+            print(f"\n##### {r['txt']} 시작 #####" + (f" (쪽 {a.echo_pages})" if a.echo_pages else ""))
+            body = (out / r["txt"]).read_text(encoding="utf-8")
+            if a.echo_pages:
+                lo, _, hi = a.echo_pages.partition("-")
+                lo, hi = int(lo), int(hi or lo)
+                parts = re.split(r"(?m)^(?==== 쪽 \d+ ===$)", body)
+                body = "".join(x for x in parts if (m := re.match(r"=== 쪽 (\d+) ===", x)) and lo <= int(m.group(1)) <= hi)
+            print(body)
             print(f"##### {r['txt']} 끝 #####", flush=True)
     if not index:
         print("::error::처리한 PDF 가 없다"); sys.exit(1)

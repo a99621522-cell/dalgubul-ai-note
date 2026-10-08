@@ -273,52 +273,52 @@
    "gunwi": 102
   },
   "opin_daegu": {
-   "daegu": 0,
-   "jung": 0,
-   "dong": 0,
-   "seo": 0,
+   "daegu": 5,
+   "jung": 2,
+   "dong": 1,
+   "seo": 2,
    "nam": 0,
-   "buk": 0,
-   "suseong": 0,
-   "dalseo": 0,
+   "buk": 1,
+   "suseong": 3,
+   "dalseo": 1,
    "dalseong": 0,
    "gunwi": 0
   },
   "opin_same": {
-   "daegu": 0,
-   "jung": 0,
-   "dong": 0,
-   "seo": 0,
-   "nam": 0,
-   "buk": 0,
-   "suseong": 0,
-   "dalseo": 0,
-   "dalseong": 0,
-   "gunwi": 0
+   "daegu": 47,
+   "jung": 46,
+   "dong": 47,
+   "seo": 41,
+   "nam": 47,
+   "buk": 51,
+   "suseong": 52,
+   "dalseo": 48,
+   "dalseong": 53,
+   "gunwi": 46
   },
   "opin_article": {
-   "daegu": 0,
-   "jung": 0,
-   "dong": 0,
-   "seo": 0,
-   "nam": 0,
-   "buk": 0,
-   "suseong": 0,
-   "dalseo": 0,
-   "dalseong": 0,
-   "gunwi": 0
+   "daegu": 477,
+   "jung": 288,
+   "dong": 305,
+   "seo": 248,
+   "nam": 284,
+   "buk": 325,
+   "suseong": 373,
+   "dalseo": 329,
+   "dalseong": 396,
+   "gunwi": 280
   },
   "opin_conflict": {
-   "daegu": 0,
-   "jung": 0,
-   "dong": 0,
-   "seo": 0,
-   "nam": 0,
-   "buk": 0,
-   "suseong": 0,
-   "dalseo": 0,
-   "dalseong": 0,
-   "gunwi": 0
+   "daegu": 27,
+   "jung": 23,
+   "dong": 26,
+   "seo": 25,
+   "nam": 26,
+   "buk": 28,
+   "suseong": 24,
+   "dalseo": 28,
+   "dalseong": 24,
+   "gunwi": 24
   },
   "penal_clause": {
    "daegu": 0,
@@ -381,9 +381,9 @@
    "gunwi": 30
   }
  },
- "total": 7155,
+ "total": 11208,
  "expc_held": 8881,
  "expc_linked": 498,
- "expc_daegu": 38,
- "opin_held": 0
+ "expc_daegu": 104,
+ "opin_held": 2405
 }

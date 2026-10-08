@@ -107,7 +107,7 @@ signals:
   opin_same:
     name: 같은 이름 조례에 대한 법제처 의견제시
     conf: check
-    show: true
+    show: false
     rule: 다른 지자체의 같은 이름 자치법규(지자체 이름을 뗀 이름이 같음)에 대해 법제처 의견제시 사례가 있음
     how: 같은 쟁점이 이 자치법규 조문에도 있는지 의견제시 이유와 대조
   opin_article:
@@ -119,7 +119,7 @@ signals:
   opin_conflict:
     name: 법제처가 같은 이름 조례에 '정할 수 없다' 취지로 회신
     conf: check
-    show: true
+    show: false
     rule: 이 자치법규(또는 다른 지자체의 같은 이름 자치법규)에 대한 법제처 의견제시 결론에 '조례로 정할 수 없다'·'위임 범위를 벗어난다'·'상위법령에 위배' 같은 표현이 있음
     how: 같은 규정이 이 자치법규에 있는지 찾아 있으면 의견 취지대로 고치거나 삭제
   penal_clause:

@@ -19,6 +19,7 @@ export type Sig = { key: string; name: string; conf: 'auto' | 'check'; show: boo
 export type Cand = {
   id: string; org: string; oid: string; oname: string; kind: string; prom: string; dept: string; url: string;
   no: string; atitle: string; text: string; sig: string; conf: string; ev: Record<string, any>; fix?: { old: string; new: string } | null;
+  why?: string; how?: string; cat?: string;
 };
 export type Summary = {
   fetched: string; built: string; orgs: Org[]; refs: number; refs_resolved: number; refs_unknown: number;
@@ -70,3 +71,13 @@ export function draftTable(items: Cand[]) {
 }
 /** ⟦…⟧(현행의 바뀌는 글자)·⟪…⟫(개정안의 새 글자)를 <u> 로 */
 export const mark = (s: string) => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]!)).replace(/⟦(.*?)⟧|⟪(.*?)⟫/g, (_m, a, b) => `<u>${a ?? b}</u>`);
+
+/** 정비 성격 4가지(화면 묶음 순서) */
+export const CATS = ['상위법령 개정·폐지', '위반 소지', '법제처 의견', '자구·기한 정비'] as const;
+export const catLabel: Record<string, string> = { '상위법령 개정·폐지': '상위법령이 바뀌거나 폐지됨', '위반 소지': '상위법령 위반 소지(검토 필요)', '법제처 의견': '법제처 해석·의견제시', '자구·기한 정비': '이름·용어·유효기간' };
+/** 표에 넣을 근거 한 줄 */
+export const evLine = (c: Cand) => {
+  const e = c.ev || {};
+  const art = e.art ? ` 제${String(e.art).replace('의', '조의')}${String(e.art).includes('의') ? '' : '조'}` : '';
+  return e.law ? `「${e.law}」${art}` : (e.old || e.end || e.word || '');
+};

@@ -64,6 +64,8 @@ def base_name(name: str) -> str:
     return b if len(b) >= 4 else ""
 
 
+# 법제처 의견제시 결론이 '조례로 정할 수 없다' 쪽인 표현
+NEG = re.compile(r"(정할|규정할|둘|부과할|제한할|감면할|지급할|위임할|설치할|할)\s*수\s*없|위반|위배|저촉|어긋나|허용되지\s*않|위임이\s*없|위임\s*범위를\s*(벗어|넘)|바람직하지\s*않|적절하지\s*않|타당하지\s*않|근거가\s*없")
 AMEND = re.compile(r"(일부\s*개정|폐지|일괄\s*개정|전부\s*개정)[^가-힣]*(조례|규칙)$|등\s*일부\s*개정")
 GENERIC = re.compile(r"^(목적|정의|다른\s*법률과의\s*관계|적용\s*범위|시행일|벌칙|과태료|권한의\s*위임)")   # 해석·의견제시와 잇기엔 너무 일반적인 조문
 
@@ -183,7 +185,13 @@ def main():
                     op_ord.setdefault(i, set()).add(d["id"])
                 sig = "opin_daegu" if mine else "opin_same"
                 use = mine or ids
+                # 법제처가 '조례로 정할 수 없다'·'위임 범위를 벗어난다' 취지로 회신한 사례 → 상위법령 위반 소지(같은 규정이 있는지 확인)
+                neg = [i for i in use if NEG.search(opin[i].get("concl", "") or opin[i].get("op", ""))]
+                if neg:
+                    sig = "opin_conflict"
+                    use = neg + [i for i in use if i not in neg]
                 add(d, None, sig, ev={"base": b, "n": len(use), "ordin_prom": ymd(prom), "after": any((opin[i].get("d") or "") > prom for i in use),
+                                      "concl": (opin[use[0]].get("concl") or opin[use[0]].get("op") or "")[:300], "mine": bool(mine),
                                       "expc": [op_card(i) for i in use[:4]], "targets": sorted({t for i in use[:4] for t in opin[i].get("targets", [])})[:6]})
             for r in refs:
                 n_ref += 1
@@ -317,6 +325,23 @@ def main():
                 raw = a.get("text") or ""
                 if "과태료" in (a.get("title") or "") and not re.search(r"삭\s*제", raw[:40]) and not re.search(r"「[^」]+」|(?<![가-힣])(법|영|시행령|시행규칙|규칙|조례)\s*제\s*\d+\s*조", raw):
                     add(d, a, "penalty_basis", ev={"ctx": t[:200]})
+                # 상위법령 위반 소지 ① 조례로 형벌(징역·벌금)을 정함 — 지방자치법 제28조제1항 단서: 벌칙은 법률의 위임이 있어야 한다
+                if not re.search(r"삭\s*제", raw[:40]):
+                    mp = re.search(r"\d+\s*년\s*이하의\s*징역|[\d,]+\s*(?:억|천만|백만|만)?\s*원\s*이하의\s*벌금|(?:징역|벌금)에\s*처한다", raw)
+                    if mp:
+                        add(d, a, "penal_clause", ev={"ctx": raw[max(0, mp.start() - 80): mp.end() + 40], "word": mp.group(0),
+                                                      "law_cited": bool(re.search(r"「[^」]+」", raw))})
+                # ③ 주민등록번호 처리 — 「개인정보 보호법」 제24조의2: 법률·대통령령 등에 구체적 근거가 있을 때만 처리할 수 있다
+                if "주민등록번호" in raw and not re.search(r"주민등록번호[^.。]{0,30}(제외|빼고|생략|뒷자리|앞자리|생년월일로)", raw):
+                    mr = re.search(r"주민등록번호", raw)
+                    add(d, a, "rrn_collect", ev={"ctx": raw[max(0, mr.start() - 80): mr.end() + 60], "law_cited": bool(re.search(r"「[^」]+」", raw))})
+                # ② 조례 과태료 상한 — 지방자치법 제34조제1항: 조례 위반 과태료는 1천만원 이하. 법률 인용이 없는 조문만
+                if "과태료" in raw and not re.search(r"「[^」]+」|(?<![가-힣])(법|영)\s*제\s*\d+\s*조", raw):
+                    for mf in re.finditer(r"([\d,]+)\s*(억|천만|백만|만)?\s*원\s*이하의\s*과태료", raw):
+                        won = int(mf.group(1).replace(",", "") or 0) * {"억": 10**8, "천만": 10**7, "백만": 10**6, "만": 10**4, None: 1}[mf.group(2)]
+                        if won > 10**7:
+                            add(d, a, "fine_over_cap", ev={"ctx": raw[max(0, mf.start() - 80): mf.end() + 20], "won": won})
+                            break
             for src in [*(a.get("text") or "" for a in arts), *(x.get("text") or "" for x in d.get("addenda") or [])]:
                 for mm in re.finditer(r"(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일\s*까지\s*(?:그\s*)?(효력을\s*가진다|유효하다|효력이\s*있다)", src):
                     end = f"{int(mm.group(1)):04d}{int(mm.group(2)):02d}{int(mm.group(3)):02d}"
@@ -328,6 +353,109 @@ def main():
         lr["refs"] = sorted(lr["refs"].values(), key=lambda e: (e["org"], e["oname"]))
         for e in lr["refs"]:
             e["arts"].sort(key=art_sort)
+    # ── 정비 사유·정비 방향(규칙 문장). 판정이 아니라 검토할 내용을 적는다 ──
+    names_by_org: dict[str, list] = {}
+    for x in lst["items"]:
+        names_by_org.setdefault(x["org"], []).append(x["name"])
+    import difflib
+    def cite(ev):
+        art = ev.get("art") or ""
+        return f"「{ev.get('law','')}」" + (f" 제{art.replace('의', '조의')}" + ("" if "의" in art else "조") if art else "")
+    def moved_to(law_id, old_title):
+        """공포 당시 조문 제목과 같은 제목의 현행 조문(번호가 옮겨 간 곳 후보)"""
+        A = arts_of(law_id) or {}
+        tn = lambda x: norm_name(re.sub(r"<[^>]*>|\[[^\]]*\]", "", x or ""))
+        arts_ = (A.get("arts") or {}).items()
+        hit = [k for k, v in arts_ if old_title and tn(v.get("t")) == tn(old_title)]
+        if hit or not old_title:
+            return hit, "같은 제목"
+        # 같은 제목이 없으면 비슷한 제목(글자 비율 0.6 이상, 가장 가까운 것) — '동물보호센터의 설치·지정 등' → '동물보호센터의 설치 등'
+        best = sorted(((difflib.SequenceMatcher(None, tn(old_title), tn(v.get("t"))).ratio(), k) for k, v in arts_ if v.get("t")), reverse=True)[:1]
+        return ([best[0][1]], "비슷한 제목") if best and best[0][0] >= 0.6 else ([], "")
+    law_id_by_name = {k: v.get("law_id") or (v.get("now") or {}).get("law_id") for k, v in laws.items()}
+    for c in cands:
+        ev, sg = c.get("ev") or {}, c["sig"]
+        why = how = ""
+        if sg == "law_renamed":
+            why = f"{cite(ev)}의 법령 이름이 「{ev['now']}」로 바뀌었다(국가법령정보센터 연혁, 같은 법령ID)."
+            how = f"인용 이름을 「{ev['now']}」로 고친다. 이름을 바꾸며 조문 번호가 달라졌을 수 있으니 인용한 조 번호도 함께 확인한다."
+        elif sg == "law_not_current":
+            last = ev.get("hist", [[]])[0] if ev.get("hist") else []
+            why = f"{cite(ev)}이 현행 법령 목록에 없고 연혁에만 있다" + (f"(마지막 판 시행 {last[6]})" if len(last) > 6 and last[6] else "") + " — 폐지되었거나 다른 법령으로 통합된 것으로 보인다."
+            alt = ev.get("cands") or []
+            how = ("근거를 후속 법령으로 바꾼다" + (f"(검색에 나온 현행 법령: {', '.join('「'+x+'」' for x in alt[:3])} — 같은 내용인지 연혁에서 확인)" if alt else "") +
+                   ". 그 법령이 이 자치법규의 제정 근거(제1조 목적)이고 대체 근거가 없으면 해당 규정 삭제나 자치법규 폐지를 검토한다.")
+        elif sg == "article_missing":
+            why = f"{cite(ev)}이 현행 「{ev.get('now', ev.get('law'))}」에 없다(조 번호 오기이거나 조문이 옮겨 갔다)."
+            how = "원래 가리키려던 조문을 현행 법령에서 찾아 조 번호를 고친다. '제○조의1' 같은 표기는 '제○조'로 바로잡는다."
+        elif sg == "article_deleted":
+            why = f"{cite(ev)}이 현행 법령에서 삭제되었다({ev.get('atext', '')[:40]})."
+            how = "삭제 사유와 내용이 옮겨 간 조문을 법령 연혁·신구조문에서 찾아 인용을 바꾸고, 옮겨 간 곳이 없으면 그 인용에 기댄 규정을 삭제하거나 고친다."
+        elif sg == "article_renumber":
+            lid = law_id_by_name.get(norm_name(ev.get("law", "")))
+            mv, how_found = moved_to(lid, ev.get("old_title")) if lid else ([], "")
+            A_ = arts_of(lid) if lid else None
+            mvt = [(A_ or {}).get("arts", {}).get(m, {}).get("t", "") for m in mv]
+            why = (f"근거 법령이 전부개정(또는 조문 이동)되어 {cite(ev)}의 내용이 바뀌었다 — 자치법규 공포 당시 이 조는 '{ev.get('old_title')}'였고 "
+                   f"지금 제{ev['art']}조는 '{ev.get('atitle')}'이다.")
+            how = (f"'{ev.get('old_title')}' 조문은 지금 " + ", ".join(f"제{m.replace('의', '조의')}{'' if '의' in m else '조'}({t})" for m, t in zip(mv[:2], mvt[:2])) +
+                   f"로 보이니({how_found}) 인용 번호를 고친다(신구조문으로 확인)."
+                   if mv else f"'{ev.get('old_title')}' 내용이 지금 몇 조에 있는지 신구조문에서 찾아 인용 번호를 고친다.")
+            if mv:
+                ev["moved_to"] = mv[:2]
+        elif sg == "local_ref_missing":
+            pool = names_by_org.get(c["org"], []) + names_by_org.get("daegu", [])
+            close = difflib.get_close_matches(ev.get("law", ""), list(dict.fromkeys(pool)), n=2, cutoff=0.6)
+            why = f"인용한 자치법규 「{ev.get('law')}」이 대구시·9개 구군 현행 자치법규 목록에 그 이름으로 없다(이름이 바뀌었거나 폐지)."
+            how = (f"현행 이름으로 고친다 — 이름이 비슷한 현행 자치법규: {', '.join('「'+x+'」' for x in close)}." if close else "인용한 자치법규의 연혁을 확인해 현행 이름으로 고치거나, 폐지되었으면 인용을 삭제한다.")
+            if close:
+                ev["close"] = close
+        elif sg == "ministry_outdated":
+            why = f"'{ev['old']}'은 현행 「정부조직법」에 없는 옛 중앙행정기관 이름이다."
+            how = f"'{ev['now']}'(현행 「정부조직법」)으로 고친다. 연혁을 서술하는 문장이면 그대로 둔다."
+        elif sg == "sunset":
+            why = f"유효기간 {ev['end']}이 지났는데 규정이 현행 자치법규에 남아 있다."
+            how = "효력이 끝난 규정(또는 자치법규)을 삭제하거나, 계속 필요하면 유효기간을 연장하는 개정을 검토한다."
+        elif sg == "term_outdated":
+            why = f"'{ev['old']}'은 「{ev['basis']}」에서 '{ev['new']}'(으)로 바뀐 용어다."
+            how = f"문맥을 보고 '{ev['new']}'(으)로 고친다."
+        elif sg == "penal_clause":
+            why = f"조례 조문이 형벌({ev['word']})을 정하고 있다 — 「지방자치법」 제28조제1항 단서는 벌칙을 정할 때 법률의 위임을 요구하고, 같은 법 제34조는 조례 위반에 과태료만 정할 수 있게 한다."
+            how = "법률의 위임 조문을 확인한다. 위임이 없으면 형벌 규정을 삭제하거나 과태료(1천만원 이하)로 바꾸는 것을 검토한다. 법률의 벌칙을 안내만 하는 문장이면 그대로 둔다."
+        elif sg == "rrn_collect":
+            why = "조문이 주민등록번호를 다룬다 — 「개인정보 보호법」 제24조의2는 법률·대통령령·국회규칙 등이 구체적으로 요구·허용한 경우 등에만 주민등록번호 처리를 허용하고, 조례만으로는 근거가 되지 않는다."
+            how = "주민등록번호를 요구하는 법령 근거가 있는지 확인하고, 없으면 생년월일 등으로 바꾸거나 삭제한다(서식 포함)."
+        elif sg == "fine_over_cap":
+            why = f"조례 과태료 {ev['won']//10**4:,}만원이 「지방자치법」 제34조제1항의 상한(1천만원)을 넘고, 조문에 다른 법률 근거 인용이 없다."
+            how = "개별 법률이 더 높은 과태료를 조례에 위임했는지 확인하고, 없으면 1천만원 이하로 고친다."
+        elif sg in ("expc_daegu", "expc_related"):
+            x = (ev.get("expc") or [{}])[0]
+            why = f"이 조문이 인용한 {cite(ev)}에 대해 법제처 법령해석({x.get('no','')}, {x.get('d','')})이 있다" + (" — 자치법규 최종 공포 뒤의 회답이다." if ev.get("after") else ".")
+            how = "회답 취지가 조문에 반영되어 있는지 확인하고, 다르면 회답에 맞게 고친다."
+        elif sg in ("opin_daegu", "opin_same", "opin_article", "opin_conflict"):
+            x = (ev.get("expc") or [{}])[0]
+            who = "이 자치법규" if sg == "opin_daegu" else ("같은 이름 조례(" + x.get("qorg", "") + ")" if sg in ("opin_same", "opin_conflict") else "같은 쟁점 조문")
+            why = f"{who}에 대해 법제처 자치법규 의견제시({x.get('no','')}, {x.get('d','')})가 있다" + (f": '{ev.get('concl','')[:120]}'" if ev.get("concl") else "") + "."
+            how = ("같은 규정이 이 자치법규에도 있는지 찾아, 있으면 법제처 의견 취지에 맞게 고치거나 삭제한다." if sg == "opin_conflict"
+                   else "의견 취지가 이 자치법규 조문에 반영되어 있는지 확인한다.")
+        elif sg in ("name_unmatched", "admrul_missing"):
+            why = f"인용한 {cite(ev)}이 현행·연혁 목록에 그 이름으로 없다(띄어쓰기·약칭·오기 또는 폐지)."
+            how = "정확한 현행 이름으로 고친다" + (f"(비슷한 현행: {', '.join('「'+str(x)+'」' for x in (ev.get('cands') or [])[:2])})" if ev.get("cands") else "") + "."
+        elif sg == "article_changed":
+            ch = (ev.get("changes") or [{}])[-1]
+            why = f"{cite(ev)}이 자치법규 최종 공포 뒤 바뀌었다({ch.get('d','')} {ch.get('why','')})."
+            how = "신구조문을 보고 위임 범위·기준·용어가 바뀌었으면 조례를 맞춘다."
+        elif sg == "gunwi_gb":
+            why, how = "군위군 편입(2023-07-01) 전 경상북도 표기가 남아 있다.", "대구광역시·시장 등으로 고칠 대상인지 문맥을 확인한다."
+        elif sg == "penalty_basis":
+            why, how = "과태료 조문에 법률 근거 인용이 없다.", "부과 근거 법률(「지방자치법」 제34조 또는 개별 법률)을 조문에 밝힌다."
+        c["why"], c["how"] = why, how
+        # 정비 성격(분류): 상위법령 개정·폐지 / 상위법령 위반 소지 / 법제처 의견 / 자구 정비
+        c["cat"] = ("위반 소지" if sg in ("penal_clause", "fine_over_cap", "opin_conflict", "penalty_basis", "rrn_collect")
+                    else "법제처 의견" if sg.startswith(("expc", "opin"))
+                    else "상위법령 개정·폐지" if sg in ("law_renamed", "law_not_current", "article_deleted", "article_renumber", "article_changed", "article_missing")
+                    else "자구·기한 정비")
+
     # 대구 지자체가 질의한 해석례(자치법규 관련 여부와 무관) + 같은 지자체에서 같은 조문을 인용한 자치법규 수
     dq = []
     for iid, e in expc.items():

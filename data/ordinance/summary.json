@@ -307,9 +307,57 @@
    "dalseo": 0,
    "dalseong": 0,
    "gunwi": 0
+  },
+  "opin_conflict": {
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 0
+  },
+  "penal_clause": {
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 0
+  },
+  "fine_over_cap": {
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 0
+  },
+  "rrn_collect": {
+   "daegu": 2,
+   "jung": 1,
+   "dong": 3,
+   "seo": 2,
+   "nam": 1,
+   "buk": 3,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 1,
+   "gunwi": 0
   }
  },
- "total": 6771,
+ "total": 6784,
  "expc_held": 8881,
  "expc_linked": 498,
  "expc_daegu": 38,

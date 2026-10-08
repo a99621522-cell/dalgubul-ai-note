@@ -17,6 +17,8 @@ const hl = (t: string) => key ? esc(t).split(esc(key)).join(`<mark>${esc(key)}</
     {showOrdin && <a href={`/ordinance/o/${c.org}-${c.oid}/`}>{c.oname}</a>}
     {c.no && <strong>{c.no}{c.atitle && `(${c.atitle})`}</strong>}
   </header>
+  {c.why && <p class="why"><strong>정비 사유</strong> {c.why}</p>}
+  {c.how && <p class="how"><strong>정비 방향</strong> {c.how}</p>}
   {c.text && <details><summary>자치법규 조문 원문</summary><p class="txt" set:html={hl(c.text)} /></details>}
   <dl>
     {ev.law && <><dt>인용</dt><dd>「{ev.law}」{ev.art && ` 제${ev.art.replace('의', '조의')}${ev.art.includes('의') ? '' : '조'}`}</dd></>}
@@ -33,7 +35,8 @@ const hl = (t: string) => key ? esc(t).split(esc(key)).join(`<mark>${esc(key)}</
     {c.sig === 'sunset' && <><dt>유효기간</dt><dd>{ev.end}까지 — {ev.ctx}</dd></>}
     {(c.sig === 'gunwi_gb' || c.sig === 'penalty_basis') && <><dt>구절</dt><dd>{ev.ctx}</dd></>}
     {ev.expc?.length > 0 && <><dt>{ev.expc[0]?.kind === 'opin' ? '법제처 자치법규 의견제시' : '법제처 법령해석례'}{ev.n > ev.expc.length ? ` (${ev.n}건 중 최근 ${ev.expc.length})` : ''}</dt><dd><ul class="hist">{ev.expc.map((x: any) => <li><a href={x.url} rel="noopener">{x.t}</a> <span class="meta">{x.no} · {x.kind === 'opin' ? '회신' : '회답'} {x.d}{x.qorg && ` · ${x.kind === 'opin' ? '요청' : '질의'} ${x.qorg}`}</span>{x.a && <div class="ans">{x.kind === 'opin' ? '의견' : '회답'} 앞부분: {x.a.length >= 220 ? x.a + '…' : x.a}</div>}</li>)}</ul>{ev.targets?.length > 0 && <div class="meta">의견제시 대상: {ev.targets.map((t: string) => `「${t}」`).join(', ')}</div>}{ev.ordin_prom && <div class="meta">자치법규 최종 공포 {ev.ordin_prom}{ev.after ? ' — 회신·회답일이 더 늦음' : ''}</div>}</dd></>}
-    <dt>확인할 것</dt><dd>{s.how}</dd>
+    {ev.close?.length > 0 && <><dt>비슷한 현행 자치법규</dt><dd>{ev.close.map((x: string) => `「${x}」`).join(', ')}</dd></>}
+    {ev.concl && <><dt>법제처 의견 결론</dt><dd>{ev.concl}</dd></>}
   </dl>
 </article>
 <style>
@@ -47,5 +50,7 @@ const hl = (t: string) => key ? esc(t).split(esc(key)).join(`<mark>${esc(key)}</
   .oc .txt { white-space: pre-wrap; font-size: var(--small); }
   .oc .hist { margin: 0; padding-left: 1.2em; }
   .oc .ans { color: var(--muted); margin: 2px 0 6px; }
+  .oc .why, .oc .how { margin: 6px 0 0; }
+  .oc .why strong, .oc .how strong { display: inline-block; min-width: 5.5em; color: var(--muted); font-weight: 600; }
   @media (max-width: 600px) { .oc dl { grid-template-columns: 1fr; } .oc dt { margin-top: 4px; } }
 </style>

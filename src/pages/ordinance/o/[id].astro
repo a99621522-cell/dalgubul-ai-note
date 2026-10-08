@@ -2,18 +2,34 @@
 import Base from '../../../layouts/Base.astro';
 import Notice from '../_Notice.astro';
 import OrdinCand from '../../../components/OrdinCand.astro';
-import { byOrdin, orgName, draftTable, mark, ymd } from '../../../lib/ordinance';
+import { byOrdin, orgName, draftTable, mark, ymd, CATS, catLabel } from '../../../lib/ordinance';
 /** /ordinance/o/<org>-<자치법규ID>/ — 후보가 있는 자치법규 한 건: 후보 카드 + 신구조문대비표 초안(글자 바꿈 신호만) */
 export function getStaticPaths() { return [...byOrdin().entries()].map(([id, g]) => ({ params: { id }, props: { g } })); }
 const { g } = Astro.props;
 const items = [...g.items].sort((a, b) => a.no.localeCompare(b.no, 'ko', { numeric: true }));
 const draft = draftTable(items);
+/** 자치법규 단위 요약: 같은 상위법령 때문에 고칠 곳을 묶는다(법령 이름에서 '시행령·시행규칙'을 뗀 법률 기준) */
+const lawKey = (c: any) => String(c.ev?.now || c.ev?.law || '').replace(/\s*(시행령|시행규칙)$/, '');
+const byLaw = new Map<string, { n: number; sigs: Set<string>; dates: Set<string> }>();
+for (const c of items) {
+  if (!['article_renumber', 'article_deleted', 'article_missing', 'law_renamed', 'law_not_current'].includes(c.sig)) continue;
+  const k = lawKey(c); if (!k) continue;
+  const g = byLaw.get(k) ?? { n: 0, sigs: new Set(), dates: new Set() };
+  g.n++; g.sigs.add(c.sig);
+  for (const x of c.ev?.changes ?? []) if (/전부개정|전문개정/.test(x.why + x.rev)) g.dates.add(x.d);
+  byLaw.set(k, g);
+}
+const SIGTXT: Record<string, string> = { article_renumber: '조 번호 바뀜', article_deleted: '조문 삭제', article_missing: '조문 없음', law_renamed: '법령 이름 바뀜', law_not_current: '법령 폐지 등' };
 ---
 <Base title={g.oname} description={`${g.oname}의 정비 검토 후보 ${items.length}건과 근거 원문`} crumb={g.oname} noindex wide>
   <div class="section-head"><h1>{g.oname}</h1><span class="meta">{orgName(g.org)} · {g.kind} · 최종 공포 {ymd(g.prom)}{g.dept && ` · ${g.dept}`}</span></div>
   <Notice />
   <p><a href={`/ordinance/org/${g.org}/`}>← {orgName(g.org)}</a> · <a href={g.url} rel="noopener">국가법령정보센터 원문</a></p>
-  <div class="section-head"><h2>정비 검토 후보 {items.length}건</h2></div>
+  <div class="section-head"><h2>정비 의견(자동 초안)</h2></div>
+  {byLaw.size > 0 && <ul class="bylaw">{[...byLaw.entries()].map(([k, g]) => <li><strong>「{k}」</strong>{g.dates.size > 0 && ` 전부개정(${[...g.dates].sort().join(', ')} 시행)`} 뒤 고치지 않은 인용 <strong>{g.n}곳</strong> — {[...g.sigs].map(x => SIGTXT[x]).join(' · ')}. 한 번의 일부개정으로 함께 정비하는 것을 검토합니다.</li>)}</ul>}
+  <ol class="sum">{CATS.flatMap(k => items.filter(c => c.cat === k)).map(c => <li><strong>{c.no || '자치법규 전체'}</strong> — {c.why} <em>→ {c.how}</em></li>)}</ol>
+  <p class="meta">초안입니다. 정비 여부와 문구는 소관 부서·법무 담당이 원문을 확인해 정합니다.</p>
+  <div class="section-head"><h2>근거 {items.length}건</h2></div>
   {items.map(c => <OrdinCand c={c} />)}
   {draft.length > 0 && <>
     <div class="section-head"><h2>신구조문대비표 초안</h2></div>
@@ -24,4 +40,4 @@ const draft = draftTable(items);
     </table></div>
   </>}
 </Base>
-<style>.txt { white-space: pre-wrap; vertical-align: top; min-width: 16em; }</style>
+<style>.txt { white-space: pre-wrap; vertical-align: top; min-width: 16em; } .sum li { margin: 6px 0; } .bylaw { background: var(--status-info-bg); padding: 8px 8px 8px 28px; border-radius: var(--radius); } .sum em { font-style: normal; color: var(--muted); }</style>

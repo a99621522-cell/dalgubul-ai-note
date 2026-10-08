@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Notice from './_Notice.astro';
-import { summary, signals, cands, orgs, byOrdin } from '../../lib/ordinance';
+import { summary, signals, cands, orgs, byOrdin, CATS, catLabel } from '../../lib/ordinance';
 /** /ordinance/ — 대구 자치법규 정비 검토 첫 화면. 신호별·지자체별 후보 수(행정 순서, 정렬·순위 없음) */
 const s = summary();
 const sigs = signals();
@@ -16,6 +16,12 @@ const rate = s && s.refs ? Math.round((s.refs_resolved / s.refs) * 1000) / 10 : 
   <Notice />
   <p class="lede">대구광역시와 9개 구·군(중구·동구·서구·남구·북구·수성구·달서구·달성군·군위군)의 현행 조례·규칙이 인용한 상위법령을 국가법령정보센터의 현행 법령·연혁·조문 변경 이력과 맞춰 보고, <strong>정비를 검토해 볼 만한 조문</strong>을 근거와 함께 모았습니다. 이름이 바뀐 법령, 현행 목록에 없는 법령, 없어지거나 삭제된 조문, 근거 조문이 전부개정된 뒤 고치지 않은 조문, 옛 기관 이름, 지난 유효기간 등입니다. 글자만 바꾸면 되는 항목은 신구조문대비표 초안을 붙였습니다.</p>
   {!s ? <p class="callout info">아직 수집 결과가 없습니다. 워크플로 「자치법규 정비 검토」가 돌면 채워집니다.</p> : <>
+  <div class="section-head"><h2>정비 성격별 항목 수</h2><span class="meta">행정 순서 · 정렬 없음</span></div>
+  <div class="scroll-x"><table class="data-table">
+    <thead><tr><th>정비 성격</th>{os.map(o => <th class="n"><a href={`/ordinance/org/${o.key}/`}>{o.name}</a></th>)}<th class="n">합계</th></tr></thead>
+    <tbody>{CATS.map(k => { const cs = cands().filter(c => c.cat === k); return <tr><td>{catLabel[k]}</td>{os.map(o => <td class="n">{cs.filter(c => c.org === o.key).length.toLocaleString()}</td>)}<td class="n">{cs.length.toLocaleString()}</td></tr>; })}</tbody>
+  </table></div>
+  <p class="meta">지자체 이름을 누르면 그 지자체의 <strong>정비 대상 목록</strong>(자치법규·조문·정비 사유·정비 방향)이 나옵니다.</p>
   <div class="section-head"><h2>신호별·지자체별 후보 수</h2><span class="meta">행정 순서 · 정렬 없음</span></div>
   <div class="scroll-x"><table class="data-table">
     <thead><tr><th>신호</th><th>확인</th>{os.map(o => <th class="n"><a href={`/ordinance/org/${o.key}/`}>{o.name}</a></th>)}<th class="n">합계</th></tr></thead>

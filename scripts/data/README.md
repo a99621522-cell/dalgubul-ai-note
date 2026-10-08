@@ -9,6 +9,7 @@
 1. "(YYYY.MM월말기준)_전국(개별,계획)입주업체현황" 내려받기 (필수)
 2. "(YYYY.MM월말기준)_산단공관할단지내_입주업체리스트" 내려받기 (선택, 등록상태·면적 보강)
 3. `python3 scripts/import_factoryon.py <1번파일> <2번파일>` → 두 CSV 갱신. 기존 기업 id 유지, 새 기업은 새 id, 사라진 기업은 옛 as_of로 남음
+4. (러너로 하기, 2026-10-08) 팩토리온 자료실은 robots.txt 가 `/bbs/` 를 막아 워크플로가 긁지 않는다. 받은 파일을 Google Drive 에 올리고(링크가 있는 모든 사용자 보기) `.github/workflows/factoryon_import.yml` 을 수동 실행(main=파일 id, kicox=선택, month=YYYY.MM)하면 러너가 받아 3번과 뒤 단계(국민연금 재대조·입지 유형·월간 통계·그래프·효과표)까지 돌리고 커밋·배포한다. 전국 원본은 저장소에 들어가지 않는다
 
 내려받은 파일이 엑셀에서 안 열리거나 정렬이 안 되면(확장자만 xls 이고 실제는 HTML 표·CSV 인 경우) `python3 scripts/repair_factoryon.py <파일>` 으로 실제 형식을 확인하고 옆에 `<파일명>_정리.xlsx` 를 만든 뒤 그 파일을 import 에 넘긴다. `--inspect` 는 진단만.
 

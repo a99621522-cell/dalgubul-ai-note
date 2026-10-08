@@ -1,0 +1,111 @@
+name: 팩토리온 월간 파일(Drive) → 기업 사전 갱신 → 통계 → 배포
+
+# 팩토리온(factoryon.go.kr) 현황통계자료실은 robots.txt 가 /bbs/ 를 막아 러너가 긁지 않는다(원칙 9).
+# 운영자가 자료실에서 "(YYYY.MM월말기준)_전국(개별,계획)입주업체현황"(필수)과
+# "(YYYY.MM월말기준)_산단공관할단지내_입주업체리스트"(선택)를 내려받아 Google Drive 에 올리고
+# (링크가 있는 모든 사용자 보기), 파일 id·링크를 입력해 수동 실행한다. 전국 원본은 저장소에 넣지 않는다(러너 임시 폴더에서만).
+# 흐름: gdown → 실제 형식 확인(HTML 표·CSV 로 온 xls 는 repair_factoryon 으로 정리) → import_factoryon.py →
+#       국민연금 산단 외 기업 재대조 → 입지 유형 → 월간 통계·그래프·효과표 → 커밋 → 배포.
+
+on:
+  workflow_dispatch:
+    inputs:
+      main:
+        description: "전국(개별,계획)입주업체현황 — Drive 파일 id 또는 공유 링크(필수)"
+        required: true
+      kicox:
+        description: "산단공관할단지내_입주업체리스트 — Drive 파일 id 또는 링크(선택)"
+        required: false
+      month:
+        description: "기준월 YYYY.MM (파일명에 넣어 as_of 로 쓴다, 예: 2026.09)"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nps-collect        # nps.yml 과 같은 CSV 를 만지므로 겹치지 않게
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt pandas openpyxl xlrd gdown
+      - name: Drive 에서 받기 (저장소 밖 임시 폴더)
+        env:
+          MAIN: ${{ inputs.main }}
+          KICOX: ${{ inputs.kicox }}
+          MONTH: ${{ inputs.month }}
+        run: |
+          set -e
+          [[ "$MONTH" =~ ^20[0-9]{2}\.(0[1-9]|1[0-2])$ ]] || { echo "month 형식은 YYYY.MM"; exit 1; }
+          mkdir -p /tmp/fo
+          gid() { python3 -c "import re,sys;s=sys.argv[1];m=re.search(r'/d/([\w-]+)|[?&]id=([\w-]+)',s);print((m.group(1) or m.group(2)) if m else s)" "$1"; }
+          gdown -O "/tmp/fo/(${MONTH}월말기준)_전국(개별,계획)입주업체현황.xlsx" "https://drive.google.com/uc?id=$(gid "$MAIN")"
+          if [ -n "$KICOX" ]; then gdown -O "/tmp/fo/(${MONTH}월말기준)_산단공관할단지내_입주업체리스트.xlsx" "https://drive.google.com/uc?id=$(gid "$KICOX")"; fi
+          ls -la /tmp/fo; file /tmp/fo/*
+      - name: 형식 확인·정리 (확장자만 xls/xlsx 인 HTML 표·CSV 대비)
+        run: |
+          set -e
+          for f in /tmp/fo/*.xlsx; do
+            python3 scripts/repair_factoryon.py "$f" --inspect || true
+            python3 - "$f" <<'PY'
+          import sys, zipfile
+          p = sys.argv[1]
+          head = open(p, "rb").read(8)
+          ok = zipfile.is_zipfile(p) or head.startswith(b"\xd0\xcf\x11\xe0")   # xlsx(zip) / xls(OLE2)
+          print(p, "진짜 엑셀" if ok else "엑셀 아님 → 정리본 사용")
+          open("/tmp/fo/.need_repair", "a").write("" if ok else p + "\n")
+          PY
+          done
+          if [ -s /tmp/fo/.need_repair ]; then
+            while read -r f; do [ -n "$f" ] && python3 scripts/repair_factoryon.py "$f"; done < /tmp/fo/.need_repair
+            ls -la /tmp/fo
+          fi
+      - name: 기업 사전 갱신
+        env:
+          MONTH: ${{ inputs.month }}
+        run: |
+          set -e
+          pick() { b="/tmp/fo/$1"; if [ -f "${b%.xlsx}_정리.xlsx" ]; then echo "${b%.xlsx}_정리.xlsx"; else echo "$b"; fi; }
+          M=$(pick "(${MONTH}월말기준)_전국(개별,계획)입주업체현황.xlsx")
+          K=""; [ -f "/tmp/fo/(${MONTH}월말기준)_산단공관할단지내_입주업체리스트.xlsx" ] && K=$(pick "(${MONTH}월말기준)_산단공관할단지내_입주업체리스트.xlsx")
+          echo "main=$M kicox=$K"
+          before=$(tail -n +2 scripts/data/dalseong_companies.csv | wc -l)
+          python3 scripts/import_factoryon.py "$M" ${K:+"$K"}
+          after=$(tail -n +2 scripts/data/dalseong_companies.csv | wc -l)
+          echo "기업 행 $before → $after"
+          git diff --stat scripts/data/dalseong_companies.csv scripts/data/dalseong_complexes.csv
+      - name: 산단 외 기업 재대조 · 입지 유형 · 통계 · 그래프
+        run: |
+          set +e
+          latest=$(ls data/nps/??????.csv 2>/dev/null | sort | tail -1)
+          if [ -n "$latest" ]; then
+            python3 scripts/nps_to_extra.py && python3 scripts/import_extra.py --replace-source '국민연금' && rm -f scripts/data/extra/nps_*.csv
+          fi
+          python3 scripts/sites.py
+          python3 scripts/build_stats.py --backfill
+          python3 scripts/render_charts.py
+          python3 scripts/effect_table.py
+          true
+      - name: 커밋
+        env:
+          MONTH: ${{ inputs.month }}
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add scripts/data/dalseong_companies.csv scripts/data/dalseong_complexes.csv scripts/data/extra_companies.csv scripts/data/company_tags.csv scripts/data/company_facts.csv data/stats data/effects src/generated
+          git status --short | head -20
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "data: 팩토리온 ${MONTH} 기업 사전 갱신"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done
+
+  deploy:
+    needs: import
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

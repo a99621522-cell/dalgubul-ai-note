@@ -82,6 +82,32 @@ def title_hit(title: str, ctx: str) -> bool:
     return any(w in ctx for w in words)
 
 
+KEYSTOP = {"대구광역시", "조례", "규칙", "시행규칙", "및", "등", "관한", "에", "의", "위한", "설치", "운영", "구성", "지원"}
+
+
+def close_names(q: str, pool: list[str]) -> list[str]:
+    """이름이 바뀐 자치법규 후보: 핵심 낱말(지자체 이름·'조례' 등 뺀 것)이 절반 이상 겹치는 현행 이름을, 겹친 낱말 수 → 글자 비율 순으로 2개.
+    '의회' 자치법규는 인용 이름에 '의회'가 있을 때만(2026-10-08 대조: '포상 조례'가 '의회 포상 조례'로 잘못 이어짐)."""
+    import difflib
+    def keys(x):
+        x = re.sub(r"^대구광역시\s*(중구|동구|서구|남구|북구|수성구|달서구|달성군|군위군)?", "", x)
+        ws = [re.sub(r"(에|의|을|를)$", "", w) for w in re.split(r"[\s·ㆍ,]+", x) if w]
+        return {w for w in ws if len(w) >= 2 and w not in KEYSTOP}
+    kq = keys(q)
+    if not kq:
+        return []
+    out = []
+    for n in pool:
+        if "의회" in n and "의회" not in q:
+            continue
+        nn = norm_name(n)
+        hit = sum(1 for w in kq if w in nn)
+        if hit * 2 >= len(kq) and hit:
+            out.append((hit, difflib.SequenceMatcher(None, norm_name(q), nn).ratio(), n))
+    out.sort(reverse=True)
+    return [n for h, r, n in out[:2] if r >= 0.55]
+
+
 def art_sort(a: str):
     return [int(x) for x in a.split("의")] if re.fullmatch(r"\d+(의\d+)?", a or "") else [9999]
 
@@ -405,7 +431,7 @@ def main():
                 ev["moved_to"] = mv[:2]
         elif sg == "local_ref_missing":
             pool = names_by_org.get(c["org"], []) + names_by_org.get("daegu", [])
-            close = difflib.get_close_matches(ev.get("law", ""), list(dict.fromkeys(pool)), n=2, cutoff=0.6)
+            close = close_names(ev.get("law", ""), list(dict.fromkeys(pool)))
             why = f"인용한 자치법규 「{ev.get('law')}」이 대구시·9개 구군 현행 자치법규 목록에 그 이름으로 없다(이름이 바뀌었거나 폐지)."
             how = (f"현행 이름으로 고친다 — 이름이 비슷한 현행 자치법규: {', '.join('「'+x+'」' for x in close)}." if close else "인용한 자치법규의 연혁을 확인해 현행 이름으로 고치거나, 폐지되었으면 인용을 삭제한다.")
             if close:

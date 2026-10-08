@@ -448,6 +448,44 @@ def main():
             if d:
                 jh[key] = d
         jdump(OUT / "laws" / "johist.json.gz", jh, gz=True)
+    # 5b. 전부개정·이동 뒤 미개정 후보: 자치법규 공포 당시 판의 조문 제목(조문별 변경 이력이 준 판 일련번호 → eflaw 조문 하나)
+    oldt = jload(OUT / "laws" / "old_titles.json.gz", {})
+    want = set()
+    for v in by_org.values():
+        for d in v:
+            prom = d.get("prom") or ""
+            for r0 in extract(d.get("articles") or []):
+                L0 = items.get(norm_name(r0["law"]))
+                if not L0 or L0.get("status") not in ("current",) or not r0["art"]:
+                    continue
+                h = jh.get(f"{L0['law_id']}|{r0['art']}")
+                if not h:
+                    continue
+                rows = h.get("rows", [])
+                if not any(prom < (x.get("d") or "") <= TODAY.replace("-", "") and re.search(r"전부개정|전문개정|이동", (x.get("why") or "") + (x.get("rev") or "")) for x in rows):
+                    continue
+                before = [x for x in rows if (x.get("d") or "") <= prom and x.get("mst")]
+                if before:
+                    b = max(before, key=lambda x: x["d"])
+                    k = f"{L0['law_id']}|{r0['art']}|{b['mst']}"
+                    if k not in oldt:
+                        want.add((k, b["mst"], jo_code(r0["art"]), b["d"]))
+    print(f"[5b] 공포 당시 조문 제목 받을 것 {len(want)} (보유 {len(oldt)})", flush=True)
+    def _old(args):
+        k, mst, jo, d = args
+        if left() < 600:
+            return k, None
+        root = xml(get("lawService.do", target="eflaw", MST=mst, JO=jo, efYd=d))
+        if root is None:
+            return k, None
+        u = next((x for x in root.iter("조문단위") if tx(x, "조문여부") == "조문"), None)
+        if u is None:
+            return k, {"t": "", "x": "", "none": 1}
+        return k, {"t": tx(u, "조문제목"), "x": re.sub(r"\s+", " ", tx(u, "조문내용"))[:200]}
+    for k, d in pmap(_old, sorted(want), "당시 제목"):
+        if d is not None:
+            oldt[k] = d
+    jdump(OUT / "laws" / "old_titles.json.gz", oldt, gz=True)
     # 6
     r = law_search("정부조직법")
     g = next((d for d in r if d.get("법령명한글") == "정부조직법"), None)

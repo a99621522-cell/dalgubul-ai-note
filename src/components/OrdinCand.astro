@@ -26,6 +26,7 @@ const hl = (t: string) => key ? esc(t).split(esc(key)).join(`<mark>${esc(key)}</
     {ev.now && c.sig.startsWith('article_') && <><dt>현행 법령</dt><dd><a href={ev.now_url} rel="noopener">「{ev.now}」</a>{ev.law_eff && ` (시행 ${ev.law_eff})`}</dd></>}
     {c.sig === 'article_missing' && <><dt>대조 결과</dt><dd>현행 법령에 이 조 번호가 없습니다.</dd></>}
     {ev.atitle !== undefined && c.sig.startsWith('article_') && <><dt>현행 조문</dt><dd>{ev.atitle && <strong>({ev.atitle}) </strong>}{ev.atext || (c.sig === 'article_deleted' ? '삭제' : '')}</dd></>}
+    {c.sig === 'article_renumber' && ev.old_title && <><dt>자치법규 공포 당시 같은 번호</dt><dd><strong>({ev.old_title})</strong> {ev.old_text}{ev.old_d && <span class="meta"> — {ev.old_d} 시행 판</span>}</dd></>}
     {ev.changes?.length > 0 && <><dt>조문 변경 이력(자치법규 공포 {ev.ordin_prom} 이후)</dt><dd><ul class="hist">{ev.changes.map((x: any) => <li>{x.d} · {x.why}{x.rev && x.rev !== x.why ? ` (${x.rev})` : ''}</li>)}</ul></dd></>}
     {c.sig === 'ministry_outdated' && <><dt>옛 이름</dt><dd>{ev.old} → 현행 「정부조직법」에서 찾을 이름: {ev.now}</dd></>}
     {c.sig === 'term_outdated' && <><dt>용어</dt><dd>{ev.old} → {ev.new} (「{ev.basis}」)</dd></>}

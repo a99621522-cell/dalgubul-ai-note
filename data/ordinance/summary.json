@@ -63,8 +63,8 @@
    "listed": 432
   }
  ],
- "refs": 41776,
- "refs_resolved": 41103,
+ "refs": 41748,
+ "refs_resolved": 41084,
  "refs_unknown": 3,
  "law_status": {
   "current": 1201,
@@ -141,28 +141,28 @@
    "gunwi": 9
   },
   "article_renumber": {
-   "daegu": 11,
-   "jung": 40,
-   "dong": 13,
-   "seo": 25,
-   "nam": 25,
-   "buk": 6,
-   "suseong": 18,
-   "dalseo": 21,
-   "dalseong": 12,
-   "gunwi": 13
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 0
   },
   "article_changed": {
-   "daegu": 872,
-   "jung": 425,
-   "dong": 465,
-   "seo": 402,
-   "nam": 472,
-   "buk": 429,
-   "suseong": 519,
-   "dalseo": 570,
-   "dalseong": 594,
-   "gunwi": 257
+   "daegu": 883,
+   "jung": 465,
+   "dong": 478,
+   "seo": 427,
+   "nam": 497,
+   "buk": 435,
+   "suseong": 537,
+   "dalseo": 591,
+   "dalseong": 598,
+   "gunwi": 270
   },
   "local_ref_missing": {
    "daegu": 33,
@@ -173,7 +173,7 @@
    "buk": 17,
    "suseong": 37,
    "dalseo": 17,
-   "dalseong": 74,
+   "dalseong": 65,
    "gunwi": 24
   },
   "admrul_missing": {
@@ -249,28 +249,28 @@
    "gunwi": 3
   },
   "expc_daegu": {
-   "daegu": 29,
-   "jung": 7,
-   "dong": 2,
+   "daegu": 7,
+   "jung": 0,
+   "dong": 0,
    "seo": 0,
    "nam": 0,
    "buk": 0,
    "suseong": 1,
    "dalseo": 0,
-   "dalseong": 5,
+   "dalseong": 1,
    "gunwi": 0
   },
   "expc_related": {
-   "daegu": 548,
-   "jung": 217,
-   "dong": 222,
-   "seo": 202,
-   "nam": 231,
-   "buk": 262,
-   "suseong": 279,
-   "dalseo": 269,
-   "dalseong": 349,
-   "gunwi": 238
+   "daegu": 178,
+   "jung": 90,
+   "dong": 88,
+   "seo": 65,
+   "nam": 76,
+   "buk": 100,
+   "suseong": 94,
+   "dalseo": 90,
+   "dalseong": 115,
+   "gunwi": 102
   },
   "opin_daegu": {
    "daegu": 0,
@@ -309,9 +309,9 @@
    "gunwi": 0
   }
  },
- "total": 9348,
+ "total": 7477,
  "expc_held": 8881,
- "expc_linked": 1309,
+ "expc_linked": 498,
  "expc_daegu": 38,
  "opin_held": 0
 }

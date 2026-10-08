@@ -64,15 +64,20 @@ def base_name(name: str) -> str:
     return b if len(b) >= 4 else ""
 
 
-STOP = {"등", "및", "의", "관한", "위한", "대한", "따른", "사항", "경우", "특례", "기준", "방법", "절차"}
+AMEND = re.compile(r"(일부\s*개정|폐지|일괄\s*개정|전부\s*개정)[^가-힣]*(조례|규칙)$|등\s*일부\s*개정")
+GENERIC = re.compile(r"^(목적|정의|다른\s*법률과의\s*관계|적용\s*범위|시행일|벌칙|과태료|권한의\s*위임)")   # 해석·의견제시와 잇기엔 너무 일반적인 조문
+
+
+STOP = {"등", "및", "의", "관한", "위한", "대한", "따른", "사항", "경우", "특례", "기준", "방법", "절차", "지방자치단체", "국가", "설치", "운영",
+        "관리", "지원", "시행", "규정", "적용", "범위", "업무", "사무", "위원회"}
 
 
 def title_hit(title: str, ctx: str) -> bool:
-    """조문 제목 낱말(2자 이상, 흔한 말 제외)이 인용 구절·자치법규 조 제목에 있으면 True — 낱말 1~2개면 모두, 3개 이상이면 2개 이상."""
+    """조문 제목 낱말(2자 이상, 흔한 말 제외) 가운데 하나라도 인용 구절·자치법규 조 제목에 있으면 True(표본 대조 2026-10-08: 2개 요구는 같은 조문을 놓침)."""
     words = [w for w in re.split(r"[\s,·ㆍ()]+", title or "") if len(w) >= 2 and w not in STOP]
-    words = [re.sub(r"(의|에|을|를|과|와|은|는)$", "", w) for w in words]
-    words = [w for w in words if len(w) >= 2]
-    return bool(words) and sum(w in ctx for w in words) >= min(len(words), 2)
+    words = [re.sub(r"(의|에|을|를|과|와|은|는)$", "", w) if len(w) >= 3 else w for w in words]   # '정의'의 '의'는 조사가 아니다
+    words = [w for w in words if len(w) >= 2 and w not in STOP]
+    return any(w in ctx for w in words)
 
 
 def art_sort(a: str):
@@ -86,6 +91,7 @@ def main():
         return
     laws = jl(D / "laws" / "index.json", {"items": {}})["items"]
     jh = jl(D / "laws" / "johist.json.gz", {})
+    oldt = jl(D / "laws" / "old_titles.json.gz", {})   # 자치법규 공포 당시 판의 조문 제목(fetch 5b)
     gov = (D / "laws" / "gov_org.txt").read_text(encoding="utf-8") if (D / "laws" / "gov_org.txt").exists() else ""
     arts_cache: dict[str, dict] = {}
 
@@ -101,9 +107,12 @@ def main():
     for iid, e in expc.items():
         if not (e.get("local") or e.get("dg")):
             continue
-        for nn, _raw, art in e.get("refs", []):
-            if art:
-                ex_by.setdefault((nn, art), []).append(iid)
+        # 쟁점 조문 = 안건명의 인용(질의요지·회답 속 부수 인용은 잇지 않음, 표본 대조 2026-10-08)
+        for r0 in extract([{"no": "", "text": e.get("t", "")}]):
+            if r0["art"]:
+                k0 = (norm_name(r0["law"]), r0["art"])
+                if iid not in ex_by.get(k0, []):
+                    ex_by.setdefault(k0, []).append(iid)
     # 법령별 최근 전부개정일(조문 번호가 바뀌었을 수 있는 경계) — 경계 앞뒤가 다른 해석례·자치법규는 잇지 않는다
     # 법제처 자치법규 의견제시 사례(법제처 누리집 공개 게시판): ① 같은 이름 자치법규(지자체 이름 뗀 이름) ② 쟁점 조문(제목·질의요지의 법령 조문)
     opin = jl(D / "opin" / "index.json.gz", {})
@@ -159,6 +168,8 @@ def main():
         items = jl(D / "ordin" / f"{o['key']}.json.gz", {"items": []})["items"]
         ordin_count[o["key"]] = len(items)
         for d in items:
+            if AMEND.search(d.get("name", "")):
+                continue   # 다른 자치법규를 고치거나 없애는 일괄 개정·폐지 조례 — 폐지 대상 이름을 인용하는 것이 정상
             arts = d.get("articles") or []
             prom = d.get("prom") or ""
             refs = extract(arts)
@@ -219,7 +230,11 @@ def main():
                     if (nn, "am", r["no"]) not in seen:
                         seen.add((nn, "am", r["no"]))
                         add(d, a, "admrul_missing", ev={**ev, "cands": L.get("cands", [])[:4]})
-                if st == "current" and r["art"] and (nn, r["art"]) in op_by_art and (nn, "op", r["no"], r["art"]) not in seen:
+                gen = False
+                if st == "current" and r["art"]:
+                    A0 = arts_of(L["law_id"])
+                    gen = bool(A0 and GENERIC.match((A0["arts"].get(r["art"]) or {}).get("t", "")))
+                if not gen and st == "current" and r["art"] and (nn, r["art"]) in op_by_art and (nn, "op", r["no"], r["art"]) not in seen:
                     seen.add((nn, "op", r["no"], r["art"]))
                     fr = full_rev.get(L["law_id"], "")
                     ids = [i for i in op_by_art[(nn, r["art"])] if not fr or ((opin[i].get("d") or "") >= fr) == (prom >= fr)]
@@ -227,7 +242,7 @@ def main():
                         ids.sort(key=lambda i: opin[i].get("d") or "", reverse=True)
                         add(d, a, "opin_article", ev={**ev, "now": L["name"], "now_url": law_url(L["name"], r["art"]), "ordin_prom": ymd(prom),
                                                        "after": any((opin[i].get("d") or "") > prom for i in ids), "n": len(ids), "expc": [op_card(i) for i in ids[:4]]})
-                if st == "current" and r["art"] and (nn, r["art"]) in ex_by and (nn, "ex", r["no"], r["art"]) not in seen:
+                if not gen and st == "current" and r["art"] and (nn, r["art"]) in ex_by and (nn, "ex", r["no"], r["art"]) not in seen:
                     seen.add((nn, "ex", r["no"], r["art"]))
                     fr = full_rev.get(L["law_id"], "")
                     ids = [i for i in ex_by[(nn, r["art"])] if not fr or ((expc[i].get("d") or "") >= fr) == (prom >= fr)]
@@ -263,10 +278,17 @@ def main():
                     if not later:
                         continue
                     ren = [x for x in later if re.search(r"전부개정|전문개정|이동", (x.get("why") or "") + (x.get("rev") or ""))]
-                    # 현행 조문 제목의 낱말이 인용 구절이나 자치법규 조 제목에 있으면 같은 내용을 가리키는 것으로 보고 '개정 뒤 미개정'으로만 둔다
-                    if ren and title_hit(la.get("t", ""), r["ctx"] + " " + (a.get("title", "") if a else "")):
-                        ev2["title_match"] = True
-                        ren = []
+                    if ren:
+                        # 공포 당시 판의 같은 번호 조문 제목과 지금 제목을 비교한다(표본 대조 2026-10-08: 제목 낱말 짐작은 정확도 60% 안팎)
+                        before = [x for x in h.get("rows", []) if (x.get("d") or "") <= prom and x.get("mst")]
+                        b0 = max(before, key=lambda x: x["d"]) if before else None
+                        ot = oldt.get(f"{L['law_id']}|{r['art']}|{b0['mst']}") if b0 else None
+                        if ot and ot.get("t") and norm_name(ot["t"]) != norm_name(la.get("t", "")):
+                            ev2["old_title"], ev2["old_text"], ev2["old_d"] = ot["t"], ot.get("x", ""), ymd(b0["d"])
+                        else:
+                            if ot and ot.get("t"):
+                                ev2["old_title"] = ot["t"]   # 제목이 같음 — 번호는 그대로
+                            ren = []
                     ev2["changes"] = [{"d": ymd(x["d"]), "why": x.get("why", ""), "rev": x.get("rev", "")} for x in later][-6:]
                     ev2["ordin_prom"] = ymd(prom)
                     add(d, a, "article_renumber" if ren else "article_changed", ev=ev2)

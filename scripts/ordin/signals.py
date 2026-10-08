@@ -82,7 +82,7 @@ def title_hit(title: str, ctx: str) -> bool:
     return any(w in ctx for w in words)
 
 
-KEYSTOP = {"대구광역시", "조례", "규칙", "시행규칙", "및", "등", "관한", "에", "의", "위한", "설치", "운영", "구성", "지원"}
+KEYSTOP = {"대구광역시", "조례", "규칙", "시행규칙", "및", "등", "관한", "에", "의", "위한", "설치", "운영", "구성", "지원", "운용", "기금", "특별회계", "관리"}
 
 
 def close_names(q: str, pool: list[str]) -> list[str]:

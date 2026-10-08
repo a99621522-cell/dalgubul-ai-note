@@ -29,6 +29,9 @@ CFG = yaml.safe_load((ROOT / "config" / "ordinance.yml").read_text(encoding="utf
 SIG = yaml.safe_load((ROOT / "config" / "ordinance_signals.yml").read_text(encoding="utf-8"))["signals"]
 TERMS = yaml.safe_load((ROOT / "config" / "ordinance_terms.yml").read_text(encoding="utf-8"))
 CRULES = yaml.safe_load((ROOT / "config" / "ordinance_content_rules.yml").read_text(encoding="utf-8"))["rules"]
+# YAML 1.1 은 키 `no` 를 불(False)로 읽는다 — 사례 번호 키를 되돌린다
+for _r in CRULES.values():
+    _r["prec"] = [{("no" if k is False else k): v for k, v in q.items()} for q in _r.get("prec") or []]
 TODAY = date.today().strftime("%Y%m%d")
 
 
@@ -362,7 +365,23 @@ def main():
                             continue
                         if R.get("title") and not re.search(R["title"], a.get("title") or ""):
                             continue
+                        if R.get("not_title") and re.search(R["not_title"], a.get("title") or ""):
+                            continue
                         hitp = next((p for p in paras if all(re.search(x, p) for x in R["all"]) and not any(re.search(x, p) for x in R.get("none", []))), None)
+                        if hitp and R.get("special") == "rights":
+                            # 그 항이 법률(또는 법·영 약칭) 조문을 인용하면 위임이 있는 것으로 보고 넘긴다.
+                            if re.search(r"「[^」]+」|(?<![가-힣])(법|영|시행령|시행규칙)\s*(제\s*\d+\s*조|에\s*따라|에서\s*정하는)", hitp):
+                                continue
+                            # 자치법규 전체가 법률 위임으로 제정됐다고 밝히면(제1조 '위임된 사항') 위임 범위를 벗어났는지만 남는다 → 참고로
+                            first = (arts[0].get("text") or "") if arts else ""
+                            # 제1조가 법률을 근거로 밝히거나(「…법」) 공공시설 이용 규칙(행위 제한·금지)이면 '위임 범위 확인' 참고로
+                            facility = re.search(r"시설|센터|공원|회관|박물관|도서관|체육|캠핑|휴양|마을|광장|주차장", d["name"]) and re.search(r"행위|금지|제한|준수|이용", a.get("title") or "")
+                            any_law = any(re.search(r"「[^」]+(법|법률|령|규칙)」", x.get("text") or "") and not re.search(r"「대구광역시", x.get("text") or "") for x in arts)
+                            fee = re.search(r"요금|사용료|견인료|보관료|수수료|관람료", hitp)
+                            if re.search(r"위임된\s*사항|위임에\s*따라|위임한\s*사항|「[^」]+(법|법률|령)」", first) or facility or any_law or fee:
+                                add(d, a, "content_rule_ref", ev={"rule": rk, "rname": R["name"] + "(자치법규는 위임 근거를 밝힘)", "level": "참고", "ctx": hitp.strip()[:400],
+                                                                  "basis": R.get("basis", ""), "prec": R.get("prec", []), "rwhy": R["why"], "rhow": "공공시설 이용 규칙이면 시설 관리 범위인지, 근거 법률이 있으면 그 법률이 이 의무·제한까지 맡겼는지 확인한다."})
+                                continue
                         if hitp and R.get("strong"):
                             # 강한 신호(의무·법정 위원회)가 아니면 숨김 신호로
                             strong = any(re.search(x, hitp) for x in R["strong"]) or bool(R.get("strong_scope") and re.search(R["strong_scope"], d["name"] + " " + (a.get("title") or "")))
@@ -479,6 +498,8 @@ def main():
             pr = ev.get("prec") or []
             refs_ = "; ".join(f"{x.get('no') or ('법령해석 ' + x.get('expc', ''))}({x.get('org', '')}): {x.get('concl', '')}" for x in pr[:2])
             why = f"[{ev['level']}] {ev['rwhy']} 근거: {ev['basis']}." + (f" 법제처 사례 — {refs_}." if refs_ else "")
+            if ev["level"] == "규제 개선 권고":
+                c["cat_override"] = "규제 개선"
             how = ev["rhow"]
         elif sg == "rrn_collect":
             why = "조문이 주민등록번호를 다룬다 — 「개인정보 보호법」 제24조의2는 법률·대통령령·국회규칙 등이 구체적으로 요구·허용한 경우 등에만 주민등록번호 처리를 허용하고, 조례만으로는 근거가 되지 않는다."
@@ -509,7 +530,7 @@ def main():
             why, how = "과태료 조문에 법률 근거 인용이 없다.", "부과 근거 법률(「지방자치법」 제34조 또는 개별 법률)을 조문에 밝힌다."
         c["why"], c["how"] = why, how
         # 정비 성격(분류): 상위법령 개정·폐지 / 상위법령 위반 소지 / 법제처 의견 / 자구 정비
-        c["cat"] = ("위반 소지" if sg in ("penal_clause", "fine_over_cap", "opin_conflict", "penalty_basis", "rrn_collect", "content_rule")
+        c["cat"] = c.pop("cat_override", None) or ("위반 소지" if sg in ("penal_clause", "fine_over_cap", "opin_conflict", "penalty_basis", "rrn_collect", "content_rule")
                     else "법제처 의견" if sg.startswith(("expc", "opin"))
                     else "상위법령 개정·폐지" if sg in ("law_renamed", "law_not_current", "article_deleted", "article_renumber", "article_changed", "article_missing")
                     else "자구·기한 정비")

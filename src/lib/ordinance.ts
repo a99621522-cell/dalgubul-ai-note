@@ -73,8 +73,8 @@ export function draftTable(items: Cand[]) {
 export const mark = (s: string) => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]!)).replace(/⟦(.*?)⟧|⟪(.*?)⟫/g, (_m, a, b) => `<u>${a ?? b}</u>`);
 
 /** 정비 성격 4가지(화면 묶음 순서) */
-export const CATS = ['상위법령 개정·폐지', '위반 소지', '법제처 의견', '자구·기한 정비'] as const;
-export const catLabel: Record<string, string> = { '상위법령 개정·폐지': '상위법령이 바뀌거나 폐지됨', '위반 소지': '상위법령 위반 소지(검토 필요)', '법제처 의견': '법제처 해석·의견제시', '자구·기한 정비': '이름·용어·유효기간' };
+export const CATS = ['위반 소지', '상위법령 개정·폐지', '규제 개선', '법제처 의견', '자구·기한 정비'] as const;
+export const catLabel: Record<string, string> = { '상위법령 개정·폐지': '상위법령이 바뀌거나 폐지됨', '위반 소지': '상위법령 위반 소지(검토 필요)', '규제 개선': '규제 개선 권고(서류·발급일 등)', '법제처 의견': '법제처 해석·의견제시', '자구·기한 정비': '이름·용어·유효기간' };
 /** 표에 넣을 근거 한 줄 */
 export const evLine = (c: Cand) => {
   const e = c.ev || {};

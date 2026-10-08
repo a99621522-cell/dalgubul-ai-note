@@ -98,7 +98,12 @@ def detail(row: dict) -> dict | None:
     main = pairs_of(f"{title}\n{q}")                       # 쟁점 조문(제목·질의요지) — 자치법규와 잇는 데 쓴다
     allp = pairs_of(f"{op}\n{why}\n{rel.split('○ 관련법령')[-1] if '○ 관련법령' in rel else ''}")
     org = head.get("요청기관", row.get("org", ""))
-    return {"no": head.get("안건번호", row["no"]), "t": title, "org": org, "d": ymd(head.get("회신일자", row["date"])),
+    # 결론: 이유의 마지막 '따라서·그렇다면·결론적으로' 문장(없으면 이유 끝 400자) — 의견 칸이 '아래 이유를 참고'뿐인 사례가 많다
+    concl = ""
+    for m in re.finditer(r"(따라서|그렇다면|결론적으로|그러므로)[^\n]{10,}", why):
+        concl = m.group(0)
+    concl = (concl or why[-400:]).strip()[:600]
+    return {"no": head.get("안건번호", row["no"]), "t": title, "concl": concl, "org": org, "d": ymd(head.get("회신일자", row["date"])),
             "q": q[:500], "op": op[:800], "why": why[:600], "targets": targets[:6], "refs": [[n, raw, art] for n, raw, art in main],
             "refs_all": [[n, raw, art] for n, raw, art in allp if (n, raw, art) not in main][:20],
             "dg": daegu_of(org, "")}

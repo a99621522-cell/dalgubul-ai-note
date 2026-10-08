@@ -232,6 +232,27 @@ def probe(t: dict, key: str) -> None:
             time.sleep(0.3)
 
 
+def probe_cells(t: dict, key: str, spec: str) -> None:
+    """--probe 'key@22@C27199,C29271@2023': 1단계 분류(시도) 코드 하나 × 2단계 분류 코드 여럿의 칸만 요청해 응답을 찍는다.
+    표 메타에 세세분류 코드가 있어도 시도 칸이 공개되는지는 실제 요청으로만 알 수 있다(2026-10-08 대학 상생발전 보고서 대조)."""
+    parts = spec.split("@")
+    o1, o2 = parts[0], parts[1] if len(parts) > 1 else "ALL"
+    yr = parts[2] if len(parts) > 2 else period_range(t.get("prd_se", "Y"), 1)[1][:4]
+    base = {"method": "getList", "apiKey": key, "itmId": "ALL", "format": "json", "jsonVD": "Y", "prdSe": t.get("prd_se", "Y"),
+            "orgId": str(t["org_id"]), "tblId": t["tbl_id"], "startPrdDe": yr, "endPrdDe": yr, "objL1": o1}
+    for code in o2.split(","):
+        try:
+            r = requests.get(API_DATA, params={**base, "objL2": code}, headers={"User-Agent": UA}, timeout=(20, 120))
+            data = r.json()
+            if isinstance(data, list):
+                print(f"[cell {o1}×{code} {yr}] {len(data)}행: " + " | ".join(f"{d.get('C2_NM')} {d.get('ITM_NM')}={d.get('DT')}{d.get('UNIT_NM','')}" for d in data[:16]))
+            else:
+                print(f"[cell {o1}×{code} {yr}] {data}")
+        except Exception as e:  # noqa: BLE001
+            print(f"[cell {o1}×{code} {yr}] 실패 {e}")
+        time.sleep(0.4)
+
+
 def save_meta(t: dict, key: str) -> None:
     """표의 항목·분류 메타(getMeta ITM)를 data/kosis/<key>.meta.json 에 저장 — 분류 코드(대·중·소분류 단계)가 필요한 표(전국사업체조사 산업 등)에."""
     r = requests.get("https://kosis.kr/openapi/statisticsData.do", params={"method": "getMeta", "apiKey": key, "format": "json", "jsonVD": "Y", "orgId": str(t["org_id"]), "tblId": t["tbl_id"], "type": "ITM"},
@@ -329,9 +350,13 @@ def main() -> int:
                 save_meta(t, key)
         return 0
     if a.probe:
+        pk, _, cells = a.probe.partition("@")   # key@지역코드@분류코드,분류코드[@연도] — 특정 칸만 요청(시도 × 세세분류가 공개되는지 확인, 2026-10-08)
         for t in load():
-            if t["key"] == a.probe:
-                probe(t, key)
+            if t["key"] == pk:
+                if cells:
+                    probe_cells(t, key, cells)
+                else:
+                    probe(t, key)
         return 0
     if a.discover:   # tbl_id 가 있어도 search 로 후보를 찍는다(옛 표 번호를 새 표로 바꿀 때, 2026-10-01: DT_1F1610 은 1999~2014 만)
         for t in tables:

@@ -29,7 +29,9 @@ function bodyRows(tbl: HTMLTableElement, onlySelected: boolean): HTMLTableRowEle
 /** 칸 단위(병합 보존)와 채운 격자(병합 칸을 같은 값으로 채움) 둘 다 */
 function grid(tbl: HTMLTableElement, opt: { onlySelected?: boolean; noHead?: boolean } = {}): Grid {
   const cells = (tr: HTMLTableRowElement): Cell[] => Array.from(tr.cells).filter(visible).map(c => {
-    const t = clean((c as HTMLElement).innerText);
+    // .tt-skip(표 칸 안의 보조 설명 줄)은 복사·CSV·PDF 에서 뺀다(산업 묶음 표, 2026-10-09)
+    const k = c.querySelector('.tt-skip') ? (() => { const x = c.cloneNode(true) as HTMLElement; x.querySelectorAll('.tt-skip').forEach(e => e.remove()); return x.textContent ?? ''; })() : (c as HTMLElement).innerText;
+    const t = clean(k);
     return { text: t, rs: c.rowSpan || 1, cs: c.colSpan || 1, th: c.tagName === 'TH', num: NUM.test(t || 'x') && /\d/.test(t) };
   });
   const headTr = opt.noHead || !tbl.tHead ? [] : Array.from(tbl.tHead.rows).filter(visible);

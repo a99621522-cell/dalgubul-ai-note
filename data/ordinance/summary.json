@@ -63,8 +63,8 @@
    "listed": 432
   }
  ],
- "refs": 41790,
- "refs_resolved": 41129,
+ "refs": 41781,
+ "refs_resolved": 41120,
  "refs_unknown": 0,
  "law_status": {
   "current": 1199,
@@ -120,8 +120,8 @@
    "daegu": 0,
    "jung": 0,
    "dong": 0,
-   "seo": 1,
-   "nam": 4,
+   "seo": 0,
+   "nam": 1,
    "buk": 1,
    "suseong": 1,
    "dalseo": 0,
@@ -157,10 +157,10 @@
    "jung": 406,
    "dong": 427,
    "seo": 350,
-   "nam": 440,
+   "nam": 439,
    "buk": 365,
    "suseong": 475,
-   "dalseo": 512,
+   "dalseo": 510,
    "dalseong": 518,
    "gunwi": 203
   },
@@ -309,7 +309,7 @@
    "gunwi": 0
   }
  },
- "total": 6778,
+ "total": 6771,
  "expc_held": 8881,
  "expc_linked": 498,
  "expc_daegu": 38,

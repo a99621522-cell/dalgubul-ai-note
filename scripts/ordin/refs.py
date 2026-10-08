@@ -10,9 +10,9 @@ import re
 
 NAME = r"「([^「」]{2,90})」"
 ART = r"\s*제\s*(\d+)\s*조(?:\s*의\s*(\d+)(?!\s*호))?(?:\s*제\s*(\d+)\s*항)?(?:\s*제\s*(\d+)\s*호)?"
-ALIAS_DEF = re.compile(NAME + r"(?:(?!같은|및|와|과)[^「」]){0,40}?\(\s*이하\s*[“\"']([^”\"']{1,12})[”\"']\s*(?:이)?라\s*한다\s*\)")
+ALIAS_DEF = re.compile(NAME + r"\s*(시행령|시행규칙)?(?:(?!같은|및|와|과)[^「」]){0,40}?\(\s*이하\s*[“\"']([^”\"']{1,12})[”\"']\s*(?:이)?라\s*한다\s*\)")
 ALIAS_DEF2 = re.compile(r"같은\s*법\s*(시행령|시행규칙)\s*\(\s*이하\s*[“\"']([^”\"']{1,12})[”\"']\s*(?:이)?라\s*한다\s*\)")
-TOKEN = re.compile(NAME + r"(?:\s*\([^()]{0,60}\))?(?:" + ART + r")?|같은\s*법\s*(시행령|시행규칙)?(?:" + ART + r")?")
+TOKEN = re.compile(NAME + r"(?:\s*(시행령|시행규칙)(?![가-힣]))?(?:\s*\([^()]{0,60}\))?(?:" + ART + r")?|같은\s*법\s*(시행령|시행규칙)?(?:" + ART + r")?")
 
 
 def norm_name(s: str) -> str:
@@ -31,8 +31,8 @@ def extract(articles: list[dict]) -> list[dict]:
     last = ""        # 마지막으로 인용한 '법률'(…법·…법률) — '같은 법'이 가리키는 것. 시행령·조례는 넣지 않는다
     for a in articles:
         text = html.unescape(a.get("text") or "")
-        for m in ALIAS_DEF.finditer(text):
-            aliases[m.group(2).strip()] = m.group(1).strip()
+        for m in ALIAS_DEF.finditer(text):   # 「…법」 시행령(이하 "영") 처럼 겹낫표 밖에 붙인 시행령·시행규칙도 이름에 넣는다
+            aliases[m.group(3).strip()] = re.sub(r"\s+", " ", m.group(1).strip()) + (f" {m.group(2)}" if m.group(2) else "")
         for m in ALIAS_DEF2.finditer(text):
             # '같은 법 시행령(이하 "영")' — 바로 앞에 나온 법률 이름(겹낫표)을 찾는다
             prev = [x for x in re.finditer(NAME, text[: m.start()]) if re.search(r"(법|법률)$", x.group(1).strip())]
@@ -42,7 +42,7 @@ def extract(articles: list[dict]) -> list[dict]:
         # 겹낫표 이름·'같은 법'·약칭('법 제n조')을 글 순서대로 읽는다 — '같은 법'은 바로 앞에 나온 법률(약칭 포함)을 가리킨다
         toks = [(m.start(), "t", m) for m in TOKEN.finditer(text)]
         if aliases:
-            pat = re.compile(r"(?<![가-힣「])(" + "|".join(re.escape(k) for k in sorted(aliases, key=len, reverse=True)) + r")" + ART)
+            pat = re.compile(r"(?<![가-힣「])(?<!같은 )(?<!같은)(" + "|".join(re.escape(k) for k in sorted(aliases, key=len, reverse=True)) + r")" + ART)
             toks += [(m.start(), "a", m) for m in pat.finditer(text)]
         toks.sort(key=lambda x: x[0])
         spans = []
@@ -54,8 +54,8 @@ def extract(articles: list[dict]) -> list[dict]:
                 no, ui, pa, it = m.group(2), m.group(3), m.group(4), m.group(5)
                 k = "alias"
             elif m.group(1):
-                law = re.sub(r"\s+", " ", m.group(1).strip())
-                no, ui, pa, it = m.group(2), m.group(3), m.group(4), m.group(5)
+                law = re.sub(r"\s+", " ", m.group(1).strip()) + (f" {m.group(2)}" if m.group(2) else "")
+                no, ui, pa, it = m.group(3), m.group(4), m.group(5), m.group(6)
                 k = "named"
             else:
                 if not last:
@@ -64,8 +64,8 @@ def extract(articles: list[dict]) -> list[dict]:
                 gap = text[(spans[-1][1] if spans else max(0, m.start() - 80)): m.start()]
                 if re.search(r"[가-힣]+법(률)?\s*제\s*\d+\s*조", gap) and not re.search(r"(?<![가-힣])(법|영)\s*제\s*\d+\s*조", gap):
                     continue
-                law = last if not m.group(6) else f"{last} {m.group(6)}"
-                no, ui, pa, it = m.group(7), m.group(8), m.group(9), m.group(10)
+                law = last if not m.group(7) else f"{last} {m.group(7)}"
+                no, ui, pa, it = m.group(8), m.group(9), m.group(10), m.group(11)
                 k = "same"
             if not re.search(r"(법|법률|령|규칙|규정|고시|훈령|예규|지침|요령|기준|조례)$", law):
                 continue   # 「 」 안이 법령 이름이 아님(서식 제목·사업명 등)

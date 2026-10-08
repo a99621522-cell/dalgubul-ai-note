@@ -26,7 +26,7 @@ from bs4 import BeautifulSoup
 BASE = "https://www.factoryon.go.kr"
 LIST = BASE + "/bbs/frtblRecsroomBbsList.do"
 DETAIL = BASE + "/bbs/frtblRecsroomBbsDetail.do"
-UA = "Mozilla/5.0 daitda-note (+https://daitda.co.kr; 운영자 수동 내려받기, 월 1회)"
+UA = "Mozilla/5.0 daitda-note/1.0 (+https://daitda.co.kr; monthly manual download)"
 WANT = {"main": "전국(개별,계획)입주업체현황", "kicox": "산단공관할단지내_입주업체리스트"}
 
 

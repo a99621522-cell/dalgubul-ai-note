@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import html
 import re
 
 NAME = r"「([^「」]{2,90})」"
@@ -15,8 +16,8 @@ TOKEN = re.compile(NAME + r"(?:\s*\([^()]{0,60}\))?(?:" + ART + r")?|같은\s*�
 
 
 def norm_name(s: str) -> str:
-    """비교용 법령 이름: 공백·가운뎃점 변이 제거."""
-    return re.sub(r"[\s·ㆍ‧･・]", "", s or "")
+    """비교용 법령 이름: 문자 참조(&#8231;) 풀고 공백·가운뎃점·쉼표 변이 제거."""
+    return re.sub(r"[\s·ㆍ‧･・‧,，]", "", html.unescape(s or ""))
 
 
 def _art(m_no, m_ui):
@@ -27,9 +28,9 @@ def extract(articles: list[dict]) -> list[dict]:
     """articles: [{no: '제3조', text: '...'}] (부칙은 넣지 않는다). 조문 순서대로 읽어 '같은 법'·약칭을 풀이한다."""
     aliases: dict[str, str] = {}
     out: list[dict] = []
-    last = ""
+    last = ""        # 마지막으로 인용한 '법률'(…법·…법률) — '같은 법'이 가리키는 것. 시행령·조례는 넣지 않는다
     for a in articles:
-        text = a.get("text") or ""
+        text = html.unescape(a.get("text") or "")
         for m in ALIAS_DEF.finditer(text):
             aliases[m.group(2).strip()] = m.group(1).strip()
         for m in ALIAS_DEF2.finditer(text):
@@ -39,18 +40,19 @@ def extract(articles: list[dict]) -> list[dict]:
         spans = []
         for m in TOKEN.finditer(text):
             if m.group(1):
-                law = m.group(1).strip()
+                law = re.sub(r"\s+", " ", m.group(1).strip())
                 no, ui, pa, it = m.group(2), m.group(3), m.group(4), m.group(5)
                 kind = "named"
             else:
                 if not last:
                     continue
-                law = last if not m.group(6) else (re.sub(r"\s*(시행령|시행규칙)$", "", last) + " " + m.group(6))
+                law = last if not m.group(6) else f"{last} {m.group(6)}"
                 no, ui, pa, it = m.group(7), m.group(8), m.group(9), m.group(10)
                 kind = "same"
             if not re.search(r"(법|법률|령|규칙|규정|고시|훈령|예규|지침|조례|기준|요령)$", law):
                 continue   # 「 」 안이 법령 이름이 아님(서식 제목·사업명 등)
-            last = law
+            if re.search(r"(법|법률)$", law):
+                last = law
             spans.append(m.span())
             out.append({"no": a.get("no", ""), "law": law, "art": _art(no, ui), "para": pa or "", "item": it or "", "kind": kind,
                         "ctx": text[max(0, m.start() - 30): m.end() + 50].replace("\n", " ")})

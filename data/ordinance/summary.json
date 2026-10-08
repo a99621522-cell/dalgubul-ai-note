@@ -1,0 +1,279 @@
+{
+ "fetched": "2026-10-08",
+ "built": "2026-10-08",
+ "orgs": [
+  {
+   "key": "daegu",
+   "name": "대구광역시",
+   "count": 951,
+   "listed": 951
+  },
+  {
+   "key": "jung",
+   "name": "중구",
+   "count": 413,
+   "listed": 413
+  },
+  {
+   "key": "dong",
+   "name": "동구",
+   "count": 475,
+   "listed": 475
+  },
+  {
+   "key": "seo",
+   "name": "서구",
+   "count": 460,
+   "listed": 460
+  },
+  {
+   "key": "nam",
+   "name": "남구",
+   "count": 445,
+   "listed": 445
+  },
+  {
+   "key": "buk",
+   "name": "북구",
+   "count": 512,
+   "listed": 512
+  },
+  {
+   "key": "suseong",
+   "name": "수성구",
+   "count": 583,
+   "listed": 583
+  },
+  {
+   "key": "dalseo",
+   "name": "달서구",
+   "count": 586,
+   "listed": 586
+  },
+  {
+   "key": "dalseong",
+   "name": "달성군",
+   "count": 576,
+   "listed": 576
+  },
+  {
+   "key": "gunwi",
+   "name": "군위군",
+   "count": 432,
+   "listed": 432
+  }
+ ],
+ "refs": 41785,
+ "refs_resolved": 39160,
+ "refs_unknown": 0,
+ "law_status": {
+  "current": 1043,
+  "local": 1153,
+  "admrul": 54,
+  "not_current": 56,
+  "local_missing": 361,
+  "admrul_missing": 104,
+  "unresolved": 50,
+  "search_only": 64,
+  "local_other": 1
+ },
+ "laws_cited": 2886,
+ "by_signal": {
+  "law_renamed": {
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 0
+  },
+  "law_not_current": {
+   "daegu": 54,
+   "jung": 14,
+   "dong": 34,
+   "seo": 19,
+   "nam": 26,
+   "buk": 35,
+   "suseong": 37,
+   "dalseo": 33,
+   "dalseong": 35,
+   "gunwi": 16
+  },
+  "name_unmatched": {
+   "daegu": 67,
+   "jung": 6,
+   "dong": 25,
+   "seo": 16,
+   "nam": 14,
+   "buk": 34,
+   "suseong": 17,
+   "dalseo": 15,
+   "dalseong": 46,
+   "gunwi": 11
+  },
+  "article_missing": {
+   "daegu": 2,
+   "jung": 3,
+   "dong": 2,
+   "seo": 1,
+   "nam": 4,
+   "buk": 4,
+   "suseong": 2,
+   "dalseo": 1,
+   "dalseong": 2,
+   "gunwi": 2
+  },
+  "article_deleted": {
+   "daegu": 23,
+   "jung": 4,
+   "dong": 13,
+   "seo": 9,
+   "nam": 15,
+   "buk": 11,
+   "suseong": 9,
+   "dalseo": 15,
+   "dalseong": 11,
+   "gunwi": 10
+  },
+  "article_renumber": {
+   "daegu": 18,
+   "jung": 44,
+   "dong": 21,
+   "seo": 35,
+   "nam": 30,
+   "buk": 10,
+   "suseong": 23,
+   "dalseo": 37,
+   "dalseong": 18,
+   "gunwi": 34
+  },
+  "article_changed": {
+   "daegu": 940,
+   "jung": 438,
+   "dong": 481,
+   "seo": 420,
+   "nam": 477,
+   "buk": 445,
+   "suseong": 548,
+   "dalseo": 574,
+   "dalseong": 597,
+   "gunwi": 296
+  },
+  "local_ref_missing": {
+   "daegu": 288,
+   "jung": 132,
+   "dong": 153,
+   "seo": 112,
+   "nam": 143,
+   "buk": 132,
+   "suseong": 153,
+   "dalseo": 128,
+   "dalseong": 203,
+   "gunwi": 128
+  },
+  "admrul_missing": {
+   "daegu": 21,
+   "jung": 22,
+   "dong": 14,
+   "seo": 15,
+   "nam": 15,
+   "buk": 29,
+   "suseong": 18,
+   "dalseo": 33,
+   "dalseong": 22,
+   "gunwi": 17
+  },
+  "ministry_outdated": {
+   "daegu": 4,
+   "jung": 17,
+   "dong": 12,
+   "seo": 14,
+   "nam": 10,
+   "buk": 2,
+   "suseong": 6,
+   "dalseo": 13,
+   "dalseong": 16,
+   "gunwi": 5
+  },
+  "term_outdated": {
+   "daegu": 4,
+   "jung": 3,
+   "dong": 2,
+   "seo": 0,
+   "nam": 2,
+   "buk": 3,
+   "suseong": 2,
+   "dalseo": 0,
+   "dalseong": 7,
+   "gunwi": 3
+  },
+  "sunset": {
+   "daegu": 9,
+   "jung": 2,
+   "dong": 1,
+   "seo": 3,
+   "nam": 1,
+   "buk": 1,
+   "suseong": 2,
+   "dalseo": 0,
+   "dalseong": 2,
+   "gunwi": 1
+  },
+  "gunwi_gb": {
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 7
+  },
+  "penalty_basis": {
+   "daegu": 4,
+   "jung": 12,
+   "dong": 17,
+   "seo": 7,
+   "nam": 6,
+   "buk": 11,
+   "suseong": 19,
+   "dalseo": 7,
+   "dalseong": 7,
+   "gunwi": 5
+  },
+  "expc_daegu": {
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 0
+  },
+  "expc_related": {
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 0
+  }
+ },
+ "total": 8210,
+ "expc_held": 0,
+ "expc_linked": 0,
+ "expc_daegu": 0
+}

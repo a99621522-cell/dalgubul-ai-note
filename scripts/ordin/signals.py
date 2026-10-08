@@ -132,7 +132,7 @@ def main():
                     n_unres += 1
                     continue
                 st = L.get("status")
-                if st in ("current", "admrul", "local", "local_other"):
+                if st in ("current", "renamed", "admrul", "local", "local_other"):
                     n_ref_ok += 1
                 # 역색인
                 if st == "current":
@@ -146,15 +146,14 @@ def main():
                     continue
                 seen.add(key)
                 ev = {"law": r["law"], "art": r["art"], "ctx": r["ctx"]}
-                if st == "not_current":
-                    hit = [c for c in L.get("cands", []) if c.get("law_id") in set(L.get("hist_ids") or [])]
-                    if hit:
-                        c = hit[0]
-                        if (nn, "renamed", r["no"]) not in seen:
-                            seen.add((nn, "renamed", r["no"]))
-                            add(d, a, "law_renamed", ev={**ev, "now": c["name"], "now_url": law_url(c["name"]), "hist": L.get("hist", [])[:6]},
-                                fix={"old": f"「{r['law']}」", "new": f"「{c['name']}」"})
-                    elif (nn, "nc", r["no"]) not in seen:
+                if st == "renamed":
+                    c = L["now"]
+                    if (nn, "renamed", r["no"]) not in seen:
+                        seen.add((nn, "renamed", r["no"]))
+                        add(d, a, "law_renamed", ev={**ev, "now": c["name"], "now_url": law_url(c["name"]), "hist": L.get("hist", [])[:6]},
+                            fix={"old": f"「{r['law']}」", "new": f"「{c['name']}」"})
+                elif st == "not_current":
+                    if (nn, "nc", r["no"]) not in seen:
                         seen.add((nn, "nc", r["no"]))
                         add(d, a, "law_not_current", ev={**ev, "hist": L.get("hist", [])[:8], "cands": [c["name"] for c in L.get("cands", [])][:4]})
                 elif st in ("search_only", "unresolved"):

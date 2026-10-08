@@ -194,40 +194,66 @@ def fetch_body(it: dict) -> dict | None:
 
 
 # ───────────────────────── 3. 이름 풀이
-LOCAL_RE = re.compile(r"(조례|규칙)(\s*시행규칙)?$")
-ADM_RE = re.compile(r"(고시|훈령|예규|지침|요령|기준|규정|공고)$")
+LOCAL_RE = re.compile(r"(조례(\s*시행규칙)?|^대구.*규칙)$")
+ADM_RE = re.compile(r"(고시|훈령|예규|지침|요령|기준|규정|공고|강령)$")
+RESOLVE_V = 2   # 풀이 규칙 판 — 바꾸면 모든 이름을 다시 푼다
 
 
-def law_search(q: str, target="law") -> list[dict]:
+def law_search(q: str, target="law", display=30) -> list[dict]:
     q2 = q.replace("·", " ").replace("ㆍ", " ")
-    root = xml(get("lawSearch.do", target=target, query=q2, display=30))
+    root = xml(get("lawSearch.do", target=target, query=q2, display=display))
     if root is None:
         return []
     return [{c.tag: (c.text or "").strip() for c in it} for it in root.iter("law" if target != "admrul" else "admrul")]
 
 
+def current_laws() -> dict[str, dict]:
+    """현행 법령 전체 목록(법률·대통령령·부령 등) → {정규화 이름: 항목}. 짧은 이름(「상법」)이 검색 30건 밖으로 밀리는 문제를 피한다."""
+    out, page, total = {}, 1, 0
+    while True:
+        root = xml(get("lawSearch.do", target="law", display=100, page=page))
+        if root is None:
+            break
+        total = int(root.findtext("totalCnt") or 0)
+        rows = list(root.iter("law"))
+        for it in rows:
+            d = {c.tag: (c.text or "").strip() for c in it}
+            if d.get("현행연혁코드", "현행") == "현행":
+                out[norm_name(d.get("법령명한글", ""))] = {"law_id": d.get("법령ID"), "mst": d.get("법령일련번호"), "name": d.get("법령명한글"),
+                                                          "kind": d.get("법령구분명"), "prom": d.get("공포일자"), "eff": d.get("시행일자"), "ministry": d.get("소관부처명")}
+        if not rows or page * 100 >= total:
+            break
+        page += 1
+    print(f"[3] 현행 법령 목록 {len(out)} (totalCnt {total})", flush=True)
+    return out
+
+
 def hist_rows(q: str) -> list[dict]:
-    """lsHistory(연혁 목록, HTML 표) — 폐지·옛 이름 법령도 나온다. 행마다 칸 글자와 링크의 MST·ID."""
-    b = get("lawSearch.do", target="lsHistory", query=q.replace("·", " ").replace("ㆍ", " "), display=50, type="HTML")
+    """lsHistory(연혁 목록, HTML 표: 순번·법령명·소관·제개정구분·법령구분·공포번호·공포일·시행일·현행연혁) — 폐지·옛 이름 법령도 나온다."""
+    b = get("lawSearch.do", target="lsHistory", query=q.replace("·", " ").replace("ㆍ", " "), display=100, type="HTML")
     if not b:
         return []
     s = b.decode("utf-8", "replace")
     rows = []
     for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", s, re.S):
         tds = re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)
-        if not tds:
+        if len(tds) < 3:
             continue
         cells = [html.unescape(re.sub(r"<[^>]+>|\s+", " ", t)).strip() for t in tds]
         href = re.search(r"href=\"([^\"]+)\"", tr)
         h = html.unescape(href.group(1)) if href else ""
-        rows.append({"cells": cells, "mst": (re.search(r"MST=(\d+)", h) or [None, ""])[1], "id": (re.search(r"[?&]ID=(\d+)", h) or [None, ""])[1], "href": h})
+        rows.append({"cells": cells, "mst": (re.search(r"MST=(\d+)", h) or [None, ""])[1]})
     return rows
 
 
-SHOWN = {"hist": 0}
+def law_id_of(mst: str) -> tuple[str, str]:
+    """옛 판 일련번호 → (법령ID, 그 판 이름). 이름이 바뀐 법령은 법령ID 가 그대로다."""
+    root = xml(get("lawService.do", timeout=120, target="law", MST=mst))
+    info = root.find("기본정보") if root is not None else None
+    return (tx(info, "법령ID"), tx(info, "법령명_한글")) if info is not None else ("", "")
 
 
-def resolve(name: str, daegu_names: set[str]) -> dict:
+def resolve(name: str, daegu_names: set[str], cur: dict[str, dict], cur_by_id: dict[str, dict]) -> dict:
     nn = norm_name(name)
     if LOCAL_RE.search(name):
         if nn in daegu_names:
@@ -236,27 +262,29 @@ def resolve(name: str, daegu_names: set[str]) -> dict:
         if res:
             return {"status": "local_other", "org": res[0].get("지자체기관명", "")}
         return {"status": "local_missing"}
-    res = law_search(name)
-    for d in res:
-        if norm_name(d.get("법령명한글", "")) == nn and d.get("현행연혁코드") in ("현행", ""):
-            return {"status": "current", "law_id": d.get("법령ID"), "mst": d.get("법령일련번호"), "name": d.get("법령명한글"),
-                    "kind": d.get("법령구분명"), "prom": d.get("공포일자"), "eff": d.get("시행일자"), "ministry": d.get("소관부처명")}
+    if nn in cur:
+        return {"status": "current", **cur[nn]}
     if ADM_RE.search(name):
         adm = law_search(name, "admrul")
         for d in adm:
             if norm_name(d.get("행정규칙명", "")) == nn:
                 return {"status": "admrul", "name": d.get("행정규칙명"), "issuer": d.get("소관부처명"), "eff": d.get("시행일자")}
-        return {"status": "admrul_missing", "cands": [d.get("행정규칙명") for d in adm[:5]]}
+        if not cur:   # 목록을 못 받았을 때만 아래로
+            return {"status": "admrul_missing", "cands": [d.get("행정규칙명") for d in adm[:5]]}
     hist = hist_rows(name)
-    if SHOWN["hist"] < 3 and hist:
-        SHOWN["hist"] += 1
-        print(f"  [lsHistory 표본] {name}: {hist[:3]}", flush=True)
-    exact = [h for h in hist if any(norm_name(c) == nn for c in h["cells"])]
-    cands = [{"law_id": d.get("법령ID"), "mst": d.get("법령일련번호"), "name": d.get("법령명한글"), "kind": d.get("법령구분명"),
-              "eff": d.get("시행일자"), "prom": d.get("공포일자")} for d in res if d.get("현행연혁코드") == "현행"]
-    return {"status": "not_current" if exact else ("search_only" if cands else "unresolved"),
-            "hist": [h["cells"] for h in exact[:12]], "hist_ids": sorted({h["id"] for h in exact if h["id"]}),
-            "hist_msts": [h["mst"] for h in exact[:12]], "cands": cands[:6]}
+    exact = [h for h in hist if len(h["cells"]) > 1 and norm_name(h["cells"][1]) == nn]
+    res = law_search(name)
+    cands = [cur[norm_name(d.get("법령명한글", ""))] for d in res if norm_name(d.get("법령명한글", "")) in cur][:6]
+    if exact:
+        lid, _ = law_id_of(exact[0]["mst"]) if exact[0]["mst"] else ("", "")
+        now = cur_by_id.get(lid)
+        out = {"hist": [h["cells"][1:] for h in exact[:10]], "hist_law_id": lid, "cands": cands}
+        if now:
+            return {"status": "renamed", "now": now, **out}
+        return {"status": "not_current", **out}
+    if ADM_RE.search(name):
+        return {"status": "admrul_missing", "cands": [c["name"] for c in cands]}
+    return {"status": "search_only" if cands else "unresolved", "cands": cands}
 
 
 # ───────────────────────── 4·5. 조문
@@ -360,15 +388,20 @@ def main():
     idx = jload(OUT / "laws" / "index.json", {"items": {}})
     items = idx["items"]
     # 현행으로 풀린 이름은 일주일에 한 번 다시(이름이 바뀌었을 수 있음), 나머지는 매번
-    need = [nn for nn in cited if nn not in items or items[nn].get("checked") != TODAY]
+    need = [nn for nn in cited if nn not in items or items[nn].get("checked") != TODAY or items[nn].get("v") != RESOLVE_V]
+    curlist = current_laws()
+    cur_by_id = {v["law_id"]: v for v in curlist.values()}
+    if curlist:
+        jdump(OUT / "laws" / "current.json.gz", {"fetched": TODAY, "items": curlist}, gz=True)
     print(f"[3] 인용 법령 이름 {len(cited)} · 이번에 풀이 {len(need)}", flush=True)
     def _res(nn):
         if left() < 1200:
             return nn, None
-        return nn, resolve(raw_names[nn], daegu_names)
+        return nn, resolve(raw_names[nn], daegu_names, curlist, cur_by_id)
     for nn, r in pmap(_res, need, "이름"):
         if r:
-            items[nn] = {"raw": raw_names[nn], "checked": TODAY, **r}
+            items[nn] = {"raw": raw_names[nn], "checked": TODAY, "v": RESOLVE_V, **r}
+    items = {k: v for k, v in items.items() if k in cited}   # 인용이 사라진 이름(파서 고침 포함)은 뺀다
     for nn in items:
         if nn in cited:
             items[nn]["arts_cited"] = sorted(cited[nn], key=lambda a: [int(x) for x in a.split("의")])
@@ -380,6 +413,9 @@ def main():
     # 4
     cur = {}
     for nn, d in items.items():
+        if d.get("status") == "renamed" and d.get("now", {}).get("law_id"):   # 바뀐 이름의 현행 법령도 조문 대조
+            n2 = d["now"]
+            cur.setdefault(n2["law_id"], {"mst": n2["mst"], "cited": set()})["cited"] |= set(d.get("arts_cited") or [])
         if d.get("status") == "current" and d.get("law_id"):
             cur.setdefault(d["law_id"], {"mst": d["mst"], "cited": set()})["cited"] |= set(d.get("arts_cited") or [])
     jobs = []

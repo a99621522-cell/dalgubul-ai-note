@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import Notice from './_Notice.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+import { summary, signals, orgs } from '../../lib/ordinance';
+/** /ordinance/about/ — 자료·방법·한계·표본 검증 */
+const s = summary();
+const sigs = signals();
+const evalPath = path.join(process.cwd(), 'data', 'ordinance', 'eval', 'result.json');
+const ev: Record<string, { n: number; ok: number; by: string }> = fs.existsSync(evalPath) ? JSON.parse(fs.readFileSync(evalPath, 'utf-8')) : {};
+const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 1000) / 10}%` : '—');
+const ST: Record<string, string> = { current: '현행 법령', renamed: '이름 바뀜', not_current: '현행 목록에 없음(연혁에만)', search_only: '이름 대조 안 됨(비슷한 현행 법령 있음)', unresolved: '찾지 못함', admrul: '행정규칙', admrul_missing: '행정규칙 대조 안 됨', local: '대구 자치법규', local_other: '다른 지자체 자치법규', local_missing: '자치법규 대조 안 됨' };
+---
+<Base title="자료·방법·한계 — 자치법규 정비 검토" description="대구 자치법규 정비 검토 후보를 어떻게 찾았는지, 자료 출처와 한계, 표본 검증 결과" crumb="자료·방법" noindex>
+  <h1>자료·방법·한계</h1>
+  <Notice />
+  <p><a href="/ordinance/">← 전체</a></p>
+  <h2>자료</h2>
+  <ul>
+    <li>국가법령정보센터 오픈API(law.go.kr/DRF): 자치법규 목록·본문(대구광역시 기관코드 6270000 아래 대구시·9개 구·군, 교육청 제외), 현행 법령 검색·본문, 법령 연혁 목록, 조문별 변경 이력, 행정규칙 검색. 받은 날 {s?.fetched ?? '—'}. 매주 갱신.</li>
+    <li>현행 자치법규 수: {orgs().map(o => `${o.name} ${o.count.toLocaleString()}`).join(' · ')}{orgs().some(o => o.count !== o.listed) && ' (목록과 본문 수가 다른 곳은 다음 수집에서 채움)'}</li>
+    <li>담당자 이름·전화번호는 받지 않습니다(소관 부서명만).</li>
+  </ul>
+  <h2>방법</h2>
+  <ol>
+    <li>조문에서 「법령 이름」 제n조, '같은 법 시행령', (이하 "법"이라 한다) 같은 약칭을 풀어 인용을 뽑습니다(부칙 제외).</li>
+    <li>인용 이름을 현행 법령 검색에 넣어 이름이 정확히 같은 현행 법령을 찾고, 없으면 법령 연혁 목록·행정규칙·자치법규 목록에서 찾습니다.</li>
+    <li>현행 법령은 조문 목록(조 번호·제목·삭제)과 인용 조문의 변경 이력을 받아 자치법규 최종 공포일과 비교합니다.</li>
+    <li>본문 낱말(옛 기관 이름·바뀐 용어·유효기간·군위군 편입 전 표기·과태료 근거)을 규칙으로 찾습니다.</li>
+  </ol>
+  {s && <>
+  <h2>인용 풀이</h2>
+  <p>인용 {s.refs.toLocaleString()}건 중 현행 법령·행정규칙·자치법규로 이은 것 {s.refs_resolved.toLocaleString()}건({pct(s.refs_resolved, s.refs)}). 인용된 이름 {s.laws_cited.toLocaleString()}개의 상태:</p>
+  <table class="data-table"><thead><tr><th>상태</th><th class="n">이름 수</th></tr></thead><tbody>{Object.entries(s.law_status).map(([k, v]) => <tr><td>{ST[k] ?? k}</td><td class="n">{v.toLocaleString()}</td></tr>)}</tbody></table>
+  </>}
+  <h2 id="eval">신호와 표본 검증</h2>
+  <p>신호마다 무작위 표본(최대 30건)을 원문과 대조해 '맞음'(정비를 검토할 근거가 실제로 있음) 비율을 셉니다. 80% 이상인 신호만 목록에 냅니다. 표본 파일: <code>data/ordinance/eval/sample.csv</code>.</p>
+  <div class="scroll-x"><table class="data-table">
+    <thead><tr><th>신호</th><th>확인</th><th>규칙</th><th class="n">후보</th><th class="n">표본 맞음</th><th>확인한 사람</th><th>화면</th></tr></thead>
+    <tbody>{sigs.map(x => <tr><td>{x.name}</td><td>{x.conf === 'auto' ? '사실 대조' : '사람 확인'}</td><td>{x.rule}</td>
+      <td class="n">{s ? (Object.values(s.by_signal[x.key] ?? {}) as number[]).reduce((a, b) => a + b, 0).toLocaleString() : '—'}</td>
+      <td class="n">{ev[x.key] ? `${ev[x.key].ok}/${ev[x.key].n} (${pct(ev[x.key].ok, ev[x.key].n)})` : '—'}</td><td>{ev[x.key]?.by ?? '—'}</td><td>{x.show ? '보임' : '숨김'}</td></tr>)}</tbody>
+  </table></div>
+  <h2>한계</h2>
+  <ul>
+    <li>인용이 겹낫표·약칭 꼴이 아니면(예: '관계 법령에 따라') 잡지 못합니다. 상위법령의 위임 조문이 새로 생겼는데 조례가 없는 경우, 숫자 기준(위원 수·과태료 상한)의 차이, 법제처 해석례·판례 연결은 아직 대조하지 않습니다.</li>
+    <li>조문 변경 이력은 '바뀌었다'는 사실이지 자치법규를 고쳐야 한다는 뜻이 아닙니다.</li>
+    <li>법령 연혁 목록에 같은 이름이 있어도 폐지인지 통합인지는 연혁 원문으로 확인해야 합니다.</li>
+  </ul>
+</Base>

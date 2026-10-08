@@ -1,0 +1,48 @@
+---
+/** 정비 검토 후보 카드 하나 — 자치법규 원문 · 근거(현행 법령 원문·변경 이력·연혁) · 확인 방법. 판정 문구를 쓰지 않는다. */
+import { sigOf, type Cand } from '../lib/ordinance';
+interface Props { c: Cand; showOrdin?: boolean }
+const { c, showOrdin = false } = Astro.props;
+const s = sigOf(c.sig);
+const ev = c.ev || {};
+const esc = (t: string) => (t || '').replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]!));
+/** 원문에서 근거 구절(ctx 앞뒤 일부)을 굵게 */
+const key = ev.law ? `「${ev.law}」` : (ev.old || ev.word || '');
+const hl = (t: string) => key ? esc(t).split(esc(key)).join(`<mark>${esc(key)}</mark>`) : esc(t);
+---
+<article class="oc">
+  <header>
+    <span class:list={['chip', c.conf]}>{s.name}</span>
+    <span class="meta">{c.conf === 'auto' ? '사실 대조' : '사람 확인 필요'}</span>
+    {showOrdin && <a href={`/ordinance/o/${c.org}-${c.oid}/`}>{c.oname}</a>}
+    {c.no && <strong>{c.no}{c.atitle && `(${c.atitle})`}</strong>}
+  </header>
+  {c.text && <details><summary>자치법규 조문 원문</summary><p class="txt" set:html={hl(c.text)} /></details>}
+  <dl>
+    {ev.law && <><dt>인용</dt><dd>「{ev.law}」{ev.art && ` 제${ev.art.replace('의', '조의')}${ev.art.includes('의') ? '' : '조'}`}</dd></>}
+    {c.sig === 'law_renamed' && <><dt>현행 이름</dt><dd><a href={ev.now_url} rel="noopener">「{ev.now}」</a></dd></>}
+    {(c.sig === 'law_not_current' || c.sig === 'law_renamed') && ev.hist?.length > 0 && <><dt>법령 연혁(국가법령정보센터)</dt><dd><ul class="hist">{ev.hist.map((h: string[]) => <li>{h.filter(Boolean).join(' · ')}</li>)}</ul></dd></>}
+    {(c.sig === 'law_not_current' || c.sig === 'name_unmatched') && ev.cands?.length > 0 && <><dt>검색에 나온 현행 법령</dt><dd>{ev.cands.join(' / ')}</dd></>}
+    {ev.now && c.sig.startsWith('article_') && <><dt>현행 법령</dt><dd><a href={ev.now_url} rel="noopener">「{ev.now}」</a>{ev.law_eff && ` (시행 ${ev.law_eff})`}</dd></>}
+    {c.sig === 'article_missing' && <><dt>대조 결과</dt><dd>현행 법령에 이 조 번호가 없습니다.</dd></>}
+    {ev.atitle !== undefined && c.sig.startsWith('article_') && <><dt>현행 조문</dt><dd>{ev.atitle && <strong>({ev.atitle}) </strong>}{ev.atext || (c.sig === 'article_deleted' ? '삭제' : '')}</dd></>}
+    {ev.changes?.length > 0 && <><dt>조문 변경 이력(자치법규 공포 {ev.ordin_prom} 이후)</dt><dd><ul class="hist">{ev.changes.map((x: any) => <li>{x.d} · {x.why}{x.rev && x.rev !== x.why ? ` (${x.rev})` : ''}</li>)}</ul></dd></>}
+    {c.sig === 'ministry_outdated' && <><dt>옛 이름</dt><dd>{ev.old} → 현행 「정부조직법」에서 찾을 이름: {ev.now}</dd></>}
+    {c.sig === 'term_outdated' && <><dt>용어</dt><dd>{ev.old} → {ev.new} (「{ev.basis}」)</dd></>}
+    {c.sig === 'sunset' && <><dt>유효기간</dt><dd>{ev.end}까지 — {ev.ctx}</dd></>}
+    {(c.sig === 'gunwi_gb' || c.sig === 'penalty_basis') && <><dt>구절</dt><dd>{ev.ctx}</dd></>}
+    <dt>확인할 것</dt><dd>{s.how}</dd>
+  </dl>
+</article>
+<style>
+  .oc { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; margin: 10px 0; background: var(--bg); }
+  .oc header { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .chip { font-size: var(--small); padding: 1px 8px; border-radius: 999px; background: var(--status-info-bg); color: var(--status-info-ink); }
+  .chip.check { background: var(--status-warn-bg); color: var(--status-warn-ink); }
+  .oc dl { display: grid; grid-template-columns: minmax(7em, max-content) 1fr; gap: 4px 12px; margin: 8px 0 0; font-size: var(--small); }
+  .oc dt { color: var(--muted); }
+  .oc dd { margin: 0; }
+  .oc .txt { white-space: pre-wrap; font-size: var(--small); }
+  .oc .hist { margin: 0; padding-left: 1.2em; }
+  @media (max-width: 600px) { .oc dl { grid-template-columns: 1fr; } .oc dt { margin-top: 4px; } }
+</style>

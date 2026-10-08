@@ -418,7 +418,7 @@ def main():
     if g:
         root = xml(get("lawService.do", target="law", MST=g["법령일련번호"]))
         if root is not None:
-            txt = "\n".join(t.strip() for t in root.itertext() if t and t.strip())
+            txt = "\n".join((e.text or "").strip() for e in root.iter() if e.tag in ("조문내용", "항내용", "호내용", "목내용") and (e.text or "").strip())
             (OUT / "laws" / "gov_org.txt").write_text(f"# 정부조직법 MST {g['법령일련번호']} 시행 {g.get('시행일자')} 받은 날 {TODAY}\n" + txt, encoding="utf-8")
     print(f"끝 — 요청 {STATS['req']} 실패 {STATS['fail']} 걸린 {(time.time()-T0)/60:.0f}분", flush=True)
 

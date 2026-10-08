@@ -1,0 +1,37 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Notice from '../_Notice.astro';
+import { orgs, summary } from '../../../lib/ordinance';
+/** /ordinance/law/ — 법령으로 찾기: 법령(조문)이 개정되면 볼 대구 자치법규. 데이터는 /ordinance-lawrefs.json(브라우저에서 거름) */
+const os = orgs();
+const s = summary();
+---
+<Base title="법령으로 찾기 — 자치법규 정비 검토" description="법령 이름을 넣으면 그 법령을 인용한 대구시·9개 구·군 자치법규와 인용 조문을 보여 줍니다." crumb="법령으로 찾기" noindex wide>
+  <div class="section-head"><h1>법령으로 찾기</h1><span class="meta">인용된 현행 법령 {s?.law_status?.current?.toLocaleString() ?? 0}개</span></div>
+  <Notice />
+  <p><a href="/ordinance/">← 전체</a> · 법령이 개정되거나 개정 예정일 때, 그 법령(조문)을 근거로 인용한 대구 자치법규를 찾습니다. 조문 번호를 함께 넣으면(예: <code>지방자치법 28</code>) 그 조를 인용한 자치법규만 남깁니다.</p>
+  <form id="lf" role="search" onsubmit="return false"><label for="lq">법령 이름</label> <input id="lq" type="search" placeholder="예: 지방자치단체 보조금 관리에 관한 법률" size="40" autocomplete="off" /></form>
+  <p id="lmsg" class="meta" aria-live="polite">불러오는 중…</p>
+  <div id="lout"></div>
+  <script is:inline define:vars={{ orgNames: Object.fromEntries(os.map(o => [o.key, o.name])), orgOrder: os.map(o => o.key) }}>
+    const q = document.getElementById('lq'), out = document.getElementById('lout'), msg = document.getElementById('lmsg');
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const norm = s => s.replace(/[\s·ㆍ]/g, '');
+    let rows = [];
+    fetch('/ordinance-lawrefs.json').then(r => r.json()).then(d => { rows = d; msg.textContent = `현행 법령 ${d.length.toLocaleString()}개. 이름 일부를 넣으세요.`; const u = new URLSearchParams(location.search).get('q'); if (u) { q.value = u; run(); } });
+    function run() {
+      const v = q.value.trim(); const m = v.match(/^(.*?)\s*(?:제)?\s*(\d+(?:의\d+)?)\s*(?:조)?$/);
+      const name = norm(m && m[1] ? m[1] : v), art = m && m[1] ? m[2] : '';
+      if (!name) { out.innerHTML = ''; return; }
+      const hit = rows.filter(r => norm(r[1]).includes(name)).slice(0, 30);
+      msg.textContent = `${hit.length}개 법령${hit.length === 30 ? '(처음 30개)' : ''}${art ? ` · 제${art}조 인용만` : ''}`;
+      out.innerHTML = hit.map(r => {
+        const refs = r[3].filter(e => !art || e[3].includes(art)).sort((a, b) => orgOrder.indexOf(a[0]) - orgOrder.indexOf(b[0]) || a[2].localeCompare(b[2], 'ko'));
+        if (!refs.length) return '';
+        return `<section><h2><a href="https://www.law.go.kr/법령/${encodeURIComponent(r[1].replace(/ /g, ''))}" rel="noopener">${esc(r[1])}</a> <span class="meta">시행 ${esc(r[2].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'))} · 인용 자치법규 ${refs.length}</span></h2>
+          <div class="scroll-x"><table class="data-table"><thead><tr><th>지자체</th><th>자치법규</th><th>인용 조문</th></tr></thead><tbody>${refs.map(e => `<tr><td>${esc(orgNames[e[0]] || e[0])}</td><td>${esc(e[2])}</td><td>${e[3].map(a => '제' + esc(a.replace('의', '조의')) + (a.includes('의') ? '' : '조')).join(', ') || '이름만'}</td></tr>`).join('')}</tbody></table></div></section>`;
+      }).join('');
+    }
+    q.addEventListener('input', () => { clearTimeout(window._lt); window._lt = setTimeout(run, 200); });
+  </script>
+</Base>

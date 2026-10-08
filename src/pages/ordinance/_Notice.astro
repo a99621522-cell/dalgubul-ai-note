@@ -1,0 +1,6 @@
+---
+/** 모든 정비 검토 화면 맨 위 고정 안내(원칙 1) */
+import { summary } from '../../lib/ordinance';
+const s = summary();
+---
+<div class="callout warn" role="note"><strong>자동 대조 결과이며 법적 판단이 아닙니다.</strong> 정비 여부는 소관 부서·법무 담당·법제처 검토로 정합니다. 자치법규·법령 원문은 국가법령정보센터(law.go.kr)에서 받았습니다{s && ` (받은 날 ${s.fetched})`}. 이 화면은 검색엔진에 노출하지 않습니다.</div>

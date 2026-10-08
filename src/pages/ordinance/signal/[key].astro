@@ -1,0 +1,27 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Notice from '../_Notice.astro';
+import OrdinCand from '../../../components/OrdinCand.astro';
+import { signals, cands, orgs, orgName } from '../../../lib/ordinance';
+/** /ordinance/signal/<key>/ — 신호 하나의 규칙·확인 방법과 후보(행정 순서 → 자치법규 가나다) */
+export function getStaticPaths() { return signals().filter(s => s.show).map(s => ({ params: { key: s.key }, props: { s } })); }
+const { s } = Astro.props;
+const order = new Map(orgs().map((o, i) => [o.key, i]));
+const list = cands().filter(c => c.sig === s.key).sort((a, b) => (order.get(a.org)! - order.get(b.org)!) || a.oname.localeCompare(b.oname, 'ko') || a.no.localeCompare(b.no, 'ko', { numeric: true }));
+const CAP = 400;
+---
+<Base title={`${s.name} — 자치법규 정비 검토`} description={s.rule} crumb={s.name} noindex wide>
+  <div class="section-head"><h1>{s.name}</h1><span class="meta">{list.length.toLocaleString()}건 · {s.conf === 'auto' ? '사실 대조' : '사람 확인 필요'}</span></div>
+  <Notice />
+  <p><a href="/ordinance/">← 전체</a></p>
+  <dl class="rule"><dt>판정 규칙</dt><dd>{s.rule}</dd><dt>확인할 것</dt><dd>{s.how}</dd></dl>
+  <div class="scroll-x"><table class="data-table">
+    <thead><tr><th>지자체</th><th>자치법규</th><th>조문</th><th>근거</th></tr></thead>
+    <tbody>{list.map(c => <tr>
+      <td>{orgName(c.org)}</td><td><a href={`/ordinance/o/${c.org}-${c.oid}/`}>{c.oname}</a></td><td>{c.no}</td>
+      <td>{c.ev?.law ? `「${c.ev.law}」${c.ev.art ? ' 제' + c.ev.art + (c.ev.art.includes('의') ? '' : '조') : ''}` : ''}{c.ev?.now ? ` → 「${c.ev.now}」` : ''}{c.ev?.old ? `${c.ev.old}` : ''}{c.ev?.end ? `${c.ev.end}까지` : ''}{c.ev?.changes?.length ? ` · ${c.ev.changes.at(-1).d} ${c.ev.changes.at(-1).why}` : ''}{c.ev?.word ? c.ev.word : ''}</td></tr>)}</tbody>
+  </table></div>
+  {list.length > CAP && <p class="meta">카드는 처음 {CAP}건만 보입니다. 나머지는 위 표와 자치법규별 화면에서 봅니다.</p>}
+  {list.slice(0, CAP).map(c => <OrdinCand c={c} showOrdin />)}
+</Base>
+<style>.rule { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; } .rule dt { color: var(--muted); } .rule dd { margin: 0; }</style>

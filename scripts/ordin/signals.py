@@ -371,7 +371,9 @@ def main():
             for src in [*(a.get("text") or "" for a in arts), *(x.get("text") or "" for x in d.get("addenda") or [])]:
                 for mm in re.finditer(r"(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일\s*까지\s*(?:그\s*)?(효력을\s*가진다|유효하다|효력이\s*있다)", src):
                     end = f"{int(mm.group(1)):04d}{int(mm.group(2)):02d}{int(mm.group(3)):02d}"
-                    if end < TODAY:
+                    # 유효기간이 지난 뒤에 공포된 개정(부칙)이 있으면 연장·정리했을 수 있어 넣지 않는다(옛 개정 부칙의 유효기간 오탐 방지)
+                    later_amend = any((x.get("date") or "") > end for x in d.get("addenda") or []) or (d.get("prom") or "") > end
+                    if end < TODAY and not later_amend:
                         add(d, None, "sunset", ev={"end": ymd(end), "ctx": src[max(0, mm.start() - 60): mm.end() + 10]})
                         break
     # 역색인 정리

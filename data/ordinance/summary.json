@@ -213,16 +213,16 @@
    "gunwi": 0
   },
   "sunset": {
-   "daegu": 9,
-   "jung": 2,
-   "dong": 1,
-   "seo": 3,
-   "nam": 1,
-   "buk": 1,
-   "suseong": 2,
+   "daegu": 4,
+   "jung": 1,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 1,
    "dalseo": 0,
-   "dalseong": 2,
-   "gunwi": 1
+   "dalseong": 0,
+   "gunwi": 0
   },
   "gunwi_gb": {
    "daegu": 0,
@@ -357,7 +357,7 @@
    "gunwi": 0
   }
  },
- "total": 6784,
+ "total": 6768,
  "expc_held": 8881,
  "expc_linked": 498,
  "expc_daegu": 38,

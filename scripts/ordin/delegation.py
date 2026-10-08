@@ -64,7 +64,7 @@ def main():
                     res["laws"].append({"name": v["name"], "fail": 1})
                     continue
                 deleg = [{"a": a, "t": ti, "x": x[:500]} for a, ti, x in us if "조례" in x]
-                kws = [{"a": a, "t": ti, "x": x[:500]} for a, ti, x in us if kw.search(x) and "조례" not in x][:40]
+                kws = [{"a": a, "t": ti, "x": x[:500]} for a, ti, x in us if kw.search(x) and "조례" not in x][:int(t.get("max") or 40)]
                 res["laws"].append({"name": v["name"], "kind": v.get("kind"), "prom": v.get("prom"), "eff": v.get("eff"),
                                     "deleg": deleg, "kw": kws})
                 print(f"  [{key}] {v['name']} 조례 언급 {len(deleg)} · 낱말 {len(kws)}", flush=True)

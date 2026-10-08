@@ -1,0 +1,1108 @@
+{
+ "year": 2023,
+ "generated_from": [
+  "data/refs/dpi-2026-university-region-mutual-development.json",
+  "data/kosis/mining-mfg-survey-national-ksic5.csv",
+  "data/kosis/mining-mfg-survey-sido.csv"
+ ],
+ "report": {
+  "title": "지역과 대학의 상생발전을 위한 전략 수립",
+  "publisher": "대구정책연구원",
+  "series": "연구 2026-09",
+  "published": "2026-01"
+ },
+ "kosis": {
+  "tbl_id": "DT_1FS1104",
+  "name": "광업·제조업조사 시도/산업분류별 주요 지표(10인 이상)",
+  "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104"
+ },
+ "groups": [
+  {
+   "name": "전기·자율 모빌리티부품",
+   "table": "표 4-4",
+   "role": "주력산업",
+   "codes_n": 6,
+   "codes_stated": 6,
+   "survey_out_n": 1,
+   "report": {
+    "est": 1110,
+    "emp": 15319,
+    "prod": 5714753,
+    "va": 1760639
+   },
+   "report_national": {
+    "nat_prod": 101649441
+   },
+   "national": {
+    "establishments": 3480.0,
+    "production": 101649441.0,
+    "value_added": 28195400.0,
+    "exact": true,
+    "missing": [],
+    "renamed": []
+   },
+   "national_matches_report": true,
+   "daegu_mid": {
+    "codes": [
+     "28",
+     "30"
+    ],
+    "names": [
+     "전기장비 제조업",
+     "자동차 및 트레일러 제조업"
+    ],
+    "establishments": 415.0,
+    "production": 13882494.0,
+    "value_added": 3017594.0
+   },
+   "codes": [
+    {
+     "ksic": "58221",
+     "name": "시스템 소프트웨어 개발 및 공급업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "30310",
+     "name": "자동차 엔진용 신품 부품 제조업",
+     "kosis_name": "자동차 엔진용 신품 부품 제조업",
+     "establishments": 782.0,
+     "production": 18453769.0,
+     "value_added": 5640861.0
+    },
+    {
+     "ksic": "30331",
+     "name": "자동차용 신품 동력 전달장치 제조업",
+     "kosis_name": "자동차용 신품 동력전달장치 제조업",
+     "establishments": 624.0,
+     "production": 27127348.0,
+     "value_added": 6386153.0
+    },
+    {
+     "ksic": "30399",
+     "name": "그 외 자동차용 신품 부품 제조업",
+     "kosis_name": "그 외 자동차용 신품 부품 제조업",
+     "establishments": 810.0,
+     "production": 13477715.0,
+     "value_added": 4185426.0
+    },
+    {
+     "ksic": "30320",
+     "name": "자동차 차체용 신품 부품 제조업",
+     "kosis_name": "자동차 차체용 신품 부품 제조업",
+     "establishments": 900.0,
+     "production": 31246107.0,
+     "value_added": 8320531.0
+    },
+    {
+     "ksic": "28111",
+     "name": "전동기 및 발전기 제조업",
+     "kosis_name": "전동기 및 발전기 제조업",
+     "establishments": 364.0,
+     "production": 11344502.0,
+     "value_added": 3662429.0
+    }
+   ]
+  },
+  {
+   "name": "기계요소 소재부품",
+   "table": "표 4-5",
+   "role": "주력산업",
+   "codes_n": 10,
+   "codes_stated": 10,
+   "survey_out_n": 0,
+   "report": {
+    "est": 4593,
+    "emp": 24132,
+    "prod": 8253874,
+    "va": 1414013
+   },
+   "report_national": {
+    "nat_prod": 114525589
+   },
+   "national": {
+    "establishments": 4443.0,
+    "production": 114525589.0,
+    "value_added": 36080121.0,
+    "exact": true,
+    "missing": [],
+    "renamed": []
+   },
+   "national_matches_report": true,
+   "daegu_mid": {
+    "codes": [
+     "22",
+     "24",
+     "25",
+     "28",
+     "29"
+    ],
+    "names": [
+     "고무 및 플라스틱제품 제조업",
+     "1차 금속 제조업",
+     "금속가공제품 제조업; 기계 및 가구 제외",
+     "전기장비 제조업",
+     "기타 기계 및 장비 제조업"
+    ],
+    "establishments": 1648.0,
+    "production": 21983735.0,
+    "value_added": 6507971.0
+   },
+   "codes": [
+    {
+     "ksic": "25924",
+     "name": "절삭 가공 및 유사 처리업",
+     "kosis_name": "절삭가공 및 유사처리업",
+     "establishments": 1446.0,
+     "production": 8304576.0,
+     "value_added": 3136593.0
+    },
+    {
+     "ksic": "25922",
+     "name": "도금업",
+     "kosis_name": "도금업",
+     "establishments": 402.0,
+     "production": 1497024.0,
+     "value_added": 794008.0
+    },
+    {
+     "ksic": "22192",
+     "name": "산업용 그 외 비경화 고무제품 제조업",
+     "kosis_name": "산업용 그 외 비경화 고무제품 제조업",
+     "establishments": 280.0,
+     "production": 3836521.0,
+     "value_added": 1230754.0
+    },
+    {
+     "ksic": "22191",
+     "name": "고무 패킹류 제조업",
+     "kosis_name": "고무패킹류 제조업",
+     "establishments": 299.0,
+     "production": 2224112.0,
+     "value_added": 859922.0
+    },
+    {
+     "ksic": "22241",
+     "name": "운송장비 조립용 플라스틱제품 제조업",
+     "kosis_name": "운송장비 조립용 플라스틱제품 제조업",
+     "establishments": 769.0,
+     "production": 16760160.0,
+     "value_added": 5371700.0
+    },
+    {
+     "ksic": "29133",
+     "name": "탭, 밸브 및 유사 장치 제조업",
+     "kosis_name": "탭 밸브 및 유사장치 제조업",
+     "establishments": 566.0,
+     "production": 6151849.0,
+     "value_added": 2381276.0
+    },
+    {
+     "ksic": "24222",
+     "name": "알루미늄 압연, 압출 및 연신제품 제조업",
+     "kosis_name": "알루미늄 압연 압출 및 연신제품 제조업",
+     "establishments": 318.0,
+     "production": 10025366.0,
+     "value_added": 2238856.0
+    },
+    {
+     "ksic": "28202",
+     "name": "운송장비용 이차전지 제조업",
+     "kosis_name": "운송장비용 이차전지 제조업",
+     "establishments": 153.0,
+     "production": 53624308.0,
+     "value_added": 13888467.0
+    },
+    {
+     "ksic": "25912",
+     "name": "금속 단조제품 제조업",
+     "kosis_name": "금속 단조제품 제조업",
+     "establishments": 152.0,
+     "production": 3682207.0,
+     "value_added": 884832.0
+    },
+    {
+     "ksic": "28209",
+     "name": "기타 이차전지 제조업",
+     "kosis_name": "기타 이차전지 제조업",
+     "establishments": 58.0,
+     "production": 8419466.0,
+     "value_added": 5293713.0
+    }
+   ]
+  },
+  {
+   "name": "디지털 의료기기",
+   "table": "표 4-6",
+   "role": "주력산업",
+   "codes_n": 10,
+   "codes_stated": 10,
+   "survey_out_n": 1,
+   "report": {
+    "est": 1854,
+    "emp": 8825,
+    "prod": 715080,
+    "va": 469919
+   },
+   "report_national": {
+    "nat_prod": 11254689,
+    "nat_va": 6174587
+   },
+   "national": {
+    "establishments": 1340.0,
+    "production": 11254689.0,
+    "value_added": 6174587.0,
+    "exact": true,
+    "missing": [],
+    "renamed": []
+   },
+   "national_matches_report": true,
+   "daegu_mid": {
+    "codes": [
+     "13",
+     "21",
+     "27"
+    ],
+    "names": [
+     "섬유제품 제조업; 의복제외",
+     "의료용 물질 및 의약품 제조업",
+     "의료 정밀 광학기기 및 시계 제조업"
+    ],
+    "establishments": 638.0,
+    "production": 4215322.0,
+    "value_added": 1896175.0
+   },
+   "codes": [
+    {
+     "ksic": "58222",
+     "name": "응용 소프트웨어 개발 및 공급업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "27195",
+     "name": "안경 및 안경렌즈 제조업",
+     "kosis_name": "안경 및 안경렌즈 제조업",
+     "establishments": 103.0,
+     "production": 802867.0,
+     "value_added": 503378.0
+    },
+    {
+     "ksic": "27193",
+     "name": "치과용 임플란트 제조업",
+     "kosis_name": "치과용 임플란트 제조업",
+     "establishments": 92.0,
+     "production": 1165039.0,
+     "value_added": 840762.0
+    },
+    {
+     "ksic": "27191",
+     "name": "치과용기기 제조업",
+     "kosis_name": "치과용 기기 제조업",
+     "establishments": 63.0,
+     "production": 457050.0,
+     "value_added": 253621.0
+    },
+    {
+     "ksic": "27192",
+     "name": "치과기공물 제조업",
+     "kosis_name": "치과기공물 제조업",
+     "establishments": 221.0,
+     "production": 432116.0,
+     "value_added": 317284.0
+    },
+    {
+     "ksic": "13229",
+     "name": "기타 직물제품 제조업",
+     "kosis_name": "기타 직물제품 제조업",
+     "establishments": 235.0,
+     "production": 2616585.0,
+     "value_added": 698836.0
+    },
+    {
+     "ksic": "27199",
+     "name": "그 외 기타 의료용기기 제조업",
+     "kosis_name": "그 외 기타 의료용 기기 제조업",
+     "establishments": 351.0,
+     "production": 2453901.0,
+     "value_added": 1414104.0
+    },
+    {
+     "ksic": "21309",
+     "name": "그 외 기타 의료용품 및 의약 관련제품 제조업",
+     "kosis_name": "그 외 기타 의료용품 및 의약 관련제품 제조업",
+     "establishments": 126.0,
+     "production": 1026181.0,
+     "value_added": 631238.0
+    },
+    {
+     "ksic": "27194",
+     "name": "정형외과용 및 신체보정용기기 제조업",
+     "kosis_name": "정형외과용 및 신체보정용 기기 제조업",
+     "establishments": 81.0,
+     "production": 651042.0,
+     "value_added": 442047.0
+    },
+    {
+     "ksic": "21301",
+     "name": "체외 진단 시약 제조업",
+     "kosis_name": "체외 진단 시약 제조업",
+     "establishments": 68.0,
+     "production": 1649908.0,
+     "value_added": 1073317.0
+    }
+   ]
+  },
+  {
+   "name": "미래모빌리티",
+   "table": "표 4-8",
+   "role": "미래 신산업",
+   "codes_n": 34,
+   "codes_stated": 35,
+   "survey_out_n": 0,
+   "report": {
+    "est": 2150,
+    "emp": 26500,
+    "prod": 13774167,
+    "va": 2913078
+   },
+   "report_national": {},
+   "national": {
+    "establishments": 8230.0,
+    "production": 271014807.0,
+    "value_added": 76955687.0,
+    "exact": false,
+    "missing": [
+     "28114",
+     "31920"
+    ],
+    "renamed": [
+     "28202"
+    ]
+   },
+   "national_matches_report": null,
+   "daegu_mid": {
+    "codes": [
+     "20",
+     "24",
+     "26",
+     "27",
+     "28",
+     "30",
+     "31"
+    ],
+    "names": [
+     "화학물질 및 화학제품 제조업; 의약품 제외",
+     "1차 금속 제조업",
+     "전자부품 컴퓨터 영상 음향 및 통신장비 제조업",
+     "의료 정밀 광학기기 및 시계 제조업",
+     "전기장비 제조업",
+     "자동차 및 트레일러 제조업",
+     "기타 운송장비 제조업"
+    ],
+    "establishments": 758.0,
+    "production": 19045956.0,
+    "value_added": 4820534.0
+   },
+   "codes": [
+    {
+     "ksic": "20129",
+     "name": "기타 기초 무기 화학 물질 제조업",
+     "kosis_name": "기타 기초 무기 화학물질 제조업",
+     "establishments": 167.0,
+     "production": 7535359.0,
+     "value_added": 2601662.0
+    },
+    {
+     "ksic": "20499",
+     "name": "그 외 기타 분류 안된 화학제품 제조업",
+     "kosis_name": "그 외 기타 분류 안된 화학제품 제조업",
+     "establishments": 449.0,
+     "production": 15474388.0,
+     "value_added": 5673531.0
+    },
+    {
+     "ksic": "24229",
+     "name": "기타 비철금속 압연, 압출 및 연신 제품 제조업",
+     "kosis_name": "기타 비철금속 압연 압출 및 연신 제품 제조업",
+     "establishments": 42.0,
+     "production": 1988078.0,
+     "value_added": 238252.0
+    },
+    {
+     "ksic": "24321",
+     "name": "알루미늄 주물 주조업",
+     "kosis_name": "알루미늄주물 주조업",
+     "establishments": 123.0,
+     "production": 1321345.0,
+     "value_added": 361460.0
+    },
+    {
+     "ksic": "26519",
+     "name": "비디오 및 기타 영상 기기 제조업",
+     "kosis_name": "비디오 및 기타 영상기기 제조업",
+     "establishments": 64.0,
+     "production": 2194885.0,
+     "value_added": 528274.0
+    },
+    {
+     "ksic": "27212",
+     "name": "전자기 측정, 시험 및 분석기구 제조업",
+     "kosis_name": "전자기 측정 시험 및 분석기구 제조업",
+     "establishments": 120.0,
+     "production": 871341.0,
+     "value_added": 397595.0
+    },
+    {
+     "ksic": "27214",
+     "name": "속도계 및 적산계기 제조업",
+     "kosis_name": "속도계 및 적산계기 제조업",
+     "establishments": 103.0,
+     "production": 2251138.0,
+     "value_added": 615962.0
+    },
+    {
+     "ksic": "28114",
+     "name": "에너지 저장장치 제조업",
+     "scope": "2023년 표에 없는 코드"
+    },
+    {
+     "ksic": "28122",
+     "name": "전기회로 접속장치 제조업",
+     "kosis_name": "전기회로 접속장치 제조업",
+     "establishments": 297.0,
+     "production": 5376030.0,
+     "value_added": 2097746.0
+    },
+    {
+     "ksic": "28123",
+     "name": "배전반 및 전기 자동제어반 제조업",
+     "kosis_name": "배전반 및 전기 자동제어반 제조업",
+     "establishments": 954.0,
+     "production": 9597908.0,
+     "value_added": 3337560.0
+    },
+    {
+     "ksic": "28202",
+     "name": "축전지 제조업",
+     "kosis_name": "운송장비용 이차전지 제조업",
+     "establishments": 153.0,
+     "production": 53624308.0,
+     "value_added": 13888467.0
+    },
+    {
+     "ksic": "28302",
+     "name": "기타 절연선 및 케이블 제조업",
+     "kosis_name": "기타 절연선 및 케이블 제조업",
+     "establishments": 356.0,
+     "production": 11147889.0,
+     "value_added": 1988369.0
+    },
+    {
+     "ksic": "28421",
+     "name": "운송장비용 조명장치 제조업",
+     "kosis_name": "운송장비용 조명장치 제조업",
+     "establishments": 132.0,
+     "production": 6280140.0,
+     "value_added": 1534530.0
+    },
+    {
+     "ksic": "28902",
+     "name": "전기용 탄소제품 및 절연제품 제조업",
+     "kosis_name": "전기용 탄소제품 및 절연제품 제조업",
+     "establishments": 60.0,
+     "production": 586319.0,
+     "value_added": 173100.0
+    },
+    {
+     "ksic": "28903",
+     "name": "교통 신호장치 제조업",
+     "kosis_name": "교통 신호장치 제조업",
+     "establishments": 55.0,
+     "production": 392953.0,
+     "value_added": 156990.0
+    },
+    {
+     "ksic": "28909",
+     "name": "그 외 기타 전기장비 제조업",
+     "kosis_name": "그 외 기타 전기장비 제조업",
+     "establishments": 159.0,
+     "production": 1285690.0,
+     "value_added": 538068.0
+    },
+    {
+     "ksic": "30110",
+     "name": "자동차용 엔진 제조업",
+     "kosis_name": "자동차용 엔진 제조업",
+     "establishments": 9.0,
+     "production": 1382188.0,
+     "value_added": 248017.0
+    },
+    {
+     "ksic": "30201",
+     "name": "차체 및 특장차 제조업",
+     "kosis_name": "차체 및 특장차 제조업",
+     "establishments": 271.0,
+     "production": 3857312.0,
+     "value_added": 1103436.0
+    },
+    {
+     "ksic": "30202",
+     "name": "자동차 구조 및 장치 변경업",
+     "kosis_name": "자동차 구조 및 장치 변경업",
+     "establishments": 18.0,
+     "production": 134351.0,
+     "value_added": 45941.0
+    },
+    {
+     "ksic": "30310",
+     "name": "자동차 엔진용 신품 부품 제조업",
+     "kosis_name": "자동차 엔진용 신품 부품 제조업",
+     "establishments": 782.0,
+     "production": 18453769.0,
+     "value_added": 5640861.0
+    },
+    {
+     "ksic": "30320",
+     "name": "자동차 차체용 신품 부품 제조업",
+     "kosis_name": "자동차 차체용 신품 부품 제조업",
+     "establishments": 900.0,
+     "production": 31246107.0,
+     "value_added": 8320531.0
+    },
+    {
+     "ksic": "30331",
+     "name": "자동차용 신품 동력 전달장치 제조업",
+     "kosis_name": "자동차용 신품 동력전달장치 제조업",
+     "establishments": 624.0,
+     "production": 27127348.0,
+     "value_added": 6386153.0
+    },
+    {
+     "ksic": "30332",
+     "name": "자동차용 신품 전기 장치 제조업",
+     "kosis_name": "자동차용 신품 전기장치 제조업",
+     "establishments": 366.0,
+     "production": 21875265.0,
+     "value_added": 5793115.0
+    },
+    {
+     "ksic": "30391",
+     "name": "자동차용 신품 조향장치 및 현가장치 제조업",
+     "kosis_name": "자동차용 신품 조향장치 및 현가 장치 제조업",
+     "establishments": 373.0,
+     "production": 10372325.0,
+     "value_added": 3073940.0
+    },
+    {
+     "ksic": "30392",
+     "name": "자동차용 신품 제동 장치 제조업",
+     "kosis_name": "자동차용 신품 제동장치 제조업",
+     "establishments": 255.0,
+     "production": 5370834.0,
+     "value_added": 1500216.0
+    },
+    {
+     "ksic": "30393",
+     "name": "자동차용 신품 의자 제조업",
+     "kosis_name": "자동차용 신품 의자 제조업",
+     "establishments": 314.0,
+     "production": 9535799.0,
+     "value_added": 2704240.0
+    },
+    {
+     "ksic": "30399",
+     "name": "그 외 자동차용 신품 부품 제조업",
+     "kosis_name": "그 외 자동차용 신품 부품 제조업",
+     "establishments": 810.0,
+     "production": 13477715.0,
+     "value_added": 4185426.0
+    },
+    {
+     "ksic": "30400",
+     "name": "자동차 재제조부품 제조업",
+     "kosis_name": "자동차 재제조 부품 제조업",
+     "establishments": 73.0,
+     "production": 769111.0,
+     "value_added": 238506.0
+    },
+    {
+     "ksic": "31311",
+     "name": "유인 항공기, 항공 우주선 및 보조장치 제조업",
+     "kosis_name": "유인 항공기 항공우주선 및 보조장치 제조업",
+     "establishments": 6.0,
+     "production": 3718471.0,
+     "value_added": 1867713.0
+    },
+    {
+     "ksic": "31312",
+     "name": "무인 항공기 및 무인 비행장치 제조업",
+     "kosis_name": "무인 항공기 및 무인 비행장치 제조업",
+     "establishments": 27.0,
+     "production": 106466.0,
+     "value_added": 46308.0
+    },
+    {
+     "ksic": "31321",
+     "name": "항공기용 엔진 제조업",
+     "kosis_name": "항공기용 엔진 제조업",
+     "establishments": 3.0,
+     "production": 200672.0,
+     "value_added": 94836.0
+    },
+    {
+     "ksic": "31322",
+     "name": "항공기용 부품 제조업",
+     "kosis_name": "항공기용 부품 제조업",
+     "establishments": 147.0,
+     "production": 3368753.0,
+     "value_added": 1538338.0
+    },
+    {
+     "ksic": "31920",
+     "name": "모터사이클 제조업",
+     "scope": "2023년 표에 없는 코드"
+    },
+    {
+     "ksic": "31999",
+     "name": "그 외 기타 달리 분류 되지 않은 운송장비 제조업",
+     "kosis_name": "그 외 기타 달리 분류되지 않은 운송장비 제조업",
+     "establishments": 18.0,
+     "production": 90550.0,
+     "value_added": 36544.0
+    }
+   ]
+  },
+  {
+   "name": "로봇",
+   "table": "표 4-9",
+   "role": "미래 신산업",
+   "codes_n": 10,
+   "codes_stated": 10,
+   "survey_out_n": 0,
+   "report": {
+    "est": 964,
+    "emp": 7452,
+    "prod": 3254564,
+    "va": 1274380
+   },
+   "report_national": {},
+   "national": {
+    "establishments": 2177.0,
+    "production": 26894326.0,
+    "value_added": 10387611.0,
+    "exact": true,
+    "missing": [],
+    "renamed": []
+   },
+   "national_matches_report": null,
+   "daegu_mid": {
+    "codes": [
+     "25",
+     "27",
+     "29"
+    ],
+    "names": [
+     "금속가공제품 제조업; 기계 및 가구 제외",
+     "의료 정밀 광학기기 및 시계 제조업",
+     "기타 기계 및 장비 제조업"
+    ],
+    "establishments": 1329.0,
+    "production": 12488904.0,
+    "value_added": 5100543.0
+   },
+   "codes": [
+    {
+     "ksic": "25943",
+     "name": "금속 스프링 제조업",
+     "kosis_name": "금속 스프링 제조업",
+     "establishments": 127.0,
+     "production": 1471092.0,
+     "value_added": 557501.0
+    },
+    {
+     "ksic": "27215",
+     "name": "기기용 자동측정 및 제어장치 제조업",
+     "kosis_name": "기기용 자동측정 및 제어장치 제조업",
+     "establishments": 104.0,
+     "production": 612856.0,
+     "value_added": 273339.0
+    },
+    {
+     "ksic": "27216",
+     "name": "산업 처리공정 제어 장비 제조업",
+     "kosis_name": "산업처리공정 제어장비 제조업",
+     "establishments": 401.0,
+     "production": 4133795.0,
+     "value_added": 1648131.0
+    },
+    {
+     "ksic": "27219",
+     "name": "기타 측정, 시험, 항해, 제어 및 정밀기기 제조업",
+     "kosis_name": "기타 측정 시험 항해 제어 및 정밀기기 제조업",
+     "establishments": 56.0,
+     "production": 591892.0,
+     "value_added": 290173.0
+    },
+    {
+     "ksic": "29142",
+     "name": "기어 및 동력 전달장치 제조업",
+     "kosis_name": "기어 및 동력전달장치 제조업",
+     "establishments": 222.0,
+     "production": 2231262.0,
+     "value_added": 804014.0
+    },
+    {
+     "ksic": "29210",
+     "name": "농업 및 임업용 기계 제조업",
+     "kosis_name": "농업 및 임업용 기계 제조업",
+     "establishments": 289.0,
+     "production": 4212268.0,
+     "value_added": 1496545.0
+    },
+    {
+     "ksic": "29222",
+     "name": "디지털 적층 성형기계 제조업",
+     "kosis_name": "디지털 적층 성형기계 제조업",
+     "establishments": 28.0,
+     "production": 213425.0,
+     "value_added": 89141.0
+    },
+    {
+     "ksic": "29224",
+     "name": "금속 성형기계 제조업",
+     "kosis_name": "금속 성형기계 제조업",
+     "establishments": 135.0,
+     "production": 1640884.0,
+     "value_added": 668948.0
+    },
+    {
+     "ksic": "29280",
+     "name": "산업용 로봇 제조업",
+     "kosis_name": "산업용 로봇 제조업",
+     "establishments": 212.0,
+     "production": 2271920.0,
+     "value_added": 816522.0
+    },
+    {
+     "ksic": "29299",
+     "name": "그 외 기타 특수목적용 기계 제조업",
+     "kosis_name": "그 외 기타 특수목적용 기계 제조업",
+     "establishments": 603.0,
+     "production": 9514932.0,
+     "value_added": 3743297.0
+    }
+   ]
+  },
+  {
+   "name": "헬스케어",
+   "table": "표 4-10",
+   "role": "미래 신산업",
+   "codes_n": 11,
+   "codes_stated": 11,
+   "survey_out_n": 0,
+   "report": {
+    "est": 494,
+    "emp": 3916,
+    "prod": 595431,
+    "va": 389487
+   },
+   "report_national": {},
+   "national": {
+    "establishments": 977.0,
+    "production": 9706141.0,
+    "value_added": 5194008.0,
+    "exact": false,
+    "missing": [
+     "21101",
+     "21102",
+     "21210",
+     "21300"
+    ],
+    "renamed": [
+     "27192"
+    ]
+   },
+   "national_matches_report": null,
+   "daegu_mid": {
+    "codes": [
+     "21",
+     "27"
+    ],
+    "names": [
+     "의료용 물질 및 의약품 제조업",
+     "의료 정밀 광학기기 및 시계 제조업"
+    ],
+    "establishments": 167.0,
+    "production": 1509291.0,
+    "value_added": 754664.0
+   },
+   "codes": [
+    {
+     "ksic": "21101",
+     "name": "의약용 화합물 및 항생물질 제조업",
+     "scope": "2023년 표에 없는 코드"
+    },
+    {
+     "ksic": "21102",
+     "name": "생물학적 제제 제조업",
+     "scope": "2023년 표에 없는 코드"
+    },
+    {
+     "ksic": "21210",
+     "name": "완제 의약품 제조업",
+     "scope": "2023년 표에 없는 코드"
+    },
+    {
+     "ksic": "21220",
+     "name": "한의약품 제조업",
+     "kosis_name": "한의약품 제조업",
+     "establishments": 80.0,
+     "production": 739858.0,
+     "value_added": 403596.0
+    },
+    {
+     "ksic": "21230",
+     "name": "동물용 의약품 제조업",
+     "kosis_name": "동물용 의약품 제조업",
+     "establishments": 44.0,
+     "production": 547714.0,
+     "value_added": 242807.0
+    },
+    {
+     "ksic": "21300",
+     "name": "의료용품 및 기타 의약 관련제품 제조업",
+     "scope": "2023년 표에 없는 코드"
+    },
+    {
+     "ksic": "27111",
+     "name": "방사선 장치 제조업",
+     "kosis_name": "방사선 장치 제조업",
+     "establishments": 74.0,
+     "production": 1695968.0,
+     "value_added": 794091.0
+    },
+    {
+     "ksic": "27112",
+     "name": "전기식 진단 및 요법 기기 제조업",
+     "kosis_name": "전기식 진단 및 요법 기기 제조업",
+     "establishments": 144.0,
+     "production": 3379534.0,
+     "value_added": 1768505.0
+    },
+    {
+     "ksic": "27191",
+     "name": "치과용 기기 제조업",
+     "kosis_name": "치과용 기기 제조업",
+     "establishments": 63.0,
+     "production": 457050.0,
+     "value_added": 253621.0
+    },
+    {
+     "ksic": "27192",
+     "name": "정형외과용 및 신체 보정용 기기 제조업",
+     "kosis_name": "치과기공물 제조업",
+     "establishments": 221.0,
+     "production": 432116.0,
+     "value_added": 317284.0
+    },
+    {
+     "ksic": "27199",
+     "name": "그 외 기타 의료용 기기 제조업",
+     "kosis_name": "그 외 기타 의료용 기기 제조업",
+     "establishments": 351.0,
+     "production": 2453901.0,
+     "value_added": 1414104.0
+    }
+   ]
+  },
+  {
+   "name": "반도체",
+   "table": "표 4-11",
+   "role": "미래 신산업",
+   "codes_n": 6,
+   "codes_stated": 6,
+   "survey_out_n": 0,
+   "report": {
+    "est": 102,
+    "emp": 1559,
+    "prod": 344045,
+    "va": 119505
+   },
+   "report_national": {},
+   "national": {
+    "establishments": 1732.0,
+    "production": 171773246.0,
+    "value_added": 82298966.0,
+    "exact": true,
+    "missing": [],
+    "renamed": []
+   },
+   "national_matches_report": null,
+   "daegu_mid": {
+    "codes": [
+     "26",
+     "29"
+    ],
+    "names": [
+     "전자부품 컴퓨터 영상 음향 및 통신장비 제조업",
+     "기타 기계 및 장비 제조업"
+    ],
+    "establishments": 547.0,
+    "production": 7567208.0,
+    "value_added": 2952936.0
+   },
+   "codes": [
+    {
+     "ksic": "26111",
+     "name": "메모리용 전자집적회로 제조업",
+     "kosis_name": "메모리용 전자집적회로 제조업",
+     "establishments": 48.0,
+     "production": 117755830.0,
+     "value_added": 59485741.0
+    },
+    {
+     "ksic": "26112",
+     "name": "비메모리용 및 기타 전자집적회로 제조업",
+     "kosis_name": "비메모리용 및 기타 전자집적회로 제조업",
+     "establishments": 82.0,
+     "production": 17678531.0,
+     "value_added": 7133562.0
+    },
+    {
+     "ksic": "26121",
+     "name": "발광 다이오드 제조업",
+     "kosis_name": "발광 다이오드 제조업",
+     "establishments": 43.0,
+     "production": 2643091.0,
+     "value_added": 997948.0
+    },
+    {
+     "ksic": "26129",
+     "name": "기타 반도체소자 제조업",
+     "kosis_name": "기타 반도체소자 제조업",
+     "establishments": 316.0,
+     "production": 9859251.0,
+     "value_added": 4811668.0
+    },
+    {
+     "ksic": "29271",
+     "name": "반도체 제조용 기계 제조업",
+     "kosis_name": "반도체 제조용 기계 제조업",
+     "establishments": 1054.0,
+     "production": 19676123.0,
+     "value_added": 8566402.0
+    },
+    {
+     "ksic": "29272",
+     "name": "디스플레이 제조용 기계 제조업",
+     "kosis_name": "디스플레이 제조용 기계 제조업",
+     "establishments": 189.0,
+     "production": 4160420.0,
+     "value_added": 1303645.0
+    }
+   ]
+  },
+  {
+   "name": "ABB",
+   "table": "표 4-12",
+   "role": "미래 신산업",
+   "codes_n": 12,
+   "codes_stated": null,
+   "survey_out_n": 10,
+   "report": {
+    "est": 1791,
+    "emp": 9686,
+    "prod": 18545,
+    "va": 10101
+   },
+   "report_national": {},
+   "national": {
+    "establishments": 504.0,
+    "production": 8096618.0,
+    "value_added": 2565555.0,
+    "exact": true,
+    "missing": [],
+    "renamed": []
+   },
+   "national_matches_report": null,
+   "daegu_mid": {
+    "codes": [
+     "26"
+    ],
+    "names": [
+     "전자부품 컴퓨터 영상 음향 및 통신장비 제조업"
+    ],
+    "establishments": 54.0,
+    "production": 1229484.0,
+    "value_added": 495224.0
+   },
+   "codes": [
+    {
+     "ksic": "26299",
+     "name": "그 외 기타 전자부품 제조업",
+     "kosis_name": "그 외 기타 전자부품 제조업",
+     "establishments": 235.0,
+     "production": 2899078.0,
+     "value_added": 1358417.0
+    },
+    {
+     "ksic": "26429",
+     "name": "기타 무선 통신장비 제조업",
+     "kosis_name": "기타 무선 통신장비 제조업",
+     "establishments": 269.0,
+     "production": 5197540.0,
+     "value_added": 1207138.0
+    },
+    {
+     "ksic": "58211",
+     "name": "유선 온라인 게임 소프트웨어 개발 및 공급업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "58212",
+     "name": "모바일 게임 소프트웨어 개발 및 공급업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "58219",
+     "name": "기타 게임 소프트웨어 개발 및 공급업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "58221",
+     "name": "시스템 소프트웨어 개발 및 공급업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "58222",
+     "name": "응용 소프트웨어 개발 및 공급업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "62010",
+     "name": "컴퓨터 프로그래밍 서비스업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "62021",
+     "name": "컴퓨터시스템 통합 자문 및 구축 서비스업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "62090",
+     "name": "기타 정보 기술 및 컴퓨터운영 관련 서비스업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "63111",
+     "name": "자료 처리업",
+     "scope": "조사 대상 아님"
+    },
+    {
+     "ksic": "63120",
+     "name": "포털 및 기타 인터넷 정보 매개 서비스업",
+     "scope": "조사 대상 아님"
+    }
+   ]
+  }
+ ]
+}

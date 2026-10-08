@@ -357,26 +357,26 @@
    "gunwi": 0
   },
   "content_rule": {
-   "daegu": 15,
+   "daegu": 20,
    "jung": 9,
    "dong": 9,
    "seo": 4,
    "nam": 4,
-   "buk": 9,
+   "buk": 11,
    "suseong": 16,
-   "dalseo": 7,
+   "dalseo": 8,
    "dalseong": 9,
    "gunwi": 4
   },
   "content_rule_ref": {
-   "daegu": 26,
+   "daegu": 21,
    "jung": 28,
    "dong": 21,
    "seo": 24,
    "nam": 28,
-   "buk": 24,
+   "buk": 22,
    "suseong": 20,
-   "dalseo": 24,
+   "dalseo": 23,
    "dalseong": 28,
    "gunwi": 30
   }

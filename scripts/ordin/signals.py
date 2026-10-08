@@ -535,6 +535,33 @@ def main():
                     else "상위법령 개정·폐지" if sg in ("law_renamed", "law_not_current", "article_deleted", "article_renumber", "article_changed", "article_missing")
                     else "자구·기한 정비")
 
+    # 사람이 상위법령 전문과 대조한 결과(config/ordinance_review.yml) — 참고 후보를 '위반 소지'로 올리거나 위임 조문을 적는다
+    RV = yaml.safe_load((ROOT / "config" / "ordinance_review.yml").read_text(encoding="utf-8")) or {}
+    rv_id = {(str(r["oid"]), r["art"]): r for r in RV.get("reviews") or []}
+    for c in cands:
+        if c["sig"] not in ("content_rule", "content_rule_ref"):
+            continue
+        r = rv_id.get((c["oid"], c["no"]))
+        if not r:
+            r = next((p for p in RV.get("patterns") or [] if re.search(p["name"], c["oname"]) and (not p.get("title") or re.search(p["title"], c.get("atitle") or ""))), None)
+        if not r:
+            continue
+        c["ev"]["review"] = {"verdict": r["verdict"], "deleg": r.get("deleg", "")}
+        if r["verdict"] == "promote":
+            c["sig"], c["cat"] = "content_rule", "위반 소지"
+            pr = [{"no": q.get("case", ""), **{k: v for k, v in q.items() if k != "case"}} for q in r.get("prec") or []]
+            if pr:
+                c["ev"]["prec"] = pr + [q for q in c["ev"].get("prec") or [] if q.get("no") not in {x["no"] for x in pr}]
+            refs_ = "; ".join(f"{q['no']}({q.get('org', '')}): {q.get('concl', '')}" for q in pr[:2])
+            c["why"] = f"[위반 소지 — 위임 근거 없음 확인] {c['ev']['rwhy']} 상위법령 대조: {r['deleg']}" + (f" 법제처 사례 — {refs_}." if refs_ else "")
+            c["how"] = r.get("how") or c["how"]
+        elif r["verdict"] == "check":
+            c["why"] += f" [위임 범위 확인] {r['deleg']}"
+            c["how"] = r.get("how") or c["how"]
+        elif r["verdict"] == "delegated":
+            c["why"] = f"[위임 조문 확인 — 정비 대상 아님] {r['deleg']}"
+            c["how"] = "위임 조문 범위 안이면 그대로 둔다. 위임 조문을 조례 제1조(목적)나 해당 조문에 밝혀 두면 근거가 분명해진다."
+
     # 대구 지자체가 질의한 해석례(자치법규 관련 여부와 무관) + 같은 지자체에서 같은 조문을 인용한 자치법규 수
     dq = []
     for iid, e in expc.items():

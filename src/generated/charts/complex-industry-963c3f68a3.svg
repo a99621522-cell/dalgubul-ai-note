@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 284" width="100%" role="img" aria-label="성서5차산단 산업별 고용 인원. 기계·금속 2,283명, 의료·바이오 776명, 전기·전자 480명, 로봇 146명, 자동차·부품 93명, 섬유·패션 0명, 기타 서비스 0명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 284" width="100%" role="img" aria-label="성서5차산단 산업별 고용 인원. 기계·금속 2,283명, 의료·바이오 776명, 전기·전자 494명, 로봇 146명, 자동차·부품 93명, 섬유·패션 0명, 기타 서비스 0명" style="max-width:720px;height:auto;font-size:14px">
 <title>성서5차산단 산업별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
 <text x="76" y="56.0" text-anchor="end" fill="#1a1a1a">기계·금속</text>
@@ -8,8 +8,8 @@
 <rect x="86.0" y="74" width="194.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="288.4" y="90.0" fill="#1a1a1a">776명</text>
 <text x="76" y="124.0" text-anchor="end" fill="#1a1a1a">전기·전자</text>
-<rect x="86.0" y="108" width="120.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="214.3" y="124.0" fill="#1a1a1a">480명</text>
+<rect x="86.0" y="108" width="123.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="217.8" y="124.0" fill="#1a1a1a">494명</text>
 <text x="76" y="158.0" text-anchor="end" fill="#1a1a1a">로봇</text>
 <rect x="86.0" y="142" width="36.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="130.6" y="158.0" fill="#1a1a1a">146명</text>

@@ -1,17 +1,17 @@
 {
  "month": "2024-10",
- "generated": "2026-10-06 14:57",
+ "generated": "2026-10-08 00:53",
  "basis": "nps",
  "basis_label": "국민연금 가입자수",
  "sources": {
   "factoryon": {
-   "as_of": "2026-08",
-   "companies": 14076
+   "as_of": "2026-09",
+   "companies": 14116
   },
   "nps": {
    "file": "data/nps/202410.csv",
    "rows": 17648,
-   "matched": 5053
+   "matched": 5057
   },
   "dart": {
    "corps_daegu": 68,
@@ -19,17 +19,17 @@
   }
  },
  "total": {
-  "firms": 14076,
-  "employment": 141250,
-  "covered": 5053,
-  "avg_employment": 28.0,
+  "firms": 14116,
+  "employment": 141284,
+  "covered": 5057,
+  "avg_employment": 27.9,
   "size_bands": {
-   "1~9": 2541,
-   "10~49": 2036,
+   "1~9": 2544,
+   "10~49": 2037,
    "50~299": 420,
    "300+": 48
   },
-  "nps_gain": 3211,
+  "nps_gain": 3212,
   "nps_loss": 2953,
   "new_firms": 2,
   "closed_firms": 0,
@@ -83,18 +83,18 @@
    "yoy": null
   },
   "자동차·부품": {
-   "firms": 985,
-   "employment": 25581,
-   "covered": 426,
-   "avg_employment": 60.0,
+   "firms": 989,
+   "employment": 25462,
+   "covered": 425,
+   "avg_employment": 59.9,
    "size_bands": {
     "1~9": 121,
     "10~49": 190,
-    "50~299": 98,
+    "50~299": 97,
     "300+": 16
    },
    "nps_gain": 467,
-   "nps_loss": 425,
+   "nps_loss": 424,
    "new_firms": 1,
    "closed_firms": 0,
    "dart_firms": 10,
@@ -114,21 +114,21 @@
    "yoy": null
   },
   "의료·바이오": {
-   "firms": 449,
-   "employment": 4586,
-   "covered": 154,
-   "avg_employment": 29.8,
+   "firms": 450,
+   "employment": 4640,
+   "covered": 155,
+   "avg_employment": 29.9,
    "size_bands": {
     "1~9": 72,
     "10~49": 59,
-    "50~299": 21,
+    "50~299": 22,
     "300+": 2
    },
    "nps_gain": 101,
    "nps_loss": 86,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 10,
+   "dart_firms": 11,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -145,18 +145,18 @@
    "yoy": null
   },
   "소프트웨어·IT": {
-   "firms": 781,
-   "employment": 8622,
-   "covered": 468,
+   "firms": 780,
+   "employment": 8581,
+   "covered": 466,
    "avg_employment": 18.4,
    "size_bands": {
     "1~9": 249,
-    "10~49": 193,
+    "10~49": 191,
     "50~299": 24,
     "300+": 2
    },
-   "nps_gain": 228,
-   "nps_loss": 250,
+   "nps_gain": 226,
+   "nps_loss": 249,
    "new_firms": 0,
    "closed_firms": 0,
    "dart_firms": 1,
@@ -177,7 +177,7 @@
    "yoy": null
   },
   "섬유·패션": {
-   "firms": 1725,
+   "firms": 1730,
    "employment": 8536,
    "covered": 539,
    "avg_employment": 15.8,
@@ -208,18 +208,18 @@
    "yoy": null
   },
   "전기·전자": {
-   "firms": 1366,
-   "employment": 17674,
-   "covered": 578,
-   "avg_employment": 30.6,
+   "firms": 1380,
+   "employment": 17743,
+   "covered": 583,
+   "avg_employment": 30.4,
    "size_bands": {
-    "1~9": 295,
-    "10~49": 226,
+    "1~9": 297,
+    "10~49": 229,
     "50~299": 48,
     "300+": 7
    },
-   "nps_gain": 344,
-   "nps_loss": 450,
+   "nps_gain": 347,
+   "nps_loss": 452,
    "new_firms": 0,
    "closed_firms": 0,
    "dart_firms": 11,
@@ -239,7 +239,7 @@
    "yoy": null
   },
   "화학·에너지": {
-   "firms": 847,
+   "firms": 850,
    "employment": 21224,
    "covered": 300,
    "avg_employment": 70.7,
@@ -270,17 +270,17 @@
    "yoy": null
   },
   "식품": {
-   "firms": 499,
-   "employment": 3522,
-   "covered": 181,
-   "avg_employment": 19.5,
+   "firms": 500,
+   "employment": 3530,
+   "covered": 182,
+   "avg_employment": 19.4,
    "size_bands": {
-    "1~9": 96,
+    "1~9": 97,
     "10~49": 71,
     "50~299": 14,
     "300+": 0
    },
-   "nps_gain": 119,
+   "nps_gain": 120,
    "nps_loss": 158,
    "new_firms": 1,
    "closed_firms": 0,
@@ -301,21 +301,21 @@
    "yoy": null
   },
   "기계·금속": {
-   "firms": 4351,
-   "employment": 31134,
-   "covered": 1413,
-   "avg_employment": 22.0,
+   "firms": 4362,
+   "employment": 31202,
+   "covered": 1414,
+   "avg_employment": 22.1,
    "size_bands": {
-    "1~9": 728,
+    "1~9": 729,
     "10~49": 569,
     "50~299": 107,
     "300+": 8
    },
    "nps_gain": 552,
-   "nps_loss": 661,
+   "nps_loss": 662,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 16,
+   "dart_firms": 15,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -332,7 +332,7 @@
    "yoy": null
   },
   "기타 제조": {
-   "firms": 1326,
+   "firms": 1327,
    "employment": 8668,
    "covered": 476,
    "avg_employment": 18.2,
@@ -363,18 +363,18 @@
    "yoy": null
   },
   "기타 서비스": {
-   "firms": 1588,
-   "employment": 9396,
-   "covered": 448,
+   "firms": 1589,
+   "employment": 9391,
+   "covered": 447,
    "avg_employment": 21.0,
    "size_bands": {
-    "1~9": 246,
+    "1~9": 245,
     "10~49": 172,
     "50~299": 26,
     "300+": 2
    },
-   "nps_gain": 240,
-   "nps_loss": 236,
+   "nps_gain": 239,
+   "nps_loss": 235,
    "new_firms": 0,
    "closed_firms": 0,
    "dart_firms": 1,
@@ -426,12 +426,12 @@
  },
  "by_complex": {
   "성서지방산업단지": {
-   "firms": 3261,
-   "employment": 39403,
-   "covered": 1134,
+   "firms": 3273,
+   "employment": 39406,
+   "covered": 1135,
    "avg_employment": 34.7,
    "size_bands": {
-    "1~9": 468,
+    "1~9": 469,
     "10~49": 523,
     "50~299": 131,
     "300+": 10
@@ -457,18 +457,18 @@
    "yoy": null
   },
   "산단 외": {
-   "firms": 2902,
-   "employment": 30183,
-   "covered": 1761,
-   "avg_employment": 17.1,
+   "firms": 2891,
+   "employment": 30116,
+   "covered": 1756,
+   "avg_employment": 17.2,
    "size_bands": {
-    "1~9": 1093,
-    "10~49": 595,
+    "1~9": 1091,
+    "10~49": 592,
     "50~299": 63,
     "300+": 8
    },
-   "nps_gain": 1089,
-   "nps_loss": 801,
+   "nps_gain": 1085,
+   "nps_loss": 797,
    "new_firms": 1,
    "closed_firms": 0,
    "dart_firms": 5,
@@ -488,18 +488,18 @@
    "yoy": null
   },
   "개별입지": {
-   "firms": 2689,
-   "employment": 12038,
-   "covered": 623,
+   "firms": 2708,
+   "employment": 12118,
+   "covered": 629,
    "avg_employment": 19.3,
    "size_bands": {
-    "1~9": 347,
-    "10~49": 240,
+    "1~9": 350,
+    "10~49": 243,
     "50~299": 32,
     "300+": 3
    },
-   "nps_gain": 238,
-   "nps_loss": 276,
+   "nps_gain": 243,
+   "nps_loss": 280,
    "new_firms": 0,
    "closed_firms": 0,
    "dart_firms": 4,
@@ -519,7 +519,7 @@
    "yoy": null
   },
   "서대구일반산업단지": {
-   "firms": 1594,
+   "firms": 1599,
    "employment": 10508,
    "covered": 336,
    "avg_employment": 31.3,
@@ -550,7 +550,7 @@
    "yoy": null
   },
   "대구제3일반산업단지": {
-   "firms": 1200,
+   "firms": 1202,
    "employment": 4324,
    "covered": 215,
    "avg_employment": 20.1,
@@ -581,12 +581,12 @@
    "yoy": null
   },
   "북구검단일반산업단지": {
-   "firms": 577,
-   "employment": 2955,
-   "covered": 143,
-   "avg_employment": 20.7,
+   "firms": 579,
+   "employment": 2958,
+   "covered": 144,
+   "avg_employment": 20.5,
    "size_bands": {
-    "1~9": 62,
+    "1~9": 63,
     "10~49": 70,
     "50~299": 9,
     "300+": 1
@@ -612,7 +612,7 @@
    "yoy": null
   },
   "달성일반산업단지": {
-   "firms": 315,
+   "firms": 317,
    "employment": 9566,
    "covered": 127,
    "avg_employment": 75.3,
@@ -643,7 +643,7 @@
    "yoy": null
   },
   "달성2차일반산업단지": {
-   "firms": 303,
+   "firms": 304,
    "employment": 5791,
    "covered": 148,
    "avg_employment": 39.1,
@@ -674,7 +674,7 @@
    "yoy": null
   },
   "대구국가산업단지": {
-   "firms": 267,
+   "firms": 268,
    "employment": 8021,
    "covered": 121,
    "avg_employment": 66.3,
@@ -705,7 +705,7 @@
    "yoy": null
   },
   "대구염색일반산업단지": {
-   "firms": 157,
+   "firms": 159,
    "employment": 1812,
    "covered": 84,
    "avg_employment": 21.6,
@@ -736,7 +736,7 @@
    "yoy": null
   },
   "대구인쇄출판밸리": {
-   "firms": 136,
+   "firms": 137,
    "employment": 807,
    "covered": 36,
    "avg_employment": 22.4,
@@ -767,7 +767,7 @@
    "yoy": null
   },
   "대구연구개발특구": {
-   "firms": 130,
+   "firms": 132,
    "employment": 2754,
    "covered": 78,
    "avg_employment": 35.3,
@@ -829,7 +829,7 @@
    "yoy": null
   },
   "성서5차첨단산업단지": {
-   "firms": 113,
+   "firms": 114,
    "employment": 3516,
    "covered": 62,
    "avg_employment": 56.7,
@@ -983,13 +983,13 @@
    "yoy": null
   },
   "대구금호워터폴리스일반산업단지": {
-   "firms": 36,
-   "employment": 275,
-   "covered": 15,
-   "avg_employment": 18.3,
+   "firms": 37,
+   "employment": 290,
+   "covered": 16,
+   "avg_employment": 18.1,
    "size_bands": {
     "1~9": 4,
-    "10~49": 11,
+    "10~49": 12,
     "50~299": 0,
     "300+": 0
    },
@@ -1135,12 +1135,12 @@
  },
  "by_district": {
   "달서구": {
-   "firms": 4017,
-   "employment": 45828,
-   "covered": 1510,
+   "firms": 4028,
+   "employment": 45831,
+   "covered": 1511,
    "avg_employment": 30.3,
    "size_bands": {
-    "1~9": 710,
+    "1~9": 711,
     "10~49": 640,
     "50~299": 145,
     "300+": 13
@@ -1166,17 +1166,17 @@
    "yoy": null
   },
   "북구": {
-   "firms": 3076,
-   "employment": 13757,
-   "covered": 868,
+   "firms": 3086,
+   "employment": 13780,
+   "covered": 870,
    "avg_employment": 15.8,
    "size_bands": {
-    "1~9": 487,
-    "10~49": 343,
+    "1~9": 488,
+    "10~49": 344,
     "50~299": 35,
     "300+": 2
    },
-   "nps_gain": 445,
+   "nps_gain": 446,
    "nps_loss": 315,
    "new_firms": 1,
    "closed_firms": 0,
@@ -1197,7 +1197,7 @@
    "yoy": null
   },
   "달성군": {
-   "firms": 2673,
+   "firms": 2682,
    "employment": 43571,
    "covered": 1044,
    "avg_employment": 41.7,
@@ -1228,7 +1228,7 @@
    "yoy": null
   },
   "서구": {
-   "firms": 2236,
+   "firms": 2242,
    "employment": 15418,
    "covered": 639,
    "avg_employment": 24.1,
@@ -1259,12 +1259,12 @@
    "yoy": null
   },
   "동구": {
-   "firms": 883,
-   "employment": 12919,
-   "covered": 453,
+   "firms": 887,
+   "employment": 12927,
+   "covered": 454,
    "avg_employment": 28.5,
    "size_bands": {
-    "1~9": 242,
+    "1~9": 243,
     "10~49": 175,
     "50~299": 34,
     "300+": 2
@@ -1477,7 +1477,7 @@
    "yoy": null
   },
   "연구개발특구": {
-   "firms": 130,
+   "firms": 132,
    "employment": 2754,
    "covered": 78,
    "avg_employment": 35.3,
@@ -1508,7 +1508,7 @@
    "yoy": null
   },
   "지식산업센터": {
-   "firms": 974,
+   "firms": 976,
    "employment": 5865,
    "covered": 255,
    "avg_employment": 23.0,
@@ -1539,13 +1539,13 @@
    "yoy": null
   },
   "산업단지": {
-   "firms": 7357,
-   "employment": 89444,
-   "covered": 2318,
-   "avg_employment": 38.6,
+   "firms": 7385,
+   "employment": 89465,
+   "covered": 2321,
+   "avg_employment": 38.5,
    "size_bands": {
-    "1~9": 920,
-    "10~49": 1068,
+    "1~9": 922,
+    "10~49": 1069,
     "50~299": 292,
     "300+": 35
    },
@@ -1570,17 +1570,17 @@
    "yoy": null
   },
   "개별입지": {
-   "firms": 5451,
-   "employment": 40554,
-   "covered": 2296,
+   "firms": 5459,
+   "employment": 40567,
+   "covered": 2297,
    "avg_employment": 17.7,
    "size_bands": {
-    "1~9": 1389,
+    "1~9": 1390,
     "10~49": 804,
     "50~299": 90,
     "300+": 10
    },
-   "nps_gain": 1281,
+   "nps_gain": 1282,
    "nps_loss": 1019,
    "new_firms": 1,
    "closed_firms": 0,
@@ -1635,12 +1635,12 @@
    "yoy": null
   },
   "창업기업": {
-   "firms": 1146,
-   "employment": 5744,
-   "covered": 598,
+   "firms": 1140,
+   "employment": 5741,
+   "covered": 597,
    "avg_employment": 9.6,
    "size_bands": {
-    "1~9": 440,
+    "1~9": 439,
     "10~49": 149,
     "50~299": 9,
     "300+": 0
@@ -1945,7 +1945,7 @@
   }
  },
  "sources_extra": {
-  "outside_companies": 2902,
+  "outside_companies": 2891,
   "note": "산단 외 기업 목록(scripts/data/extra_companies.csv). 없으면 0"
  },
  "cross": {
@@ -2018,27 +2018,27 @@
   },
   "자동차·부품": {
    "성서지방산업단지": {
-    "firms": 265,
+    "firms": 270,
     "employment": 7500,
     "covered": 107
-   },
-   "대구국가산업단지": {
-    "firms": 83,
-    "employment": 4041,
-    "covered": 50
    },
    "대구테크노폴리스일반산업단지": {
     "firms": 23,
     "employment": 3977,
     "covered": 17
    },
+   "대구국가산업단지": {
+    "firms": 82,
+    "employment": 3922,
+    "covered": 49
+   },
    "달성일반산업단지": {
-    "firms": 55,
+    "firms": 56,
     "employment": 2479,
     "covered": 28
    },
    "산단 외": {
-    "firms": 193,
+    "firms": 192,
     "employment": 2123,
     "covered": 103
    },
@@ -2135,9 +2135,9 @@
     "covered": 23
    },
    "달성2차일반산업단지": {
-    "firms": 4,
-    "employment": 101,
-    "covered": 2
+    "firms": 5,
+    "employment": 155,
+    "covered": 3
    },
    "서대구일반산업단지": {
     "firms": 16,
@@ -2197,9 +2197,9 @@
   },
   "소프트웨어·IT": {
    "산단 외": {
-    "firms": 633,
-    "employment": 6932,
-    "covered": 396
+    "firms": 631,
+    "employment": 6891,
+    "covered": 394
    },
    "대구경북경제자유구역수성의료지구": {
     "firms": 39,
@@ -2207,7 +2207,7 @@
     "covered": 23
    },
    "대구인쇄출판밸리": {
-    "firms": 25,
+    "firms": 26,
     "employment": 284,
     "covered": 11
    },
@@ -2249,12 +2249,12 @@
   },
   "섬유·패션": {
    "성서지방산업단지": {
-    "firms": 455,
+    "firms": 454,
     "employment": 2353,
     "covered": 128
    },
    "대구염색일반산업단지": {
-    "firms": 152,
+    "firms": 154,
     "employment": 1789,
     "covered": 82
    },
@@ -2264,17 +2264,17 @@
     "covered": 150
    },
    "개별입지": {
-    "firms": 411,
+    "firms": 412,
     "employment": 1156,
     "covered": 55
    },
    "서대구일반산업단지": {
-    "firms": 289,
+    "firms": 290,
     "employment": 769,
     "covered": 59
    },
    "달성일반산업단지": {
-    "firms": 68,
+    "firms": 69,
     "employment": 279,
     "covered": 20
    },
@@ -2284,7 +2284,7 @@
     "covered": 7
    },
    "대구제3일반산업단지": {
-    "firms": 38,
+    "firms": 39,
     "employment": 126,
     "covered": 8
    },
@@ -2336,14 +2336,14 @@
   },
   "전기·전자": {
    "성서지방산업단지": {
-    "firms": 335,
+    "firms": 337,
     "employment": 6583,
     "covered": 134
    },
    "개별입지": {
-    "firms": 373,
-    "employment": 2043,
-    "covered": 142
+    "firms": 378,
+    "employment": 2092,
+    "covered": 145
    },
    "달성일반산업단지": {
     "firms": 25,
@@ -2356,7 +2356,7 @@
     "covered": 114
    },
    "달성2차일반산업단지": {
-    "firms": 17,
+    "firms": 18,
     "employment": 1322,
     "covered": 9
    },
@@ -2376,19 +2376,19 @@
     "covered": 23
    },
    "대구연구개발특구": {
-    "firms": 33,
+    "firms": 35,
     "employment": 476,
     "covered": 19
    },
    "성서5차첨단산업단지": {
-    "firms": 27,
+    "firms": 28,
     "employment": 431,
     "covered": 13
    },
    "서대구일반산업단지": {
-    "firms": 83,
-    "employment": 324,
-    "covered": 29
+    "firms": 85,
+    "employment": 329,
+    "covered": 30
    },
    "대구제3일반산업단지": {
     "firms": 64,
@@ -2396,9 +2396,9 @@
     "covered": 17
    },
    "대구금호워터폴리스일반산업단지": {
-    "firms": 12,
-    "employment": 155,
-    "covered": 8
+    "firms": 13,
+    "employment": 170,
+    "covered": 9
    },
    "군위농공단지": {
     "firms": 11,
@@ -2463,12 +2463,12 @@
     "covered": 18
    },
    "대구국가산업단지": {
-    "firms": 22,
+    "firms": 23,
     "employment": 1635,
     "covered": 2
    },
    "개별입지": {
-    "firms": 186,
+    "firms": 187,
     "employment": 596,
     "covered": 52
    },
@@ -2478,7 +2478,7 @@
     "covered": 8
    },
    "대구제3일반산업단지": {
-    "firms": 37,
+    "firms": 38,
     "employment": 62,
     "covered": 3
    },
@@ -2530,9 +2530,9 @@
   },
   "식품": {
    "개별입지": {
-    "firms": 197,
-    "employment": 1081,
-    "covered": 56
+    "firms": 199,
+    "employment": 1089,
+    "covered": 57
    },
    "성서지방산업단지": {
     "firms": 72,
@@ -2540,7 +2540,7 @@
     "covered": 26
    },
    "산단 외": {
-    "firms": 124,
+    "firms": 123,
     "employment": 863,
     "covered": 69
    },
@@ -2607,19 +2607,19 @@
   },
   "기계·금속": {
    "성서지방산업단지": {
-    "firms": 1310,
-    "employment": 8788,
-    "covered": 451
+    "firms": 1314,
+    "employment": 8791,
+    "covered": 452
    },
    "개별입지": {
-    "firms": 899,
+    "firms": 906,
     "employment": 4737,
     "covered": 198
    },
    "산단 외": {
-    "firms": 446,
-    "employment": 3458,
-    "covered": 270
+    "firms": 442,
+    "employment": 3455,
+    "covered": 269
    },
    "달성일반산업단지": {
     "firms": 68,
@@ -2637,19 +2637,19 @@
     "covered": 135
    },
    "달성2차일반산업단지": {
-    "firms": 141,
-    "employment": 1663,
-    "covered": 70
+    "firms": 140,
+    "employment": 1609,
+    "covered": 69
    },
    "대구국가산업단지": {
-    "firms": 85,
-    "employment": 1343,
-    "covered": 34
+    "firms": 86,
+    "employment": 1462,
+    "covered": 35
    },
    "북구검단일반산업단지": {
-    "firms": 245,
-    "employment": 1163,
-    "covered": 69
+    "firms": 247,
+    "employment": 1166,
+    "covered": 70
    },
    "대구테크노폴리스일반산업단지": {
     "firms": 42,
@@ -2662,7 +2662,7 @@
     "covered": 17
    },
    "서대구일반산업단지": {
-    "firms": 216,
+    "firms": 218,
     "employment": 724,
     "covered": 54
    },
@@ -2704,19 +2704,19 @@
   },
   "기타 제조": {
    "산단 외": {
-    "firms": 386,
-    "employment": 2607,
-    "covered": 235
+    "firms": 383,
+    "employment": 2584,
+    "covered": 233
    },
    "성서지방산업단지": {
-    "firms": 219,
+    "firms": 220,
     "employment": 2503,
     "covered": 84
    },
    "개별입지": {
-    "firms": 390,
-    "employment": 1441,
-    "covered": 68
+    "firms": 393,
+    "employment": 1464,
+    "covered": 70
    },
    "달성2차일반산업단지": {
     "firms": 17,
@@ -2796,14 +2796,14 @@
     "covered": 236
    },
    "성서지방산업단지": {
-    "firms": 221,
+    "firms": 222,
     "employment": 2364,
     "covered": 46
    },
    "서대구일반산업단지": {
     "firms": 729,
-    "employment": 2251,
-    "covered": 123
+    "employment": 2246,
+    "covered": 122
    },
    "대구제3일반산업단지": {
     "firms": 105,
@@ -2939,12 +2939,12 @@
     "covered": 4
    },
    "산업단지": {
-    "firms": 649,
-    "employment": 22556,
-    "covered": 291
+    "firms": 654,
+    "employment": 22437,
+    "covered": 290
    },
    "개별입지": {
-    "firms": 299,
+    "firms": 298,
     "employment": 2409,
     "covered": 126
    }
@@ -2966,9 +2966,9 @@
     "covered": 10
    },
    "산업단지": {
-    "firms": 133,
-    "employment": 1738,
-    "covered": 33
+    "firms": 134,
+    "employment": 1792,
+    "covered": 34
    },
    "개별입지": {
     "firms": 231,
@@ -2993,14 +2993,14 @@
     "covered": 29
    },
    "산업단지": {
-    "firms": 37,
+    "firms": 38,
     "employment": 377,
     "covered": 16
    },
    "개별입지": {
-    "firms": 564,
-    "employment": 6027,
-    "covered": 346
+    "firms": 562,
+    "employment": 5986,
+    "covered": 344
    }
   },
   "섬유·패션": {
@@ -3015,17 +3015,17 @@
     "covered": 1
    },
    "지식산업센터": {
-    "firms": 66,
+    "firms": 67,
     "employment": 129,
     "covered": 17
    },
    "산업단지": {
-    "firms": 1061,
+    "firms": 1064,
     "employment": 5842,
     "covered": 319
    },
    "개별입지": {
-    "firms": 593,
+    "firms": 594,
     "employment": 2542,
     "covered": 202
    }
@@ -3037,24 +3037,24 @@
     "covered": 7
    },
    "연구개발특구": {
-    "firms": 33,
+    "firms": 35,
     "employment": 476,
     "covered": 19
    },
    "지식산업센터": {
-    "firms": 221,
-    "employment": 2317,
-    "covered": 80
+    "firms": 223,
+    "employment": 2322,
+    "covered": 81
    },
    "산업단지": {
-    "firms": 562,
-    "employment": 11144,
-    "covered": 225
+    "firms": 567,
+    "employment": 11159,
+    "covered": 226
    },
    "개별입지": {
-    "firms": 542,
-    "employment": 3635,
-    "covered": 247
+    "firms": 547,
+    "employment": 3684,
+    "covered": 250
    }
   },
   "화학·에너지": {
@@ -3074,12 +3074,12 @@
     "covered": 11
    },
    "산업단지": {
-    "firms": 465,
+    "firms": 467,
     "employment": 14452,
     "covered": 139
    },
    "개별입지": {
-    "firms": 343,
+    "firms": 344,
     "employment": 6649,
     "covered": 146
    }
@@ -3106,9 +3106,9 @@
     "covered": 52
    },
    "개별입지": {
-    "firms": 320,
-    "employment": 1944,
-    "covered": 125
+    "firms": 321,
+    "employment": 1952,
+    "covered": 126
    }
   },
   "기계·금속": {
@@ -3128,14 +3128,14 @@
     "covered": 44
    },
    "산업단지": {
-    "firms": 2747,
-    "employment": 21727,
-    "covered": 884
+    "firms": 2755,
+    "employment": 21798,
+    "covered": 886
    },
    "개별입지": {
-    "firms": 1336,
-    "employment": 8105,
-    "covered": 465
+    "firms": 1339,
+    "employment": 8102,
+    "covered": 464
    }
   },
   "기타 제조": {
@@ -3150,7 +3150,7 @@
     "covered": 7
    },
    "산업단지": {
-    "firms": 515,
+    "firms": 516,
     "employment": 4552,
     "covered": 166
    },
@@ -3172,12 +3172,12 @@
     "covered": 0
    },
    "지식산업센터": {
-    "firms": 222,
-    "employment": 2089,
-    "covered": 42
+    "firms": 221,
+    "employment": 2084,
+    "covered": 41
    },
    "산업단지": {
-    "firms": 970,
+    "firms": 972,
     "employment": 3766,
     "covered": 167
    },

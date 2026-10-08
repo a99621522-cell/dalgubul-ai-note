@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 386" width="100%" role="img" aria-label="달성2차산단 산업별 고용 인원. 전기·전자 1,738명, 기계·금속 1,690명, 자동차·부품 1,560명, 기타 제조 573명, 기타 서비스 158명, 화학·에너지 152명, 의료·바이오 97명, 섬유·패션 89명, 식품 73명, 로봇 0명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 386" width="100%" role="img" aria-label="달성2차산단 산업별 고용 인원. 전기·전자 1,738명, 기계·금속 1,641명, 자동차·부품 1,560명, 기타 제조 573명, 기타 서비스 158명, 화학·에너지 152명, 의료·바이오 146명, 섬유·패션 89명, 식품 73명, 로봇 0명" style="max-width:720px;height:auto;font-size:14px">
 <title>달성2차산단 산업별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
 <text x="76" y="56.0" text-anchor="end" fill="#1a1a1a">전기·전자</text>
 <rect x="86.0" y="40" width="572.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="666.0" y="56.0" fill="#1a1a1a">1,738명</text>
 <text x="76" y="90.0" text-anchor="end" fill="#1a1a1a">기계·금속</text>
-<rect x="86.0" y="74" width="556.2" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="650.2" y="90.0" fill="#1a1a1a">1,690명</text>
+<rect x="86.0" y="74" width="540.1" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="634.1" y="90.0" fill="#1a1a1a">1,641명</text>
 <text x="76" y="124.0" text-anchor="end" fill="#1a1a1a">자동차·부품</text>
 <rect x="86.0" y="108" width="513.4" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="607.4" y="124.0" fill="#1a1a1a">1,560명</text>
@@ -20,8 +20,8 @@
 <rect x="86.0" y="210" width="50.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="144.0" y="226.0" fill="#1a1a1a">152명</text>
 <text x="76" y="260.0" text-anchor="end" fill="#1a1a1a">의료·바이오</text>
-<rect x="86.0" y="244" width="31.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="125.9" y="260.0" fill="#1a1a1a">97명</text>
+<rect x="86.0" y="244" width="48.1" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="142.1" y="260.0" fill="#1a1a1a">146명</text>
 <text x="76" y="294.0" text-anchor="end" fill="#1a1a1a">섬유·패션</text>
 <rect x="86.0" y="278" width="29.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="123.3" y="294.0" fill="#1a1a1a">89명</text>

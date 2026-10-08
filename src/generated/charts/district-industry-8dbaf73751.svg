@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="동구 산업별 고용 인원. 소프트웨어·IT 3,112명, 의료·바이오 2,546명, 기계·금속 1,067명, 전기·전자 1,051명, 섬유·패션 1,022명, 자동차·부품 422명, 식품 407명, 화학·에너지 266명, 기타 제조 259명, 기타 서비스 219명, 로봇 38명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="동구 산업별 고용 인원. 소프트웨어·IT 3,112명, 의료·바이오 2,546명, 전기·전자 1,080명, 기계·금속 1,072명, 섬유·패션 1,022명, 자동차·부품 422명, 식품 407명, 화학·에너지 266명, 기타 제조 259명, 기타 서비스 219명, 로봇 38명" style="max-width:720px;height:auto;font-size:14px">
 <title>동구 산업별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
 <text x="92" y="56.0" text-anchor="end" fill="#1a1a1a">소프트웨어·IT</text>
@@ -7,12 +7,12 @@
 <text x="92" y="90.0" text-anchor="end" fill="#1a1a1a">의료·바이오</text>
 <rect x="102.0" y="74" width="454.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="564.9" y="90.0" fill="#1a1a1a">2,546명</text>
-<text x="92" y="124.0" text-anchor="end" fill="#1a1a1a">기계·금속</text>
-<rect x="102.0" y="108" width="190.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="300.6" y="124.0" fill="#1a1a1a">1,067명</text>
-<text x="92" y="158.0" text-anchor="end" fill="#1a1a1a">전기·전자</text>
-<rect x="102.0" y="142" width="187.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="297.8" y="158.0" fill="#1a1a1a">1,051명</text>
+<text x="92" y="124.0" text-anchor="end" fill="#1a1a1a">전기·전자</text>
+<rect x="102.0" y="108" width="193.0" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="303.0" y="124.0" fill="#1a1a1a">1,080명</text>
+<text x="92" y="158.0" text-anchor="end" fill="#1a1a1a">기계·금속</text>
+<rect x="102.0" y="142" width="191.5" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="301.5" y="158.0" fill="#1a1a1a">1,072명</text>
 <text x="92" y="192.0" text-anchor="end" fill="#1a1a1a">섬유·패션</text>
 <rect x="102.0" y="176" width="182.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="292.6" y="192.0" fill="#1a1a1a">1,022명</text>

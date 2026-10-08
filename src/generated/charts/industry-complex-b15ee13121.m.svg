@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="기타 서비스 산단별 고용 인원. 산단 외 3,904명, 성서산단 2,469명, 서대구산단 2,319명, 대구제3산단 527명, 대구국가산단 215명, 달성2차산단 158명, 북구검단산단 144명, 개별입지 62명, 경자구역 수성의료지구 58명, 대구이시아폴리스산단 58명, 그 밖의 단지 4명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="기타 서비스 산단별 고용 인원. 산단 외 3,904명, 성서산단 2,469명, 서대구산단 2,315명, 대구제3산단 527명, 대구국가산단 215명, 달성2차산단 158명, 북구검단산단 144명, 개별입지 62명, 경자구역 수성의료지구 58명, 대구이시아폴리스산단 58명, 그 밖의 단지 4명" style="max-width:360px;height:auto;font-size:14px">
 <title>기타 서비스 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">산단 외</text>
@@ -8,8 +8,8 @@
 <rect x="8.0" y="98" width="183.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="197.4" y="112.0" fill="#1a1a1a">2,469명</text>
 <text x="8" y="136.0" fill="#1a1a1a">서대구산단</text>
-<rect x="8.0" y="142" width="172.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="186.3" y="156.0" fill="#1a1a1a">2,319명</text>
+<rect x="8.0" y="142" width="172.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="186.0" y="156.0" fill="#1a1a1a">2,315명</text>
 <text x="8" y="180.0" fill="#1a1a1a">대구제3산단</text>
 <rect x="8.0" y="186" width="39.1" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="53.1" y="200.0" fill="#1a1a1a">527명</text>

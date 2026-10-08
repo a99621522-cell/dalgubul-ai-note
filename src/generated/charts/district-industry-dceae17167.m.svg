@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 398" width="100%" role="img" aria-label="남구 산업별 고용 인원. 섬유·패션 86명, 전기·전자 73명, 의료·바이오 33명, 자동차·부품 25명, 기계·금속 20명, 기타 제조 15명, 식품 11명, 화학·에너지 11명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 398" width="100%" role="img" aria-label="남구 산업별 고용 인원. 섬유·패션 86명, 전기·전자 73명, 의료·바이오 33명, 자동차·부품 25명, 기계·금속 20명, 기타 제조 19명, 식품 11명, 화학·에너지 11명" style="max-width:360px;height:auto;font-size:14px">
 <title>남구 산업별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">섬유·패션</text>
@@ -17,8 +17,8 @@
 <rect x="8.0" y="230" width="73.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="87.0" y="244.0" fill="#1a1a1a">20명</text>
 <text x="8" y="268.0" fill="#1a1a1a">기타 제조</text>
-<rect x="8.0" y="274" width="54.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="68.8" y="288.0" fill="#1a1a1a">15명</text>
+<rect x="8.0" y="274" width="69.4" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="83.4" y="288.0" fill="#1a1a1a">19명</text>
 <text x="8" y="312.0" fill="#1a1a1a">식품</text>
 <rect x="8.0" y="318" width="40.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="54.2" y="332.0" fill="#1a1a1a">11명</text>

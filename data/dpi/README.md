@@ -5,5 +5,5 @@
 보고서에 적힌 전국 값, 산업별 세세분류 업종 코드. 운영자가 Drive 에 올린 원문을 OCR 로 읽어 `data/refs/dpi-2026-university-region-mutual-development.json`
 (key_figures·industry_codes)에 옮긴 값을 구조화한 것 — 값을 만들거나 고치지 않았다(ABB 의 2020~2022 생산액·부가가치는 보고서 '-' → null).
 
-쓰는 곳: `/policy/dpi-industry/`(리포트 › 연구 보고서 수치, 운영자 지시 2026-10-08 '대구정책연구원 자료는 별도로 올려').
+쓰는 곳: `src/components/IndustryBundles.astro` — `/stats/industry/#bundles` 와 `/policy/dpi-industry/`. 사이트에는 최근 연도(2023) 대구 값만 보인다(운영자 지시 2026-10-09 '2016년 이런 과거 자료는 필요 없어, 그냥 대구정책연구원 자료만 올려'); 전국 값·연도별 값은 이 파일에만.
 통계청 공개 통계로 만든 표(`/stats/industry/#bundles`, `data/kosis/industry_bundles.json`)·성장 계산기·리포트 집계에는 섞지 않는다.

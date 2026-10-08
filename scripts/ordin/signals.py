@@ -72,6 +72,27 @@ def main():
         return arts_cache[lid]
 
     org_name = {o["key"]: o["name"] for o in CFG["orgs"]}
+    # 법제처 법령해석례: (법령 이름, 조) → 해석례 목록. 자치법규 관련(local) 또는 대구 질의(dg)만 잇는다
+    expc = jl(D / "expc" / "index.json.gz", {})
+    ex_by: dict[tuple, list] = {}
+    for iid, e in expc.items():
+        if not (e.get("local") or e.get("dg")):
+            continue
+        for nn, _raw, art in e.get("refs", []):
+            if art:
+                ex_by.setdefault((nn, art), []).append(iid)
+    # 법령별 최근 전부개정일(조문 번호가 바뀌었을 수 있는 경계) — 경계 앞뒤가 다른 해석례·자치법규는 잇지 않는다
+    ex_ord: dict[str, set] = {}   # 대구 질의 해석례 → 이은 같은 지자체 자치법규(전부개정 경계 반영)
+    full_rev: dict[str, str] = {}
+    for k, h in jh.items():
+        lid = k.split("|")[0]
+        for x in h.get("rows", []):
+            if re.search(r"전부개정|전문개정", (x.get("why") or "") + (x.get("rev") or "")) and (x.get("d") or "") > full_rev.get(lid, ""):
+                full_rev[lid] = x["d"]
+    def ex_card(iid):
+        e = expc[iid]
+        return {"id": iid, "t": e["t"], "no": e.get("no", ""), "d": ymd(e.get("d", "")), "qorg": e.get("qorg", ""), "a": e.get("a", "")[:220],
+                "url": f"https://www.law.go.kr/LSW/expcInfoP.do?expcSeq={iid}", "dg": e.get("dg", "")}
     cands, n_ref, n_ref_ok, n_unres = [], 0, 0, 0
     lawrefs: dict[str, dict] = {}
     ordin_count = {}
@@ -148,7 +169,22 @@ def main():
                     if (nn, "am", r["no"]) not in seen:
                         seen.add((nn, "am", r["no"]))
                         add(d, a, "admrul_missing", ev={**ev, "cands": L.get("cands", [])[:4]})
-                elif st == "current" and r["art"]:
+                if st == "current" and r["art"] and (nn, r["art"]) in ex_by and (nn, "ex", r["no"], r["art"]) not in seen:
+                    seen.add((nn, "ex", r["no"], r["art"]))
+                    fr = full_rev.get(L["law_id"], "")
+                    ids = [i for i in ex_by[(nn, r["art"])] if not fr or ((expc[i].get("d") or "") >= fr) == (prom >= fr)]
+                    ids.sort(key=lambda i: expc[i].get("d") or "", reverse=True)
+                    mine = [i for i in ids if expc[i].get("dg") == d["org"]]
+                    for i in mine:
+                        ex_ord.setdefault(i, set()).add(d["id"])
+                    if mine:
+                        last = max(expc[i].get("d") or "" for i in mine)
+                        add(d, a, "expc_daegu", ev={**ev, "now": L["name"], "now_url": law_url(L["name"], r["art"]), "ordin_prom": ymd(prom),
+                                                     "after": last > prom, "expc": [ex_card(i) for i in mine[:4]]})
+                    elif ids:
+                        add(d, a, "expc_related", ev={**ev, "now": L["name"], "now_url": law_url(L["name"], r["art"]), "ordin_prom": ymd(prom),
+                                                       "after": any((expc[i].get("d") or "") > prom for i in ids), "n": len(ids), "expc": [ex_card(i) for i in ids[:4]]})
+                if st == "current" and r["art"]:
                     A = arts_of(L["law_id"])
                     if not A:
                         continue
@@ -205,6 +241,15 @@ def main():
         lr["refs"] = sorted(lr["refs"].values(), key=lambda e: (e["org"], e["oname"]))
         for e in lr["refs"]:
             e["arts"].sort(key=art_sort)
+    # 대구 지자체가 질의한 해석례(자치법규 관련 여부와 무관) + 같은 지자체에서 같은 조문을 인용한 자치법규 수
+    dq = []
+    for iid, e in expc.items():
+        if not e.get("dg"):
+            continue
+        hits = sorted(ex_ord.get(iid, set()))
+        dq.append({**ex_card(iid), "q": e.get("q", "")[:300], "local": e.get("local", False), "refs": [f"「{raw}」" + (f" 제{art}조" if art and "의" not in art else (f" 제{art.replace('의', '조의')}" if art else "")) for _n, raw, art in e.get("refs", [])][:6], "ordins": hits[:30]})
+    dq.sort(key=lambda x: x["d"], reverse=True)
+    (D / "expc_daegu.json").write_text(json.dumps({"built": ymd(TODAY), "items": dq}, ensure_ascii=False, indent=0) + "\n", encoding="utf-8")
     # 요약
     orgs = [o["key"] for o in CFG["orgs"]]
     by = {s: {k: 0 for k in orgs} for s in SIG}
@@ -215,7 +260,7 @@ def main():
         st[L.get("status")] = st.get(L.get("status"), 0) + 1
     summary = {"fetched": lst.get("fetched", ""), "built": ymd(TODAY), "orgs": [{"key": k, "name": org_name[k], "count": ordin_count.get(k, 0), "listed": lst["counts"].get(k, 0)} for k in orgs],
                "refs": n_ref, "refs_resolved": n_ref_ok, "refs_unknown": n_unres, "law_status": st, "laws_cited": len(laws),
-               "by_signal": by, "total": len(cands)}
+               "by_signal": by, "total": len(cands), "expc_held": len(expc), "expc_linked": sum(1 for v in ex_by.values() for _ in v), "expc_daegu": len(dq)}
     (D / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     with gzip.open(D / "candidates.json.gz", "wt", encoding="utf-8") as f:
         json.dump({"built": ymd(TODAY), "items": cands}, f, ensure_ascii=False, separators=(",", ":"))

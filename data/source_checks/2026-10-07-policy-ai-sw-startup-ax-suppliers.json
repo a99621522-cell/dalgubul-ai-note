@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-07-policy-ai-sw-startup-ax-suppliers.md",
- "checked": "2026-10-06",
- "ok": 12,
+ "checked": "2026-10-08",
+ "ok": 10,
  "total": 14,
- "ratio": 0.86,
+ "ratio": 0.71,
  "official_bad": [
   "대구광역시 산업경제동향, 「대구시, '지역거점 AX 혁신 기술개발' 본격 착수」",
   "Gloucestershire County Council, 「Funded support for south-west manufacturers for digital adoption」(Made Smarter Adoption 2026/27)"
@@ -135,24 +135,24 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01",
    "date": "2026-09-28",
    "kind": "data",
-   "status": 200,
-   "page_title": "KOSIS",
-   "title_match": 0.12,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
-   "note": ""
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "중소벤처기업부, 「창업기업동향 — 지역별·업종별 창업기업수」 KOSIS DT_142N_G205(2026년 6월)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_142N_G205",
    "date": "2026-10-06",
    "kind": "data",
-   "status": 200,
-   "page_title": "KOSIS",
-   "title_match": 0.17,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
-   "note": ""
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "기업 사전(팩토리온 2026-08 공장등록 + 산단 외 사업장 목록, KSIC 코드·입지 유형·종사자 신고값)·사업 DB(사업명만)",

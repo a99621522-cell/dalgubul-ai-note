@@ -1,10 +1,12 @@
 {
  "file": "src/content/posts/2026-10-05-policy-automotive-tariff.md",
- "checked": "2026-10-05",
- "ok": 12,
+ "checked": "2026-10-08",
+ "ok": 10,
  "total": 13,
- "ratio": 0.92,
+ "ratio": 0.77,
  "official_bad": [
+  "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」",
+  "산업통상부, 「2026년 8월 수출입 동향」",
   "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)"
  ],
  "pass": false,
@@ -74,36 +76,36 @@
    "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
    "date": "2026-09-15",
    "kind": "gov",
-   "status": 200,
-   "page_title": "대구본부세관",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "산업통상부, 「2026년 8월 수출입 동향」",
    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172145/view",
    "date": "2026-09-01",
    "kind": "gov",
-   "status": 200,
-   "page_title": "2026년 8월 수출입동향 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
    "date": "2026-10-01",
    "kind": "official",
-   "status": 200,
-   "page_title": "KOSIS",
-   "title_match": 0.12,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
    "date_found": false,
    "ok": false,
-   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+   "note": "ConnectTimeout"
   },
   {
    "title": "U.S. Federal Register 2025-22845, Section 232 automobile parts inclusions process — January 2026 window",

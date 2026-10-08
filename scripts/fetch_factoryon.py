@@ -132,10 +132,14 @@ def download(s: requests.Session, url: str, q: dict, dest_base: Path, referer: s
     cd = r.headers.get("Content-Disposition", "")
     fm = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", cd)
     name = unquote(fm.group(1)) if fm else ""
+    try:
+        name = name.encode("latin-1").decode("utf-8")   # 서버가 UTF-8 바이트를 그대로 보냄
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass
     ext = Path(name).suffix.lower() if name else ""
     if ext not in (".xls", ".xlsx", ".zip", ".csv"):
         ext = ".xlsx"
-    dest = dest_base.with_suffix(ext)
+    dest = dest_base.parent / (dest_base.name + ext)   # with_suffix 는 '(2026.09월말기준)…' 의 점을 확장자로 봐서 못 쓴다
     with open(dest, "wb") as f:
         for chunk in r.iter_content(1 << 16):
             f.write(chunk)

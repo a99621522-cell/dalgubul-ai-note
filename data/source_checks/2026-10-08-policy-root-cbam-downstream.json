@@ -1,12 +1,12 @@
 {
  "file": "src/content/posts/2026-10-08-policy-root-cbam-downstream.md",
  "checked": "2026-10-08",
- "ok": 10,
- "total": 12,
- "ratio": 0.83,
+ "ok": 6,
+ "total": 10,
+ "ratio": 0.6,
  "official_bad": [
-  "유럽자동차제조협회(ACEA), 「ACEA statement on CBAM downstream extension proposal」",
-  "재유럽일본기업협회(JBCE), 「Position Paper: CBAM downstream extension」"
+  "산업통상부, 「제13차 CBAM 정부합동설명회 개최 — CBAM 이행 규정과 실무 대응방안 안내」 보도자료",
+  "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」 보도자료"
  ],
  "pass": false,
  "sources": [
@@ -15,12 +15,12 @@
    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172151/view",
    "date": "2026-09-02",
    "kind": "gov",
-   "status": 200,
-   "page_title": "탄소국경조정제도(CBAM) 대응역량 강화를 위한 정부 합동설명회 개최 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
-   "title_match": 0.86,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "European Parliamentary Research Service, Briefing BRI(2026)789314 — CBAM extension to downstream goods (2025/0419(COD))",
@@ -71,40 +71,16 @@
    "note": ""
   },
   {
-   "title": "유럽자동차제조협회(ACEA), 「ACEA statement on CBAM downstream extension proposal」",
-   "url": "https://www.acea.auto/press-release/acea-statement-on-cbam-downstream-extension-proposal/",
-   "date": "2026-07-06",
-   "kind": "report",
-   "status": 403,
-   "page_title": "403 - Forbidden",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": ""
-  },
-  {
-   "title": "재유럽일본기업협회(JBCE), 「Position Paper: CBAM downstream extension」",
-   "url": "https://www.jbce.org/images/positions/Trade_Policy/JBCE_Position_Paper_CBAM_downstream_extension_260622published-LJBCE30.pdf",
-   "date": "2026-06-22",
-   "kind": "report",
-   "status": 404,
-   "page_title": "Page not found - Japan Business Council in Europe",
-   "title_match": 0.29,
-   "date_found": false,
-   "ok": false,
-   "note": ""
-  },
-  {
    "title": "헤럴드경제, 「중기부, EU '탄소국경제도' 인프라구축 사업 참여할 중기 모집」",
    "url": "https://www.heraldk.com/article/2026040419000043948",
    "date": "2026-04-04",
    "kind": "news",
-   "status": 200,
-   "page_title": "중기부, EU ‘탄소국경제도’ 인프라구축 사업 참여할 중기 모집… 최대 4200만원 지원 - 헤럴드경제 미주판",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "창원상공회의소 경남FTA통상진흥센터, 「2026년 탄소국경세 대응 지원사업 참여기업 모집공고」",
@@ -135,24 +111,24 @@
    "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
    "date": "2026-09-15",
    "kind": "gov",
-   "status": 200,
-   "page_title": "대구본부세관",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "관세청, 「기업무역활동통계 — 지역별 수출현황」 KOSIS DT_134006_N007(2025년)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N007",
    "date": "2026-10-06",
    "kind": "data",
-   "status": 200,
-   "page_title": "KOSIS",
-   "title_match": 0.2,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
-   "note": ""
+   "ok": false,
+   "note": "ConnectTimeout"
   }
  ]
 }

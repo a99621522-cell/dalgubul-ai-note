@@ -1,26 +1,23 @@
 {
  "file": "src/content/posts/2026-10-08-policy-root-cbam-downstream.md",
  "checked": "2026-10-08",
- "ok": 6,
+ "ok": 9,
  "total": 10,
- "ratio": 0.6,
- "official_bad": [
-  "산업통상부, 「제13차 CBAM 정부합동설명회 개최 — CBAM 이행 규정과 실무 대응방안 안내」 보도자료",
-  "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」 보도자료"
- ],
- "pass": false,
+ "ratio": 0.9,
+ "official_bad": [],
+ "pass": true,
  "sources": [
   {
    "title": "산업통상부, 「제13차 CBAM 정부합동설명회 개최 — CBAM 이행 규정과 실무 대응방안 안내」 보도자료",
    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172151/view",
    "date": "2026-09-02",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "탄소국경조정제도(CBAM) 대응역량 강화를 위한 정부 합동설명회 개최 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
+   "title_match": 0.86,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "European Parliamentary Research Service, Briefing BRI(2026)789314 — CBAM extension to downstream goods (2025/0419(COD))",
@@ -111,24 +108,24 @@
    "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
    "date": "2026-09-15",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "대구본부세관",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "관세청, 「기업무역활동통계 — 지역별 수출현황」 KOSIS DT_134006_N007(2025년)",
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N007",
    "date": "2026-10-06",
    "kind": "data",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.2,
    "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "ok": true,
+   "note": ""
   }
  ]
 }

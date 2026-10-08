@@ -21,7 +21,7 @@ on:
         required: false
         default: "kor+eng"
       echo:
-        description: "뽑은 글자를 로그에도 찍기(true) — 세션 환경에서 아티팩트 저장소(blob)가 막혀 있을 때 get_job_logs 로 읽는다"
+        description: "뽑은 글자를 로그에도 찍기(true, 또는 쪽 범위 61-116 이면 그 쪽만) — 세션 환경에서 아티팩트 저장소(blob)가 막혀 있을 때 get_job_logs 로 읽는다(끝 5,000줄만 오므로 긴 문서는 범위로 나눠 찍는다)"
         required: false
         default: "false"
       parse_budget:
@@ -52,7 +52,8 @@ jobs:
       - name: 받기 + OCR
         env:
           FILES: ${{ inputs.files }}
-        run: python3 scripts/drive_ocr.py --files "$FILES" --dpi "${{ inputs.dpi }}" --lang "${{ inputs.lang }}" --out ocr $([ "${{ inputs.echo }}" = true ] && echo --echo)
+          ECHO: ${{ inputs.echo }}
+        run: python3 scripts/drive_ocr.py --files "$FILES" --dpi "${{ inputs.dpi }}" --lang "${{ inputs.lang }}" --out ocr $(case "$ECHO" in true) echo --echo;; [0-9]*) echo --echo --echo-pages "$ECHO";; esac)
       - name: 결과 요약
         if: always()
         run: |

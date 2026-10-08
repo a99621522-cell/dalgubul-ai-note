@@ -188,6 +188,8 @@ def kosis_block(area_key: str, keywords: list[str]) -> list[dict]:
         cf = kdir / f"{m['key']}.csv"
         rows = list(csv.DictReader(open(cf, encoding="utf-8"))) if cf.exists() else []
         latest = [r for r in rows if r.get("PRD_DE") == m.get("latest")]
+        dg = [r for r in latest if any((r.get(f"C{i}_NM") or "").startswith("대구") for i in (1, 2, 3))]
+        latest = dg or latest   # 전국 행을 함께 받는 표는 대구 행을 먼저
         out.append({"key": m["key"], "name": m.get("tbl_nm") or m["name"], "latest": m.get("latest", ""), "unit": m.get("unit", ""),
                     "source_url": m.get("source_url", ""), "fetched": m.get("fetched", ""),
                     "rows": [{k: r.get(k, "") for k in ("ITM_NM", "C1_NM", "C2_NM", "C3_NM", "DT")} for r in latest[:12]]})

@@ -30,6 +30,7 @@ tables:
     search: ["광업제조업조사 시도 산업", "시도 산업중분류 출하액 부가가치", "광업 제조업조사 시도별 주요지표", "제조업 시도 산업분류별 사업체수 종사자수 출하액"]
     prd_se: Y
     area_col: C1
+    area: ["대구", "전국"]   # 전국 행도 — 산업 구조 통계 '주력·미래 신산업 관련 업종' 표의 전국 대비 비중(운영자 지시 2026-10-08 '통계청 자료로 작성')
     areas: [manufacturing-ax, machinery, automotive, textile, root, semiconductor]
   - key: mfg-tangible-sido
     name: 광업·제조업조사 — 시도·산업중분류별 유형자산(연말잔액, 10인 이상) — 자본회전율(출하액 ÷ 유형자산)용, 성장 계산기 '투자액 → 연 매출'(2026-10-07)

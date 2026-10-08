@@ -1,0 +1,55 @@
+---
+/** 대구시가 출자·조성한 창업·벤처 펀드(운영자 지시 2026-10-08 '창업쪽에 대구시가 만든 펀드 조사해서 넣어') — data/funds/daegu_funds.yml.
+ *  대구창업허브(DASH) 게시 값과 보도자료·언론 보도의 사실만(규모·출자 구성·운용사·투자 대상). 평가·순위 없음, 피투자 기업 명단 없음. */
+import { daeguFunds } from '../lib/funds';
+const F = daeguFunds();
+const n = (v: number) => v.toLocaleString('ko-KR');
+---
+{F && <section class="fund" id="funds">
+  <div class="section-head"><h2>대구시가 출자·조성한 창업·벤처 펀드</h2><span class="meta">공개 자료 기준 {F.as_of}</span></div>
+  <p class="meta">대구창업허브(DASH)에 게시된 <a href={F.dash.regional} rel="noopener">지역 운용 펀드</a>·<a href={F.dash.city} rel="noopener">대구시 출자펀드</a>와 보도자료·언론 보도의 사실만 옮겼습니다. 펀드 규모는 결성 총액(모태펀드·금융기관·민간 출자 포함)이고 대구시 출자액은 보도가 있는 펀드에만 적었습니다. 어느 기업에 얼마를 투자했는지는 공개 명단이 없어 싣지 않습니다.</p>
+
+  <h3>조성 중·계획(2026년)</h3>
+  <div class="scroll-x"><table class="data-table compact t-plan" data-title="대구시 창업·벤처 펀드 조성 계획(2026년)">
+    <thead><tr><th>펀드</th><th>규모</th><th>상태</th><th>출자 구성·투자 대상</th><th>출처</th></tr></thead>
+    <tbody>{F.plans.map(p => <tr>
+      <th scope="row">{p.name}</th><td class="n">{p.size}</td><td>{p.status}</td>
+      <td>{p.contributors ? `출자: ${p.contributors} · ` : ''}{p.target}{p.note ? ` · ${p.note}` : ''}</td>
+      <td>{p.sources.map((s, i) => <>{i ? ' · ' : ''}<a href={s.url} rel="noopener">{s.title.split(',')[0]} {s.date}</a></>)}</td>
+    </tr>)}</tbody>
+  </table></div>
+  <p class="meta">{F.plans_note}</p>
+
+  <h3>운용 중인 지역 펀드 — {F.regional.length}개(대구창업허브 게시)</h3>
+  <div class="scroll-x"><table class="data-table compact t-reg" data-title="대구 지역 운용 펀드(대구창업허브 게시)">
+    <thead><tr><th>펀드</th><th class="n">규모(억 원)</th><th>운용사</th><th>투자 대상</th><th>결성·출자(보도)</th><th>문의 기관</th></tr></thead>
+    <tbody>{F.regional.map(r => <tr>
+      <th scope="row">{r.name}</th><td class="n">{n(r.size_eok)}</td><td>{r.gp}</td><td>{r.target}</td>
+      <td>{r.formed ?? '—'}{r.sources?.map(s => <> (<a href={s.url} rel="noopener">{s.title.split(',')[0]} {s.date}</a>)</>)}</td>
+      <td>{r.contact ?? '—'}</td>
+    </tr>)}</tbody>
+  </table></div>
+
+  <h3>대구시 출자펀드 — 상시 모집 투자 창구</h3>
+  <div class="scroll-x"><table class="data-table compact t-city" data-title="대구시 출자펀드(대구창업허브 게시, 상시 모집)">
+    <thead><tr><th>펀드</th><th>운용사</th><th>투자 대상</th><th class="n">투자 규모</th><th>결성·출자(보도)</th></tr></thead>
+    <tbody>{F.city.map(c => <tr>
+      <th scope="row">{c.name}</th><td>{c.gp}</td><td>{c.target}</td><td class="n">{c.ticket}</td>
+      <td>{c.formed ?? '—'}{c.sources?.map(s => <> (<a href={s.url} rel="noopener">{s.title.split(',')[0]} {s.date}</a>)</>)}</td>
+    </tr>)}</tbody>
+  </table></div>
+  <p class="meta">{F.city_note} 출처: 대구창업허브(DASH, 대구광역시·대구테크노파크) 게시, 한국벤처투자 지역혁신 벤처펀드 사업개요, 전자신문·대구일보·매일신문 보도(표 안 링크). 규모와 출자 구성은 발표·게시 시점 값이며 이후 증액·추가 결성은 반영되지 않았을 수 있습니다.</p>
+</section>}
+<style>
+  .fund { margin-top: var(--s5); }
+  .fund h3 { margin: var(--s3) 0 var(--s1); font-size: 1.05rem; }
+  .fund td { vertical-align: top; }
+  @media (min-width: 601px) {
+    .fund .t-plan { min-width: 1100px; } .fund .t-reg { min-width: 1240px; } .fund .t-city { min-width: 1000px; }
+    .fund .t-plan th:nth-child(1) { width: 21%; } .fund .t-plan th:nth-child(2) { width: 9%; } .fund .t-plan th:nth-child(3) { width: 15%; } .fund .t-plan th:nth-child(4) { width: 41%; } .fund .t-plan th:nth-child(5) { width: 14%; }
+    .fund .t-reg th:nth-child(1) { width: 16%; } .fund .t-reg th:nth-child(2) { width: 6%; } .fund .t-reg th:nth-child(3) { width: 24%; } .fund .t-reg th:nth-child(4) { width: 18%; } .fund .t-reg th:nth-child(5) { width: 27%; } .fund .t-reg th:nth-child(6) { width: 9%; }
+    .fund .t-city th:nth-child(1) { width: 20%; } .fund .t-city th:nth-child(2) { width: 11%; } .fund .t-city th:nth-child(3) { width: 24%; } .fund .t-city th:nth-child(4) { width: 10%; } .fund .t-city th:nth-child(5) { width: 35%; }
+    .fund .data-table td:last-child { white-space: nowrap; }
+    .fund .t-city td:last-child, .fund .t-plan td:last-child { white-space: normal; }
+  }
+</style>

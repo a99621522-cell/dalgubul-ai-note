@@ -1,9 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import StartupFirms from '../../components/StartupFirms.astro';
+import StartupFunds from '../../components/StartupFunds.astro';
 import { startupFirms } from '../../lib/startups';
 /** /startups/ — 메뉴 '창업·벤처'(운영자 지시 2026-10-06 '벤처기업은 어디 있어?' → 헤더 '기업' 묶음에 넣음).
- *  기업 사전의 창업·벤처 기업 집계(StartupFirms)와 명단 바로가기(벤처기업·7년 이내 벤처·창업보육센터 입주·창업기업), 창업기업동향 통계 링크.
+ *  기업 사전의 창업·벤처 기업 집계(StartupFirms)·대구시 출자·조성 펀드(StartupFunds, data/funds, 운영자 지시 2026-10-08)와 명단 바로가기(벤처기업·7년 이내 벤처·창업보육센터 입주·창업기업), 창업기업동향 통계 링크.
  *  공개 명단 기준, 값 그대로, 평가·순위 없음. 벤처 확인 유형·유효 기간은 기업별 페이지 '창업·벤처 정보'. */
 const S = startupFirms();
 const n = (v: number) => v.toLocaleString('ko-KR');
@@ -23,6 +24,7 @@ const LINKS = [
     {LINKS.map(l => (<li><a class="lk" href={l.href}><b>{l.name}</b><span class="cnt">{n(l.count)}곳</span><span class="desc">{l.desc}</span></a></li>))}
   </ul>
   <StartupFirms />
+  <StartupFunds />
   <p class="meta">투자 유치 사실은 벤처 확인 유형 '벤처투자유형'(적격 투자기관의 투자를 받아 확인)으로만 보이며, 금액·투자사는 공개 명단에 없습니다. 공공데이터포털의 투자기업 파일(기술보증기금·신용보증기금·중진공)은 기업명이 없어 잇지 못했습니다. 창업보육센터 졸업 기업 명단도 공개 파일에 없습니다.</p>
   <style>
     .lede { margin: 0 0 var(--s3); }

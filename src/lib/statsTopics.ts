@@ -8,7 +8,7 @@ export const TOPICS: StatsTopic[] = [
   { key: 'services', name: '서비스업·자영업', href: '/stats/services/', period: '분기·월간', desc: '업종별 서비스업 생산지수, 대형소매점 판매, 자영업자 수·비중, 소상공인·전통시장 체감경기, 관광 방문자·소비.' },
   { key: 'industry', name: '산업 구조', href: '/stats/industry/', period: '연간', desc: '지역내총생산, 부문별 부가가치·입지계수, 17개 시도 산업구조 지표, 성장 계산기 바로가기.' },
   { key: 'business', name: '기업·사업체', href: '/stats/business/', period: '연간', desc: '산업별 사업체·종사자, 중소기업·소상공인, 창업·벤처기업, 기업 신생·소멸, 수출입 활동기업.',
-    links: [{ name: '창업·벤처기업', href: '/stats/business/#startup' }, { name: '기업 사전의 창업·벤처', href: '/stats/business/#startups' }] },   // 운영자 지시 2026-10-06 '통계 허브 카드에 창업·벤처 바로가기'
+    links: [{ name: '창업·벤처기업', href: '/stats/business/#startup' }, { name: '기업 사전의 창업·벤처', href: '/stats/business/#startups' }, { name: '대구시 창업 펀드', href: '/startups/#funds' }] },   // 운영자 지시 2026-10-06 '통계 허브 카드에 창업·벤처 바로가기'
   { key: 'population', name: '인구·고용', href: '/stats/population/', period: '연간', desc: '인구·취업자·고용률 연간 추이, 구·군별 인구·취업자, 연령별 순이동, 소매판매.' },
   { key: 'compare', name: '시도 비교', href: '/stats/compare/', period: '연간·월간', desc: '17개 시도의 지역내총생산·성장률·산업구조, 취업자·고용률, 사업체·종사자, 기업 신생·소멸, 수출입 기업, 인구, 소매판매, 월간 지표를 같은 표에 — 대구 값을 다른 시도와 나란히(비교 기준이지 순위가 아님).' },   // 추세·비교·효과 보강 2단계(2026-10-06)
 ];

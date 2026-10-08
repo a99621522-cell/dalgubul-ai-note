@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-06 · 표 39개 · 설정 config/kosis_tables.yml
+갱신 2026-10-08 · 표 41개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|

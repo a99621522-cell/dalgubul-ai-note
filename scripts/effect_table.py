@@ -96,7 +96,8 @@ def main() -> int:
             if b >= 1:
                 pair[cid] = (b, a)
         treated = {cid for cid, rs in support.items() if any(int(r["year"]) == y for r in rs) and cid in pair}
-        untouched = {cid for cid in pair if cid not in support or not any(y - 1 <= int(r["year"]) <= y + 1 for r in support[cid])}
+        untouched = {cid for cid in pair if (cid not in support or not any(y - 1 <= int(r["year"]) <= y + 1 for r in support[cid]))
+                     and emp_b[cid].get("primary", True)}   # 같은 사업장에 붙은 다른 공장 기록은 비교군에 한 번만
         # 묶음: 전체 / 산업 그룹 / 규모 띠 / 지원 유형 / 재원 — 지원군과 같은 산업·규모 비교군
         def group_key(cid: str, how: str) -> str:
             c = by_id.get(cid, {})

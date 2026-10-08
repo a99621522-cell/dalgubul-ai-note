@@ -14,22 +14,22 @@
 <text x="160.8" y="280" text-anchor="middle" fill="#767676">25년</text>
 <text x="253.8" y="280" text-anchor="middle" fill="#767676">26년</text>
 <line x1="60" x2="308" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M67.8,196.6 L91.0,197.7 M91.0,197.7 L106.5,200.9 M114.2,199.8 L137.5,193.4 M168.5,190.1 L199.5,179.3 M199.5,179.3 L253.8,165.3 M253.8,165.3 L300.2,84.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
-<path d="M60.0,196.6 L67.8,196.6" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="60.0" cy="196.6" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="67.8" cy="196.6" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="91.0" cy="197.7" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<path d="M106.5,200.9 L114.2,199.8" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="106.5" cy="200.9" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="114.2" cy="199.8" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<path d="M137.5,193.4 L145.2,191.2 L153.0,191.2 L160.8,191.2 L168.5,190.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="137.5" cy="193.4" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="145.2" cy="191.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="153.0" cy="191.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="160.8" cy="191.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="168.5" cy="190.1" r="3" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="199.5" cy="179.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<circle cx="253.8" cy="165.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M67.8,200.9 L91.0,202.0 M91.0,202.0 L106.5,205.2 M114.2,204.2 L137.5,198.8 M168.5,195.5 L199.5,184.7 M199.5,184.7 L253.8,170.7 M253.8,170.7 L300.2,84.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity="0.7"/>
+<path d="M60.0,200.9 L67.8,200.9" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="60.0" cy="200.9" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="67.8" cy="200.9" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="91.0" cy="202.0" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M106.5,205.2 L114.2,204.2" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="106.5" cy="205.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="114.2" cy="204.2" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<path d="M137.5,198.8 L145.2,196.6 L153.0,196.6 L160.8,196.6 L168.5,195.5" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="137.5" cy="198.8" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="145.2" cy="196.6" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="153.0" cy="196.6" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="160.8" cy="196.6" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="168.5" cy="195.5" r="3" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="199.5" cy="184.7" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<circle cx="253.8" cy="170.7" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
 <path d="M300.2,84.3 L308.0,99.4" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="300.2" cy="84.3" r="3" style="fill:var(--primary,#1B4F9B)"/>
 <circle cx="308.0" cy="99.4" r="3" style="fill:var(--primary,#1B4F9B)"/>

@@ -1,0 +1,41 @@
+# 자치법규 정비 검토 — 법제처 법령해석례 수집(scripts/ordin/fetch_expc.py). 수집 워크플로와 따로 돈다.
+# data/ordinance/expc_run.txt 를 바꿔 푸시하거나 매주 월 04:40 KST. 새 해석례만 받는다.
+name: 자치법규 정비 검토 — 법제처 해석례
+
+on:
+  schedule:
+    - cron: "40 19 * * 0"
+  workflow_dispatch:
+  push:
+    branches: [ccr-a1fc4817-w0vo95]
+    paths: ["data/ordinance/expc_run.txt"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ordinance-expc
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+          BUDGET_MIN: "180"
+        run: python3 -u scripts/ordin/fetch_expc.py || true
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ordinance/expc || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 법제처 해석례 $(date +%F)"
+          for i in 1 2 3 4 5; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 7; done

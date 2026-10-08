@@ -52,6 +52,18 @@ def law_url(name, art=""):
     return f"https://www.law.go.kr/법령/{name.replace(' ', '')}" + (f"/제{art}조" if art and "의" not in art else (f"/제{art.replace('의', '조의')}" if art else ""))
 
 
+REGION = re.compile(r"^(?:[가-힣]{1,5}?(?:특별자치시|특별자치도|특별시|광역시|도))?(?:[가-힣]{1,4}?(?:시|군|구))?")
+
+
+def base_name(name: str) -> str:
+    """자치법규 이름에서 지자체 이름을 뗀 비교용 이름: '대구광역시 달서구 지방보조금 관리 조례' → '지방보조금관리조례'.
+    '…조례안'의 '안', 가운뎃점·공백 변이도 없앤다. 남는 이름이 4자 미만이면 빈 값(비교하지 않음)."""
+    n = norm_name(name)
+    n = re.sub(r"안$", "", n)
+    b = REGION.sub("", n, count=1)
+    return b if len(b) >= 4 else ""
+
+
 STOP = {"등", "및", "의", "관한", "위한", "대한", "따른", "사항", "경우", "특례", "기준", "방법", "절차"}
 
 
@@ -93,6 +105,24 @@ def main():
             if art:
                 ex_by.setdefault((nn, art), []).append(iid)
     # 법령별 최근 전부개정일(조문 번호가 바뀌었을 수 있는 경계) — 경계 앞뒤가 다른 해석례·자치법규는 잇지 않는다
+    # 법제처 자치법규 의견제시 사례(법제처 누리집 공개 게시판): ① 같은 이름 자치법규(지자체 이름 뗀 이름) ② 쟁점 조문(제목·질의요지의 법령 조문)
+    opin = jl(D / "opin" / "index.json.gz", {})
+    op_by_name: dict[str, list] = {}
+    op_by_art: dict[tuple, list] = {}
+    for sq, e in opin.items():
+        for nm in e.get("targets", []):
+            b = base_name(nm)
+            if b and sq not in op_by_name.get(b, []):
+                op_by_name.setdefault(b, []).append(sq)
+        for nn2, _raw, art in e.get("refs", []):
+            if art:
+                op_by_art.setdefault((nn2, art), []).append(sq)
+    def op_card(sq):
+        e = opin[sq]
+        return {"id": sq, "t": e["t"], "no": e.get("no", ""), "d": ymd(e.get("d", "")), "qorg": e.get("org", ""),
+                "a": (e.get("op", "") if len(e.get("op", "")) > 40 else (e.get("op", "") + " " + e.get("why", "")).strip())[:220],
+                "url": f"https://www.moleg.go.kr/lawinfo/reglAnalysis/reglAnalysisInfo.mo?mid=a10107020000&caseSeq={sq}", "dg": e.get("dg", ""), "kind": "opin"}
+    op_ord: dict[str, set] = {}   # 대구 요청 의견제시 → 이은 같은 지자체 자치법규
     ex_ord: dict[str, set] = {}   # 대구 질의 해석례 → 이은 같은 지자체 자치법규(전부개정 경계 반영)
     full_rev: dict[str, str] = {}
     for k, h in jh.items():
@@ -134,6 +164,16 @@ def main():
             refs = extract(arts)
             seen = set()
             art_by_no = {a["no"]: a for a in arts}
+            b = base_name(d["name"])
+            if b and b in op_by_name:
+                ids = sorted(op_by_name[b], key=lambda i: opin[i].get("d") or "", reverse=True)
+                mine = [i for i in ids if opin[i].get("dg") == d["org"]]
+                for i in mine:
+                    op_ord.setdefault(i, set()).add(d["id"])
+                sig = "opin_daegu" if mine else "opin_same"
+                use = mine or ids
+                add(d, None, sig, ev={"base": b, "n": len(use), "ordin_prom": ymd(prom), "after": any((opin[i].get("d") or "") > prom for i in use),
+                                      "expc": [op_card(i) for i in use[:4]], "targets": sorted({t for i in use[:4] for t in opin[i].get("targets", [])})[:6]})
             for r in refs:
                 n_ref += 1
                 nn = norm_name(r["law"])
@@ -179,6 +219,14 @@ def main():
                     if (nn, "am", r["no"]) not in seen:
                         seen.add((nn, "am", r["no"]))
                         add(d, a, "admrul_missing", ev={**ev, "cands": L.get("cands", [])[:4]})
+                if st == "current" and r["art"] and (nn, r["art"]) in op_by_art and (nn, "op", r["no"], r["art"]) not in seen:
+                    seen.add((nn, "op", r["no"], r["art"]))
+                    fr = full_rev.get(L["law_id"], "")
+                    ids = [i for i in op_by_art[(nn, r["art"])] if not fr or ((opin[i].get("d") or "") >= fr) == (prom >= fr)]
+                    if ids:
+                        ids.sort(key=lambda i: opin[i].get("d") or "", reverse=True)
+                        add(d, a, "opin_article", ev={**ev, "now": L["name"], "now_url": law_url(L["name"], r["art"]), "ordin_prom": ymd(prom),
+                                                       "after": any((opin[i].get("d") or "") > prom for i in ids), "n": len(ids), "expc": [op_card(i) for i in ids[:4]]})
                 if st == "current" and r["art"] and (nn, r["art"]) in ex_by and (nn, "ex", r["no"], r["art"]) not in seen:
                     seen.add((nn, "ex", r["no"], r["art"]))
                     fr = full_rev.get(L["law_id"], "")
@@ -263,6 +311,12 @@ def main():
             continue
         hits = sorted(ex_ord.get(iid, set()))
         dq.append({**ex_card(iid), "q": e.get("q", "")[:300], "local": e.get("local", False), "refs": [f"「{raw}」" + (f" 제{art}조" if art and "의" not in art else (f" 제{art.replace('의', '조의')}" if art else "")) for _n, raw, art in e.get("refs", [])][:6], "ordins": hits[:30]})
+    for sq, e in opin.items():
+        if not e.get("dg"):
+            continue
+        dq.append({**op_card(sq), "q": e.get("q", "")[:300], "local": True, "targets": e.get("targets", []),
+                   "refs": [f"「{raw}」" + (f" 제{art}조" if art and "의" not in art else (f" 제{art.replace('의', '조의')}" if art else "")) for _n, raw, art in e.get("refs", [])][:6],
+                   "ordins": sorted(op_ord.get(sq, set()))[:30]})
     dq.sort(key=lambda x: x["d"], reverse=True)
     (D / "expc_daegu.json").write_text(json.dumps({"built": ymd(TODAY), "items": dq}, ensure_ascii=False, indent=0) + "\n", encoding="utf-8")
     # 요약
@@ -275,7 +329,7 @@ def main():
         st[L.get("status")] = st.get(L.get("status"), 0) + 1
     summary = {"fetched": lst.get("fetched", ""), "built": ymd(TODAY), "orgs": [{"key": k, "name": org_name[k], "count": ordin_count.get(k, 0), "listed": lst["counts"].get(k, 0)} for k in orgs],
                "refs": n_ref, "refs_resolved": n_ref_ok, "refs_unknown": n_unres, "law_status": st, "laws_cited": len(laws),
-               "by_signal": by, "total": len(cands), "expc_held": len(expc), "expc_linked": sum(1 for v in ex_by.values() for _ in v), "expc_daegu": len(dq)}
+               "by_signal": by, "total": len(cands), "expc_held": len(expc), "expc_linked": sum(1 for v in ex_by.values() for _ in v), "expc_daegu": len(dq), "opin_held": len(opin)}
     (D / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     with gzip.open(D / "candidates.json.gz", "wt", encoding="utf-8") as f:
         json.dump({"built": ymd(TODAY), "items": cands}, f, ensure_ascii=False, separators=(",", ":"))

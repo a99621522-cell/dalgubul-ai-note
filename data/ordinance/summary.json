@@ -63,9 +63,9 @@
    "listed": 432
   }
  ],
- "refs": 41778,
- "refs_resolved": 41105,
- "refs_unknown": 0,
+ "refs": 41776,
+ "refs_resolved": 41103,
+ "refs_unknown": 3,
  "law_status": {
   "current": 1201,
   "local": 1153,
@@ -93,7 +93,7 @@
    "gunwi": 22
   },
   "law_not_current": {
-   "daegu": 3,
+   "daegu": 2,
    "jung": 2,
    "dong": 5,
    "seo": 3,
@@ -109,7 +109,7 @@
    "jung": 3,
    "dong": 25,
    "seo": 17,
-   "nam": 12,
+   "nam": 11,
    "buk": 21,
    "suseong": 14,
    "dalseo": 9,
@@ -117,52 +117,52 @@
    "gunwi": 16
   },
   "article_missing": {
-   "daegu": 2,
-   "jung": 4,
-   "dong": 3,
+   "daegu": 0,
+   "jung": 0,
+   "dong": 1,
    "seo": 1,
    "nam": 4,
-   "buk": 5,
-   "suseong": 2,
-   "dalseo": 1,
-   "dalseong": 3,
-   "gunwi": 2
+   "buk": 1,
+   "suseong": 1,
+   "dalseo": 0,
+   "dalseong": 1,
+   "gunwi": 1
   },
   "article_deleted": {
    "daegu": 24,
    "jung": 4,
-   "dong": 12,
+   "dong": 11,
    "seo": 9,
-   "nam": 15,
-   "buk": 11,
-   "suseong": 10,
+   "nam": 14,
+   "buk": 10,
+   "suseong": 8,
    "dalseo": 15,
-   "dalseong": 12,
-   "gunwi": 10
+   "dalseong": 11,
+   "gunwi": 9
   },
   "article_renumber": {
-   "daegu": 18,
-   "jung": 47,
-   "dong": 21,
-   "seo": 35,
-   "nam": 30,
-   "buk": 10,
-   "suseong": 23,
-   "dalseo": 37,
-   "dalseong": 19,
-   "gunwi": 34
+   "daegu": 11,
+   "jung": 40,
+   "dong": 13,
+   "seo": 25,
+   "nam": 25,
+   "buk": 6,
+   "suseong": 18,
+   "dalseo": 21,
+   "dalseong": 12,
+   "gunwi": 13
   },
   "article_changed": {
-   "daegu": 974,
-   "jung": 450,
-   "dong": 500,
-   "seo": 432,
-   "nam": 491,
-   "buk": 467,
-   "suseong": 560,
-   "dalseo": 594,
-   "dalseong": 627,
-   "gunwi": 304
+   "daegu": 872,
+   "jung": 425,
+   "dong": 465,
+   "seo": 402,
+   "nam": 472,
+   "buk": 429,
+   "suseong": 519,
+   "dalseo": 570,
+   "dalseong": 594,
+   "gunwi": 257
   },
   "local_ref_missing": {
    "daegu": 33,
@@ -201,16 +201,16 @@
    "gunwi": 5
   },
   "term_outdated": {
-   "daegu": 4,
-   "jung": 3,
-   "dong": 2,
+   "daegu": 1,
+   "jung": 2,
+   "dong": 1,
    "seo": 0,
-   "nam": 2,
+   "nam": 0,
    "buk": 3,
-   "suseong": 2,
+   "suseong": 1,
    "dalseo": 0,
-   "dalseong": 7,
-   "gunwi": 3
+   "dalseong": 6,
+   "gunwi": 0
   },
   "sunset": {
    "daegu": 9,
@@ -234,21 +234,45 @@
    "suseong": 0,
    "dalseo": 0,
    "dalseong": 0,
-   "gunwi": 7
+   "gunwi": 1
   },
   "penalty_basis": {
-   "daegu": 4,
-   "jung": 12,
-   "dong": 17,
-   "seo": 7,
-   "nam": 6,
-   "buk": 11,
-   "suseong": 19,
-   "dalseo": 7,
-   "dalseong": 7,
-   "gunwi": 5
+   "daegu": 0,
+   "jung": 5,
+   "dong": 6,
+   "seo": 1,
+   "nam": 0,
+   "buk": 3,
+   "suseong": 2,
+   "dalseo": 0,
+   "dalseong": 3,
+   "gunwi": 3
   },
   "expc_daegu": {
+   "daegu": 29,
+   "jung": 7,
+   "dong": 2,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 1,
+   "dalseo": 0,
+   "dalseong": 5,
+   "gunwi": 0
+  },
+  "expc_related": {
+   "daegu": 548,
+   "jung": 217,
+   "dong": 222,
+   "seo": 202,
+   "nam": 231,
+   "buk": 262,
+   "suseong": 279,
+   "dalseo": 269,
+   "dalseong": 349,
+   "gunwi": 238
+  },
+  "opin_daegu": {
    "daegu": 0,
    "jung": 0,
    "dong": 0,
@@ -260,7 +284,19 @@
    "dalseong": 0,
    "gunwi": 0
   },
-  "expc_related": {
+  "opin_same": {
+   "daegu": 0,
+   "jung": 0,
+   "dong": 0,
+   "seo": 0,
+   "nam": 0,
+   "buk": 0,
+   "suseong": 0,
+   "dalseo": 0,
+   "dalseong": 0,
+   "gunwi": 0
+  },
+  "opin_article": {
    "daegu": 0,
    "jung": 0,
    "dong": 0,
@@ -273,8 +309,9 @@
    "gunwi": 0
   }
  },
- "total": 7087,
- "expc_held": 0,
- "expc_linked": 0,
- "expc_daegu": 0
+ "total": 9348,
+ "expc_held": 8881,
+ "expc_linked": 1309,
+ "expc_daegu": 38,
+ "opin_held": 0
 }

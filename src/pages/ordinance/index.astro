@@ -33,7 +33,7 @@ const rate = s && s.refs ? Math.round((s.refs_resolved / s.refs) * 1000) / 10 : 
 
   <div class="section-head"><h2>더 보기</h2></div>
   <ul>
-    <li><a href="/ordinance/expc/">대구 지자체가 법제처에 질의한 해석례</a> — {(s.expc_daegu ?? 0).toLocaleString()}건과 같은 조문을 인용한 자치법규</li>
+    <li><a href="/ordinance/expc/">대구 지자체가 법제처에 질의·요청한 사례</a> — 법령해석례·자치법규 의견제시 {(s.expc_daegu ?? 0).toLocaleString()}건과 이어지는 자치법규</li>
     <li><a href="/ordinance/law/">법령으로 찾기</a> — 이 법령(조문)이 바뀌면 어느 대구 자치법규를 봐야 하나(인용 역색인)</li>
     <li><a href="/ordinance/about/">자료·방법·한계</a> — 인용 {s.refs.toLocaleString()}건 중 현행 법령·자치법규로 이은 것 {rate}%</li>
   </ul>

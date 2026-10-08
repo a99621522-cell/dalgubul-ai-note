@@ -22,7 +22,7 @@ export type Cand = {
 };
 export type Summary = {
   fetched: string; built: string; orgs: Org[]; refs: number; refs_resolved: number; refs_unknown: number;
-  law_status: Record<string, number>; laws_cited: number; by_signal: Record<string, Record<string, number>>; total: number; expc_held?: number; expc_linked?: number; expc_daegu?: number;
+  law_status: Record<string, number>; laws_cited: number; by_signal: Record<string, Record<string, number>>; total: number; expc_held?: number; expc_linked?: number; expc_daegu?: number; opin_held?: number;
 };
 
 export const signals = memo((): Sig[] => {

@@ -14,19 +14,20 @@ const L = new Map(listItems().map(x => [`${x.org}-${x.id}`, x]));
 const pages = byOrdin();
 const cnt = (k: string) => items.filter(x => x.dg === k).length;
 ---
-<Base title="법제처 해석례 — 자치법규 정비 검토" description="대구광역시와 9개 구·군이 법제처에 질의해 회답받은 법령해석례와, 같은 법령 조문을 인용한 자치법규" crumb="법제처 해석례" noindex wide>
-  <div class="section-head"><h1>대구 지자체가 법제처에 질의한 해석례</h1><span class="meta">{items.length.toLocaleString()}건 · 법제처 해석례 보유 {s?.expc_held?.toLocaleString() ?? 0}건</span></div>
+<Base title="법제처 해석·의견제시 — 자치법규 정비 검토" description="대구광역시와 9개 구·군이 법제처에 질의·요청해 받은 법령해석례와 자치법규 의견제시 사례, 그리고 이어지는 자치법규" crumb="법제처 해석·의견제시" noindex wide>
+  <div class="section-head"><h1>대구 지자체가 법제처에 질의·요청한 사례</h1><span class="meta">{items.length.toLocaleString()}건 · 보유 법령해석례 {s?.expc_held?.toLocaleString() ?? 0}건 · 의견제시 사례 {s?.opin_held?.toLocaleString() ?? 0}건</span></div>
   <Notice />
-  <p><a href="/ordinance/">← 전체</a> · 법제처가 공개한 법령해석례(국가법령정보센터) 중 질의기관이나 안건 머리가 대구광역시·구·군인 것입니다(군위군은 편입 전 경상북도 군위군 질의 포함). '인용 자치법규'는 같은 지자체의 현행 자치법규 가운데 해석례가 다룬 법령 조문을 인용한 것입니다 — 회답이 반영됐는지는 원문으로 확인합니다. 다른 지자체·부처가 질의한 해석례 중 자치법규에 관한 것은 각 자치법규 화면에 이어 붙였습니다.</p>
+  <p><a href="/ordinance/">← 전체</a> · 두 가지 공개 자료입니다. ① <strong>법령해석례</strong>(국가법령정보센터): 법령 조문의 뜻을 법제처에 질의해 받은 회답. ② <strong>자치법규 의견제시 사례</strong>(법제처 누리집 「자치입법 의견제시」): 조례·규칙(안)이 상위법령에 맞는지 등을 지자체가 요청해 받은 법제처 의견. 질의·요청 기관이 대구광역시·구·군인 것만 모았습니다(군위군은 편입 전 경상북도 군위군 포함). '이어지는 자치법규'는 같은 지자체의 현행 자치법규 중 의견제시 대상과 이름이 같거나(지자체 이름 뗀 비교) 해석례가 다룬 법령 조문을 인용한 것입니다 — 회신이 반영됐는지는 원문으로 확인합니다. 다른 지자체의 같은 이름 조례에 대한 의견제시는 각 자치법규 화면에 붙였습니다. 자치법규정보시스템(ELIS)의 실무자 커뮤니티 자료는 로그인 뒤 자료라 쓰지 않습니다.</p>
   <p class="meta">{os.map(o => `${o.name} ${cnt(o.key)}`).join(' · ')}</p>
   {items.length === 0 ? <p class="callout info">아직 해석례 수집 결과가 없습니다.</p> :
   <div class="scroll-x"><table class="data-table">
-    <thead><tr><th>지자체</th><th>안건</th><th>회답일</th><th>다룬 법령 조문</th><th>회답 앞부분</th><th>인용 자치법규</th></tr></thead>
+    <thead><tr><th>지자체</th><th>구분</th><th>안건</th><th>회신·회답일</th><th>다룬 법령 조문 · 대상 자치법규</th><th>의견·회답 앞부분</th><th>이어지는 자치법규</th></tr></thead>
     <tbody>{items.map(x => <tr>
       <td>{orgName(x.dg)}</td>
-      <td><a href={x.url} rel="noopener">{x.t}</a><div class="meta">{x.no}{x.local && ' · 자치법규 관련'}</div></td>
+      <td>{x.kind === 'opin' ? '의견제시' : '법령해석'}</td>
+      <td><a href={x.url} rel="noopener">{x.t}</a><div class="meta">{x.no}{x.kind !== 'opin' && x.local && ' · 자치법규 관련'}</div></td>
       <td class="n">{x.d}</td>
-      <td>{x.refs.join(', ')}</td>
+      <td>{[...x.refs, ...(x.targets ?? []).map((t: string) => `「${t}」`)].join(', ')}</td>
       <td>{x.a.length >= 220 ? x.a + '…' : x.a}</td>
       <td>{x.ordins.length ? x.ordins.map((oid: string, i: number) => { const k = `${x.dg}-${oid}`; const o = L.get(k); return <>{i > 0 && ', '}<a href={pages.has(k) ? `/ordinance/o/${k}/` : `https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=${o?.mst ?? ''}`}>{o?.name ?? oid}</a></>; }) : '—'}</td>
     </tr>)}</tbody>

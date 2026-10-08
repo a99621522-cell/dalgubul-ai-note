@@ -1,94 +1,47 @@
 ---
-/** 대구 주력·미래 신산업 관련 업종(통계청 중분류) — 운영자 지시 2026-10-08 '통계청 자료로 작성하는게 정확할 것 같은데'.
- *  데이터 data/kosis/industry_bundles.json(scripts/industry_bundles.py): 값은 모두 KOSIS(광업·제조업조사 10인 이상·전국사업체조사 1인 이상)의
- *  대구·전국 중분류 값. 연구 보고서는 산업 묶음의 업종 코드 정의만 빌린다(보고서의 대구 수치는 공개 통계로 확인할 수 없어 싣지 않는다).
- *  덧셈·나눗셈(전국 대비 비중·부가가치율)만, 평가·순위 없음. */
+/** 대구 주력·미래 신산업 현황(대구정책연구원 연구 보고서 값) — /stats/industry/#bundles 와 /policy/dpi-industry/ 가 같이 쓴다.
+ *  운영자 지시 2026-10-09 '산업통계부문이 안맞아, 로봇산업 숫자도 너무 많아 전국인지 대구인지, 2016년 이런 과거 자료는 필요 없어,
+ *  그냥 대구정책연구원 자료만 올려': 통계청 중분류 대조표는 빼고, 보고서의 최근 연도(2023) 대구 값만 한 표로. 전국 값·연도별 추이는 싣지 않는다.
+ *  데이터 data/dpi/university_industry.json(보고서 4장 표 값 그대로). 단위 바꿈(백만 원 → 억 원)만, 평가·순위 없음. */
 import fs from 'node:fs';
 
-type Num = number | null;
-type Pair = { dg: Num; nat: Num };
-type Row = { code: string; name: string; bundles: string[]; manufacturing: boolean; census: { est: Pair; emp: Pair }; survey: { est: Pair; prod: Pair; va: Pair } | null };
-type Bundle = { name: string; role: string; page: number | null; codes: { ksic: string; name: string }[]; mids: string[] };
-type Data = {
-  survey_year: number | null; census_year: number | null;
-  definition: { publisher: string; title: string; series: string };
-  sources: { name: string; tbl_id: string; url: string }[];
-  mfg_total: { census: { est: Pair; emp: Pair }; survey: { est: Pair; prod: Pair; va: Pair } };
-  rows: Row[]; bundles: Bundle[];
-};
-const D = (() => { try { return JSON.parse(fs.readFileSync('data/kosis/industry_bundles.json', 'utf-8')) as Data; } catch { return null; } })();
-
-const n = (v: Num | undefined) => v == null ? '—' : v.toLocaleString('ko-KR');
-const eok = (v: Num | undefined) => v == null ? '—' : Math.round(v / 100).toLocaleString('ko-KR');   // 백만 원 → 억 원
-const pct = (a: Num | undefined, b: Num | undefined) => a == null || !b ? '—' : (a / b * 100).toFixed(1);
-const share = (p: Pair) => pct(p.dg, p.nat);
-const mfg = D ? D.rows.filter(r => r.survey) : [];
-const svc = D ? D.rows.filter(r => !r.survey) : [];
-const def = D ? `${D.definition.publisher} 「${D.definition.title}」(${D.definition.series})` : '';
-const T = D?.mfg_total;
+type S = (number | null)[];
+type Bundle = { name: string; role: string; page: number; codes: { ksic: string; name: string }[]; codes_stated: number | null; daegu: { est: S; emp: S; prod: S; va: S } };
+const D = (() => { try { return JSON.parse(fs.readFileSync('data/dpi/university_industry.json', 'utf-8')) as {
+  source: { publisher: string; title: string; series: string; published: string }; years: number[]; bundles: Bundle[] }; } catch { return null; } })();
+const n = (v: number | null | undefined) => v == null ? '—' : v.toLocaleString('ko-KR');
+const eok = (v: number | null | undefined) => v == null ? '—' : Math.round(v / 100).toLocaleString('ko-KR');
+const i = D ? D.years.length - 1 : 0;
+const Y = D ? D.years[i] : '';
+const src = D ? `${D.source.publisher} 「${D.source.title}」(${D.source.series}, ${D.source.published.replace('-', '.')})` : '';
+interface Props { heading?: boolean }
+const { heading = true } = Astro.props;
 ---
 {D && <section class="ib" id="bundles">
-  <div class="section-head"><h2>대구 주력·미래 신산업 관련 업종</h2><span class="meta">통계청 중분류 · 광업·제조업조사 {D.survey_year ?? '—'}년 · 전국사업체조사 {D.census_year ?? '—'}년</span></div>
-  <p class="meta">{def}이 세세분류(5자리) 업종을 묶어 정한 대구 주력산업 3개·미래 신산업 5개를, 통계청이 대구 값을 공개하는 가장 세밀한 단계인 <b>중분류(2자리)</b>로 보여 줍니다. 값은 모두 국가데이터처 KOSIS 이고, 묶음 업종이 속한 중분류 <b>전체</b>의 값입니다(묶음보다 넓음). 대구 세세분류 값은 통계청이 공개하지 않아 싣지 않습니다. 보고서에 실린 산업별 값은 <a href="/policy/dpi-industry/">리포트 › 연구 보고서 수치</a>에 따로 있습니다.</p>
-
-  <h3 class="ib-h3">생산액·부가가치(10인 이상, 광업·제조업조사 {D.survey_year ?? ''}년)</h3>
-  <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 관련 제조업 중분류 생산액·부가가치(${D.survey_year ?? ''})`}>
-    <thead>
-      <tr><th rowspan="2">중분류</th><th rowspan="2" data-pri="3">관련 산업 묶음</th><th rowspan="2" class="n" data-pri="2">사업체(곳)</th><th colspan="2" class="c">생산액</th><th colspan="2" class="c">부가가치</th><th colspan="2" class="c" data-pri="2">부가가치율(%)</th></tr>
-      <tr><th class="n">대구(억 원)</th><th class="n">전국 대비(%)</th><th class="n">대구(억 원)</th><th class="n">전국 대비(%)</th><th class="n" data-pri="2">대구</th><th class="n" data-pri="2">전국</th></tr>
-    </thead>
-    <tbody>
-      {mfg.map(r => { const s = r.survey!; return <tr>
-        <th scope="row">{r.code + " " + r.name}</th>
-        <td class="wrap tiny ib-bund">{r.bundles.join(', ')}</td>
-        <td class="n">{n(s.est.dg)}</td>
-        <td class="n">{eok(s.prod.dg)}</td><td class="n">{share(s.prod)}</td>
-        <td class="n">{eok(s.va.dg)}</td><td class="n">{share(s.va)}</td>
-        <td class="n">{pct(s.va.dg, s.prod.dg)}</td><td class="n">{pct(s.va.nat, s.prod.nat)}</td>
-      </tr>; })}
-      {T && <tr class="total"><th scope="row">제조업 전체(참고)</th><td></td><td class="n">{n(T.survey.est.dg)}</td><td class="n">{eok(T.survey.prod.dg)}</td><td class="n">{share(T.survey.prod)}</td><td class="n">{eok(T.survey.va.dg)}</td><td class="n">{share(T.survey.va)}</td><td class="n">{pct(T.survey.va.dg, T.survey.prod.dg)}</td><td class="n">{pct(T.survey.va.nat, T.survey.prod.nat)}</td></tr>}
-    </tbody>
+  {heading && <div class="section-head"><h2>대구 주력·미래 신산업 현황</h2><span class="meta">대구 · {Y}년 · 대구정책연구원 연구 보고서</span></div>}
+  <p class="meta">{src}에 실린 대구의 산업별 값({Y}년)을 그대로 옮겼습니다. 모두 <b>대구</b> 값입니다.</p>
+  <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 현황(${Y}년, 대구정책연구원)`}>
+    <thead><tr><th>산업</th><th data-pri="3">구분</th><th class="n">사업체(개)</th><th class="n">종사자(명)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th></tr></thead>
+    <tbody>{D.bundles.map(b => <tr>
+      <th scope="row">{b.name}</th><td>{b.role}</td>
+      <td class="n">{n(b.daegu.est[i])}</td><td class="n">{n(b.daegu.emp[i])}</td><td class="n">{eok(b.daegu.prod[i])}</td><td class="n">{eok(b.daegu.va[i])}</td>
+    </tr>)}</tbody>
   </table></div>
-
-  <h3 class="ib-h3">사업체·종사자(1인 이상, 전국사업체조사 {D.census_year ?? ''}년)</h3>
-  <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 관련 중분류 사업체·종사자(${D.census_year ?? ''})`}>
-    <thead><tr><th>중분류</th><th data-pri="3">관련 산업 묶음</th><th class="n">대구 사업체(곳)</th><th class="n">전국 대비(%)</th><th class="n">대구 종사자(명)</th><th class="n">전국 대비(%)</th></tr></thead>
-    <tbody>
-      {D.rows.map(r => <tr>
-        <th scope="row">{r.code + " " + r.name}</th>
-        <td class="wrap tiny ib-bund">{r.bundles.join(', ')}</td>
-        <td class="n">{n(r.census.est.dg)}</td><td class="n">{share(r.census.est)}</td>
-        <td class="n">{n(r.census.emp.dg)}</td><td class="n">{share(r.census.emp)}</td>
-      </tr>)}
-      {T && <tr class="total"><th scope="row">제조업 전체(참고)</th><td></td><td class="n">{n(T.census.est.dg)}</td><td class="n">{share(T.census.est)}</td><td class="n">{n(T.census.emp.dg)}</td><td class="n">{share(T.census.emp)}</td></tr>}
-    </tbody>
-  </table></div>
-
   <ul class="meta ib-notes">
-    <li><b>기준이 둘입니다.</b> 생산액·부가가치는 종사자 10인 이상 사업체(광업·제조업조사), 사업체·종사자는 1인 이상 전체(전국사업체조사)라 같은 사업체 집합이 아니고 조사 연도도 다릅니다.</li>
-    <li><b>중분류는 묶음보다 넓습니다.</b> 예를 들어 '27 의료·정밀·광학기기'에는 의료기기 말고 측정·제어기기·안경 등이 함께 들어 있습니다. 한 중분류가 여러 묶음에 걸쳐 있으니 묶음끼리 더하지 마세요.</li>
-    {svc.length > 0 && <li><b>{svc.map(r => r.code + ' ' + r.name).join(', ')}</b>은 서비스업이라 광업·제조업조사 대상이 아니어서 생산액·부가가치 표에 없습니다.</li>}
-    <li>— 는 KOSIS 값이 없거나 사업체가 적어 비공개 처리된 칸입니다. 전국 대비·부가가치율은 이 사이트의 나눗셈이고, 금액은 백만 원을 억 원으로 반올림했습니다.</li>
+    <li>사업체·종사자는 1인 이상 전체, 생산액·부가가치는 종사자 10인 이상 사업체 기준입니다(보고서 표 주).</li>
+    <li>산업마다 업종이 일부 겹쳐 산업별 값을 더하면 안 됩니다. ABB 의 생산액·부가가치는 제조 업종만의 값입니다.</li>
   </ul>
-
   <details class="ib-codes">
-    <summary>산업 묶음 정의(세세분류 업종 코드)와 관련 중분류 보기</summary>
-    <div class="scroll-x"><table class="data-table compact" data-title="대구 주력·미래 신산업 묶음 정의">
-      <thead><tr><th>산업 묶음</th><th>구분</th><th class="n">업종 수</th><th>관련 중분류</th><th>세세분류 업종(코드)</th></tr></thead>
-      <tbody>{D.bundles.map(b => <tr>
-        <th scope="row">{b.name}</th><td>{b.role}</td><td class="n">{b.codes.length}</td>
-        <td class="wrap">{b.mids.join('·')}</td>
-        <td class="wrap tiny">{b.codes.map(c => `${c.ksic} ${c.name}`).join(', ')}</td>
-      </tr>)}</tbody>
+    <summary>산업별 업종(세세분류 코드) 보기</summary>
+    <div class="scroll-x"><table class="data-table compact" data-title="대구 주력·미래 신산업 업종 정의(대구정책연구원)">
+      <thead><tr><th>산업</th><th>업종(코드)</th></tr></thead>
+      <tbody>{D.bundles.map(b => <tr><th scope="row">{b.name}</th><td class="wrap tiny">{b.codes.map(c => c.ksic + ' ' + c.name).join(', ')}</td></tr>)}</tbody>
     </table></div>
-    <p class="meta">업종 코드는 {def}에 실린 것을 옮겼습니다(보고서 표기 그대로, 일부 묶음은 한국표준산업분류 10차·11차 번호가 섞여 있음).</p>
   </details>
-  <p class="meta">출처: 국가데이터처 KOSIS {D.sources.map((s, i) => <>{i ? ', ' : ''}<a href={s.url} rel="noopener">{s.name}({s.tbl_id})</a></>)}. 산업 묶음 정의: {def}. 평가·순위가 아닙니다.</p>
+  <p class="meta">출처: {src}. 보고서 값 그대로이며 평가·순위가 아닙니다.</p>
 </section>}
 <style>
   .ib { margin-top: var(--s5); }
-  .ib-h3 { margin: var(--s3) 0 var(--s1); font-size: 1.05rem; }
-  .ib-bund { min-width: 11em; }
   .ib-notes { padding-left: 1.2em; margin: var(--s2) 0; overflow-wrap: anywhere; }
   .ib-notes li { margin: 2px 0; }
   .ib-codes { margin: var(--s2) 0; }

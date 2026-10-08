@@ -1,72 +1,10 @@
 ---
-/** /policy/dpi-industry/ — 대구정책연구원 연구 보고서의 대구 주력·미래 신산업 수치(운영자 지시 2026-10-08 '대구정책연구원 자료는 별도로 올려').
- *  data/dpi/university_industry.json(보고서 4장 표의 값 그대로, README). 통계청 공개 통계(/stats/industry/#bundles)와 섞지 않으려고
- *  리포트 메뉴 아래 따로 둔다. 이 사이트는 단위 바꿈(백만 원 → 억 원)만 하고 계산·평가하지 않는다. */
-import fs from 'node:fs';
+/** /policy/dpi-industry/ — 대구정책연구원 연구 보고서의 대구 주력·미래 신산업 현황. 표는 IndustryBundles(통계 › 산업 구조와 같은 표, 2023년 대구 값만 —
+ *  운영자 지시 2026-10-09 '2016년 이런 과거 자료는 필요 없어, 그냥 대구정책연구원 자료만 올려'). */
 import Base from '../../layouts/Base.astro';
-
-type S = (number | null)[];
-type Bundle = { name: string; role: string; page: number; codes: { ksic: string; name: string }[]; codes_stated: number | null;
-  daegu: { est: S; emp: S; prod: S; va: S }; national?: Record<string, Record<string, number>> };
-const D = JSON.parse(fs.readFileSync('data/dpi/university_industry.json', 'utf-8')) as {
-  source: { publisher: string; title: string; series: string; published: string; pages: number }; years: number[]; bundles: Bundle[] };
-const n = (v: number | null | undefined) => v == null ? '—' : v.toLocaleString('ko-KR');
-const eok = (v: number | null | undefined) => v == null ? '—' : Math.round(v / 100).toLocaleString('ko-KR');
-const last = D.years.length - 1, Y = D.years[last];
-const src = `${D.source.publisher} 「${D.source.title}」(${D.source.series}, ${D.source.published.replace('-', '.')})`;
-const natLabel: Record<string, string> = { est: '사업체(개)', emp: '종사자(명)', prod: '생산액(억 원)', va: '부가가치(억 원)' };
-const natVal = (k: string, v: number) => (k === 'prod' || k === 'va') ? eok(v) : n(v);
+import IndustryBundles from '../../components/IndustryBundles.astro';
 ---
-<Base title="대구 주력·미래 신산업 현황(연구 보고서)" description={`${src}에 실린 대구 주력산업 3개·미래 신산업 5개의 사업체·종사자·생산액·부가가치(2016~${Y}년)를 보고서 값 그대로 옮긴 표.`} current="policy" crumb="연구 보고서 수치" wide>
-  <div class="section-head"><h1>대구 주력·미래 신산업 현황</h1><span class="meta">연구 보고서 수치 · 2016~{Y}년</span></div>
-  <p class="lede">{src} 4장에 실린 산업별 표의 값을 그대로 옮겼습니다. 이 사이트가 계산한 값이 아니며, 금액 단위만 백만 원에서 억 원으로 바꿨습니다.</p>
-  <div class="callout info">보고서의 산업은 한국표준산업분류 세세분류(5자리) 업종을 묶은 것이고, 대구의 세세분류 값은 통계청 공개 통계(KOSIS)에 없습니다. 그래서 이 값들은 공개 통계로 다시 만들어 볼 수 없습니다. 통계청이 공개하는 중분류 값은 <a href="/stats/industry/#bundles">통계 › 산업 구조 › 주력·미래 신산업 관련 업종</a>에 따로 있습니다.</div>
-
-  <h2>{Y}년 한눈에</h2>
-  <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 현황(${Y}년, 연구 보고서 값)`}>
-    <thead><tr><th>산업</th><th>구분</th><th class="n" data-pri="3">업종 수</th><th class="n">사업체(개)</th><th class="n">종사자(명)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th><th class="n" data-pri="2">보고서 쪽</th></tr></thead>
-    <tbody>{D.bundles.map(b => <tr>
-      <th scope="row"><a href={'#' + encodeURIComponent(b.name)}>{b.name}</a></th><td>{b.role}</td><td class="n">{b.codes_stated ?? b.codes.length}</td>
-      <td class="n">{n(b.daegu.est[last])}</td><td class="n">{n(b.daegu.emp[last])}</td><td class="n">{eok(b.daegu.prod[last])}</td><td class="n">{eok(b.daegu.va[last])}</td><td class="n">{b.page}</td>
-    </tr>)}</tbody>
-  </table></div>
-
-  <h2>읽을 때 주의할 점</h2>
-  <ul class="notes">
-    <li><b>기준이 둘입니다.</b> 사업체·종사자는 1인 이상 전체(통계청 전국사업체조사), 생산액·부가가치는 종사자 10인 이상 사업체(광업·제조업조사)입니다(보고서 표 주).</li>
-    <li><b>2019→2020년 사업체 수가 함께 늘어납니다.</b> 모든 산업에서 같은 해에 사업체 수가 크게 늘고 종사자·생산액은 그만큼 늘지 않습니다. 통계청 전국사업체조사 표가 2020년부터 새 계열로 바뀐 시점과 겹치므로, 2019년 이전과 2020년 이후의 사업체 수를 한 추세로 이어 읽지 않는 것이 안전합니다.</li>
-    <li><b>산업끼리 겹칩니다.</b> 같은 업종 코드가 여러 산업에 들어 있어(예: 자동차 부품, 응용 소프트웨어) 산업별 값을 더하면 안 됩니다.</li>
-    <li><b>ABB 의 생산액·부가가치</b>는 제조 업종(전자부품·무선 통신장비)만의 값입니다. 소프트웨어·정보서비스 업종은 광업·제조업조사 대상이 아니어서 사업체·종사자에만 들어갑니다. 2020~2022년은 보고서에 값이 없습니다(—).</li>
-    <li><b>업종 코드 판.</b> 미래모빌리티·헬스케어 산업의 코드 목록에는 한국표준산업분류 10차 번호가 섞여 있습니다(아래 정의 표, 보고서 표기 그대로).</li>
-    <li><b>전국 값.</b> 보고서에 전국 생산액이 실린 3개 산업(전기·자율 모빌리티부품, 기계요소 소재부품, 디지털 의료기기)은 통계청 공개 전국 세세분류 값을 같은 코드로 더한 값과 같습니다(이 사이트 확인, 2026-10-08).</li>
-  </ul>
-
-  <h2>산업별 2016~{Y}년</h2>
-  {D.bundles.map(b => <section class="bundle" id={b.name}>
-    <h3>{b.name} <span class="meta">{b.role} · 보고서 {b.page}쪽</span></h3>
-    <div class="scroll-x"><table class="data-table compact" data-title={`${b.name} 대구 2016~${Y}년(연구 보고서 값)`}>
-      <thead><tr><th>연도</th><th class="n">사업체(개)</th><th class="n">종사자(명)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th></tr></thead>
-      <tbody>{D.years.map((y, i) => <tr><th scope="row">{y}</th><td class="n">{n(b.daegu.est[i])}</td><td class="n">{n(b.daegu.emp[i])}</td><td class="n">{eok(b.daegu.prod[i])}</td><td class="n">{eok(b.daegu.va[i])}</td></tr>)}</tbody>
-    </table></div>
-    {b.national && <p class="meta">전국(보고서 값): {Object.entries(b.national).map(([k, v], j) => <>{j ? ' · ' : ''}{natLabel[k]} {Object.entries(v).map(([yy, x]) => yy + '년 ' + natVal(k, x)).join(', ')}</>)}</p>}
-  </section>)}
-
-  <details class="defs">
-    <summary>산업별 업종 정의(세세분류 코드) 보기</summary>
-    <div class="scroll-x"><table class="data-table compact" data-title="연구 보고서의 대구 주력·미래 신산업 업종 정의">
-      <thead><tr><th>산업</th><th class="n">업종 수</th><th>세세분류 업종(코드)</th></tr></thead>
-      <tbody>{D.bundles.map(b => <tr><th scope="row">{b.name}</th><td class="n">{b.codes.length}{b.codes_stated && b.codes_stated !== b.codes.length ? ' / ' + b.codes_stated : ''}</td><td class="wrap tiny">{b.codes.map(c => c.ksic + ' ' + c.name).join(', ')}</td></tr>)}</tbody>
-    </table></div>
-    <p class="meta">업종 수가 '34 / 35' 처럼 적힌 산업은 보고서가 밝힌 업종 수와 표에서 읽은 코드 수가 다른 경우입니다.</p>
-  </details>
-
-  <p class="meta">출처: {src}. 보고서 값 그대로이며 이 사이트의 평가·순위가 아닙니다.</p>
-  <style>
-    .notes { padding-left: 1.2em; overflow-wrap: anywhere; }
-    .notes li { margin: 4px 0; }
-    .bundle { margin-top: var(--s4); }
-    .bundle h3 { margin: 0 0 var(--s1); font-size: 1.05rem; }
-    .defs { margin: var(--s4) 0 var(--s2); }
-    .defs > summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
-  </style>
+<Base title="대구 주력·미래 신산업 현황" description="대구정책연구원 연구 보고서에 실린 대구 주력산업 3개·미래 신산업 5개의 사업체·종사자·생산액·부가가치(2023년)." current="policy" crumb="대구 주력·미래 신산업 현황">
+  <div class="section-head"><h1>대구 주력·미래 신산업 현황</h1><span class="meta">대구 · 2023년</span></div>
+  <IndustryBundles heading={false} />
 </Base>

@@ -1,0 +1,38 @@
+# 자치법규 정비 검토 — 내용 점검 후보의 상위법령 위임 근거 조사(scripts/ordin/delegation.py, config/ordinance_delegation.yml).
+# 설정·스크립트를 바꿔 푸시하거나 data/ordinance/deleg_run.txt 를 바꿔 푸시하면 실행. 결과 data/ordinance/delegation/
+name: 자치법규 정비 검토 — 위임 근거 조사
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ccr-a1fc4817-w0vo95]
+    paths: ["data/ordinance/deleg_run.txt", "config/ordinance_delegation.yml", "scripts/ordin/delegation.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ordinance-deleg
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+        run: python3 -u scripts/ordin/delegation.py
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ordinance/delegation || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 자치법규 위임 근거 조사 $(date +%F)"
+          for i in 1 2 3 4 5; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 7; done

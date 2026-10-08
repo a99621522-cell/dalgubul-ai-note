@@ -1,6 +1,7 @@
-# 자치법규 정비 검토 — 법제처 법령해석례 수집(scripts/ordin/fetch_expc.py). 수집 워크플로와 따로 돈다.
+# 자치법규 정비 검토 — 법제처 법령해석례(scripts/ordin/fetch_expc.py, 국가법령정보센터 API)와 자치법규 의견제시 사례
+# (scripts/ordin/fetch_opin.py, 법제처 누리집 공개 게시판, 요청 사이 1초) 수집. 수집 워크플로와 따로 돈다.
 # data/ordinance/expc_run.txt 를 바꿔 푸시하거나 매주 월 04:40 KST. 새 해석례만 받는다.
-name: 자치법규 정비 검토 — 법제처 해석례
+name: 자치법규 정비 검토 — 법제처 해석례·의견제시
 
 on:
   schedule:
@@ -20,7 +21,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 200
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,11 +32,15 @@ jobs:
           LAW_OC: ${{ secrets.LAW_OC }}
           BUDGET_MIN: "180"
         run: python3 -u scripts/ordin/fetch_expc.py || true
+      - name: 의견제시 사례
+        env:
+          BUDGET_MIN: "270"
+        run: python3 -u scripts/ordin/fetch_opin.py || true
       - name: 커밋
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ordinance/expc || true
           git diff --cached --quiet && { echo "변경 없음"; exit 0; }
-          git commit -m "chore: 법제처 해석례 $(date +%F)"
+          git commit -m "chore: 법제처 해석례·의견제시 $(date +%F)"
           for i in 1 2 3 4 5; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 7; done

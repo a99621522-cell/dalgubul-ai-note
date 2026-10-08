@@ -1,0 +1,26 @@
+# 자치법규 정비 검토 — API 실측(수집 워크플로와 따로 돈다). data/ordinance/probe.txt 첫 줄의 스크립트 이름(probe | probe_expc)을 돌려 로그만 남긴다.
+name: 자치법규 정비 검토 실측
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ccr-a1fc4817-w0vo95]
+    paths: ["data/ordinance/probe.txt"]
+
+concurrency:
+  group: ordinance-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+        run: python3 -u "scripts/ordin/$(head -1 data/ordinance/probe.txt).py"

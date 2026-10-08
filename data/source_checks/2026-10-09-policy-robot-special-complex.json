@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-09-policy-robot-special-complex.md",
  "checked": "2026-10-08",
- "ok": 9,
+ "ok": 8,
  "total": 9,
- "ratio": 1.0,
+ "ratio": 0.89,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -96,12 +96,12 @@
    "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
    "date": "2026-10-08",
    "kind": "data",
-   "status": 200,
-   "page_title": "KOSIS",
-   "title_match": 0.12,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
-   "note": ""
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "기업 사전(팩토리온 2026-09 공장등록, KSIC 코드·단지·종사자 신고값)·지원 이력·사업 DB(사업명만)",

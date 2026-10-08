@@ -386,6 +386,11 @@ def main():
                                 add(d, a, "content_rule_ref", ev={"rule": rk, "rname": R["name"] + "(자치법규는 위임 근거를 밝힘)", "level": "참고", "ctx": hitp.strip()[:400],
                                                                   "basis": R.get("basis", ""), "prec": R.get("prec", []), "rwhy": R["why"], "rhow": "공공시설 이용 규칙이면 시설 관리 범위인지, 근거 법률이 있으면 그 법률이 이 의무·제한까지 맡겼는지 확인한다."})
                                 continue
+                        if hitp and R.get("weak") and any(re.search(x, hitp) for x in R["weak"]):
+                            # 다른 서류로 대신할 수 있거나 보여 주기만 하는 경우 — 부담이 작아 참고로
+                            add(d, a, "content_rule_ref", ev={"rule": rk, "rname": R["name"] + "(다른 서류로 대신 가능)", "level": "참고", "ctx": hitp.strip()[:400],
+                                                              "basis": R.get("basis", ""), "prec": R.get("prec", []), "rwhy": R["why"], "rhow": R["how"]})
+                            continue
                         if hitp and R.get("strong"):
                             # 강한 신호(의무·법정 위원회)가 아니면 숨김 신호로
                             strong = any(re.search(x, hitp) for x in R["strong"]) or bool(R.get("strong_scope") and re.search(R["strong_scope"], d["name"] + " " + (a.get("title") or "")))

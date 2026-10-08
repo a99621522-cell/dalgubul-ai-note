@@ -274,16 +274,18 @@ def main():
                     h = jh.get(f"{L['law_id']}|{r['art']}")
                     if not h or not prom:
                         continue
-                    later = [x for x in h.get("rows", []) if prom < (x.get("d") or "") <= TODAY and x.get("why") != "제정"]   # 시행 예정 개정은 뺀다
+                    # 자치법규 최종 공포 뒤에 '공포'되고 오늘까지 '시행'된 조문 변경 — 공포 뒤·시행 전에 미리 고친 자치법규는 걸리지 않는다
+                    later = [x for x in h.get("rows", []) if prom < (x.get("prom") or x.get("d") or "") and (x.get("d") or "") <= TODAY and x.get("why") != "제정"]
                     if not later:
                         continue
                     ren = [x for x in later if re.search(r"전부개정|전문개정|이동", (x.get("why") or "") + (x.get("rev") or ""))]
                     if ren:
                         # 공포 당시 판의 같은 번호 조문 제목과 지금 제목을 비교한다(표본 대조 2026-10-08: 제목 낱말 짐작은 정확도 60% 안팎)
-                        before = [x for x in h.get("rows", []) if (x.get("d") or "") <= prom and x.get("mst")]
-                        b0 = max(before, key=lambda x: x["d"]) if before else None
+                        before = [x for x in h.get("rows", []) if (x.get("prom") or x.get("d") or "") <= prom and x.get("mst")]
+                        b0 = max(before, key=lambda x: (x.get("prom") or x["d"], x["d"])) if before else None
                         ot = oldt.get(f"{L['law_id']}|{r['art']}|{b0['mst']}") if b0 else None
-                        if ot and ot.get("t") and norm_name(ot["t"]) != norm_name(la.get("t", "")):
+                        tn = lambda x: norm_name(re.sub(r"<[^>]*>|\[[^\]]*\]", "", x or ""))   # '<개정 2003.1.20>' 같은 표기는 빼고 비교
+                        if ot and ot.get("t") and tn(ot["t"]) != tn(la.get("t", "")):
                             ev2["old_title"], ev2["old_text"], ev2["old_d"] = ot["t"], ot.get("x", ""), ymd(b0["d"])
                         else:
                             if ot and ot.get("t"):

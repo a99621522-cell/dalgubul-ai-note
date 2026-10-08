@@ -462,11 +462,12 @@ def main():
                 if not h:
                     continue
                 rows = h.get("rows", [])
-                if not any(prom < (x.get("d") or "") <= TODAY.replace("-", "") and re.search(r"전부개정|전문개정|이동", (x.get("why") or "") + (x.get("rev") or "")) for x in rows):
+                # 기준은 법령 '공포일' — 자치법규를 고칠 때 이미 공포된 판(시행 전이라도)을 보고 번호를 맞췄을 수 있다
+                if not any(prom < (x.get("prom") or x.get("d") or "") and (x.get("d") or "") <= TODAY.replace("-", "") and re.search(r"전부개정|전문개정|이동", (x.get("why") or "") + (x.get("rev") or "")) for x in rows):
                     continue
-                before = [x for x in rows if (x.get("d") or "") <= prom and x.get("mst")]
+                before = [x for x in rows if (x.get("prom") or x.get("d") or "") <= prom and x.get("mst")]
                 if before:
-                    b = max(before, key=lambda x: x["d"])
+                    b = max(before, key=lambda x: (x.get("prom") or x["d"], x["d"]))
                     k = f"{L0['law_id']}|{r0['art']}|{b['mst']}"
                     if k not in oldt:
                         want.add((k, b["mst"], jo_code(r0["art"]), b["d"]))

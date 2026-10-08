@@ -141,28 +141,28 @@
    "gunwi": 9
   },
   "article_renumber": {
-   "daegu": 6,
-   "jung": 43,
-   "dong": 11,
-   "seo": 30,
-   "nam": 24,
-   "buk": 5,
-   "suseong": 12,
-   "dalseo": 29,
-   "dalseong": 15,
+   "daegu": 0,
+   "jung": 22,
+   "dong": 0,
+   "seo": 1,
+   "nam": 9,
+   "buk": 3,
+   "suseong": 8,
+   "dalseo": 1,
+   "dalseong": 3,
    "gunwi": 0
   },
   "article_changed": {
-   "daegu": 877,
-   "jung": 422,
-   "dong": 467,
-   "seo": 397,
-   "nam": 474,
-   "buk": 430,
-   "suseong": 525,
-   "dalseo": 563,
-   "dalseong": 583,
-   "gunwi": 270
+   "daegu": 731,
+   "jung": 408,
+   "dong": 422,
+   "seo": 350,
+   "nam": 438,
+   "buk": 361,
+   "suseong": 475,
+   "dalseo": 512,
+   "dalseong": 518,
+   "gunwi": 204
   },
   "local_ref_missing": {
    "daegu": 33,
@@ -309,7 +309,7 @@
    "gunwi": 0
   }
  },
- "total": 7480,
+ "total": 6763,
  "expc_held": 8881,
  "expc_linked": 498,
  "expc_daegu": 38,

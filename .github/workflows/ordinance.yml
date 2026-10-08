@@ -1,0 +1,55 @@
+# 대구 자치법규 정비 검토 — 국가법령정보센터 오픈API 로 대구시·9개 구군 자치법규와 인용 상위법령을 받아 data/ordinance 에 커밋한다.
+# 이 세션 환경은 law.go.kr 이 막혀 있어 러너가 받는다. 매주 월 03:40 KST + 수동. 입력 probe=true 면 API 실측 로그만.
+name: 자치법규 정비 검토 (법령정보센터)
+
+on:
+  schedule:
+    - cron: "40 18 * * 0"
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "API 실측만(true)"
+        required: false
+        default: "false"
+  push:
+    branches: [ccr-a1fc4817-w0vo95]
+    paths: ["scripts/ordin/**", "config/ordinance.yml", ".github/workflows/ordinance.yml", "data/ordinance/run.txt"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ordinance
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 실행
+        env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+          PROBE: ${{ inputs.probe }}
+        run: |
+          MODE=$(head -1 data/ordinance/run.txt 2>/dev/null || echo fetch)
+          [ "$PROBE" = "true" ] && MODE=probe
+          echo "mode=$MODE"
+          if [ "$MODE" = "probe" ]; then python3 scripts/ordin/probe.py; exit 0; fi
+          set +e
+          python3 scripts/ordin/fetch.py
+          python3 scripts/ordin/signals.py
+          echo "exit=$?"
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ordinance || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 자치법규 정비 검토 자료 $(date +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done

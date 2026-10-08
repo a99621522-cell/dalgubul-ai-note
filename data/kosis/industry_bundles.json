@@ -1,5 +1,5 @@
 {
- "survey_year": null,
+ "survey_year": 2024,
  "census_year": 2023,
  "definition": {
   "publisher": "대구정책연구원",
@@ -32,16 +32,16 @@
   },
   "survey": {
    "est": {
-    "dg": null,
-    "nat": null
+    "dg": 3160.0,
+    "nat": 73570.0
    },
    "prod": {
-    "dg": null,
-    "nat": null
+    "dg": 38767161.0,
+    "nat": 2091671417.0
    },
    "va": {
-    "dg": null,
-    "nat": null
+    "dg": 13395339.0,
+    "nat": 749052813.0
    }
   }
  },
@@ -52,7 +52,7 @@
    "bundles": [
     "디지털 의료기기"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 3566.0,
@@ -63,7 +63,20 @@
      "nat": 126300.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 454.0,
+     "nat": 2513.0
+    },
+    "prod": {
+     "dg": 2591513.0,
+     "nat": 17971156.0
+    },
+    "va": {
+     "dg": 1064545.0,
+     "nat": 7106409.0
+    }
+   }
   },
   {
    "code": "20",
@@ -71,7 +84,7 @@
    "bundles": [
     "미래모빌리티"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 461.0,
@@ -82,7 +95,20 @@
      "nat": 191827.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 41.0,
+     "nat": 3496.0
+    },
+    "prod": {
+     "dg": 527492.0,
+     "nat": 194003592.0
+    },
+    "va": {
+     "dg": 250958.0,
+     "nat": 56375332.0
+    }
+   }
   },
   {
    "code": "21",
@@ -91,7 +117,7 @@
     "디지털 의료기기",
     "헬스케어"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 42.0,
@@ -102,7 +128,20 @@
      "nat": 63092.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 16.0,
+     "nat": 733.0
+    },
+    "prod": {
+     "dg": 248094.0,
+     "nat": 38093285.0
+    },
+    "va": {
+     "dg": 166627.0,
+     "nat": 24330607.0
+    }
+   }
   },
   {
    "code": "22",
@@ -110,7 +149,7 @@
    "bundles": [
     "기계요소 소재부품"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 1268.0,
@@ -121,7 +160,20 @@
      "nat": 276552.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 247.0,
+     "nat": 6253.0
+    },
+    "prod": {
+     "dg": 2720962.0,
+     "nat": 80539732.0
+    },
+    "va": {
+     "dg": 869675.0,
+     "nat": 30589544.0
+    }
+   }
   },
   {
    "code": "24",
@@ -130,7 +182,7 @@
     "기계요소 소재부품",
     "미래모빌리티"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 377.0,
@@ -141,7 +193,20 @@
      "nat": 169404.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 91.0,
+     "nat": 3202.0
+    },
+    "prod": {
+     "dg": 2214232.0,
+     "nat": 182143092.0
+    },
+    "va": {
+     "dg": 352538.0,
+     "nat": 37294641.0
+    }
+   }
   },
   {
    "code": "25",
@@ -150,7 +215,7 @@
     "기계요소 소재부품",
     "로봇"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 7728.0,
@@ -161,7 +226,20 @@
      "nat": 443721.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 682.0,
+     "nat": 9752.0
+    },
+    "prod": {
+     "dg": 4856792.0,
+     "nat": 95359606.0
+    },
+    "va": {
+     "dg": 2106626.0,
+     "nat": 36734109.0
+    }
+   }
   },
   {
    "code": "26",
@@ -171,7 +249,7 @@
     "반도체",
     "ABB"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 343.0,
@@ -182,7 +260,20 @@
      "nat": 397693.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 59.0,
+     "nat": 3436.0
+    },
+    "prod": {
+     "dg": 1385138.0,
+     "nat": 341530085.0
+    },
+    "va": {
+     "dg": 570153.0,
+     "nat": 169321812.0
+    }
+   }
   },
   {
    "code": "27",
@@ -193,7 +284,7 @@
     "로봇",
     "헬스케어"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 1612.0,
@@ -204,7 +295,20 @@
      "nat": 149046.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 147.0,
+     "nat": 2797.0
+    },
+    "prod": {
+     "dg": 1310479.0,
+     "nat": 34083094.0
+    },
+    "va": {
+     "dg": 655700.0,
+     "nat": 16150835.0
+    }
+   }
   },
   {
    "code": "28",
@@ -214,7 +318,7 @@
     "기계요소 소재부품",
     "미래모빌리티"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 1520.0,
@@ -225,7 +329,20 @@
      "nat": 278587.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 127.0,
+     "nat": 4896.0
+    },
+    "prod": {
+     "dg": 3503724.0,
+     "nat": 141220649.0
+    },
+    "va": {
+     "dg": 711004.0,
+     "nat": 47904692.0
+    }
+   }
   },
   {
    "code": "29",
@@ -235,7 +352,7 @@
     "로봇",
     "반도체"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 3287.0,
@@ -246,7 +363,20 @@
      "nat": 499415.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 492.0,
+     "nat": 10275.0
+    },
+    "prod": {
+     "dg": 5989864.0,
+     "nat": 149805602.0
+    },
+    "va": {
+     "dg": 2379951.0,
+     "nat": 57674948.0
+    }
+   }
   },
   {
    "code": "30",
@@ -255,7 +385,7 @@
     "전기·자율 모빌리티부품",
     "미래모빌리티"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 975.0,
@@ -266,7 +396,20 @@
      "nat": 364792.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 290.0,
+     "nat": 4899.0
+    },
+    "prod": {
+     "dg": 8091837.0,
+     "nat": 294588528.0
+    },
+    "va": {
+     "dg": 2327122.0,
+     "nat": 89005494.0
+    }
+   }
   },
   {
    "code": "31",
@@ -274,7 +417,7 @@
    "bundles": [
     "미래모빌리티"
    ],
-   "manufacturing": false,
+   "manufacturing": true,
    "census": {
     "est": {
      "dg": 83.0,
@@ -285,7 +428,20 @@
      "nat": 137323.0
     }
    },
-   "survey": null
+   "survey": {
+    "est": {
+     "dg": 9.0,
+     "nat": 1736.0
+    },
+    "prod": {
+     "dg": 46551.0,
+     "nat": 73311389.0
+    },
+    "va": {
+     "dg": 21481.0,
+     "nat": 23830723.0
+    }
+   }
   },
   {
    "code": "58",

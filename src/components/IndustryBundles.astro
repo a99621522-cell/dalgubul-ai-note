@@ -39,8 +39,8 @@ const T = D?.mfg_total;
     </thead>
     <tbody>
       {mfg.map(r => { const s = r.survey!; return <tr>
-        <th scope="row">{r.code} {r.name}</th>
-        <td class="wrap tiny">{r.bundles.join(', ')}</td>
+        <th scope="row">{r.code + " " + r.name}</th>
+        <td class="wrap tiny ib-bund">{r.bundles.join(', ')}</td>
         <td class="n">{n(s.est.dg)}</td>
         <td class="n">{eok(s.prod.dg)}</td><td class="n">{share(s.prod)}</td>
         <td class="n">{eok(s.va.dg)}</td><td class="n">{share(s.va)}</td>
@@ -55,8 +55,8 @@ const T = D?.mfg_total;
     <thead><tr><th>중분류</th><th data-pri="3">관련 산업 묶음</th><th class="n">대구 사업체(곳)</th><th class="n">전국 대비(%)</th><th class="n">대구 종사자(명)</th><th class="n">전국 대비(%)</th></tr></thead>
     <tbody>
       {D.rows.map(r => <tr>
-        <th scope="row">{r.code} {r.name}</th>
-        <td class="wrap tiny">{r.bundles.join(', ')}</td>
+        <th scope="row">{r.code + " " + r.name}</th>
+        <td class="wrap tiny ib-bund">{r.bundles.join(', ')}</td>
         <td class="n">{n(r.census.est.dg)}</td><td class="n">{share(r.census.est)}</td>
         <td class="n">{n(r.census.emp.dg)}</td><td class="n">{share(r.census.emp)}</td>
       </tr>)}
@@ -67,7 +67,7 @@ const T = D?.mfg_total;
   <ul class="meta ib-notes">
     <li><b>기준이 둘입니다.</b> 생산액·부가가치는 종사자 10인 이상 사업체(광업·제조업조사), 사업체·종사자는 1인 이상 전체(전국사업체조사)라 같은 사업체 집합이 아니고 조사 연도도 다릅니다.</li>
     <li><b>중분류는 묶음보다 넓습니다.</b> 예를 들어 '27 의료·정밀·광학기기'에는 의료기기 말고 측정·제어기기·안경 등이 함께 들어 있습니다. 한 중분류가 여러 묶음에 걸쳐 있으니 묶음끼리 더하지 마세요.</li>
-    {svc.length > 0 && <li><b>{svc.map(r => `${r.code} ${r.name}`).join(', ')}</b>은 서비스업이라 광업·제조업조사 대상이 아니어서 생산액·부가가치 표에 없습니다.</li>}
+    {svc.length > 0 && <li><b>{svc.map(r => r.code + ' ' + r.name).join(', ')}</b>은 서비스업이라 광업·제조업조사 대상이 아니어서 생산액·부가가치 표에 없습니다.</li>}
     <li>— 는 KOSIS 값이 없거나 사업체가 적어 비공개 처리된 칸입니다. 전국 대비·부가가치율은 이 사이트의 나눗셈이고, 금액은 백만 원을 억 원으로 반올림했습니다.</li>
   </ul>
 
@@ -88,6 +88,7 @@ const T = D?.mfg_total;
 <style>
   .ib { margin-top: var(--s5); }
   .ib-h3 { margin: var(--s3) 0 var(--s1); font-size: 1.05rem; }
+  .ib-bund { min-width: 11em; }
   .ib-notes { padding-left: 1.2em; margin: var(--s2) 0; overflow-wrap: anywhere; }
   .ib-notes li { margin: 2px 0; }
   .ib-codes { margin: var(--s2) 0; }

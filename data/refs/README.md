@@ -19,7 +19,7 @@
    curl -sL -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/a99621522-cell/dalgubul-ai-note/actions/artifacts/<id>/zip -o ocr.zip
    ```
    (`actions/runs/<run_id>/artifacts` 로 id 확인). `index.json` 에 쪽·글자 수·빈 쪽 수가 있다.
-   세션 환경에서 아티팩트 저장소(*.blob.core.windows.net)가 막혀 있으면(2026-10-02 확인) 입력 `echo=true` 로 돌려 글자를 로그에 찍고 `get_job_logs` 로 읽는다.
+   세션 환경에서 아티팩트 저장소(*.blob.core.windows.net)가 막혀 있으면(2026-10-02 확인) 입력 `echo=true` 로 돌려 글자를 로그에 찍고 `get_job_logs` 로 읽는다. `get_job_logs` 는 로그 끝 5,000줄만 돌려주므로 긴 문서는 `echo=61-116` 처럼 쪽 범위로 나눠 다시 돌린다(2026-10-08).
 4. 세션은 txt 를 읽고 **요약 JSON 만** 여기에 남긴다. txt·zip 은 작업 폴더에서 지우고 커밋하지 않는다.
 
 ## JSON 형식

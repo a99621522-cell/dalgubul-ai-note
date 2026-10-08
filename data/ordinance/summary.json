@@ -64,24 +64,24 @@
   }
  ],
  "refs": 41748,
- "refs_resolved": 41084,
- "refs_unknown": 3,
+ "refs_resolved": 41087,
+ "refs_unknown": 0,
  "law_status": {
-  "current": 1201,
+  "current": 1198,
   "local": 1153,
   "admrul": 55,
-  "renamed": 67,
+  "renamed": 68,
   "local_missing": 175,
   "admrul_missing": 101,
-  "search_only": 56,
+  "search_only": 55,
   "unresolved": 36,
   "local_other": 1,
-  "not_current": 17
+  "not_current": 16
  },
- "laws_cited": 2862,
+ "laws_cited": 2858,
  "by_signal": {
   "law_renamed": {
-   "daegu": 70,
+   "daegu": 71,
    "jung": 20,
    "dong": 33,
    "seo": 23,
@@ -141,27 +141,27 @@
    "gunwi": 9
   },
   "article_renumber": {
-   "daegu": 0,
-   "jung": 0,
-   "dong": 0,
-   "seo": 0,
-   "nam": 0,
-   "buk": 0,
-   "suseong": 0,
-   "dalseo": 0,
-   "dalseong": 0,
+   "daegu": 6,
+   "jung": 43,
+   "dong": 11,
+   "seo": 30,
+   "nam": 24,
+   "buk": 5,
+   "suseong": 12,
+   "dalseo": 29,
+   "dalseong": 15,
    "gunwi": 0
   },
   "article_changed": {
-   "daegu": 883,
-   "jung": 465,
-   "dong": 478,
-   "seo": 427,
-   "nam": 497,
-   "buk": 435,
-   "suseong": 537,
-   "dalseo": 591,
-   "dalseong": 598,
+   "daegu": 877,
+   "jung": 422,
+   "dong": 467,
+   "seo": 397,
+   "nam": 474,
+   "buk": 430,
+   "suseong": 525,
+   "dalseo": 563,
+   "dalseong": 583,
    "gunwi": 270
   },
   "local_ref_missing": {
@@ -309,7 +309,7 @@
    "gunwi": 0
   }
  },
- "total": 7477,
+ "total": 7480,
  "expc_held": 8881,
  "expc_linked": 498,
  "expc_daegu": 38,

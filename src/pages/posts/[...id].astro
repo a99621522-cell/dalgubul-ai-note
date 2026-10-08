@@ -42,7 +42,7 @@ if (d.faq.length > 0) jsonld.push({
         <span class="cat">{CATEGORIES[d.category].name}</span>{' · '}{fmt(d.date)}
         {d.deadline && <>{' · '}마감 {fmt(d.deadline)}</>}
         {d.auto && <span class="auto">AI 작성</span>}
-        {dl && <span class="dl"> · 내려받기 <a href={dl.docx} download>Word</a> · <a href={dl.md} download>MD</a></span>}
+        {dl && <span class="dl"> · 내려받기 {dl.hwpx && <><a href={dl.hwpx} download title="공무원 보고서 양식(절 머리표·○·-·※) 한글 파일">한글</a> · </>}<a href={dl.docx} download>Word</a> · <a href={dl.md} download>MD</a></span>}
       </div>
     </header>
     {insight && heroSrc && d.hero && (

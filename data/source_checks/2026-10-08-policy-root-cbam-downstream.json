@@ -1,14 +1,11 @@
 {
  "file": "src/content/posts/2026-10-08-policy-root-cbam-downstream.md",
  "checked": "2026-10-08",
- "ok": 10,
- "total": 12,
- "ratio": 0.83,
- "official_bad": [
-  "유럽자동차제조협회(ACEA), 「ACEA statement on CBAM downstream extension proposal」",
-  "재유럽일본기업협회(JBCE), 「Position Paper: CBAM downstream extension」"
- ],
- "pass": false,
+ "ok": 9,
+ "total": 10,
+ "ratio": 0.9,
+ "official_bad": [],
+ "pass": true,
  "sources": [
   {
    "title": "산업통상부, 「제13차 CBAM 정부합동설명회 개최 — CBAM 이행 규정과 실무 대응방안 안내」 보도자료",
@@ -71,40 +68,16 @@
    "note": ""
   },
   {
-   "title": "유럽자동차제조협회(ACEA), 「ACEA statement on CBAM downstream extension proposal」",
-   "url": "https://www.acea.auto/press-release/acea-statement-on-cbam-downstream-extension-proposal/",
-   "date": "2026-07-06",
-   "kind": "report",
-   "status": 403,
-   "page_title": "403 - Forbidden",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": ""
-  },
-  {
-   "title": "재유럽일본기업협회(JBCE), 「Position Paper: CBAM downstream extension」",
-   "url": "https://www.jbce.org/images/positions/Trade_Policy/JBCE_Position_Paper_CBAM_downstream_extension_260622published-LJBCE30.pdf",
-   "date": "2026-06-22",
-   "kind": "report",
-   "status": 404,
-   "page_title": "Page not found - Japan Business Council in Europe",
-   "title_match": 0.29,
-   "date_found": false,
-   "ok": false,
-   "note": ""
-  },
-  {
    "title": "헤럴드경제, 「중기부, EU '탄소국경제도' 인프라구축 사업 참여할 중기 모집」",
    "url": "https://www.heraldk.com/article/2026040419000043948",
    "date": "2026-04-04",
    "kind": "news",
-   "status": 200,
-   "page_title": "중기부, EU ‘탄소국경제도’ 인프라구축 사업 참여할 중기 모집… 최대 4200만원 지원 - 헤럴드경제 미주판",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "창원상공회의소 경남FTA통상진흥센터, 「2026년 탄소국경세 대응 지원사업 참여기업 모집공고」",

@@ -432,8 +432,11 @@ def main():
             if mv:
                 ev["moved_to"] = mv[:2]
         elif sg == "local_ref_missing":
-            pool = names_by_org.get(c["org"], []) + names_by_org.get("daegu", [])
-            close = close_names(ev.get("law", ""), list(dict.fromkeys(pool)))
+            # 같은 지자체 자치법규를 먼저 찾고(인용 이름에 '대구광역시'만 있어도 구·군 조례를 가리키는 일이 많다), 없을 때만 대구시 것
+            q0 = ev.get("law", "")
+            own = names_by_org.get(c["org"], [])
+            close = close_names(q0, own) if c["org"] != "daegu" and not re.match(r"^대구광역시\s+(?!중구|동구|서구|남구|북구|수성구|달서구|달성군|군위군)\S", q0) else []
+            close = close or close_names(q0, names_by_org.get("daegu", []) if c["org"] != "daegu" else own)
             why = f"인용한 자치법규 「{ev.get('law')}」이 대구시·9개 구군 현행 자치법규 목록에 그 이름으로 없다(이름이 바뀌었거나 폐지)."
             how = (f"현행 이름으로 고친다 — 이름이 비슷한 현행 자치법규: {', '.join('「'+x+'」' for x in close)}." if close else "인용한 자치법규의 연혁을 확인해 현행 이름으로 고치거나, 폐지되었으면 인용을 삭제한다.")
             if close:

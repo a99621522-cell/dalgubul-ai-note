@@ -33,18 +33,18 @@ const NOTE: Record<string, string> = {
   '로봇': '산업용 로봇 제조업 1개에 특수목적용 기계·농업용 기계·측정·제어기기 등 9개 업종을 더한 값 — 로봇 제조 기업 수가 아님',
   '헬스케어': '의료기기·의약품 업종, 업종 번호는 옛 분류(10차) 기준',
   '반도체': '반도체 소자 외에 반도체·디스플레이 제조용 기계와 발광 다이오드 업종이 들어 있음',
-  'ABB': '소프트웨어·IT 서비스 10개와 전자부품·무선 통신장비 2개 업종 — 생산액·부가가치는 제조 2개 업종만',
+  'ABB': '소프트웨어·IT 서비스 업종과 전자부품·무선 통신장비 업종을 묶음 — 생산액·부가가치는 제조 업종(전자부품·무선 통신장비)만',
 };
 interface Props { heading?: boolean }
 const { heading = true } = Astro.props;
 ---
 {D && <section class="ib" id="bundles">
   {heading && <div class="section-head"><h2>대구 주력·미래 신산업 현황</h2><span class="meta">대구 · {Y}년 · 대구정책연구원 연구 보고서</span></div>}
-  <p class="meta">{src}에 실린 대구의 산업별 값({Y}년)을 그대로 옮겼습니다. 모두 <b>대구</b> 값입니다.</p>
+  <p class="meta">{src}에 실린 대구의 산업별 값을 그대로 옮겼습니다. 모두 <b>대구</b> 값이고, {Y}년은 이 보고서에 실린 가장 최근 연도입니다. 주력산업 3개는 보고서가 정한 업종 묶음이고, 미래 신산업 5개는 보고서가 대구테크노파크의 산업 분류를 따른 묶음입니다.</p>
   <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 현황(${Y}년, 대구정책연구원)`}>
     <thead><tr><th>산업</th><th data-pri="3">구분</th><th class="n">사업체(개)</th><th class="n">종사자(명)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th></tr></thead>
     <tbody>{D.bundles.map(b => <tr>
-      <th scope="row">{b.name}<div class="tiny muted">{inc(b)}</div>{NOTE[b.name] && <div class="tiny ib-warn">{NOTE[b.name]}</div>}</th><td class="ib-role">{b.role}</td>
+      <th scope="row">{b.name}<div class="tiny muted tt-skip">{inc(b)}</div>{NOTE[b.name] && <div class="tiny ib-warn tt-skip">{NOTE[b.name]}</div>}</th><td class="ib-role">{b.role}</td>
       <td class="n">{n(b.daegu.est[i])}</td><td class="n">{n(b.daegu.emp[i])}</td><td class="n">{eok(b.daegu.prod[i])}</td><td class="n">{eok(b.daegu.va[i])}</td>
     </tr>)}</tbody>
   </table></div>
@@ -56,9 +56,10 @@ const { heading = true } = Astro.props;
   <details class="ib-codes">
     <summary>산업별 업종(세세분류 코드) 보기</summary>
     <div class="scroll-x"><table class="data-table compact" data-title="대구 주력·미래 신산업 업종 정의(대구정책연구원)">
-      <thead><tr><th>산업</th><th>업종(코드)</th></tr></thead>
-      <tbody>{D.bundles.map(b => <tr><th scope="row">{b.name}</th><td class="wrap tiny">{b.codes.map(c => c.ksic + ' ' + c.name).join(', ')}</td></tr>)}</tbody>
+      <thead><tr><th>산업</th><th class="n">업종 수</th><th>업종(코드)</th></tr></thead>
+      <tbody>{D.bundles.map(b => <tr><th scope="row">{b.name}</th><td class="n">{b.codes_stated && b.codes_stated !== b.codes.length ? b.codes_stated + '(목록 ' + b.codes.length + ')' : b.codes.length}</td><td class="wrap tiny">{b.codes.map(c => c.ksic + ' ' + c.name).join(', ')}</td></tr>)}</tbody>
     </table></div>
+    <p class="meta">업종 수가 '35(목록 34)'처럼 적힌 산업은 보고서 본문이 밝힌 업종 수와 표에서 읽은 코드 수가 다른 경우입니다. 업종 이름·번호는 보고서 표기 그대로입니다.</p>
   </details>
   <p class="meta">출처: {src}. 보고서 값 그대로이며 평가·순위가 아닙니다.</p>
 </section>}

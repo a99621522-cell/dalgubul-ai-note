@@ -426,6 +426,16 @@ def main():
                         if won > 10**7:
                             add(d, a, "fine_over_cap", ev={"ctx": raw[max(0, mf.start() - 80): mf.end() + 20], "won": won})
                             break
+            # 지방세 감면 조례의 조문별 감면 기한('YYYY년 M월 D일까지 면제·경감한다')이 지났는데 조문이 남아 있음 — 조문의 마지막 개정이 기한 전일 때만
+            if re.search(r"(시세|구세|군세|지방세).{0,6}감면", d.get("name", "")):
+                for a in arts:
+                    raw_ = a.get("text") or ""
+                    for mm in re.finditer(r"(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일\s*까지\s*[^.。]{0,40}?(면제|경감|감면|공제)(한다|하며|하고)", raw_):
+                        end = f"{int(mm.group(1)):04d}{int(mm.group(2)):02d}{int(mm.group(3)):02d}"
+                        revs = [f"{int(y):04d}{int(m_):02d}{int(dd):02d}" for y, m_, dd in re.findall(r"(?:개정|신설)\s*(\d{4})\s*[.]\s*(\d{1,2})\s*[.]\s*(\d{1,2})", raw_)]
+                        if end < TODAY and not any(r_ > end for r_ in revs):
+                            add(d, a, "sunset", ev={"end": ymd(end), "ctx": raw_[max(0, mm.start() - 80): mm.end() + 10], "tax": True})
+                            break
             for src in [*(a.get("text") or "" for a in arts), *(x.get("text") or "" for x in d.get("addenda") or [])]:
                 for mm in re.finditer(r"(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일\s*까지\s*(?:그\s*)?(효력을\s*가진다|유효하다|효력이\s*있다)", src):
                     end = f"{int(mm.group(1)):04d}{int(mm.group(2)):02d}{int(mm.group(3)):02d}"
@@ -505,6 +515,9 @@ def main():
         elif sg == "sunset":
             why = f"유효기간 {ev['end']}이 지났는데 규정이 현행 자치법규에 남아 있다."
             how = "효력이 끝난 규정(또는 자치법규)을 삭제하거나, 계속 필요하면 유효기간을 연장하는 개정을 검토한다."
+            if ev.get("tax"):
+                why = f"지방세 감면 기한 {ev['end']}이 지났는데 감면 조문이 현행 조례에 남아 있다(「지방세특례제한법」 제4조제1항: 조례 감면은 3년의 기간 이내)."
+                how = "기한이 지난 감면 조문을 삭제하고, 이미 감면한 세액의 추징 규정이 남아야 하면 부칙 경과조치로 옮긴다. 감면을 이어가려면 지방세심의위원회 심의(같은 법 제4조제3항)를 거쳐 3년 이내로 연장한다."
         elif sg == "term_outdated":
             why = f"'{ev['old']}'은 「{ev['basis']}」에서 '{ev['new']}'(으)로 바뀐 용어다."
             how = f"문맥을 보고 '{ev['new']}'(으)로 고친다."

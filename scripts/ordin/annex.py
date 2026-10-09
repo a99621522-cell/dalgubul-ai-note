@@ -104,7 +104,21 @@ def annexes(root, probe=False) -> list[dict]:
     return out
 
 
+def debug(name: str):
+    for kw in ({}, {"knd": 1}, {"knd": 2}):
+        for sv in (1, 2):
+            root = F.xml(F.get("lawSearch.do", target="ordinbyl", query=name, search=sv, display=100, **kw))
+            rows = [{c.tag: (c.text or "").strip() for c in it} for it in root if len(it)] if root is not None else []
+            print(f"[debug] {name} search={sv} {kw} 행 {len(rows)} totalCnt {root.findtext('totalCnt') if root is not None else '-'}", flush=True)
+            for r in rows[:12]:
+                print("   ", r.get("별표종류"), r.get("별표번호"), r.get("별표명", "")[:40], r.get("관련자치법규일련번호"), re.sub(r"<[^>]+>", "", r.get("관련자치법규명", ""))[:40], flush=True)
+
+
 def main():
+    import os
+    if os.environ.get("ANNEX_DEBUG"):
+        debug(os.environ["ANNEX_DEBUG"])
+        return
     probe = "--probe" in sys.argv
     OUT.mkdir(parents=True, exist_ok=True)
     cur = F.current_laws()
@@ -142,7 +156,7 @@ def main():
     def one(t):
         # 자치법규 본문(lawService target=ordin)에는 별표가 없어 별표서식 목록(lawSearch target=ordinbyl, 해당 자치법규명 검색)으로 받는다
         q = t["name"].replace("·", " ").replace("ㆍ", " ")
-        root = F.xml(F.get("lawSearch.do", target="ordinbyl", query=q, search=2, knd=1, display=100))
+        root = F.xml(F.get("lawSearch.do", target="ordinbyl", query=q, search=2, display=100))
         if root is None:
             return {**t, "fail": 1}
         p = probe and first[0]

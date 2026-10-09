@@ -47,6 +47,42 @@ def pdf_text(link: str) -> str:
         return ""
 
 
+def file_text(link: str) -> tuple[str, str]:
+    """별표 파일(HWPX·HWP·PDF)을 받아 글자를 뽑는다 → (글자, 형식)."""
+    if not link:
+        return "", ""
+    url = link if link.startswith("http") else "https://www.law.go.kr" + link
+    try:
+        r = F.sess().get(url, timeout=90)
+        b = r.content if r.status_code == 200 else b""
+    except Exception as e:  # noqa: BLE001
+        print("  파일 실패", url[:80], type(e).__name__, flush=True)
+        return "", ""
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "a"
+        p.write_bytes(b)
+        if b[:4] == b"PK\x03\x04":   # HWPX(zip)
+            import zipfile
+            try:
+                z = zipfile.ZipFile(p)
+                xs = sorted(n for n in z.namelist() if re.match(r"Contents/section\d+\.xml", n))
+                t = " ".join(re.sub(r"<[^>]+>", " ", z.read(n).decode("utf-8", "ignore")) for n in xs)
+                return re.sub(r"\s+", " ", t), "HWPX"
+            except Exception:  # noqa: BLE001
+                return "", ""
+        if b[:5] == b"%PDF-" and shutil.which("pdftotext"):
+            subprocess.run(["pdftotext", "-layout", str(p), str(p) + ".txt"], check=False, timeout=120)
+            q = Path(str(p) + ".txt")
+            return (q.read_text(encoding="utf-8", errors="ignore"), "PDF") if q.exists() else ("", "")
+        if b[:8] == bytes.fromhex("d0cf11e0a1b11ae1") and shutil.which("hwp5txt"):
+            try:
+                o = subprocess.run(["hwp5txt", str(p)], capture_output=True, timeout=120)
+                return o.stdout.decode("utf-8", "ignore"), "HWP"
+            except Exception:  # noqa: BLE001
+                return "", ""
+    return "", ""
+
+
 def annexes(root, probe=False) -> list[dict]:
     out = []
     for u in root.iter():
@@ -96,6 +132,7 @@ def main():
     print(f"자치법규 대상 {len(targets)}", flush=True)
     first = [True]
     PROBED: list = []
+    PROBED2: list = []
 
     def one(t):
         # 자치법규 본문(lawService target=ordin)에는 별표가 없어 별표서식 목록(lawSearch target=ordinbyl, 해당 자치법규명 검색)으로 받는다
@@ -114,10 +151,22 @@ def main():
             nm = next((v for k, v in r.items() if "자치법규명" in k or "법규명" in k), "")
             if norm_name(nm) != norm_name(t["name"]) and t["mst"] not in r.values():
                 continue
+            if r.get("별표종류") == "서식":
+                continue
             pdf = next((v for k, v in r.items() if "PDF" in k and "링크" in k and v), "")
-            body = pdf_text(pdf)
+            body, src = "", ""
+            det = F.xml(F.get("lawService.do", target="ordinbyl", ID=r.get("별표일련번호", "")))
+            if det is not None:
+                if not PROBED2:
+                    PROBED2.append(1)
+                    print("  [probe] ordinbyl 상세 태그:", {e.tag: (e.text or "").strip()[:50] for e in det.iter() if len(e) == 0}, flush=True)
+                body = next(((e.text or "").strip() for e in det.iter() if e.tag.endswith("내용") and (e.text or "").strip()), "")
+                src = "본문" if body else ""
+                pdf = pdf or next(((e.text or "").strip() for e in det.iter() if "PDF" in e.tag and "링크" in e.tag and (e.text or "").strip()), "")
+            if not body:
+                body, src = file_text(pdf or r.get("별표서식파일링크", ""))
             out.append({"no": r.get("별표번호", ""), "br": r.get("별표가지번호", ""), "kind": r.get("별표종류") or r.get("별표구분", ""),
-                        "title": next((v for k, v in r.items() if k in ("별표명", "별표서식명", "별표제목") and v), ""), "text": body[:MAXC], "src": "PDF" if body else "",
+                        "title": next((v for k, v in r.items() if k in ("별표명", "별표서식명", "별표제목") and v), ""), "text": body[:MAXC], "src": src if body else "",
                         "link": pdf or r.get("별표서식파일링크", "")})
         return {**t, "annex": out, "rows": len(rows)}
 

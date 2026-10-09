@@ -3,8 +3,10 @@
  *  운영자 지시 2026-10-09 '2016년 이런 과거 자료는 필요 없어, 그냥 대구정책연구원 자료만 올려'). */
 import Base from '../../layouts/Base.astro';
 import IndustryBundles from '../../components/IndustryBundles.astro';
+import IndustryCountCompare from '../../components/IndustryCountCompare.astro';
 ---
 <Base title="대구 주력·미래 신산업 현황" description="대구정책연구원 연구 보고서에 실린 대구 주력산업 3개·미래 신산업 5개의 사업체·종사자·생산액·부가가치(2023년)." current="policy" crumb="대구 주력·미래 신산업 현황">
   <div class="section-head"><h1>대구 주력·미래 신산업 현황</h1><span class="meta">대구 · 2023년</span></div>
   <IndustryBundles heading={false} />
+  <IndustryCountCompare />
 </Base>

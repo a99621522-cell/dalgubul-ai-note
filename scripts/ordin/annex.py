@@ -95,6 +95,7 @@ def main():
                 targets.append({k: d[k] for k in ("org", "id", "mst", "name")})
     print(f"자치법규 대상 {len(targets)}", flush=True)
     first = [True]
+    PROBED: list = []
 
     def one(t):
         # 자치법규 본문(lawService target=ordin)에는 별표가 없어 별표서식 목록(lawSearch target=ordinbyl, 해당 자치법규명 검색)으로 받는다
@@ -105,17 +106,18 @@ def main():
         p = probe and first[0]
         first[0] = False
         rows = [{c.tag: (c.text or "").strip() for c in it} for it in root if len(it)]
-        if p:
-            print("  [probe] ordinbyl 행 수", len(rows), "필드:", {k: v[:50] for k, v in (rows[0].items() if rows else [])}, flush=True)
+        if rows and not PROBED:
+            PROBED.append(1)
+            print("  [probe] ordinbyl 행 수", len(rows), "필드:", {k: v[:60] for k, v in rows[0].items()}, flush=True)
         out = []
         for r in rows:
-            nm = r.get("관련자치법규명") or r.get("자치법규명") or ""
-            if norm_name(nm) != norm_name(t["name"]) and r.get("자치법규일련번호") != t["mst"]:
+            nm = next((v for k, v in r.items() if "자치법규명" in k or "법규명" in k), "")
+            if norm_name(nm) != norm_name(t["name"]) and t["mst"] not in r.values():
                 continue
-            pdf = r.get("별표서식PDF파일링크") or ""
+            pdf = next((v for k, v in r.items() if "PDF" in k and "링크" in k and v), "")
             body = pdf_text(pdf)
             out.append({"no": r.get("별표번호", ""), "br": r.get("별표가지번호", ""), "kind": r.get("별표종류") or r.get("별표구분", ""),
-                        "title": r.get("별표명") or r.get("별표서식명") or r.get("별표제목", ""), "text": body[:MAXC], "src": "PDF" if body else "",
+                        "title": next((v for k, v in r.items() if k in ("별표명", "별표서식명", "별표제목") and v), ""), "text": body[:MAXC], "src": "PDF" if body else "",
                         "link": pdf or r.get("별표서식파일링크", "")})
         return {**t, "annex": out, "rows": len(rows)}
 

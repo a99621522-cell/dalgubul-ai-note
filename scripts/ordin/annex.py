@@ -130,6 +130,11 @@ def main():
             if rx.search(d["name"]):
                 targets.append({k: d[k] for k in ("org", "id", "mst", "name")})
     print(f"자치법규 대상 {len(targets)}", flush=True)
+    old = {}
+    for o in F.jload(OUT / "ordin.json.gz", []) or []:
+        for a in o.get("annex") or []:
+            if a.get("text") and a.get("id"):
+                old[a["id"]] = a
     first = [True]
     PROBED: list = []
     PROBED2: list = []
@@ -153,6 +158,13 @@ def main():
                 continue
             if r.get("별표종류") == "서식":
                 continue
+            bid = r.get("별표일련번호", "")
+            if bid in old:
+                out.append(old[bid])
+                continue
+            if F.left() < 600:
+                out.append({"id": bid, "title": r.get("별표명", ""), "text": "", "src": "", "skip": "시간"})
+                continue
             pdf = next((v for k, v in r.items() if "PDF" in k and "링크" in k and v), "")
             body, src = "", ""
             det = F.xml(F.get("lawService.do", target="ordinbyl", ID=r.get("별표일련번호", "")))
@@ -165,7 +177,7 @@ def main():
                 pdf = pdf or next(((e.text or "").strip() for e in det.iter() if "PDF" in e.tag and "링크" in e.tag and (e.text or "").strip()), "")
             if not body:
                 body, src = file_text(pdf or r.get("별표서식파일링크", ""))
-            out.append({"no": r.get("별표번호", ""), "br": r.get("별표가지번호", ""), "kind": r.get("별표종류") or r.get("별표구분", ""),
+            out.append({"id": bid, "no": r.get("별표번호", ""), "br": r.get("별표가지번호", ""), "kind": r.get("별표종류") or r.get("별표구분", ""),
                         "title": next((v for k, v in r.items() if k in ("별표명", "별표서식명", "별표제목") and v), ""), "text": body[:MAXC], "src": src if body else "",
                         "link": pdf or r.get("별표서식파일링크", "")})
         return {**t, "annex": out, "rows": len(rows)}

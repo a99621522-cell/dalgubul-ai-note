@@ -18,7 +18,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -27,6 +27,7 @@ jobs:
       - run: pip install -q -r scripts/requirements.txt
       - env:
           LAW_OC: ${{ secrets.LAW_OC }}
+          BUDGET_MIN: "130"
         run: (sudo apt-get update -q >/dev/null && sudo apt-get install -y -q poppler-utils >/dev/null; pip install -q pyhwp) || echo "poppler 설치 실패 — PDF 글자 없이 진행"; python3 -u scripts/ordin/annex.py --probe
       - name: 커밋
         run: |

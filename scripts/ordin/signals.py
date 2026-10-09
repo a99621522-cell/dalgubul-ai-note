@@ -566,6 +566,7 @@ def main():
         c["ev"]["review"] = {"verdict": r["verdict"], "deleg": r.get("deleg", "")}
         if r["verdict"] == "promote":
             c["sig"], c["cat"] = "content_rule", "위반 소지"
+            c["ev"]["level"] = "위반 소지"
             pr = [{"no": q.get("case", ""), **{k: v for k, v in q.items() if k != "case"}} for q in r.get("prec") or []]
             if pr:
                 c["ev"]["prec"] = pr + [q for q in c["ev"].get("prec") or [] if q.get("no") not in {x["no"] for x in pr}]

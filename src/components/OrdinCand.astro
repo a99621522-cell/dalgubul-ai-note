@@ -5,6 +5,7 @@ interface Props { c: Cand; showOrdin?: boolean }
 const { c, showOrdin = false } = Astro.props;
 const s = sigOf(c.sig);
 const ev = c.ev || {};
+const VERDICT: Record<string, string> = { promote: '위임 근거 없음 확인', check: '위임 범위 확인 필요', delegated: '위임 조문 확인' };
 const esc = (t: string) => (t || '').replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]!));
 /** 원문에서 근거 구절(ctx 앞뒤 일부)을 굵게 */
 const key = ev.law ? `「${ev.law}」` : (ev.old || ev.word || '');
@@ -35,7 +36,14 @@ const hl = (t: string) => key ? esc(t).split(esc(key)).join(`<mark>${esc(key)}</
     {c.sig === 'sunset' && <><dt>유효기간</dt><dd>{ev.end}까지 — {ev.ctx}</dd></>}
     {(c.sig === 'gunwi_gb' || c.sig === 'penalty_basis') && <><dt>구절</dt><dd>{ev.ctx}</dd></>}
     {ev.expc?.length > 0 && <><dt>{ev.expc[0]?.kind === 'opin' ? '법제처 자치법규 의견제시' : '법제처 법령해석례'}{ev.n > ev.expc.length ? ` (${ev.n}건 중 최근 ${ev.expc.length})` : ''}</dt><dd><ul class="hist">{ev.expc.map((x: any) => <li><a href={x.url} rel="noopener">{x.t}</a> <span class="meta">{x.no} · {x.kind === 'opin' ? '회신' : '회답'} {x.d}{x.qorg && ` · ${x.kind === 'opin' ? '요청' : '질의'} ${x.qorg}`}</span>{x.a && <div class="ans">{x.kind === 'opin' ? '의견' : '회답'} 앞부분: {x.a.length >= 220 ? x.a + '…' : x.a}</div>}</li>)}</ul>{ev.targets?.length > 0 && <div class="meta">의견제시 대상: {ev.targets.map((t: string) => `「${t}」`).join(', ')}</div>}{ev.ordin_prom && <div class="meta">자치법규 최종 공포 {ev.ordin_prom}{ev.after ? ' — 회신·회답일이 더 늦음' : ''}</div>}</dd></>}
-    {ev.close?.length > 0 && <><dt>비슷한 현행 자치법규</dt><dd>{ev.close.map((x: string) => `「${x}」`).join(', ')}</dd></>}
+    {c.sig.startsWith('content_rule') && <>
+      {ev.rname && <><dt>점검 유형</dt><dd>{ev.rname}{ev.level && ev.level !== '참고' && ` · ${ev.level}`}</dd></>}
+      {ev.annex && <><dt>별표</dt><dd>{ev.annex}</dd></>}
+      {ev.ctx && <><dt>걸린 구절</dt><dd>{ev.ctx}</dd></>}
+      {ev.prec?.length > 0 && <><dt>판례·법제처 사례</dt><dd><ul class="hist">{ev.prec.map((x: any) => <li>{x.seq ? <a href={`https://www.moleg.go.kr/lawinfo/reglAnalysis/reglAnalysisInfo.mo?mid=a10107020000&caseSeq=${x.seq}`} rel="noopener">{x.no}</a> : (x.no || (x.expc && `법령해석 ${x.expc}`))} <span class="meta">{x.org}{x.date && ` · ${x.date}`}</span>{x.concl && <div class="ans">{x.concl}</div>}</li>)}</ul></dd></>}
+      {ev.review && <><dt>상위법령 대조</dt><dd>{VERDICT[ev.review.verdict] ?? ev.review.verdict}<span class="meta"> — 세션 대조, 운영자 확인 전</span></dd></>}
+    </>}
+    {ev.close?.length > 0 &&<><dt>비슷한 현행 자치법규</dt><dd>{ev.close.map((x: string) => `「${x}」`).join(', ')}</dd></>}
     {ev.concl && <><dt>법제처 의견 결론</dt><dd>{ev.concl}</dd></>}
   </dl>
 </article>

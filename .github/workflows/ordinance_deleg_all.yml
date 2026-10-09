@@ -1,0 +1,41 @@
+# 자치법규 정비 검토 — 현행 법령 전체의 '조례' 위임 조문(scripts/ordin/deleg_all.py → data/ordinance/deleg_all.json.gz).
+# data/ordinance/deleg_all_run.txt 를 바꿔 푸시하거나 수동 실행. 시간이 모자라면 받은 만큼 커밋하고 다음 실행이 이어 받는다.
+name: 자치법규 정비 검토 — 법령 전체 조례 위임
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ccr-a1fc4817-w0vo95]
+    paths: ["data/ordinance/deleg_all_run.txt", "scripts/ordin/deleg_all.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ordinance-deleg-all
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+          BUDGET_MIN: "130"
+          WORKERS: "4"
+        run: python3 -u scripts/ordin/deleg_all.py
+      - name: 커밋
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ordinance/deleg_all.json.gz || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 법령 전체 조례 위임 조문 $(date +%F)"
+          for i in 1 2 3 4 5; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 7; done

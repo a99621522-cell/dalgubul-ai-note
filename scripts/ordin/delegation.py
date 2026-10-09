@@ -65,8 +65,10 @@ def main():
                     continue
                 deleg = [{"a": a, "t": ti, "x": x[:500]} for a, ti, x in us if "조례" in x]
                 kws = [{"a": a, "t": ti, "x": x[:500]} for a, ti, x in us if kw.search(x) and "조례" not in x][:int(t.get("max") or 40)]
+                want = set(t.get("arts") or [])  # 조문 통째로(각 호까지) 볼 조 — 위임이 의무인지·요건이 무엇인지 확인용
+                full = [{"a": a, "t": ti, "x": x[:700]} for a, ti, x in us if a in want]
                 res["laws"].append({"name": v["name"], "kind": v.get("kind"), "prom": v.get("prom"), "eff": v.get("eff"),
-                                    "deleg": deleg, "kw": kws})
+                                    "deleg": deleg, "kw": kws, **({"arts": full} if full else {})})
                 print(f"  [{key}] {v['name']} 조례 언급 {len(deleg)} · 낱말 {len(kws)}", flush=True)
         F.jdump(OUT / f"{key}.json", res)
         md += [f"## {key} — {t['what']}", ""]

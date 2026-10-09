@@ -154,47 +154,34 @@ def main():
     PROBED2: list = []
 
     def one(t):
-        # 자치법규 본문(lawService target=ordin)에는 별표가 없어 별표서식 목록(lawSearch target=ordinbyl, 해당 자치법규명 검색)으로 받는다
-        q = t["name"].replace("·", " ").replace("ㆍ", " ")
-        root = F.xml(F.get("lawSearch.do", target="ordinbyl", query=q, search=2, display=100))
+        root = F.xml(F.get("lawService.do", target="ordin", MST=t["mst"]))
         if root is None:
             return {**t, "fail": 1}
-        p = probe and first[0]
-        first[0] = False
-        rows = [{c.tag: (c.text or "").strip() for c in it} for it in root if len(it)]
-        if rows and not PROBED:
-            PROBED.append(1)
-            print("  [probe] ordinbyl 행 수", len(rows), "필드:", {k: v[:60] for k, v in rows[0].items()}, flush=True)
         out = []
-        for r in rows:
-            nm = next((v for k, v in r.items() if "자치법규명" in k or "법규명" in k), "")
-            if norm_name(nm) != norm_name(t["name"]) and t["mst"] not in r.values():
+        for u in root.iter("별표단위"):
+            d = {k.tag: (k.text or "").strip() for k in u}
+            if not PROBED:
+                PROBED.append(1)
+                print("  [probe] 자치법규 별표단위:", {k: v[:60] for k, v in d.items()}, flush=True)
+            kind = d.get("별표구분") or d.get("별표종류") or ""
+            title = d.get("별표제목") or d.get("별표명") or ""
+            if "서식" in kind or "서식" in title[:12]:
                 continue
-            if r.get("별표종류") == "서식":
-                continue
-            bid = r.get("별표일련번호", "")
+            bid = d.get("별표키") or f"{t['mst']}-{d.get('별표번호', '')}-{d.get('별표가지번호', '')}"
             if bid in old:
                 out.append(old[bid])
                 continue
-            if F.left() < 600:
-                out.append({"id": bid, "title": r.get("별표명", ""), "text": "", "src": "", "skip": "시간"})
-                continue
-            pdf = next((v for k, v in r.items() if "PDF" in k and "링크" in k and v), "")
-            body, src = "", ""
-            det = F.xml(F.get("lawService.do", target="ordinbyl", ID=r.get("별표일련번호", "")))
-            if det is not None:
-                if not PROBED2:
-                    PROBED2.append(1)
-                    print("  [probe] ordinbyl 상세 태그:", {e.tag: (e.text or "").strip()[:50] for e in det.iter() if len(e) == 0}, flush=True)
-                body = next(((e.text or "").strip() for e in det.iter() if e.tag.endswith("내용") and (e.text or "").strip()), "")
-                src = "본문" if body else ""
-                pdf = pdf or next(((e.text or "").strip() for e in det.iter() if "PDF" in e.tag and "링크" in e.tag and (e.text or "").strip()), "")
-            if not body:
-                body, src = file_text(pdf or r.get("별표서식파일링크", ""))
-            out.append({"id": bid, "no": r.get("별표번호", ""), "br": r.get("별표가지번호", ""), "kind": r.get("별표종류") or r.get("별표구분", ""),
-                        "title": next((v for k, v in r.items() if k in ("별표명", "별표서식명", "별표제목") and v), ""), "text": body[:MAXC], "src": src if body else "",
-                        "link": pdf or r.get("별표서식파일링크", "")})
-        return {**t, "annex": out, "rows": len(rows)}
+            body = next((v for k, v in d.items() if k.endswith("내용") and v), "")
+            src = "본문" if body else ""
+            links = [v for k, v in d.items() if "링크" in k and v]
+            if not body and F.left() > 600:
+                for ln in sorted(links, key=lambda x: 0 if "PDF" in x.upper() else 1):
+                    body, src = file_text(ln)
+                    if body:
+                        break
+            out.append({"id": bid, "no": d.get("별표번호", ""), "br": d.get("별표가지번호", ""), "kind": kind, "title": title,
+                        "text": re.sub(r"[ \t]+", " ", body)[:MAXC], "src": src if body else "", "link": links[0] if links else ""})
+        return {**t, "annex": out}
 
     ords = F.pmap(one, targets, "자치법규 별표")
     F.jdump(OUT / "ordin.json.gz", ords, gz=True)

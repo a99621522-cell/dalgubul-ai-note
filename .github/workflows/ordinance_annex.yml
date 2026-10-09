@@ -27,7 +27,7 @@ jobs:
       - run: pip install -q -r scripts/requirements.txt
       - env:
           LAW_OC: ${{ secrets.LAW_OC }}
-        run: sudo apt-get install -y -q poppler-utils >/dev/null; python3 -u scripts/ordin/annex.py --probe
+        run: (sudo apt-get update -q >/dev/null && sudo apt-get install -y -q poppler-utils >/dev/null) || echo "poppler 설치 실패 — PDF 글자 없이 진행"; python3 -u scripts/ordin/annex.py --probe
       - name: 커밋
         run: |
           git config user.name "github-actions[bot]"

@@ -93,6 +93,21 @@ def file_text(link: str) -> tuple[str, str]:
             except Exception as e:  # noqa: BLE001
                 print("  [diag] hwp5txt 예외", type(e).__name__, flush=True)
                 return "", ""
+        if b[:16] == b"HWP Document Fil" and shutil.which("soffice"):   # 한글 97(3.0) — LibreOffice hwpfilter
+            q = Path(td) / "a.hwp"
+            q.write_bytes(b)
+            try:
+                subprocess.run(["soffice", f"-env:UserInstallation=file://{td}/lo", "--headless", "--convert-to", "txt:Text (encoded):UTF8", "--outdir", td, str(q)],
+                               capture_output=True, timeout=180)
+            except Exception as e:  # noqa: BLE001
+                print("  [diag] soffice 예외", type(e).__name__, flush=True)
+            t = Path(td) / "a.txt"
+            if t.exists():
+                return t.read_text(encoding="utf-8", errors="ignore"), "HWP97"
+            if len(DIAG) < 5:
+                DIAG.append(1)
+                print("  [diag] soffice 변환 결과 없음", flush=True)
+            return "", ""
         if len(DIAG) < 5:
             DIAG.append(1)
             print("  [diag] 알 수 없는 형식:", b[:16], len(b), flush=True)

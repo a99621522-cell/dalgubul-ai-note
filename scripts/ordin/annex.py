@@ -137,7 +137,7 @@ def main():
     def one(t):
         # 자치법규 본문(lawService target=ordin)에는 별표가 없어 별표서식 목록(lawSearch target=ordinbyl, 해당 자치법규명 검색)으로 받는다
         q = t["name"].replace("·", " ").replace("ㆍ", " ")
-        root = F.xml(F.get("lawSearch.do", target="ordinbyl", query=q, search=2, display=100))
+        root = F.xml(F.get("lawSearch.do", target="ordinbyl", query=q, search=2, knd=1, display=100))
         if root is None:
             return {**t, "fail": 1}
         p = probe and first[0]

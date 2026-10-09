@@ -32,6 +32,7 @@ def pdf_text(link: str) -> str:
     if not link or not shutil.which("pdftotext"):
         return ""
     url = link if link.startswith("http") else "https://www.law.go.kr" + link
+    url = url.replace("http://", "https://", 1)
     try:
         r = F.sess().get(url, timeout=90)
         if r.status_code != 200 or not r.content[:5].startswith(b"%PDF"):
@@ -52,6 +53,7 @@ def file_text(link: str) -> tuple[str, str]:
     if not link:
         return "", ""
     url = link if link.startswith("http") else "https://www.law.go.kr" + link
+    url = url.replace("http://", "https://", 1)
     try:
         r = F.sess().get(url, timeout=90)
         b = r.content if r.status_code == 200 else b""
@@ -165,7 +167,7 @@ def main():
                 print("  [probe] 자치법규 별표단위:", {k: v[:60] for k, v in d.items()}, flush=True)
             kind = d.get("별표구분") or d.get("별표종류") or ""
             title = d.get("별표제목") or d.get("별표명") or ""
-            if "서식" in kind or "서식" in title[:12]:
+            if title.startswith("[별지") or "서식]" in title[:16]:   # 별표구분은 별표도 '서식'으로 와서 제목으로 가른다
                 continue
             bid = d.get("별표키") or f"{t['mst']}-{d.get('별표번호', '')}-{d.get('별표가지번호', '')}"
             if bid in old:
@@ -173,7 +175,7 @@ def main():
                 continue
             body = next((v for k, v in d.items() if k.endswith("내용") and v), "")
             src = "본문" if body else ""
-            links = [v for k, v in d.items() if "링크" in k and v]
+            links = [v for k, v in d.items() if ("링크" in k or "파일명" in k) and v.startswith("http")]
             if not body and F.left() > 600:
                 for ln in sorted(links, key=lambda x: 0 if "PDF" in x.upper() else 1):
                     body, src = file_text(ln)

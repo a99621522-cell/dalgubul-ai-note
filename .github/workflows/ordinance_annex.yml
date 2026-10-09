@@ -1,0 +1,38 @@
+# 자치법규 정비 검토 — 내용 점검 후보의 상위법령 별표 본문 받기(scripts/ordin/annex.py, config/ordinance_annex.yml).
+# 설정·스크립트를 바꿔 푸시하거나 data/ordinance/annex_run.txt 를 바꿔 푸시하면 실행. 결과 data/ordinance/annex/
+name: 자치법규 정비 검토 — 별표 본문 받기
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ccr-a1fc4817-w0vo95]
+    paths: ["data/ordinance/annex_run.txt", "config/ordinance_annex.yml", "scripts/ordin/annex.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ordinance-annex
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+        run: sudo apt-get install -y -q poppler-utils >/dev/null; python3 -u scripts/ordin/annex.py --probe
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ordinance/annex || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 자치법규 별표 본문 $(date +%F)"
+          for i in 1 2 3 4 5; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 7; done

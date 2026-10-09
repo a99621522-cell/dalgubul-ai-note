@@ -18,7 +18,7 @@ export type Org = { key: string; name: string; count: number; listed: number };
 export type Sig = { key: string; name: string; conf: 'auto' | 'check'; show: boolean; rule: string; how: string };
 export type Cand = {
   id: string; org: string; oid: string; oname: string; kind: string; prom: string; dept: string; url: string;
-  no: string; atitle: string; text: string; sig: string; conf: string; ev: Record<string, any>; fix?: { old: string; new: string } | null;
+  no: string; atitle: string; text: string; sig: string; conf: string; ev: Record<string, any>; fix?: { old: string; new: string } | { old: string; new: string }[] | null;
   why?: string; how?: string; cat?: string;
 };
 export type Summary = {
@@ -55,10 +55,11 @@ export const ymd = (s?: string) => (s && s.length === 8 ? `${s.slice(0, 4)}-${s.
 export function draftTable(items: Cand[]) {
   const byNo = new Map<string, { no: string; text: string; fixes: { old: string; new: string }[] }>();
   for (const c of items) {
-    if (!c.fix || !c.fix.new) continue;
+    const fx = (Array.isArray(c.fix) ? c.fix : c.fix ? [c.fix] : []).filter(f => f && f.new);
+    if (!fx.length) continue;
     if (!byNo.has(c.no)) byNo.set(c.no, { no: c.no, text: c.text, fixes: [] });
     const r = byNo.get(c.no)!;
-    if (!r.fixes.some(f => f.old === c.fix!.old)) r.fixes.push(c.fix);
+    for (const f of fx) if (!r.fixes.some(g => g.old === f.old)) r.fixes.push(f);
   }
   return [...byNo.values()].map(r => {
     let cur = r.text, neu = r.text;

@@ -33,7 +33,7 @@ const SIGTXT: Record<string, string> = { article_renumber: '조 번호 바뀜', 
   {items.map(c => <OrdinCand c={c} />)}
   {draft.length > 0 && <>
     <div class="section-head"><h2>신구조문대비표 초안</h2></div>
-    <p class="callout info">자동 생성 초안 — 글자만 바꾸는 항목(법령 이름·기관 이름)입니다. 조문 체계·부칙(시행일·경과조치)은 입안 담당자가 작성합니다. 밑줄이 바뀌는 부분입니다.</p>
+    <p class="callout info">자동 생성 초안 — 글자만 바꾸는 항목(법령 이름·기관 이름, 조문 제목이 같은 현행 조로 옮긴 조 번호, 세션이 대조한 근거 법령 이동·위원 자격 문구)입니다. 조문 체계·부칙(시행일·경과조치)은 입안 담당자가 작성합니다. 밑줄이 바뀌는 부분입니다.</p>
     <div class="scroll-x"><table class="data-table" data-stack="off">
       <thead><tr><th>현행</th><th>개정안(초안)</th></tr></thead>
       <tbody>{draft.map(r => <tr><td class="txt" set:html={mark(r.cur)} /><td class="txt" set:html={mark(r.neu)} /></tr>)}</tbody>

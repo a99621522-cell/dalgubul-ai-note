@@ -411,7 +411,8 @@ def main():
                 for mr in MANUAL.get((str(d["id"]), a.get("no")), []):
                     pr = [{"no": q.get("case", ""), **{k: v for k, v in q.items() if k != "case"}} for q in mr.get("prec") or []]
                     add(d, a, "content_rule", ev={"rule": mr["key"], "rname": mr["name"], "level": mr["level"], "ctx": mr.get("ctx", "")[:400],
-                                                  "basis": mr["basis"], "prec": pr, "rwhy": mr["why"], "rhow": mr["how"], "annex": mr.get("annex", "")})
+                                                  "basis": mr["basis"], "prec": pr, "rwhy": mr["why"], "rhow": mr["how"], "annex": mr.get("annex", "")},
+                        **({"fix": [f for f in mr["fix"] if f["old"] in (a.get("text") or "")]} if mr.get("fix") else {}))
                 # 상위법령 위반 소지 ① 조례로 형벌(징역·벌금)을 정함 — 지방자치법 제28조제1항 단서: 벌칙은 법률의 위임이 있어야 한다
                 if not re.search(r"삭\s*제", raw[:40]):
                     mp = re.search(r"\d+\s*년\s*이하의\s*징역|[\d,]+\s*(?:억|천만|백만|만)?\s*원\s*이하의\s*벌금|(?:징역|벌금)에\s*처한다", raw)
@@ -502,6 +503,13 @@ def main():
                    if mv else f"'{ev.get('old_title')}' 내용이 지금 몇 조에 있는지 신구조문에서 찾아 인용 번호를 고친다.")
             if mv:
                 ev["moved_to"] = mv[:2]
+            # 신구조문대비표 초안: 같은 제목 조문이 하나뿐이고 조문에 「법령」 제N조 가 글자 그대로 한 번 있을 때만 번호를 바꾼다
+            if how_found == "같은 제목" and len(mv) == 1:
+                lab = lambda k: f"제{k.replace('의', '조의')}" + ("" if "의" in k else "조")
+                pat = re.compile(re.escape(f"「{ev.get('law', '')}」") + r"\s*" + re.escape(lab(ev["art"])) + r"(?![의\d])")
+                hits = pat.findall(c.get("text") or "")
+                if len(hits) == 1 and mv[0] != ev["art"]:
+                    c["fix"] = {"old": hits[0], "new": hits[0][: len(hits[0]) - len(lab(ev["art"]))] + lab(mv[0])}
         elif sg == "local_ref_missing":
             # 같은 지자체 자치법규를 먼저 찾고(인용 이름에 '대구광역시'만 있어도 구·군 조례를 가리키는 일이 많다), 없을 때만 대구시 것
             q0 = ev.get("law", "")

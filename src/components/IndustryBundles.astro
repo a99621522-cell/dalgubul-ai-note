@@ -46,14 +46,14 @@ const { heading = true } = Astro.props;
 {D && <section class="ib" id="bundles">
   {heading && <div class="section-head"><h2>대구 주력·미래 신산업 현황</h2><span class="meta">대구 · {Y}년 · 대구정책연구원 연구 보고서</span></div>}
   <p class="meta">{src}에 실린 대구의 산업별 값을 그대로 옮겼습니다. 모두 <b>대구</b> 값이고, {Y}년은 이 보고서에 실린 가장 최근 연도입니다. 주력산업 3개는 보고서가 정한 업종 묶음이고, 미래 신산업 5개는 보고서가 대구테크노파크의 산업 분류를 따른 묶음입니다.</p>
-  <div class="scroll-x"><table class="data-table" data-title={`대구 주력·미래 신산업 현황(${Y}년, 대구정책연구원)`}>
+  <div class="scroll-x"><table class="data-table ib-main" data-stack="off" data-title={`대구 주력·미래 신산업 현황(${Y}년, 대구정책연구원)`}>
     <thead>
       <tr><th rowspan="2">산업</th><th rowspan="2">구분</th><th colspan="4">대구정책연구원 보고서({Y}년)</th><th>기업 사전({foAsOf.replace('-', '.')})</th></tr>
       <tr><th class="n">사업체(개)</th><th class="n">종사자(명)</th><th class="n">생산액(억 원)</th><th class="n">부가가치(억 원)</th><th class="n">공장등록 기업(곳)</th></tr>
     </thead>
     <tbody>{D.bundles.map(b => <tr>
-      <th scope="row">{b.name}<div class="tiny muted tt-skip">{inc(b)}</div>{NOTE[b.name] && <div class="tiny ib-warn tt-skip">{NOTE[b.name]}</div>}</th><td class="ib-role">{b.role}</td>
-      <td class="n">{n(b.daegu.est[i])}</td><td class="n">{n(b.daegu.emp[i])}</td><td class="n">{eok(b.daegu.prod[i])}</td><td class="n">{eok(b.daegu.va[i])}</td><td class="n">{n(foCount(b))}</td>
+      <th scope="row">{b.name}<div class="tiny muted tt-skip">{inc(b)}</div>{NOTE[b.name] && <div class="tiny ib-warn tt-skip">{NOTE[b.name]}</div>}</th><td class="ib-role" data-label="구분">{b.role}</td>
+      <td class="n" data-label={`사업체(개, ${Y})`}>{n(b.daegu.est[i])}</td><td class="n" data-label="종사자(명)">{n(b.daegu.emp[i])}</td><td class="n" data-label="생산액(억 원)">{eok(b.daegu.prod[i])}</td><td class="n" data-label="부가가치(억 원)">{eok(b.daegu.va[i])}</td><td class="n" data-label={`공장등록 기업(곳, ${foAsOf.replace('-', '.')})`}>{n(foCount(b))}</td>
     </tr>)}</tbody>
   </table></div>
   <ul class="meta ib-notes">
@@ -81,5 +81,14 @@ const { heading = true } = Astro.props;
   .ib-role { white-space: nowrap; }
   .ib-warn { color: var(--ink); margin-top: 2px; font-weight: 400; }
   .ib-codes { margin: var(--s2) 0; }
+  /* 휴대폰: 산업 이름 칸(고정 열)이 화면 대부분을 차지해 숫자 칸이 그 밑으로 숨었다(운영자 지적 2026-10-09 '안열려') — 600px 아래는 산업마다 카드로 */
+  @media (max-width: 600px) {
+    .ib-main thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .ib-main, .ib-main tbody, .ib-main tr { display: block; width: 100%; }
+    .ib-main tr { border-bottom: 1px solid var(--line); padding: var(--s2) 0; }
+    .ib-main th[scope="row"] { display: block; position: static; min-width: 0; max-width: none; box-shadow: none; border: 0; padding: 0 0 4px; }
+    .ib-main td { display: flex; justify-content: space-between; gap: 1em; border: 0; padding: 2px 0; white-space: normal; }
+    .ib-main td::before { content: attr(data-label); color: var(--muted); text-align: left; }
+  }
   .ib-codes > summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
 </style>

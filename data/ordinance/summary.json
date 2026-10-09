@@ -1,6 +1,6 @@
 {
  "fetched": "2026-10-08",
- "built": "2026-10-08",
+ "built": "2026-10-09",
  "orgs": [
   {
    "key": "daegu",
@@ -362,11 +362,11 @@
    "dong": 21,
    "seo": 13,
    "nam": 11,
-   "buk": 24,
+   "buk": 25,
    "suseong": 30,
    "dalseo": 17,
-   "dalseong": 18,
-   "gunwi": 14
+   "dalseong": 19,
+   "gunwi": 15
   },
   "content_rule_ref": {
    "daegu": 21,
@@ -381,7 +381,7 @@
    "gunwi": 30
   }
  },
- "total": 12517,
+ "total": 12520,
  "expc_held": 8881,
  "expc_linked": 498,
  "expc_daegu": 134,

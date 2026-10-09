@@ -29,6 +29,10 @@ CFG = yaml.safe_load((ROOT / "config" / "ordinance.yml").read_text(encoding="utf
 SIG = yaml.safe_load((ROOT / "config" / "ordinance_signals.yml").read_text(encoding="utf-8"))["signals"]
 TERMS = yaml.safe_load((ROOT / "config" / "ordinance_terms.yml").read_text(encoding="utf-8"))
 CRULES = yaml.safe_load((ROOT / "config" / "ordinance_content_rules.yml").read_text(encoding="utf-8"))["rules"]
+# 사람이 자치법규 별표(금액표 등)를 상위법령 별표와 대조해 찾은 후보 — 조문 규칙으로는 잡히지 않는다(config/ordinance_review.yml annex)
+MANUAL: dict = {}
+for _m in (yaml.safe_load((ROOT / "config" / "ordinance_review.yml").read_text(encoding="utf-8")) or {}).get("annex") or []:
+    MANUAL.setdefault((str(_m["oid"]), _m["art"]), []).append(_m)
 # YAML 1.1 은 키 `no` 를 불(False)로 읽는다 — 사례 번호 키를 되돌린다
 for _r in CRULES.values():
     _r["prec"] = [{("no" if k is False else k): v for k, v in q.items()} for q in _r.get("prec") or []]
@@ -401,6 +405,10 @@ def main():
                         if hitp:
                             add(d, a, "content_rule", ev={"rule": rk, "rname": R["name"], "level": R["level"], "ctx": hitp.strip()[:400],
                                                           "basis": R.get("basis", ""), "prec": R.get("prec", []), "rwhy": R["why"], "rhow": R["how"]})
+                for mr in MANUAL.get((str(d["id"]), a.get("no")), []):
+                    pr = [{"no": q.get("case", ""), **{k: v for k, v in q.items() if k != "case"}} for q in mr.get("prec") or []]
+                    add(d, a, "content_rule", ev={"rule": mr["key"], "rname": mr["name"], "level": mr["level"], "ctx": mr.get("ctx", "")[:400],
+                                                  "basis": mr["basis"], "prec": pr, "rwhy": mr["why"], "rhow": mr["how"], "annex": mr.get("annex", "")})
                 # 상위법령 위반 소지 ① 조례로 형벌(징역·벌금)을 정함 — 지방자치법 제28조제1항 단서: 벌칙은 법률의 위임이 있어야 한다
                 if not re.search(r"삭\s*제", raw[:40]):
                     mp = re.search(r"\d+\s*년\s*이하의\s*징역|[\d,]+\s*(?:억|천만|백만|만)?\s*원\s*이하의\s*벌금|(?:징역|벌금)에\s*처한다", raw)

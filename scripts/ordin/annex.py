@@ -197,7 +197,7 @@ def main():
     old = {}
     for o in F.jload(OUT / "ordin.json.gz", []) or []:
         for a in o.get("annex") or []:
-            if a.get("text") and a.get("id") and a.get("src") not in ("HWP",):
+            if a.get("text") and a.get("id") and "<표>" not in a["text"][:4000]:   # 표가 빠진 옛 hwp5txt 결과는 다시 받는다
                 old[a["id"]] = a
     first = [True]
     PROBED: list = []

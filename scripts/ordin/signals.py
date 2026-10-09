@@ -579,17 +579,23 @@ def main():
             r = next((p for p in RV.get("patterns") or [] if re.search(p["name"], c["oname"]) and (not p.get("title") or re.search(p["title"], c.get("atitle") or ""))), None)
         if not r:
             continue
-        c["ev"]["review"] = {"verdict": r["verdict"], "deleg": r.get("deleg", "")}
+        # label: 올린 이유(기본은 「지방자치법」 제28조제1항 단서 — 주민 권리 제한·의무 부과·벌칙에 법률 위임이 없음).
+        # 다른 기관 의무·위원 자격처럼 위임 문제가 아닌 것은 label 로 이유를 따로 적고, level 로 수준을 정한다.
+        c["ev"]["review"] = {"verdict": r["verdict"], "deleg": r.get("deleg", ""), **({"label": r["label"]} if r.get("label") else {})}
         if r["verdict"] == "promote":
+            lv = r.get("level", "위반 소지")
             c["sig"], c["cat"] = "content_rule", "위반 소지"
-            c["ev"]["level"] = "위반 소지"
+            c["ev"]["level"] = lv
             pr = [{"no": q.get("case", ""), **{k: v for k, v in q.items() if k != "case"}} for q in r.get("prec") or []]
             if pr:
                 c["ev"]["prec"] = pr + [q for q in c["ev"].get("prec") or [] if q.get("no") not in {x["no"] for x in pr}]
             refs_ = "; ".join(f"{q['no']}({q.get('org', '')}): {q.get('concl', '')}" for q in pr[:2])
-            c["why"] = f"[위반 소지 — 위임 근거 없음 확인] {c['ev']['rwhy']} 상위법령 대조: {r['deleg']}" + (f" 법제처 사례 — {refs_}." if refs_ else "")
+            c["why"] = f"[{lv} — {r.get('label', '법률 위임 없는 주민 의무·권리 제한')}] {c['ev']['rwhy']} 상위법령 대조: {r['deleg']}" + (f" 법제처 사례 — {refs_}." if refs_ else "")
             c["how"] = r.get("how") or c["how"]
         elif r["verdict"] == "check":
+            if c["sig"] == "content_rule":  # 대조 결과 위임·적용 범위를 더 봐야 하면 참고로 내린다
+                c["sig"], c["ev"]["level"], c["cat"] = "content_rule_ref", "참고", "자구·기한 정비"
+                c["why"] = re.sub(r"^\[[^\]]*\]", "[참고]", c["why"])
             c["why"] += f" [위임 범위 확인] {r['deleg']}"
             c["how"] = r.get("how") or c["how"]
         elif r["verdict"] == "delegated":

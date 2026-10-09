@@ -26,6 +26,7 @@ ROOT = F.ROOT
 OUT = ROOT / "data" / "ordinance" / "annex"
 CFG = yaml.safe_load((ROOT / "config" / "ordinance_annex.yml").read_text(encoding="utf-8"))
 MAXC = 40000
+DIAG: list = []
 
 
 def pdf_text(link: str) -> str:
@@ -76,12 +77,25 @@ def file_text(link: str) -> tuple[str, str]:
             subprocess.run(["pdftotext", "-layout", str(p), str(p) + ".txt"], check=False, timeout=120)
             q = Path(str(p) + ".txt")
             return (q.read_text(encoding="utf-8", errors="ignore"), "PDF") if q.exists() else ("", "")
-        if b[:8] == bytes.fromhex("d0cf11e0a1b11ae1") and shutil.which("hwp5txt"):
-            try:
-                o = subprocess.run(["hwp5txt", str(p)], capture_output=True, timeout=120)
-                return o.stdout.decode("utf-8", "ignore"), "HWP"
-            except Exception:  # noqa: BLE001
+        if b[:8] == bytes.fromhex("d0cf11e0a1b11ae1"):
+            exe = shutil.which("hwp5txt")
+            if not exe:
+                if not DIAG:
+                    DIAG.append(1)
+                    print("  [diag] hwp5txt 없음", flush=True)
                 return "", ""
+            try:
+                o = subprocess.run([exe, str(p)], capture_output=True, timeout=120)
+                if not o.stdout.strip() and len(DIAG) < 3:
+                    DIAG.append(1)
+                    print("  [diag] hwp5txt 실패:", o.returncode, o.stderr.decode("utf-8", "ignore")[-400:], flush=True)
+                return o.stdout.decode("utf-8", "ignore"), "HWP"
+            except Exception as e:  # noqa: BLE001
+                print("  [diag] hwp5txt 예외", type(e).__name__, flush=True)
+                return "", ""
+        if len(DIAG) < 5:
+            DIAG.append(1)
+            print("  [diag] 알 수 없는 형식:", b[:16], len(b), flush=True)
     return "", ""
 
 

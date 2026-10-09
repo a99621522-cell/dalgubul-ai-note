@@ -9,8 +9,8 @@
   "202301",
   "202612"
  ],
- "rows_total": 63848,
- "rows_kept": 2568,
+ "rows_total": 87800,
+ "rows_kept": 3540,
  "latest": "202608",
  "unit": "2020＝100",
  "areas": [
@@ -20,7 +20,7 @@
   "textile",
   "root"
  ],
- "fetched": "2026-10-06",
+ "fetched": "2026-10-09",
  "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
  "note": ""
 }

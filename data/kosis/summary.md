@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-08 · 표 41개 · 설정 config/kosis_tables.yml
+갱신 2026-10-09 · 표 40개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -21,14 +21,14 @@
 | medical-use-sido-outside | [시도별 진료현황-관외](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A006) | Y 2020~2026 | 2024 | 1275 | 명 |
 | medical-use-sido-provider | [의료기관 시도별 진료현황-전체](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A007) | Y 2020~2026 | 2024 | 1350 | 명 |
 | medical-use-sido-resident | [시도별 진료현황-전체](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A004) | Y 2020~2026 | 2024 | 1800 | 명 |
-| mfg-production-index-industry | [시도/산업별 광공업생산지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001) | M 202301~202612 | 202608 | 2568 | 2020＝100 |
+| mfg-production-index-industry | [시도/산업별 광공업생산지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001) | M 202301~202612 | 202608 | 3540 | 2020＝100 |
 | mfg-production-index-sido | [광공업생산지수(시도)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=INH_1F02001) | M 202301~202612 | 202608 | 792 | 2020＝100 |
 | mfg-tangible-sido | [시도/산업분류별 유형자산 증가액 감소액 및 연말잔액(10명 이상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1106) | Y 2020~2026 | 2024 | 2164 | 개 |
 | mice-conference-sido | [국제회의의 지역별 현황](https://kosis.kr/statHtml/statHtml.do?orgId=314&tblId=DT_314005_A001) | Y 2020~2026 | 2024 | 216 | 건 |
 | mice-exhibition-sido | [지역별 시설별 전시회 개최건수](https://kosis.kr/statHtml/statHtml.do?orgId=430&tblId=DT_430001_05_003) | Y 2020~2026 | 2024 | 488 | 건 |
 | migration-age-sido | [시군구/성/연령(5세)별 순이동자수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26002) | Y 2020~2026 | 2025 | 360 | 명 |
 | migration-sido | [시군구별 이동자수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26001_A01) | M 202301~202612 | 202608 | 96208 | 명 |
-| mining-mfg-survey-sido | [시도/산업분류별 출하액생산액부가가치 및 주요생산비(10명 이상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104) | Y 2020~2026 | 2024 | 64197 | 개 |
+| mining-mfg-survey-sido | [시도/산업분류별 출하액생산액부가가치 및 주요생산비(10명 이상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104) | Y 2020~2026 | 2024 | 5157 | 개 |
 | population-sido | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | Y 2014~2026 | 2025 | 10257 | 명 |
 | population-sigungu-monthly | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | M 202401~202612 | 202609 | 29055 | 명 |
 | regional-employment-sigungu | [시군구/산업별 취업자(10차)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3A05S) | H 202001~202602 | 202401 | 534 | 천명 |
@@ -39,4 +39,4 @@
 | sme-stats-sido | [시도별·산업중분류별·기업규모별 기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001) | Y 2020~2026 | 2023 | 45863 | 개 |
 | sme-workers-sido | [시도별·산업중분류별·기업규모별 종사자수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_B001) | Y 2020~2026 | 2023 | 45864 | 명 |
 | startup-trend-sido-prev | [지역별 · 업종별 창업기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_142N_F205) | M 202101~202612 | 202512 | 1140 | 개 |
-| startup-trend-sido | [지역별 · 업종별 창업기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_142N_G205) | M 202201~202612 | 202606 | 114 | 개 |
+| startup-trend-sido | [지역별 · 업종별 창업기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_142N_G205) | M 202201~202612 | 202607 | 133 | 개 |

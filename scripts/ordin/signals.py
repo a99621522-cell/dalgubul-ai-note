@@ -32,8 +32,9 @@ CRULES = yaml.safe_load((ROOT / "config" / "ordinance_content_rules.yml").read_t
 # 사람이 자치법규 별표(금액표 등)를 상위법령 별표와 대조해 찾은 후보 — 조문 규칙으로는 잡히지 않는다(config/ordinance_review.yml annex)
 MANUAL: dict = {}
 # + 규칙이 조례 사항(사용료 대강·금연구역 범위 등)을 정한 곳(subdeleg — scripts/ordin/subdeleg_scan.py 목록을 세션이 대조)
+# + 위임 조례 미제정·옮겨간 상위 조문(manual — scripts/ordin/unenacted.py 목록을 세션이 대조)
 _RV0 = yaml.safe_load((ROOT / "config" / "ordinance_review.yml").read_text(encoding="utf-8")) or {}
-for _m in (_RV0.get("annex") or []) + (_RV0.get("subdeleg") or []):
+for _m in (_RV0.get("annex") or []) + (_RV0.get("subdeleg") or []) + (_RV0.get("manual") or []):
     MANUAL.setdefault((str(_m["oid"]), _m["art"]), []).append(_m)
 # YAML 1.1 은 키 `no` 를 불(False)로 읽는다 — 사례 번호 키를 되돌린다
 for _r in CRULES.values():

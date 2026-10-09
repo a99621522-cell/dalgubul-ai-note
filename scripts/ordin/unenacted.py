@@ -119,7 +119,7 @@ def main():
         miss = "전부" if len(r["missing"]) == len(ORGS) or (r["level"] == "sigungu" and len(r["missing"]) == len(GUGUN)) else ", ".join(ORG_KO[o] for o in r["missing"])
         ca = ", ".join(ORG_KO[o] for o in r["cited_any"]) or "-"
         L.append(f"| {lv} | {r['law']} | {r['art']}({r['title']}) | {r['text'][:160].replace('|', '｜')} | {miss} | {ca} |")
-    p = ROOT / "docs" / "ordinance" / f"unenacted_{day}.md"
+    p = ROOT / "docs" / "ordinance" / f"unenacted_scan_{day}.md"
     p.write_text("\n".join(L) + "\n", encoding="utf-8")
     print(p, len(uniq))
 

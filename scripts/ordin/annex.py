@@ -97,15 +97,27 @@ def main():
     first = [True]
 
     def one(t):
-        root = F.xml(F.get("lawService.do", target="ordin", MST=t["mst"]))
+        # 자치법규 본문(lawService target=ordin)에는 별표가 없어 별표서식 목록(lawSearch target=ordinbyl, 해당 자치법규명 검색)으로 받는다
+        q = t["name"].replace("·", " ").replace("ㆍ", " ")
+        root = F.xml(F.get("lawSearch.do", target="ordinbyl", query=q, search=2, display=100))
         if root is None:
             return {**t, "fail": 1}
         p = probe and first[0]
         first[0] = False
+        rows = [{c.tag: (c.text or "").strip() for c in it} for it in root if len(it)]
         if p:
-            tags = sorted({e.tag for e in root.iter() if "별표" in e.tag})
-            print("  [probe] 자치법규 별표 관련 태그:", tags, flush=True)
-        return {**t, "annex": annexes(root, p)}
+            print("  [probe] ordinbyl 행 수", len(rows), "필드:", {k: v[:50] for k, v in (rows[0].items() if rows else [])}, flush=True)
+        out = []
+        for r in rows:
+            nm = r.get("관련자치법규명") or r.get("자치법규명") or ""
+            if norm_name(nm) != norm_name(t["name"]) and r.get("자치법규일련번호") != t["mst"]:
+                continue
+            pdf = r.get("별표서식PDF파일링크") or ""
+            body = pdf_text(pdf)
+            out.append({"no": r.get("별표번호", ""), "br": r.get("별표가지번호", ""), "kind": r.get("별표종류") or r.get("별표구분", ""),
+                        "title": r.get("별표명") or r.get("별표서식명") or r.get("별표제목", ""), "text": body[:MAXC], "src": "PDF" if body else "",
+                        "link": pdf or r.get("별표서식파일링크", "")})
+        return {**t, "annex": out, "rows": len(rows)}
 
     ords = F.pmap(one, targets, "자치법규 별표")
     F.jdump(OUT / "ordin.json.gz", ords, gz=True)

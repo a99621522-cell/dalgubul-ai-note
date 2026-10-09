@@ -84,6 +84,23 @@ def file_text(link: str) -> tuple[str, str]:
                     DIAG.append(1)
                     print("  [diag] hwp5txt 없음", flush=True)
                 return "", ""
+            h = shutil.which("hwp5html")
+            if h:   # 표까지 살리려고 HTML 로 바꾼 뒤 칸은 ' | ', 행은 줄바꿈
+                try:
+                    subprocess.run([h, "--output", str(Path(td) / "h"), str(p)], capture_output=True, timeout=180)
+                    x = Path(td) / "h" / "index.xhtml"
+                    if x.exists():
+                        t = x.read_text(encoding="utf-8", errors="ignore")
+                        t = re.sub(r"<style.*?</style>", " ", t, flags=re.S)
+                        t = re.sub(r"</t[dh]>", " | ", t)
+                        t = re.sub(r"</(tr|p|div|table)>", "\n", t)
+                        t = re.sub(r"<[^>]+>", " ", t)
+                        t = re.sub(r"&nbsp;|&#160;", " ", t).replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+                        t = re.sub(r"[ \t]+", " ", t)
+                        if t.strip():
+                            return t, "HWP"
+                except Exception as e:  # noqa: BLE001
+                    print("  [diag] hwp5html 예외", type(e).__name__, flush=True)
             try:
                 o = subprocess.run([exe, str(p)], capture_output=True, timeout=120)
                 if not o.stdout.strip() and len(DIAG) < 3:
@@ -108,6 +125,8 @@ def file_text(link: str) -> tuple[str, str]:
                 DIAG.append(1)
                 print("  [diag] soffice 변환 결과 없음", flush=True)
             return "", ""
+        if b[:2] == b"\xa3\xdb":   # 글자 파일(cp949)
+            return b.decode("cp949", "ignore"), "TXT"
         if len(DIAG) < 5:
             DIAG.append(1)
             print("  [diag] 알 수 없는 형식:", b[:16], len(b), flush=True)
@@ -178,7 +197,7 @@ def main():
     old = {}
     for o in F.jload(OUT / "ordin.json.gz", []) or []:
         for a in o.get("annex") or []:
-            if a.get("text") and a.get("id"):
+            if a.get("text") and a.get("id") and a.get("src") not in ("HWP",):
                 old[a["id"]] = a
     first = [True]
     PROBED: list = []

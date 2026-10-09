@@ -34,9 +34,9 @@ const pRow = (key: string, what: string, sub?: string): Row | null => {
   return { n: fmt(n) + (sub ? '' : (p.n_org ? ` (기업 ${p.n_firm}·기관 ${p.n_org})` : '')), when: p.as_of ? ym(p.as_of) : '—', src, what, names: true };
 };
 const mRow = (): Row | null => mfds ? { n: fmt(Number(mfds.firms)), when: `${mfds.year}년`, src: '식품의약품안전처 의료기기 생산·수출입 실적', what: '의료기기 생산 실적을 보고한 대구 업체(안경·의약품 없음)', names: false } : null;
-/** 운영자 지시 2026-10-09 '미래차와 알파시티는 출처를 넣어서 반영해' — 기관 발표·기관 누리집 값(보도 매체 아님) */
+/** 운영자 지시 2026-10-09 '미래차와 알파시티는 출처를 넣어서 반영해' → 알파시티는 '홈페이지로 해': 누리집 기업현황 '전체 311건'(2026-09-25 저장 화면 scripts/data/alphacity/page01.mht). 기관 발표·기관 누리집 값(보도 매체 아님) */
 const fmtsMembers: Row = { n: '212', when: '2025.03', src: '대구광역시 보도자료 「자동차부품기업의 미래차전환 원스톱 지원 강화」(2025-04)', what: '대구 미래차전환종합지원센터(지능형자동차부품진흥원) 회원사 — 가입 기준이라 업종 기업 수가 아님', names: false, url: 'https://info.daegu.go.kr/newshome/mtnmain.php?aid=270689&mtnkey=articleview&mkey=todaylist' };
-const alphaFirms: Row = { n: '333', when: '2025.01', src: 'KOTRA 인베스트코리아 대구 투자정보 「수성알파시티」', what: '수성알파시티 지식산업기반시설용지 입주 기업 — 단지 입주 기준이라 업종이 섞임', names: false, url: 'https://www.investkorea.org/dg-kr/bbs/i-1031/detail.do?ntt_sn=490550' };
+const alphaFirms: Row = { n: '311', when: '2026.09', src: '수성알파시티 누리집 기업현황', what: '수성알파시티 입주 기업(누리집 기업현황 게시 건수, 대학 등 일부 기관 포함) — 단지 입주 기준이라 업종이 섞임', names: false, url: 'https://alphacity.or.kr/boardList?type=1' };
 const autoParts = (): Row => ({ n: fmt(foBy(k => k.startsWith('303'))), when: ym(foAsOf), src: '기업 사전(팩토리온 공장등록)', what: '자동차 신품 부품 업종(303)만 — 묶음에 든 화학·배전반·소프트웨어 등은 뺌', names: true });
 
 /** 산업마다 더하는 줄. 묶음 두 줄(보고서·공장등록)은 모든 산업에 공통으로 앞에 붙는다 */

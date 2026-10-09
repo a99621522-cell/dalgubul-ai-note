@@ -359,14 +359,14 @@
   "content_rule": {
    "daegu": 38,
    "jung": 15,
-   "dong": 21,
+   "dong": 22,
    "seo": 13,
    "nam": 11,
-   "buk": 25,
-   "suseong": 30,
+   "buk": 26,
+   "suseong": 32,
    "dalseo": 17,
    "dalseong": 19,
-   "gunwi": 15
+   "gunwi": 16
   },
   "content_rule_ref": {
    "daegu": 21,
@@ -381,7 +381,7 @@
    "gunwi": 30
   }
  },
- "total": 12520,
+ "total": 12525,
  "expc_held": 8881,
  "expc_linked": 498,
  "expc_daegu": 134,

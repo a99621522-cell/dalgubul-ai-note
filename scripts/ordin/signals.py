@@ -572,7 +572,7 @@ def main():
         if c["sig"] not in ("content_rule", "content_rule_ref"):
             continue
         r = rv_id.get((c["oid"], c["no"]))
-        if not r:
+        if not r and c["sig"] == "content_rule_ref":  # 이름 패턴은 참고 후보에만 — 위반 소지 후보는 조문별 대조(reviews)로만 바꾼다
             r = next((p for p in RV.get("patterns") or [] if re.search(p["name"], c["oname"]) and (not p.get("title") or re.search(p["title"], c.get("atitle") or ""))), None)
         if not r:
             continue

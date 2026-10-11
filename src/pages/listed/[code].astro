@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, debtRatio, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode } from '../../lib/dart';
+import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, debtRatio, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode, qByCode, qKey, qLabel, qPrev, perfByCode } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/<corp_code>/ — 대구시 상장기업 회사별 페이지(운영자 지시 2026-10-05). DART 공시 값만: 재무(최근 3개 사업연도)·직원·연구개발비·타법인 출자·
  *  미래 산업 관련 공시. 원 → 억 원 나눗셈만, 비율·순위·평가 없음. 대표자 등 개인 정보 없음. corp_code 는 DART 고유번호라 바뀌지 않는다. */
@@ -24,6 +24,9 @@ const ACC: [keyof typeof c.years[string], string][] = [['revenue', '매출액'],
 const finYears = years.filter(y => c.years[y]);
 const revAcc = finYears.map(y => c.years[y]?.revenue_account).find(a => a && a !== '매출액');   // 금융회사: 영업수익 등을 매출액 자리에(운영자 지시 2026-10-06)
 if (revAcc) ACC[0] = ['revenue', `매출액(${revAcc})`];
+const qs = qByCode(c.code).slice(-6);
+const perf = perfByCode(c.code);
+const qYoYc = (q: (typeof qs)[number], col: 'revenue' | 'operating_income' | 'net_income') => { const a = Number(q[col]), b = Number(qPrev(q, col)); return q[col] && b > 0 && a > 0 ? pct1(((a / b) - 1) * 100) : '—'; };
 const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
 ---
 <Base title={`${c.name} — 대구시 상장기업`} description={`${c.name}(${c.cls}${c.stock ? ' ' + c.stock : ''}, 대구 ${c.district}) DART 공시: 최근 3개 사업연도 재무·직원·연구개발비·타법인 출자·미래 산업 관련 공시.`} current="listed" crumb={c.name}>
@@ -63,6 +66,32 @@ const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
     </table></div>)}
     {finYears.length > 0 && <p class="meta">{revAcc && `이 회사는 매출액 계정이 없어(금융업) 사업보고서 손익계산서의 '${revAcc}'을 매출액 자리에 넣었습니다. `}매출액 증가율 = (그해 ÷ 전년 − 1) × 100, 영업이익률 = 영업이익 ÷ 매출액 × 100, 부채비율 = 부채총계 ÷ 자본총계 × 100 — 공시 값을 나눈 것. 연구개발비·직원 수는 사업보고서 '연구개발 활동'·'직원 등의 현황' 값(아래 표)(기준이 다른 해끼리는 계산하지 않음). 원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
   </section>
+
+  {qs.length > 0 && (
+  <section>
+    <div class="section-head"><h2>분기 실적</h2><span class="meta">분기·반기·사업보고서 · 억 원 · {qs.at(-1)!.fs}</span></div>
+    <div class="scroll-x"><table class="data-table" data-title={`${c.name} 분기 실적`}>
+      <thead><tr><th>계정</th>{qs.map(q => <th class="n">{qLabel(qKey(q))}{q.derived ? '※' : ''}</th>)}</tr></thead>
+      <tbody>
+        <tr><th scope="row">매출액</th>{qs.map(q => <td class="n">{f(q.revenue)}</td>)}</tr>
+        <tr><th scope="row">매출액 전년 같은 분기 대비(%)</th>{qs.map(q => <td class="n">{qYoYc(q, 'revenue')}</td>)}</tr>
+        <tr><th scope="row">영업이익</th>{qs.map(q => <td class="n">{f(q.operating_income)}</td>)}</tr>
+        <tr><th scope="row">전년 같은 분기 영업이익</th>{qs.map(q => <td class="n">{f(qPrev(q, 'operating_income'))}</td>)}</tr>
+        <tr><th scope="row">당기순이익</th>{qs.map(q => <td class="n">{f(q.net_income)}</td>)}</tr>
+      </tbody>
+    </table></div>
+    <p class="meta">1~3분기는 보고서에 공시된 그 분기 3개월 값, ※ 4분기는 사업보고서 연간 값 − 3분기 누적(이 사이트 계산)입니다. 전년 같은 분기 값은 같은 보고서에 함께 공시된 값입니다. 원문: {qs.filter(q => q.source_url).map((q, i) => <>{i ? ' · ' : ''}<a href={q.source_url} rel="noopener">{qLabel(qKey(q))}</a></>)}</p>
+  </section>)}
+
+  {perf.length > 0 && (
+  <section>
+    <div class="section-head"><h2>실적 공시</h2><span class="meta">최근 15개월 · 변동 사유·전망·잠정실적</span></div>
+    <div class="scroll-x"><table class="data-table" data-title={`${c.name} 실적 공시`}>
+      <thead><tr><th>접수일</th><th>구분</th><th>공시</th><th>공시 문구(변동 주요원인·전망)</th></tr></thead>
+      <tbody>{perf.map(p => <tr><td class="nw">{ymd(p.rcept_dt)}</td><td class="nw">{p.kind}</td><td><a href={p.url} rel="noopener">{p.report_nm}</a></td><td class="ex">{p.excerpt || '—'}</td></tr>)}</tbody>
+    </table></div>
+    <p class="meta">손익구조 변동은 매출액·손익이 전년보다 30%(대규모법인 15%) 이상 바뀌었을 때 내는 공시로, 회사가 적은 변동 주요원인 문구를 그대로(120자까지) 옮겼습니다. 실적 전망은 회사가 스스로 낸 전망 공시입니다. 잠정실적은 감사·검토 전 값이라 정기보고서와 다를 수 있습니다. 이 사이트의 해석·평가가 아닙니다.</p>
+  </section>)}
 
   <section>
     <div class="section-head"><h2>직원</h2><span class="meta">사업보고서 '직원 등의 현황'</span></div>
@@ -108,7 +137,7 @@ const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
     </>)}
   </section>
 
-  <p class="meta">출처: 금융감독원 전자공시시스템(DART) OpenDART — 기업개황, 단일회사 주요계정, 사업보고서(직원 현황·타법인 출자 현황·연구개발 활동), 공시서류원본. 대표자 등 개인 정보는 받지 않습니다.</p>
+  <p class="meta">출처: 금융감독원 전자공시시스템(DART) OpenDART — 기업개황, 단일회사 주요계정(분기·반기·사업보고서), 실적 공시(잠정실적·손익구조 변동·실적 전망), 사업보고서(직원 현황·타법인 출자 현황·연구개발 활동), 공시서류원본. 대표자 등 개인 정보는 받지 않습니다.</p>
 </Base>
 <style>
   .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--s2); margin: var(--s2) 0; }

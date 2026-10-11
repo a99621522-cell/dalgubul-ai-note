@@ -1,11 +1,13 @@
 {
  "file": "src/content/posts/2026-10-08-policy-root-cbam-downstream.md",
- "checked": "2026-10-08",
- "ok": 10,
+ "checked": "2026-10-11",
+ "ok": 9,
  "total": 10,
- "ratio": 1.0,
- "official_bad": [],
- "pass": true,
+ "ratio": 0.9,
+ "official_bad": [
+  "핀란드 경제고용부, 「Carbon Border Adjustment Mechanism progresses at Ecofin Council」"
+ ],
+ "pass": false,
  "sources": [
   {
    "title": "산업통상부, 「제13차 CBAM 정부합동설명회 개최 — CBAM 이행 규정과 실무 대응방안 안내」 보도자료",
@@ -48,11 +50,11 @@
    "url": "https://valtioneuvosto.fi/en/-/1410877/carbon-border-adjustment-mechanism-progresses-at-ecofin-council",
    "date": "2026-06-12",
    "kind": "gov",
-   "status": 200,
-   "page_title": "Carbon Border Adjustment Mechanism progresses at Ecofin Council - Finnish Government",
-   "title_match": 0.88,
+   "status": 403,
+   "page_title": "Just a moment...",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
+   "ok": false,
    "note": ""
   },
   {

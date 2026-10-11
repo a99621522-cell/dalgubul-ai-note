@@ -135,3 +135,28 @@ export function makesOf(c: DartCorp): { text: string; kind: 'dart' | 'factory' |
   if (c.factoryProduct) { const t = c.factoryProduct.replace(/\s+/g, ' '); const cut = t.length > 50 ? t.slice(0, 50).replace(/[,\s]+[^,\s]*$/, '').replace(/\s*등$/, '') + ' 등' : t; return { text: cut, kind: 'factory' }; }
   return { text: '', kind: '' };
 }
+
+/** 분기 실적(scripts/collect_dart_qtr.py → scripts/data/company_financials_q.csv, 운영자 지시 2026-10-12): 대구 본사 유가증권·코스닥 상장회사의
+ *  분기·반기·사업보고서 주요계정(연결 우선). 1~3분기는 공시된 3개월 값, 4분기는 '연간 − 3분기 누적'(derived=1, 이 사이트 계산).
+ *  *_prev 는 같은 보고서의 전년 같은 분기 값(공시). 순위·평가 없음. */
+export type DartQuarter = { corp_code: string; name: string; corp_cls: string; stock_code: string; year: string; quarter: string; fs: string;
+  revenue: string; operating_income: string; net_income: string; revenue_cum: string; operating_income_cum: string; net_income_cum: string;
+  revenue_prev: string; operating_income_prev: string; net_income_prev: string; derived: string; unit: string; rcept_no: string; source_url: string; as_of: string };
+export const dartQuarters = memo(() => readCsv('scripts/data/company_financials_q.csv') as DartQuarter[]);
+export const qKey = (q: Pick<DartQuarter, 'year' | 'quarter'>) => `${q.year}-${q.quarter}`;
+export const qLabel = (k: string) => { const [y, q] = k.split('-'); return `${y.slice(2)}.${q}Q`; };
+export const qByCode = (code: string) => dartQuarters().filter(q => q.corp_code === code).sort((a, b) => qKey(a).localeCompare(qKey(b)));
+/** 전년 같은 분기 값: 1~3분기는 공시 행의 *_prev, 4분기는 전년 4분기 행(같은 연결·개별 기준일 때만) */
+export const qPrev = (q: DartQuarter, col: 'revenue' | 'operating_income' | 'net_income') => {
+  if (q.quarter !== '4') return q[`${col}_prev`];
+  const p = dartQuarters().find(x => x.corp_code === q.corp_code && x.quarter === '4' && Number(x.year) === Number(q.year) - 1 && x.fs === q.fs);
+  return p?.[col] ?? '';
+};
+/** 매출액 전년 같은 분기 대비 증감률(%) — 두 값이 모두 0 보다 클 때만 */
+export const qYoY = (q?: DartQuarter) => { if (!q) return null; const a = Number(q.revenue), b = Number(qPrev(q, 'revenue')); return q.revenue && b > 0 && a > 0 ? (a / b - 1) * 100 : null; };
+
+/** 실적 관련 공시(data/dart/performance.csv): 영업(잠정)실적 · 매출액 또는 손익구조 30%(대규모법인 15%) 이상 변동(공시된 주요원인 문구) ·
+ *  영업실적 등에 대한 전망(공정공시). excerpt 는 회사가 공시한 문구 그대로(120자 안). 해석·평가 없음. */
+export type DartPerf = { rcept_dt: string; corp_code: string; name: string; kind: string; report_nm: string; excerpt: string; rcept_no: string; url: string };
+export const dartPerf = memo(() => readCsv('data/dart/performance.csv') as DartPerf[]);
+export const perfByCode = (code: string) => dartPerf().filter(p => p.corp_code === code).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));

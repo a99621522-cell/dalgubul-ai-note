@@ -6,6 +6,7 @@
 > 전제 — 엔진에 12운성(포태법, 첩경식 수토동궁)과 12신살(생년·일지 기준 병기)은 있고, **일주론(60일주 해설)은 없다**.
 > 작업 일지 157차 결론(운 시기 판정은 근거 없음, 용신은 60% 상한)에 따라 앱은 원국 서술에 집중하고 길흉 시기 단정은 피한다.
 > 운영자가 준비할 것: ① 일주론 60개 해설의 출처(책·쪽) ② 12운성 기본 식(첩경식/연해자평식) 결정 ③ Render 의 Claude 키·ALLOW_ORIGIN 은 그대로.
+> 운영자 지시 2026-10-11: **만세력 계산기는 운영자가 만든 간명 앱의 `manse` 모듈을 쓴다**(외부 패키지 @fullstackfamily/manseryeok 이 아니라).
 
 ---
 
@@ -16,11 +17,12 @@
 그다음 코드: chapgyeong-input.js(만세력 어댑터, analyzeFromBirth), chapgyeong-vol1-tables.js 192행 이하(포태법 십이운성),
 chapgyeong-vol1-sinsal.js(analyzeSinsal, analyzePoTae), chapgyeong-vol1-gapja60.js(순중·공망),
 chapgyeong-un.js(buildDaeun·seunGanji·monthsOfYear), chapgyeong-haeseol.js(toBrief·checkOutput),
-chapgyeong-server.js(POST /첩경, /첩경/판정), app/index.html.
+chapgyeong-server.js(POST /첩경, /첩경/판정), app/index.html,
+그리고 간명 앱 번들 ganmyeong-integration/webapp/engine.bundle.js 의 `manse` 모듈(사주·대운수·그해절기·toJD — 우리가 만든 만세력 계산기).
 
 ## 만들 것
 생년월일시·성별·(양력/음력, 출생지 경도)를 넣으면 다음을 보여 주는 단일 페이지 추명 앱 + 서버 API.
-1. 명식 4주 표 (기존 어댑터 그대로, 대운수는 156차 천문계산 fallback 포함)
+1. 명식 4주 표 — 만세력은 간명 앱 `manse.사주(년,월,일,시,분,{성별,출생지,야자시})` 로 세우고 chapgyeong-input.js `fromManse` 로 엔진에 넘긴다. 대운수는 `manse.대운수` (절입까지 날수 ÷3 반올림, 첩경 2권 '2올림 1버림'과 같음)
 2. 일주론: 일주(日柱) 60갑자별 해설. 데이터는 data/ilju60.json 에서 읽는다(아래 스키마). 코드에 해설 문장을 박지 않는다.
 3. 12운성: 일간 기준으로 연·월·일·시 지지 4곳 + 대운 10개 + 올해 세운의 운성. 첩경식(수토동궁)을 기본으로 하고,
    화토동궁(연해자평식)을 옵션으로 둔다. 어느 식인지 화면에 표기.
@@ -47,7 +49,7 @@ chapgyeong-server.js(POST /첩경, /첩경/판정), app/index.html.
 - 해설 문장은 출처(책·쪽)가 있는 것만. 의료·법률·투자 조언 금지, 사망·사고 단정 금지.
 - README_RESTORE.md 에는 작성자 개인 명식·경력이 적혀 있다. 앱·테스트·예시 데이터에 넣지 말고, 예시 명식은 책 실례(docs/)에서 가져온다.
 - npm test(회귀 127)가 그대로 통과해야 한다. 새 기능은 test/ilju.js 에 추가(60일주 전부 운성·신살 계산 오류 0건, 두 운성식 결과 대조).
-- 외부 의존성 추가 금지(@fullstackfamily/manseryeok 만). 화면은 외부 CDN 없이 단일 HTML.
+- 외부 의존성 추가 금지. 만세력은 간명 앱 `manse` 모듈을 쓴다. @fullstackfamily/manseryeok 은 새로 부르지 않는다(그 모듈이 절입표로 스스로 참조하는 경우만 남김). 화면은 외부 CDN 없이 단일 HTML.
 
 ## 진행
 1. 먼저 읽고, 12운성 두 식과 12신살 두 기준의 결과가 갈리는 지점을 책 실례 5건으로 보여 주며 어떻게 표시할지 제안한 뒤 멈춰라.

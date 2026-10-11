@@ -3,20 +3,26 @@
  "name": "BCG Publications",
  "group": "해외 컨설팅",
  "home": "https://www.bcg.com",
- "fetched": "2026-10-05",
+ "fetched": "2026-10-11",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
   {
-   "title": "Corporate Finance and Strategy",
-   "url": "https://www.bcg.com/capabilities/corporate-finance-strategy/overview",
-   "date": "2026-10-02",
+   "title": "Value Creation in Energy 2026: Winning Energy’s Next Investment Cycle",
+   "url": "https://www.bcg.com/publications/2026/energy-companies-creating-value",
+   "date": "2026-10-08",
    "summary": ""
   },
   {
-   "title": "Which Strategic Foresight Approach Is Best for You?",
-   "url": "https://www.bcg.com/publications/2026/approach-foresight-right-company",
-   "date": "2026-10-02",
+   "title": "Principal Investors and Private Equity",
+   "url": "https://www.bcg.com/industries/principal-investors-private-equity/overview",
+   "date": "2026-10-06",
+   "summary": ""
+  },
+  {
+   "title": "Sustainability in Private Markets, 2026: As Progress Continues, AI Poses New Risks and Opportunities",
+   "url": "https://www.bcg.com/publications/2026/private-markets-sustainability-ai-risk",
+   "date": "2026-10-06",
    "summary": ""
   }
  ],

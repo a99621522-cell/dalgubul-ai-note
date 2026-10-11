@@ -3,7 +3,7 @@
  "name": "Deloitte Insights(비공식 RSS 집계)",
  "group": "해외 컨설팅",
  "home": "https://www.deloitte.com",
- "fetched": "2026-10-05",
+ "fetched": "2026-10-11",
  "status": "OK",
  "method": "rss(ntent.com/yushakareem/public-deloitte-in)",
  "items": [
@@ -38,6 +38,12 @@
    "summary": "Article • Deloitte’s latest proprietary research and insights to help move the AI conversation forward, offering fresh perspectives and foresight on what those organizational and economic impacts might be"
   },
   {
+   "title": "Reshaping operations for a new era of agentic AI transformation: 4 leadership priorities for COOs",
+   "url": "https://www.deloitte.com/us/en/insights/topics/technology-management/coo-agentic-ai-transformation.html",
+   "date": "",
+   "summary": "Article • 5-min read • COOs may be tasked with reimagining operating models and organizational structures to help drive value through agentic AI. Which strategies could work best?"
+  },
+  {
    "title": "Deloitte Finance Trends 2027: Shaping the next era of stakeholder value",
    "url": "https://www.deloitte.com/us/en/insights/topics/leadership/finance-trends-leadership.html",
    "date": "",
@@ -53,7 +59,13 @@
    "title": "Environmental stewardship for leaner AI agent systems: The case for architectural restraint",
    "url": "https://www.deloitte.com/us/en/insights/topics/emerging-technologies/environmentally-responsible-ai.html",
    "date": "",
-   "summary": "Article • 9-min read • Architectural restraint can help AI agents reduce unnecessary computation, use computing resources more efficiently, and strengthen governance."
+   "summary": "Article • 9-min read • Responsible AI calls for disciplined system design that reduces unnecessary computation and uses computing resources more efficiently"
+  },
+  {
+   "title": "Long-term vs. one-off: A new take on brand-creator collaborations",
+   "url": "https://www.deloitte.com/us/en/insights/industry/technology/long-term-creator-partnerships.html",
+   "date": "",
+   "summary": "Article • 5-min read • Creators deliver purchasing influence that can double buyer likelihood. For brands, the opportunity may be in sustained partnerships, not one-time campaigns."
   },
   {
    "title": "The next tech infrastructure advantage is intelligence orchestration",
@@ -68,28 +80,16 @@
    "summary": "Article • 9-min read • How is AI reshaping the CISO role? Explore how CISOs can help clarify accountability, governance, and risk ownership across the enterprise."
   },
   {
-   "title": "Video podcasts dominate: Opportunity for brands, competition for traditional video",
-   "url": "https://www.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions/2026/video-podcasts-reach.html",
+   "title": "AI investments keep US economic growth in gear, for now",
+   "url": "https://www.deloitte.com/us/en/insights/topics/economy/us-economic-forecast/united-states-outlook-analysis.html",
    "date": "",
-   "summary": "Article • 7-min read • Podcasting is booming as a video-first, multilingual medium. It may help brands reach global audiences, while occupying a larger share of viewers’ screen time."
-  },
-  {
-   "title": "Forecasting the rise of push payment scams—the fraud consumers are tricked into authorizing",
-   "url": "https://www.deloitte.com/us/en/insights/industry/financial-services/authorized-push-payment-fraud.html",
-   "date": "",
-   "summary": "Article • 7-min read • Deloitte estimates US losses from authorized push payment fraud could surge to nearly $15 billion by 2028. Who’s most vulnerable, and how can banks shore up their defenses?"
+   "summary": "Article • 6-min read • AI investments keep US economic growth in gear. Deloitte’s economic forecast sees the AI buildout lifting productivity despite near-term headwinds."
   },
   {
    "title": "Digital Media Trends",
    "url": "https://www.deloitte.com/us/en/insights/industry/technology/digital-media-trends-consumption-habits-survey/2025.html",
    "date": "",
    "summary": "Article • 14-min read • While studios and streaming providers compete, tougher competition is coming from social video platforms that are hyperscale and hyper-capitalized"
-  },
-  {
-   "title": "2025 Smart Manufacturing and Operations Survey: Navigating challenges to implementation",
-   "url": "https://www.deloitte.com/us/en/insights/industry/manufacturing-industrial-products/2025-smart-manufacturing-survey.html",
-   "date": "",
-   "summary": "Article • 12-min read • Deloitte’s survey of 600 executives shows that as factories and operations get smarter, manufacturers work to overcome obstacles in talent acquisition, manage complex transformations, and mitigate operational risk"
   },
   {
    "title": "Getting human and machine relationships right",

@@ -3,10 +3,76 @@
  "name": "McKinsey Insights",
  "group": "해외 컨설팅",
  "home": "https://www.mckinsey.com",
- "fetched": "2026-10-05",
+ "fetched": "2026-10-11",
  "status": "OK",
  "method": "rss(/insights/rss)",
  "items": [
+  {
+   "title": "The six strategy roles a CEO must not delegate",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-six-strategy-roles-a-ceo-must-not-delegate",
+   "date": "2026-10-09",
+   "summary": "Strategy is a team sport, but the value it creates ultimately depends on the CEO’s involvement."
+  },
+  {
+   "title": "As the world order turns, leading companies are keeping pace. Here’s how",
+   "url": "https://www.mckinsey.com/capabilities/geopolitics/our-insights/as-the-world-order-turns-leading-companies-are-keeping-pace-heres-how",
+   "date": "2026-10-09",
+   "summary": "Leading companies are tracking six emerging patterns of geopolitical change and realigning their businesses to achieve resilience, seize growth, and build competitive advantage."
+  },
+  {
+   "title": "For CPG companies, agentic AI’s real payoff is growth",
+   "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/for-cpg-companies-agentic-ais-real-payoff-is-growth",
+   "date": "2026-10-09",
+   "summary": "As the relationship between consumer-packaged-goods companies and retailers becomes more complex, agentic AI can recapture lost sales. But are leaders ready to harness the technology’s power?"
+  },
+  {
+   "title": "Shapers and Founders: Understanding the owner mindset",
+   "url": "https://www.mckinsey.com/featured-insights/future-of-asia/future-of-asia-podcasts/shapers-and-founders-understanding-the-owner-mindset",
+   "date": "2026-10-08",
+   "summary": "Marrying Eastern philosophy and Western management culture has given many of Asia’s owner-CEOs a unique edge in growing their businesses."
+  },
+  {
+   "title": "The playbook for seeing around geopolitical corners",
+   "url": "https://www.mckinsey.com/capabilities/geopolitics/our-insights/the-playbook-for-seeing-around-geopolitical-corners",
+   "date": "2026-10-08",
+   "summary": "From black swans to gray rhinos, geopolitical shocks are multiplying. Here’s the tool kit smart leaders use to see them coming."
+  },
+  {
+   "title": "Why AI’s easiest wins are misleading CEOs",
+   "url": "https://www.mckinsey.com/capabilities/transformation/our-insights/why-ais-easiest-wins-are-misleading-ceos",
+   "date": "2026-10-07",
+   "summary": ""
+  },
+  {
+   "title": "Using production rates to excel at executing construction projects",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/using-production-rates-to-excel-at-executing-construction-projects",
+   "date": "2026-10-06",
+   "summary": "As construction productivity stagnates, companies can stand out by employing granular, achievable rates of production to optimize schedules, improve productivity, and make delivery predictable."
+  },
+  {
+   "title": "Medtech needs more than a market rotation to win back investors",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/medtech-needs-more-than-a-market-rotation-to-win-back-investors",
+   "date": "2026-10-06",
+   "summary": "With industry performance plateauing, medtech leaders must earn back investor trust with fresh strategies and better execution."
+  },
+  {
+   "title": "Author Talks: Rana Foroohar on a new ‘great game’ in the Arctic",
+   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-rana-foroohar-on-a-new-great-game-in-the-arctic",
+   "date": "2026-10-06",
+   "summary": "From shipping and rare earths to energy and security, the Arctic is gaining importance in the global economy. The Financial Times’ Rana Foroohar explores its role in a new era of great-power competition."
+  },
+  {
+   "title": "Scaling AI inference",
+   "url": "https://www.mckinsey.com/industries/semiconductors/our-insights/scaling-ai-inference",
+   "date": "2026-10-05",
+   "summary": "Inference is reshaping AI economics, infrastructure architectures, and investment priorities across the semiconductor ecosystem."
+  },
+  {
+   "title": "AI is changing work. Now it has to change the organization",
+   "url": "https://www.mckinsey.com/capabilities/people-and-organization/our-insights/ai-is-changing-work-now-it-has-to-change-the-organization",
+   "date": "2026-10-05",
+   "summary": "The first phase of enterprise AI put powerful new tools in people’s hands. Capturing the larger opportunity from agentic AI will require leaders to rethink the shape of the organization itself."
+  },
   {
    "title": "Pause, pivot, or accelerate: SaaS in the age of agentic AI",
    "url": "https://www.mckinsey.com/industries/financial-services/our-insights/pause-pivot-or-accelerate-saas-in-the-age-of-agentic-ai",
@@ -20,6 +86,12 @@
    "summary": "As technology transforms the factory floor, industrial companies are confronting a broader question: What will it take to lead the next era of manufacturing?"
   },
   {
+   "title": "Shareholder activism is changing. Are companies ready?",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/shareholder-activism-is-changing-are-companies-ready",
+   "date": "2026-10-02",
+   "summary": "Boards and CEOs can build value-creation plans that withstand and even benefit from shareholder activist scrutiny."
+  },
+  {
    "title": "State of Consumer Africa 2026: Meeting the pragmatic shopper",
    "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-consumer-africa-2026-meeting-the-pragmatic-shopper",
    "date": "2026-10-02",
@@ -30,12 +102,6 @@
    "url": "https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/the-banks-digital-twin-the-future-of-nonfinancial-risk-management",
    "date": "2026-10-02",
    "summary": "The risk function’s fundamental purpose has not changed, but the nature of the risks, the pace at which they materialize, and the tools available to manage them have."
-  },
-  {
-   "title": "Shareholder activism is changing. Are companies ready?",
-   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/shareholder-activism-is-changing-are-companies-ready",
-   "date": "2026-10-02",
-   "summary": "Boards and CEOs can build value-creation plans that withstand and even benefit from shareholder activist scrutiny."
   },
   {
    "title": "The cash hiding in plain sight",
@@ -56,28 +122,28 @@
    "summary": "With a more coordinated approach, smaller cities in the middle of the country could generate trillions of dollars in added economic output."
   },
   {
-   "title": "Global Economics Intelligence executive summary, August 2026",
-   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/global-economics-intelligence",
-   "date": "2026-09-30",
-   "summary": "Public debt and search for growth exercise minds of economists and policymakers as US debt hits record high; inflation fueled by energy supply uncertainty limits room for maneuver on interest rates."
-  },
-  {
    "title": "How to drive transformations with rigor",
    "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/how-to-drive-transformations-with-rigor",
    "date": "2026-09-30",
    "summary": "McKinsey research finds that companies executing transformations with rigor are much more likely to meet overall organizational transformation goals. Chris Hagedorn, Preeya Mody, and Michel Morenville join us to discuss what rigor really means in the context of transformation and how to embed it thr"
   },
   {
-   "title": "The CEO’s singular impact on the success—or failure—of AI in organizations",
-   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-ceos-singular-impact-on-the-success-or-failure-of-ai-in-organizations",
+   "title": "Global Economics Intelligence executive summary, August 2026",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/global-economics-intelligence",
    "date": "2026-09-30",
-   "summary": "There are certain aspects of the AI opportunity that chief executives cannot hand off to others—raising the organization’s ambition, rearchitecting how it works, and resetting its culture."
+   "summary": "Public debt and search for growth exercise minds of economists and policymakers as US debt hits record high; inflation fueled by energy supply uncertainty limits room for maneuver on interest rates."
   },
   {
    "title": "Evidence over hype: New York’s path to a healthy-longevity economy",
    "url": "https://www.mckinsey.com/mhi/our-insights/evidence-over-hype-new-yorks-path-to-a-healthy-longevity-economy",
    "date": "2026-09-30",
    "summary": "A McKinsey survey finds that New Yorkers prioritize healthy longevity—and spend accordingly."
+  },
+  {
+   "title": "The CEO’s singular impact on the success—or failure—of AI in organizations",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-ceos-singular-impact-on-the-success-or-failure-of-ai-in-organizations",
+   "date": "2026-09-30",
+   "summary": "There are certain aspects of the AI opportunity that chief executives cannot hand off to others—raising the organization’s ambition, rearchitecting how it works, and resetting its culture."
   },
   {
    "title": "Economic conditions outlook, September 2026",
@@ -122,6 +188,12 @@
    "summary": "Fear and change can go hand in hand. Executives who understand this can significantly improve their odds of transformation success, while the executives who don’t risk sabotaging their change programs."
   },
   {
+   "title": "LATAM’s reinvention at 35,000 feet",
+   "url": "https://www.mckinsey.com/industries/travel/how-we-help-clients/latams-reinvention-at-35000-feet",
+   "date": "2026-09-29",
+   "summary": "Partnering with McKinsey, the airline rewired its organization to make digital and AI core parts of the business—transforming the passenger experience, accelerating growth, and unlocking new levels of operations performance."
+  },
+  {
    "title": "Navigating the new normal: Building resilience in fuel retail trading",
    "url": "https://www.mckinsey.com/industries/oil-and-gas/our-insights/navigating-the-new-normal-building-resilience-in-fuel-retail-trading",
    "date": "2026-09-28",
@@ -164,88 +236,16 @@
    "summary": "At Cannes Lions 2026, LinkedIn CMO Jessica Jensen and McKinsey senior partner Dianne Esber discussed what it takes to turn AI from experimentation into a catalyst for growth."
   },
   {
-   "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
-   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
-   "date": "2026-09-23",
-   "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
-  },
-  {
    "title": "Harnessing AI to make mining safer",
    "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/harnessing-ai-to-make-mining-safer",
    "date": "2026-09-23",
    "summary": "AI could improve both safety and productivity by anticipating problems before they arise, detecting worker fatigue, and automating dangerous tasks."
   },
   {
-   "title": "India’s new insurance track: The marathon becomes an AI-led decathlon",
-   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/indias-new-insurance-track-the-marathon-becomes-an-ai-led-decathlon",
+   "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
    "date": "2026-09-23",
-   "summary": "As India’s economy continues to ramp up, insurers have an opportunity to capture value by improving productivity, modernizing operating models, and scaling technology and AI across the enterprise."
-  },
-  {
-   "title": "Author Talks: The business of owning a sports team",
-   "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-the-business-of-owning-a-sports-team",
-   "date": "2026-09-23",
-   "summary": "How does business ownership compare with owning a sports team? Baltimore Orioles owner David M. Rubenstein explains the leadership mindset, culture building, and long-term thinking that team ownership requires."
-  },
-  {
-   "title": "Rewiring procurement in resources: Making judgment an enduring asset",
-   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/rewiring-procurement-in-resources-making-judgment-an-enduring-asset",
-   "date": "2026-09-23",
-   "summary": "For procurement leaders in the resources sector, using AI to codify the function’s category expertise does not just capture more value—it turns hard-won judgment into a compounded, durable advantage."
-  },
-  {
-   "title": "Powering through uncertainty: A talk with former US Energy Secretary Ernest Moniz",
-   "url": "https://www.mckinsey.com/industries/electric-power-and-natural-gas/our-insights/powering-through-uncertainty-a-talk-with-former-us-energy-secretary-ernest-moniz",
-   "date": "2026-09-22",
-   "summary": "The physicist and policymaker says the coming decade will be defined by a race for electrons—and that nuclear power, grid investment, and new public–private models will be part of the picture."
-  },
-  {
-   "title": "Winning hearts in an age of infinite travel choices",
-   "url": "https://www.mckinsey.com/industries/travel/our-insights/winning-hearts-in-an-age-of-infinite-travel-choices",
-   "date": "2026-09-22",
-   "summary": "Travelers’ discovery and booking journeys have been reshaped. How can travel players show up at every turn on the path from search to certainty?"
-  },
-  {
-   "title": "The future of healthy living: A $16.4 trillion opportunity",
-   "url": "https://www.mckinsey.com/mhi/our-insights/the-future-of-healthy-living-a-16-4-trillion-opportunity",
-   "date": "2026-09-22",
-   "summary": "New McKinsey Health Institute analysis finds that addressing modifiable risk factors could add 12 years to healthy life expectancy at birth and add nearly 9 percent to the global economy by 2050."
-  },
-  {
-   "title": "Ready to ramp? How US manufacturers can scale at pace",
-   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/ready-to-ramp-how-us-manufacturers-can-scale-at-pace",
-   "date": "2026-09-22",
-   "summary": "US manufacturers have a once-in-a-generation opportunity to reshore the production of critical and at-risk goods, but to do so, they will need to aggressively ramp up production from today’s levels."
-  },
-  {
-   "title": "Value is the compass. Consumers set the pace.",
-   "url": "https://www.mckinsey.com/cn/our-insights/our-insights/value-is-the-compass-consumers-set-the-pace",
-   "date": "2026-09-22",
-   "summary": "The 10th edition of McKinsey’s automotive consumer survey: China’s car buyers reveal where value is heading—and why the road ahead is exciting for consumers everywhere."
-  },
-  {
-   "title": "WIRED: The AI playbook top companies use",
-   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/wired-the-ai-playbook-top-companies-use",
-   "date": "2026-09-21",
-   "summary": "WIRED’s Katie Drummond talks with McKinsey’s Dan Swan about why capturing AI’s full potential requires companies to move beyond experimentation and fundamentally rewire their businesses."
-  },
-  {
-   "title": "The economics of AI",
-   "url": "https://www.mckinsey.com/quarterly/the-five-fifty/five-fifty-the-economics-of-ai",
-   "date": "2026-09-21",
-   "summary": "AI is getting more expensive for companies. As rising token usage and workflow complexity make costs harder to predict, leaders need new ways to manage AI economics."
-  },
-  {
-   "title": "AI drug discovery: Focusing on what matters most",
-   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/ai-drug-discovery-focusing-on-what-matters-most",
-   "date": "2026-09-21",
-   "summary": "AI is accelerating drug discovery, but investment has concentrated in molecule design—the stage with the best data and clearest tools. The industry’s real constraint lies elsewhere: identifying and validating the right disease mechanism."
-  },
-  {
-   "title": "Novartis’s Christian Diehl on scaling AI beyond the demo",
-   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/novartiss-christian-diehl-on-scaling-ai-beyond-the-demo",
-   "date": "2026-09-21",
-   "summary": "Novartis’s chief data and digital officer for biomedical research explains how data platform investments are paying off in AI safety prediction, generative chemistry, and faster translation."
+   "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
   }
  ],
  "note": "",

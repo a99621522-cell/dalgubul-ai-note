@@ -3,27 +3,39 @@
  "name": "대한상공회의소 보도자료(정책건의·규제개선)",
  "group": "규제·건의",
  "home": "https://www.korcham.net",
- "fetched": "2026-10-05",
+ "fetched": "2026-10-11",
  "status": "OK",
- "method": "목록 페이지(keep_pattern)",
+ "method": "목록 페이지(행)(쪽 6개)",
  "items": [
   {
+   "title": "대한상의, 감사원 사전컨설팅으로 기업애로 해소 지원",
+   "url": "https://www.korcham.net/nCham/Service/Economy/appl/KcciReportList.asp?pageno=1#대한상의-감사원-사전컨설팅으로-기업애로-해소-지원",
+   "date": "2026-10-07",
+   "summary": ""
+  },
+  {
    "title": "소비자 안심 유통환경 조성 및 유통산업 협력을 위한 업...",
-   "url": "https://www.korcham.net/nCham/Service/Economy/appl/KcciReportList.asp#소비자-안심-유통환경-조성-및-유통산업-협력을-위한-업-",
+   "url": "https://www.korcham.net/nCham/Service/Economy/appl/KcciReportList.asp?pageno=1#소비자-안심-유통환경-조성-및-유통산업-협력을-위한-업-",
    "date": "2026-09-30",
    "summary": ""
   },
   {
    "title": "국회 경제대도약위원회 출범식",
-   "url": "https://www.korcham.net/nCham/Service/Economy/appl/KcciReportList.asp#국회-경제대도약위원회-출범식",
+   "url": "https://www.korcham.net/nCham/Service/Economy/appl/KcciReportList.asp?pageno=1#국회-경제대도약위원회-출범식",
    "date": "2026-09-10",
+   "summary": ""
+  },
+  {
+   "title": "주요국의 성과기반 지원정책 사례와 시사점 보고서",
+   "url": "https://www.korcham.net/nCham/Service/Economy/appl/KcciReportList.asp?pageno=2#주요국의-성과기반-지원정책-사례와-시사점-보고서",
+   "date": "2026-08-27",
    "summary": ""
   }
  ],
  "note": "",
  "page_counts": [
-  "1:15/2",
-  "2:13/2",
+  "1:15/3",
+  "2:12/1",
   "3:0/0",
   "4:0/0",
   "5:0/0",

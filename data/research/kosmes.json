@@ -3,10 +3,16 @@
  "name": "중소벤처기업진흥공단",
  "group": "기업지원기관",
  "home": "https://www.kosmes.or.kr",
- "fetched": "2026-10-05",
+ "fetched": "2026-10-11",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
+  {
+   "title": "2026년도 4/4분기 정책자금 기준금리",
+   "url": "https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do#2026년도-4-4분기-정책자금-기준금리",
+   "date": "2026-10-06",
+   "summary": ""
+  },
   {
    "title": "2026 중소기업 CBAM 대응 인프라(MRV) 구축 사업 4차 수요기업 모집",
    "url": "https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do#2026-중소기업-CBAM-대응-인프라-MRV-구축-사업-4차-수요기업-",
@@ -53,12 +59,6 @@
    "title": "2026년 재도전응원본부 재창업 특화교육·컨설팅 참가자 모집",
    "url": "https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do#2026년-재도전응원본부-재창업-특화교육-컨설팅-참가자-모집",
    "date": "2026-08-24",
-   "summary": ""
-  },
-  {
-   "title": "2026년 중소기업 정책자금 융자계획 공고 개정(3차)",
-   "url": "https://www.kosmes.or.kr/nsh/SH/NTS/SHNTS001M0.do#2026년-중소기업-정책자금-융자계획-공고-개정-3차-",
-   "date": "2026-07-27",
    "summary": ""
   }
  ],

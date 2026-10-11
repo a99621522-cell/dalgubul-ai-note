@@ -3,12 +3,36 @@
  "name": "IDC Press Releases",
  "group": "해외 컨설팅",
  "home": "https://www.idc.com",
- "fetched": "2026-10-05",
+ "fetched": "2026-10-11",
  "status": "OK",
  "method": "rss(/feed)",
  "items": [
   {
-   "title": "AI Strategy Is Easier to Define Than to Deliver. IDC’s Benchmark Shows the Gap",
+   "title": "Why Speed and Control Both Depend on Verified Data",
+   "url": "https://www.idc.com/resource-center/blog/speed-and-control-depend-on-verified-data/",
+   "date": "2026-10-07",
+   "summary": "For years, enterprise technology leaders across industries have operated under a flawed assumption: fast decision-making and rigorous compliance exist on opposite sides of a zero-sum game. But in today’s rapidly changing tech landscape where AI is accelerating everything we do, the math no longer ad"
+  },
+  {
+   "title": "IDC Quanta for Tech Leaders: Make Every Technology Investment Defensible",
+   "url": "https://www.idc.com/resource-center/blog/idc-quanta-for-tech-leaders-launch/",
+   "date": "2026-10-07",
+   "summary": "In IDC analysts’ conversations with technology leaders, reevaluating their vendor ecosystem, controlling volatile AI costs, and proving measurable AI ROI are the same three challenges that keep coming up. Yet depending on the organization, the outcomes could hardly be further apart. In IDC&#8217;s 2"
+  },
+  {
+   "title": "What a 14-Year-Old Got Right About AI in 1984",
+   "url": "https://www.idc.com/resource-center/blog/what-a-14-year-old-got-right-about-ai-in-1984/",
+   "date": "2026-10-06",
+   "summary": "The questions I asked about AI at 14 still hold up today: can a machine ask “Why? and How?”, and does it benefit society? Forty-two years ago, I wrote about AI in the non-fiction, math models section for Quest magazine, a high school literary compilation that tapped into creative talent from student"
+  },
+  {
+   "title": "The New Battleground for Enterprise Software: The UI Layer",
+   "url": "https://www.idc.com/resource-center/blog/the-new-battleground-for-enterprise-software-the-ui-layer/",
+   "date": "2026-10-05",
+   "summary": "I called the death of the SaaS UI &#8220;wonderful&#8221; two weeks ago in my prior blog, and I stand by it. But a death this size leaves something behind: real estate. Somebody inherits the land the UI vacates, and that fight is already underway. Salesforce didn&#8217;t just retire its own interfac"
+  },
+  {
+   "title": "AI Strategy is Easier to Define Than to Deliver. IDC’s Benchmark Shows the Gap",
    "url": "https://www.idc.com/resource-center/blog/ai-strategy-is-easier-to-define-than-to-deliver-idcs-benchmark-shows-the-gap/",
    "date": "2026-10-02",
    "summary": "About six in ten organizations say their AI strategy is transforming the business. IDC&#8217;s 2026 MaturityScape Benchmark AI Survey measured whether their capabilities match that claim, and for roughly five in six they do not yet. How did IDC measure AI maturity? The May 2026 survey covers 1,900 o"
@@ -42,30 +66,6 @@
    "url": "https://www.idc.com/resource-center/blog/two-people-100000-employees-one-ai-platform-to-close-the-gap/",
    "date": "2026-09-24",
    "summary": "Imagine being responsible for making sure market intelligence reaches the right decision-maker before a call gets made without it, at a global technology company that manufactures, delivers services, and funds serious R&#38;D all at once. Now imagine doing it with a team of two. For years, that&#821"
-  },
-  {
-   "title": "Snapdragon Summit 2026: Qualcomm’s Bid to Be the Silicon Behind Every Agent on Every Device",
-   "url": "https://www.idc.com/resource-center/blog/snapdragon-summit-2026-qualcomms-bid-to-be-the-silicon-behind-every-agent-on-every-device/",
-   "date": "2026-09-24",
-   "summary": "Qualcomm flew members of the IDC team to Maui for this year&#8217;s Snapdragon Summit, and the theme of the week has been agentic AI. CEO Cristiano Amon used the day-one keynote to argue that the smartphone is moving from an app-centric model, where the user starts every task, to an agent-centric on"
-  },
-  {
-   "title": "Industrial AI and the Orchestration Problem",
-   "url": "https://www.idc.com/resource-center/blog/industrial-ai-and-the-orchestration-problem/",
-   "date": "2026-09-24",
-   "summary": "A couple of months ago I was at Siemens Realize LIVE in Amsterdam, and over dinner at the media and analyst reception, a conversation with Tony Hemmelgarn, CEO of Siemens Digital Industries, took a turn I did not expect. From industrial AI to why a Delhi intersection, and a UK roundabout arrive at t"
-  },
-  {
-   "title": "FutureScape 2027: The Great Rewrite – Winning in the Agentic Economy",
-   "url": "https://www.idc.com/resource-center/blog/futurescape-2027-the-great-rewrite-winning-in-the-agentic-economy/",
-   "date": "2026-09-24",
-   "summary": "IDC FutureScape 2027 delivers evidence-backed 2027–2031 predictions on AI infrastructure, agents, and IT strategy. Register for 13 Nov in Singapore. The post FutureScape 2027: The Great Rewrite – Winning in the Agentic Economy appeared first on IDC ."
-  },
-  {
-   "title": "SaaSpocalypse: Catchy Title, Flawed Premise",
-   "url": "https://www.idc.com/resource-center/blog/saaspocalypse-catchy-title-flawed-premise/",
-   "date": "2026-09-23",
-   "summary": "The worldwide enterprise application market is approaching $700 billion, and blended growth has held near 13% through the first half of 2026, the third consecutive year of double-digit expansion. Yet, none of that has stopped the industry from convincing itself that the ground beneath it is about to"
   }
  ],
  "note": "",

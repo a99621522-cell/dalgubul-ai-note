@@ -59,3 +59,4 @@ chapgyeong-server.js(POST /첩경, /첩경/판정), app/index.html,
    매 단계 끝에 npm test 결과를 보고한다.
 3. 끝나면 README_RESTORE.md 에 159차로 기록한다.
 > 161차(같은 날): 운영자가 올린 6권 스캔 PDF(220MB, 드라이브 링크 공유)로 6권 예시 DB의 빈 第百五~百十二 21건을 쪽 그림 판독으로 채움 → 6권 평가 307·홀드아웃 61·match_db 598 로 원본 집계와 일치. zip 전달(vol6-161-patch.zip·chapgyeong-restore-161.zip).
+> 162차(같은 날, 운영자 지시 '연산과 해석 분리, 트리거 JSON 주입'): chapgyeong-trigger.js(대운·세운·절기월 트리거 id JSON, 사건 유형 6개 후보 규칙, LLM 프롬프트·검사기, POST /트리거). 백테스트(3권 실례 저자 언급 운 67건): 트리거 수 백분위 54%(무작위 50%), 후보 유형 기저율 79% → 시기 변별력 없음(157차 재확인). zip 전달(trigger-162-patch.zip·chapgyeong-restore-162.zip).

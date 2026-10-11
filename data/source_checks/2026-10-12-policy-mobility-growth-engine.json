@@ -1,0 +1,121 @@
+{
+ "file": "src/content/posts/2026-10-12-policy-mobility-growth-engine.md",
+ "checked": "2026-10-11",
+ "ok": 8,
+ "total": 9,
+ "ratio": 0.89,
+ "official_bad": [
+  "International Energy Agency(IEA), 「Global EV Outlook 2026」 Executive summary"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "파이낸셜뉴스, 권역별 성장엔진 선정 보도(제10회 중앙지방협력회의, 대경권 4개 성장엔진)",
+   "url": "https://www.fnnews.com/news/202608261649316125",
+   "date": "2026-08-26",
+   "kind": "news",
+   "status": 200,
+   "page_title": "중부 첨단산업·서남 반도체AI·동남 제조AI…권역별 &#039;성장엔진&#039; 확정 - 파이낸셜뉴스",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "산업통상부, 「제1회 지방주도 성장엔진 협의회」 보도자료(KDI 경제정보센터 게시)",
+   "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=286451",
+   "date": "2026-09-07",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "5극3특 성장엔진 시동건다! 「지방주도 성장엔진 협의회」 출범 | 경제정책자료 |KDI 경제교육·정보센터",
+   "title_match": 0.6,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "아이뉴스24, 대경권 '딥테크 동맹' 가동 — 대구시·경북도 4극3특 과학기술혁신지원사업 공동 추진",
+   "url": "https://www.inews24.com/view/2004265",
+   "date": "2026-09-10",
+   "kind": "news",
+   "status": 200,
+   "page_title": "&ldquo;대구 AI 두뇌+경북 제조 근육 합친다&rdquo;&hellip;대경권, 131억 &lsquo;딥테크 동맹&rsquo; 가동",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "서울신문, 「부울경, ‘하나의 생활·경제권’ 가동…초광역 협력 강화」",
+   "url": "https://m.go.seoul.co.kr/news/2026/09/08/20260908500248",
+   "date": "2026-09-08",
+   "kind": "news",
+   "status": 200,
+   "page_title": "부울경, ‘하나의 생활·경제권’ 가동…초광역 협력 강화",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "International Energy Agency(IEA), 「Global EV Outlook 2026」 Executive summary",
+   "url": "https://www.iea.org/reports/global-ev-outlook-2026/executive-summary",
+   "date": "2026-05",
+   "kind": "official",
+   "status": 403,
+   "page_title": "Just a moment...",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": ""
+  },
+  {
+   "title": "한국은행 대구경북본부·국토연구원 공동 연구, 「5극3특 성장엔진 육성을 위한 대구·경북 신산업의 공간적·기술적 연계효과 분석」(조사연구자료, 작성자 견해)",
+   "url": "https://www.bok.or.kr/portal/bbs/P0000800/list.do?menuNo=200560&searchBbsSeCd=z12",
+   "date": "2026-08-21",
+   "kind": "report",
+   "status": 200,
+   "page_title": "| 조사연구자료(목록) | 지역연구자료 | 뉴스/자료 | 한국은행 홈페이지",
+   "title_match": 0.88,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "한국은행 조사국, 「우리나라 주요 제조업 생산 및 공급망 지도(2026)」",
+   "url": "https://www.bok.or.kr/portal/bbs/B0000347/view.do?nttId=11063183&oldMenuNo=201150&menuNo=201106&programType=newsData&depth=201106&relate=Y",
+   "date": "2026-07-27",
+   "kind": "official",
+   "status": 200,
+   "page_title": "한국 제조업의 지도, 흐름이 달라졌다 - ｢우리나라 주요 제조업 생산 및 공급망 지도｣가 보여주는 제조업의 달라진 연결 구조 | 블로그(상세) | 뉴스/자료 | 한국은행 홈페이지",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "국가데이터처, 「광업제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2024년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
+   "date": "2026-10-09",
+   "kind": "data",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-09 공장등록, KSIC 코드·단지·종사자 신고값)·지원 이력(공개 명단)·사업 DB(사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-10-12",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

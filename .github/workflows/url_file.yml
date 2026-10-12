@@ -1,0 +1,57 @@
+name: 공개 주소의 파일을 브랜치에 잠시 넣기
+
+# 이 세션 환경은 외부 사이트가 막혀 있어, 공개 보고서(PDF 등)를 러너가 받아 지정 경로에 커밋한다.
+# 세션이 받아 Drive DAITDA 폴더로 옮긴 뒤 브랜치에서 지운다(원문은 main 에 남기지 않는다). 공개 자료만.
+# 실행: Actions → Run workflow → url(쉼표로 여러 개), dir(저장소 안 폴더).
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "받을 주소(쉼표로 여러 개)"
+        required: true
+      dir:
+        description: "저장소 안 폴더"
+        required: false
+        default: "tmp/drive_upload"
+      max_mb:
+        description: "파일당 최대 크기(MB)"
+        required: false
+        default: "40"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: 받기
+        env:
+          URLS: ${{ inputs.url }}
+          DIR: ${{ inputs.dir }}
+          MAX_MB: ${{ inputs.max_mb }}
+        run: |
+          set -e
+          case "$DIR" in /*|*..*) echo "잘못된 경로"; exit 1;; esac
+          mkdir -p "$DIR"
+          IFS=',' read -ra LIST <<< "$URLS"
+          for u in "${LIST[@]}"; do
+            u=$(echo "$u" | xargs)
+            name=$(basename "${u%%\?*}")
+            [ -n "$name" ] || name="file"
+            curl -sSL --max-time 300 -A "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)" -o "$DIR/$name" "$u" || { echo "실패 $u"; continue; }
+            sz=$(stat -c %s "$DIR/$name"); echo "$name $sz 바이트"; file "$DIR/$name"
+            [ "$sz" -le $((MAX_MB * 1024 * 1024)) ] || { echo "너무 큼 — 지움"; rm -f "$DIR/$name"; }
+          done
+      - name: 커밋
+        env:
+          DIR: ${{ inputs.dir }}
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add -f "$DIR"
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "tmp: 공개 파일 받기(Drive 옮김용) $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

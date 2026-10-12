@@ -1,0 +1,47 @@
+name: 산업단지별 생산·수출·고용(산단공 전국산업단지현황통계, 대구)
+
+# scripts/fetch_complex_stats.py — 공공데이터포털 「전국산업단지현황통계」 유형별 파일의 대구 행 → data/complex_stats/.
+# 2025년 3분기부터 생산액·수출액·고용 공표가 중지되어 옛 분기 판은 웨이백 스냅샷의 첨부 id 로 받는다. 이 세션 환경은 포털 차단.
+on:
+  schedule:
+    - cron: "17 22 25 1,4,7,10 *"   # 분기 말 다음 달 26일 07:17 KST(포털 등록 분기 후 3주쯤)
+  workflow_dispatch:
+    inputs:
+      list:
+        description: "식별자만 보기(true)"
+        required: false
+        default: "false"
+  push:
+    branches: ["claude/policy-reports"]
+    paths: ["scripts/fetch_complex_stats.py", ".github/workflows/complex_stats.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: complex-stats
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python3 scripts/fetch_complex_stats.py $([ "${{ inputs.list }}" = "true" ] && echo --list)
+      - name: 커밋
+        if: ${{ !cancelled() && inputs.list != 'true' }}
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/complex_stats 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 산업단지별 생산·수출·고용(산단공 현황통계, 대구) $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

@@ -1,0 +1,139 @@
+[
+ {
+  "u": "/",
+  "perf": 98,
+  "a11y": 100,
+  "bp": 100,
+  "seo": 100,
+  "fcp": 1.96,
+  "lcp": 1.96,
+  "tbt": 0,
+  "cls": 0,
+  "bytes": 1792,
+  "unusedJs": 453,
+  "dom": 1080,
+  "fails": [
+   "valid-source-maps",
+   "label-content-name-mismatch"
+  ]
+ },
+ {
+  "u": "/companies/",
+  "perf": 98,
+  "a11y": 100,
+  "bp": 100,
+  "seo": 100,
+  "fcp": 1.81,
+  "lcp": 1.81,
+  "tbt": 0,
+  "cls": 0,
+  "bytes": 1651,
+  "unusedJs": 453,
+  "dom": 387,
+  "fails": [
+   "valid-source-maps"
+  ]
+ },
+ {
+  "u": "/listed/",
+  "perf": 42,
+  "a11y": 100,
+  "bp": 100,
+  "seo": 100,
+  "fcp": 5.56,
+  "lcp": 5.56,
+  "tbt": 1133,
+  "cls": 0,
+  "bytes": 2467,
+  "unusedJs": 453,
+  "dom": 11071,
+  "fails": [
+   "valid-source-maps"
+  ]
+ },
+ {
+  "u": "/stats/",
+  "perf": 96,
+  "a11y": 100,
+  "bp": 100,
+  "seo": 100,
+  "fcp": 2.26,
+  "lcp": 2.26,
+  "tbt": 0,
+  "cls": 0,
+  "bytes": 1607,
+  "unusedJs": 453,
+  "dom": 212,
+  "fails": [
+   "valid-source-maps"
+  ]
+ },
+ {
+  "u": "/stats/industry/",
+  "perf": 92,
+  "a11y": 100,
+  "bp": 100,
+  "seo": 100,
+  "fcp": 2.71,
+  "lcp": 2.71,
+  "tbt": 0,
+  "cls": 0,
+  "bytes": 1976,
+  "unusedJs": 453,
+  "dom": 2497,
+  "fails": [
+   "valid-source-maps"
+  ]
+ },
+ {
+  "u": "/growth/",
+  "perf": 85,
+  "a11y": 100,
+  "bp": 100,
+  "seo": 100,
+  "fcp": 3.02,
+  "lcp": 3.02,
+  "tbt": 0,
+  "cls": 0.11,
+  "bytes": 1971,
+  "unusedJs": 453,
+  "dom": 2129,
+  "fails": [
+   "valid-source-maps"
+  ]
+ },
+ {
+  "u": "/companies/c0544/",
+  "perf": 98,
+  "a11y": 100,
+  "bp": 100,
+  "seo": 100,
+  "fcp": 1.8,
+  "lcp": 1.8,
+  "tbt": 0,
+  "cls": 0,
+  "bytes": 1696,
+  "unusedJs": 453,
+  "dom": 472,
+  "fails": [
+   "valid-source-maps"
+  ]
+ },
+ {
+  "u": "/support/",
+  "perf": 38,
+  "a11y": 100,
+  "bp": 100,
+  "seo": 100,
+  "fcp": 5.87,
+  "lcp": 5.87,
+  "tbt": 1474,
+  "cls": 0.018,
+  "bytes": 2629,
+  "unusedJs": 453,
+  "dom": 16750,
+  "fails": [
+   "valid-source-maps"
+  ]
+ }
+]

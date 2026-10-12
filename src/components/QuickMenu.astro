@@ -1,0 +1,52 @@
+---
+/** 첫 화면 '주요 메뉴' 바로가기 9칸(리디자인 v3 2단계, 산단별 생산액 칸은 운영자 지시 2026-10-12 '첫 화면에 바로가기 달아'): 선 그림 아이콘 + 이름 + 한 줄 설명(숫자는 빌드 때 센 값). 아이콘만으로 구분하지 않는다. */
+import { companies } from '../lib/csv';
+import { dartCorps } from '../lib/dart';
+import { REPORT_FILES } from '../lib/reportFiles';
+const n = (v: number) => v.toLocaleString('ko-KR');
+const listed = dartCorps().corps.filter(c => ['유가증권', '코스닥', '코넥스'].includes(c.cls)).length;
+const I: Record<string, string> = {
+  firm: '<path d="M3 21V9l6-4v4l6-4v4l6-3v15z"/><path d="M7 17h2M11 17h2M15 17h2"/>',
+  stats: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  listed: '<path d="M3 17l5-5 4 4 8-8"/><path d="M14 8h6v6"/>',
+  dash: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/>',
+  support: '<path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"/>',
+  check: '<path d="M9 3h6l4 4v14H5V3z"/><path d="m9 14 2 2 4-4"/>',
+  growth: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  complex: '<path d="M3 21h18"/><path d="M5 21V11l4 3V11l4 3V7l6 4v10"/><path d="M17 4h2v4"/>',
+  report: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/>',
+};
+const ITEMS = [
+  { k: 'firm', name: '기업 사전', href: '/companies/', sub: `${n(companies().length)}곳 · 단지·업종·구군` },
+  { k: 'stats', name: '통계', href: '/stats/', sub: '경기·수출입·제조업 등 7주제' },
+  { k: 'listed', name: '상장기업', href: '/listed/', sub: `${listed}곳 · 재무·분기 실적` },
+  { k: 'dash', name: '현황판', href: '/dashboard/', sub: '입지·구군·단지별 기업' },
+  { k: 'complex', name: '산단별 생산액', href: '/dashboard/#complex-output', sub: '단지별 생산·수출·고용' },
+  { k: 'support', name: '지원받은 기업', href: '/support/', sub: '공개 명단의 지원 이력' },
+  { k: 'check', name: '지침 검토기', href: '/programs/guidelines/check/', sub: '사업계획서를 지침과 대조' },
+  { k: 'growth', name: '성장 계산기', href: '/growth/', sub: '목표 성장률에 필요한 조건' },
+  { k: 'report', name: '리포트', href: '/policy/', sub: `자료 ${REPORT_FILES.length}건 · PDF·한글·Word` },
+];
+---
+<nav class="quick" aria-labelledby="h-quick">
+  <h2 id="h-quick" class="visually-hidden">주요 메뉴</h2>
+  <ul>
+    {ITEMS.map(i => (
+      <li><a href={i.href}>
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={I[i.k]} />
+        <b>{i.name}</b><span>{i.sub}</span>
+      </a></li>
+    ))}
+  </ul>
+</nav>
+<style>
+  .quick { margin: var(--s4) 0 var(--s2); }
+  .quick ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--ink); }
+  .quick li { border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); min-width: 0; }
+  .quick li:nth-child(3n) { border-right: 0; }
+  .quick a { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: var(--s3) var(--s1); color: var(--ink); text-decoration: none; min-height: 132px; word-break: keep-all; }
+  .quick a:hover, .quick a:focus-visible { background: var(--band); }
+  .quick svg { color: var(--primary); }
+  .quick b { font-size: 1.05rem; }
+  .quick span { font-size: var(--tiny); color: var(--muted); word-break: keep-all; }
+</style>

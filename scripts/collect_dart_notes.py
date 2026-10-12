@@ -186,7 +186,13 @@ def report_notes(code: str, meta: dict, rep: dict, probe: bool) -> list[dict]:
     if probe:
         print(f"== probe {meta['name']} {rep['year']}.{rep['quarter']}Q {rep['report_nm']} 장 제목: "
               f"{[t for t, _, _ in secs if re.match(r'^[IVX]+\.', t)]}")
-        print(f"   경영진단: {mdna} 문단 {len(mdna_par)} · 사업의 내용 문단 {len(biz_par)} · 앞부분: {body[:300]}")
+        print(f"   경영진단: {mdna} 문단 {len(mdna_par)} · 사업의 내용 문단 {len(biz_par)} · 앞부분: {body[:200]}")
+        subs = list(dict.fromkeys(t for t, _ in mdna_par))
+        print(f"   경영진단 소제목: {subs[:15]}")
+        for t, ptxt in mdna_par[6:14]:
+            print(f"     ({t}) {ptxt[:200]}")
+            for sn in sentences(ptxt)[:3]:
+                print(f"        · [{classify(sn) or '-'}] {sn[:120]}")
     rows, seen = [], set()
     count = {"이유": 0, "전망": 0}
     for sec_name, pars in (("경영진단", mdna_par if mdna == "있음" else []), ("사업의 내용", biz_par)):
@@ -252,7 +258,7 @@ def field(text: str, keys: list[str], n: int = 200) -> str:
         if m:
             s = text[m.end(): m.end() + n + 40].strip(" :-·)")
             s = re.sub(r"^\(?요약\)?\s*", "", s)
-            s = re.split(r"\s\d{1,2}\s*\.\s|\s※", s)[0].strip()
+            s = re.split(r"\s※|기타 투자판단|관련공시|개최장소|개최 장소|참석대상|참가대상|\s\d{1,2}\s*\.\s*(?:개최|일시|장소|대상|방식|기타)", s)[0].strip()
             return cut(s, n)
     return ""
 
@@ -325,7 +331,7 @@ def kind_attachment(acptno: str, probe: bool) -> tuple[str, list[str], str]:
     html = v.text
     opts = re.findall(r'<option[^>]*value="([^"]+)"[^>]*>([^<]*)</option>', html)
     if probe:
-        print(f"   KIND 뷰어 {len(html)}자 · 옵션 {opts[:10]}")
+        print(f"   KIND 뷰어 {len(html)}자 · 옵션 {opts[:10]} · 본문 {re.sub(r'\s+', ' ', html)[:400]!r}")
         for m in re.finditer(r".{0,100}(\.pdf|external|docNo|download|첨부).{0,140}", html):
             print("   …", re.sub(r"\s+", " ", m.group(0))[:240])
     pdfs = re.findall(r'(?:href|src)=["\']([^"\']+\.pdf)["\']', html, re.I)

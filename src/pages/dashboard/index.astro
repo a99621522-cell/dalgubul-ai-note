@@ -5,6 +5,7 @@ import Chart from '../../components/Chart.astro';
 import Delta from '../../components/Delta.astro';
 import { monthly, monthLabel, fmt } from '../../lib/stats';
 import { siteTypes, tagName } from '../../lib/sites';
+import { kicoxRows, kicoxByFo, kicoxQuarter, complexProd, complexTrend, prodByFo, SOURCE_NAME, qLabelK } from '../../lib/kicox';
 /** /dashboard/ — 현황판: 큰 숫자 → 입지 유형(산단 외 포함) → 구·군 9 → 산업단지 23 → 태그(벤처 등). 표마다 기업 사전 필터로 연결. 평가·순위 없음. */
 const m = monthly();
 const ym = m ? monthLabel(m.month) : '';
@@ -21,6 +22,19 @@ const districts = m ? Object.entries(m.by_district).filter(([k]) => /[구군]$/.
 const complexes = m ? Object.entries(m.by_complex).filter(([k]) => k !== '개별입지' && k !== '산단 외').sort((a, b) => b[1].firms - a[1].firms) : [];
 const outside = m ? ['개별입지', '산단 외'].map(k => [k, m.by_complex[k]] as const).filter(([, v]) => v) : [];
 const tags = m ? Object.entries(m.by_tag) : [];
+// 한국산업단지공단 「전국산업단지 현황통계」(분기) — 분양률·입주계약·가동업체(운영자 지시 2026-10-12)
+const kx = kicoxByFo();
+const kq = kicoxQuarter();
+const kRows = kicoxRows();
+const rate = (v: number | null | undefined) => (v == null ? '—' : `${v.toFixed(1)}%`);
+const pf = prodByFo();
+const pRows = complexProd();
+const pQ = pRows.reduce((m, r) => (r.quarter > m ? r.quarter : m), '');
+const pLatest = pRows.filter(r => r.quarter === pQ);
+const tRows = complexTrend();
+const eok = (mil: number | string) => (mil === '' ? '—' : Math.round(Number(mil) / 100).toLocaleString('ko-KR'));
+const eokB = (bil: string) => (bil === '' ? '—' : Math.round(Number(bil) * 10).toLocaleString('ko-KR'));
+const kn = (v: string) => (v === '' ? '—' : Number(v).toLocaleString('ko-KR'));
 const hasMom = !!m && (m.total.mom?.employment != null || [...districts, ...complexes].some(([, v]) => v.mom?.employment != null));
 const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.total.employment)}명(${ym}). 입지 유형·구군 9·산업단지 ${complexes.length}·태그별 기업 수와 고용, 취득·상실.` : '대구 산단·기업 현황판';
 ---
@@ -48,13 +62,47 @@ const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.
       <section aria-labelledby="h-complex">
         <div class="section-head"><h2 id="h-complex">산업단지별</h2><span class="meta">{complexes.length}개 단지 + 개별입지·산단 외</span></div>
         <div class="scroll-x"><table class="data-table">
-          <thead><tr><th>단지</th><th class="n">기업 수</th><th class="n">고용 인원</th>{hasMom && <th class="n">전월 대비</th>}<th class="n">집계 대상</th></tr></thead>
+          <thead><tr><th>단지</th><th class="n">기업 수</th><th class="n">고용 인원</th>{hasMom && <th class="n">전월 대비</th>}<th class="n">집계 대상</th>{kx.size > 0 && <><th class="n" data-pri="2">가동업체(산단공)</th><th class="n" data-pri="2">분양률(산단공)</th></>}{pf.size > 0 && <th class="n">생산액(억 원, {qLabelK(pQ)})</th>}</tr></thead>
           <tbody>
-            {complexes.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td>{hasMom && <td class="n"><Delta d={v.mom?.employment ?? null} /></td>}<td class="n">{fmt(v.covered)}</td></tr>)}
-            {outside.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td>{hasMom && <td class="n"><Delta d={v.mom?.employment ?? null} /></td>}<td class="n">{fmt(v.covered)}</td></tr>)}
+            {complexes.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td>{hasMom && <td class="n"><Delta d={v.mom?.employment ?? null} /></td>}<td class="n">{fmt(v.covered)}</td>{kx.size > 0 && <><td class="n">{kx.get(k) ? fmt(kx.get(k)!.operating) : '—'}</td><td class="n">{rate(kx.get(k)?.rate)}</td></>}{pf.size > 0 && <td class="n">{pf.get(k) ? eok(pf.get(k)!.prod) : '—'}</td>}</tr>)}
+            {outside.map(([k, v]) => <tr><th scope="row"><a href={`/companies/?complex=${encodeURIComponent(k)}`}>{k}</a></th><td class="n">{fmt(v.firms)}</td><td class="n">{fmt(v.employment)}</td>{hasMom && <td class="n"><Delta d={v.mom?.employment ?? null} /></td>}<td class="n">{fmt(v.covered)}</td>{kx.size > 0 && <><td class="n">—</td><td class="n">—</td></>}{pf.size > 0 && <td class="n">—</td>}</tr>)}
           </tbody>
         </table></div>
+        {kx.size > 0 && <p class="meta">가동업체·분양률은 한국산업단지공단 「전국산업단지 현황통계」({kq}) 값이고, 기업 수·고용은 공장등록(팩토리온)·국민연금 기준이라 근거가 달라 서로 맞지 않습니다. 성서지방산업단지는 성서 1~4차를 더했고(분양률은 분양 면적 ÷ 분양대상 면적), 단지별 전체 값은 아래 표에 있습니다.</p>}
+        {pf.size > 0 && <p class="meta">생산액은 단지 관리기관이 누리집에 공개한 분기 실적(아래 '산업단지 생산·수출')이 있는 단지만 적었습니다. 나머지 단지는 공개된 단지별 생산 자료를 찾지 못해 — 로 두었습니다.</p>}
       </section>
+      {kRows.length > 0 && (
+        <section aria-labelledby="h-kicox">
+          <div class="section-head"><h2 id="h-kicox">산업단지 분양·입주 현황</h2><span class="meta">한국산업단지공단 {kq} · {kRows.filter(r => !r.sub).length}개 단지</span></div>
+          <div class="scroll-x"><table class="data-table" data-title={`대구 산업단지 분양·입주 현황(한국산업단지공단 ${kq})`}>
+            <thead><tr><th>단지</th><th>유형</th><th>구·군</th><th>조성</th><th class="n" data-pri="2">지정면적(천㎡)</th><th class="n" data-pri="2">산업시설구역(천㎡)</th><th class="n">분양대상(천㎡)</th><th class="n">미분양(천㎡)</th><th class="n">분양률(%)</th><th class="n">입주계약 업체</th><th class="n">가동업체</th></tr></thead>
+            <tbody>{kRows.map(r => (
+              <tr><th scope="row">{r.sub ? <span class="sub">└ {r.name}</span> : r.fo_name ? <a href={`/companies/?complex=${encodeURIComponent(r.fo_name)}`}>{r.name}</a> : r.name}</th><td>{r.type}</td><td>{r.district}</td><td>{r.status}</td><td class="n">{kn(r.designated_k_m2)}</td><td class="n">{kn(r.industrial_k_m2)}</td><td class="n">{kn(r.sale_target_k_m2)}</td><td class="n">{kn(r.unsold_k_m2)}</td><td class="n">{r.sale_rate === '' ? '—' : Number(r.sale_rate).toFixed(1)}</td><td class="n">{kn(r.firms_contracted)}</td><td class="n">{kn(r.firms_operating)}</td></tr>
+            ))}</tbody>
+          </table></div>
+          <p class="meta">출처: 한국산업단지공단 「전국산업단지 현황통계」 {kq}(산업입지정보시스템). 단지 이름은 통계표 그대로이고 [재생사업지구] 같은 표기는 뗐습니다. └ 는 위 단지의 하위 단지(위 단지 값은 하위 단지의 합). 분양률은 분양대상 면적 중 분양된 면적의 비율, 가동업체는 입주계약 업체 중 가동 중인 업체입니다. 이 통계에는 단지별 생산·수출·고용 값이 없습니다.</p>
+        </section>
+      )}
+      {pLatest.length > 0 && (
+        <section aria-labelledby="h-prod">
+          <div class="section-head"><h2 id="h-prod">산업단지 생산·수출</h2><span class="meta">{qLabelK(pQ)} · 관리기관 공개 자료</span></div>
+          <div class="scroll-x"><table class="data-table" data-title={`대구 산업단지 생산·수출(${qLabelK(pQ)}, 관리기관 공개 자료)`}>
+            <thead><tr><th>단지</th><th class="n" data-pri="2">입주(개)</th><th class="n" data-pri="2">가동(개)</th><th class="n">고용(명)</th><th class="n">생산(억 원)</th><th class="n" data-pri="2">전년 같은 분기 생산(억 원)</th><th class="n">수출(억 원)</th><th class="n" data-pri="3">올해 누계 생산(억 원)</th><th class="n" data-pri="3">올해 누계 수출(억 원)</th></tr></thead>
+            <tbody>{pLatest.map(r => (
+              <tr><th scope="row">{r.total ? <b>{r.complex} (전체)</b> : r.fo_name ? <a href={`/companies/?complex=${encodeURIComponent(r.fo_name)}`}>{r.complex}</a> : r.complex}</th><td class="n">{Number(r.firms).toLocaleString('ko-KR')}</td><td class="n">{Number(r.operating).toLocaleString('ko-KR')}</td><td class="n">{Number(r.employment).toLocaleString('ko-KR')}</td><td class="n">{eok(r.prod_q_mil)}</td><td class="n">{eokB(r.prod_prev_bil)}</td><td class="n">{eok(r.export_q_mil)}</td><td class="n">{eok(r.prod_cum_mil)}</td><td class="n">{eok(r.export_cum_mil)}</td></tr>
+            ))}</tbody>
+          </table></div>
+          <p class="meta">출처: {[...new Set(pLatest.map(r => r.source))].map((k, i) => <>{i > 0 && ', '}<a href={pLatest.find(r => r.source === k)!.doc_url} rel="noopener">{SOURCE_NAME[k] ?? k} 「{qLabelK(pQ)} 단지별 입주현황」</a></>)}. 백만 원을 100으로 나눠 억 원으로 적었고(전년 같은 분기는 십억 원 값 × 10), 생산·수출은 관리기관이 입주업체에게서 모은 실적입니다. '(전체)'는 하위 단지의 합입니다. 성서산업단지 1~4차는 기업 사전에서 '성서지방산업단지', 5차는 '성서5차첨단산업단지'입니다.</p>
+          {tRows.length > 1 && <>
+            <h3>성서산업단지 분기별 생산·수출</h3>
+            <div class="scroll-x"><table class="data-table" data-title="대구성서산업단지 분기별 생산·수출(관리기관 경기동향 보고서)">
+              <thead><tr><th>분기</th><th class="n">생산(억 원)</th><th class="n">내수(억 원)</th><th class="n">수출(억 원)</th><th class="n">가동률(%)</th><th class="n" data-pri="2">입주업체(개)</th><th class="n" data-pri="2">근로자(명)</th></tr></thead>
+              <tbody>{tRows.map(r => <tr><th scope="row"><a href={r.doc_url} rel="noopener">{qLabelK(r.quarter)}</a></th><td class="n">{eok(r.prod_mil)}</td><td class="n">{eok(r.domestic_mil)}</td><td class="n">{eok(r.export_mil)}</td><td class="n">{r.operating_rate}</td><td class="n">{Number(r.firms).toLocaleString('ko-KR')}</td><td class="n">{Number(r.workers).toLocaleString('ko-KR')}</td></tr>)}</tbody>
+            </table></div>
+            <p class="meta">출처: 대구성서산업단지관리공단 분기 「입주업체 경기동향 보고서」(경기동향 게시판). 성서 1~5차와 대구인쇄출판밸리를 합친 값이고, 가동률은 관리공단 표본조사 값입니다(보고서 기준 95% 신뢰수준 ±2.38%p). 같은 분기라도 이 보고서와 위 「단지별 입주현황」의 생산액은 집계 시점이 달라 조금 다를 수 있습니다.</p>
+          </>}
+        </section>
+      )}
       {tags.length > 0 && (
         <section aria-labelledby="h-tag">
           <div class="section-head"><h2 id="h-tag">공개 명단 태그별</h2></div>
@@ -68,4 +116,7 @@ const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.
       <p class="meta">출처: 팩토리온 입주업체현황({m.sources.factoryon.as_of}), 국민연금 가입 사업장 내역({m.month}, {fmt(m.sources.nps?.rows ?? null)}행 중 {fmt(m.sources.nps?.matched ?? null)}곳 매칭). 이달 통계표: <a href={`/stats/${m.month}/`}>{ym}</a>. 국가데이터처·한국은행 통계(주제별): <a href="/stats/">통계</a>.</p>
     </>
   ) : <p class="empty">통계가 아직 없습니다. scripts/build_stats.py 를 먼저 실행하세요.</p>}
+<style>
+  .sub { font-weight: 400; color: var(--muted); }
+</style>
 </Base>

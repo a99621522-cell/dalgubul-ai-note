@@ -1,0 +1,35 @@
+name: 산업단지 관리기관 분기 자료 받기
+# config/complex_sources.yml 의 관리기관 게시판에서 분기 생산·수출·고용 PDF 글자를 받아 data/complexes/raw/ 에 커밋하고 표를 읽는다.
+# 매달 25일(분기 자료는 분기 끝 뒤 두 달쯤 게시) + 설정·스크립트 푸시 때.
+on:
+  schedule:
+    - cron: "23 22 24 * *"
+  workflow_dispatch: {}
+  push:
+    paths: [".github/workflows/complex_reports.yml", "scripts/fetch_complex_reports.py", "scripts/parse_complex_reports.py", "config/complex_sources.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: complex-reports
+  cancel-in-progress: false
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - run: sudo apt-get install -y -qq poppler-utils >/dev/null || (sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq poppler-utils >/dev/null)
+      - run: python3 scripts/fetch_complex_reports.py
+      - run: if [ -f scripts/parse_complex_reports.py ]; then python3 scripts/parse_complex_reports.py; fi
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/complexes
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -m "data: 산업단지 관리기관 분기 자료 $(date +%F)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done

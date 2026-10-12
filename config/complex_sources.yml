@@ -1,0 +1,20 @@
+# 대구 산업단지 관리기관 누리집의 분기 생산·수출·고용 자료(운영자 지시 2026-10-12 '대구시 개별 산단 홈페이지 들어가서 조사해서 올려').
+# scripts/fetch_complex_reports.py 가 게시판 목록 → 제목이 title 에 맞는 글 → 첨부 이름이 files 에 맞는 PDF 를 받아 글자를 data/complexes/raw/ 에 둔다.
+# 입주업체 명단 첨부(대표자 등 개인정보가 섞일 수 있음)는 받지 않는다. robots.txt 를 지킨다.
+# 조사 결과(2026-10-12, 미국 GitHub 러너 기준):
+#   성서(1~5차·인쇄출판밸리) — 대구성서산업단지관리공단 seongseo.or.kr '경기동향' 게시판, 분기마다 단지별 입주현황(생산·수출·고용)·경기동향 보고서 PDF. 수집함
+#   서대구 — 서대구산업단지관리공단 seodaegu.or.kr (robots 허용) — 입주업체 명단(대표자 이름 포함, 받지 않음)만 있고 생산 자료 없음
+#   달성1차 — 달성1차산업단지관리공단 dalin.or.kr (robots 없음) — 입주기업 명단·면적·업종별 면적만, 생산 자료 없음(월간 소식지 PDF 는 확인 못 함)
+#   대구염색 — 대구염색산업단지관리공단 dyecen.or.kr — robots.txt 가 전체 차단(Disallow: /)이라 수집하지 않음
+#   대구국가·달성2차 — 한국산업단지공단 관리(kicox.or.kr) — 미국 러너 SSL 차단
+#   대구제3·검단 등 — 관리기관 누리집 주소 못 찾음
+version: 2026-10-12
+sources:
+  - key: seongseo
+    name: 대구성서산업단지관리공단
+    home: https://www.seongseo.or.kr
+    list: https://www.seongseo.or.kr/board/public_infor
+    post: '/board/public_infor/(\d+)'
+    title: '경기동향'
+    files: ['단지별 입주현황', '경기동향 보고서']
+    pages: 2

@@ -1,0 +1,31 @@
+---
+import { bokDaeguMeta, bokDaeguRows, periodLabel } from '../lib/bokDaegu';
+/** 한국은행 대구경북본부 「대구경북지역 주요 경제지표」 대구 표 11개(예금은행 수신·대출, 비은행 여수신, 어음부도·신설법인). 값 그대로, 평가 없음. */
+const meta = bokDaeguMeta();
+const fmt = (v: string | undefined) => (v == null || v === '' ? '—' : Number(v).toLocaleString('ko-KR', { maximumFractionDigits: 2 }));
+const iss = meta?.issue ? `${meta.issue.slice(0, 4)}년 ${Number(meta.issue.slice(5))}월 호` : '';
+---
+{meta && meta.tables.length > 0 && (
+<section id="bok-daegu" aria-labelledby="h-bok">
+  <div class="section-head"><h2 id="h-bok">한국은행 대구 금융 지표</h2><span class="meta">대구경북본부 주요 경제지표 {iss} · 대구 표 {meta.tables.length}개</span></div>
+  <p class="meta">한국은행 대구경북본부가 매달 내는 「대구경북지역 주요 경제지표」에서 대구 판 표만 옮겼습니다(대구·경북 합계와 경북 판은 싣지 않음). 예금·대출은 기간 말 잔액, 어음·신설법인은 기간 중 값이고, 'p'는 잠정치입니다. 연간 최근 3년과 최근 13개월(산업별 대출금은 분기)을 보입니다. 표마다 합계 = 항목 합 검산을 거쳤습니다.</p>
+  {meta.tables.map((t, i) => { const { annual, recent } = bokDaeguRows(t.key); return (
+    <details open={i < 2}>
+      <summary>{t.title} <span class="u">({t.unit}, {t.basis})</span></summary>
+      <div class="scroll-x"><table class="data-table" data-title={`대구 ${t.title}(한국은행 대구경북본부, ${t.unit})`}>
+        <thead><tr><th>시점</th>{t.columns.map((c, j) => <th class="n" data-pri={j > 5 ? '2' : undefined}>{c}</th>)}</tr></thead>
+        <tbody>
+          {recent.map(r => <tr><th scope="row" class="nw">{periodLabel(r.period)}{r.prelim && 'p'}</th>{t.columns.map(c => <td class="n">{fmt(r.vals[c])}</td>)}</tr>)}
+          {annual.map(r => <tr class="yr"><th scope="row" class="nw">{periodLabel(r.period)}</th>{t.columns.map(c => <td class="n">{fmt(r.vals[c])}</td>)}</tr>)}
+        </tbody>
+      </table></div>
+    </details>
+  ); })}
+  <p class="meta">출처: {meta.source} {iss}(대구 판). 산업 분류는 한국표준산업분류 제11차 개정 기준(원표 주석). 같은 지표의 ECOS 월간 계열은 위 '금융' 그래프에 있습니다.</p>
+</section>
+)}
+<style>
+  tr.yr th, tr.yr td { background: var(--surface); }
+  .u { color: var(--muted); font-size: var(--small); font-weight: 400; }
+  .nw { white-space: nowrap; }
+</style>

@@ -4,7 +4,7 @@
 # 조사 결과(2026-10-12, 미국 GitHub 러너 기준):
 #   성서(1~5차·인쇄출판밸리) — 대구성서산업단지관리공단 seongseo.or.kr '경기동향' 게시판, 분기마다 단지별 입주현황(생산·수출·고용)·경기동향 보고서 PDF. 수집함
 #   서대구 — 서대구산업단지관리공단 seodaegu.or.kr (robots 허용) — 입주업체 명단(대표자 이름 포함, 받지 않음)만 있고 생산 자료 없음
-#   달성1차 — 달성1차산업단지관리공단 dalin.or.kr (robots 없음) — 입주기업 명단·면적·업종별 면적만, 생산 자료 없음(월간 소식지 PDF 는 확인 못 함)
+#   달성1차 — 달성1차산업단지관리공단 dalin.or.kr (robots 없음) — 월간 「달성1차산업단지 뉴스」 PDF 의 'N월 중 현황'(생산·수출·가동률·입주·고용, 두 달 전 값). 수집함(spa)
 #   대구염색 — 대구염색산업단지관리공단 dyecen.or.kr — robots.txt 가 전체 차단(Disallow: /)이라 수집하지 않음
 #   대구국가·달성2차 — 한국산업단지공단 관리(kicox.or.kr) — 미국 러너 SSL 차단
 #   대구제3·검단 등 — 관리기관 누리집 주소 못 찾음
@@ -18,3 +18,12 @@ sources:
     title: '경기동향'
     files: ['단지별 입주현황', '경기동향 보고서']
     pages: 2
+  - key: dalin
+    name: 달성1차산업단지관리공단
+    home: https://dalin.or.kr
+    spa: true            # 화면을 스크립트로 그림 — 브라우저로 연다
+    list: https://dalin.or.kr/board/notice_web
+    post: '/board/notice_web/(\d+)'
+    post_url: 'https://dalin.or.kr/board/notice_web/{id}'
+    title: '달성1차산업단지 뉴스\s*제\s*\d+\s*호'
+    window: 60

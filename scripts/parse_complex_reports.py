@@ -3,6 +3,7 @@
 
 ① <key>_<YYYY>q<N>_1.txt — 산단공 양식 「단지별 입주현황」: 단지(하위 단지)마다 총괄표(입주·가동·가동율·고용·생산·수출, 전년 같은 분기와 당분기)와
    '4. 매출액'(생산·수출 연간계획·당분기 실적·누계 실적, 백만원) → data/complexes/production.csv
+③ <key>_<글번호>.txt — 월간 소식지(달성1차산업단지 뉴스)의 'N월 중 현황' → data/complexes/monthly.csv(생산 백만원·수출 천불·근로자)
 ② <key>_<YYYY>q<N>_2.txt — 관리기관 「입주업체 경기동향 보고서」 첫 쪽 요약(가동률·총생산액·입주업체·근로자수)과 '전분기 대비 생산실적' 표(생산액·내수·수출, 백만원)
    → data/complexes/trend.csv (분기마다 당분기 값만)
 값은 문서 그대로 옮기고 계산하지 않는다(억 원 환산은 페이지에서 ÷100). 관리기관의 해설·전망 문장은 옮기지 않는다.
@@ -25,6 +26,8 @@ FO = {"대구성서산업단지 1차단지": "성서지방산업단지", "대구
 COLS_P = ["source", "quarter", "complex", "total", "fo_name", "firms", "operating", "operating_rate", "employment_prev", "employment",
           "prod_prev_bil", "prod_bil", "export_prev_bil", "export_bil", "prod_plan_mil", "prod_q_mil", "prod_cum_mil",
           "export_plan_mil", "export_q_mil", "export_cum_mil", "doc_url"]
+OUT_M = ROOT / "data" / "complexes" / "monthly.csv"
+COLS_M = ["source", "month", "prod_mil", "export_kusd", "workers", "issue", "doc_url"]
 COLS_T = ["source", "quarter", "operating_rate", "prod_mil", "domestic_mil", "export_mil", "firms", "workers", "doc_url"]
 NUM = r"-?[\d,]+(?:\.\d+)?"
 
@@ -87,8 +90,35 @@ def parse_trend(path: Path, source: str, quarter: str) -> dict | None:
     return row
 
 
+def parse_monthly(path: Path, source: str) -> dict | None:
+    """월간 소식지(달성1차산업단지 뉴스)의 'YYYY. M월 중 현황' — 총 생산실적(백만원)·수출실적(천불)·총 근로자 수. 두 단 편집이라 낱말 짝으로만 찾는다."""
+    text = path.read_text(encoding="utf-8")
+    post, _ = meta(text)
+    m = re.search(r"(\d{4})\.\s*(\d{1,2})\s*월\s*중\s*현황", text)
+    p = re.search(r"생산\s*실적은\s*([\d,]+)\s*백만원", text)
+    if not m or not p:
+        print(f"  {path.name} 월 현황 못 찾음")
+        return None
+    x = re.search(r"수출\s*실적은\s*([\d,]+)\s*천미?불", text)
+    w = re.search(r"([\d,]{5,})\s*명\s*\(\s*남", text)
+    iss = re.search(r"제\s*(\d+)\s*호", text.splitlines()[0])
+    return {"source": source, "month": f"{m.group(1)}-{int(m.group(2)):02d}", "prod_mil": n(p.group(1)),
+            "export_kusd": n(x.group(1)) if x else "", "workers": n(w.group(1)) if w else "",
+            "issue": iss.group(1) if iss else "", "doc_url": post}
+
+
 def main() -> int:
-    prod, trend = [], []
+    prod, trend, monthly = [], [], []
+    for p in sorted(RAW.glob("*_[0-9]*.txt")):
+        mm = re.match(r"([a-z]+)_(\d+)\.txt$", p.name)
+        if mm:
+            r = parse_monthly(p, mm.group(1))
+            if r:
+                monthly.append(r)
+    by_m = {}
+    for r in sorted(monthly, key=lambda r: int(r["issue"] or 0)):   # 같은 달이 여러 호에 실리면 늦은 호
+        by_m[(r["source"], r["month"])] = r
+    monthly = sorted(by_m.values(), key=lambda r: (r["source"], r["month"]))
     for p in sorted(RAW.glob("*_*q*_*.txt")):
         m = re.match(r"(.+)_(\d{4})q(\d)_(\d)\.txt$", p.name)
         if not m:
@@ -100,7 +130,7 @@ def main() -> int:
             r = parse_trend(p, src, q)
             if r:
                 trend.append(r)
-    for out, cols, rows in ((OUT_P, COLS_P, prod), (OUT_T, COLS_T, trend)):
+    for out, cols, rows in ((OUT_P, COLS_P, prod), (OUT_T, COLS_T, trend), (OUT_M, COLS_M, monthly)):
         with open(out, "w", encoding="utf-8", newline="") as f:
             w = csv.DictWriter(f, fieldnames=cols)
             w.writeheader()

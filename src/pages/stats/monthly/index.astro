@@ -1,6 +1,8 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import StatsNav from '../../../components/StatsNav.astro';
+import BokDaeguTables from '../../../components/BokDaeguTables.astro';
+import BokRegionalDaegu from '../../../components/BokRegionalDaegu.astro';
 import { monthlySeries, change, latest, groups, fmt, fmtChg, trendChart, CYCLES, CYCLE_DESC, cycleSentence } from '../../../lib/monthly';
 /** /stats/monthly/ — 경기 동향(월간). 원 통계(KOSIS·ECOS)에서 직접 읽고, 원 통계를 아직 받지 않는 지표만
  *  data/refs/dpi-*.json 정리값을 쓴다(src/lib/monthly.ts). 지표마다 원 통계 기관을 출처로 적는다 — 페이지에 자료 정리 기관·간행물 이름은 쓰지 않는다
@@ -96,6 +98,8 @@ const GROUP_DESC: Record<string, string> = {
       <li>업종별 생산·출하·재고는 <a href="/stats/manufacturing/">제조업</a>, 품목·국가별 수출입은 <a href="/stats/trade/">수출입</a> 페이지에 있습니다.</li>
     </ul>
   </details>
+  <BokDaeguTables />
+  <BokRegionalDaegu />
   <style>
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .u { color: var(--muted); font-size: var(--small); font-weight: 400; margin-left: 2px; }

@@ -5,6 +5,8 @@ export type ReportFile = { title: string; name: string; href: string; size: stri
 export const REPORT_FILES: ReportFile[] = [
   { title: '중국 로봇 훈련장 현황', name: '중국 로봇 훈련장 현황',
     href: '/files/china-robot-training-grounds.docx', size: '1.1MB', pdf: '/files/china-robot-training-grounds.pdf', pdfSize: '1.5MB', hwpx: '/hwpx/china-robot-training-grounds.hwpx', hwpxSize: '1.3MB', date: '2026-10-12' },
+  { title: '대구 소재 상장기업 2026년 2분기 실적', name: '대구 소재 상장기업 2026년 2분기 실적',
+    href: '/files/daegu-listed-2026q2.docx', size: '0.4MB', pdf: '/files/daegu-listed-2026q2.pdf', pdfSize: '0.8MB', hwpx: '/hwpx/daegu-listed-2026q2.hwpx', hwpxSize: '0.4MB', date: '2026-10-12' },
   { title: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판(산업구조지수를 중심으로)', name: '지역 산업구조 특성이 경제성장에 미치는 영향 — 대구판',
     href: '/files/daegu-industry-structure.docx', size: '1.7MB', pdf: '/files/daegu-industry-structure.pdf', pdfSize: '2.2MB', hwpx: '/hwpx/daegu-industry-structure.hwpx', hwpxSize: '2.3MB', date: '2026-09-30' },
   { title: '주요 제조업 공급망 지도 해설', name: '주요 제조업 공급망 지도 해설',

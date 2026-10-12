@@ -160,3 +160,9 @@ export const qYoY = (q?: DartQuarter) => { if (!q) return null; const a = Number
 export type DartPerf = { rcept_dt: string; corp_code: string; name: string; kind: string; report_nm: string; excerpt: string; rcept_no: string; url: string };
 export const dartPerf = memo(() => readCsv('data/dart/performance.csv') as DartPerf[]);
 export const perfByCode = (code: string) => dartPerf().filter(p => p.corp_code === code).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));
+
+/** 경영진 진단·방향(scripts/collect_dart_mgmt.py → data/dart/mgmt.csv, 운영자 지시 2026-10-12): 최근 사업보고서 '이사의 경영진단 및 분석의견'의
+ *  개요(overview)·전망·계획 문장(outlook)과 사업의 내용·경영진단에서 신규사업·진출 낱말이 든 문장(new_biz) — 회사 공시 문구 그대로(220자 안), 이 사이트의 요약·평가 아님 */
+export type DartMgmt = { corp_code: string; name: string; report_year: string; rcept_dt: string; overview: string; outlook: string; new_biz: string; rcept_no: string; url: string };
+export const dartMgmt = memo(() => readCsv('data/dart/mgmt.csv') as DartMgmt[]);
+export const mgmtByCode = (code: string) => dartMgmt().find(m => m.corp_code === code);

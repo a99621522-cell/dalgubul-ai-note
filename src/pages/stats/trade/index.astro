@@ -20,7 +20,8 @@ const ym = (m: string) => `${m.slice(0, 4)}년 ${Number(m.slice(5))}월`;
   {months.length > 1 && <nav class="toc" aria-label="달"><ol>{months.map(m => <li><a href={`#m${m.month}`}>{ym(m.month)}</a></li>)}</ol></nav>}
 
   {months.map(m => {
-    const cs = m.customs_summary.rows as Row[];
+    const cs = (m.customs_summary?.rows ?? []) as Row[];
+    const hasCs = cs.length > 0;
     const dg = cs.find(r => r.area === '대구');
     const nat = cs.find(r => r.area.startsWith('전국'));
     return (
@@ -32,13 +33,24 @@ const ym = (m: string) => `${m.slice(0, 4)}년 ${Number(m.slice(5))}월`;
         <thead><tr><th>구분</th><th>출처</th><th class="n">수출(억 달러)</th><th class="n">증감률(%)</th><th class="n">수입(억 달러)</th><th class="n">증감률(%)</th><th class="n">무역수지(억 달러)</th><th class="n">누계 수출(억 달러)</th><th class="n">누계 증감률(%)</th></tr></thead>
         <tbody>
           <tr><th scope="row">전국</th><td>산업통상부</td><td class="n">{n(m.motir_summary.export, 1)}</td><td class="n">{p(m.motir_summary.export_yoy)}</td><td class="n">{n(m.motir_summary.import, 1)}</td><td class="n">{p(m.motir_summary.import_yoy)}</td><td class="n">{n(m.motir_summary.balance, 1)}</td><td class="n">{n(m.motir_summary.ytd_export, 0)}</td><td class="n">{p(m.motir_summary.ytd_export_yoy)}</td></tr>
+          {!hasCs && <tr><th scope="row">대구·경북</th><td>대구본부세관</td><td colspan="7">발표 전(매달 15일쯤)</td></tr>}
           {cs.map(r => (
             <tr><th scope="row">{r.area}</th><td>대구본부세관</td><td class="n">{n(eok(r.export), 1)}</td><td class="n">{p(r.export_yoy)}</td><td class="n">{n(eok(r.import), 1)}</td><td class="n">{p(r.import_yoy)}</td><td class="n">{n(r.balance_eok, 1)}</td><td class="n">{n(eok(r.ytd_export), 1)}</td><td class="n">{p(r.ytd_export_yoy)}</td></tr>
           ))}
         </tbody>
       </table></div>
-      <p class="meta">증감률은 전년 같은 달(누계는 전년 같은 기간) 대비. 누계는 그해 1월부터 그달까지. 무역수지는 보도자료에 적힌 값(세관 표의 전국 행은 무역수지가 없어 —). 산업통상부 {ym(m.month)} 자료에는 누계 수출이 없어 —(누계 무역수지 {n(m.motir_summary.ytd_balance, 1)}억 달러). 대구 수출은 세관 표의 전국 수출의 {dg && nat ? ((dg.export / nat.export) * 100).toFixed(2) : '—'}%(같은 표 안의 나눗셈). 출처: <a href={m.sources.motir.url} rel="noopener">{m.sources.motir.name}</a>, <a href={m.sources.customs.url} rel="noopener">{m.sources.customs.name}</a>.</p>
+      <p class="meta">증감률은 전년 같은 달(누계는 전년 같은 기간) 대비. 누계는 그해 1월부터 그달까지. 무역수지는 보도자료에 적힌 값{hasCs && '(세관 표의 전국 행은 무역수지가 없어 —)'}.{m.motir_summary.ytd_export == null && ` 산업통상부 ${ym(m.month)} 자료에는 누계 수출이 없어 —(누계 무역수지 ${n(m.motir_summary.ytd_balance, 1)}억 달러).`}{hasCs && ` 대구 수출은 세관 표의 전국 수출의 ${dg && nat ? ((dg.export / nat.export) * 100).toFixed(2) : '—'}%(같은 표 안의 나눗셈).`}{!hasCs && ' 대구·경북 값은 대구본부세관 보도자료가 나오면 채웁니다.'} 출처: <a href={m.sources.motir.url} rel="noopener">{m.sources.motir.name}</a>{m.sources.customs && <>, <a href={m.sources.customs.url} rel="noopener">{m.sources.customs.name}</a></>}.</p>
 
+      {!hasCs && <>
+      <h3>지역별 수출 (전국, 산업통상부)</h3>
+      <div class="scroll-x"><table class="data-table" data-title={`${ym(m.month)} 지역별 수출 — 전국`}>
+        <thead><tr><th>국가·지역</th><th class="n">전국(억 달러)</th><th class="n">증감률(%)</th></tr></thead>
+        <tbody>{(m.countries.rows as Row[]).map(r => (
+          <tr><th scope="row">{r.country}</th><td class="n">{n(r.national[0], Number.isInteger(r.national[0]) ? 0 : 1)}</td><td class="n">{p(r.national[1])}</td></tr>
+        ))}</tbody>
+      </table></div>
+      </>}
+      {hasCs && <>
       <h3>국가별 수출</h3>
       <div class="scroll-x"><table class="data-table" data-title={`${ym(m.month)} 국가별 수출 — 대구·경북·전국`}>
         <thead><tr><th>국가·지역</th><th class="n">대구(백만 달러)</th><th class="n">증감률(%)</th><th class="n">대구 누계(백만 달러)</th><th class="n">누계 증감률(%)</th><th class="n">경북(백만 달러)</th><th class="n">증감률(%)</th><th class="n">전국(억 달러)</th><th class="n">증감률(%)</th></tr></thead>
@@ -64,6 +76,7 @@ const ym = (m: string) => `${m.slice(0, 4)}년 ${Number(m.slice(5))}월`;
         ))}</tbody>
       </table></div>
 
+      </>}
       <h3>전국 20대 품목 수출 (산업통상부)</h3>
       <div class="scroll-x"><table class="data-table" data-title={`${ym(m.month)} 전국 20대 품목 수출`}>
         <thead><tr><th>품목</th><th class="n">수출(억 달러)</th><th class="n">증감률(%)</th></tr></thead>

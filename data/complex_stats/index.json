@@ -1,6 +1,116 @@
 {
  "files": [
   {
+   "quarter": "2024Q2",
+   "type": "일반",
+   "file": "2024Q2_일반.csv",
+   "orig": "산업단지현황조사_2024년 2분기(게시용)_연간보정(241121).xlsx",
+   "atch": "FILE_000000003087765",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2025Q4",
+   "type": "국가산업단지",
+   "file": "2025Q4_국가산업단지.csv",
+   "orig": "(25년4분기)국가(콤마삭제).csv",
+   "atch": "FILE_000000003675845",
+   "pk": "15085874",
+   "has_production": false,
+   "rows": 1
+  },
+  {
+   "quarter": "2025Q4",
+   "type": "농공",
+   "file": "2025Q4_농공.csv",
+   "orig": "(25년4분기)농공.csv",
+   "atch": "FILE_000000003669624",
+   "pk": "15085878",
+   "has_production": false,
+   "rows": 4
+  },
+  {
+   "quarter": "2025Q4",
+   "type": "도시첨단",
+   "file": "2025Q4_도시첨단.csv",
+   "orig": "(25년4분기)도시첨단.csv",
+   "atch": "FILE_000000003669716",
+   "pk": "15085880",
+   "has_production": false,
+   "rows": 3
+  },
+  {
+   "quarter": "2025Q4",
+   "type": "외국인",
+   "file": "2025Q4_외국인.csv",
+   "orig": "(25년4분기)외투.csv",
+   "atch": "FILE_000000003625491",
+   "pk": "15085884",
+   "has_production": false,
+   "rows": 1
+  },
+  {
+   "quarter": "2025Q4",
+   "type": "일반",
+   "file": "2025Q4_일반.csv",
+   "orig": "(25년4분기)일반(콤마삭제).csv",
+   "atch": "FILE_000000003675849",
+   "pk": "15085886",
+   "has_production": false,
+   "rows": 18
+  },
+  {
+   "quarter": "2026Q1",
+   "type": "국가산업단지",
+   "file": "2026Q1_국가산업단지.csv",
+   "orig": "(26년1분기)국가(재).csv",
+   "atch": "FILE_000000007686042",
+   "pk": "15085874",
+   "has_production": false,
+   "rows": 1
+  },
+  {
+   "quarter": "2026Q1",
+   "type": "농공",
+   "file": "2026Q1_농공.csv",
+   "orig": "(26년1분기)농공.csv",
+   "atch": "FILE_000000007669778",
+   "pk": "15085878",
+   "has_production": false,
+   "rows": 4
+  },
+  {
+   "quarter": "2026Q1",
+   "type": "도시첨단",
+   "file": "2026Q1_도시첨단.csv",
+   "orig": "(26년1분기)도시첨단.csv",
+   "atch": "FILE_000000007669776",
+   "pk": "15085880",
+   "has_production": false,
+   "rows": 3
+  },
+  {
+   "quarter": "2026Q1",
+   "type": "외국인",
+   "file": "2026Q1_외국인.csv",
+   "orig": "(26년1분기)외국인.csv",
+   "atch": "FILE_000000007669800",
+   "pk": "15085884",
+   "has_production": false,
+   "rows": 1
+  },
+  {
+   "quarter": "2026Q1",
+   "type": "일반",
+   "file": "2026Q1_일반.csv",
+   "orig": "(26년1분기)일반(재).csv",
+   "atch": "FILE_000000007686106",
+   "pk": "15085886",
+   "has_production": false,
+   "rows": 18
+  },
+  {
    "quarter": "2026Q2",
    "type": "국가산업단지",
    "file": "2026Q2_국가산업단지.csv",

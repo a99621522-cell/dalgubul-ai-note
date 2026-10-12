@@ -117,7 +117,7 @@ def decode(raw: bytes) -> str:
 
 def quarter_of(name: str) -> str:
     """'(26년2분기)농공.csv' · '…_20250630' → '2026Q2'."""
-    m = re.search(r"(\d{2,4})년\s*(\d)\s*분기", name)
+    m = re.search(r"(\d{2,4})\s*[년.]\s*(\d)\s*분기", name)
     if m:
         y = int(m.group(1)); y = y + 2000 if y < 100 else y
         return f"{y}Q{m.group(2)}"

@@ -1,0 +1,17 @@
+---
+import fs from 'node:fs';
+/** 한국은행 「지역경제보고서」에서 대구 단독 값만(data/bok/regional_report_daegu.json, 운영자 지시 2026-10-12). 값·비교는 보고서 그대로, 평가 없음. */
+const p = 'data/bok/regional_report_daegu.json';
+const d = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf-8')) : null;
+---
+{d && d.items?.length > 0 && (
+<section id="bok-report" aria-labelledby="h-bokr">
+  <div class="section-head"><h2 id="h-bokr">한국은행 지역경제보고서 — 대구 값</h2><span class="meta">{d.publisher} 「{d.title}」 · {d.items.length}개</span></div>
+  <p class="meta">한국은행이 권역별로 낸 보고서(권역별 경제 동향·지역경제포커스·지역경제연구)에서 대구 단독 값만 옮겼습니다. 대구·경북을 합친 값과 기업 개별 값은 싣지 않았고, 비교 칸은 같은 문장·표에 실린 값입니다. 쪽은 보고서 인쇄 쪽입니다.</p>
+  <div class="scroll-x"><table class="data-table" data-title={`한국은행 ${d.title} 대구 값`}>
+    <thead><tr><th>항목</th><th>시점</th><th>대구</th><th data-pri="2">비교(같은 자료)</th><th data-pri="2">장</th><th class="n" data-pri="3">쪽</th></tr></thead>
+    <tbody>{d.items.map((it: any) => <tr><th scope="row">{it.name}</th><td>{it.when}</td><td class="n">{it.daegu}</td><td>{it.compare}</td><td>{it.part}</td><td class="n">{it.page}</td></tr>)}</tbody>
+  </table></div>
+  <p class="meta">출처: {d.publisher} 「{d.title}」(작성 {d.made}). 보고서 안 다른 기관 자료는 비교 칸에 기관 이름을 적었습니다. 지역경제연구 5편에는 대구를 다룬 글이 없습니다.</p>
+</section>
+)}

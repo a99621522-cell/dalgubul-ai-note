@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, dartNotes, dartIR } from '../../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, mgmtByCode, dartNotes, dartIR } from '../../lib/dart';
 import type { DartQuarter } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
@@ -79,11 +79,24 @@ const noteCorps = [...new Set(NOTES.filter(n => n.kind).map(n => n.corp_code))].
 const IR = dartIR().filter(r => listedCodes.has(r.corp_code));
 const irGuide = IR.filter(r => r.guidance).length;
 const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
+/** 회사 카드(운영자 지시 2026-10-12 '기업 1개당 카드 하나 만들어서 필요한 정보를 다 넣어'): 흩어진 표(재무·분기·직원·연구개발비·출자·실적 공시·미래 산업 공시)를
+ *  회사마다 한 장에. 값과 계산은 아래 표와 같다(공시 값, 억 원 나눗셈·비율만). 가나다순, 순위 없음. */
+const qLatest = new Map(qCorps.map(q => [q.code, q.L]));
+const invN = countBy(INV, r => r.corp_code); const invCount = new Map(invN);
+const futBy = new Map<string, string[]>(); for (const d of fut) futBy.set(d.corp_code, [...(futBy.get(d.corp_code) ?? []), ...d.fields.split(', ').filter(Boolean)]);
+const perfBy = new Map<string, typeof PERF>(); for (const p of PERF) perfBy.set(p.corp_code, [...(perfBy.get(p.corp_code) ?? []), p]);
+const cardsData = corps.map(c => {
+  const L = c.years[last] ?? c.latest; const P = c.years[years.at(-2) ?? ''];
+  const ps = (perfBy.get(c.code) ?? []).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));
+  return { c, L, P, ly: L?.year ?? '', mk: makesOf(c), q: qLatest.get(c.code), em: empCode.get(c.code), rd: rndCode.get(c.code),
+    inv: invCount.get(c.code) ?? 0, fut: [...new Set(futBy.get(c.code) ?? [])], futN: fut.filter(d => d.corp_code === c.code).length,
+    why: ps.find(p => p.kind !== '잠정실적' && p.excerpt), pre: ps.find(p => p.kind === '잠정실적'), mg: mgmtByCode(c.code) };
+});
 ---
 <Base title="대구시 상장기업" description={`본사가 대구인 상장 회사 ${corps.length}곳(유가증권·코스닥·코넥스)의 최근 3개 사업연도 매출액·영업이익·직원·연구개발비·타법인 출자·미래 산업 관련 공시(DART 공시 값 그대로).`} current="listed" wide>
   <div class="section-head"><h1>대구시 상장기업</h1><span class="meta">{corps.length}곳 · {years[0]}~{last} 사업연도 · {asOf} 받음 · 금융감독원 DART</span></div>
-  <p class="lede">금융감독원 전자공시(DART) 기업개황의 본사 주소가 대구인 상장 회사 {corps.length}곳입니다. 회사 이름을 누르면 재무·직원·연구개발비·출자·공시를 한 페이지에서 봅니다. 재무는 연결재무제표가 있으면 연결, 없으면 개별 값이고 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>
-  <nav class="jump meta"><a href="#fin">재무</a> · <a href="#quarter">분기 실적</a> · <a href="#perf">실적 공시(사유·전망)</a> · <a href="#notes">보고서·IR 실적 설명</a> · <a href="#employees">직원</a> · <a href="#rnd">연구개발비</a> · <a href="#invest">출자</a> · <a href="#future">미래 산업 공시</a> · <a href="#dist">분포</a> · <a href="#unlisted">비상장 공시 회사</a></nav>
+  <p class="lede">금융감독원 전자공시(DART) 기업개황의 본사 주소가 대구인 상장 회사 {corps.length}곳입니다. 회사마다 카드 한 장에 무엇을 만드는지, 최근 사업연도 재무, 최근 분기 실적, 직원·연구개발비, 실적 변동 사유·전망 공시를 모았고, 회사 이름을 누르면 전체 자료를 한 페이지에서 봅니다. 재무는 연결재무제표가 있으면 연결, 없으면 개별 값이고 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>
+  <nav class="jump meta"><a href="#cards">회사 카드</a> · <a href="#fin-head">재무 표</a> · <a href="#quarter">분기 실적</a> · <a href="#perf">실적 공시(사유·전망)</a> · <a href="#notes">보고서·IR 실적 설명</a> · <a href="#employees">직원</a> · <a href="#rnd">연구개발비</a> · <a href="#invest">출자</a> · <a href="#future">미래 산업 공시</a> · <a href="#dist">분포</a> · <a href="#unlisted">비상장 공시 회사</a></nav>
 
   {corps.length === 0 ? <p class="meta">아직 받은 자료가 없습니다.</p> : (<>
   <div class="cards">
@@ -96,6 +109,37 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
     <select id="grp" aria-label="산업"><option value="">모든 산업</option>{groups.map(g => <option value={g}>{g}</option>)}</select>
     <span id="count" class="meta">{corps.length}곳</span>
   </div>
+  <section id="cards">
+    <div class="ccards">{cardsData.map(({ c, L, P, ly, mk, q, em, rd, inv, fut: fs, futN, why, pre, mg }) => (
+      <article class="ccard" data-name={`${c.name} ${c.ksicName} ${mk.text}`} data-cls={c.cls} data-grp={c.group}>
+        <header><h3><a href={`/listed/${c.code}/`}>{c.name}</a></h3><span class="meta">{c.cls}{c.stock && ` · ${c.stock}`}{c.district && ` · ${c.district}`}</span></header>
+        <p class="cc-what"><b>{c.ksicName || c.group}</b>{mk.text && <> · {mk.text}{mk.kind === 'factory' && <span class="meta"> (공장등록)</span>}</>}</p>
+        <dl class="cc-grid">
+          <div><dt>매출액{ly && ` (${ly})`}</dt><dd>{f(L?.revenue)}억 <small>{P ? `전년 대비 ${pct1(revGrowth(L, P))}%` : ''}</small></dd></div>
+          <div><dt>영업이익</dt><dd>{f(L?.operating_income)}억 <small>이익률 {pct1n(opMargin(L))}%</small></dd></div>
+          <div><dt>최근 분기{q && ` (${qLabel(qKey(q))})`}</dt><dd>{q ? <>매출 {f(q.revenue)}억 <small>전년 같은 분기 {pct1(qYoY(q))}%</small><br />영업이익 {f(q.operating_income)}억</> : '—'}</dd></div>
+          <div><dt>부채비율 · 순이익</dt><dd>{pct1n(debtRatio(L))}% <small>순이익 {f(L?.net_income)}억</small></dd></div>
+          <div><dt>직원{em && ` (${em.year})`}</dt><dd>{em ? <>{n0(em.employees)}명 <small>1인 평균 급여 {mil(em.avg_salary)}백만 원</small></> : '—'}</dd></div>
+          <div><dt>연구개발비{rd && ` (${rd.year})`}</dt><dd>{rd ? <>{eokS(rd.rnd_won)}억 <small>매출 대비 {rd.ratio_pct ? Number(rd.ratio_pct).toFixed(1) : '—'}%</small></> : '—'}</dd></div>
+        </dl>
+        {mg && (mg.overview || mg.outlook || mg.new_biz) && <details class="cc-mgmt"><summary>경영진 진단·방향 <span class="meta">{mg.report_year}년 사업보고서</span></summary>
+          {mg.overview && <p><b>회사 상황</b> “{mg.overview}”</p>}
+          {mg.outlook && <p><b>향후 방향</b> “{mg.outlook}”</p>}
+          {mg.new_biz && <p><b>신사업·진출</b> “{mg.new_biz}”</p>}
+          <p class="meta"><a href={mg.url} rel="noopener">사업보고서 원문</a> · 회사 공시 문구 그대로</p>
+        </details>}
+        {why && <p class="cc-perf"><span class="cc-tag">{why.kind}</span> <a href={why.url} rel="noopener">{ymd(why.rcept_dt)}</a> {why.excerpt}</p>}
+        <p class="meta cc-more">
+          {pre && <><a href={pre.url} rel="noopener">잠정실적 {ymd(pre.rcept_dt)}</a> · </>}
+          {futN > 0 && <>미래 산업 공시 {futN}건({fs.join('·')}) · </>}
+          {inv > 0 && <>타법인 출자 {inv}건 · </>}
+          <a href={`/listed/${c.code}/`}>회사 페이지</a> · <a href={c.url} rel="noopener">DART</a>{c.companyId && <> · <a href={`/companies/${c.companyId}/`}>기업 사전</a></>}
+        </p>
+      </article>))}</div>
+    <p class="meta">카드의 값은 아래 표와 같은 공시 값입니다: 매출액·영업이익·순이익·부채비율은 최근 사업보고서(연결 우선), 최근 분기는 분기·반기보고서(4분기는 연간 − 3분기 누적), 직원·연구개발비는 사업보고서 표, 사유·전망 문구와 '경영진 진단·방향'(최근 사업보고서 「이사의 경영진단 및 분석의견」·사업의 내용에서 앞부분 220자까지)은 회사 공시 문구 그대로이며 이 사이트의 요약이나 평가가 아닙니다. 전년 대비·이익률·부채비율은 공시 값을 나눈 것이고 — 는 공시가 없거나 계산하지 않은 칸입니다. 가나다순이며 순위나 평가가 아닙니다.</p>
+  </section>
+
+  <div class="section-head" id="fin-head"><h2>재무 표 — 전체 열</h2><span class="meta">{years[0]}~{last} 사업연도</span></div>
   <div class="scroll-x" id="fin-wrap"><table class="data-table" id="fin" data-grid data-title={`대구시 상장기업 재무 ${years[0]}~${last}`}>
     <thead>
       <tr><th rowspan="2">회사</th><th rowspan="2">분야(업종)</th><th rowspan="2">무엇을 만드나</th><th rowspan="2">시장</th><th rowspan="2">종목코드</th><th rowspan="2">구·군</th>
@@ -283,13 +327,13 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   const cls = document.getElementById('cls') as HTMLSelectElement | null;
   const grp = document.getElementById('grp') as HTMLSelectElement | null;
   const count = document.getElementById('count');
-  const rows = [...document.querySelectorAll<HTMLTableRowElement>('#fin tbody tr')];
+  const rows = [...document.querySelectorAll<HTMLElement>('#fin tbody tr, #cards .ccard')];
   const apply = () => {
     const t = (q?.value || '').trim().toLowerCase();
     let n = 0;
     for (const r of rows) {
       const ok = (!t || (r.dataset.name || '').toLowerCase().includes(t)) && (!cls?.value || r.dataset.cls === cls.value) && (!grp?.value || r.dataset.grp === grp.value);
-      r.hidden = !ok; if (ok) n++;
+      r.hidden = !ok; if (ok && r.classList.contains('ccard')) n++;
     }
     if (count) count.textContent = `${n}곳`;
   };
@@ -311,5 +355,22 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   #notes td.ex { min-width: 18em; }
   #notes td.ex p { margin: 0 0 .35em; }
   #fin td.wrap { white-space: normal; min-width: 12em; max-width: 22em; font-size: var(--small); }
+  .ccards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--s3); margin: var(--s2) 0; }
+  .ccard { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--bg); display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .ccard[hidden] { display: none; }
+  .ccard[hidden] { display: none; }
+  .cc-mgmt { font-size: var(--small); border-top: 1px dashed var(--line); padding-top: 4px; }
+  .cc-mgmt > summary { cursor: pointer; font-weight: 600; }
+  .cc-mgmt p { margin: 4px 0; overflow-wrap: anywhere; }
+  .ccard header h3 { margin: 0; font-size: 1.05rem; }
+  .ccard header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+  .cc-what { margin: 0; font-size: var(--small); overflow-wrap: anywhere; }
+  .cc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 4px 0; }
+  .cc-grid dt { font-size: var(--small); color: var(--muted); }
+  .cc-grid dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .cc-grid small { font-weight: 400; color: var(--muted); }
+  .cc-perf { margin: 0; font-size: var(--small); background: var(--surface); border-radius: 6px; padding: 6px 8px; overflow-wrap: anywhere; }
+  .cc-tag { font-weight: 600; }
+  .cc-more { margin: 0; margin-top: auto; overflow-wrap: anywhere; }
   .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3); }
 </style>

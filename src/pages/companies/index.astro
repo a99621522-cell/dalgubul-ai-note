@@ -78,11 +78,21 @@ const head = [...list].sort((a, b) => byName(a.name, b.name)).slice(0, FIRST);
     const wide = matchMedia('(min-width: 720px)');
     const syncFilters = () => { filters.open = wide.matches; };
     syncFilters(); wide.addEventListener('change', syncFilters);
+    // /companies-index.json v2(사전 + 배열 행) → 객체 행. src/scripts/companyIndex.ts decodeCompanyIndex 와 같은 식(인라인 스크립트라 따로 둔다)
+    function decodeIdx(j) {
+      if (j.v !== 2) return j.rows;
+      const D = j.dict;
+      return j.rows.map(([i, n, d, e, c, g, s, w, t, x, m, f, k, z]) => {
+        const r = { i, n, d: D.d[d], e: D.e[e], c: D.c[c], g: D.g[g], s: D.s[s], w: D.w[w], t: D.t[t] };
+        if (k) r.k = k.map(v => D.k[v]); if (f & 1) r.p = 1; if (z) r.z = z.map(v => D.z[v]); if (x) r.x = x; if (m >= 0) r.m = m; if (f & 2) r.md = 1;
+        return r;
+      });
+    }
     function load() {
       if (rows) return Promise.resolve(rows);
       if (!loading) {
         count.textContent = '불러오는 중…';
-        loading = fetch('/companies-index.json').then(r => r.json()).then(j => (rows = j.rows)).catch(() => {
+        loading = fetch('/companies-index.json').then(r => r.json()).then(j => (rows = decodeIdx(j))).catch(() => {
           count.textContent = '목록을 불러오지 못했습니다. 새로고침해 주세요.'; loading = null; return null;
         });
       }

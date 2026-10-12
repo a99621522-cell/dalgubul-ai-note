@@ -1,5 +1,6 @@
 /** /explore/ 데이터 탐색 — 브라우저에서 질문을 조건으로 바꾸고(규칙), 기업 색인·월간 집계로 표와 SVG 그래프를 그린다.
  *  외부 라이브러리·서버·AI 호출 없음. 그래프는 dataviz 규칙: 막대 24px 이하·끝 4px 둥글게, 선 2px, 격자 hairline, 값 라벨은 12개 이하일 때만, 표는 항상 함께. */
+import { loadCompanyIndex } from './companyIndex';
 type Row = { i: string; n: string; d: string; e: string; c: string; g: string; s: string; w: string; t: string; k?: string[]; p?: 1; m?: number; md?: 1 };
 type Lite = { firms: number; employment: number; covered: number; nps_gain: number | null; nps_loss: number | null; new_firms: number | null; closed_firms: number | null; support_firms: number | null; support_records: number | null };
 type Data = {
@@ -35,7 +36,7 @@ let lastSvg: SVGSVGElement | null = null;
 
 async function load() {
   if (!DATA) DATA = await (await fetch('/explore-data.json')).json();
-  if (!ROWS) ROWS = (await (await fetch('/companies-index.json')).json()).rows;
+  if (!ROWS) ROWS = (await loadCompanyIndex()).rows as any;
   return { data: DATA!, rows: ROWS! };
 }
 

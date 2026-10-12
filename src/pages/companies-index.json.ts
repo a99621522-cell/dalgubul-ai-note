@@ -14,23 +14,19 @@ export const GET: APIRoute = () => {
   const list = companies();
   const supported = new Set(supportHistory().filter(r => r.id).map(r => r.id));
   const emp = (companyStats()?.companies ?? {}) as Record<string, { e: number | null; d?: 1 }>;
-  const rows = list.map(c => ({
-    i: c.id,
-    n: c.name,
-    d: c.district,
-    e: c.eupmyeon,
-    c: shortComplex(c.complex),
-    g: c.sector_group,
-    s: c.sector.replace(/ 외 \d+ 종/, ''),
-    w: c.workers_band,
-    t: c.site_type,
-    ...(c.tags.length ? { k: c.tags } : {}),
-    ...(supported.has(c.id) ? { p: 1 } : {}),
-    ...((z => (z.length ? { z } : {}))(zonesOf(c))),
-    ...((x => (x.length === 2 ? { x } : {}))((c.sector_code || '').trim().slice(0, 2))),
-    ...(emp[c.id]?.e != null ? { m: emp[c.id].e } : {}),
-    ...(emp[c.id]?.d ? { md: 1 } : {}),   // 같은 국민연금 사업장에 붙은 다른 공장 기록 — 고용 합계에서 뺀다(build_stats.py, 2026-10-08)
-  }));
-  const body = JSON.stringify({ as_of: list[0]?.as_of ?? '', total: rows.length, rows });
+  // v2 형식(리디자인 v3 3단계 2026-10-12): 되풀이되는 글자(구군·읍면동·단지·업종군·업종·규모·입지·태그·특구)를 사전(dict)으로 빼고 행은 배열로 —
+  // 2.9MB → 약 1MB. 브라우저는 src/scripts/companyIndex.ts decodeCompanyIndex()(기업 사전 목록은 같은 식을 인라인으로)로 예전과 같은 객체 행을 되살린다.
+  // 행 = [i, n, d, e, c, g, s, w, t, x, m, f, k, z] — d~t 는 dict 번호, x 는 업종 코드 앞 2자리(없으면 ''), m 은 고용(없으면 -1), f 비트(1=p 지원 이력, 2=md 겹치는 기록), k·z 는 번호 배열 또는 0
+  const DK = ['d', 'e', 'c', 'g', 's', 'w', 't', 'k', 'z'] as const;
+  const dict: Record<string, string[]> = Object.fromEntries(DK.map(k => [k, []]));
+  const pos: Record<string, Map<string, number>> = Object.fromEntries(DK.map(k => [k, new Map()]));
+  const ix = (k: string, v: string) => { const m = pos[k]; let i = m.get(v); if (i == null) { i = dict[k].length; dict[k].push(v); m.set(v, i); } return i; };
+  const rows = list.map(c => {
+    const z = zonesOf(c), x = (c.sector_code || '').trim().slice(0, 2);
+    return [c.id, c.name, ix('d', c.district), ix('e', c.eupmyeon), ix('c', shortComplex(c.complex)), ix('g', c.sector_group), ix('s', c.sector.replace(/ 외 \d+ 종/, '')),
+      ix('w', c.workers_band), ix('t', c.site_type), x.length === 2 ? x : '', emp[c.id]?.e ?? -1, (supported.has(c.id) ? 1 : 0) | (emp[c.id]?.d ? 2 : 0),
+      c.tags.length ? c.tags.map(t => ix('k', t)) : 0, z.length ? z.map(t => ix('z', t)) : 0];
+  });
+  const body = JSON.stringify({ v: 2, as_of: list[0]?.as_of ?? '', total: rows.length, dict, rows });
   return new Response(body, { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
 };

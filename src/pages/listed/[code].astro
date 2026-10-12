@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, debtRatio, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode, qByCode, qKey, qLabel, qPrev, perfByCode } from '../../lib/dart';
+import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, debtRatio, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode, qByCode, qKey, qLabel, qPrev, perfByCode, notesByCode, irByCode } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/<corp_code>/ — 대구시 상장기업 회사별 페이지(운영자 지시 2026-10-05). DART 공시 값만: 재무(최근 3개 사업연도)·직원·연구개발비·타법인 출자·
  *  미래 산업 관련 공시. 원 → 억 원 나눗셈만, 비율·순위·평가 없음. 대표자 등 개인 정보 없음. corp_code 는 DART 고유번호라 바뀌지 않는다. */
@@ -26,6 +26,9 @@ const revAcc = finYears.map(y => c.years[y]?.revenue_account).find(a => a && a !
 if (revAcc) ACC[0] = ['revenue', `매출액(${revAcc})`];
 const qs = qByCode(c.code).slice(-6);
 const perf = perfByCode(c.code);
+const notes = notesByCode(c.code);
+const noteReps = [...new Map(notes.map(n => [n.rcept_no, n])).values()];
+const irs = irByCode(c.code);
 const qYoYc = (q: (typeof qs)[number], col: 'revenue' | 'operating_income' | 'net_income') => { const a = Number(q[col]), b = Number(qPrev(q, col)); return q[col] && b > 0 && a > 0 ? pct1(((a / b) - 1) * 100) : '—'; };
 const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
 ---
@@ -91,6 +94,22 @@ const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
       <tbody>{perf.map(p => <tr><td class="nw">{ymd(p.rcept_dt)}</td><td class="nw">{p.kind}</td><td><a href={p.url} rel="noopener">{p.report_nm}</a></td><td class="ex">{p.excerpt || '—'}</td></tr>)}</tbody>
     </table></div>
     <p class="meta">손익구조 변동은 매출액·손익이 전년보다 30%(대규모법인 15%) 이상 바뀌었을 때 내는 공시로, 회사가 적은 변동 주요원인 문구를 그대로(120자까지) 옮겼습니다. 실적 전망은 회사가 스스로 낸 전망 공시입니다. 잠정실적은 감사·검토 전 값이라 정기보고서와 다를 수 있습니다. 이 사이트의 해석·평가가 아닙니다.</p>
+  </section>)}
+
+
+  {(notes.length > 0 || irs.length > 0) && (
+  <section>
+    <div class="section-head"><h2>보고서·IR 실적 설명</h2><span class="meta">정기보고서 본문·기업설명회 — 회사 문구</span></div>
+    {noteReps.map(r => <>
+      <h3><a href={r.url} rel="noopener">{r.report_nm}</a> <span class="meta">경영진단 {r.mdna}</span></h3>
+      <ul>{notes.filter(n => n.rcept_no === r.rcept_no).map(n => <li><b>{n.kind}</b> {n.sentence} <span class="meta">({n.section})</span></li>)}</ul>
+    </>)}
+    {irs.length > 0 && <>
+      <h3>기업설명회(IR)</h3>
+      <ul>{irs.map(r => <li><a href={r.url} rel="noopener">{ymd(r.rcept_dt)}</a> {[r.purpose, r.content].filter(Boolean).join(' · ')}
+        {r.guidance && <ul>{r.guidance.split(' / ').map(g => <li>{g}</li>)}</ul>}{r.att_url && <> <a href={r.att_url} rel="noopener">IR 자료</a></>}</li>)}</ul>
+    </>}
+    <p class="meta">보고서 본문에서 실적 낱말·증감·원인 표현이 함께 든 문장(이유)과 시점·전망 표현이 든 문장(전망)을 낱말 규칙으로 골라 회사 문구 그대로 옮겼고, IR 자료는 전망·목표·계획 낱말과 숫자가 든 줄만 옮겼습니다. 이 사이트의 해석·평가가 아니며 원문을 함께 보세요.</p>
   </section>)}
 
   <section>

@@ -160,3 +160,15 @@ export const qYoY = (q?: DartQuarter) => { if (!q) return null; const a = Number
 export type DartPerf = { rcept_dt: string; corp_code: string; name: string; kind: string; report_nm: string; excerpt: string; rcept_no: string; url: string };
 export const dartPerf = memo(() => readCsv('data/dart/performance.csv') as DartPerf[]);
 export const perfByCode = (code: string) => dartPerf().filter(p => p.corp_code === code).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));
+
+/** 실적 이유·전망 문구(scripts/collect_dart_notes.py, 운영자 지시 2026-10-12 '실적이유와 가이던스 — 1 2 다해봐'):
+ *  ① data/dart/report_notes.csv — 정기보고서 본문(경영진단·사업의 내용)에서 실적 낱말+증감+원인(이유) 또는 시점+전망 표현(전망)이 든 문장.
+ *     mdna = 경영진단 장이 '있음'·'생략'(분기보고서는 생략 많음)·'없음'. 문장 없는 보고서는 kind 가 빈 행 하나.
+ *  ② data/dart/ir.csv — 기업설명회(IR) 공시의 목적·내용 구절과 첨부 IR 자료 PDF 의 전망·목표 낱말 줄(guidance, ' / ' 로 이음).
+ *  모두 회사 문구 그대로(낱말 규칙으로 고른 것)이며 해석·평가 없음. */
+export type DartNote = { corp_code: string; name: string; year: string; quarter: string; report_nm: string; mdna: string; kind: string; section: string; sentence: string; rcept_no: string; url: string; as_of: string };
+export const dartNotes = memo(() => readCsv('data/dart/report_notes.csv') as DartNote[]);
+export const notesByCode = (code: string) => dartNotes().filter(n => n.corp_code === code && n.kind);
+export type DartIR = { rcept_dt: string; corp_code: string; name: string; report_nm: string; purpose: string; content: string; pdf: string; guidance: string; rcept_no: string; url: string; att_url: string; as_of: string };
+export const dartIR = memo(() => readCsv('data/dart/ir.csv') as DartIR[]);
+export const irByCode = (code: string) => dartIR().filter(r => r.corp_code === code).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));

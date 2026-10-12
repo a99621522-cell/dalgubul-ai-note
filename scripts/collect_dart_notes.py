@@ -147,18 +147,24 @@ def paragraphs(block: str) -> list[tuple[str, str]]:
 
 
 def sentences(p: str) -> list[str]:
-    parts = re.split(r"(?<=[다음함됨임])\.\s+|\s(?=[①-⑩]|\(\d+\)\s|[가-하]\.\s|-\s)", p)
+    parts = re.split(r"(?<=[다음함됨임])\.(?=\s|\(|\d|\[|[가-힣A-Za-z-])\s*|\s(?=[①-⑩]|\(\d+\)\s|[가-하]\.\s|-\s)", p)
     return [s.strip(" -·") for s in parts if s and len(s.strip()) >= 12]
 
 
-def classify(s: str) -> str:
+PERIOD_W = r"(당분기|당반기|당기|전분기|전기|전년|동기|대비|20[12]\d년|상반기|하반기|1분기|2분기|3분기|4분기)"
+MARKET_W = r"(따르면|시장 ?규모|CAGR|연평균|억 ?달러|조 ?달러|보고서|전망하고 있습니다|예측되고|추정되고|없음|해당사항)"
+
+
+def classify(s: str, own: bool = True) -> str:
+    """own=False 는 '사업의 내용'(산업 일반 설명이 많다): 이유는 기간 낱말, 전망은 '당사' 가 든 문장만"""
     if re.search(BOILER, s) or re.match(r"^\(?주\s?\d", s) or "주1)" in s[:40]:
         return ""
-    if re.search(TIME_W, s) and re.search(FWD_W, s):
+    if re.search(TIME_W, s) and re.search(FWD_W, s) and not re.search(MARKET_W, s) and (own or re.search(r"(당사|회사는|당사는)", s)):
         return "전망"
     if (re.search(PERF_W, s) and re.search(CHG_W, s) and re.search(CAUSE_W, s)
             and (re.search(r"(았|었|였|했|됐|되었|하였|쳤|켰|졌|렸|왔|냈)", s) or "요인" in s)
-            and not re.search(r"수 있(습니다|음|다)", s)):
+            and not re.search(r"수 있(습니다|음|다)", s) and re.search(PERIOD_W, s)
+            and (own or re.search(r"(당사|당기|당분기|당반기|전년 ?동기|전년 ?대비|전기 ?대비)", s))):
         return "이유"
     return ""
 
@@ -209,7 +215,7 @@ def report_notes(code: str, meta: dict, rep: dict, probe: bool) -> list[dict]:
                 elif not (merged and x and merged[-1].endswith(x)):
                     merged.append(x)
             for s in merged:
-                k = classify(s)
+                k = classify(s, own=(sec_name == "경영진단"))
                 if not k or count[k] >= 4 or s[:60] in seen:
                     continue
                 seen.add(s[:60])

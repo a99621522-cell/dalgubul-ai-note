@@ -110,14 +110,17 @@ def sentences(seg: str) -> list[str]:
         if len(ln) < 20 or re.fullmatch(r"[\d,.\s()%△▲-]+", ln):
             continue
         for snt in re.split(r"(?<=[다음임함됨]\.)\s*(?=\S)", ln):   # '…습니다.당사는' 처럼 붙은 문장도 나눈다
-            snt = snt.strip()
+            # 앞의 번호·소제목 떼기: '(4) 신규사업 등의 내용 및 전망제한된 …' → '제한된 …'
+            snt = re.sub(r"^\(?\d+\)\s*(신규\s*사업\s*등의\s*내용\s*및\s*전망|[가-힣 ]{0,20}(현황|특성|전망|상황))?\s*", "", snt.strip())
             if len(snt) >= 20 and re.search(r"[다음임함됨]\.?$", snt) and not SKIP.search(snt):
                 out.append(snt)
     return out
 
 
 BOILER = re.compile(r"예측정보|정정보고서|확신을 제공|부정확한 것으로|유의하시기|작성시점|기준으로 작성|한국채택국제회계기준|연결재무제표|감사인|단위\s*:"
-                    r"|언급한 바와\s*같이|종합하여\s*정리|장부와\s*관계\s*서류|면밀히\s*검토|경영진단의\s*개요|이사의\s*경영진단|본\s*(항목|절)에서는|참고하시기|참조하시기|차입금|상환\s*계획|다음과\s*같습니다|아래와\s*같습니다|아래\s*표")
+                    r"|언급한 바와\s*같이|종합하여\s*정리|장부와\s*관계\s*서류|면밀히\s*검토|경영진단의\s*개요|이사의\s*경영진단|본\s*(항목|절)에서는|참고하시기|참조하시기|차입금|상환\s*계획|다음과\s*같습니다|아래와\s*같습니다|아래\s*표"
+                    r"|손상\s*(검토|검사|차손)|순실현가능|공정가치|이연법인세|충당부채|회계\s*정책|회계\s*추정|추정\s*시|재무보고일|감가상각"
+                    r"|열람하고|진단하였습니다|관련\s*서류|부속명세서")
 
 
 def pack(snts: list[str]) -> str:
@@ -136,7 +139,7 @@ def pack(snts: list[str]) -> str:
 
 OUTLOOK = re.compile(r"전망|계획|예정|목표|추진|향후|전략|방침|노력할|강화할|확대할|집중할")
 OWN = re.compile(r"당사|당社|회사는|우리\s*회사|동사|연결회사|당\s*그룹")
-NB_SKIP = re.compile(r"연구개발비|국내\s*업체들|국내기업들|경쟁사|업체들은|시장\s*규모는|조사기관|억\s*달러|진입|용이하지")
+NB_SKIP = re.compile(r"연구개발비|국내\s*업체들|국내기업들|경쟁사|업체들은|시장\s*규모는|조사기관|억\s*달러|진입|용이하지|경쟁\s*(상황|관계)")
 NEWBIZ = re.compile(r"신규\s*사업|신사업|신성장|새로운\s*(성장|사업)|다각화|포트폴리오\s*(다변화|확대|재편)|진출(하였|했|하고|할|을|\s*선언)|미래\s*(먹거리|성장\s*동력)|신시장")
 
 
@@ -160,7 +163,7 @@ def extract(text: str, probe: bool) -> dict:
     overview = pack(own_first(sentences(ov_seg) or s_all))
     outlook = pack(own_first([x for x in s_all if OUTLOOK.search(x) and x not in overview]))
     nb = [x for x in sentences(biz) + s_all if NEWBIZ.search(x) and not NB_SKIP.search(x) and x not in overview and x not in outlook]
-    new_biz = pack(own_first(nb))
+    new_biz = pack([x for x in nb if OWN.search(x)])   # 회사가 주어인 문장만 — 업계 일반 전망은 뺀다
     return {"overview": overview, "outlook": outlook, "new_biz": new_biz}
 
 

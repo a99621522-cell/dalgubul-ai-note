@@ -85,63 +85,74 @@ def doc_text(rcept_no: str) -> str:
     return re.sub(r"\n\s*\n+", "\n", t).strip()
 
 
-def section(text: str, title_pat: str, end_pat: str = r"\n§ ") -> str:
-    """'§ 제목' 다음부터 다음 '§' 앞까지(절 제목이 TITLE 태그가 아니면 줄 머리 글자로 찾는다)"""
-    m = re.search(r"§\s*[^\n]*" + title_pat + r"[^\n]*\n", text)
-    if not m:
-        m = re.search(r"\n\s*(?:\d+\s*[.)]|[가-하]\s*[.)])?\s*" + title_pat + r"[^\n]{0,30}\n", text)
-    if not m:
-        return ""
-    rest = text[m.end():]
-    e = re.search(end_pat, rest)
-    return rest[: e.start()] if e else rest[:20000]
+def between(text: str, start_pat: str, end_pat: str) -> str:
+    """'§ …start_pat…' 절 제목부터 '§ …end_pat…' 제목 앞까지(같은 낱말이 목차에 먼저 나오면 본문 쪽 — 마지막 것이 아니라 가장 긴 구간)"""
+    best = ""
+    for m in re.finditer(r"§[^\n]*" + start_pat + r"[^\n]*\n", text):
+        rest = text[m.end():]
+        e = re.search(r"§[^\n]*" + end_pat, rest)
+        seg = rest[: e.start()] if e else rest[:30000]
+        if len(seg) > len(best):
+            best = seg
+    return best
 
 
-def first_sentences(body: str, prefer: tuple[str, ...] = ()) -> str:
-    """본문 줄 가운데 문장(…다./…음./…임.)으로 끝나는 줄을 앞에서부터 모아 MAXLEN 안으로. prefer 낱말이 든 소제목 아래를 먼저 본다."""
-    lines = [ln.strip(" -·•○□▶■◆※") for ln in body.split("\n")]
-    lines = [ln for ln in lines if ln]
-    start = 0
-    for w in prefer:
-        for i, ln in enumerate(lines):
-            if w in ln and len(ln) < 40:      # 소제목
-                start = i + 1
-                break
-        else:
+def drop_sub(seg: str, title_pat: str) -> str:
+    """하위 절(제목에 title_pat) 하나를 다음 '§' 앞까지 지운다 — 예측정보 주의사항 같은 정형 문구"""
+    return re.sub(r"§[^\n]*" + title_pat + r"[^\n]*\n[\s\S]*?(?=§|$)", "", seg, count=1)
+
+
+def sentences(seg: str) -> list[str]:
+    seg = re.sub(r"§[^\n]*\n", "\n", seg)
+    out = []
+    for ln in seg.split("\n"):
+        ln = ln.strip(" -·•○□▶■◆※")
+        if len(ln) < 20 or re.fullmatch(r"[\d,.\s()%△▲-]+", ln):
             continue
-        break
-    out = ""
-    for ln in lines[start:]:
-        if len(ln) < 15 or re.fullmatch(r"[\d,.\s()%△▲-]+", ln) or "단위" in ln[:10]:
-            continue
-        if not re.search(r"(다|음|임|함|됨)\s*\.?$", ln) and not re.search(r"[다음임함됨]\.", ln):
-            continue
-        if SKIP.search(ln):
-            return ""
-        out = (out + " " + ln).strip()
-        if len(out) >= MAXLEN:
-            break
-    if len(out) > MAXLEN:
-        cut = out[:MAXLEN]
-        k = max(cut.rfind("다."), cut.rfind("음."), cut.rfind("임."))
-        out = cut[: k + 2] if k > MAXLEN * 0.5 else cut.rstrip() + "…"
+        for snt in re.split(r"(?<=[다음임함됨]\.)\s+", ln):
+            snt = snt.strip()
+            if len(snt) >= 20 and re.search(r"[다음임함됨]\.?$", snt) and not SKIP.search(snt):
+                out.append(snt)
     return out
 
 
+BOILER = re.compile(r"예측정보|정정보고서|확신을 제공|부정확한 것으로|유의하시기|작성시점|기준으로 작성|한국채택국제회계기준|연결재무제표|감사인|단위\s*:")
+
+
+def pack(snts: list[str]) -> str:
+    out = ""
+    for snt in snts:
+        if BOILER.search(snt):
+            continue
+        nxt = (out + " " + snt).strip()
+        if len(nxt) > MAXLEN:
+            if not out:
+                out = snt[:MAXLEN].rstrip() + "…"
+            break
+        out = nxt
+    return out
+
+
+OUTLOOK = re.compile(r"전망|계획|예정|목표|추진|향후|전략|방침|노력할|강화할|확대할|집중할")
+NEWBIZ = re.compile(r"신규\s*사업|신사업|신성장|새로운\s*성장|사업\s*다각화|진출|미래\s*먹거리|신시장|신제품")
+
+
 def extract(text: str, probe: bool) -> dict:
-    mdna = section(text, r"이사의\s*경영진단\s*및\s*분석의견")
+    mdna = between(text, r"이사의\s*경영진단\s*및\s*분석의견", r"(회계감사인|감사인의\s*감사의견|이사회\s*등\s*회사의\s*기관)")
+    mdna = drop_sub(mdna, r"예측정보")
+    biz = between(text, r"사업의\s*내용", r"재무에\s*관한\s*사항")
     if probe:
-        print(f"   [경영진단 절 {len(mdna)}자] {mdna[:1500]!r}")
-    newbiz = section(text, r"신규\s*사업\s*등의\s*내용\s*및\s*전망", r"\n§ |\n\s*(?:\d+\s*[.)]|[가-하]\s*[.)])\s*(조직도|사업부문|기타)")
-    if not newbiz:
-        newbiz = section(text, r"신규\s*사업")
-    if probe:
-        print(f"   [신규사업 {len(newbiz)}자] {newbiz[:800]!r}")
-    return {
-        "overview": first_sentences(mdna, ("개요", "경영진단의 개요", "회사의 현황", "재무상태")),
-        "outlook": first_sentences(mdna, ("전망", "향후", "계획", "경영 방향", "경영방향")),
-        "new_biz": first_sentences(newbiz),
-    }
+        print(f"   [경영진단 {len(mdna)}자] {mdna[:1800]!r}")
+        print(f"   [사업의 내용 {len(biz)}자] 신규사업 낱말 문장: {[x for x in sentences(biz) if NEWBIZ.search(x)][:4]}")
+    ov_seg = ""
+    m = re.search(r"§[^\n]*개요[^\n]*\n([\s\S]*?)(?=§|$)", mdna)
+    if m:
+        ov_seg = m.group(1)
+    s_all = sentences(mdna)
+    overview = pack(sentences(ov_seg) or s_all)
+    outlook = pack([x for x in s_all if OUTLOOK.search(x) and x not in overview])
+    new_biz = pack([x for x in sentences(biz) + s_all if NEWBIZ.search(x)])
+    return {"overview": overview, "outlook": outlook, "new_biz": new_biz}
 
 
 def main(argv: list[str]) -> int:
@@ -152,7 +163,7 @@ def main(argv: list[str]) -> int:
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}
     if probe:
-        corps = {c: v for c, v in corps.items() if probe in (v.get("name") or "")}
+        corps = {c: v for c, v in corps.items() if any(p and p == (v.get("name") or "") for p in probe.split(","))}
     old = {r["corp_code"]: r for r in csv.DictReader(open(OUT, encoding="utf-8"))} if OUT.exists() else {}
     bgn = (date.today() - timedelta(days=500)).strftime("%Y%m%d")
     end = date.today().strftime("%Y%m%d")

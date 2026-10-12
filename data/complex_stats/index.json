@@ -1,6 +1,1296 @@
 {
  "files": [
   {
+   "quarter": "2018Q1",
+   "type": "국가산업단지",
+   "file": "2018Q1_국가산업단지.csv",
+   "orig": "(2018.1분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002463472",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2018Q1",
+   "type": "농공",
+   "file": "2018Q1_농공.csv",
+   "orig": "(2018.1분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002463520",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2018Q1",
+   "type": "도시첨단",
+   "file": "2018Q1_도시첨단.csv",
+   "orig": "(2018.1분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002463531",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2018Q1",
+   "type": "외국인",
+   "file": "2018Q1_외국인.csv",
+   "orig": "(2018.1분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002463543",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2018Q1",
+   "type": "일반",
+   "file": "2018Q1_일반.csv",
+   "orig": "(2018.1분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002463553",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2018Q2",
+   "type": "국가산업단지",
+   "file": "2018Q2_국가산업단지.csv",
+   "orig": "(2018.2분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002463473",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2018Q2",
+   "type": "농공",
+   "file": "2018Q2_농공.csv",
+   "orig": "(2018.2분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002463521",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2018Q2",
+   "type": "도시첨단",
+   "file": "2018Q2_도시첨단.csv",
+   "orig": "(2018.2분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002463533",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2018Q2",
+   "type": "외국인",
+   "file": "2018Q2_외국인.csv",
+   "orig": "(2018.2분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002463544",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2018Q2",
+   "type": "일반",
+   "file": "2018Q2_일반.csv",
+   "orig": "(2018.2분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002463554",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2018Q3",
+   "type": "국가산업단지",
+   "file": "2018Q3_국가산업단지.csv",
+   "orig": "(2018.3분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002463474",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2018Q3",
+   "type": "농공",
+   "file": "2018Q3_농공.csv",
+   "orig": "(2018.3분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002463522",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2018Q3",
+   "type": "도시첨단",
+   "file": "2018Q3_도시첨단.csv",
+   "orig": "(2018.3분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002463534",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2018Q3",
+   "type": "외국인",
+   "file": "2018Q3_외국인.csv",
+   "orig": "(2018.3분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002420504",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2018Q3",
+   "type": "일반",
+   "file": "2018Q3_일반.csv",
+   "orig": "(2018.3분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002463556",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2018Q4",
+   "type": "국가산업단지",
+   "file": "2018Q4_국가산업단지.csv",
+   "orig": "(2018.4분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002463475",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2018Q4",
+   "type": "농공",
+   "file": "2018Q4_농공.csv",
+   "orig": "(2018.4분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002608616",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2018Q4",
+   "type": "도시첨단",
+   "file": "2018Q4_도시첨단.csv",
+   "orig": "(2018.4분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002463536",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2018Q4",
+   "type": "외국인",
+   "file": "2018Q4_외국인.csv",
+   "orig": "(2018.4분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002608650",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2018Q4",
+   "type": "일반",
+   "file": "2018Q4_일반.csv",
+   "orig": "(2018.4분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002463557",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2019Q1",
+   "type": "국가산업단지",
+   "file": "2019Q1_국가산업단지.csv",
+   "orig": "(2019.1분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002463478",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2019Q1",
+   "type": "농공",
+   "file": "2019Q1_농공.csv",
+   "orig": "(2019.1분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002463524",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2019Q1",
+   "type": "도시첨단",
+   "file": "2019Q1_도시첨단.csv",
+   "orig": "(2019.1분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002463537",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2019Q1",
+   "type": "외국인",
+   "file": "2019Q1_외국인.csv",
+   "orig": "(2019.1분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002463546",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2019Q1",
+   "type": "일반",
+   "file": "2019Q1_일반.csv",
+   "orig": "(2019.1분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002463558",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2019Q2",
+   "type": "국가산업단지",
+   "file": "2019Q2_국가산업단지.csv",
+   "orig": "(2019.2분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002463509",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2019Q2",
+   "type": "농공",
+   "file": "2019Q2_농공.csv",
+   "orig": "(2019.2분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002463526",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2019Q2",
+   "type": "도시첨단",
+   "file": "2019Q2_도시첨단.csv",
+   "orig": "(2019.2분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002463538",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2019Q2",
+   "type": "외국인",
+   "file": "2019Q2_외국인.csv",
+   "orig": "(2019.2분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002463547",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2019Q2",
+   "type": "일반",
+   "file": "2019Q2_일반.csv",
+   "orig": "(2019.2분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002463559",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2019Q3",
+   "type": "국가산업단지",
+   "file": "2019Q3_국가산업단지.csv",
+   "orig": "(2019.3분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002463510",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2019Q3",
+   "type": "농공",
+   "file": "2019Q3_농공.csv",
+   "orig": "(2019.3분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002463527",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2019Q3",
+   "type": "도시첨단",
+   "file": "2019Q3_도시첨단.csv",
+   "orig": "(2019.3분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002463539",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2019Q3",
+   "type": "외국인",
+   "file": "2019Q3_외국인.csv",
+   "orig": "(2019.3분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002463548",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2019Q3",
+   "type": "일반",
+   "file": "2019Q3_일반.csv",
+   "orig": "(2019.3분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002463577",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2019Q4",
+   "type": "국가산업단지",
+   "file": "2019Q4_국가산업단지.csv",
+   "orig": "(2019.4분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002463511",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2019Q4",
+   "type": "농공",
+   "file": "2019Q4_농공.csv",
+   "orig": "(2019.4분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002463528",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2019Q4",
+   "type": "도시첨단",
+   "file": "2019Q4_도시첨단.csv",
+   "orig": "(2019.4분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002463541",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2019Q4",
+   "type": "외국인",
+   "file": "2019Q4_외국인.csv",
+   "orig": "(2019.4분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002463550",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2019Q4",
+   "type": "일반",
+   "file": "2019Q4_일반.csv",
+   "orig": "(2019.4분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002463579",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2020Q1",
+   "type": "국가산업단지",
+   "file": "2020Q1_국가산업단지.csv",
+   "orig": "(2020.1분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002457076",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2020Q1",
+   "type": "농공",
+   "file": "2020Q1_농공.csv",
+   "orig": "(2020.1분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002457156",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2020Q1",
+   "type": "도시첨단",
+   "file": "2020Q1_도시첨단.csv",
+   "orig": "(2020.1분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002457151",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2020Q1",
+   "type": "외국인",
+   "file": "2020Q1_외국인.csv",
+   "orig": "(2020.1분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002457175",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2020Q1",
+   "type": "일반",
+   "file": "2020Q1_일반.csv",
+   "orig": "(2020.1분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002457085",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2020Q2",
+   "type": "국가산업단지",
+   "file": "2020Q2_국가산업단지.csv",
+   "orig": "(2020.2분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002457078",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2020Q2",
+   "type": "농공",
+   "file": "2020Q2_농공.csv",
+   "orig": "(2020.2분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002457157",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2020Q2",
+   "type": "도시첨단",
+   "file": "2020Q2_도시첨단.csv",
+   "orig": "(2020.2분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002457152",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2020Q2",
+   "type": "외국인",
+   "file": "2020Q2_외국인.csv",
+   "orig": "(2020.2분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002457177",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2020Q2",
+   "type": "일반",
+   "file": "2020Q2_일반.csv",
+   "orig": "(2020.2분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002457086",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2020Q3",
+   "type": "국가산업단지",
+   "file": "2020Q3_국가산업단지.csv",
+   "orig": "(2020.3분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002457080",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2020Q3",
+   "type": "농공",
+   "file": "2020Q3_농공.csv",
+   "orig": "(2020.3분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002457158",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2020Q3",
+   "type": "도시첨단",
+   "file": "2020Q3_도시첨단.csv",
+   "orig": "(2020.3분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002457153",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2020Q3",
+   "type": "외국인",
+   "file": "2020Q3_외국인.csv",
+   "orig": "(2020.3분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002457178",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2020Q3",
+   "type": "일반",
+   "file": "2020Q3_일반.csv",
+   "orig": "(2020.3분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002457088",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2020Q4",
+   "type": "국가산업단지",
+   "file": "2020Q4_국가산업단지.csv",
+   "orig": "(2020.4분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002457082",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2020Q4",
+   "type": "농공",
+   "file": "2020Q4_농공.csv",
+   "orig": "(2020.4분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002457159",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2020Q4",
+   "type": "도시첨단",
+   "file": "2020Q4_도시첨단.csv",
+   "orig": "(2020.4분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002457154",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2020Q4",
+   "type": "외국인",
+   "file": "2020Q4_외국인.csv",
+   "orig": "(2020.4분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002457179",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2020Q4",
+   "type": "일반",
+   "file": "2020Q4_일반.csv",
+   "orig": "(2020.4분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002457149",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2021Q1",
+   "type": "국가산업단지",
+   "file": "2021Q1_국가산업단지.csv",
+   "orig": "(2021.1분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002663815",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2021Q1",
+   "type": "농공",
+   "file": "2021Q1_농공.csv",
+   "orig": "(2021.1분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002663821",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2021Q1",
+   "type": "도시첨단",
+   "file": "2021Q1_도시첨단.csv",
+   "orig": "(2021.1분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002663820",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2021Q1",
+   "type": "외국인",
+   "file": "2021Q1_외국인.csv",
+   "orig": "(2021.1분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002457180",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2021Q1",
+   "type": "일반",
+   "file": "2021Q1_일반.csv",
+   "orig": "(2021.1분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002663819",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2021Q2",
+   "type": "국가산업단지",
+   "file": "2021Q2_국가산업단지.csv",
+   "orig": "(2021.2분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002485957",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2021Q2",
+   "type": "농공",
+   "file": "2021Q2_농공.csv",
+   "orig": "(2021.2분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002672235",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2021Q2",
+   "type": "도시첨단",
+   "file": "2021Q2_도시첨단.csv",
+   "orig": "(2021.2분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002672230",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2021Q2",
+   "type": "외국인",
+   "file": "2021Q2_외국인.csv",
+   "orig": "(2021.2분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002483593",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2021Q2",
+   "type": "일반",
+   "file": "2021Q2_일반.csv",
+   "orig": "(2021.2분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002672221",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2021Q3",
+   "type": "국가산업단지",
+   "file": "2021Q3_국가산업단지.csv",
+   "orig": "(2021.3분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002672154",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2021Q3",
+   "type": "농공",
+   "file": "2021Q3_농공.csv",
+   "orig": "(2021.3분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002672236",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2021Q3",
+   "type": "도시첨단",
+   "file": "2021Q3_도시첨단.csv",
+   "orig": "(2021.3분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002672231",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2021Q3",
+   "type": "외국인",
+   "file": "2021Q3_외국인.csv",
+   "orig": "(2021.3분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002498358",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2021Q3",
+   "type": "일반",
+   "file": "2021Q3_일반.csv",
+   "orig": "(2021.3분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002672222",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2021Q4",
+   "type": "국가산업단지",
+   "file": "2021Q4_국가산업단지.csv",
+   "orig": "(2021.4분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002672156",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2021Q4",
+   "type": "농공",
+   "file": "2021Q4_농공.csv",
+   "orig": "(2021.4분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002672237",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2021Q4",
+   "type": "도시첨단",
+   "file": "2021Q4_도시첨단.csv",
+   "orig": "(2021.4분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002672232",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2021Q4",
+   "type": "외국인",
+   "file": "2021Q4_외국인.csv",
+   "orig": "(2021.4분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002519402",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2021Q4",
+   "type": "일반",
+   "file": "2021Q4_일반.csv",
+   "orig": "(2021.4분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002672226",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2022Q1",
+   "type": "국가산업단지",
+   "file": "2022Q1_국가산업단지.csv",
+   "orig": "(2022.1분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002946237",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2022Q1",
+   "type": "농공",
+   "file": "2022Q1_농공.csv",
+   "orig": "(2022.1분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002946275",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2022Q1",
+   "type": "도시첨단",
+   "file": "2022Q1_도시첨단.csv",
+   "orig": "(2022.1분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002946287",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2022Q1",
+   "type": "외국인",
+   "file": "2022Q1_외국인.csv",
+   "orig": "(2022.1분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002946282",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2022Q1",
+   "type": "일반",
+   "file": "2022Q1_일반.csv",
+   "orig": "(2022.1분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002946281",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2022Q2",
+   "type": "국가산업단지",
+   "file": "2022Q2_국가산업단지.csv",
+   "orig": "(2022.2분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002949753",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2022Q2",
+   "type": "농공",
+   "file": "2022Q2_농공.csv",
+   "orig": "(2022.2분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002949756",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2022Q2",
+   "type": "도시첨단",
+   "file": "2022Q2_도시첨단.csv",
+   "orig": "(2022.2분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002949759",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2022Q2",
+   "type": "외국인",
+   "file": "2022Q2_외국인.csv",
+   "orig": "(2022.2분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002949758",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2022Q2",
+   "type": "일반",
+   "file": "2022Q2_일반.csv",
+   "orig": "(2022.2분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002949770",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2022Q3",
+   "type": "국가산업단지",
+   "file": "2022Q3_국가산업단지.csv",
+   "orig": "(2022.3분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000002949766",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2022Q3",
+   "type": "농공",
+   "file": "2022Q3_농공.csv",
+   "orig": "(2022.3분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000002949768",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2022Q3",
+   "type": "도시첨단",
+   "file": "2022Q3_도시첨단.csv",
+   "orig": "(2022.3분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000002949773",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2022Q3",
+   "type": "외국인",
+   "file": "2022Q3_외국인.csv",
+   "orig": "(2022.3분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000002949772",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2022Q3",
+   "type": "일반",
+   "file": "2022Q3_일반.csv",
+   "orig": "(2022.3분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000002949771",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2022Q4",
+   "type": "국가산업단지",
+   "file": "2022Q4_국가산업단지.csv",
+   "orig": "(2022.4분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003076827",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2022Q4",
+   "type": "농공",
+   "file": "2022Q4_농공.csv",
+   "orig": "(2022.4분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003076821",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2022Q4",
+   "type": "도시첨단",
+   "file": "2022Q4_도시첨단.csv",
+   "orig": "(2022.4분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003076811",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2022Q4",
+   "type": "외국인",
+   "file": "2022Q4_외국인.csv",
+   "orig": "(2022.4분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003076860",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2022Q4",
+   "type": "일반",
+   "file": "2022Q4_일반.csv",
+   "orig": "(2022.4분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003076817",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2023Q1",
+   "type": "국가산업단지",
+   "file": "2023Q1_국가산업단지.csv",
+   "orig": "(2023.1분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003076873",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2023Q1",
+   "type": "농공",
+   "file": "2023Q1_농공.csv",
+   "orig": "(2023.1분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003076871",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2023Q1",
+   "type": "도시첨단",
+   "file": "2023Q1_도시첨단.csv",
+   "orig": "(2023.1분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003076865",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2023Q1",
+   "type": "외국인",
+   "file": "2023Q1_외국인.csv",
+   "orig": "(2023.1분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003076876",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2023Q1",
+   "type": "일반",
+   "file": "2023Q1_일반.csv",
+   "orig": "(2023.1분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003076869",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2023Q2",
+   "type": "국가산업단지",
+   "file": "2023Q2_국가산업단지.csv",
+   "orig": "(2023.2분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003076891",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2023Q2",
+   "type": "농공",
+   "file": "2023Q2_농공.csv",
+   "orig": "(2023.2분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003076888",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 2
+  },
+  {
+   "quarter": "2023Q2",
+   "type": "도시첨단",
+   "file": "2023Q2_도시첨단.csv",
+   "orig": "(2023.2분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003076880",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2023Q2",
+   "type": "외국인",
+   "file": "2023Q2_외국인.csv",
+   "orig": "(2023.2분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003076894",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2023Q2",
+   "type": "일반",
+   "file": "2023Q2_일반.csv",
+   "orig": "(2023.2분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003076883",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2023Q3",
+   "type": "국가산업단지",
+   "file": "2023Q3_국가산업단지.csv",
+   "orig": "(2023.3분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003083530",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2023Q3",
+   "type": "농공",
+   "file": "2023Q3_농공.csv",
+   "orig": "(2023.3분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003083532",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2023Q3",
+   "type": "도시첨단",
+   "file": "2023Q3_도시첨단.csv",
+   "orig": "(2023.3분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003083671",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2023Q3",
+   "type": "외국인",
+   "file": "2023Q3_외국인.csv",
+   "orig": "(2023.3분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003083528",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2023Q3",
+   "type": "일반",
+   "file": "2023Q3_일반.csv",
+   "orig": "(2023.3분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003087501",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2023Q4",
+   "type": "국가산업단지",
+   "file": "2023Q4_국가산업단지.csv",
+   "orig": "(2023.4분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003083679",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2023Q4",
+   "type": "농공",
+   "file": "2023Q4_농공.csv",
+   "orig": "(2023.4분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003083680",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2023Q4",
+   "type": "도시첨단",
+   "file": "2023Q4_도시첨단.csv",
+   "orig": "(2023.4분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003083694",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2023Q4",
+   "type": "외국인",
+   "file": "2023Q4_외국인.csv",
+   "orig": "(2023.4분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003083674",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2023Q4",
+   "type": "일반",
+   "file": "2023Q4_일반.csv",
+   "orig": "(2023.4분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003083686",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2024Q1",
+   "type": "국가산업단지",
+   "file": "2024Q1_국가산업단지.csv",
+   "orig": "(2024.1분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003087876",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2024Q1",
+   "type": "농공",
+   "file": "2024Q1_농공.csv",
+   "orig": "(2024.1분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003087826",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2024Q1",
+   "type": "도시첨단",
+   "file": "2024Q1_도시첨단.csv",
+   "orig": "(2024.1분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003087735",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2024Q1",
+   "type": "외국인",
+   "file": "2024Q1_외국인.csv",
+   "orig": "(2024.1분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003087888",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2024Q1",
+   "type": "일반",
+   "file": "2024Q1_일반.csv",
+   "orig": "(2024.1분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003087764",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2024Q2",
+   "type": "국가산업단지",
+   "file": "2024Q2_국가산업단지.csv",
+   "orig": "(2024.2분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003087877",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2024Q2",
+   "type": "농공",
+   "file": "2024Q2_농공.csv",
+   "orig": "(2024.2분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003087875",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2024Q2",
+   "type": "도시첨단",
+   "file": "2024Q2_도시첨단.csv",
+   "orig": "(2024.2분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003087739",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2024Q2",
+   "type": "외국인",
+   "file": "2024Q2_외국인.csv",
+   "orig": "(2024.2분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003087889",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
    "quarter": "2024Q2",
    "type": "일반",
    "file": "2024Q2_일반.csv",
@@ -8,6 +1298,256 @@
    "atch": "FILE_000000003087765",
    "pk": "15085886",
    "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2024Q3",
+   "type": "국가산업단지",
+   "file": "2024Q3_국가산업단지.csv",
+   "orig": "(2024.3분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003076734",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2024Q3",
+   "type": "농공",
+   "file": "2024Q3_농공.csv",
+   "orig": "(2024.3분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003076738",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2024Q3",
+   "type": "도시첨단",
+   "file": "2024Q3_도시첨단.csv",
+   "orig": "(2024.3분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003076808",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2024Q3",
+   "type": "외국인",
+   "file": "2024Q3_외국인.csv",
+   "orig": "(2024.3분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003076732",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2024Q3",
+   "type": "일반",
+   "file": "2024Q3_일반.csv",
+   "orig": "(2024.3분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003076801",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2024Q4",
+   "type": "국가산업단지",
+   "file": "2024Q4_국가산업단지.csv",
+   "orig": "(2024.4분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003110805",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2024Q4",
+   "type": "농공",
+   "file": "2024Q4_농공.csv",
+   "orig": "(2024.4분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003110808",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2024Q4",
+   "type": "도시첨단",
+   "file": "2024Q4_도시첨단.csv",
+   "orig": "(2024.4분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003110819",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2024Q4",
+   "type": "외국인",
+   "file": "2024Q4_외국인.csv",
+   "orig": "(2024.4분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003110803",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2024Q4",
+   "type": "일반",
+   "file": "2024Q4_일반.csv",
+   "orig": "(2024.4분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003110809",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2025Q1",
+   "type": "국가산업단지",
+   "file": "2025Q1_국가산업단지.csv",
+   "orig": "(2025.1분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003170871",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2025Q1",
+   "type": "농공",
+   "file": "2025Q1_농공.csv",
+   "orig": "(2025.1분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003172298",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2025Q1",
+   "type": "도시첨단",
+   "file": "2025Q1_도시첨단.csv",
+   "orig": "(2025.1분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003172777",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2025Q1",
+   "type": "외국인",
+   "file": "2025Q1_외국인.csv",
+   "orig": "(2025.1분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003170860",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2025Q1",
+   "type": "일반",
+   "file": "2025Q1_일반.csv",
+   "orig": "(2025.1분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003172308",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2025Q2",
+   "type": "국가산업단지",
+   "file": "2025Q2_국가산업단지.csv",
+   "orig": "(2025.2분기)전국산업단지현황통계_국가.csv",
+   "atch": "FILE_000000003575089",
+   "pk": "15085874",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2025Q2",
+   "type": "농공",
+   "file": "2025Q2_농공.csv",
+   "orig": "(2025.2분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003575093",
+   "pk": "15085878",
+   "has_production": true,
+   "rows": 4
+  },
+  {
+   "quarter": "2025Q2",
+   "type": "도시첨단",
+   "file": "2025Q2_도시첨단.csv",
+   "orig": "(2025.2분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003575176",
+   "pk": "15085880",
+   "has_production": true,
+   "rows": 3
+  },
+  {
+   "quarter": "2025Q2",
+   "type": "외국인",
+   "file": "2025Q2_외국인.csv",
+   "orig": "(2025.2분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003515009",
+   "pk": "15085884",
+   "has_production": true,
+   "rows": 1
+  },
+  {
+   "quarter": "2025Q2",
+   "type": "일반",
+   "file": "2025Q2_일반.csv",
+   "orig": "(2025.2분기)전국산업단지현황통계_일반.csv",
+   "atch": "FILE_000000003575108",
+   "pk": "15085886",
+   "has_production": true,
+   "rows": 18
+  },
+  {
+   "quarter": "2025Q3",
+   "type": "국가산업단지",
+   "file": "2025Q3_국가산업단지.csv",
+   "orig": "(2025.3분기)전국산업단지현황통계_국가(재).csv",
+   "atch": "FILE_000000003669621",
+   "pk": "15085874",
+   "has_production": false,
+   "rows": 1
+  },
+  {
+   "quarter": "2025Q3",
+   "type": "농공",
+   "file": "2025Q3_농공.csv",
+   "orig": "(2025.3분기)전국산업단지현황통계_농공.csv",
+   "atch": "FILE_000000003623272",
+   "pk": "15085878",
+   "has_production": false,
+   "rows": 4
+  },
+  {
+   "quarter": "2025Q3",
+   "type": "도시첨단",
+   "file": "2025Q3_도시첨단.csv",
+   "orig": "(2025.3분기)전국산업단지현황통계_도시첨단.csv",
+   "atch": "FILE_000000003623270",
+   "pk": "15085880",
+   "has_production": false,
+   "rows": 3
+  },
+  {
+   "quarter": "2025Q3",
+   "type": "외국인",
+   "file": "2025Q3_외국인.csv",
+   "orig": "(2025.3분기)전국산업단지현황통계_외국인.csv",
+   "atch": "FILE_000000003575242",
+   "pk": "15085884",
+   "has_production": false,
+   "rows": 1
+  },
+  {
+   "quarter": "2025Q3",
+   "type": "일반",
+   "file": "2025Q3_일반.csv",
+   "orig": "(2025.3분기)전국산업단지현황통계_일반(재).csv",
+   "atch": "FILE_000000003669620",
+   "pk": "15085886",
+   "has_production": false,
    "rows": 18
   },
   {

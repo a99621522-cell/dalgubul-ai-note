@@ -49,14 +49,14 @@ KEY = os.environ.get("DART_KEY", "").strip()
 LISTED = {"Y": "유가증권", "K": "코스닥"}
 CALLS = [0]
 COLS_R = ["corp_code", "name", "year", "quarter", "report_nm", "mdna", "kind", "section", "sentence", "rcept_no", "url", "as_of"]
-COLS_I = ["rcept_dt", "corp_code", "name", "report_nm", "purpose", "content", "pdf", "guidance", "rcept_no", "url", "att_url", "as_of"]
+COLS_I = ["rcept_dt", "corp_code", "name", "report_nm", "purpose", "content", "posted", "ir_page", "pdf", "guidance", "rcept_no", "url", "att_url", "as_of"]
 
 PERF_W = r"(매출|영업이익|순이익|이익|손실|실적|수익성|수익|판매량|판매|수주|물량|출하|가동률|원가율|마진)"
 CHG_W = r"(증가|감소|개선|악화|확대|축소|흑자|적자|상승|하락|호조|부진|성장|둔화|회복|증대|저하)"
-CAUSE_W = r"(으로 인해|으로 인하여|로 인해|로 인하여|에 따라|에 따른|영향으로|영향을|의 영향|덕분|때문|기인|힘입어|반영되어|으로 매출|로 매출)"
+CAUSE_W = r"(요인|영향입니다|영향이|으로 인해|으로 인하여|로 인해|로 인하여|에 따라|에 따른|영향으로|영향을|의 영향|덕분|때문|기인|힘입어|반영되어|으로 매출|로 매출)"
 TIME_W = r"(향후|하반기|상반기|내년|차기|익년|금년|올해|중장기|앞으로|202[6-9]년|20[3-9]\d년|다음 분기|4분기|하반기에)"
 FWD_W = r"(전망|예상|예정|계획|목표|기대|추진할|추진하고|노력할|것으로 보|할 것|될 것|확대할|강화할|진출할)"
-BOILER = r"(기밀|비공개|기재하지 않|예측정보|책임을 지지|보장할 수 없|보장하지|투자자는|유의하시|K-IFRS|기준서|회계정책|주석|감사인|재작성|공시대상기간)"
+BOILER = r"(참고하시기|참고 바랍|다음과 같습니다|기밀|비공개|기재하지 않|예측정보|책임을 지지|보장할 수 없|보장하지|투자자는|유의하시|K-IFRS|기준서|회계정책|주석|감사인|재작성|공시대상기간)"
 GUIDE_W = re.compile(r"(가이던스|guidance|outlook|전망|목표|target|계획|예상|\b20[2-3]\dE\b|E\)|Plan\b)", re.I)
 
 
@@ -157,7 +157,8 @@ def classify(s: str) -> str:
     if re.search(TIME_W, s) and re.search(FWD_W, s):
         return "전망"
     if (re.search(PERF_W, s) and re.search(CHG_W, s) and re.search(CAUSE_W, s)
-            and re.search(r"(였|었|했|됐|되었|하였)", s) and not re.search(r"수 있(습니다|음|다)", s)):
+            and (re.search(r"(았|었|였|했|됐|되었|하였|쳤|켰|졌|렸|왔|냈)", s) or "요인" in s)
+            and not re.search(r"수 있(습니다|음|다)", s)):
         return "이유"
     return ""
 
@@ -197,9 +198,17 @@ def report_notes(code: str, meta: dict, rep: dict, probe: bool) -> list[dict]:
     count = {"이유": 0, "전망": 0}
     for sec_name, pars in (("경영진단", mdna_par if mdna == "있음" else []), ("사업의 내용", biz_par)):
         for sub, p in pars:
-            if re.search(r"예측정보", sub):
-                continue
-            for s in sentences(p):
+            sents = sentences(p)
+            # '…증가하였습니다. 이는 …영향입니다' 처럼 원인이 다음 문장에 있으면 붙여 본다
+            merged = []
+            for j, x in enumerate(sents):
+                nx = sents[j + 1] if j + 1 < len(sents) else ""
+                if (nx and re.match(r"^(이는|이러한|이에|이것은)", nx) and re.search(CAUSE_W, nx)
+                        and re.search(PERF_W, x) and re.search(CHG_W, x)):
+                    merged.append(x.rstrip(".") + ". " + nx)
+                elif not (merged and x and merged[-1].endswith(x)):
+                    merged.append(x)
+            for s in merged:
                 k = classify(s)
                 if not k or count[k] >= 4 or s[:60] in seen:
                     continue
@@ -207,7 +216,7 @@ def report_notes(code: str, meta: dict, rep: dict, probe: bool) -> list[dict]:
                 count[k] += 1
                 rows.append({"corp_code": code, "name": meta.get("name", ""), "year": rep["year"], "quarter": rep["quarter"],
                              "report_nm": rep["report_nm"], "mdna": mdna, "kind": k, "section": f"{sec_name} · {sub}"[:60],
-                             "sentence": cut(s), "rcept_no": rep["rcept_no"],
+                             "sentence": cut(s, 260), "rcept_no": rep["rcept_no"],
                              "url": f"{WEB}/dsaf001/main.do?rcpNo={rep['rcept_no']}", "as_of": date.today().isoformat()})
                 if probe:
                     print(f"   [{k}] ({sec_name}·{sub}) {cut(s)}")
@@ -238,12 +247,12 @@ def allowed(url: str) -> bool:
     return bool(rp) and rp.can_fetch(UA["User-Agent"], url)
 
 
-def web(url: str) -> requests.Response | None:
+def web(url: str, referer: str = "") -> requests.Response | None:
     if not allowed(url):
         print(f"[dart_notes] robots.txt 가 막음: {url}")
         return None
     try:
-        r = requests.get(url, headers=UA, timeout=60)
+        r = requests.get(url, headers={**UA, **({"Referer": referer} if referer else {})}, timeout=60)
         time.sleep(1.0)
         r.raise_for_status()
         return r
@@ -258,7 +267,7 @@ def field(text: str, keys: list[str], n: int = 200) -> str:
         if m:
             s = text[m.end(): m.end() + n + 40].strip(" :-·)")
             s = re.sub(r"^\(?요약\)?\s*", "", s)
-            s = re.split(r"\s※|기타 투자판단|관련공시|개최장소|개최 장소|참석대상|참가대상|\s\d{1,2}\s*\.\s*(?:개최|일시|장소|대상|방식|기타)", s)[0].strip()
+            s = re.split(r"\s※|기타 투자판단|관련공시|개최장소|개최 장소|참석대상|참가대상|\s\d{1,2}\s*\.\s*(?:개최|일시|장소|대상|방식|기타|결정|IR 자료|관련)", s)[0].strip()
             return cut(s, n)
     return ""
 
@@ -325,7 +334,7 @@ KIND = "https://kind.krx.co.kr"
 
 def kind_attachment(acptno: str, probe: bool) -> tuple[str, list[str], str]:
     """거래소 KIND 공시 뷰어(접수번호가 DART 와 같다)에서 첨부 IR 자료 PDF 를 찾는다. robots.txt 를 지키고, 못 찾으면 빈 값."""
-    v = web(f"{KIND}/common/disclsviewer.do?method=search&acptno={acptno}")
+    v = web(f"{KIND}/common/disclsviewer.do?method=search&acptno={acptno}&docno=&viewerhost=&viewerport=", referer=KIND + "/")
     if not v:
         return "", [], ""
     html = v.text
@@ -372,6 +381,8 @@ def ir_rows(code: str, meta: dict, months: int, seen: set, probe: bool, budget: 
             time.sleep(0.2)
             purpose = field(text, ["개최목적", "개최 목적", "목적"], 120)
             content = field(text, ["주요내용", "주요 내용", "설명회 내용", "IR 내용", "내용"], 200)
+            m_post = re.search(r"IR\s*자료\s*게재\s*일시?\s*:?\s*(\d{4}-\d{2}-\d{2})", text)
+            m_page = re.search(r"관련\s*웹\s*페이지\s*:?\s*(https?://[^\s<>\"']+)", text)
             pdf, lines, att = ("", [], "")
             if budget[0] > 0:
                 budget[0] -= 1
@@ -379,7 +390,8 @@ def ir_rows(code: str, meta: dict, months: int, seen: set, probe: bool, budget: 
             if probe:
                 print(f"== probe IR {r['rcept_dt']} {nm}\n   원문 앞: {text[:500]}\n   목적: {purpose}\n   내용: {content}")
             out.append({"rcept_dt": r.get("rcept_dt", ""), "corp_code": code, "name": meta.get("name") or r.get("corp_name", ""),
-                        "report_nm": nm, "purpose": purpose, "content": content, "pdf": pdf, "guidance": " / ".join(lines),
+                        "report_nm": nm, "purpose": purpose, "content": content,
+                        "posted": m_post.group(1) if m_post else "", "ir_page": m_page.group(1).rstrip(".,)") if m_page else "", "pdf": pdf, "guidance": " / ".join(lines),
                         "rcept_no": r["rcept_no"], "url": f"{WEB}/dsaf001/main.do?rcpNo={r['rcept_no']}", "att_url": att,
                         "as_of": date.today().isoformat()})
         if page >= int(j.get("total_page") or 1):

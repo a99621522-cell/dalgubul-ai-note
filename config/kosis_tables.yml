@@ -301,6 +301,26 @@ tables:
     tbl_id: "DT_35003_A36"
     prd_se: Y
     area: []
+  # 산업단지별 생산·수출·고용(운영자 지적 2026-10-12 '산단별 생산액이 안나와') — 한국산업단지공단 전국산업단지현황통계(KOSIS org 399, 분기).
+  # 2026-10-12 discover. 공공데이터포털 파일은 2025년 3분기부터 생산·수출·고용 공표 중지라 KOSIS 의 단지별 표로 받는다
+  - key: kicox-general-complex
+    name: 전국산업단지현황통계 — 일반산업단지별 현황(분기)
+    org_id: "399"
+    tbl_id: "DT_399030017"
+    prd_se: Q
+    area: []
+  - key: kicox-national-complex
+    name: 전국산업단지현황통계 — 국가산업단지별 현황(분기)
+    org_id: "399"
+    tbl_id: "DT_399030021"
+    prd_se: Q
+    area: []
+  - key: kicox-urban-complex
+    name: 전국산업단지현황통계 — 도시첨단산업단지별 현황(분기)
+    org_id: "399"
+    tbl_id: "DT_399030017A"
+    prd_se: Q
+    area: []
   - key: industrial-complex-output
     name: 전국산업단지현황통계(한국산업단지공단) — 산업단지별 생산·수출·고용·가동률 (운영자 지적 2026-10-12 '산단별 생산액이 안나와'; 포털 파일은 2025년 3분기부터 생산·수출·고용 공표 중지)
     tbl_id: ""

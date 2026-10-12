@@ -56,7 +56,7 @@ CHG_W = r"(증가|감소|개선|악화|확대|축소|흑자|적자|상승|하락
 CAUSE_W = r"(으로 인해|으로 인하여|로 인해|로 인하여|에 따라|에 따른|영향으로|영향을|의 영향|덕분|때문|기인|힘입어|반영되어|으로 매출|로 매출)"
 TIME_W = r"(향후|하반기|상반기|내년|차기|익년|금년|올해|중장기|앞으로|202[6-9]년|20[3-9]\d년|다음 분기|4분기|하반기에)"
 FWD_W = r"(전망|예상|예정|계획|목표|기대|추진할|추진하고|노력할|것으로 보|할 것|될 것|확대할|강화할|진출할)"
-BOILER = r"(예측정보|책임을 지지|보장할 수 없|보장하지|투자자는|유의하시|K-IFRS|기준서|회계정책|주석|감사인|재작성|공시대상기간)"
+BOILER = r"(기밀|비공개|기재하지 않|예측정보|책임을 지지|보장할 수 없|보장하지|투자자는|유의하시|K-IFRS|기준서|회계정책|주석|감사인|재작성|공시대상기간)"
 GUIDE_W = re.compile(r"(가이던스|guidance|outlook|전망|목표|target|계획|예상|\b20[2-3]\dE\b|E\)|Plan\b)", re.I)
 
 
@@ -152,11 +152,12 @@ def sentences(p: str) -> list[str]:
 
 
 def classify(s: str) -> str:
-    if re.search(BOILER, s):
+    if re.search(BOILER, s) or re.match(r"^\(?주\s?\d", s) or "주1)" in s[:40]:
         return ""
     if re.search(TIME_W, s) and re.search(FWD_W, s):
         return "전망"
-    if re.search(PERF_W, s) and re.search(CHG_W, s) and re.search(CAUSE_W, s):
+    if (re.search(PERF_W, s) and re.search(CHG_W, s) and re.search(CAUSE_W, s)
+            and re.search(r"(였|었|했|됐|되었|하였)", s) and not re.search(r"수 있(습니다|음|다)", s)):
         return "이유"
     return ""
 
@@ -250,6 +251,7 @@ def field(text: str, keys: list[str], n: int = 200) -> str:
         m = re.search(re.escape(k), text)
         if m:
             s = text[m.end(): m.end() + n + 40].strip(" :-·)")
+            s = re.sub(r"^\(?요약\)?\s*", "", s)
             s = re.split(r"\s\d{1,2}\s*\.\s|\s※", s)[0].strip()
             return cut(s, n)
     return ""
@@ -281,8 +283,8 @@ def pdf_lines(pdf: bytes) -> list[str]:
 def ir_attachment(rcept_no: str, probe: bool) -> tuple[str, list[str], str]:
     """(pdf 여부, 전망 줄, 첨부 주소) — dart.fss.or.kr 공시 화면의 첨부 선택 → PDF 내려받기"""
     page = web(f"{WEB}/dsaf001/main.do?rcpNo={rcept_no}")
-    if not page:
-        return "", [], ""
+    if not page:                     # dart.fss.or.kr 공시 화면은 robots.txt 가 막는다(2026-10-12 확인) → 거래소 KIND
+        return kind_attachment(rcept_no, probe)
     html = page.text
     opts = re.findall(r'<option[^>]*value="([^"]*)"[^>]*>([^<]*)</option>', html)
     att = [(v, clean(t)) for v, t in opts if re.search(r"rcpNo=\d+|^\d{14}$", v) and t.strip()]
@@ -309,6 +311,42 @@ def ir_attachment(rcept_no: str, probe: bool) -> tuple[str, list[str], str]:
                 return "예", lines, url
             if probe and r is not None:
                 print(f"   {url} → PDF 아님({r.headers.get('content-type')}) {r.text[:200]!r}")
+    return "아니오", [], ""
+
+
+KIND = "https://kind.krx.co.kr"
+
+
+def kind_attachment(acptno: str, probe: bool) -> tuple[str, list[str], str]:
+    """거래소 KIND 공시 뷰어(접수번호가 DART 와 같다)에서 첨부 IR 자료 PDF 를 찾는다. robots.txt 를 지키고, 못 찾으면 빈 값."""
+    v = web(f"{KIND}/common/disclsviewer.do?method=search&acptno={acptno}")
+    if not v:
+        return "", [], ""
+    html = v.text
+    opts = re.findall(r'<option[^>]*value="([^"]+)"[^>]*>([^<]*)</option>', html)
+    if probe:
+        print(f"   KIND 뷰어 {len(html)}자 · 옵션 {opts[:10]}")
+        for m in re.finditer(r".{0,100}(\.pdf|external|docNo|download|첨부).{0,140}", html):
+            print("   …", re.sub(r"\s+", " ", m.group(0))[:240])
+    pdfs = re.findall(r'(?:href|src)=["\']([^"\']+\.pdf)["\']', html, re.I)
+    docs = [d for d, t in opts if re.match(r"^\d{10,}", d)]
+    for d in docs[:6]:
+        dn = d.split("|")[0]
+        c = web(f"{KIND}/common/disclsviewer.do?method=searchContents&docNo={dn}")
+        if not c:
+            continue
+        found = re.findall(r'(?:href|src)=["\']([^"\']+\.pdf)["\']', c.text, re.I) + re.findall(r'(https?://[^"\'\s]+\.pdf)', c.text, re.I)
+        if probe:
+            print(f"   KIND 문서 {dn} {len(c.text)}자 PDF 후보 {found[:4]} · 앞부분 {re.sub(r'\s+', ' ', c.text[:300])!r}")
+        pdfs += found
+    for u in dict.fromkeys(pdfs):
+        url = u if u.startswith("http") else KIND + (u if u.startswith("/") else "/" + u)
+        r = web(url)
+        if r is not None and r.content[:4] == b"%PDF":
+            lines = pdf_lines(r.content)
+            if probe:
+                print(f"   KIND PDF {len(r.content)//1024}KB 전망 줄 {len(lines)}: {lines[:4]}")
+            return "예", lines, url
     return "아니오", [], ""
 
 
@@ -356,7 +394,15 @@ def latest_reports(n: int = 2) -> dict[str, list[dict]]:
         q = int(r["quarter"])
         by.setdefault(r["corp_code"], {})[r["rcept_no"]] = {"rcept_no": r["rcept_no"], "year": r["year"], "quarter": r["quarter"],
                                                              "report_nm": f"{r['year']} {names[q]}"}
-    return {c: sorted(d.values(), key=lambda x: (int(x["year"]), int(x["quarter"])), reverse=True)[:n] for c, d in by.items()}
+    out = {}
+    for c, d in by.items():
+        lst = sorted(d.values(), key=lambda x: (int(x["year"]), int(x["quarter"])), reverse=True)
+        pick = lst[:n]
+        annual = next((x for x in lst if x["quarter"] == "4"), None)     # 분·반기는 경영진단을 생략하는 회사가 많아 연간 보고서도
+        if annual and annual not in pick:
+            pick.append(annual)
+        out[c] = pick
+    return out
 
 
 def write(path: Path, cols: list[str], rows: list[dict]) -> None:

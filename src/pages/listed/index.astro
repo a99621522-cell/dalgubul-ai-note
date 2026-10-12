@@ -208,7 +208,7 @@ const cardsData = corps.map(c => {
   {(noteCorps.length > 0 || IR.length > 0) && (
   <section id="notes">
     <div class="section-head"><h2>보고서·IR 실적 설명 — 이유와 전망</h2><span class="meta">정기보고서 {noteReports.length}건 · 문장 있는 회사 {noteCorps.length}곳 · IR 공시 {IR.length}건</span></div>
-    <p class="meta">분기·반기·사업보고서 본문(이사의 경영진단 및 분석의견, 사업의 내용 중 사업의 개요·매출 및 수주상황·기타 참고사항)에서 <b>이유</b>(실적 낱말 + 증감 + 원인 표현이 함께 든 문장)와 <b>전망</b>(향후·하반기·내년 같은 시점 + 전망·계획·목표 표현이 든 문장)을 낱말 규칙으로 골라 회사 문구 그대로 옮겼습니다(문장당 180자, 보고서마다 각 4문장까지). 표 안 글자와 예측정보 주의 문구는 뺐습니다. 경영진단 장은 분기·반기보고서에서 생략할 수 있어 {noteReports.length}건 가운데 {mdnaYes}건에만 있습니다. 규칙으로 고른 것이라 빠지거나 덜 맞는 문장이 있을 수 있으니 원문을 함께 보세요. 이 사이트의 해석이나 평가가 아닙니다.</p>
+    <p class="meta">분기·반기·사업보고서 본문(이사의 경영진단 및 분석의견, 사업의 내용 중 사업의 개요·매출 및 수주상황·기타 참고사항)에서 <b>이유</b>(실적 낱말 + 증감 + 원인 표현이 함께 든 문장)와 <b>전망</b>(향후·하반기·내년 같은 시점 + 전망·계획·목표 표현이 든 문장)을 낱말 규칙으로 골라 회사 문구 그대로 옮겼습니다(문장당 260자, 보고서마다 각 4문장까지). 표 안 글자와 예측정보 주의 문구는 뺐습니다. 경영진단 장은 분기·반기보고서에서 생략할 수 있어 {noteReports.length}건 가운데 {mdnaYes}건에만 있습니다. 규칙으로 고른 것이라 빠지거나 덜 맞는 문장이 있을 수 있으니 원문을 함께 보세요. 이 사이트의 해석이나 평가가 아닙니다.</p>
     {noteCorps.length > 0 && <div class="scroll-x"><table class="data-table" data-grid data-title="대구시 상장기업 정기보고서 실적 이유·전망 문장">
       <thead><tr><th>회사</th><th>보고서</th><th>이유(회사 문구)</th><th>전망(회사 문구)</th></tr></thead>
       <tbody>{noteCorps.map(c => <tr><td class="nw"><a href={`/listed/${c.code}/`}>{c.name}</a></td><td class="nw"><a href={c.rep.url} rel="noopener">{c.rep.report_nm}</a></td>

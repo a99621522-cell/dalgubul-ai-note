@@ -315,12 +315,23 @@ tables:
     tbl_id: "DT_399030021"
     prd_se: Q
     area: []
-  - key: kicox-urban-complex
-    name: 전국산업단지현황통계 — 도시첨단산업단지별 현황(분기)
+  - key: kicox-national-complex-41
+    name: 전국산업단지현황통계 — 국가산업단지별 현황 041(분기)
     org_id: "399"
-    tbl_id: "DT_399030017A"
+    tbl_id: "DT_399030041"
     prd_se: Q
     area: []
+  - key: kicox-national-complex-42
+    name: 전국산업단지현황통계 — 국가산업단지별 현황 042(분기)
+    org_id: "399"
+    tbl_id: "DT_399030042"
+    prd_se: Q
+    area: []
+  - key: kicox-agro-complex
+    name: 전국산업단지현황통계 — 농공단지별 현황(분기)
+    org_id: "399"
+    tbl_id: ""
+    search: ["농공단지별 현황", "농공단지 생산 수출", "전국산업단지현황통계 농공"]
   - key: industrial-complex-output
     name: 전국산업단지현황통계(한국산업단지공단) — 산업단지별 생산·수출·고용·가동률 (운영자 지적 2026-10-12 '산단별 생산액이 안나와'; 포털 파일은 2025년 3분기부터 생산·수출·고용 공표 중지)
     tbl_id: ""

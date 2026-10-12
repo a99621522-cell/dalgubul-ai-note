@@ -1,0 +1,61 @@
+name: DART 대구 상장회사 실적 이유·전망 문구(보고서 본문·IR)
+
+# scripts/collect_dart_notes.py — 분기·반기·사업보고서 본문(경영진단·사업의 내용)의 실적 변동 이유·향후 전망 문장과
+# 기업설명회(IR) 공시·첨부 IR 자료(PDF, 저장 안 함)의 전망 줄을 data/dart/report_notes.csv · data/dart/ir.csv 로 커밋한다.
+# 분기 실적(dart_qtr.yml, 매달 2·17일) 다음 날 돈다. 이 세션 환경은 opendart·dart.fss.or.kr 이 막혀 러너가 대신 돈다.
+# data/dart/notes_probe.txt 첫 줄에 회사 이름을 적어 푸시하면 그 회사만 로그로(저장 안 함).
+on:
+  schedule:
+    - cron: "37 21 2,17 * *"     # 매달 3·18일 06:37 KST
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "회사 이름(적으면 그 회사만 로그로, 저장 안 함)"
+        required: false
+        default: ""
+      args:
+        description: "추가 인자(예: --no-ir)"
+        required: false
+        default: ""
+  push:
+    branches: ["claude/policy-reports"]
+    paths: ["data/dart/notes_probe.txt"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-notes
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt && sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq poppler-utils >/dev/null
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+          PROBE_IN: ${{ inputs.probe }}
+          ARGS_IN: ${{ inputs.args }}
+        run: |
+          P="$PROBE_IN"
+          if [ -z "$P" ] && [ "${{ github.event_name }}" = "push" ]; then P=$(head -1 data/dart/notes_probe.txt | tr -d '\r'); [ -z "$P" ] && P="__none__"; fi
+          echo "PROBE=$P" >> "$GITHUB_ENV"
+          if [ "$P" = "__none__" ]; then echo "probe 파일이 비어 있음 — 아무것도 하지 않음"; exit 0; fi
+          if [ -n "$P" ]; then python3 scripts/collect_dart_notes.py --probe "$P" $ARGS_IN; else python3 scripts/collect_dart_notes.py $ARGS_IN; fi
+      - name: 커밋
+        if: env.PROBE == ''
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dart/report_notes.csv data/dart/ir.csv 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 대구 상장회사 실적 이유·전망 문구 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

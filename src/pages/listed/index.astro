@@ -100,7 +100,7 @@ const cardsData = corps.map(c => {
 
   {corps.length === 0 ? <p class="meta">아직 받은 자료가 없습니다.</p> : (<>
   <div class="cards">
-    {byCls.map(([k, n]) => <div class="card"><div class="big">{n}</div><div class="meta">{k}</div></div>)}
+    {byCls.map(([k, n]) => <button type="button" class="card clsbtn" data-cls={k} aria-pressed="false" aria-controls="cards"><span class="big">{n}</span><span class="meta">{k} 보기</span></button>)}
   </div>
 
   <div class="tools">
@@ -337,12 +337,28 @@ const cardsData = corps.map(c => {
     }
     if (count) count.textContent = `${n}곳`;
   };
-  [q, cls, grp].forEach(el => el?.addEventListener('input', apply));
+  // 구분 카드(유가증권·코스닥·코넥스)를 누르면 구분 필터 — 다시 누르면 해제(운영자 지적 2026-10-12 '클릭이 안되')
+  const btns = [...document.querySelectorAll<HTMLButtonElement>('.clsbtn[data-cls]')];
+  const sync = () => btns.forEach(b => b.setAttribute('aria-pressed', String(!!cls?.value && b.dataset.cls === cls.value)));
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (!cls) return;
+    cls.value = cls.value === b.dataset.cls ? '' : (b.dataset.cls || '');
+    apply(); sync();
+    const u = new URL(location.href); if (cls.value) u.searchParams.set('cls', cls.value); else u.searchParams.delete('cls'); history.replaceState(null, '', u);
+    document.getElementById('q')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  }));
+  [q, cls, grp].forEach(el => el?.addEventListener('input', () => { apply(); sync(); }));
+  const pc = new URLSearchParams(location.search).get('cls');
+  if (cls && pc && [...cls.options].some(o => o.value === pc)) { cls.value = pc; apply(); sync(); }
 </script>
 <style>
   .cards { display: flex; flex-wrap: wrap; gap: var(--s2); margin: var(--s2) 0; }
   .card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; min-width: 120px; background: var(--bg); }
   .card .big { font-size: 1.5rem; font-weight: 700; }
+  .clsbtn { color: var(--ink); font: inherit; text-align: left; cursor: pointer; display: flex; flex-direction: column; }
+  .clsbtn:hover, .clsbtn:focus-visible { border-color: var(--primary); background: var(--band); }
+  .clsbtn[aria-pressed="true"] { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); background: var(--band); }
+  .clsbtn .meta { color: var(--primary); }
   .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: var(--s2) 0; }
   .tools input, .tools select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
   .tools input { flex: 1 1 200px; }

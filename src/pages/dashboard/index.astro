@@ -37,6 +37,7 @@ const eokB = (bil: string) => (bil === '' ? '—' : Math.round(Number(bil) * 10)
 const kn = (v: string) => (v === '' ? '—' : Number(v).toLocaleString('ko-KR'));
 const hasMom = !!m && (m.total.mom?.employment != null || [...districts, ...complexes].some(([, v]) => v.mom?.employment != null));
 const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.total.employment)}명(${ym}). 입지 유형·구군 9·산업단지 ${complexes.length}·태그별 기업 수와 고용, 취득·상실.` : '대구 산단·기업 현황판';
+import ComplexOutput from '../../components/ComplexOutput.astro';
 ---
 <Base title="현황판" description={description} current="dashboard">
   <div class="section-head"><h1>현황판</h1><span class="meta">{fo === ym ? `${ym} 기준` : `기업 등록 ${fo} · 고용 ${ym} 기준`} · {m?.basis_label}</span></div>
@@ -80,7 +81,7 @@ const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.
               <tr><th scope="row">{r.sub ? <span class="sub">└ {r.name}</span> : r.fo_name ? <a href={`/companies/?complex=${encodeURIComponent(r.fo_name)}`}>{r.name}</a> : r.name}</th><td>{r.type}</td><td>{r.district}</td><td>{r.status}</td><td class="n">{kn(r.designated_k_m2)}</td><td class="n">{kn(r.industrial_k_m2)}</td><td class="n">{kn(r.sale_target_k_m2)}</td><td class="n">{kn(r.unsold_k_m2)}</td><td class="n">{r.sale_rate === '' ? '—' : Number(r.sale_rate).toFixed(1)}</td><td class="n">{kn(r.firms_contracted)}</td><td class="n">{kn(r.firms_operating)}</td></tr>
             ))}</tbody>
           </table></div>
-          <p class="meta">출처: 한국산업단지공단 「전국산업단지 현황통계」 {kq}(산업입지정보시스템). 단지 이름은 통계표 그대로이고 [재생사업지구] 같은 표기는 뗐습니다. └ 는 위 단지의 하위 단지(위 단지 값은 하위 단지의 합). 분양률은 분양대상 면적 중 분양된 면적의 비율, 가동업체는 입주계약 업체 중 가동 중인 업체입니다. 이 통계에는 단지별 생산·수출·고용 값이 없습니다.</p>
+          <p class="meta">출처: 한국산업단지공단 「전국산업단지 현황통계」 {kq}(산업입지정보시스템). 단지 이름은 통계표 그대로이고 [재생사업지구] 같은 표기는 뗐습니다. └ 는 위 단지의 하위 단지(위 단지 값은 하위 단지의 합). 분양률은 분양대상 면적 중 분양된 면적의 비율, 가동업체는 입주계약 업체 중 가동 중인 업체입니다. 이 통계는 2025년 3분기부터 단지별 생산·수출·고용 공표를 멈췄습니다 — 그 전 분기 값은 아래 <a href="#complex-output">「산업단지별 생산·수출·고용」</a>에 있습니다.</p>
         </section>
       )}
       {pLatest.length > 0 && (
@@ -103,6 +104,7 @@ const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.
           </>}
         </section>
       )}
+      <ComplexOutput />
       {tags.length > 0 && (
         <section aria-labelledby="h-tag">
           <div class="section-head"><h2 id="h-tag">공개 명단 태그별</h2></div>

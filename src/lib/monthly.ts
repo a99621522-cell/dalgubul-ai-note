@@ -44,6 +44,17 @@ export const dpiIssues = (): DpiRef[] => {
     .map(f => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf-8')) as DpiRef);
 };
 /** 연구원 자료의 한 지표 계열 — 같은 기준월은 가장 늦은 호의 값. */
+/** 앞 계열에 뒤 계열을 이어 붙인다(같은 달은 뒤 값). */
+function joinPts(...parts: Pt[][]): Pt[] {
+  const by = new Map<string, Pt>();
+  for (const ps of parts) for (const p of ps) by.set(p.m, p);
+  return [...by.values()].sort((a, b) => a.m.localeCompare(b.m));
+}
+/** 한국은행 대구경북본부 「대구경북지역 주요 경제지표」의 대구경북 기업경기실사지수(scripts/parse_bok_dg_bsi.py → data/bok/dg_bsi.csv, 실적만) */
+function dgBsi(sector: string, item = '업황'): Pt[] {
+  return readCsv('data/bok/dg_bsi.csv').filter(r => r.sector === sector && r.item === item && r.actual !== '')
+    .map(r => ({ m: r.month, v: Number(r.actual) })).sort((a, b) => a.m.localeCompare(b.m));
+}
 function dpi(name: string): Pt[] {
   const by = new Map<string, Pt>();
   for (const iss of dpiIssues()) {   // published 오름차순이라 뒤 호가 덮어쓴다
@@ -112,8 +123,10 @@ export function monthlySeries(): Series[] {
     { key: 'biz', group: '창업·경기', name: '창업기업 수', unit: '개', change: '%', digits: 0, pts: dpi('창업기업 수'), compiled: true, source: '중소벤처기업부 창업기업동향', url: '' },
     { key: 'cci', cycle: '동행', rel: '대구 동행종합지수', group: '창업·경기', name: '경기동행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기동행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
     { key: 'cli', cycle: '선행', rel: '대구 선행종합지수', group: '창업·경기', name: '경기선행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기선행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
-    { key: 'mbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
-    { key: 'nbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '비제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: dpi('비제조업 업황 BSI'), compiled: true, source: '한국은행 대구경북본부 기업경기조사', url: '' },
+    { key: 'mbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: joinPts(ecos('bsi-region', r => r.ITEM_NAME1 === '제조업 업황BSI' && r.ITEM_NAME2 === '대구'), dpi('제조업 업황 BSI')), compiled: true, source: '한국은행 대구경북본부 기업경기조사(대구)', url: '', note: '2025년 9월까지는 한국은행 ECOS 값' },
+    { key: 'mbsi_dk', group: '창업·경기', name: '제조업 업황 BSI(대구경북)', unit: '지수', change: 'p', digits: 0, pts: joinPts(ecos('bsi-region', r => r.ITEM_NAME1 === '제조업 업황BSI' && r.ITEM_NAME2 === '대구경북'), dgBsi('제조업')), source: '한국은행 대구경북본부 「대구경북지역 주요 경제지표」·ECOS', url: '', note: '대구와 경북을 합친 값. 2025년 10월부터는 대구경북본부 경제지표(2026년 10월 호) 표 값' },
+    { key: 'nbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '비제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: joinPts(ecos('bsi-region', r => r.ITEM_NAME1 === '비제조업 업황BSI' && r.ITEM_NAME2 === '대구'), dpi('비제조업 업황 BSI')), compiled: true, source: '한국은행 대구경북본부 기업경기조사(대구)', url: '', note: '2025년 9월까지는 한국은행 ECOS 값' },
+    { key: 'nbsi_dk', group: '창업·경기', name: '비제조업 업황 BSI(대구경북)', unit: '지수', change: 'p', digits: 0, pts: joinPts(ecos('bsi-region', r => r.ITEM_NAME1 === '비제조업 업황BSI' && r.ITEM_NAME2 === '대구경북'), dgBsi('비제조업')), source: '한국은행 대구경북본부 「대구경북지역 주요 경제지표」·ECOS', url: '', note: '대구와 경북을 합친 값. 2025년 10월부터는 대구경북본부 경제지표(2026년 10월 호) 표 값' },
     { key: 'smb', group: '창업·경기', name: '소상공인 체감경기(BSI)', unit: '지수', change: 'p', digits: 1, pts: kosis('smb-bsi-sido', r => r.ITM_NM === '체감' && r.C1_NM === '대구'), source: `소상공인시장진흥공단 「${sb.tbl_nm ?? ''}」(KOSIS)`, url: sb.source_url ?? '', note: '100 넘으면 전월보다 좋다는 응답이 많음' },
     { key: 'mkt', group: '창업·경기', name: '전통시장 체감경기(BSI)', unit: '지수', change: 'p', digits: 1, pts: kosis('market-bsi-sido', r => r.ITM_NM === '체감' && r.C1_NM === '대구'), source: `소상공인시장진흥공단 「${mb.tbl_nm ?? ''}」(KOSIS)`, url: mb.source_url ?? '', note: '100 넘으면 전월보다 좋다는 응답이 많음' },
   ];

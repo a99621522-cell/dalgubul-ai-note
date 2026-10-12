@@ -1,11 +1,10 @@
 {
  "file": "src/content/posts/2026-10-07-policy-ai-sw-startup-ax-suppliers.md",
- "checked": "2026-10-11",
- "ok": 12,
+ "checked": "2026-10-12",
+ "ok": 13,
  "total": 14,
- "ratio": 0.86,
+ "ratio": 0.93,
  "official_bad": [
-  "대구광역시 산업경제동향, 「대구시, '지역거점 AX 혁신 기술개발' 본격 착수」",
   "Gloucestershire County Council, 「Funded support for south-west manufacturers for digital adoption」(Made Smarter Adoption 2026/27)"
  ],
  "pass": false,
@@ -39,12 +38,12 @@
    "url": "https://distat.daegu.go.kr/site/bbs/BoardControll.do?bbsId=BBSMSTR_000000000011",
    "date": "2026-09-18",
    "kind": "gov",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "대구산업경제동향 온라인 시스템",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "뉴스핌, 「대구시, '지역거점 AX 혁신 기술개발' 본격 착수」",

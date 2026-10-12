@@ -1,0 +1,29 @@
+---
+/** 첨부 파일 목록(리디자인 v3 2026-10-12 — 참조 디자인 '첨부파일' 패턴): 굵은 위선 아래 파일명 줄마다 오른쪽에 「내려받기 | 열기」.
+ *  열기는 브라우저가 바로 여는 형식(PDF)만. 형식·크기·쪽수를 글자로 함께 적는다(아이콘만으로 구분하지 않음). */
+interface Item { label: string; href: string; kind: 'PDF' | 'Word' | '한글'; size?: string; pages?: number; download: string }
+interface Props { items: Item[]; title?: string }
+const { items, title = '첨부 파일' } = Astro.props;
+---
+<section class="attach" aria-label={title}>
+  <div class="attach-head"><h2>{title}</h2><span class="meta">{items.length}개</span></div>
+  <ul>
+    {items.map(i => (
+      <li>
+        <span class="att-name"><span class={`att-kind k-${i.kind === '한글' ? 'hwp' : i.kind.toLowerCase()}`}>{i.kind}</span>{i.label}<span class="meta"> · {i.size}{i.pages ? ` · ${i.pages}쪽` : ''}</span></span>
+        <span class="att-acts"><a href={i.href} download={i.download}>내려받기</a>{i.kind === 'PDF' && <><span aria-hidden="true">|</span><a href={i.href} target="_blank" rel="noopener">열기</a></>}</span>
+      </li>
+    ))}
+  </ul>
+</section>
+<style>
+  .attach { margin: var(--s3) 0; }
+  .attach-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: var(--s1); border-bottom: 2px solid var(--ink); }
+  .attach-head h2 { font-size: 1.05rem; margin: 0; }
+  .attach ul { list-style: none; margin: 0; padding: 0; }
+  .attach li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px var(--s2); padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .att-name { display: inline-flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .att-kind { display: inline-block; min-width: 3.2em; text-align: center; font-size: var(--tiny); font-weight: 700; padding: 1px 6px; border: 1px solid var(--line-strong); border-radius: 3px; color: var(--muted); }
+  .att-acts { display: inline-flex; gap: 8px; align-items: center; color: var(--muted-2); }
+  .att-acts a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 4px; font-weight: 600; }
+</style>

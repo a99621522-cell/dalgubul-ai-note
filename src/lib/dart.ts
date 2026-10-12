@@ -169,6 +169,6 @@ export const perfByCode = (code: string) => dartPerf().filter(p => p.corp_code =
 export type DartNote = { corp_code: string; name: string; year: string; quarter: string; report_nm: string; mdna: string; kind: string; section: string; sentence: string; rcept_no: string; url: string; as_of: string };
 export const dartNotes = memo(() => readCsv('data/dart/report_notes.csv') as DartNote[]);
 export const notesByCode = (code: string) => dartNotes().filter(n => n.corp_code === code && n.kind);
-export type DartIR = { rcept_dt: string; corp_code: string; name: string; report_nm: string; purpose: string; content: string; pdf: string; guidance: string; rcept_no: string; url: string; att_url: string; as_of: string };
+export type DartIR = { rcept_dt: string; corp_code: string; name: string; report_nm: string; purpose: string; content: string; posted: string; ir_page: string; pdf: string; guidance: string; rcept_no: string; url: string; att_url: string; as_of: string };
 export const dartIR = memo(() => readCsv('data/dart/ir.csv') as DartIR[]);
 export const irByCode = (code: string) => dartIR().filter(r => r.corp_code === code).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));

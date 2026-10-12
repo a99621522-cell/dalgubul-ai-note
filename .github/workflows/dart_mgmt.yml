@@ -1,0 +1,47 @@
+name: DART 대구 상장회사 경영진 진단·방향 문구
+
+# scripts/collect_dart_mgmt.py — 최근 사업보고서 '이사의 경영진단 및 분석의견'·'신규사업 등의 내용 및 전망'에서 회사 공시 문구를 짧게 뽑아
+# data/dart/mgmt.csv 로 커밋한다. 사업보고서(3월 말)·정정 반영으로 4·5·6월 20일 + 수동. data/dart/mgmt_probe.txt 첫 줄 회사 이름 → 그 회사만 로그(저장 안 함).
+on:
+  schedule:
+    - cron: "41 21 19 4,5,6 *"
+  workflow_dispatch:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/collect_dart_mgmt.py", ".github/workflows/dart_mgmt.yml", "data/dart/mgmt_probe.txt"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-mgmt
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          P=""
+          if [ "${{ github.event_name }}" = "push" ] && [ -f data/dart/mgmt_probe.txt ]; then P=$(head -1 data/dart/mgmt_probe.txt | tr -d '\r'); fi
+          echo "PROBE=$P" >> "$GITHUB_ENV"
+          if [ -n "$P" ]; then python3 scripts/collect_dart_mgmt.py --probe "$P"; else python3 scripts/collect_dart_mgmt.py; fi
+      - name: 커밋
+        if: env.PROBE == ''
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dart/mgmt.csv
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 대구 상장회사 경영진 진단·방향 문구 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

@@ -116,7 +116,8 @@ def sentences(seg: str) -> list[str]:
     return out
 
 
-BOILER = re.compile(r"예측정보|정정보고서|확신을 제공|부정확한 것으로|유의하시기|작성시점|기준으로 작성|한국채택국제회계기준|연결재무제표|감사인|단위\s*:")
+BOILER = re.compile(r"예측정보|정정보고서|확신을 제공|부정확한 것으로|유의하시기|작성시점|기준으로 작성|한국채택국제회계기준|연결재무제표|감사인|단위\s*:"
+                    r"|언급한 바와\s*같이|종합하여\s*정리|장부와\s*관계\s*서류|면밀히\s*검토|경영진단의\s*개요|이사의\s*경영진단|본\s*(항목|절)에서는|참고하시기|참조하시기")
 
 
 def pack(snts: list[str]) -> str:
@@ -134,6 +135,8 @@ def pack(snts: list[str]) -> str:
 
 
 OUTLOOK = re.compile(r"전망|계획|예정|목표|추진|향후|전략|방침|노력할|강화할|확대할|집중할")
+OWN = re.compile(r"당사|당社|회사는|우리\s*회사|동사|연결회사|당\s*그룹")
+NB_SKIP = re.compile(r"연구개발비|국내\s*업체들|경쟁사|업체들은|시장\s*규모는|조사기관|억\s*달러")
 NEWBIZ = re.compile(r"신규\s*사업|신사업|신성장|새로운\s*성장|사업\s*다각화|진출|미래\s*먹거리|신시장|신제품")
 
 
@@ -151,7 +154,10 @@ def extract(text: str, probe: bool) -> dict:
     s_all = sentences(mdna)
     overview = pack(sentences(ov_seg) or s_all)
     outlook = pack([x for x in s_all if OUTLOOK.search(x) and x not in overview])
-    new_biz = pack([x for x in sentences(biz) + s_all if NEWBIZ.search(x)])
+    nb = [x for x in sentences(biz) + s_all if NEWBIZ.search(x) and not NB_SKIP.search(x)]
+    # 회사가 주어인 문장(당사·회사·우리)을 먼저 — 업계 일반 설명보다 회사의 방향
+    nb = [x for x in nb if OWN.search(x)] + [x for x in nb if not OWN.search(x)]
+    new_biz = pack(nb[:3] if nb and OWN.search(nb[0]) else [])
     return {"overview": overview, "outlook": outlook, "new_biz": new_biz}
 
 

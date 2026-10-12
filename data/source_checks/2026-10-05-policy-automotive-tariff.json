@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-05-policy-automotive-tariff.md",
- "checked": "2026-10-11",
- "ok": 12,
+ "checked": "2026-10-12",
+ "ok": 11,
  "total": 13,
- "ratio": 0.92,
+ "ratio": 0.85,
  "official_bad": [
   "국가데이터처, 「광업제조업동향조사 — 시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)"
  ],
@@ -38,12 +38,12 @@
    "url": "https://www.heraldk.com/article/2026072314504451079",
    "date": "2026-07-23",
    "kind": "news",
-   "status": 200,
-   "page_title": "미국, 60개국에 ‘301조 강제노동 관세’…한국은 12.5% - 헤럴드경제 미주판",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "뉴시스, 「미 무역법 301조 관세, 대구기업 대미 수출 영향 제한적일 듯」",

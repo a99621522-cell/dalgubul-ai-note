@@ -58,7 +58,7 @@ button, input, select { font: inherit; }
 .drawer-g a { display: flex; align-items: center; min-height: 48px; padding: 0 var(--s1); border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 1.05rem; }
 .drawer-g a[aria-current="page"] { color: var(--primary); font-weight: 700; }
 body.drawer-open { overflow: hidden; }
-@media (min-width: 768px) { .drawer { display: none !important; } }
+/* (v3: 768px 이상에서도 드로어를 「전체 메뉴」 패널로 씀 — 아래 리디자인 v3 절) */
 
 /* ---------- 본문 공통 ---------- */
 .crumbs { font-size: var(--small); color: var(--muted); margin: 0 0 var(--s2); }
@@ -466,3 +466,74 @@ article.post.insight .body td:first-child { font-weight: 600; background: var(--
 .chart-tools { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; margin: 4px 0 var(--s2); }
 .chart-tools .btn { min-height: 32px; padding: 0 10px; font-size: var(--small); font-weight: 600; }
 @media print { .grid-bar, .chart-tools, .grid-sel, #tt-toast { display: none !important; } .grid-scroll { max-height: none; overflow: visible; } }
+
+/* ───────── 리디자인 v3 (2026-10-12, 운영자 '모두해' — docs/design/redesign-v3/01-audit.md 4장: 참조 디자인 패턴) ─────────
+   유틸리티 바 · 큰 대메뉴(가운데) · 「전체 메뉴」 패널 · 드롭다운 위치 표시 · 페이지 행동(링크 복사·인쇄) · 옅은 청색 제목 띠.
+   기관 로고·고유 색·장식 그림·조회수·담당 전화는 쓰지 않는다. */
+:root { --band: #eaf1fa; --band-line: #d3e0f2; }
+.util-bar { display: none; border-bottom: 1px solid var(--line); background: var(--bg); font-size: var(--tiny); }
+.util-row { display: flex; justify-content: space-between; align-items: center; min-height: 36px; }
+.util-bar ul { display: flex; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; }
+.util-bar li + li::before { content: ''; display: inline-block; width: 1px; height: 11px; margin: 0 10px; background: var(--line-strong); vertical-align: -1px; }
+.util-bar a { color: var(--muted); text-decoration: none; display: inline-block; padding: 6px 0; }
+.util-bar a:hover { color: var(--primary); text-decoration: underline; }
+@media (min-width: 1024px) { .util-bar { display: block; } }
+
+.nt-d { display: none; }
+@media (min-width: 768px) {
+  .site-head .row { min-height: 64px; }
+  .nav { flex: 1; justify-content: center; gap: 4px; }
+  .nav .ng-btn, .nav .ng-link { font-size: 1.05rem; font-weight: 600; padding: 0 14px; min-height: 64px; border-bottom-width: 3px; border-radius: 0; }
+  .nav .ng-btn:hover, .nav .ng-link:hover, .nav .ng-btn[aria-expanded="true"] { background: none; color: var(--primary); }
+  .brand { margin-right: 0; }
+  .site-head .nav-toggle { display: inline-flex; }
+  .nt-m { display: none; } .nt-d { display: inline; }
+  .drawer { position: absolute; inset: 100% 0 auto 0; z-index: 30; padding: 0 0 var(--s4); border-bottom: 2px solid var(--ink); overflow: visible; }
+  .drawer-head { border-bottom: 0; }
+  .drawer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--s3); }
+  .drawer-g { margin-top: 0; }
+  .drawer-g h2 { font-size: 1.05rem; color: var(--ink); font-weight: 700; padding-bottom: var(--s1); border-bottom: 2px solid var(--primary); margin-bottom: 4px; }
+  .drawer-g a { min-height: 40px; border-bottom: 0; font-size: var(--small); }
+  .drawer-g a:hover { color: var(--primary); text-decoration: underline; }
+  body.drawer-open { overflow: auto; }
+}
+@media (min-width: 1024px) {
+  .site-head .row { min-height: 76px; }
+  .nav { gap: 12px; }
+  .nav .ng-btn, .nav .ng-link { font-size: 1.2rem; padding: 0 18px; min-height: 76px; }
+}
+
+/* 위치 표시 줄: 왼쪽 드롭다운 브레드크럼, 오른쪽 페이지 행동 */
+.loc-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s1) var(--s2); margin: 0 0 var(--s2); }
+.loc-row .crumbs { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; }
+.cr-sep { color: var(--muted-2); }
+.cr-dd { position: relative; display: inline-block; }
+.cr-dd > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); }
+.cr-dd > summary::-webkit-details-marker { display: none; }
+.cr-dd > summary::after { content: ''; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translate(-2px, -2px); margin-left: 2px; }
+.cr-dd[open] > summary { border-color: var(--primary); color: var(--primary); }
+.cr-dd > ul { position: absolute; z-index: 25; top: calc(100% + 4px); left: 0; min-width: 200px; margin: 0; padding: 6px; list-style: none; background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--radius); }
+.cr-dd > ul a { display: flex; align-items: center; min-height: 40px; padding: 0 10px; color: var(--ink); text-decoration: none; border-radius: var(--radius); white-space: nowrap; }
+.cr-dd > ul a:hover { background: var(--surface); }
+.cr-dd > ul a[aria-current] { color: var(--primary); font-weight: 700; }
+.page-acts { display: flex; gap: 4px; margin-left: auto; }
+.pa-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px; font: inherit; font-size: var(--small); color: var(--muted); background: none; border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; }
+.pa-btn:hover { color: var(--primary); border-color: var(--line); }
+@media (max-width: 479px) { .pa-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+
+/* 제목 띠: 페이지 h1 머리를 옅은 청색 면으로(화면 끝까지) */
+main .section-head:has(> h1), main .page-head, main article.post > header {
+  background: var(--band); box-shadow: 0 0 0 100vmax var(--band); clip-path: inset(0 -100vmax);
+  border-bottom: 1px solid var(--band-line); padding-top: var(--s4); padding-bottom: var(--s3); margin-bottom: var(--s3);
+}
+main .section-head:has(> h1) { align-items: flex-end; }
+main .section-head:has(> h1) h1, main .page-head h1, main article.post > header h1 { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem); letter-spacing: -0.02em; }
+main .section-head:has(> h1) .meta { color: var(--muted); }
+.loc-row + .section-head, .loc-row + :is(section, div, article) > .section-head:first-child, .loc-row + article.post > header { margin-top: 0; }
+main article.post > header .eyebrow { margin: 0 0 4px; }
+@media print { .util-bar, .loc-row { display: none !important; } main .section-head:has(> h1), main .page-head, main article.post > header { box-shadow: none; clip-path: none; background: none; } }
+/* 검색 결과가 색인을 받은 뒤 한꺼번에 들어와 꼬리말을 밀던 레이아웃 이동(CLS 0.41) — 결과 자리를 미리 잡는다(리디자인 v3 감사 L5) */
+main:has(#s-results) { min-height: 130vh; }
+/* 긴 주소·영문 낱말이 휴대폰 폭을 넘기지 않게, 긴 선택 상자는 폭 안에서 줄임(리디자인 v3 점검: /listed/notes/·검토기 390px 가로 넘침) */
+main p, main li { overflow-wrap: anywhere; }
+main select { max-width: min(100%, calc(100vw - 32px)); }

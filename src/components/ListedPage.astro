@@ -1,0 +1,326 @@
+---
+import Base from '../layouts/Base.astro';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, dartNotes, dartIR } from '../lib/dart';
+import type { DartQuarter } from '../lib/dart';
+import { companies, normName } from '../lib/csv';
+/** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
+ *  본사 주소가 대구인 유가증권·코스닥·코넥스 상장 회사의 재무·직원·연구개발비·출자·미래 산업 공시, 회사별 상세는 /listed/<corp_code>/.
+ *  리디자인 v3 감사(2026-10-12: 한 페이지 568KB·표 59개·DOM 1.1만) 뒤 절마다 하위 페이지로 나눴다 — 이 컴포넌트를 src/pages/listed/{index,quarter,perf,notes,future,employees,rnd,invest}.astro 가 part 로 부른다.
+ *  사업보고서를 내는 비상장 회사는 맨 아래 따로. 값은 공시 그대로(원 → 억 원 나눗셈만), 가나다순, 평가·순위·비율 계산 없음. */
+interface Props { part?: 'fin' | 'quarter' | 'perf' | 'notes' | 'future' | 'employees' | 'rnd' | 'invest' }
+const { part = 'fin' } = Astro.props;
+const PARTS = [['fin', '재무', ''], ['quarter', '분기 실적', 'quarter'], ['perf', '실적 공시(사유·전망)', 'perf'], ['notes', '보고서·IR 실적 설명', 'notes'], ['future', '미래 산업 공시', 'future'], ['employees', '직원', 'employees'], ['rnd', '연구개발비', 'rnd'], ['invest', '출자', 'invest']] as const;
+const partName = PARTS.find(x => x[0] === part)![1];
+const all = dartCorps();
+const { years, asOf } = all;
+const corps = all.corps.filter(c => isListed(c.cls));
+const unlisted = all.corps.filter(c => !isListed(c.cls));
+const listedCodes = new Set(corps.map(c => c.code));
+const last = years.at(-1) ?? '';
+const CLS_ORDER = ['유가증권', '코스닥', '코넥스'];
+const byCls = countBy(corps, c => c.cls).sort((a, b) => CLS_ORDER.indexOf(a[0]) - CLS_ORDER.indexOf(b[0]));
+const byGroup = countBy(corps, c => c.group).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+const byDist = countBy(corps, c => c.district).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+const groups = byGroup.map(g => g[0]);
+const fut = futureDisclosures().filter(d => listedCodes.has(d.corp_code));
+const futFields = countBy(fut.flatMap(d => d.fields.split(', ').filter(Boolean)), x => x).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+const coId = new Map(corps.map(c => [c.code, c.companyId]));
+const EMP = dartEmployees().filter(e => listedCodes.has(e.corp_code));
+const empYears = [...new Set(EMP.map(e => e.year))].sort().slice(-3);
+const empLast = empYears.at(-1) ?? '';
+const byCodeCorp = new Map(corps.map(c => [c.code, c]));
+const empCorps = [...new Set(EMP.map(e => e.corp_code))].map(code => {
+  const rs = EMP.filter(e => e.corp_code === code);
+  const y = Object.fromEntries(rs.map(e => [e.year, e]));
+  const L = y[empLast] ?? [...rs].sort((a, b) => b.year.localeCompare(a.year))[0];
+  const c = byCodeCorp.get(code);
+  return { code, name: c?.name ?? L.name, cls: c?.cls ?? '', companyId: c?.companyId ?? null, y, L };
+}).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+const empLastRows = EMP.filter(e => e.year === empLast);
+const empSum = empLastRows.reduce((a, e) => a + (Number(e.employees) || 0), 0);
+const empF = empLastRows.reduce((a, e) => a + (Number(e.female) || 0), 0);
+const empC = empLastRows.reduce((a, e) => a + (Number(e.contract) || 0), 0);
+const RND = dartRnd().filter(r => listedCodes.has(r.corp_code));
+const rndYears = [...new Set(RND.map(r => r.year))].sort().slice(-3);
+const rndLast = rndYears.at(-1) ?? '';
+const rndCorps = [...new Set(RND.map(r => r.corp_code))].map(code => {
+  const rs = RND.filter(r => r.corp_code === code); const y = Object.fromEntries(rs.map(r => [r.year, r]));
+  const c = byCodeCorp.get(code); return { code, name: c?.name ?? rs[0].name, companyId: c?.companyId ?? null, y, url: rs[0].source_url };
+}).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+const rndSum = RND.filter(r => r.year === rndLast).reduce((a, r) => a + (Number(r.rnd_won) || 0), 0);
+const INV = dartInvest().filter(r => listedCodes.has(r.corp_code));
+const local = new Set([...companies().map(c => normName(c.name)), ...all.corps.map(c => normName(c.name))]);
+const invCorps = [...new Set(INV.map(r => r.corp_code))].map(code => {
+  const rs = INV.filter(r => r.corp_code === code).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));
+  const c = byCodeCorp.get(code); return { code, name: c?.name ?? rs[0].name, companyId: c?.companyId ?? null, rs, year: rs[0].year, url: rs[0].source_url };
+}).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+const rndCode = new Map(RND.filter(r => r.year === rndLast).map(r => [r.corp_code, r]));
+const empCode = new Map(empLastRows.map(e => [e.corp_code, e]));
+const invPurpose = countBy(INV, r => purposeOf(r.purpose)).sort((a, b) => b[1] - a[1]);
+const invLocal = INV.filter(r => local.has(normName(r.inv_name))).length;
+const eokS = (won?: string) => { const v = Number(won); return won && Number.isFinite(v) && v > 0 ? (v / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : '—'; };
+/** 분기 실적(운영자 지시 2026-10-12): 최근 6개 분기, 회사마다 그 분기 행 */
+const QS = dartQuarters().filter(q => listedCodes.has(q.corp_code));
+const qKeys = [...new Set(QS.map(qKey))].sort().slice(-6);
+const qCorps = [...new Set(QS.map(q => q.corp_code))].map(code => {
+  const rs = QS.filter(q => q.corp_code === code); const by = Object.fromEntries(rs.map(q => [qKey(q), q])) as Record<string, DartQuarter>;
+  const L = [...rs].sort((a, b) => qKey(b).localeCompare(qKey(a)))[0];
+  return { code, name: byCodeCorp.get(code)?.name ?? L.name, cls: byCodeCorp.get(code)?.cls ?? L.corp_cls, by, L };
+}).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+const qAsOf = QS.map(q => q.as_of).sort().at(-1) ?? '';
+const PERF = dartPerf().filter(p => listedCodes.has(p.corp_code));
+const perfWhy = PERF.filter(p => p.kind !== '잠정실적');
+const perfPre = PERF.filter(p => p.kind === '잠정실적');
+/** 보고서 본문·IR 의 실적 이유·전망 문구(운영자 지시 2026-10-12) — 회사별 최근 보고서 문장, IR 공시 */
+const NOTES = dartNotes().filter(n => listedCodes.has(n.corp_code));
+const noteReports = [...new Map(NOTES.map(n => [n.rcept_no, n])).values()];
+const mdnaYes = noteReports.filter(n => n.mdna === '있음').length;
+const noteCorps = [...new Set(NOTES.filter(n => n.kind).map(n => n.corp_code))].map(code => {
+  const rs = NOTES.filter(n => n.corp_code === code && n.kind);
+  const latest = [...rs].sort((a, b) => (b.year + b.quarter).localeCompare(a.year + a.quarter))[0];
+  const cur = rs.filter(n => n.rcept_no === latest.rcept_no);
+  return { code, name: byCodeCorp.get(code)?.name ?? latest.name, rep: latest, why: cur.filter(n => n.kind === '이유'), out: cur.filter(n => n.kind === '전망') };
+}).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+const IR = dartIR().filter(r => listedCodes.has(r.corp_code));
+const irGuide = IR.filter(r => r.guidance).length;
+const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
+---
+<Base title={part === 'fin' ? '대구시 상장기업' : `대구시 상장기업 — ${partName}`} crumb={part === 'fin' ? undefined : partName} description={`본사가 대구인 상장 회사 ${corps.length}곳(유가증권·코스닥·코넥스)의 최근 3개 사업연도 매출액·영업이익·직원·연구개발비·타법인 출자·미래 산업 관련 공시(DART 공시 값 그대로).`} current="listed" wide>
+  <div class="section-head"><h1>{part === 'fin' ? '대구시 상장기업' : `상장기업 ${partName}`}</h1><span class="meta">{corps.length}곳 · {years[0]}~{last} 사업연도 · {asOf} 받음 · 금융감독원 DART</span></div>
+  <p class="lede">금융감독원 전자공시(DART) 기업개황의 본사 주소가 대구인 상장 회사 {corps.length}곳입니다. 회사 이름을 누르면 재무·직원·연구개발비·출자·공시를 한 페이지에서 봅니다. 재무는 연결재무제표가 있으면 연결, 없으면 개별 값이고 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>
+  <nav class="sub-tabs" aria-label="상장기업 자료">{PARTS.map(([k, name, path]) => <a href={`/listed/${path ? path + '/' : ''}`} aria-current={k === part ? 'page' : undefined}>{name}</a>)}<a href="/listed/#unlisted">비상장 공시 회사</a></nav>
+
+  {corps.length === 0 ? <p class="meta">아직 받은 자료가 없습니다.</p> : (<>
+  {part === 'fin' && (<>
+  <div class="cards">
+    {byCls.map(([k, n]) => <div class="card"><div class="big">{n}</div><div class="meta">{k}</div></div>)}
+  </div>
+
+  <div class="tools">
+    <input id="q" type="search" placeholder="회사명·제품 검색 (예: 변속기, 렌즈)" aria-label="회사명·제품 검색" />
+    <select id="cls" aria-label="상장 구분"><option value="">모든 구분</option>{byCls.map(([k]) => <option value={k}>{k}</option>)}</select>
+    <select id="grp" aria-label="산업"><option value="">모든 산업</option>{groups.map(g => <option value={g}>{g}</option>)}</select>
+    <span id="count" class="meta">{corps.length}곳</span>
+  </div>
+  <div class="scroll-x" id="fin-wrap"><table class="data-table" id="fin" data-grid data-title={`대구시 상장기업 재무 ${years[0]}~${last}`}>
+    <thead>
+      <tr><th rowspan="2">회사</th><th rowspan="2">분야(업종)</th><th rowspan="2">무엇을 만드나</th><th rowspan="2">시장</th><th rowspan="2">종목코드</th><th rowspan="2">구·군</th>
+        <th colspan={years.length} class="c">매출액(억 원)</th><th colspan={years.length - 1} class="c">매출액 증가율(%)</th><th colspan={years.length} class="c">영업이익(억 원)</th><th colspan={years.length} class="c">영업이익률(%)</th>
+        <th colspan="5" class="c">{last}년 재무상태</th><th colspan="2" class="c">연구개발비({rndLast}년)</th><th rowspan="2" class="n">직원 수<br />({empLast}년)</th><th rowspan="2">공시</th></tr>
+      <tr>{years.map(y => <th class="n">{y}</th>)}{years.slice(1).map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익<br />(억 원)</th><th class="n">자산총계<br />(억 원)</th><th class="n">부채총계<br />(억 원)</th><th class="n">자본총계<br />(억 원)</th><th class="n">부채비율<br />(%)</th><th class="n">억 원</th><th class="n">매출 대비<br />(%)</th></tr>
+    </thead>
+    <tbody>{corps.map(c => { const L = c.years[last]; const mk = makesOf(c); const rd = rndCode.get(c.code); const em = empCode.get(c.code); return (
+      <tr data-name={`${c.name} ${c.ksicName} ${mk.text}`} data-cls={c.cls} data-grp={c.group}>
+        <th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a></th>
+        <td class="wrap">{c.ksicName || c.group}{c.ksicName && <span class="meta"> · {c.group}</span>}</td>
+        <td class="wrap">{mk.text || '—'}{mk.kind === 'factory' && <span class="meta"> (공장등록)</span>}</td>
+        <td>{c.cls}</td><td class="nw">{c.stock || '—'}</td><td>{c.district}</td>
+        {years.map(y => <td class="n" title={c.years[y]?.revenue_account && c.years[y]!.revenue_account !== '매출액' ? `${c.years[y]!.revenue_account}(매출액 계정 없음)` : undefined}>{f(c.years[y]?.revenue)}{c.years[y]?.revenue_account && c.years[y]!.revenue_account !== '매출액' ? '※' : ''}</td>)}
+        {years.slice(1).map((y, i) => <td class="n">{pct1(revGrowth(c.years[y], c.years[years[i]]))}</td>)}
+        {years.map(y => <td class="n">{f(c.years[y]?.operating_income)}</td>)}
+        {years.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}
+        <td class="n">{f(L?.net_income)}</td><td class="n">{f(L?.total_assets)}</td><td class="n">{f(L?.total_liabilities)}</td><td class="n">{f(L?.total_equity)}</td>
+        <td class="n">{pct1n(debtRatio(L))}</td>
+        <td class="n">{rd ? eokS(rd.rnd_won) : '—'}</td><td class="n">{rd?.ratio_pct ? Number(rd.ratio_pct).toFixed(1) : '—'}</td>
+        <td class="n">{em ? n0(em.employees) : '—'}</td>
+        <td><a href={c.url} rel="noopener">DART</a>{L?.fs === '개별' ? <span class="meta"> 개별</span> : ''}</td>
+      </tr>); })}</tbody>
+  </table></div>
+  <p class="meta">매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 연구개발비·직원 수는 아래 '연구개발비'·'직원 현황'과 같은 사업보고서 값입니다(표를 못 찾은 회사는 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. ※ 는 금융회사(은행·금융지주 등)처럼 매출액 계정이 없어 사업보고서 손익계산서의 영업수익(없으면 순영업수익·이자수익)을 매출액 자리에 넣은 것입니다(운영자 지시 2026-10-06). — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
+  </>)}
+
+  {part === 'quarter' && qCorps.length > 0 && (
+  <section id="quarter">
+    <div class="section-head"><h2>분기 실적</h2><span class="meta">분기·반기·사업보고서 · {qCorps.length}곳 · {qLabel(qKeys[0])}~{qLabel(qKeys.at(-1)!)} · {qAsOf} 받음</span></div>
+    <p class="meta">유가증권·코스닥 상장회사는 분기가 끝나고 45일 안에 분기·반기보고서를, 사업연도가 끝나고 90일 안에 사업보고서를 냅니다(코넥스는 분기·반기보고서 의무가 없어 뺐습니다). 1~3분기는 보고서에 공시된 그 분기 3개월 값이고, 4분기는 따로 공시되지 않아 사업보고서 연간 값에서 3분기 누적을 뺀 값입니다(※, 이 사이트 계산). 연결재무제표가 있으면 연결, 없으면 개별입니다.</p>
+    <div class="scroll-x"><table class="data-table" id="qtr" data-grid data-title={`대구시 상장기업 분기 실적 ${qLabel(qKeys[0])}~${qLabel(qKeys.at(-1)!)}`}>
+      <thead>
+        <tr><th rowspan="2">회사</th><th colspan={qKeys.length} class="c">매출액(억 원)</th><th colspan={qKeys.length} class="c">영업이익(억 원)</th><th rowspan="2" class="n">최근 분기 매출액<br />전년 같은 분기 대비(%)</th><th rowspan="2">공시</th></tr>
+        <tr>{qKeys.map(k => <th class="n">{qLabel(k)}</th>)}{qKeys.map(k => <th class="n">{qLabel(k)}</th>)}</tr>
+      </thead>
+      <tbody>{qCorps.map(c => (
+        <tr>
+          <th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a>{c.L.fs === '개별' && <span class="meta"> 개별</span>}</th>
+          {qKeys.map(k => <td class="n">{f(c.by[k]?.revenue)}{c.by[k]?.derived ? '※' : ''}</td>)}
+          {qKeys.map(k => <td class="n">{f(c.by[k]?.operating_income)}{c.by[k]?.derived ? '※' : ''}</td>)}
+          <td class="n" title={qLabel(qKey(c.L))}>{pct1(qYoY(c.L))}</td>
+          <td>{c.L.source_url ? <a href={c.L.source_url} rel="noopener">DART</a> : '—'}</td>
+        </tr>))}</tbody>
+    </table></div>
+    <p class="meta">'최근 분기 전년 같은 분기 대비'는 그 회사의 가장 최근 분기 매출액을 같은 보고서에 공시된 전년 같은 분기 값(4분기는 전년 4분기 계산 값)과 나눈 것입니다(두 값이 0 보다 클 때만). — 는 그 분기 보고서가 없거나 계정이 공시되지 않은 경우입니다. 가나다순이며 순위가 아닙니다.</p>
+  </section>)}
+
+  {part === 'perf' && PERF.length > 0 && (
+  <section id="perf">
+    <div class="section-head"><h2>실적 공시 — 변동 사유·전망·잠정실적</h2><span class="meta">최근 15개월 · {PERF.length}건</span></div>
+    <p class="meta">회사가 거래소에 낸 실적 관련 공시입니다. <b>손익구조 변동</b>은 매출액이나 손익이 전년보다 30%(대규모법인 15%) 이상 바뀌었을 때 내는 공시로, 회사가 적은 '변동 주요원인' 문구를 그대로 옮겼습니다. <b>실적 전망</b>은 회사가 스스로 낸 매출·이익 전망(공정공시)으로, 내는 회사가 많지 않습니다. 문구는 공시 원문 앞부분(120자까지)이며 이 사이트의 해석이나 평가가 아닙니다.</p>
+    {perfWhy.length > 0 && <div class="scroll-x"><table class="data-table" data-grid data-title="대구시 상장기업 손익구조 변동 사유·실적 전망 공시">
+      <thead><tr><th>접수일</th><th>회사</th><th>구분</th><th>공시</th><th>공시 문구(변동 주요원인·전망)</th></tr></thead>
+      <tbody>{perfWhy.map(p => <tr><td class="nw">{ymd(p.rcept_dt)}</td><td><a href={`/listed/${p.corp_code}/`}>{p.name}</a></td><td class="nw">{p.kind}</td><td class="wrap"><a href={p.url} rel="noopener">{p.report_nm}</a></td><td class="ex">{p.excerpt || '—'}</td></tr>)}</tbody>
+    </table></div>}
+    {perfPre.length > 0 && <details class="stat-details"><summary>영업(잠정)실적 공시 {perfPre.length}건 — 정기보고서보다 먼저 내는 실적 속보</summary>
+      <div class="scroll-x"><table class="data-table compact" data-title="대구시 상장기업 영업(잠정)실적 공시">
+        <thead><tr><th>접수일</th><th>회사</th><th>공시</th></tr></thead>
+        <tbody>{perfPre.map(p => <tr><td class="nw">{ymd(p.rcept_dt)}</td><td><a href={`/listed/${p.corp_code}/`}>{p.name}</a></td><td><a href={p.url} rel="noopener">{p.report_nm}</a></td></tr>)}</tbody>
+      </table></div>
+      <p class="meta">잠정 수치는 감사·검토 전 값이라 뒤에 나오는 분기·사업보고서 값과 다를 수 있습니다. 수치는 공시 원문을 보세요.</p>
+    </details>}
+  </section>)}
+
+
+  {part === 'notes' && (noteCorps.length > 0 || IR.length > 0) && (
+  <section id="notes">
+    <div class="section-head"><h2>보고서·IR 실적 설명 — 이유와 전망</h2><span class="meta">정기보고서 {noteReports.length}건 · 문장 있는 회사 {noteCorps.length}곳 · IR 공시 {IR.length}건</span></div>
+    <p class="meta">분기·반기·사업보고서 본문(이사의 경영진단 및 분석의견, 사업의 내용 중 사업의 개요·매출 및 수주상황·기타 참고사항)에서 <b>이유</b>(실적 낱말 + 증감 + 원인 표현이 함께 든 문장)와 <b>전망</b>(향후·하반기·내년 같은 시점 + 전망·계획·목표 표현이 든 문장)을 낱말 규칙으로 골라 회사 문구 그대로 옮겼습니다(문장당 260자, 보고서마다 각 4문장까지). 표 안 글자와 예측정보 주의 문구는 뺐습니다. 경영진단 장은 분기·반기보고서에서 생략할 수 있어 {noteReports.length}건 가운데 {mdnaYes}건에만 있습니다. 규칙으로 고른 것이라 빠지거나 덜 맞는 문장이 있을 수 있으니 원문을 함께 보세요. 이 사이트의 해석이나 평가가 아닙니다.</p>
+    {noteCorps.length > 0 && <div class="scroll-x"><table class="data-table" data-grid data-title="대구시 상장기업 정기보고서 실적 이유·전망 문장">
+      <thead><tr><th>회사</th><th>보고서</th><th>이유(회사 문구)</th><th>전망(회사 문구)</th></tr></thead>
+      <tbody>{noteCorps.map(c => <tr><td class="nw"><a href={`/listed/${c.code}/`}>{c.name}</a></td><td class="nw"><a href={c.rep.url} rel="noopener">{c.rep.report_nm}</a></td>
+        <td class="ex">{c.why.length ? c.why.map(n => <p>{n.sentence}</p>) : '—'}</td><td class="ex">{c.out.length ? c.out.map(n => <p>{n.sentence}</p>) : '—'}</td></tr>)}</tbody>
+    </table></div>}
+    {IR.length > 0 && <>
+      <h3>기업설명회(IR)</h3>
+      <p class="meta">거래소에 낸 '기업설명회(IR) 개최' 공시 {IR.length}건입니다. 목적·내용은 공시 문구이고, IR 자료는 대부분 회사 IR 페이지에 따로 올라가 공시에는 게재일과 주소만 있습니다(그 주소는 이 사이트가 수집하지 않습니다). 첨부 IR 자료(PDF)를 받을 수 있었던 {IR.filter(r => r.pdf === '예').length}건은 자료 글자 가운데 전망·목표·계획·가이던스 낱말과 숫자가 함께 든 줄을 8줄까지 옮겼습니다({irGuide}건). 자료의 표가 줄 단위로 쪼개져 읽기 어려울 수 있으니 원문을 함께 보세요.</p>
+      <div class="scroll-x"><table class="data-table" data-grid data-title="대구시 상장기업 기업설명회(IR) 공시">
+        <thead><tr><th>접수일</th><th>회사</th><th>목적·내용</th><th>IR 자료의 전망·목표 줄</th></tr></thead>
+        <tbody>{IR.map(r => <tr><td class="nw"><a href={r.url} rel="noopener">{ymd(r.rcept_dt)}</a></td><td class="nw"><a href={`/listed/${r.corp_code}/`}>{r.name}</a></td>
+          <td class="ex">{[r.purpose, r.content].filter(Boolean).join(' · ') || '—'}</td>
+          <td class="ex">{r.guidance ? r.guidance.split(' / ').map(g => <p>{g}</p>) : (r.pdf === '예' ? '(해당 줄 없음)' : '—')}{r.att_url && <p><a href={r.att_url} rel="noopener">IR 자료</a></p>}{!r.att_url && r.ir_page && <p class="meta">IR 자료 게재 {r.posted || ''} · 회사 IR 페이지 {r.ir_page}</p>}</td></tr>)}</tbody>
+      </table></div>
+    </>}
+  </section>)}
+
+  {part === 'future' && fut.length > 0 && (
+  <section id="future">
+    <div class="section-head"><h2>미래 산업 관련 공시</h2><span class="meta">최근 12개월 · {fut.length}건</span></div>
+    <p class="meta">위 회사들의 시설투자·공급계약·지분 취득·특허·주요경영사항 공시 가운데, 공시 원문에 미래 산업 낱말(반도체·2차전지·전기차·자율주행·로봇·인공지능·수소·바이오·방산 등)이 나온 것입니다. 분야는 원문에 나온 낱말로 붙인 것이라 그 사업의 주력이라는 뜻은 아닙니다. 근거 구절은 원문에서 낱말이 처음 나온 곳입니다.</p>
+    <p class="meta">분야별: {futFields.map(([k, n], i) => <>{i ? ' · ' : ''}{k} {n}건</>)}</p>
+    <div class="scroll-x"><table class="data-table" data-grid data-title="대구시 상장기업 미래 산업 관련 공시">
+      <thead><tr><th>접수일</th><th>회사</th><th>공시</th><th>분야</th><th>근거 구절</th></tr></thead>
+      <tbody>{fut.map(d => { const id = coId.get(d.corp_code); return (
+        <tr><td class="nw">{ymd(d.rcept_dt)}</td><td><a href={`/listed/${d.corp_code}/`}>{d.name}</a></td>
+          <td><a href={d.url} rel="noopener">{d.report_nm}</a></td><td>{d.fields}</td><td class="ex">{d.excerpt}</td></tr>); })}</tbody>
+    </table></div>
+  </section>)}
+
+  {part === 'employees' && empCorps.length > 0 && (
+  <section id="employees">
+    <div class="section-head"><h2>직원 현황</h2><span class="meta">사업보고서 · {empYears[0]}~{empLast} 사업연도 · {empCorps.length}곳</span></div>
+    <div class="cards">
+      <div class="card"><div class="big">{empSum.toLocaleString('ko-KR')}</div><div class="meta">{empLast}년 직원 합계({empLastRows.length}곳)</div></div>
+      <div class="card"><div class="big">{empC.toLocaleString('ko-KR')}</div><div class="meta">그 가운데 기간제</div></div>
+      <div class="card"><div class="big">{empF.toLocaleString('ko-KR')}</div><div class="meta">그 가운데 여성</div></div>
+    </div>
+    <div class="scroll-x"><table class="data-table" id="emp" data-grid data-title={`대구시 상장기업 직원 현황 ${empYears[0]}~${empLast}`}>
+      <thead>
+        <tr><th rowspan="2">회사</th><th colspan={empYears.length} class="c">직원 수(명)</th><th colspan="5" class="c">{empLast}년</th><th rowspan="2">공시</th></tr>
+        <tr>{empYears.map(y => <th class="n">{y}</th>)}<th class="n">정규직</th><th class="n">기간제</th><th class="n">여성</th><th class="n">평균 근속(년)</th><th class="n">1인 평균 급여(백만 원)</th></tr>
+      </thead>
+      <tbody>{empCorps.map(c => (
+        <tr>
+          <th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a>{c.cls && <span class="meta"> {c.cls}</span>}</th>
+          {empYears.map(y => <td class="n">{n0(c.y[y]?.employees)}</td>)}
+          <td class="n">{n0(c.L.regular)}</td><td class="n">{n0(c.L.contract)}</td><td class="n">{n0(c.L.female)}</td>
+          <td class="n">{c.L.avg_tenure ? Number(c.L.avg_tenure).toFixed(1) : '—'}</td><td class="n">{mil(c.L.avg_salary)}</td>
+          <td>{c.L.source_url ? <a href={c.L.source_url} rel="noopener">DART</a> : '—'}</td>
+        </tr>))}</tbody>
+    </table></div>
+    <p class="meta">사업보고서 '직원 등의 현황'의 회사 단위 값입니다. 공시 행(사업부문·성별)을 더했고, 평균 근속은 직원 수로 가중했습니다. 1인 평균 급여는 연간 급여 총액 ÷ 직원 수로, 공시마다 단위·기준(월·연)이 달라 공시 표의 '1인 평균 급여'와 다를 수 있습니다. 총액이 천원 단위로 공시된 곳은 원으로 바꿨습니다. 직원 수가 없는 해는 —. 가나다순이며 순위가 아닙니다.</p>
+  </section>)}
+
+  {part === 'rnd' && rndCorps.length > 0 && (
+  <section id="rnd">
+    <div class="section-head"><h2>연구개발비</h2><span class="meta">사업보고서 '연구개발 활동' 표 · {rndYears[0]}~{rndLast} · {rndCorps.length}곳</span></div>
+    <div class="cards">
+      <div class="card"><div class="big">{(rndSum / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 0 })}억</div><div class="meta">{rndLast}년 연구개발비 합계({RND.filter(r => r.year === rndLast).length}곳)</div></div>
+    </div>
+    <div class="scroll-x"><table class="data-table" data-grid data-title={`대구시 상장기업 연구개발비 ${rndYears[0]}~${rndLast}`}>
+      <thead><tr><th rowspan="2">회사</th><th colspan={rndYears.length} class="c">연구개발비(억 원)</th><th colspan={rndYears.length} class="c">매출액 대비(%)</th><th rowspan="2">공시</th></tr>
+        <tr>{rndYears.map(y => <th class="n">{y}</th>)}{rndYears.map(y => <th class="n">{y}</th>)}</tr></thead>
+      <tbody>{rndCorps.map(c => (
+        <tr><th scope="row"><a href={`/listed/${c.code}/`}>{c.name}</a></th>
+          {rndYears.map(y => <td class="n">{eokS(c.y[y]?.rnd_won)}</td>)}
+          {rndYears.map(y => <td class="n">{c.y[y]?.ratio_pct ? Number(c.y[y].ratio_pct).toFixed(2) : '—'}</td>)}
+          <td><a href={c.url} rel="noopener">DART</a></td></tr>))}</tbody>
+    </table></div>
+    <p class="meta">최근 사업보고서 원문의 '연구개발 활동' 표에서 연구개발비용 합계 행과 매출액 대비 비율 행을 읽어 표 위 단위(원·천원·백만원)로 원 환산했습니다. 비율은 공시 값 그대로(회사마다 별도·연결 기준이 다를 수 있음). 표를 찾지 못한 회사({empCorps.length - rndCorps.length}곳 남짓)는 싣지 않았습니다. 가나다순이며 순위가 아닙니다.</p>
+  </section>)}
+
+  {part === 'invest' && invCorps.length > 0 && (
+  <section id="invest">
+    <div class="section-head"><h2>타법인 출자 현황</h2><span class="meta">사업보고서 · {invCorps.length}곳 · {INV.length}건</span></div>
+    <div class="cards">
+      {invPurpose.slice(0, 4).map(([k, n]) => <div class="card"><div class="big">{n}</div><div class="meta">{k}</div></div>)}
+      <div class="card"><div class="big">{invLocal}</div><div class="meta">피출자 법인 이름이 대구 기업과 같은 건</div></div>
+    </div>
+    <p class="meta">회사를 누르면 출자한 법인 목록이 펼쳐집니다(기말 지분율 높은 순). 출자 목적은 공시 문구를 경영참여·사업 관련(시장 진출·생산·개발 등)·단순·일반투자·조합 출자·지분 취득·출자로 묶었습니다. '대구 기업과 같은 건'은 피출자 법인 이름이 기업 사전·대구 본사 공시 기업 이름과 같은 경우로, 같은 이름의 다른 회사일 수 있습니다. 장부가액은 회사마다 공시 단위가 달라 싣지 않았습니다(원문 링크).</p>
+    <div class="inv-list">{invCorps.map(c => (
+      <details class="stat-details"><summary>{c.name} <span class="meta">{c.rs.length}건 · {c.year}년</span></summary>
+        <div class="scroll-x"><table class="data-table compact" data-title={`${c.name} 타법인 출자 현황 ${c.year}`}>
+          <thead><tr><th>피출자 법인</th><th>목적</th><th class="n">기말 지분율(%)</th><th>최초 취득</th></tr></thead>
+          <tbody>{c.rs.map(r => <tr><td>{r.inv_name}{local.has(normName(r.inv_name)) && <span class="meta"> · 대구</span>}</td><td>{purposeOf(r.purpose)}</td><td class="n">{r.end_share_pct || '—'}</td><td class="nw">{r.first_acq_date || '—'}</td></tr>)}</tbody>
+        </table></div>
+        <p class="meta"><a href={`/listed/${c.code}/`}>회사 페이지</a> · <a href={c.url} rel="noopener">사업보고서 원문</a></p>
+      </details>))}</div>
+  </section>)}
+
+  {part === 'fin' && (
+  <section id="dist">
+    <div class="section-head"><h2>분포</h2></div>
+    <div class="two">
+      <div class="scroll-x"><table class="data-table" data-title="대구시 상장기업 산업별 수">
+        <thead><tr><th>산업</th><th class="n">회사 수</th></tr></thead>
+        <tbody>{byGroup.map(([k, n]) => <tr><th scope="row">{k}</th><td class="n">{n}</td></tr>)}</tbody>
+      </table></div>
+      <div class="scroll-x"><table class="data-table" data-title="대구시 상장기업 구·군별 수">
+        <thead><tr><th>구·군</th><th class="n">회사 수</th></tr></thead>
+        <tbody>{byDist.map(([k, n]) => <tr><th scope="row">{k}</th><td class="n">{n}</td></tr>)}</tbody>
+      </table></div>
+    </div>
+  </section>)}
+  {part === 'fin' && unlisted.length > 0 && (
+  <section id="unlisted">
+    <div class="section-head"><h2>사업보고서를 내는 비상장 회사</h2><span class="meta">{unlisted.length}곳</span></div>
+    <p class="meta">상장하지 않았지만 사업보고서를 DART 에 내는 대구 본사 회사입니다(위 표·합계에는 넣지 않음). 상장 폐지된 회사가 들어 있을 수 있습니다.</p>
+    <p>{unlisted.map((c, i) => <>{i ? ' · ' : ''}<a href={`/listed/${c.code}/`}>{c.name}</a></>)}</p>
+  </section>)}
+  </>)}
+  <p class="meta">출처: 금융감독원 전자공시시스템(DART) OpenDART — 단일회사 주요계정(분기·반기·사업보고서), 공시검색(사업보고서 제출 회사, 확장 공시, 실적 공시), 공시서류원본(미래 산업 낱말 확인), 사업보고서 직원 현황·타법인 출자 현황·연구개발 활동 표, 기업개황(본사 주소·업종 코드·상장 구분), 단일회사 주요계정(사업보고서). 사업보고서를 내지 않는 비상장 기업은 들어 있지 않습니다. 대표자 등 개인 정보는 받지 않습니다.</p>
+</Base>
+<script>
+  // 옛 한 페이지 시절의 앵커(/listed/#quarter 등)를 하위 페이지로(2026-10-12 분할)
+  const OLD: Record<string, string> = { quarter: 'quarter', perf: 'perf', notes: 'notes', future: 'future', employees: 'employees', rnd: 'rnd', invest: 'invest' };
+  const h = location.hash.slice(1); if (location.pathname === '/listed/' && OLD[h]) location.replace(`/listed/${OLD[h]}/`);
+  const q = document.getElementById('q') as HTMLInputElement | null;
+  const cls = document.getElementById('cls') as HTMLSelectElement | null;
+  const grp = document.getElementById('grp') as HTMLSelectElement | null;
+  const count = document.getElementById('count');
+  const rows = [...document.querySelectorAll<HTMLTableRowElement>('#fin tbody tr')];
+  const apply = () => {
+    const t = (q?.value || '').trim().toLowerCase();
+    let n = 0;
+    for (const r of rows) {
+      const ok = (!t || (r.dataset.name || '').toLowerCase().includes(t)) && (!cls?.value || r.dataset.cls === cls.value) && (!grp?.value || r.dataset.grp === grp.value);
+      r.hidden = !ok; if (ok) n++;
+    }
+    if (count) count.textContent = `${n}곳`;
+  };
+  [q, cls, grp].forEach(el => el?.addEventListener('input', apply));
+</script>
+<style>
+  .cards { display: flex; flex-wrap: wrap; gap: var(--s2); margin: var(--s2) 0; }
+  .card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; min-width: 120px; background: var(--bg); }
+  .card .big { font-size: 1.5rem; font-weight: 700; }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: var(--s2) 0; }
+  .tools input, .tools select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+  .tools input { flex: 1 1 200px; }
+  th.c { text-align: center; }
+  td.nw { white-space: nowrap; }
+  td.ex { font-size: var(--small); color: var(--muted); min-width: 16em; }
+  .jump { margin: var(--s2) 0; }
+  #fin th, #fin td { white-space: nowrap; vertical-align: top; }
+  #perf td.wrap { min-width: 14em; }
+  #notes td.ex { min-width: 18em; }
+  #notes td.ex p { margin: 0 0 .35em; }
+  #fin td.wrap { white-space: normal; min-width: 12em; max-width: 22em; font-size: var(--small); }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3); }
+</style>

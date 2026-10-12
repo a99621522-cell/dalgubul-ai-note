@@ -9,11 +9,19 @@ const FILES = REPORT_FILES;
 ---
 <Base title="리포트" description={`리포트 자료 내려받기 ${FILES.length}건(PDF·Word·한글).`} current="policy">
   <div class="section-head"><h1>리포트</h1><span class="meta">자료 {FILES.length}건</span></div>
-  <ul class="files">
+  <ul class="rlist">
     {FILES.map(f => (
       <li>
-        <span class="t">{f.title}</span>
-        <span class="dl">{f.pdf && <><a href={f.pdf} download={`${f.name}.pdf`}>PDF 내려받기</a> <span class="meta">{f.pdfSize}</span> · </>}<a href={f.href} download={`${f.name}.docx`}>Word 내려받기</a> <span class="meta">{f.size}</span>{f.hwpx && <> · <a href={f.hwpx} download={`${f.name}.hwpx`}>한글 내려받기</a> <span class="meta">{f.hwpxSize}</span></>}</span>
+        <div class="r-main">
+          <a class="r-title" href={`/policy/${f.slug}/`}>{f.title}</a>
+          <p class="r-sum">{f.summary}</p>
+          <p class="r-meta"><span>{f.date.replaceAll('-', '. ')}.</span>{f.topics.map(t => <span class="chip">{t}</span>)}</p>
+        </div>
+        <div class="r-dl" aria-label={`${f.name} 내려받기`}>
+          {f.pdf && <a href={f.pdf} download={`${f.name}.pdf`}><b>PDF</b> {f.pdfSize}</a>}
+          {f.hwpx && <a href={f.hwpx} download={`${f.name}.hwpx`}><b>한글</b> {f.hwpxSize}</a>}
+          <a href={f.href} download={`${f.name}.docx`}><b>Word</b> {f.size}</a>
+        </div>
       </li>
     ))}
   </ul>
@@ -29,6 +37,19 @@ const FILES = REPORT_FILES;
   </section>
 
   <style>
+    .rlist { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+    .rlist > li { display: grid; grid-template-columns: 1fr auto; gap: var(--s1) var(--s3); padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+    @media (max-width: 767px) { .rlist > li { grid-template-columns: 1fr; } }
+    .r-title { font-size: 1.15rem; font-weight: 700; color: var(--ink); text-decoration: none; }
+    .r-title:hover { color: var(--primary); text-decoration: underline; }
+    .r-sum { margin: 6px 0 0; color: var(--muted); font-size: var(--small); }
+    .r-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 8px 0 0; font-size: var(--small); color: var(--muted); }
+    .r-meta .chip { display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border: 1px solid var(--band-line); border-radius: 999px; background: var(--band); color: var(--primary-deep); }
+    .r-dl { display: flex; flex-direction: column; gap: 4px; min-width: 9.5em; }
+    @media (max-width: 767px) { .r-dl { flex-direction: row; flex-wrap: wrap; } }
+    .r-dl a { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); font-size: var(--small); color: var(--muted); text-decoration: none; }
+    .r-dl a b { color: var(--ink); min-width: 2.6em; }
+    .r-dl a:hover { border-color: var(--primary); color: var(--primary); }
     ul.files { list-style: none; padding: 0; }
     ul.files li { padding: var(--s2) 0; border-bottom: 1px solid var(--line); }
     ul.files .t { display: block; font-weight: 600; }

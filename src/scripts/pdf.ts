@@ -5,8 +5,10 @@
  * 한글 글자를 빠뜨려(2026-10-01 확인: '대구' 등이 빈칸) 쓰지 않는다. 굵은 글씨는 같은 글꼴을 조금 비켜 두 번 그려 낸다.
  * 입력은 hwpx.ts 와 같은 Block(p·table)이라 호출하는 쪽은 buildHwpx 대신 buildPdf 만 부르면 된다.
  */
-import { PDFDocument, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
+import type { PDFFont, PDFPage, RGB } from 'pdf-lib';
+// pdf-lib·fontkit(약 1.1MB)는 PDF 를 만들 때만 받는다(리디자인 v3 감사 2026-10-12: 공통 표 도구가 정적 import 해 모든 페이지가 받던 것).
+// 색 객체는 pdf-lib rgb() 와 같은 모양({type:'RGB',…})이라 라이브러리 없이 만든다.
+const rgb = (red: number, green: number, blue: number) => ({ type: 'RGB', red, green, blue }) as unknown as RGB;
 import type { Block, Cell } from './hwpx';
 
 export { p, table, safeName, today, type Block } from './hwpx';
@@ -68,7 +70,7 @@ function wrap(text: string, font: PDFFont, size: number, width: number): string[
 }
 
 export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: boolean } = {}): Promise<Blob> {
-  const reg = await loadFont();
+  const [reg, { PDFDocument }, { default: fontkit }] = await Promise.all([loadFont(), import('pdf-lib'), import('@pdf-lib/fontkit')]);
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
   const F = await doc.embedFont(reg, { subset: false }), B = F;

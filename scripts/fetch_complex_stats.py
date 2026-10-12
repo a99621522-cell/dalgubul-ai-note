@@ -3,7 +3,7 @@
 
 공공데이터포털 파일데이터(유형별: 국가·일반·도시첨단·농공 …)를 받는다. 포털 안내(2026-09-21 판): '25년 3분기부터 생산액·수출액·고용
 항목 공표를 일시 중지'(직접 조사 → DB 기반 산출 전환) — 최신 판에는 면적·입주·가동업체만 있다. 그래서 생산액이 실린 옛 분기 판은
-웨이백 머신(web.archive.org)에 남은 자료 페이지 스냅샷에서 첨부 id(atchFileId)를 뽑아 포털에서 내려받는다(nps_backfill.py 와 같은 방식).
+포털 오픈API(odcloud) 문서에 남은 판별 uddi 를 포털에 물어 그 판의 첨부 id(atchFileId)로 내려받는다(웨이백은 --wayback — 2026-10-12 시험에서 2024 스냅샷엔 id 가 없었다).
   python3 scripts/fetch_complex_stats.py --list     # 데이터셋·스냅샷·첨부 id 만 출력
   python3 scripts/fetch_complex_stats.py            # 받아 대구 행만 data/complex_stats/<YYYYQn>_<유형>.csv + index.json
 전국 원본은 저장하지 않는다. 값은 원본 그대로(단위는 열 이름에 적힌 대로), 평가 없음. 표준 라이브러리 + requests.
@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "complex_stats"
 PAGE = "https://www.data.go.kr/data/{pk}/fileData.do"
 CDX = "https://web.archive.org/cdx/search/cdx"
+OAS = "https://infuser.odcloud.kr/oas/docs?namespace={pk}/v1"
 WB = "https://web.archive.org/web/{ts}id_/{url}"
 DL = "https://www.data.go.kr/cmm/cmm/fileDownload.do"
 DL_NEW = "https://www.data.go.kr/tcs/dss/selectFileDataDownload.do"
@@ -141,6 +142,7 @@ DEADLINE = time.time() + 40 * 60   # 러너 한도 안에서 끝내고 받은 �
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--wayback", action="store_true", help="웨이백 스냅샷도 본다(느림, 2026-10-12 시험: 2024 스냅샷에 첨부 id 없음)")
     a = ap.parse_args(argv)
     sess = requests.Session()
     OUT.mkdir(parents=True, exist_ok=True)
@@ -150,25 +152,40 @@ def main(argv: list[str]) -> int:
     sets = find_datasets(sess)
     print("데이터셋:", sets)
     for pk, typ in sets.items():
+        if not re.search(r"일반|농공|국가|도시첨단|외국인", typ):   # 대구 단지 행이 있는 유형만(요약·시도별·신규지정 등은 건너뜀)
+            continue
         atchs: list[str] = []
         live = get(sess, PAGE.format(pk=pk), timeout=60)
         if live is not None and live.status_code == 200:
             u, at = ids_in(live.text)
             atchs += at
-        snaps = snapshots(sess, pk)
-        print(f"[{pk} {typ}] 웨이백 스냅샷 {len(snaps)}개: {snaps[:20]}")
-        for ts in snaps:
+        # 옛 분기 판: 포털 오픈API(odcloud) 문서에는 파일을 올릴 때마다 생긴 uddi 경로가 모두 남는다(키 없이 문서만 읽음).
+        # 옛 uddi 를 포털에 물으면 그 판의 첨부 id 가 오고, 교체된 옛 첨부도 내려받힌다(nps_backfill.py 와 같은 관찰, 2026-10-06)
+        doc = get(sess, OAS.format(pk=pk), timeout=60)
+        uddis = []
+        if doc is not None and doc.status_code == 200:
+            uddis = list(dict.fromkeys(re.findall(r"uddi:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", doc.text)))
+            names = re.findall(r'"summary"\s*:\s*"([^"]+)"', doc.text)
+            print(f"[{pk} {typ}] 오픈API 문서 uddi {len(uddis)}개 · 이름 {names[:12]}")
+        else:
+            print(f"[{pk} {typ}] 오픈API 문서 못 받음: {getattr(doc, 'status_code', '접속 실패')}")
+        for uu in uddis:
             if time.time() > DEADLINE:
-                print("   시간 한도 — 스냅샷 확인 중단"); break
-            r = get(sess, WB.format(ts=ts, url=PAGE.format(pk=pk)))
-            if r is None or r.status_code != 200:
-                continue
-            u, at = ids_in(r.text)
-            if not at and u:
-                at = [x for x in (resolve(sess, pk, uu) for uu in u[:2]) if x]
-            print(f"   {ts}: uddi {u[:1]} atch {at[:3]}")
-            atchs += at
-            time.sleep(2)
+                print("   시간 한도 — 중단"); break
+            at = resolve(sess, pk, uu)
+            print(f"   {uu} → {at or '첨부 id 없음'}")
+            if at:
+                atchs.append(at)
+            time.sleep(1)
+        if a.wayback:
+            for ts in snapshots(sess, pk):
+                if time.time() > DEADLINE:
+                    break
+                r = get(sess, WB.format(ts=ts, url=PAGE.format(pk=pk)))
+                if r is None or r.status_code != 200:
+                    continue
+                atchs += ids_in(r.text)[1]
+                time.sleep(2)
         atchs = list(dict.fromkeys(atchs))
         print(f"[{pk} {typ}] 첨부 id {len(atchs)}개: {atchs}")
         if a.list:

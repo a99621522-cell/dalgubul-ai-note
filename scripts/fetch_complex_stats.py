@@ -24,13 +24,13 @@ DL = "https://www.data.go.kr/cmm/cmm/fileDownload.do"
 DL_NEW = "https://www.data.go.kr/tcs/dss/selectFileDataDownload.do"
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"}
 # 포털 검색(2026-10-12)으로 확인한 번호. 나머지 유형은 --search 로 찾아 더한다
-KNOWN = {"15085886": "일반", "15085878": "농공", "15085876": "노후"}
+KNOWN = {"15085886": "일반", "15085878": "농공"}   # 노후(15085876)는 다른 유형과 겹쳐 받지 않는다
 SEARCH_WORDS = ["전국산업단지현황통계"]
 
 
 def get(sess: requests.Session, url: str, **kw) -> requests.Response | None:
-    to = kw.pop("timeout", 90)
-    for wait in (0, 15, 40, 90):   # 웨이백은 429 를 자주 돌려준다
+    to = kw.pop("timeout", 40)
+    for wait in (0, 20):   # 웨이백은 429 를 자주 돌려준다(한 번만 다시)
         if wait:
             time.sleep(wait)
         try:
@@ -53,7 +53,7 @@ def find_datasets(sess: requests.Session) -> dict[str, str]:
             for pk, title, _ in search(w, sess, pages=2):
                 t = re.sub(r"\s+", "", title)
                 m = re.search(r"전국산업단지현황통계_?(\S+)", t)
-                if "산업단지공단" in t and m:
+                if "산업단지공단" in t and m and "노후" not in m.group(1):
                     sets.setdefault(pk, m.group(1))
     except Exception as e:  # noqa: BLE001
         print(f"검색 실패: {e}")
@@ -66,9 +66,13 @@ def snapshots(sess: requests.Session, pk: str) -> list[str]:
     if r is None or r.status_code != 200:
         return []
     try:
-        return [row[1] for row in r.json()[1:]]
+        ts = [row[1] for row in r.json()[1:]]
     except ValueError:
         return []
+    month: dict[str, str] = {}
+    for t in ts:   # 달마다 마지막 스냅샷 하나만(분기 파일은 석 달에 한 번 바뀐다)
+        month[t[:6]] = t
+    return sorted(month.values(), reverse=True)
 
 
 def ids_in(html: str) -> tuple[list[str], list[str]]:
@@ -131,6 +135,9 @@ def daegu_rows(text: str) -> tuple[list[str], list[list[str]]]:
     return head, [[c.strip() for c in r] for r in rows[1:] if len(r) > si and r[si].strip().startswith("대구")]
 
 
+DEADLINE = time.time() + 40 * 60   # 러너 한도 안에서 끝내고 받은 것은 저장한다
+
+
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", action="store_true")
@@ -151,6 +158,8 @@ def main(argv: list[str]) -> int:
         snaps = snapshots(sess, pk)
         print(f"[{pk} {typ}] 웨이백 스냅샷 {len(snaps)}개: {snaps[:20]}")
         for ts in snaps:
+            if time.time() > DEADLINE:
+                print("   시간 한도 — 스냅샷 확인 중단"); break
             r = get(sess, WB.format(ts=ts, url=PAGE.format(pk=pk)))
             if r is None or r.status_code != 200:
                 continue
@@ -159,7 +168,7 @@ def main(argv: list[str]) -> int:
                 at = [x for x in (resolve(sess, pk, uu) for uu in u[:2]) if x]
             print(f"   {ts}: uddi {u[:1]} atch {at[:3]}")
             atchs += at
-            time.sleep(4)
+            time.sleep(2)
         atchs = list(dict.fromkeys(atchs))
         print(f"[{pk} {typ}] 첨부 id {len(atchs)}개: {atchs}")
         if a.list:

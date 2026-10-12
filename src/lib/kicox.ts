@@ -36,16 +36,28 @@ export const complexTrend = () => (tc ??= (readCsv('data/complexes/trend.csv') a
 /** 관리기관 이름 */
 export const SOURCE_NAME: Record<string, string> = { seongseo: '대구성서산업단지관리공단' };
 export const qLabelK = (q: string) => (q ? `${q.slice(0, 4)}년 ${q.slice(5)}분기` : '');
-/** 기업 사전 단지 이름 → 최근 분기 생산·수출(백만원, 하위 단지 합) */
-export function prodByFo(): Map<string, { quarter: string; prod: number; exp: number; parts: string[] }> {
+export type MonthRow = { source: string; month: string; prod_mil: string; export_kusd: string; workers: string; issue: string; doc_url: string };
+let mc: MonthRow[] | null = null;
+/** 월간 소식지(달성1차산업단지 뉴스)의 'N월 중 현황' — data/complexes/monthly.csv */
+export const complexMonthly = () => (mc ??= (readCsv('data/complexes/monthly.csv') as MonthRow[]).sort((a, b) => a.month.localeCompare(b.month)));
+/** 월간 자료 관리기관 → 기업 사전 단지 이름 */
+const MONTHLY_FO: Record<string, string> = { dalin: '달성일반산업단지' };
+SOURCE_NAME.dalin = '달성1차산업단지관리공단';
+/** 기업 사전 단지 이름 → 가장 최근 생산(백만원, 하위 단지 합)과 그 기간 이름(분기 또는 월) */
+export function prodByFo(): Map<string, { period: string; prod: number; parts: string[] }> {
   const rows = complexProd();
   const latest = rows.reduce((m, r) => (r.quarter > m ? r.quarter : m), '');
-  const out = new Map<string, { quarter: string; prod: number; exp: number; parts: string[] }>();
+  const out = new Map<string, { period: string; prod: number; parts: string[] }>();
   for (const r of rows) {
     if (!r.fo_name || r.quarter !== latest) continue;
-    const o = out.get(r.fo_name) ?? { quarter: r.quarter, prod: 0, exp: 0, parts: [] };
-    o.prod += Number(r.prod_q_mil); o.exp += Number(r.export_q_mil); o.parts.push(r.complex);
+    const o = out.get(r.fo_name) ?? { period: `${r.quarter.slice(2, 4)}년 ${r.quarter.slice(5)}분기`, prod: 0, parts: [] };
+    o.prod += Number(r.prod_q_mil); o.parts.push(r.complex);
     out.set(r.fo_name, o);
+  }
+  const mrows = complexMonthly();
+  for (const [src, fo] of Object.entries(MONTHLY_FO)) {
+    const last = mrows.filter(r => r.source === src).at(-1);
+    if (last && !out.has(fo)) out.set(fo, { period: `${last.month.slice(2, 4)}년 ${Number(last.month.slice(5))}월`, prod: Number(last.prod_mil), parts: [src] });
   }
   return out;
 }

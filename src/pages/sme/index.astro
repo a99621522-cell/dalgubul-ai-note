@@ -1,0 +1,99 @@
+---
+import Base from '../../layouts/Base.astro';
+import { smeList, SME_GROUPS } from '../../lib/sme';
+/** /sme/ — 메뉴 '지역중소기업'(운영자 지시 2026-10-12 '지역중소기업명단은 별도의 메뉴로 올리면 안되?').
+ *  대구광역시가 공공데이터포털에 공개한 지역중소기업 명단(15129730)을 이름·업종 그대로 보인다. 주소·업종 코드가 없어 기업 사전에 넣지 않은 명단이다.
+ *  처음 200곳만 HTML 로, 검색·업종 묶음은 /sme-index.json 을 받아 브라우저에서 거른다. 평가·순위 없음, 가나다순. */
+const S = smeList();
+const n = (v: number) => v.toLocaleString('ko-KR');
+const counts = SME_GROUPS.map(g => ({ ...g, count: S.rows.filter(r => r.groups.includes(g.key)).length }));
+const linked = S.rows.filter(r => r.id).length;
+const FIRST = 200;
+---
+<Base title="대구 지역중소기업 명단" description={`대구광역시 지역중소기업 명단 ${n(S.rows.length)}곳 — 기업명·업종(공공데이터포털, ${S.asOf} 기준). 업종 묶음·이름으로 찾기.`} current="sme">
+  <div class="section-head"><h1>지역중소기업 명단</h1><span class="meta">{S.asOf} 기준 · {n(S.rows.length)}곳</span></div>
+  <p class="lede">대구광역시가 공공데이터포털에 공개한 「지역중소기업 명단」입니다. 명단에는 <b>기업명과 업종만</b> 있고 주소·업종 코드·종사자 수는 없어, 공장등록·국민연금 자료로 만든 <a href="/companies/">기업 사전</a>과 따로 보입니다. 도소매·건설·서비스업도 명단 그대로 싣습니다.</p>
+
+  <section aria-labelledby="g-h">
+    <h2 id="g-h">업종 묶음별 기업 수</h2>
+    <div class="scroll-x"><table class="data-table">
+      <caption class="visually-hidden">업종 묶음별 지역중소기업 수</caption>
+      <thead><tr><th scope="col">업종 묶음</th><th scope="col" class="num">기업 수(곳)</th></tr></thead>
+      <tbody>{counts.map(g => <tr><th scope="row"><a href={`?g=${g.key}#list`} data-g={g.key}>{g.name}</a></th><td class="num">{n(g.count)}</td></tr>)}</tbody>
+    </table></div>
+    <p class="note">업종은 명단에 적힌 글자 그대로이며 대분류·중분류가 섞여 있어 낱말로 묶었습니다. 업종을 여러 개 적은 기업은 묶음마다 셉니다(합계가 전체보다 큼). 자료: {S.source}</p>
+  </section>
+
+  <section id="list" aria-labelledby="l-h">
+    <h2 id="l-h">명단</h2>
+    <form class="filters" role="search" onsubmit="return false">
+      <label>이름 <input id="sq" type="search" placeholder="기업 이름" autocomplete="off" /></label>
+      <label>업종 묶음 <select id="sg"><option value="">전체</option>{SME_GROUPS.map(g => <option value={g.key}>{g.name}</option>)}</select></label>
+      <label class="chk"><input id="sl" type="checkbox" /> 기업 사전에 있는 곳만</label>
+    </form>
+    <p class="meta" id="scount" aria-live="polite">{n(S.rows.length)}곳 중 처음 {FIRST}곳 · 가나다순</p>
+    <div class="scroll-x"><table class="data-table" id="stable">
+      <thead><tr><th scope="col">기업명</th><th scope="col">업종(명단 그대로)</th><th scope="col">기업 사전</th></tr></thead>
+      <tbody id="sbody">{S.rows.slice(0, FIRST).map(r => <tr><td>{r.name}</td><td>{r.sector || '—'}</td><td>{r.id ? <a href={`/companies/${r.id}/`}>보기</a> : ''}</td></tr>)}</tbody>
+    </table></div>
+    <p><button type="button" id="smore" class="btn secondary">더 보기</button></p>
+  </section>
+
+  <section class="notes">
+    <h2>읽을 때 주의</h2>
+    <ul>
+      <li>'기업 사전' 칸은 회사 이름이 기업 사전의 한 곳과 같을 때만 연결합니다({n(linked)}곳). 이름이 같은 다른 회사일 수 있고, 같은 이름이 기업 사전에 여럿이면 연결하지 않습니다.</li>
+      <li>개인 성명으로 보이는 이름(대표자 이름으로 등록한 개인사업자) {n(S.excluded)}건은 개인정보 원칙에 따라 싣지 않습니다(원본 {n(S.total)}행).</li>
+      <li>명단에 실린 사실만 옮깁니다. 지금 영업 중인지, 어디에 있는지는 이 명단으로 알 수 없습니다.</li>
+      <li>출처: <a href="https://www.data.go.kr/data/15129730/fileData.do" rel="noopener">공공데이터포털 대구광역시 지역중소기업 명단</a>(파일데이터 15129730), {S.asOf} 받음.</li>
+    </ul>
+  </section>
+
+  <script>
+    const PAGE = 200;
+    type Row = [string, string, string, string];
+    let rows: Row[] | null = null, shown = PAGE;
+    const $ = (id: string) => document.getElementById(id)!;
+    const q = $('sq') as HTMLInputElement, g = $('sg') as HTMLSelectElement, l = $('sl') as HTMLInputElement;
+    const body = $('sbody'), count = $('scount'), more = $('smore') as HTMLButtonElement;
+    const norm = (s: string) => s.replace(/\(주\)|㈜|주식회사|\s/g, '').toLowerCase();
+    const p = new URLSearchParams(location.search);
+    if (p.get('q')) q.value = p.get('q')!;
+    if (p.get('g')) g.value = p.get('g')!;
+    if (p.get('linked')) l.checked = true;
+    async function load() { if (!rows) rows = await (await fetch('/sme-index.json')).json(); return rows!; }
+    function cell(tr: HTMLElement, text: string) { const td = document.createElement('td'); td.textContent = text; tr.appendChild(td); return td; }
+    async function render() {
+      const all = await load();
+      const k = norm(q.value.trim());
+      const list = all.filter(r => (!k || norm(r[0]).includes(k)) && (!g.value || r[2].split(';').includes(g.value)) && (!l.checked || r[3]));
+      body.replaceChildren(...list.slice(0, shown).map(r => {
+        const tr = document.createElement('tr'); cell(tr, r[0]); cell(tr, r[1] || '—');
+        const td = cell(tr, ''); if (r[3]) { const a = document.createElement('a'); a.href = `/companies/${r[3]}/`; a.textContent = '보기'; td.appendChild(a); }
+        return tr;
+      }));
+      count.textContent = `${list.length.toLocaleString('ko-KR')}곳${list.length > shown ? ` 중 처음 ${shown.toLocaleString('ko-KR')}곳` : ''} · 가나다순`;
+      more.hidden = list.length <= shown;
+      const u = new URL(location.href);
+      for (const [key, v] of [['q', q.value.trim()], ['g', g.value], ['linked', l.checked ? '1' : '']]) v ? u.searchParams.set(key, v) : u.searchParams.delete(key);
+      history.replaceState(null, '', u);
+    }
+    let t: number | undefined;
+    q.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(() => { shown = PAGE; render(); }, 200); });
+    g.addEventListener('change', () => { shown = PAGE; render(); });
+    l.addEventListener('change', () => { shown = PAGE; render(); });
+    more.addEventListener('click', () => { shown += PAGE; render(); });
+    document.querySelectorAll<HTMLAnchorElement>('a[data-g]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); g.value = a.dataset.g!; shown = PAGE; render(); $('list').scrollIntoView(); }));
+    if (q.value || g.value || l.checked) render();
+  </script>
+  <style>
+    .lede { margin: 0 0 var(--s3); }
+    .filters { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); align-items: end; margin: 0 0 var(--s2); }
+    .filters label { display: grid; gap: 2px; font-size: var(--small); color: var(--muted); }
+    .filters label.chk { display: flex; align-items: center; gap: 6px; }
+    .filters input[type=search], .filters select { min-height: 40px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 6px; font: inherit; color: var(--ink); background: var(--bg); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .note { font-size: var(--small); color: var(--muted); }
+    .notes ul { padding-left: 1.2em; font-size: var(--small); color: var(--muted); }
+  </style>
+</Base>

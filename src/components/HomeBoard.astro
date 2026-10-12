@@ -21,7 +21,7 @@ const ups = [
 ---
 <div class="board2">
   <section aria-labelledby="h-rep">
-    <div class="b-head"><h2 id="h-rep">리포트</h2><a href="/policy/">전체 보기</a></div>
+    <div class="b-head"><h2 id="h-rep">리포트</h2><a href="/policy/">리포트 전체 보기</a></div>
     <ul class="b-list">{REPORT_FILES.slice(0, 5).map(f => <li><a href={`/policy/${f.slug}/`}>{f.title}</a><span class="b-date">{f.date.replaceAll('-', '.')}</span></li>)}</ul>
   </section>
   <section aria-labelledby="h-up">

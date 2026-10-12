@@ -22,3 +22,30 @@ export function kicoxByFo(): Map<string, KicoxSum> {
   }
   return out;
 }
+
+/** 산업단지 관리기관이 누리집에 공개한 분기 생산·수출(scripts/fetch_complex_reports.py → parse_complex_reports.py, 운영자 지시 2026-10-12 '산단별 매출액').
+ *  production.csv = 산단공 양식 「단지별 입주현황」(하위 단지별, 백만원·십억원), trend.csv = 관리기관 경기동향 보고서의 분기 합계(백만원). 값은 문서 그대로. */
+export type ProdRow = { source: string; quarter: string; complex: string; total: string; fo_name: string; firms: string; operating: string; operating_rate: string;
+  employment_prev: string; employment: string; prod_prev_bil: string; prod_bil: string; export_prev_bil: string; export_bil: string;
+  prod_plan_mil: string; prod_q_mil: string; prod_cum_mil: string; export_plan_mil: string; export_q_mil: string; export_cum_mil: string; doc_url: string };
+export type TrendRow = { source: string; quarter: string; operating_rate: string; prod_mil: string; domestic_mil: string; export_mil: string; firms: string; workers: string; doc_url: string };
+let pc: ProdRow[] | null = null;
+let tc: TrendRow[] | null = null;
+export const complexProd = () => (pc ??= readCsv('data/complexes/production.csv') as ProdRow[]);
+export const complexTrend = () => (tc ??= (readCsv('data/complexes/trend.csv') as TrendRow[]).sort((a, b) => a.quarter.localeCompare(b.quarter)));
+/** 관리기관 이름 */
+export const SOURCE_NAME: Record<string, string> = { seongseo: '대구성서산업단지관리공단' };
+export const qLabelK = (q: string) => (q ? `${q.slice(0, 4)}년 ${q.slice(5)}분기` : '');
+/** 기업 사전 단지 이름 → 최근 분기 생산·수출(백만원, 하위 단지 합) */
+export function prodByFo(): Map<string, { quarter: string; prod: number; exp: number; parts: string[] }> {
+  const rows = complexProd();
+  const latest = rows.reduce((m, r) => (r.quarter > m ? r.quarter : m), '');
+  const out = new Map<string, { quarter: string; prod: number; exp: number; parts: string[] }>();
+  for (const r of rows) {
+    if (!r.fo_name || r.quarter !== latest) continue;
+    const o = out.get(r.fo_name) ?? { quarter: r.quarter, prod: 0, exp: 0, parts: [] };
+    o.prod += Number(r.prod_q_mil); o.exp += Number(r.export_q_mil); o.parts.push(r.complex);
+    out.set(r.fo_name, o);
+  }
+  return out;
+}

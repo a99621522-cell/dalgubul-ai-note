@@ -1,28 +1,18 @@
 ---
-/** 첫 화면 머리: 두 줄 표제 → 인기 검색어 → 큰 검색창(통합 검색 /search/) → 사업 DB 건수.
- *  기업마당(bizinfo.go.kr) 첫 화면을 본보기로 한 배치(운영자 지시 2026-09-27). 숫자는 빌드 때 사업 DB 에서 센다. */
-import { programs, companies } from '../lib/csv';
-const firms = companies().length;
-const national = programs().filter(p => p.corp).length;
-const total = national;
-const asOf = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\.\s?/g, (m, i, s) => (i === s.length - 1 ? '' : '. '));
+/** 첫 화면 머리(리디자인 v3 2단계 2026-10-12, 운영자 '디자인 진행해'): 옅은 청색 띠 위에 왼쪽 정렬 제목 → 큰 검색창 → 인기 검색어.
+ *  이전의 가운데 정렬 슬로건('…연결합니다')은 감사 H1(마케팅형 히어로)에 따라 뺐다. 검색은 통합 검색 /search/ 그대로. */
 const HOT = ['자동차부품', '성서산단', '달성군', '의료기기', '로봇', '섬유'];
 ---
-<section class="home-hero" aria-labelledby="h-hero">
-  <p class="eyebrow">대구 산업·기업 자료</p>
-  <h1 id="h-hero">대구 산업 데이터와 정책을 연결합니다</h1>
-  <div class="hot" aria-label="인기 검색어">
-    <span class="label">인기 검색어</span>
-    <span class="chips">{HOT.map(w => <a class="chip" href={`/search/?q=${encodeURIComponent(w)}`}>#{w}</a>)}<a class="chip" href="/support/star/">#스타기업</a></span>
-  </div>
+<section class="home-hero v3" aria-labelledby="h-hero">
+  <h1 id="h-hero">대구 산업·기업 자료</h1>
+  <p class="hh-sub">공장등록 기업 사전, 산업 통계, 상장기업 공시, 부처 사업을 공개 자료 그대로 모았습니다.</p>
   <form class="big-search" action="/search/" method="get" role="search">
     <label for="home-q" class="visually-hidden">검색어</label>
-    <input id="home-q" name="q" type="search" placeholder="기업명·업종·구군·사업명" autocomplete="off" data-typeahead />
+    <input id="home-q" name="q" type="search" placeholder="기업명·업종·사업명" autocomplete="off" data-typeahead />
     <button type="submit" aria-label="검색"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg></button>
   </form>
-  <nav class="entry" aria-label="바로 가기">
-    <a class="entry-tile" href="/companies/"><span class="et-k">기업 찾기</span><span class="et-v">{firms.toLocaleString('ko-KR')}<small>곳</small></span><span class="et-s">공장등록·산단 외 기업 사전 · 상장기업 재무</span></a>
-    <a class="entry-tile" href="/stats/"><span class="et-k">통계 보기</span><span class="et-v">7<small>주제</small></span><span class="et-s">경기·수출입·제조업·서비스업·산업구조·기업·인구</span></a>
-    <a class="entry-tile" href="/programs/"><span class="et-k">사업 찾기</span><span class="et-v">{total.toLocaleString('ko-KR')}<small>건</small></span><span class="et-s">부처 사업설명자료 {asOf} 기준 · 예산은 자료 값 그대로</span></a>
-  </nav>
+  <div class="hot" aria-label="인기 검색어">
+    <span class="label">인기 검색어</span>
+    <span class="chips">{HOT.map(w => <a class="chip" href={`/search/?q=${encodeURIComponent(w)}`}>{w}</a>)}<a class="chip" href="/support/star/">스타기업</a></span>
+  </div>
 </section>

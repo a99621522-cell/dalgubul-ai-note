@@ -55,4 +55,19 @@
   /* 폭 */
   --measure: 720px;        /* 글 본문 */
   --measure-wide: 1080px;  /* 표·현황 화면 */
+
+  /* ── 토큰 v3(리디자인 v3 2단계 2026-10-12) — 3계층: 원시(primitive) 램프 → 의미(semantic) → 컴포넌트.
+     주색 램프는 기존 --primary(#1B4F9B)를 600 단계로 두고 같은 색상각에서 명도만 바꿨다. 데이터 색(--chart-*)은 그대로(Okabe–Ito). */
+  --blue-50: #f3f7fc; --blue-100: #eaf1fa; --blue-200: #d3e0f2; --blue-300: #a9c1e4; --blue-400: #6f94cc;
+  --blue-500: #3a68b0; --blue-600: #1B4F9B; --blue-700: #173f7c; --blue-800: #16305F; --blue-900: #0f2142;
+  --gray-50: #f7f8fa; --gray-100: #f5f6f8; --gray-200: #e0e0e0; --gray-300: #bdbdbd; --gray-500: #767676; --gray-600: #595959; --gray-900: #1a1a1a;
+  /* 의미 토큰: 화면 면(surface) 3단 — 바탕 / 옅은 면 / 띠 */
+  --color-surface-0: var(--bg); --color-surface-1: var(--gray-100); --color-surface-band: var(--blue-100); --color-line-band: var(--blue-200);
+  --color-link: var(--blue-600); --color-link-hover: var(--blue-800);
+  /* 타입 스케일(유동, 기본 18px · 비율 약 1.2): 제목은 화면 폭에 따라 clamp */
+  --fs-display: clamp(1.75rem, 1.25rem + 2.2vw, 2.5rem);
+  --fs-h1: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem);
+  --fs-h2: clamp(1.25rem, 1.1rem + 0.6vw, 1.45rem);
+  --fs-h3: 1.15rem;
+  --radius-2: 8px;   /* 카드·입력 상자(작은 모서리 4px 와 두 단계만) */
 }

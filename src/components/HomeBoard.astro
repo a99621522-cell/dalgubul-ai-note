@@ -1,0 +1,44 @@
+---
+/** 첫 화면 게시판 2칸(리디자인 v3 2단계): 왼쪽 '리포트'(REPORT_FILES 순서 그대로 — 운영자 지시 2026-10-12 로봇 자료가 첫 번째), 오른쪽 '자료 갱신 현황'(무엇이 언제 기준인지).
+ *  회전 카드(ReportCarousel)는 제목이 접힘선 아래로 밀리던 문제(감사 H3)로 첫 화면에서 이 목록으로 바꿨다. 날짜는 자료의 기준·받은 날 그대로. */
+import { REPORT_FILES } from '../lib/reportFiles';
+import { monthly, monthLabel } from '../lib/stats';
+import { dartQuarters } from '../lib/dart';
+import { kosisIndex } from '../lib/kosis';
+import { smeList } from '../lib/sme';
+import fs from 'node:fs';
+const m = monthly();
+const qAsOf = dartQuarters().map(q => q.as_of).sort().at(-1) ?? '';
+const trade = fs.readdirSync('data/trade').filter(f => /^\d{6}\.json$/.test(f)).sort().at(-1)?.slice(0, 6);
+const ups = [
+  m?.sources?.factoryon?.as_of && { name: '기업 사전(팩토리온 공장등록)', when: `${monthLabel(m.sources.factoryon.as_of)} 기준`, href: '/companies/' },
+  m && { name: '고용 인원(국민연금 가입자)', when: `${monthLabel(m.month)} 기준`, href: `/stats/${m.month}/` },
+  qAsOf && { name: '상장기업 분기 실적(DART)', when: `${qAsOf} 받음`, href: '/listed/quarter/' },
+  { name: '통계청 KOSIS 통계표', when: `${kosisIndex().generated} 받음`, href: '/stats/' },
+  trade && { name: '대구 수출입(세관)', when: `${trade.slice(0, 4)}년 ${Number(trade.slice(4))}월분`, href: '/stats/trade/' },
+  { name: '대구시 지역중소기업 명단', when: `${smeList().asOf} 기준`, href: '/sme/' },
+].filter(Boolean) as { name: string; when: string; href: string }[];
+---
+<div class="board2">
+  <section aria-labelledby="h-rep">
+    <div class="b-head"><h2 id="h-rep">리포트</h2><a href="/policy/">전체 보기</a></div>
+    <ul class="b-list">{REPORT_FILES.slice(0, 5).map(f => <li><a href={`/policy/${f.slug}/`}>{f.title}</a><span class="b-date">{f.date.replaceAll('-', '.')}</span></li>)}</ul>
+  </section>
+  <section aria-labelledby="h-up">
+    <div class="b-head"><h2 id="h-up">자료 갱신 현황</h2><a href="/posts/2026-09-13-about/">자료 출처</a></div>
+    <ul class="b-list">{ups.map(u => <li><a href={u.href}>{u.name}</a><span class="b-date">{u.when}</span></li>)}</ul>
+  </section>
+</div>
+<style>
+  .board2 { display: grid; grid-template-columns: 1fr; gap: var(--s4); margin: var(--s5) 0; }
+  @media (min-width: 900px) { .board2 { grid-template-columns: 3fr 2fr; } }
+  .board2 > section { min-width: 0; }
+  .b-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--ink); padding-bottom: var(--s1); }
+  .b-head h2 { font-size: var(--h3); margin: 0; }
+  .b-head a { font-size: var(--small); }
+  .b-list { list-style: none; margin: 0; padding: 0; }
+  .b-list li { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .b-list a { color: var(--ink); text-decoration: none; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .b-list a:hover { color: var(--primary); text-decoration: underline; }
+  .b-date { flex: none; font-size: var(--small); color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>

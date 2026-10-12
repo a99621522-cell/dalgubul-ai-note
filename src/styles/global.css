@@ -537,3 +537,22 @@ main:has(#s-results) { min-height: 130vh; }
 /* 긴 주소·영문 낱말이 휴대폰 폭을 넘기지 않게, 긴 선택 상자는 폭 안에서 줄임(리디자인 v3 점검: /listed/notes/·검토기 390px 가로 넘침) */
 main p, main li { overflow-wrap: anywhere; }
 main select { max-width: min(100%, calc(100vw - 32px)); }
+
+/* ───────── 리디자인 v3 2단계: 첫 화면·토큰 적용 (2026-10-12, 운영자 '디자인 진행해') ───────── */
+:root { --band: var(--blue-100); --band-line: var(--blue-200); }
+.home-hero.v3 { text-align: left; background: var(--band); box-shadow: 0 0 0 100vmax var(--band); clip-path: inset(0 -100vmax); padding: var(--s5) 0 var(--s4); border-bottom: 1px solid var(--band-line); }
+main.wrap:has(> .home-hero.v3:first-child) { padding-top: 0; }
+.home-hero.v3 h1 { margin: 0; font-size: var(--fs-display); font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--ink); background: none; -webkit-background-clip: initial; background-clip: initial; }
+.home-hero.v3 .hh-sub { margin: var(--s1) 0 var(--s3); color: var(--muted); font-size: 1.02rem; word-break: keep-all; }
+.home-hero.v3 .big-search { margin: 0; max-width: 820px; }
+.home-hero.v3 .big-search input { border-radius: var(--radius-2); border-width: 2px; min-height: 60px; }
+.home-hero.v3 .big-search button { border-radius: var(--radius-2); background: var(--blue-600); }
+.home-hero.v3 .big-search button:hover { background: var(--blue-800); }
+.home-hero.v3 .hot { margin: var(--s2) 0 0; max-width: none; }
+.home-hero.v3 .chip { padding: 0 12px; border: 1px solid var(--band-line); border-radius: 999px; background: var(--bg); }
+.home-hero.v3 .chip:hover, .home-hero.v3 .chip:focus-visible { border-color: var(--primary); text-decoration: none; }
+/* 제목 크기 토큰 적용(띠 안 h1) */
+main .section-head:has(> h1) h1, main .page-head h1, main article.post > header h1 { font-size: var(--fs-h1); }
+.section-head h2 { font-size: var(--fs-h2); }
+/* 그라데이션은 쓰지 않는다(공공 신뢰 톤) — 남아 있던 검색 단추도 단색 */
+.big-search button { background: var(--blue-600); }

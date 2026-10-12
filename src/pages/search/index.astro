@@ -32,17 +32,24 @@ import Base from '../../layouts/Base.astro';
     if (!q) return;
     document.title = `${q} — 통합 검색 — 다잇다`;
     $('s-status').textContent = '찾는 중…';
-    const [ci, si] = await Promise.all([fetch('/companies-index.json').then(r => r.json()), fetch('/search-index.json').then(r => r.json())]);
+    // 가벼운 글·사업 색인(약 90KB)을 먼저 그리고, 기업 색인(약 2.9MB)은 받는 대로 채운다(리디자인 v3: 검색 결과 표시 지연 줄임)
+    const ciP = fetch('/companies-index.json').then(r => r.json());
+    const si = await fetch('/search-index.json').then(r => r.json());
     // 태그 key(star 등)를 한글 이름으로도 찾게 — '스타기업'·'프리스타'·'벤처' 같은 검색어(2026-10-01)
     const TAGN: Record<string, string> = { star: '스타기업 대구스타기업', prestar: 'Pre-스타기업 프리스타기업 프리스타', k3030: '3030기업', venture: '벤처기업', innobiz: '이노비즈', kmedi: '첨복단지 입주', startup: '창업기업', ccei: '창경센터', labfirm: '연구소기업' };
     const tagText = (k: string[] = []) => k.map(t => `${t} ${TAGN[t] ?? ''}`).join(' ');
-    const co = (ci.rows as any[]).filter(r => hit(r.n, r.s, r.d, r.e, r.c, r.g, tagText(r.k))).sort((a, b) => a.n.localeCompare(b.n, 'ko'));
     const po = (si.posts as any[]).filter(p => hit(p.t, p.d, p.g.join(' '), p.c));
     const pr = (si.programs as any[]).filter(p => hit(p.n, p.m, p.e));
-    fill('s-co-list', co.map(r => `<li><a href="/companies/${r.i}/">${esc(r.n)}</a><span class="meta"> · ${esc(r.d)} ${esc(r.e || '')} · ${esc(r.s || '')}${r.c ? ' · ' + esc(r.c) : ''}${r.w ? ' · ' + esc(r.w) : ''}</span></li>`), 12);
     fill('s-po-list', po.map(p => `<li><a href="${p.u}">${esc(p.t)}</a><span class="meta"> · ${esc(p.c)} · ${p.y}</span><p class="summary">${esc(p.d)}</p></li>`), 10);
     fill('s-pr-list', pr.map(p => `<li><span class="name">${esc(p.n)}</span><span class="meta"> · ${esc(p.m)}${p.e ? ' · ' + esc(p.e) : ''}${p.b ? ' · 2026년 ' + esc(p.b) : ''}${p.w ? ' · <span class="tag">신규</span>' : ''}</span></li>`), 10);
-    cnt('s-co-n', co.length); cnt('s-po-n', po.length); cnt('s-pr-n', pr.length);
+    cnt('s-po-n', po.length); cnt('s-pr-n', pr.length);
+    $('s-co-list').innerHTML = '<li class="empty">기업 사전을 불러오는 중…</li>';
+    $('s-co-list').style.minHeight = '24rem';   // 기업 결과가 늦게 들어와도 아래 글·사업 목록이 밀리지 않게 자리를 잡아 둔다
+    $('s-results').hidden = false;
+    const ci = await ciP;
+    const co = (ci.rows as any[]).filter(r => hit(r.n, r.s, r.d, r.e, r.c, r.g, tagText(r.k))).sort((a, b) => a.n.localeCompare(b.n, 'ko'));
+    fill('s-co-list', co.map(r => `<li><a href="/companies/${r.i}/">${esc(r.n)}</a><span class="meta"> · ${esc(r.d)} ${esc(r.e || '')} · ${esc(r.s || '')}${r.c ? ' · ' + esc(r.c) : ''}${r.w ? ' · ' + esc(r.w) : ''}</span></li>`), 12);
+    cnt('s-co-n', co.length);
     ($('s-co-more') as HTMLAnchorElement).href = `/companies/?q=${encodeURIComponent(q)}`;
     ($('s-explore') as HTMLAnchorElement).href = `/explore/?q=${encodeURIComponent(q)}`;
     const total = co.length + po.length + pr.length;

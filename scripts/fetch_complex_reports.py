@@ -111,6 +111,58 @@ def run(src: dict, robots: dict) -> int:
     return n
 
 
+def run_spa(src: dict, robots: dict) -> int:
+    """화면을 스크립트로 그리는 게시판(달성1차 등): 브라우저로 목록·글을 열어 화면의 PDF 링크를 받는다.
+    글 번호를 최근 것부터 `window` 개 거슬러 열고, 제목이 `title` 에 맞는 글만 저장(이미 본 글 번호는 raw/<key>_checked.txt 로 건너뜀)."""
+    from playwright.sync_api import sync_playwright
+    if not allowed(src["list"], robots):
+        print(f"  robots 차단: {src['list']}")
+        return 0
+    checked_f = RAW / f"{src['key']}_checked.txt"
+    checked = set(checked_f.read_text().split()) if checked_f.exists() else set()
+    n = 0
+    with sync_playwright() as pw:
+        b = pw.chromium.launch()
+        pg = b.new_page(user_agent=UA)
+        pg.goto(src["list"], wait_until="networkidle", timeout=60000)
+        ids = [int(m.group(1)) for a in pg.query_selector_all("a[href]") if (m := re.search(src["post"], a.get_attribute("href") or ""))]
+        if not ids:
+            print(f"[{src['key']}] 목록에서 글 번호를 못 찾음")
+            return 0
+        top = max(ids)
+        print(f"[{src['key']}] 최근 글 번호 {top}, {src.get('window', 40)}개 거슬러 확인")
+        for pid in range(top, top - int(src.get("window", 40)), -1):
+            if str(pid) in checked:
+                continue
+            url = src["post_url"].format(id=pid)
+            try:
+                pg.goto(url, wait_until="networkidle", timeout=45000)
+            except Exception as e:  # noqa: BLE001
+                print(f"  {pid} 열기 실패: {str(e)[:80]}")
+                continue
+            time.sleep(1)
+            body = pg.inner_text("body")
+            m = re.search(src["title"], body)
+            checked.add(str(pid))
+            if not m:
+                continue
+            pdf = next((a.get_attribute("href") for a in pg.query_selector_all("a[href]") if ".pdf" in (a.get_attribute("href") or "").lower()), None)
+            if not pdf:
+                print(f"  {pid} '{m.group(0)}' PDF 없음")
+                continue
+            f = get(urljoin(url, pdf))
+            if not f or not f.content.startswith(b"%PDF"):
+                continue
+            text = pdf_text(f.content)
+            out = RAW / f"{src['key']}_{pid}.txt"
+            out.write_text(f"# {src['name']} — {m.group(0)}\n# 글: {url}\n# 첨부: {pdf.split('?')[0]}\n\n{text}", encoding="utf-8")
+            print(f"  저장 {out.relative_to(ROOT)} ({m.group(0)}, {len(text):,}자)")
+            n += 1
+        b.close()
+    checked_f.write_text("\n".join(sorted(checked, key=int)) + "\n")
+    return n
+
+
 def main(argv: list[str]) -> int:
     cfg = yaml.safe_load(CFG.read_text(encoding="utf-8"))
     only = argv[argv.index("--only") + 1].split(",") if "--only" in argv else None
@@ -121,7 +173,7 @@ def main(argv: list[str]) -> int:
         if only and src["key"] not in only:
             continue
         try:
-            total += run(src, robots)
+            total += run_spa(src, robots) if src.get("spa") else run(src, robots)
         except Exception as e:  # noqa: BLE001
             print(f"[{src['key']}] 건너뜀: {e}")
     print(f"새 글자 파일 {total}개")

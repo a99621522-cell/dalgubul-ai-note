@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -q -r scripts/requirements.txt
+      - run: pip install -q -r scripts/requirements.txt playwright && python -m playwright install --with-deps chromium
       - run: sudo apt-get install -y -qq poppler-utils >/dev/null || (sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq poppler-utils >/dev/null)
       - run: python3 scripts/fetch_complex_reports.py
       - run: if [ -f scripts/parse_complex_reports.py ]; then python3 scripts/parse_complex_reports.py; fi

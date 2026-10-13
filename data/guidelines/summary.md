@@ -1,6 +1,6 @@
 # 사업 지침 창고 (data/guidelines)
 
-받은 날짜: 2026-10-11 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
+받은 날짜: 2026-10-13 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
 
 | key | 지침 | 종류 | 소관 | 시행일 | 상태 | 글자 | 검토 단계 | 원문 |
 |---|---|---|---|---|---|---|---|---|

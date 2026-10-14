@@ -1,0 +1,131 @@
+---
+import { industryShares, loanIndex, loanSeries, qLabel, qShort, OTHER, SECTORS, TABLE_ONLY } from '../lib/industryFinance';
+/** /stats/industry/ #finance — 산업별 자금 흐름(운영자 지시 2026-10-14). ① 업종별 은행 대출·부가가치·종사자 비중 나란히 ② 업종별 대출 잔액 지수(2020년 말 = 100) 작은 그래프.
+ *  값은 원 통계 그대로, 비중·지수는 나눗셈만. 평가 문장 없음 — 배치로만 나란히 보인다. */
+const sh = industryShares();
+const ix = loanIndex();
+const f1 = (v: number | null) => (v == null ? '—' : v.toFixed(1));
+const f0 = (v: number | null) => (v == null ? '—' : Math.round(v).toLocaleString('ko-KR'));
+const eok = (v: number | null) => (v == null ? '—' : `${(v / 10000).toFixed(1)}조 원`);
+const maxSh = sh ? Math.max(...sh.rows.flatMap(r => [r.shLoanBase ?? 0, r.shGva ?? 0, r.shEmp ?? 0])) : 1;
+const w = (v: number | null) => `${v == null ? 0 : Math.max(0.4, (v / maxSh) * 100)}%`;
+
+// 작은 그래프: 모든 업종이 같은 세로축(비교용)
+const all = ix.series.flatMap(s => s.points.map(p => p.idx));
+const yMin = Math.min(80, Math.floor(Math.min(...all, 100) / 20) * 20);
+const yMax = Math.ceil(Math.max(...all, 100) / 20) * 20;
+const W = 300, H = 150, pl = 30, pr = 44, pt = 10, pb = 22;
+const n = ix.periods.length;
+const X = (i: number) => pl + (i / Math.max(1, n - 1)) * (W - pl - pr);
+const Y = (v: number) => pt + (1 - (v - yMin) / (yMax - yMin)) * (H - pt - pb);
+const ticks = [yMin, 100, yMax].filter((v, i, a) => a.indexOf(v) === i);
+const brk = ix.periods.indexOf('2025-Q4');
+const yearTicks = ix.periods.map((p, i) => ({ p, i })).filter(o => o.p === '2020' || o.p.endsWith('Q4')).filter((_, k, a) => k === 0 || k === a.length - 1 || k % 2 === 0);
+const tablePeriods = ix.periods.filter(p => p === '2020' || p.endsWith('Q4') || p >= `${ix.periods[n - 1]?.slice(0, 4)}-Q1`);
+const lastP = ix.periods[n - 1] ?? '';
+---
+{sh && (
+<section id="finance" aria-labelledby="h-finance">
+  <div class="section-head"><h2 id="h-finance">산업별 자금 흐름</h2><span class="meta">한국은행 대구 예금은행 산업별 대출금 · KOSIS 지역소득 · 전국사업체조사</span></div>
+  <p class="lede">대구 예금은행이 업종별로 빌려준 돈(기업 대출 잔액)을 같은 업종의 경제 규모(부가가치)·고용(종사자) 옆에 나란히 놓았습니다. 세 값은 근거 통계가 달라 서로 더하거나 바꿔 쓰지 않습니다. 비중은 원 값의 나눗셈이고 평가·순위가 아닙니다.</p>
+
+  <h3 class="sub">① 업종별 비중 — 대출 · 부가가치 · 종사자</h3>
+  <ul class="legend" aria-label="범례">
+    <li><span class="sw s1"></span>은행 대출 비중({qLabel(sh.base)})</li>
+    <li><span class="sw s2"></span>부가가치 비중({sh.gvaYear}년)</li>
+    <li><span class="sw s3"></span>종사자 비중({sh.empYear}년)</li>
+  </ul>
+  <div class="bars" role="img" aria-label={`대구 업종별 은행 대출·부가가치·종사자 비중(%). 표는 아래에 있습니다.`}>
+    {sh.rows.map(r => (
+      <div class="row">
+        <div class="lab">{r.key}</div>
+        <div class="trio">
+          <div class="b"><span class="bar s1" style={`width:${w(r.shLoanBase)}`}></span><span class="v">{f1(r.shLoanBase)}%</span></div>
+          <div class="b"><span class="bar s2" style={`width:${w(r.shGva)}`}></span><span class="v">{f1(r.shGva)}%</span></div>
+          <div class="b"><span class="bar s3" style={`width:${w(r.shEmp)}`}></span><span class="v">{f1(r.shEmp)}%</span></div>
+        </div>
+      </div>
+    ))}
+  </div>
+  <details>
+    <summary>표로 보기</summary>
+    <div class="scroll-x"><table class="data-table" data-title="대구 업종별 은행 대출·부가가치·종사자 비중">
+      <thead><tr><th>업종</th><th class="n">대출 잔액<br />{qLabel(sh.base)}(억 원)</th><th class="n">대출 비중(%)</th><th class="n">대출 잔액<br />{qLabel(sh.latest)}{sh.prelimLatest && 'p'}(억 원)</th><th class="n">대출 비중(%)</th><th class="n" data-pri="2">부가가치<br />{sh.gvaYear}년(백만 원)</th><th class="n">부가가치 비중(%)</th><th class="n" data-pri="2">종사자<br />{sh.empYear}년(명)</th><th class="n">종사자 비중(%)</th></tr></thead>
+      <tbody>
+        {sh.rows.map(r => <tr class={r.key === OTHER ? 'oth' : ''}><th scope="row">{r.key}</th><td class="n">{f0(r.loanBase)}</td><td class="n">{f1(r.shLoanBase)}</td><td class="n">{f0(r.loanLatest)}</td><td class="n">{f1(r.shLoanLatest)}</td><td class="n">{f0(r.gva)}</td><td class="n">{f1(r.shGva)}</td><td class="n">{f0(r.emp)}</td><td class="n">{f1(r.shEmp)}</td></tr>)}
+        <tr class="tot"><th scope="row">합계</th><td class="n">{f0(sh.totals.loanBase)}</td><td class="n">100.0</td><td class="n">{f0(sh.totals.loanLatest)}</td><td class="n">100.0</td><td class="n">{f0(sh.totals.gva)}</td><td class="n">100.0</td><td class="n">{f0(sh.totals.emp)}</td><td class="n">100.0</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+  <ul class="notes">
+    <li><b>대출</b>: 한국은행 대구경북본부 「대구경북지역 주요 경제지표」 대구 예금은행 산업별 대출금(분기 말 잔액). 은행 간·정부 대출을 뺀 민간 원화대출이고, 합계는 업종별 소계(기업 대출, 가계 대출 제외)입니다. 비은행·정책자금·회사채는 들어 있지 않습니다. 부가가치와 같은 해({sh.gvaYear}년) 말 값으로 막대를 그렸고, 최근 분기({qLabel(sh.latest)}) 값은 표에 함께 적었습니다.</li>
+    <li><b>부가가치</b>: KOSIS 「시도별 경제활동별 지역내총생산」 대구 명목, 총부가가치(기초가격) 대비. <b>종사자</b>: 전국사업체조사 대구, 전체 산업 대비(농림어업은 개인 경영 농가가 빠짐). 세 값의 기준 연도가 다릅니다.</li>
+    <li>'{OTHER}'은 합계에서 표의 10개 업종을 뺀 나머지입니다(정보통신·전문서비스·사업서비스·교육·보건·공공행정 등). 대출 자료에 업종이 따로 나오지 않습니다.</li>
+    <li>제조업은 대출 자료가 하나로만 나와 자동차부품·기계 같은 세부 업종으로 나누지 않습니다.</li>
+  </ul>
+
+  <h3 class="sub">② 업종별 대출 잔액 추이 — 2020년 말 = 100</h3>
+  <p class="meta">금액 크기가 달라도 늘어난 속도를 견줄 수 있게 2020년 말 잔액을 100으로 두었습니다. 모든 그래프의 세로축이 같습니다({yMin}–{yMax}). 점선 가로줄은 100, 세로 점선은 2025년 4분기입니다. 전기·가스·증기(잔액 3천억 원대, 2021년 4분기에 한 분기만 크게 튐)와 광업(수백억 원)은 잔액이 작아 표에만 둡니다.</p>
+  <div class="sm">
+    {ix.series.map(s => { const last = s.points[s.points.length - 1]; const d = s.points.map((p, k) => `${k ? 'L' : 'M'}${X(ix.periods.indexOf(p.p)).toFixed(1)},${Y(p.idx).toFixed(1)}`).join(' '); return (
+      <figure class="panel">
+        <figcaption><b>{s.key}</b> <span class="meta">{last ? `${qLabel(last.p)} ${f1(last.idx)} · ${eok(last.v)}` : ''}</span></figcaption>
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${s.key} 대출 잔액 지수, 2020년 말 100에서 ${last ? qLabel(last.p) + ' ' + f1(last.idx) : ''}`}>
+          {ticks.map(t => <g><line x1={pl} x2={W - pr} y1={Y(t)} y2={Y(t)} class={t === 100 ? 'base' : 'grid'} /><text x={pl - 4} y={Y(t) + 3} class="ax" text-anchor="end">{t}</text></g>)}
+          {brk >= 0 && <line x1={X(brk)} x2={X(brk)} y1={pt} y2={H - pb} class="brk" />}
+          {yearTicks.map(o => <text x={X(o.i)} y={H - 6} class="ax" text-anchor="middle">{o.p === '2020' ? '20말' : o.p.slice(2, 4)}</text>)}
+          <path d={d} class="ln" />
+          {s.points.map(p => <circle cx={X(ix.periods.indexOf(p.p))} cy={Y(p.idx)} r="5" class="hit"><title>{`${s.key} ${qLabel(p.p)}: 지수 ${f1(p.idx)}, 잔액 ${f0(p.v)}억 원`}</title></circle>)}
+          {last && <circle cx={X(ix.periods.indexOf(last.p))} cy={Y(last.idx)} r="3" class="dot" />}
+          {last && <text x={X(ix.periods.indexOf(last.p)) + 5} y={Y(last.idx) + 4} class="lv">{Math.round(last.idx)}</text>}
+        </svg>
+      </figure>
+    ); })}
+  </div>
+  <details>
+    <summary>표로 보기 (잔액, 억 원)</summary>
+    <div class="scroll-x"><table class="data-table" data-title="대구 예금은행 업종별 대출 잔액(억 원)">
+      <thead><tr><th>업종</th>{tablePeriods.map(p => <th class="n">{qShort(p)}</th>)}</tr></thead>
+      <tbody>
+        {ix.series.map(s => <tr><th scope="row">{s.key}</th>{tablePeriods.map(p => { const pt0 = s.points.find(x => x.p === p); return <td class="n">{pt0 ? f0(pt0.v) : '—'}</td>; })}</tr>)}
+        {SECTORS.filter(s => TABLE_ONLY.includes(s.key)).map(s => <tr><th scope="row">{s.key}</th>{tablePeriods.map(p => <td class="n">{f0(loanSeries().val(s.loan, p))}</td>)}</tr>)}
+      </tbody>
+    </table></div>
+  </details>
+  <p class="callout warn">2025년 4분기에 업종별 소계가 한 분기 사이 4조 5천억 원가량 줄었습니다(부동산업·금융보험업·건설업 중심). 원 자료에 사유가 적혀 있지 않아 상환·매각·분류 변경 가운데 무엇인지 알 수 없습니다. 이 분기를 지나는 1년 전 대비 증감은 이 변동의 영향을 크게 받습니다. 최근 분기({qLabel(lastP)})는 잠정치입니다.</p>
+  <p class="meta">출처: 한국은행 대구경북본부 「대구경북지역 주요 경제지표」(경제통계) 2.2.4 산업별 대출금(대구) · 국가데이터처 KOSIS 시도별 경제활동별 지역내총생산 · 전국사업체조사. 원 표 11개는 <a href="/stats/monthly/#bok-daegu">경기 동향 › 한국은행 대구 금융 지표</a>에 있습니다.</p>
+</section>
+)}
+<style>
+  .sub { font-size: var(--fs-h3, 1.1rem); margin: 1.4rem 0 .4rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: .3rem 1rem; list-style: none; padding: 0; margin: .3rem 0 .6rem; font-size: var(--small); color: var(--ink); }
+  .legend li { display: flex; align-items: center; gap: .35rem; }
+  .sw { width: .9rem; height: .55rem; border-radius: 2px; display: inline-block; }
+  .s1 { background: var(--chart-1); } .s2 { background: var(--chart-2); } .s3 { background: var(--chart-3); }
+  .bars { display: grid; gap: .55rem; margin-bottom: .6rem; }
+  .row { display: grid; grid-template-columns: 8.5rem 1fr; gap: .6rem; align-items: center; }
+  .lab { font-size: var(--small); text-align: right; line-height: 1.25; }
+  .trio { display: grid; gap: 2px; }
+  .b { display: flex; align-items: center; gap: .35rem; min-width: 0; }
+  .bar { display: block; height: .55rem; border-radius: 0 4px 4px 0; flex: 0 0 auto; max-width: calc(100% - 3.2rem); }
+  .v { font-size: .74rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  @media (max-width: 480px) { .row { grid-template-columns: 1fr; gap: .2rem; } .lab { text-align: left; font-weight: 600; } }
+  tr.oth th, tr.oth td { color: var(--muted); }
+  tr.tot th, tr.tot td { font-weight: 600; background: var(--surface); }
+  .notes { font-size: var(--small); color: var(--muted); padding-left: 1.1rem; margin: .5rem 0 0; }
+  .notes li { margin: .2rem 0; }
+  .sm { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: .8rem; margin: .5rem 0; }
+  .panel { margin: 0; border: 1px solid var(--line); border-radius: var(--radius-2, 8px); padding: .45rem .5rem .2rem; background: var(--bg); }
+  .panel figcaption { font-size: var(--small); margin-bottom: .1rem; }
+  .panel figcaption .meta { display: block; font-size: .78rem; }
+  .panel svg { width: 100%; height: auto; display: block; }
+  .panel .grid { stroke: var(--line); stroke-width: 1; }
+  .panel .base { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .panel .brk { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 1 3; }
+  .panel .ax { fill: var(--muted); font-size: 10px; }
+  .panel .ln { fill: none; stroke: var(--chart-1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .panel .dot { fill: var(--chart-1); stroke: var(--bg); stroke-width: 2; }
+  .panel .lv { fill: var(--ink); font-size: 11px; font-weight: 600; }
+  .panel .hit { fill: transparent; }
+  .panel .hit:hover { fill: var(--chart-1); fill-opacity: .25; }
+</style>

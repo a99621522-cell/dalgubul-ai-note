@@ -1,0 +1,147 @@
+{
+ "file": "src/content/posts/2026-10-15-policy-automotive-production-disruption.md",
+ "checked": "2026-10-14",
+ "ok": 6,
+ "total": 11,
+ "ratio": 0.55,
+ "official_bad": [
+  "산업통상부, 「2026년 8월 자동차산업 동향」 보도자료",
+  "산업통상부, 「2026년 9월 수출입 동향」 보도자료",
+  "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」 보도자료"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "산업통상부, 「2026년 8월 자동차산업 동향」 보도자료",
+   "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172213/view",
+   "date": "2026-09-17",
+   "kind": "gov",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "한국경제, 국가데이터처 「2026년 8월 산업활동동향」 보도(자동차 생산 전월 대비 감소)",
+   "url": "https://www.hankyung.com/article/2026093056031",
+   "date": "2026-09-30",
+   "kind": "news",
+   "status": 200,
+   "page_title": "자동차 생산 급감이 드러낸 한국 제조업의 약한 고리 | 한국경제",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "산업통상부, 「2026년 9월 수출입 동향」 보도자료",
+   "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172254/view",
+   "date": "2026-10-01",
+   "kind": "gov",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」 보도자료",
+   "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
+   "date": "2026-09-15",
+   "kind": "gov",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "국가데이터처, 「시도/산업별 광공업생산지수(2020=100)」 KOSIS DT_1F02001(2026년 8월)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1F02001",
+   "date": "2026-10-09",
+   "kind": "data",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "국가데이터처, 「광업제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2024년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
+   "date": "2026-10-09",
+   "kind": "data",
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
+  },
+  {
+   "title": "한국은행, 「산업별대출금(예금은행, 지역별, 전산업)」 ECOS 132Y001(2026년 2분기)",
+   "url": "https://ecos.bok.or.kr/#/Short/132Y001",
+   "date": "2026-10-10",
+   "kind": "data",
+   "status": 200,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "머니투데이방송(MTN), 「현대자동차 노사, 111일 만에 임금교섭 잠정합의」",
+   "url": "https://news.mtn.co.kr/news-detail/2026082506011691736",
+   "date": "2026-08-25",
+   "kind": "news",
+   "status": 200,
+   "page_title": "현대자동차 노사, 111일 만에 임금교섭 잠정합의 | MTN 머니투데이방송",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "CLEPA(유럽자동차부품협회), 「One in four European automotive suppliers bracing for losses in 2026」 Pulse Check Spring 2026 보도자료",
+   "url": "https://www.clepa.eu/wp-content/uploads/2026/03/2026.03.23_Press-Release_Pulse-Check-Spring-2026_Final.pdf",
+   "date": "2026-03-23",
+   "kind": "report",
+   "status": 200,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "헤럴드경제, 「울산시·경남도, 中企 경영안정자금 긴급 지원」",
+   "url": "https://www.heraldk.com/article/2026050718465459576",
+   "date": "2026-05-07",
+   "kind": "news",
+   "status": 200,
+   "page_title": "울산시·경남도, 中企 경영안정자금 긴급 지원 - 헤럴드경제 미주판",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-09 공장등록 KSIC 코드·단지·종사자 신고값, 국민연금 2026-08 매칭)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-10-15",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.5,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

@@ -17,6 +17,7 @@ API·접속 실패는 로그 후 건너뛰고 못 받은 회사는 기존 행을
 
 사용: python3 scripts/collect_dart_notes.py [--months 15] [--probe 회사명] [--no-ir] [--no-report]
   --probe: 그 회사만, 섹션 제목·뽑은 문장·IR 첨부 페이지 구조를 로그로(저장 안 함)
+  --dump: --probe 와 함께 쓰면 보고서의 '사업의 내용'·'경영진단' 본문을 표까지 글자로 로그에(공시 원문 확인용)
 """
 from __future__ import annotations
 
@@ -111,6 +112,9 @@ def doc_xml(rcept_no: str) -> str:
     return raw.decode("utf-8", "ignore")
 
 
+DUMP = [False]   # --dump(--probe 와 함께): 사업의 내용·경영진단 본문을 표까지 로그로
+
+
 def clean(s: str) -> str:
     s = re.sub(r"<[^>]+>", " ", s)
     return re.sub(r"\s+", " ", unescape(s)).strip()
@@ -144,6 +148,25 @@ def paragraphs(block: str) -> list[tuple[str, str]]:
             if len(t) >= 15:
                 out.append((cur, t))
     return out
+
+
+def dump_block(name: str, blk: str, limit: int = 120000) -> None:
+    """--dump: 장 본문을 표까지 글자로 로그에 찍는다(공시 원문 확인용, 저장 안 함)"""
+    out = []
+    for m in re.finditer(r"<TITLE[^>]*>(.*?)</TITLE>|<TABLE.*?</TABLE>|<P[^>]*>(.*?)</P>", blk, re.S | re.I):
+        if m.group(1) is not None:
+            out.append(f"\n### {clean(m.group(1))}")
+        elif m.group(0)[:6].upper() == "<TABLE":
+            for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", m.group(0), re.S | re.I):
+                cells = [clean(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, re.S | re.I)]
+                if any(cells):
+                    out.append("| " + " | ".join(cells) + " |")
+        else:
+            t = clean(m.group(2) or "")
+            if t:
+                out.append(t)
+    text = "\n".join(out)
+    print(f"===== dump {name} ({len(text)}자) =====\n{text[:limit]}\n===== dump 끝 =====")
 
 
 def sentences(p: str) -> list[str]:
@@ -190,6 +213,9 @@ def report_notes(code: str, meta: dict, rep: dict, probe: bool) -> list[dict]:
         mdna = "있음"
     biz_blk = top_block(secs, r"사업의 내용", xml)
     biz_par = [(t, p) for t, p in paragraphs(biz_blk) if re.search(r"사업의 개요|영업의 (개황|현황)|매출 및 수주|기타 참고|시장 ?여건|산업의 (특성|전망)", t)]
+    if probe and DUMP[0]:
+        dump_block(f"{rep['report_nm']} 사업의 내용", biz_blk)
+        dump_block(f"{rep['report_nm']} 경영진단", mdna_blk, 40000)
     if probe:
         print(f"== probe {meta['name']} {rep['year']}.{rep['quarter']}Q {rep['report_nm']} 장 제목: "
               f"{[t for t, _, _ in secs if re.match(r'^[IVX]+\.', t)]}")
@@ -443,6 +469,7 @@ def main(argv: list[str]) -> int:
         return 0
     months = int(argv[argv.index("--months") + 1]) if "--months" in argv else 15
     probe = argv[argv.index("--probe") + 1] if "--probe" in argv else ""
+    DUMP[0] = "--dump" in argv and bool(probe)
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}
     if probe:

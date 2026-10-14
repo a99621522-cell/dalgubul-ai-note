@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href: string; size: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'daesung-hitech-broker-reports', summary: '2025년 6월 – 2026년 10월 증권사 리포트 8건(유안타증권·키움증권·신한투자증권)이 대구 달성군 코스닥 상장사 대성하이텍에 대해 적은 사실·수치를 정리하고 DART 공시와 대조한 자료. 투자의견·목표주가·애널리스트 이름은 싣지 않음.', topics: ['상장기업', '증권사 리포트'], pages: 4,
+    title: '(주)대성하이텍 증권사 리포트 정리', name: '(주)대성하이텍 증권사 리포트 정리',
+    href: '/files/daesung-hitech-broker-reports.docx', size: '43KB', pdf: '/files/daesung-hitech-broker-reports.pdf', pdfSize: '0.2MB', hwpx: '/hwpx/daesung-hitech-broker-reports.hwpx', hwpxSize: '64KB', date: '2026-10-14' },
   { slug: 'china-robot-training-grounds', summary: '중국정보통신연구원(CAICT) 「체화지능 훈련장 연구보고서(2026년)」 등 공개 자료로 정리한 중국 휴머노이드 로봇 훈련장의 건설 현황·운영 방식·과제와 해외 사례.', topics: ['로봇', '해외 동향'], pages: 11,
     title: '중국 로봇 훈련장 현황', name: '중국 로봇 훈련장 현황',
     href: '/files/china-robot-training-grounds.docx', size: '1.1MB', pdf: '/files/china-robot-training-grounds.pdf', pdfSize: '1.5MB', hwpx: '/hwpx/china-robot-training-grounds.hwpx', hwpxSize: '1.3MB', date: '2026-10-12' },

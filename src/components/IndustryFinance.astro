@@ -1,5 +1,5 @@
 ---
-import { industryShares, loanIndex, loanSeries, qLabel, qShort, OTHER, SECTORS, TABLE_ONLY } from '../lib/industryFinance';
+import { industryShares, loanIndex, loanSeries, industryCards, qLabel, qShort, OTHER, SECTORS, TABLE_ONLY, type CardItem } from '../lib/industryFinance';
 /** /stats/industry/ #finance — 산업별 자금 흐름(운영자 지시 2026-10-14). ① 업종별 은행 대출·부가가치·종사자 비중 나란히 ② 업종별 대출 잔액 지수(2020년 말 = 100) 작은 그래프.
  *  값은 원 통계 그대로, 비중·지수는 나눗셈만. 평가 문장 없음 — 배치로만 나란히 보인다. */
 const sh = industryShares();
@@ -23,6 +23,10 @@ const brk = ix.periods.indexOf('2025-Q4');
 const yearTicks = ix.periods.map((p, i) => ({ p, i })).filter(o => o.p === '2020' || o.p.endsWith('Q4')).filter((_, k, a) => k === 0 || k === a.length - 1 || k % 2 === 0);
 const tablePeriods = ix.periods.filter(p => p === '2020' || p.endsWith('Q4') || p >= `${ix.periods[n - 1]?.slice(0, 4)}-Q1`);
 const lastP = ix.periods[n - 1] ?? '';
+const ic = industryCards();
+const arrow = (c: number | null) => (c == null ? '' : Math.abs(c) < 0.05 ? '–' : c > 0 ? '▲' : '▼');
+const dir = (c: number | null) => (c == null ? '' : Math.abs(c) < 0.05 ? '변동 없음' : c > 0 ? '증가' : '감소');
+const chgTxt = (it: CardItem) => (it.chg == null ? '—' : `${it.chg > 0 ? '+' : ''}${it.chgUnit === '%' ? it.chg.toFixed(1) : Math.round(it.chg)}${it.chgUnit}`);
 ---
 {sh && (
 <section id="finance" aria-labelledby="h-finance">
@@ -93,6 +97,40 @@ const lastP = ix.periods[n - 1] ?? '';
     </table></div>
   </details>
   <p class="callout warn">2025년 4분기에 업종별 소계가 한 분기 사이 4조 5천억 원가량 줄었습니다(부동산업·금융보험업·건설업 중심). 원 자료에 사유가 적혀 있지 않아 상환·매각·분류 변경 가운데 무엇인지 알 수 없습니다. 이 분기를 지나는 1년 전 대비 증감은 이 변동의 영향을 크게 받습니다. 최근 분기({qLabel(lastP)})는 잠정치입니다.</p>
+
+  <h3 class="sub" id="cards">③ 업종 카드 — 대출·실물·체감·규모</h3>
+  <p class="meta">기업 대출의 82%를 차지하는 다섯 업종입니다. 칸마다 최근 값과 1년 전(같은 달·분기) 대비 증감을 적고, 화살표는 방향만 표시합니다(좋고 나쁨이 아님). 지표마다 기준 시점이 다르고, 체감 지수(BSI)는 대구·경북을 합친 값입니다.</p>
+  <div class="cards">
+    {ic.cards.map(c => (
+      <article class="icard">
+        <h4>{c.key}</h4>
+        <ul>
+          {c.items.map(it => (
+            <li>
+              <span class="il"><span class="nm">{it.label}</span><span class="pd">{it.period}</span></span>
+              <span class="iv">{it.value}</span>
+              <span class="ic" aria-label={`1년 전 대비 ${dir(it.chg)} ${chgTxt(it)}`}><span class="ar" aria-hidden="true">{arrow(it.chg)}</span>{chgTxt(it)}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </div>
+  <p class="meta">업종 구분 없는 자금 용도(대구 예금은행 중소기업 대출, 전 업종): {ic.common.map(it => `${it.label} ${it.value}(${it.period}, 1년 전 대비 ${chgTxt(it)})`).join(' · ')}. 시설자금은 설비 투자, 운전자금은 원재료·인건비 같은 운영비에 쓰입니다.</p>
+  <details>
+    <summary>표로 보기 (카드 값과 출처)</summary>
+    <div class="scroll-x"><table class="data-table" data-title="대구 업종 카드 — 대출·실물·체감·규모">
+      <thead><tr><th>업종</th><th>지표</th><th>기준 시점</th><th class="n">값</th><th class="n">1년 전 대비</th><th data-pri="2">출처</th></tr></thead>
+      <tbody>
+        {ic.cards.flatMap(c => c.items.map((it, j) => <tr><th scope="row">{j === 0 ? c.key : ''}</th><td>{it.label}{it.note ? ` (${it.note})` : ''}</td><td>{it.period}</td><td class="n">{it.value}</td><td class="n">{chgTxt(it)}</td><td>{it.source}</td></tr>))}
+        {ic.common.map((it, j) => <tr><th scope="row">{j === 0 ? '전 업종(참고)' : ''}</th><td>{it.label}</td><td>{it.period}</td><td class="n">{it.value}</td><td class="n">{chgTxt(it)}</td><td>{it.source}</td></tr>)}
+      </tbody>
+    </table></div>
+  </details>
+  <ul class="notes">
+    <li>실물 지표: 제조업은 광공업 생산·출하지수(월, 원지수), 도소매·숙박음식·부동산은 서비스업 생산지수(분기, 불변지수), 건설은 건설수주액(월, 국가데이터처 건설경기동향조사), 도소매는 대형소매점 판매액지수(월)도 함께. 건설수주액은 한 달 값이라 큰 공사 한두 건에 크게 흔들립니다.</li>
+    <li>규모: 전국사업체조사 종사자·사업체(최근 연도와 첫 연도 대비). 대출 증감과 실물 지표가 같은 방향인지 다른 방향인지는 읽는 사람이 판단합니다.</li>
+  </ul>
   <p class="meta">출처: 한국은행 대구경북본부 「대구경북지역 주요 경제지표」(경제통계) 2.2.4 산업별 대출금(대구) · 국가데이터처 KOSIS 시도별 경제활동별 지역내총생산 · 전국사업체조사. 원 표 11개는 <a href="/stats/monthly/#bok-daegu">경기 동향 › 한국은행 대구 금융 지표</a>에 있습니다.</p>
 </section>
 )}
@@ -114,6 +152,17 @@ const lastP = ix.periods[n - 1] ?? '';
   tr.tot th, tr.tot td { font-weight: 600; background: var(--surface); }
   .notes { font-size: var(--small); color: var(--muted); padding-left: 1.1rem; margin: .5rem 0 0; }
   .notes li { margin: .2rem 0; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: .8rem; margin: .5rem 0; }
+  .icard { border: 1px solid var(--line); border-radius: var(--radius-2, 8px); padding: .6rem .75rem .4rem; background: var(--bg); }
+  .icard h4 { margin: 0 0 .35rem; font-size: 1rem; }
+  .icard ul { list-style: none; margin: 0; padding: 0; }
+  .icard li { display: grid; grid-template-columns: 1fr auto 5.2rem; gap: .5rem; align-items: baseline; padding: .32rem 0; border-top: 1px solid var(--line); font-size: var(--small); }
+  .icard li:first-child { border-top: 0; }
+  .il { display: flex; flex-direction: column; min-width: 0; }
+  .il .pd { color: var(--muted); font-size: .74rem; }
+  .iv, .ic { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .iv { font-weight: 600; }
+  .ic .ar { display: inline-block; width: 1em; margin-right: .15rem; color: var(--muted); }
   .sm { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: .8rem; margin: .5rem 0; }
   .panel { margin: 0; border: 1px solid var(--line); border-radius: var(--radius-2, 8px); padding: .45rem .5rem .2rem; background: var(--bg); }
   .panel figcaption { font-size: var(--small); margin-bottom: .1rem; }

@@ -1,4 +1,5 @@
 import { readCsv } from './csv';
+import { monthlySeries, kosis, change, latest, type Series } from './monthly';
 /** 산업별 자금 흐름(운영자 지시 2026-10-14 '산업 중심으로 — 그렇게 진행해'): 한국은행 대구 예금은행 산업별 대출금(data/bok/daegu_loans_industry.csv, 분기 말 잔액)을
  *  같은 산업의 부가가치(KOSIS 지역소득, grdp-sido-industry-all) · 종사자(전국사업체조사, biz-census-sido-industry-all) 비중과 나란히 놓는다.
  *  값은 원 통계 그대로, 비중·지수는 나눗셈만. 평가·순위 없음. 제조업은 대출 자료가 한 덩어리라 세부 업종으로 나누지 않는다. */
@@ -85,4 +86,71 @@ export function loanIndex(): { series: IndexSeries[]; periods: string[]; base: s
     return { key: c.key, points };
   });
   return { series, periods: L.periods, base };
+}
+
+/* ── ③ 업종 카드(운영자 지시 2026-10-14 '통계는 진행해'): 대출·실물·체감·규모를 한 장에, 방향은 화살표만(평가 없음) ── */
+
+export type CardItem = { label: string; period: string; value: string; chg: number | null; chgUnit: string; source: string; note?: string };
+export type Card = { key: string; items: CardItem[] };
+
+const KOSIS_SVC = '국가데이터처 KOSIS 「시도 서비스업생산지수」';
+const pctChg = (a: number | null | undefined, b: number | null | undefined) => (a != null && b ? (a / b - 1) * 100 : null);
+const mLabel = (m: string) => `${m.slice(0, 4)}년 ${Number(m.slice(5))}월`;
+const qOfM = (m: string) => `${m.slice(0, 4)}년 ${Math.ceil(Number(m.slice(5)) / 3)}분기`;
+const n1 = (v: number) => v.toLocaleString('ko-KR', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
+const n0 = (v: number) => Math.round(v).toLocaleString('ko-KR');
+
+/** 월간 계열(monthly.ts)의 최근 값과 전년 같은 달 대비 */
+function fromSeries(S: Series[], key: string, label: string, quarterly = false): CardItem | null {
+  const s = S.find(x => x.key === key); if (!s) return null;
+  const p = latest(s); if (!p) return null;
+  return { label, period: quarterly ? qOfM(p.m) : mLabel(p.m), value: `${s.digits ? n1(p.v) : n0(p.v)}${s.unit.startsWith('20') || s.unit === '지수' ? '' : s.unit === '억 원' ? '억 원' : ` ${s.unit}`}`, chg: change(s, p, 12), chgUnit: s.change === '%' ? '%' : 'p', source: s.source, note: s.unit.startsWith('20') ? `지수(${s.unit})` : undefined };
+}
+/** 서비스업생산지수 업종(분기, 불변지수) */
+function svc(c2: string, label: string): CardItem | null {
+  const pts = kosis('service-index-sido', r => r.ITM_NM === '불변지수' && r.C2_NM === c2, true);
+  const p = pts[pts.length - 1]; if (!p) return null;
+  const [y, mo] = p.m.split('-'); const p0 = pts.find(x => x.m === `${Number(y) - 1}-${mo}`);
+  return { label, period: qOfM(p.m), value: n1(p.v), chg: pctChg(p.v, p0?.v), chgUnit: '%', source: KOSIS_SVC, note: '지수(2020=100), 불변' };
+}
+/** 전국사업체조사 종사자·사업체: 최근 연도와 첫 연도 대비 */
+function census(name: string): CardItem[] {
+  const rows = readCsv('data/kosis/biz-census-sido-industry-all.csv').filter(r => r.C1_NM === '대구' && r.C3_NM === '계' && r.C2_NM.trim() === name);
+  const years = [...new Set(rows.map(r => r.PRD_DE))].sort(); if (!years.length) return [];
+  const y1 = years[years.length - 1], y0 = years[0];
+  const at = (itm: string, y: string) => num(rows.find(r => r.ITM_NM === itm && r.PRD_DE === y)?.DT);
+  return (['종사자수', '사업체수'] as const).map(itm => {
+    const a = at(itm, y1), b = at(itm, y0);
+    return { label: itm === '종사자수' ? '종사자' : '사업체', period: `${y1}년 (${y0}년 대비)`, value: a == null ? '—' : `${n0(a)}${itm === '종사자수' ? '명' : '곳'}`, chg: pctChg(a, b), chgUnit: '%', source: '국가데이터처 전국사업체조사' };
+  });
+}
+
+/** 업종 카드 5장: 기업 대출의 82%를 차지하는 업종 */
+export function industryCards(): { cards: Card[]; common: CardItem[] } {
+  const L = loanSeries(); const S = monthlySeries();
+  const last = L.periods[L.periods.length - 1];
+  const yago = last ? `${Number(last.slice(0, 4)) - 1}-${last.slice(5)}` : '';
+  const loan = (col: string): CardItem => {
+    const v = L.val(col, last), v0 = L.val(col, yago);
+    return { label: '은행 대출 잔액', period: `${qLabel(last)}${L.prelim.has(last) ? '(잠정)' : ''}`, value: v == null ? '—' : `${n1(v / 10000)}조 원`, chg: pctChg(v, v0), chgUnit: '%', source: '한국은행 대구경북본부 「대구경북지역 주요 경제지표」', note: '1년 전 대비는 2025년 4분기 급감 분기를 지남' };
+  };
+  const bsi = (mfg: boolean) => fromSeries(S, mfg ? 'mbsi_dk' : 'nbsi_dk', mfg ? '업황 BSI(제조업, 대구경북)' : '업황 BSI(비제조업, 대구경북)');
+  const def: [string, string, (CardItem | null)[]][] = [
+    ['제조업', '제조업(10~34)', [fromSeries(S, 'ip', '광공업 생산지수'), fromSeries(S, 'ship', '광공업 출하지수'), bsi(true)]],
+    ['도매 및 소매업', '도매 및 소매업(45~47)', [svc('도매 및 소매업', '서비스업 생산(도소매)'), fromSeries(S, 'retail', '대형소매점 판매액지수'), bsi(false)]],
+    ['숙박 및 음식점업', '숙박 및 음식점업(55~56)', [svc('숙박 및 음식점업', '서비스업 생산(숙박음식)'), bsi(false)]],
+    ['건설업', '건설업(41~42)', [fromSeries(S, 'cons', '건설수주액'), bsi(false)]],
+    ['부동산업', '부동산업(68)', [svc('부동산업', '서비스업 생산(부동산)'), bsi(false)]],
+  ];
+  const cards = def.map(([key, emp, real]) => ({ key, items: [loan(key), ...real.filter(Boolean) as CardItem[], ...census(emp)] }));
+  // 업종 구분 없는 자금 용도(중소기업 시설·운전자금)
+  const corp = new Map<string, number>();
+  for (const r of readCsv('data/bok/daegu_loans_corp.csv')) { const v = num(r.value); if (v != null) corp.set(`${r.column}|${r.period}`, v); }
+  const cm = [...new Set(readCsv('data/bok/daegu_loans_corp.csv').map(r => r.period))].filter(p => /^\d{4}-\d{2}$/.test(p)).sort().pop() ?? '';
+  const cm0 = cm ? `${Number(cm.slice(0, 4)) - 1}-${cm.slice(5)}` : '';
+  const common: CardItem[] = ['중소기업 시설자금', '중소기업 운전자금'].map(c => {
+    const v = corp.get(`${c}|${cm}`) ?? null, v0 = corp.get(`${c}|${cm0}`) ?? null;
+    return { label: c, period: cm ? mLabel(cm) : '', value: v == null ? '—' : `${n1(v / 10000)}조 원`, chg: pctChg(v, v0), chgUnit: '%', source: '한국은행 대구경북본부 「대구경북지역 주요 경제지표」', note: '업종 구분 없음(전 업종 중소기업)' };
+  });
+  return { cards, common };
 }

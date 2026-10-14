@@ -1,10 +1,11 @@
 {
  "file": "src/content/posts/2026-10-07-policy-ai-sw-startup-ax-suppliers.md",
- "checked": "2026-10-12",
- "ok": 13,
+ "checked": "2026-10-14",
+ "ok": 11,
  "total": 14,
- "ratio": 0.93,
+ "ratio": 0.79,
  "official_bad": [
+  "대구광역시 산업경제동향, 「대구시, '지역거점 AX 혁신 기술개발' 본격 착수」",
   "Gloucestershire County Council, 「Funded support for south-west manufacturers for digital adoption」(Made Smarter Adoption 2026/27)"
  ],
  "pass": false,
@@ -38,12 +39,12 @@
    "url": "https://distat.daegu.go.kr/site/bbs/BoardControll.do?bbsId=BBSMSTR_000000000011",
    "date": "2026-09-18",
    "kind": "gov",
-   "status": 200,
-   "page_title": "대구산업경제동향 온라인 시스템",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "뉴스핌, 「대구시, '지역거점 AX 혁신 기술개발' 본격 착수」",
@@ -62,12 +63,12 @@
    "url": "https://m.etnews.com/20260319000418",
    "date": "2026-03-19",
    "kind": "news",
-   "status": 200,
-   "page_title": "625억원 규모 바우처로 기업 'AI 도입·AX' 지원한다 - 전자신문",
-   "title_match": 0.83,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "머니투데이방송, 「AI 청년창업 '동반성장 바우처' 공급기업 선정 보도」(과기정통부 2026 AI 청년창업기업 동반성장 바우처)",

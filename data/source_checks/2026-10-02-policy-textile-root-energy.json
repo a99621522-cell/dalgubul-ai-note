@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-02-policy-textile-root-energy.md",
- "checked": "2026-10-12",
- "ok": 13,
+ "checked": "2026-10-14",
+ "ok": 12,
  "total": 14,
- "ratio": 0.93,
+ "ratio": 0.86,
  "official_bad": [
   "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)"
  ],
@@ -98,12 +98,12 @@
    "url": "https://www.etnews.com/20251224000391",
    "date": "2025-12-24",
    "kind": "news",
-   "status": 200,
-   "page_title": "분산에너지특구 '경북·울산·충남' 추가 지정…송전망 부족 대안 기대 - 전자신문",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "뉴스핌, 「이철우 경북지사 '기업 움직이려면 산업용 전기요금 30% 이상 차등 필요'」",

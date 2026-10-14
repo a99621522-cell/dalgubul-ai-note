@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-13-policy-semiconductor-export-baseline.md",
- "checked": "2026-10-12",
- "ok": 12,
+ "checked": "2026-10-14",
+ "ok": 13,
  "total": 13,
- "ratio": 0.92,
+ "ratio": 1.0,
  "official_bad": [],
  "pass": true,
  "sources": [
@@ -60,12 +60,12 @@
    "url": "https://www.heraldk.com/article/2026062821393781599",
    "date": "2026-06-28",
    "kind": "news",
-   "status": null,
-   "page_title": "",
-   "title_match": 0.0,
-   "date_found": false,
-   "ok": false,
-   "note": "ConnectTimeout"
+   "status": 200,
+   "page_title": "산업장관 “서남권 반도체에 800조…충청권에 81조 투자” - 헤럴드경제 미주판",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
   },
   {
    "title": "산업통상부, 「2026 소부장 국제투자 컨퍼런스」 개최 보도자료",

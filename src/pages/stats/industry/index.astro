@@ -3,6 +3,7 @@ import Base from '../../../layouts/Base.astro';
 import StatsNav from '../../../components/StatsNav.astro';
 import KosisSections from '../../../components/KosisSections.astro';
 import HighValueFirms from '../../../components/HighValueFirms.astro';
+import IndustryFinance from '../../../components/IndustryFinance.astro';
 import IndustryBundles from '../../../components/IndustryBundles.astro';
 import IndustryCountCompare from '../../../components/IndustryCountCompare.astro';
 import { TOPICS, KOSIS_TOPICS } from '../../../lib/statsTopics';
@@ -16,6 +17,7 @@ const idx = kosisIndex();
   <div class="section-head"><h1>{t.name}</h1><span class="meta">{t.period} · 국가데이터처 KOSIS · 갱신 {idx.generated}</span></div>
   <p class="lede">{t.desc} 그래프 아래 표는 눌러서 펼칩니다. 값은 KOSIS 그대로이고 평가·순위가 아닙니다. 업종별 성장 가정에 따른 성장률과 목표 성장률에 필요한 산업별 기여는 <a href="/growth/">성장 계산기</a>에서 계산해 볼 수 있습니다.</p>
   <KosisSections sections={KOSIS_TOPICS[t.key]} />
+  <IndustryFinance />
   <IndustryBundles />
   <IndustryCountCompare />
   <HighValueFirms />

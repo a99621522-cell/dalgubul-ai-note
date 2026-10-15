@@ -1,14 +1,87 @@
 {
  "month": "2026-09",
- "note": "산업통상부 값만(억 달러, 통관기준 잠정치). 대구본부세관 「2026년 9월 대구·경북지역 수출입 현황」은 아직 발표 전이라 대구·경북 값은 비어 있음. 증감률은 전년 동월(누계는 전년 동기) 대비 %",
+ "note": "값은 두 보도자료 원문 그대로. 세관 자료는 백만 달러(업체 소재지 기준, 신고수리일 기준, 수출 FOB·수입 CIF), 산업통상부 자료는 억 달러(통관기준 잠정치). 증감률은 전년 동월(누계는 전년 동기) 대비 %",
  "sources": {
+  "customs": {
+   "name": "대구본부세관 「2026년 9월 대구·경북지역 수출입 현황」 보도자료(2026-10-15)",
+   "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
+   "raw": "data/trade/raw/customs_202609_att1.txt"
+  },
   "motir": {
    "name": "산업통상부 「2026년 9월 수출입 동향」 보도자료(2026-10-01)",
    "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172254/view",
    "raw": "data/trade/raw/motir_202609.txt"
   }
  },
- "customs_summary": null,
+ "customs_summary": {
+  "unit": "백만 달러",
+  "rows": [
+   {
+    "area": "대구",
+    "export": 883,
+    "export_prev_year": 801,
+    "export_prev_month": 799,
+    "export_yoy": 10.3,
+    "export_mom": 10.5,
+    "import": 684,
+    "import_yoy": 20.7,
+    "balance_eok": 2.0,
+    "balance_yoy": -13.0,
+    "ytd_export": 7506,
+    "ytd_export_yoy": 11.4,
+    "ytd_import": 5617,
+    "ytd_import_yoy": 23.3
+   },
+   {
+    "area": "경북",
+    "export": 4111,
+    "export_prev_year": 3641,
+    "export_prev_month": 3848,
+    "export_yoy": 12.9,
+    "export_mom": 6.8,
+    "import": 1479,
+    "import_yoy": 5.4,
+    "balance_eok": 26.3,
+    "balance_yoy": 16.9,
+    "ytd_export": 32977,
+    "ytd_export_yoy": 16.6,
+    "ytd_import": 12950,
+    "ytd_import_yoy": 13.4
+   },
+   {
+    "area": "대구·경북",
+    "export": 4994,
+    "export_prev_year": 4442,
+    "export_prev_month": 4647,
+    "export_yoy": 12.4,
+    "export_mom": 7.5,
+    "import": 2163,
+    "import_yoy": 9.8,
+    "balance_eok": 28.3,
+    "balance_yoy": 14.1,
+    "ytd_export": 40483,
+    "ytd_export_yoy": 15.6,
+    "ytd_import": 18567,
+    "ytd_import_yoy": 16.2
+   },
+   {
+    "area": "전국(세관 표)",
+    "export": 121050,
+    "export_prev_year": 65723,
+    "export_prev_month": 98282,
+    "export_yoy": 84.2,
+    "export_mom": 23.2,
+    "import": 71078,
+    "import_yoy": 26.0,
+    "balance_eok": null,
+    "balance_yoy": null,
+    "ytd_export": 814722,
+    "ytd_export_yoy": 57.1,
+    "ytd_import": 562293,
+    "ytd_import_yoy": 19.7
+   }
+  ]
+ },
  "motir_summary": {
   "unit": "억 달러",
   "export": 1209.4,
@@ -22,8 +95,160 @@
   "ytd_export_yoy": 56.8,
   "ytd_balance": 2525
  },
- "daegu_export_items": null,
- "gb_export_items": null,
+ "daegu_export_items": {
+  "unit": "천 달러",
+  "cols": [
+   "품목(MTI 성질별)",
+   "2025년 9월",
+   "2026년 9월",
+   "증감률(%)",
+   "2026년 1~9월 누계",
+   "누계 증감률(%)"
+  ],
+  "rows": [
+   [
+    "화공품",
+    187216.1,
+    259851.9,
+    38.8,
+    2215652.8,
+    53.8
+   ],
+   [
+    "전기·전자제품",
+    127896.4,
+    138585.2,
+    8.4,
+    1145138.8,
+    8.8
+   ],
+   [
+    "기계류와 정밀기기",
+    122950.0,
+    136635.2,
+    11.1,
+    1167822.4,
+    -9.4
+   ],
+   [
+    "수송장비",
+    150544.1,
+    130043.5,
+    -13.6,
+    1132299.8,
+    -0.5
+   ],
+   [
+    "  자동차부품",
+    100538.9,
+    100553.1,
+    0.0,
+    884700.3,
+    8.3
+   ],
+   [
+    "  승용자동차",
+    9073.5,
+    4248.9,
+    -53.2,
+    40637.9,
+    -26.2
+   ],
+   [
+    "철강제품",
+    63099.9,
+    70663.9,
+    12.0,
+    586456.0,
+    1.7
+   ],
+   [
+    "직물",
+    51550.1,
+    51392.5,
+    -0.3,
+    407400.4,
+    -8.3
+   ],
+   [
+    "총계",
+    800625.1,
+    883232.5,
+    10.3,
+    7505555.8,
+    11.4
+   ]
+  ]
+ },
+ "gb_export_items": {
+  "unit": "천 달러",
+  "cols": [
+   "품목(MTI 성질별)",
+   "2025년 9월",
+   "2026년 9월",
+   "증감률(%)",
+   "2026년 1~9월 누계",
+   "누계 증감률(%)"
+  ],
+  "rows": [
+   [
+    "전기·전자제품",
+    1692685.0,
+    2147146.0,
+    26.8,
+    14985536.5,
+    29.1
+   ],
+   [
+    "철강제품",
+    774185.1,
+    745708.9,
+    -3.7,
+    7245127.9,
+    7.9
+   ],
+   [
+    "화공품",
+    439539.1,
+    440680.4,
+    0.3,
+    3647952.1,
+    0.4
+   ],
+   [
+    "기계류와 정밀기기",
+    200316.2,
+    197648.4,
+    -1.3,
+    2074463.1,
+    5.9
+   ],
+   [
+    "수송장비",
+    174040.4,
+    156105.5,
+    -10.3,
+    1414280.8,
+    -4.6
+   ],
+   [
+    "  자동차부품",
+    141907.2,
+    128646.6,
+    -9.3,
+    1114939.4,
+    -5.1
+   ],
+   [
+    "총계",
+    3641114.4,
+    4111351.9,
+    12.9,
+    32977170.7,
+    16.6
+   ]
+  ]
+ },
  "national_items": {
   "unit": "억 달러",
   "note": "산업통상부 20대 품목(표의 반올림 값, 본문에 소수 값이 있으면 소수)",
@@ -131,22 +356,22 @@
   ]
  },
  "countries": {
-  "unit": "전국 억 달러",
-  "note": "산업통상부 지역 구분 그대로",
+  "unit": "대구·경북 백만 달러 / 전국 억 달러",
+  "note": "세관의 '동남아'와 산업통상부의 '아세안'은 범위가 같다고 볼 근거가 없어 따로 적음. 세관 표는 대구·경북 각각 상위 5개 국가·지역만 실어 그 밖은 —",
   "rows": [
    {
     "country": "중국",
     "daegu": [
-     null,
-     null
+     254,
+     24.4
     ],
     "daegu_ytd": [
-     null,
-     null
+     2077,
+     14.4
     ],
     "gb": [
-     null,
-     null
+     1488,
+     35.0
     ],
     "national": [
      260.1,
@@ -156,20 +381,58 @@
    {
     "country": "미국",
     "daegu": [
-     null,
-     null
+     192,
+     15.7
     ],
     "daegu_ytd": [
-     null,
-     null
+     1479,
+     5.6
     ],
     "gb": [
-     null,
-     null
+     798,
+     17.4
     ],
     "national": [
      243.3,
      137.0
+    ]
+   },
+   {
+    "country": "동남아(세관) / 아세안(산업부)",
+    "daegu": [
+     153,
+     5.3
+    ],
+    "daegu_ytd": [
+     1305,
+     10.6
+    ],
+    "gb": [
+     650,
+     -5.7
+    ],
+    "national": [
+     212.9,
+     92.6
+    ]
+   },
+   {
+    "country": "EU",
+    "daegu": [
+     64,
+     -22.0
+    ],
+    "daegu_ytd": [
+     692,
+     10.0
+    ],
+    "gb": [
+     396,
+     6.5
+    ],
+    "national": [
+     86.5,
+     20.9
     ]
    },
    {
@@ -183,12 +446,31 @@
      null
     ],
     "gb": [
-     null,
-     null
+     161,
+     1.8
     ],
     "national": [
      32,
      25
+    ]
+   },
+   {
+    "country": "중남미",
+    "daegu": [
+     60,
+     18.1
+    ],
+    "daegu_ytd": [
+     513,
+     16.8
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     29,
+     -4
     ]
    },
    {
@@ -208,63 +490,6 @@
     "national": [
      26,
      50
-    ]
-   },
-   {
-    "country": "아세안",
-    "daegu": [
-     null,
-     null
-    ],
-    "daegu_ytd": [
-     null,
-     null
-    ],
-    "gb": [
-     null,
-     null
-    ],
-    "national": [
-     212.9,
-     92.6
-    ]
-   },
-   {
-    "country": "EU",
-    "daegu": [
-     null,
-     null
-    ],
-    "daegu_ytd": [
-     null,
-     null
-    ],
-    "gb": [
-     null,
-     null
-    ],
-    "national": [
-     86.5,
-     20.9
-    ]
-   },
-   {
-    "country": "중남미",
-    "daegu": [
-     null,
-     null
-    ],
-    "daegu_ytd": [
-     null,
-     null
-    ],
-    "gb": [
-     null,
-     null
-    ],
-    "national": [
-     29,
-     -4
     ]
    },
    {

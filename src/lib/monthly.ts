@@ -67,6 +67,25 @@ function dpi(name: string): Pt[] {
 }
 
 
+/** 대구본부세관 「대구·경북지역 수출입 현황」(data/trade/YYYYMM.json, /stats/trade/ 와 같은 파일)의 대구 행.
+ *  연구원 자료의 수출입(한국무역협회 표기)과 같은 달 값이 같다(2026-07 수출 947·수입 685 — 세관 8월 자료의 전월 칸).
+ *  수출·수입은 보도자료 값, 무역수지는 같은 표의 수출 − 수입(백만 달러). */
+function customs(kind: 'export' | 'import' | 'balance'): Pt[] {
+  const dir = 'data/trade';
+  if (!fs.existsSync(dir)) return [];
+  const out: Pt[] = [];
+  for (const f of fs.readdirSync(dir).filter(f => /^\d{6}\.json$/.test(f)).sort()) {
+    const d = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf-8'));
+    const r = (d.customs_summary?.rows ?? []).find((x: { area: string }) => x.area === '대구');
+    if (!r) continue;
+    const m = ym(f.slice(0, 6));
+    if (kind === 'export') out.push({ m, v: r.export, yoy: r.export_yoy ?? null, mom: r.export_mom ?? null });
+    else if (kind === 'import') out.push({ m, v: r.import, yoy: r.import_yoy ?? null });
+    else if (r.export != null && r.import != null) out.push({ m, v: r.export - r.import });
+  }
+  return out;
+}
+
 export function monthlySeries(): Series[] {
   const mi = meta('data/kosis', 'mfg-production-index-industry');
   const lf = meta('data/kosis', 'labor-force-sido');
@@ -112,9 +131,9 @@ export function monthlySeries(): Series[] {
     { key: 'car', group: '소비·투자', name: '자동차 신규등록', unit: '대', change: '%', digits: 0, pts: dpi('자동차 신규등록대수'), compiled: true, source: '국토교통부 자동차 등록 통계', url: '' },
     { key: 'capm', group: '소비·투자', name: '자본재 수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('자본재 수입액'), compiled: true, source: '국가데이터처', url: '' },
     { key: 'cons', cycle: '선행', rel: '구성지표와 같음(건설수주액, 통계청은 실질)', group: '소비·투자', name: '건설수주액', unit: '억 원', change: '%', digits: 0, pts: dpi('건설수주액'), compiled: true, source: '국가데이터처 건설경기동향조사', url: '' },
-    { key: 'exp', group: '수출입', name: '수출액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수출액'), compiled: true, source: '한국무역협회', url: '' },
-    { key: 'imp', cycle: '동행', rel: '구성지표와 같음(수입액)', group: '수출입', name: '수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('수입액'), compiled: true, source: '한국무역협회', url: '' },
-    { key: 'bal', group: '수출입', name: '무역수지', unit: '백만 달러', change: 'p', digits: 1, pts: dpi('무역수지'), compiled: true, source: '한국무역협회', url: '', note: '증감은 백만 달러 차' },
+    { key: 'exp', group: '수출입', name: '수출액', unit: '백만 달러', change: '%', digits: 1, pts: joinPts(dpi('수출액'), customs('export')), compiled: true, source: '한국무역협회(~2026-07) · 대구본부세관 「대구·경북지역 수출입 현황」(2026-08~)', url: 'https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525' },
+    { key: 'imp', cycle: '동행', rel: '구성지표와 같음(수입액)', group: '수출입', name: '수입액', unit: '백만 달러', change: '%', digits: 1, pts: joinPts(dpi('수입액'), customs('import')), compiled: true, source: '한국무역협회(~2026-07) · 대구본부세관 「대구·경북지역 수출입 현황」(2026-08~)', url: 'https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525' },
+    { key: 'bal', group: '수출입', name: '무역수지', unit: '백만 달러', change: 'p', digits: 1, pts: joinPts(dpi('무역수지'), customs('balance')), compiled: true, source: '한국무역협회(~2026-07) · 대구본부세관 「대구·경북지역 수출입 현황」(2026-08~)', url: 'https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525', note: '증감은 백만 달러 차' },
     { key: 'hhd', group: '금융', name: '가계대출 연체율', unit: '%', change: '%p', digits: 2, pts: dlq('가계대출 연체율(전체1M)'), source: eSrc(dq), url: dq.source_url ?? '', note: '국내은행' },
     { key: 'cod', group: '금융', name: '기업대출 연체율', unit: '%', change: '%p', digits: 2, pts: dlq('기업대출 연체율(전체1M)'), source: eSrc(dq), url: dq.source_url ?? '', note: '국내은행' },
     { key: 'smed', group: '금융', name: '중소기업대출 연체율', unit: '%', change: '%p', digits: 2, pts: dlq('중소기업대출 연체율(전체1M)'), source: eSrc(dq), url: dq.source_url ?? '', note: '국내은행' },

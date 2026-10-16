@@ -9,7 +9,7 @@ const { f } = Astro.props as { f: ReportFile };
 const items = [
   ...(f.pdf ? [{ label: `${f.name}.pdf`, href: f.pdf, kind: 'PDF' as const, size: f.pdfSize, pages: f.pages, download: `${f.name}.pdf` }] : []),
   ...(f.hwpx ? [{ label: `${f.name}.hwpx`, href: f.hwpx, kind: '한글' as const, size: f.hwpxSize, download: `${f.name}.hwpx` }] : []),
-  { label: `${f.name}.docx`, href: f.href, kind: 'Word' as const, size: f.size, download: `${f.name}.docx` },
+  ...(f.href ? [{ label: `${f.name}.docx`, href: f.href, kind: 'Word' as const, size: f.size, download: `${f.name}.docx` }] : []),
 ];
 const mb = (s?: string) => Number((s || '').replace(/MB$/, '')) || 0;
 const others = REPORT_FILES.filter(x => x.slug !== f.slug);

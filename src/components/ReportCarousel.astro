@@ -15,7 +15,7 @@ const posts: Slide[] = reports.map(r => ({
   outline: (r.data.outline ?? []).slice(0, 2), href: `/posts/${r.id}/`, hwpx: downloadUrls(r.id).hwpx,
 }));
 const files: Slide[] = REPORT_FILES.map(f => ({
-  title: f.title, area: '리포트 자료', date: new Date(f.date), img: null, alt: '', outline: f.hwpx ? ['PDF', 'Word', '한글'] : ['PDF', 'Word'], href: `/policy/${f.slug}/`, pdf: f.pdf, docx: f.href, hwpx: f.hwpx, name: f.name,
+  title: f.title, area: '리포트 자료', date: new Date(f.date), img: null, alt: '', outline: [f.pdf && 'PDF', f.href && 'Word', f.hwpx && '한글'].filter(Boolean) as string[], href: `/policy/${f.slug}/`, pdf: f.pdf, docx: f.href, hwpx: f.hwpx, name: f.name,
 }));
 const slides = [...posts, ...files].slice(0, 5);
 const fmt = (d: Date) => d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });

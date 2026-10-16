@@ -121,7 +121,7 @@ python3 scripts/approve.py            # 초안 승인
 2. 원문 문장을 그대로 옮기지 않는다. 완전히 다시 쓴다. 인용은 15단어 이내, 소스당 1회
 3. 모든 글에 출처(`source`, `sourceUrl`)를 남긴다. 보도자료는 공공누리 조건에 따라 출처 표시
 4. 정책 평가·비판 없음. 사실과 대구 산업 접점만 정리
-5. 자동 생성 글은 `auto: true` 로 표시하고 `draft: true` 로 저장. 승인 없이 노출하는 코드 변경 금지. **예외(운영자 지시 2026-09-28): 정책 브리프(format: brief)는 `.claude/agents/policy-brief.md` 에이전트가 근거가 충분한 주제만 골라 조사·작성하고 `scripts/review_report.py --gate` 가 PASS 이며 자기 검토를 통과할 때만 `draft: false` 로 발행한다.** 아니면 초안. 발행 뒤에도 `publish_reports.yml`·`review_reports.yml` 이 다시 검사해 미달이면 draft 로 되돌린다
+5. 자동 생성 글은 `auto: true` 로 표시하고 `draft: true` 로 저장. 승인 없이 노출하는 코드 변경 금지. (2026-09-28 에 둔 정책 브리프 자동 발행 예외는 **운영자 지시 2026-10-16 'AI가 작성한 리포트는 내려' 로 없앴다** — 그날 발행 중이던 AI 작성 리포트 3편(반도체 수출 기준선·ICT 창업·섬유 생산 감소)을 draft 로 내리고 그 HWPX 와 앞서 내린 봉제·데이터센터 냉각 HWPX 를 지웠다. 정책 브리프도 항상 초안으로 두고 `publish_reports.yml` 이 브랜치에서 온 auto: true 리포트를 draft 로 강제한다. 운영자가 검토·지시해 다시 쓴 글(auto: false, 예: CBAM)만 운영자 판단으로 발행.) 발행 뒤에도 `publish_reports.yml`·`review_reports.yml` 이 다시 검사해 미달이면 draft 로 되돌린다
 6. 지원사업 공고는 글로 쓰지 않는다. `data/notices/notices.csv` 에 제목·기관·마감·링크만 남기고, 리포트는 그 데이터를 근거로 쓴다
 7. 개인정보·내부 자료·로그인 뒤 자료는 수집 대상에 넣지 않는다
 8. AI 답변 최적화(AEO): 모든 글은 `description`을 결론 먼저의 '핵심 문장'으로, 표로 정리할 수 있는 정보는 표로, 글마다 `faq` 3개(본문 근거만). 이미지는 캡션(figcaption) 필수. 글 페이지는 Article·FAQPage JSON-LD를 자동 출력한다

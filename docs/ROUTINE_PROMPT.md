@@ -30,14 +30,14 @@ https://www.factoryon.go.kr/bbs/frtblRecsroomBbsList.do 에서 최신 월 "전�
 
 실행 구조(2026-09-26 확정): 루틴은 운영 세션을 깨우고, 운영 세션이 `create_session(source main, outcome_branch: claude/policy-reports)` 으로
 작성 세션을 만든다. 루틴이 직접 만든 세션은 지정 브랜치가 없어 `git push` 가 승인 대기로 막히므로(시험 2회 확인) 이 구조를 쓴다.
-작성 세션은 아래 프롬프트를 그대로 받는다. 푸시되면 `.github/workflows/publish_reports.yml` 이 main 에 병합 → 브랜치에서 온 리포트마다 `review_report.py --gate` 를 돌려 FAIL 이면 `draft: true` 로 되돌림(운영자 지시 2026-09-28: 충분한 자료와 신뢰성이 있을 때만 발간) → 배포한다. 운영자는 `python3 scripts/approve.py` 로 초안을 직접 발행할 수도 있다.
+작성 세션은 아래 프롬프트를 그대로 받는다. 푸시되면 `.github/workflows/publish_reports.yml` 이 main 에 병합 → 브랜치에서 온 리포트마다 `review_report.py --gate` 를 돌려 FAIL 이면 `draft: true` 로 되돌림(운영자 지시 2026-09-28: 충분한 자료와 신뢰성이 있을 때만 발간) → AI 작성 리포트(auto: true)는 검사 결과와 상관없이 초안으로 둔다(운영자 지시 2026-10-16) → 배포한다. 운영자는 `python3 scripts/approve.py` 로 초안을 직접 발행할 수도 있다.
 
 ### 작성 세션 프롬프트 (그대로 복사) — v3 정책 브리프(2026-09-29 부터)
 
 저장소 a99621522-cell/dalgubul-ai-note. 이 세션의 지정 브랜치는 `claude/policy-reports` 다: `git fetch origin main && git checkout -B claude/policy-reports origin/main` 으로 main 에서 새로 만든다. main 에는 직접 푸시하지 않는다.
 `.claude/agents/policy-brief.md` 의 지시를 그대로 따른다(에이전트 policy-brief 로 실행하거나, 그 파일 내용을 프롬프트로 삼는다): ① 분야 10개의 근거를 조사해 후보 주제 3개를 채점하고 7점 이상인 1개만 고른다(없으면 쓰지 않고 보고) ② 내부 자료와 WebSearch·WebFetch 로 충분히 조사해 조사 메모(docs/strategy/research/)를 만든 뒤 ③ 대구정책 브리프식 개조식(format: brief)으로 쓴다 ④ `python3 scripts/review_report.py --gate <파일>` 이 PASS 이고 자기 검토 5항목이 모두 예일 때만 `draft: false`, 아니면 초안으로 둔다(운영자 지시 2026-09-28: 충분한 자료와 신뢰성이 있을 때만 발간).
 논리 규칙(운영자 지시 2026-09-28): 주장마다 근거 1개(근거 없는 주장은 쓰지 않음) / 제안 수치는 계산식·출처가 있을 때만, 없으면 "N 은 조사 뒤 정함" / 공장등록 키워드 집계는 '품목 등록 기업 수' 로만(역량·수요 근거 금지) / 원인 문장에도 출처 / 전제가 미확인이면 정책 제안이 아니라 '조사 제안' 1개만 / 제안은 근거가 받쳐 주는 만큼만 0~3개 / 출처 5건 이상, 그중 공식 자료 2건 이상 / 2,000~6,000자.
-끝에 `npm run build` 를 통과시키고 한 커밋("brief: <제목> YYYY-MM-DD", 끝에 "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" 줄)으로 `git push -u origin claude/policy-reports --force-with-lease`. 워크플로 publish_reports.yml 이 main 에 병합하고 --gate 를 다시 돌려 FAIL 이면 draft 로 되돌린다. 마지막 출력에 고른 주제와 채점표, 검사 결과, 발행 여부와 사유, 출처 수, 확인 못 한 것을 적는다. 푸시가 거부되면 오류 메시지를 그대로 적는다.
+끝에 `npm run build` 를 통과시키고 한 커밋("brief: <제목> YYYY-MM-DD", 끝에 "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" 줄)으로 `git push -u origin claude/policy-reports --force-with-lease`. 워크플로 publish_reports.yml 이 main 에 병합한다. 리포트는 항상 draft: true 로 둔다(운영자 지시 2026-10-16 'AI가 작성한 리포트는 내려' — 발행은 운영자 검토 뒤 approve.py). 마지막 출력에 고른 주제와 채점표, 검사 결과, 발행 여부와 사유, 출처 수, 확인 못 한 것을 적는다. 푸시가 거부되면 오류 메시지를 그대로 적는다.
 
 (v2 인사이트 리포트 형식·v1 1~9절 형식은 2026-09-28 까지의 초안에만 남아 있다. 사양은 git 이력 참고. 2026-09-28 운영자 지적: 말투가 어색하고 논리가 맞지 않음 — 측정한 것과 주장이 다름, 확인 안 된 전제, 근거 없는 원인, 도출 없는 제안 수치, 잣대 혼용, 병목과 제안 불일치.)
 

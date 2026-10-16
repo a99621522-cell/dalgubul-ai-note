@@ -3,6 +3,7 @@
 
 - 키: 환경변수 KOSIS_KEY(인증키 하나로 모든 표). 없으면 아무것도 받지 않고 끝낸다(무인 실행이 죽지 않게).
 - 표마다 통계자료 조회 API 를 부른다. 실패는 로그만 남기고 다음 표로.
+- --check: 표마다 최근 1개 시점만 물어 저장본(<key>.json latest)보다 새 시점이 있는 표만 받는다(kosis.yml 매일 실행).
 - --discover: tbl_id 가 빈 표의 search 낱말로 통계표 검색 API 를 불러 후보(표 이름·orgId·tblId)를 찍는다. 확인해서 yml 에 채운다.
 - --list '낱말 낱말': 검색 API 가 못 찾을 때 주제별 통계목록 트리(statisticsList)를 내려가며 이름에 낱말이 든 표를 찍는다(워크플로 입력 list).
   표 번호를 찾는 다른 방법: KOSIS 사이트에서 표를 연 뒤 주소의 tblId=… 를 읽는다(예: statHtml.do?orgId=101&tblId=DT_1K52D01).
@@ -143,6 +144,50 @@ def apply_keep(t: dict, rows: list) -> list:
         vals = k.get(col)
         if vals:
             out = [r for r in out if r.get(f"{col}_NM", "") in vals]
+    return out
+
+
+def latest_period(t: dict, key: str) -> str:
+    """KOSIS 에 올라온 그 표의 가장 최근 시점 — 최근 1개 시점만(newEstPrdCnt=1) 요청해 PRD_DE 의 최댓값. 분류 단계 수는 _get_rows 처럼 늘려 가며 맞춘다."""
+    base = {"method": "getList", "apiKey": key, "itmId": "ALL", "format": "json", "jsonVD": "Y", "prdSe": t.get("prd_se", "Y"),
+            "orgId": str(t["org_id"]), "tblId": t["tbl_id"], "newEstPrdCnt": "1"}
+    for n in range(int(t.get("min_levels", 1)), 9):
+        data = _call({**base, **{f"objL{i}": "ALL" for i in range(1, n + 1)}})
+        e = _err(data)
+        if not e and isinstance(data, list):
+            return max((r.get("PRD_DE", "") for r in data), default="")
+        if not any(x in e for x in ("21", "변수", "30", "존재하지")):
+            raise RuntimeError(e)
+        time.sleep(0.3)
+    return ""
+
+
+def stale_tables(tables: list, key: str) -> list:
+    """새 시점이 올라온 표만 — 저장된 <key>.json 의 latest 와 KOSIS 의 최근 시점을 견준다(2026-10-16 운영자 '언제 업데이트 되는지 보고 자동으로 받아와').
+    결과는 로그와 GitHub 작업 요약에 표로 남긴다."""
+    out, lines = [], ["| 표 | 저장된 최근 | KOSIS 최근 | 받기 |", "|---|---|---|---|"]
+    for t in tables:
+        if not t.get("tbl_id"):
+            continue
+        p = OUT / f"{t['key']}.json"
+        have = json.loads(p.read_text(encoding="utf-8")).get("latest", "") if p.exists() else ""
+        try:
+            now = latest_period(t, key)
+        except NetworkDead:
+            raise
+        except Exception as e:  # noqa: BLE001
+            print(f"[check] {t['key']}: 확인 실패 {e} — 받기 대상에 넣음")
+            now = "?"
+        new = now == "?" or (now and now > have)
+        print(f"[check] {t['key']}: 저장 {have or '-'} / KOSIS {now or '-'}{' → 받기' if new else ''}")
+        lines.append(f"| {t['key']} | {have or '-'} | {now or '-'} | {'받기' if new else ''} |")
+        if new:
+            out.append(t)
+        time.sleep(0.3)
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
+            fh.write("## KOSIS 새 자료 확인\n\n" + "\n".join(lines) + "\n")
+    print(f"[check] 새 시점이 올라온 표 {len(out)}개: {', '.join(t['key'] for t in out) or '없음'}")
     return out
 
 
@@ -321,6 +366,7 @@ def main() -> int:
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--summary", action="store_true")
+    ap.add_argument("--check", action="store_true", help="KOSIS 최근 시점이 저장본보다 새 표만 받는다(매일 실행용)")
     ap.add_argument("--list", default="", help="통계목록 트리에서 낱말이 든 표를 찾는다(예: '전국사업체조사 시도')")
     ap.add_argument("--probe", default="", help="표 key 하나의 메타·최소 요청 응답을 찍는다(오류 21 원인 확인)")
     ap.add_argument("--meta", default="", help="표 key 의 항목·분류 메타를 data/kosis/<key>.meta.json 으로 저장(분류 코드가 필요할 때)")
@@ -362,6 +408,13 @@ def main() -> int:
         for t in tables:
             discover(t, key); time.sleep(0.5)
         return 0
+    if a.check:
+        try:
+            tables = stale_tables(tables, key)
+        except NetworkDead as e:
+            print(f"[check] {e}"); return 75
+        if not tables:
+            return 0
     metas = []
     for t in tables:
         if not t.get("tbl_id"):

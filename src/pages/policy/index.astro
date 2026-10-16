@@ -20,7 +20,7 @@ const FILES = REPORT_FILES;
         <div class="r-dl" aria-label={`${f.name} 내려받기`}>
           {f.pdf && <a href={f.pdf} download={`${f.name}.pdf`}><b>PDF</b> {f.pdfSize}</a>}
           {f.hwpx && <a href={f.hwpx} download={`${f.name}.hwpx`}><b>한글</b> {f.hwpxSize}</a>}
-          <a href={f.href} download={`${f.name}.docx`}><b>Word</b> {f.size}</a>
+          {f.href && <a href={f.href} download={`${f.name}.docx`}><b>Word</b> {f.size}</a>}
         </div>
       </li>
     ))}

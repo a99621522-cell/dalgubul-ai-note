@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'sl-sdv-robotics', summary: '대구 북구 유가증권 상장사 에스엘의 전동화(SDV) 부품과 로보틱스(모베드·스팟·플러드) 사업을 한화투자증권 기업분석(2026-09-28) 원문과 DART 공시(2025 사업보고서, 2026 1분기·반기보고서)로 정리하고 분기 실적을 대조한 자료. 투자의견·목표주가·애널리스트 이름은 싣지 않음.', topics: ['상장기업', '미래차', '로봇', '증권사 리포트'],
+    title: '에스엘 SDV·로보틱스 사업 — 증권사 리포트와 공시 정리', name: '에스엘 SDV·로보틱스 사업 — 증권사 리포트와 공시 정리',
+    hwpx: '/hwpx/sl-sdv-robotics.hwpx', hwpxSize: '144KB', date: '2026-10-16' },
   { slug: 'daesung-hitech-robot-cdmo', summary: '대구 달성군 코스닥 상장사 대성하이텍의 로봇 CDMO 진출 선언과 방산 정밀부품·AI 데이터센터 냉각·카테터 사업을 증권사 리포트 원문 3건(유안타증권·키움증권)과 DART 공시로 정리한 자료. 투자의견·목표주가·애널리스트 이름은 싣지 않음.', topics: ['상장기업', '로봇', '증권사 리포트'],
     title: '대성하이텍 진출 선언 — 정밀가공에서 로봇 CDMO로', name: '대성하이텍 진출 선언 — 정밀가공에서 로봇 CDMO로',
     hwpx: '/hwpx/daesung-hitech-robot-cdmo.hwpx', hwpxSize: '276KB', date: '2026-10-16' },

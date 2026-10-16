@@ -1,28 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구 고용률·실업률(월간). 2024-09부터 2026-08까지 24개월. 고용률 최근 58.3%; 실업률 최근 2.1%" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" role="img" aria-label="대구 고용률·실업률(월간). 2024-10부터 2026-09까지 24개월. 고용률 최근 59%; 실업률 최근 2.5%" style="max-width:720px;height:auto;font-size:14px">
 <title>대구 고용률·실업률(월간)</title>
-<line x1="72" x2="616" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" x2="624" y1="296.0" y2="296.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="301.0" text-anchor="end" fill="#767676">0</text>
-<line x1="72" x2="616" y1="232.0" y2="232.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" x2="624" y1="232.0" y2="232.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="237.0" text-anchor="end" fill="#767676">20</text>
-<line x1="72" x2="616" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" x2="624" y1="168.0" y2="168.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="173.0" text-anchor="end" fill="#767676">40</text>
-<line x1="72" x2="616" y1="104.0" y2="104.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" x2="624" y1="104.0" y2="104.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="109.0" text-anchor="end" fill="#767676">60</text>
-<line x1="72" x2="616" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" x2="624" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="64" y="45.0" text-anchor="end" fill="#767676">80</text>
-<text x="119.3" y="320" text-anchor="middle" fill="#767676">24.11</text>
-<text x="190.3" y="320" text-anchor="middle" fill="#767676">25.2</text>
-<text x="261.2" y="320" text-anchor="middle" fill="#767676">25.5</text>
-<text x="332.2" y="320" text-anchor="middle" fill="#767676">25.8</text>
-<text x="403.1" y="320" text-anchor="middle" fill="#767676">25.11</text>
-<text x="474.1" y="320" text-anchor="middle" fill="#767676">26.2</text>
-<text x="545.0" y="320" text-anchor="middle" fill="#767676">26.5</text>
-<text x="616.0" y="320" text-anchor="middle" fill="#767676">26.8</text>
-<line x1="72" x2="616" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
-<path d="M72.0,110.4 L95.7,110.4 L119.3,110.1 L143.0,114.2 L166.6,114.9 L190.3,113.3 L213.9,109.8 L237.6,109.1 L261.2,108.2 L284.9,109.1 L308.5,111.0 L332.2,110.7 L355.8,108.8 L379.5,110.1 L403.1,108.5 L426.8,113.0 L450.4,116.2 L474.1,110.7 L497.7,110.4 L521.4,109.1 L545.0,108.2 L568.7,108.8 L592.3,108.5 L616.0,109.4" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="616.0" cy="109.4" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="624.0" y="114.2" fill="#1a1a1a" font-weight="600">58.3% 고용률</text>
-<path d="M72.0,287.0 L95.7,286.4 L119.3,286.7 L143.0,284.8 L166.6,283.2 L190.3,284.2 L213.9,287.0 L237.6,284.2 L261.2,285.8 L284.9,285.8 L308.5,286.7 L332.2,289.3 L355.8,287.0 L379.5,286.4 L403.1,286.7 L426.8,280.3 L450.4,279.7 L474.1,285.8 L497.7,285.4 L521.4,287.7 L545.0,287.0 L568.7,286.4 L592.3,288.0 L616.0,289.3" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="616.0" cy="289.3" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="624.0" y="294.0" fill="#1a1a1a" font-weight="600">2.1% 실업률</text>
+<text x="120.0" y="320" text-anchor="middle" fill="#767676">24.12</text>
+<text x="192.0" y="320" text-anchor="middle" fill="#767676">25.3</text>
+<text x="264.0" y="320" text-anchor="middle" fill="#767676">25.6</text>
+<text x="336.0" y="320" text-anchor="middle" fill="#767676">25.9</text>
+<text x="408.0" y="320" text-anchor="middle" fill="#767676">25.12</text>
+<text x="480.0" y="320" text-anchor="middle" fill="#767676">26.3</text>
+<text x="552.0" y="320" text-anchor="middle" fill="#767676">26.6</text>
+<text x="624.0" y="320" text-anchor="middle" fill="#767676">26.9</text>
+<line x1="72" x2="624" y1="296" y2="296" stroke="#767676" stroke-width="1"/>
+<path d="M72.0,110.4 L96.0,110.1 L120.0,114.2 L144.0,114.9 L168.0,113.3 L192.0,109.8 L216.0,109.1 L240.0,108.2 L264.0,109.1 L288.0,111.0 L312.0,110.7 L336.0,108.8 L360.0,110.1 L384.0,108.5 L408.0,113.0 L432.0,116.2 L456.0,110.7 L480.0,110.4 L504.0,109.1 L528.0,108.2 L552.0,108.8 L576.0,108.5 L600.0,109.4 L624.0,107.2" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="624.0" cy="107.2" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="632.0" y="112.2" fill="#1a1a1a" font-weight="600">59% 고용률</text>
+<path d="M72.0,286.4 L96.0,286.7 L120.0,284.8 L144.0,283.2 L168.0,284.2 L192.0,287.0 L216.0,284.2 L240.0,285.8 L264.0,285.8 L288.0,286.7 L312.0,289.3 L336.0,287.0 L360.0,286.4 L384.0,286.7 L408.0,280.3 L432.0,279.7 L456.0,285.8 L480.0,285.4 L504.0,287.7 L528.0,287.0 L552.0,286.4 L576.0,288.0 L600.0,289.3 L624.0,288.0" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="624.0" cy="288.0" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="632.0" y="293.0" fill="#1a1a1a" font-weight="600">2.5% 실업률</text>
 <text x="72" y="16" fill="#767676">KOSIS 행정구역(시도)별 경제활동인구</text></svg>

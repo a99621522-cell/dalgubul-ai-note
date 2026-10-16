@@ -1,21 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구 취업자(월간). 2024-09부터 2026-08까지 24개월. 취업자 최근 1,223.6천명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구 취업자(월간). 2024-10부터 2026-09까지 24개월. 취업자 최근 1,236.8천명" style="max-width:360px;height:auto;font-size:14px">
 <title>대구 취업자(월간)</title>
 <line x1="60" x2="262" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">1,160</text>
-<line x1="60" x2="262" y1="202.0" y2="202.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="207.0" text-anchor="end" fill="#767676">1,180</text>
-<line x1="60" x2="262" y1="148.0" y2="148.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="153.0" text-anchor="end" fill="#767676">1,200</text>
-<line x1="60" x2="262" y1="94.0" y2="94.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="99.0" text-anchor="end" fill="#767676">1,220</text>
+<line x1="60" x2="262" y1="212.8" y2="212.8" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="217.8" text-anchor="end" fill="#767676">1,180</text>
+<line x1="60" x2="262" y1="169.6" y2="169.6" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="174.6" text-anchor="end" fill="#767676">1,200</text>
+<line x1="60" x2="262" y1="126.4" y2="126.4" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="131.4" text-anchor="end" fill="#767676">1,220</text>
+<line x1="60" x2="262" y1="83.2" y2="83.2" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="88.2" text-anchor="end" fill="#767676">1,240</text>
 <line x1="60" x2="262" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
-<text x="52" y="45.0" text-anchor="end" fill="#767676">1,240</text>
-<text x="103.9" y="280" text-anchor="middle" fill="#767676">25.2</text>
-<text x="156.6" y="280" text-anchor="middle" fill="#767676">25.8</text>
-<text x="209.3" y="280" text-anchor="middle" fill="#767676">26.2</text>
-<text x="262.0" y="280" text-anchor="middle" fill="#767676">26.8</text>
+<text x="52" y="45.0" text-anchor="end" fill="#767676">1,260</text>
+<text x="103.9" y="280" text-anchor="middle" fill="#767676">25.3</text>
+<text x="156.6" y="280" text-anchor="middle" fill="#767676">25.9</text>
+<text x="209.3" y="280" text-anchor="middle" fill="#767676">26.3</text>
+<text x="262.0" y="280" text-anchor="middle" fill="#767676">26.9</text>
 <line x1="60" x2="262" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,105.9 L68.8,107.0 L77.6,98.9 L86.3,174.2 L95.1,184.7 L103.9,158.3 L112.7,93.2 L121.5,86.7 L130.3,68.1 L139.0,88.6 L147.8,118.8 L156.6,112.4 L165.4,82.1 L174.2,101.0 L183.0,73.5 L191.7,153.4 L200.5,204.7 L209.3,110.5 L218.1,106.2 L226.9,81.6 L235.7,64.8 L244.4,76.7 L253.2,72.1 L262.0,84.3" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="262.0" cy="84.3" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
-<text x="270.0" y="89.3" fill="#1a1a1a" font-weight="600">1,223.6천명</text>
+<path d="M60.0,136.8 L68.8,130.3 L77.6,190.6 L86.3,199.0 L95.1,177.8 L103.9,125.8 L112.7,120.6 L121.5,105.7 L130.3,122.1 L139.0,146.3 L147.8,141.1 L156.6,116.9 L165.4,132.0 L174.2,110.0 L183.0,173.9 L191.7,215.0 L200.5,139.6 L209.3,136.1 L218.1,116.5 L226.9,103.1 L235.7,112.6 L244.4,108.9 L253.2,118.6 L262.0,90.1" fill="none" stroke="#1B4F9B" style="stroke:var(--primary,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="262.0" cy="90.1" r="3.5" style="fill:var(--primary,#1B4F9B)"/>
+<text x="270.0" y="95.1" fill="#1a1a1a" font-weight="600">1,236.8천명</text>
 <text x="8" y="16" fill="#767676">KOSIS 행정구역(시도)별 경제활동인구</text></svg>

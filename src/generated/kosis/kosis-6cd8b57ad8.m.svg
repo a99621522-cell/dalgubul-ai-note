@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구 고용률·실업률(월간). 2024-09부터 2026-08까지 24개월. 고용률 최근 58.3%; 실업률 최근 2.1%" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="100%" role="img" aria-label="대구 고용률·실업률(월간). 2024-10부터 2026-09까지 24개월. 고용률 최근 59%; 실업률 최근 2.5%" style="max-width:360px;height:auto;font-size:14px">
 <title>대구 고용률·실업률(월간)</title>
 <line x1="60" x2="304" y1="256.0" y2="256.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="261.0" text-anchor="end" fill="#767676">0</text>
@@ -10,17 +10,17 @@
 <text x="52" y="99.0" text-anchor="end" fill="#767676">60</text>
 <line x1="60" x2="304" y1="40.0" y2="40.0" stroke="#e0e0e0" stroke-width="1"/>
 <text x="52" y="45.0" text-anchor="end" fill="#767676">80</text>
-<text x="113.0" y="280" text-anchor="middle" fill="#767676">25.2</text>
-<text x="176.7" y="280" text-anchor="middle" fill="#767676">25.8</text>
-<text x="240.3" y="280" text-anchor="middle" fill="#767676">26.2</text>
-<text x="304.0" y="280" text-anchor="middle" fill="#767676">26.8</text>
+<text x="113.0" y="280" text-anchor="middle" fill="#767676">25.3</text>
+<text x="176.7" y="280" text-anchor="middle" fill="#767676">25.9</text>
+<text x="240.3" y="280" text-anchor="middle" fill="#767676">26.3</text>
+<text x="304.0" y="280" text-anchor="middle" fill="#767676">26.9</text>
 <line x1="60" x2="304" y1="256" y2="256" stroke="#767676" stroke-width="1"/>
-<path d="M60.0,99.4 L70.6,99.4 L81.2,99.1 L91.8,102.6 L102.4,103.2 L113.0,101.8 L123.7,98.9 L134.3,98.3 L144.9,97.5 L155.5,98.3 L166.1,99.9 L176.7,99.7 L187.3,98.1 L197.9,99.1 L208.5,97.8 L219.1,101.6 L229.7,104.3 L240.3,99.7 L251.0,99.4 L261.6,98.3 L272.2,97.5 L282.8,98.1 L293.4,97.8 L304.0,98.6" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="304.0" cy="98.6" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
-<text x="312.0" y="85.3" fill="#1a1a1a" font-weight="600">58.3%</text>
-<text x="312.0" y="102.3" fill="#1a1a1a">고용률</text>
-<path d="M60.0,248.4 L70.6,247.9 L81.2,248.2 L91.8,246.6 L102.4,245.2 L113.0,246.0 L123.7,248.4 L134.3,246.0 L144.9,247.4 L155.5,247.4 L166.1,248.2 L176.7,250.3 L187.3,248.4 L197.9,247.9 L208.5,248.2 L219.1,242.8 L229.7,242.2 L240.3,247.4 L251.0,247.1 L261.6,249.0 L272.2,248.4 L282.8,247.9 L293.4,249.2 L304.0,250.3" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="304.0" cy="250.3" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
-<text x="312.0" y="237.0" fill="#1a1a1a" font-weight="600">2.1%</text>
+<path d="M60.0,99.4 L70.6,99.1 L81.2,102.6 L91.8,103.2 L102.4,101.8 L113.0,98.9 L123.7,98.3 L134.3,97.5 L144.9,98.3 L155.5,99.9 L166.1,99.7 L176.7,98.1 L187.3,99.1 L197.9,97.8 L208.5,101.6 L219.1,104.3 L229.7,99.7 L240.3,99.4 L251.0,98.3 L261.6,97.5 L272.2,98.1 L282.8,97.8 L293.4,98.6 L304.0,96.7" fill="none" stroke="#1B4F9B" style="stroke:var(--chart-1,#1B4F9B)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="304.0" cy="96.7" r="3.5" style="fill:var(--chart-1,#1B4F9B)"/>
+<text x="312.0" y="84.4" fill="#1a1a1a" font-weight="600">59%</text>
+<text x="312.0" y="101.4" fill="#1a1a1a">고용률</text>
+<path d="M60.0,247.9 L70.6,248.2 L81.2,246.6 L91.8,245.2 L102.4,246.0 L113.0,248.4 L123.7,246.0 L134.3,247.4 L144.9,247.4 L155.5,248.2 L166.1,250.3 L176.7,248.4 L187.3,247.9 L197.9,248.2 L208.5,242.8 L219.1,242.2 L229.7,247.4 L240.3,247.1 L251.0,249.0 L261.6,248.4 L272.2,247.9 L282.8,249.2 L293.4,250.3 L304.0,249.2" fill="none" stroke="#E69F00" style="stroke:var(--chart-2,#E69F00)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="304.0" cy="249.2" r="3.5" style="fill:var(--chart-2,#E69F00)"/>
+<text x="312.0" y="237.0" fill="#1a1a1a" font-weight="600">2.5%</text>
 <text x="312.0" y="254.0" fill="#1a1a1a">실업률</text>
 <text x="8" y="16" fill="#767676">KOSIS 행정구역(시도)별 경제활동인구</text></svg>

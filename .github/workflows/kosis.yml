@@ -6,9 +6,14 @@ name: 통계청 KOSIS 통계표 받기
 
 on:
   schedule:
-    - cron: "17 19 8 * *"      # 매월 9일 04:17 KST (월간 통계 공표 뒤)
+    - cron: "17 19 8 * *"      # 매월 9일 04:17 KST — 전체 다시 받기(수정값 반영)
+    - cron: "17 4 * * *"       # 매일 13:17 KST — 새 시점이 올라온 표만(--check). 통계청·중기부 공표는 대개 08:00·12:00(2026-10-16 운영자 '언제 업데이트 되는지 보고 자동으로 받아와')
   workflow_dispatch:
     inputs:
+      check:
+        description: "새 시점이 올라온 표만 받기(true)"
+        required: false
+        default: "false"
       only:
         description: "표 key (쉼표 구분, 비우면 전부)"
         required: false
@@ -61,7 +66,8 @@ jobs:
           if [ -n "${{ inputs.probe }}" ]; then python3 scripts/fetch_kosis.py --probe "${{ inputs.probe }}"; exit 0; fi
           if [ -n "${{ inputs.list }}" ]; then [ "${{ matrix.attempt }}" = "1" ] && python3 scripts/fetch_kosis.py --list "${{ inputs.list }}"; exit 0; fi   # 목록 검색은 러너 하나만(셋이 같이 돌면 1분 200건 한도에 걸린다)
           if [ "${{ inputs.discover }}" = "true" ]; then python3 scripts/fetch_kosis.py --discover ${{ inputs.only && format('--only {0}', inputs.only) || '' }}; exit 0; fi
-          python3 scripts/fetch_kosis.py ${{ inputs.only && format('--only {0}', inputs.only) || '' }} || { rc=$?; [ "$rc" = "75" ] && echo "::warning::이 러너(attempt ${{ matrix.attempt }})는 kosis.kr 연결 불가" && exit 0; exit $rc; }
+          CHECK=""; { [ "${{ github.event.schedule }}" = "17 4 * * *" ] || [ "${{ inputs.check }}" = "true" ]; } && CHECK="--check"
+          python3 scripts/fetch_kosis.py $CHECK ${{ inputs.only && format('--only {0}', inputs.only) || '' }} || { rc=$?; [ "$rc" = "75" ] && echo "::warning::이 러너(attempt ${{ matrix.attempt }})는 kosis.kr 연결 불가" && exit 0; exit $rc; }
       - name: 커밋
         if: inputs.discover != 'true' && inputs.list == '' && inputs.probe == ''
         run: |
@@ -86,3 +92,23 @@ jobs:
             git push origin HEAD:"${GITHUB_REF_NAME}" && break
             sleep $((i * 5))
           done
+
+  # 데이터 커밋은 GITHUB_TOKEN 으로 올라가 deploy.yml(push 트리거)을 깨우지 않는다 — 이 실행에서 data/kosis 가 바뀌었으면 바로 배포
+  changed:
+    needs: fetch
+    if: always() && github.ref_name == 'main' && inputs.discover != 'true' && inputs.list == '' && inputs.probe == '' && inputs.meta == ''
+    runs-on: ubuntu-latest
+    outputs:
+      yes: ${{ steps.c.outputs.yes }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 30 }
+      - id: c
+        run: |
+          n=$(git log --since="90 minutes ago" --grep="data: KOSIS" --format=%H -- data/kosis | wc -l)
+          echo "이 실행 뒤 data/kosis 커밋 $n 개"; [ "$n" -gt 0 ] && echo "yes=1" >> "$GITHUB_OUTPUT" || true
+  deploy:
+    needs: changed
+    if: needs.changed.outputs.yes == '1'
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

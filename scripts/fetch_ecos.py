@@ -5,6 +5,7 @@
 - 표마다 StatisticSearch 를 부른다(항목 코드 없이 전체 → ITEM_NAME1~4 에 '대구'가 든 행만). 실패는 로그만 남기고 다음 표로.
 - --discover: stat_code 가 빈 표는 통계표 목록(StatisticTableList)에서 search 낱말이 든 표를, stat_code 가 있는 표는
   항목 목록(StatisticItemList)에서 '대구'가 든 항목을 찍는다. 확인해서 yml 에 채운다.
+- --check: 항목 목록의 최근 시점이 저장본보다 새 표만 받는다(ecos.yml 매일 실행).
 - --only key,key  --dry-run(주소만 출력)  --summary(data/ecos/summary.md 만 다시 씀)
 - 이 세션 환경은 ecos.bok.or.kr 접속이 막혀 있어 GitHub Actions(ecos.yml)가 대신 돈다. 평가 없음, 값은 그대로.
 """
@@ -127,6 +128,36 @@ def discover(t: dict, key: str) -> None:
         print(f"[discover] {t['key']}: 실패 {e}")
 
 
+def stale_tables(tables: list, key: str) -> list:
+    """새 시점이 올라온 표만 — 항목 목록(StatisticItemList)의 '대구' 항목 END_TIME 최댓값을 저장된 <key>.json latest 와 견준다
+    (2026-10-16 운영자 '언제 업데이트 되는지 보고 자동으로 받아와'). 확인이 안 되면 받기 대상에 넣는다."""
+    out, lines = [], ["| 표 | 저장된 최근 | ECOS 최근 | 받기 |", "|---|---|---|---|"]
+    for t in tables:
+        if not t.get("stat_code"):
+            continue
+        p = OUT / f"{t['key']}.json"
+        have = json.loads(p.read_text(encoding="utf-8")).get("latest", "") if p.exists() else ""
+        try:
+            items = paged(key, "StatisticItemList", t["stat_code"], limit=5)
+            words = t.get("area") if t.get("area") is not None else ["대구"]
+            ends = [i.get("END_TIME") or "" for i in items if i.get("CYCLE") == t.get("cycle", "M") and (not words or any(w in (i.get("ITEM_NAME") or "") for w in words))]
+            now = max(ends, default="") or max((i.get("END_TIME") or "" for i in items if i.get("CYCLE") == t.get("cycle", "M")), default="")
+        except Exception as e:  # noqa: BLE001
+            print(f"[check] {t['key']}: 확인 실패 {e} — 받기 대상에 넣음")
+            now = "?"
+        new = now == "?" or (now and now > have)
+        print(f"[check] {t['key']}: 저장 {have or '-'} / ECOS {now or '-'}{' → 받기' if new else ''}")
+        lines.append(f"| {t['key']} | {have or '-'} | {now or '-'} | {'받기' if new else ''} |")
+        if new:
+            out.append(t)
+        time.sleep(0.3)
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
+            fh.write("## ECOS 새 자료 확인\n\n" + "\n".join(lines) + "\n")
+    print(f"[check] 새 시점이 올라온 표 {len(out)}개: {', '.join(t['key'] for t in out) or '없음'}")
+    return out
+
+
 def write_summary() -> None:
     files = sorted(OUT.glob("*.json"))
     lines = ["# 한국은행 ECOS 수집 결과", "", f"갱신 {date.today().isoformat()} · 표 {len(files)}개 · 설정 config/ecos_tables.yml", "",
@@ -144,6 +175,7 @@ def main() -> int:
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--summary", action="store_true")
+    ap.add_argument("--check", action="store_true", help="ECOS 최근 시점이 저장본보다 새 표만 받는다(매일 실행용)")
     a = ap.parse_args()
     tables = load()
     if a.only:
@@ -154,6 +186,10 @@ def main() -> int:
     key = os.environ.get("ECOS_KEY", "").strip().strip('"\'')
     if not key and not a.dry_run:
         print("ECOS_KEY 가 없어 받지 않음(GitHub Secrets 에 넣으면 동작)"); return 0
+    if a.check and not a.discover:
+        tables = stale_tables(tables, key)
+        if not tables:
+            return 0
     for t in tables:
         if a.discover:
             discover(t, key); time.sleep(0.3); continue

@@ -225,6 +225,14 @@ tables:
     prd_se: Q
     years: 4
     area_col: C1
+  # ── 월간 경기 동향에서 연구원 자료로 채우던 지표의 원 통계(2026-10-16 운영자 '통계청 자료도 받아서 고쳐') — 건설수주만 원 통계가 있다
+  - key: construction-orders-sido
+    name: 건설경기동향조사 — 공사지역·발주자별 건설수주액(월간, 경상)
+    tbl_id: "DT_1G1B034"   # 2026-10-16 discover(공종별은 DT_1G1B035). 자동차 신규등록(국토부)·자본재 수입(관세청)은 KOSIS 에 시도 월간 표가 없어(같은 날 discover) 연구원 자료 그대로
+    search: ["시도별 건설수주", "지역별 건설수주액", "건설경기동향조사 시도 발주자별 건설수주"]
+    prd_se: M
+    years: 3
+    area_col: C1
   - key: large-retail-index-sido
     name: 서비스업동향조사 — 시도별 대형소매점 판매액지수(월간, 2020=100)
     tbl_id: "DT_1K41015"   # 2026-10-03 discover

@@ -4,7 +4,7 @@ import { readCsv } from './csv';
 
 /** /stats/monthly/ 월간 대구 경제지표(운영자 지시 2026-10-02).
  *  원 통계로 받는 지표는 원 통계에서 직접 읽는다: KOSIS(data/kosis — 광공업생산지수·경제활동인구·인구이동), ECOS(data/ecos — 소비자심리·연체율·어음부도율·대출금).
- *  원 통계를 아직 받지 않는 지표(경기종합지수·자동차 등록·건설수주·창업기업·BSI 등)만 대구정책연구원 「월간 대구경제동향」 요약(data/refs/dpi-*.json 의 indicators)을 쓴다.
+ *  원 통계를 아직 받지 않는 지표(경기종합지수·자동차 등록·자본재 수입·BSI 등 — 건설수주·창업기업은 2026-10-16 KOSIS 원 통계로)만 대구정책연구원 「월간 대구경제동향」 요약(data/refs/dpi-*.json 의 indicators)을 쓴다.
  *  같은 달 값이 여러 호에 실리면 가장 늦은 호의 값. 전년 같은 달·전월 대비는 같은 계열 안의 나눗셈·뺄셈이거나 자료에 적힌 값이다. 평가 없음. */
 
 export type Pt = { m: string; v: number; yoy?: number | null; mom?: number | null };
@@ -99,6 +99,12 @@ export function monthlySeries(): Series[] {
   const se = meta('data/kosis', 'self-employed-sido');
   const mb = meta('data/kosis', 'market-bsi-sido');
   const sb = meta('data/kosis', 'smb-bsi-sido');
+  const st = meta('data/kosis', 'startup-trend-sido');
+  const co = meta('data/kosis', 'construction-orders-sido');
+  /** 중소벤처기업부 창업기업동향(KOSIS) 대구 전 업종 합계 — 2026-10-16 연구원 요약에서 원 통계로(값은 같음, 연구원 자료에 없던 달도 채워짐) */
+  const startup = (key: string): Pt[] => readCsv(`data/kosis/${key}.csv`)   // C1 이 업종·C2 가 지역인 표라 kosis()(C1 = 시도)를 쓰지 않는다
+    .filter(r => r.ITM_NM === '전체' && r.C1_NM.trim() === '합계' && r.C2_NM === '대구')
+    .map(r => ({ m: ym(r.PRD_DE), v: Number(r.DT) })).filter(p => /^\d{4}-\d{2}$/.test(p.m) && Number.isFinite(p.v));
   const kSrc = (m: typeof mi) => `국가데이터처 KOSIS 「${m.tbl_nm ?? ''}」`;
   const eSrc = (m: typeof cs) => `한국은행 ECOS 「${(m.stat_name ?? '').replace(/^[\d.]+\s*/, '')}」`;
   const mfg = (itm: string) => kosis('mfg-production-index-industry', r => r.ITM_NM === itm && r.C2_NM === '총지수' && r.C1_NM.startsWith('대구'));
@@ -130,7 +136,7 @@ export function monthlySeries(): Series[] {
     { key: 'retail', cycle: '동행', rel: '소매판매액지수의 일부(대형소매점)', group: '소비·투자', name: '대형소매점 판매액지수', unit: '2020=100', change: '%', digits: 1, pts: kosis('large-retail-index-sido', r => r.ITM_NM === '대형소매점 불변지수'), source: kSrc(lr), url: lr.source_url ?? '', note: '불변지수' },
     { key: 'car', group: '소비·투자', name: '자동차 신규등록', unit: '대', change: '%', digits: 0, pts: dpi('자동차 신규등록대수'), compiled: true, source: '국토교통부 자동차 등록 통계', url: '' },
     { key: 'capm', group: '소비·투자', name: '자본재 수입액', unit: '백만 달러', change: '%', digits: 1, pts: dpi('자본재 수입액'), compiled: true, source: '국가데이터처', url: '' },
-    { key: 'cons', cycle: '선행', rel: '구성지표와 같음(건설수주액, 통계청은 실질)', group: '소비·투자', name: '건설수주액', unit: '억 원', change: '%', digits: 0, pts: dpi('건설수주액'), compiled: true, source: '국가데이터처 건설경기동향조사', url: '' },
+    { key: 'cons', cycle: '선행', rel: '구성지표와 같음(건설수주액, 통계청은 실질)', group: '소비·투자', name: '건설수주액', unit: '억 원', change: '%', digits: 0, pts: joinPts(dpi('건설수주액'), kosis('construction-orders-sido', r => r.C2_NM === '계').map(p => ({ ...p, v: p.v / 100 }))), source: kSrc(co), url: co.source_url ?? '', note: '경상, 공사지역 기준 발주자 계(백만 원 ÷ 100)' },
     { key: 'exp', group: '수출입', name: '수출액', unit: '백만 달러', change: '%', digits: 1, pts: joinPts(dpi('수출액'), customs('export')), compiled: true, source: '한국무역협회(~2026-07) · 대구본부세관 「대구·경북지역 수출입 현황」(2026-08~)', url: 'https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525' },
     { key: 'imp', cycle: '동행', rel: '구성지표와 같음(수입액)', group: '수출입', name: '수입액', unit: '백만 달러', change: '%', digits: 1, pts: joinPts(dpi('수입액'), customs('import')), compiled: true, source: '한국무역협회(~2026-07) · 대구본부세관 「대구·경북지역 수출입 현황」(2026-08~)', url: 'https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525' },
     { key: 'bal', group: '수출입', name: '무역수지', unit: '백만 달러', change: 'p', digits: 1, pts: joinPts(dpi('무역수지'), customs('balance')), compiled: true, source: '한국무역협회(~2026-07) · 대구본부세관 「대구·경북지역 수출입 현황」(2026-08~)', url: 'https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525', note: '증감은 백만 달러 차' },
@@ -140,7 +146,7 @@ export function monthlySeries(): Series[] {
     { key: 'loan', group: '금융', name: '원화대출금(예금은행)', unit: '조 원', change: '%', digits: 1, pts: ecos('bank-loans-region', r => r.ITEM_NAME1 === '원화대출금' && r.ITEM_NAME2 === '대구').map(p => ({ ...p, v: p.v / 1000 })), source: eSrc(ln), url: ln.source_url ?? '' },
     { key: 'dft', group: '금융', name: '어음부도율', unit: '%', change: '%p', digits: 2, pts: ecos('default-rate-region', r => r.ITEM_NAME1 === '대구'), source: eSrc(df), url: df.source_url ?? '' },
     { key: 'newcorp', group: '창업·경기', name: '신설법인 수', unit: '개', change: '%', digits: 0, pts: readCsv('data/bok/daegu_bills_newcorp.csv').filter(r => r.column === '신설법인수' && /^\d{4}-\d{2}$/.test(r.period) && r.value !== '').map(r => ({ m: r.period, v: Number(r.value) })), source: '한국은행 대구경북본부 「대구경북지역 주요 경제지표」(대구)', url: '', note: '법인 등기 기준, 기간 중' },
-    { key: 'biz', group: '창업·경기', name: '창업기업 수', unit: '개', change: '%', digits: 0, pts: dpi('창업기업 수'), compiled: true, source: '중소벤처기업부 창업기업동향', url: '' },
+    { key: 'biz', group: '창업·경기', name: '창업기업 수', unit: '개', change: '%', digits: 0, pts: joinPts(dpi('창업기업 수'), startup('startup-trend-sido-prev'), startup('startup-trend-sido')), source: kSrc(st), url: st.source_url ?? '', note: '전 업종 합계. 2026년 1월부터 한국표준산업분류 11차 개정 기준(새 표)' },
     { key: 'cci', cycle: '동행', rel: '대구 동행종합지수', group: '창업·경기', name: '경기동행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기동행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
     { key: 'cli', cycle: '선행', rel: '대구 선행종합지수', group: '창업·경기', name: '경기선행지수', unit: '2020=100', change: '%', digits: 1, pts: dpi('경기선행지수'), compiled: true, source: '대구 경기종합지수(대구정책연구원)', url: '' },
     { key: 'mbsi', cycle: '선행', rel: '경제심리지수를 이루는 지수(기업경기)', group: '창업·경기', name: '제조업 업황 BSI', unit: '지수', change: 'p', digits: 0, pts: joinPts(ecos('bsi-region', r => r.ITEM_NAME1 === '제조업 업황BSI' && r.ITEM_NAME2 === '대구'), dpi('제조업 업황 BSI')), compiled: true, source: '한국은행 대구경북본부 기업경기조사(대구)', url: '', note: '2025년 9월까지는 한국은행 ECOS 값' },

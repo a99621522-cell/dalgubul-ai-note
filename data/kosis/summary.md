@@ -1,11 +1,12 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-12 · 표 43개 · 설정 config/kosis_tables.yml
+갱신 2026-10-16 · 표 41개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
 | biz-birth-death-sido | [시도별 산업대분류별 기업규모별 기업 수(활동/신생/소멸)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_6BD1105) | Y 2016~2026 | 2024 | 115788 | 개% |
 | biz-census-sido-industry-all | [시도·산업·사업체구분별 사업체수 종사자수(’20~ )](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52D01) | Y 2020~2026 | 2023 | 14520 | 개 |
+| construction-orders-sido | [공사지역/발주자별 건설수주액(경상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1G1B034) | M 202301~202612 | 202608 | 220 | 백만원 |
 | employed-industry-sido | [시도/산업별 취업자](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3B05S) | H 201401~202602 | 202401 | 42895 | 천명 |
 | export-region-index | [지역별 수출지표 현황](https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N015) | Y 2014~2026 | 2025 | 459 | % |
 | export-region | [지역별 수출현황](https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N007) | Y 2014~2026 | 2025 | 1700 | 개 |

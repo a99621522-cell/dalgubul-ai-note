@@ -1,0 +1,20 @@
+{
+ "key": "construction-orders-sido",
+ "name": "건설경기동향조사 — 공사지역·발주자별 건설수주액(월간, 경상)",
+ "tbl_nm": "공사지역/발주자별 건설수주액(경상)",
+ "org_id": "101",
+ "tbl_id": "DT_1G1B034",
+ "prd_se": "M",
+ "period": [
+  "202301",
+  "202612"
+ ],
+ "rows_total": 4620,
+ "rows_kept": 220,
+ "latest": "202608",
+ "unit": "백만원",
+ "areas": [],
+ "fetched": "2026-10-16",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1G1B034",
+ "note": ""
+}

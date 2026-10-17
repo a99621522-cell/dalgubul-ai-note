@@ -120,7 +120,7 @@ tables:
   - key: regional-employment-sigungu
     name: 지역별고용조사 — 시군구·산업별 취업자
     tbl_id: "DT_1ES3A05S"
-    search: "지역별고용조사 시군구 산업별 취업자"
+    search: ["지역별고용조사 시군구 산업별 취업자", "시군구/산업별 취업자", "시군구 산업별 취업자"]
     prd_se: H
     area_col: C1
   - key: labor-force-sido

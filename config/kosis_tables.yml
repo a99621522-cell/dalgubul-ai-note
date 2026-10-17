@@ -119,7 +119,7 @@ tables:
     note: 노동생산성(총부가가치/취업자) 계산용
   - key: regional-employment-sigungu
     name: 지역별고용조사 — 시군구·산업별 취업자
-    tbl_id: "DT_1ES3A05S"
+    tbl_id: "DT_1ES3A30S"   # 2026-10-17: 시군구/산업별 취업자(11차). 옛 DT_1ES3A05S(10차)은 2024년 상반기에서 끝남
     search: ["지역별고용조사 시군구 산업별 취업자", "시군구/산업별 취업자", "시군구 산업별 취업자"]
     prd_se: H
     area_col: C1

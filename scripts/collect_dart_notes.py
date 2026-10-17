@@ -18,6 +18,7 @@ API·접속 실패는 로그 후 건너뛰고 못 받은 회사는 기존 행을
 사용: python3 scripts/collect_dart_notes.py [--months 15] [--probe 회사명] [--no-ir] [--no-report]
   --probe: 그 회사만, 섹션 제목·뽑은 문장·IR 첨부 페이지 구조를 로그로(저장 안 함)
   --disclosure <낱말>: --probe 와 함께 쓰면 최근 --months 달 공시 중 제목에 그 낱말이 든 공시(예: 전환사채)의 원문을 표까지 로그로(저장 안 함). 전환사채면 주요사항보고서 API(cvbdIsDecsn)의 자금조달 목적별 금액도 찍는다
+  --corp-search <낱말>: 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 기업개황·최근 --months 달 공시 목록을 로그로(저장 안 함)
   --dump: --probe 와 함께 쓰면 보고서의 '회사의 개요'(정관 사업목적 등)·'사업의 내용'·'경영진단' 본문을 표까지 글자로 로그에(공시 원문 확인용)
 """
 from __future__ import annotations
@@ -472,6 +473,28 @@ def main(argv: list[str]) -> int:
     months = int(argv[argv.index("--months") + 1]) if "--months" in argv else 15
     probe = argv[argv.index("--probe") + 1] if "--probe" in argv else ""
     DUMP[0] = "--dump" in argv and bool(probe)
+    if "--corp-search" in argv:   # 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 최근 공시 목록만 로그로 — 저장 안 함(2026-10-17 삼보에이앤티 확인)
+        kw = argv[argv.index("--corp-search") + 1]
+        try:
+            r = requests.get(f"{API}/corpCode.xml", params={"crtfc_key": KEY}, headers=UA, timeout=120)
+            xml = zipfile.ZipFile(io.BytesIO(r.content)).read("CORPCODE.xml").decode("utf-8", "ignore")
+        except Exception as e:  # noqa: BLE001
+            print(f"[dart_notes] corpCode 실패: {redact(e)[:120]}")
+            return 0
+        hits = [(clean(m.group(1)), clean(m.group(2)), clean(m.group(3)))
+                for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)
+                if kw.replace(" ", "") in clean(m.group(2)).replace(" ", "")]
+        print(f"[dart_notes] 고유번호 목록에서 '{kw}' {len(hits)}곳")
+        bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
+        for code, name, stock in hits[:10]:
+            info = get("company.json", corp_code=code) or {}
+            print(f"=== {name} corp_code={code} 종목코드={stock or '-'} 법인구분={info.get('corp_cls')} 주소={info.get('adres')} 업종={info.get('induty_code')} 설립일={info.get('est_dt')} 홈페이지={info.get('hm_url')}")
+            j = get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), page_count=100) or {}
+            rows = j.get("list", [])
+            print(f"    최근 {months}달 공시 {len(rows)}건")
+            for x in rows:
+                print(f"    {x.get('rcept_dt')} {x.get('report_nm')} ({x.get('flr_nm')}) https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
+        return 0
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}
     if probe:

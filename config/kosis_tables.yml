@@ -16,7 +16,7 @@ tables:
   - key: biz-census-sido-industry-all
     name: 전국사업체조사 — 시도·산업·사업체구분별 사업체 수·종사자 수('20~), 17개 시도 전체(종사자 기준 입지계수용)
     org_id: "101"
-    tbl_id: "DT_1K52D01"
+    tbl_id: "DT_1K52F01"   # 2026-10-17: 등록기반 11차 산업분류 표(2020~2024). 옛 DT_1K52D01(10차)은 2023년에서 끝남 — 2023년 이전도 11차로 연계해 실림
     prd_se: Y
     years: 6
     area_col: C1
@@ -184,7 +184,7 @@ tables:
     area: []
   - key: employed-industry-sido
     name: 지역별고용조사 — 시도·산업별 취업자(산업별 취업자 비중·제조업 노동생산성용, 반기)
-    tbl_id: "DT_1ES3B05S"
+    tbl_id: "DT_1ES3B05J"   # 2026-10-17: 11차 산업분류(2013 상반기부터 소급). 옛 DT_1ES3B05S(10차)은 2024년 상반기에서 끝남
     search: "경제활동인구조사 시도 산업별 취업자"
     prd_se: H
     years: 12
@@ -309,19 +309,3 @@ tables:
     tbl_id: "DT_35003_A36"
     prd_se: Y
     area: []
-  # ── 임시 확인용(2026-10-17, probe 만 — 확인 뒤 지움) ──
-  - key: probe-census-f01
-    name: 전국사업체조사 11차 등록기반 확인
-    tbl_id: "DT_1K52F01"
-    prd_se: Y
-    area_col: C1
-  - key: probe-emp-sido-j
-    name: 지역별고용조사 시도/산업별 취업자 새 분류 확인
-    tbl_id: "DT_1ES3B05J"
-    prd_se: H
-    area_col: C1
-  - key: probe-emp-sgg-j
-    name: 지역별고용조사 시군구/산업별 취업자 새 분류 확인
-    tbl_id: "DT_1ES3A05J"
-    prd_se: H
-    area_col: C1

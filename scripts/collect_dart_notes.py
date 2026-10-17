@@ -17,6 +17,7 @@ API·접속 실패는 로그 후 건너뛰고 못 받은 회사는 기존 행을
 
 사용: python3 scripts/collect_dart_notes.py [--months 15] [--probe 회사명] [--no-ir] [--no-report]
   --probe: 그 회사만, 섹션 제목·뽑은 문장·IR 첨부 페이지 구조를 로그로(저장 안 함)
+  --disclosure <낱말>: --probe 와 함께 쓰면 최근 --months 달 공시 중 제목에 그 낱말이 든 공시(예: 전환사채)의 원문을 표까지 로그로(저장 안 함). 전환사채면 주요사항보고서 API(cvbdIsDecsn)의 자금조달 목적별 금액도 찍는다
   --dump: --probe 와 함께 쓰면 보고서의 '회사의 개요'(정관 사업목적 등)·'사업의 내용'·'경영진단' 본문을 표까지 글자로 로그에(공시 원문 확인용)
 """
 from __future__ import annotations
@@ -477,6 +478,23 @@ def main(argv: list[str]) -> int:
         corps = {c: v for c, v in corps.items() if probe in (v.get("name") or "")}
     if not corps:
         print("대상 회사 없음")
+        return 0
+    if "--disclosure" in argv and probe:   # 정기보고서가 아닌 공시(예: 전환사채권발행결정) 원문을 표까지 로그로 — 저장 안 함(2026-10-17 한국피아이엠 CB 자금 용도 확인)
+        kw = argv[argv.index("--disclosure") + 1]
+        bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
+        for code, meta in sorted(corps.items()):
+            j = get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), page_count=100) or {}
+            hits = [x for x in j.get("list", []) if kw in (x.get("report_nm") or "")]
+            print(f"[dart_notes] {meta.get('name')} — '{kw}' 공시 {len(hits)}건")
+            for x in hits:
+                print(f"--- {x.get('rcept_dt')} {x.get('report_nm')} rcept_no={x.get('rcept_no')} https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
+                xml = doc_xml(x["rcept_no"])
+                if xml:
+                    dump_block(f"{meta.get('name')} {x.get('report_nm')}", xml)
+            if "전환사채" in kw:   # 주요사항보고서 구조화 API — 자금조달 목적별 금액
+                r = get("cvbdIsDecsn.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d")) or {}
+                for row in r.get("list", []):
+                    print("[cvbdIsDecsn] " + json.dumps({k: v for k, v in row.items() if v not in ("", "-")}, ensure_ascii=False))
         return 0
     reps = latest_reports(2)
     rrows, irows = [], []

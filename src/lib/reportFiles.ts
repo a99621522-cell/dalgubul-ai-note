@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'kpim-humanoid-datacenter', summary: '대구 달성군 코스닥 상장사 한국피아이엠이 터보차저 부품(MIM·티타늄)에서 휴머노이드 손가락 관절 감속기와 데이터센터 냉각 부품으로 넓히는 까닭과 핵심 기술·수주·투자(전환사채 400억 원 용도)·일정을 DART 공시와 증권사 리포트 4건(키움증권·IBK투자증권)으로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치·애널리스트 이름은 싣지 않음.', topics: ['상장기업', '로봇', '뿌리산업', '증권사 리포트'],
+    title: '한국피아이엠, 터보차저 부품 → 휴머노이드 손가락 관절', name: '한국피아이엠, 터보차저 부품 → 휴머노이드 손가락 관절',
+    hwpx: '/hwpx/kpim-humanoid-datacenter.hwpx', hwpxSize: '463KB', date: '2026-10-17' },
   { slug: 'sl-sdv-robotics', summary: '대구 북구 유가증권 상장사 에스엘의 전동화(SDV) 부품과 로보틱스(모베드·스팟·플러드) 사업을 한화투자증권 기업분석(2026-09-28) 원문과 DART 공시(2025 사업보고서, 2026 1분기·반기보고서)로 정리하고 분기 실적을 대조한 자료. 투자의견·목표주가·애널리스트 이름은 싣지 않음.', topics: ['상장기업', '미래차', '로봇', '증권사 리포트'],
     title: '에스엘 SDV·로보틱스 사업 — 증권사 리포트와 공시 정리', name: '에스엘 SDV·로보틱스 사업 — 증권사 리포트와 공시 정리',
     hwpx: '/hwpx/sl-sdv-robotics.hwpx', hwpxSize: '144KB', date: '2026-10-16' },

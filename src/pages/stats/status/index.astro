@@ -1,0 +1,70 @@
+---
+import Base from '../../../layouts/Base.astro';
+import StatsNav from '../../../components/StatsNav.astro';
+import SourceBadge from '../../../components/SourceBadge.astro';
+import { dataFeeds, buildDate, type Feed } from '../../../lib/dataStatus';
+/** /stats/status/ — 자료 갱신 현황(운영자 지시 2026-10-17). 출처별 최근 시점·받은 날·다음 공표 예정(어림)·상태. 값은 빌드 때 데이터 파일에서 읽는다. */
+const F = dataFeeds();
+const today = buildDate();
+const GROUPS = [...new Set(F.map(f => f.group))];
+const late = F.filter(f => f.status === '갱신 지연');
+const n = (s: Feed['status']) => F.filter(f => f.status === s).length;
+const CYCLE: Record<string, string> = { M: '월간', Q: '분기', H: '반기', Y: '연간' };
+---
+<Base title="자료 갱신 현황" description="대구 통계·기업 자료의 출처별 최근 시점, 받은 날, 다음 공표 예정(어림)과 예정보다 늦은 자료. 국가데이터처 KOSIS·한국은행 ECOS·기관 자료·행정자료." current="stats" wide>
+  <div class="section-head"><h1>자료 갱신 현황</h1></div>
+  <p class="lede">이 사이트가 받는 자료 {F.length}개의 최근 시점과 다음 공표 예정입니다. 기준일은 사이트를 만든 날({today})입니다.</p>
+  <StatsNav current="status" />
+
+  <ul class="sum">
+    <li><strong>{n('정상')}</strong> 예정대로</li>
+    <li><strong>{late.length}</strong> 갱신 지연</li>
+    <li><strong>{n('수시')}</strong> 수시(운영자가 받은 자료)</li>
+    <li><strong>{n('끝난 표')}</strong> 끝난 표</li>
+  </ul>
+
+  {late.length > 0 && (
+  <div class="callout warn" role="note">
+    <p><strong>예정보다 늦은 자료 {late.length}개</strong> — 원 통계 공표가 늦었는지, 원 통계는 나왔는데 이 사이트가 받는 표에 아직 없는지(표 번호가 바뀌는 경우 등)를 확인하고 있습니다. 그동안 페이지에는 아래 '최근 시점' 값이 그대로 보입니다.</p>
+    <ul>{late.map(f => <li>{f.name}{f.table && ` 「${f.table}」`} — 최근 {f.latestLabel}, 예정 {f.next}</li>)}</ul>
+  </div>)}
+
+  {GROUPS.map((g, gi) => { const rows = F.filter(f => f.group === g); return (
+  <section aria-labelledby={`h-s${gi}`}>
+    <div class="section-head"><h2 id={`h-s${gi}`}>{g}</h2><span class="meta">{rows.length}개</span></div>
+    <div class="scroll-x"><table class="data-table" data-grid data-title={`자료 갱신 현황 — ${g}`}>
+      <thead><tr><th>자료</th><th data-pri="2">표·기관</th><th>주기</th><th>최근 시점</th><th data-pri="3">받은 날</th><th>다음 공표(어림)</th><th>상태</th></tr></thead>
+      <tbody>{rows.map(f => (
+        <tr class={f.status === '갱신 지연' ? 'late' : ''}>
+          <th scope="row">{f.href ? <a href={f.href}>{f.name}</a> : f.name} <SourceBadge kind={f.badge} /></th>
+          <td class="sm">{f.url ? <a href={f.url} rel="noopener">{f.table ?? f.org}</a> : (f.table ?? f.org)}{f.table && f.org !== 'KOSIS' && <span class="meta"> · {f.org}</span>}{f.note && <span class="meta"> · {f.note}</span>}</td>
+          <td class="nw">{f.cycle ? CYCLE[f.cycle] : '수시'}</td>
+          <td class="nw">{f.latestLabel}</td>
+          <td class="nw">{f.fetched || '—'}</td>
+          <td class="nw">{f.next}</td>
+          <td class="nw st">{f.status}</td>
+        </tr>))}</tbody>
+    </table></div>
+  </section>); })}
+
+  <details class="how">
+    <summary>다음 공표 예정은 어떻게 어림했나</summary>
+    <ul>
+      <li>최근 시점의 다음 시점(월간은 다음 달, 분기는 다음 분기, 연간은 다음 해)이 끝난 날에 원 통계가 평소 공표되기까지 걸리는 날을 더했습니다 — 예: 경제활동인구조사 15일, 광공업생산지수 약 한 달, 지역내총생산 이듬해 12월, 전국사업체조사 이듬해 9월(잠정).</li>
+      <li>그 날짜에서 10일이 지나도 새 시점이 없으면 '갱신 지연'입니다. 원 기관의 공표 일정표와 다를 수 있습니다.</li>
+      <li>'받은 날'은 이 사이트가 자료를 마지막으로 받아 확인한 날입니다(국가데이터처 KOSIS·한국은행 ECOS 는 매일 새 시점을 확인하고, 새 시점이 있을 때만 다시 받습니다). 기록이 없는 자료는 —.</li>
+      <li>'수시'는 운영자가 받은 간행물·PDF 에서 옮긴 자료라 정해진 갱신 날이 없습니다. '끝난 표'는 더 이어지지 않는 표이고, 이어지는 표가 있으면 비고에 적었습니다.</li>
+      <li>숫자 종류(국가통계·기관 자료·행정자료·이 사이트 계산)의 뜻은 <a href="/stats/#h-key">통계 첫 화면</a>에 있습니다. 자료별 출처 설명은 <a href="/posts/2026-09-13-about/">자료 출처</a>.</li>
+    </ul>
+  </details>
+  <style>
+    .sum { list-style: none; display: flex; flex-wrap: wrap; gap: var(--s2); padding: 0; margin: var(--s3) 0; }
+    .sum li { padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: var(--small); color: var(--muted); }
+    .sum strong { font-size: 1.3rem; color: var(--ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
+    td.sm { font-size: 12px; }
+    tr.late .st { font-weight: 700; }
+    .how { margin: var(--s4) 0; }
+    .how > summary { cursor: pointer; font-weight: 700; }
+    .how li { font-size: var(--small); margin: 4px 0; }
+  </style>
+</Base>

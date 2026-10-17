@@ -25,7 +25,7 @@ const ups = [
     <ul class="b-list">{REPORT_FILES.slice(0, 5).map(f => <li><a href={`/policy/${f.slug}/`}>{f.title}</a><span class="b-date">{f.date.replaceAll('-', '.')}</span></li>)}</ul>
   </section>
   <section aria-labelledby="h-up">
-    <div class="b-head"><h2 id="h-up">자료 갱신 현황</h2><a href="/posts/2026-09-13-about/">자료 출처</a></div>
+    <div class="b-head"><h2 id="h-up">자료 갱신 현황</h2><a href="/stats/status/">전체 갱신 현황</a></div>
     <ul class="b-list">{ups.map(u => <li><a href={u.href}>{u.name}</a><span class="b-date">{u.when}</span></li>)}</ul>
   </section>
 </div>

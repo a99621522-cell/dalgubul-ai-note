@@ -556,3 +556,9 @@ main .section-head:has(> h1) h1, main .page-head h1, main article.post > header 
 .section-head h2 { font-size: var(--fs-h2); }
 /* 그라데이션은 쓰지 않는다(공공 신뢰 톤) — 남아 있던 검색 단추도 단색 */
 .big-search button { background: var(--blue-600); }
+
+/* 숫자 꼬리표(SourceBadge, 2026-10-17) — 상태색을 쓰지 않고 테두리 모양으로 구분 */
+.sbadge { display: inline-block; font-size: 11px; line-height: 1.5; padding: 0 6px; border: 1px solid var(--line-strong); border-radius: 4px; color: var(--muted); background: var(--bg); white-space: nowrap; vertical-align: 1px; font-weight: 400; }
+.sbadge.sb-nat { border-color: var(--primary); color: var(--primary); }
+.sbadge.sb-adm { border-style: dashed; }
+.sbadge.sb-calc { border-style: dotted; color: var(--ink); }

@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'databank-cloud-ai', summary: '대구 수성알파시티 비상장 IT 서비스 기업 데이타뱅크가 오라클 DB 구축·유지보수에서 클라우드 전환·운영(MSP)·AI·의료 IT·데이터 복제로 넓히는 흐름을 DART 감사보고서(2023 – 2025 사업연도)와 회사 홈페이지로 정리한 자료. 첫 장은 감사보고서 실적·매출 계정 표와 그래프. 증권사 리포트 없음, 개인 주주 이름은 싣지 않음.', topics: ['비상장기업', '클라우드', 'AI', '소프트웨어'],
+    title: '데이타뱅크, 오라클 DB 유지보수 → 클라우드 전환·AI·의료 IT', name: '데이타뱅크, 오라클 DB 유지보수 → 클라우드 전환·AI·의료 IT',
+    hwpx: '/hwpx/databank-cloud-ai.hwpx', hwpxSize: '151KB', date: '2026-10-17' },
   { slug: 'egis-digital-twin', summary: '대구 수성구 코스닥 상장사 이지스가 공공기관 3D 지도·디지털 트윈 구축 용역에서 구독형 디지털 어스(SaaS)·AI(GeoPhysical AI)·유럽 Gaia-X 등 해외 데이터 플랫폼으로 넓히는 흐름을 DART 공시와 한국IR협의회 리포트(2026-08-05)로 정리한 자료. 첫 장은 DART 실적 표·그래프, 서비스·연혁·AI 그림은 리포트 수록 그림. 투자의견·실적 전망치·밸류에이션은 싣지 않음.', topics: ['상장기업', '디지털 트윈', 'AI', '소프트웨어'],
     title: '이지스, 공공 3D 지도 구축 → 구독형 디지털 어스·AI·해외 데이터 플랫폼', name: '이지스, 공공 3D 지도 구축 → 구독형 디지털 어스·AI·해외 데이터 플랫폼',
     hwpx: '/hwpx/egis-digital-twin.hwpx', hwpxSize: '381KB', date: '2026-10-17' },

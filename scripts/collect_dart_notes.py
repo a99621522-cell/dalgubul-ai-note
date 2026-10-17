@@ -18,7 +18,7 @@ API·접속 실패는 로그 후 건너뛰고 못 받은 회사는 기존 행을
 사용: python3 scripts/collect_dart_notes.py [--months 15] [--probe 회사명] [--no-ir] [--no-report]
   --probe: 그 회사만, 섹션 제목·뽑은 문장·IR 첨부 페이지 구조를 로그로(저장 안 함)
   --disclosure <낱말>: --probe 와 함께 쓰면 최근 --months 달 공시 중 제목에 그 낱말이 든 공시(예: 전환사채)의 원문을 표까지 로그로(저장 안 함). 전환사채면 주요사항보고서 API(cvbdIsDecsn)의 자금조달 목적별 금액도 찍는다
-  --corp-search <낱말>: 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 기업개황·최근 --months 달 공시 목록을 로그로(저장 안 함)
+  --corp-search <낱말>: 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 기업개황·최근 --months 달 공시 목록을 로그로(저장 안 함). --dump 면 가장 최근 공시 원문, --dump-all 이면 최대 5건 원문
   --dump: --probe 와 함께 쓰면 보고서의 '회사의 개요'(정관 사업목적 등)·'사업의 내용'·'경영진단' 본문을 표까지 글자로 로그에(공시 원문 확인용)
 """
 from __future__ import annotations
@@ -494,10 +494,11 @@ def main(argv: list[str]) -> int:
             print(f"    최근 {months}달 공시 {len(rows)}건")
             for x in rows:
                 print(f"    {x.get('rcept_dt')} {x.get('report_nm')} ({x.get('flr_nm')}) https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
-            if "--dump" in argv and rows:   # 가장 최근 공시(비상장 외감 회사는 감사보고서) 원문을 표까지 로그로
-                xml = doc_xml(rows[0]["rcept_no"])
-                if xml:
-                    dump_block(f"{name} {rows[0].get('report_nm')}", xml)
+            if "--dump" in argv and rows:   # 가장 최근 공시(비상장 외감 회사는 감사보고서) 원문을 표까지 로그로, --dump-all 이면 목록 전부(최대 5건)
+                for x in (rows[:5] if "--dump-all" in argv else rows[:1]):
+                    xml = doc_xml(x["rcept_no"])
+                    if xml:
+                        dump_block(f"{name} {x.get('report_nm')} {x.get('rcept_dt')}", xml)
         return 0
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}

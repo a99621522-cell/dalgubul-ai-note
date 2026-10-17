@@ -69,6 +69,13 @@ export function chart(kind: string, name: string) {
 }
 
 /** 'YYYY-MM' → '2026년 8월' */
+/** 기준 표시(운영자 지시 2026-10-17 '기준을 표시해'): 기업 수는 팩토리온 공장등록 기준월, 고용은 국민연금 달 — 둘이 다르면 따로 적는다. */
+export const foMonth = (m: Monthly | null) => (m?.sources?.factoryon?.as_of ? monthLabel(m.sources.factoryon.as_of) : '');
+export const basisHead = (m: Monthly | null) => {
+  if (!m) return '';
+  const ym = monthLabel(m.month), fo = foMonth(m);
+  return !fo || fo === ym ? `${ym} 기준` : `기업 등록 ${fo} · 고용 ${ym} 기준`;
+};
 export const monthLabel = (ym: string) => { const [y, m] = ym.replace(/(\d{4})(\d{2})/, '$1-$2').split('-'); return `${y}년 ${Number(m)}월`; };
 /** 숫자 → 천 단위 쉼표. null → '자료 없음' */
 export const fmt = (n: number | null | undefined, unit = '') => (n === null || n === undefined ? '자료 없음' : `${n.toLocaleString('ko-KR')}${unit}`);

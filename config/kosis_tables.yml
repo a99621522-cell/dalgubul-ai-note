@@ -309,3 +309,19 @@ tables:
     tbl_id: "DT_35003_A36"
     prd_se: Y
     area: []
+  # ── 임시 확인용(2026-10-17, probe 만 — 확인 뒤 지움) ──
+  - key: probe-census-f01
+    name: 전국사업체조사 11차 등록기반 확인
+    tbl_id: "DT_1K52F01"
+    prd_se: Y
+    area_col: C1
+  - key: probe-emp-sido-j
+    name: 지역별고용조사 시도/산업별 취업자 새 분류 확인
+    tbl_id: "DT_1ES3B05J"
+    prd_se: H
+    area_col: C1
+  - key: probe-emp-sgg-j
+    name: 지역별고용조사 시군구/산업별 취업자 새 분류 확인
+    tbl_id: "DT_1ES3A05J"
+    prd_se: H
+    area_col: C1

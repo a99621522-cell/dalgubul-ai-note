@@ -36,7 +36,7 @@ const NOTE: Record<string, string> = {
   'employed-industry-sido': '2026-10-17 부터 11차 산업분류 표(DT_1ES3B05J, 2013년부터 소급)로 받음',
   'sme-stats-sido': '2024년 기준은 2026-08 발표 — KOSIS 표에는 아직 2023년까지',
   'sme-workers-sido': '2024년 기준은 2026-08 발표 — KOSIS 표에는 아직 2023년까지',
-  'regional-employment-sigungu': '10차 산업분류 표 — 11차 시군구 표 번호 확인 중',
+  'regional-employment-sigungu': '2026-10-17 부터 11차 산업분류 표(DT_1ES3A30S)로 받음',
 };
 /** 시점 문자열 → { y, i }(i: 월 1~12, 분기 1~4, 반기 1~2, 연 1) */
 function parsePeriod(c: Cycle, s: string): { y: number; i: number } | null {

@@ -18,7 +18,7 @@ const LAG_KOSIS: Record<string, number> = {
   'market-bsi-sido': 5, 'smb-bsi-sido': 5, 'startup-trend-sido': 80, 'service-index-sido': 50,
   'labor-force-sido-annual-all': 20, 'population-sido': 20, 'migration-age-sido': 30, 'retail-sales-index-sido': 60, 'export-region': 60, 'export-region-index': 60,
   'grdp-sido-industry-all': 350, 'grdp-sido-industry': 350, 'grdp-sido-expenditure': 350, 'mining-mfg-survey-sido': 350, 'mfg-tangible-sido': 350,
-  'biz-birth-death-sido': 350, 'biz-census-sido-industry-all': 270, 'sme-stats-sido': 245, 'sme-workers-sido': 245,   // 전국사업체조사 잠정 9월, 중소기업기본통계 8월쯤
+  'biz-birth-death-sido': 350, 'biz-census-sido-industry-all': 350, 'sme-stats-sido': 245, 'sme-workers-sido': 245,   // 전국사업체조사는 9월 보도자료·12월 KOSIS 사업체·종사자, 중소기업기본통계 8월쯤
   'foreign-residents-sido': 320, 'mice-conference-sido': 365, 'mice-exhibition-sido': 365,
   'medical-use-sido-resident': 300, 'medical-use-sido-provider': 300, 'medical-use-sido-outside': 300, 'medical-use-sgg-provider-outside': 300,
   'employed-industry-sido': 110, 'regional-employment-sigungu': 110,
@@ -30,6 +30,14 @@ const ENDED: Record<string, string> = {
   'bsi-region': 'ECOS 의 대구 값이 2025년 9월에서 멈춤 — 그 뒤는 한국은행 대구경북본부 「대구경북지역 주요 경제지표」로 이음',
 };
 
+/** 표별 비고 — 새 표 번호를 찾았거나 원 기관 발표와 KOSIS 수록이 어긋날 때(2026-10-17 확인) */
+const NOTE: Record<string, string> = {
+  'biz-census-sido-industry-all': '2026-10-17 부터 11차 산업분류 표(DT_1K52F01)로 받음',
+  'employed-industry-sido': '2026-10-17 부터 11차 산업분류 표(DT_1ES3B05J, 2013년부터 소급)로 받음',
+  'sme-stats-sido': '2024년 기준은 2026-08 발표 — KOSIS 표에는 아직 2023년까지',
+  'sme-workers-sido': '2024년 기준은 2026-08 발표 — KOSIS 표에는 아직 2023년까지',
+  'regional-employment-sigungu': '10차 산업분류 표 — 11차 시군구 표 번호 확인 중',
+};
 /** 시점 문자열 → { y, i }(i: 월 1~12, 분기 1~4, 반기 1~2, 연 1) */
 function parsePeriod(c: Cycle, s: string): { y: number; i: number } | null {
   const t = s.replace(/[^0-9Q]/g, '');
@@ -76,7 +84,7 @@ export function dataFeeds(): Feed[] {
     const d = readJson(path.join('data/kosis', fn));
     if (!d?.tbl_nm || !d.prd_se || !d.latest) continue;
     const c = d.prd_se as Cycle;
-    push({ group: 'KOSIS 통계표', name: String(d.name ?? d.tbl_nm).split(' — ')[0], table: d.tbl_nm, org: 'KOSIS', badge: '국가통계', cycle: c, latest: d.latest, fetched: d.fetched ?? '', url: d.source_url, lag: LAG_KOSIS[d.key] ?? LAG_DEFAULT[c], ended: ENDED[d.key] });
+    push({ group: 'KOSIS 통계표', name: String(d.name ?? d.tbl_nm).split(' — ')[0], table: d.tbl_nm, org: 'KOSIS', badge: '국가통계', cycle: c, latest: d.latest, fetched: d.fetched ?? '', url: d.source_url, note: NOTE[d.key], lag: LAG_KOSIS[d.key] ?? LAG_DEFAULT[c], ended: ENDED[d.key] });
   }
   // 한국은행 ECOS
   for (const fn of fs.readdirSync('data/ecos').filter(f => f.endsWith('.json')).sort()) {

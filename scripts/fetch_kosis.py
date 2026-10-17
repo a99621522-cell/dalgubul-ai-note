@@ -201,6 +201,10 @@ def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
     rows = _get_rows(base, start, end, int(t.get("min_levels", 1)))
     area_words = t["area"] if "area" in t and t["area"] is not None else ["대구"]   # area: [] 이면 전 지역 행을 남긴다
     col = t.get("area_col")
+    for row in rows:   # 전국사업체조사 11차 표(DT_1K52F01)는 지역을 '대  구'·'전  국'처럼 글자 사이를 띄워 준다 — 다른 표와 같게 붙인다(2026-10-17)
+        k = f"{col or 'C1'}_NM"
+        if re.fullmatch(r"[가-힣](?:\s+[가-힣])+", (row.get(k) or "").strip()):
+            row[k] = re.sub(r"\s+", "", row[k])
     keep = []
     for row in rows:
         names = [row.get(f"{c}_NM", "") for c in ("C1", "C2", "C3", "C4")]

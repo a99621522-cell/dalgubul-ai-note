@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'samick-thk-robot', summary: '대구 달서구 유가증권 상장사 삼익THK가 LM가이드·볼나사(직선운동 부품)에서 반도체 웨이퍼·패널 이송 로봇과 협동로봇으로 사업을 넓히는 흐름을 DART 공시와 증권사 리포트(SK증권 2026-08)·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '로봇', '기계'],
+    title: '삼익THK, LM가이드 → 반도체 이송 로봇·협동로봇', name: '삼익THK, LM가이드 → 반도체 이송 로봇·협동로봇',
+    hwpx: '/hwpx/samick-thk-robot.hwpx', hwpxSize: '145KB', date: '2026-10-17' },
   { slug: 'daedong-ai-agri-robot', summary: '대구 달성군 유가증권 상장사 대동이 트랙터 중심 농기계에서 AI 무인 자율작업 트랙터·농업 로봇(대동로보틱스·농업용 휴머노이드)으로 넓히는 흐름을 DART 공시와 회사 발표·정부 발표·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '로봇', 'AI', '농기계'],
     title: '대동, 트랙터 → AI 자율작업·농업 로봇', name: '대동, 트랙터 → AI 자율작업·농업 로봇',
     hwpx: '/hwpx/daedong-ai-agri-robot.hwpx', hwpxSize: '150KB', date: '2026-10-17' },

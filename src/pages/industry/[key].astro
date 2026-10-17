@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import StatTiles, { type Tile } from '../../components/StatTiles.astro';
+import BasisNote from '../../components/BasisNote.astro';
 import Chart from '../../components/Chart.astro';
 import { monthly, monthLabel, fmt, statMonths, basisHead, foMonth } from '../../lib/stats';
 const nMonths = statMonths().length;
@@ -35,6 +36,7 @@ const description = s ? `${g.name} — 대구 기업 ${fmt(s.firms)}곳, 고용 
   {s ? (
     <>
       <StatTiles tiles={tiles} />
+      {m && s && <BasisNote m={m} s={s} scope={g.name} />}
       {nMonths >= 2 ? (
       <section aria-labelledby="h-trend">
         <div class="section-head"><h2 id="h-trend">월별 추이</h2><a href="/industry/compare/">다른 산업과 비교</a></div>

@@ -1,0 +1,38 @@
+---
+/** 숫자 기준 상자(운영자 지시 2026-10-17 '어떤 기준 기업인지 종사자도 어떤 기준인지 표시해야지').
+ *  기업 수 = 어떤 명단의 무엇을 셌나, 고용 인원 = 국민연금 가입자(어느 사업장), 공장등록 종사자 = 신고값 — 셋을 같은 말로 적는다.
+ *  s 를 주면 그 묶음(산업 그룹 등)의 값, 없으면 대구 전체. */
+import { foMonth, monthLabel, type Monthly, type Metrics } from '../lib/stats';
+interface Props { m: Monthly; s?: Metrics; scope?: string }
+const { m, s = m.total, scope = '대구 전체' } = Astro.props;
+const f = (n: number | null | undefined) => (n == null ? '—' : n.toLocaleString('ko-KR'));
+const fo = foMonth(m) || monthLabel(m.month), ym = monthLabel(m.month);
+const whole = s === m.total;
+const outside = m.sources_extra?.outside_companies ?? 0;
+const nps = m.basis === 'nps';
+---
+<details class="basis" open>
+  <summary>이 숫자의 기준 <span class="meta">— {scope}</span></summary>
+  <dl>
+    <dt>기업 수 {f(s.firms)}곳</dt>
+    <dd>{whole
+      ? <>팩토리온 공장등록 공장 {f(s.firms - outside)}곳({fo} 말 명단) + 산단 외 기업 {f(outside)}곳(국민연금 가입 사업장·수성알파시티 입주·벤처기업·첨복단지 입주 명단 등에서 찾은 제조·지식서비스 기업).</>
+      : <>기업 사전 명단(팩토리온 공장등록 {fo} 말 + 산단 외 기업 목록) 가운데 이 묶음에 든 곳.</>}
+      공장등록은 공장 단위라 한 회사의 공장이 여럿이면 따로 셉니다. 도소매·음식·건설 등 서비스업은 넣지 않습니다.</dd>
+    {nps && <>
+      <dt>고용 인원 {f(s.employment)}명</dt>
+      <dd>국민연금 가입자 수({ym} 공개 파일). 기업 사전과 이름·구·군이 이어진 국민연금 사업장 {f(s.covered)}곳의 가입자만 더했고, 나머지 {f(s.firms - s.covered)}곳은 값이 없습니다. 가입 대상(18세 이상 60세 미만 근로자)만 들어가며, 다른 지역 본사에서 함께 신고하는 사업장은 빠질 수 있습니다.</dd>
+    </>}
+    {(nps ? s.fo_employment != null : true) && <>
+      <dt>공장등록 종사자 {f(nps ? s.fo_employment : s.employment)}명{nps && s.fo_covered != null && ` (${f(s.fo_covered)}곳)`}</dt>
+      <dd>공장을 등록·변경할 때 팩토리온에 신고한 종사자 수({fo} 말 명단). 신고 시점이 공장마다 달라 지금 인원과 다를 수 있고, 국민연금 값과 근거가 달라 더하지 않습니다.</dd>
+    </>}
+  </dl>
+</details>
+<style>
+  .basis { margin: var(--s2) 0 var(--s3); padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: var(--small); }
+  .basis > summary { cursor: pointer; font-weight: 700; }
+  .basis dl { margin: 8px 0 0; display: grid; gap: 6px; }
+  .basis dt { font-weight: 700; }
+  .basis dd { margin: 0 0 4px; color: var(--muted); }
+</style>

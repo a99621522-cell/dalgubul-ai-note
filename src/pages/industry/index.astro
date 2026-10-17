@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import IndustryTable from '../../components/IndustryTable.astro';
+import BasisNote from '../../components/BasisNote.astro';
 import Chart from '../../components/Chart.astro';
 import { monthly, monthLabel, fmt, basisHead, foMonth } from '../../lib/stats';
 import { industryGroups } from '../../lib/industry';
@@ -15,6 +16,7 @@ const description = m ? `대구 산업 그룹 11개의 기업 수(${foMonth(m)} 
   <p class="lede">표준산업분류(KSIC) 코드와 생산품 키워드로 11개 그룹으로 나눈 대구 기업 {fmt(m?.total.firms ?? null)}곳(팩토리온 공장등록 {foMonth(m)} 기준 + 산단 외 목록)의 현황입니다. 고용 인원은 {m?.basis_label ?? '국민연금 가입자수'}이며 값이 있는 기업만 집계합니다. 순위나 평가는 하지 않습니다. 대구·경북 기업이 만드는 품목을 특정국 의존 품목과 맞춰 본 <a href="/supply-map/">대구·경북 품목 지도</a>도 있습니다.</p>
   {m ? (
     <>
+      <BasisNote m={m} />
       <IndustryTable />
       <p class="meta">그룹 규칙은 <code>config/industry_groups.yml</code> 하나로 관리하며, 산업명을 누르면 그룹별 페이지로 갑니다.</p>
       <section aria-labelledby="h-bar">

@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Delta from '../../components/Delta.astro';
+import BasisNote from '../../components/BasisNote.astro';
 import { statMonths, monthly, monthLabel, fmt, foMonth } from '../../lib/stats';
 /** /stats/<YYYY-MM>/ — 그 달의 통계표 전체(산업·입지·구군·단지·태그). 월보의 근거 표. */
 export async function getStaticPaths() {
@@ -21,6 +22,7 @@ const blocks: [string, Record<string, any>][] = [['산업 그룹', m.by_industry
     <thead><tr><th>전체</th><th class="n">기업 수</th><th class="n">고용 인원</th><th class="n">집계 대상</th><th class="n">취득</th><th class="n">상실</th><th class="n">전월 대비</th><th class="n">전년 대비</th></tr></thead>
     <tbody><tr><th scope="row">대구 전체</th><td class="n">{fmt(m.total.firms)}</td><td class="n">{fmt(m.total.employment)}</td><td class="n">{fmt(m.total.covered)}</td><td class="n">{fmt(m.total.nps_gain)}</td><td class="n">{fmt(m.total.nps_loss)}</td><td class="n"><Delta d={m.total.mom?.employment ?? null} /></td><td class="n"><Delta d={m.total.yoy?.employment ?? null} /></td></tr></tbody>
   </table></div>
+  <BasisNote m={m} scope={`${label} 대구 전체`} />
   {blocks.map(([title, rows]) => (
     <section>
       <div class="section-head"><h2>{title}별</h2></div>

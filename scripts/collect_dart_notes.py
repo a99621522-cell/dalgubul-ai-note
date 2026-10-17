@@ -494,6 +494,10 @@ def main(argv: list[str]) -> int:
             print(f"    최근 {months}달 공시 {len(rows)}건")
             for x in rows:
                 print(f"    {x.get('rcept_dt')} {x.get('report_nm')} ({x.get('flr_nm')}) https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
+            if "--dump" in argv and rows:   # 가장 최근 공시(비상장 외감 회사는 감사보고서) 원문을 표까지 로그로
+                xml = doc_xml(rows[0]["rcept_no"])
+                if xml:
+                    dump_block(f"{name} {rows[0].get('report_nm')}", xml)
         return 0
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}

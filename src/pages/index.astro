@@ -2,6 +2,7 @@
 /** 첫 화면(리디자인 v3 2단계 2026-10-12): 제목 띠·검색창(HomeHero) → 주요 메뉴 8칸(QuickMenu) → 리포트·자료 갱신 현황(HomeBoard) → 큰 숫자 4개 → 산업단지·특구별 기업(ZoneSummary) → 산업별 현황 표 → 고용 추이 → 최신 글 5개 */
 import Base from '../layouts/Base.astro';
 import StatTiles, { type Tile } from '../components/StatTiles.astro';
+import BasisNote from '../components/BasisNote.astro';
 import IndustryTable from '../components/IndustryTable.astro';
 import Chart from '../components/Chart.astro';
 import PostList from '../components/PostList.astro';
@@ -47,12 +48,13 @@ const description = m
       <section aria-labelledby="h-now" class="section">
         <div class="section-head"><h2 id="h-now">대구 산단·기업 현황</h2><span class="meta">{ymHead}</span></div>
         <StatTiles tiles={tiles} />
+        <BasisNote m={m} />
       </section>
       <ZoneSummary />
       <section aria-labelledby="h-ind">
         <div class="section-head"><h2 id="h-ind">산업별 현황</h2><a href="/industry/">산업별 자세히</a></div>
         <IndustryTable compact={true} />
-        <p class="meta">고용 인원은 {m.basis_label}. 집계 대상은 국민연금 사업장과 이어진 기업 {m.total.covered.toLocaleString('ko-KR')}곳 / 전체 {m.total.firms.toLocaleString('ko-KR')}곳(같은 사업장에 이어진 공장 기록은 고용을 한 번만 더함).{m.basis === 'nps' && m.total.fo_employment != null && ` 공장등록 종사자(팩토리온 신고값)는 ${m.total.fo_covered?.toLocaleString('ko-KR')}곳 ${m.total.fo_employment.toLocaleString('ko-KR')}명으로 근거가 달라 따로 적습니다.`} 산업 그룹은 표준산업분류(KSIC) 코드로 나눴습니다.</p>
+        <p class="meta">고용 인원은 {m.basis_label}. 집계 대상은 국민연금 사업장과 이어진 기업 {m.total.covered.toLocaleString('ko-KR')}곳 / 전체 {m.total.firms.toLocaleString('ko-KR')}곳(같은 사업장에 이어진 공장 기록은 고용을 한 번만 더함).{m.basis === 'nps' && m.total.fo_employment != null && ` 공장등록 종사자(팩토리온 신고값, ${fo} 기준)는 ${m.total.fo_covered?.toLocaleString('ko-KR')}곳 ${m.total.fo_employment.toLocaleString('ko-KR')}명으로 근거가 달라 따로 적습니다.`} 산업 그룹은 표준산업분류(KSIC) 코드로 나눴습니다.</p>
       </section>
       <section aria-labelledby="h-trend">
         <div class="section-head"><h2 id="h-trend">고용 인원 추이</h2><a href={`/stats/${m.month}/`}>이달 통계표</a></div>

@@ -79,7 +79,9 @@ def load_companies() -> list[dict]:
     for r in rows:
         r["group"] = classify(r["sector_code"], r["sector"], r["product"])
         w = (r.get("workers") or "").strip()
-        r["fo_workers"] = int(w) if w.isdigit() else None
+        # 공장등록 종사자는 팩토리온 기록(id c…)의 신고값만 — 산단 외 기업(id x…)의 workers 는 국민연금 등 다른 명단에서 온 값이라
+        # 섞으면 '공장등록 종사자' 합이 근거가 섞인다(2026-10-17 운영자 지적 '종사자도 어떤 기준인지 표시해야지' 확인 중 발견: 2,261곳이 국민연금 값)
+        r["fo_workers"] = int(w) if w.isdigit() and not r["id"].startswith("x") else None
         r["complex"] = r.get("complex") or "개별입지"
     return rows
 

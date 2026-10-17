@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import StatTiles, { type Tile } from '../../components/StatTiles.astro';
+import BasisNote from '../../components/BasisNote.astro';
 import Chart from '../../components/Chart.astro';
 import Delta from '../../components/Delta.astro';
 import { monthly, monthLabel, fmt } from '../../lib/stats';
@@ -45,6 +46,7 @@ import ComplexOutput from '../../components/ComplexOutput.astro';
   {m ? (
     <>
       <StatTiles tiles={tiles} />
+      <BasisNote m={m} />
       <section aria-labelledby="h-site">
         <div class="section-head"><h2 id="h-site">입지 유형별</h2></div>
         <Chart kind="site-bar" name="employment" caption={`입지 유형별 고용 인원, ${ym}`} />

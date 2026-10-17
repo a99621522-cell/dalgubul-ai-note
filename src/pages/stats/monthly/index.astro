@@ -4,6 +4,8 @@ import StatsNav from '../../../components/StatsNav.astro';
 import BokDaeguTables from '../../../components/BokDaeguTables.astro';
 import BokRegionalDaegu from '../../../components/BokRegionalDaegu.astro';
 import { monthlySeries, change, latest, groups, fmt, fmtChg, trendChart, CYCLES, CYCLE_DESC, cycleSentence } from '../../../lib/monthly';
+import SourceBadge from '../../../components/SourceBadge.astro';
+import { badgeOf } from '../../../lib/keyIndicators';
 /** /stats/monthly/ — 경기 동향(월간). 원 통계(KOSIS·ECOS)에서 직접 읽고, 원 통계를 아직 받지 않는 지표만
  *  data/refs/dpi-*.json 정리값을 쓴다(src/lib/monthly.ts). 지표마다 원 통계 기관을 출처로 적는다 — 페이지에 자료 정리 기관·간행물 이름은 쓰지 않는다
  *  (운영자 지시 2026-10-02, 경기종합지수는 작성 기관이라 그 지표의 출처로만). 값 그대로, 평가 없음.
@@ -70,7 +72,7 @@ const GROUP_DESC: Record<string, string> = {
         <figure class="tcard">
           <figcaption>{s.cycle && <span class="ctag">{s.cycle}</span>}<strong>{s.name}</strong> <span class="u">({s.unit})</span></figcaption>
           <div set:html={svg} />
-          <p class="tsrc">{latest(s).m} · 전년 같은 달 대비 {chg(s, 12)} · 출처: {s.source}</p>
+          <p class="tsrc">{latest(s).m} · 전년 같은 달 대비 {chg(s, 12)} · 출처: <SourceBadge kind={badgeOf(s)} /> {s.source}</p>
         </figure>); })}
     </div>
     <details>
@@ -79,7 +81,7 @@ const GROUP_DESC: Record<string, string> = {
         <thead><tr><th>지표</th><th>기준월</th><th class="n">값</th><th>단위</th><th class="n">전년 같은 달 대비</th><th class="n">전월 대비</th><th>출처</th></tr></thead>
         <tbody>{ss.map(s => (
           <tr><th scope="row">{s.name}</th><td class="nw">{latest(s).m}</td><td class="n">{fmt(latest(s).v, s.digits)}</td><td>{s.unit}</td><td class="n">{chg(s, 12)}</td><td class="n">{chg(s, 1)}</td>
-            <td class="src">{s.url ? <a href={s.url} rel="noopener">{s.source}</a> : s.source}{s.note && <span class="meta"> · {s.note}</span>}</td></tr>))}</tbody>
+            <td class="src"><SourceBadge kind={badgeOf(s)} /> {s.url ? <a href={s.url} rel="noopener">{s.source}</a> : s.source}{s.note && <span class="meta"> · {s.note}</span>}</td></tr>))}</tbody>
       </table></div>
       <div class="scroll-x"><table class="data-table" data-title={`대구 ${g} — 월별 값`}>
         <thead><tr><th>기준월</th>{ss.map(s => <th class="n">{s.name}<br /><span class="u">({s.unit})</span></th>)}</tr></thead>

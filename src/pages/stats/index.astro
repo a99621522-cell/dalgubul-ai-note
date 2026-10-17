@@ -3,13 +3,15 @@ import Base from '../../layouts/Base.astro';
 import StatsNav from '../../components/StatsNav.astro';
 import { TOPICS, KOSIS_TOPICS } from '../../lib/statsTopics';
 import { kosisTable, kosisChart } from '../../lib/kosis';
-import { monthlySeries, latest, change, fmt, fmtChg } from '../../lib/monthly';
+import { monthlySeries } from '../../lib/monthly';
+import SourceBadge from '../../components/SourceBadge.astro';
+import { keyIndicators, BADGE_DESC, type Badge } from '../../lib/keyIndicators';
 import fs from 'node:fs';
 import { serviceSeries, retailSeries, selfEmployedSeries, marketSeries, tourismSeries } from '../../lib/services';
-/** /stats/ — 통계 허브(운영자 지적 2026-10-02: 통계가 복잡하고 분류가 없다). 주제 6개 카드 + 경기 동향 핵심 숫자. 값 그대로, 평가 없음. */
+/** /stats/ — 통계 허브(운영자 지적 2026-10-02: 통계가 복잡하고 분류가 없다). 대구 대표 지표 표(지표마다 대표 출처 하나 + 다른 기준으로 본 값, 2026-10-17) + 주제 카드. 값 그대로, 평가 없음. */
 const S = monthlySeries();
-const pick = (k: string) => S.find(s => s.key === k);
-const heads = ['ip', 'er', 'exp', 'csi'].map(pick).filter(Boolean) as typeof S;
+const KEY = keyIndicators();
+const BADGES = Object.keys(BADGE_DESC) as Badge[];
 const svcN = serviceSeries().length + retailSeries().length + selfEmployedSeries().length + marketSeries().length + tourismSeries().length;
 const tradeMonths = fs.readdirSync('data/trade').filter(f => /^\d{6}\.json$/.test(f)).sort();
 const count = (key: string) => {
@@ -22,18 +24,39 @@ const count = (key: string) => {
   <p class="lede">대구 통계를 주제 7개로 나눴습니다. 매달 바뀌는 <strong>경기 동향·수출입</strong>은 위에, 해마다 바뀌는 <strong>제조업·서비스업·산업 구조·기업·인구</strong>는 아래에 있습니다. 값은 원 통계 그대로이고 평가·순위가 아닙니다.</p>
   <StatsNav current="hub" />
 
-  {heads.length > 0 && (
-  <section aria-labelledby="h-now">
-    <div class="section-head"><h2 id="h-now">이번 달 핵심 숫자</h2><a href="/stats/monthly/">경기 동향 전체</a></div>
-    <div class="tiles">
-      {heads.map(s => { const p = latest(s); const y = change(s, p, 12); return (
-        <a class="tile" href="/stats/monthly/">
-          <span class="tl">{s.name}</span>
-          <span class="tv">{fmt(p.v, s.digits)}<small> {s.unit === '2020=100' ? '' : s.unit}</small></span>
-          <span class="ty">{p.m} · 전년 같은 달 대비 {fmtChg(y, s.unit, s.change === '%p' ? 1 : 1)}{y != null && (s.change === '%' ? '%' : s.change === '%p' ? '%p' : 'p')}</span>
-        </a>); })}
-    </div>
-  </section>)}
+  <section aria-labelledby="h-key">
+    <div class="section-head"><h2 id="h-key">대구 대표 지표</h2><a href="/stats/status/">자료 갱신 현황</a></div>
+    <p class="meta">지표마다 대표 출처를 하나만 골랐습니다 — 국가승인통계(KOSIS·한국은행 ECOS)가 먼저이고, 없으면 원 기관 자료입니다. 같은 것을 다른 기준으로 센 값은 표 아래 <a href="#alts">다른 기준으로 본 값</a>에 왜 다른지와 함께 있습니다.</p>
+    <ul class="legend">{BADGES.map(b => <li><SourceBadge kind={b} /> {BADGE_DESC[b]}</li>)}</ul>
+    <div class="scroll-x"><table class="data-table" data-title="대구 대표 지표">
+      <thead><tr><th>지표</th><th class="n">값</th><th>단위</th><th>기준</th><th data-pri="2">변화</th><th>숫자 종류</th><th data-pri="3">출처</th></tr></thead>
+      <tbody>{KEY.map(g => (<>
+        <tr class="grp"><th scope="rowgroup" colspan="7">{g.group}</th></tr>
+        {g.items.map(i => (
+          <tr><th scope="row"><a href={i.href}>{i.name}</a>{i.alts.length > 0 && <a class="alt-n" href={`#alt-${i.key}`}>다른 기준 {i.alts.length}</a>}</th>
+            <td class="n v">{i.value}</td><td>{i.unit}</td><td class="nw">{i.when}</td><td class="nw">{i.change}</td>
+            <td><SourceBadge kind={i.badge} /></td>
+            <td class="src">{i.url ? <a href={i.url} rel="noopener">{i.source}</a> : i.source}{i.note && <span class="meta"> · {i.note}</span>}</td></tr>))}
+      </>))}</tbody>
+    </table></div>
+    <p class="meta">증감 표시: △ 는 줄어듦. 월간 지표의 기준월이 서로 다른 것은 원 통계마다 공표 시기가 달라서입니다(<a href="/stats/status/">자료 갱신 현황</a>).</p>
+  </section>
+
+  <section id="alts" aria-labelledby="h-alts">
+    <div class="section-head"><h2 id="h-alts">다른 기준으로 본 값</h2><a href="/stats/industry/#count-compare">산업별 기업 수는 기관마다 왜 다른가</a></div>
+    <p class="meta">같은 '고용'·'기업 수'라도 누구를, 어디를, 언제를 세느냐에 따라 숫자가 다릅니다. 어느 쪽이 맞다는 것이 아니라 묻는 것에 맞는 숫자를 고르면 됩니다.</p>
+    {KEY.flatMap(g => g.items).filter(i => i.alts.length).map(i => (
+      <details class="alt" id={`alt-${i.key}`} open={i.key === 'emp' || i.key === 'bizcount'}>
+        <summary><strong>{i.name}</strong> <span class="meta">— 대표 값 {i.value}{i.unit === '%' ? '%' : ` ${i.unit}`} ({i.when}) 외 {i.alts.length}개</span></summary>
+        <div class="scroll-x"><table class="data-table" data-title={`${i.name} — 다른 기준으로 본 값`}>
+          <thead><tr><th>숫자</th><th class="n">값</th><th>기준</th><th>숫자 종류</th><th>왜 다른가</th><th data-pri="3">출처</th></tr></thead>
+          <tbody>
+            <tr class="rep"><th scope="row">{i.name} (대표 값)</th><td class="n">{i.value}{i.unit === '%' ? '%' : ` ${i.unit}`}</td><td class="nw">{i.when}</td><td><SourceBadge kind={i.badge} /></td><td>이 표의 기준</td><td class="src">{i.source}</td></tr>
+            {i.alts.map(a => <tr><th scope="row">{a.name}</th><td class="n">{a.value}</td><td class="nw">{a.when}</td><td><SourceBadge kind={a.badge} /></td><td>{a.why}</td><td class="src">{a.source}</td></tr>)}
+          </tbody>
+        </table></div>
+      </details>))}
+  </section>
 
   <section aria-labelledby="h-topics">
     <div class="section-head"><h2 id="h-topics">주제별 통계</h2></div>
@@ -52,13 +75,14 @@ const count = (key: string) => {
   </section>
   <p class="meta more">기업 사전으로 집계한 달별 기업 수·고용 통계표는 <a href="/dashboard/">현황판</a>에 있습니다.</p>
   <style>
-    .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s2); margin-bottom: var(--s3); }
-    .tile { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); text-decoration: none; }
-    .tile:hover { background: var(--surface); }
-    .tl { font-size: var(--small); color: var(--muted); }
-    .tv { font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
-    .tv small { font-size: var(--small); font-weight: 400; color: var(--muted); }
-    .ty { font-size: 12px; color: var(--muted); }
+    .legend { list-style: none; margin: var(--s2) 0; padding: 0; display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+    tr.grp th { background: var(--surface); font-weight: 700; text-align: left; }
+    td.v { font-weight: 700; }
+    td.src, .alt td { font-size: 12px; }
+    .alt-n { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 400; color: var(--muted); }
+    .alt { margin: 0.6rem 0; }
+    .alt > summary { cursor: pointer; padding: 6px 0; }
+    tr.rep th, tr.rep td { background: var(--surface); }
     .more { margin-top: var(--s2); }
     .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--s2); }
     .card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }

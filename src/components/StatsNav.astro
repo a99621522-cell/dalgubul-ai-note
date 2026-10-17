@@ -1,10 +1,11 @@
 ---
 import { TOPICS } from '../lib/statsTopics';
-/** 통계 주제 탭(허브 /stats/ 와 주제 페이지 위). current 는 TOPICS 의 key, 허브는 'hub'. */
+/** 통계 주제 탭(허브 /stats/ 와 주제 페이지 위). current 는 TOPICS 의 key, 허브는 'hub', 자료 갱신 현황은 'status'. */
 interface Props { current: string }
 const { current } = Astro.props;
 ---
 <nav class="sub-tabs" aria-label="통계 주제">
   <a href="/stats/" aria-current={current === 'hub' ? 'page' : undefined}>전체</a>
   {TOPICS.map(t => <a href={t.href} aria-current={current === t.key ? 'page' : undefined}>{t.name}</a>)}
+  <a href="/stats/status/" aria-current={current === 'status' ? 'page' : undefined}>자료 갱신 현황</a>
 </nav>

@@ -1,6 +1,7 @@
 ---
 import { kosisTable, kosisChart, fmtCell } from '../lib/kosis';
 import type { KosisSection } from '../lib/statsTopics';
+import SourceBadge from './SourceBadge.astro';
 /** KOSIS 표·그래프 묶음을 그린다(render_kosis.py 산출물). 값은 KOSIS 그대로, 평가·순위 없음. 표는 table.data-table(한글 표 복사·PDF). */
 interface Props { sections: KosisSection[] }
 const { sections } = Astro.props;
@@ -29,7 +30,7 @@ for (const [i, s] of shown.entries()) { const k = `after-${s.key ?? i}`; if (Ast
           <thead><tr>{t.columns.map((h, j) => <th class={j ? 'n' : ''}>{h}</th>)}</tr></thead>
           <tbody>{t.rows.map(r => <tr>{r.map((v, j) => j === 0 ? <th scope="row">{v}</th> : <td class="n">{fmtCell(v)}</td>)}</tr>)}</tbody>
         </table></div>
-        <p class="meta">출처: {t.source}{t.note && ` · ${t.note}`}</p>
+        <p class="meta"><SourceBadge kind="국가통계" />{t.source.includes('이 사이트 계산') && <> <SourceBadge kind="이 사이트 계산" /></>} 출처: {t.source}{t.note && ` · ${t.note}`}</p>
       </details>
     ); })}
   </section>

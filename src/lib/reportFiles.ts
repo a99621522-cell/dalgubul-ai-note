@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'sl-sdv-robotics', summary: '대구 북구 유가증권 상장사 에스엘이 자동차 램프에서 전동화(SDV) 제어 부품(E-Shift·BMS·SBCM)과 로봇 모듈(현대차그룹 모베드·보스턴다이내믹스 스팟 다리·휠 구동 액추에이터)로 넓히는 흐름을 DART 공시(2025 사업보고서, 2026 1분기·반기보고서)와 한화투자증권 기업분석(2026-09-28)으로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '미래차', '로봇'],
+    title: '에스엘, 자동차 램프 → 전동화(SDV) 부품·로봇 모듈', name: '에스엘, 자동차 램프 → 전동화(SDV) 부품·로봇 모듈',
+    hwpx: '/hwpx/sl-sdv-robotics.hwpx', hwpxSize: '207KB', date: '2026-10-17' },
   { slug: 'lemon-healthcare-mydata', summary: '대구 데이타뱅크(옛 데이타뱅크시스템즈)에서 2017년 인적분할해 세운 코스닥 상장사 레몬헬스케어(본사 서울)가 병원 환자용 앱 구축에서 의료마이데이터 중계(실손보험 청구·전자처방전)와 구독형 플랫폼으로 넓히는 흐름을 DART 반기보고서(2026)로 정리한 자료. 첫 장은 DART 실적 표·그래프. 실적 목표·공모가·인물 이름은 싣지 않음.', topics: ['상장기업', '헬스케어', '의료데이터'],
     title: '레몬헬스케어, 병원 앱 구축 → 의료마이데이터 중계·구독 플랫폼', name: '레몬헬스케어, 병원 앱 구축 → 의료마이데이터 중계·구독 플랫폼',
     hwpx: '/hwpx/lemon-healthcare-mydata.hwpx', hwpxSize: '210KB', date: '2026-10-17' },
@@ -24,9 +27,6 @@ export const REPORT_FILES: ReportFile[] = [
   { slug: 'kpim-humanoid-datacenter', summary: '대구 달성군 코스닥 상장사 한국피아이엠이 터보차저 부품(MIM·티타늄)에서 휴머노이드 손가락 관절 감속기와 데이터센터 냉각 부품으로 넓히는 까닭과 핵심 기술·수주·투자(전환사채 400억 원 용도)·일정을 DART 공시와 증권사 리포트 4건(키움증권·IBK투자증권)으로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치·애널리스트 이름은 싣지 않음.', topics: ['상장기업', '로봇', '뿌리산업', '증권사 리포트'],
     title: '한국피아이엠, 터보차저 부품 → 휴머노이드 손가락 관절', name: '한국피아이엠, 터보차저 부품 → 휴머노이드 손가락 관절',
     hwpx: '/hwpx/kpim-humanoid-datacenter.hwpx', hwpxSize: '463KB', date: '2026-10-17' },
-  { slug: 'sl-sdv-robotics', summary: '대구 북구 유가증권 상장사 에스엘의 전동화(SDV) 부품과 로보틱스(모베드·스팟·플러드) 사업을 한화투자증권 기업분석(2026-09-28) 원문과 DART 공시(2025 사업보고서, 2026 1분기·반기보고서)로 정리하고 분기 실적을 대조한 자료. 투자의견·목표주가·애널리스트 이름은 싣지 않음.', topics: ['상장기업', '미래차', '로봇', '증권사 리포트'],
-    title: '에스엘 SDV·로보틱스 사업 — 증권사 리포트와 공시 정리', name: '에스엘 SDV·로보틱스 사업 — 증권사 리포트와 공시 정리',
-    hwpx: '/hwpx/sl-sdv-robotics.hwpx', hwpxSize: '144KB', date: '2026-10-16' },
   { slug: 'daesung-hitech-robot-cdmo', summary: '대구 달성군 코스닥 상장사 대성하이텍의 로봇 CDMO 진출 선언과 방산 정밀부품·AI 데이터센터 냉각·카테터 사업을 증권사 리포트 원문 3건(유안타증권·키움증권)과 DART 공시로 정리한 자료. 투자의견·목표주가·애널리스트 이름은 싣지 않음.', topics: ['상장기업', '로봇', '증권사 리포트'],
     title: '대성하이텍 진출 선언 — 정밀가공에서 로봇 CDMO로', name: '대성하이텍 진출 선언 — 정밀가공에서 로봇 CDMO로',
     hwpx: '/hwpx/daesung-hitech-robot-cdmo.hwpx', hwpxSize: '276KB', date: '2026-10-16' },

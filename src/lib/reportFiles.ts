@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'lemon-healthcare-mydata', summary: '대구 데이타뱅크(옛 데이타뱅크시스템즈)에서 2017년 인적분할해 세운 코스닥 상장사 레몬헬스케어(본사 서울)가 병원 환자용 앱 구축에서 의료마이데이터 중계(실손보험 청구·전자처방전)와 구독형 플랫폼으로 넓히는 흐름을 DART 반기보고서(2026)로 정리한 자료. 첫 장은 DART 실적 표·그래프. 실적 목표·공모가·인물 이름은 싣지 않음.', topics: ['상장기업', '헬스케어', '의료데이터'],
+    title: '레몬헬스케어, 병원 앱 구축 → 의료마이데이터 중계·구독 플랫폼', name: '레몬헬스케어, 병원 앱 구축 → 의료마이데이터 중계·구독 플랫폼',
+    hwpx: '/hwpx/lemon-healthcare-mydata.hwpx', hwpxSize: '210KB', date: '2026-10-17' },
   { slug: 'databank-cloud-ai', summary: '대구 수성알파시티 비상장 IT 서비스 기업 데이타뱅크가 오라클 DB 구축·유지보수에서 클라우드 전환·운영(MSP)·AI·의료 IT·데이터 복제로 넓히는 흐름을 DART 감사보고서(2023 – 2025 사업연도)와 회사 홈페이지로 정리한 자료. 첫 장은 감사보고서 실적·매출 계정 표와 그래프. 증권사 리포트 없음, 개인 주주 이름은 싣지 않음.', topics: ['비상장기업', '클라우드', 'AI', '소프트웨어'],
     title: '데이타뱅크, 오라클 DB 유지보수 → 클라우드 전환·AI·의료 IT', name: '데이타뱅크, 오라클 DB 유지보수 → 클라우드 전환·AI·의료 IT',
     hwpx: '/hwpx/databank-cloud-ai.hwpx', hwpxSize: '151KB', date: '2026-10-17' },

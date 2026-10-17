@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'egis-digital-twin', summary: '대구 수성구 코스닥 상장사 이지스가 공공기관 3D 지도·디지털 트윈 구축 용역에서 구독형 디지털 어스(SaaS)·AI(GeoPhysical AI)·유럽 Gaia-X 등 해외 데이터 플랫폼으로 넓히는 흐름을 DART 공시와 한국IR협의회 리포트(2026-08-05)로 정리한 자료. 첫 장은 DART 실적 표·그래프, 서비스·연혁·AI 그림은 리포트 수록 그림. 투자의견·실적 전망치·밸류에이션은 싣지 않음.', topics: ['상장기업', '디지털 트윈', 'AI', '소프트웨어'],
+    title: '이지스, 공공 3D 지도 구축 → 구독형 디지털 어스·AI·해외 데이터 플랫폼', name: '이지스, 공공 3D 지도 구축 → 구독형 디지털 어스·AI·해외 데이터 플랫폼',
+    hwpx: '/hwpx/egis-digital-twin.hwpx', hwpxSize: '381KB', date: '2026-10-17' },
   { slug: 'yjlink-smt-robot', summary: '대구 달성군 코스닥 상장사 와이제이링크가 SMT(표면실장) 기판 이송장비에서 라인 전체 공급(풀라인)·물류 자동화 로봇(릴·매거진 타워, AGV·AMR)·반도체 패키징 장비로 넓히는 흐름을 DART 공시와 한국IR협의회 리포트(2025-08·2026-09)로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프, 제품·라인 그림은 리포트 수록 그림. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '로봇', '스마트공장', '반도체'],
     title: '와이제이링크, SMT 이송장비 → 풀라인·물류 로봇·반도체 패키징', name: '와이제이링크, SMT 이송장비 → 풀라인·물류 로봇·반도체 패키징',
     hwpx: '/hwpx/yjlink-smt-robot.hwpx', hwpxSize: '436KB', date: '2026-10-17' },

@@ -2,14 +2,33 @@
 //   POST /api/divine  {question, datetime?, longitude?, material?, yearMing?, method?, options?}  → DivinationResult
 //   POST /api/cast    같은 입력 → charts 만(LLM 없음)
 //   GET  /health
+//   GET  /, /app.js, /app.css  — public/ 의 화면 파일(정적, 화이트리스트)
 // 실행: node src/llm/server.ts  (PORT 기본 8787). 개인정보(생년월일 등)는 저장하지 않는다.
 import http from 'node:http';
+import { readFileSync, existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { runDivination, castOnly, type DivinationRequest } from './pipeline.ts';
 import { AnthropicCaller, RefusalError } from './model.ts';
 
 const PORT = Number(process.env.PORT ?? 8787);
 const MAX_BODY = 64 * 1024;
 const caller = new AnthropicCaller();
+const PUBLIC_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../public');
+const STATIC: Record<string, { file: string; type: string }> = {
+  '/': { file: 'index.html', type: 'text/html; charset=utf-8' },
+  '/index.html': { file: 'index.html', type: 'text/html; charset=utf-8' },
+  '/app.js': { file: 'app.js', type: 'text/javascript; charset=utf-8' },
+  '/app.css': { file: 'app.css', type: 'text/css; charset=utf-8' },
+};
+const CSP = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+function sendStatic(res: http.ServerResponse, key: string) {
+  const s = STATIC[key];
+  const full = path.join(PUBLIC_DIR, s.file);
+  if (!existsSync(full)) { res.writeHead(404); return res.end('not found'); }
+  res.writeHead(200, { 'content-type': s.type, 'content-security-policy': CSP, 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'cache-control': 'no-cache' });
+  res.end(readFileSync(full));
+}
 
 function readJson(req: http.IncomingMessage): Promise<unknown> {
   return new Promise((resolve, reject) => {
@@ -32,7 +51,7 @@ function sanitize(b: unknown): DivinationRequest {
   const req: DivinationRequest = { question: o.question.trim() };
   if (typeof o.datetime === 'string') req.datetime = o.datetime;
   if (typeof o.longitude === 'number') req.longitude = o.longitude;
-  if (typeof o.yearMing === 'string') req.yearMing = o.yearMing;
+  if (typeof o.yearMing === 'string' && /^[甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥]$/.test(o.yearMing)) req.yearMing = o.yearMing;
   if (typeof o.externalSigns === 'string') req.externalSigns = o.externalSigns.slice(0, 300);
   if (o.method === 'auto' || o.method === 'meihua' || o.method === 'qimen' || o.method === 'both') req.method = o.method;
   if (o.material && typeof o.material === 'object') {
@@ -53,12 +72,14 @@ function sanitize(b: unknown): DivinationRequest {
 
 const server = http.createServer(async (req, res) => {
   try {
-    if (req.method === 'GET' && req.url === '/health') return send(res, 200, { ok: true, model: caller.model });
-    if (req.method === 'POST' && req.url === '/api/cast') {
+    const urlPath = (req.url ?? '/').split('?')[0];
+    if ((req.method === 'GET' || req.method === 'HEAD') && urlPath in STATIC) return sendStatic(res, urlPath);
+    if (req.method === 'GET' && urlPath === '/health') return send(res, 200, { ok: true, model: caller.model });
+    if (req.method === 'POST' && urlPath === '/api/cast') {
       const body = sanitize(await readJson(req));
       return send(res, 200, { charts: castOnly(body, body.method === 'auto' ? 'both' : body.method ?? 'both') });
     }
-    if (req.method === 'POST' && req.url === '/api/divine') {
+    if (req.method === 'POST' && urlPath === '/api/divine') {
       const body = sanitize(await readJson(req));
       const result = await runDivination(body, caller);
       return send(res, 200, result);

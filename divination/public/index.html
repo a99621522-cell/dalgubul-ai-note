@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>매화·기문 점풀이</title>
+<meta name="description" content="매화역수와 기문둔갑으로 질문 하나를 풀어 봅니다. 괘와 국은 즉시 계산하고, 풀이는 서버가 만듭니다. 참고·오락용.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="top">
+  <h1>매화·기문 점풀이</h1>
+  <p class="sub">질문 하나를 적으면 매화역수 괘와 기문둔갑 국을 세우고 풀이를 씁니다. <strong>참고·오락용</strong>이며 의료·법률·투자 판단을 대신하지 않습니다.</p>
+</header>
+
+<main>
+  <form id="f" class="card" autocomplete="off" novalidate>
+    <label class="field">
+      <span class="lbl">질문</span>
+      <textarea id="q" name="q" rows="2" maxlength="500" placeholder="예: 이번 달 안에 이직 제안을 받아들여도 될까요" required></textarea>
+    </label>
+
+    <div class="row">
+      <label class="field">
+        <span class="lbl">시각</span>
+        <input id="at" name="at" type="datetime-local" step="60">
+        <span class="hint">비우면 지금. 질문이 떠오른 때를 넣어도 됩니다.</span>
+      </label>
+      <label class="field">
+        <span class="lbl">장소</span>
+        <select id="place" name="place">
+          <option value="128.60">대구</option>
+          <option value="126.98">서울</option>
+          <option value="129.08">부산</option>
+          <option value="126.71">인천</option>
+          <option value="126.85">광주</option>
+          <option value="127.38">대전</option>
+          <option value="129.31">울산</option>
+          <option value="126.53">제주</option>
+          <option value="custom">직접 입력(경도)</option>
+        </select>
+        <input id="lon" name="lon" type="number" step="0.01" min="-180" max="180" placeholder="경도 (동경 +)" class="hidden" aria-label="경도">
+      </label>
+    </div>
+
+    <fieldset class="field">
+      <legend class="lbl">기괘 재료 (매화역수)</legend>
+      <div class="seg" role="radiogroup" aria-label="기괘 재료">
+        <label><input type="radio" name="mat" value="time" checked> 시각으로</label>
+        <label><input type="radio" name="mat" value="numbers"> 숫자로</label>
+        <label><input type="radio" name="mat" value="text"> 글자로</label>
+      </div>
+      <input id="nums" name="nums" type="text" inputmode="numeric" placeholder="숫자 1~3개, 쉼표로 (예: 37, 58)" class="hidden" aria-label="숫자">
+      <input id="txt" name="txt" type="text" maxlength="20" placeholder="떠오른 낱말 (예: 대구)" class="hidden" aria-label="글자">
+    </fieldset>
+
+    <div class="row">
+      <label class="field">
+        <span class="lbl">술법</span>
+        <select id="method" name="method">
+          <option value="both">매화역수 + 기문둔갑</option>
+          <option value="meihua">매화역수만</option>
+          <option value="qimen">기문둔갑만</option>
+          <option value="auto">질문에 맞춰 하나 고르기</option>
+        </select>
+      </label>
+      <label class="field">
+        <span class="lbl">생년 간지 <small>(선택, 기문 년명)</small></span>
+        <input id="ym" name="ym" type="text" maxlength="2" placeholder="예: 庚午" pattern="[甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥]">
+      </label>
+    </div>
+
+    <details class="adv">
+      <summary>세부 설정</summary>
+      <div class="row">
+        <label class="field"><span class="lbl">지방시 보정</span>
+          <select id="ls" name="ls"><option value="none">표준시 그대로</option><option value="longitude">경도 보정</option><option value="longitude+eot">경도 + 균시차</option></select></label>
+        <label class="field"><span class="lbl">자시 처리</span>
+          <select id="zi" name="zi"><option value="23">23시에 일진이 바뀜</option><option value="00">0시에 일진이 바뀜</option></select></label>
+      </div>
+      <label class="field"><span class="lbl">외응 <small>(선택)</small></span>
+        <input id="ext" name="ext" type="text" maxlength="300" placeholder="질문할 때 눈에 띈 것 (예: 까치가 울었다)"></label>
+    </details>
+
+    <div class="actions">
+      <button type="button" id="castBtn" class="btn">괘·국 보기</button>
+      <button type="submit" id="divineBtn" class="btn primary">풀이 받기</button>
+      <span id="status" class="status" role="status" aria-live="polite"></span>
+    </div>
+  </form>
+
+  <section id="charts" class="charts hidden" aria-live="polite"></section>
+  <section id="reading" class="card reading hidden" aria-live="polite"></section>
+</main>
+
+<footer class="foot">
+  <p>이 서비스는 <strong>참고·오락용</strong>입니다. 건강·법률·투자 결정은 전문가와 상의하세요. 입력한 내용은 저장하지 않습니다.</p>
+  <p>마음이 많이 힘드시면 자살예방상담전화 <strong>109</strong> (24시간), 정신건강위기상담 <strong>1577-0199</strong>로 먼저 연락해 주세요.</p>
+</footer>
+<script src="/app.js" defer></script>
+</body>
+</html>

@@ -8,10 +8,20 @@ npm install       # @anthropic-ai/sdk, zod (해석 파이프라인에만 필요.
 npm test          # node --test (Node 22.18+ 는 .ts 를 바로 실행). 모델 호출은 가짜로 대체
 npm run typecheck # tsc --noEmit (npx 로 typescript 를 받음)
 npm run cli -- "이번 달 이직 제안을 받아들여도 될까요" [--at 2026-10-18T14:30+09:00] [--numbers 37,58] [--method both|meihua|qimen|auto] [--dry] [--json]
-npm run serve     # http://localhost:8787  POST /api/divine, POST /api/cast, GET /health
+npm run serve     # http://localhost:8787  화면(/) + POST /api/divine, POST /api/cast, GET /health
 ```
 
 해석 파이프라인은 `ANTHROPIC_API_KEY`(또는 `ant auth login` 프로필)가 있어야 돌고, 모델은 `DIVINATION_MODEL`(기본 `claude-opus-5-5`)로 바꾼다. `--dry` 와 `/api/cast` 는 계산만 하므로 키가 없어도 된다.
+
+## 화면 (`public/`)
+
+`npm run serve` 뒤 http://localhost:8787 을 열면 한 쪽짜리 화면이 뜬다(프레임워크 없음, `index.html`·`app.css`·`app.js`, 서버가 화이트리스트로만 내보내고 CSP `default-src 'self'`).
+
+- 입력: 질문, 시각(비우면 지금), 장소(시도 선택 또는 경도), 기괘 재료(시각·숫자·글자), 술법(둘 다·매화·기문·자동), 생년 간지, 세부 설정(지방시 보정·자시·외응).
+- 「괘·국 보기」는 `/api/cast` 로 즉시 그린다: 매화는 본·호·변괘 효 그림(동효 강조)·체용·왕쇠·응기 수, 기문은 낙서 배치 9궁(팔신/구성/천반 간/팔문/지반 간·왕쇠, 공망·역마 표시, 일간 궁 테두리)·국·치부치사·용신 궁·격국 칩.
+- 「풀이 받기」는 괘·국을 먼저 그린 뒤 `/api/divine` 를 기다려 마크다운 풀이와 분류·검수 수정 건수·술법별 원문(펼침)을 보인다. 서버에 키가 없으면 "API 키가 설정되어 있지 않아 풀이를 만들 수 없습니다" 라고만 알리고 괘·국은 그대로 둔다. 자해 암시로 멈춘 답은 테두리색을 바꿔 위기 안내만 보인다.
+- 첫 화면 머리와 바닥에 참고·오락용 고지와 109·1577-0199 안내를 고정. 브라우저 저장소를 쓰지 않는다.
+- 검증: `tests/web.test.ts`(서버를 띄워 정적 파일·CSP·cast·400), Playwright 로 1100px·390px 폭 스크린샷과 가로 스크롤 없음·콘솔 오류 없음 확인(2026-10-18).
 
 ## 해석 파이프라인 (`src/llm/`)
 
@@ -54,6 +64,7 @@ src/meihua/               선천괘수 기괘(연월일시·숫자·글자), 본
 src/qimen/                시가기문 전반 차보법 포국, 격국 판정표
 src/index.ts              castMeihua / castQimen / castBoth
 src/llm/                  해석 파이프라인(프롬프트·모델 호출·CLI·서버)
+public/                   화면(index.html·app.css·app.js)
 tests/                    달력(한국천문연구원 공표값)·고전 사례(관매점·모란점)·손 포국 사례·파이프라인(가짜 모델)
 ```
 

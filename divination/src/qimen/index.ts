@@ -179,6 +179,7 @@ function resolveName(raw: string, palaces: Palace[], heavenPalaceOf: (s: string)
   if (name.length === 1 && STEMS.includes(name as never)) return heavenPalaceOf(name);
   const byDoor = palaces.find((p) => p.door === name); if (byDoor) return byDoor.gong;
   const byStar = palaces.find((p) => p.star === name && !p.isCenter); if (byStar) return byStar.gong;
+  if (name === '天禽') { const rui = palaces.find((p) => p.star === '天芮' && !p.isCenter); if (rui) return rui.gong; } // 天禽은 天芮에 붙어 돈다(寄 坤2)
   const byDeity = palaces.find((p) => p.deity === name); if (byDeity) return byDeity.gong;
   return null;
 }

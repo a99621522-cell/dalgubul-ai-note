@@ -1,7 +1,7 @@
 // LLM 단계의 구조화 출력 스키마(zod). 분류기와 검수자는 JSON, 해석가·편집자는 마크다운 글.
 import { z } from 'zod';
 
-export const QUESTION_TYPES = ['재물', '직장·사업', '시험·학업', '혼인·연애', '건강', '이동·여행', '소송·분쟁', '분실물·사람찾기', '날씨', '일반'] as const;
+export const QUESTION_TYPES = ['재물·투자', '계약·거래', '취업·이직', '승진·직장', '사업·창업', '시험·학업', '혼인·연애', '부동산·이사', '건강', '이동·여행', '소송·분쟁', '분실물·사람찾기', '날씨', '일반'] as const;
 export const SAFETY_FLAGS = ['none', 'health', 'legal', 'finance', 'self_harm', 'minor'] as const;
 
 export const ClassificationSchema = z.object({

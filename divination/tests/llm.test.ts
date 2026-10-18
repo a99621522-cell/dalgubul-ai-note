@@ -6,7 +6,7 @@ import type { ModelCaller, TextCall, JsonCall, Usage } from '../src/llm/model.ts
 import { ClassificationSchema, ReviewSchema } from '../src/llm/schemas.ts';
 
 const u: Usage = { input: 10, output: 5, cacheRead: 0, cacheWrite: 0 };
-const baseCls = { question_type: '직장·사업', time_horizon: '이번달', subject: '본인', method: 'qimen', method_reason: '시기 선택', qimen_yongshin: ['개문', '일간'], needs_more_input: [], safety_flag: 'none' };
+const baseCls = { question_type: '취업·이직', time_horizon: '이번달', subject: '본인', method: 'qimen', method_reason: '시기 선택', qimen_yongshin: ['개문', '일간'], needs_more_input: [], safety_flag: 'none' };
 
 function fake(overrides: { cls?: Partial<typeof baseCls>; review?: { text: string; changes: string[] } | null } = {}) {
   const calls: Array<TextCall | JsonCall<unknown>> = [];

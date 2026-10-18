@@ -1,0 +1,13 @@
+{
+  "name": "divination-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "매화역수·기문둔갑 계산 엔진 (순수 함수, 외부 의존 없음). 사이트(Astro)와 무관한 독립 패키지.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "node --test tests/*.test.ts",
+    "typecheck": "npx -y -p typescript@5 -p @types/node@22 tsc --noEmit -p tsconfig.json"
+  },
+  "engines": { "node": ">=22.18" }
+}

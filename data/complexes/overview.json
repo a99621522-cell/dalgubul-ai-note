@@ -1,0 +1,15 @@
+{
+ "as_of": "2024-12",
+ "sales_year": "2024",
+ "source": "KOTRA 대구 투자환경 누리집 「전체 산업단지 현황」",
+ "url": "https://www.investkorea.org/dg-kr/cntnts/i-2972/web.do",
+ "fetched": "2026-10-18",
+ "total": {
+  "area_k_m2": "45279",
+  "firms": "10200",
+  "employees": "117069",
+  "sales_eok": "366480",
+  "industrial_k_m2": "24400"
+ },
+ "note": "단지 행 합 = 표의 계 행(칸마다 확인). 면적 천㎡, 매출액 억 원. 관리기관 칸은 표 그대로(괄호 안은 담당 부서)."
+}

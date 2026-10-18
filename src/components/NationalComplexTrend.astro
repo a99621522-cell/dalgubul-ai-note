@@ -17,7 +17,7 @@ const d = (a: number | null | undefined, b: number | null | undefined, k = 0) =>
 };
 const tiles = last ? [
   { k: '생산', v: f0(last.production), u: '억 원', c: d(last.production, prev?.production) },
-  { k: '수출', v: f1(last.export), u: '백만 달러', c: d(last.export, prev?.export, 1) },
+  { k: '수출', v: f1(last.exp), u: '백만 달러', c: d(last.exp, prev?.exp, 1) },
   { k: '고용', v: f0(last.employment), u: '명', c: d(last.employment, prev?.employment) },
   { k: '가동률', v: f1(last.opRate), u: '%', c: d(last.opRate, prev?.opRate, 1) + (last.opRate != null && prev?.opRate != null ? '%p' : '') },
   { k: '입주 · 가동', v: `${f0(last.firmsIn)} · ${f0(last.firmsOp)}`, u: '곳', c: '' },
@@ -36,7 +36,7 @@ const tiles = last ? [
       <th class="n">가동률<br /><small>%</small></th><th class="n" data-pri="2">제조업 가동업체<br /><small>곳</small></th><th class="n">입주<br /><small>곳</small></th><th class="n">가동<br /><small>곳</small></th>
       <th class="n" data-pri="3">임차<br /><small>곳</small></th><th class="n" data-pri="3">가동률 50인 미만<br /><small>%</small></th><th class="n" data-pri="3">50~299인</th><th class="n" data-pri="3">300인 이상</th></tr></thead>
     <tbody>{[...q].reverse().map(r => (
-      <tr><th scope="row">{ntLabel(r.period)}{r.revised ? ' *' : ''}</th><td class="n">{f0(r.production)}</td><td class="n">{f1(r.export)}</td><td class="n">{f0(r.employment)}</td>
+      <tr><th scope="row">{ntLabel(r.period)}{r.revised ? ' *' : ''}</th><td class="n">{f0(r.production)}</td><td class="n">{f1(r.exp)}</td><td class="n">{f0(r.employment)}</td>
         <td class="n">{f1(r.opRate)}</td><td class="n">{f0(r.mfgFirms)}</td><td class="n">{f0(r.firmsIn)}</td><td class="n">{f0(r.firmsOp)}</td><td class="n">{f0(r.tenants)}</td>
         <td class="n">{f1(r.rateLt50)}</td><td class="n">{f1(r.rate50)}</td><td class="n">{f1(r.rateGe300)}</td></tr>))}</tbody>
   </table></div>
@@ -46,7 +46,7 @@ const tiles = last ? [
       <caption class="sr-only">대구국가산업단지 연도별 누계 생산·수출과 연말 고용·입주·가동</caption>
       <thead><tr><th>연도</th><th>기준 시점</th><th class="n">생산 누계<br /><small>억 원</small></th><th class="n">수출 누계<br /><small>백만 달러</small></th><th class="n">고용<br /><small>명</small></th><th class="n">입주<br /><small>곳</small></th><th class="n">가동<br /><small>곳</small></th></tr></thead>
       <tbody>{[...years].reverse().map(y => (
-        <tr><th scope="row">{y.year}{y.full ? '' : ' (진행 중)'}</th><td class="nw">{ntLabel(y.last)}</td><td class="n">{f0(y.production)}</td><td class="n">{f1(y.export)}</td><td class="n">{f0(y.employment)}</td><td class="n">{f0(y.firmsIn)}</td><td class="n">{f0(y.firmsOp)}</td></tr>))}</tbody>
+        <tr><th scope="row">{y.year}{y.full ? '' : ' (진행 중)'}</th><td class="nw">{ntLabel(y.last)}</td><td class="n">{f0(y.production)}</td><td class="n">{f1(y.exp)}</td><td class="n">{f0(y.employment)}</td><td class="n">{f0(y.firmsIn)}</td><td class="n">{f0(y.firmsOp)}</td></tr>))}</tbody>
     </table></div>
     <p class="meta">생산·수출은 원 파일의 그해 1월부터의 누계, 고용·입주·가동은 기준 시점 값입니다. 빠진 달의 파일이 포털에 없으면 그해 마지막 시점이 12월보다 앞설 수 있습니다.</p>
   </details>

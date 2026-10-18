@@ -7,7 +7,15 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "node --test tests/*.test.ts",
-    "typecheck": "npx -y -p typescript@5 -p @types/node@22 tsc --noEmit -p tsconfig.json"
+    "typecheck": "npx -y -p typescript@5 -p @types/node@22 tsc --noEmit -p tsconfig.json",
+    "cli": "node src/llm/cli.ts",
+    "serve": "node src/llm/server.ts"
   },
-  "engines": { "node": ">=22.18" }
+  "engines": {
+    "node": ">=22.18"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
+    "zod": "^4.6.7"
+  }
 }

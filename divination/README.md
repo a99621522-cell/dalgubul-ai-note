@@ -1,12 +1,31 @@
 # divination — 매화역수·기문둔갑 계산 엔진
 
-점술 앱의 **계산** 부분만 담은 독립 TypeScript 패키지. LLM 호출이 없고 외부 의존성도 없다. 같은 입력이면 항상 같은 JSON 을 낸다. 해석(풀이 문장)은 이 JSON 을 받는 LLM 프롬프트의 몫이다.
+점술 앱의 **계산 엔진**(순수 함수, 외부 의존 없음)과 **해석 파이프라인**(Claude API 호출, `src/llm/`)을 담은 독립 TypeScript 패키지. 계산은 같은 입력이면 항상 같은 JSON 을 내고, 해석은 그 JSON 만 보고 쓴다.
 이 저장소의 사이트(Astro, `../src`)와는 코드·빌드가 전혀 연결되어 있지 않다. 다른 저장소로 옮길 때는 이 폴더를 그대로 복사하면 된다.
 
 ```
-npm test          # node --test (Node 22.18+ 는 .ts 를 바로 실행)
-npm run typecheck # npx typescript 로 tsc --noEmit (네트워크 필요)
+npm install       # @anthropic-ai/sdk, zod (해석 파이프라인에만 필요. 계산 엔진은 의존성 없음)
+npm test          # node --test (Node 22.18+ 는 .ts 를 바로 실행). 모델 호출은 가짜로 대체
+npm run typecheck # tsc --noEmit (npx 로 typescript 를 받음)
+npm run cli -- "이번 달 이직 제안을 받아들여도 될까요" [--at 2026-10-18T14:30+09:00] [--numbers 37,58] [--method both|meihua|qimen|auto] [--dry] [--json]
+npm run serve     # http://localhost:8787  POST /api/divine, POST /api/cast, GET /health
 ```
+
+해석 파이프라인은 `ANTHROPIC_API_KEY`(또는 `ant auth login` 프로필)가 있어야 돌고, 모델은 `DIVINATION_MODEL`(기본 `claude-opus-5-5`)로 바꾼다. `--dry` 와 `/api/cast` 는 계산만 하므로 키가 없어도 된다.
+
+## 해석 파이프라인 (`src/llm/`)
+
+```
+질문 ─▶ 분류기(JSON) ─▶ 계산 엔진(코드) ─▶ 매화 해석가 ┐
+                │                        기문 해석가 ┴▶ 종합 편집자 ─▶ 검수자(JSON) ─▶ 답
+                └─ safety_flag = self_harm 이면 계산·해석 없이 위기 안내(109)만
+```
+
+- `prompts/*.md` 프롬프트 5개 + 위기 문구. 시스템 프롬프트는 캐시 표시(`cache_control`), 계산 JSON 은 사용자 메시지로 넣는다.
+- `model.ts` `ModelCaller` 인터페이스와 실제 구현 `AnthropicCaller`. 분류기·검수자는 구조화 출력(`beta.messages.parse` + zod), 해석가·편집자는 마크다운. 모든 호출에 서버측 거절 대체(`fallbacks: "default"`)를 켰고, 그래도 `refusal` 이면 `RefusalError`. effort 는 분류·검수 low, 해석·종합 medium.
+- `pipeline.ts` `runDivination(req, caller)`: 분류 → 계산 → 해석(병렬) → 종합(둘 다 있을 때만) → 검수. `method` 기본 `both`, `auto` 는 분류기가 고른 하나. 결과에 분류·괘·국·단계별 글·검수 변경 목록·토큰 사용량이 함께 온다. `castOnly()` 는 모델 없이 괘·국만.
+- `cli.ts`, `server.ts` 진입점. 서버는 `node:http` 만 쓰고 입력을 길이·형식으로 거른다. 요청·결과를 저장하지 않는다.
+- 테스트(`tests/llm.test.ts`)는 가짜 호출자로 단계 순서·안전 분기·종합 조건·검수 반영을 본다. 실제 모델 품질(같은 JSON 에 판단이 흔들리지 않는지)은 키가 있는 환경에서 `npm run cli -- ... --json` 을 여러 번 돌려 `## 한 줄 답` 을 비교한다.
 
 ## 쓰는 법
 
@@ -34,7 +53,8 @@ src/calendar/pillars.ts   연(입춘)·월(節)·일(JDN)·시(두수법) 주
 src/meihua/               선천괘수 기괘(연월일시·숫자·글자), 본·호·변괘, 체용, 왕쇠
 src/qimen/                시가기문 전반 차보법 포국, 격국 판정표
 src/index.ts              castMeihua / castQimen / castBoth
-tests/                    달력(한국천문연구원 공표값)·고전 사례(관매점·모란점)·손 포국 사례
+src/llm/                  해석 파이프라인(프롬프트·모델 호출·CLI·서버)
+tests/                    달력(한국천문연구원 공표값)·고전 사례(관매점·모란점)·손 포국 사례·파이프라인(가짜 모델)
 ```
 
 ## 정한 것(유파·기준)

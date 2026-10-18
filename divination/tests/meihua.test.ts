@@ -54,3 +54,15 @@ test('castMeihua: 호괘·변괘 효 구성이 본괘에서 파생된다', () =>
   assert.ok(typeof r.numbers.yingqi.base === 'number');
   assert.equal(r.meta.method, 'time');
 });
+
+test('동전 기괘: 하 [0,1,1]=巽5 · 상 [1,1,1]=乾1 · 卯時4 → 10 → 天風姤 九四 (老人占과 같은 수)', async () => {
+  const { numbersFromCoins } = await import('../src/meihua/index.ts');
+  const n = numbersFromCoins([0, 1, 1], [1, 1, 1], 4);
+  assert.deepEqual([n.upper, n.lower, n.moving, n.total], [1, 5, 4, 10]);
+  const r = castMeihua({ datetime: '2026-10-19T06:00:00+09:00', material: { coins: { lower: [0, 1, 1], upper: [1, 1, 1] } } });
+  assert.equal(r.meta.method, 'coins'); assert.equal(r.benGua.hanja, '天風姤'); assert.equal(r.benGua.movingLine, 4);
+  const z = castMeihua({ datetime: '2026-10-19T06:00:00+09:00', material: { coins: { lower: [0, 0, 0], upper: [0, 0, 0] } } });
+  assert.equal(z.benGua.hanja, '坤爲地'); assert.equal(z.huFromBian, true); assert.equal(z.benGua.movingLine, (8 + 8 + 4) % 6);
+  assert.throws(() => numbersFromCoins([0, 1] as never, [1, 1, 1], 4));
+  assert.deepEqual(castMeihua({ datetime: '2026-10-19T06:00:00+09:00', material: { coins: { lower: [1, 0, 1], upper: [0, 1, 0] } } }), castMeihua({ datetime: '2026-10-19T06:00:00+09:00', material: { coins: { lower: [1, 0, 1], upper: [0, 1, 0] } } }));
+});

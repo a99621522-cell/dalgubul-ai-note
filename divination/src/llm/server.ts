@@ -61,6 +61,12 @@ function sanitize(b: unknown): DivinationRequest {
     if (typeof m.text === 'string') req.material.text = m.text.slice(0, 20);
     if (typeof m.object === 'string') req.material.object = m.object.slice(0, 20);
     if (typeof m.direction === 'string') req.material.direction = m.direction.slice(0, 10);
+    if (m.coins && typeof m.coins === 'object') {
+      const c = m.coins as Record<string, unknown>;
+      const ok = (a: unknown): a is [0 | 1, 0 | 1, 0 | 1] => Array.isArray(a) && a.length === 3 && a.every((b) => b === 0 || b === 1);
+      if (!ok(c.lower) || !ok(c.upper)) throw new Error('coins 형식 오류(0|1 세 개씩)');
+      req.material.coins = { lower: c.lower, upper: c.upper };
+    }
   }
   if (o.options && typeof o.options === 'object') {
     const t = o.options as Record<string, unknown>;
@@ -90,7 +96,7 @@ const server = http.createServer(async (req, res) => {
   } catch (e) {
     if (e instanceof RefusalError) return send(res, 422, { error: e.message, stage: e.stage });
     const msg = e instanceof Error ? e.message : String(e);
-    const status = /필요합니다|형식|이내|너무|객체|비어/.test(msg) ? 400 : 500;
+    const status = /필요합니다|형식|이내|너무|객체|비어|물상 사전|방위/.test(msg) ? 400 : 500;
     return send(res, status, { error: msg });
   }
 });

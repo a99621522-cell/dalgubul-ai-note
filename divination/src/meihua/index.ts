@@ -21,7 +21,7 @@ export interface MeihuaChart {
     castAt: string; tz: string; localSolar: string; ziHour: string; correctionMin: number; effectiveLocal: string;
     lunar: { year: number; month: number; day: number; leap: boolean };
     pillars: { year: string; month: string; day: string; hour: string };
-    method: 'time' | 'number' | 'text' | 'object';
+    method: 'time' | 'number' | 'text' | 'object' | 'coins';
     rawMaterial: string | null;
     numberRule: string;
   };
@@ -110,6 +110,18 @@ export function numbersFromObject(object: string, direction: string, hourBranchN
   return { upper: un, lower: ln, moving: mod(total, 6), total, rule: `단법후천: ${o.matched}=${o.trigram}(${un}) 상괘, ${d.matched}=${d.trigram}(${ln}) 하괘, 동효=(${un}+${ln}+시지수 ${hourBranchNum}) mod 6`, upperHit: o.matched, lowerHit: d.matched };
 }
 function trigramNumber(name: string): number { return ['乾', '兌', '離', '震', '巽', '坎', '艮', '坤'].indexOf(name) + 1; }
+
+export type CoinLines = [0 | 1, 0 | 1, 0 | 1];
+/**
+ * 동전 기괘(물수점의 변형): 동전 3개를 던져 앞=양(1)·뒤=음(0)으로 효 셋(초효→상효)을 얻어 하괘, 다시 던져 상괘.
+ * 동효는 『梅花易數』 물수점대로 (상괘수+하괘수+시지수) mod 6 — 체용을 위해 동효를 하나로 둔다(전통 척전법과 다름).
+ */
+export function numbersFromCoins(lower: CoinLines, upper: CoinLines, hourBranchNum: number): MeihuaNumbers {
+  for (const arr of [lower, upper]) if (arr.length !== 3 || arr.some((b) => b !== 0 && b !== 1)) throw new Error('동전 효는 0|1 세 개여야 합니다');
+  const up = trigramNumber(trigramByLines(upper).name), lo = trigramNumber(trigramByLines(lower).name);
+  const total = up + lo + hourBranchNum;
+  return { upper: up, lower: lo, moving: mod(total, 6), total, rule: '동전 기괘: 앞=양 뒤=음, 하괘 3효 → 상괘 3효, 동효=(상괘수+하괘수+시지수) mod 6' };
+}
 
 function guaOut(upper: Trigram, lower: Trigram, movingLine: GuaOut['movingLine']): GuaOut {
   const n = hexagramName(upper, lower);

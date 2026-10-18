@@ -5,7 +5,7 @@ import { lunarFromDayNumber } from './calendar/lunar.ts';
 import { currentTerm } from './calendar/solarTerms.ts';
 import { civilFromJd } from './calendar/astro.ts';
 import { branchNumber, branchOf, type Branch } from './common/ganzhi.ts';
-import { numbersFromTime, numbersFromNumbers, numbersFromText, numbersFromObject, buildCore, type MeihuaChart } from './meihua/index.ts';
+import { numbersFromTime, numbersFromNumbers, numbersFromText, numbersFromObject, numbersFromCoins, buildCore, type MeihuaChart, type CoinLines } from './meihua/index.ts';
 import { buildQimen, type QimenChart } from './qimen/index.ts';
 
 export type { MeihuaChart } from './meihua/index.ts';
@@ -27,7 +27,7 @@ export interface CastInput {
 
 export interface MeihuaCastInput extends CastInput {
   /** 기괘 재료. 없으면 연월일시 기괘. object+direction 은 단법후천(사물 괘 + 방위 괘) */
-  material?: { numbers?: number[]; text?: string; strokeTable?: Record<string, number>; object?: string; direction?: string };
+  material?: { numbers?: number[]; text?: string; strokeTable?: Record<string, number>; object?: string; direction?: string; coins?: { lower: CoinLines; upper: CoinLines } };
 }
 
 export interface QimenCastInput extends CastInput {
@@ -53,7 +53,9 @@ export function castMeihua(input: MeihuaCastInput): MeihuaChart {
   const hourNum = t.hourBranchIndex + 1;
   const yearNum = branchNumber(branchOf(pillars.year));
   let nums; let method: MeihuaChart['meta']['method'] = 'time'; let raw: string | null = null;
-  if (input.material?.object) {
+  if (input.material?.coins) {
+    nums = numbersFromCoins(input.material.coins.lower, input.material.coins.upper, hourNum); method = 'coins'; raw = `하 ${input.material.coins.lower.join('')} 상 ${input.material.coins.upper.join('')}`;
+  } else if (input.material?.object) {
     nums = numbersFromObject(input.material.object, input.material.direction ?? '', hourNum); method = 'object'; raw = `${input.material.object} / ${input.material.direction ?? ''}`;
   } else if (input.material?.numbers && input.material.numbers.length) {
     nums = numbersFromNumbers(input.material.numbers, hourNum); method = 'number'; raw = input.material.numbers.join(',');

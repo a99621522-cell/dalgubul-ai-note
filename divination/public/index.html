@@ -52,6 +52,7 @@
         <label><input type="radio" name="mat" value="numbers"> 숫자로</label>
         <label><input type="radio" name="mat" value="text"> 글자로</label>
         <label><input type="radio" name="mat" value="object"> 보인 것으로</label>
+        <label><input type="radio" name="mat" value="coins"> 동전으로</label>
       </div>
       <input id="nums" name="nums" type="text" inputmode="numeric" placeholder="숫자 1~3개, 쉼표로 (예: 37, 58)" class="hidden" aria-label="숫자">
       <input id="txt" name="txt" type="text" maxlength="20" placeholder="떠오른 낱말 (예: 대구)" class="hidden" aria-label="글자">
@@ -64,6 +65,28 @@
         <datalist id="objlist"></datalist>
         <span class="hint">『매화역수』 단법후천: 보인 것의 괘가 상괘, 방위의 괘가 하괘, 시각으로 동효.</span>
       </div>
+      <section id="coins" class="coins hidden" aria-label="동전 기괘">
+        <p class="hint">동전 앞면=양(陽, 실선), 뒷면=음(陰, 끊긴 선). 세 개를 던져 아래부터 한 효씩, 하괘 → 상괘. 동효는 『매화역수』 물수점대로 두 괘의 수와 시각으로 정합니다. 전통 척전법(주역 육효, 변효 여러 개)과 달리 체용 해석을 위해 동효를 하나로 둡니다.</p>
+        <div class="coinboard">
+          <div class="coinpad">
+            <div class="coinrow" id="coinrow">
+              <div class="coin" data-i="0"><div class="face front">陽</div><div class="face back">陰</div></div>
+              <div class="coin" data-i="1"><div class="face front">陽</div><div class="face back">陰</div></div>
+              <div class="coin" data-i="2"><div class="face front">陽</div><div class="face back">陰</div></div>
+            </div>
+            <div class="coinbtns">
+              <button type="button" id="tossBtn" class="btn primary">던지기 (1/2 하괘)</button>
+              <button type="button" id="skipAnim" class="btn small">애니메이션 건너뛰기</button>
+              <button type="button" id="resetCoins" class="btn small hidden">다시 던지기</button>
+            </div>
+            <p id="coinSay" class="status" role="status" aria-live="polite"></p>
+          </div>
+          <div class="coinhex">
+            <svg id="coinSvg" viewBox="0 0 72 84" aria-hidden="true"></svg>
+            <div id="coinName" class="nm"></div>
+          </div>
+        </div>
+      </section>
     </fieldset>
 
     <div class="row">

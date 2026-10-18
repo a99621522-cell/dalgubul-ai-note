@@ -50,3 +50,12 @@ test('잘못된 입력은 400, 큰 본문은 거절', async () => {
   const r3 = await fetch(base + '/api/cast', { method: 'POST', body: JSON.stringify({ question: 'x'.repeat(600) }) });
   assert.equal(r3.status, 400);
 });
+
+test('POST /api/cast material.coins 왕복과 형식 오류 400', async () => {
+  const r = await fetch(base + '/api/cast', { method: 'POST', body: JSON.stringify({ question: '테스트', datetime: '2026-10-19T06:00:00+09:00', method: 'meihua', material: { coins: { lower: [0, 1, 1], upper: [1, 1, 1] } } }) });
+  assert.equal(r.status, 200);
+  const d = await r.json() as { charts: { meihua: { benGua: { hanja: string }; meta: { method: string } } } };
+  assert.equal(d.charts.meihua.benGua.hanja, '天風姤'); assert.equal(d.charts.meihua.meta.method, 'coins');
+  const bad = await fetch(base + '/api/cast', { method: 'POST', body: JSON.stringify({ question: '테스트', material: { coins: { lower: [0, 1], upper: [1, 1, 1] } } }) });
+  assert.equal(bad.status, 400);
+});

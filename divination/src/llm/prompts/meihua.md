@@ -3,7 +3,7 @@
 
 [입력 JSON 필드]
 - question, questionType, timeHorizon: 질문과 분류
-- chart.meta: castAt(기괘 시각), lunar(음력 연·월·일·윤달), pillars(연·월·일·시주), method(time|number|text|object — object 는 단법후천: 보인 사물의 괘가 상괘, 방위의 괘가 하괘), rawMaterial, numberRule
+- chart.meta: castAt(기괘 시각), lunar(음력 연·월·일·윤달), pillars(연·월·일·시주), method(time|number|text|object|coins — object 는 단법후천: 보인 사물의 괘가 상괘, 방위의 괘가 하괘; coins 는 동전 3개로 하괘·상괘를 만들고 동효는 물수점 규칙), rawMaterial, numberRule
 - chart.benGua / huGua / bianGua: {name, hanja, upper:{name,element}, lower:{name,element}, movingLine}
   (호괘는 본괘 2·3·4효가 하괘, 3·4·5효가 상괘. 변괘는 동효를 뒤집은 괘)
 - chart.tiYong: {ti: upper|lower, yong: upper|lower, relation: 用生體|體生用|體克用|用克體|比和}

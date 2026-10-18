@@ -39,6 +39,7 @@ const eokB = (bil: string) => (bil === '' ? '—' : Math.round(Number(bil) * 10)
 const kn = (v: string) => (v === '' ? '—' : Number(v).toLocaleString('ko-KR'));
 const hasMom = !!m && (m.total.mom?.employment != null || [...districts, ...complexes].some(([, v]) => v.mom?.employment != null));
 const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.total.employment)}명(${ym}). 입지 유형·구군 9·산업단지 ${complexes.length}·태그별 기업 수와 고용, 취득·상실.` : '대구 산단·기업 현황판';
+import ComplexOverview from '../../components/ComplexOverview.astro';
 import ComplexOutput from '../../components/ComplexOutput.astro';
 import NationalComplexTrend from '../../components/NationalComplexTrend.astro';
 ---
@@ -116,6 +117,7 @@ import NationalComplexTrend from '../../components/NationalComplexTrend.astro';
           </>}
         </section>
       )}
+      <ComplexOverview />
       <ComplexOutput />
       <NationalComplexTrend />
       {tags.length > 0 && (

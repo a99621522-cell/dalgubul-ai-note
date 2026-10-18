@@ -112,6 +112,8 @@ export function dataFeeds(): Feed[] {
   const cs = readJson('data/complex_stats/index.json');
   const csLatest = maxOf((cs?.files ?? []).map((f: { quarter: string }) => f.quarter));
   if (csLatest) push({ group: '기관 자료·공시', name: '전국산업단지현황통계(대구 단지별 입주·가동)', org: '한국산업단지공단', badge: '기관 자료', cycle: 'Q', latest: csLatest, fetched: '', href: '/dashboard/#complex-output', note: '생산·수출·고용은 2025년 3분기부터 공표 중지', lag: 75 });
+  const ov = readJson('data/complexes/overview.json');
+  if (ov?.sales_year) push({ group: '기관 자료·공시', name: '대구 산업단지 전체 현황(단지별 입주·종업원·매출액)', org: 'KOTRA 대구 투자환경 누리집', badge: '기관 자료', cycle: 'Y', latest: ov.sales_year, fetched: ov.fetched ?? '', href: '/dashboard/#complex-sales', url: ov.url, note: '누리집 표가 바뀌면 매달 25일 받음(공표 일정 없음)', lag: null });
   const nt = readCsv('data/complex_trend/daegu_national.csv').filter(r => r.freq === 'Q').map(r => r.period).at(-1);
   if (nt) push({ group: '기관 자료·공시', name: '주요국가산업단지 산업동향(대구국가산단)', org: '한국산업단지공단', badge: '기관 자료', cycle: 'Q', latest: nt, fetched: '', href: '/dashboard/#national-trend', note: '생산·수출·고용·가동률 — 2025년 3분기 뒤에도 공표', lag: 75 });
   const ss = maxOf(readCsv('data/complexes/trend.csv').map(r => r.quarter));

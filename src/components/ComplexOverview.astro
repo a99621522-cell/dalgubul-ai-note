@@ -1,0 +1,34 @@
+---
+/** 산업단지별 입주·종업원·연 매출액 — 대구 산업단지 전체(KOTRA 「대구 투자환경」 누리집 '전체 산업단지 현황', 운영자 지시 2026-10-18 '다른 산단은 산단별 홈페이지 이런 곳을 찾아봐').
+ *  관리기관 누리집에 생산 자료가 없는 단지까지 한 해 매출액이 실린 표. 값·행 순서는 표 그대로(순위 아님), 단위 그대로. 아래 생산액(산단공)과 근거가 달라 견주지 않는다. */
+import { complexOverview, builtLabel } from '../lib/complexOverview';
+const d = complexOverview();
+const n = (v: number | null) => (v == null ? '—' : v.toLocaleString('ko-KR'));
+const t = (k: string) => (d ? n(Number(d.meta.total[k])) : '');
+const ym = (s: string) => (s ? `${s.slice(0, 4)}년 ${Number(s.slice(5))}월 말` : '');
+const GROUP: Record<string, string> = { 국가산단: '국가', 일반산단: '일반', 도시첨단: '도시첨단', 농공단지: '농공' };
+---
+{d && (
+<section aria-labelledby="h-cx-sales" id="complex-sales">
+  <div class="section-head"><h2 id="h-cx-sales">산업단지별 입주업체·종업원·매출액 — 대구 전체 {d.rows.length}개 단지</h2>
+    <span class="meta">{ym(d.meta.as_of)} 기준 · 매출액 {d.meta.sales_year}년</span></div>
+  <p class="meta">관리기관 누리집에 생산 자료가 없는 단지(제3·서대구·검단·염색·테크노폴리스·농공단지 등)까지 한 해 매출액을 단지마다 적은 표입니다. 성서 1~5차는 한 줄, 대구인쇄출판밸리는 '출판'입니다. 조성 중인 단지는 입주·매출이 비어 있습니다.</p>
+  <div class="scroll-x"><table class="data-table" data-title={`대구 산업단지별 입주업체·종업원·매출액(${ym(d.meta.as_of)} 기준)`}>
+    <caption class="sr-only">대구 산업단지별 지정면적·입주업체·종업원·연 매출액·관리기관</caption>
+    <thead><tr><th>단지</th><th data-pri="3">유형</th><th data-pri="3">조성 기간</th><th class="n" data-pri="2">지정면적<br /><small>천㎡</small></th><th class="n" data-pri="3">산업용지<br /><small>천㎡</small></th>
+      <th class="n">입주업체<br /><small>곳</small></th><th class="n">종업원<br /><small>명</small></th><th class="n">매출액<br /><small>억 원, {d.meta.sales_year}년</small></th><th data-pri="2">관리기관(담당 부서)</th></tr></thead>
+    <tbody>
+      {d.rows.map(r => (
+        <tr><th scope="row">{r.name}</th><td>{GROUP[r.group] ?? r.group}</td><td class="nw">{builtLabel(r.built)}</td><td class="n">{n(r.area)}</td><td class="n">{n(r.industrial)}</td>
+          <td class="n">{n(r.firms)}</td><td class="n">{n(r.employees)}</td><td class="n">{n(r.sales)}</td><td>{r.agency || '—'}</td></tr>
+      ))}
+      <tr class="total"><th scope="row">계</th><td></td><td></td><td class="n">{t('area_k_m2')}</td><td class="n">{t('industrial_k_m2')}</td>
+        <td class="n">{t('firms')}</td><td class="n">{t('employees')}</td><td class="n">{t('sales_eok')}</td><td></td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">출처: <a href={d.meta.url} rel="noopener">KOTRA 「대구 투자환경」 누리집 — 투자 프로젝트 › 전체 산업단지 현황</a>(산업단지 현황, {ym(d.meta.as_of)} 기준, 받은 날 {d.meta.fetched}). 값은 표 그대로이고, 단지 행의 합이 표의 '계' 행과 칸마다 같을 때만 받습니다. '—' 는 표의 빈 칸('-')입니다. 매출액은 입주기업 매출을 모은 값이라 아래 「산업단지별 생산·수출·고용」(산단공 생산액)·관리기관 생산 실적과 근거가 달라 견주지 않습니다. 첨단의료복합단지·수성알파시티·신서의료R&amp;D특구는 개별법에 따른 별도 단지라 표에 없습니다.</p>
+</section>
+)}
+<style>
+  tr.total th, tr.total td { font-weight: 700; border-top: 2px solid var(--line); }
+</style>

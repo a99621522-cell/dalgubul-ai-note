@@ -7,8 +7,21 @@
 
   // --- 입력 보조 ---
   function pad(n) { return String(n).padStart(2, '0'); }
-  function nowLocal() { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
-  $('at').placeholder = nowLocal();
+  const KST = 540; // 분. 매화·기문 시진은 장소(한국)의 표준시로 센다. 기기 시간대와 무관
+  function tzString() { return '+09:00'; }
+  /** 지금을 KST 부품으로 */
+  function kstParts(ms) {
+    const d = new Date((ms ?? Date.now()) + KST * 60000);
+    return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1, d: d.getUTCDate(), hh: d.getUTCHours(), mm: d.getUTCMinutes(), ss: d.getUTCSeconds() };
+  }
+  const BRANCH_KO = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '유', '술', '해'];
+  function hourBranchOf(hh) { return Math.floor(((hh + 1) % 24) / 2); }
+  function tickKst() {
+    const k = kstParts(); const el = $('kstNow'); if (!el) return;
+    el.textContent = `${k.y}-${pad(k.m)}-${pad(k.d)} ${pad(k.hh)}:${pad(k.mm)}:${pad(k.ss)} KST (${BRANCH_KO[hourBranchOf(k.hh)]}시)`;
+  }
+  tickKst(); setInterval(tickKst, 1000);
+  $('at').placeholder = (() => { const k = kstParts(); return `${k.y}-${pad(k.m)}-${pad(k.d)}T${pad(k.hh)}:${pad(k.mm)}`; })();
   $('place').addEventListener('change', () => $('lon').classList.toggle('hidden', $('place').value !== 'custom'));
   f.querySelectorAll('input[name=mat]').forEach((r) => r.addEventListener('change', () => {
     if (!r.checked) return;
@@ -20,10 +33,6 @@
   const OBJ_WORDS = ['노인', '아버지', '윗사람', '말', '거울', '어머니', '할머니', '소', '옷감', '쌀', '장남', '청년', '용', '뱀', '대나무', '천둥', '장녀', '스님', '닭', '새', '바람', '돼지', '물고기', '술', '도둑', '달', '해', '꿩', '문서', '편지', '꽃', '화로', '개', '소년', '돌', '산', '쥐', '호랑이', '소녀', '양', '칼', '그릇', '무당', '빨강', '파랑', '노랑', '하양', '검정'];
   $('objlist').innerHTML = OBJ_WORDS.map((w) => `<option value="${w}">`).join('');
 
-  function tzString() {
-    const off = -new Date().getTimezoneOffset(); const s = off >= 0 ? '+' : '-'; const a = Math.abs(off);
-    return `${s}${pad(Math.floor(a / 60))}:${pad(a % 60)}`;
-  }
   function buildRequest() {
     const q = $('q').value.trim();
     if (!q) throw new Error('질문을 적어 주세요.');
@@ -56,7 +65,7 @@
     const ym = $('ym').value.trim();
     if (ym) { if (!/^[甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥]$/.test(ym)) throw new Error('생년 간지는 庚午 처럼 한자 두 글자로 적어 주세요.'); req.yearMing = ym; }
     const ext = $('ext').value.trim(); if (ext) req.externalSigns = ext;
-    req.options = { localSolar: $('ls').value, ziHour: $('zi').value, tzOffsetMin: -new Date().getTimezoneOffset() };
+    req.options = { localSolar: $('ls').value, ziHour: $('zi').value, tzOffsetMin: KST };
     if (req.options.localSolar !== 'none' && req.longitude === undefined) throw new Error('지방시 보정에는 경도가 필요합니다.');
     return req;
   }
@@ -200,8 +209,13 @@
   const coinState = { lines: [], at: null, busy: false, skip: false, readOnce: false, get lower() { return this.lines.length >= 3 ? this.lines.slice(0, 3) : null; }, get upper() { return this.lines.length >= 6 ? this.lines.slice(3, 6) : null; } };
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function rngBits(n) { const a = new Uint8Array(n); crypto.getRandomValues(a); return Array.from(a, (b) => b & 1); }
-  function isoNow() { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}${tzString()}`; }
-  function hourNumAt() { const at = coinState.at ? new Date(coinState.at) : new Date(); return Math.floor(((at.getHours() + 1) % 24) / 2) + 1; }
+  function isoNow() { const k = kstParts(); return `${k.y}-${pad(k.m)}-${pad(k.d)}T${pad(k.hh)}:${pad(k.mm)}:${pad(k.ss)}+09:00`; }
+  function hourNumAt() {
+    // 사용자가 시각을 넣었으면 그 시각(KST), 아니면 첫 던지기 순간(KST). ISO 문자열의 시 부분으로 계산해 기기 시간대와 무관
+    const iso = $('at').value ? `${$('at').value}:00+09:00` : (coinState.at || isoNow());
+    const hh = Number(iso.slice(11, 13));
+    return hourBranchOf(hh) + 1;
+  }
   function currentMoving() {
     if (coinState.lines.length < 6) return null;
     const up = TRI_NUM[TRI_KO[coinState.upper.join('')][0]], lo = TRI_NUM[TRI_KO[coinState.lower.join('')][0]];

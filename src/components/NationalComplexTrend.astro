@@ -1,0 +1,65 @@
+---
+/** 대구국가산업단지 산업동향(산단공) — 운영자 지적 2026-10-18 '국가산단은 산업단지관리공단에 자료가 있잖아'.
+ *  전국산업단지현황통계(ComplexOutput)는 2025년 3분기부터 생산·수출·고용을 멈췄지만, 산단공 관리 국가산업단지는 분기 산업동향으로 이어 공표한다.
+ *  값은 원 파일 그대로, 단위 바꿈 없음. 증감은 같은 계열 안 뺄셈. 평가 없음. */
+import { nationalTrend, ntLabel, ntYears } from '../lib/nationalTrend';
+const rows = nationalTrend();
+const q = rows.filter(r => r.freq === 'Q');
+const last = q.at(-1) ?? rows.at(-1);
+const prev = last ? rows[rows.indexOf(last) - 1] : undefined;
+const years = ntYears(rows);
+const f0 = (v: number | null | undefined) => v == null ? '—' : Math.round(v).toLocaleString('ko-KR');
+const f1 = (v: number | null | undefined) => v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const d = (a: number | null | undefined, b: number | null | undefined, k = 0) => {
+  if (a == null || b == null) return '';
+  const x = a - b, s = Math.abs(x).toLocaleString('ko-KR', { minimumFractionDigits: k, maximumFractionDigits: k });
+  return x > 0 ? `+${s}` : x < 0 ? `△${s}` : '0';
+};
+const tiles = last ? [
+  { k: '생산', v: f0(last.production), u: '억 원', c: d(last.production, prev?.production) },
+  { k: '수출', v: f1(last.exp), u: '백만 달러', c: d(last.exp, prev?.exp, 1) },
+  { k: '고용', v: f0(last.employment), u: '명', c: d(last.employment, prev?.employment) },
+  { k: '가동률', v: f1(last.opRate), u: '%', c: d(last.opRate, prev?.opRate, 1) + (last.opRate != null && prev?.opRate != null ? '%p' : '') },
+  { k: '입주 · 가동', v: `${f0(last.firmsIn)} · ${f0(last.firmsOp)}`, u: '곳', c: '' },
+] : [];
+---
+{last && (
+<section aria-labelledby="h-nt" id="national-trend">
+  <div class="section-head"><h2 id="h-nt">대구국가산업단지 산업동향(산단공)</h2><span class="meta">{ntLabel(last.period)}{last.revised ? ' · 연간보정' : ''}</span></div>
+  <p class="meta">한국산업단지공단이 관리하는 국가산업단지의 분기 산업동향입니다. 위 「산업단지별 생산·수출·고용」의 전국산업단지현황통계는 2025년 3분기부터 생산·수출·고용 공표를 멈췄지만, 대구국가산업단지는 이 통계로 {ntLabel(last.period)}까지 이어집니다. 대구 안의 다른 산업단지는 이 통계에 없습니다.</p>
+  <ul class="nt-tiles">
+    {tiles.map(t => <li><span class="k">{t.k}</span><span class="v">{t.v}<small> {t.u}</small></span>{t.c && <span class="c">{prev ? `${ntLabel(prev.period)} 대비 ${t.c}` : ''}</span>}</li>)}
+  </ul>
+  <div class="scroll-x"><table class="data-table" data-title="대구국가산업단지 분기 산업동향">
+    <caption class="sr-only">대구국가산업단지 분기별 생산·수출·고용·가동률·입주</caption>
+    <thead><tr><th>분기</th><th class="n">생산<br /><small>억 원</small></th><th class="n">수출<br /><small>백만 달러</small></th><th class="n">고용<br /><small>명</small></th>
+      <th class="n">가동률<br /><small>%</small></th><th class="n" data-pri="2">제조업 가동업체<br /><small>곳</small></th><th class="n">입주<br /><small>곳</small></th><th class="n">가동<br /><small>곳</small></th>
+      <th class="n" data-pri="3">임차<br /><small>곳</small></th><th class="n" data-pri="3">가동률 50인 미만<br /><small>%</small></th><th class="n" data-pri="3">50~299인</th><th class="n" data-pri="3">300인 이상</th></tr></thead>
+    <tbody>{[...q].reverse().map(r => (
+      <tr><th scope="row">{ntLabel(r.period)}{r.revised ? ' *' : ''}</th><td class="n">{f0(r.production)}</td><td class="n">{f1(r.exp)}</td><td class="n">{f0(r.employment)}</td>
+        <td class="n">{f1(r.opRate)}</td><td class="n">{f0(r.mfgFirms)}</td><td class="n">{f0(r.firmsIn)}</td><td class="n">{f0(r.firmsOp)}</td><td class="n">{f0(r.tenants)}</td>
+        <td class="n">{f1(r.rateLt50)}</td><td class="n">{f1(r.rate50)}</td><td class="n">{f1(r.rateGe300)}</td></tr>))}</tbody>
+  </table></div>
+  <details class="nt-years">
+    <summary>연도별 보기({years[0]?.year}~{years.at(-1)?.year}년)</summary>
+    <div class="scroll-x"><table class="data-table" data-title="대구국가산업단지 연도별 산업동향">
+      <caption class="sr-only">대구국가산업단지 연도별 누계 생산·수출과 연말 고용·입주·가동</caption>
+      <thead><tr><th>연도</th><th>기준 시점</th><th class="n">생산 누계<br /><small>억 원</small></th><th class="n">수출 누계<br /><small>백만 달러</small></th><th class="n">고용<br /><small>명</small></th><th class="n">입주<br /><small>곳</small></th><th class="n">가동<br /><small>곳</small></th></tr></thead>
+      <tbody>{[...years].reverse().map(y => (
+        <tr><th scope="row">{y.year}{y.full ? '' : ' (진행 중)'}</th><td class="nw">{ntLabel(y.last)}</td><td class="n">{f0(y.production)}</td><td class="n">{f1(y.exp)}</td><td class="n">{f0(y.employment)}</td><td class="n">{f0(y.firmsIn)}</td><td class="n">{f0(y.firmsOp)}</td></tr>))}</tbody>
+    </table></div>
+    <p class="meta">생산·수출은 원 파일의 그해 1월부터의 누계, 고용·입주·가동은 기준 시점 값입니다. 빠진 달의 파일이 포털에 없으면 그해 마지막 시점이 12월보다 앞설 수 있습니다.</p>
+  </details>
+  <p class="meta">출처: 한국산업단지공단 「주요국가산업단지 산업동향」(공공데이터포털 파일데이터 — 국가산업단지 산업동향정보 생산실적·수출실적·고용현황·가동률·입주업체 현황·단지별 가동률 세부내역, 「통계법」 제18조), 대구국가산업단지 행. 2024년 1분기까지는 월간, 그 뒤는 분기로 공표됩니다. 생산·수출·가동률은 제조업 가동업체만 조사합니다(포털 안내). * 는 연간보정 판 값입니다. 이 표의 고용은 산단공 조사값이라 위 표의 고용 인원(국민연금)·종사자(팩토리온 신고)와 근거가 달라 견주지 않습니다. △ 는 줄어듦.</p>
+</section>
+)}
+<style>
+  .nt-tiles { list-style: none; padding: 0; margin: var(--s2) 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--s2); }
+  .nt-tiles li { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; }
+  .nt-tiles .k { font-size: var(--small); color: var(--muted); }
+  .nt-tiles .v { font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .nt-tiles .v small { font-size: var(--small); font-weight: 400; color: var(--muted); }
+  .nt-tiles .c { font-size: 12px; color: var(--muted); }
+  .nt-years { margin: .6rem 0; }
+  .nt-years summary { cursor: pointer; font-weight: 600; }
+</style>

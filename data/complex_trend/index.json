@@ -1,0 +1,5025 @@
+{
+ "files": [
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462844.csv",
+   "orig": "(2018.1월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462844",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462845.csv",
+   "orig": "(2018.2월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462845",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462846.csv",
+   "orig": "(2018.3월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462846",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462848.csv",
+   "orig": "(2018.4월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462848",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462847.csv",
+   "orig": "(2018.5월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462847",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462915.csv",
+   "orig": "(2018.6월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462915",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462916.csv",
+   "orig": "(2018.7월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462916",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462918.csv",
+   "orig": "(2018.8월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462918",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462923.csv",
+   "orig": "(2019.1월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462923",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462924.csv",
+   "orig": "(2019.2월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462924",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462925.csv",
+   "orig": "(2019.3월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462925",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462926.csv",
+   "orig": "(2019.4월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462926",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462932.csv",
+   "orig": "(2019.5월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462932",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462933.csv",
+   "orig": "(2019.6월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462933",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462935.csv",
+   "orig": "(2019.7월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462935",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462937.csv",
+   "orig": "(2019.8월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462937",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002462938.csv",
+   "orig": "(2019.9월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462938",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464510.csv",
+   "orig": "(2020.1월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464510",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464509.csv",
+   "orig": "(2020.2월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464509",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464508.csv",
+   "orig": "(2020.3월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464508",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464507.csv",
+   "orig": "(2020.4월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464507",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464506.csv",
+   "orig": "(2020.5월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464506",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464505.csv",
+   "orig": "(2020.6월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464505",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464504.csv",
+   "orig": "(2020.7월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464504",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464503.csv",
+   "orig": "(2020.8월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464503",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002464502.csv",
+   "orig": "(2020.9월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464502",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002643731.csv",
+   "orig": "(2021.1월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643731",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002643734.csv",
+   "orig": "(2021.4월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643734",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002643732.csv",
+   "orig": "(2021.2월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643732",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002643736.csv",
+   "orig": "(2021.5월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643736",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002643738.csv",
+   "orig": "(2021.6월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643738",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002643816.csv",
+   "orig": "(2021.7월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643816",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002643914.csv",
+   "orig": "(2021.9월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643914",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002754441.csv",
+   "orig": "(2022.2월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002754441",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002754740.csv",
+   "orig": "(2022.3월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002754740",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002754766.csv",
+   "orig": "(2022.4월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002754766",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002756116.csv",
+   "orig": "(2022.5월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002756116",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002756846.csv",
+   "orig": "(2022.7월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002756846",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002756870.csv",
+   "orig": "(2022.8월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002756870",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000002756922.csv",
+   "orig": "(2022.9월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002756922",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510769.csv",
+   "orig": "(2022.10)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510769",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510766.csv",
+   "orig": "(2022.11)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510766",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510762.csv",
+   "orig": "(2022.12)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510762",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510760.csv",
+   "orig": "(2023.1)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510760",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510726.csv",
+   "orig": "(2023.2)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510726",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510720.csv",
+   "orig": "(2023.3)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510720",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510717.csv",
+   "orig": "(2023.4)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510717",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510715.csv",
+   "orig": "(2023.5)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510715",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510712.csv",
+   "orig": "(2023.6)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510712",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510706.csv",
+   "orig": "(2023.8)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510706",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510701.csv",
+   "orig": "(2023.9)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510701",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510668.csv",
+   "orig": "(2023.10)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510668",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510664.csv",
+   "orig": "(2023.11)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510664",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510657.csv",
+   "orig": "(2023.12)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510657",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510653.csv",
+   "orig": "(2024.1)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510653",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510651.csv",
+   "orig": "(2024.2)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510651",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "",
+   "file": "employment_FILE_000000003510642.csv",
+   "orig": "(2024.3)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510642",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2018Q4",
+   "file": "employment_FILE_000000002462920.csv",
+   "orig": "(2018.10월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462920",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2018Q4",
+   "file": "employment_FILE_000000002611809.csv",
+   "orig": "(2018.11월)주요국가산업단지 산업동향_단지별 고용현황_20220916.csv",
+   "atch": "FILE_000000002611809",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2018Q4",
+   "file": "employment_FILE_000000002611817.csv",
+   "orig": "(2018.12월)주요국가산업단지 산업동향_단지별 고용현황_20220916.csv",
+   "atch": "FILE_000000002611817",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2019Q4",
+   "file": "employment_FILE_000000002462939.csv",
+   "orig": "(2019.10월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462939",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2019Q4",
+   "file": "employment_FILE_000000002462940.csv",
+   "orig": "(2019.11월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462940",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2019Q4",
+   "file": "employment_FILE_000000002462941.csv",
+   "orig": "(2019.12월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002462941",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2020Q4",
+   "file": "employment_FILE_000000002464501.csv",
+   "orig": "(2020.10월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464501",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2020Q4",
+   "file": "employment_FILE_000000002464499.csv",
+   "orig": "(2020.11월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464499",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2020Q4",
+   "file": "employment_FILE_000000002464498.csv",
+   "orig": "(2020.12월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002464498",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2021Q4",
+   "file": "employment_FILE_000000002643916.csv",
+   "orig": "(2021.10월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643916",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2021Q4",
+   "file": "employment_FILE_000000002643917.csv",
+   "orig": "(2021.11월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643917",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2021Q4",
+   "file": "employment_FILE_000000002643920.csv",
+   "orig": "(2021.12월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643920",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2022Q3",
+   "file": "employment_FILE_000000002611805.csv",
+   "orig": "(2018.9월)주요국가산업단지 산업동향_단지별 고용현황_20220916.csv",
+   "atch": "FILE_000000002611805",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2024Q2",
+   "file": "employment_FILE_000000003510640.csv",
+   "orig": "(2024.2분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510640",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2024Q3",
+   "file": "employment_FILE_000000003510632.csv",
+   "orig": "(2024.3분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510632",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2024Q4",
+   "file": "employment_FILE_000000003510625.csv",
+   "orig": "(2024.4분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510625",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2025Q1",
+   "file": "employment_FILE_000000003510543.csv",
+   "orig": "(2025.1분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510543",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2025Q2",
+   "file": "employment_FILE_000000003220936.csv",
+   "orig": "(2025.2분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003220936",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2025Q3",
+   "file": "employment_FILE_000000003551877.csv",
+   "orig": "(2025.3분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003551877",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2025Q4",
+   "file": "employment_FILE_000000003602122.csv",
+   "orig": "(2025.4분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003602122",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2026Q1",
+   "file": "employment_FILE_000000007637316.csv",
+   "orig": "(연간보정)(2026.1분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000007637316",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2026Q2",
+   "file": "employment_FILE_000000007660444.csv",
+   "orig": "(연간보정)(2026.2분기)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000007660444",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2033Q3",
+   "file": "employment_FILE_000000002754402.csv",
+   "orig": "(2022.1월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002754402",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2036Q4",
+   "file": "employment_FILE_000000002643733.csv",
+   "orig": "(2021.3월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643733",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2056Q3",
+   "file": "employment_FILE_000000003510708.csv",
+   "orig": "(2023.7)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000003510708",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2075Q2",
+   "file": "employment_FILE_000000002756788.csv",
+   "orig": "(2022.6월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002756788",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "employment",
+   "label": "고용현황",
+   "period": "2089Q3",
+   "file": "employment_FILE_000000002643906.csv",
+   "orig": "(2021.8월)주요국가산업단지 산업동향_단지별 고용현황.csv",
+   "atch": "FILE_000000002643906",
+   "pk": "15085890",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462942.csv",
+   "orig": "(2018.1월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462942",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462943.csv",
+   "orig": "(2018.2월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462943",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462944.csv",
+   "orig": "(2018.3월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462944",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462945.csv",
+   "orig": "(2018.4월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462945",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462946.csv",
+   "orig": "(2018.5월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462946",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462947.csv",
+   "orig": "(2018.6월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462947",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462948.csv",
+   "orig": "(2018.7월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462948",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462949.csv",
+   "orig": "(2018.8월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462949",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462955.csv",
+   "orig": "(2019.1월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462955",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462956.csv",
+   "orig": "(2019.2월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462956",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462957.csv",
+   "orig": "(2019.3월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462957",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462959.csv",
+   "orig": "(2019.4월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462959",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462960.csv",
+   "orig": "(2019.5월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462960",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462962.csv",
+   "orig": "(2019.6월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462962",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462963.csv",
+   "orig": "(2019.7월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462963",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462965.csv",
+   "orig": "(2019.8월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462965",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002462967.csv",
+   "orig": "(2019.9월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462967",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464542.csv",
+   "orig": "(2020.1월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464542",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464541.csv",
+   "orig": "(2020.2월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464541",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464540.csv",
+   "orig": "(2020.3월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464540",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464539.csv",
+   "orig": "(2020.4월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464539",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464538.csv",
+   "orig": "(2020.5월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464538",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464537.csv",
+   "orig": "(2020.6월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464537",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464536.csv",
+   "orig": "(2020.7월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464536",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464535.csv",
+   "orig": "(2020.8월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464535",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002464534.csv",
+   "orig": "(2020.9월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464534",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002657979.csv",
+   "orig": "(2021.1월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002657979",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002657985.csv",
+   "orig": "(2021.2월)주요국가산업단지 산업동향_단지별 수출내역.csv",
+   "atch": "FILE_000000002657985",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002657996.csv",
+   "orig": "(2021.3월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002657996",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002657997.csv",
+   "orig": "(2021.4월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002657997",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002658033.csv",
+   "orig": "(2021.5월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002658033",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002658036.csv",
+   "orig": "(2021.6월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002658036",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002658170.csv",
+   "orig": "(2021.8월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002658170",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002754389.csv",
+   "orig": "(2022.1월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002754389",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002754430.csv",
+   "orig": "(2022.2월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002754430",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002754728.csv",
+   "orig": "(2022.3월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002754728",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002754756.csv",
+   "orig": "(2022.4월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002754756",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002756108.csv",
+   "orig": "(2022.5월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002756108",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002756777.csv",
+   "orig": "(2022.6월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002756777",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002757971.csv",
+   "orig": "(2022.7월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002757971",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002756858.csv",
+   "orig": "(2022.8월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002756858",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000002756878.csv",
+   "orig": "(2022.9월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002756878",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552374.csv",
+   "orig": "(2022.10)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552374",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552373.csv",
+   "orig": "(2022.11)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552373",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552372.csv",
+   "orig": "(2022.12)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552372",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552371.csv",
+   "orig": "(2023.1)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552371",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552370.csv",
+   "orig": "(2023.2)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552370",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552369.csv",
+   "orig": "(2023.3)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552369",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552368.csv",
+   "orig": "(2023.4)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552368",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552367.csv",
+   "orig": "(2023.5)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552367",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552365.csv",
+   "orig": "(2023.6)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552365",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552364.csv",
+   "orig": "(2023.7)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552364",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552363.csv",
+   "orig": "(2023.8)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552363",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552362.csv",
+   "orig": "(2023.9)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552362",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552361.csv",
+   "orig": "(2023.10)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552361",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552360.csv",
+   "orig": "(2023.11)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552360",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552359.csv",
+   "orig": "(2023.12)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552359",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552358.csv",
+   "orig": "(2024.1)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552358",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552356.csv",
+   "orig": "(2024.2)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552356",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "",
+   "file": "export_FILE_000000003552355.csv",
+   "orig": "(2024.3)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552355",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2018Q4",
+   "file": "export_FILE_000000002611808.csv",
+   "orig": "(2018.10월)주요국가산업단지 산업동향_단지별 수출실적_20220916.csv",
+   "atch": "FILE_000000002611808",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2018Q4",
+   "file": "export_FILE_000000002611810.csv",
+   "orig": "(2018.11월)주요국가산업단지 산업동향_단지별 수출실적_20220916.csv",
+   "atch": "FILE_000000002611810",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2018Q4",
+   "file": "export_FILE_000000002611820.csv",
+   "orig": "(2018.12월)주요국가산업단지 산업동향_단지별 수출실적_20220916.csv",
+   "atch": "FILE_000000002611820",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2019Q4",
+   "file": "export_FILE_000000002462969.csv",
+   "orig": "(2019.10월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462969",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2019Q4",
+   "file": "export_FILE_000000002462971.csv",
+   "orig": "(2019.11월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462971",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2019Q4",
+   "file": "export_FILE_000000002462972.csv",
+   "orig": "(2019.12월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002462972",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2020Q4",
+   "file": "export_FILE_000000002464533.csv",
+   "orig": "(2020.10월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464533",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2020Q4",
+   "file": "export_FILE_000000002464532.csv",
+   "orig": "(2020.11월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464532",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2020Q4",
+   "file": "export_FILE_000000002464531.csv",
+   "orig": "(2020.12월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002464531",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2021Q4",
+   "file": "export_FILE_000000002658175.csv",
+   "orig": "(2021.10월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002658175",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2021Q4",
+   "file": "export_FILE_000000002658178.csv",
+   "orig": "(2021.11월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002658178",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2021Q4",
+   "file": "export_FILE_000000002658184.csv",
+   "orig": "(2021.12월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002658184",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2022Q3",
+   "file": "export_FILE_000000002611806.csv",
+   "orig": "(2018.9월)주요국가산업단지 산업동향_단지별 수출실적_20220916.csv",
+   "atch": "FILE_000000002611806",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2024Q2",
+   "file": "export_FILE_000000003552354.csv",
+   "orig": "(2024.2분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552354",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2024Q3",
+   "file": "export_FILE_000000003552352.csv",
+   "orig": "(2024.3분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552352",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2024Q4",
+   "file": "export_FILE_000000003552350.csv",
+   "orig": "(2024.4분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552350",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2025Q1",
+   "file": "export_FILE_000000003552347.csv",
+   "orig": "(2025.1분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003552347",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2025Q2",
+   "file": "export_FILE_000000003220866.csv",
+   "orig": "(2025.2분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003220866",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2025Q3",
+   "file": "export_FILE_000000003551935.csv",
+   "orig": "(2025.3분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003551935",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2025Q4",
+   "file": "export_FILE_000000003602104.csv",
+   "orig": "(2025.4분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000003602104",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2026Q1",
+   "file": "export_FILE_000000007637336.csv",
+   "orig": "(연간보정)(2026.1분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000007637336",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2026Q2",
+   "file": "export_FILE_000000007660488.csv",
+   "orig": "(연간보정)(2026.2분기)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000007660488",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2055Q3",
+   "file": "export_FILE_000000002658172.csv",
+   "orig": "(2021.9월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002658172",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "export",
+   "label": "수출실적",
+   "period": "2057Q2",
+   "file": "export_FILE_000000002658042.csv",
+   "orig": "(2021.7월)주요국가산업단지 산업동향_단지별 수출실적.csv",
+   "atch": "FILE_000000002658042",
+   "pk": "15085892",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002418463.csv",
+   "orig": "(2018.1월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002418463",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002420216.csv",
+   "orig": "(2018.2월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002420216",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002420492.csv",
+   "orig": "(2018.3월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002420492",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002421416.csv",
+   "orig": "(2018.4월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002421416",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002421560.csv",
+   "orig": "(2018.5월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002421560",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002421738.csv",
+   "orig": "(2018.6월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002421738",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002423037.csv",
+   "orig": "(2018.7월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002423037",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002423097.csv",
+   "orig": "(2018.8월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002423097",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002423546.csv",
+   "orig": "(2018.9월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002423546",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002424346.csv",
+   "orig": "(2019.1월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002424346",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002424583.csv",
+   "orig": "(2019.2월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002424583",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002425137.csv",
+   "orig": "(2019.3월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002425137",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002425204.csv",
+   "orig": "(2019.4월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002425204",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002425338.csv",
+   "orig": "(2019.5월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002425338",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002425375.csv",
+   "orig": "(2019.6월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002425375",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002425869.csv",
+   "orig": "(2019.7월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002425869",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002426079.csv",
+   "orig": "(2019.8월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002426079",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002426430.csv",
+   "orig": "(2019.9월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002426430",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002427182.csv",
+   "orig": "(2020.1월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002427182",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002427200.csv",
+   "orig": "(2020.2월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002427200",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002427509.csv",
+   "orig": "(2020.3월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002427509",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002427644.csv",
+   "orig": "(2020.4월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002427644",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002428123.csv",
+   "orig": "(2020.5월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002428123",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002428569.csv",
+   "orig": "(2020.6월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002428569",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002428733.csv",
+   "orig": "(2020.7월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002428733",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002429140.csv",
+   "orig": "(2020.8월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002429140",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002431886.csv",
+   "orig": "(2020.9월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002431886",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643185.csv",
+   "orig": "(2021.1월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643185",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643187.csv",
+   "orig": "(2021.2월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643187",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643191.csv",
+   "orig": "(2021.3월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643191",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643198.csv",
+   "orig": "(2021.4월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643198",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643206.csv",
+   "orig": "(2021.5월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643206",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643207.csv",
+   "orig": "(2021.6월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643207",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643212.csv",
+   "orig": "(2021.7월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643212",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643214.csv",
+   "orig": "(2021.8월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643214",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002643299.csv",
+   "orig": "(2021.9월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643299",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002754400.csv",
+   "orig": "(2022.1월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002754400",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002754440.csv",
+   "orig": "(2022.2월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002754440",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002754739.csv",
+   "orig": "(2022.3월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002754739",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002754765.csv",
+   "orig": "(2022.4월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002754765",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002756115.csv",
+   "orig": "(2022.5월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002756115",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002756786.csv",
+   "orig": "(2022.6월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002756786",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002756844.csv",
+   "orig": "(2022.7월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002756844",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002756869.csv",
+   "orig": "(2022.8월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002756869",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000002756921.csv",
+   "orig": "(2022.9월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002756921",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552396.csv",
+   "orig": "(2022.10)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552396",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552395.csv",
+   "orig": "(2022.11)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552395",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552393.csv",
+   "orig": "(2022.12)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552393",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552392.csv",
+   "orig": "(2023.1)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552392",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552391.csv",
+   "orig": "(2023.2)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552391",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552390.csv",
+   "orig": "(2023.3)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552390",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552389.csv",
+   "orig": "(2023.4)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552389",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552388.csv",
+   "orig": "(2023.5)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552388",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552387.csv",
+   "orig": "(2023.6)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552387",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552386.csv",
+   "orig": "(2023.7)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552386",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552385.csv",
+   "orig": "(2023.8)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552385",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552384.csv",
+   "orig": "(2023.9)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552384",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552383.csv",
+   "orig": "(2023.10)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552383",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552382.csv",
+   "orig": "(2023.11)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552382",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552381.csv",
+   "orig": "(2023.12)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552381",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552380.csv",
+   "orig": "(2024.1)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552380",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003552378.csv",
+   "orig": "(2024.2)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003552378",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "",
+   "file": "firms_FILE_000000003514063.csv",
+   "orig": "(2024.3)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003514063",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2018Q4",
+   "file": "firms_FILE_000000002423652.csv",
+   "orig": "(2018.10월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002423652",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2018Q4",
+   "file": "firms_FILE_000000002423980.csv",
+   "orig": "(2018.11월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002423980",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2018Q4",
+   "file": "firms_FILE_000000002424168.csv",
+   "orig": "(2018.12월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002424168",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2019Q4",
+   "file": "firms_FILE_000000002426494.csv",
+   "orig": "(2019.10월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002426494",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2019Q4",
+   "file": "firms_FILE_000000002426617.csv",
+   "orig": "(2019.11월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002426617",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2019Q4",
+   "file": "firms_FILE_000000002426989.csv",
+   "orig": "(2019.12월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002426989",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2020Q4",
+   "file": "firms_FILE_000000002432527.csv",
+   "orig": "(2020.10월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002432527",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2020Q4",
+   "file": "firms_FILE_000000002432658.csv",
+   "orig": "(2020.11월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002432658",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2020Q4",
+   "file": "firms_FILE_000000002432993.csv",
+   "orig": "(2020.12월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002432993",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2021Q4",
+   "file": "firms_FILE_000000002643305.csv",
+   "orig": "(2021.10월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643305",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2021Q4",
+   "file": "firms_FILE_000000002643308.csv",
+   "orig": "(2021.11월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643308",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2021Q4",
+   "file": "firms_FILE_000000002643311.csv",
+   "orig": "(2021.12월)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000002643311",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2024Q2",
+   "file": "firms_FILE_000000003514026.csv",
+   "orig": "(2024.2분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003514026",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2024Q3",
+   "file": "firms_FILE_000000003514024.csv",
+   "orig": "(2024.3분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003514024",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2024Q4",
+   "file": "firms_FILE_000000003514022.csv",
+   "orig": "(2024.4분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003514022",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2025Q1",
+   "file": "firms_FILE_000000003514020.csv",
+   "orig": "(2025.1분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003514020",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2025Q2",
+   "file": "firms_FILE_000000003220867.csv",
+   "orig": "(2025.2분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003220867",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2025Q3",
+   "file": "firms_FILE_000000003551933.csv",
+   "orig": "(2025.3분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003551933",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2025Q4",
+   "file": "firms_FILE_000000003602106.csv",
+   "orig": "(2025.4분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000003602106",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2026Q1",
+   "file": "firms_FILE_000000007637346.csv",
+   "orig": "(연간보정)(2026.1분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000007637346",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "firms",
+   "label": "입주업체 현황",
+   "period": "2026Q2",
+   "file": "firms_FILE_000000007660492.csv",
+   "orig": "(연간보정)(2026.2분기)주요국가산업단지 산업동향_단지별 입주업체 현황.csv",
+   "atch": "FILE_000000007660492",
+   "pk": "15085894",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462752.csv",
+   "orig": "(2018.1월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462752",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462753.csv",
+   "orig": "(2018.2월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462753",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462754.csv",
+   "orig": "(2018.3월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462754",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462755.csv",
+   "orig": "(2018.4월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462755",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462756.csv",
+   "orig": "(2018.5월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462756",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462758.csv",
+   "orig": "(2018.6월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462758",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462790.csv",
+   "orig": "(2018.8월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462790",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462792.csv",
+   "orig": "(2018.9월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462792",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462798.csv",
+   "orig": "(2019.1월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462798",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462799.csv",
+   "orig": "(2019.2월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462799",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462800.csv",
+   "orig": "(2019.3월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462800",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462801.csv",
+   "orig": "(2019.4월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462801",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462802.csv",
+   "orig": "(2019.5월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462802",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462804.csv",
+   "orig": "(2019.6월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462804",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462805.csv",
+   "orig": "(2019.7월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462805",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462806.csv",
+   "orig": "(2019.8월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462806",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002462807.csv",
+   "orig": "(2019.9월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462807",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464475.csv",
+   "orig": "(2020.1월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464475",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464474.csv",
+   "orig": "(2020.2월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464474",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464473.csv",
+   "orig": "(2020.3월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464473",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464472.csv",
+   "orig": "(2020.4월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464472",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464470.csv",
+   "orig": "(2020.6월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464470",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464471.csv",
+   "orig": "(2020.5월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464471",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464469.csv",
+   "orig": "(2020.7월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464469",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464348.csv",
+   "orig": "(2020.8월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464348",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002464347.csv",
+   "orig": "(2020.9월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464347",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002643926.csv",
+   "orig": "(2021.1월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002643926",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002643970.csv",
+   "orig": "(2021.3월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002643970",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002643977.csv",
+   "orig": "(2021.5월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002643977",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002644028.csv",
+   "orig": "(2021.6월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002644028",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002644033.csv",
+   "orig": "(2021.7월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002644033",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002644045.csv",
+   "orig": "(2021.8월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002644045",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002644046.csv",
+   "orig": "(2021.9월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002644046",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002754396.csv",
+   "orig": "(2022.1월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002754396",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002754762.csv",
+   "orig": "(2022.4월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002754762",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002756112.csv",
+   "orig": "(2022.5월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002756112",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002756781.csv",
+   "orig": "(2022.6월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002756781",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002756841.csv",
+   "orig": "(2022.7월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002756841",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000002756865.csv",
+   "orig": "(2022.8월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002756865",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003514008.csv",
+   "orig": "(2022.11)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003514008",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003514006.csv",
+   "orig": "(2022.12)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003514006",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003514003.csv",
+   "orig": "(2023.1)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003514003",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003514000.csv",
+   "orig": "(2023.2)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003514000",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003513856.csv",
+   "orig": "(2023.3)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513856",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003513852.csv",
+   "orig": "(2023.4)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513852",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003513849.csv",
+   "orig": "(2023.5)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513849",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003513814.csv",
+   "orig": "(2023.6)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513814",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003513808.csv",
+   "orig": "(2023.7)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513808",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003513802.csv",
+   "orig": "(2023.8)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513802",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "",
+   "file": "operation_FILE_000000003513790.csv",
+   "orig": "(2023.10)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513790",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2003Q2",
+   "file": "operation_FILE_000000003513777.csv",
+   "orig": "(2024.1)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513777",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2006Q1",
+   "file": "operation_FILE_000000002754435.csv",
+   "orig": "(2022.2월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002754435",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2008Q1",
+   "file": "operation_FILE_000000003514012.csv",
+   "orig": "(2022.10)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003514012",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2017Q2",
+   "file": "operation_FILE_000000003513767.csv",
+   "orig": "(2024.3)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513767",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2018Q4",
+   "file": "operation_FILE_000000002462793.csv",
+   "orig": "(2018.10월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462793",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2018Q4",
+   "file": "operation_FILE_000000002462795.csv",
+   "orig": "(2018.11월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462795",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2018Q4",
+   "file": "operation_FILE_000000002462796.csv",
+   "orig": "(2018.12월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462796",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2019Q4",
+   "file": "operation_FILE_000000002462808.csv",
+   "orig": "(2019.10월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462808",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2019Q4",
+   "file": "operation_FILE_000000002462810.csv",
+   "orig": "(2019.11월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462810",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2019Q4",
+   "file": "operation_FILE_000000002462811.csv",
+   "orig": "(2019.12월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002462811",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2019Q4",
+   "file": "operation_FILE_000000003513781.csv",
+   "orig": "(2023.12)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513781",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2020Q4",
+   "file": "operation_FILE_000000002464346.csv",
+   "orig": "(2020.10월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464346",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2020Q4",
+   "file": "operation_FILE_000000002464345.csv",
+   "orig": "(2020.11월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464345",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2020Q4",
+   "file": "operation_FILE_000000002464344.csv",
+   "orig": "(2020.12월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002464344",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2021Q4",
+   "file": "operation_FILE_000000002644050.csv",
+   "orig": "(2021.10월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002644050",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2021Q4",
+   "file": "operation_FILE_000000002644051.csv",
+   "orig": "(2021.11월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002644051",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2021Q4",
+   "file": "operation_FILE_000000002644055.csv",
+   "orig": "(2021.12월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002644055",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2022Q3",
+   "file": "operation_FILE_000000002611737.csv",
+   "orig": "(2018.7월)주요국가산업단지 산업동향_단지별 가동률_20220916.csv",
+   "atch": "FILE_000000002611737",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2024Q2",
+   "file": "operation_FILE_000000003513766.csv",
+   "orig": "(2024.2분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513766",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2024Q3",
+   "file": "operation_FILE_000000003513762.csv",
+   "orig": "(2024.3분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513762",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2024Q4",
+   "file": "operation_FILE_000000003513348.csv",
+   "orig": "(2024.4분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513348",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2025Q1",
+   "file": "operation_FILE_000000003513345.csv",
+   "orig": "(2025.1분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513345",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2025Q2",
+   "file": "operation_FILE_000000003220869.csv",
+   "orig": "(2025.2분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003220869",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2025Q3",
+   "file": "operation_FILE_000000003551924.csv",
+   "orig": "(2025.3분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003551924",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2025Q4",
+   "file": "operation_FILE_000000003602108.csv",
+   "orig": "(2025.4분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003602108",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2026Q1",
+   "file": "operation_FILE_000000007637328.csv",
+   "orig": "(연간보정)(2026.1분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000007637328",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2026Q2",
+   "file": "operation_FILE_000000007660484.csv",
+   "orig": "(연간보정)(2026.2분기)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000007660484",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2069Q1",
+   "file": "operation_FILE_000000003513774.csv",
+   "orig": "(2024.2)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513774",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2070Q1",
+   "file": "operation_FILE_000000002643971.csv",
+   "orig": "(2021.4월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002643971",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2077Q4",
+   "file": "operation_FILE_000000002754736.csv",
+   "orig": "(2022.3월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002754736",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2080Q3",
+   "file": "operation_FILE_000000002643969.csv",
+   "orig": "(2021.2월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002643969",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2086Q3",
+   "file": "operation_FILE_000000003513783.csv",
+   "orig": "(2023.11)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513783",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2094Q4",
+   "file": "operation_FILE_000000003513795.csv",
+   "orig": "(2023.9)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000003513795",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation",
+   "label": "가동률",
+   "period": "2098Q3",
+   "file": "operation_FILE_000000002756917.csv",
+   "orig": "(2022.9월)주요국가산업단지 산업동향_단지별 가동률.csv",
+   "atch": "FILE_000000002756917",
+   "pk": "15085889",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462815.csv",
+   "orig": "(2018.1월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462815",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462816.csv",
+   "orig": "(2018.2월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462816",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462818.csv",
+   "orig": "(2018.4월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462818",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462819.csv",
+   "orig": "(2018.5월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462819",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462820.csv",
+   "orig": "(2018.6월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462820",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462821.csv",
+   "orig": "(2018.7월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462821",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462822.csv",
+   "orig": "(2018.8월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462822",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462823.csv",
+   "orig": "(2018.9월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462823",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462828.csv",
+   "orig": "(2019.1월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462828",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462829.csv",
+   "orig": "(2019.2월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462829",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462830.csv",
+   "orig": "(2019.3월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462830",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462832.csv",
+   "orig": "(2019.4월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462832",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462834.csv",
+   "orig": "(2019.5월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462834",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462835.csv",
+   "orig": "(2019.6월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462835",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462837.csv",
+   "orig": "(2019.7월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462837",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462838.csv",
+   "orig": "(2019.8월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462838",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002462839.csv",
+   "orig": "(2019.9월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462839",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464493.csv",
+   "orig": "(2020.1월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464493",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464491.csv",
+   "orig": "(2020.3월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464491",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464490.csv",
+   "orig": "(2020.4월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464490",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464492.csv",
+   "orig": "(2020.2월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464492",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464489.csv",
+   "orig": "(2020.5월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464489",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464488.csv",
+   "orig": "(2020.6월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464488",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464487.csv",
+   "orig": "(2020.7월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464487",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464485.csv",
+   "orig": "(2020.8월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464485",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002464484.csv",
+   "orig": "(2020.9월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464484",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002644109.csv",
+   "orig": "(2021.1월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644109",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002644122.csv",
+   "orig": "(2021.3월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644122",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002644125.csv",
+   "orig": "(2021.4월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644125",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002644131.csv",
+   "orig": "(2021.5월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644131",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002644133.csv",
+   "orig": "(2021.6월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644133",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002644137.csv",
+   "orig": "(2021.7월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644137",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002644169.csv",
+   "orig": "(2021.8월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644169",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002644172.csv",
+   "orig": "(2021.9월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644172",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002754403.csv",
+   "orig": "(2022.1월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002754403",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002754741.csv",
+   "orig": "(2022.3월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002754741",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002754767.csv",
+   "orig": "(2022.4월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002754767",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002756117.csv",
+   "orig": "(2022.5월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002756117",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002756820.csv",
+   "orig": "(2022.6월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002756820",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002756847.csv",
+   "orig": "(2022.7월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002756847",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000002756871.csv",
+   "orig": "(2022.8월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002756871",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552346.csv",
+   "orig": "(2022.10)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552346",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552341.csv",
+   "orig": "(2022.12)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552341",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552338.csv",
+   "orig": "(2023.1)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552338",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552336.csv",
+   "orig": "(2023.2)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552336",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552335.csv",
+   "orig": "(2023.3)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552335",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552333.csv",
+   "orig": "(2023.4)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552333",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552330.csv",
+   "orig": "(2023.5)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552330",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552328.csv",
+   "orig": "(2023.6)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552328",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552327.csv",
+   "orig": "(2023.7)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552327",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552325.csv",
+   "orig": "(2023.8)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552325",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552322.csv",
+   "orig": "(2023.9)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552322",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552319.csv",
+   "orig": "(2023.10)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552319",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552313.csv",
+   "orig": "(2024.1)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552313",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552312.csv",
+   "orig": "(2024.2)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552312",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "",
+   "file": "operation_detail_FILE_000000003552310.csv",
+   "orig": "(2024.3)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552310",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2003Q2",
+   "file": "operation_detail_FILE_000000003552314.csv",
+   "orig": "(2023.12)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552314",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2008Q3",
+   "file": "operation_detail_FILE_000000002754442.csv",
+   "orig": "(2022.2월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002754442",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2018Q4",
+   "file": "operation_detail_FILE_000000002462824.csv",
+   "orig": "(2018.10월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462824",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2018Q4",
+   "file": "operation_detail_FILE_000000002462825.csv",
+   "orig": "(2018.11월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462825",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2018Q4",
+   "file": "operation_detail_FILE_000000002462826.csv",
+   "orig": "(2018.12월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462826",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2019Q4",
+   "file": "operation_detail_FILE_000000002462840.csv",
+   "orig": "(2019.10월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462840",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2019Q4",
+   "file": "operation_detail_FILE_000000002462841.csv",
+   "orig": "(2019.11월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462841",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2019Q4",
+   "file": "operation_detail_FILE_000000002462842.csv",
+   "orig": "(2019.12월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002462842",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2019Q4",
+   "file": "operation_detail_FILE_000000003552316.csv",
+   "orig": "(2023.11)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552316",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2020Q4",
+   "file": "operation_detail_FILE_000000002464483.csv",
+   "orig": "(2020.10월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464483",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2020Q4",
+   "file": "operation_detail_FILE_000000002464482.csv",
+   "orig": "(2020.11월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464482",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2020Q4",
+   "file": "operation_detail_FILE_000000002464481.csv",
+   "orig": "(2020.12월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002464481",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2021Q4",
+   "file": "operation_detail_FILE_000000002644177.csv",
+   "orig": "(2021.10월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644177",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2021Q4",
+   "file": "operation_detail_FILE_000000002644184.csv",
+   "orig": "(2021.11월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644184",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2021Q4",
+   "file": "operation_detail_FILE_000000002644193.csv",
+   "orig": "(2021.12월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644193",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2024Q2",
+   "file": "operation_detail_FILE_000000003552309.csv",
+   "orig": "(2024.2분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552309",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2024Q3",
+   "file": "operation_detail_FILE_000000003552307.csv",
+   "orig": "(2024.3분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552307",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2024Q4",
+   "file": "operation_detail_FILE_000000003552302.csv",
+   "orig": "(2024.4분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552302",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2025Q1",
+   "file": "operation_detail_FILE_000000003552300.csv",
+   "orig": "(2025.1분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552300",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2025Q2",
+   "file": "operation_detail_FILE_000000003220864.csv",
+   "orig": "(2025.2분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003220864",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2025Q3",
+   "file": "operation_detail_FILE_000000003551938.csv",
+   "orig": "(2025.3분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003551938",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2025Q4",
+   "file": "operation_detail_FILE_000000003653788.csv",
+   "orig": "(2025.4분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003653788",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2026Q1",
+   "file": "operation_detail_FILE_000000007637332.csv",
+   "orig": "(연간보정)(2026.1분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000007637332",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2026Q2",
+   "file": "operation_detail_FILE_000000007660362.csv",
+   "orig": "(연간보정)(2026.2분기)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000007660362",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2072Q1",
+   "file": "operation_detail_FILE_000000002644115.csv",
+   "orig": "(2021.2월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002644115",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2080Q1",
+   "file": "operation_detail_FILE_000000003552343.csv",
+   "orig": "(2022.11)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000003552343",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "operation_detail",
+   "label": "단지별 가동률 세부내역",
+   "period": "2098Q3",
+   "file": "operation_detail_FILE_000000002756923.csv",
+   "orig": "(2022.9월)주요국가산업단지 산업동향_단지별 가동률 세부내역.csv",
+   "atch": "FILE_000000002756923",
+   "pk": "15085888",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462628.csv",
+   "orig": "(2018.1월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462628",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462629.csv",
+   "orig": "(2018.2월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462629",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462630.csv",
+   "orig": "(2018.3월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462630",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462631.csv",
+   "orig": "(2018.4월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462631",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462632.csv",
+   "orig": "(2018.5월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462632",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462633.csv",
+   "orig": "(2018.6월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462633",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462634.csv",
+   "orig": "(2018.7월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462634",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462635.csv",
+   "orig": "(2018.8월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462635",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462637.csv",
+   "orig": "(2018.9월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462637",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462642.csv",
+   "orig": "(2019.1월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462642",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462643.csv",
+   "orig": "(2019.2월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462643",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462644.csv",
+   "orig": "(2019.3월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462644",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462645.csv",
+   "orig": "(2019.4월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462645",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462646.csv",
+   "orig": "(2019.5월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462646",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462647.csv",
+   "orig": "(2019.6월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462647",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462648.csv",
+   "orig": "(2019.7월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462648",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462649.csv",
+   "orig": "(2019.8월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462649",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002462650.csv",
+   "orig": "(2019.9월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462650",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002464526.csv",
+   "orig": "(2020.1월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464526",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002464525.csv",
+   "orig": "(2020.2월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464525",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002464524.csv",
+   "orig": "(2020.3월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464524",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002464523.csv",
+   "orig": "(2020.4월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464523",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002464522.csv",
+   "orig": "(2020.5월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464522",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002464521.csv",
+   "orig": "(2020.6월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464521",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002464520.csv",
+   "orig": "(2020.7월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464520",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002464519.csv",
+   "orig": "(2020.8월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464519",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002663232.csv",
+   "orig": "(2021.1월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663232",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002663247.csv",
+   "orig": "(2021.2월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663247",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002663221.csv",
+   "orig": "(2021.3월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663221",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002663233.csv",
+   "orig": "(2021.5월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663233",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002660454.csv",
+   "orig": "(2021.7월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002660454",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002663219.csv",
+   "orig": "(2021.8월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663219",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002663292.csv",
+   "orig": "(2021.9월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663292",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002754413.csv",
+   "orig": "(2022.1월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002754413",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002754443.csv",
+   "orig": "(2022.2월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002754443",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002754742.csv",
+   "orig": "(2022.3월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002754742",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002754768.csv",
+   "orig": "(2022.4월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002754768",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002756118.csv",
+   "orig": "(2022.5월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002756118",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002756821.csv",
+   "orig": "(2022.6월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002756821",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002756848.csv",
+   "orig": "(2022.7월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002756848",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002756872.csv",
+   "orig": "(2022.8월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002756872",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000002756924.csv",
+   "orig": "(2022.9월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002756924",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513328.csv",
+   "orig": "(2022.12)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513328",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513322.csv",
+   "orig": "(2023.1)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513322",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513321.csv",
+   "orig": "(2023.2)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513321",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513317.csv",
+   "orig": "(2023.4)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513317",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513315.csv",
+   "orig": "(2023.5)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513315",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513309.csv",
+   "orig": "(2023.6)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513309",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513272.csv",
+   "orig": "(2023.9)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513272",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513271.csv",
+   "orig": "(2023.10)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513271",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513265.csv",
+   "orig": "(2023.11)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513265",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513262.csv",
+   "orig": "(2023.12)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513262",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513258.csv",
+   "orig": "(2024.1)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513258",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513253.csv",
+   "orig": "(2024.2)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513253",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "",
+   "file": "production_FILE_000000003513249.csv",
+   "orig": "(2024.3)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513249",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2004Q3",
+   "file": "production_FILE_000000002663224.csv",
+   "orig": "(2021.6월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663224",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2018Q4",
+   "file": "production_FILE_000000002462638.csv",
+   "orig": "(2018.10월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462638",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2018Q4",
+   "file": "production_FILE_000000002611812.csv",
+   "orig": "(2018.11월)주요국가산업단지 산업동향_단지별 생산실적_20220916.csv",
+   "atch": "FILE_000000002611812",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2018Q4",
+   "file": "production_FILE_000000002611821.csv",
+   "orig": "(2018.12월)주요국가산업단지 산업동향_단지별 생산실적_20220916.csv",
+   "atch": "FILE_000000002611821",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2019Q4",
+   "file": "production_FILE_000000002462651.csv",
+   "orig": "(2019.10월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462651",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2019Q4",
+   "file": "production_FILE_000000002462652.csv",
+   "orig": "(2019.11월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462652",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2019Q4",
+   "file": "production_FILE_000000002462653.csv",
+   "orig": "(2019.12월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002462653",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2020Q4",
+   "file": "production_FILE_000000002464517.csv",
+   "orig": "(2020.10월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464517",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2020Q4",
+   "file": "production_FILE_000000002464516.csv",
+   "orig": "(2020.11월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464516",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2020Q4",
+   "file": "production_FILE_000000002464515.csv",
+   "orig": "(2020.12월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002464515",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2021Q4",
+   "file": "production_FILE_000000002663228.csv",
+   "orig": "(2021.10월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663228",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2021Q4",
+   "file": "production_FILE_000000002663238.csv",
+   "orig": "(2021.11월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663238",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2021Q4",
+   "file": "production_FILE_000000002663225.csv",
+   "orig": "(2021.12월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663225",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2022Q4",
+   "file": "production_FILE_000000003513341.csv",
+   "orig": "(2022.10월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513341",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2022Q4",
+   "file": "production_FILE_000000003513332.csv",
+   "orig": "(2022.11월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513332",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2024Q2",
+   "file": "production_FILE_000000003513215.csv",
+   "orig": "(2024.2분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513215",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2024Q3",
+   "file": "production_FILE_000000003513210.csv",
+   "orig": "(2024.3분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513210",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2024Q4",
+   "file": "production_FILE_000000003513205.csv",
+   "orig": "(2024.4분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513205",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2025Q1",
+   "file": "production_FILE_000000003513203.csv",
+   "orig": "(2025.1분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513203",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2025Q2",
+   "file": "production_FILE_000000003220872.csv",
+   "orig": "(2025.2분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003220872",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2025Q3",
+   "file": "production_FILE_000000003551920.csv",
+   "orig": "(2025.3분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003551920",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2025Q4",
+   "file": "production_FILE_000000003602110.csv",
+   "orig": "(2025.4분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003602110",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2026Q1",
+   "file": "production_FILE_000000007637326.csv",
+   "orig": "(연간보정)(2026.1분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000007637326",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2026Q2",
+   "file": "production_FILE_000000007660472.csv",
+   "orig": "(연간보정)(2026.2분기)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000007660472",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2049Q1",
+   "file": "production_FILE_000000003513319.csv",
+   "orig": "(2023.3)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513319",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2056Q4",
+   "file": "production_FILE_000000003513275.csv",
+   "orig": "(2023.8)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513275",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2069Q4",
+   "file": "production_FILE_000000002663223.csv",
+   "orig": "(2021.4월)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000002663223",
+   "pk": "15085891",
+   "rows": 1
+  },
+  {
+   "key": "production",
+   "label": "생산실적",
+   "period": "2096Q1",
+   "file": "production_FILE_000000003513276.csv",
+   "orig": "(2023.7)주요국가산업단지 산업동향_단지별 생산실적.csv",
+   "atch": "FILE_000000003513276",
+   "pk": "15085891",
+   "rows": 1
+  }
+ ],
+ "note": "한국산업단지공단 국가산업단지 산업동향정보(공공데이터포털 파일데이터). 대구·달성 이름이 든 행만. 생산·수출·가동률은 제조업 가동업체 조사(포털 안내)."
+}

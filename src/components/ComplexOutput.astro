@@ -13,7 +13,7 @@ const sum = (f: (r: any) => number | null) => d ? d.rows.reduce((a, r) => a + (f
 <section aria-labelledby="h-cx-out" id="complex-output">
   <div class="section-head"><h2 id="h-cx-out">산업단지별 생산·수출·고용 — 전체 단지(산단공 통계)</h2>
     <span class="meta">생산·수출 {d.lastYear}년 연간·{qRange(d.prodQ)} · 입주·가동 {qLabel(d.latest)}</span></div>
-  <p class="meta">한국산업단지공단은 2025년 3분기부터 생산액·수출액·고용 공표를 일시 중지했습니다(조사 방식 전환, 공공데이터포털 안내). 그래서 생산·수출·고용은 마지막으로 공표된 {qLabel(d.prodQ)}까지이고, 입주·가동업체는 최신 {qLabel(d.latest)} 값입니다.</p>
+  <p class="meta">한국산업단지공단은 2025년 3분기부터 생산액·수출액·고용 공표를 일시 중지했습니다(조사 방식 전환, 공공데이터포털 안내). 그래서 생산·수출·고용은 마지막으로 공표된 {qLabel(d.prodQ)}까지이고, 입주·가동업체는 최신 {qLabel(d.latest)} 값입니다. 대구국가산업단지는 산단공의 분기 산업동향으로 그 뒤도 이어집니다(아래 <a href="#national-trend">「대구국가산업단지 산업동향」</a>).</p>
   <div class="scroll-x"><table class="data-table">
     <caption class="sr-only">대구 산업단지별 생산액·수출액·고용</caption>
     <thead>

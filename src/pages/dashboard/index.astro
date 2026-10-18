@@ -40,6 +40,7 @@ const kn = (v: string) => (v === '' ? '—' : Number(v).toLocaleString('ko-KR'))
 const hasMom = !!m && (m.total.mom?.employment != null || [...districts, ...complexes].some(([, v]) => v.mom?.employment != null));
 const description = m ? `대구 기업 ${fmt(m.total.firms)}곳·고용 ${fmt(m.total.employment)}명(${ym}). 입지 유형·구군 9·산업단지 ${complexes.length}·태그별 기업 수와 고용, 취득·상실.` : '대구 산단·기업 현황판';
 import ComplexOutput from '../../components/ComplexOutput.astro';
+import NationalComplexTrend from '../../components/NationalComplexTrend.astro';
 ---
 <Base title="현황판" description={description} current="dashboard">
   <div class="section-head"><h1>현황판</h1><span class="meta">{fo === ym ? `${ym} 기준` : `기업 등록 ${fo} · 고용 ${ym} 기준`} · {m?.basis_label}</span></div>
@@ -116,6 +117,7 @@ import ComplexOutput from '../../components/ComplexOutput.astro';
         </section>
       )}
       <ComplexOutput />
+      <NationalComplexTrend />
       {tags.length > 0 && (
         <section aria-labelledby="h-tag">
           <div class="section-head"><h2 id="h-tag">공개 명단 태그별</h2></div>

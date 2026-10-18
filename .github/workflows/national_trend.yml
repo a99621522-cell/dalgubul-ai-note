@@ -1,0 +1,46 @@
+name: 국가산업단지 산업동향(산단공, 대구 단지)
+
+# scripts/fetch_national_trend.py — 공공데이터포털 「국가산업단지 산업동향정보」 파일의 대구 행 → data/complex_trend/ (운영자 지적 2026-10-18).
+on:
+  schedule:
+    - cron: "37 22 25 1,4,7,10 *"   # 분기 말 다음 달 26일 07:37 KST
+  workflow_dispatch:
+    inputs:
+      list:
+        description: "식별자만 보기(true)"
+        required: false
+        default: "false"
+  push:
+    branches: ["claude/policy-reports", "claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/fetch_national_trend.py", ".github/workflows/national_trend.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: national-trend
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python3 scripts/fetch_national_trend.py $([ "${{ inputs.list }}" = "true" ] && echo --list)
+      - name: 커밋
+        if: ${{ !cancelled() && inputs.list != 'true' }}
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/complex_trend 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 국가산업단지 산업동향(산단공, 대구) $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

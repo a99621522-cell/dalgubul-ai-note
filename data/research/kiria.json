@@ -3,182 +3,102 @@
  "name": "한국로봇산업진흥원(KIRIA)",
  "group": "기업지원기관",
  "home": "https://www.kiria.org",
- "fetched": "2026-10-11",
- "status": "최근 없음",
- "method": "",
- "items": [],
- "note": "최신 항목 2025-12-29 (최근 70일 밖)",
- "sample_links": [
-  [
-   "본문 바로가기",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#contents"
-  ],
-  [
-   "부대시설 이용안내",
-   "https://www.kiria.org/portal/intro/portalIntFacIntro.do"
-  ],
-  [
-   "KIRIA 신문고",
-   "https://www.kiria.org/portal/intro/portalIntPolice.do"
-  ],
-  [
-   "안전 제안신고 제도",
-   "https://www.kiria.org/portal/inform/portalInfoSafetyReport.jsp"
-  ],
-  [
-   "협력업체 소통게시판",
-   "https://www.kiria.org/portal/inform/portalInfoPartnerComm.jsp"
-  ],
-  [
-   "로봇규제 개선",
-   "https://www.kiria.org/portal/policysut/portalPlcyReguImprove.do"
-  ],
-  [
-   "첨단제조로봇 실증사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptRoCreProduct.do"
-  ],
-  [
-   "로봇활용 제조혁신 지원사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptProcInnoIntro.do"
-  ],
-  [
-   "규제혁신 로봇 실증사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptRoDevSup.do"
-  ],
-  [
-   "대규모융합 로봇 실증사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptRoFuIntro.do"
-  ],
-  [
-   "로봇스타트업 지원사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptProTechIntro.do"
-  ],
-  [
-   "로봇플래그쉽 지역거점 구축사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptRoFlagship.jsp"
-  ],
-  [
-   "첨단로봇산업 전문인력양성사업",
-   "https://www.kiria.org/portal/culture/portalCulRoInnovation.do"
-  ],
-  [
-   "AI 로봇 창의교실 체험관(초등학생)",
-   "https://www.kiria.org/portal/culture/portalCulAiClass.jsp"
-  ],
-  [
-   "KIRIA ISSUE REPORT 정책 및 동향자료",
-   "https://www.kiria.org/portal/reference/portalRefTrendList.do"
-  ],
-  [
-   "설립목적 및 연혁",
-   "https://www.kiria.org/portal/intro/portalIntHistory.do"
-  ],
-  [
-   "찾아오시는 길",
-   "https://www.kiria.org/portal/intro/portalIntMap.do"
-  ],
-  [
-   "부대시설 이용안내",
-   "https://www.kiria.org/portal/intro/portalIntFacIntro.do"
-  ],
-  [
-   "KIRIA 신문고",
-   "https://www.kiria.org/portal/intro/portalIntPolice.do"
-  ],
-  [
-   "안전 제안신고 제도",
-   "https://www.kiria.org/portal/inform/portalInfoSafetyReport.jsp"
-  ],
-  [
-   "협력업체 소통게시판",
-   "https://www.kiria.org/portal/inform/portalInfoPartnerComm.jsp"
-  ],
-  [
-   "로봇규제 개선",
-   "https://www.kiria.org/portal/policysut/portalPlcyReguImprove.do"
-  ],
-  [
-   "첨단제조로봇 실증사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptRoCreProduct.do"
-  ],
-  [
-   "로봇활용 제조혁신 지원사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptProcInnoIntro.do"
-  ],
-  [
-   "규제혁신 로봇 실증사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptRoDevSup.do"
-  ],
-  [
-   "대규모융합 로봇 실증사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptRoFuIntro.do"
-  ],
-  [
-   "로봇 스타트업 지원사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptProTechIntro.do"
-  ],
-  [
-   "로봇플래그쉽 지역거점 구축사업",
-   "https://www.kiria.org/portal/bizsupt/portalBsuptRoFlagship.jsp"
-  ],
-  [
-   "산업융합・연계형 로봇창의 인재양성사업 (석·박사)",
-   "https://www.kiria.org/portal/culture/portalCulRoCreaTalent.do"
-  ],
-  [
-   "AI 로봇 창의교실 체험관(초등학생)",
-   "https://www.kiria.org/portal/culture/portalCulAiClass.jsp"
-  ],
-  [
-   "KIRIA ISSUE REPORT 정책 및 동향자료",
-   "https://www.kiria.org/portal/reference/portalRefTrendList.do"
-  ],
-  [
-   "2024년 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ],
-  [
-   "2023년 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ],
-  [
-   "2022년 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ],
-  [
-   "2021년 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ],
-  [
-   "2020년 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ],
-  [
-   "2019년 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ],
-  [
-   "2018년 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ],
-  [
-   "2017 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ],
-  [
-   "2016년 로봇산업 실태조사 결과보고서",
-   "https://www.kiria.org/portal/policysut/portalPlcyReports.do#link"
-  ]
+ "fetched": "2026-10-18",
+ "status": "OK",
+ "method": "첫 화면",
+ "items": [
+  {
+   "title": "KIRIA ISSUE REPORT 정책 및 동향자료",
+   "url": "https://www.kiria.org/portal/reference/portalRefTrendList.do",
+   "date": "2026-10-16",
+   "summary": ""
+  },
+  {
+   "title": "[Robot Issue Brief 2026-14] 'IFR, 세계 산업용 로봇 가동 500만대 돌파' 2026-10-16",
+   "url": "https://www.kiria.org#-Robot-Issue-Brief-2026-14-IFR-세계-산업용-로봇",
+   "date": "2026-10-16",
+   "summary": ""
+  },
+  {
+   "title": "입찰공고 국내 유통 산업용 로봇 현황 및 부품 사용 실태 조사 용역 공고 2026/10/08",
+   "url": "https://www.kiria.org#입찰공고-국내-유통-산업용-로봇-현황-및-부품-사용-실태-조사-용역-공고",
+   "date": "2026-10-08",
+   "summary": ""
+  },
+  {
+   "title": "실외이동로봇 운행안전인증 제품 공표 (KIRIA-01-26-007-01, (주)뉴빌리티-뉴비 쉴드, NB015R3-S, NB015R3-.. 2026-10-08",
+   "url": "https://www.kiria.org#실외이동로봇-운행안전인증-제품-공표-KIRIA-01-26-007-01-주",
+   "date": "2026-10-08",
+   "summary": "실외이동로봇 운행안전인증 제품 공표 (KIRIA-01-26-006-01, (주)뉴빌리티-뉴비 플로우, NB015R3-F) 2026-10-08"
+  },
+  {
+   "title": "실외이동로봇 운행안전인증 제품 인증서 반납 공표 (KIRIA-01-24-005-01, 에이브이라이드코리아(유) - R) 2026-10-02",
+   "url": "https://www.kiria.org#실외이동로봇-운행안전인증-제품-인증서-반납-공표-KIRIA-01-24-0",
+   "date": "2026-10-02",
+   "summary": ""
+  },
+  {
+   "title": "[Robot Issue Brief 2026-13] '피지컬AI, 기존 설비의 생산성과 경제성 혁신에 주목해야' 2026-10-02",
+   "url": "https://www.kiria.org#-Robot-Issue-Brief-2026-13-피지컬AI-기존-설비의-",
+   "date": "2026-10-02",
+   "summary": "[로봇산업 정책동향 Brief 2026-06] '중국의 체화지능 훈련·실증 인프라_로봇 데이터·훈련장·운영체계 중심' 2026-10-02"
+  },
+  {
+   "title": "[Robot Issue Brief 2026-12] 'IFR, 로봇 자동화의 고용·생산성·경쟁력 영향 분석' 2026-09-14",
+   "url": "https://www.kiria.org#-Robot-Issue-Brief-2026-12-IFR-로봇-자동화의-고",
+   "date": "2026-09-14",
+   "summary": ""
+  },
+  {
+   "title": "실외이동로봇 운행안전인증 제품 공표 (KIRIA-01-24-012-05, (주)뉴빌리티 - 두루아이) 2026-09-10",
+   "url": "https://www.kiria.org#실외이동로봇-운행안전인증-제품-공표-KIRIA-01-24-012-05-주",
+   "date": "2026-09-10",
+   "summary": ""
+  },
+  {
+   "title": "사업공고 한국로봇산업진흥원 2026 로보월드 K-로봇 공공프리마켓(가칭) 참여기업 모집 수요조사 2026/09/07",
+   "url": "https://www.kiria.org#사업공고-한국로봇산업진흥원-2026-로보월드-K-로봇-공공프리마켓-가칭-",
+   "date": "2026-09-07",
+   "summary": ""
+  },
+  {
+   "title": "[보도자료] 한국로봇산업진흥원, 2차 신규직원 10명 공개 채용 2026-09-01",
+   "url": "https://www.kiria.org#-보도자료-한국로봇산업진흥원-2차-신규직원-10명-공개-채용-2026-0",
+   "date": "2026-09-01",
+   "summary": ""
+  },
+  {
+   "title": "채용공고 2026년 제2차 한국로봇산업진흥원 신규직원 채용공고 2026/08/31",
+   "url": "https://www.kiria.org#채용공고-2026년-제2차-한국로봇산업진흥원-신규직원-채용공고-2026-",
+   "date": "2026-08-31",
+   "summary": ""
+  },
+  {
+   "title": "[보도자료] 한국로봇산업진흥원, 화성특례시 제조 RX 확산 현장 간담회 개최 2026-08-29",
+   "url": "https://www.kiria.org#-보도자료-한국로봇산업진흥원-화성특례시-제조-RX-확산-현장-간담회-개최",
+   "date": "2026-08-29",
+   "summary": ""
+  },
+  {
+   "title": "[로봇산업 정책동향 Brief 2026-05] '미국 FCC의 외국산 첨단로봇 규제와 시장·공급망 영향' 2026-08-28",
+   "url": "https://www.kiria.org#-로봇산업-정책동향-Brief-2026-05-미국-FCC의-외국산-첨단로",
+   "date": "2026-08-28",
+   "summary": ""
+  },
+  {
+   "title": "[보도자료] 한국로봇산업진흥원, '2026년 대전 지역 서비스로봇 기업 RX 확산 기업 간담회' 개최 2026-08-26",
+   "url": "https://www.kiria.org#-보도자료-한국로봇산업진흥원-2026년-대전-지역-서비스로봇-기업-RX-",
+   "date": "2026-08-26",
+   "summary": ""
+  },
+  {
+   "title": "[보도자료] 한국로봇산업진흥원, 대구 자동차부품업계와 로봇산업 진출 지원 간담회 개최 2026-08-26",
+   "url": "https://www.kiria.org#-보도자료-한국로봇산업진흥원-대구-자동차부품업계와-로봇산업-진출-지원-간",
+   "date": "2026-08-26",
+   "summary": "[보도자료] 한국로봇산업진흥원, 사회적 배려 계층 아동 초청 '창의교실 로봇 체험 프로그램' 개최 2026-08-26"
+  }
  ],
- "page_chars": 64864,
- "sample_dates": [
-  " 제목, 첨부, 작성자, 발행일, 조회 목록을 제공합니다. No 구분 제목 첨부 작성자 발행일 조회 14 통계자료 2024년 로봇산업 실태조사 결과보고서 관리자 2025-12-29 5141 13 통계자료 2023년 ",
-  "행일 조회 14 통계자료 2024년 로봇산업 실태조사 결과보고서 관리자 2025-12-29 5141 13 통계자료 2023년 로봇산업 실태조사 결과보고서 관리자 2024-12-20 5843 12 통계자료 2022년 ",
-  " 5141 13 통계자료 2023년 로봇산업 실태조사 결과보고서 관리자 2024-12-20 5843 12 통계자료 2022년 로봇산업 실태조사 결과보고서 관리자 2023-12-27 7304 11 통계자료 2021년 ",
-  " 5843 12 통계자료 2022년 로봇산업 실태조사 결과보고서 관리자 2023-12-27 7304 11 통계자료 2021년 로봇산업 실태조사 결과보고서 관리자 2022-12-02 8570 10 통계자료 2020년 ",
-  " 7304 11 통계자료 2021년 로봇산업 실태조사 결과보고서 관리자 2022-12-02 8570 10 통계자료 2020년 로봇산업 실태조사 결과보고서 관리자 2021-12-07 6213 9 통계자료 2019년 로",
-  "2 8570 10 통계자료 2020년 로봇산업 실태조사 결과보고서 관리자 2021-12-07 6213 9 통계자료 2019년 로봇산업 실태조사 결과보고서 관리자 2021-03-15 7096 8 통계자료 2018년 로"
- ],
+ "note": "",
  "areas": [
   "robot-physical-ai"
  ]

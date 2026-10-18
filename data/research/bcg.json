@@ -3,26 +3,44 @@
  "name": "BCG Publications",
  "group": "해외 컨설팅",
  "home": "https://www.bcg.com",
- "fetched": "2026-10-11",
+ "fetched": "2026-10-18",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
   {
-   "title": "Value Creation in Energy 2026: Winning Energy’s Next Investment Cycle",
-   "url": "https://www.bcg.com/publications/2026/energy-companies-creating-value",
-   "date": "2026-10-08",
+   "title": "Fabriq Personalization AI by BCG X",
+   "url": "https://www.bcg.com/x/product-library/fabriq-marketing-personalization-platform",
+   "date": "2026-10-14",
    "summary": ""
   },
   {
-   "title": "Principal Investors and Private Equity",
-   "url": "https://www.bcg.com/industries/principal-investors-private-equity/overview",
-   "date": "2026-10-06",
+   "title": "Corporate and Investment Banking Report 2026: A Golden Window for Growth",
+   "url": "https://www.bcg.com/publications/2026/corporate-and-investment-banking-growth",
+   "date": "2026-10-14",
    "summary": ""
   },
   {
-   "title": "Sustainability in Private Markets, 2026: As Progress Continues, AI Poses New Risks and Opportunities",
-   "url": "https://www.bcg.com/publications/2026/private-markets-sustainability-ai-risk",
-   "date": "2026-10-06",
+   "title": "Digital, Technology, and Data",
+   "url": "https://www.bcg.com/capabilities/digital-technology-data/overview",
+   "date": "2026-10-13",
+   "summary": ""
+  },
+  {
+   "title": "The AI-First Tech Function: What CEOs Need to Know",
+   "url": "https://www.bcg.com/publications/2026/ceos-help-ctos-cios-prepare-agentic-ai",
+   "date": "2026-10-13",
+   "summary": ""
+  },
+  {
+   "title": "Business Resilience",
+   "url": "https://www.bcg.com/capabilities/business-resilience",
+   "date": "2026-10-13",
+   "summary": ""
+  },
+  {
+   "title": "Why Companies Fail: What 50 Years of Data Tells Us",
+   "url": "https://www.bcg.com/publications/2026/why-do-companies-fail-us-failure-rates",
+   "date": "2026-10-13",
    "summary": ""
   }
  ],

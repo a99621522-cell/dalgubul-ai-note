@@ -3,10 +3,46 @@
  "name": "IDC Press Releases",
  "group": "해외 컨설팅",
  "home": "https://www.idc.com",
- "fetched": "2026-10-11",
+ "fetched": "2026-10-18",
  "status": "OK",
  "method": "rss(/feed)",
  "items": [
+  {
+   "title": "Does IDC’s 75% Specialized Cloud Prediction Hold?",
+   "url": "https://www.idc.com/resource-center/blog/does-idcs-75-specialized-cloud-prediction-hold/",
+   "date": "2026-10-16",
+   "summary": "In October 2024, IDC&#8217;s FutureScape: Worldwide Cloud 2025 Predictions forecast that by 2026, 75% of organizations would use specialized accelerated cloud computing services to speed up deployment and scale their AI and other accelerated applications. Two years later, Dave McCarthy, Group Vice P"
+  },
+  {
+   "title": "Why “Lights Out” Is the Wrong Way to Think About Physical AI",
+   "url": "https://www.idc.com/resource-center/blog/why-lights-out-is-the-wrong-way-to-think-about-physical-ai/",
+   "date": "2026-10-16",
+   "summary": "The robot arm putting parts together on a factory floor is the easy image. It’s not the whole story, and according to Sarah Lee, IDC’s Senior Research Director of Manufacturing IT Strategies, thinking it is the whole story is exactly what’s slowing companies down. Physical AI has become one of those"
+  },
+  {
+   "title": "European AI Stack: Will AI Live in the Public Cloud Alone?",
+   "url": "https://www.idc.com/resource-center/blog/european-ai-stack-will-ai-live-in-the-public-cloud-alone/",
+   "date": "2026-10-15",
+   "summary": "Application, platform, infrastructure and services each follow their own dynamics. IDC analysts Ewa Zborowska and Carla Arend explain where European demand is heading and how vendors can position for it. Europe’s AI market is worth $105 billion, and customers are busy building their own AI stack, la"
+  },
+  {
+   "title": "How to Build a Defensible Technology Recommendation With IDC Quanta for Tech Leaders",
+   "url": "https://www.idc.com/resource-center/blog/how-to-build-a-defensible-technology-recommendation-with-idc-quanta/",
+   "date": "2026-10-14",
+   "summary": "On Monday, you open an email from your CFO: They want to modernize one of the company’s critical technology platforms. They need a proposal with a viable shortlist. And they want a defensible technology recommendation by Friday. By the afternoon, the vendor decks are already piling up. Each has a co"
+  },
+  {
+   "title": "Keep Your Negotiating Evidence After the Vendor Leaves at Signature",
+   "url": "https://www.idc.com/resource-center/blog/keep-your-negotiating-evidence-after-the-vendor-leaves-at-signature/",
+   "date": "2026-10-14",
+   "summary": "Every procurement team knows the moment. The signature page is turned, and the vendor’s negotiation team quietly disappears. What’s left is a contract, a renewal date circled two or three years out, and a procurement lead who now owns every consequence of a deal someone else helped negotiate. That h"
+  },
+  {
+   "title": "When the Stakes Are Real, “Probably Right” Isn’t Good Enough",
+   "url": "https://www.idc.com/resource-center/blog/when-the-stakes-are-real-probably-right-isnt-good-enough/",
+   "date": "2026-10-13",
+   "summary": "How do you decide, in an afternoon, whether a drone program is worth a government&#8217;s time? For Andrew Shipe, that&#8217;s a real, recurring question. As an Innovation Strategist on Sourcewell’s innovation team, Sourcewell Ventures, Shipe helps a government cooperative serving public agencies ac"
+  },
   {
    "title": "Why Speed and Control Both Depend on Verified Data",
    "url": "https://www.idc.com/resource-center/blog/speed-and-control-depend-on-verified-data/",
@@ -30,42 +66,6 @@
    "url": "https://www.idc.com/resource-center/blog/the-new-battleground-for-enterprise-software-the-ui-layer/",
    "date": "2026-10-05",
    "summary": "I called the death of the SaaS UI &#8220;wonderful&#8221; two weeks ago in my prior blog, and I stand by it. But a death this size leaves something behind: real estate. Somebody inherits the land the UI vacates, and that fight is already underway. Salesforce didn&#8217;t just retire its own interfac"
-  },
-  {
-   "title": "AI Strategy is Easier to Define Than to Deliver. IDC’s Benchmark Shows the Gap",
-   "url": "https://www.idc.com/resource-center/blog/ai-strategy-is-easier-to-define-than-to-deliver-idcs-benchmark-shows-the-gap/",
-   "date": "2026-10-02",
-   "summary": "About six in ten organizations say their AI strategy is transforming the business. IDC&#8217;s 2026 MaturityScape Benchmark AI Survey measured whether their capabilities match that claim, and for roughly five in six they do not yet. How did IDC measure AI maturity? The May 2026 survey covers 1,900 o"
-  },
-  {
-   "title": "Stop Trusting the Model: The AI Enforcement Layer Every Organization Needs",
-   "url": "https://www.idc.com/resource-center/blog/stop-trusting-the-model-the-ai-enforcement-layer-every-organization-needs/",
-   "date": "2026-09-30",
-   "summary": "Any organization that lets an AI system touch real data or real decisions needs an enforcement layer that sits outside the model, where the model cannot reach it or argue with it. The same holds for a mid-sized manufacturer using generative AI to draft procurement contracts and a healthcare provider"
-  },
-  {
-   "title": "The Architecture Bet Nobody Benchmarks Until It’s Too Late",
-   "url": "https://www.idc.com/resource-center/blog/the-architecture-bet-nobody-benchmarks-until-its-too-late/",
-   "date": "2026-09-29",
-   "summary": "Most CTOs can describe their technology roadmap with total confidence. Fewer can say, with real evidence, whether that roadmap is ahead of the market or just ahead of last year&#8217;s version of itself. IDC&#8217;s research on AI maturity puts a number on that gap. Across the organizations IDC trac"
-  },
-  {
-   "title": "You Don’t Choose a Model, You Govern a Constellation",
-   "url": "https://www.idc.com/resource-center/blog/you-dont-choose-a-model-you-govern-a-constellation/",
-   "date": "2026-09-28",
-   "summary": "A CTO explaining, for the third time this quarter, why the company runs five different models across four teams describes most enterprise AI programs heading into the new year. No one outside the AI group can name all five with confidence. Eighteen months ago, the question was simple: which frontier"
-  },
-  {
-   "title": "Meta Connect 2026: More Glasses on More Faces",
-   "url": "https://www.idc.com/resource-center/blog/meta-connect-2026-more-glasses-on-more-faces/",
-   "date": "2026-09-25",
-   "summary": "For the past few years, Meta Connect has been at the center of ongoing debates: is the Metaverse dead? Are AI glasses the next big thing? Will Zuckerberg&#8217;s latest bet pay off? This year answered a bit of all three. But the biggest news wasn&#8217;t one flashy new product. It was how many produ"
-  },
-  {
-   "title": "Two People. 100,000 Employees. One AI Platform to Close the Gap.",
-   "url": "https://www.idc.com/resource-center/blog/two-people-100000-employees-one-ai-platform-to-close-the-gap/",
-   "date": "2026-09-24",
-   "summary": "Imagine being responsible for making sure market intelligence reaches the right decision-maker before a call gets made without it, at a global technology company that manufactures, delivers services, and funds serious R&#38;D all at once. Now imagine doing it with a team of two. For years, that&#821"
   }
  ],
  "note": "",

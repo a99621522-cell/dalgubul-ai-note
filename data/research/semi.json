@@ -3,31 +3,73 @@
  "name": "SEMI",
  "group": "해외 협회",
  "home": "https://www.semi.org",
- "fetched": "2026-10-11",
+ "fetched": "2026-10-18",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
   {
    "title": "Semi Press releases",
    "url": "https://www.semi.org/en/news-media-press-releases#Semi-Press-releases",
-   "date": "2026-10-06",
+   "date": "2026-10-15",
    "summary": ""
   },
   {
-   "title": "SEMI Joins the EU STEAM Executive Panel to Advance Semiconductor Workforce Priorities October 6, 2026 Learn More",
-   "url": "https://www.semi.org/en/semi-press-release/semi-joins-the-eu-steam-executive-panel-to-advance-semiconductor-workforce-priorities",
-   "date": "2026-10-06",
+   "title": "Nordson SonoFlex Acoustic System Wins 2026 Best of West Award October 15, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/nordson-sonoflex-acoustic-system-wins-2026-best-of-west-award",
+   "date": "2026-10-15",
    "summary": ""
   },
   {
    "title": "Semi Member Press Releases",
    "url": "https://www.semi.org/en/news-media-press-releases#Semi-Member-Press-Releases",
-   "date": "2026-10-06",
+   "date": "2026-10-15",
    "summary": ""
   },
   {
    "title": "View SEMI Press releases",
    "url": "https://www.semi.org/en/news-media-press/semi-press-releases/press-archive",
+   "date": "2026-10-15",
+   "summary": ""
+  },
+  {
+   "title": "Agileo Automation Appoints Semitorr – CTW Solutions As Distributor Of E84 PIO Box and Speech Scenario For North American Fab Market October 14, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/176491",
+   "date": "2026-10-14",
+   "summary": ""
+  },
+  {
+   "title": "Kulicke & Soffa Earns 2026 SEMI Award for North America at SEMICON West October 13, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/kulicke-and-soffa-earns-2026-semi-award-for-north-america-at-semicon-west",
+   "date": "2026-10-13",
+   "summary": ""
+  },
+  {
+   "title": "Global 300mm Fab Equipment Spending to Reach $227 Billion in 2029 as Buildout Accelerates, SEMI Projects October 13, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/global-300mm-fab-equipment-spending-to-reach-227-billion-in-2029-as-buildout-accelerates-semi-projects",
+   "date": "2026-10-13",
+   "summary": ""
+  },
+  {
+   "title": "SEMI and Semiconductor Digest Announce 2026 Best of West Award Finalists October 12, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/semi-and-semiconductor-digest-announce-2026-best-of-west-award-finalists",
+   "date": "2026-10-12",
+   "summary": ""
+  },
+  {
+   "title": "Junkosha showcases collaborative cable engineering offering with new 1 mm pitch high-flex cable for semiconductor equipment manufacturers October 12, 2026 Learn",
+   "url": "https://www.semi.org/en/node/176426",
+   "date": "2026-10-12",
+   "summary": ""
+  },
+  {
+   "title": "RENA Technologies Secures Major Orders for High-Throughput Platforms for the Semiconductor Industry October 12, 2026 Learn More",
+   "url": "https://www.semi.org/en/node/176421",
+   "date": "2026-10-12",
+   "summary": ""
+  },
+  {
+   "title": "SEMI Joins the EU STEAM Executive Panel to Advance Semiconductor Workforce Priorities October 6, 2026 Learn More",
+   "url": "https://www.semi.org/en/semi-press-release/semi-joins-the-eu-steam-executive-panel-to-advance-semiconductor-workforce-priorities",
    "date": "2026-10-06",
    "summary": ""
   },
@@ -68,33 +110,9 @@
    "summary": ""
   },
   {
-   "title": "Global Semiconductor Equipment Billings Increased 23% Year-Over-Year in Q2 2026, SEMI Reports September 3, 2026 Learn More",
-   "url": "https://www.semi.org/en/semi-press-release/global-semiconductor-equipment-billings-increased-23-percent-year-over-year-in-q2-2026-semi-reports",
-   "date": "2026-09-03",
-   "summary": ""
-  },
-  {
-   "title": "SEMI and Silicon Catalyst Aim to Accelerate Global Semiconductor Innovation with Strategic Partnership September 2, 2026 Learn More",
-   "url": "https://www.semi.org/en/semi-press-release/semi-and-silicon-catalyst-aim-to-accelerate-global-semiconductor-innovation-with-strategic-partnership",
-   "date": "2026-09-02",
-   "summary": ""
-  },
-  {
-   "title": "Registration Opens for SEMICON Europa 2026 as Industry Leaders Gather to Navigate Europe’s Semiconductor Future September 1, 2026 Learn More",
-   "url": "https://www.semi.org/en/semi-press-release/registration-opens-for-semicon-europa-2026-as-industry-leaders-gather-to-navigate-europes-semiconductor-future",
-   "date": "2026-09-01",
-   "summary": ""
-  },
-  {
    "title": "DAS Environmental Experts Introduces ALCEA for Integrated NOx Treatment in Semiconductor Fabs September 1, 2026 Learn More",
    "url": "https://www.semi.org/en/node/175196",
    "date": "2026-09-01",
-   "summary": ""
-  },
-  {
-   "title": "SEMICON West 2026 to Spotlight $1 Trillion Semiconductor Milestone and Technologies Powering the Industry’s Next Era August 27, 2026 Learn More",
-   "url": "https://www.semi.org/en/semi-press-release/semicon-west-2026-to-spotlight-1-trillion-dollars-semiconductor-milestone-and-technologies-powering-the-industrys-next-era",
-   "date": "2026-08-27",
    "summary": ""
   },
   {
@@ -113,12 +131,6 @@
    "title": "Brewer Science to Showcase Advanced Materials Innovation at SEMICON Taiwan 2026 August 25, 2026 Learn More",
    "url": "https://www.semi.org/en/node/174926",
    "date": "2026-08-25",
-   "summary": ""
-  },
-  {
-   "title": "Brewer Science Strengthens America's Semiconductor Supply Chain with Acquisition of Heraeus Epurio's Semiconductor Chemicals Business August 7, 2026 Learn More",
-   "url": "https://www.semi.org/en/node/174286",
-   "date": "2026-08-07",
    "summary": ""
   }
  ],

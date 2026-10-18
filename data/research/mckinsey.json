@@ -3,10 +3,100 @@
  "name": "McKinsey Insights",
  "group": "해외 컨설팅",
  "home": "https://www.mckinsey.com",
- "fetched": "2026-10-11",
+ "fetched": "2026-10-18",
  "status": "OK",
  "method": "rss(/insights/rss)",
  "items": [
+  {
+   "title": "Getting real about AI: How AI agents are changing the economics of software engineering",
+   "url": "https://www.mckinsey.com/uk/our-insights/getting-real-about-ai-how-ai-agents-are-changing-the-economics-of-software-engineering",
+   "date": "2026-10-16",
+   "summary": "Cognition co-founder and President Russell Kaplan explains why the next frontier of AI in software engineering is about more than writing code faster and what it takes to turn autonomous agents into measurable business value."
+  },
+  {
+   "title": "What is a forward-deployed engineer?",
+   "url": "https://www.mckinsey.com/featured-insights/mckinsey-explainers/what-is-a-forward-deployed-engineer",
+   "date": "2026-10-16",
+   "summary": "Forward-deployed engineers work inside another company’s own systems. Three McKinsey leaders explain how FDEs help companies derive impact from AI."
+  },
+  {
+   "title": "Place, purpose, and the path to economic mobility",
+   "url": "https://www.mckinsey.com/institute-for-economic-mobility/our-insights/place-purpose-and-the-path-to-economic-mobility",
+   "date": "2026-10-15",
+   "summary": "Where you live shapes far more than you’d think. New research points to how community, place, and connection relate to getting ahead."
+  },
+  {
+   "title": "The judgment bottleneck: Balancing AI and human speeds in strategy",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-judgment-bottleneck-balancing-ai-and-human-speeds-in-strategy",
+   "date": "2026-10-15",
+   "summary": "Analysis now runs on AI time, but judgment still runs on human time. Three moves can help turn AI’s speed into better strategy decisions."
+  },
+  {
+   "title": "Strengthening supply chains behind US semiconductors",
+   "url": "https://www.mckinsey.com/industries/semiconductors/our-insights/strengthening-supply-chains-behind-us-semiconductors",
+   "date": "2026-10-15",
+   "summary": "New research maps hidden upstream dependencies in the US semiconductor supply chain and outlines potential mitigation strategies to make the ecosystem more resilient."
+  },
+  {
+   "title": "The AI value curve: The economics of applying AI to existing work",
+   "url": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-ai-value-curve-the-economics-of-applying-ai-to-existing-work",
+   "date": "2026-10-14",
+   "summary": "Many organizations are still measuring AI adoption instead of value. The AI value curve helps identify where AI’s automation potential can be deployed most cost-effectively."
+  },
+  {
+   "title": "Voices on Planning: The AI-powered future of supply chain",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/voices-on-planning-the-ai-powered-future-of-supply-chain",
+   "date": "2026-10-14",
+   "summary": "The shift from software as a service to AI-enabled planning could move decision-making from fixed cycles to real time, but success will require the right governance, expertise, and operating model."
+  },
+  {
+   "title": "Rewiring capital projects to boost construction productivity",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/rewiring-capital-projects-to-boost-construction-productivity",
+   "date": "2026-10-14",
+   "summary": "McKinsey’s Capital Excellence experts discuss how AI and technology can boost construction productivity, address labor shortages, and accelerate delivery of complex capital projects."
+  },
+  {
+   "title": "What does AI really cost?",
+   "url": "https://www.mckinsey.com/featured-insights/mckinsey-explainers/what-does-ai-really-cost",
+   "date": "2026-10-14",
+   "summary": "Moving an AI tool from pilot to production can nearly quadruple its cost. Three McKinsey experts explain why—and how to tell whether it’s worth it."
+  },
+  {
+   "title": "The AI operating system: A new way for CEOs to run the enterprise",
+   "url": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-ai-operating-system-a-new-way-for-ceos-to-run-the-enterprise",
+   "date": "2026-10-13",
+   "summary": "An AI operating system can become an enterprise’s “second brain,” but only if CEOs rethink how management itself evolves."
+  },
+  {
+   "title": "Why the future of capital projects belongs to digital and AI-enabled teams",
+   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/why-the-future-of-capital-projects-belongs-to-digital-and-ai-enabled-teams",
+   "date": "2026-10-13",
+   "summary": "Digital and AI are changing the way capital projects are selected, designed, procured, built, and steered. Leaders are moving beyond pilots to rewire how projects are planned and delivered."
+  },
+  {
+   "title": "Why medtechs can’t afford to overlook customer experience",
+   "url": "https://www.mckinsey.com/industries/life-sciences/our-insights/why-medtechs-cant-afford-to-overlook-customer-experience",
+   "date": "2026-10-13",
+   "summary": "Customer experience is a competitive imperative for medtechs. To create a durable advantage, it must be designed into products from day one, not added as a post-sale service."
+  },
+  {
+   "title": "Meesho: Making e-commerce everyone’s business",
+   "url": "https://www.mckinsey.com/featured-insights/future-of-asia/meesho-making-e-commerce-everyones-business",
+   "date": "2026-10-12",
+   "summary": "Scaling an e-commerce start-up in India’s dispersed markets is challenging, but innovation, patience, and passionately solving hard problems have enabled Meesho’s founders to succeed."
+  },
+  {
+   "title": "Asset management 2026: Plenty for the few?",
+   "url": "https://www.mckinsey.com/industries/financial-services/our-insights/asset-management-2026-plenty-for-the-few",
+   "date": "2026-10-12",
+   "summary": "A golden age for the industry is becoming a golden age for a smaller group of asset managers."
+  },
+  {
+   "title": "McKinsey research shows AI creating more jobs than automation displaces — but 11 million American workers will need help this decade",
+   "url": "https://www.mckinsey.com/mgi/media-center/mckinsey-research-shows-ai-creating-more-jobs-than-automation-displaces-but-11-million-american-workers-will-need-help-this-decade",
+   "date": "2026-10-11",
+   "summary": "While debates about AI’s impact on the workforce dominate headlines, the biggest challenge ahead will be helping workers find the most direct pathway into growing jobs, write Eric Kutcher and Tanguy Catlin in Fortune."
+  },
   {
    "title": "The six strategy roles a CEO must not delegate",
    "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-six-strategy-roles-a-ceo-must-not-delegate",
@@ -128,22 +218,16 @@
    "summary": "McKinsey research finds that companies executing transformations with rigor are much more likely to meet overall organizational transformation goals. Chris Hagedorn, Preeya Mody, and Michel Morenville join us to discuss what rigor really means in the context of transformation and how to embed it thr"
   },
   {
-   "title": "Global Economics Intelligence executive summary, August 2026",
-   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/global-economics-intelligence",
-   "date": "2026-09-30",
-   "summary": "Public debt and search for growth exercise minds of economists and policymakers as US debt hits record high; inflation fueled by energy supply uncertainty limits room for maneuver on interest rates."
-  },
-  {
-   "title": "Evidence over hype: New York’s path to a healthy-longevity economy",
-   "url": "https://www.mckinsey.com/mhi/our-insights/evidence-over-hype-new-yorks-path-to-a-healthy-longevity-economy",
-   "date": "2026-09-30",
-   "summary": "A McKinsey survey finds that New Yorkers prioritize healthy longevity—and spend accordingly."
-  },
-  {
    "title": "The CEO’s singular impact on the success—or failure—of AI in organizations",
    "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-ceos-singular-impact-on-the-success-or-failure-of-ai-in-organizations",
    "date": "2026-09-30",
    "summary": "There are certain aspects of the AI opportunity that chief executives cannot hand off to others—raising the organization’s ambition, rearchitecting how it works, and resetting its culture."
+  },
+  {
+   "title": "Global Economics Intelligence executive summary, August 2026",
+   "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/global-economics-intelligence",
+   "date": "2026-09-30",
+   "summary": "Public debt and search for growth exercise minds of economists and policymakers as US debt hits record high; inflation fueled by energy supply uncertainty limits room for maneuver on interest rates."
   },
   {
    "title": "Economic conditions outlook, September 2026",
@@ -152,100 +236,16 @@
    "summary": "Executives’ economic pessimism has eased since June, but they remain cautious. Negative views continue to be more common than positive ones, and expectations for the next six months are mixed."
   },
   {
+   "title": "Evidence over hype: New York’s path to a healthy-longevity economy",
+   "url": "https://www.mckinsey.com/mhi/our-insights/evidence-over-hype-new-yorks-path-to-a-healthy-longevity-economy",
+   "date": "2026-09-30",
+   "summary": "A McKinsey survey finds that New Yorkers prioritize healthy longevity—and spend accordingly."
+  },
+  {
    "title": "Author Talks: Can you fulfill your ambition and compose a life?",
    "url": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-can-you-fulfill-your-ambition-and-compose-a-life",
    "date": "2026-09-29",
    "summary": "Mayfield’s former Chief Marketing Officer Kamini Ramani draws on Indian women leaders’ experiences in corporate America to bring a culturally rooted lens to ambition, resilience, and leadership."
-  },
-  {
-   "title": "Workforce in motion: Skills and pathways to future jobs in the United States",
-   "url": "https://www.mckinsey.com/mgi/our-research/workforce-in-motion-skills-and-pathways-to-future-jobs-in-the-united-states",
-   "date": "2026-09-29",
-   "summary": "AI, automation, and broader structural trends are accelerating the reallocation of work across the US economy. Capturing its benefits requires developing new professional pathways and skills, and reducing barriers between declining and growing occupations."
-  },
-  {
-   "title": "The next phase of government AI economics",
-   "url": "https://www.mckinsey.com/industries/public-sector/our-insights/the-next-phase-of-government-ai-economics",
-   "date": "2026-09-29",
-   "summary": "Subsidized AI pilots are expiring as usage explodes. Here’s how US public sector leaders can treat AI spend as a managed category before the bill arrives."
-  },
-  {
-   "title": "Make life better: Mikhail Lomtadze’s customer-first philosophy",
-   "url": "https://www.mckinsey.com/featured-insights/future-of-asia/make-life-better-mikhail-lomtadzes-customer-first-philosophy",
-   "date": "2026-09-29",
-   "summary": "Mikhail Lomtadze, cofounder and CEO of Kaspi, believes the only measure that matters is whether Kaspi makes customers’ lives better or not—and why that single conviction changes everything else."
-  },
-  {
-   "title": "How leaders are turning AI into growth",
-   "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/how-leaders-are-turning-ai-into-growth",
-   "date": "2026-09-29",
-   "summary": "Nearly 90 percent of companies are investing in AI, but only 6 percent see material impact. The difference is in how they approach it."
-  },
-  {
-   "title": "Leading when change feels threatening",
-   "url": "https://www.mckinsey.com/capabilities/people-and-organization/our-insights/leading-when-change-feels-threatening",
-   "date": "2026-09-29",
-   "summary": "Fear and change can go hand in hand. Executives who understand this can significantly improve their odds of transformation success, while the executives who don’t risk sabotaging their change programs."
-  },
-  {
-   "title": "LATAM’s reinvention at 35,000 feet",
-   "url": "https://www.mckinsey.com/industries/travel/how-we-help-clients/latams-reinvention-at-35000-feet",
-   "date": "2026-09-29",
-   "summary": "Partnering with McKinsey, the airline rewired its organization to make digital and AI core parts of the business—transforming the passenger experience, accelerating growth, and unlocking new levels of operations performance."
-  },
-  {
-   "title": "Navigating the new normal: Building resilience in fuel retail trading",
-   "url": "https://www.mckinsey.com/industries/oil-and-gas/our-insights/navigating-the-new-normal-building-resilience-in-fuel-retail-trading",
-   "date": "2026-09-28",
-   "summary": "Commodity markets have entered a new era of persistent volatility. For fuel retailers, this is a chance to strengthen resilience and unlock value, but only with strategic investment and a shift in mindset."
-  },
-  {
-   "title": "AI is changing how we work. Is your organization ready?",
-   "url": "https://www.mckinsey.com/capabilities/people-and-organization/our-insights/ai-is-changing-how-we-work-is-your-organization-ready",
-   "date": "2026-09-28",
-   "summary": "As AI reshapes roles, leaders face a bigger question: how to rethink jobs, teams, and the way work gets done in a fundamentally different era."
-  },
-  {
-   "title": "The AI-powered future of care",
-   "url": "https://www.mckinsey.com/industries/healthcare/our-insights/the-ai-powered-future-of-care",
-   "date": "2026-09-28",
-   "summary": "AI won’t replace clinicians, but it can improve quality, increase access, and reshape the workforce, payments, and patient volumes. Today, AI can perform some 16 to 22 percent of US outpatient care."
-  },
-  {
-   "title": "Convenience or discovery: Which mission will your store serve?",
-   "url": "https://www.mckinsey.com/industries/retail/our-insights/convenience-or-discovery-which-mission-will-your-store-serve",
-   "date": "2026-09-28",
-   "summary": "As AI reshapes how consumers browse, shop, and buy, retailers must choose a mission for every location—and commit to it."
-  },
-  {
-   "title": "Billion-dollar beauty: The odds of scaling a breakout brand",
-   "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/billion-dollar-beauty-the-odds-of-scaling-a-breakout-brand",
-   "date": "2026-09-24",
-   "summary": "Our new analysis reveals the odds of reaching $1 billion in sales—and how the paths to that milestone differ by category and ownership."
-  },
-  {
-   "title": "Democratized superintelligence is coming: The world needs to get ready",
-   "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/democratized-superintelligence-is-coming-the-world-needs-to-get-ready",
-   "date": "2026-09-24",
-   "summary": "Bret Taylor, Sierra cofounder and OpenAI chair, believes AI’s near-term cybersecurity risks are real but solvable, and its greater power lies in delivering the world’s best knowledge to everyone."
-  },
-  {
-   "title": "The new growth mandate: A conversation with LinkedIn CMO Jessica Jensen",
-   "url": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/the-new-growth-mandate-a-conversation-with-linkedin-cmo-jessica-jensen",
-   "date": "2026-09-24",
-   "summary": "At Cannes Lions 2026, LinkedIn CMO Jessica Jensen and McKinsey senior partner Dianne Esber discussed what it takes to turn AI from experimentation into a catalyst for growth."
-  },
-  {
-   "title": "Harnessing AI to make mining safer",
-   "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/harnessing-ai-to-make-mining-safer",
-   "date": "2026-09-23",
-   "summary": "AI could improve both safety and productivity by anticipating problems before they arise, detecting worker fatigue, and automating dangerous tasks."
-  },
-  {
-   "title": "Maintenance meets AI: A proven approach for asset-heavy industries",
-   "url": "https://www.mckinsey.com/capabilities/operations/our-insights/maintenance-meets-ai-a-proven-approach-for-asset-heavy-industries",
-   "date": "2026-09-23",
-   "summary": "Embedding the latest AI and technology within day-to-day operations is transforming maintenance from a cost center into a significant driver of value."
   }
  ],
  "note": "",

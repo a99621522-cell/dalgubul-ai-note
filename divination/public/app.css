@@ -84,7 +84,7 @@ footer.foot p{margin:6px 0}
 .coins{margin:6px 0 12px;padding:12px;border:1px dashed var(--line);border-radius:10px;background:var(--bg)}
 .coinboard{display:grid;grid-template-columns:1fr 120px;gap:14px;align-items:start}
 @media (max-width:600px){.coinboard{grid-template-columns:1fr}}
-.coinrow{display:flex;gap:18px;justify-content:center;height:110px;align-items:flex-end;perspective:700px}
+.coinrow{display:flex;gap:18px;justify-content:center;height:150px;padding-top:70px;box-sizing:border-box;align-items:flex-end;perspective:700px}
 .coin{width:64px;height:64px;position:relative;transform-style:preserve-3d;transition:transform var(--dur,1s) cubic-bezier(.2,.7,.2,1)}
 .coin .face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.25rem;backface-visibility:hidden;border:2px solid var(--line);box-shadow:inset 0 0 0 4px rgba(0,0,0,.06)}
 .coin .front{background:linear-gradient(145deg,#f3d58a,#c9a24a);color:#5a3d00}

@@ -42,7 +42,8 @@ export class AnthropicCaller implements ModelCaller {
   model: string;
   constructor(model: string = process.env.DIVINATION_MODEL ?? DEFAULT_MODEL, client?: Anthropic) {
     this.model = model;
-    this.client = client ?? new Anthropic();
+    // 해석 한 단계가 보통 20~40초. 90초를 넘기면 끊고(재시도 2회는 SDK 기본) 사용자에게 다시 시도하라고 한다
+    this.client = client ?? new Anthropic({ timeout: Number(process.env.ANTHROPIC_TIMEOUT_MS ?? 90000), maxRetries: 2 });
   }
 
   private params(call: TextCall) {

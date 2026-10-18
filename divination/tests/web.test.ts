@@ -11,7 +11,7 @@ let child: ChildProcess;
 
 before(async () => {
   const server = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../src/llm/server.ts');
-  child = spawn(process.execPath, [server], { env: { ...process.env, PORT: String(PORT) }, stdio: ['ignore', 'pipe', 'pipe'] });
+  child = spawn(process.execPath, [server], { env: { ...process.env, PORT: String(PORT), RATE_CAST_PER_MIN: '8', METRICS_TOKEN: 'test-token' }, stdio: ['ignore', 'pipe', 'pipe'] });
   await new Promise<void>((resolve, reject) => {
     const t = setTimeout(() => reject(new Error('server start timeout')), 8000);
     child.stdout!.on('data', (d: Buffer) => { if (d.toString().includes('divination server')) { clearTimeout(t); resolve(); } });
@@ -58,4 +58,23 @@ test('POST /api/cast material.coins 왕복과 형식 오류 400', async () => {
   assert.equal(d.charts.meihua.benGua.hanja, '天風姤'); assert.equal(d.charts.meihua.meta.method, 'coins');
   const bad = await fetch(base + '/api/cast', { method: 'POST', body: JSON.stringify({ question: '테스트', material: { coins: { lower: [0, 1], upper: [1, 1, 1] } } }) });
   assert.equal(bad.status, 400);
+});
+
+test('GET /metrics 는 토큰이 있어야 열리고 집계에 질문이 없다', async () => {
+  assert.equal((await fetch(base + '/metrics')).status, 404);
+  const r = await fetch(base + '/metrics', { headers: { 'x-metrics-token': 'test-token' } });
+  assert.equal(r.status, 200);
+  const d = await r.json() as { counts: { cast: number }; limits: { maxDivinePerDay: number } };
+  assert.ok(d.counts.cast >= 1); assert.equal(d.limits.maxDivinePerDay, 500);
+  assert.ok(!JSON.stringify(d).includes('테스트'));
+});
+
+test('요청 제한: 분당 한도를 넘기면 429 와 retry-after', async () => {
+  let last = 200; let retry = '';
+  for (let i = 0; i < 12; i++) {
+    const r = await fetch(base + '/api/cast', { method: 'POST', body: JSON.stringify({ question: 'x', datetime: '2026-10-19T07:00:00+09:00', method: 'meihua' }) });
+    last = r.status; if (r.status === 429) { retry = r.headers.get('retry-after') ?? ''; break; }
+  }
+  assert.equal(last, 429); assert.ok(Number(retry) > 0);
+  assert.ok((await fetch(base + '/health')).ok);
 });

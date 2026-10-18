@@ -24,6 +24,10 @@ npm run serve     # http://localhost:8787  화면(/) + POST /api/divine, POST /a
 - 첫 화면 머리와 바닥에 참고·오락용 고지와 109·1577-0199 안내를 고정. 브라우저 저장소를 쓰지 않는다.
 - 검증: `tests/web.test.ts`(서버를 띄워 정적 파일·CSP·cast·coins·400), Playwright 로 1100px·390px 폭 스크린샷과 가로 스크롤 없음·콘솔 오류 없음, 동전판은 reduced-motion·시간대(서울·뉴욕) 6회에서 화면의 동효와 서버 계산이 모두 일치, 앞면 비율 0.48/900회 확인(2026-10-18).
 
+## 배포·운영
+
+`Dockerfile`(node:22-alpine, 빌드 없이 .ts 실행, 비루트, 헬스체크)과 `.env.example`, 운영 체크리스트 `docs/ops.md`. 서버(`src/llm/server.ts` + `src/llm/ops.ts`)는 IP 별 분당·일별 요청 제한(429), 동시 실행 제한과 서버 하루 상한(503), 같은 질문·시각·재료 결과 캐시(LRU+TTL, 키는 해시만), 모델 호출 시간 제한, 사용량 집계 `GET /metrics`(토큰 보호, 질문·IP 없음), 선택 JSONL 사용량 로그, 요청 ID, 정상 종료를 갖췄다. 이 환경에는 Docker 데몬이 없어 이미지 빌드는 첫 배포 전에 로컬에서 확인한다.
+
 ## 해석 파이프라인 (`src/llm/`)
 
 ```
@@ -67,7 +71,8 @@ src/qimen/                시가기문 전반 차보법 포국, 격국 판정표
 src/index.ts              castMeihua / castQimen / castBoth
 src/llm/                  해석 파이프라인(프롬프트·모델 호출·CLI·서버)
 public/                   화면(index.html·app.css·app.js)
-tests/                    달력(한국천문연구원 공표값)·고전 사례(관매점·모란점)·손 포국 사례·파이프라인(가짜 모델)
+tests/                    달력·고전 사례·손 포국·파이프라인(가짜 모델)·운영 모듈·서버(정적·제한·metrics)
+Dockerfile, .env.example, docs/ops.md  배포·운영
 ```
 
 ## 정한 것(유파·기준)

@@ -26,7 +26,7 @@ npm run serve     # http://localhost:8787  화면(/) + POST /api/divine, POST /a
 
 ## 배포·운영
 
-`Dockerfile`(node:22-alpine, 빌드 없이 .ts 실행, 비루트, 헬스체크)과 `.env.example`, 운영 체크리스트 `docs/ops.md`. 서버(`src/llm/server.ts` + `src/llm/ops.ts`)는 IP 별 분당·일별 요청 제한(429), 동시 실행 제한과 서버 하루 상한(503), 같은 질문·시각·재료 결과 캐시(LRU+TTL, 키는 해시만), 모델 호출 시간 제한, 사용량 집계 `GET /metrics`(토큰 보호, 질문·IP 없음), 선택 JSONL 사용량 로그, 요청 ID, 정상 종료를 갖췄다. 이 환경에는 Docker 데몬이 없어 이미지 빌드는 첫 배포 전에 로컬에서 확인한다.
+`Dockerfile`(node:22-alpine, 빌드 없이 .ts 실행, 비루트, 헬스체크)과 `.env.example`, 운영 체크리스트 `docs/ops.md`. 서버(`src/llm/server.ts` + `src/llm/ops.ts`)는 IP 별 분당·일별 요청 제한(429), 동시 실행 제한과 서버 하루 상한(503), 같은 질문·시각·재료 결과 캐시(LRU+TTL, 키는 해시만), 모델 호출 시간 제한, 사용량 집계 `GET /metrics`(토큰 보호, 질문·IP 없음), 선택 JSONL 사용량 로그, 요청 ID, 정상 종료를 갖췄다. 이 환경에는 Docker 데몬이 없어 이미지 빌드는 첫 배포 전에 로컬에서 확인한다. **Render 배포**는 저장소 루트의 `render.yaml`(Blueprint, Node 런타임, 싱가포르, `/health`)로 — 절차는 `docs/ops.md` 3절.
 
 ## 해석 파이프라인 (`src/llm/`)
 

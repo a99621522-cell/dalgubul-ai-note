@@ -20,6 +20,16 @@ curl -s localhost:8787/health
 - HTTPS 는 플랫폼 또는 Cloudflare 가 끝낸다. 서버는 HTTP 만 듣는다.
 - 이미지 빌드는 이 저장소의 CI 환경에서 확인하지 못했다(Docker 데몬 없음). 첫 배포 전에 로컬에서 한 번 빌드·실행해 `/health` 와 `/api/cast` 를 본다.
 
+### Render (권장 경로, 저장소 루트 `render.yaml`)
+1. Render 대시보드 → **New → Blueprint** → GitHub 저장소 `a99621522-cell/dalgubul-ai-note` 연결 → 브랜치 선택(이 작업 브랜치 또는 main 에 합친 뒤 main).
+2. 서비스 `daitda-divination` 이 잡히면 **ANTHROPIC_API_KEY** 값을 입력(저장소에는 없음). `METRICS_TOKEN` 은 자동 생성된다.
+3. Apply → 빌드(`npm ci --omit=dev`) → 시작(`node src/llm/server.ts`). 헬스체크 `/health` 가 200 이면 공개 주소 `https://daitda-divination.onrender.com` 이 열린다.
+4. 열어서 「괘·국 보기」 → 「풀이 받기」 한 번. `/metrics` 는 헤더 `x-metrics-token: <METRICS_TOKEN>` 으로.
+5. 커스텀 도메인은 서비스 Settings → Custom Domains 에서 추가하고 DNS 에 CNAME. Cloudflare 존(daitda.co.kr)을 쓰면 `divine.daitda.co.kr` 같은 하위 도메인을 CNAME 으로 걸면 된다.
+- 플랜: `starter` 로 두었다. `free` 로 바꾸면 비용은 없지만 15분 유휴 뒤 잠들어 첫 응답이 50초쯤 걸리고 메모리 제한·캐시가 자주 비워진다.
+- 환경 변수 값은 `render.yaml` 의 기본값(하루 300건, 동시 3건, IP 당 분당 6·하루 40건)이며 대시보드에서 언제든 바꾼다. 바꾸면 자동 재시작.
+- Node 버전은 `NODE_VERSION=22.22.0` 과 `divination/.node-version` 두 곳에 같은 값.
+
 ## 4. 비용 어림 (풀이 1건, 두 술법, 검수 포함)
 단계 5회 호출(분류·매화·기문·종합·검수). 입력은 시스템 프롬프트(캐시 대상) + 계산 JSON, 출력은 700~1,000자 풀이. 실제 토큰은 평가 스크립트(`src/llm/eval.ts`)로 재고 아래 표를 고친다.
 

@@ -1,0 +1,38 @@
+# Render Blueprint — 매화·기문 점풀이 서버(divination/)만 올린다. 사이트(Astro)는 Cloudflare Pages 그대로.
+# Render 대시보드 → New → Blueprint → 이 저장소 선택 → 브랜치 지정. 비밀값(sync: false)은 생성 화면에서 묻는다.
+services:
+  - type: web
+    name: daitda-divination
+    runtime: node
+    region: singapore          # 한국에서 가장 가까운 리전
+    plan: starter              # free 는 15분 유휴 뒤 잠들어 첫 응답이 느리고 메모리 제한·캐시가 자주 비워진다
+    rootDir: divination
+    buildCommand: npm ci --omit=dev
+    startCommand: node src/llm/server.ts
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0         # .ts 직접 실행(22.18+)
+      - key: ANTHROPIC_API_KEY
+        sync: false            # 대시보드에서 직접 입력. 저장소에 넣지 않는다
+      - key: METRICS_TOKEN
+        generateValue: true    # /metrics 보호 토큰. 대시보드 Environment 에서 값 확인
+      - key: DIVINATION_MODEL
+        value: claude-opus-5-5
+      - key: TRUST_PROXY
+        value: "1"             # Render 프록시 뒤라 X-Forwarded-For 첫 값이 사용자 IP
+      - key: MAX_INFLIGHT
+        value: "3"
+      - key: MAX_DIVINE_PER_DAY
+        value: "300"
+      - key: RATE_DIVINE_PER_MIN
+        value: "6"
+      - key: RATE_DIVINE_PER_DAY
+        value: "40"
+      - key: CACHE_MAX
+        value: "500"
+      - key: CACHE_TTL_MIN
+        value: "1440"
+      - key: ANTHROPIC_TIMEOUT_MS
+        value: "90000"

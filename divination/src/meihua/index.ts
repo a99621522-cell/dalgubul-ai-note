@@ -2,6 +2,7 @@
 import { relation, seasonElement, strength, branchOf, type Branch, type Element, type Rel, type Strength } from '../common/ganzhi.ts';
 import { trigramByNumber, trigramByLines, hexagramName, type Trigram } from './trigrams.ts';
 import { strokesOfText } from './strokes.ts';
+import { objectTrigram, directionTrigram } from './images.ts';
 
 export interface GuaOut {
   name: string; hanja: string;
@@ -20,7 +21,7 @@ export interface MeihuaChart {
     castAt: string; tz: string; localSolar: string; ziHour: string; correctionMin: number; effectiveLocal: string;
     lunar: { year: number; month: number; day: number; leap: boolean };
     pillars: { year: string; month: string; day: string; hour: string };
-    method: 'time' | 'number' | 'text';
+    method: 'time' | 'number' | 'text' | 'object';
     rawMaterial: string | null;
     numberRule: string;
   };
@@ -94,6 +95,21 @@ export function numbersFromText(text: string, _hourBranchNum: number, table?: Re
   const total = front + back;
   return { upper: mod(front, 8), lower: mod(back, 8), moving: mod(total, 6), total, rule: '글자 획수(字占): 앞 글자 획수 합=상괘, 뒤=하괘, 동효=총획(시지수 없음)' };
 }
+
+/**
+ * 단법후천 기괘(『梅花易數』 物卦起例·占動物): 보인 사물(사람·동물·색)의 괘를 상괘, 그것이 있던/온 방위의 괘를 하괘로,
+ * 두 괘수에 시지수를 더해 동효. 老人有憂色占(乾1 上·巽5 下·卯4 → 姤 四爻)이 이 법.
+ */
+export function numbersFromObject(object: string, direction: string, hourBranchNum: number): MeihuaNumbers & { upperHit: string; lowerHit: string } {
+  const o = objectTrigram(object);
+  if (!o) throw new Error(`물상 사전에 없는 낱말: ${object}`);
+  const d = directionTrigram(direction) ?? objectTrigram(direction);
+  if (!d) throw new Error(`방위(또는 하괘 낱말)를 알 수 없음: ${direction}`);
+  const un = trigramNumber(o.trigram), ln = trigramNumber(d.trigram);
+  const total = un + ln + hourBranchNum;
+  return { upper: un, lower: ln, moving: mod(total, 6), total, rule: `단법후천: ${o.matched}=${o.trigram}(${un}) 상괘, ${d.matched}=${d.trigram}(${ln}) 하괘, 동효=(${un}+${ln}+시지수 ${hourBranchNum}) mod 6`, upperHit: o.matched, lowerHit: d.matched };
+}
+function trigramNumber(name: string): number { return ['乾', '兌', '離', '震', '巽', '坎', '艮', '坤'].indexOf(name) + 1; }
 
 function guaOut(upper: Trigram, lower: Trigram, movingLine: GuaOut['movingLine']): GuaOut {
   const n = hexagramName(upper, lower);

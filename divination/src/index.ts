@@ -5,7 +5,7 @@ import { lunarFromDayNumber } from './calendar/lunar.ts';
 import { currentTerm } from './calendar/solarTerms.ts';
 import { civilFromJd } from './calendar/astro.ts';
 import { branchNumber, branchOf, type Branch } from './common/ganzhi.ts';
-import { numbersFromTime, numbersFromNumbers, numbersFromText, buildCore, type MeihuaChart } from './meihua/index.ts';
+import { numbersFromTime, numbersFromNumbers, numbersFromText, numbersFromObject, buildCore, type MeihuaChart } from './meihua/index.ts';
 import { buildQimen, type QimenChart } from './qimen/index.ts';
 
 export type { MeihuaChart } from './meihua/index.ts';
@@ -15,6 +15,7 @@ export { lunarFromCivil, civilFromLunar, leapMonthOf } from './calendar/lunar.ts
 export { solarTerms } from './calendar/solarTerms.ts';
 export { pillarsOf } from './calendar/pillars.ts';
 export { resolveTime } from './calendar/time.ts';
+export { objectTrigram, directionTrigram, imageHints, KO_IMAGES, CLASSIC_IMAGES } from './meihua/images.ts';
 
 export interface CastInput {
   /** ISO 8601, 시간대 포함 권장(없으면 +09:00). 예: 2026-10-18T14:30:00+09:00 */
@@ -25,8 +26,8 @@ export interface CastInput {
 }
 
 export interface MeihuaCastInput extends CastInput {
-  /** 기괘 재료. 없으면 연월일시 기괘 */
-  material?: { numbers?: number[]; text?: string; strokeTable?: Record<string, number> };
+  /** 기괘 재료. 없으면 연월일시 기괘. object+direction 은 단법후천(사물 괘 + 방위 괘) */
+  material?: { numbers?: number[]; text?: string; strokeTable?: Record<string, number>; object?: string; direction?: string };
 }
 
 export interface QimenCastInput extends CastInput {
@@ -52,7 +53,9 @@ export function castMeihua(input: MeihuaCastInput): MeihuaChart {
   const hourNum = t.hourBranchIndex + 1;
   const yearNum = branchNumber(branchOf(pillars.year));
   let nums; let method: MeihuaChart['meta']['method'] = 'time'; let raw: string | null = null;
-  if (input.material?.numbers && input.material.numbers.length) {
+  if (input.material?.object) {
+    nums = numbersFromObject(input.material.object, input.material.direction ?? '', hourNum); method = 'object'; raw = `${input.material.object} / ${input.material.direction ?? ''}`;
+  } else if (input.material?.numbers && input.material.numbers.length) {
     nums = numbersFromNumbers(input.material.numbers, hourNum); method = 'number'; raw = input.material.numbers.join(',');
   } else if (input.material?.text) {
     nums = numbersFromText(input.material.text, hourNum, input.material.strokeTable); method = 'text'; raw = input.material.text;

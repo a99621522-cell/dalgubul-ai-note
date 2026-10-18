@@ -249,6 +249,36 @@ export function detectFormats(c: Ctx): Format[] {
       const jx: Record<string, number> = { 戊: 3, 己: 2, 庚: 8, 辛: 9, 壬: 4, 癸: 4 };
       if (jx[h] === p.gong) push('六儀擊刑', '凶', p.gong, `${h} 격형`);
     }
+    // --- 『遁甲演義』 卷2 의 여섯 遁·三詐·五假·天網四張 ---
+    const good3 = ['開門', '休門', '生門'].includes(p.door);
+    for (const h of hs) {
+      const qi = '乙丙丁'.includes(h);
+      // 神遁 丙+生門+九天 / 鬼遁 丁+休門+九地, 乙+開門+九地
+      if (h === '丙' && p.door === '生門' && p.deity === '九天') push('神遁', '吉', p.gong, '丙+生門+九天');
+      if ((h === '丁' && p.door === '休門' && p.deity === '九地') || (h === '乙' && p.door === '開門' && p.deity === '九地')) push('鬼遁', '吉', p.gong, `${h}+${p.door}+九地`);
+      // 風遁 乙+三吉門+巽4 / 丙+開門+巽4
+      if (p.gong === 4 && ((h === '乙' && good3) || (h === '丙' && p.door === '開門'))) push('風遁', '吉', p.gong, `${h}+${p.door}+巽궁`);
+      // 雲遁 乙+지반辛+三吉門 / 乙+開門+坤2
+      if (h === '乙' && ((p.earthStem === '辛' && good3) || (p.door === '開門' && p.gong === 2))) push('雲遁', '吉', p.gong, p.earthStem === '辛' ? `乙+${p.door}+辛` : '乙+開門+坤궁');
+      // 龍遁 乙+休門+坎1 / 乙+休門+지반癸
+      if (h === '乙' && p.door === '休門' && (p.gong === 1 || p.earthStem === '癸')) push('龍遁', '吉', p.gong, p.gong === 1 ? '乙+休門+坎궁' : '乙+休門+癸');
+      // 虎遁 乙+休門+지반辛(艮) / 乙+生門+辛 / 辛+生門+艮8
+      if ((h === '乙' && p.earthStem === '辛' && (p.door === '休門' || p.door === '生門')) || (h === '辛' && p.door === '生門' && p.gong === 8)) push('虎遁', '吉', p.gong, `${h}+${p.door}+${h === '辛' ? '艮궁' : '辛'}`);
+      // 三詐: 三吉門+三奇 아래 太陰=真詐·九地=重詐·六合=休詐
+      if (qi && good3) {
+        if (p.deity === '太陰') push('真詐', '吉', p.gong, `${h}+${p.door}+太陰 (施恩·隱遁)`);
+        if (p.deity === '九地') push('重詐', '吉', p.gong, `${h}+${p.door}+九地 (取財·拜官)`);
+        if (p.deity === '六合') push('休詐', '吉', p.gong, `${h}+${p.door}+六合 (合藥·祈禳)`);
+      }
+      // 五假(人假 제외): 地假 杜門+丁己癸+九地, 天假 景門+乙丙丁+九天, 神假 傷門+丁己癸+九地, 鬼假 死門+丁己癸+九地
+      const djg = '丁己癸'.includes(h);
+      if (p.door === '杜門' && djg && p.deity === '九地') push('地假', '吉', p.gong, `杜門+${h}+九地 (潛伏·藏形)`);
+      if (p.door === '景門' && qi && p.deity === '九天') push('天假', '吉', p.gong, `景門+${h}+九天 (進謁·干求)`);
+      if (p.door === '傷門' && djg && p.deity === '九地') push('神假', '吉', p.gong, `傷門+${h}+九地 (埋葬)`);
+      if (p.door === '死門' && djg && p.deity === '九地') push('鬼假', '吉', p.gong, `死門+${h}+九地 (超亡·薦度)`);
+      // 天網四張: 천반 癸 가 든 궁. 1~4궁 낮음(길 있음), 6~9궁 높음(길 없음)
+      if (h === '癸') push('天網四張', '凶', p.gong, p.gong <= 4 ? `癸 ${p.gong}궁 — 그물 낮음(一二網低有路踪)` : `癸 ${p.gong}궁 — 그물 높음(八九高強)`);
+    }
     // 門迫: 門克宮
     if (p.doorVsPalace === '迫') push('門迫', '凶', p.gong, `${p.door} 이 ${p.trigram}궁을 극함`);
   }

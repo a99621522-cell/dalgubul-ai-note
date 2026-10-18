@@ -23,7 +23,7 @@ export interface DivinationRequest {
   datetime?: string;
   longitude?: number;
   latitude?: number;
-  material?: { numbers?: number[]; text?: string; strokeTable?: Record<string, number> };
+  material?: { numbers?: number[]; text?: string; strokeTable?: Record<string, number>; object?: string; direction?: string };
   /** 질문자 생년 간지(년명). 선택 */
   yearMing?: string | null;
   externalSigns?: string | null;

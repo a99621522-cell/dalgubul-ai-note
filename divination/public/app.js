@@ -11,10 +11,13 @@
   $('at').placeholder = nowLocal();
   $('place').addEventListener('change', () => $('lon').classList.toggle('hidden', $('place').value !== 'custom'));
   f.querySelectorAll('input[name=mat]').forEach((r) => r.addEventListener('change', () => {
-    $('nums').classList.toggle('hidden', r.value !== 'numbers' || !r.checked);
-    $('txt').classList.toggle('hidden', r.value !== 'text' || !r.checked);
-    if (r.checked) { $('nums').classList.toggle('hidden', r.value !== 'numbers'); $('txt').classList.toggle('hidden', r.value !== 'text'); }
+    if (!r.checked) return;
+    $('nums').classList.toggle('hidden', r.value !== 'numbers');
+    $('txt').classList.toggle('hidden', r.value !== 'text');
+    $('objwrap').classList.toggle('hidden', r.value !== 'object');
   }));
+  const OBJ_WORDS = ['노인', '아버지', '윗사람', '말', '거울', '어머니', '할머니', '소', '옷감', '쌀', '장남', '청년', '용', '뱀', '대나무', '천둥', '장녀', '스님', '닭', '새', '바람', '돼지', '물고기', '술', '도둑', '달', '해', '꿩', '문서', '편지', '꽃', '화로', '개', '소년', '돌', '산', '쥐', '호랑이', '소녀', '양', '칼', '그릇', '무당', '빨강', '파랑', '노랑', '하양', '검정'];
+  $('objlist').innerHTML = OBJ_WORDS.map((w) => `<option value="${w}">`).join('');
 
   function tzString() {
     const off = -new Date().getTimezoneOffset(); const s = off >= 0 ? '+' : '-'; const a = Math.abs(off);
@@ -38,6 +41,11 @@
       const t = $('txt').value.trim();
       if (!t) throw new Error('글자를 적어 주세요.');
       req.material = { text: t };
+    } else if (mat === 'object') {
+      const o = $('obj').value.trim(), d = $('dir').value;
+      if (!o) throw new Error('보인 것을 적어 주세요.');
+      if (!d) throw new Error('그것이 있던 방위를 골라 주세요.');
+      req.material = { object: o, direction: d };
     }
     req.method = $('method').value;
     const ym = $('ym').value.trim();
@@ -86,13 +94,14 @@
     const tri = (t) => `${t.name}(${KO[t.name]}·${ELEM_KO[t.element]})`;
     const rel = m.tiYong.relation;
     const relCls = rel === '用克體' ? 'bad' : rel === '體生用' ? '' : 'good';
-    return `<article class="panel"><h2>매화역수 <small>${esc(m.meta.method === 'time' ? '연월일시 기괘' : m.meta.method === 'number' ? '숫자 기괘' : '글자 획수 기괘')}</small></h2>
+    return `<article class="panel"><h2>매화역수 <small>${esc(m.meta.method === 'time' ? '연월일시 기괘' : m.meta.method === 'number' ? '숫자 기괘' : m.meta.method === 'object' ? '단법후천 기괘' : '글자 획수 기괘')}</small></h2>
       <div class="hexrow">${guaBlock(m.benGua, `본괘 · ${m.benGua.movingLine}효 동`)}${guaBlock(m.huGua, m.huFromBian ? '호괘(변괘의 호)' : '호괘')}${guaBlock(m.bianGua, '변괘')}</div>
       <div><span class="tag">체 ${esc(tri(ti))}</span><span class="tag">용 ${esc(tri(yong))}</span><span class="tag ${relCls}">${esc(REL_KO[rel] || rel)}</span></div>
       <dl class="kv">
         <dt>왕쇠(월령)</dt><dd>체 ${esc(m.seasonStrength.ti)} · 용 ${esc(m.seasonStrength.yong)}</dd>
         <dt>호괘→체</dt><dd>상 ${esc(TOTI_KO[m.huToTi.upper])} · 하 ${esc(TOTI_KO[m.huToTi.lower])} (체호: ${m.huRoles.tiHu === 'upper' ? '상' : '하'})</dd>
         <dt>변괘→체</dt><dd>${esc(TOTI_KO[m.bianToTi])}</dd>
+        ${m.meta.method !== 'time' ? `<dt>재료</dt><dd>${esc(m.meta.rawMaterial || '')} · ${esc(m.meta.numberRule)}</dd>` : ''}
         <dt>괘수</dt><dd>상 ${m.numbers.upper} · 하 ${m.numbers.lower} · 동효 ${m.numbers.moving} · 총 ${m.numbers.total} (응기 ${m.numbers.yingqi.fast}~${m.numbers.yingqi.slow})</dd>
         <dt>음력·사주</dt><dd>${m.meta.lunar.year}년 ${m.meta.lunar.leap ? '윤' : ''}${m.meta.lunar.month}월 ${m.meta.lunar.day}일 · ${esc(Object.values(m.meta.pillars).join(' '))}</dd>
       </dl></article>`;

@@ -59,6 +59,8 @@ function sanitize(b: unknown): DivinationRequest {
     req.material = {};
     if (Array.isArray(m.numbers)) req.material.numbers = m.numbers.map(Number).filter((n) => Number.isInteger(n) && n >= 0).slice(0, 3);
     if (typeof m.text === 'string') req.material.text = m.text.slice(0, 20);
+    if (typeof m.object === 'string') req.material.object = m.object.slice(0, 20);
+    if (typeof m.direction === 'string') req.material.direction = m.direction.slice(0, 10);
   }
   if (o.options && typeof o.options === 'object') {
     const t = o.options as Record<string, unknown>;

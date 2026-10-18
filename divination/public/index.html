@@ -51,9 +51,19 @@
         <label><input type="radio" name="mat" value="time" checked> 시각으로</label>
         <label><input type="radio" name="mat" value="numbers"> 숫자로</label>
         <label><input type="radio" name="mat" value="text"> 글자로</label>
+        <label><input type="radio" name="mat" value="object"> 보인 것으로</label>
       </div>
       <input id="nums" name="nums" type="text" inputmode="numeric" placeholder="숫자 1~3개, 쉼표로 (예: 37, 58)" class="hidden" aria-label="숫자">
       <input id="txt" name="txt" type="text" maxlength="20" placeholder="떠오른 낱말 (예: 대구)" class="hidden" aria-label="글자">
+      <div id="objwrap" class="row hidden">
+        <input id="obj" name="obj" type="text" maxlength="20" list="objlist" placeholder="눈에 띈 사람·동물·물건·색 (예: 노인, 닭, 붉은 꽃)" aria-label="보인 것">
+        <select id="dir" name="dir" aria-label="방위">
+          <option value="">그것이 있던 방위</option>
+          <option>북</option><option>북동</option><option>동</option><option>남동</option><option>남</option><option>남서</option><option>서</option><option>북서</option>
+        </select>
+        <datalist id="objlist"></datalist>
+        <span class="hint">『매화역수』 단법후천: 보인 것의 괘가 상괘, 방위의 괘가 하괘, 시각으로 동효.</span>
+      </div>
     </fieldset>
 
     <div class="row">

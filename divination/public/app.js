@@ -48,7 +48,7 @@
       if (!d) throw new Error('그것이 있던 방위를 골라 주세요.');
       req.material = { object: o, direction: d };
     } else if (mat === 'coins') {
-      if (!coinState.lower || !coinState.upper) throw new Error('동전을 두 번 던져 괘를 먼저 만들어 주세요.');
+      if (!coinState.lower || !coinState.upper) throw new Error(`동전을 여섯 번 던져 괘를 먼저 완성해 주세요 (지금 ${coinState.lines.length}/6).`);
       req.material = { coins: { lower: coinState.lower, upper: coinState.upper } };
       if (!req.datetime && coinState.at) req.datetime = coinState.at; // 첫 던지기 순간으로 고정
     }
@@ -183,45 +183,63 @@
     readingEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // --- 동전 기괘 ---
+  // --- 동전 기괘: 동전 3개 × 6번, 앞면 홀수=양·짝수=음, 아래부터 한 효씩 ---
   const TRI_KO = { '111': ['乾', '건'], '110': ['兌', '태'], '101': ['離', '리'], '100': ['震', '진'], '011': ['巽', '손'], '010': ['坎', '감'], '001': ['艮', '간'], '000': ['坤', '곤'] };
   const TRI_NUM = { 乾: 1, 兌: 2, 離: 3, 震: 4, 巽: 5, 坎: 6, 艮: 7, 坤: 8 };
-  const coinState = { lower: null, upper: null, at: null, busy: false, skip: false, readOnce: false };
+  const HEX_NAME = {
+    乾: { 乾: ['건위천', '乾爲天'], 兌: ['천택리', '天澤履'], 離: ['천화동인', '天火同人'], 震: ['천뢰무망', '天雷无妄'], 巽: ['천풍구', '天風姤'], 坎: ['천수송', '天水訟'], 艮: ['천산돈', '天山遯'], 坤: ['천지비', '天地否'] },
+    兌: { 乾: ['택천쾌', '澤天夬'], 兌: ['태위택', '兌爲澤'], 離: ['택화혁', '澤火革'], 震: ['택뢰수', '澤雷隨'], 巽: ['택풍대과', '澤風大過'], 坎: ['택수곤', '澤水困'], 艮: ['택산함', '澤山咸'], 坤: ['택지췌', '澤地萃'] },
+    離: { 乾: ['화천대유', '火天大有'], 兌: ['화택규', '火澤睽'], 離: ['이위화', '離爲火'], 震: ['화뢰서합', '火雷噬嗑'], 巽: ['화풍정', '火風鼎'], 坎: ['화수미제', '火水未濟'], 艮: ['화산려', '火山旅'], 坤: ['화지진', '火地晉'] },
+    震: { 乾: ['뇌천대장', '雷天大壯'], 兌: ['뇌택귀매', '雷澤歸妹'], 離: ['뇌화풍', '雷火豊'], 震: ['진위뢰', '震爲雷'], 巽: ['뇌풍항', '雷風恒'], 坎: ['뇌수해', '雷水解'], 艮: ['뇌산소과', '雷山小過'], 坤: ['뇌지예', '雷地豫'] },
+    巽: { 乾: ['풍천소축', '風天小畜'], 兌: ['풍택중부', '風澤中孚'], 離: ['풍화가인', '風火家人'], 震: ['풍뢰익', '風雷益'], 巽: ['손위풍', '巽爲風'], 坎: ['풍수환', '風水渙'], 艮: ['풍산점', '風山漸'], 坤: ['풍지관', '風地觀'] },
+    坎: { 乾: ['수천수', '水天需'], 兌: ['수택절', '水澤節'], 離: ['수화기제', '水火旣濟'], 震: ['수뢰둔', '水雷屯'], 巽: ['수풍정', '水風井'], 坎: ['감위수', '坎爲水'], 艮: ['수산건', '水山蹇'], 坤: ['수지비', '水地比'] },
+    艮: { 乾: ['산천대축', '山天大畜'], 兌: ['산택손', '山澤損'], 離: ['산화비', '山火賁'], 震: ['산뢰이', '山雷頤'], 巽: ['산풍고', '山風蠱'], 坎: ['산수몽', '山水蒙'], 艮: ['간위산', '艮爲山'], 坤: ['산지박', '山地剝'] },
+    坤: { 乾: ['지천태', '地天泰'], 兌: ['지택림', '地澤臨'], 離: ['지화명이', '地火明夷'], 震: ['지뢰복', '地雷復'], 巽: ['지풍승', '地風升'], 坎: ['지수사', '地水師'], 艮: ['지산겸', '地山謙'], 坤: ['곤위지', '坤爲地'] },
+  };
+  const YAO_NAME = ['초효', '2효', '3효', '4효', '5효', '상효'];
+  const coinState = { lines: [], at: null, busy: false, skip: false, readOnce: false, get lower() { return this.lines.length >= 3 ? this.lines.slice(0, 3) : null; }, get upper() { return this.lines.length >= 6 ? this.lines.slice(3, 6) : null; } };
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function rngBits(n) { const a = new Uint8Array(n); crypto.getRandomValues(a); return Array.from(a, (b) => b & 1); }
   function isoNow() { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}${tzString()}`; }
-  function drawCoinHex() {
-    const lines = [...(coinState.lower || [null, null, null]), ...(coinState.upper || [null, null, null])];
-    let moving = null;
-    if (coinState.lower && coinState.upper) {
-      const up = TRI_NUM[TRI_KO[coinState.upper.join('')][0]], lo = TRI_NUM[TRI_KO[coinState.lower.join('')][0]];
-      const at = coinState.at ? new Date(coinState.at) : new Date();
-      const hourNum = Math.floor(((at.getHours() + 1) % 24) / 2) + 1;
-      moving = (up + lo + hourNum) % 6 || 6;
-    }
+  function hourNumAt() { const at = coinState.at ? new Date(coinState.at) : new Date(); return Math.floor(((at.getHours() + 1) % 24) / 2) + 1; }
+  function currentMoving() {
+    if (coinState.lines.length < 6) return null;
+    const up = TRI_NUM[TRI_KO[coinState.upper.join('')][0]], lo = TRI_NUM[TRI_KO[coinState.lower.join('')][0]];
+    return (up + lo + hourNumAt()) % 6 || 6;
+  }
+  function drawCoinHex(newIndex) {
+    const lines = coinState.lines; const moving = currentMoving();
     let svg = '';
     for (let i = 5; i >= 0; i--) {
-      const y = (5 - i) * 14 + 2; const v = lines[i];
-      const cls = 'yao' + (v === null ? ' pending' : '') + (moving === i + 1 ? ' move' : '');
+      const y = (5 - i) * 14 + 2; const v = i < lines.length ? lines[i] : null;
+      const cls = 'yao' + (v === null ? ' pending' : '') + (moving === i + 1 ? ' move' : '') + (newIndex === i ? ' new' : '');
       if (v === 1 || v === null) svg += `<rect class="${cls}" x="4" y="${y}" width="64" height="8" rx="1"/>`;
       else svg += `<rect class="${cls}" x="4" y="${y}" width="27" height="8" rx="1"/><rect class="${cls}" x="41" y="${y}" width="27" height="8" rx="1"/>`;
     }
     $('coinSvg').innerHTML = svg;
     const lo = coinState.lower ? TRI_KO[coinState.lower.join('')] : null, up = coinState.upper ? TRI_KO[coinState.upper.join('')] : null;
-    $('coinName').textContent = up && lo ? `${up[0]} 위 ${lo[0]} 아래 · 동효 ${moving}효` : lo ? `하괘 ${lo[0]}(${lo[1]})` : '';
+    $('coinName').textContent = up ? '' : lo ? `하괘 ${lo[0]}(${lo[1]}) · 상괘 ${lines.length - 3}/3` : lines.length ? `하괘 ${lines.length}/3` : '';
+    if (up && lo) {
+      const nm = HEX_NAME[up[0]][lo[0]];
+      $('coinFinalName').innerHTML = `${esc(nm[0])}<small>${esc(nm[1])}</small>`;
+      $('coinFinalSub').textContent = `${up[0]}(${up[1]}) 위 · ${lo[0]}(${lo[1]}) 아래 · 동효 ${moving}효`;
+      $('coinFinal').classList.remove('hidden');
+    } else $('coinFinal').classList.add('hidden');
   }
   function setCoinsUI() {
-    const done = coinState.lower && coinState.upper;
-    $('tossBtn').textContent = done ? '던지기 끝' : coinState.lower ? '던지기 (2/2 상괘)' : '던지기 (1/2 하괘)';
-    $('tossBtn').disabled = !!done || coinState.busy;
-    $('resetCoins').classList.toggle('hidden', !coinState.lower);
+    const n = coinState.lines.length; const done = n >= 6;
+    $('tossBtn').textContent = done ? '여섯 번 다 던졌습니다' : `던지기 ${n + 1}/6 · ${YAO_NAME[n]}`;
+    $('tossBtn').disabled = done || coinState.busy;
+    $('resetCoins').classList.toggle('hidden', n === 0);
   }
   function wait(ms) { return new Promise((r) => setTimeout(r, ms)); }
   async function toss() {
-    if (coinState.busy || (coinState.lower && coinState.upper)) return;
+    if (coinState.busy || coinState.lines.length >= 6) return;
     coinState.busy = true; setCoinsUI();
-    if (!coinState.lower && !coinState.at) coinState.at = isoNow();
+    if (coinState.lines.length === 0) coinState.at = isoNow();
     const bits = rngBits(3); // 결과를 먼저 정하고, 연출은 그 결과대로만 떨어진다
+    const heads = bits.reduce((a, b) => a + b, 0);
+    const line = heads % 2 === 1 ? 1 : 0; // 앞면 홀수=양, 짝수=음
     const coins = Array.from(document.querySelectorAll('#coinrow .coin'));
     const animate = !reduced && !coinState.skip;
     const dur = animate ? 1000 : 150;
@@ -229,26 +247,30 @@
       c.style.setProperty('--dur', dur + 'ms');
       c.classList.remove('tossing'); void c.offsetWidth;
       if (animate) { c.classList.add('tossing'); c.style.transitionDelay = (i * 80) + 'ms'; }
-      // 회전 수는 결과 면에 맞게: 앞=짝수 반바퀴, 뒤=홀수 반바퀴
-      const turns = animate ? 4 + i : 0;
+      const prev = Number(c.dataset.turns || 0); const turns = animate ? prev + 4 + i : prev;
+      c.dataset.turns = turns;
       c.style.transform = `rotateY(${turns * 360 + (bits[i] ? 0 : 180)}deg)`;
       c.classList.toggle('is-back', !bits[i]);
     });
-    await wait(dur + 200);
-    const arr = /** @type {[0|1,0|1,0|1]} */ (bits);
-    if (!coinState.lower) coinState.lower = arr; else coinState.upper = arr;
-    const tri = TRI_KO[arr.join('')];
-    $('coinSay').textContent = `${bits.map((b) => (b ? '앞' : '뒤')).join(' ')} — ${bits.map((b) => (b ? '양' : '음')).join(' ')}, ${coinState.upper ? '상괘' : '하괘'} ${tri[0]}(${tri[1]})`;
-    drawCoinHex();
+    await wait(dur + 150);
+    const idx = coinState.lines.length;
+    coinState.lines.push(line);
+    drawCoinHex(idx);
+    const faces = bits.map((b) => (b ? '앞' : '뒤')).join(' ');
+    let say = `${faces} — 앞면 ${heads}개(${heads % 2 ? '홀수' : '짝수'}) → ${line ? '양(실선)' : '음(끊긴 선)'}, ${YAO_NAME[idx]}`;
+    if (idx === 2) { const lo = TRI_KO[coinState.lower.join('')]; say += `. 하괘 ${lo[0]}(${lo[1]}) 완성`; }
+    if (idx === 5) { say += `. 괘가 완성되었습니다: ${$('coinFinalName').textContent.replace(/(\S)([\u4e00-\u9fff])/, '$1 $2')}. 이제 「괘·국 보기」나 「풀이 받기」를 누르세요.`; }
+    $('coinSay').textContent = say;
     coinState.busy = false; setCoinsUI();
-    if (coinState.lower && coinState.upper) $('coinSay').textContent += ` → ${$('coinName').textContent}. 이제 「괘·국 보기」나 「풀이 받기」를 누르세요.`;
   }
   $('tossBtn').addEventListener('click', toss);
   $('skipAnim').addEventListener('click', () => { coinState.skip = !coinState.skip; $('skipAnim').textContent = coinState.skip ? '애니메이션 켜기' : '애니메이션 건너뛰기'; });
+  let resetArmed = false;
   $('resetCoins').addEventListener('click', () => {
-    if (coinState.readOnce && !confirm('같은 일로 다시 점치지 않는 것이 매화역수의 원칙입니다. 그래도 다시 던질까요?')) return;
-    coinState.lower = null; coinState.upper = null; coinState.at = null; $('coinSay').textContent = '';
-    document.querySelectorAll('#coinrow .coin').forEach((c) => { c.style.transform = ''; c.classList.remove('is-back', 'tossing'); });
+    if (coinState.readOnce && !resetArmed) { resetArmed = true; $('resetCoins').textContent = '정말 다시? 한 번 더 누르면 다시 던집니다'; $('coinSay').textContent = '같은 일로 다시 점치지 않는 것이 매화역수의 원칙입니다.'; return; }
+    resetArmed = false; $('resetCoins').textContent = '다시 던지기';
+    coinState.lines = []; coinState.at = null; $('coinSay').textContent = '';
+    document.querySelectorAll('#coinrow .coin').forEach((c) => { c.style.transform = ''; c.dataset.turns = 0; c.classList.remove('is-back', 'tossing'); });
     drawCoinHex(); setCoinsUI();
   });
   drawCoinHex(); setCoinsUI();

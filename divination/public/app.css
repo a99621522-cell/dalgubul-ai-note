@@ -82,7 +82,7 @@ footer.foot p{margin:6px 0}
 
 /* 동전 기괘 */
 .coins{margin:6px 0 12px;padding:12px;border:1px dashed var(--line);border-radius:10px;background:var(--bg)}
-.coinboard{display:grid;grid-template-columns:1fr 120px;gap:14px;align-items:start}
+.coinboard{display:grid;grid-template-columns:1fr 170px;gap:14px;align-items:start}
 @media (max-width:600px){.coinboard{grid-template-columns:1fr}}
 .coinrow{display:flex;gap:18px;justify-content:center;height:150px;padding-top:70px;box-sizing:border-box;align-items:flex-end;perspective:700px}
 .coin{width:64px;height:64px;position:relative;transform-style:preserve-3d;transition:transform var(--dur,1s) cubic-bezier(.2,.7,.2,1)}
@@ -95,9 +95,19 @@ footer.foot p{margin:6px 0}
 .coinbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
 .btn.small{padding:6px 12px;font-weight:500;font-size:.85rem}
 .coinhex{display:flex;flex-direction:column;align-items:center;gap:6px}
-.coinhex svg{width:90px;height:105px}
+.coinhex svg{width:96px;height:112px}
 .coinhex .yao{fill:var(--ink);transform-origin:left center;transition:transform .35s ease-out}
+.coinhex .yao.new{animation:draw .45s ease-out}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .coinhex .yao.pending{fill:var(--line)}
 .coinhex .yao.move{fill:var(--accent)}
 .coinhex .nm{font-weight:600;text-align:center;min-height:2.6em;font-size:.9rem}
 @media (prefers-reduced-motion:reduce){.coin{transition:opacity .2s}.coin.tossing{animation:none}.coinhex .yao{transition:none}}
+
+.coinhex .final{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:4px;padding:10px 12px;border:2px solid var(--accent);border-radius:10px;background:var(--card);text-align:center;animation:pop .5s ease-out}
+.coinhex .final .lbl{font-size:.72rem;letter-spacing:.08em;color:var(--mute)}
+.coinhex .final strong{font-size:1.5rem;line-height:1.15;color:var(--accent)}
+.coinhex .final strong small{display:block;font-size:.95rem;font-weight:600;letter-spacing:.06em;margin-top:2px}
+.coinhex .final span:last-child{font-size:.82rem;color:var(--mute)}
+@keyframes pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.coinhex .final{animation:none}.coinhex .yao.new{animation:none}}

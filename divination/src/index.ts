@@ -63,7 +63,7 @@ export function castMeihua(input: MeihuaCastInput): MeihuaChart {
   return {
     meta: { ...metaBase(t, input), lunar, pillars, method, rawMaterial: raw, numberRule: nums.rule },
     ...core,
-    numbers: { upper: nums.upper, lower: nums.lower, moving: nums.moving, total: nums.total },
+    numbers: { upper: nums.upper, lower: nums.lower, moving: nums.moving, total: nums.total, yingqi: { base: nums.total, fast: Math.ceil(nums.total / 2), slow: nums.total * 2 } },
   };
 }
 

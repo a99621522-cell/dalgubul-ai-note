@@ -29,7 +29,15 @@ export interface MeihuaChart {
   seasonStrength: { ti: Strength; yong: Strength };
   /** 호괘 상·하 각각이 체에 미치는 관계 */
   huToTi: { upper: ToTi; lower: ToTi }; bianToTi: ToTi;
-  numbers: { upper: number; lower: number; moving: number; total: number };
+  /** 체 자리의 호괘(體互)가 상·하 어느 쪽인지. 體互가 用互보다 중하다(『梅花易數』 體用互變之訣) */
+  huRoles: { tiHu: 'upper' | 'lower'; yongHu: 'upper' | 'lower' };
+  /** 본괘가 乾爲天·坤爲地면 호괘 대신 변괘의 호괘를 쓴다('乾坤無互 互其變卦') */
+  huFromBian: boolean;
+  numbers: {
+    upper: number; lower: number; moving: number; total: number;
+    /** 응기(克應) 기준 수 — 成卦之數(total). 立=그대로, 行=절반(빠름), 坐=두 배(늦음). 단위(일·월·년)는 사안의 멀고 가까움으로 정한다(占卜克應之訣) */
+    yingqi: { base: number; fast: number; slow: number };
+  };
 }
 
 export interface MeihuaNumbers { upper: number; lower: number; moving: number; total: number; rule: string }
@@ -68,19 +76,23 @@ export function numbersFromNumbers(nums: number[], hourBranchNum: number): Meihu
   return { upper: mod(nums[0], 8), lower: mod(nums[1], 8), moving: mod(nums[2], 6), total: nums[0] + nums[1] + nums[2], rule: '숫자 3개: 첫째=상괘, 둘째=하괘, 셋째=동효' };
 }
 
-/** 글자 획수 기괘: 글자를 반으로(홀수면 앞이 적게) 나눠 앞 획수 합=상괘, 뒤=하괘, 동효=총획+시지수 */
-export function numbersFromText(text: string, hourBranchNum: number, table?: Record<string, number>): MeihuaNumbers {
+/**
+ * 글자 획수 기괘(『梅花易數』 卷一 字占): 글자 수가 짝수면 반으로, 홀수면 앞이 한 글자 적게 나눠 앞 획수 합=상괘, 뒤=하괘,
+ * 동효=두 괘 획수 총합 mod 6 (시지수를 더하지 않는다 — '又合二卦總數取爻', 西林寺額占 7+8=15→3효).
+ * 글자 1개는 원문이 좌우 획을 나누지만 여기서는 상·하괘를 같은 획수로 두고 동효만 총획으로 본다.
+ */
+export function numbersFromText(text: string, _hourBranchNum: number, table?: Record<string, number>): MeihuaNumbers {
   const strokes = strokesOfText(text, table);
   if (strokes.length === 0) throw new Error('글자가 없습니다');
   if (strokes.length === 1) {
     const n = strokes[0];
-    return { upper: mod(n, 8), lower: mod(n + hourBranchNum, 8), moving: mod(n + hourBranchNum, 6), total: n + hourBranchNum, rule: '글자 1개: 상괘=획수, 하괘·동효=획수+시지수' };
+    return { upper: mod(n, 8), lower: mod(n, 8), moving: mod(n, 6), total: n, rule: '글자 1개: 상괘=하괘=획수, 동효=획수 (원문은 좌우 획 분리)' };
   }
   const cut = Math.floor(strokes.length / 2);
   const front = strokes.slice(0, cut).reduce((a, b) => a + b, 0);
   const back = strokes.slice(cut).reduce((a, b) => a + b, 0);
-  const total = front + back + hourBranchNum;
-  return { upper: mod(front, 8), lower: mod(back, 8), moving: mod(total, 6), total, rule: '글자 획수: 앞 글자 획수 합=상괘, 뒤=하괘, 동효=총획+시지수' };
+  const total = front + back;
+  return { upper: mod(front, 8), lower: mod(back, 8), moving: mod(total, 6), total, rule: '글자 획수(字占): 앞 글자 획수 합=상괘, 뒤=하괘, 동효=총획(시지수 없음)' };
 }
 
 function guaOut(upper: Trigram, lower: Trigram, movingLine: GuaOut['movingLine']): GuaOut {
@@ -99,6 +111,8 @@ export interface MeihuaCore {
   tiYong: MeihuaChart['tiYong'];
   seasonStrength: MeihuaChart['seasonStrength'];
   huToTi: { upper: ToTi; lower: ToTi }; bianToTi: ToTi;
+  huRoles: MeihuaChart['huRoles'];
+  huFromBian: boolean;
 }
 
 function toTi(other: Element, ti: Element): ToTi {
@@ -112,15 +126,17 @@ export function buildCore(num: { upper: number; lower: number; moving: number },
   const lower = trigramByNumber(num.lower);
   const moving = num.moving as 1 | 2 | 3 | 4 | 5 | 6;
   const ben = guaOut(upper, lower, moving);
-  // 호괘: 2·3·4효 → 하호괘, 3·4·5효 → 상호괘
   const l = ben.lines;
-  const huLower = trigramByLines([l[1], l[2], l[3]]);
-  const huUpper = trigramByLines([l[2], l[3], l[4]]);
-  const hu = guaOut(huUpper, huLower, null);
   // 변괘: 동효 반전
   const bl = [...l] as GuaOut['lines'];
   bl[moving - 1] = bl[moving - 1] === 1 ? 0 : 1;
   const bian = guaOut(trigramByLines([bl[3], bl[4], bl[5]]), trigramByLines([bl[0], bl[1], bl[2]]), null);
+  // 호괘: 2·3·4효 → 하호괘, 3·4·5효 → 상호괘. 본괘가 乾爲天·坤爲地면 변괘의 호괘('乾坤無互，互其變卦')
+  const huFromBian = ben.hanja === '乾爲天' || ben.hanja === '坤爲地';
+  const src = huFromBian ? bl : l;
+  const huLower = trigramByLines([src[1], src[2], src[3]]);
+  const huUpper = trigramByLines([src[2], src[3], src[4]]);
+  const hu = guaOut(huUpper, huLower, null);
   // 체용: 동효가 있는 괘가 용
   const yongIsUpper = moving >= 4;
   const ti = yongIsUpper ? lower : upper;
@@ -136,6 +152,8 @@ export function buildCore(num: { upper: number; lower: number; moving: number },
     seasonStrength: { ti: strength(ti.element, season), yong: strength(yong.element, season) },
     huToTi: { upper: toTi(hu.upper.element as Element, ti.element), lower: toTi(hu.lower.element as Element, ti.element) },
     bianToTi: toTi(bianYong.element as Element, ti.element),
+    huRoles: yongIsUpper ? { tiHu: 'lower', yongHu: 'upper' } : { tiHu: 'upper', yongHu: 'lower' },
+    huFromBian,
   };
 }
 

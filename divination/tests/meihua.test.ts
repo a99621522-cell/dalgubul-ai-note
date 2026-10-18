@@ -38,8 +38,8 @@ test('숫자 기괘 규칙 1·2·3개', () => {
 });
 
 test('글자 획수 기괘(한글 자모 합)', () => {
-  const n = numbersFromText('대구', 1); // 대 = ㄷ2+ㅐ3 = 5, 구 = ㄱ1+ㅜ2 = 3 → 상 5, 하 3, 동효 (5+3+1)=9 → 3
-  assert.deepEqual([n.upper, n.lower, n.moving], [5, 3, 3]);
+  const n = numbersFromText('대구', 1); // 대 = ㄷ2+ㅐ3 = 5, 구 = ㄱ1+ㅜ2 = 3 → 상 5, 하 3, 동효 (5+3)=8 → 2 (字占은 시지수를 더하지 않음)
+  assert.deepEqual([n.upper, n.lower, n.moving], [5, 3, 2]);
   assert.throws(() => numbersFromText('漢', 1));
   assert.equal(numbersFromText('漢', 1, { 漢: 14 }).upper, 6);
 });
@@ -47,8 +47,10 @@ test('글자 획수 기괘(한글 자모 합)', () => {
 test('castMeihua: 호괘·변괘 효 구성이 본괘에서 파생된다', () => {
   const r = castMeihua({ datetime: '2026-10-18T14:30:00+09:00' });
   const l = r.benGua.lines;
-  assert.deepEqual(r.huGua.lines, [l[1], l[2], l[3], l[2], l[3], l[4]]);
   const bl = [...l]; bl[r.benGua.movingLine! - 1] ^= 1;
   assert.deepEqual(r.bianGua.lines, bl);
+  const src = r.huFromBian ? bl : l; // 乾坤無互면 변괘에서 호괘
+  assert.deepEqual(r.huGua.lines, [src[1], src[2], src[3], src[2], src[3], src[4]]);
+  assert.ok(typeof r.numbers.yingqi.base === 'number');
   assert.equal(r.meta.method, 'time');
 });

@@ -98,3 +98,12 @@ test('빈 질문은 오류', async () => {
   const { caller } = fake();
   await assert.rejects(() => runDivination({ question: '  ' }, caller), /비어/);
 });
+
+test('eval: 한 줄 답에서 방향을 뽑고 금지어를 잡는다', async () => {
+  const { direction, FORBIDDEN } = await import('../src/llm/eval.ts');
+  assert.equal(direction('## 한 줄 답\n소길입니다. 늦더라도 성사됩니다.'), '소길');
+  assert.equal(direction('## 한 줄 판단\n흉: 체가 극을 받습니다'), '흉');
+  assert.equal(direction('## 한 줄 답\n평 — 아직 비어 있습니다'), '평');
+  assert.ok(FORBIDDEN.test('반드시 오릅니다'));
+  assert.ok(!FORBIDDEN.test('괘상은 좋게 읽힙니다'));
+});

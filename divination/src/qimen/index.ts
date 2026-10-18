@@ -175,6 +175,7 @@ function resolveName(raw: string, palaces: Palace[], heavenPalaceOf: (s: string)
   if (name === '경문') name = '景門'; // 한글 '경문' 은 景門으로 본다(驚門은 '놀랄 경문'·驚門 으로)
   if (name === '놀랄 경문') name = '驚門';
   name = ALIASES[name] ?? name;
+  if (name === '역마' || name === '驛馬') return palaces.find((p) => p.isHorse)?.gong ?? null;
   if (name.length === 1 && STEMS.includes(name as never)) return heavenPalaceOf(name);
   const byDoor = palaces.find((p) => p.door === name); if (byDoor) return byDoor.gong;
   const byStar = palaces.find((p) => p.star === name && !p.isCenter); if (byStar) return byStar.gong;
@@ -223,6 +224,8 @@ export function detectFormats(c: Ctx): Format[] {
       // 伏勃·飛勃: 丙加天乙(値符儀) / 天乙加丙 (煙波釣叟歌 '丙加天乙為伏逆，天乙加丙為飛勃')
       if (h === '丙' && e === c.xunYi) push('伏勃', '凶', p.gong, `丙+値符儀(${e})`);
       if (h === c.xunYi && e === '丙') push('飛勃', '凶', p.gong, `値符儀(${h})+丙`);
+      // 勃格: 丙奇臨時干 (『奇門遁甲統宗』 總賦 '丙奇臨時干名勃格而禍起')
+      if (h === '丙' && e === c.hourStem && c.hourStem !== '丙') push('勃格', '凶', p.gong, `丙+시간(${e})`);
       // 伏干格·飛干格·時格 (일간·시간이 甲이면 육의로 대체)
       if (h === '庚' && e === c.dayStemEff && c.dayStemEff !== '庚') push('伏干格', '凶', p.gong, `庚+일간(${e})`);
       if (h === c.dayStemEff && e === '庚' && c.dayStemEff !== '庚') push('飛干格', '凶', p.gong, `일간(${h})+庚`);
@@ -234,8 +237,10 @@ export function detectFormats(c: Ctx): Format[] {
       if ('乙丙丁'.includes(h) && ['開門', '休門', '生門'].includes(p.door)) push('三奇得門', '吉', p.gong, `${h}+${p.door}`);
       // 玉女守門: 丁 이 치사문 궁에
       if (h === '丁' && p.door === c.zhishiDoor) push('玉女守門', '吉', p.gong, '丁+치사문');
-      // 天遁 丙+生門+丁(지반) — 煙波釣叟歌 '生門六丙合六丁', 遁甲演義 양둔4국 乙酉시·음둔6국 庚申시 예시. (현대 일부는 丙+生門+戊)
-      if (h === '丙' && p.door === '生門' && p.earthStem === '丁') push('天遁', '吉', p.gong, '丙+生門+丁');
+      // 天遁 丙+生門+丁(지반) — 煙波釣叟歌 '生門六丙合六丁', 遁甲演義 양둔4국 乙酉시·음둔6국 庚申시 예시.
+      // 『奇門遁甲統宗』 奇門秘訣總賦는 '生丙臨戊天遁' 이라 丙+生門+戊 도 天遁으로 적고 note 에 출처를 남긴다
+      if (h === '丙' && p.door === '生門' && p.earthStem === '丁') push('天遁', '吉', p.gong, '丙+生門+丁(煙波釣叟歌·遁甲演義)');
+      if (h === '丙' && p.door === '生門' && p.earthStem === '戊') push('天遁', '吉', p.gong, '丙+生門+戊(奇門遁甲統宗)');
       if (h === '乙' && p.door === '開門' && p.earthStem === '己') push('地遁', '吉', p.gong, '乙+開門+己');
       if (h === '丁' && p.door === '休門' && p.deity === '太陰') push('人遁', '吉', p.gong, '丁+休門+太陰');
       // 三奇入墓: 乙 坤2(未), 丙 乾6(戌), 丁 艮8(丑) — 遁甲演義 王璋 주 '六乙下臨二宮 六丙到六宮 六丁下臨八宮'

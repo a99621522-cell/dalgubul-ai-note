@@ -157,7 +157,7 @@ export function buildQimen(input: QimenInput): Omit<QimenChart, 'meta'> {
     dayVsHour: relation(elem(dayP), elem(hourP)),
     dayVsMatter: matter.map((m) => ({ name: m.name, rel: m.gong === null ? null : relation(elem(dayP), elem(m.gong)) })),
   };
-  const formats = detectFormats({ palaces, zhishiDoor, zhishiGong: land, shift, p0, pt, dayStemEff, hourStem, wubuyushi, yang, dun: ju.dun });
+  const formats = detectFormats({ palaces, zhishiDoor, zhishiGong: land, shift, p0, pt, dayStemEff, hourStem, xunYi: yi, wubuyushi, yang, dun: ju.dun });
   return {
     ju: { dun: ju.dun, number: ju.number, jieqi: input.term.name, jieqiAt: input.term.at, yuan: ju.yuan, futou: ju.futou },
     pillars,
@@ -182,7 +182,7 @@ function resolveName(raw: string, palaces: Palace[], heavenPalaceOf: (s: string)
   return null;
 }
 
-interface Ctx { palaces: Palace[]; zhishiDoor: string; zhishiGong: number; shift: number; p0: number; pt: number; dayStemEff: string; hourStem: string; wubuyushi: boolean; yang: boolean; dun: '陽' | '陰' }
+interface Ctx { palaces: Palace[]; zhishiDoor: string; zhishiGong: number; shift: number; p0: number; pt: number; dayStemEff: string; hourStem: string; /** 순수 육의(値符 儀) */ xunYi: string; wubuyushi: boolean; yang: boolean; dun: '陽' | '陰' }
 
 /** 격국 판정. 조건은 각 줄 주석. 같은 궁의 길·흉을 모두 넣는다 */
 export function detectFormats(c: Ctx): Format[] {
@@ -215,6 +215,14 @@ export function detectFormats(c: Ctx): Format[] {
       if (h === '庚' && e === '癸') push('大格', '凶', p.gong, '庚+癸');
       if (h === '庚' && e === '壬') push('小格', '凶', p.gong, '庚+壬');
       if (h === '庚' && e === '庚') push('戰格', '凶', p.gong, '庚+庚(伏吟格)');
+      // 奇格: 六庚謹勿加三奇 (煙波釣叟歌)
+      if (h === '庚' && '乙丙丁'.includes(e)) push('奇格', '凶', p.gong, `庚+${e}`);
+      // 天乙伏宮格·天乙飛宮格: 庚加値符(순수 육의) / 値符加庚 (煙波釣叟歌 '庚加值符天乙伏，值符加庚天乙飛')
+      if (h === '庚' && e === c.xunYi && c.xunYi !== '庚') push('天乙伏宮格', '凶', p.gong, `庚+値符儀(${e})`);
+      if (h === c.xunYi && e === '庚' && c.xunYi !== '庚') push('天乙飛宮格', '凶', p.gong, `値符儀(${h})+庚`);
+      // 伏勃·飛勃: 丙加天乙(値符儀) / 天乙加丙 (煙波釣叟歌 '丙加天乙為伏逆，天乙加丙為飛勃')
+      if (h === '丙' && e === c.xunYi) push('伏勃', '凶', p.gong, `丙+値符儀(${e})`);
+      if (h === c.xunYi && e === '丙') push('飛勃', '凶', p.gong, `値符儀(${h})+丙`);
       // 伏干格·飛干格·時格 (일간·시간이 甲이면 육의로 대체)
       if (h === '庚' && e === c.dayStemEff && c.dayStemEff !== '庚') push('伏干格', '凶', p.gong, `庚+일간(${e})`);
       if (h === c.dayStemEff && e === '庚' && c.dayStemEff !== '庚') push('飛干格', '凶', p.gong, `일간(${h})+庚`);
@@ -226,12 +234,12 @@ export function detectFormats(c: Ctx): Format[] {
       if ('乙丙丁'.includes(h) && ['開門', '休門', '生門'].includes(p.door)) push('三奇得門', '吉', p.gong, `${h}+${p.door}`);
       // 玉女守門: 丁 이 치사문 궁에
       if (h === '丁' && p.door === c.zhishiDoor) push('玉女守門', '吉', p.gong, '丁+치사문');
-      // 天遁 丙+生門+戊(지반), 地遁 乙+開門+己(지반), 人遁 丁+休門+太陰
-      if (h === '丙' && p.door === '生門' && p.earthStem === '戊') push('天遁', '吉', p.gong, '丙+生門+戊');
+      // 天遁 丙+生門+丁(지반) — 煙波釣叟歌 '生門六丙合六丁', 遁甲演義 양둔4국 乙酉시·음둔6국 庚申시 예시. (현대 일부는 丙+生門+戊)
+      if (h === '丙' && p.door === '生門' && p.earthStem === '丁') push('天遁', '吉', p.gong, '丙+生門+丁');
       if (h === '乙' && p.door === '開門' && p.earthStem === '己') push('地遁', '吉', p.gong, '乙+開門+己');
       if (h === '丁' && p.door === '休門' && p.deity === '太陰') push('人遁', '吉', p.gong, '丁+休門+太陰');
-      // 三奇入墓: 乙 in 坤2, 丙·丁 in 乾6 (※ 丁 입묘를 艮8 로 보는 유파 있음)
-      if ((h === '乙' && p.gong === 2) || ((h === '丙' || h === '丁') && p.gong === 6)) push('三奇入墓', '凶', p.gong, `${h} 입묘`);
+      // 三奇入墓: 乙 坤2(未), 丙 乾6(戌), 丁 艮8(丑) — 遁甲演義 王璋 주 '六乙下臨二宮 六丙到六宮 六丁下臨八宮'
+      if ((h === '乙' && p.gong === 2) || (h === '丙' && p.gong === 6) || (h === '丁' && p.gong === 8)) push('三奇入墓', '凶', p.gong, `${h} 입묘`);
       // 六儀擊刑: 戊3 己2 庚8 辛9 壬4 癸4
       const jx: Record<string, number> = { 戊: 3, 己: 2, 庚: 8, 辛: 9, 壬: 4, 癸: 4 };
       if (jx[h] === p.gong) push('六儀擊刑', '凶', p.gong, `${h} 격형`);

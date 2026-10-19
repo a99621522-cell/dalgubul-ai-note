@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'daegu-invested-firms-2026-10', summary: '대구 기업 가운데 2024년 7월 – 2026년 10월에 투자한 곳과 금액이 모두 확인된 비상장 기업 15곳·18건(프리IPO·상장 공모·시리즈 A – C·시드)과, 상장회사 등 DART 공시 회사 18곳의 제3자배정 유상증자·사모 전환사채 등 28건을 DART 공시·감사보고서와 보도로 정리한 자료. 금액·투자처 중 하나만 확인된 기업, 회차별 투자가 모두 확인된 기업, 대구시가 출자·조성한 펀드 현황을 함께 실음. 평가·순위는 싣지 않음.', topics: ['투자', '창업·벤처', '비상장기업', '상장기업'],
+    title: '대구 투자 받은 기업 현황(2024-07 – 2026-10)', name: '대구 투자 받은 기업 현황(2024-07 – 2026-10)',
+    hwpx: '/hwpx/daegu-invested-firms-2026-10.hwpx', hwpxSize: '60KB', date: '2026-10-19' },
   { slug: 'beyless-sdm-edge', summary: '대구 북구 비상장 모빌리티 소프트웨어 기업 베이리스가 차량용 임베디드 소프트웨어에서 드론·로봇·LiDAR·방산 엣지 플랫폼으로 넓히는 흐름을 DART 감사보고서(2022 – 2025 사업연도)와 국민연금·KEIT 과제·회사 누리집·보도로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 투자 유치(시리즈 A·B)와 2027년 상장 목표는 회사 발표로만 적고, 개인 이름·기업가치 비교는 싣지 않음.', topics: ['비상장기업', '모빌리티', '로봇', '소프트웨어'],
     title: '베이리스, 차량용 임베디드 SW → 드론·로봇·LiDAR·방산 엣지 플랫폼', name: '베이리스, 차량용 임베디드 SW → 드론·로봇·LiDAR·방산 엣지 플랫폼',
     hwpx: '/hwpx/beyless-sdm-edge.hwpx', hwpxSize: '93KB', date: '2026-10-19' },

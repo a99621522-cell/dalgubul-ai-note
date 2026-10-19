@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'dogu-robotics-patrol', summary: '대구 북구(한국로봇산업진흥원 로봇혁신센터) 비상장 순찰로봇 기업 도구로보틱스(옛 도구공간)의 실외·실내·보급형 순찰로봇, 실증·해외 공급, 시리즈 A 투자와 상장 준비를 국민연금·벤처기업명단·국가 R&D·AI로봇 글로벌혁신특구 명단과 보도로 정리한 자료. DART 공시가 없어 매출은 보도 값만 실음. 평가·전망은 싣지 않음.', topics: ['로봇', '비상장기업', '투자'],
+    title: '도구로보틱스, 순찰로봇 → 실내·외 통합 순찰과 미국 수출', name: '도구로보틱스, 순찰로봇 → 실내·외 통합 순찰과 미국 수출',
+    hwpx: '/hwpx/dogu-robotics-patrol.hwpx', hwpxSize: '38KB', date: '2026-10-19' },
   { slug: 'und-robotics-toolchanger', summary: '대구 수성구 비상장 로봇 부품 기업 유엔디로보틱스(옛 유엔디)가 스위칭 마그네틱 그리퍼에서 로봇 자동 툴체인저 맥봇·공정 자동화 장비·모바일 로봇으로 넓혀 온 과정을 DART 감사보고서(2022 – 2025 매출 123.6억 → 262.4억 원)·투자 6회·국민연금·공공 과제 자료와 보도로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['로봇', '비상장기업', '투자'],
     title: '유엔디로보틱스, 마그네틱 그리퍼 → 로봇 자동 툴체인저·모바일 로봇', name: '유엔디로보틱스, 마그네틱 그리퍼 → 로봇 자동 툴체인저·모바일 로봇',
     hwpx: '/hwpx/und-robotics-toolchanger.hwpx', hwpxSize: '92KB', date: '2026-10-19' },

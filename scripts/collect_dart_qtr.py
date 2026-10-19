@@ -196,8 +196,12 @@ def quarter_rows(code: str, meta: dict, pers: list[tuple[int, int]], probe: bool
             for x in raw[(y, q)][:12]:
                 print("   ", {k: x.get(k) for k in ("fs_div", "sj_div", "account_nm", "thstrm_nm", "thstrm_amount", "thstrm_add_amount", "frmtrm_amount", "frmtrm_add_amount")})
     rows = []
+    op = open_quarter()
     for (y, q) in pers:
         lst = raw.get((y, q)) or []
+        if (y, q) == op:      # 결산월이 12월이 아닌 회사(예: 6월 결산)의 사업연도 분기는 달력 분기보다 먼저 나온다 — 분기 끝 전에 낸 것은 뺀다
+            m, d = QEND[q]
+            lst = [x for x in lst if (x.get("rcept_no") or "")[:8] > f"{y}{m:02d}{d:02d}"]
         for fs in ("CFS", "OFS"):
             got = pick(lst, fs)
             if not got:

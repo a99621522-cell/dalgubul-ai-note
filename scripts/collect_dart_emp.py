@@ -6,6 +6,9 @@ OpenDART 사업보고서 주요정보 '직원 현황'(empSttus.json, 사업보�
 회사·연도마다 합계 행이 있으면 그 값을, 없으면 행을 더한다(직원 수·정규직·기간제·연간 급여 총액). 남녀는 성별 행을 더한다.
 평균 근속연수·1인 평균 급여는 합계 행 값(없으면 공시 행 값을 직원 수로 가중한 값, avg_method=가중)으로. 개인 정보는 없다(회사 단위 집계).
 공시 값과 접수번호 링크만 — 평가·순위 없음. 키: DART_KEY. 사용: python3 scripts/collect_dart_emp.py [--years 3]
+--half: 가장 최근 반기보고서(11012, 6월 말 기준 — 8월 14일 제출 기한이 지난 해)의 직원 현황 → scripts/data/company_employees_half.csv
+(운영자 지시 2026-10-19 '직원 현황도 반기보고서로 업데이트해'). 급여 총액·1인 평균은 1~6월 누적이라 연간 값과 견주지 않는다.
+코넥스는 반기보고서 의무가 없어 대부분 빠진다.
 """
 from __future__ import annotations
 
@@ -23,6 +26,7 @@ import requests
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "scripts" / "state" / "dart_corp.json"
 OUT = ROOT / "scripts" / "data" / "company_employees.csv"
+OUT_HALF = ROOT / "scripts" / "data" / "company_employees_half.csv"
 API = "https://opendart.fss.or.kr/api"
 UA = {"User-Agent": "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"}
 KEY = os.environ.get("DART_KEY", "").strip()
@@ -129,6 +133,8 @@ def main(argv: list[str]) -> int:
         return 0
     years = int(argv[argv.index("--years") + 1]) if "--years" in argv else 3
     corps = {c: v for c, v in json.loads(CACHE.read_text(encoding="utf-8")).items() if v.get("daegu")} if CACHE.exists() else {}
+    if "--half" in argv:
+        return half(corps)
     print(f"[dart_emp] 대구 본사 공시 기업 {len(corps)}곳")
     this = date.today().year
     rows, sample = [], 0
@@ -155,6 +161,32 @@ def main(argv: list[str]) -> int:
         w.writeheader()
         w.writerows(out)
     print(f"저장: {OUT.relative_to(ROOT)} ({len(out)}행 — 새로 {len(rows)} · 기존 유지 {len(kept)})")
+    return 0
+
+
+def half(corps: dict) -> int:
+    """가장 최근 반기보고서 직원 현황 → OUT_HALF (그 해 행만 새로 쓴다, 받지 못한 회사는 기존 행 유지)"""
+    today = date.today()
+    y = today.year if today >= date(today.year, 8, 15) else today.year - 1
+    print(f"[dart_emp] 반기보고서 {y}년 6월 말 · 대구 본사 공시 기업 {len(corps)}곳")
+    rows = []
+    for i, (code, meta) in enumerate(sorted(corps.items()), 1):
+        j = get("empSttus.json", corp_code=code, bsns_year=y, reprt_code="11012")
+        time.sleep(0.15)
+        rec = summarize(code, meta.get("name", ""), y, (j or {}).get("list", []))
+        if rec:
+            rows.append(rec)
+        if i % 20 == 0:
+            print(f"[dart_emp] {i}/{len(corps)}곳, 행 {len(rows)}")
+    got = {r["corp_code"] for r in rows}
+    old = list(csv.DictReader(open(OUT_HALF, encoding="utf-8"))) if OUT_HALF.exists() else []
+    kept = [r for r in old if str(r.get("year")) == str(y) and r.get("corp_code") not in got and r.get("corp_code") in corps]
+    out = sorted(kept + rows, key=lambda r: r["corp_code"])
+    with open(OUT_HALF, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=COLS, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(out)
+    print(f"저장: {OUT_HALF.relative_to(ROOT)} ({len(out)}행 — 새로 {len(rows)} · 기존 유지 {len(kept)})")
     return 0
 
 

@@ -4,7 +4,7 @@ name: DART 대구 본사 기업 직원 현황 받기
 # → scripts/data/company_employees.csv. 키 DART_KEY. 이 세션 환경은 opendart 가 막혀 러너가 돈다.
 on:
   schedule:
-    - cron: "17 22 15 4,5,6,9,12 *"   # dart_fin 다음(16일 07:17 KST)
+    - cron: "17 22 15 4,5,6,8,9,12 *"   # dart_fin 다음(16일 07:17 KST), 8월은 반기보고서(8월 14일 기한) 뒤
   workflow_dispatch:
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
@@ -31,12 +31,14 @@ jobs:
         env:
           DART_KEY: ${{ secrets.DART_KEY }}
           PYTHONUNBUFFERED: "1"
-        run: python3 scripts/collect_dart_emp.py --years 3
+        run: |
+          python3 scripts/collect_dart_emp.py --years 3
+          python3 scripts/collect_dart_emp.py --half
       - name: 커밋
         run: |
           git config user.name dalgubul-bot
           git config user.email bot@users.noreply.github.com
-          git add scripts/data/company_employees.csv
+          git add scripts/data/company_employees.csv scripts/data/company_employees_half.csv
           git diff --cached --quiet && { echo "변경 없음"; exit 0; }
           git commit -m "data: DART 대구 본사 기업 직원 현황 $(date -u +%Y-%m-%d)"
           for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

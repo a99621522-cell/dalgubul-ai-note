@@ -3,6 +3,12 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'beamworks-breast-ultrasound-ai', summary: '경북대 교수가 2021년 대구 북구에 창업한 의료 AI 기업 빔웍스의 유방 초음파 진단 보조 소프트웨어 인허가(식약처·혁신의료기술·미국 FDA 510(k))·임상, 국내외 유통, 투자 유치를 국민연금·벤처기업명단·국가 R&D 자료와 보도로 정리한 자료. DART 공시가 없어 재무 값은 싣지 않음. 평가·전망은 싣지 않음.', topics: ['의료·바이오', '인공지능', '비상장기업'],
+    title: '빔웍스, 유방 초음파 AI → 미국 FDA 허가·갑상선·지방간 초음파로', name: '빔웍스, 유방 초음파 AI → 미국 FDA 허가·갑상선·지방간 초음파로',
+    hwpx: '/hwpx/beamworks-breast-ultrasound-ai.hwpx', hwpxSize: '89KB', date: '2026-10-19' },
+  { slug: 'ideas2silicon-soc-ip', summary: '미국 팹리스 Uniquify 가 2023년 12월 대구 북구(산격청사)에 세운 아이디어스투실리콘이 반도체 설계 용역에서 SoC 설계 턴키·설계자산(IP) 라이선스로 넓혀 온 과정을 DART 감사보고서(2025년 매출 130.7억 원)·증자 회차·정부 지원과 보도로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['반도체', '비상장기업', '투자'],
+    title: '아이디어스투실리콘, 미국 팹리스의 대구 법인 → 반도체 설계자산(IP)·SoC 설계 턴키', name: '아이디어스투실리콘, 미국 팹리스의 대구 법인 → 반도체 설계자산(IP)·SoC 설계 턴키',
+    hwpx: '/hwpx/ideas2silicon-soc-ip.hwpx', hwpxSize: '86KB', date: '2026-10-19' },
   { slug: 'dogu-robotics-patrol', summary: '대구 북구(한국로봇산업진흥원 로봇혁신센터) 비상장 순찰로봇 기업 도구로보틱스(옛 도구공간)의 실외·실내·보급형 순찰로봇, 실증·해외 공급, 시리즈 A 투자와 상장 준비를 국민연금·벤처기업명단·국가 R&D·AI로봇 글로벌혁신특구 명단과 보도로 정리한 자료. DART 공시가 없어 매출은 보도 값만 실음. 평가·전망은 싣지 않음.', topics: ['로봇', '비상장기업', '투자'],
     title: '도구로보틱스, 순찰로봇 → 실내·외 통합 순찰과 미국 수출', name: '도구로보틱스, 순찰로봇 → 실내·외 통합 순찰과 미국 수출',
     hwpx: '/hwpx/dogu-robotics-patrol.hwpx', hwpxSize: '38KB', date: '2026-10-19' },

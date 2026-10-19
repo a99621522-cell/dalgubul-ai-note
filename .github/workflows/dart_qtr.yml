@@ -49,7 +49,7 @@ jobs:
         run: |
           git config user.name dalgubul-bot
           git config user.email bot@users.noreply.github.com
-          git add scripts/data/company_financials_q.csv data/dart/performance.csv
+          git add scripts/data/company_financials_q.csv data/dart/performance.csv data/dart/prelim.csv
           git diff --cached --quiet && { echo "변경 없음"; exit 0; }
           git commit -m "data: DART 대구 상장회사 분기 실적·실적 공시 $(date -u +%Y-%m-%d)"
           for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

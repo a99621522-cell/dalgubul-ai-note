@@ -140,7 +140,7 @@ def due(year: int, q: int) -> date:
 
 
 def periods(n: int) -> list[tuple[int, int]]:
-    """마감이 지난 최근 n개 분기(오래된 것부터)"""
+    """마감이 지난 최근 n개 분기(오래된 것부터) + 끝났지만 제출 마감 전인 분기(일찍 낸 회사만 행이 생김, 운영자 지시 2026-10-20)"""
     out, y, q = [], date.today().year, 4
     while len(out) < n and y >= date.today().year - 3:
         if due(y, q) <= date.today():
@@ -148,7 +148,22 @@ def periods(n: int) -> list[tuple[int, int]]:
         q -= 1
         if q == 0:
             y, q = y - 1, 4
-    return out[::-1]
+    out = out[::-1]
+    op = open_quarter()
+    if op and op not in out:
+        out.append(op)
+    return out
+
+
+def open_quarter() -> tuple[int, int] | None:
+    """분기는 끝났고 보고서 제출 마감은 아직인 분기(없으면 None)"""
+    t = date.today()
+    for y in (t.year, t.year - 1):
+        for q in (4, 3, 2, 1):
+            m, d = QEND[q]
+            if date(y, m, d) < t < due(y, q):
+                return (y, q)
+    return None
 
 
 def pick(lst: list[dict], fs: str) -> dict:
@@ -220,6 +235,95 @@ def quarter_rows(code: str, meta: dict, pers: list[tuple[int, int]], probe: bool
     return rows
 
 
+OUT_PRE = ROOT / "data" / "dart" / "prelim.csv"
+COLS_PRE = ["rcept_dt", "corp_code", "name", "year", "quarter", "fs", "revenue", "operating_income", "net_income",
+            "revenue_prev", "operating_income_prev", "net_income_prev", "revenue_cum", "operating_income_cum", "net_income_cum",
+            "unit_note", "report_nm", "rcept_no", "url"]
+PRE_ACC = [("revenue", ("매출액", "영업수익", "수익(매출액)")), ("operating_income", ("영업이익",)), ("net_income", ("당기순이익",))]
+UNIT_MUL = {"백만원": 10**6, "억원": 10**8, "천원": 10**3, "원": 1}
+NUMTOK = re.compile(r"^(?:[-△▲]?[\d,]+(?:\.\d+)?%?|-|흑자전환|적자전환|적자지속|적자확대|적자축소|흑자지속|N/A|해당없음)$")
+
+
+def _won(tok: str, mul: int) -> str:
+    t = tok.replace(",", "").replace("△", "-").replace("▲", "-")
+    try:
+        return str(round(float(t) * mul))
+    except ValueError:
+        return ""
+
+
+def _row(tokens: list[str], i: int) -> list[str]:
+    out = []
+    for t in tokens[i:i + 8]:
+        if not NUMTOK.match(t):
+            break
+        out.append(t)
+    return out
+
+
+def parse_prelim(text: str, rcept_dt: str) -> dict | None:
+    """영업(잠정)실적(공정공시) 원문 글자 → 그 분기 매출액·영업이익·당기순이익(당해·전년동기·누계). 분기가 아니면(월 실적) None.
+    표는 '구분 | 당기실적 | 전기실적 | 전기대비증감율 | 전년동기실적 | 전년동기대비증감율', 계정마다 '당해실적'·'누계실적' 두 줄."""
+    head = text[:3000]
+    m = re.search(r"단위\s*[:：]?\s*(백만원|억원|천원|원)", head)
+    mul = UNIT_MUL.get(m.group(1), 0) if m else 0
+    if not mul:
+        return None
+    pm = re.search(r"(20\d\d|'\d\d)\s*[.년]\s*([1-4])\s*(?:Q|분기)", head) or re.search(r"([1-4])\s*Q\s*'?(20\d\d|\d\d)", head)
+    if pm:
+        a, b = pm.group(1), pm.group(2)
+        if pm.re.pattern.startswith("([1-4])"):
+            a, b = b, a
+        y = int(a.strip("'")) if len(a.strip("'")) == 4 else 2000 + int(a.strip("'"))
+        q = int(b)
+    else:
+        if re.search(r"\d{4}\s*[.년]\s*\d{1,2}\s*월|\(\s*\d{4}\.\d{2}\s*\)", head):
+            return None                                     # 월 실적(예: 한국가스공사 월별 판매)
+        yy, mm = int(rcept_dt[:4]), int(rcept_dt[4:6])
+        y, q = (yy - 1, 4) if mm <= 3 else (yy, (mm - 1) // 3)
+    toks = head.split()
+    rec = {"year": y, "quarter": q, "unit_note": m.group(1)}
+    for col, names in PRE_ACC:
+        for i, t in enumerate(toks):
+            if t in names or any(t.startswith(n) and len(t) <= len(n) + 6 for n in names):
+                j = next((k for k in range(i + 1, min(i + 6, len(toks))) if toks[k] == "당해실적"), None)
+                if j is None:
+                    continue
+                cur = _row(toks, j + 1)
+                k2 = next((k for k in range(j + 1, min(j + 12, len(toks))) if toks[k] == "누계실적"), None)
+                cum = _row(toks, k2 + 1) if k2 is not None else []
+                if cur:
+                    rec[col] = _won(cur[0], mul)
+                    rec[col + "_prev"] = _won(cur[3], mul) if len(cur) >= 4 else ""
+                    rec[col + "_cum"] = _won(cum[0], mul) if cum else ""
+                break
+    return rec if rec.get("revenue") or rec.get("operating_income") else None
+
+
+def prelim_rows(perf: list[dict], probe: bool, max_docs: list[int]) -> list[dict]:
+    """잠정실적 공시(최근 13개월) 원문을 읽어 분기 숫자를 남긴다. 이미 읽은 접수번호는 건너뛴다(probe 면 다시 읽어 로그만)."""
+    old = list(csv.DictReader(open(OUT_PRE, encoding="utf-8"))) if OUT_PRE.exists() and not probe else []
+    done = {r["rcept_no"] for r in old}
+    cutoff = (date.today() - timedelta(days=400)).strftime("%Y%m%d")
+    out = []
+    for p in perf:
+        if p["kind"] != "잠정실적" or p["rcept_dt"] < cutoff or p["rcept_no"] in done or max_docs[0] <= 0:
+            continue
+        text = doc_text(p["rcept_no"])
+        max_docs[0] -= 1
+        time.sleep(0.2)
+        rec = parse_prelim(text, p["rcept_dt"]) if text else None
+        if probe:
+            print(f"== probe 잠정실적 {p['rcept_dt']} {p['name']} {p['report_nm']}\n   {text[:1500]}\n   → {rec}")
+        if not rec:
+            continue
+        rec.update({"rcept_dt": p["rcept_dt"], "corp_code": p["corp_code"], "name": p["name"], "report_nm": p["report_nm"],
+                    "fs": "연결" if "연결" in p["report_nm"] else "개별", "rcept_no": p["rcept_no"], "url": p["url"]})
+        out.append({c: rec.get(c, "") for c in COLS_PRE})
+    keep = [r for r in old if r["rcept_dt"] >= cutoff]
+    return keep + out
+
+
 def kind_of(title: str) -> str:
     t = title.replace(" ", "")
     for w, k in KINDS:
@@ -278,7 +382,8 @@ def main(argv: list[str]) -> int:
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}
     if probe:
-        corps = {c: v for c, v in corps.items() if probe in (v.get("name") or "")}
+        names = [x.strip() for x in probe.split(",") if x.strip()]
+        corps = {c: v for c, v in corps.items() if any(n in (v.get("name") or "") for n in names)}
     if not corps:
         print("대상 회사 없음(대구 본사 유가증권·코스닥, collect_dart_fin.py 캐시)")
         return 0
@@ -294,6 +399,7 @@ def main(argv: list[str]) -> int:
         if i % 10 == 0:
             print(f"[dart_qtr] {i}/{len(corps)}곳 · 분기 행 {len(qrows)} · 실적 공시 {len(prows)}")
     if probe:
+        prelim_rows([r for r in old_p if r["corp_code"] in corps][:6], True, [6])
         print(f"[dart_qtr] probe 끝 — 분기 행 {len(qrows)}, 실적 공시 {len(prows)}, API {CALLS[0]}건(저장 안 함)")
         for r in qrows:
             print("   ", {k: r[k] for k in ("year", "quarter", "fs", "revenue", "revenue_cum", "revenue_prev", "operating_income", "derived")})
@@ -325,6 +431,18 @@ def main(argv: list[str]) -> int:
         w = csv.DictWriter(f, fieldnames=COLS_P, extrasaction="ignore")
         w.writeheader()
         w.writerows(out_p)
+    pre = prelim_rows(out_p, False, [80])
+    # 같은 회사·같은 분기는 늦게 낸(정정) 공시 하나만
+    bestp: dict[tuple, dict] = {}
+    for r in pre:
+        k = (r["corp_code"], str(r["year"]), str(r["quarter"]), r["fs"])
+        if k not in bestp or r["rcept_no"] > bestp[k]["rcept_no"]:
+            bestp[k] = r
+    with open(OUT_PRE, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=COLS_PRE, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(sorted(bestp.values(), key=lambda r: (r["rcept_dt"], r["rcept_no"]), reverse=True))
+    print(f"잠정실적 숫자 {len(bestp)}건 → {OUT_PRE.relative_to(ROOT)}")
     print(f"저장: {OUT_Q.relative_to(ROOT)} {len(out_q)}행(기업 {len({r['corp_code'] for r in out_q})}곳) · "
           f"{OUT_P.relative_to(ROOT)} {len(out_p)}건 · API {CALLS[0]}건")
     return 0

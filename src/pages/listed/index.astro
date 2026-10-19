@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, mgmtByCode, dartNotes, dartIR } from '../../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, mgmtByCode, dartNotes, dartIR, halfYear, growth, ratio } from '../../lib/dart';
 import type { DartQuarter } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
@@ -85,18 +85,23 @@ const qLatest = new Map(qCorps.map(q => [q.code, q.L]));
 const invN = countBy(INV, r => r.corp_code); const invCount = new Map(invN);
 const futBy = new Map<string, string[]>(); for (const d of fut) futBy.set(d.corp_code, [...(futBy.get(d.corp_code) ?? []), ...d.fields.split(', ').filter(Boolean)]);
 const perfBy = new Map<string, typeof PERF>(); for (const p of PERF) perfBy.set(p.corp_code, [...(perfBy.get(p.corp_code) ?? []), p]);
+/** 올해 상반기(반기보고서, 운영자 지시 2026-10-19 '사업보고서도 상반기로 업데이트해'): 1~6월 누적 손익·6월 말 재무상태·전년 상반기 대비 */
+const H = halfYear(listedCodes);
+const hy = H.year, hp = hy ? String(Number(hy) - 1) : '';
+const hBy = new Map(H.rows.map(r => [r.code, r]));
+const hMargin = (r?: (typeof H.rows)[number]) => r && Number(r.cur.revenue_cum) > 0 && r.cur.operating_income_cum ? Number(r.cur.operating_income_cum) / Number(r.cur.revenue_cum) * 100 : null;
 const cardsData = corps.map(c => {
   const L = c.years[last] ?? c.latest; const P = c.years[years.at(-2) ?? ''];
   const ps = (perfBy.get(c.code) ?? []).sort((a, b) => b.rcept_dt.localeCompare(a.rcept_dt));
   return { c, L, P, ly: L?.year ?? '', mk: makesOf(c), q: qLatest.get(c.code), em: empCode.get(c.code), rd: rndCode.get(c.code),
     inv: invCount.get(c.code) ?? 0, fut: [...new Set(futBy.get(c.code) ?? [])], futN: fut.filter(d => d.corp_code === c.code).length,
-    why: ps.find(p => p.kind !== '잠정실적' && p.excerpt), pre: ps.find(p => p.kind === '잠정실적'), mg: mgmtByCode(c.code) };
+    why: ps.find(p => p.kind !== '잠정실적' && p.excerpt), pre: ps.find(p => p.kind === '잠정실적'), mg: mgmtByCode(c.code), h: hBy.get(c.code) };
 });
 ---
 <Base title="대구시 상장기업" description={`본사가 대구인 상장 회사 ${corps.length}곳(유가증권·코스닥·코넥스)의 최근 3개 사업연도 매출액·영업이익·직원·연구개발비·타법인 출자·미래 산업 관련 공시(DART 공시 값 그대로).`} current="listed" wide>
   <div class="section-head"><h1>대구시 상장기업</h1><span class="meta">{corps.length}곳 · {years[0]}~{last} 사업연도 · {asOf} 받음 · 금융감독원 DART</span></div>
   <p class="lede">금융감독원 전자공시(DART) 기업개황의 본사 주소가 대구인 상장 회사 {corps.length}곳입니다. 회사마다 카드 한 장에 무엇을 만드는지, 최근 사업연도 재무, 최근 분기 실적, 직원·연구개발비, 실적 변동 사유·전망 공시를 모았고, 회사 이름을 누르면 전체 자료를 한 페이지에서 봅니다. 재무는 연결재무제표가 있으면 연결, 없으면 개별 값이고 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>
-  <nav class="jump meta"><a href="#cards">회사 카드</a> · <a href="#fin-head">재무 표</a> · <a href="#quarter">분기 실적</a> · <a href="#perf">실적 공시(사유·전망)</a> · <a href="#notes">보고서·IR 실적 설명</a> · <a href="#employees">직원</a> · <a href="#rnd">연구개발비</a> · <a href="#invest">출자</a> · <a href="#future">미래 산업 공시</a> · <a href="#dist">분포</a> · <a href="#unlisted">비상장 공시 회사</a></nav>
+  <nav class="jump meta"><a href="#cards">회사 카드</a> · <a href="#fin-head">재무 표</a> · <a href="/listed/half/">상반기 재무</a> · <a href="#quarter">분기 실적</a> · <a href="#perf">실적 공시(사유·전망)</a> · <a href="#notes">보고서·IR 실적 설명</a> · <a href="#employees">직원</a> · <a href="#rnd">연구개발비</a> · <a href="#invest">출자</a> · <a href="#future">미래 산업 공시</a> · <a href="#dist">분포</a> · <a href="#unlisted">비상장 공시 회사</a></nav>
 
   {corps.length === 0 ? <p class="meta">아직 받은 자료가 없습니다.</p> : (<>
   <div class="cards">
@@ -110,13 +115,14 @@ const cardsData = corps.map(c => {
     <span id="count" class="meta">{corps.length}곳</span>
   </div>
   <section id="cards">
-    <div class="ccards">{cardsData.map(({ c, L, P, ly, mk, q, em, rd, inv, fut: fs, futN, why, pre, mg }) => (
+    <div class="ccards">{cardsData.map(({ c, L, P, ly, mk, q, em, rd, inv, fut: fs, futN, why, pre, mg, h }) => (
       <article class="ccard" data-name={`${c.name} ${c.ksicName} ${mk.text}`} data-cls={c.cls} data-grp={c.group}>
         <header><h3><a href={`/listed/${c.code}/`}>{c.name}</a></h3><span class="meta">{c.cls}{c.stock && ` · ${c.stock}`}{c.district && ` · ${c.district}`}</span></header>
         <p class="cc-what"><b>{c.ksicName || c.group}</b>{mk.text && <> · {mk.text}{mk.kind === 'factory' && <span class="meta"> (공장등록)</span>}</>}</p>
         <dl class="cc-grid">
           <div><dt>매출액{ly && ` (${ly})`}</dt><dd>{f(L?.revenue)}억 <small>{P ? `전년 대비 ${pct1(revGrowth(L, P))}%` : ''}</small></dd></div>
           <div><dt>영업이익</dt><dd>{f(L?.operating_income)}억 <small>이익률 {pct1n(opMargin(L))}%</small></dd></div>
+          {h && <div class="cc-half"><dt>{hy}년 상반기 (1~6월)</dt><dd>매출 {f(h.cur.revenue_cum)}억 <small>전년 상반기 대비 {pct1(growth(h.cur.revenue_cum, h.prev?.revenue_cum))}%</small><br />영업이익 {f(h.cur.operating_income_cum)}억 <small>이익률 {pct1n(hMargin(h))}%</small><br /><small>6월 말 자산 {f(h.cur.total_assets)}억 · 부채비율 {pct1n(ratio(h.cur.total_liabilities, h.cur.total_equity))}%</small></dd></div>}
           <div><dt>최근 분기{q && ` (${qLabel(qKey(q))})`}</dt><dd>{q ? <>매출 {f(q.revenue)}억 <small>전년 같은 분기 {pct1(qYoY(q))}%</small><br />영업이익 {f(q.operating_income)}억</> : '—'}</dd></div>
           <div><dt>부채비율 · 순이익</dt><dd>{pct1n(debtRatio(L))}% <small>순이익 {f(L?.net_income)}억</small></dd></div>
           <div><dt>직원{em && ` (${em.year})`}</dt><dd>{em ? <>{n0(em.employees)}명 <small>1인 평균 급여 {mil(em.avg_salary)}백만 원</small></> : '—'}</dd></div>
@@ -136,7 +142,7 @@ const cardsData = corps.map(c => {
           <a href={`/listed/${c.code}/`}>회사 페이지</a> · <a href={c.url} rel="noopener">DART</a>{c.companyId && <> · <a href={`/companies/${c.companyId}/`}>기업 사전</a></>}
         </p>
       </article>))}</div>
-    <p class="meta">카드의 값은 아래 표와 같은 공시 값입니다: 매출액·영업이익·순이익·부채비율은 최근 사업보고서(연결 우선), 최근 분기는 분기·반기보고서(4분기는 연간 − 3분기 누적), 직원·연구개발비는 사업보고서 표, 사유·전망 문구와 '경영진 진단·방향'(최근 사업보고서 「이사의 경영진단 및 분석의견」·사업의 내용에서 앞부분 220자까지)은 회사 공시 문구 그대로이며 이 사이트의 요약이나 평가가 아닙니다. 전년 대비·이익률·부채비율은 공시 값을 나눈 것이고 — 는 공시가 없거나 계산하지 않은 칸입니다. 가나다순이며 순위나 평가가 아닙니다.</p>
+    <p class="meta">카드의 값은 아래 표와 같은 공시 값입니다: {hy && `${hy}년 상반기는 반기보고서의 1~6월 누적 손익과 6월 말 재무상태(전년 상반기는 ${hp}년 반기보고서, 같은 연결·개별일 때만 대비 계산, 코넥스는 반기보고서 의무가 없어 없음), `}매출액·영업이익·순이익·부채비율은 최근 사업보고서(연결 우선), 최근 분기는 분기·반기보고서(4분기는 연간 − 3분기 누적), 직원·연구개발비는 사업보고서 표, 사유·전망 문구와 '경영진 진단·방향'(최근 사업보고서 「이사의 경영진단 및 분석의견」·사업의 내용에서 앞부분 220자까지)은 회사 공시 문구 그대로이며 이 사이트의 요약이나 평가가 아닙니다. 전년 대비·이익률·부채비율은 공시 값을 나눈 것이고 — 는 공시가 없거나 계산하지 않은 칸입니다. 가나다순이며 순위나 평가가 아닙니다.</p>
   </section>
 
   <div class="section-head" id="fin-head"><h2>재무 표 — 전체 열</h2><span class="meta">{years[0]}~{last} 사업연도</span></div>
@@ -144,8 +150,8 @@ const cardsData = corps.map(c => {
     <thead>
       <tr><th rowspan="2">회사</th><th rowspan="2">분야(업종)</th><th rowspan="2">무엇을 만드나</th><th rowspan="2">시장</th><th rowspan="2">종목코드</th><th rowspan="2">구·군</th>
         <th colspan={years.length} class="c">매출액(억 원)</th><th colspan={years.length - 1} class="c">매출액 증가율(%)</th><th colspan={years.length} class="c">영업이익(억 원)</th><th colspan={years.length} class="c">영업이익률(%)</th>
-        <th colspan="5" class="c">{last}년 재무상태</th><th colspan="2" class="c">연구개발비({rndLast}년)</th><th rowspan="2" class="n">직원 수<br />({empLast}년)</th><th rowspan="2">공시</th></tr>
-      <tr>{years.map(y => <th class="n">{y}</th>)}{years.slice(1).map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익<br />(억 원)</th><th class="n">자산총계<br />(억 원)</th><th class="n">부채총계<br />(억 원)</th><th class="n">자본총계<br />(억 원)</th><th class="n">부채비율<br />(%)</th><th class="n">억 원</th><th class="n">매출 대비<br />(%)</th></tr>
+        <th colspan="5" class="c">{last}년 재무상태</th>{hy && <th colspan="5" class="c">{hy}년 상반기(반기보고서)</th>}<th colspan="2" class="c">연구개발비({rndLast}년)</th><th rowspan="2" class="n">직원 수<br />({empLast}년)</th><th rowspan="2">공시</th></tr>
+      <tr>{years.map(y => <th class="n">{y}</th>)}{years.slice(1).map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}{years.map(y => <th class="n">{y}</th>)}<th class="n">당기순이익<br />(억 원)</th><th class="n">자산총계<br />(억 원)</th><th class="n">부채총계<br />(억 원)</th><th class="n">자본총계<br />(억 원)</th><th class="n">부채비율<br />(%)</th>{hy && <><th class="n">매출액<br />(억 원)</th><th class="n">전년 상반기<br />대비(%)</th><th class="n">영업이익<br />(억 원)</th><th class="n">6월 말 자산<br />(억 원)</th><th class="n">6월 말<br />부채비율(%)</th></>}<th class="n">억 원</th><th class="n">매출 대비<br />(%)</th></tr>
     </thead>
     <tbody>{corps.map(c => { const L = c.years[last]; const mk = makesOf(c); const rd = rndCode.get(c.code); const em = empCode.get(c.code); return (
       <tr data-name={`${c.name} ${c.ksicName} ${mk.text}`} data-cls={c.cls} data-grp={c.group}>
@@ -159,12 +165,13 @@ const cardsData = corps.map(c => {
         {years.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}
         <td class="n">{f(L?.net_income)}</td><td class="n">{f(L?.total_assets)}</td><td class="n">{f(L?.total_liabilities)}</td><td class="n">{f(L?.total_equity)}</td>
         <td class="n">{pct1n(debtRatio(L))}</td>
+        {hy && (() => { const h = hBy.get(c.code); return <><td class="n">{f(h?.cur.revenue_cum)}</td><td class="n">{pct1(growth(h?.cur.revenue_cum, h?.prev?.revenue_cum))}</td><td class="n">{f(h?.cur.operating_income_cum)}</td><td class="n">{f(h?.cur.total_assets)}</td><td class="n">{pct1n(ratio(h?.cur.total_liabilities, h?.cur.total_equity))}</td></>; })()}
         <td class="n">{rd ? eokS(rd.rnd_won) : '—'}</td><td class="n">{rd?.ratio_pct ? Number(rd.ratio_pct).toFixed(1) : '—'}</td>
         <td class="n">{em ? n0(em.employees) : '—'}</td>
         <td><a href={c.url} rel="noopener">DART</a>{L?.fs === '개별' ? <span class="meta"> 개별</span> : ''}</td>
       </tr>); })}</tbody>
   </table></div>
-  <p class="meta">매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 연구개발비·직원 수는 아래 '연구개발비'·'직원 현황'과 같은 사업보고서 값입니다(표를 못 찾은 회사는 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. ※ 는 금융회사(은행·금융지주 등)처럼 매출액 계정이 없어 사업보고서 손익계산서의 영업수익(없으면 순영업수익·이자수익)을 매출액 자리에 넣은 것입니다(운영자 지시 2026-10-06). — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
+  <p class="meta">{hy && `'${hy}년 상반기' 열은 반기보고서의 1~6월 누적 매출액·영업이익과 6월 말 자산·부채비율이고, 전년 상반기 대비는 ${hp}년 반기보고서 값과 나눈 것입니다(같은 연결·개별 기준일 때만, 코넥스는 반기보고서 의무가 없어 —). 회사별 상반기 표는 `}{hy && <a href="/listed/half/">상반기 재무</a>}{hy && '에 있습니다. '}매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 연구개발비·직원 수는 아래 '연구개발비'·'직원 현황'과 같은 사업보고서 값입니다(표를 못 찾은 회사는 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. ※ 는 금융회사(은행·금융지주 등)처럼 매출액 계정이 없어 사업보고서 손익계산서의 영업수익(없으면 순영업수익·이자수익)을 매출액 자리에 넣은 것입니다(운영자 지시 2026-10-06). — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
 
   {qCorps.length > 0 && (
   <section id="quarter">

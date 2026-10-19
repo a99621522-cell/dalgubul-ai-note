@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, debtRatio, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode, qByCode, qKey, qLabel, qPrev, perfByCode, mgmtByCode, notesByCode, irByCode } from '../../lib/dart';
+import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, debtRatio, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode, qByCode, qKey, qLabel, qPrev, perfByCode, mgmtByCode, notesByCode, irByCode, halfYear, growth, ratio } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/<corp_code>/ — 대구시 상장기업 회사별 페이지(운영자 지시 2026-10-05). DART 공시 값만: 재무(최근 3개 사업연도)·직원·연구개발비·타법인 출자·
  *  미래 산업 관련 공시. 원 → 억 원 나눗셈만, 비율·순위·평가 없음. 대표자 등 개인 정보 없음. corp_code 는 DART 고유번호라 바뀌지 않는다. */
@@ -32,6 +32,13 @@ const noteReps = [...new Map(notes.map(n => [n.rcept_no, n])).values()];
 const irs = irByCode(c.code);
 const qYoYc = (q: (typeof qs)[number], col: 'revenue' | 'operating_income' | 'net_income') => { const a = Number(q[col]), b = Number(qPrev(q, col)); return q[col] && b > 0 && a > 0 ? pct1(((a / b) - 1) * 100) : '—'; };
 const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
+/** 올해 상반기(반기보고서, 운영자 지시 2026-10-19 '사업보고서도 상반기로 업데이트해') — 재무 표 오른쪽 열 */
+const HY = halfYear(new Set([c.code]));
+const h = HY.rows[0]; const hy = HY.year;
+const hCell = (k: string): string => { if (!h) return '—';
+  const m: Record<string, string | undefined> = { revenue: h.cur.revenue_cum, operating_income: h.cur.operating_income_cum, net_income: h.cur.net_income_cum,
+    total_assets: h.cur.total_assets, total_liabilities: h.cur.total_liabilities, total_equity: h.cur.total_equity };
+  return f(m[k]); };
 ---
 <Base title={`${c.name} — 대구시 상장기업`} description={`${c.name}(${c.cls}${c.stock ? ' ' + c.stock : ''}, 대구 ${c.district}) DART 공시: 최근 3개 사업연도 재무·직원·연구개발비·타법인 출자·미래 산업 관련 공시.`} current="listed" crumb={c.name}>
   <div class="section-head"><h1>{c.name}</h1><span class="meta">{listed ? `${c.cls} 상장` : '비상장(사업보고서 제출)'}{c.stock && ` · 종목코드 ${c.stock}`}</span></div>
@@ -71,15 +78,15 @@ const fsKind = [...new Set(finYears.map(y => c.years[y].fs))].join('·');
     <div class="section-head"><h2>재무</h2><span class="meta">사업보고서 주요계정 · 억 원{fsKind && ` · ${fsKind}`}</span></div>
     {finYears.length === 0 ? <p class="meta">사업보고서 주요계정을 받지 못했습니다(코넥스·신규 상장 회사는 없을 수 있음). DART 원문을 확인하세요.</p> : (
     <div class="scroll-x"><table class="data-table" data-title={`${c.name} 재무 ${finYears[0]}~${finYears.at(-1)}`}>
-      <thead><tr><th>계정</th>{finYears.map(y => <th class="n">{y}</th>)}</tr></thead>
-      <tbody>{ACC.map(([k, label]) => <tr><th scope="row">{label}</th>{finYears.map(y => <td class="n">{f(c.years[y][k] as string)}</td>)}</tr>)}
-        <tr><th scope="row">매출액 증가율(%)</th>{finYears.map((y, i) => <td class="n">{i ? pct1(revGrowth(c.years[y], c.years[finYears[i - 1]])) : '—'}</td>)}</tr>
-        <tr><th scope="row">영업이익률(%)</th>{finYears.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}</tr>
-        <tr><th scope="row">부채비율(%)</th>{finYears.map(y => <td class="n">{pct1n(debtRatio(c.years[y]))}</td>)}</tr>
-        <tr><th scope="row">연구개발비</th>{finYears.map(y => { const r = rnd.find(x => x.year === y); return <td class="n">{r ? f(r.rnd_won) : '—'}</td>; })}</tr>
-        <tr><th scope="row">직원 수(명)</th>{finYears.map(y => { const e = emp.find(x => x.year === y); return <td class="n">{e ? n0(e.employees) : '—'}</td>; })}</tr></tbody>
+      <thead><tr><th>계정</th>{finYears.map(y => <th class="n">{y}</th>)}{h && <th class="n">{hy} 상반기<br /><span class="meta">반기보고서</span></th>}</tr></thead>
+      <tbody>{ACC.map(([k, label]) => <tr><th scope="row">{label}</th>{finYears.map(y => <td class="n">{f(c.years[y][k] as string)}</td>)}{h && <td class="n">{hCell(k as string)}</td>}</tr>)}
+        <tr><th scope="row">매출액 증가율(%)</th>{finYears.map((y, i) => <td class="n">{i ? pct1(revGrowth(c.years[y], c.years[finYears[i - 1]])) : '—'}</td>)}{h && <td class="n" title="전년 상반기 대비">{pct1(growth(h.cur.revenue_cum, h.prev?.revenue_cum))}</td>}</tr>
+        <tr><th scope="row">영업이익률(%)</th>{finYears.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}{h && <td class="n">{pct1n(Number(h.cur.revenue_cum) > 0 && h.cur.operating_income_cum ? Number(h.cur.operating_income_cum) / Number(h.cur.revenue_cum) * 100 : null)}</td>}</tr>
+        <tr><th scope="row">부채비율(%)</th>{finYears.map(y => <td class="n">{pct1n(debtRatio(c.years[y]))}</td>)}{h && <td class="n">{pct1n(ratio(h.cur.total_liabilities, h.cur.total_equity))}</td>}</tr>
+        <tr><th scope="row">연구개발비</th>{finYears.map(y => { const r = rnd.find(x => x.year === y); return <td class="n">{r ? f(r.rnd_won) : '—'}</td>; })}{h && <td class="n">—</td>}</tr>
+        <tr><th scope="row">직원 수(명)</th>{finYears.map(y => { const e = emp.find(x => x.year === y); return <td class="n">{e ? n0(e.employees) : '—'}</td>; })}{h && <td class="n">—</td>}</tr></tbody>
     </table></div>)}
-    {finYears.length > 0 && <p class="meta">{revAcc && `이 회사는 매출액 계정이 없어(금융업) 사업보고서 손익계산서의 '${revAcc}'을 매출액 자리에 넣었습니다. `}매출액 증가율 = (그해 ÷ 전년 − 1) × 100, 영업이익률 = 영업이익 ÷ 매출액 × 100, 부채비율 = 부채총계 ÷ 자본총계 × 100 — 공시 값을 나눈 것. 연구개발비·직원 수는 사업보고서 '연구개발 활동'·'직원 등의 현황' 값(아래 표)(기준이 다른 해끼리는 계산하지 않음). 원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
+    {finYears.length > 0 && <p class="meta">{h && <>'{hy} 상반기' 열은 {hy}년 반기보고서의 1~6월 누적 손익과 6월 말 재무상태({h.fs})이고, 그 열의 매출액 증가율은 전년 상반기 대비입니다(<a href={h.cur.source_url} rel="noopener">반기보고서 원문</a>). </>}{revAcc && `이 회사는 매출액 계정이 없어(금융업) 사업보고서 손익계산서의 '${revAcc}'을 매출액 자리에 넣었습니다. `}매출액 증가율 = (그해 ÷ 전년 − 1) × 100, 영업이익률 = 영업이익 ÷ 매출액 × 100, 부채비율 = 부채총계 ÷ 자본총계 × 100 — 공시 값을 나눈 것. 연구개발비·직원 수는 사업보고서 '연구개발 활동'·'직원 등의 현황' 값(아래 표)(기준이 다른 해끼리는 계산하지 않음). 원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
   </section>
 
   {qs.length > 0 && (

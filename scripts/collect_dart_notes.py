@@ -466,6 +466,105 @@ def write(path: Path, cols: list[str], rows: list[dict]) -> None:
         w.writerows(rows)
 
 
+INST = re.compile(r"조합|투자|펀드|파트너스|캐피탈|벤처스|인베스트|사모|신탁|기금|홀딩스|지주|주식회사|㈜|\(주\)|은행|증권|자산운용|창업|재단|공사|Fund|Capital|Partners|Ventures|Inc|LLC|Ltd", re.I)
+
+
+def norm_name(s: str) -> str:
+    return re.sub(r"\(주\)|㈜|주식회사|\(유\)|유한회사|\s|[.,·]", "", s or "")
+
+
+def flat(xml: str) -> list[str]:
+    """원문을 줄 목록으로 — 표는 칸을 | 로 이은 한 줄"""
+    out = []
+    for m in re.finditer(r"<TABLE.*?</TABLE>|<P[^>]*>(.*?)</P>|<TITLE[^>]*>(.*?)</TITLE>", xml, re.S | re.I):
+        if m.group(0)[:6].upper() == "<TABLE":
+            for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", m.group(0), re.S | re.I):
+                cells = [clean(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, re.S | re.I)]
+                if any(cells):
+                    out.append(" | ".join(cells))
+        else:
+            t = clean(m.group(1) or m.group(2) or "")
+            if t:
+                out.append(t)
+    return out
+
+
+def invest_scan(argv: list[str]) -> int:
+    """--invest-scan: 벤처기업명단 '벤처투자유형' 대구 기업(scripts/data/company_facts.csv) + --invest-names 이름들을
+    DART 고유번호 목록에서 이름(법인 표기 뺀 정확 일치)으로 찾아, 본사 주소가 대구인 회사의 최근 감사보고서에서
+    매출·영업이익·순이익·자본총계, 자본변동표의 우선주·유상증자·전환 줄, 주주 현황의 법인·조합 주주(개인 이름은 세지 않고 건수만)를
+    로그로 찍는다(저장 안 함). 운영자 지시 2026-10-19 '투자받은 기업들 부터 조사하자'."""
+    names: dict[str, str] = {}
+    facts = ROOT / "scripts" / "data" / "company_facts.csv"
+    ids = set()
+    if facts.exists():
+        for r in csv.DictReader(open(facts, encoding="utf-8")):
+            if "벤처투자유형" in r.get("detail", ""):
+                ids.add(r["id"])
+    for f in ("dalseong_companies.csv", "extra_companies.csv"):
+        fp = ROOT / "scripts" / "data" / f
+        if fp.exists():
+            for r in csv.DictReader(open(fp, encoding="utf-8")):
+                if r["id"] in ids:
+                    names[norm_name(r["name"])] = r["name"]
+    if "--invest-names" in argv:
+        for n in argv[argv.index("--invest-names") + 1].split(","):
+            if n.strip():
+                names[norm_name(n)] = n.strip()
+    print(f"[invest] 대상 이름 {len(names)}개")
+    try:
+        r = requests.get(f"{API}/corpCode.xml", params={"crtfc_key": KEY}, headers=UA, timeout=180)
+        xml = zipfile.ZipFile(io.BytesIO(r.content)).read("CORPCODE.xml").decode("utf-8", "ignore")
+    except Exception as e:  # noqa: BLE001
+        print(f"[invest] corpCode 실패: {redact(e)[:120]}")
+        return 0
+    hits = []
+    for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S):
+        k = norm_name(clean(m.group(2)))
+        if k in names:
+            hits.append((clean(m.group(1)), clean(m.group(2)), clean(m.group(3)), names[k]))
+    print(f"[invest] 고유번호 목록 이름 일치 {len(hits)}곳")
+    bgn = (date.today() - timedelta(days=4 * 366)).strftime("%Y%m%d")
+    for code, cname, stock, src in hits:
+        info = get("company.json", corp_code=code) or {}
+        adr = info.get("adres") or ""
+        if not adr.startswith("대구"):   # '해운대구' 같은 주소가 잡히지 않게 앞글자로
+            print(f"INVEST\t{cname}\t{code}\t대구 아님\t{adr[:40]}")
+            continue
+        j = get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), page_count=100) or {}
+        rows = j.get("list", [])
+        aud = [x for x in rows if "감사보고서" in (x.get("report_nm") or "")]
+        other = sorted({re.sub(r"\s+", " ", x.get("report_nm") or "") for x in rows if x not in aud})
+        head = {"name": cname, "code": code, "stock": stock or "-", "cls": info.get("corp_cls"), "est": info.get("est_dt"),
+                "adr": adr[:60], "induty": info.get("induty_code"), "audits": [f"{x.get('rcept_dt')}:{x.get('report_nm')}:{x.get('rcept_no')}" for x in aud],
+                "other": other[:15]}
+        print("INVEST\t" + json.dumps(head, ensure_ascii=False))
+        if not aud:
+            continue
+        lines = flat(doc_xml(aud[0]["rcept_no"]))
+        keep = []
+        for ln in lines:
+            if re.match(r"^(I\.|Ⅰ\.)?\s*매출액|^(V|Ⅴ)\.\s*영업|당기순이익|당기순손실|^자 ?본 ?총 ?계|^부 ?채 ?총 ?계|^자 ?산 ?총 ?계", ln):
+                keep.append("FIN " + ln[:200])
+            elif ln.count("|") >= 2 and re.search(r"우선주의 ?발행|우선주 ?발행|유상증자|신주의 ?발행|주식의 ?발행|증자", ln) and re.search(r"\d{3,}", ln):
+                keep.append("CAP " + ln[:260])
+            elif re.search(r"20(2[3-6])[-.년]\s?\d", ln) and re.search(r"발행|납입|유상증자|투자", ln) and len(ln) < 500:
+                keep.append("DATE " + ln[:300])
+        sh = [ln for ln in lines if ln.count("|") >= 2 and re.search(r"\d+(\.\d+)?\s*%", ln)]
+        inst = [ln for ln in sh if INST.search(ln.split("|")[0])]
+        indiv = len(sh) - len(inst)
+        for ln in inst[:15]:
+            keep.append("SH " + ln[:200])
+        keep.append(f"SH 개인·기타 행 {indiv}개(이름 생략)")
+        seen = set()
+        for k in keep:
+            if k not in seen:
+                seen.add(k)
+                print("INVEST\t" + cname + "\t" + k)
+    print(f"[invest] 끝 — API 호출 {CALLS[0]}회")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if not KEY:
         print("DART_KEY 없음")
@@ -473,6 +572,8 @@ def main(argv: list[str]) -> int:
     months = int(argv[argv.index("--months") + 1]) if "--months" in argv else 15
     probe = argv[argv.index("--probe") + 1] if "--probe" in argv else ""
     DUMP[0] = "--dump" in argv and bool(probe)
+    if "--invest-scan" in argv:
+        return invest_scan(argv)
     if "--corp-search" in argv:   # 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 최근 공시 목록만 로그로 — 저장 안 함(2026-10-17 삼보에이앤티 확인)
         kw = argv[argv.index("--corp-search") + 1]
         try:

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, dartNotes, dartIR, halfYear, growth, ratio } from '../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, dartNotes, dartIR, halfYear, growth, ratio, dartEmpHalf } from '../lib/dart';
 import type { DartQuarter } from '../lib/dart';
 import { companies, normName } from '../lib/csv';
 /** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
@@ -40,6 +40,11 @@ const empLastRows = EMP.filter(e => e.year === empLast);
 const empSum = empLastRows.reduce((a, e) => a + (Number(e.employees) || 0), 0);
 const empF = empLastRows.reduce((a, e) => a + (Number(e.female) || 0), 0);
 const empC = empLastRows.reduce((a, e) => a + (Number(e.contract) || 0), 0);
+/** 반기보고서 6월 말 직원(운영자 지시 2026-10-19 '직원 현황도 반기보고서로 업데이트해') */
+const EH = dartEmpHalf().filter(e => listedCodes.has(e.corp_code));
+const ehY = EH.map(e => e.year).sort().at(-1) ?? '';
+const ehBy = new Map(EH.map(e => [e.corp_code, e]));
+const ehSum = EH.reduce((a, e) => a + (Number(e.employees) || 0), 0);
 const RND = dartRnd().filter(r => listedCodes.has(r.corp_code));
 const rndYears = [...new Set(RND.map(r => r.year))].sort().slice(-3);
 const rndLast = rndYears.at(-1) ?? '';
@@ -254,11 +259,12 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
       <div class="card"><div class="big">{empSum.toLocaleString('ko-KR')}</div><div class="meta">{empLast}년 직원 합계({empLastRows.length}곳)</div></div>
       <div class="card"><div class="big">{empC.toLocaleString('ko-KR')}</div><div class="meta">그 가운데 기간제</div></div>
       <div class="card"><div class="big">{empF.toLocaleString('ko-KR')}</div><div class="meta">그 가운데 여성</div></div>
+      {EH.length > 0 && <div class="card"><div class="big">{ehSum.toLocaleString('ko-KR')}</div><div class="meta">{ehY}년 6월 말 직원 합계({EH.length}곳, 반기보고서)</div></div>}
     </div>
     <div class="scroll-x"><table class="data-table" id="emp" data-grid data-title={`대구시 상장기업 직원 현황 ${empYears[0]}~${empLast}`}>
       <thead>
-        <tr><th rowspan="2">회사</th><th colspan={empYears.length} class="c">직원 수(명)</th><th colspan="5" class="c">{empLast}년</th><th rowspan="2">공시</th></tr>
-        <tr>{empYears.map(y => <th class="n">{y}</th>)}<th class="n">정규직</th><th class="n">기간제</th><th class="n">여성</th><th class="n">평균 근속(년)</th><th class="n">1인 평균 급여(백만 원)</th></tr>
+        <tr><th rowspan="2">회사</th><th colspan={empYears.length} class="c">직원 수(명, 사업보고서)</th><th colspan="5" class="c">{empLast}년</th>{EH.length > 0 && <th colspan="5" class="c">{ehY}년 6월 말(반기보고서)</th>}<th rowspan="2">공시</th></tr>
+        <tr>{empYears.map(y => <th class="n">{y}</th>)}<th class="n">정규직</th><th class="n">기간제</th><th class="n">여성</th><th class="n">평균 근속(년)</th><th class="n">1인 평균 급여(백만 원)</th>{EH.length > 0 && <><th class="n">직원 수</th><th class="n">정규직</th><th class="n">기간제</th><th class="n">여성</th><th class="n">상반기 1인<br />평균 급여(백만 원)</th></>}</tr>
       </thead>
       <tbody>{empCorps.map(c => (
         <tr>
@@ -266,10 +272,11 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
           {empYears.map(y => <td class="n">{n0(c.y[y]?.employees)}</td>)}
           <td class="n">{n0(c.L.regular)}</td><td class="n">{n0(c.L.contract)}</td><td class="n">{n0(c.L.female)}</td>
           <td class="n">{c.L.avg_tenure ? Number(c.L.avg_tenure).toFixed(1) : '—'}</td><td class="n">{mil(c.L.avg_salary)}</td>
+          {EH.length > 0 && (() => { const e = ehBy.get(c.code); return <><td class="n">{n0(e?.employees)}</td><td class="n">{n0(e?.regular)}</td><td class="n">{n0(e?.contract)}</td><td class="n">{n0(e?.female)}</td><td class="n">{mil(e?.avg_salary)}</td></>; })()}
           <td>{c.L.source_url ? <a href={c.L.source_url} rel="noopener">DART</a> : '—'}</td>
         </tr>))}</tbody>
     </table></div>
-    <p class="meta">사업보고서 '직원 등의 현황'의 회사 단위 값입니다. 공시 행(사업부문·성별)을 더했고, 평균 근속은 직원 수로 가중했습니다. 1인 평균 급여는 연간 급여 총액 ÷ 직원 수로, 공시마다 단위·기준(월·연)이 달라 공시 표의 '1인 평균 급여'와 다를 수 있습니다. 총액이 천원 단위로 공시된 곳은 원으로 바꿨습니다. 직원 수가 없는 해는 —. 가나다순이며 순위가 아닙니다.</p>
+    <p class="meta">사업보고서 '직원 등의 현황'의 회사 단위 값입니다. 공시 행(사업부문·성별)을 더했고, 평균 근속은 직원 수로 가중했습니다. 1인 평균 급여는 연간 급여 총액 ÷ 직원 수로, 공시마다 단위·기준(월·연)이 달라 공시 표의 '1인 평균 급여'와 다를 수 있습니다. 총액이 천원 단위로 공시된 곳은 원으로 바꿨습니다. 직원 수가 없는 해는 —. {EH.length > 0 && `'${ehY}년 6월 말' 열은 반기보고서 '직원 등의 현황' 값이고, 상반기 1인 평균 급여는 1~6월 급여 총액 ÷ 직원 수라 연간 값과 견주지 않습니다(코넥스는 반기보고서 의무가 없어 —). `}가나다순이며 순위가 아닙니다.</p>
   </section>)}
 
   {part === 'rnd' && rndCorps.length > 0 && (

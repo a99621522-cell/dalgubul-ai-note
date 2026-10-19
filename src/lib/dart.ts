@@ -83,6 +83,10 @@ export const ymd = (s: string) => (s && s.length === 8 ? `${s.slice(0, 4)}-${s.s
 export type DartEmployee = { corp_code: string; name: string; year: string; employees: string; regular: string; contract: string; male: string; female: string;
   avg_tenure: string; salary_total: string; avg_salary: string; avg_salary_reported: string; avg_method: string; unit_note: string; rcept_no: string; source_url: string; as_of: string };
 export const dartEmployees = memo(() => readCsv('scripts/data/company_employees.csv') as DartEmployee[]);
+/** 반기보고서 직원 현황(collect_dart_emp.py --half → company_employees_half.csv, 운영자 지시 2026-10-19 '직원 현황도 반기보고서로 업데이트해'):
+ *  6월 말 직원 수·정규직·기간제·남녀·평균 근속, 급여 총액·1인 평균 급여는 1~6월 누적이라 연간 값과 견주지 않는다 */
+export const dartEmpHalf = memo(() => readCsv('scripts/data/company_employees_half.csv') as DartEmployee[]);
+export const empHalfByCode = (code: string) => dartEmpHalf().find(e => e.corp_code === code);
 export const employeesOf = (name: string) => dartEmployees().filter(e => normName(e.name) === normName(name)).sort((a, b) => b.year.localeCompare(a.year));
 /** 숫자 칸 → 표시(빈칸·0 은 —) */
 export const n0 = (s?: string) => { const v = Number(s); return s && Number.isFinite(v) && v !== 0 ? Math.round(v).toLocaleString('ko-KR') : '—'; };

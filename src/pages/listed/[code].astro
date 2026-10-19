@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, debtRatio, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode, qByCode, qKey, qLabel, qPrev, perfByCode, mgmtByCode, notesByCode, irByCode, halfYear, growth, ratio } from '../../lib/dart';
+import { dartCorps, eok, ymd, opMargin, revGrowth, pct1, pct1n, debtRatio, n0, mil, purposeOf, isListed, productsByCode, empByCode, rndByCode, invByCode, futByCode, qByCode, qKey, qLabel, qPrev, perfByCode, mgmtByCode, notesByCode, irByCode, halfYear, growth, ratio, empHalfByCode } from '../../lib/dart';
 import { companies, normName } from '../../lib/csv';
 /** /listed/<corp_code>/ — 대구시 상장기업 회사별 페이지(운영자 지시 2026-10-05). DART 공시 값만: 재무(최근 3개 사업연도)·직원·연구개발비·타법인 출자·
  *  미래 산업 관련 공시. 원 → 억 원 나눗셈만, 비율·순위·평가 없음. 대표자 등 개인 정보 없음. corp_code 는 DART 고유번호라 바뀌지 않는다. */
@@ -14,6 +14,7 @@ const listed = isListed(c.cls);
 const prods = productsByCode(c.code);
 const emp = empByCode(c.code);
 const empYears = [...emp].reverse().slice(-3);
+const eh = empHalfByCode(c.code);   // 반기보고서 6월 말 직원(운영자 지시 2026-10-19)
 const rnd = rndByCode(c.code);
 const rndRows = [...rnd].reverse().slice(-3);
 const inv = invByCode(c.code);
@@ -84,7 +85,7 @@ const hCell = (k: string): string => { if (!h) return '—';
         <tr><th scope="row">영업이익률(%)</th>{finYears.map(y => <td class="n">{pct1n(opMargin(c.years[y]))}</td>)}{h && <td class="n">{pct1n(Number(h.cur.revenue_cum) > 0 && h.cur.operating_income_cum ? Number(h.cur.operating_income_cum) / Number(h.cur.revenue_cum) * 100 : null)}</td>}</tr>
         <tr><th scope="row">부채비율(%)</th>{finYears.map(y => <td class="n">{pct1n(debtRatio(c.years[y]))}</td>)}{h && <td class="n">{pct1n(ratio(h.cur.total_liabilities, h.cur.total_equity))}</td>}</tr>
         <tr><th scope="row">연구개발비</th>{finYears.map(y => { const r = rnd.find(x => x.year === y); return <td class="n">{r ? f(r.rnd_won) : '—'}</td>; })}{h && <td class="n">—</td>}</tr>
-        <tr><th scope="row">직원 수(명)</th>{finYears.map(y => { const e = emp.find(x => x.year === y); return <td class="n">{e ? n0(e.employees) : '—'}</td>; })}{h && <td class="n">—</td>}</tr></tbody>
+        <tr><th scope="row">직원 수(명)</th>{finYears.map(y => { const e = emp.find(x => x.year === y); return <td class="n">{e ? n0(e.employees) : '—'}</td>; })}{h && <td class="n">{eh ? n0(eh.employees) : '—'}</td>}</tr></tbody>
     </table></div>)}
     {finYears.length > 0 && <p class="meta">{h && <>'{hy} 상반기' 열은 {hy}년 반기보고서의 1~6월 누적 손익과 6월 말 재무상태({h.fs})이고, 그 열의 매출액 증가율은 전년 상반기 대비입니다(<a href={h.cur.source_url} rel="noopener">반기보고서 원문</a>). </>}{revAcc && `이 회사는 매출액 계정이 없어(금융업) 사업보고서 손익계산서의 '${revAcc}'을 매출액 자리에 넣었습니다. `}매출액 증가율 = (그해 ÷ 전년 − 1) × 100, 영업이익률 = 영업이익 ÷ 매출액 × 100, 부채비율 = 부채총계 ÷ 자본총계 × 100 — 공시 값을 나눈 것. 연구개발비·직원 수는 사업보고서 '연구개발 활동'·'직원 등의 현황' 값(아래 표)(기준이 다른 해끼리는 계산하지 않음). 원문: {finYears.map((y, i) => <>{i ? ' · ' : ''}<a href={c.years[y].source_url} rel="noopener">{y}년 사업보고서</a></>)}</p>}
   </section>
@@ -133,13 +134,15 @@ const hCell = (k: string): string => { if (!h) return '—';
 
   <section>
     <div class="section-head"><h2>직원</h2><span class="meta">사업보고서 '직원 등의 현황'</span></div>
-    {empYears.length === 0 ? <p class="meta">받은 자료가 없습니다.</p> : (<>
+    {empYears.length === 0 && !eh ? <p class="meta">받은 자료가 없습니다.</p> : (<>
     <div class="scroll-x"><table class="data-table" data-title={`${c.name} 직원 현황`}>
       <thead><tr><th>사업연도</th><th class="n">직원(명)</th><th class="n">정규직</th><th class="n">기간제</th><th class="n">남성</th><th class="n">여성</th><th class="n">평균 근속(년)</th><th class="n">1인 평균 급여(백만 원)</th><th>원문</th></tr></thead>
       <tbody>{empYears.map(e => <tr><th scope="row">{e.year}</th><td class="n">{n0(e.employees)}</td><td class="n">{n0(e.regular)}</td><td class="n">{n0(e.contract)}</td><td class="n">{n0(e.male)}</td><td class="n">{n0(e.female)}</td>
-        <td class="n">{e.avg_tenure ? Number(e.avg_tenure).toFixed(1) : '—'}</td><td class="n">{mil(e.avg_salary)}</td><td>{e.source_url ? <a href={e.source_url} rel="noopener">DART</a> : '—'}</td></tr>)}</tbody>
+        <td class="n">{e.avg_tenure ? Number(e.avg_tenure).toFixed(1) : '—'}</td><td class="n">{mil(e.avg_salary)}</td><td>{e.source_url ? <a href={e.source_url} rel="noopener">DART</a> : '—'}</td></tr>)}
+        {eh && <tr><th scope="row">{eh.year}년 6월 말<br /><span class="meta">반기보고서</span></th><td class="n">{n0(eh.employees)}</td><td class="n">{n0(eh.regular)}</td><td class="n">{n0(eh.contract)}</td><td class="n">{n0(eh.male)}</td><td class="n">{n0(eh.female)}</td>
+          <td class="n">{eh.avg_tenure ? Number(eh.avg_tenure).toFixed(1) : '—'}</td><td class="n">{mil(eh.avg_salary)}<span class="meta"> (1~6월)</span></td><td>{eh.source_url ? <a href={eh.source_url} rel="noopener">DART</a> : '—'}</td></tr>}</tbody>
     </table></div>
-    <p class="meta">공시 행(사업부문·성별)을 더한 회사 단위 값입니다. 1인 평균 급여는 연간 급여 총액 ÷ 직원 수로, 공시 표의 '1인 평균 급여'와 다를 수 있습니다.{empYears.some(e => e.unit_note) && ' 급여 총액이 천원 단위로 공시돼 원으로 바꾼 해가 있습니다.'}</p>
+    <p class="meta">공시 행(사업부문·성별)을 더한 회사 단위 값입니다.{eh && ` ${eh.year}년 6월 말 행은 반기보고서 값이고 그 행의 1인 평균 급여는 1~6월 급여 총액 ÷ 직원 수라 연간 값과 견주지 않습니다.`} 1인 평균 급여는 연간 급여 총액 ÷ 직원 수로, 공시 표의 '1인 평균 급여'와 다를 수 있습니다.{empYears.some(e => e.unit_note) && ' 급여 총액이 천원 단위로 공시돼 원으로 바꾼 해가 있습니다.'}</p>
     </>)}
   </section>
 

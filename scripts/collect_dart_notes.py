@@ -528,7 +528,7 @@ def invest_scan(argv: list[str]) -> int:
     for code, cname, stock, src in hits:
         info = get("company.json", corp_code=code) or {}
         adr = info.get("adres") or ""
-        if "대구" not in adr:
+        if not adr.startswith("대구"):   # '해운대구' 같은 주소가 잡히지 않게 앞글자로
             print(f"INVEST\t{cname}\t{code}\t대구 아님\t{adr[:40]}")
             continue
         j = get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), page_count=100) or {}
@@ -546,8 +546,10 @@ def invest_scan(argv: list[str]) -> int:
         for ln in lines:
             if re.match(r"^(I\.|Ⅰ\.)?\s*매출액|^(V|Ⅴ)\.\s*영업|당기순이익|당기순손실|^자 ?본 ?총 ?계|^부 ?채 ?총 ?계|^자 ?산 ?총 ?계", ln):
                 keep.append("FIN " + ln[:200])
-            elif re.search(r"우선주|유상증자|신주|전환권|상환전환|주식발행초과금의|출자전환", ln) and re.search(r"\d{2,}", ln) and len(ln) < 400:
+            elif ln.count("|") >= 2 and re.search(r"우선주의 ?발행|우선주 ?발행|유상증자|신주의 ?발행|주식의 ?발행|증자", ln) and re.search(r"\d{3,}", ln):
                 keep.append("CAP " + ln[:260])
+            elif re.search(r"20(2[3-6])[-.년]\s?\d", ln) and re.search(r"발행|납입|유상증자|투자", ln) and len(ln) < 500:
+                keep.append("DATE " + ln[:300])
         sh = [ln for ln in lines if ln.count("|") >= 2 and re.search(r"\d+(\.\d+)?\s*%", ln)]
         inst = [ln for ln in sh if INST.search(ln.split("|")[0])]
         indiv = len(sh) - len(inst)

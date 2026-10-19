@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'und-robotics-toolchanger', summary: '대구 수성구 비상장 로봇 부품 기업 유엔디로보틱스(옛 유엔디)가 스위칭 마그네틱 그리퍼에서 로봇 자동 툴체인저 맥봇·공정 자동화 장비·모바일 로봇으로 넓혀 온 과정을 DART 감사보고서(2022 – 2025 매출 123.6억 → 262.4억 원)·투자 6회·국민연금·공공 과제 자료와 보도로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['로봇', '비상장기업', '투자'],
+    title: '유엔디로보틱스, 마그네틱 그리퍼 → 로봇 자동 툴체인저·모바일 로봇', name: '유엔디로보틱스, 마그네틱 그리퍼 → 로봇 자동 툴체인저·모바일 로봇',
+    hwpx: '/hwpx/und-robotics-toolchanger.hwpx', hwpxSize: '92KB', date: '2026-10-19' },
   { slug: 'daegu-invested-firms-2026-10', summary: '대구 기업 가운데 2024년 7월 – 2026년 10월에 투자한 곳과 금액이 모두 확인된 비상장 기업 15곳·18건(프리IPO·상장 공모·시리즈 A – C·시드)과, 상장회사 등 DART 공시 회사 18곳의 제3자배정 유상증자·사모 전환사채 등 28건을 DART 공시·감사보고서와 보도로 정리한 자료. 금액·투자처 중 하나만 확인된 기업, 회차별 투자가 모두 확인된 기업, 대구시가 출자·조성한 펀드 현황을 함께 실음. 평가·순위는 싣지 않음.', topics: ['투자', '창업·벤처', '비상장기업', '상장기업'],
     title: '대구 투자 받은 기업 현황(2024-07 – 2026-10)', name: '대구 투자 받은 기업 현황(2024-07 – 2026-10)',
     hwpx: '/hwpx/daegu-invested-firms-2026-10.hwpx', hwpxSize: '60KB', date: '2026-10-19' },

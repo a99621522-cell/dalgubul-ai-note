@@ -264,23 +264,24 @@ def _row(tokens: list[str], i: int) -> list[str]:
 def parse_prelim(text: str, rcept_dt: str) -> dict | None:
     """영업(잠정)실적(공정공시) 원문 글자 → 그 분기 매출액·영업이익·당기순이익(당해·전년동기·누계). 분기가 아니면(월 실적) None.
     표는 '구분 | 당기실적 | 전기실적 | 전기대비증감율 | 전년동기실적 | 전년동기대비증감율', 계정마다 '당해실적'·'누계실적' 두 줄."""
-    head = text[:3000]
+    i0 = text.find("실적기간")
+    head = text[i0 if i0 >= 0 else 0:][:5000]
     m = re.search(r"단위\s*[:：]?\s*(백만원|억원|천원|원)", head)
     mul = UNIT_MUL.get(m.group(1), 0) if m else 0
     if not mul:
         return None
-    pm = re.search(r"(20\d\d|'\d\d)\s*[.년]\s*([1-4])\s*(?:Q|분기)", head) or re.search(r"([1-4])\s*Q\s*'?(20\d\d|\d\d)", head)
+    # 실적기간 '당기실적 2026-07-01 ~ 2026-09-30' — 3개월이고 분기 끝이면 그 분기, 한 달(월 실적)이면 None
+    pm = re.search(r"당기실적\s*(\d{4})-(\d{2})-\d{2}\s*~\s*(\d{4})-(\d{2})-\d{2}", head)
     if pm:
-        a, b = pm.group(1), pm.group(2)
-        if pm.re.pattern.startswith("([1-4])"):
-            a, b = b, a
-        y = int(a.strip("'")) if len(a.strip("'")) == 4 else 2000 + int(a.strip("'"))
-        q = int(b)
+        y, m1, m2 = int(pm.group(3)), int(pm.group(2)), int(pm.group(4))
+        if m2 % 3 or (m2 - m1) % 12 != 2:
+            return None
+        q = m2 // 3
     else:
-        if re.search(r"\d{4}\s*[.년]\s*\d{1,2}\s*월|\(\s*\d{4}\.\d{2}\s*\)", head):
-            return None                                     # 월 실적(예: 한국가스공사 월별 판매)
-        yy, mm = int(rcept_dt[:4]), int(rcept_dt[4:6])
-        y, q = (yy - 1, 4) if mm <= 3 else (yy, (mm - 1) // 3)
+        qm = re.search(r"\('?(\d{2})\.\s*([1-4])Q\)", head)
+        if not qm:
+            return None
+        y, q = 2000 + int(qm.group(1)), int(qm.group(2))
     toks = head.split()
     rec = {"year": y, "quarter": q, "unit_note": m.group(1)}
     for col, names in PRE_ACC:
@@ -294,7 +295,9 @@ def parse_prelim(text: str, rcept_dt: str) -> dict | None:
                 cum = _row(toks, k2 + 1) if k2 is not None else []
                 if cur:
                     rec[col] = _won(cur[0], mul)
-                    rec[col + "_prev"] = _won(cur[3], mul) if len(cur) >= 4 else ""
+                    # 열: 당기 · 전기 · 전기대비 증감율 · (흑자적자전환여부) · 전년동기 · …  — 전환여부 칸이 있으면 7칸
+                    py = 4 if len(cur) >= 7 else 3
+                    rec[col + "_prev"] = _won(cur[py], mul) if len(cur) > py else ""
                     rec[col + "_cum"] = _won(cum[0], mul) if cum else ""
                 break
     return rec if rec.get("revenue") or rec.get("operating_income") else None

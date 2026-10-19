@@ -594,6 +594,9 @@ def placement_scan(argv: list[str]) -> int:
             print(f"[place] corpCode 실패: {redact(e)[:120]}")
     bgn = argv[argv.index("--since") + 1] if "--since" in argv else "20240701"
     end = date.today().strftime("%Y%m%d")
+    if "--skip" in argv:   # 로그가 5,000줄을 넘어 앞부분이 잘릴 때 이미 본 회사를 뺀다
+        skip = {norm_name(n) for n in argv[argv.index("--skip") + 1].split(",")}
+        corps = {c: n for c, n in corps.items() if norm_name(n or "") not in skip}
     print(f"[place] 대상 {len(corps)}곳, {bgn} 부터")
     for code, name in sorted(corps.items(), key=lambda x: x[1] or ""):
         rows, page = [], 1
@@ -616,6 +619,8 @@ def placement_scan(argv: list[str]) -> int:
             print(f"PLACE\t{name}\t{x.get('rcept_dt')}\t{re.sub(chr(32)+'+', ' ', x.get('report_nm') or '')}\t{rn}")
             if rn in api_rows:
                 print(f"PLACE\t{name}\tAPI " + json.dumps(api_rows[rn], ensure_ascii=False))
+            if "정정" in (x.get("report_nm") or ""):   # 정정 공시는 목록·API 값만(본문은 원 공시와 거의 같다)
+                continue
             lines = flat(doc_xml(rn))
             on = 0
             for ln in lines:

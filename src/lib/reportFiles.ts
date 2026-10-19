@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'beyless-sdm-edge', summary: '대구 북구 비상장 모빌리티 소프트웨어 기업 베이리스가 차량용 임베디드 소프트웨어에서 드론·로봇·LiDAR·방산 엣지 플랫폼으로 넓히는 흐름을 DART 감사보고서(2022 – 2025 사업연도)와 국민연금·KEIT 과제·회사 누리집·보도로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 투자 유치(시리즈 A·B)와 2027년 상장 목표는 회사 발표로만 적고, 개인 이름·기업가치 비교는 싣지 않음.', topics: ['비상장기업', '모빌리티', '로봇', '소프트웨어'],
+    title: '베이리스, 차량용 임베디드 SW → 드론·로봇·LiDAR·방산 엣지 플랫폼', name: '베이리스, 차량용 임베디드 SW → 드론·로봇·LiDAR·방산 엣지 플랫폼',
+    hwpx: '/hwpx/beyless-sdm-edge.hwpx', hwpxSize: '93KB', date: '2026-10-19' },
   { slug: 'sl-sdv-robotics', summary: '대구 북구 유가증권 상장사 에스엘이 자동차 램프에서 전동화(SDV) 제어 부품(E-Shift·BMS·SBCM)과 로봇 모듈(현대차그룹 모베드·보스턴다이내믹스 스팟 다리·휠 구동 액추에이터)로 넓히는 흐름을 DART 공시(2025 사업보고서, 2026 1분기·반기보고서)와 한화투자증권 기업분석(2026-09-28)으로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '미래차', '로봇'],
     title: '에스엘, 자동차 램프 → 전동화(SDV) 부품·로봇 모듈', name: '에스엘, 자동차 램프 → 전동화(SDV) 부품·로봇 모듈',
     hwpx: '/hwpx/sl-sdv-robotics.hwpx', hwpxSize: '207KB', date: '2026-10-17' },

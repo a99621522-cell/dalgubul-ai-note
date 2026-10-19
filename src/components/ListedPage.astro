@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, dartNotes, dartIR, halfYear, growth, ratio, dartEmpHalf } from '../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, dartNotes, dartIR, halfYear, growth, ratio, dartEmpHalf, lastEndedQuarter, quarterStatus, qDue } from '../lib/dart';
 import type { DartQuarter } from '../lib/dart';
 import { companies, normName } from '../lib/csv';
 /** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
@@ -73,6 +73,14 @@ const qCorps = [...new Set(QS.map(q => q.corp_code))].map(code => {
   return { code, name: byCodeCorp.get(code)?.name ?? L.name, cls: byCodeCorp.get(code)?.cls ?? L.corp_cls, by, L };
 }).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 const qAsOf = QS.map(q => q.as_of).sort().at(-1) ?? '';
+/** 최근 끝난 분기의 실적 발표 현황(운영자 지시 2026-10-20 '3분기 실적 발표한 기업과 안한 기업 조사하고 발표한 기업은 반영해') */
+const LQ = lastEndedQuarter();
+const ST = quarterStatus(corps, LQ.year, LQ.quarter);
+const stRep = ST.filter(r => r.state === '보고서'), stPre = ST.filter(r => r.state === '잠정실적'), stNot = ST.filter(r => r.state === '아직');
+const lqDue = qDue(LQ.year, LQ.quarter);
+const lqDueS = `${lqDue.getUTCFullYear()}-${String(lqDue.getUTCMonth() + 1).padStart(2, '0')}-${String(lqDue.getUTCDate()).padStart(2, '0')}`;
+const lqName = `${LQ.year}년 ${LQ.quarter}분기`;
+const lqRep = LQ.quarter === 4 ? '사업보고서' : LQ.quarter === 2 ? '반기보고서' : '분기보고서';
 /** 상반기 재무(운영자 지시 2026-10-19): 반기보고서 누적 손익 + 6월 말 재무상태 */
 const H = halfYear(listedCodes);
 const hy = H.year, hp = hy ? String(Number(hy) - 1) : '';
@@ -177,6 +185,38 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
         </tr>); })}</tbody>
     </table></div>
     <p class="meta">값은 반기보고서 주요계정(공시 원 단위)을 억 원으로 나눈 것입니다. 증감률은 (올해 상반기 ÷ 전년 상반기 − 1) × 100(두 값이 0 보다 클 때만), 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 나눈 값입니다. {hasBS && `'${hp}년 말' 부채비율은 같은 반기보고서에 비교로 공시된 전기말 값으로 계산했습니다. `}합계는 두 해 값이 모두 있는 회사만 더했고, 연결·개별 기준이 섞여 있습니다. — 는 반기보고서가 없거나 그 계정이 공시되지 않은 경우입니다. 가나다순이며 순위나 평가가 아닙니다. 분기별 값은 <a href="/listed/quarter/">분기 실적</a>, 사업연도 값은 <a href="/listed/">재무</a>에 있습니다.</p>
+  </section>)}
+
+  {part === 'quarter' && ST.length > 0 && (
+  <section id="announce">
+    <div class="section-head"><h2>{lqName} 실적 발표 현황</h2><span class="meta">유가증권·코스닥 {ST.length}곳 · {lqRep} 마감 {lqDueS} · {qAsOf} 받음</span></div>
+    <div class="cards static">
+      <div class="card"><span class="big">{stRep.length}</span><span class="meta">{lqRep} 낸 회사</span></div>
+      <div class="card"><span class="big">{stPre.length}</span><span class="meta">잠정실적만 공시한 회사</span></div>
+      <div class="card"><span class="big">{stNot.length}</span><span class="meta">아직 발표 없음</span></div>
+    </div>
+    <p class="meta">'발표'는 DART 에 {lqRep}를 냈거나, 그 전에 거래소에 영업(잠정)실적(공정공시)을 낸 경우입니다. 잠정실적은 회사가 공시한 잠정치라 {lqRep} 값과 다를 수 있고, {lqRep}가 나오면 그 값으로 바뀝니다. '아직'은 {qAsOf} 까지 둘 다 없는 회사로, 대부분 마감({lqDueS}) 무렵에 {lqRep}를 냅니다 — 늦은 것이 아닙니다. 잠정실적 공시는 의무가 아니어서 내는 회사가 많지 않습니다.</p>
+    {(stRep.length + stPre.length) > 0 && <div class="scroll-x"><table class="data-table" id="announced" data-title={`대구시 상장기업 ${lqName} 실적 발표 회사`}>
+      <thead>
+        <tr><th rowspan="2">회사</th><th rowspan="2">시장</th><th rowspan="2">발표</th><th rowspan="2">접수일</th><th colspan="3" class="c">매출액(억 원)</th><th colspan="2" class="c">영업이익(억 원)</th><th rowspan="2" class="n">당기순이익<br />(억 원)</th><th rowspan="2">공시</th></tr>
+        <tr><th class="n">{lqName}</th><th class="n">전년 같은 분기</th><th class="n">증감(%)</th><th class="n">{lqName}</th><th class="n">전년 같은 분기</th></tr>
+      </thead>
+      <tbody>{[...stRep, ...stPre].sort((a, b) => a.name.localeCompare(b.name, 'ko')).map(r => (
+        <tr>
+          <th scope="row"><a href={`/listed/${r.code}/`}>{r.name}</a>{r.fs === '개별' && <span class="meta"> 개별</span>}</th>
+          <td class="nw">{r.cls}</td>
+          <td class="nw">{r.state === '보고서' ? lqRep : '잠정실적'}</td>
+          <td class="nw">{ymd(r.date)}</td>
+          <td class="n">{f(r.revenue)}</td><td class="n">{f(r.revenue_prev)}</td><td class="n">{pct1(growth(r.revenue, r.revenue_prev))}</td>
+          <td class="n">{f(r.op)}</td><td class="n">{f(r.op_prev)}</td><td class="n">{f(r.net)}</td>
+          <td>{r.url ? <a href={r.url} rel="noopener">DART</a> : '—'}</td>
+        </tr>))}</tbody>
+    </table></div>}
+    {stNot.length > 0 && <details class="stat-details" open={stRep.length + stPre.length === 0}><summary>아직 발표 없음 {stNot.length}곳 — {lqRep} 마감 {lqDueS}</summary>
+      <p class="meta">{stNot.map((r, i) => <>{i > 0 && ' · '}<a href={`/listed/${r.code}/`}>{r.name}</a>{r.offFy && ' (결산월이 12월 아님)'}</>)}</p>
+      {stNot.some(r => r.offFy) && <p class="meta">결산월이 12월이 아닌 회사는 사업연도 분기가 달력 분기와 달라, DART 의 같은 이름 분기 보고서를 이 표의 {lqName}로 세지 않았습니다.</p>}
+    </details>}
+    <p class="meta">값은 공시 값(잠정실적은 공시 단위 — 대개 백만 원)을 억 원으로 나눈 것이고, 증감은 (이번 분기 ÷ 전년 같은 분기 − 1) × 100 입니다(두 값이 0 보다 클 때만). 연결재무제표가 있으면 연결, 없으면 개별입니다. 가나다순이며 순위나 평가가 아닙니다.</p>
   </section>)}
 
   {part === 'quarter' && qCorps.length > 0 && (

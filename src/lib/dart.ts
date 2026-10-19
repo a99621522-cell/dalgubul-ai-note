@@ -178,6 +178,42 @@ export const ratio = (l?: string, e?: string) => { const x = Number(l), y = Numb
 /** 매출액 전년 같은 분기 대비 증감률(%) — 두 값이 모두 0 보다 클 때만 */
 export const qYoY = (q?: DartQuarter) => { if (!q) return null; const a = Number(q.revenue), b = Number(qPrev(q, 'revenue')); return q.revenue && b > 0 && a > 0 ? (a / b - 1) * 100 : null; };
 
+/** 영업(잠정)실적 공시의 분기 숫자(collect_dart_qtr.py 가 공시 원문 표에서 읽음 → data/dart/prelim.csv, 운영자 지시 2026-10-20
+ *  '3분기 실적 발표한 기업과 안한 기업 조사하고 발표한 기업은 반영해'). 값은 공시 단위(대개 백만 원)를 원으로 바꾼 것 — 잠정치라 분기보고서와 다를 수 있다. */
+export type DartPrelim = { rcept_dt: string; corp_code: string; name: string; year: string; quarter: string; fs: string;
+  revenue: string; operating_income: string; net_income: string; revenue_prev: string; operating_income_prev: string; net_income_prev: string;
+  revenue_cum: string; operating_income_cum: string; net_income_cum: string; unit_note: string; report_nm: string; rcept_no: string; url: string };
+export const dartPrelim = memo(() => readCsv('data/dart/prelim.csv') as DartPrelim[]);
+const Q_END: Record<number, [number, number]> = { 1: [3, 31], 2: [6, 30], 3: [9, 30], 4: [12, 31] };
+/** 분기 보고서 제출 마감(분기·반기 45일, 사업보고서 90일 — 자본시장법 제159·160조) */
+export const qDue = (y: number, q: number) => { const [m, d] = Q_END[q]; const t = new Date(Date.UTC(y, m - 1, d)); t.setUTCDate(t.getUTCDate() + (q === 4 ? 90 : 45)); return t; };
+/** 빌드 날 기준 가장 최근에 끝난 분기 */
+export function lastEndedQuarter(today = new Date()): { year: number; quarter: number } {
+  for (let y = today.getUTCFullYear(); y >= today.getUTCFullYear() - 1; y--)
+    for (const q of [4, 3, 2, 1]) { const [m, d] = Q_END[q]; if (Date.UTC(y, m - 1, d) < today.getTime()) return { year: y, quarter: q }; }
+  return { year: today.getUTCFullYear() - 1, quarter: 4 };
+}
+export type QStatusRow = { code: string; name: string; cls: string; state: '보고서' | '잠정실적' | '아직'; date: string; fs: string; offFy?: boolean;
+  revenue: string; revenue_prev: string; op: string; op_prev: string; net: string; url: string; report_nm: string; prelim?: DartPrelim };
+/** 그 분기 실적 발표 현황: 분기·반기·사업보고서가 있으면 '보고서', 없고 잠정실적 공시가 있으면 '잠정실적', 둘 다 없으면 '아직'(마감 전이면 낼 차례) */
+export function quarterStatus(corps: { code: string; name: string; cls: string }[], year: number, quarter: number): QStatusRow[] {
+  const qs = dartQuarters(), pre = dartPrelim();
+  return corps.filter(c => c.cls === '유가증권' || c.cls === '코스닥').map(c => {
+    // 분기 끝 전에 낸 보고서는 결산월이 12월이 아닌 회사의 사업연도 분기라 달력 분기로 보지 않는다(예: 세원정공 6월 결산)
+    const end = `${year}${String(Q_END[quarter][0]).padStart(2, '0')}${Q_END[quarter][1]}`;
+    const r = qs.find(q => q.corp_code === c.code && Number(q.year) === year && Number(q.quarter) === quarter && q.rcept_no.slice(0, 8) > end);
+    const p = pre.filter(x => x.corp_code === c.code && Number(x.year) === year && Number(x.quarter) === quarter)
+      .sort((a, b) => (a.fs === '연결' ? 0 : 1) - (b.fs === '연결' ? 0 : 1) || b.rcept_no.localeCompare(a.rcept_no))[0];
+    if (r) return { code: c.code, name: c.name, cls: c.cls, state: '보고서' as const, date: r.rcept_no.slice(0, 8), fs: r.fs, revenue: r.revenue, revenue_prev: qPrev(r, 'revenue'),
+      op: r.operating_income, op_prev: qPrev(r, 'operating_income'), net: r.net_income, url: r.source_url, report_nm: quarter === 4 ? '사업보고서' : quarter === 2 ? '반기보고서' : '분기보고서', prelim: p };
+    if (p) return { code: c.code, name: c.name, cls: c.cls, state: '잠정실적' as const, date: p.rcept_dt, fs: p.fs, revenue: p.revenue, revenue_prev: p.revenue_prev,
+      op: p.operating_income, op_prev: p.operating_income_prev, net: p.net_income, url: p.url, report_nm: p.report_nm, prelim: p };
+    // 1~3분기 보고서가 그 달력 분기 끝보다 먼저 접수됐으면 결산월이 12월이 아닌 회사(사업보고서는 정정본 접수일이 늦을 수 있어 보지 않음)
+    const offFy = qs.some(q => q.corp_code === c.code && q.quarter !== '4' && q.rcept_no.slice(0, 8) <= `${q.year}${String(Q_END[Number(q.quarter)][0]).padStart(2, '0')}${Q_END[Number(q.quarter)][1]}`);
+    return { code: c.code, name: c.name, cls: c.cls, state: '아직' as const, offFy, date: '', fs: '', revenue: '', revenue_prev: '', op: '', op_prev: '', net: '', url: '', report_nm: '' };
+  }).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+}
+
 /** 실적 관련 공시(data/dart/performance.csv): 영업(잠정)실적 · 매출액 또는 손익구조 30%(대규모법인 15%) 이상 변동(공시된 주요원인 문구) ·
  *  영업실적 등에 대한 전망(공정공시). excerpt 는 회사가 공시한 문구 그대로(120자 안). 해석·평가 없음. */
 export type DartPerf = { rcept_dt: string; corp_code: string; name: string; kind: string; report_nm: string; excerpt: string; rcept_no: string; url: string };

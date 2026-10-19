@@ -141,7 +141,10 @@ export function makesOf(c: DartCorp): { text: string; kind: 'dart' | 'factory' |
  *  *_prev 는 같은 보고서의 전년 같은 분기 값(공시). 순위·평가 없음. */
 export type DartQuarter = { corp_code: string; name: string; corp_cls: string; stock_code: string; year: string; quarter: string; fs: string;
   revenue: string; operating_income: string; net_income: string; revenue_cum: string; operating_income_cum: string; net_income_cum: string;
-  revenue_prev: string; operating_income_prev: string; net_income_prev: string; derived: string; unit: string; rcept_no: string; source_url: string; as_of: string };
+  revenue_prev: string; operating_income_prev: string; net_income_prev: string;
+  /** 분기 말 재무상태(자산·부채·자본총계)와 같은 보고서의 비교 시점 값(*_prev: 분기·반기는 전기말) — 2026-10-19 부터 받음, 그 전 행은 빈 칸 */
+  total_assets?: string; total_liabilities?: string; total_equity?: string; total_assets_prev?: string; total_liabilities_prev?: string; total_equity_prev?: string;
+  derived: string; unit: string; rcept_no: string; source_url: string; as_of: string };
 export const dartQuarters = memo(() => readCsv('scripts/data/company_financials_q.csv') as DartQuarter[]);
 export const qKey = (q: Pick<DartQuarter, 'year' | 'quarter'>) => `${q.year}-${q.quarter}`;
 export const qLabel = (k: string) => { const [y, q] = k.split('-'); return `${y.slice(2)}.${q}Q`; };
@@ -152,6 +155,22 @@ export const qPrev = (q: DartQuarter, col: 'revenue' | 'operating_income' | 'net
   const p = dartQuarters().find(x => x.corp_code === q.corp_code && x.quarter === '4' && Number(x.year) === Number(q.year) - 1 && x.fs === q.fs);
   return p?.[col] ?? '';
 };
+/** 상반기(반기보고서) 재무(운영자 지시 2026-10-19 '대구시 상장기업들 올해 상반기 재무제표 업데이트해'): 가장 최근 반기(2분기 행)의 누적 손익과
+ *  6월 말 재무상태, 전년 상반기 누적(전년 2분기 행, 같은 연결·개별 기준일 때만), 반기보고서의 전기말 재무상태. 값은 공시 그대로, 나눗셈만 이 사이트 계산 */
+export type HalfRow = { code: string; name: string; cls: string; fs: string; cur: DartQuarter; prev?: DartQuarter };
+export function halfYear(codes?: Set<string>): { year: string; rows: HalfRow[] } {
+  const qs = dartQuarters().filter(q => q.quarter === '2' && (!codes || codes.has(q.corp_code)));
+  const year = qs.map(q => q.year).sort().at(-1) ?? '';
+  const rows = qs.filter(q => q.year === year).map(cur => {
+    const prev = qs.find(q => q.corp_code === cur.corp_code && Number(q.year) === Number(year) - 1 && q.fs === cur.fs);
+    return { code: cur.corp_code, name: cur.name, cls: cur.corp_cls, fs: cur.fs, cur, prev };
+  }).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+  return { year, rows };
+}
+/** 두 원 단위 값의 증감률(%) — 둘 다 0 보다 클 때만 */
+export const growth = (a?: string, b?: string) => { const x = Number(a), y = Number(b); return a && b && x > 0 && y > 0 ? (x / y - 1) * 100 : null; };
+/** 부채비율(%) = 부채 ÷ 자본 × 100, 자본이 0 이하면 null */
+export const ratio = (l?: string, e?: string) => { const x = Number(l), y = Number(e); return l && e && y > 0 && Number.isFinite(x) ? (x / y) * 100 : null; };
 /** 매출액 전년 같은 분기 대비 증감률(%) — 두 값이 모두 0 보다 클 때만 */
 export const qYoY = (q?: DartQuarter) => { if (!q) return null; const a = Number(q.revenue), b = Number(qPrev(q, 'revenue')); return q.revenue && b > 0 && a > 0 ? (a / b - 1) * 100 : null; };
 

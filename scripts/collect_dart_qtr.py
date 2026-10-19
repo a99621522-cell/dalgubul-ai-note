@@ -6,6 +6,8 @@
    단일회사 주요계정(fnlttSinglAcnt)을 1분기(11013)·반기(11012)·3분기(11014)·사업보고서(11011)로 받는다. 연결 우선·없으면 개별.
    손익 계정의 thstrm_amount(당기 3개월)·thstrm_add_amount(당기 누적)·frmtrm_amount(전년 같은 분기)를 그대로 적고,
    4분기는 따로 공시되지 않으므로 '사업보고서 연간 − 3분기 누적'(같은 연결·개별 기준일 때만)으로 계산해 derived=1 로 표시한다.
+   재무상태(자산·부채·자본총계)는 그 분기 말 값(thstrm_amount)과 같은 보고서의 비교 시점 값(frmtrm_amount — 분기·반기는 전기말,
+   사업보고서는 전년말)을 *_prev 로 적는다(운영자 지시 2026-10-19 '상반기 재무제표 업데이트해').
    코넥스는 분기·반기보고서 제출 의무가 없어 대상에서 뺀다.
 2) 실적 관련 공시 → data/dart/performance.csv
    공시검색(list.json, 회사별)에서 제목으로 ① 영업(잠정)실적 ② 매출액 또는 손익구조 30%(대규모법인 15%) 이상 변동 ③ 영업실적 등에 대한 전망을 골라
@@ -47,10 +49,17 @@ ACCOUNTS = [
     ("operating_income", ("영업이익", "영업이익(손실)")),
     ("net_income", ("당기순이익", "당기순이익(손실)", "당기순손익")),
 ]
+BS_ACCOUNTS = [
+    ("total_assets", ("자산총계",)),
+    ("total_liabilities", ("부채총계",)),
+    ("total_equity", ("자본총계",)),
+]
 COLS_Q = ["corp_code", "name", "corp_cls", "stock_code", "year", "quarter", "fs",
           "revenue", "operating_income", "net_income",
           "revenue_cum", "operating_income_cum", "net_income_cum",
           "revenue_prev", "operating_income_prev", "net_income_prev",
+          "total_assets", "total_liabilities", "total_equity",
+          "total_assets_prev", "total_liabilities_prev", "total_equity_prev",
           "derived", "unit", "rcept_no", "source_url", "as_of"]
 COLS_P = ["rcept_dt", "corp_code", "name", "kind", "report_nm", "excerpt", "rcept_no", "url"]
 # 제목 → 구분. 정정 공시는 같은 회사·같은 구분의 최근 것만 남긴다
@@ -153,6 +162,10 @@ def pick(lst: list[dict], fs: str) -> dict:
             if nm in names and col not in got:
                 got[col] = {"amt": to_num(x.get("thstrm_amount", "")), "cum": to_num(x.get("thstrm_add_amount", "")),
                             "prev": to_num(x.get("frmtrm_amount", "")), "rcept_no": x.get("rcept_no", "")}
+        for col, names in BS_ACCOUNTS:
+            if nm in names and col not in got and x.get("sj_div") in ("BS", "", None):
+                got[col] = {"amt": to_num(x.get("thstrm_amount", "")), "prev": to_num(x.get("frmtrm_amount", "")),
+                            "rcept_no": x.get("rcept_no", "")}
     return got
 
 
@@ -179,6 +192,9 @@ def quarter_rows(code: str, meta: dict, pers: list[tuple[int, int]], probe: bool
                    "unit": "원", "as_of": date.today().isoformat(), "derived": ""}
             rec["rcept_no"] = next((v["rcept_no"] for v in got.values() if v.get("rcept_no")), "")
             rec["source_url"] = f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rec['rcept_no']}" if rec["rcept_no"] else ""
+            for col, _ in BS_ACCOUNTS:
+                rec[col] = got.get(col, {}).get("amt", "")
+                rec[col + "_prev"] = got.get(col, {}).get("prev", "")
             if q < 4:
                 for col, _ in ACCOUNTS:
                     v = got.get(col, {})

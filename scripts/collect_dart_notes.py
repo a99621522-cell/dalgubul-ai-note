@@ -565,6 +565,75 @@ def invest_scan(argv: list[str]) -> int:
     return 0
 
 
+PLACE = re.compile(r"유상증자결정|전환사채권발행결정|신주인수권부사채권발행결정|교환사채권발행결정")
+PLACE_API = {"유상증자": "piicDecsn.json", "전환사채": "cvbdIsDecsn.json", "신주인수권": "bdwtIsDecsn.json", "교환사채": "exbdIsDecsn.json"}
+PERSON = re.compile(r"^[가-힣]{2,4}$")
+
+
+def placement_scan(argv: list[str]) -> int:
+    """--placement-scan: 대구 본사 공시 회사(캐시 daegu) + --invest-names 이름(본사 대구만)의 2024-07 이후
+    유상증자·전환사채·신주인수권부사채·교환사채 발행 결정 공시를 찾아 구조화 API 값(증자 방식·주식 수·자금 용도·사채 총액·발행 방법)과
+    원문의 배정 대상자·납입일·발행가 줄을 로그로 찍는다(저장 안 함). 사람 이름으로 보이는 칸은 '(개인)'으로 바꾼다.
+    운영자 지시 2026-10-19 '다른 투자 받은 기업도 조사해봐'."""
+    cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
+    corps = {c: v.get("name") for c, v in cache.items() if v.get("daegu")}
+    if "--invest-names" in argv:
+        want = {norm_name(n) for n in argv[argv.index("--invest-names") + 1].split(",") if n.strip()}
+        try:
+            r = requests.get(f"{API}/corpCode.xml", params={"crtfc_key": KEY}, headers=UA, timeout=180)
+            xml = zipfile.ZipFile(io.BytesIO(r.content)).read("CORPCODE.xml").decode("utf-8", "ignore")
+            for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>", xml, re.S):
+                if norm_name(clean(m.group(2))) in want and clean(m.group(1)) not in corps:
+                    code = clean(m.group(1))
+                    adr = (get("company.json", corp_code=code) or {}).get("adres") or ""
+                    if adr.startswith("대구"):
+                        corps[code] = clean(m.group(2))
+                    else:
+                        print(f"PLACE\t{clean(m.group(2))}\t대구 아님\t{adr[:30]}")
+        except Exception as e:  # noqa: BLE001
+            print(f"[place] corpCode 실패: {redact(e)[:120]}")
+    bgn = argv[argv.index("--since") + 1] if "--since" in argv else "20240701"
+    end = date.today().strftime("%Y%m%d")
+    if "--skip" in argv:   # 로그가 5,000줄을 넘어 앞부분이 잘릴 때 이미 본 회사를 뺀다
+        skip = {norm_name(n) for n in argv[argv.index("--skip") + 1].split(",")}
+        corps = {c: n for c, n in corps.items() if norm_name(n or "") not in skip}
+    print(f"[place] 대상 {len(corps)}곳, {bgn} 부터")
+    for code, name in sorted(corps.items(), key=lambda x: x[1] or ""):
+        rows, page = [], 1
+        while True:
+            j = get("list.json", corp_code=code, bgn_de=bgn, end_de=end, pblntf_ty="B", page_no=page, page_count=100) or {}
+            rows += j.get("list", [])
+            if page >= int(j.get("total_page") or 1):
+                break
+            page += 1
+        hits = [x for x in rows if PLACE.search(x.get("report_nm") or "") and "자회사" not in (x.get("report_nm") or "")]
+        if not hits:
+            continue
+        api_rows = {}
+        for key, ep in PLACE_API.items():
+            if any(key in (x.get("report_nm") or "") for x in hits):
+                for row in (get(ep, corp_code=code, bgn_de=bgn, end_de=end) or {}).get("list", []):
+                    api_rows[row.get("rcept_no")] = {k: v for k, v in row.items() if v not in ("", "-") and k not in ("corp_code", "corp_name", "corp_cls")}
+        for x in hits:
+            rn = x.get("rcept_no")
+            print(f"PLACE\t{name}\t{x.get('rcept_dt')}\t{re.sub(chr(32)+'+', ' ', x.get('report_nm') or '')}\t{rn}")
+            if rn in api_rows:
+                print(f"PLACE\t{name}\tAPI " + json.dumps(api_rows[rn], ensure_ascii=False))
+            if "정정" in (x.get("report_nm") or ""):   # 정정 공시는 목록·API 값만(본문은 원 공시와 거의 같다)
+                continue
+            lines = flat(doc_xml(rn))
+            on = 0
+            for ln in lines:
+                if re.search(r"배정\s?대상자|제3자배정 대상|대상자명|발행 대상자|사채 ?발행 ?대상", ln):
+                    on = 25
+                if on or re.search(r"납입일|신주 발행가액|발행가액|사채의 ?권면|증자방식|사채발행방법|자금조달의 목적|선정경위|최대주주와의 관계", ln):
+                    cells = [("(개인)" if PERSON.match(c.strip()) and not INST.search(c) else c) for c in ln.split(" | ")]
+                    print(f"PLACE\t{name}\tDOC " + " | ".join(cells)[:260])
+                    on = max(on - 1, 0)
+    print(f"[place] 끝 — API 호출 {CALLS[0]}회")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if not KEY:
         print("DART_KEY 없음")
@@ -574,6 +643,8 @@ def main(argv: list[str]) -> int:
     DUMP[0] = "--dump" in argv and bool(probe)
     if "--invest-scan" in argv:
         return invest_scan(argv)
+    if "--placement-scan" in argv:
+        return placement_scan(argv)
     if "--corp-search" in argv:   # 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 최근 공시 목록만 로그로 — 저장 안 함(2026-10-17 삼보에이앤티 확인)
         kw = argv[argv.index("--corp-search") + 1]
         try:

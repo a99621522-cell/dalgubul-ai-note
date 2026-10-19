@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'connext-collagenase-dupuytren', summary: '대구 동구 한국메디벤처센터에 연구소를 둔 비상장 바이오 기업 코넥스트가 연구용 재조합 효소에서 재조합 콜라겐분해효소(CNT201) 듀피트렌 구축 치료제 호주 2상·파마리서치 라이선스로 넓혀 온 과정을 DART 연결감사보고서(2025년 첫 감사)·국민연금·첨복단지 명단과 보도로 정리한 자료. 본점 이전 날짜는 확인 필요로 적음. 개인 주주 이름·평가·전망은 싣지 않음.', topics: ['의료·바이오', '비상장기업', '투자'],
+    title: '코넥스트, 재조합 콜라겐분해효소 → 듀피트렌 구축 치료제 호주 2상', name: '코넥스트, 재조합 콜라겐분해효소 → 듀피트렌 구축 치료제 호주 2상',
+    hwpx: '/hwpx/connext-collagenase-dupuytren.hwpx', hwpxSize: '42KB', date: '2026-10-19' },
   { slug: 'beamworks-breast-ultrasound-ai', summary: '경북대 교수가 2021년 대구 북구에 창업한 의료 AI 기업 빔웍스의 유방 초음파 진단 보조 소프트웨어 인허가(식약처·혁신의료기술·미국 FDA 510(k))·임상, 국내외 유통, 투자 유치를 국민연금·벤처기업명단·국가 R&D 자료와 보도로 정리한 자료. DART 공시가 없어 재무 값은 싣지 않음. 평가·전망은 싣지 않음.', topics: ['의료·바이오', '인공지능', '비상장기업'],
     title: '빔웍스, 유방 초음파 AI → 미국 FDA 허가·갑상선·지방간 초음파로', name: '빔웍스, 유방 초음파 AI → 미국 FDA 허가·갑상선·지방간 초음파로',
     hwpx: '/hwpx/beamworks-breast-ultrasound-ai.hwpx', hwpxSize: '89KB', date: '2026-10-19' },

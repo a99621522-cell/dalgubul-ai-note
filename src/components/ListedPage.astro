@@ -1,15 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
-import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, dartNotes, dartIR } from '../lib/dart';
+import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil, dartRnd, dartInvest, purposeOf, isListed, makesOf, opMargin, revGrowth, pct1, pct1n, debtRatio, dartQuarters, qKey, qLabel, qYoY, dartPerf, dartNotes, dartIR, halfYear, growth, ratio } from '../lib/dart';
 import type { DartQuarter } from '../lib/dart';
 import { companies, normName } from '../lib/csv';
 /** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
  *  본사 주소가 대구인 유가증권·코스닥·코넥스 상장 회사의 재무·직원·연구개발비·출자·미래 산업 공시, 회사별 상세는 /listed/<corp_code>/.
  *  리디자인 v3 감사(2026-10-12: 한 페이지 568KB·표 59개·DOM 1.1만) 뒤 절마다 하위 페이지로 나눴다 — 이 컴포넌트를 src/pages/listed/{index,quarter,perf,notes,future,employees,rnd,invest}.astro 가 part 로 부른다.
  *  사업보고서를 내는 비상장 회사는 맨 아래 따로. 값은 공시 그대로(원 → 억 원 나눗셈만), 가나다순, 평가·순위·비율 계산 없음. */
-interface Props { part?: 'fin' | 'quarter' | 'perf' | 'notes' | 'future' | 'employees' | 'rnd' | 'invest' }
+interface Props { part?: 'fin' | 'half' | 'quarter' | 'perf' | 'notes' | 'future' | 'employees' | 'rnd' | 'invest' }
 const { part = 'fin' } = Astro.props;
-const PARTS = [['fin', '재무', ''], ['quarter', '분기 실적', 'quarter'], ['perf', '실적 공시(사유·전망)', 'perf'], ['notes', '보고서·IR 실적 설명', 'notes'], ['future', '미래 산업 공시', 'future'], ['employees', '직원', 'employees'], ['rnd', '연구개발비', 'rnd'], ['invest', '출자', 'invest']] as const;
+const PARTS = [['fin', '재무', ''], ['half', '상반기 재무', 'half'], ['quarter', '분기 실적', 'quarter'], ['perf', '실적 공시(사유·전망)', 'perf'], ['notes', '보고서·IR 실적 설명', 'notes'], ['future', '미래 산업 공시', 'future'], ['employees', '직원', 'employees'], ['rnd', '연구개발비', 'rnd'], ['invest', '출자', 'invest']] as const;
 const partName = PARTS.find(x => x[0] === part)![1];
 const all = dartCorps();
 const { years, asOf } = all;
@@ -68,6 +68,18 @@ const qCorps = [...new Set(QS.map(q => q.corp_code))].map(code => {
   return { code, name: byCodeCorp.get(code)?.name ?? L.name, cls: byCodeCorp.get(code)?.cls ?? L.corp_cls, by, L };
 }).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 const qAsOf = QS.map(q => q.as_of).sort().at(-1) ?? '';
+/** 상반기 재무(운영자 지시 2026-10-19): 반기보고서 누적 손익 + 6월 말 재무상태 */
+const H = halfYear(listedCodes);
+const hy = H.year, hp = hy ? String(Number(hy) - 1) : '';
+const hasBS = H.rows.some(r => r.cur.total_assets);
+const hSum = (rs: typeof H.rows, pick: (r: (typeof H.rows)[number]) => string | undefined) => rs.reduce((a, r) => a + (Number(pick(r)) || 0), 0);
+const hBoth = H.rows.filter(r => r.prev && r.cur.revenue_cum && r.prev.revenue_cum);
+const hRevNow = hSum(hBoth, r => r.cur.revenue_cum), hRevPrev = hSum(hBoth, r => r.prev!.revenue_cum);
+const hOpBoth = H.rows.filter(r => r.prev && r.cur.operating_income_cum && r.prev.operating_income_cum);
+const hOpNow = hSum(hOpBoth, r => r.cur.operating_income_cum), hOpPrev = hSum(hOpBoth, r => r.prev!.operating_income_cum);
+const hUp = hBoth.filter(r => Number(r.cur.revenue_cum) > Number(r.prev!.revenue_cum)).length;
+const hLoss = H.rows.filter(r => r.cur.operating_income_cum && Number(r.cur.operating_income_cum) < 0).length;
+const eok1 = (v: number) => (v / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 0 });
 const PERF = dartPerf().filter(p => listedCodes.has(p.corp_code));
 const perfWhy = PERF.filter(p => p.kind !== '잠정실적');
 const perfPre = PERF.filter(p => p.kind === '잠정실적');
@@ -128,6 +140,39 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   </table></div>
   <p class="meta">매출액 증가율은 (그해 매출액 ÷ 전년 매출액 − 1) × 100, 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 공시 값을 나눈 것입니다(두 해의 재무제표 기준이 연결·개별로 다르면 증가율은 —). 연구개발비·직원 수는 아래 '연구개발비'·'직원 현황'과 같은 사업보고서 값입니다(표를 못 찾은 회사는 —). 가나다순이며 이 값으로 줄 세우지 않습니다. '분야(업종)'은 DART 기업개황의 업종 코드(KSIC) 이름(공장등록 자료에 같은 코드가 있을 때, 없으면 이 사이트의 산업 그룹)이고, '무엇을 만드나'는 최근 사업보고서 '주요 제품' 표의 품목을 매출 비율이 큰 순서로 3개까지 옮긴 것입니다. 사업보고서 표를 아직 못 읽은 회사는 공장등록(팩토리온) 생산품을 '(공장등록)'으로 적었습니다. ※ 는 금융회사(은행·금융지주 등)처럼 매출액 계정이 없어 사업보고서 손익계산서의 영업수익(없으면 순영업수익·이자수익)을 매출액 자리에 넣은 것입니다(운영자 지시 2026-10-06). — 는 그 해 사업보고서가 없거나 그 계정이 공시되지 않은 경우입니다(코넥스 회사는 사업보고서 주요계정이 없을 수 있음). 회사 상세 페이지에서 기업 사전(공장등록) 이름이 같은 기업으로 이어집니다. 산업은 공시된 업종 코드(KSIC)로 이 사이트의 11개 산업 그룹 규칙에 맞춘 것입니다.</p>
   </>)}
+
+  {part === 'half' && H.rows.length > 0 && (
+  <section id="half">
+    <div class="section-head"><h2>{hy}년 상반기 재무</h2><span class="meta">반기보고서({hy}년 6월 말) · {H.rows.length}곳 · {qAsOf} 받음 · 금융감독원 DART</span></div>
+    <p class="meta">유가증권·코스닥 상장회사는 상반기가 끝나고 45일 안(8월 14일까지) 반기보고서를 냅니다(코넥스는 반기보고서 의무가 없어 뺐습니다). 손익은 1~6월 누적, 재무상태는 6월 말 값이며, 연결재무제표가 있으면 연결, 없으면 개별입니다. 전년 상반기는 {hp}년 반기보고서 값(같은 연결·개별 기준일 때만)입니다.</p>
+    <div class="cards static">
+      <div class="card"><span class="big">{H.rows.length}</span><span class="meta">반기보고서 낸 회사</span></div>
+      {hBoth.length > 0 && <div class="card"><span class="big">{eok1(hRevNow)}</span><span class="meta">상반기 매출액 합계(억 원, {hBoth.length}곳)<br />{hp}년 {eok1(hRevPrev)} · {pct1(growth(String(hRevNow), String(hRevPrev)))}%</span></div>}
+      {hOpBoth.length > 0 && <div class="card"><span class="big">{eok1(hOpNow)}</span><span class="meta">상반기 영업이익 합계(억 원, {hOpBoth.length}곳)<br />{hp}년 {eok1(hOpPrev)}</span></div>}
+      {hBoth.length > 0 && <div class="card"><span class="big">{hUp}</span><span class="meta">매출액이 전년 상반기보다 많은 회사<br />({hBoth.length}곳 중)</span></div>}
+      <div class="card"><span class="big">{hLoss}</span><span class="meta">상반기 영업손실 회사</span></div>
+    </div>
+    <div class="scroll-x"><table class="data-table" id="halftbl" data-grid data-title={`대구시 상장기업 ${hy}년 상반기 재무`}>
+      <thead>
+        <tr><th rowspan="2">회사</th><th rowspan="2">시장</th><th colspan="3" class="c">상반기 매출액(억 원)</th><th colspan="3" class="c">상반기 영업이익(억 원)</th><th rowspan="2" class="n">상반기<br />당기순이익<br />(억 원)</th>
+          {hasBS && <th colspan="4" class="c">{hy}년 6월 말 재무상태(억 원)</th>}{hasBS && <th rowspan="2" class="n">부채비율<br />{hp}년 말(%)</th>}<th rowspan="2">공시</th></tr>
+        <tr><th class="n">{hp}</th><th class="n">{hy}</th><th class="n">증감률(%)</th><th class="n">{hp}</th><th class="n">{hy}</th><th class="n">영업이익률<br />(%)</th>
+          {hasBS && <><th class="n">자산총계</th><th class="n">부채총계</th><th class="n">자본총계</th><th class="n">부채비율(%)</th></>}</tr>
+      </thead>
+      <tbody>{H.rows.map(r => { const c = r.cur, p = r.prev; return (
+        <tr data-cls={r.cls}>
+          <th scope="row"><a href={`/listed/${r.code}/`}>{byCodeCorp.get(r.code)?.name ?? r.name}</a>{r.fs === '개별' && <span class="meta"> 개별</span>}</th>
+          <td>{r.cls}</td>
+          <td class="n">{f(p?.revenue_cum)}</td><td class="n">{f(c.revenue_cum)}</td><td class="n">{pct1(growth(c.revenue_cum, p?.revenue_cum))}</td>
+          <td class="n">{f(p?.operating_income_cum)}</td><td class="n">{f(c.operating_income_cum)}</td><td class="n">{pct1n(c.revenue_cum && Number(c.revenue_cum) > 0 && c.operating_income_cum ? Number(c.operating_income_cum) / Number(c.revenue_cum) * 100 : null)}</td>
+          <td class="n">{f(c.net_income_cum)}</td>
+          {hasBS && <><td class="n">{f(c.total_assets)}</td><td class="n">{f(c.total_liabilities)}</td><td class="n">{f(c.total_equity)}</td><td class="n">{pct1n(ratio(c.total_liabilities, c.total_equity))}</td>
+          <td class="n">{pct1n(ratio(c.total_liabilities_prev, c.total_equity_prev))}</td></>}
+          <td>{c.source_url ? <a href={c.source_url} rel="noopener">DART</a> : '—'}</td>
+        </tr>); })}</tbody>
+    </table></div>
+    <p class="meta">값은 반기보고서 주요계정(공시 원 단위)을 억 원으로 나눈 것입니다. 증감률은 (올해 상반기 ÷ 전년 상반기 − 1) × 100(두 값이 0 보다 클 때만), 영업이익률은 영업이익 ÷ 매출액 × 100, 부채비율은 부채총계 ÷ 자본총계 × 100(자본총계가 0 이하면 —)으로 이 사이트가 나눈 값입니다. {hasBS && `'${hp}년 말' 부채비율은 같은 반기보고서에 비교로 공시된 전기말 값으로 계산했습니다. `}합계는 두 해 값이 모두 있는 회사만 더했고, 연결·개별 기준이 섞여 있습니다. — 는 반기보고서가 없거나 그 계정이 공시되지 않은 경우입니다. 가나다순이며 순위나 평가가 아닙니다. 분기별 값은 <a href="/listed/quarter/">분기 실적</a>, 사업연도 값은 <a href="/listed/">재무</a>에 있습니다.</p>
+  </section>)}
 
   {part === 'quarter' && qCorps.length > 0 && (
   <section id="quarter">
@@ -325,6 +370,10 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
   .card[aria-pressed="true"] { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); background: var(--band); }
   .card .big { font-size: 1.5rem; font-weight: 700; }
   .card .meta { color: var(--primary); }
+  .cards.static .card { cursor: default; }
+  .cards.static .card:hover { border-color: var(--line); background: var(--bg); }
+  .cards.static .card .meta { color: var(--muted); }
+  #halftbl th, #halftbl td { white-space: nowrap; }
   .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: var(--s2) 0; }
   .tools input, .tools select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
   .tools input { flex: 1 1 200px; }

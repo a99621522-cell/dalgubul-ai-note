@@ -11,9 +11,12 @@ b) 재무: 단일회사 전체 재무제표(fnlttSinglAcntAll) — 사업보고�
    → data/dart_sdv/financials.csv: 주요 계정(매출액·영업이익·당기순이익·자산·부채·자본총계·판매비와관리비·연구개발비 계열)만, 공시 계정명 그대로
    → data/dart_sdv/financials_all.csv: 받은 모든 계정 행(손익·재무상태·현금흐름·자본변동)
    반기보고서 손익 계정은 '2분기(4~6월)'와 '1~6월 누적' 두 줄, 재무상태 계정은 6월 말 값.
+c) 연구개발비: 손익계산서에 연구개발비 계정이 없는 회사가 대부분이라, 2025 사업보고서와 2026 반기보고서 원문(document.xml)의
+   'II. 사업의 내용 — 연구개발 활동' 표에서 연구개발비용 합계 행·매출액 대비 비율 행을 읽는다(collect_dart_extra.py 의 rnd_from_doc 재사용,
+   표 위 단위로 원 환산, 열 머리가 오래된 해부터면 뒤집음). → data/dart_sdv/rnd.csv (표 머리 글자를 함께 남겨 열 대조가 되게)
 값은 공시 그대로(원). 해석·평가 없음. 키: DART_KEY. API 실패는 로그 후 건너뛴다.
 
-사용: python3 scripts/collect_dart_sdv.py [--discover] [--no-fin]
+사용: python3 scripts/collect_dart_sdv.py [--discover] [--no-fin] [--no-rnd]
 """
 from __future__ import annotations
 
@@ -30,6 +33,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from collect_dart_notes import API, CALLS, KEY, UA, clean, get, redact  # noqa: E402  (재시도·한도 초과 멈춤을 같이 쓴다)
+from collect_dart_extra import UNIT, doc_xml, rnd_from_doc  # noqa: E402  (연구개발 활동 표 읽기)
 
 ROOT = Path(__file__).resolve().parent.parent
 TARGETS = ROOT / "scripts" / "data" / "sdv_targets.csv"
@@ -54,6 +58,7 @@ RND = re.compile(r"연구개발|경상연구")
 
 COLS_T = ["회사명", "지역(입력)", "corp_code", "DART 회사명", "stock_code", "시장", "본사주소", "induty_code", "매칭방법", "비고"]
 COLS_F = ["회사명", "corp_code", "연도", "보고서", "기간", "연결/개별", "표준항목", "계정명", "account_id", "재무제표", "금액(원)", "rcept_no", "url"]
+COLS_R = ["회사명", "corp_code", "보고서", "보고서 연도", "열", "기간", "연구개발비(원)", "매출액 대비(%)", "공시 단위", "표 머리", "rcept_no", "url"]
 COLS_A = ["회사명", "corp_code", "연도", "보고서", "연결/개별", "재무제표", "account_id", "계정명", "account_detail",
           "당기명", "당기금액", "당기누적금액", "전기명", "전기금액", "전기누적금액", "통화", "ord", "rcept_no"]
 
@@ -148,9 +153,9 @@ def discover(corps, cache, have: set) -> list[dict]:
     return out
 
 
-def fin(row: dict) -> tuple[list[dict], list[dict]]:
+def fin(row: dict) -> tuple[list[dict], list[dict], dict]:
     code, name = row["corp_code"], row["회사명"]
-    picks, alls = [], []
+    picks, alls, reps = [], [], {}
     jobs = [(y, "11011", "사업보고서") for y in YEARS] + [(HALF_YEAR, "11012", "반기보고서")]
     for y, rc, rname in jobs:
         lst, fs = [], ""
@@ -166,6 +171,8 @@ def fin(row: dict) -> tuple[list[dict], list[dict]]:
             continue
         rno = lst[0].get("rcept_no", "")
         url = f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rno}" if rno else ""
+        if rno and (y, rc) in ((YEARS[-1], "11011"), (HALF_YEAR, "11012")):
+            reps[(y, rname)] = rno
         for x in lst:
             alls.append({"회사명": name, "corp_code": code, "연도": y, "보고서": rname, "연결/개별": fs, "재무제표": x.get("sj_nm", "") or x.get("sj_div", ""),
                          "account_id": x.get("account_id", ""), "계정명": (x.get("account_nm") or "").strip(), "account_detail": x.get("account_detail", ""),
@@ -200,7 +207,32 @@ def fin(row: dict) -> tuple[list[dict], list[dict]]:
                 if x.get("thstrm_add_amount"):
                     picks.append({**base, "기간": "1~6월 누적", "금액(원)": x.get("thstrm_add_amount", "")})
         print(f"[sdv]   {name} {y} {rname} {fs}: 계정 {len(lst)}행, 주요 {len(seen)}개")
-    return picks, alls
+    return picks, alls, reps
+
+
+def rnd(row: dict, reps: dict[tuple[int, str], str]) -> list[dict]:
+    """사업보고서(2025)·반기보고서(2026) 원문의 연구개발 활동 표 → 열마다 한 줄. 사업보고서는 당기·전기·전전기 = 2025·2024·2023,
+    반기보고서는 첫 열 = 2026년 1~6월, 그 뒤 열은 표 머리 그대로(대개 전기·전전기 연간)."""
+    out = []
+    for (y, rname), rno in sorted(reps.items()):
+        xml = doc_xml(rno)
+        time.sleep(0.3)
+        res = rnd_from_doc(xml) if xml else None
+        if not res or not res["vals"] or not res["unit"]:
+            print(f"[sdv]   {row['회사명']} {y} {rname}: 연구개발 표 못 찾음" + (" (단위 없음)" if res and not res["unit"] else ""))
+            continue
+        url = f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rno}"
+        for k, v in enumerate(res["vals"]):
+            if rname == "사업보고서":
+                period = f"{y - k}년 연간"
+            else:
+                period = f"{y}년 1~6월" if k == 0 else f"반기보고서 표 {k + 1}번째 열(표 머리 참조)"
+            r = res["ratios"][k] if k < len(res["ratios"]) and res["ratios"][k] is not None and abs(res["ratios"][k]) < 100 else ""
+            out.append({"회사명": row["회사명"], "corp_code": row["corp_code"], "보고서": rname, "보고서 연도": y, "열": k + 1, "기간": period,
+                        "연구개발비(원)": round(v * UNIT[res["unit"]]), "매출액 대비(%)": r, "공시 단위": res["unit"],
+                        "표 머리": res["hdr"][:160], "rcept_no": rno, "url": url})
+        print(f"[sdv]   {row['회사명']} {y} {rname}: 연구개발비 {len(res['vals'])}개 열")
+    return out
 
 
 def write(path: Path, cols: list[str], rows: list[dict]) -> None:
@@ -227,14 +259,18 @@ def main(argv: list[str]) -> int:
     CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=0), encoding="utf-8")
     write(OUT / "targets_resolved.csv", COLS_T, rows)
     if "--no-fin" not in argv:
-        picks, alls = [], []
+        picks, alls, rnds = [], [], []
         for r in rows:
             if r.get("corp_code"):
-                p, a = fin(r)
+                p, a, reps = fin(r)
                 picks += p
                 alls += a
+                if "--no-rnd" not in argv:
+                    rnds += rnd(r, reps)
         write(OUT / "financials.csv", COLS_F, picks)
         write(OUT / "financials_all.csv", COLS_A, alls)
+        if "--no-rnd" not in argv:
+            write(OUT / "rnd.csv", COLS_R, rnds)
     print(f"[sdv] 끝 — API {CALLS[0]:,}건")
     return 0
 

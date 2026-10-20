@@ -217,6 +217,41 @@ def main() -> int:
         flows[k]["gb_fd_d"] = round(sum(num(g[b][c[0]]) for c in fd if c[1] == "대구"))
         flows[k]["gb_fd_gb"] = round(sum(num(g[b][c[0]]) for c in fd if c[1] == "경북"))
 
+    # ---------- 서비스 구매처(정책 제언 1 상세, 운영자 지시 2026-10-20 '1에 대해 자세히') ----------
+    # 대구·경북의 33개 부문(사는 쪽)이 서비스(G~T)를 어느 지역에서 샀는지 — 17개 시도 + 수입(수입계 행)
+    SVC = [c for c in sec_code if c >= "G"]
+    imp_rows = {r[2]: r[0] for r in extra_rows if r[1] == "수입계" and re.fullmatch(r"[A-Z]\d{0,2}", r[2])}
+    IX = {r_: idx(r_) for r_ in REGIONS}   # 행과 열은 같은 지역·부문 순서(561 = 17 × 33)
+    assert [rw[1:3] for rw in rows] == [c[1:3] for c in cols], "행·열 순서 다름"
+    purchases = []
+    for breg in ("대구", "경북"):
+        for k, bcode in enumerate(sec_code):
+            bj = (D if breg == "대구" else GB)[k]
+            gcol = cols[bj][0]
+            for scode in SVC:
+                sk = sec_code.index(scode)
+                for sreg in REGIONS:
+                    v = float(Z[IX[sreg][sk], bj])
+                    if v:
+                        purchases.append({"buyer_region": breg, "buyer_code": bcode, "buyer": sec_name[k], "buyer_kind": sector_kind(bcode),
+                                          "supplier_region": sreg, "supplier_code": scode, "supplier": sec_name[sk], "value_mil": round(v)})
+                if scode in imp_rows:
+                    v = num(g[imp_rows[scode]][gcol])
+                    if v:
+                        purchases.append({"buyer_region": breg, "buyer_code": bcode, "buyer": sec_name[k], "buyer_kind": sector_kind(bcode),
+                                          "supplier_region": "수입", "supplier_code": scode, "supplier": sec_name[sk], "value_mil": round(v)})
+    print(f"[io] 서비스 구매처 {len(purchases)}행, 수입 행 {len(imp_rows)}개")
+    # 대구 서비스 부문이 판 곳: 사는 지역(17) × 사는 부문 종류
+    dsales = []
+    for scode in SVC:
+        sk = sec_code.index(scode)
+        si = D[sk]
+        for breg in REGIONS:
+            for kind in ("1차·광업", "제조업", "SOC", "서비스업"):
+                v = sum(float(Z[si, IX[breg][q]]) for q in range(33) if sector_kind(sec_code[q]) == kind)
+                if v:
+                    dsales.append({"supplier_code": scode, "supplier": sec_name[sk], "buyer_region": breg, "buyer_kind": kind, "value_mil": round(v)})
+
     # ---------- 생산유발계수표: 지역 최종수요 1단위가 다른 지역에 유발하는 생산 ----------
     pg = load(wb["생산유발계수"])
     P5, P6 = pg[4], pg[5]
@@ -247,6 +282,8 @@ def main() -> int:
     wcsv("io_network_mst.csv", msts)
     wcsv("io_flows_dg.csv", flows)
     wcsv("io_induce_dg.csv", induce)
+    wcsv("io_service_purchases.csv", purchases)
+    wcsv("io_daegu_service_sales.csv", dsales)
     tot = lambda k: sum(f[k] for f in flows if isinstance(f[k], (int, float)))
     summary = {"source": "한국은행 「2020년 지역산업연관표」 지역간 투입산출표(생산자가격, 통합대분류 33부문), 백만 원",
                "threshold": TH, "networks": summs,

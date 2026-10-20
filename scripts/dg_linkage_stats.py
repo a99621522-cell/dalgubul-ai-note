@@ -354,6 +354,52 @@ def commute(summary: dict) -> None:
     write("stats_commute_net.csv", ["지역", "산업", "연도", "취업인구_현거주지", "취업인구_근무지", "근무지-거주지"], out)
 
 
+DG_GU = ["중구", "동구", "서구", "남구", "북구", "수성구", "달서구", "달성군"]
+
+
+def commute_od(summary: dict) -> None:
+    """인구총조사 통근·통학 OD(대구·경북 시군구, 12세 이상). 2020년 군위군은 경북 소속(2023-07 대구 편입)."""
+    rs = rows("commute-od-dg")
+    if not rs:
+        return
+    # 포항시 남구·북구가 대구 남구·북구와 이름이 같다 — 표의 행 순서(대구 구군이 먼저)로 두 번째 나온 이름은 '포항 남구'처럼 바꾼다
+    v = {}
+    blocks: dict[str, int] = {}
+    prev_c1, seen_c2 = None, {}
+    for r in rs:
+        if r["ITM_NM"] != "통근통학인구(12세 이상)":
+            continue
+        c1 = r["C1_NM"]
+        if c1 != prev_c1:
+            occ1 = blocks.get(c1, 0)
+            blocks[c1] = occ1 + 1
+            prev_c1, seen_c2 = c1, {}
+        occ2 = seen_c2.get(r["C2_NM"], 0)
+        seen_c2[r["C2_NM"]] = occ2 + 1
+        o = ("포항 " + c1) if occ1 and c1 in ("남구", "북구") else c1
+        d = ("포항 " + r["C2_NM"]) if occ2 and r["C2_NM"] in ("남구", "북구") else r["C2_NM"]
+        v[(o, d)] = num(r["DT"])
+    gb = [n for n in dict.fromkeys(k[0] for k in v) if n not in DG_GU + ["계", "대구광역시", "경상북도"] and not n.startswith("포항 ")]
+    year = rs[0]["PRD_DE"]
+    tot = lambda o, d: v.get((o, d)) or 0.0
+    out = [["대구광역시", "대구광역시", tot("대구광역시", "대구광역시")], ["대구광역시", "경상북도", tot("대구광역시", "경상북도")],
+           ["대구광역시", "기타", tot("대구광역시", "기타")], ["대구광역시", "계", tot("대구광역시", "계")],
+           ["경상북도", "대구광역시", tot("경상북도", "대구광역시")], ["경상북도", "경상북도", tot("경상북도", "경상북도")],
+           ["경상북도", "기타", tot("경상북도", "기타")], ["경상북도", "계", tot("경상북도", "계")]]
+    write("stats_commute_od.csv", ["현거주지", "통근통학지", f"인구_{year}"], out)
+    sg = []
+    for g in gb:   # 경북 시군별: 대구로 가는 사람, 대구에서 오는 사람
+        to_d, from_d, home = tot(g, "대구광역시"), tot("대구광역시", g), tot(g, "계")
+        sg.append([g, home, to_d, to_d / home * 100 if home else None, from_d])
+    sg.sort(key=lambda r: -(r[2] + r[4]))
+    write("stats_commute_gb_sigungu.csv", ["경북시군", "통근통학인구_거주", "대구로_통근통학", "대구로_비중", "대구에서_오는_통근통학"], sg)
+    gu = []
+    for d in DG_GU:
+        gu.append([d, tot(d, "계"), tot(d, "경상북도"), tot("경상북도", d)])
+    write("stats_commute_dg_gu.csv", ["대구구군", "통근통학인구_거주", "경북으로", "경북에서_오는"], gu)
+    summary["commute_year"] = year
+
+
 def main() -> None:
     summary: dict = {}
     macro(summary)
@@ -362,6 +408,7 @@ def main() -> None:
     mfg_sales(summary)
     mfg_wage(summary)
     commute(summary)
+    commute_od(summary)
     (OUT / "stats_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False))
 

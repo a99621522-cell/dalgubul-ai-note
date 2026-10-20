@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="542" viewBox="0 0 800 542" role="img" aria-label="경북 시군별 대구와 오가는 통근·통학 인구(2020년)">
+<rect width="800" height="542" fill="#ffffff"/>
+<text x="24.0" y="32.0" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="700" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >경북 시군별 대구와 오가는 통근·통학 인구(2020년)</text>
+<rect x="24" y="44" width="14" height="10" rx="2" fill="#1B4F9B"/>
+<text x="44.0" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대구에서 오는 사람</text>
+<rect x="196.0" y="44" width="14" height="10" rx="2" fill="#E69F00"/>
+<text x="216.0" y="54.0" font-size="13" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >대구로 가는 사람</text>
+<line x1="71.0" y1="82" x2="71.0" y2="482" stroke="#e0e0e0"/>
+<text x="71.0" y="500.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >0</text>
+<line x1="233.2" y1="82" x2="233.2" y2="482" stroke="#e0e0e0"/>
+<text x="233.2" y="500.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >12,500</text>
+<line x1="395.5" y1="82" x2="395.5" y2="482" stroke="#e0e0e0"/>
+<text x="395.5" y="500.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >25,000</text>
+<line x1="557.8" y1="82" x2="557.8" y2="482" stroke="#e0e0e0"/>
+<text x="557.8" y="500.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >37,500</text>
+<line x1="720.0" y1="82" x2="720.0" y2="482" stroke="#e0e0e0"/>
+<text x="720.0" y="500.0" font-size="12" fill="#595959" text-anchor="middle" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >50,000</text>
+<text x="63.0" y="112.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >경산시</text>
+<path d="M71,89 h601.3 q4,0 4,4 v6 q0,4 -4,4 h-601.3 z" fill="#1B4F9B"/>
+<path d="M71,107 h299.1 q4,0 4,4 v6 q0,4 -4,4 h-299.1 z" fill="#E69F00"/>
+<text x="63.0" y="162.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >칠곡군</text>
+<path d="M71,139 h254.8 q4,0 4,4 v6 q0,4 -4,4 h-254.8 z" fill="#1B4F9B"/>
+<path d="M71,157 h45.5 q4,0 4,4 v6 q0,4 -4,4 h-45.5 z" fill="#E69F00"/>
+<text x="63.0" y="212.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >구미시</text>
+<path d="M71,189 h192.0 q4,0 4,4 v6 q0,4 -4,4 h-192.0 z" fill="#1B4F9B"/>
+<path d="M71,207 h50.2 q4,0 4,4 v6 q0,4 -4,4 h-50.2 z" fill="#E69F00"/>
+<text x="63.0" y="262.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >고령군</text>
+<path d="M71,239 h90.0 q4,0 4,4 v6 q0,4 -4,4 h-90.0 z" fill="#1B4F9B"/>
+<path d="M71,257 h27.0 q4,0 4,4 v6 q0,4 -4,4 h-27.0 z" fill="#E69F00"/>
+<text x="63.0" y="312.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >성주군</text>
+<path d="M71,289 h97.8 q4,0 4,4 v6 q0,4 -4,4 h-97.8 z" fill="#1B4F9B"/>
+<path d="M71,307 h12.6 q4,0 4,4 v6 q0,4 -4,4 h-12.6 z" fill="#E69F00"/>
+<text x="63.0" y="362.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >영천시</text>
+<path d="M71,339 h78.6 q4,0 4,4 v6 q0,4 -4,4 h-78.6 z" fill="#1B4F9B"/>
+<path d="M71,357 h14.7 q4,0 4,4 v6 q0,4 -4,4 h-14.7 z" fill="#E69F00"/>
+<text x="63.0" y="412.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >포항시</text>
+<path d="M71,389 h21.6 q4,0 4,4 v6 q0,4 -4,4 h-21.6 z" fill="#1B4F9B"/>
+<path d="M71,407 h17.1 q4,0 4,4 v6 q0,4 -4,4 h-17.1 z" fill="#E69F00"/>
+<text x="63.0" y="462.0" font-size="13" fill="#1a1a1a" text-anchor="end" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >청도군</text>
+<path d="M71,439 h23.6 q4,0 4,4 v6 q0,4 -4,4 h-23.6 z" fill="#1B4F9B"/>
+<path d="M71,457 h10.8 q4,0 4,4 v6 q0,4 -4,4 h-10.8 z" fill="#E69F00"/>
+<text x="24.0" y="528.0" font-size="12" fill="#595959" text-anchor="start" font-weight="400" font-family="'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif" >출처: 국가데이터처 인구총조사(KOSIS DT_1PA2007)</text>
+</svg>

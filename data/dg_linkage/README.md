@@ -9,6 +9,7 @@
 | `firms_*` | `scripts/dg_linkage_firms.py` | 대구 기업 사전 ↔ 경북 등록공장 이름(+생산품) 일치 |
 | `io_service_purchases.csv`, `io_daegu_service_sales.csv` | `scripts/dg_linkage_io.py` | 대구·경북 33부문이 서비스(G~T)를 산 지역(17개 시도·수입), 대구 서비스 부문이 판 지역·산업 종류 |
 | `report/proposal1.md`, `report/*정책제언1*.hwpx` | `scripts/dg_linkage_p1.py` | 정책 제언 1 상세(대구 지식서비스–경북 첨단제조 거래 연결) |
+| `report/proposal1_tools.md`, `report/*정책수단*.hwpx` | `scripts/dg_linkage_p1_tools.py` | 대구 지식서비스의 경북 공급 확대 정책수단 설계(안) |
 | `report/` | `scripts/dg_linkage_report.py` | 보고서 md·그림, 공무원 양식 HWPX(`scratchpad` 의 md2hwpx 와 같은 hwpx_blocks 경로) |
 
 주의: 산업연관표는 33부문(원 보고서 48부문), 사업체조사는 등록기반 2020~2024, 통근 OD 의 '남구·북구'는 행 순서로 대구/포항을 가른다.

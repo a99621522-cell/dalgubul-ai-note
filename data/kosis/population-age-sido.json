@@ -1,0 +1,20 @@
+{
+ "key": "population-age-sido",
+ "name": "시도·연령별 인구(고령인구·생산가능인구 비중)",
+ "tbl_nm": "고령인구비율(시도/시/군/구)",
+ "org_id": "101",
+ "tbl_id": "DT_1YL20631",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 4428,
+ "rows_kept": 288,
+ "latest": "2025",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-20",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631",
+ "note": ""
+}

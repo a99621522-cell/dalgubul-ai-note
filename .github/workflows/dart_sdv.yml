@@ -1,0 +1,54 @@
+name: DART SDV 보고서용 대구·경북 자동차부품사 원자료(일회성)
+
+# scripts/collect_dart_sdv.py — 「현대·기아차의 SDV가 지역 자동차 부품회사에 미치는 영향과 대책 — 대구·경북」 연구보고서용 원자료.
+# scripts/data/sdv_targets.csv 의 회사 → data/dart_sdv/(targets_resolved·financials·financials_all.csv)만 커밋한다. 사이트 산출물은 건드리지 않는다.
+# 이 세션 환경은 opendart.fss.or.kr 이 막혀 러너가 대신 돈다. 대상 목록이나 스크립트를 고쳐 푸시하면 다시 돈다.
+on:
+  workflow_dispatch:
+    inputs:
+      discover:
+        description: "본사 경북 + 업종 30xxx 상장사 추가 발견(true/false)"
+        required: false
+        default: "true"
+      args:
+        description: "추가 인자(예: --no-fin)"
+        required: false
+        default: ""
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/collect_dart_sdv.py", "scripts/data/sdv_targets.csv", ".github/workflows/dart_sdv.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-sdv
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+          DISC: ${{ inputs.discover || 'true' }}
+          ARGS_IN: ${{ inputs.args }}
+        run: |
+          A="$ARGS_IN"; [ "$DISC" = "true" ] && A="$A --discover"
+          python3 scripts/collect_dart_sdv.py $A
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dart_sdv
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART SDV 보고서용 대구·경북 자동차부품사 원자료 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

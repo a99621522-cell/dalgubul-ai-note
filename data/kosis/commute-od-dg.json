@@ -1,0 +1,20 @@
+{
+ "key": "commute-od-dg",
+ "name": "인구총조사 — 현 거주지별·통근통학지별 통근·통학 인구(대구↔경북 이동)",
+ "tbl_nm": "현 거주지별/성별/통근통학지별 통근통학 인구(대구 경북)(12세 이상)-시군구",
+ "org_id": "101",
+ "tbl_id": "DT_1PA2007",
+ "prd_se": "F",
+ "period": [
+  "2014",
+  "2026"
+ ],
+ "rows_total": 3516,
+ "rows_kept": 3516,
+ "latest": "2020",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-20",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1PA2007",
+ "note": ""
+}

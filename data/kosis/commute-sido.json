@@ -1,0 +1,20 @@
+{
+ "key": "commute-sido",
+ "name": "인구총조사 — 시도·산업별 현거주지·근무지 기준 취업인구(15세 이상, 표본) — 두 값의 차가 통근 순유입",
+ "tbl_nm": "현거주지별/근무지별/산업별 취업인구(15세이상)-시군구",
+ "org_id": "101",
+ "tbl_id": "DT_1PC2011",
+ "prd_se": "F",
+ "period": [
+  "2014",
+  "2026"
+ ],
+ "rows_total": 41976,
+ "rows_kept": 8226,
+ "latest": "2020",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-20",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1PC2011",
+ "note": ""
+}

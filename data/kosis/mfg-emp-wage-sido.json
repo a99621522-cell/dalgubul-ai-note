@@ -1,0 +1,20 @@
+{
+ "key": "mfg-emp-wage-sido",
+ "name": "광업·제조업조사 — 시도·산업중분류별 종사자 수·급여액(10인 이상) — 노동생산성·노동소득분배율용",
+ "tbl_nm": "시도/산업분류별 사업체수 종사자수 및 급여액(10인 이상)",
+ "org_id": "101",
+ "tbl_id": "DT_1FS1109",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 57169,
+ "rows_kept": 4340,
+ "latest": "2024",
+ "unit": "개",
+ "areas": [],
+ "fetched": "2026-10-20",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1109",
+ "note": ""
+}

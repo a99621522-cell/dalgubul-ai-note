@@ -1,0 +1,61 @@
+{
+ "source": "한국은행 「2020년 지역산업연관표」 지역간 투입산출표(생산자가격, 통합대분류 33부문), 백만 원",
+ "threshold": 0.03,
+ "networks": [
+  {
+   "network": "대구",
+   "nodes": 33,
+   "links_total": 1056,
+   "links_sig": 47,
+   "share_pct": 4.5,
+   "centralization_in": 0.0005,
+   "centralization_out": 0.0006,
+   "communities": 11,
+   "main_component": 27
+  },
+  {
+   "network": "경북",
+   "nodes": 33,
+   "links_total": 1056,
+   "links_sig": 61,
+   "share_pct": 5.8,
+   "centralization_in": 0.0004,
+   "centralization_out": 0.0005,
+   "communities": 9,
+   "main_component": 29
+  },
+  {
+   "network": "대경권",
+   "nodes": 66,
+   "links_total": 4290,
+   "links_sig": 129,
+   "share_pct": 3.0,
+   "centralization_in": 0.0001,
+   "centralization_out": 0.0002,
+   "communities": 16,
+   "main_component": 56
+  }
+ ],
+ "flows_total": {
+  "daegu_output": 125412790,
+  "gb_output": 273189812,
+  "daegu_va": 61153091,
+  "gb_va": 105179180,
+  "d_to_gb_inter": 9251181,
+  "d_to_d_inter": 22157878,
+  "d_to_all_inter": 53805136,
+  "gb_to_d_inter": 5375884,
+  "gb_to_gb_inter": 49122771,
+  "gb_to_all_inter": 129826650,
+  "d_buys_from_gb": 5375886,
+  "d_buys_from_d": 22157881,
+  "d_buys_all": 56486996,
+  "gb_buys_from_d": 9251180,
+  "gb_buys_from_gb": 49122772,
+  "gb_buys_all": 130606867,
+  "d_fd_gb": 5898861,
+  "d_fd_d": 56574612,
+  "gb_fd_d": 4262182,
+  "gb_fd_gb": 116109717
+ }
+}

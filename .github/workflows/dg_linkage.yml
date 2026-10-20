@@ -1,0 +1,38 @@
+name: 대경권 연계성 — 2020 지역산업연관표 네트워크(일회성)
+# scripts/dg_linkage_io.py — 운영자가 Drive DAITDA 에 올린 한국은행 「2020년 지역산업연관표」 지역간 투입산출표 엑셀로
+# 대구·경북·대경권 산업연관 네트워크와 지역간 거래를 계산해 data/dg_linkage/ 에 커밋한다(사이트와 분리, 운영자 지시 2026-10-20).
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "Drive 파일 id"
+        required: false
+        default: "1IbNo3zZ67AulBrzPhyk18B10QOKC8bkI"
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/dg_linkage_io.py", ".github/workflows/dg_linkage.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: dg-linkage
+  cancel-in-progress: false
+jobs:
+  io:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q gdown openpyxl numpy networkx
+      - name: 계산
+        env: { PYTHONUNBUFFERED: "1" }
+        run: python3 scripts/dg_linkage_io.py --file "${{ inputs.file || '1IbNo3zZ67AulBrzPhyk18B10QOKC8bkI' }}"
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dg_linkage
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 대경권 산업연관 네트워크·지역간 거래(2020 지역산업연관표)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

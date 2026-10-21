@@ -11,7 +11,7 @@
   python3 scripts/collect_welfare.py                  # 수집 (DATA_GO_KR_KEY 필요, 공공데이터포털에서 두 API 활용신청)
   python3 scripts/collect_welfare.py --max-detail 300 # 1회 상세 호출 상한(API별). 개발계정 일 1,000건 한도라 기본 900
 
-원칙: 공개 API 값 그대로(요약·평가 없음), 개인정보 없음(담당 부서 전화는 기관 대표 문의처라 싣는다).
+원칙: 공개 API 값 그대로 (요약·평가 없음), 개인정보 없음(담당 부서 전화는 기관 대표 문의처라 싣는다).
 이 세션 환경은 data.go.kr 접속이 막혀 GitHub Actions(.github/workflows/welfare.yml)가 돌린다. 실패는 로그만 남긴다.
 """
 from __future__ import annotations

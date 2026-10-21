@@ -1,0 +1,68 @@
+name: 복지 분야별 KOSIS 통계 (표 찾기·받기)
+
+# 복지정책 지원 사이트(sites/welfare)의 분야별 통계. 운영자 지시 2026-10-21 '분야별 통계 … 받아'.
+# config/kosis_tables.yml 의 welfare-* 표를 다룬다. 이 세션은 Actions 로그를 못 읽으므로 출력은 data/welfare/ 에 커밋한다.
+#  - tbl_id 가 빈 표: 통계표 검색 후보 → data/welfare/kosis_discover.log
+#  - tbl_id 가 있는 표: 받아 data/kosis/welfare-*.csv/json → 실행 기록 data/welfare/kosis_fetch.log
+# kosis.kr 은 미국 러너 IP 에 따라 연결이 안 될 때가 있어 러너 3개를 띄우고, 성공한 쪽만 커밋한다.
+
+on:
+  push:
+    branches: ["claude/welfare-finder"]
+    paths: ["config/kosis_tables.yml", ".github/workflows/welfare_kosis.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: welfare-kosis-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        attempt: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 연결 확인
+        id: up
+        run: |
+          code=$(curl -s -o /dev/null -m 25 -w '%{http_code}' https://kosis.kr/ 2>/dev/null); echo "kosis.kr HTTP ${code:-000}"
+          [ "${code:-000}" != "000" ] && echo "ok=1" >> "$GITHUB_OUTPUT" || true
+      - name: 찾기·받기
+        if: steps.up.outputs.ok == '1'
+        env:
+          KOSIS_KEY: ${{ secrets.KOSIS_KEY }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set +e
+          mkdir -p data/welfare
+          EMPTY=$(python3 -c "import yaml;print(','.join(t['key'] for t in yaml.safe_load(open('config/kosis_tables.yml'))['tables'] if t['key'].startswith('welfare-') and not t.get('tbl_id')))")
+          FULL=$(python3 -c "import yaml;print(','.join(t['key'] for t in yaml.safe_load(open('config/kosis_tables.yml'))['tables'] if t['key'].startswith('welfare-') and t.get('tbl_id')))")
+          echo "찾기: $EMPTY"; echo "받기: $FULL"
+          if [ -n "$EMPTY" ]; then timeout 1500 python3 scripts/fetch_kosis.py --discover --only "$EMPTY" > data/welfare/kosis_discover.log 2>&1; fi
+          if [ -n "$FULL" ]; then timeout 1500 python3 scripts/fetch_kosis.py --only "$FULL" > data/welfare/kosis_fetch.log 2>&1; fi
+          tail -5 data/welfare/kosis_discover.log data/welfare/kosis_fetch.log 2>/dev/null
+          true
+      - name: 커밋
+        if: steps.up.outputs.ok == '1'
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/welfare/kosis_*.log 2>/dev/null; git add data/kosis/welfare-* 2>/dev/null; true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -qm "data: 복지 분야 KOSIS 통계 찾기·받기 $(date -u +%Y-%m-%d) (attempt ${{ matrix.attempt }})"
+          for i in 1 2 3 4; do
+            git fetch -q origin "${GITHUB_REF_NAME}"
+            git rebase -q -X theirs "origin/${GITHUB_REF_NAME}" || { git rebase --abort; sleep $((i * 5)); continue; }
+            git push -q origin HEAD:"${GITHUB_REF_NAME}" && break
+            sleep $((i * 5))
+          done

@@ -342,3 +342,78 @@ tables:
     area_col: C1
     keep: {C1_level: [2]}
     area: []
+  # ── 복지 분야별 통계(복지정책 지원 사이트 sites/welfare, 운영자 지시 2026-10-21 '분야별 통계 … 받아') ──
+  # tbl_id 가 빈 표는 .github/workflows/welfare_kosis.yml 이 discover 결과를 data/welfare/kosis_discover_*.log 로 남긴다 → 확인해 채운다
+  - key: welfare-pop-age-sigungu
+    name: 복지 — 시군구·연령별 주민등록인구(아동·청년·고령 인구, 구·군별)
+    tbl_id: ""
+    search: ["행정구역 시군구 5세별 주민등록인구", "시군구 연령별 주민등록인구", "주민등록인구 시군구 연령 5세"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-births-sigungu
+    name: 복지(임신·출산) — 시군구별 출생아 수·합계출산율
+    tbl_id: ""
+    search: ["시군구 합계출산율", "시군구별 출생아수 합계출산율", "인구동향조사 출생 시군구"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-births-monthly-sido
+    name: 복지(임신·출산) — 시도별 월간 출생아 수
+    tbl_id: ""
+    search: ["시도별 월별 출생아수", "인구동향 월 출생 시도", "시도 출생 사망 혼인 이혼 월"]
+    prd_se: M
+    years: 4
+    area: []
+  - key: welfare-oneperson-sigungu
+    name: 복지(1인가구·고립) — 시군구별 가구원수별 가구(1인가구 수·비율)
+    tbl_id: ""
+    search: ["시군구 1인가구", "가구원수별 가구 시군구", "1인가구 비율 시군구", "인구총조사 가구원수별 일반가구 시군구"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-elderly-alone
+    name: 복지(노인·돌봄) — 고령자(65세 이상) 1인가구·독거노인
+    tbl_id: ""
+    search: ["독거노인 시군구", "65세 이상 1인가구 시군구", "고령자 1인가구 시도", "독거노인 현황 시도"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-ltc
+    name: 복지(노인·돌봄) — 노인장기요양 인정자·신청자(시도·시군구)
+    tbl_id: ""
+    search: ["노인장기요양 인정자 시군구", "장기요양 등급판정 시도", "장기요양보험 인정자 수 시도", "장기요양 인정자 현황"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-disabled
+    name: 복지(장애인) — 시도·시군구별 장애유형·정도별 등록장애인
+    tbl_id: ""
+    search: ["시군구별 장애유형별 등록장애인", "등록장애인 시군구", "장애인현황 시도별 장애유형 장애정도", "전국 장애인 등록 현황"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-livelihood
+    name: 복지(저소득) — 국민기초생활보장 수급자 수(시도·시군구)
+    tbl_id: ""
+    search: ["국민기초생활보장 수급자 시군구", "기초생활수급자 시도별", "수급자 현황 시군구", "국민기초생활보장 수급자 현황"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-singleparent
+    name: 복지(한부모) — 한부모 가구(시도·시군구)
+    tbl_id: ""
+    search: ["한부모가구 시군구", "한부모 가구 시도", "모자 부자 가구 시군구"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-multicultural
+    name: 복지(다문화) — 다문화가구·외국인주민(시군구)
+    tbl_id: ""
+    search: ["다문화가구 시군구", "다문화 가구원 시도", "외국인주민 현황 시군구"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-childcare
+    name: 복지(영유아·보육) — 어린이집 수·정원·현원(시군구)
+    tbl_id: ""
+    search: ["어린이집 시군구", "보육통계 어린이집 수 시도", "어린이집 정원 현원 시군구"]
+    prd_se: Y
+    area: ["대구"]
+  - key: welfare-suicide
+    name: 복지(건강·정신건강) — 시도·시군구 자살 사망자·자살률
+    tbl_id: ""
+    search: ["시도별 자살률", "사망원인 고의적 자해 시도", "시군구 자살 사망률", "시도 사망원인별 사망률"]
+    prd_se: Y
+    area: []

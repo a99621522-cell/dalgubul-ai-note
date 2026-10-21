@@ -14,8 +14,8 @@ welfare-socialfacility: 4430행 중 대구 4430행, 최근 2023
 welfare-elderly-leisure: 5904행 중 대구 5904행, 최근 2025
 -rw-r--r-- 1 runner runner  860441 Oct 21 05:59 data/kosis/welfare-births-monthly-sido.csv
 -rw-r--r-- 1 runner runner     501 Oct 21 05:59 data/kosis/welfare-births-monthly-sido.json
--rw-r--r-- 1 runner runner  304115 Oct 21 05:58 data/kosis/welfare-births-sigungu.csv
--rw-r--r-- 1 runner runner     504 Oct 21 05:58 data/kosis/welfare-births-sigungu.json
+-rw-r--r-- 1 runner runner  304115 Oct 21 05:59 data/kosis/welfare-births-sigungu.csv
+-rw-r--r-- 1 runner runner     504 Oct 21 05:59 data/kosis/welfare-births-sigungu.json
 -rw-r--r-- 1 runner runner  390571 Oct 21 06:00 data/kosis/welfare-childcare.csv
 -rw-r--r-- 1 runner runner     493 Oct 21 06:00 data/kosis/welfare-childcare.json
 -rw-r--r-- 1 runner runner   91280 Oct 21 06:00 data/kosis/welfare-disabled.csv
@@ -36,7 +36,7 @@ welfare-elderly-leisure: 5904행 중 대구 5904행, 최근 2025
 -rw-r--r-- 1 runner runner     533 Oct 21 05:58 data/kosis/welfare-pop-age-sigungu.json
 -rw-r--r-- 1 runner runner   94212 Oct 21 06:00 data/kosis/welfare-singleparent.csv
 -rw-r--r-- 1 runner runner     524 Oct 21 06:00 data/kosis/welfare-singleparent.json
--rw-r--r-- 1 runner runner  310005 Oct 21 06:00 data/kosis/welfare-socialfacility.csv
--rw-r--r-- 1 runner runner     517 Oct 21 06:00 data/kosis/welfare-socialfacility.json
+-rw-r--r-- 1 runner runner  310005 Oct 21 06:01 data/kosis/welfare-socialfacility.csv
+-rw-r--r-- 1 runner runner     517 Oct 21 06:01 data/kosis/welfare-socialfacility.json
 -rw-r--r-- 1 runner runner  562890 Oct 21 06:00 data/kosis/welfare-suicide.csv
 -rw-r--r-- 1 runner runner     503 Oct 21 06:00 data/kosis/welfare-suicide.json

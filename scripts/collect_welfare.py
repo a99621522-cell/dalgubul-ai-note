@@ -217,7 +217,24 @@ def now_kst() -> str:
     return datetime.now(KST).strftime("%Y-%m-%d")
 
 
+def key_diag() -> None:
+    """키 값은 찍지 않고 형태만 — 인코딩 키(%)인지, 길이, 앞뒤 공백, 두 가지 방식으로 보냈을 때 응답 코드."""
+    raw = os.environ.get("DATA_GO_KR_KEY", "")
+    k = raw.strip()
+    print(f"[key] 길이 {len(k)}, 앞뒤 공백 {'있음' if raw != k else '없음'}, '%' 포함 {'예(인코딩 키)' if '%' in k else '아니오(디코딩 키)'}, '+' 포함 {'예' if '+' in k else '아니오'}")
+    tries = {"그대로": k, "URL 인코딩": urllib.parse.quote(k, safe=""), "URL 디코딩": urllib.parse.unquote(k)}
+    for name, kv in tries.items():
+        try:
+            r = requests.get(f"{LOCAL_LIST}?serviceKey={kv}&pageNo=1&numOfRows=1&ctpvNm={urllib.parse.quote(SIDO)}", headers=UA, timeout=30)
+            body = r.text
+            tag = re.search(r"<(?:returnAuthMsg|resultMsg|resultMessage)>([^<]*)<", body)
+            print(f"[key] {name}: HTTP {r.status_code} · {tag.group(1) if tag else body[:80]!r} · totalCount {re.search(r'<totalCount>(\d+)', body).group(1) if '<totalCount>' in body else '-'}")
+        except Exception as e:  # noqa: BLE001
+            print(f"[key] {name}: 실패 {e}")
+
+
 def probe(key: str) -> None:
+    key_diag()
     PROBE_DIR.mkdir(parents=True, exist_ok=True)
     for label, url, params in [
         ("central_list", CENTRAL_LIST, {"callTp": "L", "srchKeyCode": "003", "pageNo": 1, "numOfRows": 3}),

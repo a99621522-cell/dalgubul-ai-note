@@ -11,7 +11,7 @@ on:
         default: ""
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: ["scripts/fetch_ict_firms.py", ".github/workflows/ict_firms.yml"]
+    paths: [".github/workflows/ict_firms.yml"]
 
 permissions:
   contents: write

@@ -9,6 +9,8 @@
    상세 페이지의 홈페이지 주소만(대표자·전화는 읽지 않는다) → data/ict_firms/dgict_members.csv
 3) 중소벤처기업부 스마트제조혁신추진단 스마트공장 공급기업(공공데이터포털 15042132, 2,865곳) — 기업명·주소의 시도·시군구만
    (담당자·연락처 열은 버린다, 원본 파일은 저장하지 않는다) → data/ict_firms/smart_factory_suppliers.csv
+4) --homepages: 대경ICT협회 명단의 회사 홈페이지 첫 화면(robots.txt 허용일 때만, 회사당 1쪽)의 제목·설명·본문 앞부분과
+   제조 AX·AI·로봇 낱말이 든 문장을 로그로만 찍는다(저장 안 함) — 기업별 사업 확인용(운영자 지시 2026-10-21).
 요청 사이 1초. 실패는 로그만 남기고 건너뛴다. 사용: python3 scripts/fetch_ict_firms.py [--no-alpha] [--no-dgict] [--no-detail] [--no-sf]
 """
 from __future__ import annotations
@@ -201,9 +203,63 @@ def smart_factory(sess: requests.Session) -> list[dict]:
     return []
 
 
+KW = re.compile(r"(인공지능|\bAI\b|머신러닝|딥러닝|비전|스마트 ?공장|스마트 ?팩토리|MES|POP|SCADA|PLC|디지털 ?트윈|예지 ?보전|자동화|로봇|자율|드론|빅데이터|클라우드|IoT|제조|공정|설비|품질|납품|고객사|레퍼런스|구축 ?사례|실적)", re.I)
+
+
+def homepages(sess: requests.Session) -> None:
+    from urllib import robotparser
+    rows = list(csv.DictReader(open(OUT / "dgict_members.csv", encoding="utf-8")))
+    n = 0
+    for x in rows:
+        hp = (x.get("홈페이지") or "").strip()
+        if not hp or hp in ("-", "#") or "." not in hp:
+            continue
+        url = hp if hp.startswith("http") else "http://" + hp
+        base = re.match(r"(https?://[^/]+)", url).group(1)
+        rp = robotparser.RobotFileParser()
+        try:
+            rr = sess.get(base + "/robots.txt", headers=UA, timeout=15)
+            if rr.status_code == 200:
+                rp.parse(rr.text.splitlines())
+                if not rp.can_fetch("*", url):
+                    print(f"HP\t{x['회사명']}\trobots 막음\t{url}")
+                    continue
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            r = sess.get(url, headers=UA, timeout=20)
+            r.encoding = r.apparent_encoding or r.encoding
+        except Exception as e:  # noqa: BLE001
+            print(f"HP\t{x['회사명']}\t실패\t{url}\t{str(e)[:60]}")
+            continue
+        soup = BeautifulSoup(r.text, "html.parser")
+        for s in soup(["script", "style", "noscript"]):
+            s.decompose()
+        title = (soup.title.get_text(" ", strip=True) if soup.title else "")[:80]
+        desc = ""
+        for m in soup.find_all("meta"):
+            if (m.get("name") or m.get("property") or "").lower() in ("description", "og:description", "keywords"):
+                desc += " " + (m.get("content") or "")
+        text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+        hits = []
+        for seg in re.split(r"(?<=[.!?。])\s|\s{2,}|\|", text):
+            if KW.search(seg) and 8 <= len(seg) <= 160 and seg not in hits:
+                hits.append(seg)
+        print(f"HP\t{x['회사명']}\t{r.status_code}\t{url}\t제목: {title}\t설명: {desc.strip()[:200]}")
+        print(f"HP\t{x['회사명']}\t본문: {text[:300]}")
+        for h in hits[:6]:
+            print(f"HP\t{x['회사명']}\t낱말: {h}")
+        n += 1
+        time.sleep(1)
+    print(f"[hp] {n}곳 읽음")
+
+
 def main(argv: list[str]) -> int:
     sess = requests.Session()
     today = date.today().isoformat()
+    if "--homepages" in argv:
+        homepages(sess)
+        return 0
     if "--no-alpha" not in argv:
         rows = alphacity(sess)
         if rows:

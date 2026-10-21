@@ -19,6 +19,7 @@ API·접속 실패는 로그 후 건너뛰고 못 받은 회사는 기존 행을
   --probe: 그 회사만, 섹션 제목·뽑은 문장·IR 첨부 페이지 구조를 로그로(저장 안 함)
   --disclosure <낱말>: --probe 와 함께 쓰면 최근 --months 달 공시 중 제목에 그 낱말이 든 공시(예: 전환사채)의 원문을 표까지 로그로(저장 안 함). 전환사채면 주요사항보고서 API(cvbdIsDecsn)의 자금조달 목적별 금액도 찍는다
   --corp-search <낱말>: 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 기업개황·최근 --months 달 공시 목록을 로그로(저장 안 함). --dump 면 가장 최근 공시 원문, --dump-all 이면 최대 5건 원문
+  --robot-scan [--names-file 경로]: 대구 본사 공시 회사 + 이름 파일의 회사(본사 대구)의 최근 정기보고서·감사보고서에서 로봇 낱말 줄 → data/dart/robot_scan.csv
   --dump: --probe 와 함께 쓰면 보고서의 '회사의 개요'(정관 사업목적 등)·'사업의 내용'·'경영진단' 본문을 표까지 글자로 로그에(공시 원문 확인용)
 """
 from __future__ import annotations
@@ -634,6 +635,116 @@ def placement_scan(argv: list[str]) -> int:
     return 0
 
 
+ROBOT = re.compile(r"로봇|로보틱스|휴머노이드|협동 ?로봇|매니퓰레이터|엔드 ?이펙터|그리퍼|그립퍼|툴 ?체인저|액추에이터|엑추에이터|감속기|\bAMR\b|\bAGV\b|모베드|MobED|\bRobot", re.I)
+SKIP_SEC = re.compile(r"임원|직원|주주|이사회|감사제도|감사인|보수|특수관계|우발|제재|소송|배당|증권의 발행|자본금 변동")
+OUT_RB = ROOT / "data" / "dart" / "robot_scan.csv"
+COLS_RB = ["corp_code", "name", "stock", "corp_cls", "induty", "district", "report_nm", "rcept_dt", "hits", "section", "line", "rcept_no", "url", "as_of"]
+
+
+def robot_lines(xml: str) -> list[tuple[str, str]]:
+    """(장·절 제목, 줄) — 로봇 낱말이 든 문단·표 행. 임원·주주·감사 등 사람·지배구조 절은 뺀다"""
+    out, sec = [], ""
+    for m in re.finditer(r"<TITLE[^>]*>(.*?)</TITLE>|<TABLE.*?</TABLE>|<P[^>]*>(.*?)</P>", xml, re.S | re.I):
+        if m.group(1) is not None:
+            sec = clean(m.group(1))[:40]
+            continue
+        if SKIP_SEC.search(sec):
+            continue
+        if m.group(0)[:6].upper() == "<TABLE":
+            for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", m.group(0), re.S | re.I):
+                cells = [clean(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, re.S | re.I)]
+                ln = " | ".join(c for c in cells if c)
+                if ROBOT.search(ln):
+                    out.append((sec, "표: " + ln))
+        else:
+            for s in sentences(clean(m.group(2) or "")) or [clean(m.group(2) or "")]:
+                if ROBOT.search(s):
+                    out.append((sec, s))
+    seen, uniq = set(), []
+    for sec, ln in out:
+        k = ln[:120]
+        if k not in seen:
+            seen.add(k)
+            uniq.append((sec, ln))
+    return uniq
+
+
+def robot_scan(argv: list[str]) -> int:
+    """--robot-scan: 대구 본사 공시 회사(캐시 daegu) + --names-file 의 이름(DART 고유번호 목록 정확 일치, 본사 주소 대구만)의
+    최근 정기보고서(사업보고서·반기보고서, 둘 다 있으면 둘 다) 또는 감사보고서 원문에서 로봇 관련 낱말이 든 문장·표 행을
+    회사 문구 그대로(줄당 240자 안, 회사당 40줄 안) data/dart/robot_scan.csv 로 남기고 로그에도 찍는다.
+    대구 로봇 기업 2단계 분류(사업 확인 기준)의 근거 확인용 — 운영자 지시 2026-10-21 '2단계는 다트를 자세히 봐야겠네'.
+    낱말 기준이라 감속기·액추에이터처럼 자동차 부품에 쓰인 말도 걸린다. 해석·평가 없음."""
+    cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
+    corps = {c: {"name": v.get("name"), "stock": v.get("stock_code") or "", "cls": v.get("corp_cls"), "induty": v.get("induty_code"),
+                 "district": (v.get("region") or "").replace("대구광역시 ", "")} for c, v in cache.items() if v.get("daegu")}
+    if "--names-file" in argv:
+        fp = ROOT / argv[argv.index("--names-file") + 1]
+        want = {}
+        for ln in fp.read_text(encoding="utf-8").splitlines():
+            ln = ln.split("#")[0].strip()
+            if ln:
+                want[norm_name(ln)] = ln
+        try:
+            r = requests.get(f"{API}/corpCode.xml", params={"crtfc_key": KEY}, headers=UA, timeout=180)
+            xml = zipfile.ZipFile(io.BytesIO(r.content)).read("CORPCODE.xml").decode("utf-8", "ignore")
+        except Exception as e:  # noqa: BLE001
+            print(f"[robot] corpCode 실패: {redact(e)[:120]}")
+            xml = ""
+        found = set()
+        for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S):
+            k = norm_name(clean(m.group(2)))
+            code = clean(m.group(1))
+            if k in want and code not in corps:
+                info = get("company.json", corp_code=code) or {}
+                adr = info.get("adres") or ""
+                if not adr.startswith("대구"):
+                    print(f"ROBOT\t{clean(m.group(2))}\t본사 대구 아님\t{adr[:30]}")
+                    continue
+                found.add(k)
+                corps[code] = {"name": clean(m.group(2)), "stock": clean(m.group(3)), "cls": info.get("corp_cls"),
+                               "induty": info.get("induty_code"), "district": " ".join(adr.split()[1:2])}
+        found |= {norm_name(v["name"] or "") for v in corps.values()}
+        miss = [v for k, v in want.items() if k not in found]
+        print(f"[robot] 이름 {len(want)}개 중 DART 에 없음(또는 대구 아님) {len(miss)}개: {', '.join(miss)[:1500]}")
+    print(f"[robot] 대상 {len(corps)}곳")
+    bgn = (date.today() - timedelta(days=800)).strftime("%Y%m%d")
+    end = date.today().strftime("%Y%m%d")
+    rows = []
+    for code, c in sorted(corps.items(), key=lambda x: x[1]["name"] or ""):
+        lst = (get("list.json", corp_code=code, bgn_de=bgn, end_de=end, page_count=100) or {}).get("list", [])
+        lst = [x for x in lst if "정정" not in (x.get("report_nm") or "") and "첨부" not in (x.get("report_nm") or "")]
+        ann = next((x for x in lst if re.search(r"사업보고서", x.get("report_nm") or "")), None)
+        half = next((x for x in lst if re.search(r"반기보고서|분기보고서", x.get("report_nm") or "")), None)
+        aud = next((x for x in lst if re.search(r"감사보고서", x.get("report_nm") or "")), None)
+        picks = [x for x in (half, ann) if x] or ([aud] if aud else [])
+        if half and ann and half["rcept_dt"] < ann["rcept_dt"]:
+            picks = [ann]
+        if not picks:
+            print(f"ROBOT\t{c['name']}\t보고서 없음(최근 800일)")
+            continue
+        got = []
+        for rep in picks:
+            for sec, ln in robot_lines(doc_xml(rep["rcept_no"])):
+                got.append((rep, sec, ln))
+        hdr = f"{c['name']}\t{c['stock'] or '-'}\t{c['cls']}\t업종 {c['induty']}\t{c['district']}"
+        print(f"ROBOT\t{hdr}\t{' + '.join(re.sub(chr(32)+'+', ' ', r['report_nm']) for r in picks)}\t로봇 낱말 줄 {len(got)}")
+        for rep, sec, ln in got[:40]:
+            print(f"ROBOT\t{c['name']}\t[{sec}] {cut(ln, 240)}")
+            rows.append({"corp_code": code, "name": c["name"], "stock": c["stock"], "corp_cls": c["cls"], "induty": c["induty"],
+                         "district": c["district"], "report_nm": re.sub(r"\s+", " ", rep["report_nm"]), "rcept_dt": rep["rcept_dt"],
+                         "hits": len(got), "section": sec, "line": cut(ln, 240), "rcept_no": rep["rcept_no"],
+                         "url": f"{WEB}/dsaf001/main.do?rcpNo={rep['rcept_no']}", "as_of": date.today().isoformat()})
+        if not got:
+            rows.append({"corp_code": code, "name": c["name"], "stock": c["stock"], "corp_cls": c["cls"], "induty": c["induty"],
+                         "district": c["district"], "report_nm": re.sub(r"\s+", " ", picks[0]["report_nm"]), "rcept_dt": picks[0]["rcept_dt"],
+                         "hits": 0, "section": "", "line": "", "rcept_no": picks[0]["rcept_no"],
+                         "url": f"{WEB}/dsaf001/main.do?rcpNo={picks[0]['rcept_no']}", "as_of": date.today().isoformat()})
+    write(OUT_RB, COLS_RB, rows)
+    print(f"[robot] 저장 {OUT_RB.relative_to(ROOT)} {len(rows)}행 · 로봇 낱말 있는 회사 {len({r['corp_code'] for r in rows if r['hits']})}곳 · API {CALLS[0]}회")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if not KEY:
         print("DART_KEY 없음")
@@ -645,6 +756,8 @@ def main(argv: list[str]) -> int:
         return invest_scan(argv)
     if "--placement-scan" in argv:
         return placement_scan(argv)
+    if "--robot-scan" in argv:
+        return robot_scan(argv)
     if "--corp-search" in argv:   # 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 최근 공시 목록만 로그로 — 저장 안 함(2026-10-17 삼보에이앤티 확인)
         kw = argv[argv.index("--corp-search") + 1]
         try:

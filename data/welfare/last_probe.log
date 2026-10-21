@@ -1,3 +1,7 @@
+[key] 길이 64, 앞뒤 공백 없음, '%' 포함 아니오(디코딩 키), '+' 포함 아니오
+[key] 그대로: HTTP 403 · '등록되지 않은 서비스키' · totalCount -
+[key] URL 인코딩: HTTP 403 · '등록되지 않은 서비스키' · totalCount -
+[key] URL 디코딩: HTTP 403 · '등록되지 않은 서비스키' · totalCount -
 [probe] central_list 실패: <?xml version="1.0" encoding="UTF-8"?>
 <OpenAPI_ServiceResponse>
 <cmmMsgHeader>

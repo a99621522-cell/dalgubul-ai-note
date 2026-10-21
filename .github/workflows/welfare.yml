@@ -40,23 +40,24 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r scripts/requirements.txt
+      - run: mkdir -p data/welfare
       - name: 구조 확인(probe)
         if: github.event_name == 'push' || inputs.probe == 'true'
         env:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
-        run: python3 scripts/collect_welfare.py --probe || true
+        run: python3 scripts/collect_welfare.py --probe 2>&1 | tee data/welfare/last_probe.log || true
       - name: 수집
         if: inputs.probe != 'true'
         env:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
           MAX_DETAIL: ${{ inputs.max_detail || '900' }}
-        run: python3 scripts/collect_welfare.py --max-detail "$MAX_DETAIL" || true
+        run: python3 scripts/collect_welfare.py --max-detail "$MAX_DETAIL" 2>&1 | tee data/welfare/last_run.log || true
       - name: 커밋
         if: inputs.probe != 'true'
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/welfare/services.json 2>/dev/null || true
+          git add data/welfare/services.json data/welfare/last_run.log data/welfare/last_probe.log 2>/dev/null || true   # 실행 기록도 남긴다(세션에서 Actions 로그를 못 읽어서)
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 복지서비스 수집 $(date -u +%Y-%m-%d)"
           git pull --rebase -q || true
           git push

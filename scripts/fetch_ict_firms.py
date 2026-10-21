@@ -214,8 +214,12 @@ def homepages(sess: requests.Session) -> None:
         hp = (x.get("홈페이지") or "").strip()
         if not hp or hp in ("-", "#") or "." not in hp:
             continue
-        url = hp if hp.startswith("http") else "http://" + hp
-        base = re.match(r"(https?://[^/]+)", url).group(1)
+        url = (hp if hp.startswith("http") else "http://" + hp).replace(" ", "")
+        mb = re.match(r"(https?://[^/\s]+)", url)
+        if not mb:
+            print(f"HP\t{x['회사명']}\t주소 형식 오류\t{hp}")
+            continue
+        base = mb.group(1)
         rp = robotparser.RobotFileParser()
         try:
             rr = sess.get(base + "/robots.txt", headers=UA, timeout=15)
@@ -232,7 +236,11 @@ def homepages(sess: requests.Session) -> None:
         except Exception as e:  # noqa: BLE001
             print(f"HP\t{x['회사명']}\t실패\t{url}\t{str(e)[:60]}")
             continue
-        soup = BeautifulSoup(r.text, "html.parser")
+        try:
+            soup = BeautifulSoup(r.text, "html.parser")
+        except Exception as e:  # noqa: BLE001
+            print(f"HP\t{x['회사명']}\t해석 실패\t{str(e)[:60]}")
+            continue
         for s in soup(["script", "style", "noscript"]):
             s.decompose()
         title = (soup.title.get_text(" ", strip=True) if soup.title else "")[:80]

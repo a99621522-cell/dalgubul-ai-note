@@ -1,0 +1,62 @@
+name: 돌봄 공급 자료 받기 (통합돌봄 공급표 초안용)
+
+# 운영자 지시 2026-10-21 '해봐' — 통합돌봄 읍면별 서비스 공급표 초안. 공공데이터포털 파일데이터를 받아
+# data/care_supply/raw/<번호>/ 에 두고, 검색 결과·로그도 저장소에 남긴다(세션에서 Actions 로그를 못 읽어서).
+# 사이트에는 싣지 않는다(내부 업무 자료 초안). 입력은 data/care_supply/request.txt:
+#   1줄: 검색어(공백 구분, 비우면 검색 안 함)  2줄: 받을 파일데이터 번호(공백 구분)
+
+on:
+  push:
+    branches: ["claude/welfare-finder"]
+    paths: ["data/care_supply/request.txt", ".github/workflows/care_supply.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: care-supply-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      - name: 검색·받기
+        run: |
+          set +e
+          mkdir -p data/care_supply
+          Q=$(sed -n 1p data/care_supply/request.txt); IDS=$(sed -n 2p data/care_supply/request.txt)
+          : > data/care_supply/last_run.log
+          if [ -n "$Q" ]; then python3 scripts/fetch_datago.py --search $Q >> data/care_supply/last_run.log 2>&1; fi
+          if [ -n "$IDS" ]; then python3 scripts/fetch_datago.py --save $IDS --max 2 >> data/care_supply/last_run.log 2>&1; fi
+          mkdir -p data/care_supply/raw
+          for id in $IDS; do [ -d data/raw/$id ] && cp -r data/raw/$id data/care_supply/raw/; done
+          # 대구 행만 남기는 건 세션이 한다 — 큰 전국 파일은 대구·달성 행만 미리 걸러 둔다
+          find data/care_supply/raw -type f \( -name '*.csv' -o -name '*.CSV' \) -size +3M | while read f; do
+            python3 - "$f" <<'EOF'
+          import sys, io
+          p = sys.argv[1]; b = open(p, 'rb').read()
+          for enc in ('utf-8-sig', 'cp949', 'euc-kr'):
+              try: t = b.decode(enc); break
+              except Exception: pass
+          lines = t.splitlines(); keep = [lines[0]] + [l for l in lines[1:] if '대구' in l]
+          open(p, 'w', encoding='utf-8').write('\n'.join(keep) + '\n'); print('filtered', p, len(lines), '->', len(keep))
+          EOF
+          done >> data/care_supply/last_run.log 2>&1
+          find data/care_supply/raw -type f -size +20M -delete
+          ls -laR data/care_supply >> data/care_supply/last_run.log
+          true
+      - name: 커밋
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/care_supply
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 돌봄 공급 자료 받기 $(date -u +%Y-%m-%d)"
+          git pull --rebase -q || true
+          git push

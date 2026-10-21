@@ -1,0 +1,20 @@
+{
+ "key": "welfare-livelihood",
+ "name": "복지(저소득) — 국민기초생활보장 수급자 수(시도·시군구)",
+ "tbl_nm": "국민기초생활보장 수급자수(시도)",
+ "org_id": "101",
+ "tbl_id": "DT_1YL13801E",
+ "prd_se": "Y",
+ "period": [
+  "2018",
+  "2026"
+ ],
+ "rows_total": 144,
+ "rows_kept": 144,
+ "latest": "2025",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-21",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL13801E",
+ "note": ""
+}

@@ -1,0 +1,20 @@
+{
+ "key": "welfare-childcare",
+ "name": "복지(영유아·보육) — 어린이집 수·정원·현원(시군구)",
+ "tbl_nm": "유아 천명당 보육시설수(시도/시/군/구)",
+ "org_id": "101",
+ "tbl_id": "DT_1YL20951",
+ "prd_se": "Y",
+ "period": [
+  "2018",
+  "2026"
+ ],
+ "rows_total": 5911,
+ "rows_kept": 5911,
+ "latest": "2025",
+ "unit": "개",
+ "areas": [],
+ "fetched": "2026-10-21",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20951",
+ "note": ""
+}

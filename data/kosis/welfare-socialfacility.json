@@ -1,0 +1,20 @@
+{
+ "key": "welfare-socialfacility",
+ "name": "복지(인프라) — 인구 십만명당 사회복지시설수(시도/시/군/구)",
+ "tbl_nm": "인구 십만명당 사회복지시설수(시도/시/군/구)",
+ "org_id": "101",
+ "tbl_id": "DT_1YL20941",
+ "prd_se": "Y",
+ "period": [
+  "2018",
+  "2026"
+ ],
+ "rows_total": 4430,
+ "rows_kept": 4430,
+ "latest": "2023",
+ "unit": "개",
+ "areas": [],
+ "fetched": "2026-10-21",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20941",
+ "note": ""
+}

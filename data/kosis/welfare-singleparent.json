@@ -1,0 +1,20 @@
+{
+ "key": "welfare-singleparent",
+ "name": "복지(한부모) — 한부모 가구(시도·시군구)",
+ "tbl_nm": "세대구성 및 자녀연령별 한부모 가구(미혼모·부 이혼 사별 포함) - 시도",
+ "org_id": "101",
+ "tbl_id": "DT_1SP1601",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 1755,
+ "rows_kept": 1755,
+ "latest": "2025",
+ "unit": "가구",
+ "areas": [],
+ "fetched": "2026-10-21",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1SP1601",
+ "note": ""
+}

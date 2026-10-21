@@ -1,0 +1,20 @@
+{
+ "key": "welfare-births-monthly-sido",
+ "name": "복지(임신·출산) — 시도별 월간 출생아 수",
+ "tbl_nm": "월.분기.연간 인구동향(출생사망혼인이혼)",
+ "org_id": "101",
+ "tbl_id": "DT_1B8000G",
+ "prd_se": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 10121,
+ "rows_kept": 10121,
+ "latest": "202607",
+ "unit": "명 건",
+ "areas": [],
+ "fetched": "2026-10-21",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B8000G",
+ "note": ""
+}

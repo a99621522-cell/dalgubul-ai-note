@@ -1,0 +1,20 @@
+{
+ "key": "welfare-pop-age-sigungu",
+ "name": "복지 — 시군구·연령별 주민등록인구(아동·청년·고령 인구, 구·군별)",
+ "tbl_nm": "시군구/성/연령(5세)별 주민등록연앙인구(2023~)",
+ "org_id": "101",
+ "tbl_id": "DT_1B040M5_1",
+ "prd_se": "Y",
+ "period": [
+  "2023",
+  "2026"
+ ],
+ "rows_total": 60696,
+ "rows_kept": 60696,
+ "latest": "2025",
+ "unit": "명",
+ "areas": [],
+ "fetched": "2026-10-21",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040M5_1",
+ "note": ""
+}

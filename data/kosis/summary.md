@@ -1,11 +1,11 @@
 # KOSIS 수집 결과
 
-갱신 2026-10-20 · 표 48개 · 설정 config/kosis_tables.yml
+갱신 2026-10-21 · 표 48개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
 | biz-birth-death-sido | [시도별 산업대분류별 기업규모별 기업 수(활동/신생/소멸)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_6BD1105) | Y 2016~2026 | 2024 | 115788 | 개% |
-| biz-census-sido-industry-all | [시도·산업·사업체구분별 사업체수 종사자수(’20~ )](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52F01) | Y 2020~2026 | 2024 | 17262 | 개 |
+| biz-census-sido-industry-all | [시도·산업·사업체구분별 사업체수 종사자수(’20~ )](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K52F01) | Y 2020~2026 | 2024 | 13958 | 개 |
 | commute-od-dg | [현 거주지별/성별/통근통학지별 통근통학 인구(대구 경북)(12세 이상)-시군구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1PA2007) | F 2014~2026 | 2020 | 3516 | 명 |
 | commute-sido | [현거주지별/근무지별/산업별 취업인구(15세이상)-시군구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1PC2011) | F 2014~2026 | 2020 | 8226 | 명 |
 | construction-orders-sido | [공사지역/발주자별 건설수주액(경상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1G1B034) | M 202301~202612 | 202608 | 220 | 백만원 |

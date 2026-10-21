@@ -103,7 +103,7 @@
 - `scripts/approve.py` — 초안 승인. `scripts/state/seen.json` — 중복 방지
 - `.github/workflows/collect.yml` — 매일 05:30 KST 자동 실행
 
-- **복지서비스 찾기** `/welfare/`(메뉴 '복지', 운영자 지시 2026-10-21 '복지분야 … 일단 해봐') — 창구 직원이 주민 상황 한 줄(나이·가구·구군)을 넣으면 중앙부처·대구시·구군 복지서비스 중 **확인해 볼 후보**를 추린다. 규칙 필터+낱말 일치만(AI 판정 없음), 자격 판정 아님 문구 유지. 재료: `scripts/collect_welfare.py`(복지로 오픈API B554287 중앙부처복지서비스·지자체복지서비스, ctpvNm=대구광역시, 상세 증분·API별 1회 900건 상한) → `data/welfare/services.json` → `src/lib/welfare.ts` → `src/pages/welfare-index.json.ts`(클라이언트 검색용) · `src/pages/welfare/index.astro`(검색 + 구·군별 등록 현황표 — 등록 건수일 뿐 복지 수준 비교 아님). 수집은 `.github/workflows/welfare.yml`(매일 03:40 KST, Secrets DATA_GO_KR_KEY + 두 API 활용신청 필요). 값 그대로·개인정보/수급자 정보 없음
+- **복지서비스 찾기 → 다잇다에서 분리(운영자 지시 2026-10-21 '다잇다 말고 다른 사이트로')** — 다잇다 메뉴·페이지에서 뺐고, 독립 사이트 초안을 `sites/welfare/`(자체 Astro 설정·레이아웃, `npx astro build --root sites/welfare`, Cloudflare Pages 프로젝트 이름 예정 daegu-welfare — 배포 워크플로 아직 없음)로 옮겼다. 재료 수집은 그대로 `scripts/collect_welfare.py` → `data/welfare/services.json`(`.github/workflows/welfare.yml`, Secrets DATA_GO_KR_KEY + 복지로 두 API 활용신청 2026-10-21 승인). 운영자가 복지 담당자 의견(행복이음으로 안 되는 것)을 들은 뒤 방향을 정하기로 보류 중. 개인정보·주민번호는 다루지 않는다
 
 ## 명령
 

@@ -13,7 +13,6 @@ export const NAV = [
   { key: 'check', name: '사업계획서 지침 검토기', href: '/programs/guidelines/check/' },
   { key: 'policy', name: '리포트', href: '/policy/' },
   { key: 'growth', name: '성장 계산기', href: '/growth/' },
-  { key: 'welfare', name: '복지서비스 찾기', href: '/welfare/' },   // 운영자 지시 2026-10-21 '복지분야 … 일단 해봐' — 복지로 오픈API, 창구용 후보 찾기
 ] as const;
 
 /** 대메뉴 5개(리디자인 v3 2026-10-12, 운영자 '모두해' — 감사 보고서 docs/design/redesign-v3/01-audit.md 의 과업 이름 안: 통계 · 기업 · 사업·지원 · 리포트 · 성장 계산기).
@@ -24,7 +23,6 @@ export const NAV_GROUPS: { key: string; name: string; items: (typeof NAV)[number
   { key: 'biz', name: '사업·지원', items: ['programs', 'check', 'support'] },
   { key: 'report', name: '리포트', items: ['policy'], href: '/policy/' },
   { key: 'growth', name: '성장 계산기', items: ['growth'], href: '/growth/' },
-  { key: 'welfare', name: '복지', items: ['welfare'], href: '/welfare/' },
 ];
 export const navItem = (key: string) => NAV.find(n => n.key === key)!;
 /** 출처 기관 바로가기(유틸리티 바) — 다잇다가 자료를 받는 공공 누리집 */

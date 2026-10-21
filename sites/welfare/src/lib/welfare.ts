@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 /** 복지서비스(data/welfare/services.json — scripts/collect_welfare.py, 복지로 오픈API). 운영자 지시 2026-10-21.
  *  중앙부처 + 대구광역시 + 구·군. 값 그대로, 평가·추천 순위 없음. 자격 판정이 아니라 '확인해 볼 후보' 목록. */
 export type Detail = { target?: string; crit?: string; benefit?: string; how?: string; since?: string; until?: string; lastMod?: string; contacts?: string[]; laws?: string[]; forms?: string[] };
@@ -15,8 +16,9 @@ export const LIFE = ['영유아', '아동', '청소년', '청년', '중장년', 
 let cache: WelfareData | null | undefined;
 export function welfareData(): WelfareData | null {
   if (cache !== undefined) return cache;
-  const p = 'data/welfare/services.json';
-  cache = fs.existsSync(p) ? (JSON.parse(fs.readFileSync(p, 'utf-8')) as WelfareData) : null;
+  // 저장소 루트에서 빌드하든(sites/welfare 를 --root 로) sites/welfare 안에서 빌드하든 찾게
+  const p = ['data/welfare/services.json', '../../data/welfare/services.json'].map(x => path.resolve(process.cwd(), x)).find(x => fs.existsSync(x));
+  cache = p ? (JSON.parse(fs.readFileSync(p, 'utf-8')) as WelfareData) : null;
   return cache;
 }
 

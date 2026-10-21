@@ -1,0 +1,71 @@
+---
+/** 대구 복지서비스 찾기 — 공통 레이아웃. 다잇다와 따로 쓰는 디자인(초록 계열, 공공서비스 톤, 모바일 먼저). */
+interface Props { title: string; description: string; current?: 'find' | 'gugun' | 'about' }
+const { title, description, current = 'find' } = Astro.props;
+const SITE = '대구 복지서비스 찾기';
+const full = title === SITE ? SITE : `${title} | ${SITE}`;
+const NAV = [
+  { key: 'find', name: '서비스 찾기', href: '/' },
+  { key: 'gugun', name: '구·군별 현황', href: '/gugun/' },
+  { key: 'about', name: '이용 안내', href: '/about/' },
+];
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{full}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+</head>
+<body>
+  <a class="skip" href="#main">본문 바로가기</a>
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href="/"><svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"/><path d="M16 24s-8-4.6-8-10.2A4.3 4.3 0 0 1 16 11a4.3 4.3 0 0 1 8 2.8C24 19.4 16 24 16 24z" fill="#fff"/></svg><span>{SITE}</span></a>
+      <nav aria-label="주요 메뉴"><ul>{NAV.map(n => <li><a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.name}</a></li>)}</ul></nav>
+    </div>
+  </header>
+  <main id="main" class="wrap"><slot /></main>
+  <footer class="foot wrap">
+    <p>복지 담당 공무원의 상담·안내를 돕는 참고 도구입니다. 자격을 판정하지 않으며, 최종 확인은 복지로 원문과 담당 부서로 해 주세요.</p>
+    <p>자료: 한국사회보장정보원 복지로 오픈API(공공데이터포털). 개인정보·수급자 정보는 다루지 않습니다.</p>
+  </footer>
+</body>
+</html>
+<style is:global>
+  :root {
+    --bg: #f7f8f6; --card: #ffffff; --ink: #1d2420; --muted: #5d6862; --line: #dfe4e0; --line-strong: #b9c3bd;
+    --pri: #1f6f5c; --pri-ink: #ffffff; --pri-soft: #e5f1ed; --warn: #8a5a00; --warn-soft: #fff4dc;
+    --s1: 4px; --s2: 8px; --s3: 16px; --s4: 24px; --s5: 40px; --r: 10px; --small: 0.875rem;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #121614; --card: #1a201d; --ink: #e8ece9; --muted: #a2ada7; --line: #2c3530; --line-strong: #46524b; --pri: #5fbfa4; --pri-ink: #0c1411; --pri-soft: #1d2f29; --warn: #f0c060; --warn-soft: #2e2715; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  html { font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; line-height: 1.6; color: var(--ink); background: var(--bg); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; }
+  a { color: var(--pri); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+  .skip { position: absolute; left: -999px; } .skip:focus { left: 8px; top: 8px; background: var(--card); padding: 8px; z-index: 9; }
+  .top { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+  .top-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; flex-wrap: wrap; }
+  .brand { display: inline-flex; align-items: center; gap: 8px; color: var(--pri); font-weight: 800; text-decoration: none; font-size: 1.05rem; }
+  .brand span { color: var(--ink); }
+  .top nav ul { list-style: none; display: flex; gap: 4px; margin: 0; padding: 0; }
+  .top nav a { display: block; padding: 8px 10px; border-radius: 8px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+  .top nav a[aria-current] { color: var(--pri); background: var(--pri-soft); }
+  main { padding-top: var(--s4); padding-bottom: var(--s5); }
+  h1 { font-size: clamp(1.4rem, 4vw, 1.9rem); margin: 0 0 var(--s2); letter-spacing: -0.01em; }
+  h2 { font-size: 1.2rem; margin: var(--s5) 0 var(--s2); }
+  .meta { color: var(--muted); font-size: var(--small); }
+  .foot { border-top: 1px solid var(--line); padding-top: var(--s3); padding-bottom: var(--s5); color: var(--muted); font-size: var(--small); }
+  .foot p { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  @media print { .top, .foot, .no-print { display: none !important; } body { background: #fff; } }
+</style>

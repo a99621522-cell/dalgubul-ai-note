@@ -7,7 +7,9 @@
    열: 기업명·산업분야·사업분야(대표자 열은 읽지 않는다 — import_alphacity.parse 재사용) → data/ict_firms/alphacity.csv
 2) 대경ICT산업협회 회원사(dgict.org/member/?mpage=1~, robots.txt 허용) — 목록의 등급·회사명과
    상세 페이지의 홈페이지 주소만(대표자·전화는 읽지 않는다) → data/ict_firms/dgict_members.csv
-요청 사이 1초. 실패는 로그만 남기고 건너뛴다. 사용: python3 scripts/fetch_ict_firms.py [--no-alpha] [--no-dgict] [--no-detail]
+3) 중소벤처기업부 스마트제조혁신추진단 스마트공장 공급기업(공공데이터포털 15042132, 2,865곳) — 기업명·주소의 시도·시군구만
+   (담당자·연락처 열은 버린다, 원본 파일은 저장하지 않는다) → data/ict_firms/smart_factory_suppliers.csv
+요청 사이 1초. 실패는 로그만 남기고 건너뛴다. 사용: python3 scripts/fetch_ict_firms.py [--no-alpha] [--no-dgict] [--no-detail] [--no-sf]
 """
 from __future__ import annotations
 
@@ -150,6 +152,55 @@ def dgict(sess: requests.Session, detail: bool) -> list[dict]:
     return uniq
 
 
+def smart_factory(sess: requests.Session) -> list[dict]:
+    import io
+    import zipfile
+    from fetch_datago import discover, get_page, try_download
+    pk = "15042132"
+    try:
+        d = discover(get_page(pk, sess))
+    except Exception as e:  # noqa: BLE001
+        print(f"[sf] 페이지 실패: {e}")
+        return []
+    calls = d["calls"] or [[u] for u in d["uddis"]] or [[x] for x in d["atch"]]
+    for c in calls[:2]:
+        try:
+            r = try_download(pk, c, sess, d["atch"])
+        except Exception as e:  # noqa: BLE001
+            print(f"[sf] 받기 실패: {e}")
+            continue
+        if r is None:
+            continue
+        data = r.content
+        if zipfile.is_zipfile(io.BytesIO(data)):
+            with zipfile.ZipFile(io.BytesIO(data)) as z:
+                data = z.read(next(n for n in z.namelist() if n.lower().endswith(".csv")))
+        for enc in ("utf-8-sig", "cp949"):
+            try:
+                txt = data.decode(enc)
+                break
+            except UnicodeDecodeError:
+                continue
+        else:
+            continue
+        rows = list(csv.DictReader(io.StringIO(txt)))
+        if not rows:
+            continue
+        keys = list(rows[0].keys())
+        kn = next((k for k in keys if "기업명" in k or "업체명" in k or "회사" in k), keys[1] if len(keys) > 1 else keys[0])
+        ka = next((k for k in keys if "주소" in k or "소재" in k), "")
+        print(f"[sf] 열 {keys} → 이름 '{kn}', 주소 '{ka}' (담당자·연락처 열은 버림)")
+        out = []
+        for x in rows:
+            adr = (x.get(ka) or "").split()
+            sido = adr[0] if adr else ""
+            sgg = adr[1] if len(adr) > 1 else ""
+            out.append({"회사명": (x.get(kn) or "").strip(), "시도": sido, "시군구": sgg})
+        print(f"[sf] {len(out)}곳")
+        return out
+    return []
+
+
 def main(argv: list[str]) -> int:
     sess = requests.Session()
     today = date.today().isoformat()
@@ -165,6 +216,12 @@ def main(argv: list[str]) -> int:
             for x in rows:
                 x["기준일"] = today
             write(OUT / "dgict_members.csv", ["회사명", "등급", "홈페이지", "상세", "기준일"], rows)
+    if "--no-sf" not in argv:
+        rows = smart_factory(sess)
+        if rows:
+            for x in rows:
+                x["기준일"] = today
+            write(OUT / "smart_factory_suppliers.csv", ["회사명", "시도", "시군구", "기준일"], rows)
     return 0
 
 

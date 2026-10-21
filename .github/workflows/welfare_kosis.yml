@@ -55,17 +55,22 @@ jobs:
       - name: 커밋
         if: steps.up.outputs.ok == '1'
         run: |
+          set +e
           git config user.name dalgubul-bot
           git config user.email bot@users.noreply.github.com
-          for f in data/welfare/kosis_*.log data/kosis/welfare-*; do [ -e "$f" ] && git add "$f"; done; true   # 없는 패턴이면 git add 가 실패해 단계가 멈추던 것 수정
-          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
-          git commit -qm "data: 복지 분야 KOSIS 통계 찾기·받기 $(date -u +%Y-%m-%d) (attempt ${{ matrix.attempt }})"
+          # 20MB 넘는 결과 파일은 저장소에 두지 않는다(푸시 거부 방지) — 크기는 기록에 남긴다
+          ls -la data/kosis/welfare-* >> data/welfare/kosis_fetch.log 2>&1
+          find data/kosis -name 'welfare-*' -size +20M -print -delete >> data/welfare/kosis_fetch.log 2>&1
+          for f in data/welfare/kosis_*.log data/kosis/welfare-*; do [ -e "$f" ] && git add "$f"; done
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -qm "data: 복지 분야 KOSIS 통계 찾기·받기 $(date -u +%Y-%m-%d) (attempt ${{ matrix.attempt }})" || { echo "commit 실패"; git status; exit 0; }
           for i in 1 2 3 4; do
             git fetch -q origin "${GITHUB_REF_NAME}"
             git rebase -q -X theirs "origin/${GITHUB_REF_NAME}" || { git rebase --abort; sleep $((i * 5)); continue; }
-            git push -q origin HEAD:"${GITHUB_REF_NAME}" && break
+            git push -q origin HEAD:"${GITHUB_REF_NAME}" && { echo "push 성공"; break; }
             sleep $((i * 5))
           done
+          exit 0
 
   deploy:
     needs: fetch

@@ -1,533 +1,364 @@
-[검색 '장기요양기관'] HTTP 200, 링크 40개
-  15104801 | 국민건강보험공단_ 장기요양기관  평가 결과 | 국민건강보험공단
-  15124763 | 국민건강보험공단_ 장기요양기관  시설별 현황 | 으로부터 입력된 정보를 기반으로,
-  15127484 | 국민건강보험공단_ 장기요양기관  평가 5회 이상 A를 받은 기관 현황 | 평가 5회 이상 A등급을 받은
-  15037751 | 충청남도 보령시  장기요양기관 | 충청남도 보령시
-  3081417 | 부산광역시 남구_ 장기요양기관  현황 | 부산광역시 남구
-  3064781 | 경상남도 함양군_ 장기요양기관  현황 | 현황 자료입니다.
-  15145962 | 국민건강보험공단_치매관련급여 제공  장기요양기관  현황 | 기호 2)
-  15048116 | 전남광주통합특별시 여수시_노인재가  장기요양기관 | (재가노인복지시설 포함)에 대한 기본 데이터를 제공합니다.
-  15026401 | 부산광역시_중구_ 장기요양기관  현황 | 현황에 대한 데이터로,
-  15051409 | 부산광역시 연제구_ 장기  요양  기관 현황 | 부산광역시 연제구
-  15146940 | 국민건강보험공단_경기도 시군별  장기요양기관  및 종사자 현황 | 수:
-  15124194 | 국민건강보험공단_ 장기요양기관  평가년도 평가등급별 기관수 및 수급자수 | 의 평가년도별 평가등급별
-  15000807 | 충청남도 서산시_재가 장기  요양  기관 | 현황을 정리한 공공자료이다. 항목은
-  15114966 | 대전광역시 서구_ 장기요양기관  지정 현황 | 현황을 담고 있으며, 데이터 기준일로 작성되었습니다.
-  15086621 | 경상남도 하동군_ 장기요양기관  현황 | 현황 (연번,
-  15043654 | 경기도 성남시_재가 장기  요양  기관 _현황 | 에 대한 데이터로,
-  15055385 | 서울특별시 강북구 재가 장기  요양  기관 | 은 국민건강보홈공단에서 운영하는 노인 장기
-  15117908 | 충청남도 금산군_ 장기요양기관 | 에 대한 정보를 제공합니다. 2026년 8월 기준 총 76개
-  15122325 | 국민건강보험공단_ 장기요양기관  코로나19신고현황 | 에서 발생한 코로나19 감염 사례에 대한 신고 현황을 기록한 자료입니다.
-  3073217 | 충청남도 논산시 재가 장기  요양  기관 | 현황 데이터입니다. 본 데이터는
-  3033560 | 전남광주통합특별시 보성군_ 장기  요양  기관 현황 | 의 현황을 정리한 자료이다.
-  15127152 | 충청북도 충주시_노인 장기  요양  기관  및 노인복지생활시설 현황 | 충청북도 충주시
-  15139726 | 대전광역시 중구_대전 중구  장기요양기관  지정 현황 | 지정 현황(연번, 연도,
-  15080657 | 경상남도 남해군_재가 장기  요양  기관 현황 | 의 현황을 종합적으로 제공합니다.
-  15119859 | 대구광역시 수성구_ 장기  요양  기관 현황 | 에 대한 현황을 정리한 자료로,
-  15133347 | 서울특별시_강북구 재가 장기  요양  기관  현황 | 정보를 담고 있는 자료입니다.
-  15103041 | 국민건강보험공단_ 장기  요양 보험통계연보 | 국민건강보험공단
-  15157592 | 경기도 남양주시_ 장기요양기관  현황 | 입니다.
-  15155573 | 부산광역시 북구_ 장기요양기관 | 부산광역시 북구
-  3080905 | 경기도 고양시_노인복지시설(주거_의료_재가)현황 | 경기도 고양시
-  15160442 | 국민건강보험공단_경기도 시군구별  장기요양기관  및 장기요양요원 현황 | 수:
-  15139200 | 국민건강보험공단_노인 장기  요양 보험 복지용구 지정 및 폐업 기관  수 | 중 급여종류가 복지용구로 지정된
-  3066347 | 경기도 군포시_노인 요양  기관  현황 | 현황은 2026. 8월 기준 군포시에 위치한
-  15080714 | 대전광역시_ 요양 보호사 교육 기관  현황 | 현황 자료는 노인
-  15020192 | 울산광역시_ 요양 보호사 | 정보를 제공한다. 고령화 사회 대응 및 노인 장기
-  15104803 | 국민건강보험공단_간호간병통합서비스 운영 기관  현황 | 국민건강보험공단
-  15048115 | 전남광주통합특별시 여수시_노인 입소시설 현황 | 전남광주통합특별시 여수시
-  15147015 | 충청남도 금산군_노인 장기  요양  기관 현황 | 현황으로 관내
-  15149305 | 국민건강보험공단_재택의료센터 기관 정보 | 국민건강보험공단
-  15095102 | 국민건강보험공단_NHIS 발간자료 | 국민건강보험공단
-  15055400 | 서울특별시 은평구_노인의료복지시설 | 서울특별시 은평구
-  15117542 | 인천광역시 미추홀구_ 요양 병원 현황 | 인천광역시 미추홀구
-  15124775 | 국민건강보험공단_우울증 조울증 조현병 진료 통계 | 국민건강보험공단
-  15128028 | 보건복지부_입원진료 병상 수 | 종류별/시도별로 분류하여 정보를 제공하고 있습니다.
-  15043855 | 전남광주통합특별시_노인 요양 시설 현황 | 에
-  15032444 | 경기도 성남시_노인_의료복지시설_현황 | 경기도 성남시
-  15122589 | 국민건강보험공단_월별 온열질환자 수 | 국민건강보험공단
-  15168158 | 국민건강보험공단_ 장기요양기관  수시평가 결과 | 을 대상으로 함 - 수시평가와 정기평가는 지표적용기간
-  15149429 | 국민건강보험공단_전문 요양 실시범사업 기관 관리 | 국민건강보험공단
-  15122824 | 국민건강보험공단_제1형 당뇨병 환자 수 | 국민건강보험공단
-  15083312 | 부산광역시 영도구_ 장기  요양 시설 | 현황 자료로
-  15156042 | 부산광역시 금정구_재가노인복지시설 현황 | 의 상세 현황을 담고 있습니다.
-  15056358 | 제주특별자치도 제주시_노인복지시설현황 | 제공기관
-  15107646 | 국민건강보험공단_특정질병코드별 진료 현황 | 국민건강보험공단
-  15063209 | 대전광역시_노인 요양 시설 현황 | 대전광역시
-  15053422 | 부산광역시 영도구_노인의료복지시설 | 부산광역시 영도구
-  15103040 | 국민건강보험공단_ 장기  요양 보험주요통계 | 국민건강보험공단
-  15056433 | 제주특별자치도_ 요양 보호사교육 기관 현황 | 과 관련한 데이터를 제공합니다.
-  15124322 | 국민건강보험공단_수면장애 관련 주상병별 진료정보 | 부담금)과 본인부담금을 더한 금액.
-  15037407 | 서울특별시 중랑구_노인의료복지시설 현황 | 서울특별시 중랑구
-  15103855 | 국민건강보험공단_특정 질병에 대한 김천시 수진자의 관내외 진료현황 | 소재지: 수진자가 진료받은
-  15149307 | 국민건강보험공단_협력 기관 현황 | 국민건강보험공단
-  15051517 | 근로복지공단_의료 기관 별 평균진료일수 지급현황(2012년 4분기) | 등급별 평균 진료 일수(일)를 집계한 통계입니다.
-  15062439 | 경상남도 통영시_노인복지시설 | 명, 소재지도로명주소,
-  3081290 | 전북특별자치도_ 요양 보호사 교육 기관  현황 | 의 현황을 정리한 데이터입니다.
-  15055439 | 서울특별시 서대문구_노인의료복지시설 현황 | , 급여종류,주소 등) 현황입니다. 데이터 기준일 : 2025.8.6.
-  15127570 | 국민건강보험공단_일차의료 만성질환관리 시범사업 참여의원 목록 | 명 - 주소 - 전화번호 □ 활용 안내 본 데이터는
-  3060622 | 강원특별자치도 원주시_노인의료복지시설 정보 | 검색 플랫폼, 지역 복지 정보 제공 서비스, 노인 대상
-  15070559 | 인천광역시 미추홀구_노인복지시설 | 등 노인 복지 제공
-  15117188 | 국민건강보험공단_간호간병통합서비스 평균재원일수 및 이용환자수 | 연속 청구 건 중복제거) 3.
-  3071089 | 충청북도 보은군_노인복지시설 현황 | 의 항목을 제공합니다.
-  15101678 | 국민건강보험공단_특정상병코드별_진료인원수 | 국민건강보험공단
-  15037455 | 서울특별시_동대문구_노인요양원 | 서울특별시 동대문구
-  3077812 | 서울특별시 용산구_노인 요양 시설현황 | 서울특별시 용산구
-  15134960 | 국민건강보험공단_심전도감시 관련 특정 행위코드에 대한 진료정보 | 에서
-  15114167 | 국민건강보험공단_ 요양  기관  종별 간호간병통합서비스 운영 및 이용현황 | 종별 간호간병통합서비스 이용현황' (2023.5.31
-  15036199 | 서울특별시 광진구_데이케어센터 | 명,
-  15102780 | 국민건강보험공단_등급별급여종류별 장기  요양 급여실적 | -> 급여제공 기관
-  15139916 | 국민건강보험공단_건강보험 및 의료급여 구분별 진료통계 | 주소지별, 진료형태별로 입내원일수 및 진료인원을 분석한 자료입니다.
-  3046034 | 충청남도 부여군_ 장기  요양 시설 현황 | 충청남도 부여군
-[검색 '재택의료센터'] HTTP 200, 링크 5개
-  15149305 | 국민건강보험공단_ 재택  의료  센터 기관정보 | 국민건강보험공단
-  15149306 | 국민건강보험공단_ 재택  의료 시범대상기관 | 국민건강보험공단
-  15149307 | 국민건강보험공단_협력기관현황 | 국민건강보험공단
-  15165686 | 국민건강보험공단_ 재택의료센터  주소정보 | 국민건강보험공단
-  15150239 | 국민건강보험공단_장기요양통합정보 방문점검 | 국민건강보험공단
-[검색 '달성군'] HTTP 200, 링크 40개
-  3068155 | 대구광역시  달성군 _인구현황 | 대구광역시
-  15006780 | 대구광역시  달성군 _기업체 현황 | 대구광역시
-  3068159 | 대구광역시  달성군 _학교 현황 | 대구광역시
-  15044948 | 대구광역시  달성군 _경로당 현황 | 대구광역시
-  3068167 | 대구광역시  달성군 _행정구역 현황 | 대구광역시
-  15044947 | 대구광역시_ 달성군 _노인복지시설현황 | 대구광역시
-  15044949 | 대구광역시  달성군 _복지센터현황 | 대구광역시
-  15037694 | 대구광역시  달성군 _불법주정차단속현황 | 제공기관
-  3074756 | 대구광역시  달성군 _문화재정보 | 대구광역시
-  3075531 | 대구광역시  달성군 _부동산중개업소 현황 | 대구광역시
-  15021434 | 대구광역시  달성군 _배수펌프장 | 대구광역시
-  3068166 | 대구광역시  달성군 _공공기관 현황 | 대구광역시
-  3068205 | 대구광역시  달성군 _의료기관현황 | 대구광역시
-  15006581 | 대구광역시  달성군 _아동 복지 및 시설 현황 | 대구광역시
-  15006211 | 대구광역시  달성군 _체육시설 현황 | 대구광역시
-  3068239 | 대구광역시  달성군 _교육 현황 | 대구광역시
-  15009553 | 대구광역시  달성군 _사회적기업 현황 | 대구광역시
-  15077482 | 대구광역시  달성군 _숙박업 현황 | 대구광역시
-  15080616 | 대구광역시  달성군 _코로나19 확진자 일별 현황 | 대구광역시
-  15084395 | 대구광역시  달성군 _폐수배수시설현황 | 대구광역시
-  15006781 | 대구광역시  달성군 _기상관측 정보 | 대구광역시
-  15062494 | 대구광역시  달성군 _폐기물신고현황 | 대구광역시
-  15041640 | 대구광역시_ 달성군 _쓰레기통설치현황 | 대구광역시
-  15054516 | 대구광역시_ 달성군 _서원정보 | 대구광역시
-  15054514 | 대구광역시  달성군 _전통사찰현황 | 대구광역시
-  15054515 | 대구광역시_ 달성군 _기념관현황 | 대구광역시
-  15006793 | 대구광역시  달성군 _자동차등록 현황 | 대구광역시
-  15094820 | 대구광역시  달성군 _주유소 현황 | 대구광역시
-  15093674 | 대구광역시  달성군 _종량제봉투 판매 정보 | 대구광역시
-  15054517 | 대구광역시  달성군 _유원시설현황 | 대구광역시
-  15043058 | 대구광역시_ 달성군 _약국현황 | 대구광역시
-  15113443 | 대구광역시  달성군 _공장등록 현황 | 대구광역시
-  15006782 | 대구광역시  달성군 _농산물 생산 현황 | 대구광역시
-  3068160 | 대구광역시  달성군 _우체국 및 금융기관 현황 | 대구광역시
-  15041646 | 대구광역시_ 달성군 _폐형광등 및 폐건전지 분리수거함현황 | 대구광역시
-  3054922 | 대구광역시  달성군 _보유 도서정보 | 대구광역시
-  15113143 | 대구광역시  달성군 _폐의약품 수거함 현황 | 대구광역시
-  3068175 | 대구광역시  달성군 _민방위 급수시설 | 대구광역시
-  15093678 | 대구광역시  달성군 _대형폐기물 수거 현황 | 대구광역시
-  15093675 | 대구광역시  달성군 _대형폐기물 처리 수수료 정보 | 대구광역시
-  3046208 | 대구광역시  달성군 _석면조사대상 건축물 현황 | 대구광역시
-  15110580 | 대구광역시  달성군 _공동주택(아파트) 현황 | 대구광역시
-  15078054 | 대구광역시  달성군 _의약품 공급업체 | 대구광역시
-  15127422 | 대구광역시  달성군 _휴게음식점 현황 | 대구광역시
-  15077082 | 대구광역시  달성군 _벙커C유사용업체현황 | 대구광역시
-  15054521 | 대구광역시  달성군 _식품접객_제조_판매업소 현황 | 대구광역시
-  15108352 | 대구광역시  달성군 _송해공원_드론 이미지데이터 | 대구광역시
-  15054520 | 대구광역시_ 달성군 _공중위생 및 음악 게임 관련업소 현황 | 대구광역시
-  15080724 | 대구광역시  달성군 _소독업체 현황 | 대구광역시
-  15073624 | 대구광역시  달성군 _실내공기질관리대상시설 현황 | 대구광역시
-  15071085 | 달성군 시설관리공단_ 달성군 여성문화복지센터_수강정보 | 달성군 시설관리공단
-  15093669 | 대구광역시  달성군 _체육시설업_현황 | 대구광역시
-  15138288 | 대구광역시  달성군 _대형폐기물배출신고정보 | 대구광역시
-  15108344 | 대구광역시  달성군 _비슬산_드론 이미지데이터 | 대구광역시
-  15127461 | 대구광역시  달성군 _담배소매인 지정현황 | 대구광역시
-  15084467 | 대구광역시  달성군 _도로굴착 허가현황 | 대구광역시
-  15108350 | 대구광역시  달성군 _사문진나루터_드론 이미지데이터 | 대구광역시
-  15108341 | 대구광역시  달성군 _비슬산_360 VR 이미지데이터 | 대구광역시
-  15108349 | 대구광역시  달성군 _사문진나루터_360 VR 이미지데이터 | 대구광역시
-  15108351 | 대구광역시  달성군 _송해공원_360 VR 이미지데이터 | 대구광역시
-  15101452 | 대구광역시  달성군 _실외체육시설 현황 | 대구광역시
-  15074471 | 달성군 시설관리공단_운영시설현황 | 달성군 시설관리공단
-  15155275 | 대구광역시  달성군 _산업단지 입주기업 현황 | 대구광역시
-  15099085 | 대구광역시  달성군 _공동주택(빌라) 현황 | 대구광역시
-  15107755 | 대구광역시  달성군 _음식폐기물다량배출사업장 | 대구광역시
-  15112140 | 대구광역시  달성군 _기계설비 성능점검 현황 | 대구광역시
-  15144168 | 대구광역시  달성군 _공인중개사사무소 | 대구광역시
-  15129864 | 대구광역시  달성군 _대기배출시설현황 | 대구광역시
-  15097364 | 대구광역시_먹거리골목 업소이미지( 달성군 1) | 대구광역시
-  15097366 | 대구광역시_먹거리골목 업소이미지( 달성군 2) | 대구광역시
-  15114364 | 대구광역시  달성군 _빈집 등급 및 동별 현황 | 대구광역시
-  15071087 | 달성군 시설관리공단_달성문화센터_수강정보 | 달성군 시설관리공단
-  15074368 | 달성군 시설관리공단_오토캠핑장 시설정보 | 달성군 시설관리공단
-  15111217 | 대구광역시  달성군 _반려동물등록 현황 | 대구광역시
-  15099083 | 대구광역시  달성군 _월별 코로나19 확진자 및 사망자 현황 | 대구광역시
-  15144166 | 대구광역시  달성군 _재활용센터 | 대구광역시
-  15074468 | 달성군 시설관리공단_경영공시정보 | 달성군 시설관리공단
-  15074245 | 달성군 시설관리공단_호텔아젤리아 객실정보 | 달성군 시설관리공단
-  15114900 | 대구광역시  달성군 _화물자동차운송사업자 업체현황 | 대구광역시
-  15144169 | 대구광역시  달성군 _현수막게시대시설 | 대구광역시
-[검색 '노인맞춤돌봄'] HTTP 200, 링크 40개
-  15065819 | 부산광역시_ 노인맞춤 돌봄기관 현황 | 현황 정보는 홀로 사는
-  15082034 | 대전광역시_ 노인맞춤 돌봄서비스 현황 | 대전광역시
-  15086383 | 인천광역시 미추홀구_ 노인맞춤 돌봄서비스수행기관 | 현황을 수록한 자료입니다.
-  15117139 | 인천광역시 계양구_ 노인맞춤 돌봄서비스현황 | 의 분포와 운영 정보를 종합적으로 파악할 수 있는 자료입니다.
-  15146556 | 서울특별시_ 노인맞춤돌봄  서비스 만족도 및 만족하지 못한 이유 통계 | 서울특별시
-  15004317 | 보건복지부_ 노인 돌봄서비스 기관 현황 | 명, 주소, 기관대표전화, 위수탁기간, 시설유형구분, 특화서비스,
-  3074876 | 대구광역시 달서구_ 노인 인구 현황 | 대구광역시 달서구
-  15082036 | 대전광역시_거점수행기관 현황 | 현황 자료는 2022년 12월 31일 기준으로 취약
-  15113285 | 대전광역시 서구_독거 노인  현황 | 대전광역시 서구
-  15055018 | 인천광역시_연령별  노인 인구 현황 | 인천광역시
-  15026028 | 부산광역시 북구_독거 노인  현황 | 부산광역시 북구
-  15081544 | 대전광역시_대전시 1인가구 지원 사업 현황 | 대전광역시
-  15067427 | 인천광역시_독거 노인  현황 | 인천광역시
-  15101729 | 경기도 파주시_재가 노인 복지시설 | 경기도 파주시
-  15016448 | 경기도 의정부시_ 노인 복지시설 현황 | 경기도 의정부시
-  15054862 | 울산광역시_울주군 재가 노인 지원서비스센터 현황 | 울산광역시 울주군
-  15013805 | 대구광역시 수성구_ 노인 복지시설 | 대구광역시 수성구
-  15081202 | 강원특별자치도 춘천시_독거 노인 현황 | 강원특별자치도 춘천시
-  3062428 | 충청남도_ 노인 인구 현황 | ·단체에 흩어져 제공되던
-  3060622 | 강원특별자치도 원주시_ 노인 의료복지시설 정보 | 강원특별자치도 원주시
-  15025112 | 부산광역시 연제구_독거 노인  현황 | 부산광역시 연제구
-  15064935 | 인천광역시 연수구_동별 독거 노인  현황 | 인천광역시 연수구
-  15090750 | 인천광역시 서해구_동별 독거 노인  현황 | 인천광역시 서해구
-  3081013 | 대전광역시 동구  노인 복지시설 현황 | 대전광역시 동구
-  3080457 | 서울특별시 마포구_65세 이상  노인  인구 | 서울특별시 마포구
-  15056184 | 제주특별자치도_ 노인 돌봄서비스시설현황 | 제주특별자치도
-  3079126 | 부산광역시_동래구_ 노인 복지시설현황 | 부산광역시 동래구
-  15067734 | 인천광역시 남동구_ 노인 일자리사업현황 | , 사업 구분, 명칭, 수행량, 연락처 등 다양한 항목을 포함하고 있습니다
-  3077816 | 서울특별시 용산구_ 노인 복지인구통계현황 | 서울특별시 용산구
-  15113333 | 인천광역시 남동구_독거노인수 | 인천광역시 남동구
-  15081601 | 대전광역시_독거 노인 등록통계 | 대전광역시
-  3046113 | 경기도 이천시_ 노인 복지시설 현황 | 경기도 이천시
-  15029090 | 울산광역시 동구_노인주야간보호센터 현황 | 울산광역시 동구
-  15089276 | 대한적십자사_무료급식소 | 대한적십자사
-  3077669 | 인천광역시 남동구_ 노인 교실( 노인 대학) 현황 | 에 부여된 연번, 대학명, 위치 정보, 신고 또는
-  15115858 | 인천광역시 연수구_ 노인 교실 현황 | 인천광역시 연수구
-  15067097 | 한국 노인 인력개발원_ 노인 일자리 직원 교육 기본 정보 | 한국 노인 인력개발원
-  15080930 | 소방청_연령별 구급활동정보 | 소방청
-  15055408 | 서울특별시 은평구_연령별인구현황 | 서울특별시 은평구
-  15055440 | 서울특별시 서대문구_ 노인 교실 현황 | 서울특별시 서대문구
-  15026988 | 한국 노인 인력개발원_60 플러스 교육센터 정보 | 한국 노인 인력개발원
-  15118572 | 경상남도 거창군_65세 이상  노인 인구 현황 | 경상남도 거창군
-  15040219 | 서울특별시 강동구_어르신 복지시설 현황 | 서울특별시 강동구
-  3080048 | 서울특별시 은평구_경로당 현황 | 서울특별시 은평구
-  15138816 | 부산광역시 부산진구_독거 노인  현황 | 부산광역시 부산진구
-  3077664 | 인천광역시 남동구_경로당 현황 | 인천광역시 남동구
-  15055966 | 전남광주통합특별시_일자리종합센터 | 전남광주통합특별시
-  3074914 | 대구광역시 남구_인구현황 | 대구광역시 남구
-  15090275 | 전남광주통합특별시 서구_독거 노인 현황 | 전남광주통합특별시 서구
-  15069312 | 광주교통공사_출퇴근시간 노인 이용률 | 광주교통공사
-  15010879 | 전북특별자치도_안전교육 정보 | 전북특별자치도
-  15114218 | 부산광역시_1인가구 지원사업 현황 | 부산광역시
-  15050911 | 농림수산식품교육문화정보원_식품힐링 정보 | 농림수산식품교육문화정보원
-  15032436 | 경기도 성남시_평생교육기관_현황 | 경기도 성남시
-  15055559 | 전북특별자치도 임실군_ 노인 복지시설현황 | 전북특별자치도 임실군
-  15051547 | 제주특별자치도 서귀포시_ 노인 복지시설현황 | 제주특별자치도 서귀포시
-  3077814 | 서울특별시 용산구_ 노인 교실현황 | 서울특별시 용산구
-  15064884 | 인천광역시 연수구_경로당 현황 | 인천광역시 연수구
-  15085500 | 전남광주통합특별시 광산구_1인가구현황_연령별_동별 | 전남광주통합특별시 광산구
-  15050908 | 농림수산식품교육문화정보원_원예치료 정보 | 농림수산식품교육문화정보원
-  15096204 | 경기도_지역사회서비스 투자 사업 현황 | 경기도
-  15048527 | 전남광주통합특별시_광산구_ 노인 복지관 이용자 현황 | 전남광주통합특별시 광산구
-  15055965 | 전남광주통합특별시_일자리종합센터 취업지원 현황 | 전남광주통합특별시
-  15063524 | 소방청_대상별 소방안전교육 현황 | 소방청
-  15098033 | 인천광역시 제물포구_동별독거 노인 현황 | 인천광역시 제물포구
-  15007648 | 충청북도 옥천군_경로당현황 | 충청북도 옥천군
-  15051491 | 인천광역시 제물포구_경로당현황 | 과 주민이 경로당 현황을 손쉽게 확인할 수 있도록 지원한다.
-  15136124 | 대구광역시 북구_행정동별 독거 노인  현황 | , 행정동, 1인 가구수) 독거 노인
-  15039528 | 농림축산식품부_푸드플랜 지원정책 매뉴얼 | 농림축산식품부
-  15067136 | 한국 노인 인력개발원_취업연계 공통코드 | 한국 노인 인력개발원
-  15099974 | 인천광역시 미추홀구_65세이상 인구통계 | 인천광역시 미추홀구
-  15054579 | 부산광역시 남구_경로당현황 | 부산광역시 남구
-  15090315 | 충청북도 음성군_독거 노인 현황 | 충청북도 음성군
-  15111652 | 경기도_생활밀착형 SOC 복지시설 | , 이용자 수 등의
-  15156094 | 한국인터넷진흥원_가명정보 지원 플랫폼_우수사례 현황 | 한국인터넷진흥원
-  15128127 | 보건복지부_응급안전안심_서비스 대상자 기본정보 | 보건복지부
-  15043348 | 인천광역시 미추홀구_ 노인 교실현황 | 인천광역시 미추홀구
-  15019025 | 한국 노인 인력개발원 연구 조사 보고서 | 한국 노인 인력개발원
-  15136389 | 과학기술정보통신부_디지털배움터 운영현황 | 과학기술정보통신부
-  15131369 | 경상남도 거제시_면동별연령분포 | 경상남도 거제시
-[검색 '방문건강관리'] HTTP 200, 링크 40개
-  15085111 | 서울특별시_ 방문건강관리  사업실적 통계 | 서울특별시
-  15064902 | 인천광역시_ 방문  건강  관리 사업실적 현황 | 인천광역시
-  15067352 | 인천광역시 남동구_ 방문  건강  관리 사업 현황 | 인천광역시 남동구
-  15085114 | 서울특별시_ 방문  건강  관리 사업  방문 전문인력당 취약가구수 통계 | 서울특별시
-  3072692 | 보건복지부_전국 지역보건의료기관 현황 | 은 지역 주민의
-  15090854 | 인천광역시 서해구_동별 방문 간호사 연락처 | 인천광역시 서해구
-  15102081 | 인천광역시 미추홀구_ 방문 보건사업현황 | 인천광역시 미추홀구
-  3076265 | 경상남도_수산생물 질병 발생 현황 | 경상남도
-  15068787 | 한국 건강 증진개발원_보건소 모바일 헬스케어 서비스 | 한국 건강 증진개발원
-  15037304 | 전남광주통합특별시 보건진료소현황 | 전남광주통합특별시
-  15140589 | 보건복지부_ 방문  간호(조무)사 수_사업별_지역별_연도별 | 보건복지부
-  15066734 | 한국교육학술정보원_ 건강 상태 자가진단 설문 내용(학생) | 한국교육학술정보원
-  15053270 | 전북특별자치도 전주시_동물약국 | 전북특별자치도 전주시
-  15002103 | 전남광주통합특별시_어린이 급식 관리  지원센터현황 | 전남광주통합특별시
-  15055386 | 서울특별시 강북구_재가노인복지시설 | 서울특별시 강북구
-  3081144 | 서울특별시 금천구_동물약국 현황 | 서울특별시 금천구
-  15056457 | 전남광주통합특별시_중독 관리 센터 현황 | 전남광주통합특별시
-  3076490 | 서울특별시 은평구_보건소현황 | 은 지하 1층부터 지상 4~7층 규모의 건물을 보유하고 있으며, 주민들의
-  3070641 | 대구광역시 남구_의료시설 | 의 정확한 안내에도 활용되어 실생활에서 유용한
-  15016448 | 경기도 의정부시_노인복지시설 현황 | 경기도 의정부시
-  15037405 | 부산광역시 연제구_산모신생아 건강  관리  지원사업 제공기관 현황 | 명, 영업소재지, 제공인력수, 제공기관면적)합니다.
-  15062460 | 인천광역시_계양구_동별 방문 간호사 연락처 | 인천광역시 계양구
-  3045987 | 부산광역시 남구  건강 기능식품판매업소 현황 | 부산광역시 남구
-  15072656 | 국가보훈부_재가복지서비스 지원대상자현황 | 국가보훈부
-  15105936 | 서울특별시 용산구_산후조리원 현황 | 서울특별시 용산구
-  15035245 | 부산광역시 서구_노인일자리 지원사업 현황 | 부산광역시 서구
-  15055426 | 전북특별자치도 군산시_한의원현황 | 전북특별자치도 군산시
-  15055914 | 전남광주통합특별시_광산구_모범 음식점 현황 | 에서는 위생
-  15072657 | 국가보훈부_재가복지서비스 지원인력현황 | 국가보훈부
-  15051497 | 인천광역시 미추홀구_의료기기판매업소 현황 | 인천광역시 미추홀구
-  15103040 | 국민 건강 보험공단_장기요양보험주요통계 | 국민 건강 보험공단
-  15085565 | 인천광역시 미추홀구_동별  방문 간호사 연락처 | 인천광역시 미추홀구
-  15066735 | 한국교육학술정보원_ 건강 상태 자가진단 설문 내용(교직원) | 한국교육학술정보원
-  15042606 | 부산광역시_ 건강 가정지원센터 현황 | ,
-  3078037 | 서울특별시 용산구_ 방문 판매업명단 | 서울특별시 용산구
-  15142088 | 재단법인한국보건의료정보원_의료진을 위한 나의 건강 기록 사용 안내서 | 재단법인한국보건의료정보원
-  15090800 | 인천광역시 서해구_ 방문 보건사업현황 | 인천광역시 서해구
-  15085571 | 인천광역시 미추홀구_산모신생아 건강  관리 지원사업 | 인천광역시 미추홀구
-  15127338 | 서울특별시 동대문구_노인복지시설 | 서울특별시 동대문구
-  3078039 | 서울특별시 용산구_동물병원 | 서울특별시 용산구
-  15111926 | 경상북도 영천시_보건지소및보건진료소현황 | 은 지역 주민들의
-  15006769 | 전남광주통합특별시 순천시_공중위생업 현황 | 전남광주통합특별시 순천시
-  15087594 | 인천광역시 남동구_일반 방문 간호시설 현황 | 인천광역시 남동구
-  15104296 | 경상남도 창원시_정신 건강 의료시설 | 명, 종별, 주소, 전화번호, 위도, 경도가 있습니다.
-  15104409 | 경상남도 통영시_정신 건강 의학과 및 요양병원 등 현황 | 현황을 정리한 자료입니다.
-  15078277 | 경기도 안성시_안성8미 | 경기도 안성시
-  15043372 | 전남광주통합특별시_동구_약국정보 | 전남광주통합특별시 동구
-  15142020 | 재단법인한국보건의료정보원_나의 건강 기록 앱 이용 안내서 | 재단법인한국보건의료정보원
-  15094282 | 서울특별시 서초구_동물약국 인허가 정보 | 서울특별시 서초구
-  15085782 | 전남광주통합특별시 동구_각동별 1인가구 현황 | 전남광주통합특별시 동구
-  15055147 | 충청남도 아산시_치과의원현황 | 충청남도 아산시
-  15142022 | 재단법인한국보건의료정보원_어르신을 위한 나의 건강 기록 사용 안내서 | 재단법인한국보건의료정보원
-  15085197 | 울산시설공단_음수대정보 | 울산시설공단
-  15106299 | 대전광역시 중구_ 방문 판매업 | 대전광역시 중구
-  15116081 | 서울특별시 금천구_의료기관 현황 | 을 찾고자 하실 때 유용하게 활용하실 수 있습니다.
-  15061460 | 한국사회보장정보원_차상위장애수당 수급자 바우처 서비스 이용 현황_시도별 | 한국사회보장정보원
-  15061463 | 한국사회보장정보원_차상위계층확인 수급자 바우처 서비스 이용 현황 | 한국사회보장정보원
-  15061466 | 한국사회보장정보원_한부모가족 수급자 바우처 서비스 이용 현황_시도별 | 한국사회보장정보원
-  15142028 | 재단법인한국보건의료정보원_만 14세 미만 자녀를 둔 부모님을 위한 나의 건강 기록 사용 안내서 | 재단법인한국보건의료정보원
-  15119375 | 전북특별자치도_치매안심센터 | 전북특별자치도
-  15061453 | 한국사회보장정보원_차상위본인부담경감대상 수급자 바우처 서비스 이용 현황 | 한국사회보장정보원
-  15061464 | 한국사회보장정보원_차상위계층확인 수급자 바우처 서비스 이용 현황 시도별 | 한국사회보장정보원
-  15061457 | 한국사회보장정보원_차상위장애아동수당 수급자 바우처 서비스 이용 현황 | 한국사회보장정보원
-  15061461 | 한국사회보장정보원_차상위장애인연금 수급자 바우처 서비스 이용 현황 | 한국사회보장정보원
-  15061451 | 한국사회보장정보원_차상위 및 한부모가족 수급자 바우처 서비스 이용 현황 | 한국사회보장정보원
-  15061458 | 한국사회보장정보원_차상위장애아동수당 수급자 바우처 서비스 이용 현황_시도별 | 한국사회보장정보원
-  15061459 | 한국사회보장정보원_차상위장애수당 수급자 바우처 서비스 이용 현황 | 한국사회보장정보원
-  15061455 | 한국사회보장정보원_차상위자활 수급자 바우처 서비스 이용 현황 | 한국사회보장정보원
-  15061462 | 한국사회보장정보원_차상위장애인연금 수급자 바우처 서비스 이용 현황_시도별 | 한국사회보장정보원
-  15061454 | 한국사회보장정보원_차상위본인부담경감대상 수급자 바우처 서비스 이용 현황_시도별 | 한국사회보장정보원
-  15061452 | 한국사회보장정보원_차상위 및 한부모가족 수급자 바우처 서비스 이용 현황_시도별 | 한국사회보장정보원
-  15061456 | 한국사회보장정보원_차상위자활 수급자 바우처 서비스 이용 현황_시도별 | 한국사회보장정보원
-  15132578 | 충청북도 충주시_굿충주헬스케어 상담정보 | 충청북도 충주시
-  15140102 | 식품안전정보원_대만_ 건강 식품 허가 신청 방법(번역) | 식품안전정보원
-  15142021 | 재단법인한국보건의료정보원_시각장애인을 위한 나의 건강 기록 사용 안내서 | 재단법인한국보건의료정보원
-  15149431 | 국민 건강 보험공단_전문요양실시범사업촉탁의진료내역 관리 | 국민 건강 보험공단
-  15156236 | 전남광주통합특별시 남구_재가노인복지시설 | 전남광주통합특별시 남구
-  15146144 | 서울특별시_몽땅정보 만능키 사업 정보 | 서울특별시
-  15141638 | 서울특별시 용산구_ 방문 판매업 인허가 정보 | 서울특별시 용산구
-  15145231 | 경상북도 경주시_보건소홈페이지 예약정보 | 경상북도 경주시
-[검색 '주야간보호'] HTTP 200, 링크 40개
-  15063214 | 대전광역시_재가노인복지시설( 주야간보호 ) 현황 | 대전광역시
-  15083393 | 울산광역시_ 주야간   보호 시설 현황 | 울산광역시
-  15112249 | 서울특별시 마포구_ 주야간  보호 시설 현황 | 서울특별시 마포구
-  15112280 | 서울특별시 광진구_ 주야간  보호 시설 현황 | 서울특별시 광진구
-  15118518 | 전남광주통합특별시 북구_노인  주야간  보호 센터 및 요양원 현황 | 전남광주통합특별시 북구
-  15151589 | 국민건강보험공단_연도별 성별 연령별  주야간보호  이용자 현황 | 국민건강보험공단
-  15131611 | 경기도 수원시_ 주야간  보호 시설 최적 입지 분석 결과(GIS) | 경기도 수원시
-  15112338 | 서울특별시 양천구_ 주야간  보호 시설현황 | 서울특별시 양천구
-  15036683 | 인천광역시계양구시설관리공단_노인복지센터  주야간  보호 사업 비용정보 | 인천광역시계양구시설관리공단
-  15043654 | 경기도 성남시_재가장기요양기관_현황 | 경기도 성남시
-  15000807 | 충청남도 서산시_재가장기요양기관 | 명은 장기요양서비스를 제공하는 기관 명칭이며, 급여종류는
-  3064781 | 경상남도 함양군_장기요양기관 현황 | 으로 구분되며, 시설의 명칭, 제공되는 서비스현황(노인요양시설(개정법),
-  15055606 | 전북특별자치도_노인돌봄 데이케어센터 현황 | 전북특별자치도
-  15065080 | 대구광역시 달서구_노인복지시설 현황 | 대구광역시 달서구
-  15039034 | 보건복지부_노인복지 시설현황 | , 학대피해노인전용쉼터 데이터를 제공합니다. * 노인복지 시설
-  15116280 | 국민건강보험공단_노인장기요양보험 재가급여 종류별 이용 현황 | 국민건강보험공단
-  15102780 | 국민건강보험공단_등급별급여종류별장기요양급여실적 | 국민건강보험공단
-  15056186 | 제주특별자치도_노인재가복지시설현황 | 제주특별자치도
-  15127876 | 보건복지부_노인복지 이용시설 현황_시설 종류별_시도별 | 보건복지부
-  15114966 | 대전광역시 서구_장기요양기관 지정 현황 | 에서 다양한 활동을 제공받는
-  15055467 | 서울특별시 마포구_노인복지시설 | 서울특별시 마포구
-  15043855 | 전남광주통합특별시_노인요양시설 현황 | 전남광주통합특별시
-  15080657 | 경상남도 남해군_재가장기요양기관현황 | 에 별도 문의가 필요합니다.
-  15080655 | 경상남도 남해군_재가노인복지시설현황 | 경상남도 남해군
-  15145962 | 국민건강보험공단_치매관련급여 제공 장기요양기관 현황 | 국민건강보험공단
-  15037430 | 서울특별시 동작구_어르신복지시설 | 서울특별시 동작구
-  15156042 | 부산광역시 금정구_재가노인복지시설 현황 | 구분 (예: 재가장기요양기관), 급여종류 (예: 방문요양, 방문목욕,
-  3070660 | 충청남도 서산시_재가노인복지시설 | 충청남도 서산시
-  3037687 | 세종특별자치시_노인복지시설 현황 | 세종특별자치시
-  15083312 | 부산광역시 영도구_장기요양시설 | (노인요양시설, 노인요양공동생활가정), 재가급여제공기관(방문요양,
-  3066347 | 경기도 군포시_노인요양기관 현황 | 경기도 군포시
-  15119850 | 경기도_재가노인복지시설 현황 | 경기도
-  15048116 | 전남광주통합특별시 여수시_노인재가 장기요양기관 | (재가노인복지시설)은 방문요양, 방문목욕,
-  15054860 | 울산광역시_울주군_노인주간 보호 센터 | 울산광역시 울주군
-  15134789 | 전남광주통합특별시 서구_노인복지시설수 | 전남광주통합특별시 서구
-  15051406 | 부산광역시 연제구_노인복지시설현황 | 기본정보(기관명, 시설유형,
-  15156236 | 전남광주통합특별시 남구_재가노인복지시설 | 전남광주통합특별시 남구
-  15046496 | 서울특별시_재가노인 복지시설 통계 | 서울특별시
-  15061697 | 전남광주통합특별시 함평군_노인장기요양시설 현황 | 전남광주통합특별시 함평군
-  15062439 | 경상남도 통영시_노인복지시설 | , 양로원 등 노인주거복지시설, 요양원 등 노인의료복지시설,
-  15117908 | 충청남도 금산군_장기요양기관 | 으로는 새금산데이케어, 기쁨요양복지센터, 어울림노인재가센터 등이 있습니다.
-  15139192 | 국민건강보험공단_노인장기요양보험 급여 부당청구 현황 | 수_시설: 요양원, 공동생활가정, 단기 보호
-  3067158 | 경기도_노인복지 관련 사회복지법인 현황 | 경기도
-  15141944 | 국민건강보험공단_대구광역시 급여종류별 장기요양급여 이용자 수 | 국민건강보험공단
-  15105134 | 경상남도 양산시_방문목욕 요양기관 현황 | 현황으로 시설명, 주소, 전화번호, 개원일,
-  3041665 | 충청북도 증평군_사회복지시설현황 | 충청북도 증평군
-  15139726 | 대전광역시 중구_대전 중구 장기요양기관 지정 현황 | 은 방문요양, 방문목욕,
-  15127338 | 서울특별시 동대문구_노인복지시설 | 서울특별시 동대문구
-  15119859 | 대구광역시 수성구_장기요양기관현황 | 대구광역시 수성구
-  15127152 | 충청북도 충주시_노인장기요양기관 및 노인복지생활시설 현황 | , 생활복지시설 등 분류 시설종류: 요양원,
-  15101729 | 경기도 파주시_재가노인복지시설 | 발굴,
-  15114872 | 부산광역시 남구_노인복지시설 현황 | 부산광역시 남구
-  15113884 | 전남광주통합특별시 신안군_장기요양시설현황 | 전남광주통합특별시 신안군
-  15134683 | 인천광역시 옹진군_노인복지시설 | 인천광역시 옹진군
-  15143098 | 서울특별시 마포구_요양원 재가복지센터 현황 | 서울특별시 마포구
-  15150723 | 보건복지부_복지시설 시설구분별 시설수 | 보건복지부
-  15158908 | 강원특별자치도_노인복지시설 | 강원특별자치도
-  15155908 | 부산광역시 해운대구_노인복지시설 현황 | , 노인여가복지시설(노인복지관, 경로당,
-  15159933 | 전남광주통합특별시 나주시_재가노인복지시설 | 전남광주통합특별시 나주시
-완료: 검색 결과 384개
-[page 15149305] HTTP 200, 192,996자
-[15149305] 국민건강보험공단_재택의료센터기관정보_20250821 | 공공데이터포털
-  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 1개, 파일명 6개, 날짜 ['2025-09-12']
-   call: ['15149305', 'uddi:1ab29657-57c7-4f7b-9d83-f700e076c072', '', '1', '1']
-   name: /catalog/15149305/fileData.json
+[page 15124763] HTTP 200, 157,125자
+[15124763] 국민건강보험공단_장기요양기관 시설별 현황_20260610 | 공공데이터포털
+  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 0개, 파일명 5개, 날짜 ['2026-06-22', '2026-09-29', '2027-01-29']
+   call: ['15124763', 'uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba', '', '1', '2']
+   name: /catalog/15124763/fileData.json
+   name: /cmm/cmm/check-reset.json
+   name: /cmm/cmm/selectForBreadCrumbMenu.json
+   name: /insertNewsLetterUser.json
+   name: response.json
+   atch: [] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/dss/script_dataOfferReqst.js', '/js/biz/datset/script_fileDetail.js']
+   forms: ['<form method="post" action="/tcs/dss/selectDataSetList.do" id="listFrm">']
+  catalog fileData.json → HTTP 200 · application/json;charset=UTF-8
+    {"name":"국민건강보험공단_장기요양기관 시설별 현황","alternateName":"국민건강보험공단_장기요양기관 시설별 현황_20260610","description":"(2025.4월 이전자료) 데이터는 전국의 노인장기요양기관으로부터 입력된 정보를 기반으로, 기관별 일반 정보, 입소 인원, 인력 구성 현황을 종합하여 제공하는 자료입니다.  (2026.6월 자료) 전국 지차체(행복e음)로부터 연계받은 지정자료 기준의 데이터입니다.  1. 노인장기요양기관 시설별 일반현황  - 기관코드, 기관명, 지정 및 설치신고일자 등 2. 노인장기요양기관 시설별 입소인원  - 기관유형코드, 정원, 현원(2025.4월 이전자료) 3. 노인장기요양기관 시설별 인력현황  - 기관코드, 기관유형코드, 각 인력별 현황 * B06코드: 재가노인복지시설 복지용구  ※ 본 데이터(2025.4월 이전자료)는 각 기관이 직접 입력한 정보를 연계하여 제공하며, 일부 항목은 미입력 등으로 인해 빈 셀이 존재할 수 있습니다. ※ 민원인의 데이터 업데이트 요청에 따라 2026년 6월 10일 기준으로 업데이트 ※ 민원인의 공공데이터 제공 신청에 따라 발췌 및 구성된 데이터이며 본 데이터와 무관한 건강보험제도, 개인의 자격,징수,급여, 장기요양 관련 문의는 공단 대표번호(1577-1000)로 하시기 바랍니다.","url":"https://www.data.go.kr/data/15124763/fileData.do","keywords":"장기요양기관,시설별,일반현황,입소인원,인력현황","license":"이용허락범위 제한 없음","dateCreated":"2026-06-22","dateModified":"2026-09-29","datePublished":"2026-06-22","creator":{"name":"국민건강보험공단","contactPoint":{"contactType":"빅데이터운영실","telephone":"033-736-3468","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"","temporalCoverage":"","additionalType":"보건 - 건강보험","datasetTimeInterval":"반기","encodingFormat":"XLSX","legislation":"","@context":"https://schema.org","@type":"Dataset"}
+  catalog fileData.do → HTTP 404 · text/html;charset=UTF-8
+    text: 포털 index 죄송합니다. 요청하신 페이지를 찾을 수 없습니다. 페이지의 주소가 잘못 입력되었거나, 변경 혹은 삭제되어 요청하신 페이지를 찾을 수 없습니다. 더 나은 서비스를 제공하는 공공데이터포털이 되겠습니다. 이전 페이지로 돌아가기 공공데이터포털 홈으로
+    hints: ['/index.do']
+    urls: []
+  POST selectFileDataDownload.do {'publicDataPk': '15124763', 'publicDataDetailPk': 'uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15124763 · publicDataDetailPk=uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba · publicDataHistSn=2 · confmDt=2026-10-02 16:53:51.000 · publicDataSj=국민건강보험공단_장기요양기관 시설별 현황 · publicDataEngSj=National Health Insurance Corporation_Status by long-term care facility · publicDataDc=(2025.4월 이전자료) 데이터는 전국의 노인장기요양기관으로부터 입력된 정보를 기반으로, 기관별 일반 정보, 입소 인원, 인력 구성 현황을 종합하여 제공하는 자료입니다. <br/>(2026.6월 자료) 전국 지차체 · kwrd=장기요양기관,시설별,일반현황,입소인원,인력현황 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=Y · provdReqstSn=134447 · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-01-29 · dataRegistCycle=RECY04 · aiTypeYn=N · registDt=2026-06-22 15:29:09.000 · updtDt=2026-09-29 16:46:37.000 · inqireCo=46002 · deleteAt=N · kwrdEn=long-term care facilities,By facility,General Information,Admissions,Workforce Status · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · isFusionApi=0 · isUnstructedData=N · stdrDe=06/10/2026 · dataNm=국민건강보험공단_장기요양기관 시설별 현황_20260610 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=147150 · etcAtentMatter=1.데이터의 특성상 xlsx 형식이 적절하여 xlsx 형식으로 등록 2.각 기관에서 입력한 자료를 연계한 자료로서 빈 셀이 존재할 수 있음 · enDetailUrl=/en/data/15124763/fileData.do · detailUrl=/data/15124763/fileData.do · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2026-06-22 15:29:09.000 · atchFileId=FILE_000000003660622 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_장기요양기관 시설별 현황_20260610 · atchFileExtsn=xlsx · atchFileCo=147150 · orginlFileNm=국민건강보험공단_장기요양기관 시설별 현황_260610.xlsx · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba · status=True · atchFileId=FILE_000000003660622
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003660622'} urls=[]
+  POST selectFileDataDownload.do {'publicDataPk': '15124763', 'publicDataDetailPk': 'uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba', 'fileDetailSn': '1', 'publicDataSn': '2', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15124763 · publicDataDetailPk=uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba · publicDataHistSn=2 · confmDt=2026-10-02 16:53:51.000 · publicDataSj=국민건강보험공단_장기요양기관 시설별 현황 · publicDataEngSj=National Health Insurance Corporation_Status by long-term care facility · publicDataDc=(2025.4월 이전자료) 데이터는 전국의 노인장기요양기관으로부터 입력된 정보를 기반으로, 기관별 일반 정보, 입소 인원, 인력 구성 현황을 종합하여 제공하는 자료입니다. <br/>(2026.6월 자료) 전국 지차체 · kwrd=장기요양기관,시설별,일반현황,입소인원,인력현황 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=Y · provdReqstSn=134447 · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-01-29 · dataRegistCycle=RECY04 · aiTypeYn=N · registDt=2026-06-22 15:29:09.000 · updtDt=2026-09-29 16:46:37.000 · inqireCo=46002 · deleteAt=N · kwrdEn=long-term care facilities,By facility,General Information,Admissions,Workforce Status · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · isFusionApi=0 · isUnstructedData=N · stdrDe=06/10/2026 · dataNm=국민건강보험공단_장기요양기관 시설별 현황_20260610 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=147150 · etcAtentMatter=1.데이터의 특성상 xlsx 형식이 적절하여 xlsx 형식으로 등록 2.각 기관에서 입력한 자료를 연계한 자료로서 빈 셀이 존재할 수 있음 · enDetailUrl=/en/data/15124763/fileData.do · detailUrl=/data/15124763/fileData.do · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2026-06-22 15:29:09.000 · atchFileId=FILE_000000003660622 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_장기요양기관 시설별 현황_20260610 · atchFileExtsn=xlsx · atchFileCo=147150 · orginlFileNm=국민건강보험공단_장기요양기관 시설별 현황_260610.xlsx · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba · status=True · atchFileId=FILE_000000003660622
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003660622'} urls=[]
+  GET selectFileDataDownload.do {'publicDataPk': '15124763', 'publicDataDetailPk': 'uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=15124763&publicDataDetailPk=ud
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15124763 · publicDataDetailPk=uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba · publicDataHistSn=2 · confmDt=2026-10-02 16:53:51.000 · publicDataSj=국민건강보험공단_장기요양기관 시설별 현황 · publicDataEngSj=National Health Insurance Corporation_Status by long-term care facility · publicDataDc=(2025.4월 이전자료) 데이터는 전국의 노인장기요양기관으로부터 입력된 정보를 기반으로, 기관별 일반 정보, 입소 인원, 인력 구성 현황을 종합하여 제공하는 자료입니다. <br/>(2026.6월 자료) 전국 지차체 · kwrd=장기요양기관,시설별,일반현황,입소인원,인력현황 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=Y · provdReqstSn=134447 · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-01-29 · dataRegistCycle=RECY04 · aiTypeYn=N · registDt=2026-06-22 15:29:09.000 · updtDt=2026-09-29 16:46:37.000 · inqireCo=46002 · deleteAt=N · kwrdEn=long-term care facilities,By facility,General Information,Admissions,Workforce Status · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · isFusionApi=0 · isUnstructedData=N · stdrDe=06/10/2026 · dataNm=국민건강보험공단_장기요양기관 시설별 현황_20260610 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=147150 · etcAtentMatter=1.데이터의 특성상 xlsx 형식이 적절하여 xlsx 형식으로 등록 2.각 기관에서 입력한 자료를 연계한 자료로서 빈 셀이 존재할 수 있음 · enDetailUrl=/en/data/15124763/fileData.do · detailUrl=/data/15124763/fileData.do · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2026-06-22 15:29:09.000 · atchFileId=FILE_000000003660622 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_장기요양기관 시설별 현황_20260610 · atchFileExtsn=xlsx · atchFileCo=147150 · orginlFileNm=국민건강보험공단_장기요양기관 시설별 현황_260610.xlsx · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:bf74fa79-43fd-4cd4-b724-fc0381af7dba · status=True · atchFileId=FILE_000000003660622
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003660622'} urls=[]
+  GET fileDownload.do {'atchFileId': 'FILE_000000003660622', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EB%B3%B4%ED%97%98%EA% · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003660622&fileDetailSn=1
+  저장 data/raw/15124763/국민건강보험공단_장기요양기관 시설별 현황_260610.xlsx (6,616,345 bytes)
+    zip 안: [Content_Types].xml (1,692 bytes)
+    zip 안: _rels/.rels (588 bytes)
+    zip 안: xl/_rels/workbook.xml.rels (1,121 bytes)
+    zip 안: xl/workbook.xml (1,589 bytes)
+    zip 안: xl/worksheets/sheet4.xml (4,942 bytes)
+    zip 안: xl/worksheets/_rels/sheet4.xml.rels (322 bytes)
+    zip 안: xl/worksheets/_rels/sheet1.xml.rels (322 bytes)
+    zip 안: xl/worksheets/sheet2.xml (8,720,362 bytes)
+    zip 안: xl/worksheets/sheet3.xml (25,471,368 bytes)
+    zip 안: xl/worksheets/sheet1.xml (14,604,978 bytes)
+    zip 안: xl/theme/theme1.xml (6,797 bytes)
+    zip 안: xl/styles.xml (20,010 bytes)
+    zip 안: xl/sharedStrings.xml (6,247,957 bytes)
+    zip 안: docProps/core.xml (601 bytes)
+    zip 안: xl/printerSettings/printerSettings2.bin (10,240 bytes)
+    zip 안: docProps/app.xml (886 bytes)
+    zip 안: xl/printerSettings/printerSettings1.bin (4,664 bytes)
+[page 15044947] HTTP 200, 192,829자
+[15044947] 대구광역시_달성군_노인복지시설현황_20251104 | 공공데이터포털
+  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 1개, 파일명 6개, 날짜 ['2018-05-25', '2025-11-04', '2026-11-04']
+   call: ['15044947', 'uddi:bb7741e8-db18-4584-b50a-b973a81650cb_201805251037', '', '1', '10']
+   name: /catalog/15044947/fileData.json
    name: /cmm/cmm/check-reset.json
    name: /cmm/cmm/selectForBreadCrumbMenu.json
    name: /insertNewsLetterUser.json
    name: /uim/cmm/selectMberInfo.json
    name: response.json
-   atch: ['FILE_000000003246599'] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/datset/script_fileDetail.js', '/js/biz/dss/script_dataOfferReqst.js']
+   atch: ['FILE_000000003512378'] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/datset/script_fileDetail.js', '/js/biz/dss/script_dataOfferReqst.js']
    forms: []
   catalog fileData.json → HTTP 200 · application/json;charset=UTF-8
-    {"name":"국민건강보험공단_재택의료센터기관정보","alternateName":"국민건강보험공단_재택의료센터기관정보_20250821","description":"□ 개요 장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.  - (이용대상) 재가 장기요양 수급자로 거동이 불편하고 재택의료가 필요한 사람(1~2등급 우선)으로 의사가 판단한 경우  - (참여기관) 장기요양 재택의료센터 시범사업 지정기관(의원, 한의원, 지방의료원, 보건소)  - (제공서비스) 방문진료(월 1회), 간호(월 2회 이상) 제공 및 지역사회 돌봄서비스 연계  본 데이터는 국민건강보험공단에서 제공하는 장기요양 재택의료센터 시범사업 참여기관 목록입니다.  □ 주요 내용 - 발췌 일자: 2025년 8월 21일 - 분류 기준: 시·도, 시·군·구, 재택의료센터 기관명, 재택의료센터 기관 종별, 주소 - 시·도 및 시·군·구: 장기요양 재택의료센터 기관 소재지 기준 - 재택의료센터 기관명: 발췌일자 기준 장기요양 재택의료센터 시범사업에 참여중인 기관 - 재택의료센터 기관 종별: 의원, 한의원, 지방의료원, 보건소(보건지소, 보건의료원 포함) - 주소: 장기요양 재택의료센터 기관의 주소","url":"https://www.data.go.kr/data/15149305/fileData.do","keywords":"장기요양,재택의료센터,참여기관,목록,정보","license":"이용허락범위 제한 없음","dateCreated":"2025-09-12","dateModified":"2025-09-12","datePublished":"2025-09-12","creator":{"name":"국민건강보험공단","contactPoint":{"contactType":"빅데이터운영실","telephone":"033-736-3468","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"","temporalCoverage":"","additionalType":"보건 - 건강보험","datasetTimeInterval":"수시 (1회성 데이터)","encodingFormat":"CSV","legislation":"","@context":"https://schema.org","@type":"Dataset"}
+    {"name":"대구광역시_달성군_노인복지시설현황","alternateName":"대구광역시_달성군_노인복지시설현황_20251104","description":"대구광역시 달성군_노인복지시설현황 현황에 대한 데이터로 달성군 관내 노인복지시설 현황 시설명, 종류, 시설장, 정원, 주소 등의 항목을 제공합니다.","url":"https://www.data.go.kr/data/15044947/fileData.do","keywords":"복지시설,노인요양,사회복지,시설정원,요양원,양로원,고령자복지,장기요양","license":"이용허락범위 제한 없음","dateCreated":"2018-05-25","dateModified":"2025-11-04","datePublished":"2018-05-25","creator":{"name":"대구광역시 달성군","contactPoint":{"contactType":"정보통신과","telephone":"053-668-2454","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"대구광역시 달성군","temporalCoverage":"","additionalType":"사회복지 - 노인·청소년","datasetTimeInterval":"연간","encodingFormat":"CSV","legislation":"「노인복지법」 제31조(노인복지시설의 설치·운영)<br/><br/>「지방자치법」 제9조(지방자치단체의 사무)<br/><br/>달성군 노인복지 조례","@context":"https://schema.org","@type":"Dataset"}
   catalog fileData.do → HTTP 404 · text/html;charset=UTF-8
     text: 포털 index 죄송합니다. 요청하신 페이지를 찾을 수 없습니다. 페이지의 주소가 잘못 입력되었거나, 변경 혹은 삭제되어 요청하신 페이지를 찾을 수 없습니다. 더 나은 서비스를 제공하는 공공데이터포털이 되겠습니다. 이전 페이지로 돌아가기 공공데이터포털 홈으로
     hints: ['/index.do']
     urls: []
-  POST selectFileDataDownload.do {'publicDataPk': '15149305', 'publicDataDetailPk': 'uddi:1ab29657-57c7-4f7b-9d83-f700e076c072', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+  POST selectFileDataDownload.do {'publicDataPk': '15044947', 'publicDataDetailPk': 'uddi:bb7741e8-db18-4584-b50a-b973a81650cb_201805251037', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149305 · publicDataDetailPk=uddi:1ab29657-57c7-4f7b-9d83-f700e076c072 · publicDataHistSn=1 · confmDt=2025-09-16 13:38:15.000 · publicDataSj=국민건강보험공단_재택의료센터기관정보 · publicDataEngSj=National Health Insurance Service_Home Medical Center Institution Information · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,참여기관,목록,정보 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:09:37.000 · updtDt=2025-09-12 16:09:37.000 · inqireCo=3673 · deleteAt=N · kwrdEn=long-term care,Home medical center,Participating organizations,inventory,information · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149305/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_재택의료센터기관정보_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=193 · enDetailUrl=/en/data/15149305/fileData.do · detailUrl=/data/15149305/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:09:37.000 · atchFileId=FILE_000000003246599 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료센터기관정보_20250821 · atchFileExtsn=csv · atchFileCo=193 · orginlFileNm=재택의료센터기관정보.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:1ab29657-57c7-4f7b-9d83-f700e076c072 · status=True · atchFileId=FILE_000000003246599
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246599'} urls=[]
-  POST selectFileDataDownload.do {'publicDataPk': '15149305', 'publicDataDetailPk': 'uddi:1ab29657-57c7-4f7b-9d83-f700e076c072', 'fileDetailSn': '1', 'publicDataSn': '1', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044947 · publicDataDetailPk=uddi:bb7741e8-db18-4584-b50a-b973a81650cb_201805251037 · publicDataHistSn=10 · confmDt=2025-11-06 14:02:05.000 · publicDataSj=대구광역시_달성군_노인복지시설현황 · publicDataEngSj=Daegu Metropolitan City_Dalseong-gun_Senior Welfare Facility Status · publicDataDc=대구광역시 달성군_노인복지시설현황 현황에 대한 데이터로 달성군 관내 노인복지시설 현황 시설명, 종류, 시설장, 정원, 주소 등의 항목을 제공합니다. · kwrd=복지시설,노인요양,사회복지,시설정원,요양원,양로원,고령자복지,장기요양 · brmCode=NB000220061201100031425 · dataHoldBasis=「노인복지법」 제31조(노인복지시설의 설치·운영)<br/><br/>「지방자치법」 제9조(지방자치단체의 사무)<br/><br/>달성군 노인복지 조례 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=관련 부서에 협조 요청 · dataLimit=일부 시설 정보(정원, 전화번호 등)는 최신 현황과 차이가 있을 수 있으며, 실제 운영 현황과 상이할 수 있음.  좌표 정보(위도·경도)는 시설 주소를 기반으로 산출되어 오차가 발생할 수 있음. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2026-11-04 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2018-05-25 10:37:21.504 · updtDt=2025-11-04 15:37:16.000 · inqireCo=4649 · deleteAt=N · kwrdEn=welfare facilities,Elderly care,social welfare,Facility garden,nursing home,nursing home,Senior welfare,long-term care · dataHoldBasisEn=Article 31 of the Elderly Welfare Act (Establishment and Operation of Elderly Welfare Facilities) Article 9 of the Local · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=8 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044947/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대구광역시 달성군 · stdrDe=11/04/2025 · dataNm=대구광역시_달성군_노인복지시설현황_20251104 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=40 · etcAtentMatter=본 데이터는 정책 수립, 연구, 정보 제공 등 공익적 목적에 활용 가능  상업적 이용 시 반드시 출처(대구광역시 달성군)를 명시해야 함 · enDetailUrl=/en/data/15044947/fileData.do · detailUrl=/data/15044947/fileData.do · dataHoldBasisFilteredTags=「노인복지법」 제31조(노인복지시설의 설치·운영)<br/><br/>「지방자치법」 제9조(지방자치단체의 사무)<br/><br/>달성군 노인복지 조례 · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-25 10:37:21.504 · atchFileId=FI
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003512378'} urls=[]
+  POST selectFileDataDownload.do {'publicDataPk': '15044947', 'publicDataDetailPk': 'uddi:bb7741e8-db18-4584-b50a-b973a81650cb_201805251037', 'fileDetailSn': '1', 'publicDataSn': '10', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149305 · publicDataDetailPk=uddi:1ab29657-57c7-4f7b-9d83-f700e076c072 · publicDataHistSn=1 · confmDt=2025-09-16 13:38:15.000 · publicDataSj=국민건강보험공단_재택의료센터기관정보 · publicDataEngSj=National Health Insurance Service_Home Medical Center Institution Information · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,참여기관,목록,정보 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:09:37.000 · updtDt=2025-09-12 16:09:37.000 · inqireCo=3673 · deleteAt=N · kwrdEn=long-term care,Home medical center,Participating organizations,inventory,information · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149305/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_재택의료센터기관정보_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=193 · enDetailUrl=/en/data/15149305/fileData.do · detailUrl=/data/15149305/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:09:37.000 · atchFileId=FILE_000000003246599 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료센터기관정보_20250821 · atchFileExtsn=csv · atchFileCo=193 · orginlFileNm=재택의료센터기관정보.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:1ab29657-57c7-4f7b-9d83-f700e076c072 · status=True · atchFileId=FILE_000000003246599
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246599'} urls=[]
-  GET selectFileDataDownload.do {'publicDataPk': '15149305', 'publicDataDetailPk': 'uddi:1ab29657-57c7-4f7b-9d83-f700e076c072', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=15149305&publicDataDetailPk=ud
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044947 · publicDataDetailPk=uddi:bb7741e8-db18-4584-b50a-b973a81650cb_201805251037 · publicDataHistSn=10 · confmDt=2025-11-06 14:02:05.000 · publicDataSj=대구광역시_달성군_노인복지시설현황 · publicDataEngSj=Daegu Metropolitan City_Dalseong-gun_Senior Welfare Facility Status · publicDataDc=대구광역시 달성군_노인복지시설현황 현황에 대한 데이터로 달성군 관내 노인복지시설 현황 시설명, 종류, 시설장, 정원, 주소 등의 항목을 제공합니다. · kwrd=복지시설,노인요양,사회복지,시설정원,요양원,양로원,고령자복지,장기요양 · brmCode=NB000220061201100031425 · dataHoldBasis=「노인복지법」 제31조(노인복지시설의 설치·운영)<br/><br/>「지방자치법」 제9조(지방자치단체의 사무)<br/><br/>달성군 노인복지 조례 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=관련 부서에 협조 요청 · dataLimit=일부 시설 정보(정원, 전화번호 등)는 최신 현황과 차이가 있을 수 있으며, 실제 운영 현황과 상이할 수 있음.  좌표 정보(위도·경도)는 시설 주소를 기반으로 산출되어 오차가 발생할 수 있음. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2026-11-04 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2018-05-25 10:37:21.504 · updtDt=2025-11-04 15:37:16.000 · inqireCo=4649 · deleteAt=N · kwrdEn=welfare facilities,Elderly care,social welfare,Facility garden,nursing home,nursing home,Senior welfare,long-term care · dataHoldBasisEn=Article 31 of the Elderly Welfare Act (Establishment and Operation of Elderly Welfare Facilities) Article 9 of the Local · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=8 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044947/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대구광역시 달성군 · stdrDe=11/04/2025 · dataNm=대구광역시_달성군_노인복지시설현황_20251104 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=40 · etcAtentMatter=본 데이터는 정책 수립, 연구, 정보 제공 등 공익적 목적에 활용 가능  상업적 이용 시 반드시 출처(대구광역시 달성군)를 명시해야 함 · enDetailUrl=/en/data/15044947/fileData.do · detailUrl=/data/15044947/fileData.do · dataHoldBasisFilteredTags=「노인복지법」 제31조(노인복지시설의 설치·운영)<br/><br/>「지방자치법」 제9조(지방자치단체의 사무)<br/><br/>달성군 노인복지 조례 · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-25 10:37:21.504 · atchFileId=FI
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003512378'} urls=[]
+  GET selectFileDataDownload.do {'publicDataPk': '15044947', 'publicDataDetailPk': 'uddi:bb7741e8-db18-4584-b50a-b973a81650cb_201805251037', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=15044947&publicDataDetailPk=ud
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149305 · publicDataDetailPk=uddi:1ab29657-57c7-4f7b-9d83-f700e076c072 · publicDataHistSn=1 · confmDt=2025-09-16 13:38:15.000 · publicDataSj=국민건강보험공단_재택의료센터기관정보 · publicDataEngSj=National Health Insurance Service_Home Medical Center Institution Information · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,참여기관,목록,정보 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:09:37.000 · updtDt=2025-09-12 16:09:37.000 · inqireCo=3673 · deleteAt=N · kwrdEn=long-term care,Home medical center,Participating organizations,inventory,information · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149305/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_재택의료센터기관정보_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=193 · enDetailUrl=/en/data/15149305/fileData.do · detailUrl=/data/15149305/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:09:37.000 · atchFileId=FILE_000000003246599 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료센터기관정보_20250821 · atchFileExtsn=csv · atchFileCo=193 · orginlFileNm=재택의료센터기관정보.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:1ab29657-57c7-4f7b-9d83-f700e076c072 · status=True · atchFileId=FILE_000000003246599
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246599'} urls=[]
-  GET fileDownload.do {'atchFileId': 'FILE_000000003246599', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EC%9E%AC%ED%83%9D%EC%9D%98%EB%A3%8C%EC%84%BC%ED%84%B0%EA% · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003246599&fileDetailSn=1
-  저장 data/raw/15149305/재택의료센터기관정보.csv (18,714 bytes)
-  머리 재택의료센터기관정보.csv:
-    | 연번,시도,시군구,재택의료센터 기관명,재택의료센터 기관 종별,주소
-    | 1,서울특별시,강남구,서울연세의원,의원,서울특별시 강남구 영동대로 210 쌍용대치종합상가 2층 201A호 (대치동  쌍용아파트) 
-    | 2,서울특별시,강남구,서울36의원,의원,서울특별시 강남구 테헤란로51길 23 204호 (역삼동) 
-[page 15149306] HTTP 200, 192,754자
-[15149306] 국민건강보험공단_재택의료시범대상기관_20250821 | 공공데이터포털
-  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 1개, 파일명 6개, 날짜 ['2025-09-12']
-   call: ['15149306', 'uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f', '', '1', '1']
-   name: /catalog/15149306/fileData.json
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044947 · publicDataDetailPk=uddi:bb7741e8-db18-4584-b50a-b973a81650cb_201805251037 · publicDataHistSn=10 · confmDt=2025-11-06 14:02:05.000 · publicDataSj=대구광역시_달성군_노인복지시설현황 · publicDataEngSj=Daegu Metropolitan City_Dalseong-gun_Senior Welfare Facility Status · publicDataDc=대구광역시 달성군_노인복지시설현황 현황에 대한 데이터로 달성군 관내 노인복지시설 현황 시설명, 종류, 시설장, 정원, 주소 등의 항목을 제공합니다. · kwrd=복지시설,노인요양,사회복지,시설정원,요양원,양로원,고령자복지,장기요양 · brmCode=NB000220061201100031425 · dataHoldBasis=「노인복지법」 제31조(노인복지시설의 설치·운영)<br/><br/>「지방자치법」 제9조(지방자치단체의 사무)<br/><br/>달성군 노인복지 조례 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=관련 부서에 협조 요청 · dataLimit=일부 시설 정보(정원, 전화번호 등)는 최신 현황과 차이가 있을 수 있으며, 실제 운영 현황과 상이할 수 있음.  좌표 정보(위도·경도)는 시설 주소를 기반으로 산출되어 오차가 발생할 수 있음. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2026-11-04 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2018-05-25 10:37:21.504 · updtDt=2025-11-04 15:37:16.000 · inqireCo=4649 · deleteAt=N · kwrdEn=welfare facilities,Elderly care,social welfare,Facility garden,nursing home,nursing home,Senior welfare,long-term care · dataHoldBasisEn=Article 31 of the Elderly Welfare Act (Establishment and Operation of Elderly Welfare Facilities) Article 9 of the Local · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=8 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044947/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대구광역시 달성군 · stdrDe=11/04/2025 · dataNm=대구광역시_달성군_노인복지시설현황_20251104 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=40 · etcAtentMatter=본 데이터는 정책 수립, 연구, 정보 제공 등 공익적 목적에 활용 가능  상업적 이용 시 반드시 출처(대구광역시 달성군)를 명시해야 함 · enDetailUrl=/en/data/15044947/fileData.do · detailUrl=/data/15044947/fileData.do · dataHoldBasisFilteredTags=「노인복지법」 제31조(노인복지시설의 설치·운영)<br/><br/>「지방자치법」 제9조(지방자치단체의 사무)<br/><br/>달성군 노인복지 조례 · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-25 10:37:21.504 · atchFileId=FI
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003512378'} urls=[]
+  GET fileDownload.do {'atchFileId': 'FILE_000000003512378', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C_%EB%8B%AC%EC · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003512378&fileDetailSn=1
+  저장 data/raw/15044947/대구광역시_달성군_노인복지시설현황_20251104.csv (4,600 bytes)
+  머리 대구광역시_달성군_노인복지시설현황_20251104.csv:
+    | ½Ã¼³¸í,Á¤¿ø,ÁÖ¼Ò,ÀüÈ­¹øÈ£,Á¾·ù,½Ã¼³Àå,À§µµ,°æµµ
+    | ½ÅÀÏ¾ç·Î¿ø,85,´ë±¸±¤¿ª½Ã ´Þ¼º±º°¡Ã¢¸é °¡Ã¢·Î 1011-31,053-768-0180,¾ç·Î½Ã¼³,ÃÖ¹ÌÁö,35.796336,128.626369
+    | ½Å¾Ö¿ä¾ç¿ø,81,´ë±¸±¤¿ª½Ã ´Þ¼º±º°¡Ã¢¸é °¡Ã¢·Î 1025,053-768-3180,³ëÀÎ¿ä¾ç½Ã¼³,¿À±Ý¿Á,35.796633,128.625875
+[page 15044949] HTTP 200, 193,761자
+[15044949] 대구광역시 달성군_복지센터현황_20260623 | 공공데이터포털
+  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 1개, 파일명 6개, 날짜 ['2019-09-16', '2026-06-23', '2027-06-23']
+   call: ['15044949', 'uddi:9dabcbd3-b68c-4c56-8e50-ad5b93355893_201909161011', '', '1', '10']
+   name: /catalog/15044949/fileData.json
    name: /cmm/cmm/check-reset.json
    name: /cmm/cmm/selectForBreadCrumbMenu.json
    name: /insertNewsLetterUser.json
    name: /uim/cmm/selectMberInfo.json
    name: response.json
-   atch: ['FILE_000000003246602'] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/datset/script_fileDetail.js', '/js/biz/dss/script_dataOfferReqst.js']
+   atch: ['FILE_000000003661888'] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/datset/script_fileDetail.js', '/js/biz/dss/script_dataOfferReqst.js']
    forms: []
   catalog fileData.json → HTTP 200 · application/json;charset=UTF-8
-    {"name":"국민건강보험공단_재택의료시범대상기관","alternateName":"국민건강보험공단_재택의료시범대상기관_20250821","description":"□ 개요 장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.  - (이용대상) 재가 장기요양 수급자로 거동이 불편하고 재택의료가 필요한 사람(1~2등급 우선)으로 의사가 판단한 경우  - (참여기관) 장기요양 재택의료센터 시범사업 지정기관(의원, 한의원, 지방의료원, 보건소)  - (제공서비스) 방문진료(월 1회), 간호(월 2회 이상) 제공 및 지역사회 돌봄서비스 연계  본 데이터는 국민건강보험공단에서 제공하는 장기요양 재택의료센터 기관 수 현황으로, 지역별, 기관 종별에 따른 장기요양 재택의료센터 시범사업 참여기관의 수를 집계한 자료입니다.  □ 주요 내용 - 발췌 일자: 2025년 8월 21일 - 분류 기준: 시·도, 시·군·구, 재택의료센터 기관 종별, 기관 수 - 시·도 및 시·군·구: 장기요양 재택의료센터 기관 소재지 기준 - 재택의료센터 기관 종별: 의원, 한의원, 지방의료원, 보건소(보건지소, 보건의료원 포함) - 기관 수: 시·도 및 시·군·구별, 재택의료센터 기관 종별에 따른 장기요양 재택의료센터 시범사업 참여기관 수     ※ 발췌일자 기준 장기요양 재택의료센터 시범사업에 참여중인 기관 기준으로 집계 ","url":"https://www.data.go.kr/data/15149306/fileData.do","keywords":"장기요양,재택의료센터,지정기관,기관수,지역별","license":"이용허락범위 제한 없음","dateCreated":"2025-09-12","dateModified":"2025-09-12","datePublished":"2025-09-12","creator":{"name":"국민건강보험공단","contactPoint":{"contactType":"빅데이터운영실","telephone":"033-736-3468","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"","temporalCoverage":"","additionalType":"보건 - 건강보험","datasetTimeInterval":"수시 (1회성 데이터)","encodingFormat":"CSV","legislation":"","@context":"https://schema.org","@type":"Dataset"}
+    {"name":"대구광역시 달성군_복지센터현황","alternateName":"대구광역시 달성군_복지센터현황_20260623","description":"대구광역시 달성군_복지센터현황 달성군 관내 복지센터 현황 데이터를 제공합니다. (명칭, 주요시설 및 프로그램, 도로명주소, 전화번호, 홈페이지, 시설장, 위도, 경도 등)  * 데이터기준일자 기준으로 운영 중인 시설만 포함됩니다. * 시설 현황은 변동될 수 있으며, 최신 정보는 달성군 복지정책과로 문의하시기 바랍니다.","url":"https://www.data.go.kr/data/15044949/fileData.do","keywords":"사회복지,복지시설,현황,복지센터,복지프로그램,사회복지관,노인복지,청소년복지","license":"이용허락범위 제한 없음","dateCreated":"2019-09-16","dateModified":"2026-06-23","datePublished":"2019-09-16","creator":{"name":"대구광역시 달성군","contactPoint":{"contactType":"정보통신과","telephone":"053-668-2454","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"대구광역시 달성군","temporalCoverage":"2026년 6월","additionalType":"사회복지 - 노인·청소년","datasetTimeInterval":"연간","encodingFormat":"CSV","legislation":"사회복지사업법 제34조(사회복지시설의 설치 등)","@context":"https://schema.org","@type":"Dataset"}
   catalog fileData.do → HTTP 404 · text/html;charset=UTF-8
     text: 포털 index 죄송합니다. 요청하신 페이지를 찾을 수 없습니다. 페이지의 주소가 잘못 입력되었거나, 변경 혹은 삭제되어 요청하신 페이지를 찾을 수 없습니다. 더 나은 서비스를 제공하는 공공데이터포털이 되겠습니다. 이전 페이지로 돌아가기 공공데이터포털 홈으로
     hints: ['/index.do']
     urls: []
-  POST selectFileDataDownload.do {'publicDataPk': '15149306', 'publicDataDetailPk': 'uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+  POST selectFileDataDownload.do {'publicDataPk': '15044949', 'publicDataDetailPk': 'uddi:9dabcbd3-b68c-4c56-8e50-ad5b93355893_201909161011', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149306 · publicDataDetailPk=uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f · publicDataHistSn=1 · confmDt=2025-09-16 13:37:37.000 · publicDataSj=국민건강보험공단_재택의료시범대상기관 · publicDataEngSj=National Health Insurance Service_Home Medical Service Pilot Institutions · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,지정기관,기관수,지역별 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:12:14.000 · updtDt=2025-09-12 16:12:14.000 · inqireCo=1878 · deleteAt=N · kwrdEn=long-term care,Home medical center,Designated institution,engine number,By region · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149306/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_재택의료시범대상기관_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=147 · enDetailUrl=/en/data/15149306/fileData.do · detailUrl=/data/15149306/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:12:14.000 · atchFileId=FILE_000000003246602 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료시범대상기관_20250821 · atchFileExtsn=csv · atchFileCo=147 · orginlFileNm=재택의료시범대상기관.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f · status=True · atchFileId=FILE_000000003246602
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246602'} urls=[]
-  POST selectFileDataDownload.do {'publicDataPk': '15149306', 'publicDataDetailPk': 'uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f', 'fileDetailSn': '1', 'publicDataSn': '1', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044949 · publicDataDetailPk=uddi:9dabcbd3-b68c-4c56-8e50-ad5b93355893_201909161011 · publicDataHistSn=10 · confmDt=2026-06-25 11:59:07.000 · publicDataSj=대구광역시 달성군_복지센터현황 · publicDataEngSj=Dalseong-gun, Daegu_Welfare Center Status · publicDataDc=대구광역시 달성군_복지센터현황<br/>달성군 관내 복지센터 현황 데이터를 제공합니다.<br/>(명칭, 주요시설 및 프로그램, 도로명주소, 전화번호, 홈페이지, 시설장, 위도, 경도 등)<br/><br/>* 데이터기준 · kwrd=사회복지,복지시설,현황,복지센터,복지프로그램,사회복지관,노인복지,청소년복지 · brmCode=NB000220061201100031425 · dataHoldBasis=사회복지사업법 제34조(사회복지시설의 설치 등) · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=관련 부서에 협조 요청 · dataLimit=데이터기준일자 기준 현황이며, 이후 시설 변경·폐관 등은 반영되지 않을 수 있습니다. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-06-23 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2019-09-16 10:11:33.752 · updtDt=2026-06-23 17:37:14.000 · inqireCo=4355 · deleteAt=N · kwrdEn=Social welfare,welfare facilities,current situation,Welfare Center,welfare programs,Social welfare center,Elderly welfar · dataHoldBasisEn=Article 34 of the Social Welfare Services Act (Establishment of Social Welfare Facilities, etc.) · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=7 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044949/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대구광역시 달성군 · tmplCvrg=2026년 6월 · stdrDe=06/23/2026 · dataNm=대구광역시 달성군_복지센터현황_20260623 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=9 · etcAtentMatter=최신 정보 및 상세 문의는 달성군 복지정책과로 연락하시기 바랍니다. · enDetailUrl=/en/data/15044949/fileData.do · detailUrl=/data/15044949/fileData.do · dataHoldBasisFilteredTags=사회복지사업법 제34조(사회복지시설의 설치 등) · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2019-09-16 10:11:33.752 · atchFileId=FILE_000000003661888 · seqNo=7 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_복지센터현황_20260623 · atchFileExtsn=csv · atchFileCo=9 · orginlFileNm=대구광역시_달성군_복지센터현황_20260623.csv · enDetailUrl=/e
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003661888'} urls=[]
+  POST selectFileDataDownload.do {'publicDataPk': '15044949', 'publicDataDetailPk': 'uddi:9dabcbd3-b68c-4c56-8e50-ad5b93355893_201909161011', 'fileDetailSn': '1', 'publicDataSn': '10', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149306 · publicDataDetailPk=uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f · publicDataHistSn=1 · confmDt=2025-09-16 13:37:37.000 · publicDataSj=국민건강보험공단_재택의료시범대상기관 · publicDataEngSj=National Health Insurance Service_Home Medical Service Pilot Institutions · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,지정기관,기관수,지역별 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:12:14.000 · updtDt=2025-09-12 16:12:14.000 · inqireCo=1878 · deleteAt=N · kwrdEn=long-term care,Home medical center,Designated institution,engine number,By region · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149306/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_재택의료시범대상기관_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=147 · enDetailUrl=/en/data/15149306/fileData.do · detailUrl=/data/15149306/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:12:14.000 · atchFileId=FILE_000000003246602 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료시범대상기관_20250821 · atchFileExtsn=csv · atchFileCo=147 · orginlFileNm=재택의료시범대상기관.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f · status=True · atchFileId=FILE_000000003246602
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246602'} urls=[]
-  GET selectFileDataDownload.do {'publicDataPk': '15149306', 'publicDataDetailPk': 'uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=15149306&publicDataDetailPk=ud
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044949 · publicDataDetailPk=uddi:9dabcbd3-b68c-4c56-8e50-ad5b93355893_201909161011 · publicDataHistSn=10 · confmDt=2026-06-25 11:59:07.000 · publicDataSj=대구광역시 달성군_복지센터현황 · publicDataEngSj=Dalseong-gun, Daegu_Welfare Center Status · publicDataDc=대구광역시 달성군_복지센터현황<br/>달성군 관내 복지센터 현황 데이터를 제공합니다.<br/>(명칭, 주요시설 및 프로그램, 도로명주소, 전화번호, 홈페이지, 시설장, 위도, 경도 등)<br/><br/>* 데이터기준 · kwrd=사회복지,복지시설,현황,복지센터,복지프로그램,사회복지관,노인복지,청소년복지 · brmCode=NB000220061201100031425 · dataHoldBasis=사회복지사업법 제34조(사회복지시설의 설치 등) · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=관련 부서에 협조 요청 · dataLimit=데이터기준일자 기준 현황이며, 이후 시설 변경·폐관 등은 반영되지 않을 수 있습니다. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-06-23 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2019-09-16 10:11:33.752 · updtDt=2026-06-23 17:37:14.000 · inqireCo=4355 · deleteAt=N · kwrdEn=Social welfare,welfare facilities,current situation,Welfare Center,welfare programs,Social welfare center,Elderly welfar · dataHoldBasisEn=Article 34 of the Social Welfare Services Act (Establishment of Social Welfare Facilities, etc.) · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=7 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044949/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대구광역시 달성군 · tmplCvrg=2026년 6월 · stdrDe=06/23/2026 · dataNm=대구광역시 달성군_복지센터현황_20260623 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=9 · etcAtentMatter=최신 정보 및 상세 문의는 달성군 복지정책과로 연락하시기 바랍니다. · enDetailUrl=/en/data/15044949/fileData.do · detailUrl=/data/15044949/fileData.do · dataHoldBasisFilteredTags=사회복지사업법 제34조(사회복지시설의 설치 등) · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2019-09-16 10:11:33.752 · atchFileId=FILE_000000003661888 · seqNo=7 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_복지센터현황_20260623 · atchFileExtsn=csv · atchFileCo=9 · orginlFileNm=대구광역시_달성군_복지센터현황_20260623.csv · enDetailUrl=/e
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003661888'} urls=[]
+  GET selectFileDataDownload.do {'publicDataPk': '15044949', 'publicDataDetailPk': 'uddi:9dabcbd3-b68c-4c56-8e50-ad5b93355893_201909161011', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=15044949&publicDataDetailPk=ud
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149306 · publicDataDetailPk=uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f · publicDataHistSn=1 · confmDt=2025-09-16 13:37:37.000 · publicDataSj=국민건강보험공단_재택의료시범대상기관 · publicDataEngSj=National Health Insurance Service_Home Medical Service Pilot Institutions · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,지정기관,기관수,지역별 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:12:14.000 · updtDt=2025-09-12 16:12:14.000 · inqireCo=1878 · deleteAt=N · kwrdEn=long-term care,Home medical center,Designated institution,engine number,By region · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149306/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_재택의료시범대상기관_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=147 · enDetailUrl=/en/data/15149306/fileData.do · detailUrl=/data/15149306/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:12:14.000 · atchFileId=FILE_000000003246602 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료시범대상기관_20250821 · atchFileExtsn=csv · atchFileCo=147 · orginlFileNm=재택의료시범대상기관.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:f9ff1693-b4a7-48e8-9434-b1965fce408f · status=True · atchFileId=FILE_000000003246602
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246602'} urls=[]
-  GET fileDownload.do {'atchFileId': 'FILE_000000003246602', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EC%9E%AC%ED%83%9D%EC%9D%98%EB%A3%8C%EC%8B%9C%EB%B2%94%EB% · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003246602&fileDetailSn=1
-  저장 data/raw/15149306/재택의료시범대상기관.csv (4,475 bytes)
-  머리 재택의료시범대상기관.csv:
-    | 연번,시도,시군구,재택의료센터 기관 종별,기관 수
-    | 1,서울특별시,강남구,의원,2
-    | 2,서울특별시,강동구,의원,1
-[page 15149307] HTTP 200, 192,688자
-[15149307] 국민건강보험공단_협력기관현황_20250821 | 공공데이터포털
-  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 1개, 파일명 6개, 날짜 ['2025-09-12']
-   call: ['15149307', 'uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac', '', '1', '1']
-   name: /catalog/15149307/fileData.json
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044949 · publicDataDetailPk=uddi:9dabcbd3-b68c-4c56-8e50-ad5b93355893_201909161011 · publicDataHistSn=10 · confmDt=2026-06-25 11:59:07.000 · publicDataSj=대구광역시 달성군_복지센터현황 · publicDataEngSj=Dalseong-gun, Daegu_Welfare Center Status · publicDataDc=대구광역시 달성군_복지센터현황<br/>달성군 관내 복지센터 현황 데이터를 제공합니다.<br/>(명칭, 주요시설 및 프로그램, 도로명주소, 전화번호, 홈페이지, 시설장, 위도, 경도 등)<br/><br/>* 데이터기준 · kwrd=사회복지,복지시설,현황,복지센터,복지프로그램,사회복지관,노인복지,청소년복지 · brmCode=NB000220061201100031425 · dataHoldBasis=사회복지사업법 제34조(사회복지시설의 설치 등) · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=관련 부서에 협조 요청 · dataLimit=데이터기준일자 기준 현황이며, 이후 시설 변경·폐관 등은 반영되지 않을 수 있습니다. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-06-23 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2019-09-16 10:11:33.752 · updtDt=2026-06-23 17:37:14.000 · inqireCo=4355 · deleteAt=N · kwrdEn=Social welfare,welfare facilities,current situation,Welfare Center,welfare programs,Social welfare center,Elderly welfar · dataHoldBasisEn=Article 34 of the Social Welfare Services Act (Establishment of Social Welfare Facilities, etc.) · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=7 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044949/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대구광역시 달성군 · tmplCvrg=2026년 6월 · stdrDe=06/23/2026 · dataNm=대구광역시 달성군_복지센터현황_20260623 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=9 · etcAtentMatter=최신 정보 및 상세 문의는 달성군 복지정책과로 연락하시기 바랍니다. · enDetailUrl=/en/data/15044949/fileData.do · detailUrl=/data/15044949/fileData.do · dataHoldBasisFilteredTags=사회복지사업법 제34조(사회복지시설의 설치 등) · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2019-09-16 10:11:33.752 · atchFileId=FILE_000000003661888 · seqNo=7 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_복지센터현황_20260623 · atchFileExtsn=csv · atchFileCo=9 · orginlFileNm=대구광역시_달성군_복지센터현황_20260623.csv · enDetailUrl=/e
+    json 단서: {'sn': '1', 'atch': 'FILE_000000003661888'} urls=[]
+  GET fileDownload.do {'atchFileId': 'FILE_000000003661888', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C_%EB%8B%AC%EC · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003661888&fileDetailSn=1
+  저장 data/raw/15044949/대구광역시_달성군_복지센터현황_20260623.csv (1,781 bytes)
+  머리 대구광역시_달성군_복지센터현황_20260623.csv:
+    | 명칭,주요시설 및 프로그램,도로명주소,전화번호,홈페이지,시설장,위도,경도,데이터기준일자
+    | 달성군여성문화복지센터,"강당, 여성단체회의실, 열린도서공간, 에어로빅실, 예체능실, 음악실, 요리실, 수영장, 헬스장 등",대구광역시 달성군 화원읍 성천로 5,053-638-0085,www.dssiseol.or.kr/pages/sisul/page.html?mc=1021,구OO,35.798565,128.487906,2026-06-23
+    | 달성군청소년상담복지센터,"개인상담, 집단검사, 심리검사 등 ",대구광역시 달성군 논공읍 논공로 252,053-614-1388,www.ds1388.or.kr,최OO,35.723894,128.455063,2026-06-23
+[page 15044948] HTTP 200, 193,283자
+[15044948] 대구광역시 달성군_경로당 현황_20260908 | 공공데이터포털
+  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 1개, 파일명 6개, 날짜 ['2018-05-29', '2026-09-08', '2027-09-08']
+   call: ['15044948', 'uddi:19ef4c7a-cd44-407c-9d09-f5094b5d3869_201805291727', '', '1', '12']
+   name: /catalog/15044948/fileData.json
    name: /cmm/cmm/check-reset.json
    name: /cmm/cmm/selectForBreadCrumbMenu.json
    name: /insertNewsLetterUser.json
    name: /uim/cmm/selectMberInfo.json
    name: response.json
-   atch: ['FILE_000000003246606'] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/datset/script_fileDetail.js', '/js/biz/dss/script_dataOfferReqst.js']
+   atch: ['FILE_000000007656318'] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/datset/script_fileDetail.js', '/js/biz/dss/script_dataOfferReqst.js']
    forms: []
   catalog fileData.json → HTTP 200 · application/json;charset=UTF-8
-    {"name":"국민건강보험공단_협력기관현황","alternateName":"국민건강보험공단_협력기관현황_20250821","description":"□ 개요 장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.  - (이용대상) 재가 장기요양 수급자로 거동이 불편하고 재택의료가 필요한 사람(1~2등급 우선)으로 의사가 판단한 경우  - (참여기관) 장기요양 재택의료센터 시범사업 지정기관(의원, 한의원, 지방의료원, 보건소)  - (제공서비스) 방문진료(월 1회), 간호(월 2회 이상) 제공 및 지역사회 돌봄서비스 연계  본 데이터는 국민건강보험공단에서 제공하는 장기요양 재택의료센터 기관별 협력기관 수 현황으로, 장기요양 재택의료센터 시범사업 참여기관별 협약을 맺은 협력기관의 수를 집계한 자료입니다.  □ 주요 내용 - 발췌 일자: 2025년 8월 21일 - 분류 기준: 시·도, 시·군·구, 재택의료센터 기관명, 협력기관 수 - 시·도 및 시·군·구: 장기요양 재택의료센터 기관 소재지 기준 - 재택의료센터 기관명: 발췌일자 기준 장기요양 재택의료센터 시범사업에 참여중인 기관 - 협력기관 수: 장기요양 재택의료센터별 협약을 맺은 협력기관(의료기관, 장기요양기관)의 수   ※ 장기요양 재택의료센터에서 협력기관 및 협약사항을 전산시스템에 등록한 자료를 기준으로 집계하였습니다. ","url":"https://www.data.go.kr/data/15149307/fileData.do","keywords":"장기요양,재택의료센터,협력기관,기관별,의료기관","license":"이용허락범위 제한 없음","dateCreated":"2025-09-12","dateModified":"2025-09-12","datePublished":"2025-09-12","creator":{"name":"국민건강보험공단","contactPoint":{"contactType":"빅데이터운영실","telephone":"033-736-3468","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"","temporalCoverage":"","additionalType":"보건 - 건강보험","datasetTimeInterval":"수시 (1회성 데이터)","encodingFormat":"CSV","legislation":"","@context":"https://schema.org","@type":"Dataset"}
+    {"name":"대구광역시 달성군_경로당 현황","alternateName":"대구광역시 달성군_경로당 현황_20260908","description":"대구광역시 달성군 관내에서 설치·운영 중인 경로당 345개소의 현황 정보입니다. 노인복지법 제36조에 따른 노인여가복지시설로서, 읍·면 단위 마을 경로당과 공동주택 경로당을 모두 포함합니다.  데이터는 명칭, 소재지주소, 전화번호, 위도, 경도, 데이터기준일자 등 총 6개 항목으로 구성된 시설별 레코드입니다. 소재지주소는 도로명주소를 기본으로 제공하며, 위도와 경도는 WGS84 좌표계를 사용하여 소수점 이하 여섯 자리까지 수록하였으므로 지도 서비스와 공간분석에 그대로 활용할 수 있습니다. 개인을 식별할 수 있는 정보는 포함하지 않습니다.  읍·면별 경로당 분포와 접근성 분석, 고령인구 대비 여가복지시설 충족도 진단, 복지사각지대 발굴, 폭염·한파 시 무더위·한파 쉼터 지정 및 안내, 돌봄·건강증진 프로그램 배치 계획 수립 등에 활용할 수 있습니다. 또한 생활권 기반 공공시설 안내 앱, 고령친화도시 정책 연구, 민간 돌봄·생활서비스 입지 분석 등의 기초자료로 활용할 수 있습니다.","url":"https://www.data.go.kr/data/15044948/fileData.do","keywords":"노인복지,여가복지시설,노인여가,복지시설,고령친화,무더위쉼터,돌봄,생활인프라","license":"이용허락범위 제한 없음","dateCreated":"2018-05-29","dateModified":"2026-09-08","datePublished":"2018-05-29","creator":{"name":"대구광역시 달성군","contactPoint":{"contactType":"정보통신과","telephone":"053-668-2454","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"대한민국 대구광역시 달성군","temporalCoverage":"","additionalType":"사회복지 - 노인·청소년","datasetTimeInterval":"연간","encodingFormat":"CSV","legislation":"「노인복지법」 제36조(경로당의 설치 등), 제4조(기초조사 등) 및 제5조(노인복지통계의 작성)","@context":"https://schema.org","@type":"Dataset"}
   catalog fileData.do → HTTP 404 · text/html;charset=UTF-8
     text: 포털 index 죄송합니다. 요청하신 페이지를 찾을 수 없습니다. 페이지의 주소가 잘못 입력되었거나, 변경 혹은 삭제되어 요청하신 페이지를 찾을 수 없습니다. 더 나은 서비스를 제공하는 공공데이터포털이 되겠습니다. 이전 페이지로 돌아가기 공공데이터포털 홈으로
     hints: ['/index.do']
     urls: []
-  POST selectFileDataDownload.do {'publicDataPk': '15149307', 'publicDataDetailPk': 'uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+  POST selectFileDataDownload.do {'publicDataPk': '15044948', 'publicDataDetailPk': 'uddi:19ef4c7a-cd44-407c-9d09-f5094b5d3869_201805291727', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149307 · publicDataDetailPk=uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac · publicDataHistSn=1 · confmDt=2025-09-16 13:31:20.000 · publicDataSj=국민건강보험공단_협력기관현황 · publicDataEngSj=National Health Insurance Service_Collaborating Organizations · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,협력기관,기관별,의료기관 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:14:29.000 · updtDt=2025-09-12 16:14:29.000 · inqireCo=893 · deleteAt=N · kwrdEn=long-term care,Home medical center,Partner organizations,By institution,medical institutions · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149307/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_협력기관현황_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=193 · enDetailUrl=/en/data/15149307/fileData.do · detailUrl=/data/15149307/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:14:29.000 · atchFileId=FILE_000000003246606 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_협력기관현황_20250821 · atchFileExtsn=csv · atchFileCo=193 · orginlFileNm=협력기관현황.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac · status=True · atchFileId=FILE_000000003246606
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246606'} urls=[]
-  POST selectFileDataDownload.do {'publicDataPk': '15149307', 'publicDataDetailPk': 'uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac', 'fileDetailSn': '1', 'publicDataSn': '1', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044948 · publicDataDetailPk=uddi:19ef4c7a-cd44-407c-9d09-f5094b5d3869_201805291727 · publicDataHistSn=12 · confmDt=2026-09-15 09:20:37.000 · publicDataSj=대구광역시 달성군_경로당 현황 · publicDataEngSj=Dalseong-gun, Daegu_Status of Senior Centers · publicDataDc=대구광역시 달성군 관내에서 설치·운영 중인 경로당 345개소의 현황 정보입니다. 노인복지법 제36조에 따른 노인여가복지시설로서, 읍·면 단위 마을 경로당과 공동주택 경로당을 모두 포함합니다.<br/><br/>데이터는 · kwrd=노인복지,여가복지시설,노인여가,복지시설,고령친화,무더위쉼터,돌봄,생활인프라 · brmCode=NB000220061201100031425 · dataHoldBasis=「노인복지법」 제36조(경로당의 설치 등), 제4조(기초조사 등) 및 제5조(노인복지통계의 작성) · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=복지정책과에서 관리하는 경로당 설치·운영 대장을 기준으로 자료를 취합하고, 도로명주소와 위경도를 보정하여 작성하였습니다. · dataLimit=본 데이터는 대구광역시 달성군에 소재한 경로당 현황만을 포함하며, 전국 또는 타 지역 데이터는 포함되어 있지 않습니다. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-09-08 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2018-05-29 17:27:48.310 · updtDt=2026-09-08 10:51:16.000 · inqireCo=5166 · deleteAt=N · kwrdEn=Elderly welfare,Leisure and welfare facilities,Senior leisure,welfare facility,age friendly,cooling shelter,elderly care · dataHoldBasisEn=Article 36 (Establishment of Senior Citizen Centers, etc.), Article 4 (Basic Survey, etc.), and Article 5 (Preparation o · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=10 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044948/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대한민국 대구광역시 달성군 · stdrDe=09/08/2026 · dataNm=대구광역시 달성군_경로당 현황_20260908 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=345 · etcAtentMatter=전화번호 항목은 일부 시설의 자료가 미집계되어 공란으로 제공됩니다. 본 데이터는 데이터기준일자 시점의 현황으로 실제와 차이가 있을 수 있습니다. · enDetailUrl=/en/data/15044948/fileData.do · detailUrl=/data/15044948/fileData.do · dataHoldBasisFilteredTags=「노인복지법」 제36조(경로당의 설치 등), 제4조(기초조사 등) 및 제5조(노인복지통계의 작성) · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-29 17:27:48.310 · atchFileId=FILE_0000000076
+    json 단서: {'sn': '1', 'atch': 'FILE_000000007656318'} urls=[]
+  POST selectFileDataDownload.do {'publicDataPk': '15044948', 'publicDataDetailPk': 'uddi:19ef4c7a-cd44-407c-9d09-f5094b5d3869_201805291727', 'fileDetailSn': '1', 'publicDataSn': '12', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149307 · publicDataDetailPk=uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac · publicDataHistSn=1 · confmDt=2025-09-16 13:31:20.000 · publicDataSj=국민건강보험공단_협력기관현황 · publicDataEngSj=National Health Insurance Service_Collaborating Organizations · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,협력기관,기관별,의료기관 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:14:29.000 · updtDt=2025-09-12 16:14:29.000 · inqireCo=893 · deleteAt=N · kwrdEn=long-term care,Home medical center,Partner organizations,By institution,medical institutions · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149307/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_협력기관현황_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=193 · enDetailUrl=/en/data/15149307/fileData.do · detailUrl=/data/15149307/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:14:29.000 · atchFileId=FILE_000000003246606 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_협력기관현황_20250821 · atchFileExtsn=csv · atchFileCo=193 · orginlFileNm=협력기관현황.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac · status=True · atchFileId=FILE_000000003246606
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246606'} urls=[]
-  GET selectFileDataDownload.do {'publicDataPk': '15149307', 'publicDataDetailPk': 'uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=15149307&publicDataDetailPk=ud
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044948 · publicDataDetailPk=uddi:19ef4c7a-cd44-407c-9d09-f5094b5d3869_201805291727 · publicDataHistSn=12 · confmDt=2026-09-15 09:20:37.000 · publicDataSj=대구광역시 달성군_경로당 현황 · publicDataEngSj=Dalseong-gun, Daegu_Status of Senior Centers · publicDataDc=대구광역시 달성군 관내에서 설치·운영 중인 경로당 345개소의 현황 정보입니다. 노인복지법 제36조에 따른 노인여가복지시설로서, 읍·면 단위 마을 경로당과 공동주택 경로당을 모두 포함합니다.<br/><br/>데이터는 · kwrd=노인복지,여가복지시설,노인여가,복지시설,고령친화,무더위쉼터,돌봄,생활인프라 · brmCode=NB000220061201100031425 · dataHoldBasis=「노인복지법」 제36조(경로당의 설치 등), 제4조(기초조사 등) 및 제5조(노인복지통계의 작성) · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=복지정책과에서 관리하는 경로당 설치·운영 대장을 기준으로 자료를 취합하고, 도로명주소와 위경도를 보정하여 작성하였습니다. · dataLimit=본 데이터는 대구광역시 달성군에 소재한 경로당 현황만을 포함하며, 전국 또는 타 지역 데이터는 포함되어 있지 않습니다. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-09-08 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2018-05-29 17:27:48.310 · updtDt=2026-09-08 10:51:16.000 · inqireCo=5166 · deleteAt=N · kwrdEn=Elderly welfare,Leisure and welfare facilities,Senior leisure,welfare facility,age friendly,cooling shelter,elderly care · dataHoldBasisEn=Article 36 (Establishment of Senior Citizen Centers, etc.), Article 4 (Basic Survey, etc.), and Article 5 (Preparation o · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=10 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044948/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대한민국 대구광역시 달성군 · stdrDe=09/08/2026 · dataNm=대구광역시 달성군_경로당 현황_20260908 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=345 · etcAtentMatter=전화번호 항목은 일부 시설의 자료가 미집계되어 공란으로 제공됩니다. 본 데이터는 데이터기준일자 시점의 현황으로 실제와 차이가 있을 수 있습니다. · enDetailUrl=/en/data/15044948/fileData.do · detailUrl=/data/15044948/fileData.do · dataHoldBasisFilteredTags=「노인복지법」 제36조(경로당의 설치 등), 제4조(기초조사 등) 및 제5조(노인복지통계의 작성) · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-29 17:27:48.310 · atchFileId=FILE_0000000076
+    json 단서: {'sn': '1', 'atch': 'FILE_000000007656318'} urls=[]
+  GET selectFileDataDownload.do {'publicDataPk': '15044948', 'publicDataDetailPk': 'uddi:19ef4c7a-cd44-407c-9d09-f5094b5d3869_201805291727', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=15044948&publicDataDetailPk=ud
     json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
-    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15149307 · publicDataDetailPk=uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac · publicDataHistSn=1 · confmDt=2025-09-16 13:31:20.000 · publicDataSj=국민건강보험공단_협력기관현황 · publicDataEngSj=National Health Insurance Service_Collaborating Organizations · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/> - (이용대상) 재가 장기요양 수급자로 거동이 불편하고  · kwrd=장기요양,재택의료센터,협력기관,기관별,의료기관 · brmCode=NB000220061215100125619 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2025-09-12 16:14:29.000 · updtDt=2025-09-12 16:14:29.000 · inqireCo=893 · deleteAt=N · kwrdEn=long-term care,Home medical center,Partner organizations,By institution,medical institutions · brmCodeNm=보건 - 건강보험 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15149307/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=08/21/2025 · dataNm=국민건강보험공단_협력기관현황_20250821 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=193 · enDetailUrl=/en/data/15149307/fileData.do · detailUrl=/data/15149307/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2025-09-12 16:14:29.000 · atchFileId=FILE_000000003246606 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_협력기관현황_20250821 · atchFileExtsn=csv · atchFileCo=193 · orginlFileNm=협력기관현황.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:e169571a-77e1-4537-b9eb-95f8290ec3ac · status=True · atchFileId=FILE_000000003246606
-    json 단서: {'sn': '1', 'atch': 'FILE_000000003246606'} urls=[]
-  GET fileDownload.do {'atchFileId': 'FILE_000000003246606', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%ED%98%91%EB%A0%A5%EA%B8%B0%EA%B4%80%ED%98%84%ED%99%A9.csv · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003246606&fileDetailSn=1
-  저장 data/raw/15149307/협력기관현황.csv (8,013 bytes)
-  머리 협력기관현황.csv:
-    | ¿¬¹ø,½Ãµµ,½Ã±º±¸,ÀçÅÃÀÇ·á¼¾ÅÍ ±â°ü¸í,Çù·Â±â°ü ¼ö
-    | 1,¼­¿ïÆ¯º°½Ã,°­³²±¸,¼­¿ï¿¬¼¼ÀÇ¿ø,0
-    | 2,¼­¿ïÆ¯º°½Ã,°­³²±¸,¼­¿ï36ÀÇ¿ø,0
-완료: 파일 3개
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15044948 · publicDataDetailPk=uddi:19ef4c7a-cd44-407c-9d09-f5094b5d3869_201805291727 · publicDataHistSn=12 · confmDt=2026-09-15 09:20:37.000 · publicDataSj=대구광역시 달성군_경로당 현황 · publicDataEngSj=Dalseong-gun, Daegu_Status of Senior Centers · publicDataDc=대구광역시 달성군 관내에서 설치·운영 중인 경로당 345개소의 현황 정보입니다. 노인복지법 제36조에 따른 노인여가복지시설로서, 읍·면 단위 마을 경로당과 공동주택 경로당을 모두 포함합니다.<br/><br/>데이터는 · kwrd=노인복지,여가복지시설,노인여가,복지시설,고령친화,무더위쉼터,돌봄,생활인프라 · brmCode=NB000220061201100031425 · dataHoldBasis=「노인복지법」 제36조(경로당의 설치 등), 제4조(기초조사 등) 및 제5조(노인복지통계의 작성) · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · colctMth=복지정책과에서 관리하는 경로당 설치·운영 대장을 기준으로 자료를 취합하고, 도로명주소와 위경도를 보정하여 작성하였습니다. · dataLimit=본 데이터는 대구광역시 달성군에 소재한 경로당 현황만을 포함하며, 전국 또는 타 지역 데이터는 포함되어 있지 않습니다. · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · nextRegistPrarnde=2027-09-08 · dataRegistCycle=RECY05 · aiTypeYn=N · registDt=2018-05-29 17:27:48.310 · updtDt=2026-09-08 10:51:16.000 · inqireCo=5166 · deleteAt=N · kwrdEn=Elderly welfare,Leisure and welfare facilities,Senior leisure,welfare facility,age friendly,cooling shelter,elderly care · dataHoldBasisEn=Article 36 (Establishment of Senior Citizen Centers, etc.), Article 4 (Basic Survey, etc.), and Article 5 (Preparation o · brmCodeNm=사회복지 - 노인·청소년 · insttNm=대구광역시 달성군 · seqNo=10 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=15044948/v1 · isFusionApi=0 · isUnstructedData=N · sptlCvrg=대한민국 대구광역시 달성군 · stdrDe=09/08/2026 · dataNm=대구광역시 달성군_경로당 현황_20260908 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=345 · etcAtentMatter=전화번호 항목은 일부 시설의 자료가 미집계되어 공란으로 제공됩니다. 본 데이터는 데이터기준일자 시점의 현황으로 실제와 차이가 있을 수 있습니다. · enDetailUrl=/en/data/15044948/fileData.do · detailUrl=/data/15044948/fileData.do · dataHoldBasisFilteredTags=「노인복지법」 제36조(경로당의 설치 등), 제4조(기초조사 등) 및 제5조(노인복지통계의 작성) · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-29 17:27:48.310 · atchFileId=FILE_0000000076
+    json 단서: {'sn': '1', 'atch': 'FILE_000000007656318'} urls=[]
+  GET fileDownload.do {'atchFileId': 'FILE_000000007656318', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C_%EB%8B%AC%EC · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000007656318&fileDetailSn=1
+  저장 data/raw/15044948/대구광역시_달성군_경로당 현황_20260908.csv (41,740 bytes)
+  머리 대구광역시_달성군_경로당 현황_20260908.csv:
+    | ï»¿ëª
+    | ì¹­,ìì¬ì§ì£¼ì,ì íë²í¸,ìë,ê²½ë,ë°ì´í°ê¸°ì¤ì¼ì
+    | íììë
+[page 3068205] HTTP 200, 197,191자
+[3068205] 대구광역시 달성군_의료기관현황_20230915 | 공공데이터포털
+  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 1개, 파일명 6개, 날짜 ['2018-05-28', '2025-12-12']
+   call: ['3068205', 'uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015', '', '1', '6']
+   name: /catalog/3068205/fileData.json
+   name: /cmm/cmm/check-reset.json
+   name: /cmm/cmm/selectForBreadCrumbMenu.json
+   name: /insertNewsLetterUser.json
+   name: /uim/cmm/selectMberInfo.json
+   name: response.json
+   atch: ['FILE_000000002814515'] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/datset/script_fileDetail.js', '/js/biz/dss/script_dataOfferReqst.js']
+   forms: []
+  catalog fileData.json → HTTP 200 · application/json;charset=UTF-8
+    {"name":"대구광역시 달성군_의료기관현황","alternateName":"대구광역시 달성군_의료기관현황_20230915","description":"의료기관의 기본 현황 정보를 정리한 자료로, 의료기관 명칭, 위치, 의료기관 유형 등 보건의료 행정 관리에 필요한 주요 정보를 포함하고 있다. 본 자료는 의료기관의 분포 현황과 의료 서비스 제공 실태를 종합적으로 파악하기 위한 기초자료로 활용된다.  또한 의료기관 현황에 대한 체계적인 관리를 통해 지역 내 의료 인프라 현황과 의료 서비스 접근성을 분석하고, 보건의료 정책 수립 및 의료 자원 배분을 위한 행정적 의사결정을 지원한다. 본 자료는 의료기관에 대한 행정 관리, 지도·점검 및 민원 대응 업무 수행과 함께 관련 통계 산출 및 보건 행정 업무 수행을 위한 참고 자료로 활용된다.  아울러 지역 주민의 건강 증진과 의료 서비스의 안정적 제공을 위한 관리 체계를 강화하고, 효율적인 보건의료 체계 운영과 공공보건 정책 추진을 위한 기초자료로 활용되며, 지속적인 보건의료 및 보건 행정 업무 수행을 지원하는 행정자료로 활용된다.","url":"https://www.data.go.kr/data/3068205/fileData.do","keywords":"건강검진,의료기관,보건의료,의료서비스,보건행정,의료시설,기관현황,병원","license":"이용허락범위 제한 없음","dateCreated":"2018-05-28","dateModified":"2025-12-12","datePublished":"2018-05-28","creator":{"name":"대구광역시 달성군","contactPoint":{"contactType":"정보통신과","telephone":"053-668-2454","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"","temporalCoverage":"","additionalType":"보건 - 보건의료","datasetTimeInterval":"수시 (1회성 데이터)","encodingFormat":"CSV","legislation":"","@context":"https://schema.org","@type":"Dataset"}
+  catalog fileData.do → HTTP 404 · text/html;charset=UTF-8
+    text: 포털 index 죄송합니다. 요청하신 페이지를 찾을 수 없습니다. 페이지의 주소가 잘못 입력되었거나, 변경 혹은 삭제되어 요청하신 페이지를 찾을 수 없습니다. 더 나은 서비스를 제공하는 공공데이터포털이 되겠습니다. 이전 페이지로 돌아가기 공공데이터포털 홈으로
+    hints: ['/index.do']
+    urls: []
+  POST selectFileDataDownload.do {'publicDataPk': '3068205', 'publicDataDetailPk': 'uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=3068205 · publicDataDetailPk=uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015 · publicDataHistSn=6 · confmDt=2023-09-18 14:12:09.000 · publicDataSj=대구광역시 달성군_의료기관현황 · publicDataEngSj=Dalseong-gun, Daegu_Status of Medical Institutions · publicDataDc=의료기관의 기본 현황 정보를 정리한 자료로, 의료기관 명칭, 위치, 의료기관 유형 등 보건의료 행정 관리에 필요한 주요 정보를 포함하고 있다. 본 자료는 의료기관의 분포 현황과 의료 서비스 제공 실태를 종합적으로 파 · kwrd=건강검진,의료기관,보건의료,의료서비스,보건행정,의료시설,기관현황,병원 · brmCode=NB000220061215100125685 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · dataLimit=- · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2018-05-28 10:15:00.042 · updtDt=2025-12-12 16:45:37.000 · inqireCo=3445 · deleteAt=N · kwrdEn=health checkup,medical institutions,Health care,medical services,Health Administration,medical facilities,Institutional  · brmCodeNm=보건 - 보건의료 · insttNm=대구광역시 달성군 · seqNo=3 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=3068205/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=09/15/2023 · dataNm=대구광역시 달성군_의료기관현황_20230915 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=150 · etcAtentMatter=토요일 진료, 일요일 진료, 수요일 진료, 진료가 없을 시, 결측치 처리 · enDetailUrl=/en/data/3068205/fileData.do · detailUrl=/data/3068205/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-28 10:15:00.042 · atchFileId=FILE_000000002814515 · seqNo=3 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_의료기관현황_20230915 · atchFileExtsn=csv · atchFileCo=150 · orginlFileNm=대구광역시_달성군_병의원현황_20230915.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015 · status=True · atchFileId=FILE_000000002814515
+    json 단서: {'sn': '1', 'atch': 'FILE_000000002814515'} urls=[]
+  POST selectFileDataDownload.do {'publicDataPk': '3068205', 'publicDataDetailPk': 'uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015', 'fileDetailSn': '1', 'publicDataSn': '6', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=3068205 · publicDataDetailPk=uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015 · publicDataHistSn=6 · confmDt=2023-09-18 14:12:09.000 · publicDataSj=대구광역시 달성군_의료기관현황 · publicDataEngSj=Dalseong-gun, Daegu_Status of Medical Institutions · publicDataDc=의료기관의 기본 현황 정보를 정리한 자료로, 의료기관 명칭, 위치, 의료기관 유형 등 보건의료 행정 관리에 필요한 주요 정보를 포함하고 있다. 본 자료는 의료기관의 분포 현황과 의료 서비스 제공 실태를 종합적으로 파 · kwrd=건강검진,의료기관,보건의료,의료서비스,보건행정,의료시설,기관현황,병원 · brmCode=NB000220061215100125685 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · dataLimit=- · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2018-05-28 10:15:00.042 · updtDt=2025-12-12 16:45:37.000 · inqireCo=3445 · deleteAt=N · kwrdEn=health checkup,medical institutions,Health care,medical services,Health Administration,medical facilities,Institutional  · brmCodeNm=보건 - 보건의료 · insttNm=대구광역시 달성군 · seqNo=3 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=3068205/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=09/15/2023 · dataNm=대구광역시 달성군_의료기관현황_20230915 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=150 · etcAtentMatter=토요일 진료, 일요일 진료, 수요일 진료, 진료가 없을 시, 결측치 처리 · enDetailUrl=/en/data/3068205/fileData.do · detailUrl=/data/3068205/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-28 10:15:00.042 · atchFileId=FILE_000000002814515 · seqNo=3 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_의료기관현황_20230915 · atchFileExtsn=csv · atchFileCo=150 · orginlFileNm=대구광역시_달성군_병의원현황_20230915.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015 · status=True · atchFileId=FILE_000000002814515
+    json 단서: {'sn': '1', 'atch': 'FILE_000000002814515'} urls=[]
+  GET selectFileDataDownload.do {'publicDataPk': '3068205', 'publicDataDetailPk': 'uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=3068205&publicDataDetailPk=udd
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=3068205 · publicDataDetailPk=uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015 · publicDataHistSn=6 · confmDt=2023-09-18 14:12:09.000 · publicDataSj=대구광역시 달성군_의료기관현황 · publicDataEngSj=Dalseong-gun, Daegu_Status of Medical Institutions · publicDataDc=의료기관의 기본 현황 정보를 정리한 자료로, 의료기관 명칭, 위치, 의료기관 유형 등 보건의료 행정 관리에 필요한 주요 정보를 포함하고 있다. 본 자료는 의료기관의 분포 현황과 의료 서비스 제공 실태를 종합적으로 파 · kwrd=건강검진,의료기관,보건의료,의료서비스,보건행정,의료시설,기관현황,병원 · brmCode=NB000220061215100125685 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · dataLimit=- · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2018-05-28 10:15:00.042 · updtDt=2025-12-12 16:45:37.000 · inqireCo=3445 · deleteAt=N · kwrdEn=health checkup,medical institutions,Health care,medical services,Health Administration,medical facilities,Institutional  · brmCodeNm=보건 - 보건의료 · insttNm=대구광역시 달성군 · seqNo=3 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=3068205/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=09/15/2023 · dataNm=대구광역시 달성군_의료기관현황_20230915 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=150 · etcAtentMatter=토요일 진료, 일요일 진료, 수요일 진료, 진료가 없을 시, 결측치 처리 · enDetailUrl=/en/data/3068205/fileData.do · detailUrl=/data/3068205/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-28 10:15:00.042 · atchFileId=FILE_000000002814515 · seqNo=3 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_의료기관현황_20230915 · atchFileExtsn=csv · atchFileCo=150 · orginlFileNm=대구광역시_달성군_병의원현황_20230915.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:10cd7262-553a-4a19-8eec-c86848f8500a_201805281015 · status=True · atchFileId=FILE_000000002814515
+    json 단서: {'sn': '1', 'atch': 'FILE_000000002814515'} urls=[]
+  GET fileDownload.do {'atchFileId': 'FILE_000000002814515', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C_%EB%8B%AC%EC · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000002814515&fileDetailSn=1
+  저장 data/raw/3068205/대구광역시_달성군_병의원현황_20230915.csv (25,311 bytes)
+  머리 대구광역시_달성군_병의원현황_20230915.csv:
+    | ¿¬¹ø,ÀÇ·á±â°ü¸í,¼ÒÀçÁö,ÀüÈ­¹øÈ£,¿ù¿äÀÏ Áø·á,È­¿äÀÏ Áø·á,¼ö¿äÀÏ Áø·á,¸ñ¿äÀÏ Áø·á,±Ý¿äÀÏ Áø·á,Åä¿äÀÏ Áø·á,ÀÏ¿äÀÏ Áø·á,°øÈÞÀÏ Áø·á,¼ö¼ú½Çº¸À¯¿©ºÎ,µ¥ÀÌÅÍ±âÁØÀÏÀÚ
+    | 1,¼º½É¿Ü°úÀÇ¿ø,´ë±¸±¤¿ª½Ã ´Þ¼º±º ÇöÇ³¸é ÇöÇ³Áß¾Ó·Î 49,053-611-0316,09:00~19:00,09:00~19:00,09:00~19:00,09:00~19:00,09:00~19:00,09:00~16:00,,09:00~13:00,N,2023-09-15
+    | 2,´õ³ªÀºº´¿ø,´ë±¸±¤¿ª½Ã ´Þ¼º±º ÇöÇ³¸é ÇöÇ³Áß¾Ó·Î 126,053-611-3300,09:00~18:00,09:00~18:00,09:00~18:00,09:00~18:00,09:00~18:00,09:00~13:00,,,N,2023-09-15
+[page 3068155] HTTP 200, 194,973자
+[3068155] 대구광역시 달성군_인구현황_20240108 | 공공데이터포털
+  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 1개, 파일명 6개, 날짜 ['2018-05-24', '2025-12-12']
+   call: ['3068155', 'uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052', '', '1', '8']
+   name: /catalog/3068155/fileData.json
+   name: /cmm/cmm/check-reset.json
+   name: /cmm/cmm/selectForBreadCrumbMenu.json
+   name: /insertNewsLetterUser.json
+   name: /uim/cmm/selectMberInfo.json
+   name: response.json
+   atch: ['FILE_000000002864883'] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/datset/script_fileDetail.js', '/js/biz/dss/script_dataOfferReqst.js']
+   forms: []
+  catalog fileData.json → HTTP 200 · application/json;charset=UTF-8
+    {"name":"대구광역시 달성군_인구현황","alternateName":"대구광역시 달성군_인구현황_20240108","description":"주민등록을 기준으로 집계된 인구 현황 정보를 정리한 자료로, 인구 수, 성별·연령별 구성 등 인구 관리에 필요한 주요 정보를 포함하고 있다. 본 자료는 인구 분포 현황과 인구 구조의 특성을 종합적으로 파악하기 위한 기초자료로 활용된다.  또한 인구 현황에 대한 체계적인 관리를 통해 인구 증감 추이와 인구 구조 변화를 분석하고, 행정 서비스 수요 예측 및 중·장기 정책 수립을 위한 행정적 의사결정을 지원한다. 본 자료는 주민등록 인구 관리, 각종 행정 통계 산출 및 정책 분석 업무 수행을 위한 참고 자료로 활용된다.  아울러 복지, 교육, 주거, 교통 등 다양한 행정 분야에서의 정책 수립과 자원 배분을 위한 기초자료로 활용되며, 효율적인 행정 운영과 지역 발전을 지원하는 행정 통계 자료로 활용된다.","url":"https://www.data.go.kr/data/3068155/fileData.do","keywords":"인구증감,의사결정,주민등록,인구통계,인구변동,인구구조,행정통계,행정현황","license":"이용허락범위 제한 없음","dateCreated":"2018-05-24","dateModified":"2025-12-12","datePublished":"2018-05-24","creator":{"name":"대구광역시 달성군","contactPoint":{"contactType":"정보통신과","telephone":"053-668-2454","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"","temporalCoverage":"","additionalType":"일반공공행정 - 일반행정","datasetTimeInterval":"수시 (1회성 데이터)","encodingFormat":"CSV","legislation":"","@context":"https://schema.org","@type":"Dataset"}
+  catalog fileData.do → HTTP 404 · text/html;charset=UTF-8
+    text: 포털 index 죄송합니다. 요청하신 페이지를 찾을 수 없습니다. 페이지의 주소가 잘못 입력되었거나, 변경 혹은 삭제되어 요청하신 페이지를 찾을 수 없습니다. 더 나은 서비스를 제공하는 공공데이터포털이 되겠습니다. 이전 페이지로 돌아가기 공공데이터포털 홈으로
+    hints: ['/index.do']
+    urls: []
+  POST selectFileDataDownload.do {'publicDataPk': '3068155', 'publicDataDetailPk': 'uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=3068155 · publicDataDetailPk=uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052 · publicDataHistSn=8 · confmDt=2024-01-08 17:49:28.000 · publicDataSj=대구광역시 달성군_인구현황 · publicDataEngSj=Dalseong-gun, Daegu_Population Status · publicDataDc=주민등록을 기준으로 집계된 인구 현황 정보를 정리한 자료로, 인구 수, 성별·연령별 구성 등 인구 관리에 필요한 주요 정보를 포함하고 있다. 본 자료는 인구 분포 현황과 인구 구조의 특성을 종합적으로 파악하기 위한  · kwrd=인구증감,의사결정,주민등록,인구통계,인구변동,인구구조,행정통계,행정현황 · brmCode=NB000220061201100024361 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2018-05-24 10:52:08.038 · updtDt=2025-12-12 16:44:24.000 · inqireCo=8604 · deleteAt=N · kwrdEn=population increase and decrease,Decision making,Resident registration,Demographics,population change,population structu · brmCodeNm=일반공공행정 - 일반행정 · insttNm=대구광역시 달성군 · seqNo=6 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=3068155/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=01/08/2024 · dataNm=대구광역시 달성군_인구현황_20240108 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=177 · enDetailUrl=/en/data/3068155/fileData.do · detailUrl=/data/3068155/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-24 10:52:08.038 · atchFileId=FILE_000000002864883 · seqNo=6 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_인구현황_20240108 · atchFileExtsn=csv · atchFileCo=177 · orginlFileNm=대구광역시 달성군_인구데이터현황_20240108.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052 · status=True · atchFileId=FILE_000000002864883
+    json 단서: {'sn': '1', 'atch': 'FILE_000000002864883'} urls=[]
+  POST selectFileDataDownload.do {'publicDataPk': '3068155', 'publicDataDetailPk': 'uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052', 'fileDetailSn': '1', 'publicDataSn': '8', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=3068155 · publicDataDetailPk=uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052 · publicDataHistSn=8 · confmDt=2024-01-08 17:49:28.000 · publicDataSj=대구광역시 달성군_인구현황 · publicDataEngSj=Dalseong-gun, Daegu_Population Status · publicDataDc=주민등록을 기준으로 집계된 인구 현황 정보를 정리한 자료로, 인구 수, 성별·연령별 구성 등 인구 관리에 필요한 주요 정보를 포함하고 있다. 본 자료는 인구 분포 현황과 인구 구조의 특성을 종합적으로 파악하기 위한  · kwrd=인구증감,의사결정,주민등록,인구통계,인구변동,인구구조,행정통계,행정현황 · brmCode=NB000220061201100024361 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2018-05-24 10:52:08.038 · updtDt=2025-12-12 16:44:24.000 · inqireCo=8604 · deleteAt=N · kwrdEn=population increase and decrease,Decision making,Resident registration,Demographics,population change,population structu · brmCodeNm=일반공공행정 - 일반행정 · insttNm=대구광역시 달성군 · seqNo=6 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=3068155/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=01/08/2024 · dataNm=대구광역시 달성군_인구현황_20240108 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=177 · enDetailUrl=/en/data/3068155/fileData.do · detailUrl=/data/3068155/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-24 10:52:08.038 · atchFileId=FILE_000000002864883 · seqNo=6 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_인구현황_20240108 · atchFileExtsn=csv · atchFileCo=177 · orginlFileNm=대구광역시 달성군_인구데이터현황_20240108.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052 · status=True · atchFileId=FILE_000000002864883
+    json 단서: {'sn': '1', 'atch': 'FILE_000000002864883'} urls=[]
+  GET selectFileDataDownload.do {'publicDataPk': '3068155', 'publicDataDetailPk': 'uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=3068155&publicDataDetailPk=udd
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=3068155 · publicDataDetailPk=uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052 · publicDataHistSn=8 · confmDt=2024-01-08 17:49:28.000 · publicDataSj=대구광역시 달성군_인구현황 · publicDataEngSj=Dalseong-gun, Daegu_Population Status · publicDataDc=주민등록을 기준으로 집계된 인구 현황 정보를 정리한 자료로, 인구 수, 성별·연령별 구성 등 인구 관리에 필요한 주요 정보를 포함하고 있다. 본 자료는 인구 분포 현황과 인구 구조의 특성을 종합적으로 파악하기 위한  · kwrd=인구증감,의사결정,주민등록,인구통계,인구변동,인구구조,행정통계,행정현황 · brmCode=NB000220061201100024361 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=3480000 · jrsdMiryfcCode=3480000 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2018-05-24 10:52:08.038 · updtDt=2025-12-12 16:44:24.000 · inqireCo=8604 · deleteAt=N · kwrdEn=population increase and decrease,Decision making,Resident registration,Demographics,population change,population structu · brmCodeNm=일반공공행정 - 일반행정 · insttNm=대구광역시 달성군 · seqNo=6 · atchFileTyCode=DATD01 · fileDetailSn=1 · cloudApi=1 · cloudUrl=http://175.106.92.45:8080 · swaggerUrl=https://infuser.odcloud.kr/oas/docs?namespace=3068155/v1 · isFusionApi=0 · isUnstructedData=N · stdrDe=01/08/2024 · dataNm=대구광역시 달성군_인구현황_20240108 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=177 · enDetailUrl=/en/data/3068155/fileData.do · detailUrl=/data/3068155/fileData.do · multiCloudApi=True · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2018-05-24 10:52:08.038 · atchFileId=FILE_000000002864883 · seqNo=6 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=대구광역시 달성군_인구현황_20240108 · atchFileExtsn=csv · atchFileCo=177 · orginlFileNm=대구광역시 달성군_인구데이터현황_20240108.csv · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:eccd4ed0-9301-450a-803f-f618aeb46184_201805241052 · status=True · atchFileId=FILE_000000002864883
+    json 단서: {'sn': '1', 'atch': 'FILE_000000002864883'} urls=[]
+  GET fileDownload.do {'atchFileId': 'FILE_000000002864883', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C %EB%8B%AC%EC · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000002864883&fileDetailSn=1
+  저장 data/raw/3068155/대구광역시 달성군_인구데이터현황_20240108.csv (11,153 bytes)
+  머리 대구광역시 달성군_인구데이터현황_20240108.csv:
+    | 연도,월,세대수,전체인구수,내국인수,외국인수,전입,전출,출생,사망,데이터기준일자
+    | 2009,02,29963,174729,172439,2290,3054,2438,138,96,2024-01-08
+    | 2009,03,60109,175168,172872,2296,2471,2111,132,81,2024-01-08
+[page 15165686] HTTP 200, 157,157자
+[15165686] 국민건강보험공단_재택의료센터 주소정보_20260909 | 공공데이터포털
+  fn_fileDataDown 호출 1개, uddi 1개, atchFileId 0개, 파일명 5개, 날짜 ['2026-09-16', '2026-09-17']
+   call: ['15165686', 'uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190', '', '1', '2']
+   name: /catalog/15165686/fileData.json
+   name: /cmm/cmm/check-reset.json
+   name: /cmm/cmm/selectForBreadCrumbMenu.json
+   name: /insertNewsLetterUser.json
+   name: response.json
+   atch: [] | scripts: ['/js/biz/cmm/cmm/file-category-util.js', '/js/biz/dss/script_dataOfferReqst.js', '/js/biz/datset/script_fileDetail.js']
+   forms: ['<form method="post" action="/tcs/dss/selectDataSetList.do" id="listFrm">']
+  catalog fileData.json → HTTP 200 · application/json;charset=UTF-8
+    {"name":"국민건강보험공단_재택의료센터 주소정보","alternateName":"국민건강보험공단_재택의료센터 주소정보_20260909","description":"□ 개요 장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다. - (이용대상) 재가 장기요양 수급자로 거동이 불편하고 재택의료가 필요한 사람(1~2등급 우선)으로 (한)의사가 판단한 경우 - (참여기관) 장기요양 재택의료센터 시범사업 지정기관(의원, 한의원, 병원, 지방의료원, 보건소(보건지소,보건의료원 포함)  - (제공서비스) 의사는 월 1회 이상, 간호사는 월 2회 이상 방문의료서비스 제공, 사회복지사는 주기적 상담을 통한 요양.돌봄 수요 발굴 및 서비스 연계    본 데이터는 국민건강보험공단에서 제공하는 장기요양 재택의료센터 시범사업 참여기관 주소정보입니다.  □ 주요 내용 - 발췌 일자: 2026년 9월 9일 - 분류 기준: 재택의료센터 기관명, 재택의료센터 기관 종별, 주소, 시·도코드, 시·군·구코드  - 시·도 코드 및 시·군·구 코드: 장기요양 재택의료센터 기관 소재지 기준 - 재택의료센터 기관명: 발췌일자 기준 장기요양 재택의료센터 시범사업에 참여중인 기관 - 재택의료센터 기관 종별: 의원, 한의원, 병원, 지방의료원, 보건소(보건지소, 보건의료원 포함) - 주소: 장기요양 재택의료센터 기관의 주소","url":"https://www.data.go.kr/data/15165686/fileData.do","keywords":"연도별,장기요양,재택의료센터,주소,정보","license":"이용허락범위 제한 없음","dateCreated":"2026-09-16","dateModified":"2026-09-17","datePublished":"2026-09-16","creator":{"name":"국민건강보험공단","contactPoint":{"contactType":"빅데이터운영실","telephone":"033-736-3468","@type":"ContactPoint"},"@type":"Organization"},"spatialCoverage":"","temporalCoverage":"","additionalType":"사회복지 - 보건의료","datasetTimeInterval":"수시 (1회성 데이터)","encodingFormat":"CSV","legislation":"","@context":"https://schema.org","@type":"Dataset"}
+  catalog fileData.do → HTTP 404 · text/html;charset=UTF-8
+    text: 포털 index 죄송합니다. 요청하신 페이지를 찾을 수 없습니다. 페이지의 주소가 잘못 입력되었거나, 변경 혹은 삭제되어 요청하신 페이지를 찾을 수 없습니다. 더 나은 서비스를 제공하는 공공데이터포털이 되겠습니다. 이전 페이지로 돌아가기 공공데이터포털 홈으로
+    hints: ['/index.do']
+    urls: []
+  POST selectFileDataDownload.do {'publicDataPk': '15165686', 'publicDataDetailPk': 'uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15165686 · publicDataDetailPk=uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190 · publicDataHistSn=2 · confmDt=2026-09-18 16:12:19.000 · publicDataSj=국민건강보험공단_재택의료센터 주소정보 · publicDataEngSj=National Health Insurance Service_Home Medical Center Address Information · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/>- (이용대상) 재가 장기요양 수급자로 거동이 불편하고 재 · kwrd=연도별,장기요양,재택의료센터,주소,정보 · brmCode=NB000220061215100125554 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2026-09-16 15:42:28.000 · updtDt=2026-09-17 16:27:00.000 · inqireCo=53 · deleteAt=N · kwrdEn=By year,long-term care,Home medical center,address,information · brmCodeNm=사회복지 - 보건의료 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · isFusionApi=0 · isUnstructedData=N · stdrDe=09/09/2026 · dataNm=국민건강보험공단_재택의료센터 주소정보_20260909 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=1 · enDetailUrl=/en/data/15165686/fileData.do · detailUrl=/data/15165686/fileData.do · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2026-09-16 15:42:28.000 · atchFileId=FILE_000000007681876 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료센터 주소정보_20260909 · atchFileExtsn=csv · atchFileCo=1 · orginlFileNm=국민건강보험공단_재택의료센터 주소정보.zip · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190 · status=True · atchFileId=FILE_000000007681876
+    json 단서: {'sn': '1', 'atch': 'FILE_000000007681876'} urls=[]
+  POST selectFileDataDownload.do {'publicDataPk': '15165686', 'publicDataDetailPk': 'uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190', 'fileDetailSn': '1', 'publicDataSn': '2', 'fileNm': ''} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15165686 · publicDataDetailPk=uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190 · publicDataHistSn=2 · confmDt=2026-09-18 16:12:19.000 · publicDataSj=국민건강보험공단_재택의료센터 주소정보 · publicDataEngSj=National Health Insurance Service_Home Medical Center Address Information · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/>- (이용대상) 재가 장기요양 수급자로 거동이 불편하고 재 · kwrd=연도별,장기요양,재택의료센터,주소,정보 · brmCode=NB000220061215100125554 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2026-09-16 15:42:28.000 · updtDt=2026-09-17 16:27:00.000 · inqireCo=53 · deleteAt=N · kwrdEn=By year,long-term care,Home medical center,address,information · brmCodeNm=사회복지 - 보건의료 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · isFusionApi=0 · isUnstructedData=N · stdrDe=09/09/2026 · dataNm=국민건강보험공단_재택의료센터 주소정보_20260909 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=1 · enDetailUrl=/en/data/15165686/fileData.do · detailUrl=/data/15165686/fileData.do · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2026-09-16 15:42:28.000 · atchFileId=FILE_000000007681876 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료센터 주소정보_20260909 · atchFileExtsn=csv · atchFileCo=1 · orginlFileNm=국민건강보험공단_재택의료센터 주소정보.zip · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190 · status=True · atchFileId=FILE_000000007681876
+    json 단서: {'sn': '1', 'atch': 'FILE_000000007681876'} urls=[]
+  GET selectFileDataDownload.do {'publicDataPk': '15165686', 'publicDataDetailPk': 'uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190', 'fileDetailSn': '1'} → HTTP 200 · text/html;charset=UTF-8 ·  · final https://www.data.go.kr/tcs/dss/selectFileDataDownload.do?publicDataPk=15165686&publicDataDetailPk=ud
+    json: {"dataSetFileDetailInfo":{"rn":"","searchCondition1":"","searchCondition2":"","searchCondition3":"","searchCondition1Array":null,"searchCondition2Array":null,"searchCondition3Array":null,"searchKeyword1":"","searchKeyword2":"","searchKeyword3":"","searchKeywordFrom1":"","searchKeywordTo1":"","searchDataName":"","searchInsttCode":"","searchStartDate":"","searchEndDate":"","searchKeywordFrom2":"","searchKeywordTo2":"","searchUseYn":"","searchOrder":"","pageIndex":1,"pageUnit":10,"pageSize":10,"firstIndex":1,"lastIndex":1,"recordCountPerPage":10,"excelFileNm":"","excelSheetNm":"","atachFileYn":"N
+    json 값(빈칸 제외): pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · publicDataPk=15165686 · publicDataDetailPk=uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190 · publicDataHistSn=2 · confmDt=2026-09-18 16:12:19.000 · publicDataSj=국민건강보험공단_재택의료센터 주소정보 · publicDataEngSj=National Health Insurance Service_Home Medical Center Address Information · publicDataDc=□ 개요<br/>장기요양 재택의료센터 시범사업은 재가에 거주하는 거동이 불편한 장기요양 수급자에게 방문형 의료-요양 통합서비스를 제공하는 제도입니다.<br/>- (이용대상) 재가 장기요양 수급자로 거동이 불편하고 재 · kwrd=연도별,장기요양,재택의료센터,주소,정보 · brmCode=NB000220061215100125554 · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · publicDataTyCode=PR0051 · publicDataTyDetailCode=DATY03 · insttCode=B550928 · jrsdMiryfcCode=B550928 · pchrgAt=N · dataCpyrhtensureAt=N · usePrmisnEnnc=N · useScopeCode=COEX07 · rsrchPblictnAt=N · ctLevyUnitCode=COUN01 · dataRegistCycle=RECY07 · aiTypeYn=N · registDt=2026-09-16 15:42:28.000 · updtDt=2026-09-17 16:27:00.000 · inqireCo=53 · deleteAt=N · kwrdEn=By year,long-term care,Home medical center,address,information · brmCodeNm=사회복지 - 보건의료 · insttNm=국민건강보험공단 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · isFusionApi=0 · isUnstructedData=N · stdrDe=09/09/2026 · dataNm=국민건강보험공단_재택의료센터 주소정보_20260909 · langCode=LADE01 · mediaTy=DAT001 · atchFileCo=1 · enDetailUrl=/en/data/15165686/fileData.do · detailUrl=/data/15165686/fileData.do · pageIndex=1 · pageUnit=10 · pageSize=10 · firstIndex=1 · lastIndex=1 · recordCountPerPage=10 · atachFileYn=N · provdTrgetSe=PROV01 · provdReqstRegistAt=N · mgahaDataYn=N · coreDataAt=N · registTy=RETY02 · registDt=2026-09-16 15:42:28.000 · atchFileId=FILE_000000007681876 · seqNo=1 · atchFileTyCode=DATD01 · fileDetailSn=1 · dataNm=국민건강보험공단_재택의료센터 주소정보_20260909 · atchFileExtsn=csv · atchFileCo=1 · orginlFileNm=국민건강보험공단_재택의료센터 주소정보.zip · enDetailUrl=/en/data/null/fileData.do · detailUrl=/data/null/fileData.do · fileDetailSn=1 · dpk=uddi:2efb2d15-7e28-4fa7-bcbf-9d3f6b208190 · status=True · atchFileId=FILE_000000007681876
+    json 단서: {'sn': '1', 'atch': 'FILE_000000007681876'} urls=[]
+  GET fileDownload.do {'atchFileId': 'FILE_000000007681876', 'fileDetailSn': '1'} → HTTP 200 · application/octet-stream; charset=UTF-8 · attachment; filename="%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EB%B3%B4%ED%97%98%EA% · final https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000007681876&fileDetailSn=1
+  저장 data/raw/15165686/국민건강보험공단_재택의료센터 주소정보.zip (14,837 bytes)
+    zip 안: 국민건강보험공단_재택의료센터 주소정보.csv (40,573 bytes)
+  머리 국민건강보험공단_재택의료센터 주소정보.csv:
+    | 재택의료센터 기관명,재택의료센터기관종별,주소,관할지방자치단체시도코드,관할지방자치단체시군구코드
+    | (의)서일의료재단기장병원,병원,부산광역시 기장군 기장읍 대청로72번길 6,26,710
+    | 365스마트의원,의원,"경기도 수원시 장안구 만석로19번길 25-10 (천천동, 롯데마트)",41,111
+완료: 파일 7개
 data/care_supply:
-total 100
-drwxr-xr-x  3 runner runner  4096 Oct 21 04:21 .
-drwxr-xr-x 38 runner runner  4096 Oct 21 04:21 ..
--rw-r--r--  1 runner runner 85321 Oct 21 04:21 last_run.log
-drwxr-xr-x  5 runner runner  4096 Oct 21 04:21 raw
--rw-r--r--  1 runner runner   129 Oct 21 04:20 request.txt
+total 128
+drwxr-xr-x  3 runner runner   4096 Oct 21 04:22 .
+drwxr-xr-x 38 runner runner   4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 112251 Oct 21 04:22 last_run.log
+drwxr-xr-x 12 runner runner   4096 Oct 21 04:22 raw
+-rw-r--r--  1 runner runner     62 Oct 21 04:22 request.txt
 
 data/care_supply/raw:
-total 20
-drwxr-xr-x 5 runner runner 4096 Oct 21 04:21 .
-drwxr-xr-x 3 runner runner 4096 Oct 21 04:21 ..
-drwxr-xr-x 2 runner runner 4096 Oct 21 04:21 15149305
-drwxr-xr-x 2 runner runner 4096 Oct 21 04:21 15149306
-drwxr-xr-x 2 runner runner 4096 Oct 21 04:21 15149307
+total 48
+drwxr-xr-x 12 runner runner 4096 Oct 21 04:22 .
+drwxr-xr-x  3 runner runner 4096 Oct 21 04:22 ..
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 15044947
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 15044948
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 15044949
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 15124763
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 15149305
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 15149306
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 15149307
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 15165686
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 3068155
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 3068205
+
+data/care_supply/raw/15044947:
+total 16
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner 4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 4600 Oct 21 04:22 대구광역시_달성군_노인복지시설현황_20251104.csv
+
+data/care_supply/raw/15044948:
+total 52
+drwxr-xr-x  2 runner runner  4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner  4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 41740 Oct 21 04:22 대구광역시_달성군_경로당 현황_20260908.csv
+
+data/care_supply/raw/15044949:
+total 12
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner 4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 1781 Oct 21 04:22 대구광역시_달성군_복지센터현황_20260623.csv
+
+data/care_supply/raw/15124763:
+total 35444
+drwxr-xr-x  2 runner runner     4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner     4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner      588 Oct 21 04:22 .rels
+-rw-r--r--  1 runner runner     1692 Oct 21 04:22 [Content_Types].xml
+-rw-r--r--  1 runner runner      886 Oct 21 04:22 app.xml
+-rw-r--r--  1 runner runner      601 Oct 21 04:22 core.xml
+-rw-r--r--  1 runner runner     4664 Oct 21 04:22 printerSettings1.bin
+-rw-r--r--  1 runner runner    10240 Oct 21 04:22 printerSettings2.bin
+-rw-r--r--  1 runner runner  6247957 Oct 21 04:22 sharedStrings.xml
+-rw-r--r--  1 runner runner 14604978 Oct 21 04:22 sheet1.xml
+-rw-r--r--  1 runner runner      322 Oct 21 04:22 sheet1.xml.rels
+-rw-r--r--  1 runner runner  8720362 Oct 21 04:22 sheet2.xml
+-rw-r--r--  1 runner runner     4942 Oct 21 04:22 sheet4.xml
+-rw-r--r--  1 runner runner      322 Oct 21 04:22 sheet4.xml.rels
+-rw-r--r--  1 runner runner    20010 Oct 21 04:22 styles.xml
+-rw-r--r--  1 runner runner     6797 Oct 21 04:22 theme1.xml
+-rw-r--r--  1 runner runner     1589 Oct 21 04:22 workbook.xml
+-rw-r--r--  1 runner runner     1121 Oct 21 04:22 workbook.xml.rels
+-rw-r--r--  1 runner runner  6616345 Oct 21 04:22 국민건강보험공단_장기요양기관 시설별 현황_260610.xlsx
 
 data/care_supply/raw/15149305:
 total 28
-drwxr-xr-x 2 runner runner  4096 Oct 21 04:21 .
-drwxr-xr-x 5 runner runner  4096 Oct 21 04:21 ..
--rw-r--r-- 1 runner runner 18714 Oct 21 04:21 재택의료센터기관정보.csv
+drwxr-xr-x  2 runner runner  4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner  4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 18714 Oct 21 04:22 재택의료센터기관정보.csv
 
 data/care_supply/raw/15149306:
 total 16
-drwxr-xr-x 2 runner runner 4096 Oct 21 04:21 .
-drwxr-xr-x 5 runner runner 4096 Oct 21 04:21 ..
--rw-r--r-- 1 runner runner 4475 Oct 21 04:21 재택의료시범대상기관.csv
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner 4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 4475 Oct 21 04:22 재택의료시범대상기관.csv
 
 data/care_supply/raw/15149307:
 total 16
-drwxr-xr-x 2 runner runner 4096 Oct 21 04:21 .
-drwxr-xr-x 5 runner runner 4096 Oct 21 04:21 ..
--rw-r--r-- 1 runner runner 8013 Oct 21 04:21 협력기관현황.csv
+drwxr-xr-x  2 runner runner 4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner 4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 8013 Oct 21 04:22 협력기관현황.csv
+
+data/care_supply/raw/15165686:
+total 64
+drwxr-xr-x  2 runner runner  4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner  4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 40573 Oct 21 04:22 국민건강보험공단_재택의료센터 주소정보.csv
+-rw-r--r--  1 runner runner 14837 Oct 21 04:22 국민건강보험공단_재택의료센터 주소정보.zip
+
+data/care_supply/raw/3068155:
+total 20
+drwxr-xr-x  2 runner runner  4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner  4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 11153 Oct 21 04:22 대구광역시 달성군_인구데이터현황_20240108.csv
+
+data/care_supply/raw/3068205:
+total 36
+drwxr-xr-x  2 runner runner  4096 Oct 21 04:22 .
+drwxr-xr-x 12 runner runner  4096 Oct 21 04:22 ..
+-rw-r--r--  1 runner runner 25311 Oct 21 04:22 대구광역시_달성군_병의원현황_20230915.csv

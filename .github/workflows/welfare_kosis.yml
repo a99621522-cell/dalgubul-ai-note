@@ -57,7 +57,7 @@ jobs:
         run: |
           git config user.name dalgubul-bot
           git config user.email bot@users.noreply.github.com
-          git add data/welfare/kosis_*.log 2>/dev/null; git add data/kosis/welfare-* 2>/dev/null; true
+          for f in data/welfare/kosis_*.log data/kosis/welfare-*; do [ -e "$f" ] && git add "$f"; done; true   # 없는 패턴이면 git add 가 실패해 단계가 멈추던 것 수정
           git diff --cached --quiet && { echo "변경 없음"; exit 0; }
           git commit -qm "data: 복지 분야 KOSIS 통계 찾기·받기 $(date -u +%Y-%m-%d) (attempt ${{ matrix.attempt }})"
           for i in 1 2 3 4; do

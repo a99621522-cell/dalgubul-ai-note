@@ -57,7 +57,7 @@ jobs:
         run: |
           git config user.name "dalgubul-bot"
           git config user.email "bot@users.noreply.github.com"
-          for f in services.json last_run.log last_probe.log; do [ -f data/welfare/$f ] && git add data/welfare/$f; done   # 실행 기록도 남긴다(세션에서 Actions 로그를 못 읽어서)
+          for f in services.json last_run.log last_probe.log; do [ -f data/welfare/$f ] && git add data/welfare/$f; done; true   # 실행 기록도 남긴다(세션에서 Actions 로그를 못 읽어서)
           git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 복지서비스 수집 $(date -u +%Y-%m-%d)"
           git pull --rebase -q || true
           git push

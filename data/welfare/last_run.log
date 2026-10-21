@@ -1,0 +1,19 @@
+[중앙부처] 목록 실패: <?xml version="1.0" encoding="UTF-8"?>
+<OpenAPI_ServiceResponse>
+<cmmMsgHeader>
+  <errMsg>SERVICE_KEY_IS_NOT_REGISTERED_ERROR</errMsg>
+  <returnAuthMsg>등록되지 않은 서비스키</returnAuthMsg>
+  <returnReasonCode
+[대구] 목록 실패: <?xml version="1.0" encoding="UTF-8"?>
+<OpenAPI_ServiceResponse>
+<cmmMsgHeader>
+  <errMsg>SERVICE_KEY_IS_NOT_REGISTERED_ERROR</errMsg>
+  <returnAuthMsg>등록되지 않은 서비스키</returnAuthMsg>
+  <returnReasonCode
+[central] 목록 0건 (이전 0건) — 이전 목록 유지
+[local] 목록 0건 (이전 0건) — 이전 목록 유지
+[중앙부처] 상세 받을 0건 (이번 상한 900)
+[중앙부처] 상세 0건 받음, 실패 0건
+[대구] 상세 받을 0건 (이번 상한 900)
+[대구] 상세 0건 받음, 실패 0건
+항목 0건 — 저장하지 않음

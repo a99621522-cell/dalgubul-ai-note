@@ -66,7 +66,7 @@ jobs:
           git commit -qm "data: 복지 분야 KOSIS 통계 찾기·받기 $(date -u +%Y-%m-%d) (attempt ${{ matrix.attempt }})" || { echo "commit 실패"; git status; exit 0; }
           for i in 1 2 3 4; do
             git fetch -q origin "${GITHUB_REF_NAME}"
-            git rebase -q -X theirs "origin/${GITHUB_REF_NAME}" || { git rebase --abort; sleep $((i * 5)); continue; }
+            git checkout -q -- . ; git clean -qfd data/kosis ; git rebase -q -X theirs "origin/${GITHUB_REF_NAME}" || { git rebase --abort; sleep $((i * 5)); continue; }
             git push -q origin HEAD:"${GITHUB_REF_NAME}" && { echo "push 성공"; break; }
             sleep $((i * 5))
           done

@@ -1,0 +1,70 @@
+name: 복지서비스 수집 (복지로 중앙부처·대구 지자체) → 배포
+
+# /welfare/ (복지서비스 찾기)의 재료 data/welfare/services.json 을 갱신한다. 운영자 지시 2026-10-21.
+# 이 세션 환경은 공공데이터포털 접속이 막혀 Actions 가 대신 받는다.
+# 필요: Secrets DATA_GO_KR_KEY + 공공데이터포털에서 두 API 활용신청(자동승인)
+#   - 한국사회보장정보원_중앙부처복지서비스 (B554287/NationalWelfareInformationsV001)
+#   - 한국사회보장정보원_지자체복지서비스   (B554287/LocalGovernmentWelfareInformations)
+# 상세는 증분(새·수정 항목만)이고 개발계정 일 1,000건 한도라 처음 며칠은 나눠 채워진다 — 매일 돈다.
+
+on:
+  schedule:
+    - cron: "40 18 * * *"     # 매일 03:40 KST
+  push:
+    branches: ["claude/welfare-finder"]
+    paths: [".github/workflows/welfare.yml", "scripts/collect_welfare.py"]
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "true 면 원문 XML 구조만 출력(커밋 없음)"
+        required: false
+        default: "false"
+      max_detail:
+        description: "API별 1회 상세 호출 상한"
+        required: false
+        default: "900"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: welfare-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      - name: 구조 확인(probe)
+        if: github.event_name == 'push' || inputs.probe == 'true'
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+        run: python3 scripts/collect_welfare.py --probe || true
+      - name: 수집
+        if: inputs.probe != 'true'
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          MAX_DETAIL: ${{ inputs.max_detail || '900' }}
+        run: python3 scripts/collect_welfare.py --max-detail "$MAX_DETAIL" || true
+      - name: 커밋
+        if: inputs.probe != 'true'
+        run: |
+          git config user.name "dalgubul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/welfare/services.json 2>/dev/null || true
+          git diff --cached --quiet && echo "변경 없음" || git commit -m "chore: 복지서비스 수집 $(date -u +%Y-%m-%d)"
+          git pull --rebase -q || true
+          git push
+
+  deploy:
+    needs: collect
+    if: inputs.probe != 'true'
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: ${{ github.ref_name }}
+    secrets: inherit

@@ -1,0 +1,46 @@
+name: 복지 사이트 배포 (sites/welfare → Cloudflare Pages daegu-welfare)
+
+# 다잇다와 따로 쓰는 복지정책 지원 사이트(운영자 지시 2026-10-21 '다잇다 말고 다른 사이트로').
+# 같은 저장소의 data/welfare(복지로)·data/kosis/welfare-*(통계청)를 읽어 빌드한다.
+# 부르는 곳: 이 사이트 코드 푸시, welfare.yml(복지로 수집 뒤), kosis.yml·welfare_kosis.yml(통계 갱신 뒤).
+# main 이면 운영 주소(daegu-welfare.pages.dev), 다른 브랜치면 미리보기 주소(<브랜치>.daegu-welfare.pages.dev).
+
+on:
+  push:
+    branches: [main, "claude/welfare-finder"]
+    paths: ["sites/welfare/**", ".github/workflows/welfare_site.yml"]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: "체크아웃·배포할 브랜치 (비우면 호출한 ref)"
+        required: false
+        type: string
+        default: ""
+
+concurrency:
+  group: welfare-site-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx astro build --root sites/welfare
+      - name: Cloudflare Pages 업로드
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DEPLOY_BRANCH: ${{ inputs.ref || github.ref_name }}
+        run: |
+          # 처음 한 번은 프로젝트를 만든다(이미 있으면 오류를 무시)
+          npx wrangler pages project create daegu-welfare --production-branch main 2>&1 | tail -2 || true
+          npx wrangler pages deploy sites/welfare/dist --project-name daegu-welfare --branch "${DEPLOY_BRANCH}" --commit-dirty=true

@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+import { welfareData, guGunTable } from '../../lib/welfare';
+/** 구·군별 등록 현황 — 복지로에 등록된 대구시·구군 자체 복지서비스 수(생애주기별). 등록 건수일 뿐 복지 수준 비교가 아니다. */
+const D = welfareData();
+const T = guGunTable(D?.items ?? []);
+const n = (v: number) => v.toLocaleString('ko-KR');
+---
+<Base title="구·군별 현황" description="대구시와 9개 구·군이 복지로에 등록한 자체 복지서비스 수(생애주기별)." current="gugun">
+  <h1>구·군별 자체 복지서비스 등록 현황</h1>
+  <p class="meta">{D ? `복지로 ${D.fetchedAt} 기준` : '자료 수집 대기 중'} · 중앙부처 서비스 제외 · 한 서비스가 여러 생애주기에 셀 수 있음</p>
+  <p>복지로에 등록된 건수일 뿐 사업 규모나 복지 수준을 비교한 값이 아닙니다. 복지로에 올리지 않은 사업은 빠집니다.</p>
+  {D && <div style="overflow-x:auto"><table>
+    <thead><tr><th scope="col" style="text-align:left">구분</th><th scope="col">전체</th>{T.lifes.map(l => <th scope="col">{l}</th>)}</tr></thead>
+    <tbody>{T.rows.map(r => <tr><th scope="row" style="text-align:left">{r.name}</th><td>{n(r.total)}</td>{r.byLife.map(v => <td>{v ? n(v) : '·'}</td>)}</tr>)}</tbody>
+  </table></div>}
+  <style>td, th { text-align: right; white-space: nowrap; font-size: 0.9rem; }</style>
+</Base>

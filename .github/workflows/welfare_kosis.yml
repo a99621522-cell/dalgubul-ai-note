@@ -66,3 +66,11 @@ jobs:
             git push -q origin HEAD:"${GITHUB_REF_NAME}" && break
             sleep $((i * 5))
           done
+
+  deploy:
+    needs: fetch
+    if: always()
+    uses: ./.github/workflows/welfare_site.yml
+    with:
+      ref: ${{ github.ref_name }}
+    secrets: inherit

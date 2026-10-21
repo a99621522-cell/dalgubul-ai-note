@@ -100,6 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       yes: ${{ steps.c.outputs.yes }}
+      welfare: ${{ steps.c.outputs.welfare }}
     steps:
       - uses: actions/checkout@v4
         with: { ref: main, fetch-depth: 30 }
@@ -107,8 +108,18 @@ jobs:
         run: |
           n=$(git log --since="90 minutes ago" --grep="data: KOSIS" --format=%H -- data/kosis | wc -l)
           echo "이 실행 뒤 data/kosis 커밋 $n 개"; [ "$n" -gt 0 ] && echo "yes=1" >> "$GITHUB_OUTPUT" || true
+          # 복지 분야 표(welfare-*)가 바뀌었으면 복지 사이트도 다시 올린다(운영자 지시 2026-10-21 '통계청 자료가 업데이트 되면 자동으로 반영해')
+          w=$(git log --since="90 minutes ago" --grep="data: KOSIS" --format=%H -- 'data/kosis/welfare-*' | wc -l)
+          [ "$w" -gt 0 ] && echo "welfare=1" >> "$GITHUB_OUTPUT" || true
   deploy:
     needs: changed
     if: needs.changed.outputs.yes == '1'
     uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+  welfare_deploy:
+    needs: changed
+    if: needs.changed.outputs.welfare == '1'
+    uses: ./.github/workflows/welfare_site.yml
+    with:
+      ref: main
     secrets: inherit

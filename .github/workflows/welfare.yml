@@ -65,7 +65,7 @@ jobs:
   deploy:
     needs: collect
     if: inputs.probe != 'true'
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/welfare_site.yml
     with:
       ref: ${{ github.ref_name }}
     secrets: inherit

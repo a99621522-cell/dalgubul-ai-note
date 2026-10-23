@@ -70,6 +70,6 @@ jobs:
         env:
           URL: ${{ inputs.url }}
           CLICK: ${{ inputs.click }}
-        run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK"
+        run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK" $([ "${{ inputs.text }}" = "true" ] && echo --text)
       - if: inputs.xhr != 'true' && inputs.datalab != 'true' && inputs.file != 'true'
         run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)

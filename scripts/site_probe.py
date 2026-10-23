@@ -131,6 +131,16 @@ def xhr(url):
             except Exception as e:
                 print(f"   못 누름: {str(e)[:200]}")
         soup = BeautifulSoup(pg.content(), "html.parser")
+        if "--text" in sys.argv:   # 화면에 보이는 글자와 그림(글이 그림인 안내 쪽)·프레임 주소
+            try: vis = pg.inner_text("body")
+            except Exception: vis = ""
+            vis = re.sub(r"\n{2,}", "\n", re.sub(r"[ \t]+", " ", vis))
+            print(f"\n== 화면 글자({len(vis):,}자, 앞 12,000자) ==\n" + vis[:12000])
+            imgs = [(urljoin(pg.url, i.get("src", "")), i.get("alt", "")) for i in soup.find_all("img") if i.get("src")]
+            print(f"== 그림 {len(imgs)}개: " + " | ".join(f"{u} [{a[:60]}]" for u, a in imgs[:60]))
+            for f in pg.frames[1:]:
+                try: print(f"== 프레임 {f.url}\n" + re.sub(r"\s+", " ", f.inner_text("body"))[:3000])
+                except Exception: pass
         links = sorted({urljoin(pg.url, a["href"]) for a in soup.find_all("a", href=True) if not a["href"].startswith("javascript")})
         print(f"\n== 화면 링크 {len(links)}개: " + " | ".join(links[:120]))
         txt = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))

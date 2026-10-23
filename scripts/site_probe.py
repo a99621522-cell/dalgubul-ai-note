@@ -71,6 +71,8 @@ def main():
         cands = soup.find_all(["article", "div", "section"])
         best = max(cands, key=lambda e: len(re.sub(r"\s", "", e.get_text(" ", strip=True))) if len(e.find_all(["div", "section", "article"])) < 40 else 0, default=soup)
         text = re.sub(r"[ \t]+", " ", best.get_text("\n", strip=True))
+        if len(re.sub(r"\s", "", text)) < 200:   # 큰 틀 안에 본문이 있어 '글 덩어리'를 못 고른 화면: body 전체 글자
+            text = re.sub(r"[ \t]+", " ", (soup.body or soup).get_text("\n", strip=True))
         text = re.sub(r"\n{2,}", "\n", text)
         print(f"== 본문({len(text):,}자, 앞 8,000자) ==\n" + text[:8000])
         return

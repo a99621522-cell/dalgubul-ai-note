@@ -6,7 +6,7 @@
   --click 은 연 뒤 그 글자가 든 요소를 차례로 누른다(지역·메뉴 고르기). 화면 하나 확인용이지 수집기가 아니다.
 --text: 운영자가 준 기사·공지 한 쪽의 제목·날짜·본문 글자만 찍는다(robots.txt 가 그 경로를 막으면 본문은 찍지 않는다). 수집기가 아니라 한 번 읽기용.
 """
-import re, sys
+import time, re, sys
 from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
@@ -18,7 +18,14 @@ def main():
     url = sys.argv[1]
     render = "--render" in sys.argv
     base = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
-    r = requests.get(base + "/robots.txt", headers={"User-Agent": UA}, timeout=20)
+    r = None
+    for _ in range(4):   # 간헐적 연결 시간 초과: 다시 시도
+        try:
+            r = requests.get(base + "/robots.txt", headers={"User-Agent": UA}, timeout=40); break
+        except requests.RequestException as e:
+            print(f"  robots.txt 다시 시도: {str(e)[:120]}"); time.sleep(10)
+    if r is None:
+        print("!! robots.txt 를 받지 못함"); return
     print(f"== robots.txt ({r.status_code}) ==")
     print(r.text[:3000] if r.ok else "(없음)")
     path = urlparse(url).path or "/"
@@ -118,7 +125,12 @@ def xhr(url):
         b = p.chromium.launch(); pg = b.new_page(user_agent=UA, viewport={"width": 1400, "height": 1000})
         pg.on("response", on_resp)
         print(f"== XHR: {url}")
-        pg.goto(url, wait_until="networkidle", timeout=90000); pg.wait_for_timeout(3000)
+        for t in range(3):
+            try:
+                pg.goto(url, wait_until="networkidle", timeout=90000); break
+            except Exception as e:
+                print(f"  다시 시도: {str(e)[:120]}"); pg.wait_for_timeout(10000)
+        pg.wait_for_timeout(3000)
         print(f"== title: {pg.title()}  최종 주소: {pg.url}")
         for c in clicks:
             print(f"\n==== 누름: {c}")
@@ -141,6 +153,21 @@ def xhr(url):
             for f in pg.frames[1:]:
                 try: print(f"== 프레임 {f.url}\n" + re.sub(r"\s+", " ", f.inner_text("body"))[:3000])
                 except Exception: pass
+        if "--pages" in sys.argv:   # 목록 화면: pageIndex=2..N 을 차례로 열어 화면 글자만 찍는다(쪽 사이 2초)
+            n = int(sys.argv[sys.argv.index("--pages") + 1])
+            for k in range(2, n + 1):
+                u = re.sub(r"([?&])pageIndex=\d+", "", pg.url).rstrip("?&")
+                u = u + ("&" if "?" in u else "?") + f"pageIndex={k}"
+                for t in range(3):
+                    try:
+                        pg.goto(u, wait_until="networkidle", timeout=90000); break
+                    except Exception as e:
+                        print(f"  {k}쪽 다시 시도: {str(e)[:120]}"); pg.wait_for_timeout(10000)
+                try: vis = pg.inner_text("main") if pg.locator("main").count() else pg.inner_text("body")
+                except Exception: vis = ""
+                vis = re.sub(r"\n{2,}", "\n", re.sub(r"[ \t]+", " ", vis))
+                print(f"\n==== {k}쪽 {u} ({len(vis):,}자)\n" + vis[:12000])
+                pg.wait_for_timeout(2000)
         links = sorted({urljoin(pg.url, a["href"]) for a in soup.find_all("a", href=True) if not a["href"].startswith("javascript")})
         print(f"\n== 화면 링크 {len(links)}개: " + " | ".join(links[:120]))
         txt = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))

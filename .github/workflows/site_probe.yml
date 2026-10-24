@@ -35,6 +35,10 @@ on:
         description: "주소가 첨부 파일이면 true — 받아서 형식·시트·표 머리와 click 칸 낱말(기본 대구,지역,시도)이 든 줄을 찍는다"
         required: false
         default: "false"
+      pages:
+        description: "xhr·text 때 목록을 pageIndex=2..N 까지 넘겨 찍을 쪽 수(비우면 첫 쪽만)"
+        required: false
+        default: ""
       click:
         description: "xhr 때 연 뒤 차례로 누를 글자(쉼표로 구분, 예: 지역,대구)"
         required: false
@@ -70,6 +74,6 @@ jobs:
         env:
           URL: ${{ inputs.url }}
           CLICK: ${{ inputs.click }}
-        run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK" $([ "${{ inputs.text }}" = "true" ] && echo --text)
+        run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK" $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ -n "${{ inputs.pages }}" ] && echo --pages ${{ inputs.pages }})
       - if: inputs.xhr != 'true' && inputs.datalab != 'true' && inputs.file != 'true'
         run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)

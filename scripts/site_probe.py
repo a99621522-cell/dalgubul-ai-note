@@ -145,8 +145,8 @@ def xhr(url):
         soup = BeautifulSoup(pg.content(), "html.parser")
         if "--text" in sys.argv:   # 화면에 보이는 글자와 그림(글이 그림인 안내 쪽)·프레임 주소
             sp = BeautifulSoup(pg.content(), "html.parser")   # 접힌(숨긴) 글자까지
-            for t in sp.find_all(["script", "style", "noscript", "header", "footer", "nav"]): t.decompose()
-            vis = (sp.find("main") or sp.body or sp).get_text("\n", strip=True)
+            for t in sp.find_all(["script", "style", "noscript"]): t.decompose()
+            vis = (sp.body or sp).get_text("\n", strip=True)
             vis = re.sub(r"\n{2,}", "\n", re.sub(r"[ \t]+", " ", vis))
             print(f"\n== 화면 글자({len(vis):,}자, 앞 12,000자) ==\n" + vis[:12000])
             imgs = [(urljoin(pg.url, i.get("src", "")), i.get("alt", "")) for i in soup.find_all("img") if i.get("src")]
@@ -165,10 +165,10 @@ def xhr(url):
                     except Exception as e:
                         print(f"  {k}쪽 다시 시도: {str(e)[:120]}"); pg.wait_for_timeout(10000)
                 sp = BeautifulSoup(pg.content(), "html.parser")   # 접힌(숨긴) 답까지: HTML 글자
-                for t in sp.find_all(["script", "style", "noscript", "header", "footer", "nav"]): t.decompose()
-                vis = (sp.find("main") or sp.body or sp).get_text("\n", strip=True)
+                for t in sp.find_all(["script", "style", "noscript"]): t.decompose()
+                vis = (sp.body or sp).get_text("\n", strip=True)
                 vis = re.sub(r"\n{2,}", "\n", re.sub(r"[ \t]+", " ", vis))
-                print(f"\n==== {k}쪽 {u} ({len(vis):,}자)\n" + vis[:12000])
+                print(f"\n==== {k}쪽 {u} ({len(vis):,}자)\n" + vis[:20000])
                 pg.wait_for_timeout(2000)
         links = sorted({urljoin(pg.url, a["href"]) for a in soup.find_all("a", href=True) if not a["href"].startswith("javascript")})
         print(f"\n== 화면 링크 {len(links)}개: " + " | ".join(links[:120]))

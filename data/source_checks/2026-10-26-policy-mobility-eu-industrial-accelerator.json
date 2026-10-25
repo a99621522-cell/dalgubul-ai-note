@@ -1,0 +1,97 @@
+{
+ "file": "src/content/posts/2026-10-26-policy-mobility-eu-industrial-accelerator.md",
+ "checked": "2026-10-25",
+ "ok": 6,
+ "total": 7,
+ "ratio": 0.86,
+ "official_bad": [
+  "Clifford Chance, 「EU Industrial Accelerator Act」 briefing"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "산업통상부, 「민관 원팀, EU 산업가속화법 대응 총력」 보도자료",
+   "url": "https://www.motie.go.kr/kor/article/ATCL3f49a5a8c/172293/view?mno=&pageIndex=1",
+   "date": "2026-10-15",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "민관 원팀, EU 산업가속화법 대응 총력 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "대구본부세관, 「2026년 9월 대구·경북지역 수출입 현황」 보도자료",
+   "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
+   "date": "2026-10-15",
+   "kind": "official",
+   "status": 200,
+   "page_title": "대구본부세관",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "대구본부세관, 「2026년 8월 대구·경북지역 수출입 현황」 보도자료",
+   "url": "https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525",
+   "date": "2026-09-15",
+   "kind": "official",
+   "status": 200,
+   "page_title": "대구본부세관",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "European Commission, 「Commission proposes new measures to boost EU industry and jobs」(Industrial Accelerator Act)",
+   "url": "https://commission.europa.eu/news-and-media/news/commission-proposes-new-measures-boost-eu-industry-and-jobs-2026-03-04_en",
+   "date": "2026-03-04",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "Commission proposes new measures to boost EU industry and jobs - European Commission",
+   "title_match": 1.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "Clifford Chance, 「EU Industrial Accelerator Act」 briefing",
+   "url": "https://www.cliffordchance.com/content/dam/cliffordchance/briefings/2026/03/eu-industrial-accelerator-act-briefing.pdf",
+   "date": "2026-03",
+   "kind": "report",
+   "status": 200,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "금융감독원 DART, 대구 본사 공시 회사 사업보고서 '타법인 출자 현황'(2025 사업연도)",
+   "url": "https://dart.fss.or.kr/",
+   "date": "2026-10-05",
+   "kind": "data",
+   "status": 200,
+   "page_title": "전자공시시스템",
+   "title_match": 0.5,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-09 공장등록, KSIC 대표 업종·단지·종사자 신고값)·사업 DB(대구시 세부사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-10-26",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

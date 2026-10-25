@@ -3,10 +3,16 @@
  "name": "중소벤처기업연구원(KOSI)",
  "group": "국내 연구",
  "home": "https://www.kosi.re.kr",
- "fetched": "2026-10-18",
+ "fetched": "2026-10-25",
  "status": "OK",
  "method": "목록 페이지(날짜 없음, 목록 순서)",
  "items": [
+  {
+   "title": "지식서비스 벤처의 초기 성장 동인: 기업 역량의 역할과 정책 방향",
+   "url": "https://www.kosi.re.kr/front/functionDisplay?menuFrontNo=322423919227700596633306148027564711658&menuFrontURL=front/focusDetail?dataSequence=B261019K01",
+   "date": "",
+   "summary": ""
+  },
   {
    "title": "해외 벤처 금융의 책임 구조",
    "url": "https://www.kosi.re.kr/front/functionDisplay?menuFrontNo=322423919227700596633306148027564711658&menuFrontURL=front/focusDetail?dataSequence=B260714K01",
@@ -58,12 +64,6 @@
   {
    "title": "민생회복 소비쿠폰 정책의 소비 진작 효과: 영세 소상공인과 지역별 차이를 중심으로",
    "url": "https://www.kosi.re.kr/front/functionDisplay?menuFrontNo=322423919227700596633306148027564711658&menuFrontURL=front/focusDetail?dataSequence=J260313K01",
-   "date": "",
-   "summary": ""
-  },
-  {
-   "title": "중소기업 임금근로자의 일시휴직 및 부업 실태 분석",
-   "url": "https://www.kosi.re.kr/front/functionDisplay?menuFrontNo=322423919227700596633306148027564711658&menuFrontURL=front/focusDetail?dataSequence=J260309K01",
    "date": "",
    "summary": ""
   }

@@ -3,44 +3,62 @@
  "name": "BCG Publications",
  "group": "해외 컨설팅",
  "home": "https://www.bcg.com",
- "fetched": "2026-10-18",
+ "fetched": "2026-10-25",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
   {
-   "title": "Fabriq Personalization AI by BCG X",
-   "url": "https://www.bcg.com/x/product-library/fabriq-marketing-personalization-platform",
-   "date": "2026-10-14",
+   "title": "Consumer Products Industry",
+   "url": "https://www.bcg.com/industries/consumer-products-industry/overview",
+   "date": "2026-10-23",
    "summary": ""
   },
   {
-   "title": "Corporate and Investment Banking Report 2026: A Golden Window for Growth",
-   "url": "https://www.bcg.com/publications/2026/corporate-and-investment-banking-growth",
-   "date": "2026-10-14",
+   "title": "The Saudi Consumer in 2026: Confident, but Disciplined",
+   "url": "https://www.bcg.com/publications/2026/saudi-arabia-consumer-outlook",
+   "date": "2026-10-23",
    "summary": ""
   },
   {
-   "title": "Digital, Technology, and Data",
-   "url": "https://www.bcg.com/capabilities/digital-technology-data/overview",
-   "date": "2026-10-13",
+   "title": "Biopharma",
+   "url": "https://www.bcg.com/industries/health-care/biopharma",
+   "date": "2026-10-22",
    "summary": ""
   },
   {
-   "title": "The AI-First Tech Function: What CEOs Need to Know",
-   "url": "https://www.bcg.com/publications/2026/ceos-help-ctos-cios-prepare-agentic-ai",
-   "date": "2026-10-13",
+   "title": "New Drug Modalities 2026",
+   "url": "https://www.bcg.com/publications/2026/new-drug-modalities-pipeline-plateau",
+   "date": "2026-10-22",
    "summary": ""
   },
   {
-   "title": "Business Resilience",
-   "url": "https://www.bcg.com/capabilities/business-resilience",
-   "date": "2026-10-13",
+   "title": "Insurance Industry",
+   "url": "https://www.bcg.com/industries/insurance/overview",
+   "date": "2026-10-21",
    "summary": ""
   },
   {
-   "title": "Why Companies Fail: What 50 Years of Data Tells Us",
-   "url": "https://www.bcg.com/publications/2026/why-do-companies-fail-us-failure-rates",
-   "date": "2026-10-13",
+   "title": "The Case for the Unified Agentic Core in Insurance",
+   "url": "https://www.bcg.com/publications/2026/unified-agentic-core-insurance",
+   "date": "2026-10-21",
+   "summary": ""
+  },
+  {
+   "title": "Marketing and Sales",
+   "url": "https://www.bcg.com/capabilities/marketing-sales/overview",
+   "date": "2026-10-21",
+   "summary": ""
+  },
+  {
+   "title": "How Retailers Can Reinvent the Digital Flywheel for Agentic Commerce",
+   "url": "https://www.bcg.com/publications/2026/retailers-win-ai-shopping-agents",
+   "date": "2026-10-21",
+   "summary": ""
+  },
+  {
+   "title": "How the Composable Shelf Reinvents Marketing",
+   "url": "https://www.bcg.com/publications/2026/composable-shelf-agentic-marketing",
+   "date": "2026-10-20",
    "summary": ""
   }
  ],

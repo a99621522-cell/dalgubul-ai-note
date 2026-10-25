@@ -3,10 +3,58 @@
  "name": "IDC Press Releases",
  "group": "해외 컨설팅",
  "home": "https://www.idc.com",
- "fetched": "2026-10-18",
+ "fetched": "2026-10-25",
  "status": "OK",
  "method": "rss(/feed)",
  "items": [
+  {
+   "title": "Spatial Intelligence: What It Is, How It Works, Where It Delivers Value",
+   "url": "https://www.idc.com/resource-center/blog/spatial-intelligence-what-it-is-how-it-works-where-it-delivers-value/",
+   "date": "2026-10-23",
+   "summary": "Spatial intelligence is the ability to understand a physical or virtual space, and how it changes over time, well enough to reason about the likelihood of outcomes based on specific actions. As AI moves from making decisions and taking actions in business processes to doing so in the physical world,"
+  },
+  {
+   "title": "Did IDC’s 50-50 Marketplace Prediction Hold?",
+   "url": "https://www.idc.com/resource-center/blog/did-idcs-50-50-marketplace-prediction-hold/",
+   "date": "2026-10-23",
+   "summary": "In October 2024, IDC&#8217;s FutureScape: Worldwide Future of Industry Ecosystems 2025 Predictions forecast that by 2026, 50% of marketplaces would expand community capabilities, using fair-value monitoring to incent collaboration, and grow their data and application inventory. The other 50% would s"
+  },
+  {
+   "title": "AI Is Short of Capacity, Not Demand",
+   "url": "https://www.idc.com/resource-center/blog/ai-is-short-of-capacity-not-demand/",
+   "date": "2026-10-22",
+   "summary": "Talk of an AI correction usually starts with a change in investor sentiment. Coupled with rocky macroeconomic headwinds, this impacts company valuations, thereby straining financing for AI-specific buildouts. In short, it affects supply. IDC tracks markets, not balance sheets, so we start with the d"
+  },
+  {
+   "title": "The US Robotics Ban Hits Humanoids Hardest and Sends Volume to Europe",
+   "url": "https://www.idc.com/resource-center/blog/us-robotics-ban-humanoids-europe/",
+   "date": "2026-10-22",
+   "summary": "The US robotics ban puts humanoid revenue 58% below baseline by 2030, per IDC. See category impacts, where volume shifts, and how to respond. The post The US Robotics Ban Hits Humanoids Hardest and Sends Volume to Europe appeared first on IDC ."
+  },
+  {
+   "title": "Compute, Power, and Trust Together Will Decide Asia/Pacific’s AI Infrastructure Race",
+   "url": "https://www.idc.com/resource-center/blog/asia-pacific-ai-infrastructure/",
+   "date": "2026-10-22",
+   "summary": "AI hardware spending in Asia/Pacific excluding Japan will reach US$265.4B by 2030. Plan compute, power and trust together to decide where inference runs. The post Compute, Power, and Trust Together Will Decide Asia/Pacific’s AI Infrastructure Race appeared first on IDC ."
+  },
+  {
+   "title": "AI Orchestration: Are Your Employees Ready?",
+   "url": "https://www.idc.com/resource-center/blog/ai-orchestration-are-your-employees-ready/",
+   "date": "2026-10-21",
+   "summary": "Agentic AI is changing what employees do all day. As agents take on much of the work, employees are left to scope the task, write the instructions, watch the run and check the output. That is AI orchestration. Problem is, almost no one was hired or trained for this. So can employees do it? The [&#82"
+  },
+  {
+   "title": "Cybersecurity Fundamentals Still Come First: Know What You Own and Who Owns It",
+   "url": "https://www.idc.com/resource-center/blog/cybersecurity-fundamentals-still-come-first-know-what-you-own-and-who-owns-it/",
+   "date": "2026-10-21",
+   "summary": "If your most critical systems went down tomorrow because of a cyber attack, how long would it take to get running again? And when did you last test that? Michelle Abraham, Research Vice President on IDC’s Security and Trust team, says leadership should know both answers. In a recent conversation, sh"
+  },
+  {
+   "title": "The Enterprise AI Deal Has Changed. Here’s What Vendors Need to Prove.",
+   "url": "https://www.idc.com/resource-center/blog/the-enterprise-ai-deal-has-changed-heres-what-vendors-need-to-prove/",
+   "date": "2026-10-20",
+   "summary": "AI spending is arriving before the business case. In IDC&#8217;s 2026 Worldwide AI Economics and Cost of Ownership Survey, 69% of organizations said there is a significant gap between AI spending and measurable financial outcomes. Only 15% had realized an AI ROI above 100% to date. That gap is why e"
+  },
   {
    "title": "Does IDC’s 75% Specialized Cloud Prediction Hold?",
    "url": "https://www.idc.com/resource-center/blog/does-idcs-75-specialized-cloud-prediction-hold/",
@@ -18,54 +66,6 @@
    "url": "https://www.idc.com/resource-center/blog/why-lights-out-is-the-wrong-way-to-think-about-physical-ai/",
    "date": "2026-10-16",
    "summary": "The robot arm putting parts together on a factory floor is the easy image. It’s not the whole story, and according to Sarah Lee, IDC’s Senior Research Director of Manufacturing IT Strategies, thinking it is the whole story is exactly what’s slowing companies down. Physical AI has become one of those"
-  },
-  {
-   "title": "European AI Stack: Will AI Live in the Public Cloud Alone?",
-   "url": "https://www.idc.com/resource-center/blog/european-ai-stack-will-ai-live-in-the-public-cloud-alone/",
-   "date": "2026-10-15",
-   "summary": "Application, platform, infrastructure and services each follow their own dynamics. IDC analysts Ewa Zborowska and Carla Arend explain where European demand is heading and how vendors can position for it. Europe’s AI market is worth $105 billion, and customers are busy building their own AI stack, la"
-  },
-  {
-   "title": "How to Build a Defensible Technology Recommendation With IDC Quanta for Tech Leaders",
-   "url": "https://www.idc.com/resource-center/blog/how-to-build-a-defensible-technology-recommendation-with-idc-quanta/",
-   "date": "2026-10-14",
-   "summary": "On Monday, you open an email from your CFO: They want to modernize one of the company’s critical technology platforms. They need a proposal with a viable shortlist. And they want a defensible technology recommendation by Friday. By the afternoon, the vendor decks are already piling up. Each has a co"
-  },
-  {
-   "title": "Keep Your Negotiating Evidence After the Vendor Leaves at Signature",
-   "url": "https://www.idc.com/resource-center/blog/keep-your-negotiating-evidence-after-the-vendor-leaves-at-signature/",
-   "date": "2026-10-14",
-   "summary": "Every procurement team knows the moment. The signature page is turned, and the vendor’s negotiation team quietly disappears. What’s left is a contract, a renewal date circled two or three years out, and a procurement lead who now owns every consequence of a deal someone else helped negotiate. That h"
-  },
-  {
-   "title": "When the Stakes Are Real, “Probably Right” Isn’t Good Enough",
-   "url": "https://www.idc.com/resource-center/blog/when-the-stakes-are-real-probably-right-isnt-good-enough/",
-   "date": "2026-10-13",
-   "summary": "How do you decide, in an afternoon, whether a drone program is worth a government&#8217;s time? For Andrew Shipe, that&#8217;s a real, recurring question. As an Innovation Strategist on Sourcewell’s innovation team, Sourcewell Ventures, Shipe helps a government cooperative serving public agencies ac"
-  },
-  {
-   "title": "Why Speed and Control Both Depend on Verified Data",
-   "url": "https://www.idc.com/resource-center/blog/speed-and-control-depend-on-verified-data/",
-   "date": "2026-10-07",
-   "summary": "For years, enterprise technology leaders across industries have operated under a flawed assumption: fast decision-making and rigorous compliance exist on opposite sides of a zero-sum game. But in today’s rapidly changing tech landscape where AI is accelerating everything we do, the math no longer ad"
-  },
-  {
-   "title": "IDC Quanta for Tech Leaders: Make Every Technology Investment Defensible",
-   "url": "https://www.idc.com/resource-center/blog/idc-quanta-for-tech-leaders-launch/",
-   "date": "2026-10-07",
-   "summary": "In IDC analysts’ conversations with technology leaders, reevaluating their vendor ecosystem, controlling volatile AI costs, and proving measurable AI ROI are the same three challenges that keep coming up. Yet depending on the organization, the outcomes could hardly be further apart. In IDC&#8217;s 2"
-  },
-  {
-   "title": "What a 14-Year-Old Got Right About AI in 1984",
-   "url": "https://www.idc.com/resource-center/blog/what-a-14-year-old-got-right-about-ai-in-1984/",
-   "date": "2026-10-06",
-   "summary": "The questions I asked about AI at 14 still hold up today: can a machine ask “Why? and How?”, and does it benefit society? Forty-two years ago, I wrote about AI in the non-fiction, math models section for Quest magazine, a high school literary compilation that tapped into creative talent from student"
-  },
-  {
-   "title": "The New Battleground for Enterprise Software: The UI Layer",
-   "url": "https://www.idc.com/resource-center/blog/the-new-battleground-for-enterprise-software-the-ui-layer/",
-   "date": "2026-10-05",
-   "summary": "I called the death of the SaaS UI &#8220;wonderful&#8221; two weeks ago in my prior blog, and I stand by it. But a death this size leaves something behind: real estate. Somebody inherits the land the UI vacates, and that fight is already underway. Salesforce didn&#8217;t just retire its own interfac"
   }
  ],
  "note": "",

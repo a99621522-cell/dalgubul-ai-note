@@ -109,7 +109,7 @@ const asks: string[] = [];
 if (empChange && empChange.pct != null && Math.abs(empChange.pct) >= 10)
   asks.push(`고용 인원이 ${monthLabel(empChange.from[0])} ${empChange.from[1].toLocaleString('ko-KR')}명에서 ${monthLabel(empChange.to[0])} ${empChange.to[1].toLocaleString('ko-KR')}명으로 ${empChange.diff > 0 ? '늘었습니다' : '줄었습니다'}(${pct1(empChange.pct)}%). 변화 배경(수주·증설·이전·인력 수급 등)을 여쭤볼 수 있습니다.`);
 for (const f of futs.slice(0, 2)) asks.push(`${ymd(f.rcept_dt)} 공시 「${f.report_nm}」${f.fields ? `(${f.fields})` : ''}의 진행 상황과 필요한 행정 지원을 확인할 수 있습니다.`);
-if (mg?.new_biz) asks.push(`사업보고서에 적은 신사업·진출 계획(아래 '경영 방향' 문구)의 추진 일정과 애로를 여쭤볼 수 있습니다.`);
+if (mg?.new_biz) asks.push(`사업보고서에 적은 신사업·진출 계획(위 '회사가 공시한 경영 방향' 문구)의 추진 일정과 애로를 여쭤볼 수 있습니다.`);
 if (perfs[0]) asks.push(`${ymd(perfs[0].rcept_dt)} 실적 공시(${perfs[0].kind})에 적힌 변동 사유의 이후 흐름을 확인할 수 있습니다.`);
 if (!supportAll.length) asks.push(`공개 명단(NTIS 과제·대구시 보조금 공개·기관 선정 공고)에서 지원 이력을 찾지 못했습니다. 이용 중인 지원사업이나 알고 싶은 지원 분야를 여쭤볼 수 있습니다.`);
 else if (!support3y.length) asks.push(`공개 명단의 지원 이력이 ${supportAll[0].year}년이 마지막입니다. 최근 이용한 지원사업을 확인할 수 있습니다.`);
@@ -120,7 +120,7 @@ if (!asks.length) asks.push('공개 자료에서 따로 짚을 변화가 보이�
 const brief = {
   name: c.name, date: todayStr, url: `https://daitda.co.kr/companies/${c.id}/`,
   head: ([
-    ['소재', `${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''} · ${c.complex} · ${c.site_type}`],
+    ['소재', [`${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''}`, c.complex, c.site_type].filter((x, i, a) => x && a.indexOf(x) === i).join(' · ')],
     ['업종', `${c.sector.replace(/ 외 \d+ 종/, '')}${c.sector_code ? ` (${c.sector_code})` : ''} · ${grpName}`],
     !fromNps && c.product && ['생산품', c.product],
     corp?.cls && ['상장·공시', `${corp.cls}${corp.stock ? ` ${corp.stock}` : ''} · DART 공시 회사`],

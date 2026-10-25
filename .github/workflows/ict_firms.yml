@@ -1,0 +1,45 @@
+name: 수성알파시티·대경ICT협회 기업 명단 받기
+
+# scripts/fetch_ict_firms.py — 수성알파시티 기업현황(인터넷 보관소 사본, 미국 러너는 원 사이트 403)과
+# 대경ICT산업협회 회원사(dgict.org, 등급·홈페이지만)를 data/ict_firms/ 로 커밋한다. 수동 실행 + 스크립트 푸시 때.
+on:
+  workflow_dispatch:
+    inputs:
+      args:
+        description: "추가 인자(예: --no-alpha, --no-detail)"
+        required: false
+        default: ""
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: [".github/workflows/ict_firms.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ict-firms-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          PYTHONUNBUFFERED: "1"
+          ARGS_IN: ${{ inputs.args }}
+        run: python3 scripts/fetch_ict_firms.py $ARGS_IN
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/ict_firms 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 수성알파시티·대경ICT협회 기업 명단 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

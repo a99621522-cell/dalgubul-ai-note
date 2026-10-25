@@ -3,10 +3,10 @@ import hwpxCompat from '../../../data/hwpx/compat.json';
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { companies, shortComplex, supportOf, recentSupport, fmtAmount, financialsOf, fmtEokWon, normName, factsOf, sinceLabel } from '../../lib/csv';
-import { futureDisclosures, ymd, employeesOf, n0, mil, rndOf, investOf, purposeOf } from '../../lib/dart';
+import { futureDisclosures, ymd, employeesOf, n0, mil, rndOf, investOf, purposeOf, dartCorps, qByCode, qYoY, mgmtByCode, perfByCode, futByCode, opMargin, revGrowth, debtRatio, pct1 } from '../../lib/dart';
 import { partners } from '../../lib/partners';
 import { tagName, tagDesc } from '../../lib/sites';
-import { companyStats, monthly, monthLabel, fmt } from '../../lib/stats';
+import { companyStats, monthly, monthLabel, fmt, timeseries } from '../../lib/stats';
 import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   return companies().map(c => ({ params: { id: c.id }, props: { c } }));
@@ -77,6 +77,77 @@ const card = {
     groups: [['공급 후보', pt.suppliers], ['수요 후보', pt.buyers], ['동종 업체', pt.peers]].map(([g, list]: any) => [g, list.slice(0, 4).map((x: any) => [x.name, shortComplex(x.complex), x.sector.replace(/ 외 \d+ 종/, ''), x.workers_band || '—'])]) },
   source: `${c.source}, 기준 ${c.as_of}`,
 };
+
+/* ---------- 기업 방문 브리핑(2026-10-25, 운영자 지시 '1부터해' — 공무원이 기업 방문·간담회 전에 만드는 한두 장 자료) ----------
+ * 기업 카드보다 넓게: 한눈에(소재·업종·규모·구분) → 고용 변화 → 실적(DART 연간·최근 분기) → 회사가 공시한 경영 방향(문구 그대로) → 최근 공시
+ * → 지원 이력 → 대구 같은 업종·같은 단지 현황 → 방문 때 확인해 볼 점(공개 자료에서 뽑은 질문 거리, 평가 아님) → 협업 후보 → 출처.
+ * 값은 화면과 같은 자료만(src/scripts/company_brief.ts 가 Word·PDF 로). 평가·추천·순위 없음, 대표자 등 개인정보 없음. */
+const corp = dartCorps().corps.find(x => x.companyId === c.id) ?? dartCorps().corps.find(x => normName(x.name) === normName(c.name));
+const qs = corp ? qByCode(corp.code) : [];
+const qLast = qs.at(-1);
+const mg = corp ? mgmtByCode(corp.code) : undefined;
+const perfs = corp ? perfByCode(corp.code).slice(0, 3) : [];
+const futs = corp ? futByCode(corp.code).slice(0, 4) : fut.slice(0, 4);
+const allMonths: string[] = cs?.months ?? [];
+// 2025-06 판부터 국민연금 파일의 사업장 행·업종코드 채움이 달라져 그 전후를 한 추세로 읽지 않는다(data/nps README) — 비교는 2025-06 이후 달끼리
+const empPts = series.map((v, i) => [months[i], v] as [string, number | null]).filter(([mo, v]) => v != null && mo >= '2025-06') as [string, number][];
+const empFirst = empPts[0], empLast = empPts.at(-1);
+const empChange = empFirst && empLast && empFirst[0] !== empLast[0] ? { from: empFirst, to: empLast, diff: empLast[1] - empFirst[1], pct: empFirst[1] > 0 ? (empLast[1] / empFirst[1] - 1) * 100 : null } : null;
+const ts = timeseries();
+const grpName = c.sector_group;
+const gm = m?.by_industry?.[grpName], cm = m?.by_complex?.[c.complex];
+const grpSeries = ts?.by_industry?.[grpName]?.employment ?? [];
+const tsMonths = ts?.months ?? [];
+const gi0 = tsMonths.findIndex(x => x >= '2025-06'), giL = tsMonths.length - 1;
+const grpChange = gi0 >= 0 && giL > gi0 && grpSeries[gi0] && grpSeries[giL] ? { from: tsMonths[gi0], to: tsMonths[giL], a: grpSeries[gi0]!, b: grpSeries[giL]!, pct: (grpSeries[giL]! / grpSeries[gi0]! - 1) * 100 } : null;
+const fy = (f?: typeof fin[number]) => f ? `${f.year}년` : '';
+const venture = facts.find(f => f.tag === 'venture');
+const bi = facts.find(f => f.tag === 'bi');
+const todayStr = new Date().toISOString().slice(0, 10);
+const in6m = (d: string) => { if (!d) return false; const t = Date.parse(d.replace(/\./g, '-')); return Number.isFinite(t) && t >= Date.now() && t - Date.now() < 183 * 864e5; };
+const asks: string[] = [];
+if (empChange && empChange.pct != null && Math.abs(empChange.pct) >= 10)
+  asks.push(`고용 인원이 ${monthLabel(empChange.from[0])} ${empChange.from[1].toLocaleString('ko-KR')}명에서 ${monthLabel(empChange.to[0])} ${empChange.to[1].toLocaleString('ko-KR')}명으로 ${empChange.diff > 0 ? '늘었습니다' : '줄었습니다'}(${pct1(empChange.pct)}%). 변화 배경(수주·증설·이전·인력 수급 등)을 여쭤볼 수 있습니다.`);
+for (const f of futs.slice(0, 2)) asks.push(`${ymd(f.rcept_dt)} 공시 「${f.report_nm}」${f.fields ? `(${f.fields})` : ''}의 진행 상황과 필요한 행정 지원을 확인할 수 있습니다.`);
+if (mg?.new_biz) asks.push(`사업보고서에 적은 신사업·진출 계획(아래 '경영 방향' 문구)의 추진 일정과 애로를 여쭤볼 수 있습니다.`);
+if (perfs[0]) asks.push(`${ymd(perfs[0].rcept_dt)} 실적 공시(${perfs[0].kind})에 적힌 변동 사유의 이후 흐름을 확인할 수 있습니다.`);
+if (!supportAll.length) asks.push(`공개 명단(NTIS 과제·대구시 보조금 공개·기관 선정 공고)에서 지원 이력을 찾지 못했습니다. 이용 중인 지원사업이나 알고 싶은 지원 분야를 여쭤볼 수 있습니다.`);
+else if (!support3y.length) asks.push(`공개 명단의 지원 이력이 ${supportAll[0].year}년이 마지막입니다. 최근 이용한 지원사업을 확인할 수 있습니다.`);
+if (venture && in6m(venture.date_to)) asks.push(`벤처기업 확인 유효기간이 ${venture.date_to}에 끝납니다. 재확인 계획을 여쭤볼 수 있습니다.`);
+if (bi) asks.push(`창업보육센터 입주 기업입니다(${bi.date_from ? `입주 ${bi.date_from}` : '입주일 미상'}). 졸업 뒤 입지(공장·사무실) 계획을 여쭤볼 수 있습니다.`);
+if (c.reg_type && c.reg_type !== '등록') asks.push(`공장이 설립 승인 단계(등록 전)로 나옵니다. 착공·등록 일정과 인허가 애로를 확인할 수 있습니다.`);
+if (!asks.length) asks.push('공개 자료에서 따로 짚을 변화가 보이지 않습니다. 최근 경영 여건과 애로 사항을 여쭤볼 수 있습니다.');
+const brief = {
+  name: c.name, date: todayStr, url: `https://daitda.co.kr/companies/${c.id}/`,
+  head: ([
+    ['소재', `${c.district}${c.eupmyeon ? ' ' + c.eupmyeon : ''} · ${c.complex} · ${c.site_type}`],
+    ['업종', `${c.sector.replace(/ 외 \d+ 종/, '')}${c.sector_code ? ` (${c.sector_code})` : ''} · ${grpName}`],
+    !fromNps && c.product && ['생산품', c.product],
+    corp?.cls && ['상장·공시', `${corp.cls}${corp.stock ? ` ${corp.stock}` : ''} · DART 공시 회사`],
+    ['고용 인원', emp == null ? '자료 없음' : `${emp.toLocaleString('ko-KR')}명 (${basis}${m ? `, ${monthLabel(m.month)} 기준` : ''})`],
+    c.tags.length && ['구분', c.tags.map(t => tagName(t)).join(', ') + ' (공개 명단)'],
+    ['주소', c.address],
+  ] as any[]).filter(Boolean),
+  emp: empPts.length >= 2 ? { months: empPts.map(x => x[0]), vals: empPts.map(x => x[1]), note: `${basis} 기준. 2025년 5월 이전 자료는 집계 방식이 달라 함께 비교하지 않습니다.` } : null,
+  fin: fin.map((f, i) => [fy(f), fmtEokWon(f.revenue), fmtEokWon(f.operating_income), (() => { const v = opMargin(f); return v == null ? '—' : `${v.toFixed(1)}%`; })(), (() => { const v = revGrowth(f, fin[i + 1]); return v == null ? '—' : `${pct1(v)}%`; })()]),
+  finNote: fin.length ? `DART 사업보고서(${fin[0].fs}) 값. 영업이익률·매출 증감은 공시 값의 나눗셈.` : '',
+  qtr: qLast ? `${qLast.year}년 ${qLast.quarter}분기(3개월) 매출 ${fmtEokWon(qLast.revenue)}, 영업이익 ${fmtEokWon(qLast.operating_income)}${qYoY(qLast) != null ? `, 매출 전년 같은 분기 대비 ${pct1(qYoY(qLast))}%` : ''} (분기보고서, ${qLast.fs})` : '',
+  debt: fin[0] && debtRatio(fin[0]) != null ? `부채비율 ${debtRatio(fin[0])!.toFixed(1)}% (${fy(fin[0])} 말)` : '',
+  dartEmp: dartEmp[0] ? `DART 직원 ${n0(dartEmp[0].employees)}명(${dartEmp[0].year}년 말)${dartRndRows[0]?.rnd_won ? ` · 연구개발비 ${fmtEokWon(dartRndRows[0].rnd_won)}(${dartRndRows[0].year}년${dartRndRows[0].ratio_pct ? `, 매출 대비 ${dartRndRows[0].ratio_pct}%` : ''})` : ''}` : '',
+  mgmt: mg ? [['회사 상황', mg.overview], ['전망·계획', mg.outlook], ['신사업·진출', mg.new_biz]].filter(([, t]) => t).map(([k, t]) => [k, String(t).slice(0, 260)]) : [],
+  mgmtSrc: mg ? `${mg.report_year}년 사업보고서 '이사의 경영진단'·'사업의 내용' 문구 그대로(${ymd(mg.rcept_dt)} 공시)` : '',
+  disc: [...futs.map(f => [ymd(f.rcept_dt), f.report_nm, f.fields || f.event || '']), ...perfs.map(x => [ymd(x.rcept_dt), x.report_nm, (x.excerpt || '').slice(0, 80)])].slice(0, 6),
+  support: support3y.slice(0, 6).map(s => [s.year, s.program, s.funder, fmtAmount(s)]),
+  supportNote: support3y.length ? `공개 자료 기준 최근 3년 ${support3y.length}건${support3y.length > 6 ? '(6건만 표시)' : ''}${supportAll.length > support3y.length ? `, 그 전 ${supportAll.length - support3y.length}건` : ''}.` : `공개 자료(NTIS 과제·대구시 보조금 공개·기관 선정 공고)에서 최근 3년 이력을 찾지 못했습니다${supportAll.length ? `(그 전 ${supportAll.length}건)` : ''}.`,
+  ctx: ([
+    gm && [`대구 ${grpName}`, `${gm.firms.toLocaleString('ko-KR')}곳 · 고용 ${gm.employment.toLocaleString('ko-KR')}명${grpChange ? ` · ${grpChange.from}→${grpChange.to} 고용 ${pct1(grpChange.pct)}%` : ''}`],
+    cm && c.complex !== '개별입지' && c.complex !== '산단 외' && [c.complex, `${cm.firms.toLocaleString('ko-KR')}곳 · 고용 ${cm.employment.toLocaleString('ko-KR')}명`],
+  ] as any[]).filter(Boolean),
+  ctxNote: m ? `기업 사전 월간 집계(${monthLabel(m.month)} 기준, 고용은 국민연금 가입자로 이어진 사업장만). 이 회사와 견주는 값이 아니라 업종·단지의 크기를 보여 주는 참고값입니다.` : '',
+  asks,
+  partners: [['공급 후보', pt.suppliers], ['수요 후보', pt.buyers], ['동종 업체', pt.peers]].map(([g, list]: any) => [g, list.slice(0, 3).map((x: any) => x.name).join(', ')]).filter(([, t]) => t),
+  source: `${c.source}(${c.as_of})${corp ? ' · 금융감독원 DART' : ''} · 국민연금 사업장 내역 · 공개 지원사업 명단`,
+};
 ---
 <Base title={c.name} description={desc} current="companies" jsonld={jsonld} crumb={c.name}>
   <article class="post">
@@ -88,6 +159,8 @@ const card = {
         <button type="button" class="btn secondary" id="card-hwp" title="이 기업의 개요·지원 이력·재무·협업 후보를 PDF 한 장으로 받습니다">기업 카드 PDF</button>
         {hwpxCompat.approved && <button type="button" class="btn secondary" id="card-hwpx" title="한글 파일(.hwpx)로 받습니다 — 실물 시험 통과 판">기업 카드 HWP</button>}
         <button type="button" class="btn secondary" id="card-docx" title="한글(HWP)·워드에서 바로 열어 고칠 수 있는 Word 파일로 받습니다">기업 카드 Word</button>
+        <button type="button" class="btn" id="brief-docx" title="기업 방문·간담회 전에 보는 브리핑(개요·고용 변화·실적·경영 방향·최근 공시·지원 이력·업종 현황·확인해 볼 점)을 Word 로 받습니다 — 한글에서 바로 열립니다">방문 브리핑 Word</button>
+        <button type="button" class="btn secondary" id="brief-pdf" title="같은 브리핑을 PDF 로 받습니다">방문 브리핑 PDF</button>
         <button type="button" class="btn secondary" id="card-print" title="브라우저 인쇄 창으로 인쇄합니다">인쇄</button>
       </div>
     </header>
@@ -197,7 +270,8 @@ const card = {
     </aside>
   </article>
   <script type="application/json" id="card-data" set:html={JSON.stringify(card)} />
-  <script>import '../../scripts/company_card';</script>
+  <script type="application/json" id="brief-data" set:html={JSON.stringify(brief).replace(/</g, '\\u003c')} />
+  <script>import '../../scripts/company_card'; import '../../scripts/company_brief';</script>
 </Base>
 <style>
   .partners, .support, .fin, .facts { margin-top: 1.5rem; }

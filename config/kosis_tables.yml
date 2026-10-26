@@ -158,6 +158,14 @@ tables:
     prd_se: M
     years: 3
     area_col: C1
+  - key: housing-unsold-sigungu
+    name: 미분양주택현황보고 — 시·군·구별 미분양 주택(월간, 국토교통부) — 구·군 경제 현황 인구이동 옆(운영자 지시 2026-10-26 '1 2 3 다 해봐')
+    org_id: "116"
+    tbl_id: "DT_MLTM_2082"   # 2026-10-26 discover. e-지방지표 DT_1YL202004E 는 받으면 시군구 칸이 뒤섞여 와 안 씀, 준공(DT_MLTM_5372)·인허가(DT_1YL7501E)는 시도까지만
+    prd_se: M
+    years: 3
+    area_col: C1
+    area: []
   - key: migration-age-sido
     name: 국내인구이동통계 — 시도·연령별 순이동(연간)
     tbl_id: "DT_1B26002"

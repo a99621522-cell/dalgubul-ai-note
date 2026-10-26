@@ -150,3 +150,122 @@ export function tourism() {
   }]));
   return { from: ymLabel(last12[0]), to: ymLabel(last12.at(-1)!), by };
 }
+
+/** KOSIS 시도·시군구 표(행이 지역 묶음 → 항목 → 달 순서)에서 대구 구·군 값만: 지역 이름이 바뀌는 곳을 묶음 경계로 보고,
+ *  '대구광역시' 묶음 바로 뒤 구·군 묶음만 대구로 본다(중구·남구 등 같은 이름이 다른 시도에도 있다). 이름 속 띄어쓰기('중  구')는 붙인다. */
+function daeguCells(file: string): { v: Map<string, number>; months: string[] } | null {
+  const rows = readCsv(file);
+  if (!rows.length) return null;
+  const v = new Map<string, number>();   // `${항목}|${구·군}|${YYYYMM}`
+  let inDaegu = false, block = '';
+  for (const r of rows) {
+    const nm = r.C1_NM.replace(/\s+/g, '');
+    if (r.C1_NM !== block) {
+      block = r.C1_NM;
+      if (nm === '대구광역시') inDaegu = true;
+      else if (!(GU as readonly string[]).includes(nm)) inDaegu = false;
+    }
+    if (!inDaegu || nm === '대구광역시') continue;
+    const n = num(r.DT); if (n != null) v.set(`${r.ITM_NM}|${nm}|${r.PRD_DE}`, n);
+  }
+  return { v, months: [...new Set(rows.map(r => r.PRD_DE))].sort() };
+}
+
+/** 추이 그래프용 월별 값: 전입 − 전출(국내인구이동통계)과 주민등록인구(첫 달 대비 증감률). */
+export function trends() {
+  const mg = daeguCells('data/kosis/migration-sido.csv'), pp = daeguCells('data/kosis/population-sigungu-monthly.csv');
+  const series = (c: typeof mg, item: string) => c ? new Map(GU.map(g => [g, c.months.map(m => ({ m, v: c.v.get(`${item}|${g}|${m}`) ?? null }))])) : null;
+  const net = series(mg, '순이동');
+  const popRaw = series(pp, '총인구수');
+  const pop = popRaw ? new Map([...popRaw].map(([g, pts]) => { const b = pts.find(x => x.v != null)?.v ?? null; return [g, pts.map(x => ({ m: x.m, v: x.v != null && b ? (x.v / b - 1) * 100 : null, raw: x.v }))]; })) : null;
+  return { net, pop, netMonths: mg?.months ?? [], popMonths: pp?.months ?? [] };
+}
+
+/** 국내인구이동통계 시군구별 이동자수(KOSIS DT_1B26001_A01, 저장 키 migration-sido — 시도·시군구 행이 함께 온다).
+ *  '대구광역시' 행 바로 뒤의 구·군 행만 대구로 본다(중구·남구 등 같은 이름이 다른 시도에도 있다). 이름 속 띄어쓰기('중  구')는 붙인다.
+ *  군위군은 2023년 7월부터 대구 아래에 온다 — 열두 달이 다 있지 않은 기간은 합을 내지 않는다. */
+export const MIG_ITEMS = ['총전입', '총전출', '순이동', '시도내이동-시군구간 전입', '시도내이동-시군구간 전출', '시도간전입', '시도간전출'] as const;
+export function migration() {
+  const c = daeguCells('data/kosis/migration-sido.csv');
+  if (!c) return null;
+  const { v, months } = c;
+  const latest = months.at(-1)!;
+  const last12 = months.slice(-12), prev12 = months.length >= 24 ? months.slice(-24, -12) : [];
+  const sum = (item: string, g: string, ms: string[]) => { if (!ms.length) return null; let s = 0; for (const m of ms) { const x = v.get(`${item}|${g}|${m}`); if (x == null) return null; s += x; } return s; };
+  const years = [...new Set(months.map(m => m.slice(0, 4)))].filter(y => months.filter(m => m.startsWith(y)).length === 12);
+  const by = new Map(GU.map(g => {
+    const s = (it: string, ms = last12) => sum(it, g, ms);
+    const inner = s('시도내이동-시군구간 전입'), innerOut = s('시도내이동-시군구간 전출'), sidoIn = s('시도간전입'), sidoOut = s('시도간전출');
+    return [g, {
+      inflow: s('총전입'), outflow: s('총전출'), net: s('순이동'), netPrev: s('순이동', prev12),
+      innerNet: inner != null && innerOut != null ? inner - innerOut : null, sidoNet: sidoIn != null && sidoOut != null ? sidoIn - sidoOut : null,
+      latestNet: v.get(`순이동|${g}|${latest}`) ?? null,
+      yearNet: years.map(y => sum('순이동', g, months.filter(m => m.startsWith(y)))),
+    }];
+  }));
+  return { latest: ymLabel(latest), from: ymLabel(last12[0]), years, by, url: 'https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B26001_A01' };
+}
+
+/** 소상공인시장진흥공단 상가(상권)정보 대구 집계(scripts/fetch_sbiz_stores.py → data/stores/). 상가업소 명단의 점포 수이지 사업체 조사 값이 아니다. */
+export function stores() {
+  let idx: { quarters: Record<string, { stores: number; file: string; daegu_file?: string }>; source?: string; url?: string };
+  try { idx = JSON.parse(fs.readFileSync('data/stores/index.json', 'utf-8')); } catch { return null; }
+  const qs = Object.keys(idx.quarters).filter(q => fs.existsSync(`data/stores/gu_${q}.csv`)).sort();
+  const q = qs.at(-1); if (!q) return null;
+  // 판 이름은 기준월로(대구 파일 이름의 YYYYMM — 분기 판이 10월 기준으로 나온 때가 있다)
+  const qLabel = (x: string) => { const ym = (idx.quarters[x]?.daegu_file ?? idx.quarters[x]?.file ?? '').match(/(20\d{2})(0[1-9]|1[0-2])/); return ym ? `${ym[1]}년 ${Number(ym[2])}월` : `${x.slice(0, 4)}년 ${x.slice(-1)}분기`; };
+  const load = (x: string) => readCsv(`data/stores/gu_${x}.csv`);
+  const cur = load(q);
+  const yearAgo = `${Number(q.slice(0, 4)) - 1}${q.slice(4)}`;
+  const prev = qs.includes(yearAgo) ? load(yearAgo) : null;
+  const large = [...new Set(cur.map(r => r.large))].sort((a, b) => cur.filter(r => r.large === b).reduce((s, r) => s + Number(r.stores), 0) - cur.filter(r => r.large === a).reduce((s, r) => s + Number(r.stores), 0));
+  const total = (rows: Record<string, string>[], g: string, l?: string) => rows.filter(r => r.sigungu === g && (!l || r.large === l)).reduce((s, r) => s + Number(r.stores), 0);
+  const flow = readCsv('data/stores/flow.csv').filter(r => r.to === q);
+  const from = flow[0]?.from ?? '';
+  const by = new Map(GU.map(g => {
+    const fl = flow.filter(r => r.sigungu === g);
+    return [g, { total: total(cur, g), yearAgo: prev ? total(prev, g) : null, l: large.map(l => total(cur, g, l)),
+      fresh: fl.length ? fl.reduce((s, r) => s + Number(r.new), 0) : null, gone: fl.length ? fl.reduce((s, r) => s + Number(r.gone), 0) : null,
+      lNew: large.map(l => fl.filter(r => r.large === l).reduce((s, r) => s + Number(r.new), 0)), lGone: large.map(l => fl.filter(r => r.large === l).reduce((s, r) => s + Number(r.gone), 0)) }];
+  }));
+  const dong = readCsv(`data/stores/dong_${q}.csv`);
+  const dongs = GU.flatMap(g => [...new Set(dong.filter(r => r.sigungu === g).map(r => r.dong))].sort((a, b) => a.localeCompare(b, 'ko')).map(d => ({ g, d, total: dong.filter(r => r.sigungu === g && r.dong === d).reduce((s, r) => s + Number(r.stores), 0), l: large.map(l => Number(dong.find(r => r.sigungu === g && r.dong === d && r.large === l)?.stores ?? 0)) })));
+  return { q: qLabel(q), yearAgo: prev ? qLabel(yearAgo) : '', from: from ? qLabel(from) : '', large, by, dongs, quarters: qs.map(qLabel), source: idx.source ?? '', url: idx.url ?? '' };
+}
+
+/** 법정동(군 지역은 읍·면) 단위: 국민연금 사업장·가입자(지번주소 셋째 낱말)와 기업 사전 기업(읍면 칸 → 없으면 도로명주소 괄호 속 동).
+ *  상가 점포는 행정동이라 이 표와 합치지 않는다(stores().dongs). 동 이름을 못 찾은 기업은 '동 미상'으로 따로 센다. */
+export function legalDongs() {
+  const np = nps();
+  const key = (g: string, d: string) => `${g}|${d}`;
+  const m = new Map<string, { g: string; d: string; sites: number; members: number; firms: number; foWorkers: number }>();
+  const get = (g: string, d: string) => m.get(key(g, d)) ?? m.set(key(g, d), { g, d, sites: 0, members: 0, firms: 0, foWorkers: 0 }).get(key(g, d))!;
+  if (np) {
+    for (const r of readCsv(`data/nps/${np.latest}.csv`)) {
+      const g = NPS_CODE[r['법정동주소광역시시군구코드']]; if (!g || r['사업장가입상태코드'] !== '1') continue;
+      const d = (r['사업장지번상세주소'] ?? '').split(/\s+/)[2]; if (!d) continue;
+      const o = get(g, d); o.sites++; o.members += num(r['가입자수']) ?? 0;
+    }
+  }
+  const unknown = new Map<string, number>();
+  for (const c of companies()) {
+    if (!(GU as readonly string[]).includes(c.district)) continue;
+    const d = c.eupmyeon || c.address.match(/\(([^,()]*?[가-힣0-9]+(?:동|가|읍|면))(?:[,)])/)?.[1]?.trim() || '';
+    if (!d) { unknown.set(c.district, (unknown.get(c.district) ?? 0) + 1); continue; }
+    const o = get(c.district, d); o.firms++; if (c.id.startsWith('c')) o.foWorkers += Number(c.workers) || 0;
+  }
+  const rows = GU.flatMap(g => [...m.values()].filter(x => x.g === g).sort((a, b) => a.d.localeCompare(b.d, 'ko')));
+  return { month: np?.latestLabel ?? '', rows, unknown };
+}
+
+/** 국토교통부 미분양주택현황보고 「시·군·구별 미분양현황」(KOSIS 116 DT_MLTM_2082, 월간, 호). 시도 칸이 '대구'인 행의 구·군 칸만. */
+export function unsold() {
+  const rows = readCsv('data/kosis/housing-unsold-sigungu.csv').filter(r => r.C1_NM === '대구');
+  if (!rows.length) return null;
+  const months = [...new Set(rows.map(r => r.PRD_DE))].sort();
+  const series = new Map(GU.map(g => [g, months.map(m => ({ m, v: num(rows.find(r => r.C2_NM === g && r.PRD_DE === m)?.DT) }))]));
+  const latest = months.at(-1)!, yearAgo = `${Number(latest.slice(0, 4)) - 1}${latest.slice(4)}`;
+  const at = (g: string, m: string) => series.get(g)?.find(p => p.m === m)?.v ?? null;
+  const by = new Map(GU.map(g => [g, { now: at(g, latest), yearAgo: months.includes(yearAgo) ? at(g, yearAgo) : null }]));
+  return { latest: ymLabel(latest), yearAgo: months.includes(yearAgo) ? ymLabel(yearAgo) : '', series, by, url: 'https://kosis.kr/statHtml/statHtml.do?orgId=116&tblId=DT_MLTM_2082' };
+}

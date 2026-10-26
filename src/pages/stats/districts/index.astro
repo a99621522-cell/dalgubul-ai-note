@@ -4,11 +4,11 @@ import StatsNav from '../../../components/StatsNav.astro';
 import SourceBadge from '../../../components/SourceBadge.astro';
 import DistrictTrends from '../../../components/DistrictTrends.astro';
 import { TOPICS } from '../../../lib/statsTopics';
-import { GU, NPS_GROUPS, population, employed, nps, firms, complexesByGu, commute, tourism, migration, stores, trends, legalDongs } from '../../../lib/districts';
+import { GU, NPS_GROUPS, population, employed, nps, firms, complexesByGu, commute, tourism, migration, stores, trends, legalDongs, unsold } from '../../../lib/districts';
 /** /stats/districts/ — 구·군 경제 현황(운영자 지시 2026-10-26). 공개 자료만 9개 구·군으로 나눠 나란히. 근거마다 기준이 달라 더하거나 나누지 않는다.
  *  행 순서는 행정 순서, 값은 원 자료 그대로(묶음 합·비중·증감 나눗셈만), 평가·순위 없음. */
 const t = TOPICS.find(x => x.key === 'districts')!;
-const pop = population(), emp = employed(), np = nps(), fi = firms(), cx = complexesByGu(), cm = commute(), tr = tourism(), mg = migration(), st = stores(), td = trends(), ld = legalDongs();
+const pop = population(), emp = employed(), np = nps(), fi = firms(), cx = complexesByGu(), cm = commute(), tr = tourism(), mg = migration(), st = stores(), td = trends(), ld = legalDongs(), us = unsold();
 const f0 = (v: number | null | undefined) => (v == null ? '—' : Math.round(v).toLocaleString('ko-KR'));
 const f1 = (v: number | null | undefined) => (v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
 const pct = (a: number | null | undefined, b: number | null | undefined) => (a == null || !b ? null : (a / b - 1) * 100);
@@ -28,12 +28,13 @@ const maxM = Math.max(1, ...mnets.map(n => Math.abs(n.v)));
 // 구·군 한 장 요약(Word·PDF) 자료 — 화면 값과 같은 것만(src/scripts/district_card.ts)
 const guData = {
   url: 'https://daitda.co.kr/stats/districts/', built: new Date().toISOString().slice(0, 10),
-  sources: ['주민등록인구·국내인구이동통계·지역별고용조사·인구총조사(KOSIS)', '국민연금공단 가입 사업장 내역', '팩토리온 공장등록·기업 사전', st ? '소상공인시장진흥공단 상가(상권)정보' : '', tr ? '한국관광 데이터랩' : ''].filter(Boolean).join(' · '),
+  sources: ['주민등록인구·국내인구이동통계·지역별고용조사·인구총조사(KOSIS)', '국토교통부 미분양주택현황보고', '국민연금공단 가입 사업장 내역', '팩토리온 공장등록·기업 사전', st ? '소상공인시장진흥공단 상가(상권)정보' : '', tr ? '한국관광 데이터랩' : ''].filter(Boolean).join(' · '),
   gu: GU.map(g => {
     const p = pop?.by.get(g), e = emp?.by.get(g), n = np?.now.get(g), n0 = np?.prev?.get(g), c = fi.by.get(g)!, k = cm?.by.get(g), v = tr?.by.get(g), m = mg?.by.get(g), s2 = st?.by.get(g);
     const rows: [string, string, string][] = [
       ['인구', `${f0(p?.now)}명`, `주민등록, ${pop?.latest ?? ''}`],
       ['인구 증감(2015→연말)', `${sgn(pct(p?.yEnd, p?.y2015))}%`, `주민등록, ${pop?.endLabel ?? ''}`],
+      ...(us ? [['미분양 주택', `${f0(us.by.get(g)!.now)}호`, `국토교통부, ${us.latest}${us.yearAgo ? ` (${us.yearAgo} ${f0(us.by.get(g)!.yearAgo)}호)` : ''}`] as [string, string, string]] : []),
       ...(m ? [['전입 − 전출', `${sgn0(m.net)}명`, `최근 12개월(${mg!.from}~${mg!.latest}), 대구 안 ${sgn0(m.innerNet)} · 다른 시도 ${sgn0(m.sidoNet)}`] as [string, string, string]] : []),
       ['취업자(사는 곳)', `${f1(e?.total)}천 명`, `지역별고용조사, ${emp?.period ?? ''}`],
       ['국민연금 사업장', `${f0(n?.sites)}곳`, `사업장 주소, ${np?.latestLabel ?? ''}`],
@@ -215,10 +216,10 @@ const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--
       ))}
     </div>
     <div class="scroll-x"><table class="data-table" data-title={`대구 구·군 전입·전출 (${mg.from}~${mg.latest}, 명)`}>
-      <thead><tr><th>구·군</th><th class="n">전입</th><th class="n">전출</th><th class="n">전입 − 전출</th><th class="n">그중 대구 안 다른 구·군과</th><th class="n">그중 다른 시도와</th><th class="n" data-pri="2">인구 대비(%)</th><th class="n" data-pri="2">앞 12개월 전입 − 전출</th>{mg.years.map(y => <th class="n" data-pri="3">{y}년</th>)}</tr></thead>
-      <tbody>{GU.map(g => { const m = mg.by.get(g)!; return <tr><th scope="row">{g}</th><td class="n">{f0(m.inflow)}</td><td class="n">{f0(m.outflow)}</td><td class="n">{sgn0(m.net)}</td><td class="n">{sgn0(m.innerNet)}</td><td class="n">{sgn0(m.sidoNet)}</td><td class="n">{m.net == null || !pop?.by.get(g)?.now ? '—' : sgn((m.net / pop!.by.get(g)!.now!) * 100)}</td><td class="n">{sgn0(m.netPrev)}</td>{m.yearNet.map(x => <td class="n">{sgn0(x)}</td>)}</tr>; })}</tbody>
+      <thead><tr><th>구·군</th><th class="n">전입</th><th class="n">전출</th><th class="n">전입 − 전출</th><th class="n">그중 대구 안 다른 구·군과</th><th class="n">그중 다른 시도와</th><th class="n" data-pri="2">인구 대비(%)</th><th class="n" data-pri="2">앞 12개월 전입 − 전출</th>{mg.years.map(y => <th class="n" data-pri="3">{y}년</th>)}{us && <><th class="n" data-pri="2">미분양 주택(호)<br />{us.latest}</th><th class="n" data-pri="3">{us.yearAgo}</th></>}</tr></thead>
+      <tbody>{GU.map(g => { const m = mg.by.get(g)!; return <tr><th scope="row">{g}</th><td class="n">{f0(m.inflow)}</td><td class="n">{f0(m.outflow)}</td><td class="n">{sgn0(m.net)}</td><td class="n">{sgn0(m.innerNet)}</td><td class="n">{sgn0(m.sidoNet)}</td><td class="n">{m.net == null || !pop?.by.get(g)?.now ? '—' : sgn((m.net / pop!.by.get(g)!.now!) * 100)}</td><td class="n">{sgn0(m.netPrev)}</td>{m.yearNet.map(x => <td class="n">{sgn0(x)}</td>)}{us && <><td class="n">{f0(us.by.get(g)!.now)}</td><td class="n">{f0(us.by.get(g)!.yearAgo)}</td></>}</tr>; })}</tbody>
     </table></div>
-    <p class="src"><SourceBadge kind="국가통계" /> 통계청 국내인구이동통계 「시군구별 이동자수」(<a href={mg.url}>KOSIS DT_1B26001_A01</a>, 월간). 같은 구·군 안에서 이사한 것은 넣지 않습니다. 인구 대비는 최근 12개월 전입 − 전출을 {pop?.latest} 주민등록인구로 나눈 값입니다. 군위군은 2023년 7월부터 대구 아래에 집계되어 그 전 기간은 비웁니다.</p>
+    <p class="src"><SourceBadge kind="국가통계" /> 통계청 국내인구이동통계 「시군구별 이동자수」(<a href={mg.url}>KOSIS DT_1B26001_A01</a>, 월간). 같은 구·군 안에서 이사한 것은 넣지 않습니다. 인구 대비는 최근 12개월 전입 − 전출을 {pop?.latest} 주민등록인구로 나눈 값입니다. 군위군은 2023년 7월부터 대구 아래에 집계되어 그 전 기간은 비웁니다.{us && <> 미분양 주택은 <SourceBadge kind="행정자료" /> 국토교통부 미분양주택현황보고 「시·군·구별 미분양현황」(<a href={us.url}>KOSIS DT_MLTM_2082</a>) — 새 아파트 공급과 함께 움직이는 값이라 나란히 두었고, 전입 원인을 뜻하지는 않습니다.</>}</p>
   </section>
   )}
 
@@ -234,7 +235,11 @@ const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--
       <h3 class="sub">주민등록인구 — {td.popMonths[0]?.slice(0, 4)}년 {Number(td.popMonths[0]?.slice(4))}월 대비 증감률(%)</h3>
       <DistrictTrends id="tr-pop" series={td.pop} kind="line" unit="%" digits={1} label="대구 구·군 주민등록인구 첫 달 대비 증감률(%)" />
     </>}
-    <p class="src"><SourceBadge kind="국가통계" /> 국내인구이동통계 「시군구별 이동자수」·주민등록인구 「행정구역(시군구)별 성별 인구수」(KOSIS). 군위군 전입·전출은 2023년 7월부터입니다. 인구 증감률은 첫 달 값으로 나눈 이 사이트 계산입니다.</p>
+    {us && <>
+      <h3 class="sub">미분양 주택 (달마다, 호)</h3>
+      <DistrictTrends id="tr-unsold" series={us.series} kind="line" unit="호" label="대구 구·군 미분양 주택(호)" />
+    </>}
+    <p class="src"><SourceBadge kind="국가통계" /> 국내인구이동통계 「시군구별 이동자수」·주민등록인구 「행정구역(시군구)별 성별 인구수」(KOSIS). 군위군 전입·전출은 2023년 7월부터입니다. 인구 증감률은 첫 달 값으로 나눈 이 사이트 계산입니다. 미분양 주택은 국토교통부 미분양주택현황보고(KOSIS DT_MLTM_2082).</p>
   </section>
   )}
 

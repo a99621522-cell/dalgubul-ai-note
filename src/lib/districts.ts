@@ -256,3 +256,15 @@ export function legalDongs() {
   const rows = GU.flatMap(g => [...m.values()].filter(x => x.g === g).sort((a, b) => a.d.localeCompare(b.d, 'ko')));
   return { month: np?.latestLabel ?? '', rows, unknown };
 }
+
+/** 국토교통부 미분양주택현황보고 「시·군·구별 미분양현황」(KOSIS 116 DT_MLTM_2082, 월간, 호). 시도 칸이 '대구'인 행의 구·군 칸만. */
+export function unsold() {
+  const rows = readCsv('data/kosis/housing-unsold-sigungu.csv').filter(r => r.C1_NM === '대구');
+  if (!rows.length) return null;
+  const months = [...new Set(rows.map(r => r.PRD_DE))].sort();
+  const series = new Map(GU.map(g => [g, months.map(m => ({ m, v: num(rows.find(r => r.C2_NM === g && r.PRD_DE === m)?.DT) }))]));
+  const latest = months.at(-1)!, yearAgo = `${Number(latest.slice(0, 4)) - 1}${latest.slice(4)}`;
+  const at = (g: string, m: string) => series.get(g)?.find(p => p.m === m)?.v ?? null;
+  const by = new Map(GU.map(g => [g, { now: at(g, latest), yearAgo: months.includes(yearAgo) ? at(g, yearAgo) : null }]));
+  return { latest: ymLabel(latest), yearAgo: months.includes(yearAgo) ? ymLabel(yearAgo) : '', series, by, url: 'https://kosis.kr/statHtml/statHtml.do?orgId=116&tblId=DT_MLTM_2082' };
+}

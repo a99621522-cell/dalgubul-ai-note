@@ -29,7 +29,7 @@ jobs:
           cd repo
           python3 scripts/fetch_datago.py --search 달성군 일반음식점 > ../out/search.txt 2>&1
           python3 scripts/fetch_datago.py --search 달성군_일반음식점 >> ../out/search.txt 2>&1
-          python3 scripts/fetch_datago.py --save 15127422 > ../out/fetch_15127422.txt 2>&1
+          python3 scripts/fetch_datago.py --save 15054521 15127422 --max 5 > ../out/fetch_15127422.txt 2>&1
           ls -la data/raw/15127422 >> ../out/fetch_15127422.txt 2>&1
           cp -r data/raw ../raw_portal 2>/dev/null
           true
@@ -46,7 +46,7 @@ jobs:
           def p(*a):
               s=" ".join(str(x) for x in a); print(s); OUT.write(s+"\n"); OUT.flush()
           # 지방행정인허가 업종 코드: 일반음식점 07_24_04_P, 휴게음식점 07_24_05_P, 제과점영업 07_24_06_P(추정), 관광식당 07_24_01_P 등
-          kinds={"일반음식점":"07_24_04_P","휴게음식점":"07_24_05_P","제과점영업":"07_24_06_P","단란주점":"07_23_02_P","유흥주점":"07_23_01_P"}
+          kinds={}; _old={"일반음식점":"07_24_04_P","휴게음식점":"07_24_05_P","제과점영업":"07_24_06_P","단란주점":"07_23_02_P","유흥주점":"07_23_01_P"}
           bases=["https://www.localdata.go.kr/datafile/each/{c}_CSV.zip","https://www.localdata.go.kr/datafile/each/{c}.csv","https://www.localdata.go.kr/datafile/each/{c}.xlsx"]
           def load(code):
               for b in bases:
@@ -107,10 +107,10 @@ jobs:
                           except Exception: pass
                   p("== 포털 파일",f,"행",len(d),"열",list(d.columns))
                   for c in d.columns:
-                      if "업태" in c or "행정동" in c: p("  ",c,d[c].value_counts().head(30).to_dict())
+                      if any(k in c for k in ("업태","업종","행정동","읍면","영업상태","구분")): p("  ",c,d[c].value_counts().head(30).to_dict())
               except Exception as e: p("  포털 파일 실패",f,e)
           # 새 지방행정인허가 파일 사이트 안내 페이지에서 내려받기 주소 찾기
-          for slug in ("general_restaurants","rest_cafes","bakeries"):
+          for slug in ():
               u=f"https://file.localdata.go.kr/file/{slug}/info"
               try:
                   r=requests.get(u,headers=UA,timeout=60); p("== 안내",u,r.status_code,len(r.text))

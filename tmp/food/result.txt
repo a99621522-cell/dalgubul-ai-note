@@ -1,0 +1,35 @@
+== 일반음식점 (07_24_04_P)
+  실패 https://www.localdata.go.kr/datafile/each/07_24_04_P_CSV.zip HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_04_P_CSV.zip (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd03d8d77a0>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_24_04_P.csv HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_04_P.csv (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d6e2990>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_24_04_P.xlsx HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_04_P.xlsx (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d6e3080>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  받지 못함
+== 휴게음식점 (07_24_05_P)
+  실패 https://www.localdata.go.kr/datafile/each/07_24_05_P_CSV.zip HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_05_P_CSV.zip (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d9e1d30>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_24_05_P.csv HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_05_P.csv (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d6e3110>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_24_05_P.xlsx HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_05_P.xlsx (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d6e1fd0>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  받지 못함
+== 제과점영업 (07_24_06_P)
+  실패 https://www.localdata.go.kr/datafile/each/07_24_06_P_CSV.zip HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_06_P_CSV.zip (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d6e3b60>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_24_06_P.csv HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_06_P.csv (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d72c380>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_24_06_P.xlsx HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_24_06_P.xlsx (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d72cc20>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  받지 못함
+== 단란주점 (07_23_02_P)
+  실패 https://www.localdata.go.kr/datafile/each/07_23_02_P_CSV.zip HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_23_02_P_CSV.zip (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d6e2030>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_23_02_P.csv HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_23_02_P.csv (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d6e1fd0>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_23_02_P.xlsx HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_23_02_P.xlsx (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d6e2ff0>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  받지 못함
+== 유흥주점 (07_23_01_P)
+  실패 https://www.localdata.go.kr/datafile/each/07_23_01_P_CSV.zip HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_23_01_P_CSV.zip (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d72cb90>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_23_01_P.csv HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_23_01_P.csv (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d72c170>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  실패 https://www.localdata.go.kr/datafile/each/07_23_01_P.xlsx HTTPSConnectionPool(host='www.localdata.go.kr', port=443): Max retries exceeded with url: /datafile/each/07_23_01_P.xlsx (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.localdata.go.kr', port=443) at 0x7fd02d72d6a0>, 'Connection to www.localdata.go.kr timed out. (connect timeout=600)'))
+  받지 못함
+== 포털 파일 raw_portal/15127422/대구광역시_달성군_휴게음식점 현황_20260624.csv 행 891 열 ['업소명', '업태구분명', '영업자명', '업소 주소', '행정동', '전화번호', '우편번호', '위도', '경도', '데이터기준일자']
+   업태구분명 {'커피숍': 425, '편의점': 169, '일반조리판매': 125, '기타 휴게음식점': 91, '패스트푸드': 34, '다방': 22, '아이스크림': 7, '푸드트럭': 4, '키즈카페': 4, '고속도로': 4, '전통찻집': 3, '과자점': 3}
+   행정동 {'다사읍': 254, '화원읍': 124, '유가읍': 123, '현풍읍': 122, '구지면': 73, '논공읍': 69, '옥포읍': 65, '가창면': 48, '하빈면': 13}
+== 안내 https://file.localdata.go.kr/file/general_restaurants/info 403 148
+  링크 []
+== 안내 https://file.localdata.go.kr/file/rest_cafes/info 403 148
+  링크 []
+== 안내 https://file.localdata.go.kr/file/bakeries/info 403 148
+  링크 []
+== 요약 {}

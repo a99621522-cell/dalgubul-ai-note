@@ -158,20 +158,12 @@ tables:
     prd_se: M
     years: 3
     area_col: C1
-  - key: housing-permit-sigungu
-    name: 주택건설 인허가실적(시도/시/군/구) — 구·군 경제 현황의 인구이동 옆 '새 집 물량'(운영자 지시 2026-10-26 '1 2 3 다 해봐'). 준공 표(DT_MLTM_5372)는 시도까지만이라 안 씀
-    org_id: "101"
-    tbl_id: "DT_1YL7501E"   # 2026-10-26 discover (e-지방지표)
-    prd_se: Y
-    years: 10
-    area_col: C1
-    area: []
   - key: housing-unsold-sigungu
-    name: 미분양주택현황(시도/시/군/구) — 구·군 경제 현황(운영자 지시 2026-10-26)
-    org_id: "101"
-    tbl_id: "DT_1YL202004E"   # 2026-10-26 discover (e-지방지표). 국토부 DT_MLTM_2082 시·군·구별 미분양현황도 있음
+    name: 미분양주택현황보고 — 시·군·구별 미분양 주택(월간, 국토교통부) — 구·군 경제 현황 인구이동 옆(운영자 지시 2026-10-26 '1 2 3 다 해봐')
+    org_id: "116"
+    tbl_id: "DT_MLTM_2082"   # 2026-10-26 discover. e-지방지표 DT_1YL202004E 는 받으면 시군구 칸이 뒤섞여 와 안 씀, 준공(DT_MLTM_5372)·인허가(DT_1YL7501E)는 시도까지만
     prd_se: M
-    years: 4
+    years: 3
     area_col: C1
     area: []
   - key: migration-age-sido

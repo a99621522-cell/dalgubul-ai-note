@@ -158,6 +158,15 @@ tables:
     prd_se: M
     years: 3
     area_col: C1
+  - key: housing-completion-sigungu
+    name: 주택건설실적 — 시군구별 주택 준공(월간) — 구·군 경제 현황의 인구이동 옆 '새 집 물량'(운영자 지시 2026-10-26 '1 2 3 다 해봐')
+    org_id: "116"
+    tbl_id: ""
+    search: ["주택건설 준공실적 시군구", "주택 준공 실적 시군구별", "시군구별 주택 준공", "주택건설실적통계 준공 시군구", "아파트 준공 시군구"]
+    prd_se: M
+    years: 4
+    area_col: C1
+    area: []
   - key: migration-age-sido
     name: 국내인구이동통계 — 시도·연령별 순이동(연간)
     tbl_id: "DT_1B26002"

@@ -172,6 +172,35 @@ def dump_block(name: str, blk: str, limit: int = 120000) -> None:
     print(f"===== dump {name} ({len(text)}자) =====\n{text[:limit]}\n===== dump 끝 =====")
 
 
+def grep_block(name: str, blk: str, pat: str, before: int = 3, after: int = 30) -> None:
+    """--disclosure … --grep 정규식: 원문을 dump_block 과 같은 줄(제목·문단·표 행)로 바꿔 정규식에 맞는 줄의 앞 3줄·뒤 30줄만 찍는다(겹치면 합침)"""
+    lines = []
+    for m in re.finditer(r"<TITLE[^>]*>(.*?)</TITLE>|<TABLE.*?</TABLE>|<P[^>]*>(.*?)</P>", blk, re.S | re.I):
+        if m.group(1) is not None:
+            lines.append(f"### {clean(m.group(1))}")
+        elif m.group(0)[:6].upper() == "<TABLE":
+            for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", m.group(0), re.S | re.I):
+                cells = [clean(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, re.S | re.I)]
+                if any(cells):
+                    lines.append("| " + " | ".join(cells) + " |")
+        else:
+            t = clean(m.group(2) or "")
+            if t:
+                lines.append(t)
+    rx = re.compile(pat)
+    keep = set()
+    for i, l in enumerate(lines):
+        if rx.search(l):
+            keep.update(range(max(0, i - before), min(len(lines), i + after + 1)))
+    print(f"===== grep {name} /{pat}/ ({len(keep)}줄 / 전체 {len(lines)}줄) =====")
+    prev = -2
+    for i in sorted(keep):
+        if i != prev + 1:
+            print("…")
+        print(lines[i]); prev = i
+    print("===== grep 끝 =====")
+
+
 def sentences(p: str) -> list[str]:
     parts = re.split(r"(?<=[다음함됨임])\.(?=\s|\(|\d|\[|[가-힣A-Za-z-])\s*|\s(?=[①-⑩]|\(\d+\)\s|[가-하]\.\s|-\s)", p)
     return [s.strip(" -·") for s in parts if s and len(s.strip()) >= 12]
@@ -794,6 +823,7 @@ def main(argv: list[str]) -> int:
         return 0
     if "--disclosure" in argv and probe:   # 정기보고서가 아닌 공시(예: 전환사채권발행결정) 원문을 표까지 로그로 — 저장 안 함(2026-10-17 한국피아이엠 CB 자금 용도 확인)
         kw = argv[argv.index("--disclosure") + 1]
+        grep = argv[argv.index("--grep") + 1] if "--grep" in argv else ""   # 정기보고서처럼 긴 원문은 맞는 줄 둘레만(2026-10-27 구영테크 CAR TECH 주석 확인)
         bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
         for code, meta in sorted(corps.items()):
             j = get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), page_count=100) or {}
@@ -802,7 +832,9 @@ def main(argv: list[str]) -> int:
             for x in hits:
                 print(f"--- {x.get('rcept_dt')} {x.get('report_nm')} rcept_no={x.get('rcept_no')} https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
                 xml = doc_xml(x["rcept_no"])
-                if xml:
+                if xml and grep:
+                    grep_block(f"{meta.get('name')} {x.get('report_nm')}", xml, grep)
+                elif xml:
                     dump_block(f"{meta.get('name')} {x.get('report_nm')}", xml)
             if "전환사채" in kw:   # 주요사항보고서 구조화 API — 자금조달 목적별 금액
                 r = get("cvbdIsDecsn.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d")) or {}

@@ -2,12 +2,13 @@
 import Base from '../../../layouts/Base.astro';
 import StatsNav from '../../../components/StatsNav.astro';
 import SourceBadge from '../../../components/SourceBadge.astro';
+import DistrictTrends from '../../../components/DistrictTrends.astro';
 import { TOPICS } from '../../../lib/statsTopics';
-import { GU, NPS_GROUPS, population, employed, nps, firms, complexesByGu, commute, tourism, migration, stores } from '../../../lib/districts';
+import { GU, NPS_GROUPS, population, employed, nps, firms, complexesByGu, commute, tourism, migration, stores, trends } from '../../../lib/districts';
 /** /stats/districts/ — 구·군 경제 현황(운영자 지시 2026-10-26). 공개 자료만 9개 구·군으로 나눠 나란히. 근거마다 기준이 달라 더하거나 나누지 않는다.
  *  행 순서는 행정 순서, 값은 원 자료 그대로(묶음 합·비중·증감 나눗셈만), 평가·순위 없음. */
 const t = TOPICS.find(x => x.key === 'districts')!;
-const pop = population(), emp = employed(), np = nps(), fi = firms(), cx = complexesByGu(), cm = commute(), tr = tourism(), mg = migration(), st = stores();
+const pop = population(), emp = employed(), np = nps(), fi = firms(), cx = complexesByGu(), cm = commute(), tr = tourism(), mg = migration(), st = stores(), td = trends();
 const f0 = (v: number | null | undefined) => (v == null ? '—' : Math.round(v).toLocaleString('ko-KR'));
 const f1 = (v: number | null | undefined) => (v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
 const pct = (a: number | null | undefined, b: number | null | undefined) => (a == null || !b ? null : (a / b - 1) * 100);
@@ -24,6 +25,35 @@ const nets = cm ? GU.map(g => ({ g, v: cm.by.get(g)!.net })) : [];
 const maxNet = Math.max(1, ...nets.map(n => Math.abs(n.v)));
 const mnets = mg ? GU.map(g => ({ g, v: mg.by.get(g)!.net ?? 0 })) : [];
 const maxM = Math.max(1, ...mnets.map(n => Math.abs(n.v)));
+// 구·군 한 장 요약(Word·PDF) 자료 — 화면 값과 같은 것만(src/scripts/district_card.ts)
+const guData = {
+  url: 'https://daitda.co.kr/stats/districts/', built: new Date().toISOString().slice(0, 10),
+  sources: ['주민등록인구·국내인구이동통계·지역별고용조사·인구총조사(KOSIS)', '국민연금공단 가입 사업장 내역', '팩토리온 공장등록·기업 사전', st ? '소상공인시장진흥공단 상가(상권)정보' : '', tr ? '한국관광 데이터랩' : ''].filter(Boolean).join(' · '),
+  gu: GU.map(g => {
+    const p = pop?.by.get(g), e = emp?.by.get(g), n = np?.now.get(g), n0 = np?.prev?.get(g), c = fi.by.get(g)!, k = cm?.by.get(g), v = tr?.by.get(g), m = mg?.by.get(g), s2 = st?.by.get(g);
+    const rows: [string, string, string][] = [
+      ['인구', `${f0(p?.now)}명`, `주민등록, ${pop?.latest ?? ''}`],
+      ['인구 증감(2015→연말)', `${sgn(pct(p?.yEnd, p?.y2015))}%`, `주민등록, ${pop?.endLabel ?? ''}`],
+      ...(m ? [['전입 − 전출', `${sgn0(m.net)}명`, `최근 12개월(${mg!.from}~${mg!.latest}), 대구 안 ${sgn0(m.innerNet)} · 다른 시도 ${sgn0(m.sidoNet)}`] as [string, string, string]] : []),
+      ['취업자(사는 곳)', `${f1(e?.total)}천 명`, `지역별고용조사, ${emp?.period ?? ''}`],
+      ['국민연금 사업장', `${f0(n?.sites)}곳`, `사업장 주소, ${np?.latestLabel ?? ''}`],
+      ['국민연금 가입자', `${f0(n?.members)}명`, `${np?.baseLabel ?? ''} 대비 ${sgn(pct(n?.members, n0?.members))}%`],
+      ['기업 사전 기업', `${f0(c.total)}곳`, `공장등록 ${foYm} + 산단 외 기업`],
+      ['공장등록 종사자', `${f0(c.foWorkers)}명`, `팩토리온 신고값, ${foYm}`],
+      ...(k ? [['통근·통학 순유입', `${sgn0(k.net)}명`, `인구총조사 ${cm!.year}년(대구·경북 안 이동)`] as [string, string, string]] : []),
+      ...(s2 ? [['상가 점포', `${f0(s2.total)}곳`, `소상공인시장진흥공단, ${st!.q}`] as [string, string, string]] : []),
+      ...(v ? [['외지인 방문자', `${man(v.vis)}만 명`, `데이터랩, ${tr!.from}~${tr!.to}`], ['관광소비', `${eok(v.sp)}억 원`, `데이터랩 내국인 신용카드, 같은 기간`]] as [string, string, string][] : []),
+    ];
+    const tables = [
+      ...(emp && e ? [{ title: `취업자 산업 구성 (${emp.period}, 사는 곳)`, head: ['산업', '취업자(천 명)', '비중(%)'], rows: emp.groups.map((x, i) => [x, f1(e.g[i]), share(e.g[i], e.total)]) }] : []),
+      ...(n ? [{ title: `국민연금 가입자 업종 구성 (${np!.latestLabel}, 사업장 주소)`, head: ['업종 묶음', '가입자(명)', '비중(%)'], rows: NPS_GROUPS.map((x, i) => [x, f0(n.g[i]), share(n.g[i], n.members)]), note: '업종은 공개 파일 업종 코드 앞 두 자리를 이 사이트가 묶은 것입니다.' }] : []),
+      { title: `기업 사전 산업 그룹별 기업 수 (${foYm})`, head: ['산업 그룹', '기업(곳)'], rows: fi.groups.filter(x => c.g.get(x)).map(x => [x, f0(c.g.get(x))]) },
+      { title: '구·군 안의 산업단지', head: ['산업단지', '입주 공장(곳)', '종사자(명)'], rows: (cx.by.get(g) ?? []).map(x => [x.name + (x.shared ? ' ※' : ''), f0(x.firms), f0(x.workers)]), note: (cx.by.get(g) ?? []).some(x => x.shared) ? '※ 두 구·군에 걸친 단지는 단지 전체 값입니다.' : undefined },
+      ...(st && s2 ? [{ title: `상가 점포 업종 구성 (${st.q})`, head: ['업종 대분류', '점포(곳)'], rows: st.large.map((l, i) => [l, f0(s2.l[i])]) }] : []),
+    ];
+    return { name: g, rows, tables };
+  }),
+};
 const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--chart-4)', 'var(--chart-6)', 'var(--chart-5)', 'var(--line-strong, #b8bec7)'];
 ---
 <Base title={`${t.name} 경제 현황`} description={`대구 9개 구·군의 인구·취업자·국민연금 사업장과 가입자·기업 수·산업단지·통근·관광 소비를 같은 표에. ${t.desc}`} current="stats" crumb={t.name} wide>
@@ -43,6 +73,14 @@ const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--
     </ul>
   </details>
 
+  <div class="gu-dl" id="gu-dl">
+    <label for="gu-sel">구·군 한 장 요약</label>
+    <select id="gu-sel">{GU.map(g => <option value={g}>{g}</option>)}</select>
+    <button type="button" class="btn secondary" id="gu-docx" title="한글(HWP)·워드에서 바로 열어 고칠 수 있는 Word 파일">Word 내려받기</button>
+    <button type="button" class="btn secondary" id="gu-pdf">PDF 내려받기</button>
+    <span id="gu-status" class="meta" role="status"></span>
+  </div>
+
   <div class="gu-cards">
     {GU.map(g => {
       const p = pop?.by.get(g), e = emp?.by.get(g), n = np?.now.get(g), c = fi.by.get(g), k = cm?.by.get(g), v = tr?.by.get(g);
@@ -59,6 +97,7 @@ const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--
             {st && <div><dt>상가 점포({st.q})</dt><dd>{f0(st.by.get(g)!.total)}곳</dd></div>}
             {v && <div><dt>외지인 방문자(12개월)</dt><dd>{man(v.vis)}만 명</dd></div>}
           </dl>
+          <p class="one"><a href="#gu-dl" data-gu={g}>{g} 한 장 받기</a></p>
           {(cx.by.get(g)?.length ?? 0) > 0 && <p class="cx">산업단지: {cx.by.get(g)!.map(x => x.name.replace(/일반산업단지|지방산업단지|첨단산업단지|산업단지/, '')).join(' · ')}</p>}
         </section>
       );
@@ -183,6 +222,22 @@ const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--
   </section>
   )}
 
+  {(td.net || td.pop) && (
+  <section aria-labelledby="h-trend">
+    <div class="section-head"><h2 id="h-trend">달마다 본 추이</h2><span class="meta">KOSIS 월간</span></div>
+    <p>9개 구·군이 같은 세로축을 씁니다. 막대·점에 마우스를 올리면 그 달 값이 나옵니다.</p>
+    {td.net && <>
+      <h3 class="sub">전입 − 전출 (달마다, 명)</h3>
+      <DistrictTrends id="tr-net" series={td.net} kind="bar" unit="명" label="대구 구·군 달마다 전입 − 전출(명)" posLabel="전입이 더 많음" negLabel="전출이 더 많음" />
+    </>}
+    {td.pop && <>
+      <h3 class="sub">주민등록인구 — {td.popMonths[0]?.slice(0, 4)}년 {Number(td.popMonths[0]?.slice(4))}월 대비 증감률(%)</h3>
+      <DistrictTrends id="tr-pop" series={td.pop} kind="line" unit="%" digits={1} label="대구 구·군 주민등록인구 첫 달 대비 증감률(%)" />
+    </>}
+    <p class="src"><SourceBadge kind="국가통계" /> 국내인구이동통계 「시군구별 이동자수」·주민등록인구 「행정구역(시군구)별 성별 인구수」(KOSIS). 군위군 전입·전출은 2023년 7월부터입니다. 인구 증감률은 첫 달 값으로 나눈 이 사이트 계산입니다.</p>
+  </section>
+  )}
+
   <section aria-labelledby="h-firms">
     <div class="section-head"><h2 id="h-firms">공장 등록 기준 — 기업 사전 산업 그룹별 기업 수</h2><span class="meta">팩토리온 {foYm} · 산단 외 기업</span></div>
     <p>기업 사전 기업을 구·군 × 산업 그룹으로 셌습니다. 숫자를 누르면 그 기업 명단으로 갑니다.</p>
@@ -238,9 +293,16 @@ const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--
   )}
 
   <p class="meta">카드 결제 전체·구 사이 소비 이동·자영업 휴·폐업률·유동인구처럼 공개되지 않는 값은 이 페이지에 없습니다(데이터안심구역 등 별도 신청 자료).</p>
+  <script type="application/json" id="gu-data" set:html={JSON.stringify(guData).replace(/</g, '\\u003c')}></script>
+  <script>import '../../../scripts/district_card';</script>
 </Base>
 
 <style>
+  .gu-dl { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .2rem 0 .8rem; }
+  .gu-dl label { font-weight: 600; }
+  .gu-dl select { min-height: 36px; }
+  .gu-dl .btn { min-height: 36px; font-size: var(--small); }
+  .gu .one { margin: .35rem 0 0; font-size: .8rem; }
   .basis { border: 1px solid var(--line); border-radius: var(--radius-2, 8px); padding: .5rem .8rem; margin: .6rem 0 1rem; background: var(--bg); }
   .basis summary { font-weight: 600; cursor: pointer; }
   .notes { font-size: var(--small); padding-left: 1.1rem; margin: .4rem 0 0; }

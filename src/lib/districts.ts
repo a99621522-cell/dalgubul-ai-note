@@ -151,15 +151,12 @@ export function tourism() {
   return { from: ymLabel(last12[0]), to: ymLabel(last12.at(-1)!), by };
 }
 
-/** 국내인구이동통계 시군구별 이동자수(KOSIS DT_1B26001_A01, 저장 키 migration-sido — 시도·시군구 행이 함께 온다).
- *  '대구광역시' 행 바로 뒤의 구·군 행만 대구로 본다(중구·남구 등 같은 이름이 다른 시도에도 있다). 이름 속 띄어쓰기('중  구')는 붙인다.
- *  군위군은 2023년 7월부터 대구 아래에 온다 — 열두 달이 다 있지 않은 기간은 합을 내지 않는다. */
-export const MIG_ITEMS = ['총전입', '총전출', '순이동', '시도내이동-시군구간 전입', '시도내이동-시군구간 전출', '시도간전입', '시도간전출'] as const;
-export function migration() {
-  const rows = readCsv('data/kosis/migration-sido.csv');
+/** KOSIS 시도·시군구 표(행이 지역 묶음 → 항목 → 달 순서)에서 대구 구·군 값만: 지역 이름이 바뀌는 곳을 묶음 경계로 보고,
+ *  '대구광역시' 묶음 바로 뒤 구·군 묶음만 대구로 본다(중구·남구 등 같은 이름이 다른 시도에도 있다). 이름 속 띄어쓰기('중  구')는 붙인다. */
+function daeguCells(file: string): { v: Map<string, number>; months: string[] } | null {
+  const rows = readCsv(file);
   if (!rows.length) return null;
-  const v = new Map<string, number>();   // `${item}|${gu}|${YYYYMM}`
-  // 행은 지역 묶음(그 안에 항목·달)으로 온다 — 지역 이름이 바뀌는 곳을 묶음 경계로 보고, '대구광역시' 묶음 뒤 구·군 묶음만 대구로 본다.
+  const v = new Map<string, number>();   // `${항목}|${구·군}|${YYYYMM}`
   let inDaegu = false, block = '';
   for (const r of rows) {
     const nm = r.C1_NM.replace(/\s+/g, '');
@@ -171,7 +168,27 @@ export function migration() {
     if (!inDaegu || nm === '대구광역시') continue;
     const n = num(r.DT); if (n != null) v.set(`${r.ITM_NM}|${nm}|${r.PRD_DE}`, n);
   }
-  const months = [...new Set(rows.map(r => r.PRD_DE))].sort();
+  return { v, months: [...new Set(rows.map(r => r.PRD_DE))].sort() };
+}
+
+/** 추이 그래프용 월별 값: 전입 − 전출(국내인구이동통계)과 주민등록인구(첫 달 대비 증감률). */
+export function trends() {
+  const mg = daeguCells('data/kosis/migration-sido.csv'), pp = daeguCells('data/kosis/population-sigungu-monthly.csv');
+  const series = (c: typeof mg, item: string) => c ? new Map(GU.map(g => [g, c.months.map(m => ({ m, v: c.v.get(`${item}|${g}|${m}`) ?? null }))])) : null;
+  const net = series(mg, '순이동');
+  const popRaw = series(pp, '총인구수');
+  const pop = popRaw ? new Map([...popRaw].map(([g, pts]) => { const b = pts.find(x => x.v != null)?.v ?? null; return [g, pts.map(x => ({ m: x.m, v: x.v != null && b ? (x.v / b - 1) * 100 : null, raw: x.v }))]; })) : null;
+  return { net, pop, netMonths: mg?.months ?? [], popMonths: pp?.months ?? [] };
+}
+
+/** 국내인구이동통계 시군구별 이동자수(KOSIS DT_1B26001_A01, 저장 키 migration-sido — 시도·시군구 행이 함께 온다).
+ *  '대구광역시' 행 바로 뒤의 구·군 행만 대구로 본다(중구·남구 등 같은 이름이 다른 시도에도 있다). 이름 속 띄어쓰기('중  구')는 붙인다.
+ *  군위군은 2023년 7월부터 대구 아래에 온다 — 열두 달이 다 있지 않은 기간은 합을 내지 않는다. */
+export const MIG_ITEMS = ['총전입', '총전출', '순이동', '시도내이동-시군구간 전입', '시도내이동-시군구간 전출', '시도간전입', '시도간전출'] as const;
+export function migration() {
+  const c = daeguCells('data/kosis/migration-sido.csv');
+  if (!c) return null;
+  const { v, months } = c;
   const latest = months.at(-1)!;
   const last12 = months.slice(-12), prev12 = months.length >= 24 ? months.slice(-24, -12) : [];
   const sum = (item: string, g: string, ms: string[]) => { if (!ms.length) return null; let s = 0; for (const m of ms) { const x = v.get(`${item}|${g}|${m}`); if (x == null) return null; s += x; } return s; };

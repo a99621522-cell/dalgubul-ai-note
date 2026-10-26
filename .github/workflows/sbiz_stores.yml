@@ -1,0 +1,56 @@
+name: 상가(상권)정보 대구 집계(소상공인시장진흥공단)
+
+# scripts/fetch_sbiz_stores.py — 공공데이터포털 15083033 전국 zip 의 대구 점포 → data/stores/(구·군·행정동·업종 집계와 분기 사이 들고 남).
+# 점포 행(상호·주소·좌표)은 저장하지 않는다. 이 세션 환경은 포털 차단이라 러너가 받는다.
+on:
+  schedule:
+    - cron: "37 22 19 * *"   # 매달 20일 07:37 KST — 분기 판이 바뀐 달에만 새 분기가 생긴다
+  workflow_dispatch:
+    inputs:
+      list:
+        description: "식별자만 보기(true)"
+        required: false
+        default: "false"
+      history:
+        description: "옛 분기 판 최대 개수"
+        required: false
+        default: "8"
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/fetch_sbiz_stores.py", ".github/workflows/sbiz_stores.yml"]
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: sbiz-stores
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python3 scripts/fetch_sbiz_stores.py --history "${{ inputs.history || '8' }}" $([ "${{ inputs.list }}" = "true" ] && echo --list)
+      - name: 커밋
+        if: ${{ !cancelled() && inputs.list != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/stores 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 상가(상권)정보 대구 집계 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done
+          # GITHUB_TOKEN 커밋은 push 배포를 깨우지 않아 main 이면 배포를 부른다
+          [ "${GITHUB_REF_NAME}" = "main" ] && gh workflow run deploy.yml --ref main || true

@@ -1,0 +1,93 @@
+name: 달성군 외식업소 수 집계 (임시)
+
+# 세션 환경에서 공공데이터 사이트가 막혀 있어 러너가 대신 받는다. 결과는 로그·artifact 로만 남기고 커밋하지 않는다.
+on:
+  push:
+    branches: ["claude/dalseong-food-count"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pandas requests
+      - name: 받기·집계
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+        run: |
+          set +e
+          mkdir -p out raw
+          cat > c.py <<'PY'
+          import os, sys, re, io, zipfile, json, glob, requests, pandas as pd
+          UA={"User-Agent":"Mozilla/5.0 daitda-note-bot/1.0"}
+          OUT=open("out/result.txt","w",encoding="utf-8")
+          def p(*a):
+              s=" ".join(str(x) for x in a); print(s); OUT.write(s+"\n"); OUT.flush()
+          # 지방행정인허가 업종 코드: 일반음식점 07_24_04_P, 휴게음식점 07_24_05_P, 제과점영업 07_24_06_P(추정), 관광식당 07_24_01_P 등
+          kinds={"일반음식점":"07_24_04_P","휴게음식점":"07_24_05_P","제과점영업":"07_24_06_P","단란주점":"07_23_02_P","유흥주점":"07_23_01_P"}
+          bases=["https://www.localdata.go.kr/datafile/each/{c}_CSV.zip","https://www.localdata.go.kr/datafile/each/{c}.csv","https://www.localdata.go.kr/datafile/each/{c}.xlsx"]
+          def load(code):
+              for b in bases:
+                  u=b.format(c=code)
+                  try:
+                      r=requests.get(u,headers=UA,timeout=600)
+                  except Exception as e:
+                      p("  실패",u,e); continue
+                  ct=r.headers.get("content-type",""); p("  ",u,r.status_code,len(r.content),ct)
+                  if r.status_code!=200 or len(r.content)<10000: continue
+                  data=r.content
+                  try:
+                      if data[:2]==b"PK" and u.endswith(".zip"):
+                          z=zipfile.ZipFile(io.BytesIO(data)); n=[x for x in z.namelist() if x.lower().endswith(".csv")][0]; data=z.read(n)
+                      if u.endswith(".xlsx"):
+                          return pd.read_excel(io.BytesIO(data),dtype=str)
+                      for enc in ("cp949","utf-8-sig","utf-8"):
+                          try: return pd.read_csv(io.BytesIO(data),dtype=str,encoding=enc,low_memory=False)
+                          except Exception: pass
+                  except Exception as e:
+                      p("  파싱 실패",e)
+              return None
+          summary={}
+          for name,code in kinds.items():
+              p(f"== {name} ({code})")
+              df=load(code)
+              if df is None: p("  받지 못함"); continue
+              p("  전국 행",len(df)," 열:",list(df.columns)[:30])
+              addr=None
+              for c in df.columns:
+                  if "주소" in c: 
+                      m=df[c].fillna("").str.contains("대구광역시 달성군")
+                      addr = m if addr is None else (addr|m)
+              st=[c for c in df.columns if "영업상태" in c]
+              d=df[addr] if addr is not None else df.iloc[0:0]
+              p("  달성군 전체 행(폐업 포함)",len(d))
+              for c in st: p("  ",c,d[c].value_counts().to_dict())
+              live=d
+              for c in st:
+                  if c.endswith("명") and "상세" not in c: live=d[d[c].fillna("").str.contains("영업|정상")]
+              p("  달성군 영업 중",len(live))
+              for c in [c for c in df.columns if "업태" in c][:1]:
+                  p("  업태별",live[c].value_counts().head(25).to_dict())
+              ac=[c for c in df.columns if "도로명" in c and "주소" in c] or [c for c in df.columns if "주소" in c]
+              if ac:
+                  em=live[ac[0]].fillna("").str.extract(r"달성군\s+(\S+[읍면])")[0]
+                  p("  읍면별",em.value_counts().to_dict())
+              summary[name]=len(live)
+              live.to_csv(f"out/{code}_dalseong_live.csv",index=False,encoding="utf-8-sig")
+          p("== 요약",json.dumps(summary,ensure_ascii=False))
+          PY
+          python3 c.py
+          echo "exit=$?"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dalseong-food-${{ github.run_id }}
+          path: out
+          retention-days: 7

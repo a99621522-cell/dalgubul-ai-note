@@ -7,17 +7,32 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   count:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: repo
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install pandas requests
+      - run: pip install pandas requests openpyxl
+      - name: 포털 파일데이터(달성군 휴게음식점 15127422 + 검색)
+        run: |
+          set +e
+          mkdir -p out
+          cd repo
+          python3 scripts/fetch_datago.py --search 달성군 일반음식점 > ../out/search.txt 2>&1
+          python3 scripts/fetch_datago.py --search 달성군_일반음식점 >> ../out/search.txt 2>&1
+          python3 scripts/fetch_datago.py --save 15127422 > ../out/fetch_15127422.txt 2>&1
+          ls -la data/raw/15127422 >> ../out/fetch_15127422.txt 2>&1
+          cp -r data/raw ../raw_portal 2>/dev/null
+          true
       - name: 받기·집계
         env:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
@@ -81,10 +96,41 @@ jobs:
                   p("  읍면별",em.value_counts().to_dict())
               summary[name]=len(live)
               live.to_csv(f"out/{code}_dalseong_live.csv",index=False,encoding="utf-8-sig")
+          # 포털에서 받은 달성군 휴게음식점 파일
+          for f in glob.glob("raw_portal/**/*.csv",recursive=True)+glob.glob("raw_portal/**/*.xlsx",recursive=True):
+              try:
+                  if f.endswith(".xlsx"): d=pd.read_excel(f,dtype=str)
+                  else:
+                      d=None
+                      for enc in ("cp949","utf-8-sig"):
+                          try: d=pd.read_csv(f,dtype=str,encoding=enc); break
+                          except Exception: pass
+                  p("== 포털 파일",f,"행",len(d),"열",list(d.columns))
+                  for c in d.columns:
+                      if "업태" in c or "행정동" in c: p("  ",c,d[c].value_counts().head(30).to_dict())
+              except Exception as e: p("  포털 파일 실패",f,e)
+          # 새 지방행정인허가 파일 사이트 안내 페이지에서 내려받기 주소 찾기
+          for slug in ("general_restaurants","rest_cafes","bakeries"):
+              u=f"https://file.localdata.go.kr/file/{slug}/info"
+              try:
+                  r=requests.get(u,headers=UA,timeout=60); p("== 안내",u,r.status_code,len(r.text))
+                  links=sorted(set(re.findall(r'(?:href|src|url)\s*[=:]\s*["\']([^"\']+)',r.text)))
+                  p("  링크",[l for l in links if re.search(r'down|csv|zip|xlsx|file',l,re.I)][:40])
+              except Exception as e: p("  실패",u,e)
           p("== 요약",json.dumps(summary,ensure_ascii=False))
           PY
           python3 c.py
           echo "exit=$?"
+      - name: 결과 커밋(임시 브랜치)
+        if: always()
+        run: |
+          git init -q res && cd res
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}"
+          git fetch -q --depth 1 origin "${GITHUB_REF_NAME}" && git checkout -q FETCH_HEAD
+          mkdir -p tmp/food && cp ../out/*.txt tmp/food/ 2>/dev/null
+          git config user.name dalgubul-bot; git config user.email bot@users.noreply.github.com
+          git add -f tmp/food && git commit -q -m "tmp: 달성군 외식업소 집계 결과 [skip ci]" && git push -q origin HEAD:"${GITHUB_REF_NAME}"
+          true
       - uses: actions/upload-artifact@v4
         if: always()
         with:

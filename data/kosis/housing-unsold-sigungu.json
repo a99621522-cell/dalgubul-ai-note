@@ -1,0 +1,20 @@
+{
+ "key": "housing-unsold-sigungu",
+ "name": "미분양주택현황(시도/시/군/구) — 구·군 경제 현황(운영자 지시 2026-10-26)",
+ "tbl_nm": "미분양주택현황(시도/시/군/구)",
+ "org_id": "101",
+ "tbl_id": "DT_1YL202004E",
+ "prd_se": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 13440,
+ "rows_kept": 13440,
+ "latest": "202608",
+ "unit": "호",
+ "areas": [],
+ "fetched": "2026-10-26",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL202004E",
+ "note": ""
+}

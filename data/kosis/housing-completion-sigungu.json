@@ -1,0 +1,20 @@
+{
+ "key": "housing-completion-sigungu",
+ "name": "주택건설실적 — 시군구별 주택 준공(월간) — 구·군 경제 현황의 인구이동 옆 '새 집 물량'(운영자 지시 2026-10-26 '1 2 3 다 해봐')",
+ "tbl_nm": "주택건설 준공실적(월계)",
+ "org_id": "116",
+ "tbl_id": "DT_MLTM_5372",
+ "prd_se": "M",
+ "period": [
+  "202201",
+  "202612"
+ ],
+ "rows_total": 20120,
+ "rows_kept": 20120,
+ "latest": "202608",
+ "unit": "호",
+ "areas": [],
+ "fetched": "2026-10-26",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=116&tblId=DT_MLTM_5372",
+ "note": ""
+}

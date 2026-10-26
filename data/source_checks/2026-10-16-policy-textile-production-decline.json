@@ -1,11 +1,13 @@
 {
  "file": "src/content/posts/2026-10-16-policy-textile-production-decline.md",
- "checked": "2026-10-19",
- "ok": 13,
+ "checked": "2026-10-25",
+ "ok": 12,
  "total": 13,
- "ratio": 1.0,
- "official_bad": [],
- "pass": true,
+ "ratio": 0.92,
+ "official_bad": [
+  "국가법령정보센터, 「지역 산업위기 대응 및 지역경제 회복을 위한 특별법 시행령」(대통령령 제35947호, 2026-01-02 시행)"
+ ],
+ "pass": false,
  "sources": [
   {
    "title": "대구본부세관, 「2026년 9월 대구·경북지역 수출입 현황」 보도자료",
@@ -84,12 +86,12 @@
    "url": "https://www.law.go.kr/법령/지역산업위기대응및지역경제회복을위한특별법시행령",
    "date": "2026-01-02",
    "kind": "law",
-   "status": 200,
-   "page_title": "지역산업위기대응및지역경제회복을위한특별법시행령",
-   "title_match": 0.4,
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
-   "note": ""
+   "ok": false,
+   "note": "ConnectionError"
   },
   {
    "title": "헤럴드경제, 「‘석화’ 울산 남구·‘철강’ 충남 당진, 산업위기선제대응지역 신규 지정」",

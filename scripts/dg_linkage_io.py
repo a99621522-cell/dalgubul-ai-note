@@ -224,9 +224,10 @@ def main() -> int:
     IX = {r_: idx(r_) for r_ in REGIONS}   # 행과 열은 같은 지역·부문 순서(561 = 17 × 33)
     assert [rw[1:3] for rw in rows] == [c[1:3] for c in cols], "행·열 순서 다름"
     purchases = []
-    for breg in ("대구", "경북"):
+    YN = ("대구", "경북", "부산", "울산", "경남")   # 영남권 5개 시도(운영자 지시 2026-10-21 '대구경북경남 등 제조업이 발달한 곳') — 대구·경북 행은 io_service_purchases.csv, 5개 시도는 io_service_purchases_yn.csv
+    for breg in YN:
         for k, bcode in enumerate(sec_code):
-            bj = (D if breg == "대구" else GB)[k]
+            bj = IX[breg][k]
             gcol = cols[bj][0]
             for scode in SVC:
                 sk = sec_code.index(scode)
@@ -282,7 +283,8 @@ def main() -> int:
     wcsv("io_network_mst.csv", msts)
     wcsv("io_flows_dg.csv", flows)
     wcsv("io_induce_dg.csv", induce)
-    wcsv("io_service_purchases.csv", purchases)
+    wcsv("io_service_purchases.csv", [r for r in purchases if r["buyer_region"] in ("대구", "경북")])
+    wcsv("io_service_purchases_yn.csv", purchases)
     wcsv("io_daegu_service_sales.csv", dsales)
     tot = lambda k: sum(f[k] for f in flows if isinstance(f[k], (int, float)))
     summary = {"source": "한국은행 「2020년 지역산업연관표」 지역간 투입산출표(생산자가격, 통합대분류 33부문), 백만 원",

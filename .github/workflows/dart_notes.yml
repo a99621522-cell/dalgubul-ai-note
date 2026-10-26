@@ -4,6 +4,7 @@ name: DART 대구 상장회사 실적 이유·전망 문구(보고서 본문·IR
 # 기업설명회(IR) 공시·첨부 IR 자료(PDF, 저장 안 함)의 전망 줄을 data/dart/report_notes.csv · data/dart/ir.csv 로 커밋한다.
 # 분기 실적(dart_qtr.yml, 매달 2·17일) 다음 날 돈다. 이 세션 환경은 opendart·dart.fss.or.kr 이 막혀 러너가 대신 돈다.
 # data/dart/notes_probe.txt 첫 줄에 회사 이름을 적어 푸시하면 그 회사만 로그로(저장 안 함).
+# args 에 --robot-scan --names-file data/dart/robot_scan_names.txt 면 로봇 낱말 줄을 data/dart/robot_scan.csv 로 커밋(대구 로봇 기업 2단계 분류 근거).
 on:
   schedule:
     - cron: "37 21 2,17 * *"     # 매달 3·18일 06:37 KST
@@ -56,6 +57,7 @@ jobs:
           git config user.name dalgubul-bot
           git config user.email bot@users.noreply.github.com
           git add data/dart/report_notes.csv data/dart/ir.csv 2>/dev/null || true
+          git add data/dart/robot_scan.csv 2>/dev/null || true
           git diff --cached --quiet && { echo "변경 없음"; exit 0; }
           git commit -m "data: DART 대구 상장회사 실적 이유·전망 문구 $(date -u +%Y-%m-%d)"
           for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

@@ -8,6 +8,7 @@
 | `stats_*.csv`, `stats_summary.json` | `scripts/dg_linkage_stats.py` (data/kosis) | GRDP 비중·성장·1인당, 고용·생산성, 부가가치 구조, 사업체조사 입지계수·변이할당·비교우위·기술수준, 출하액 변이할당, 제조업 급여, 고령인구, 통근·통학(인구총조사 2020) |
 | `firms_*` | `scripts/dg_linkage_firms.py` | 대구 기업 사전 ↔ 경북 등록공장 이름(+생산품) 일치 |
 | `io_service_purchases.csv`, `io_daegu_service_sales.csv` | `scripts/dg_linkage_io.py` | 대구·경북 33부문이 서비스(G~T)를 산 지역(17개 시도·수입), 대구 서비스 부문이 판 지역·산업 종류 |
+| `io_service_purchases_yn.csv` | `scripts/dg_linkage_io.py` | 영남권 5개 시도(대구·경북·부산·울산·경남) 33부문이 서비스(G~T)를 산 지역(17개 시도·수입) — 영남권 제조업 AI·SW 공급 집적지 검토용(2026-10-21) |
 | `report/proposal1.md`, `report/*정책제언1*.hwpx` | `scripts/dg_linkage_p1.py` | 정책 제언 1 상세(대구 지식서비스–경북 첨단제조 거래 연결) |
 | `report/proposal1_tools.md`, `report/*정책수단*.hwpx` | `scripts/dg_linkage_p1_tools.py` | 대구 지식서비스의 경북 공급 확대 정책수단 설계(안) |
 | `report/` | `scripts/dg_linkage_report.py` | 보고서 md·그림, 공무원 양식 HWPX(`scratchpad` 의 md2hwpx 와 같은 hwpx_blocks 경로) |

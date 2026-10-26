@@ -1,0 +1,76 @@
+---
+/** 구·군 작은 그래프 묶음(/stats/districts/ 추이). 9개 구·군이 같은 세로축을 쓴다 — 크기를 서로 견줄 수 있게.
+ *  kind=bar: 0 기준 위아래 막대(양수 --chart-1, 음수 --chart-2), kind=line: 선 하나. 점·막대마다 <title> 툴팁. 값 그대로, 평가 없음. */
+import { GU } from '../lib/districts';
+type Pt = { m: string; v: number | null };
+interface Props { id: string; series: Map<string, Pt[]>; kind: 'bar' | 'line'; unit: string; digits?: number; label: string; posLabel?: string; negLabel?: string }
+const { id, series, kind, unit, digits = 0, label, posLabel, negLabel } = Astro.props;
+const all = GU.flatMap(g => (series.get(g) ?? []).map(p => p.v).filter((v): v is number => v != null));
+const nice = (x: number) => { if (x <= 0) return 0; const e = 10 ** Math.floor(Math.log10(x)); return Math.ceil(x / e / (x / e > 5 ? 2 : 1)) * e * (x / e > 5 ? 2 : 1); };
+const hi = nice(Math.max(0, ...all)), lo = -nice(-Math.min(0, ...all));
+const yMax = hi || 1, yMin = lo;
+const W = 300, H = 140, pl = 40, pr = 8, pt = 8, pb = 20;
+const months = [...new Set(GU.flatMap(g => (series.get(g) ?? []).map(p => p.m)))].sort();
+const n = months.length;
+const X = (i: number) => pl + (kind === 'bar' ? (i + 0.5) / n : i / Math.max(1, n - 1)) * (W - pl - pr);
+const Y = (v: number) => pt + (1 - (v - yMin) / (yMax - yMin || 1)) * (H - pt - pb);
+const bw = Math.max(1.5, (W - pl - pr) / n - 1.5);
+const fmt = (v: number) => `${v > 0 && kind === 'bar' ? '+' : ''}${v.toLocaleString('ko-KR', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+const ml = (m: string) => `${m.slice(0, 4)}.${Number(m.slice(4))}`;
+const yTicks = [yMin, 0, yMax].filter((v, i, a) => a.indexOf(v) === i);
+const xTicks = months.map((m, i) => ({ m, i })).filter(o => o.m.endsWith('01'));
+const bar = (v: number) => { const y0 = Y(0), y1 = Y(v); return { y: Math.min(y0, y1), h: Math.max(0.8, Math.abs(y1 - y0)) }; };
+---
+<div class="dt">
+  {kind === 'bar' && posLabel && <ul class="legend" aria-label="범례"><li><span class="sw" style="background:var(--chart-1)"></span>{posLabel}</li><li><span class="sw" style="background:var(--chart-2)"></span>{negLabel}</li></ul>}
+  <div class="sm" id={id}>
+    {GU.map(g => {
+      const pts = (series.get(g) ?? []).map(p => ({ ...p, i: months.indexOf(p.m) }));
+      const has = pts.filter(p => p.v != null) as (Pt & { i: number; v: number })[];
+      const last = has.at(-1);
+      const path = has.map((p, k) => `${k === 0 || has[k - 1].i !== p.i - 1 ? 'M' : 'L'}${X(p.i).toFixed(1)},${Y(p.v).toFixed(1)}`).join('');
+      return (
+        <figure class="panel">
+          <figcaption>{g}{last && <span class="meta"> · {ml(last.m)} {fmt(last.v)}{unit}</span>}</figcaption>
+          <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${g} ${label}. 값은 아래 표에 있습니다.`}>
+            {yTicks.map(t => <><line class={t === 0 ? 'base' : 'grid'} x1={pl} x2={W - pr} y1={Y(t)} y2={Y(t)} /><text class="ax" x={pl - 4} y={Y(t) + 3} text-anchor="end">{t.toLocaleString('ko-KR')}</text></>)}
+            {xTicks.map(o => <text class="ax" x={X(o.i)} y={H - 6} text-anchor="middle">{`${o.m.slice(2, 4)}년`}</text>)}
+            {kind === 'bar'
+              ? has.map(p => { const b = bar(p.v); return <rect x={X(p.i) - bw / 2} y={b.y} width={bw} height={b.h} rx="1" fill={p.v >= 0 ? 'var(--chart-1)' : 'var(--chart-2)'}><title>{`${g} ${ml(p.m)}: ${fmt(p.v)}${unit}`}</title></rect>; })
+              : <>
+                  <path class="ln" d={path} />
+                  {has.map(p => <circle class="hit" cx={X(p.i)} cy={Y(p.v)} r="6"><title>{`${g} ${ml(p.m)}: ${fmt(p.v)}${unit}`}</title></circle>)}
+                  {last && <circle class="dot" cx={X(last.i)} cy={Y(last.v)} r="3.5" />}
+                </>}
+          </svg>
+        </figure>
+      );
+    })}
+  </div>
+  <details>
+    <summary>표로 보기</summary>
+    <div class="scroll-x"><table class="data-table" data-title={label}>
+      <thead><tr><th>달</th>{GU.map(g => <th class="n">{g}</th>)}</tr></thead>
+      <tbody>{months.map(m => <tr><th scope="row">{ml(m)}</th>{GU.map(g => { const v = series.get(g)?.find(p => p.m === m)?.v; return <td class="n">{v == null ? '—' : fmt(v)}</td>; })}</tr>)}</tbody>
+    </table></div>
+  </details>
+</div>
+
+<style>
+  .legend { display: flex; flex-wrap: wrap; gap: .3rem 1rem; list-style: none; padding: 0; margin: .3rem 0 .5rem; font-size: var(--small); }
+  .legend li { display: flex; align-items: center; gap: .35rem; }
+  .sw { width: .9rem; height: .55rem; border-radius: 2px; display: inline-block; }
+  .sm { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: .7rem; margin: .4rem 0 .6rem; }
+  .panel { margin: 0; border: 1px solid var(--line); border-radius: var(--radius-2, 8px); padding: .45rem .5rem .2rem; background: var(--bg); }
+  .panel figcaption { font-size: var(--small); font-weight: 600; }
+  .panel figcaption .meta { font-weight: 400; }
+  .panel svg { width: 100%; height: auto; display: block; }
+  .grid { stroke: var(--line); stroke-width: 1; }
+  .base { stroke: var(--muted); stroke-width: 1; }
+  .ax { fill: var(--muted); font-size: 10px; }
+  .ln { fill: none; stroke: var(--chart-1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .dot { fill: var(--chart-1); stroke: var(--bg); stroke-width: 2; }
+  .hit { fill: transparent; }
+  .hit:hover { fill: var(--chart-1); fill-opacity: .25; }
+  rect:hover { opacity: .75; }
+</style>

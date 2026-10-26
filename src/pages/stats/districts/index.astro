@@ -4,11 +4,11 @@ import StatsNav from '../../../components/StatsNav.astro';
 import SourceBadge from '../../../components/SourceBadge.astro';
 import DistrictTrends from '../../../components/DistrictTrends.astro';
 import { TOPICS } from '../../../lib/statsTopics';
-import { GU, NPS_GROUPS, population, employed, nps, firms, complexesByGu, commute, tourism, migration, stores, trends } from '../../../lib/districts';
+import { GU, NPS_GROUPS, population, employed, nps, firms, complexesByGu, commute, tourism, migration, stores, trends, legalDongs } from '../../../lib/districts';
 /** /stats/districts/ — 구·군 경제 현황(운영자 지시 2026-10-26). 공개 자료만 9개 구·군으로 나눠 나란히. 근거마다 기준이 달라 더하거나 나누지 않는다.
  *  행 순서는 행정 순서, 값은 원 자료 그대로(묶음 합·비중·증감 나눗셈만), 평가·순위 없음. */
 const t = TOPICS.find(x => x.key === 'districts')!;
-const pop = population(), emp = employed(), np = nps(), fi = firms(), cx = complexesByGu(), cm = commute(), tr = tourism(), mg = migration(), st = stores(), td = trends();
+const pop = population(), emp = employed(), np = nps(), fi = firms(), cx = complexesByGu(), cm = commute(), tr = tourism(), mg = migration(), st = stores(), td = trends(), ld = legalDongs();
 const f0 = (v: number | null | undefined) => (v == null ? '—' : Math.round(v).toLocaleString('ko-KR'));
 const f1 = (v: number | null | undefined) => (v == null ? '—' : v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
 const pct = (a: number | null | undefined, b: number | null | undefined) => (a == null || !b ? null : (a / b - 1) * 100);
@@ -270,16 +270,30 @@ const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--
       </table></div>
     </details>
     )}
-    <details>
-      <summary>행정동별 점포 수 보기 ({st.dongs.length}개 동)</summary>
-      <div class="scroll-x"><table class="data-table" data-title={`대구 행정동별 상가 점포 수 (${st.q})`}>
-        <thead><tr><th>구·군</th><th>행정동</th><th class="n">점포(곳)</th>{st.large.map(l => <th class="n" data-pri="2">{l}</th>)}</tr></thead>
-        <tbody>{st.dongs.map(d => <tr><td>{d.g}</td><th scope="row">{d.d}</th><td class="n">{f0(d.total)}</td>{d.l.map(v => <td class="n">{f0(v)}</td>)}</tr>)}</tbody>
-      </table></div>
-    </details>
     <p class="src"><SourceBadge kind="행정자료" /> {st.source}{st.url && <> (<a href={st.url}>공공데이터포털</a>)</>}, 분기 판({st.quarters.join(' · ')}). 점포 단위 명단을 이 사이트가 센 것이며 상호·주소는 싣지 않습니다. 같은 자료의 업종은 상권 업종 분류(대분류)이고 통계청 산업분류와 다릅니다. 명단에 오르는 범위가 판마다 조금씩 달라질 수 있어 증감은 참고로 봅니다.</p>
   </section>
   )}
+
+  <section aria-labelledby="h-dong">
+    <div class="section-head"><h2 id="h-dong">동 단위로 보기</h2><span class="meta">법정동 · 행정동</span></div>
+    <p>구·군을 고르면 그 구·군의 동만 보입니다. 국민연금·기업 사전은 주소의 <b>법정동</b>(군은 읍·면), 상가 점포는 <b>행정동</b> 기준이라 동 이름이 서로 맞지 않아 표를 나눴습니다.</p>
+    <div class="gu-dl"><label for="dong-gu">구·군</label><select id="dong-gu"><option value="">전체</option>{GU.map(g => <option value={g}>{g}</option>)}</select></div>
+    <h3 class="sub">법정동 — 국민연금 사업장·가입자, 기업 사전 기업</h3>
+    <div class="scroll-x"><table class="data-table dong-t" data-title={`대구 법정동별 국민연금 사업장·가입자(${ld.month})와 기업 사전 기업(${foYm})`}>
+      <thead><tr><th>구·군</th><th>법정동</th><th class="n">국민연금 사업장(곳)</th><th class="n">가입자(명)</th><th class="n">기업 사전 기업(곳)</th><th class="n" data-pri="2">공장등록 종사자(명)</th></tr></thead>
+      <tbody>{ld.rows.map(r => <tr data-gu={r.g}><td>{r.g}</td><th scope="row">{r.d}</th><td class="n">{f0(r.sites)}</td><td class="n">{f0(r.members)}</td><td class="n">{r.firms ? f0(r.firms) : '—'}</td><td class="n">{f0(r.foWorkers)}</td></tr>)}</tbody>
+    </table></div>
+    <p class="src"><SourceBadge kind="행정자료" /> 국민연금공단 가입 사업장 내역({ld.month}, 지번주소의 법정동) · 기업 사전(읍·면 칸, 없으면 도로명주소 괄호 속 동). 주소에서 동을 못 찾은 기업은 빠집니다({GU.filter(g => ld.unknown.get(g)).map(g => `${g} ${f0(ld.unknown.get(g))}곳`).join(' · ') || '없음'}) — 대부분 주소가 짧게 적힌 산단 외 기업입니다.</p>
+    {st && <>
+      <h3 class="sub">행정동 — 상가 점포 ({st.q})</h3>
+      <div class="scroll-x"><table class="data-table dong-t" data-title={`대구 행정동별 상가 점포 수 (${st.q})`}>
+        <thead><tr><th>구·군</th><th>행정동</th><th class="n">점포(곳)</th>{st.large.map(l => <th class="n" data-pri="2">{l}</th>)}</tr></thead>
+        <tbody>{st.dongs.map(d => <tr data-gu={d.g}><td>{d.g}</td><th scope="row">{d.d}</th><td class="n">{f0(d.total)}</td>{d.l.map(v => <td class="n">{f0(v)}</td>)}</tr>)}</tbody>
+      </table></div>
+      <p class="src"><SourceBadge kind="행정자료" /> {st.source}. 행정동 이름은 원 자료 그대로입니다.</p>
+    </>}
+    <p class="meta">행정동별 주민등록인구는 아직 받지 않았습니다.</p>
+  </section>
 
   {tr && (
   <section aria-labelledby="h-tour">
@@ -295,6 +309,11 @@ const NPS_COLOR = ['var(--chart-3)', 'var(--chart-1)', 'var(--chart-2)', 'var(--
   <p class="meta">카드 결제 전체·구 사이 소비 이동·자영업 휴·폐업률·유동인구처럼 공개되지 않는 값은 이 페이지에 없습니다(데이터안심구역 등 별도 신청 자료).</p>
   <script type="application/json" id="gu-data" set:html={JSON.stringify(guData).replace(/</g, '\\u003c')}></script>
   <script>import '../../../scripts/district_card';</script>
+  <script>
+    // 동 표 구·군 거르기 — 고른 구·군의 행만 보인다
+    const sel = document.getElementById('dong-gu') as HTMLSelectElement | null;
+    sel?.addEventListener('change', () => document.querySelectorAll<HTMLTableRowElement>('table.dong-t tbody tr').forEach(tr => { tr.hidden = !!sel.value && tr.dataset.gu !== sel.value; }));
+  </script>
 </Base>
 
 <style>

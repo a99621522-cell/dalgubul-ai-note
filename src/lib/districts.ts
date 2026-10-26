@@ -231,3 +231,28 @@ export function stores() {
   const dongs = GU.flatMap(g => [...new Set(dong.filter(r => r.sigungu === g).map(r => r.dong))].sort((a, b) => a.localeCompare(b, 'ko')).map(d => ({ g, d, total: dong.filter(r => r.sigungu === g && r.dong === d).reduce((s, r) => s + Number(r.stores), 0), l: large.map(l => Number(dong.find(r => r.sigungu === g && r.dong === d && r.large === l)?.stores ?? 0)) })));
   return { q: qLabel(q), yearAgo: prev ? qLabel(yearAgo) : '', from: from ? qLabel(from) : '', large, by, dongs, quarters: qs.map(qLabel), source: idx.source ?? '', url: idx.url ?? '' };
 }
+
+/** 법정동(군 지역은 읍·면) 단위: 국민연금 사업장·가입자(지번주소 셋째 낱말)와 기업 사전 기업(읍면 칸 → 없으면 도로명주소 괄호 속 동).
+ *  상가 점포는 행정동이라 이 표와 합치지 않는다(stores().dongs). 동 이름을 못 찾은 기업은 '동 미상'으로 따로 센다. */
+export function legalDongs() {
+  const np = nps();
+  const key = (g: string, d: string) => `${g}|${d}`;
+  const m = new Map<string, { g: string; d: string; sites: number; members: number; firms: number; foWorkers: number }>();
+  const get = (g: string, d: string) => m.get(key(g, d)) ?? m.set(key(g, d), { g, d, sites: 0, members: 0, firms: 0, foWorkers: 0 }).get(key(g, d))!;
+  if (np) {
+    for (const r of readCsv(`data/nps/${np.latest}.csv`)) {
+      const g = NPS_CODE[r['법정동주소광역시시군구코드']]; if (!g || r['사업장가입상태코드'] !== '1') continue;
+      const d = (r['사업장지번상세주소'] ?? '').split(/\s+/)[2]; if (!d) continue;
+      const o = get(g, d); o.sites++; o.members += num(r['가입자수']) ?? 0;
+    }
+  }
+  const unknown = new Map<string, number>();
+  for (const c of companies()) {
+    if (!(GU as readonly string[]).includes(c.district)) continue;
+    const d = c.eupmyeon || c.address.match(/\(([^,()]*?[가-힣0-9]+(?:동|가|읍|면))(?:[,)])/)?.[1]?.trim() || '';
+    if (!d) { unknown.set(c.district, (unknown.get(c.district) ?? 0) + 1); continue; }
+    const o = get(c.district, d); o.firms++; if (c.id.startsWith('c')) o.foWorkers += Number(c.workers) || 0;
+  }
+  const rows = GU.flatMap(g => [...m.values()].filter(x => x.g === g).sort((a, b) => a.d.localeCompare(b.d, 'ko')));
+  return { month: np?.latestLabel ?? '', rows, unknown };
+}

@@ -1,0 +1,145 @@
+{
+ "file": "src/content/posts/2026-10-27-policy-semiconductor-auto-chip-demand.md",
+ "checked": "2026-10-26",
+ "ok": 9,
+ "total": 11,
+ "ratio": 0.82,
+ "official_bad": [
+  "CLEPA(유럽 자동차부품협회), 「Chips Act position paper」"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "산업통상부, 「M.AX 원팀으로 車반도체 생태계 성장 가속화」 보도자료",
+   "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172319/view",
+   "date": "2026-10-21",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "M.AX 원팀으로 車반도체 생태계 성장 가속화 &lt; 보도·참고자료 &lt; 보도자료 &lt; 알림·뉴스 &lt; 산업통상부",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "서울신문, 「현대차 주문·中企 설계…車반도체 국산화 '원팀' 출범」",
+   "url": "https://www.seoul.co.kr/news/newsView.php?id=20261021500253",
+   "date": "2026-10-21",
+   "kind": "news",
+   "status": 200,
+   "page_title": "현대차 주문·中企 설계…車반도체 국산화 ‘원팀’ 출범 | 서울신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "비즈워치, 산업통상부 '함께 크는 M.AX 프로젝트' 미래차 업무협약 5건 보도",
+   "url": "https://news.bizwatch.co.kr/article/industry/2026/09/30/0015",
+   "date": "2026-09-30",
+   "kind": "news",
+   "status": 403,
+   "page_title": "Just a moment...",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": ""
+  },
+  {
+   "title": "한국산업기술기획평가원(KEIT), 「KEIT 이슈픽 2026년 7월호: 제조산업」(차량용 반도체 국산화율 향상)",
+   "url": "https://srome.keit.re.kr/srome/biz/info/keitPub/retrieveKeitIssuListView.do?prgmId=XPG404010000",
+   "date": "2026-07-01",
+   "kind": "report",
+   "status": 200,
+   "page_title": "KEIT 이슈픽 | KEIT 간행물 및 콘텐츠 | 정보",
+   "title_match": 0.67,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "한국은행 조사국, 「우리나라 주요 제조업 생산 및 공급망 지도(2026)」",
+   "url": "https://www.bok.or.kr/portal/bbs/B0000347/view.do?nttId=11063183&oldMenuNo=201150&menuNo=201106&programType=newsData&depth=201106&relate=Y",
+   "date": "2026-07-27",
+   "kind": "official",
+   "status": 200,
+   "page_title": "한국 제조업의 지도, 흐름이 달라졌다 - ｢우리나라 주요 제조업 생산 및 공급망 지도｣가 보여주는 제조업의 달라진 연결 구조 | 블로그(상세) | 뉴스/자료 | 한국은행 홈페이지",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "AENEAS, 「Chips Act 2.0: EU Proposes New Measures to Strengthen Semiconductor Competitiveness and Resilience」(집행위 제안 소개)",
+   "url": "https://aeneas-office.org/2026/06/03/european-commission-unveils-proposed-chips-act-2-0/",
+   "date": "2026-06-03",
+   "kind": "report",
+   "status": 200,
+   "page_title": "Chips Act 2.0: EU Proposes New Measures to Strengthen Semiconductor Competitiveness and Resilience : Aeneas",
+   "title_match": 1.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "CLEPA(유럽 자동차부품협회), 「Chips Act position paper」",
+   "url": "https://www.clepa.eu/wp-content/uploads/2026/02/ChipsAct_PositionPaper_final.pdf",
+   "date": "2026-02",
+   "kind": "report",
+   "status": 200,
+   "page_title": "",
+   "title_match": 0.2,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "헤럴드경제, 「경기도, 팹리스 사업화 '양산성능평가 지원' 참여기업 모집」",
+   "url": "https://www.heraldk.com/article/2026020818294517789",
+   "date": "2026-02-08",
+   "kind": "news",
+   "status": 200,
+   "page_title": "경기도, 팹리스 사업화 ‘양산성능평가 지원’ 참여기업 모집 - 헤럴드경제 미주판",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "통계청 KOSIS, 광업·제조업조사 「시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 2024",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
+   "date": "2026-10-26",
+   "kind": "data",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.2,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "금융감독원 DART, 기업개황(본사 주소) — 원팀 TF 보도 기업 대조",
+   "url": "https://dart.fss.or.kr/",
+   "date": "2026-10-05",
+   "kind": "data",
+   "status": 200,
+   "page_title": "전자공시시스템",
+   "title_match": 0.67,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-09 공장등록, KSIC 대표 업종·단지·종사자 신고값)·사업 DB(사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-10-27",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

@@ -208,11 +208,12 @@ export function migration() {
 
 /** 소상공인시장진흥공단 상가(상권)정보 대구 집계(scripts/fetch_sbiz_stores.py → data/stores/). 상가업소 명단의 점포 수이지 사업체 조사 값이 아니다. */
 export function stores() {
-  let idx: { quarters: Record<string, { stores: number; file: string }>; source?: string; url?: string };
+  let idx: { quarters: Record<string, { stores: number; file: string; daegu_file?: string }>; source?: string; url?: string };
   try { idx = JSON.parse(fs.readFileSync('data/stores/index.json', 'utf-8')); } catch { return null; }
   const qs = Object.keys(idx.quarters).filter(q => fs.existsSync(`data/stores/gu_${q}.csv`)).sort();
   const q = qs.at(-1); if (!q) return null;
-  const qLabel = (x: string) => `${x.slice(0, 4)}년 ${x.slice(-1)}분기`;
+  // 판 이름은 기준월로(대구 파일 이름의 YYYYMM — 분기 판이 10월 기준으로 나온 때가 있다)
+  const qLabel = (x: string) => { const ym = (idx.quarters[x]?.daegu_file ?? idx.quarters[x]?.file ?? '').match(/(20\d{2})(0[1-9]|1[0-2])/); return ym ? `${ym[1]}년 ${Number(ym[2])}월` : `${x.slice(0, 4)}년 ${x.slice(-1)}분기`; };
   const load = (x: string) => readCsv(`data/stores/gu_${x}.csv`);
   const cur = load(q);
   const yearAgo = `${Number(q.slice(0, 4)) - 1}${q.slice(4)}`;

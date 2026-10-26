@@ -1,0 +1,121 @@
+{
+ "file": "src/content/posts/2026-10-22-policy-root-energy-indexation.md",
+ "checked": "2026-10-25",
+ "ok": 8,
+ "total": 9,
+ "ratio": 0.89,
+ "official_bad": [
+  "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "국회예산정책처, 「대·중소기업 상생협력 지원사업·정책 평가」 발간 보도자료",
+   "url": "https://www.nabo.go.kr/ko/notice/releasesView.do?idx=9374",
+   "date": "2026-07-23",
+   "kind": "report",
+   "status": 200,
+   "page_title": "국회예산정책처",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "아시아경제, 「하도급·가맹법 시행령 국무회의 통과」(공정거래위원회 하도급법 시행령 개정, 에너지 연동 확대)",
+   "url": "https://view.asiae.co.kr/article/2026072810005149928",
+   "date": "2026-07-28",
+   "kind": "news",
+   "status": 200,
+   "page_title": "하도급법·가맹사업법 반복 위반시 과징금 가중 한도 50→100%",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "중소벤처기업부·공정거래위원회, 「에너지경비 납품대금 연동 기업 실무 가이드」 발간 보도자료(KDI 경제정보센터 정책자료)",
+   "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=283722",
+   "date": "2026-07-01",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "납품대금 연동대상 확대, ‘에너지경비 연동 가이드북’으로 차질 없이 준비 | 경제정책자료 |KDI 경제교육·정보센터",
+   "title_match": 0.71,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "중소벤처기업부, 납품대금 연동 우수기업 현장 방문 보도자료 — 12월 에너지경비 연동제 안착 방침(KDI 경제정보센터 정책자료)",
+   "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=280526",
+   "date": "2026-05-01",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "중기부, 원자재 가격 상승 대응...‘납품대금 연동제’로 뿌리산업 보호 강화 | 경제정책자료 |KDI 경제교육·정보센터",
+   "title_match": 0.57,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "중소벤처기업부, 「2026년 납품대금 연동 우수기업 포상」 후보자 모집 보도자료(KDI 경제정보센터 정책자료)",
+   "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=285704",
+   "date": "2026-08-24",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "납품대금 연동제로 상생 실천한 우수기업 포상 후보자 모집 | 경제정책자료 |KDI 경제교육·정보센터",
+   "title_match": 0.71,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
+   "date": "2026-10-21",
+   "kind": "official",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "経済産業省・中小企業庁, 「価格交渉促進月間(2026年3月)フォローアップ調査の結果」",
+   "url": "https://www.meti.go.jp/press/2026/06/20260626003/20260626003.html",
+   "date": "2026-06-26",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "価格交渉促進月間（2026年3月）フォローアップ調査の結果を公表します（METI/経済産業省）",
+   "title_match": 0.75,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "중소벤처기업부, 「2026년 납품대금 연동 우수기업 포상 수정 공고」(기업마당)",
+   "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127093",
+   "date": "2026-10-13",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "기업마당>정책정보>지원사업 공고",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-09 공장등록, KSIC 대표 업종·단지·종사자 신고값)·지원 이력·사업 DB(대구시 세부사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-10-22",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

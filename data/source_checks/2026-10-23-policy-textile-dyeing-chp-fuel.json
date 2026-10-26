@@ -1,0 +1,121 @@
+{
+ "file": "src/content/posts/2026-10-23-policy-textile-dyeing-chp-fuel.md",
+ "checked": "2026-10-25",
+ "ok": 8,
+ "total": 9,
+ "ratio": 0.89,
+ "official_bad": [
+  "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)"
+ ],
+ "pass": false,
+ "sources": [
+  {
+   "title": "대구신문, 「염색산단 열병합발전소 친환경 연료전환 추진」",
+   "url": "https://www.idaegu.co.kr/news/articleView.html?idxno=560410",
+   "date": "2026-09-22",
+   "kind": "news",
+   "status": 200,
+   "page_title": "염색산단 열병합발전소 친환경 연료전환 추진 < 사회일반 < 사회 < 기사본문 - 대구신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "경북매일, 대구염색산업단지 열병합발전소 친환경 연료전환 타당성조사 착수 보도",
+   "url": "https://kbmaeil.com/article/20260922500780",
+   "date": "2026-09-22",
+   "kind": "news",
+   "status": 200,
+   "page_title": "대구염색산단, 열병합발전소 친환경 연료전환 ‘시동’ - 경북매일",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "매일신문, 「대구염색산단, 열병합발전소 석탄 대신 친환경 연료 전환 타당성 조사 추진」",
+   "url": "https://www.imaeil.com/page/view/2026092314305690457",
+   "date": "2026-09-23",
+   "kind": "news",
+   "status": 200,
+   "page_title": "대구 열병합발전소 `석탄→친환경 연료` 전환 추진 - 매일신문",
+   "title_match": 0.67,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기후에너지환경부, 제12차 전력수급기본계획 수립을 위한 「2040년 석탄발전 조기폐지 방안 정책토론회(7차)」 개최 보도자료(KDI 경제정보센터 정책자료)",
+   "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=286547",
+   "date": "2026-09-09",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "제12차 전기본 수립을 위한 2040년 석탄발전 조기폐지 방안 정책토론회(7차) 개최 | 경제정책자료 |KDI 경제교육·정보센터",
+   "title_match": 0.7,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "전자신문, 「2040년 석탄발전 21기 조기폐지 추진…최대 10기 '안보전원' 검토」",
+   "url": "https://www.etnews.com/20260918000144",
+   "date": "2026-09-18",
+   "kind": "news",
+   "status": 200,
+   "page_title": "2040년 석탄발전 21기 조기폐지 추진…최대 10기 '안보전원' 검토 - 전자신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "매일신문, 대구 염색산단 입주 업종 확대 규제 완화 추진 보도",
+   "url": "https://www.imaeil.com/page/view/2026081712523336654",
+   "date": "2026-08-17",
+   "kind": "news",
+   "status": 200,
+   "page_title": "권오상 서구청장 `주요 현안, 대구시 및 중앙부처와 협력해 해결` - 매일신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "국가데이터처, 「광업·제조업조사 — 시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 KOSIS DT_1FS1104(2020~2024년)",
+   "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104",
+   "date": "2026-10-22",
+   "kind": "official",
+   "status": 200,
+   "page_title": "KOSIS",
+   "title_match": 0.12,
+   "date_found": false,
+   "ok": false,
+   "note": "열리지만 제목·날짜를 본문에서 못 찾음(JS 렌더링·제목 표기 차이 가능) — 사람이 확인"
+  },
+  {
+   "title": "한국은행, 「2020년 지역산업연관표」(해설편·분석편)",
+   "url": "https://www.bok.or.kr/portal/bbs/P0001588/view.do?nttId=11062193&menuNo=200457&programType=newsData&relate=Y&depth=200457",
+   "date": "2026-06",
+   "kind": "report",
+   "status": 200,
+   "page_title": "2020년 지역산업연관표 | 산업연관표(상세) | 간행물 | 뉴스/자료 | 한국은행 홈페이지",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-09 공장등록, KSIC 대표 업종·단지·종사자 신고값)·사업 DB(대구시 세부사업명만)",
+   "url": "https://daitda.co.kr/companies/",
+   "date": "2026-10-23",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.25,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

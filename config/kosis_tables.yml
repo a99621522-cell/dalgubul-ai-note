@@ -158,6 +158,14 @@ tables:
     prd_se: M
     years: 3
     area_col: C1
+  - key: migration-sigungu
+    name: 국내인구이동통계 — 시군구별 전입·전출·순이동(월간, 시도 안·시도 사이 나눔) — 구·군 경제 현황(운영자 지시 2026-10-26 '인구이동도 받아서 붙여')
+    tbl_id: ""
+    search: ["시군구별 이동자수", "국내인구이동 시군구 전입 전출 순이동", "시군구 전입 전출 월", "행정구역 시군구별 이동자수"]
+    prd_se: M
+    years: 3
+    area_col: C1
+    area: []
   - key: migration-age-sido
     name: 국내인구이동통계 — 시도·연령별 순이동(연간)
     tbl_id: "DT_1B26002"

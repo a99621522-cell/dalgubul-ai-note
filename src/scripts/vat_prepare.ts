@@ -1,6 +1,6 @@
 /** /vat/prepare/ 신고 준비(신고 담당). 인계표 → 신고서 칸별 숫자표 + 안분·정산·재계산 + 신고 기록. 참고용 계산, 서버 없음. */
-import { renderForms, type UsedRow, type ConvRow } from './vat_forms';
-import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, getFilings, saveFiling, deemedRent, nextFiling, ymd, lawLink, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
+import { renderForms, renderUnitSummary, type UsedRow, type ConvRow } from './vat_forms';
+import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, prevPeriodKey, PRELIM_NOTICE_LIMIT, getFilings, saveFiling, deemedRent, nextFiling, ymd, lawLink, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
 type Ledger = { fid: string; name: string; type: string; month: string; rows: LedgerRow[]; src: string };
 const D = loadData();
 if (D) init(D);
@@ -60,7 +60,7 @@ function init(D: Data) {
     $('p-sales')!.querySelectorAll<HTMLButtonElement>('[data-deem]').forEach(b => b.addEventListener('click', () => { const box = b.closest<HTMLElement>('[data-fid]')!; const fid = box.dataset.fid!; const g = (k: string) => num(box.querySelector<HTMLInputElement>(`[data-d=${k}]`)!.value); const r = deemedRent(g('dep'), g('days'), g('rate') / 100, P.y); sales[fid].c4 += r; Object.assign(sales[fid], { dep: g('dep'), days: g('days'), rate: g('rate'), deem: (sales[fid].deem ?? 0) + r }); const c4 = box.querySelector<HTMLInputElement>('[data-c=c4]')!; c4.value = fmt(sales[fid].c4); refreshGroupTaxable(); alert(`간주임대료 ${fmt(r)}원을 (4)에 더했습니다.`); }));
   }
   /** 과세사업 전환 매입세액(시행령 제85조) — 무상(면세)이던 시설을 유상(과세)으로 바꾼 과세기간의 확정신고에 */
-  const convRows: { desc: string; tax: number; kind: 'building' | 'other'; acq: PeriodKey; common: boolean }[] = [];
+  const convRows: { desc: string; tax: number; kind: 'building' | 'other'; acq: PeriodKey; common: boolean; gkey: string }[] = [];
   const convTaxRatio = () => { const tx = (org?.facilities.filter(f => inFiling(D, f)) ?? []).reduce((s, f) => s + (sales[f.id] ? sales[f.id].c1 + sales[f.id].c3 + sales[f.id].c4 : 0), 0); const ex = Object.values(exemptIn).reduce((s, v) => s + v, 0); return tx + ex ? tx / (tx + ex) : 1; };
   function renderConvert(P: ReturnType<typeof periodInfo>) {
     const wrap = $('p-convert')!; if (!wrap) return; wrap.hidden = false;
@@ -68,8 +68,9 @@ function init(D: Data) {
     const ratioEl = convTaxRatio;
     const draw = () => { const r = ratioEl(); $('p-conv-list')!.innerHTML = convRows.length ? `<div class="scroll-x"><table class="data-table vat-table" data-stack="off"><caption>과세사업 전환 매입세액 — ${esc(P.name)} 확정신고에 공제(참고용)</caption><thead><tr><th scope="col">자산</th><th scope="col">불공제됐던 매입세액</th><th scope="col">종류</th><th scope="col">취득 과세기간</th><th scope="col">경과 과세기간</th><th scope="col">남은 비율</th><th scope="col">공통 사용</th><th scope="col">공제 세액</th><th scope="col" class="no-print"></th></tr></thead><tbody>${convRows.map((c, i) => { const cc = convertCredit(c.tax, c.kind, c.acq, sel.value, c.common ? r : 1); return `<tr><th scope="row">${esc(c.desc)}</th><td>${fmt(c.tax)}</td><td>${c.kind === 'building' ? '건물·구축물(5%)' : '그 밖(25%)'}</td><td>${c.acq}</td><td>${cc.n}</td><td>${pct(cc.remain)}</td><td>${c.common ? `과세 비율 ${pct(r)}${r < 0.05 ? ' — 5% 미만, 공제 없음' : ''}` : '과세 전용'}</td><td><strong>${fmt(cc.credit)}</strong></td><td class="no-print"><button type="button" class="link-btn" data-cdel="${i}">삭제</button></td></tr>`; }).join('')}<tr class="total"><th scope="row">합계</th><td colspan="6"></td><td>${fmt(convRows.reduce((s, c) => s + convertCredit(c.tax, c.kind, c.acq, sel.value, c.common ? r : 1).credit, 0))}</td><td></td></tr></tbody></table></div><p class="meta">확정신고 때 「과세사업전환 감가상각자산 신고서」를 함께 냅니다(제85조 제5항). 뒤에 면세비율이 5%p 이상 바뀌면 재계산(제7항 → 제83조). 취득이 과세기간 개시일 뒤면 개시일에 취득한 것으로 봅니다(제6항).</p>` : '<p class="meta">전환할 자산을 넣으면 공제 세액을 계산합니다.</p>'; $('p-conv-list')!.querySelectorAll<HTMLButtonElement>('[data-cdel]').forEach(b => b.addEventListener('click', () => { convRows.splice(Number(b.dataset.cdel), 1); draw(); })); };
     wrap.querySelector<HTMLSelectElement>('[data-cacq]')!.innerHTML = acqOpts.filter(k => k <= sel.value).map(k => `<option value="${k}">${periodInfo(k).name.replace(' 확정신고', '')}</option>`).join('');
+    const uw = wrap.querySelector<HTMLElement>('[data-cunit-wrap]')!; const us = wrap.querySelector<HTMLSelectElement>('[data-cunit]')!; const ug = [...groupsOf(org?.facilities.filter(f => inFiling(D, f)) ?? []).keys()]; uw.hidden = !(org && org.unit === 'site' && ug.length > 1); us.innerHTML = ug.map(k => `<option value="${esc(k)}">${esc(groupName(k))}</option>`).join('');
     const addBtn = wrap.querySelector<HTMLButtonElement>('[data-cadd]')!; const fresh = addBtn.cloneNode(true) as HTMLButtonElement; addBtn.replaceWith(fresh);
-    fresh.addEventListener('click', () => { const g = (k: string) => wrap.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-${k}]`)!; const tax = num(g('ctax').value); if (!tax) { alert('불공제됐던 매입세액을 넣으세요.'); return; } convRows.push({ desc: g('cdesc').value.trim() || '(자산)', tax, kind: (g('ckind').value as 'building' | 'other'), acq: g('cacq').value, common: (g('ccommon') as HTMLInputElement).checked }); (g('cdesc') as HTMLInputElement).value = ''; (g('ctax') as HTMLInputElement).value = ''; draw(); });
+    fresh.addEventListener('click', () => { const g = (k: string) => wrap.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-${k}]`)!; const tax = num(g('ctax').value); if (!tax) { alert('불공제됐던 매입세액을 넣으세요.'); return; } convRows.push({ desc: g('cdesc').value.trim() || '(자산)', tax, kind: (g('ckind').value as 'building' | 'other'), acq: g('cacq').value, common: (g('ccommon') as HTMLInputElement).checked, gkey: org && org.unit === 'site' ? (g('cunit').value || 'noreg') : 'entity' }); (g('cdesc') as HTMLInputElement).value = ''; (g('ctax') as HTMLInputElement).value = ''; draw(); });
     draw();
   }
   const groupsOf = (facs: OrgFacility[]) => { const m = new Map<string, OrgFacility[]>(); facs.forEach(f => { const k = groupKey(f); m.set(k, [...(m.get(k) ?? []), f]); }); return m; };
@@ -105,7 +106,7 @@ function init(D: Data) {
     if (!org) return; const P = periodInfo(sel.value); const prelimSaved = P.prelimKey ? getFilings()[P.prelimKey] : undefined; const prevIds = new Set(prelimSaved?.row_ids ?? []);
     const facs = org.facilities.filter(f => inFiling(D, f)); const gs = groupsOf(facs);
     const cells: Record<string, { amt: number; tax: number }> = {}; const add = (no: string, amt: number, tax: number) => { const c = cells[no] ?? (cells[no] = { amt: 0, tax: 0 }); c.amt += amt; c.tax += tax; };
-    const common: Record<string, number> = {}; const rowIds: string[] = []; const unresolved: string[] = [], excluded: string[] = [], lateNote: string[] = [], missing: string[] = [];
+    const common: Record<string, number> = {}; const commonAmt: Record<string, number> = {}; const rowIds: string[] = []; const unresolved: string[] = [], excluded: string[] = [], lateNote: string[] = [], missing: string[] = [];
     const assets: Filing['assets'] = []; let nInv = 0, nCard = 0, nNo = 0; const used: UsedRow[] = [];
     for (const f of facs) {
       const months = includePrelimRows ? [...P.prelim, ...P.own] : P.own;
@@ -125,7 +126,7 @@ function init(D: Data) {
           add(main, r.amt, r.tax); if (inv) nInv++; else nCard++;
           const gk = groupKey(f);
           if (r.v === 'no') { add('53', r.amt, r.tax); nNo++; }
-          if (r.v === 'split') common[gk] = (common[gk] ?? 0) + r.tax;
+          if (r.v === 'split') { common[gk] = (common[gk] ?? 0) + r.tax; commonAmt[gk] = (commonAmt[gk] ?? 0) + r.amt; }
           if (r.asset) assets.push({ id: r.id, facility: f.name, desc: r.desc, period: sel.value, tax: r.tax, kind: r.what === 'repair' ? 'building' : 'other', common: r.v === 'split', ratio0: 0, group: gk });
         }
       }
@@ -150,25 +151,49 @@ function init(D: Data) {
     const hi = (k: PeriodKey) => { const p = periodInfo(k); return p.y * 2 + p.half - 1; }; const curH = hi(sel.value);
     const recalc: { a: Filing['assets'][number]; from: PeriodKey; ratio: number; n: number; amt: number }[] = [];
     for (const [k, fl] of Object.entries(getFilings())) { if (k === sel.value || hi(k) >= curH) continue; for (const a of fl.assets ?? []) { if (!a.common) continue; const g = groups.find(x => x.key === a.group); if (!g) continue; const diff = g.ratio - a.ratio0; if (Math.abs(diff) < D.rules.recalc.threshold_pp) continue; const n = curH - hi(a.period); const remain = Math.max(0, 1 - D.rules.recalc.rates[a.kind] * n); if (remain <= 0) continue; recalc.push({ a, from: k, ratio: g.ratio, n, amt: Math.floor(a.tax * remain * diff) }); } }
-    /* 과세사업 전환 매입세액 → (48), 재계산 → (54)에 합산 */
-    const cr = convTaxRatio(); const conv: ConvRow[] = convRows.map(cv => { const cc = convertCredit(cv.tax, cv.kind, cv.acq, sel.value, cv.common ? cr : 1); return { ...cv, credit: cc.credit, n: cc.n, remain: cc.remain }; }); const convSum = conv.reduce((s, v) => s + v.credit, 0); if (convSum) add('48', 0, convSum);
-    const recalcSum = recalc.reduce((s, r) => s + r.amt, 0); if (recalcSum) add('54', 0, recalcSum);
+    /* 등록 단위(사업장)마다 신고서 한 장 — 사업자 단위 과세면 한 장 + 사업장별 명세(첨부 15) */
+    const cr = convTaxRatio(); const convAll: ConvRow[] = convRows.map(cv => { const cc = convertCredit(cv.tax, cv.kind, cv.acq, sel.value, cv.common ? cr : 1); return { ...cv, credit: cc.credit, n: cc.n, remain: cc.remain }; });
+    const units = org.unit === 'entity' ? [{ key: 'entity', fs: facs }] : [...gs.entries()].map(([key, fs]) => ({ key, fs }));
+    const prevFiling = getFilings()[prevPeriodKey(sel.value)];
+    const unitCells = (fs: OrgFacility[], us: UsedRow[], gk: string) => {
+      const c: Record<string, { amt: number; tax: number }> = {}; const ad = (no: string, amt: number, tax: number) => { const x = c[no] ?? (c[no] = { amt: 0, tax: 0 }); x.amt += amt; x.tax += tax; };
+      for (const u of us) { const main = u.isPre ? '13' : u.inv ? (u.r.asset ? '12' : '10') : (u.r.asset ? '45' : '44'); ad(main, u.r.amt, u.r.tax); if (u.r.v === 'no') ad('53', u.r.amt, u.r.tax); if (u.r.late && u.inv) ad('66', u.r.amt, Math.floor(u.r.amt * 5 / 1000)); }
+      for (const f of fs) { const sl = sales[f.id]; if (!sl) continue; if (sl.c1) ad('1', sl.c1, Math.floor(sl.c1 * 0.1)); if (sl.c3) ad('3', sl.c3, Math.floor(sl.c3 * 0.1)); if (sl.c4) ad('4', sl.c4, Math.floor(sl.c4 * 0.1)); }
+      for (const g of groups.filter(g => org!.unit === 'entity' || g.key === gk)) if (g.nondeduct) ad('54', 0, g.nondeduct);
+      const rc = recalc.filter(r => org!.unit === 'entity' || r.a.group === gk).reduce((s, r) => s + r.amt, 0); if (rc) ad('54', 0, rc);
+      const cv = convAll.filter(v => org!.unit === 'entity' || v.gkey === gk).reduce((s, v) => s + v.credit, 0); if (cv) ad('48', 0, cv);
+      return c; };
+    const unitHtml: string[] = []; const unitRecs: NonNullable<Filing['units']> = [];
+    for (const un of units) {
+      const fids = new Set(un.fs.map(f => f.id)); const us = used.filter(u => fids.has(u.f.id)); const ucells = unitCells(un.fs, us, un.key);
+      const supply = ['1', '3', '4'].reduce((t, n) => t + (ucells[n]?.amt ?? 0), 0); const mt = ['1', '3', '4'].reduce((t, n) => t + (ucells[n]?.tax ?? 0), 0);
+      const c15 = ['44', '45', '48'].reduce((t, n) => t + (ucells[n]?.tax ?? 0), 0), c16 = ['10', '12', '13', '14'].reduce((t, n) => t + (ucells[n]?.tax ?? 0), 0) + c15, c17 = ['53', '54'].reduce((t, n) => t + (ucells[n]?.tax ?? 0), 0); const pay = mt - (c16 - c17);
+      /* 예정고지 판단: 직전 과세기간(확정) 신고 기록의 이 단위 공급가액 */
+      const pu = prevFiling ? (prevFiling.units?.find(x => x.key === un.key) ?? (prevFiling.units ? undefined : { supply: ['1', '3', '4'].reduce((t, n) => t + (prevFiling.cells[n]?.amt ?? 0), 0), pay: 0 })) : undefined;
+      const notice = pu ? (pu.supply < PRELIM_NOTICE_LIMIT ? 'notice' : 'file') : 'unknown';
+      const name = org.unit === 'entity' ? `${org.org} (사업자 단위 과세${org.reg_no ? ' · ' + org.reg_no : ''})` : groupName(un.key);
+      unitRecs.push({ key: un.key, name, cells: ucells, supply, pay });
+      unitHtml.push(renderForms({ D, org, P, cells: ucells, used: us, groups: groups.filter(g => org!.unit === 'entity' || g.key === un.key), commonAmt, prelimIn, recalc: recalc.filter(r => org!.unit === 'entity' || r.a.group === un.key), conv: convAll.filter(v => org!.unit === 'entity' || v.gkey === un.key), convRatio: cr, sales, facs: un.fs, unitName: name, unitIndex: units.length > 1 ? `${unitHtml.length + 1}/${units.length}` : '', notice: { state: notice, prevSupply: pu?.supply ?? 0, prevPay: pu?.pay ?? 0, prevKey: prevPeriodKey(sel.value) }, unresolved, excluded, missing }));
+    }
+    const conv = convAll; void conv;
     /* 결과 */
-    const sum = (nos: string[]) => nos.reduce((s, n) => s + (cells[n]?.tax ?? 0), 0);
-    const c15 = sum(['44', '45', '48']); void c15;
     const out = $('p-result')!;
-    out.innerHTML = renderForms({ D, org, P, cells, used, groups, prelimIn, recalc, conv, convRatio: cr, sales, facs, unresolved, excluded, missing }) + `
+    out.innerHTML = `<div class="section-head"><h2>4. ${esc(P.name)} — 신고서 모양 결과${units.length > 1 ? ` · 등록 단위 ${units.length}개(신고서 ${units.length}장)` : ''}</h2><span class="meta">참고용 · 부가가치세법 시행규칙 별지 서식의 칸 배치·번호(${esc(D.form_version ?? '2026-04-01')} 시행 판) · 홈택스 화면이 아님</span></div>
+      ${org.unit === 'site' && units.length > 1 ? `<div class="callout info"><strong>사업장별 등록</strong> — 등록번호마다 신고서와 부속서류를 따로 냅니다(아래 ${units.length}묶음). 안분·예정고지도 등록 단위마다 따로 봅니다.</div>` : ''}
+      ${org.unit === 'entity' ? renderUnitSummary(org, P, facs, used, sales, groups) : ''}
+      ${unitHtml.join('<hr class="unit-sep" />')}
       <h3>자산대장 — 이번 기간 취득 ${assets.length}건</h3>
       ${assets.length ? `<div class="scroll-x"><table class="data-table vat-table" data-stack="off"><caption>자산대장에 올릴 것(재계산·전환 추적용)</caption><thead><tr><th scope="col">시설</th><th scope="col">내용</th><th scope="col">세액</th><th scope="col">종류</th><th scope="col">공통 여부</th><th scope="col">취득 때 면세비율</th></tr></thead><tbody>${assets.map(a => `<tr><th scope="row">${esc(a.facility)}</th><td>${esc(a.desc)}</td><td>${fmt(a.tax)}</td><td>${a.kind === 'building' ? '건물·구축물(5%)' : '그 밖(25%)'}</td><td>${a.common ? '공통(안분)' : '과세 전용'}</td><td>${a.common ? pct(a.ratio0) : '—'}</td></tr>`).join('')}</tbody></table></div>` : '<p class="meta">이번 기간에 \'여러 해 쓰는 것\'으로 표시한 지출이 없습니다.</p>'}
-      <p class="meta">근거: ${lawLink(D, { law: 'act', art: '제40조' })} · ${lawLink(D, { law: 'decree', art: '제81조' })} · ${lawLink(D, { law: 'decree', art: '제82조' })} · ${lawLink(D, { law: 'decree', art: '제83조' })} · ${lawLink(D, { law: 'decree', art: '제85조' })} — 면세공급가액에는 면세사업 관련 국고·공공보조금을 넣습니다(제81조 제1항 단서). 세금계산서 ${nInv}건 · 카드·현금영수증 ${nCard}건 · 불공제 명세 ${nNo}건.</p>
+      <p class="meta">근거: ${lawLink(D, { law: 'act', art: '제40조' })} · ${lawLink(D, { law: 'decree', art: '제81조' })} · ${lawLink(D, { law: 'decree', art: '제82조' })} · ${lawLink(D, { law: 'decree', art: '제83조' })} · ${lawLink(D, { law: 'decree', art: '제85조' })} · ${lawLink(D, { law: 'act', art: '제48조' })} · ${lawLink(D, { law: 'act', art: '제60조' })} — 면세공급가액에는 면세사업 관련 국고·공공보조금을 넣습니다(제81조 제1항 단서). 세금계산서 ${nInv}건 · 카드·현금영수증 ${nCard}건 · 불공제 명세 ${nNo}건.</p>
       <h3>처리할 것</h3>
-      <ul class="meta-list">${missing.length ? `<li><strong>인계표가 아직 없는 시설·달 ${missing.length}</strong>: ${esc(missing.join(', '))} — 시설 담당에게 요청</li>` : '<li>이 기간 모든 시설·달의 인계표가 있습니다.</li>'}
-        ${unresolved.length ? `<li><strong>노랑(확인 필요) ${unresolved.length}건 — 숫자표에서 뺐습니다</strong>:<br>${unresolved.map(esc).join('<br>')}</li>` : ''}
+      <ul class="meta-list">${missing.length ? `<li><strong>인계표가 아직 없는 시설·달 ${missing.length}</strong>: ${esc(missing.join(', '))} — 시설 담당에게 요청</li>` : '<li>이 기간 모든 시설·달의 기록이 있습니다.</li>'}
+        ${unresolved.length ? `<li><strong>노랑(확인 필요) ${unresolved.length}건 — 신고서에서 뺐습니다</strong>:<br>${unresolved.map(esc).join('<br>')}</li>` : ''}
         ${excluded.length ? `<li><strong>신고서 밖 ${excluded.length}건(증빙 요건 미달·다른 명의 등)</strong> — 수정세금계산서를 받으면 다음 신고(또는 경정청구)에 넣습니다:<br>${excluded.map(esc).join('<br>')}</li>` : ''}
-        ${lateNote.length ? `<li><strong>지연 수취 ${lateNote.length}건</strong>: 확정신고기한 뒤 1년 안이면 수정신고·경정청구서와 함께(시행령 제75조 제7호)<br>${lateNote.map(esc).join('<br>')}</li>` : ''}</ul>
-      <div class="actions no-print"><button type="button" class="btn" id="p-save">신고 기록 저장(filing JSON 내려받기)</button><button type="button" class="btn secondary" id="p-csv">숫자표 CSV</button><button type="button" class="btn secondary" id="p-print">인쇄</button></div>
-      <p class="meta">저장하면 이 브라우저에도 남아 확정신고 정산·다음 기간 재계산·인수인계에 쓰입니다. 표 아래 「한글 표 복사」로 공문에 붙일 수 있습니다. 참고용 계산이며 신고서의 최종 숫자와 책임은 신고인에게 있습니다.</p>`;
-    const filing: Filing = { v: 1, org: org.org, period: sel.value, saved: ymd(new Date()), cells, row_ids: rowIds, groups, assets, sales: { ...sales } };
+        ${lateNote.length ? `<li><strong>지연 수취 ${lateNote.length}건</strong>: 확정신고기한 안에 받았으면 공제하되 (66) 지연수취 가산세 5/1,000, 그 뒤 1년 안이면 수정신고·경정청구서와 함께(시행령 제75조 제7호)<br>${lateNote.map(esc).join('<br>')}</li>` : ''}</ul>
+      <div class="actions no-print"><button type="button" class="btn" id="p-save">신고 기록 저장(filing JSON 내려받기)</button><button type="button" class="btn secondary" id="p-csv">서식 표 CSV</button><button type="button" class="btn secondary" id="p-print">인쇄</button></div>
+      <p class="meta">저장하면 이 브라우저에도 남아 확정신고 정산·다음 기간 재계산·예정고지 판단·인수인계에 쓰입니다. 표 아래 「한글 표 복사」로 공문에 붙일 수 있습니다. 참고용 계산이며 신고서의 최종 숫자와 책임은 신고인에게 있습니다.</p>`;
+    for (const u of unitRecs) for (const [no, v] of Object.entries(u.cells)) if (no === '48' || no === '66' || (no === '54' && !cells['54'])) add(no, v.amt, v.tax);
+    const filing: Filing = { v: 1, org: org.org, period: sel.value, saved: ymd(new Date()), cells, row_ids: rowIds, groups, assets, sales: { ...sales }, units: unitRecs };
     $('p-save')?.addEventListener('click', () => { saveFiling(filing); recalc.forEach(r => { const fl = getFilings()[r.from]; const a = fl?.assets.find(x => x.id === r.a.id); if (a) { a.ratio0 = r.ratio; saveFiling(fl); } }); downloadText(`filing-${org!.org}-${sel.value}.json`, JSON.stringify(filing, null, 2), 'application/json'); alert('저장했습니다. 이 브라우저와 내려받은 파일에 남습니다.'); });
     $('p-csv')?.addEventListener('click', () => { const rows: (string | number)[][] = [['표', '칸', '구분', '금액', '세액']]; out.querySelectorAll<HTMLTableElement>('table.form').forEach(t => { const cap = t.caption?.textContent ?? ''; t.querySelectorAll('tbody tr').forEach(tr => { const cs = [...tr.children].map(c => c.textContent?.trim() ?? ''); rows.push([cap, ...cs]); }); }); downloadText(`신고서-${org!.org}-${sel.value}.csv`, toCsv(rows), 'text/csv;charset=utf-8'); });
     $('p-print')?.addEventListener('click', () => window.print());

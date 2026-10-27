@@ -37,7 +37,7 @@
 .steps { display: flex; gap: 6px; flex-wrap: wrap; margin: var(--s2) 0; font-size: var(--small); }
 .steps span { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
 .steps span[aria-current] { border-color: var(--primary); color: var(--primary); font-weight: 700; }
-.step[hidden], .vc-form[hidden], .q[hidden], .vat-more[hidden], #m-list[hidden], .vc-card[hidden] { display: none !important; }
+.step[hidden], .vc-form[hidden], .vc-form label[hidden], .vc-form [data-basis-in][hidden], .q[hidden], .vat-more[hidden], #m-list[hidden], .vc-card[hidden] { display: none !important; }
 .verdict { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: var(--small); font-weight: 700; white-space: nowrap; border: 1px solid var(--line-strong); }
 .verdict.ok, .verdict.taxable { background: #e6f4ea; color: #1e6b3a; border-color: #9fd3b0; }
 .verdict.split { background: #e8f0fe; color: #1a4b9c; border-color: #a9c4f5; }
@@ -81,3 +81,5 @@
 .vat-table.form tr.total th, .vat-table.form tr.total td { font-weight: 700; background: var(--surface); }
 .vat-table.form td:first-child { white-space: nowrap; color: var(--muted); }
 .vat-table.form td:nth-child(3), .vat-table.form td:nth-child(4) { text-align: right; font-variant-numeric: tabular-nums; }
+.unit-head { margin-top: var(--s4); padding: 8px 12px; background: var(--band, var(--surface)); border-left: 4px solid var(--primary); }
+hr.unit-sep { border: 0; border-top: 3px double var(--line-strong); margin: var(--s4) 0; }

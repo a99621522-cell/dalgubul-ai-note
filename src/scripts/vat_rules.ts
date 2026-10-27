@@ -183,7 +183,12 @@ export const CELLS: { no: string; name: string; group: string }[] = [
 export type Filing = { v: 1; org: string; period: PeriodKey; saved: string; cells: Record<string, { amt: number; tax: number }>; row_ids: string[];
   groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string; basis?: string }[];
   assets: { id: string; facility: string; desc: string; period: PeriodKey; tax: number; kind: 'building' | 'other'; common: boolean; ratio0: number; group: string }[];
-  sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }> };
+  sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }>;
+  /** 등록 단위(사업장)별 신고서 값 — 사업장별 등록이면 등록번호마다 신고서 한 장(세무사 평가 3차) */
+  units?: { key: string; name: string; cells: Record<string, { amt: number; tax: number }>; supply: number; pay: number }[] };
+/** 직전 과세기간(확정 기준) 열쇠 — 예정고지 판단(법 제48조 제3항·영 제90조 제4항: 직전 과세기간 공급가액 합계 1억5천만 원 미만 법인은 예정고지) */
+export const prevPeriodKey = (k: PeriodKey): PeriodKey => { const y = Number(k.slice(0, 4)); const half = Number(k[5]); return half === 1 ? `${y - 1}-2F` : `${y}-1F`; };
+export const PRELIM_NOTICE_LIMIT = 150_000_000;
 export const FILINGS_KEY = 'vat-filings-v1';
 export const getFilings = (): Record<PeriodKey, Filing> => lsGet<Record<PeriodKey, Filing>>(FILINGS_KEY) ?? {};
 export const saveFiling = (f: Filing) => { const a = getFilings(); a[f.period] = f; lsSet(FILINGS_KEY, a); };

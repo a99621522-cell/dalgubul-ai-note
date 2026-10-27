@@ -1,5 +1,5 @@
 /** /vat/monthly/ 시설 지출 기록 → 매입 인계표(수탁기관·시설 부서). 판정은 vat_rules.judge(공용), 질문은 현장 말. localStorage 저장, 서버 없음. */
-import { $, esc, num, fmt, loadData, judge, toInput, getOrg, setOrg, getLedger, setLedger, readJsonFile, downloadText, toCsv, facilityStatus, STATUS_WORD, RUN_NAME, PROOF_Q, PAYEE_Q, USE_Q, WHAT_Q, ASSET_WHAT, SIGNAL, LABEL, lawLink, lawText, uniq, uid, ymd, monthStr, periodOf, nextFiling, handoverDue, type Data, type Org, type OrgFacility, type LedgerRow, type ProofQ, type PayeeQ, type UseQ, type Out } from './vat_rules';
+import { $, esc, num, fmt, loadData, judge, toInput, parseTable, guessColumns, COL_GUESS, guessWhat, getOrg, setOrg, getLedger, setLedger, readJsonFile, downloadText, toCsv, facilityStatus, STATUS_WORD, RUN_NAME, PROOF_Q, PAYEE_Q, USE_Q, WHAT_Q, ASSET_WHAT, SIGNAL, LABEL, lawLink, lawText, uniq, uid, ymd, monthStr, periodOf, nextFiling, handoverDue, type Data, type Org, type OrgFacility, type LedgerRow, type ProofQ, type PayeeQ, type UseQ, type Out } from './vat_rules';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
@@ -62,5 +62,40 @@ function init(D: Data) {
   $('m-json')?.addEventListener('click', () => { if (!fac || !org) return; downloadText(`ledger-${org.org}-${fac.name}-${month}.json`, JSON.stringify({ v: 1, org: org.org, facility: fac.id, facility_name: fac.name, type: fac.type, month, period: periodOf(month), exported: ymd(new Date()), rows: getLedger(fac.id, month) }, null, 2), 'application/json'); });
   $('m-print')?.addEventListener('click', () => window.print());
   $('m-clear')?.addEventListener('click', () => { if (fac && confirm(`${fac.name} ${month} 기록 ${getLedger(fac.id, month).length}건을 지웁니다.`)) { setLedger(fac.id, month, []); renderList(); res.innerHTML = ''; } });
-  renderOrg();
+  /* ---------- 여러 건 한꺼번에(붙여넣기) ---------- */
+  const mbWrap = $<HTMLDetailsElement>('mb-wrap')!; const mbForm = $<HTMLFormElement>('mb-form')!;
+  const mbVal = (n: string) => document.querySelector<HTMLInputElement>(`input[name=${n}]:checked`)?.value ?? '';
+  mbForm.addEventListener('change', () => { const card = mbVal('mb-proof') !== 'e_invoice'; $('mb-vat-q')!.hidden = !card; $('mb-payee-q')!.hidden = card; });
+  let grid: string[][] = [], hasHeader = false, map: Record<string, number> = {};
+  mbForm.addEventListener('submit', e => {
+    e.preventDefault(); grid = parseTable($<HTMLTextAreaElement>('mb-text')!.value); if (!grid.length) { $('mb-map')!.innerHTML = '<p class="callout info">붙여넣은 글자가 없습니다.</p>'; return; }
+    map = guessColumns(grid[0]); hasHeader = Object.keys(map).length >= 2; if (!hasHeader) map = {};
+    const ncol = Math.max(...grid.map(r => r.length)); const names = Array.from({ length: ncol }, (_, i) => hasHeader ? (grid[0][i] || `열 ${i + 1}`) : `열 ${i + 1}`);
+    $('mb-map')!.innerHTML = `<div class="vc-form"><p class="q-title full">열 맞추기 <span class="note">${hasHeader ? '머리글에서 짐작했습니다' : '머리글을 찾지 못해 열 번호로 고르세요'} · ${grid.length - (hasHeader ? 1 : 0)}행</span></p>${COL_GUESS.map(g => `<label>${g.name} <select data-col="${g.key}"><option value="">(없음)</option>${names.map((n, i) => `<option value="${i}" ${map[g.key] === i ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></label>`).join('')}<div class="actions"><button type="button" class="btn" id="mb-build">미리보기</button></div></div>`;
+    $('mb-build')!.addEventListener('click', buildPreview);
+    buildPreview();
+  });
+  function buildPreview() {
+    if (!org || !fac) return; map = {}; $('mb-map')!.querySelectorAll<HTMLSelectElement>('select[data-col]').forEach(s => { if (s.value !== '') map[s.dataset.col!] = Number(s.value); });
+    const rows = grid.slice(hasHeader ? 1 : 0); const reg = (org.unit === 'entity' ? org.reg_no : fac.reg_no)?.replace(/\D/g, '') ?? '';
+    const proof = mbVal('mb-proof'); const batchPayee = mbVal('mb-payee');
+    const items = rows.map(r => { const g = (k: string) => map[k] === undefined ? '' : (r[map[k]] ?? ''); let amt = num(g('amt')), tax = num(g('tax')); const total = num(g('total')); if (!amt && total) { amt = Math.round(total / 1.1); tax = total - amt; } if (amt && !tax && map.tax === undefined) tax = Math.floor(amt * 0.1);
+      const desc = [g('supplier'), g('desc')].filter(Boolean).join(' · ') || '(내용 없음)'; const preg = g('payee_reg').replace(/\D/g, '');
+      const payee = proof === 'e_invoice' ? (preg ? (reg && preg === reg ? 'org' : 'contractor') : batchPayee) : 'org';
+      const d = (g('date').match(/(\d{4})[.\-/]?(\d{2})[.\-/]?(\d{2})/) ?? []); const date = d.length ? `${d[1]}-${d[2]}-${d[3]}` : `${month}-01`;
+      return { date, desc, amt, tax, payee, what: guessWhat(desc), asset: false, use: 'this', on: amt > 0 || tax > 0 }; });
+    $('mb-preview')!.innerHTML = `<div class="scroll-x"><table class="data-table vat-table" id="mb-table" data-stack="off"><caption>붙여넣은 ${items.length}건 — 행마다 '어디에'와 '무엇'을 고르고 넣기</caption><thead><tr><th scope="col">넣기</th><th scope="col">날짜</th><th scope="col">내용</th><th scope="col">공급가액</th><th scope="col">부가세</th><th scope="col">받는 사람</th><th scope="col">어디에 썼나</th><th scope="col">무엇</th><th scope="col">여러 해 씀</th></tr></thead><tbody>${items.map((it, i) => `<tr data-i="${i}"><td><input type="checkbox" data-on ${it.on ? 'checked' : ''}/></td><td>${it.date}</td><td>${esc(it.desc)}</td><td>${it.amt ? fmt(it.amt) : ''}</td><td>${it.tax ? fmt(it.tax) : ''}</td><td>${it.payee === 'org' ? '우리 기관' : it.payee === 'contractor' ? '<span class="verdict no">다른 명의</span>' : '<span class="verdict check">모름</span>'}</td><td><select data-use>${USE_Q.map(o => `<option value="${o.key}">${o.name}</option>`).join('')}</select></td><td><select data-what>${WHAT_Q.map(o => `<option value="${o.key}" ${o.key === it.what ? 'selected' : ''}>${o.name.split('(')[0]}</option>`).join('')}</select></td><td><input type="checkbox" data-asset /></td></tr>`).join('')}</tbody></table></div>
+      <div class="actions"><button type="button" class="btn" id="mb-add">체크한 행을 기록에 넣기</button><span class="meta">넣은 뒤 아래 '이 달 기록' 표에서 신호등을 확인합니다. 같은 영수증을 두 번 넣지 않게 주의하세요.</span></div>`;
+    $('mb-add')!.addEventListener('click', () => {
+      if (!org || !fac) return; const led = getLedger(fac.id, month); let n = 0; const vatSep = mbVal('mb-vatsep') !== '0';
+      document.querySelectorAll<HTMLTableRowElement>('#mb-table tbody tr').forEach(tr => { if (!tr.querySelector<HTMLInputElement>('[data-on]')!.checked) return; const it = items[Number(tr.dataset.i)]; const use = tr.querySelector<HTMLSelectElement>('[data-use]')!.value as UseQ; const what = tr.querySelector<HTMLSelectElement>('[data-what]')!.value; const asset = ASSET_WHAT.has(what) && tr.querySelector<HTMLInputElement>('[data-asset]')!.checked;
+        const q = { proof: proof as ProofQ, payee: it.payee as PayeeQ, vat_sep: vatSep, use, what, asset, late: false }; const m = toInput(D, org!, fac!, q); const o: Out = m.override ?? judge(D, m.input); if (m.note) o.why.push(m.note);
+        led.push({ id: uid(), d: it.date, desc: it.desc, amt: it.amt, tax: o.v === 'none' ? 0 : it.tax, proof: q.proof, payee: q.payee, vat_sep: vatSep, use, what, asset, late: false, v: o.v, title: o.title, todo: o.todo[0] || '', basis: uniq(o.basis).map(lawText).join(', '), done: false }); n++; });
+      setLedger(fac.id, month, led); renderList(); $('mb-preview')!.innerHTML = `<p class="callout ok">${n}건을 ${fac.name} ${month} 기록에 넣었습니다.</p>`; $<HTMLTextAreaElement>('mb-text')!.value = ''; $('m-list')!.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  const origPick = pick; // 시설을 고르면 대량 입력도 열린다
+  facSel.addEventListener('change', () => { mbWrap.hidden = !fac || facilityStatus(D, fac) === 'own'; }); monthIn.addEventListener('change', () => { mbWrap.hidden = !fac; });
+  void origPick;
+  renderOrg(); mbWrap.hidden = !fac;
 }

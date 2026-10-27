@@ -171,3 +171,61 @@ export const getFilings = (): Record<PeriodKey, Filing> => lsGet<Record<PeriodKe
 export const saveFiling = (f: Filing) => { const a = getFilings(); a[f.period] = f; lsSet(FILINGS_KEY, a); };
 /** 간주임대료 공급가액(시행령 제65조 제1항): 보증금 × 과세대상 기간 일수 × 이자율 ÷ 365(윤년 366). 이자율은 기획재정부령 정기예금 이자율 — 사용자가 넣는다 */
 export const deemedRent = (deposit: number, days: number, rate: number, year: number) => Math.floor(deposit * days * rate / ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 366 : 365));
+
+/* ---------- v2 3단계: 표 붙여넣기(엑셀·홈택스·카드 명세) · zip(라이브러리 없음) ---------- */
+/** TSV/CSV 글자 → 행렬. 탭이 있으면 탭, 없으면 쉼표(따옴표 처리) */
+export function parseTable(text: string): string[][] {
+  const t = text.replace(/\r\n?/g, '\n').replace(/^﻿/, ''); const lines = t.split('\n').filter(l => l.trim());
+  if (!lines.length) return [];
+  if (lines[0].includes('\t')) return lines.map(l => l.split('\t').map(c => c.trim()));
+  return lines.map(l => { const out: string[] = []; let cur = '', q = false; for (let i = 0; i < l.length; i++) { const ch = l[i]; if (q) { if (ch === '"') { if (l[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; } else if (ch === '"') q = true; else if (ch === ',') { out.push(cur.trim()); cur = ''; } else cur += ch; } out.push(cur.trim()); return out; });
+}
+/** 머리글 낱말로 열 짐작(홈택스 전자세금계산서 목록·카드사 이용내역·엑셀 장부 공통) */
+export const COL_GUESS: { key: string; name: string; re: RegExp }[] = [
+  { key: 'date', name: '날짜', re: /작성일|거래일|발급일|승인일|이용일|일자|날짜|date/i },
+  { key: 'desc', name: '내용(품목)', re: /품목|내용|적요|품명|비고|메모|사용처/ },
+  { key: 'supplier', name: '공급자(상호·가맹점)', re: /공급자상호|공급자|상호|가맹점|거래처|판매자|업체/ },
+  { key: 'amt', name: '공급가액', re: /공급가액|공급가|과세금액|순금액/ },
+  { key: 'tax', name: '세액(부가세)', re: /세액|부가세|부가가치세|vat/i },
+  { key: 'total', name: '합계(부가세 포함)', re: /합계금액|합계|총액|총금액|승인금액|결제금액|이용금액/ },
+  { key: 'payee_reg', name: '공급받는자 등록번호', re: /공급받는자.*등록번호|공급받는자등록|매입자.*등록번호/ }];
+export function guessColumns(header: string[]) { const m: Record<string, number> = {}; for (const g of COL_GUESS) { const i = header.findIndex(h => g.re.test(h.replace(/\s/g, ''))); if (i >= 0 && !Object.values(m).includes(i)) m[g.key] = i; } return m; }
+export const WHAT_GUESS: { re: RegExp; key: string }[] = [
+  { re: /전기|한전|한국전력|가스|도시가스|통신|KT|SKT|LGU|인터넷|전화|수도|상하수도/i, key: 'utility' }, { re: /수도요금|상수도|도서|교육|진료/, key: 'water' }, { re: /청소|경비|용역|인쇄|홍보|방역|소독|위탁/, key: 'service' },
+  { re: /수선|공사|보수|교체|도장|방수|설치/, key: 'repair' }, { re: /비품|장비|소모품|사무용품|물품|구입|구매/, key: 'equip' }, { re: /주유|유류|휘발유|경유|세차|정비|타이어|렌트|리스/, key: 'car_pass' },
+  { re: /식대|회식|다과|간식|커피|음료|식사/, key: 'staff' }, { re: /선물|기념품|화환|경조|접대/, key: 'guest' }, { re: /보험/, key: 'insurance' }, { re: /토지|부지|조성/, key: 'land' }];
+export const guessWhat = (s: string) => { for (const g of WHAT_GUESS) if (g.re.test(s)) return g.key; return 'other'; };
+const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+export const crc32 = (b: Uint8Array) => { let c = 0xffffffff; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+const enc = new TextEncoder(), dec = new TextDecoder();
+/** 저장 전용(압축 없음) zip — 파일 이름은 UTF-8 */
+export function zipStore(files: { name: string; data: string | Uint8Array }[]): Blob {
+  const parts: Uint8Array[] = []; const cd: Uint8Array[] = []; let off = 0; const now = new Date();
+  const dosTime = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xffff, dosDate = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xffff;
+  const u16 = (v: number) => [v & 0xff, (v >> 8) & 0xff], u32 = (v: number) => [v & 0xff, (v >> 8) & 0xff, (v >> 16) & 0xff, (v >>> 24) & 0xff];
+  for (const f of files) {
+    const data = typeof f.data === 'string' ? enc.encode(f.data) : f.data; const name = enc.encode(f.name); const crc = crc32(data);
+    const lh = new Uint8Array([...u32(0x04034b50), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(dosTime), ...u16(dosDate), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(name.length), ...u16(0), ...name]);
+    cd.push(new Uint8Array([...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(dosTime), ...u16(dosDate), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off), ...name]));
+    parts.push(lh, data); off += lh.length + data.length;
+  }
+  const cdSize = cd.reduce((s, c) => s + c.length, 0);
+  const eocd = new Uint8Array([...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cdSize), ...u32(off), ...u16(0)]);
+  return new Blob([...parts, ...cd, eocd] as BlobPart[], { type: 'application/zip' });
+}
+/** zip 풀기 — 저장(0)과 deflate(8, DecompressionStream) */
+export async function unzip(buf: ArrayBuffer): Promise<{ name: string; data: Uint8Array }[]> {
+  const b = new Uint8Array(buf); const dv = new DataView(buf); let e = b.length - 22; while (e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--; if (e < 0) throw new Error('zip 아님');
+  const n = dv.getUint16(e + 10, true); let p = dv.getUint32(e + 16, true); const out: { name: string; data: Uint8Array }[] = [];
+  for (let i = 0; i < n; i++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) break; const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true), nl = dv.getUint16(p + 28, true), xl = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lo = dv.getUint32(p + 42, true);
+    const name = dec.decode(b.subarray(p + 46, p + 46 + nl)); const lnl = dv.getUint16(lo + 26, true), lxl = dv.getUint16(lo + 28, true); const start = lo + 30 + lnl + lxl; let data = b.slice(start, start + csize);
+    if (method === 8) { const ds = new Blob([data as BlobPart]).stream().pipeThrough(new DecompressionStream('deflate-raw')); data = new Uint8Array(await new Response(ds).arrayBuffer()); }
+    if (!name.endsWith('/')) out.push({ name, data }); p += 46 + nl + xl + cl;
+  }
+  return out;
+}
+export const utf8 = (d: Uint8Array) => dec.decode(d);
+export function downloadBlob(name: string, blob: Blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0); }
+export const setAllLedgers = (a: Record<string, LedgerRow[]>) => lsSet(LEDGER_KEY, a);
+export const setFilings = (a: Record<PeriodKey, Filing>) => lsSet(FILINGS_KEY, a);

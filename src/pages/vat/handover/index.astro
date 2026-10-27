@@ -1,0 +1,18 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import '../../../styles/vat.css';
+/** /vat/handover/ — 인수인계 꾸러미(v2 3단계 2026-10-27, 설계 4.5). 이 브라우저의 기관 설정·시설 기록·신고 기록·자산대장·미처리 목록·1쪽 안내를 zip 하나로 내려받고, 다음 담당자는 zip 을 열어 그대로 이어받는다. zip 은 라이브러리 없이 브라우저가 묶고 푼다(vat_rules.ts zipStore/unzip). 개인정보 없음. 스크립트 src/scripts/vat_handover.ts */
+---
+<Base title="부가세 인수인계 꾸러미" description="지자체 부가세 담당이 바뀔 때 기관 설정·시설 기록·신고 기록·자산대장·미처리 목록과 한 쪽 안내를 zip 하나로 넘기고, 다음 담당자는 그 파일을 열어 이어받습니다. 브라우저 안에서만." current="vat" crumb="인수인계">
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/prepare/">신고 준비</a></p>
+  <div class="section-head"><h1>인수인계 꾸러미</h1><span class="meta">담당이 바뀔 때</span></div>
+  <p class="lede">부가세 신고는 반년마다 한 번이라 담당이 바뀌면 지난 신고가 어떻게 됐는지 아무도 모르기 쉽습니다. 이 화면은 <strong>이 브라우저에 있는 것 전부</strong>(기관 설정, 시설 기록, 신고 기록, 자산대장, 아직 처리 안 된 것)와 <strong>한 쪽 안내</strong>를 zip 하나로 묶습니다. 다음 담당자는 자기 컴퓨터에서 그 파일을 열면 끝입니다.</p>
+  <section class="vc-card" id="h-state"><h3>이 브라우저에 있는 것</h3><div id="h-inv">확인 중…</div></section>
+  <div class="actions no-print"><button type="button" class="btn" id="h-zip">인수인계 꾸러미(zip) 내려받기</button><button type="button" class="btn secondary" id="h-readme">한 쪽 안내 인쇄</button></div>
+  <section class="vc-card no-print"><h3>받은 꾸러미 열기(다음 담당자)</h3><p class="meta">전임자가 준 zip 을 여세요. 이 브라우저의 설정·기록을 그 내용으로 바꿉니다(기존 것이 있으면 물어봅니다). <input type="file" id="h-open" accept=".zip,application/zip" /> <span id="h-open-state"></span></p></section>
+  <section id="h-doc"></section>
+  <section class="how"><h2>지키는 것</h2><ul><li>꾸러미에는 담당자 이름·전화가 들어가지 않습니다(부서명만). 파일은 업무망 안에서만 주고받습니다.</li><li>zip 안은 모두 글자 파일(JSON·CSV·TXT)이라 이 도구가 없어도 엑셀·메모장으로 열립니다.</li><li>신고 책임은 신고인에게 있고, 기록은 참고용 판정입니다.</li></ul></section>
+  <VatData />
+  <script>import '../../../scripts/vat_handover';</script>
+</Base>

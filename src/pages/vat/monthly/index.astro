@@ -38,6 +38,19 @@ import '../../../styles/vat.css';
   </form>
   <div id="m-result" aria-live="polite"></div>
 
+  <details class="vat-more no-print" id="mb-wrap" hidden><summary><strong>여러 건 한꺼번에</strong> — 홈택스 매입 목록·카드사 이용내역·엑셀 장부를 붙여넣기</summary>
+    <p class="meta">홈택스 「전자세금계산서 목록 조회(매입)」나 카드사 이용내역을 엑셀로 내려받아 <strong>머리글 줄부터 복사해 붙여넣으세요</strong>(탭·쉼표 구분 모두 됩니다). 열은 머리글로 짐작하고, 틀리면 아래에서 고칩니다. 그다음 행마다 '어디에 썼나'와 '무엇'만 고르면 됩니다.</p>
+    <form class="vc-form" id="mb-form" autocomplete="off">
+      <label class="full">붙여넣기 <textarea id="mb-text" rows="6" placeholder="작성일자	공급자상호	품목	공급가액	세액	공급받는자등록번호&#10;2026-10-02	○○전력	전기요금	1,500,000	150,000	555-83-00001" style="min-height:8em;padding:8px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--bg);color:var(--ink);font:inherit"></textarea></label>
+      <div class="q full"><span class="q-title">이 목록의 영수증 종류</span><div class="choices"><label><input type="radio" name="mb-proof" value="e_invoice" checked /> 전자세금계산서 목록</label><label><input type="radio" name="mb-proof" value="card" /> 신용카드 이용내역</label><label><input type="radio" name="mb-proof" value="cash" /> 현금영수증 내역</label></div></div>
+      <div class="q full" id="mb-payee-q"><span class="q-title">받는 사람(공급받는 자)이 우리 기관인가요 — 등록번호 열이 있으면 자동으로 견줍니다</span><div class="choices"><label><input type="radio" name="mb-payee" value="org" checked /> 모두 우리 기관</label><label><input type="radio" name="mb-payee" value="contractor" /> 모두 공단·수탁기관 명의</label><label><input type="radio" name="mb-payee" value="unknown" /> 모름(노랑으로)</label></div></div>
+      <div class="q full" id="mb-vat-q" hidden><span class="q-title">카드 전표에 부가세가 따로 적혀 있나요</span><div class="choices"><label><input type="radio" name="mb-vatsep" value="1" checked /> 네(세액 열이 있음)</label><label><input type="radio" name="mb-vatsep" value="0" /> 아니요·모름</label></div></div>
+      <div class="actions"><button type="submit" class="btn secondary">열 읽기</button></div>
+    </form>
+    <div id="mb-map"></div>
+    <div id="mb-preview"></div>
+  </details>
+
   <section id="m-list" hidden>
     <div class="section-head"><h2 id="m-list-title">이 달 기록</h2><span class="meta" id="m-sum"></span></div>
     <div class="scroll-x"><table class="data-table vat-table" id="m-table" data-stack="off">

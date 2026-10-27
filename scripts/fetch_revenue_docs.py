@@ -64,10 +64,58 @@ def to_text(pdf: Path, txt: Path) -> bool:
     return r.returncode == 0 and txt.exists() and txt.stat().st_size > 1000
 
 
+def cms_token(g: dict, jar: Path) -> str:
+    """동구·서구 누리집(같은 CMS): 화면의 download 폼 csrfToken(세션 쿠키와 짝) — POST /file/direct/download.do (csrfToken, filename, path)"""
+    page = get(g["page"], jar=jar).decode("utf-8", "ignore")
+    m = re.search(r'name=["\']csrfToken["\'][^>]*value=["\']([^"\']+)', page) or re.search(r'value=["\']([^"\']+)["\'][^>]*name=["\']csrfToken', page)
+    return m.group(1) if m else ""
+
+
+def cms_post(g: dict, jar: Path, token: str, filename: str, out: Path | None = None) -> bytes:
+    return get(g["download_url"], out, post={"csrfToken": token, "filename": filename, "path": g["path"]}, referer=g["page"], jar=jar)
+
+
+def probe_post(g: dict) -> None:
+    """cms_post 누리집의 번호 파일(01.pdf …)을 차례로 받아 첫 쪽 글자 앞부분만 로그로(저장 없음)"""
+    tmp = RAW / "_probe"
+    tmp.mkdir(parents=True, exist_ok=True)
+    jar = tmp / f"{g['key']}.jar"
+    token = cms_token(g, jar)
+    print(f"[revenue] {g['name']} probe_post token={'있음' if token else '없음'} path={g['path']}")
+    miss = 0
+    for i in range(1, int(g.get("probe_n", 30)) + 1):
+        fn = g.get("probe_fmt", "{:02d}.pdf").format(i)
+        f = tmp / f"p{i:03d}.pdf"
+        data = cms_post(g, jar, token, fn, f)
+        if not data or not data[:5].startswith(b"%PDF"):
+            print(f"   [{fn}] 없음/비PDF ({len(data)}B) {data[:120]!r}")
+            miss += 1
+            if miss >= 3 and i > 10:
+                break
+            continue
+        miss = 0
+        r = subprocess.run(["pdftotext", "-l", "2", "-layout", str(f), "-"], capture_output=True)
+        print(f"   [{fn}] {len(data):,}B :: {re.sub(r'\\s+', ' ', r.stdout.decode('utf-8', 'ignore'))[:200]}")
+        f.unlink(missing_ok=True)
+        time.sleep(0.8)
+    jar.unlink(missing_ok=True)
+    try:
+        tmp.rmdir()
+    except OSError:
+        pass
+
+
 def fetch_pdf(g: dict, year: str) -> Path | None:
     RAW.mkdir(parents=True, exist_ok=True)
     pdf = RAW / f"{g['key']}_{year}.pdf"
-    if g["kind"] == "pdf":
+    if g["kind"] == "cms_post":
+        jar = RAW / f"{g['key']}.jar"
+        token = cms_token(g, jar)
+        if not token:
+            print(f"[revenue] {g['name']}: csrfToken 못 찾음")
+            return None
+        data = cms_post(g, jar, token, g["file"], pdf)
+    elif g["kind"] == "pdf":
         data = get(g["url"], pdf)
     elif g["kind"] == "daegu_jumin":
         jar = RAW / f"{g['key']}.jar"
@@ -95,11 +143,15 @@ def fetch_expense(g: dict, year: str) -> Path | None:
     RAW.mkdir(parents=True, exist_ok=True)
     out = RAW / f"{g['key']}_{year}_exp.txt"; parts: list[str] = []
     jar = RAW / f"{g['key']}_exp.jar"; tok = ""
+    cms = g["kind"] == "cms_post"
     if files:
-        page = get(g["page"], jar=jar).decode("utf-8", "ignore"); m = re.search(r'name="CSRFToken" value="([^"]+)"', page); tok = m.group(1) if m else ""
+        if cms:
+            tok = cms_token(g, jar)
+        else:
+            page = get(g["page"], jar=jar).decode("utf-8", "ignore"); m = re.search(r'name="CSRFToken" value="([^"]+)"', page); tok = m.group(1) if m else ""
     for i, item in enumerate(urls or files):
         pdf = RAW / f"_exp_{g['key']}_{i}.pdf"; txt = RAW / f"_exp_{g['key']}_{i}.txt"
-        data = get(item, pdf) if urls else get(g["page"].rsplit("/", 1)[0] + "/fileDownload.do", pdf, post={"CSRFToken": tok, "fileName": item, "startGubun": "budetBill"}, referer=g["page"], jar=jar)
+        data = get(item, pdf) if urls else (cms_post(g, jar, tok, item, pdf) if cms else get(g["page"].rsplit("/", 1)[0] + "/fileDownload.do", pdf, post={"CSRFToken": tok, "fileName": item, "startGubun": "budetBill"}, referer=g["page"], jar=jar))
         if not data or not data.startswith(b"%PDF") or not to_text(pdf, txt):
             print(f"[revenue] {g['name']} 세출 {i + 1}/{len(urls or files)} 실패: {str(item)[-40:]}")
             pdf.unlink(missing_ok=True); txt.unlink(missing_ok=True); time.sleep(1.5); continue
@@ -131,7 +183,7 @@ def discover(g: dict) -> None:
         if not html:
             print(f"[revenue] {g['name']}: 페이지 못 받음 {url}")
             continue
-        links = re.findall(r'href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', html, re.S)
+        links = [(m.group(2), m.group(3)) for m in re.finditer(r'href=(["\'])(.*?)\1[^>]*>(.*?)</a>', html, re.S)]
         files = re.findall(r'(?:src|href|data-url|onclick)=["\']([^"\']*(?:\.pdf|\.hwpx?|\.xlsx?|download|atch|attach|fileDown)[^"\']*)["\']', html, re.I)
         print(f"[revenue] {g['name']} discover d{depth} {url} ({len(html)}B, 링크 {len(links)}, 파일형 {len(files)})")
         shown: set[str] = set()
@@ -166,6 +218,12 @@ def discover(g: dict) -> None:
             for fm in re.finditer(r'<form\b[^>]*action=["\']([^"\']*(?:download|viewer|file)[^"\']*)["\'][^>]*>(.*?)</form>', html, re.I | re.S):
                 hid = re.findall(r'<input[^>]+name=["\']([^"\']+)["\'][^>]*value=["\']([^"\']*)["\']', fm.group(2), re.I)
                 print(f"   [form-hidden] {fm.group(1)} :: {'; '.join(f'{a}={b[:60]}' for a, b in hid)[:300]}")
+            # 눌렀을 때 도는 함수의 본문(goFile·goSelect·fn_budget_detail …) — 받는 주소·인자 조합을 알아낸다
+            names = set(re.findall(r"(?:javascript:|onclick=[\"'])\s*([A-Za-z_][\w]*)\s*\(", html))
+            for nm in sorted(names)[:12]:
+                mm = re.search(r"function\s+" + re.escape(nm) + r"\s*\([^)]*\)\s*\{.{0,700}", html, re.S)
+                if mm and re.search(r"file|down|budget|yesan|location|open|submit|href", mm.group(0), re.I):
+                    print(f"   [함수] {re.sub(r'\\s+', ' ', mm.group(0))[:700]}")
             text = re.sub(r"<script.*?</script>|<style.*?</style>", " ", html, flags=re.S | re.I)
             text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", text))
             for i, m in enumerate(re.finditer(r"사업명세서|세입예산서|세입세출예산서|본예산", text)):
@@ -225,6 +283,8 @@ def main() -> int:
             if "--parse-only" not in sys.argv:
                 if g.get("probe_base"):
                     probe_files(g)
+                elif g.get("probe_post"):
+                    probe_post(g)
                 else:
                     discover(g)
             continue

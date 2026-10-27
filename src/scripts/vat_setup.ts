@@ -68,6 +68,11 @@ function init(D: Data) {
     $('st-summary')!.innerHTML = `<p><strong>${esc(org.org || '(기관 이름 없음)')}</strong>${org.kind === 'contractor' ? ` <span class="verdict check">수탁기관${org.parent ? ' · 위탁기관 ' + esc(org.parent) : ''}</span>` : ''} · ${esc(org.dept || '부서 없음')} · ${org.unit === 'entity' ? '사업자 단위 과세' : '사업장별 등록'} · 인계표 매달 ${org.handover_day}일까지 · 저장 ${org.created}</p>
       <div class="scroll-x"><table class="data-table vat-table" data-stack="off"><caption>${esc(org.org)} 과세사업 시설 설정</caption><thead><tr><th scope="col">시설</th><th scope="col">부가세</th><th scope="col">운영</th><th scope="col">세금계산서 받을 번호</th><th scope="col">수입 종류</th></tr></thead><tbody>${rows || '<tr><td colspan="5">시설 없음</td></tr>'}</tbody></table></div>`;
     $('cards')!.innerHTML = org.facilities.map(f => card(f)).join('');
+    /* 대행 협약서 점검표(세무회계법인 2차 6번): 군 명의 사업의 지출 매입세액이 군·공단 사이에 떨어지지 않게 — 수탁기관이거나 위탁 시설이 있을 때, 체크는 이 브라우저(vat-contract-v1) */
+    const AC = D.rules.agency_contract ?? []; const box = $('st-contract'); if (box) { const need = org.kind === 'contractor' || org.facilities.some(f => f.run === 'entrusted_org' || f.run === 'entrusted_own'); box.hidden = !need || !AC.length;
+      if (need && AC.length) { let st: Record<string, boolean> = {}; try { st = JSON.parse(localStorage.getItem('vat-contract-v1') || '{}'); } catch { /* */ }
+        box.innerHTML = `<details class="vat-more"><summary><strong>대행·위탁 협약서 점검표</strong> ${AC.length}개 — 군과 공단 사이에 떨어지는 매입세액 막기</summary><p class="meta">협약서(또는 운영 지침)에 이 항목이 있는지 봅니다. 조문이 아니라 절차 체크이며, 없으면 협약 갱신 때 넣을 자리입니다.</p><ul class="checks">${AC.map(c => `<li><label><input type="checkbox" data-ac="${c.key}" ${st[c.key] ? 'checked' : ''}/> <span>${esc(c.text)}</span></label></li>`).join('')}</ul></details>`;
+        box.querySelectorAll<HTMLInputElement>('[data-ac]').forEach(c => c.addEventListener('change', () => { st[c.dataset.ac!] = c.checked; try { localStorage.setItem('vat-contract-v1', JSON.stringify(st)); } catch { /* */ } })); } }
   }
   function card(f: OrgFacility) {
     const st = facilityStatus(D, f); const r = facilityRule(D, f); const reg = org.unit === 'entity' ? org.reg_no : f.reg_no;

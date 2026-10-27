@@ -8,7 +8,7 @@ function init(D: Data) {
   let org: Org | null = getOrg();
   const ledgers = new Map<string, Ledger>();
   const sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }> = {};
-  const exemptIn: Record<string, number> = {}; const oneoffIn: Record<string, number> = {}; const basisIn: Record<string, { basis: string; ex: number; tot: number; building?: boolean }> = {}; const prelimIn: Record<string, { taxable: number; exempt: number; common: number; nondeduct: number }> = {};
+  const exemptIn: Record<string, number> = {}; const oneoffIn: Record<string, number> = {}; const adminIn: Record<string, { basis: string; ex: number; tot: number }> = {}; const basisIn: Record<string, { basis: string; ex: number; tot: number; building?: boolean }> = {}; const prelimIn: Record<string, { taxable: number; exempt: number; common: number; nondeduct: number }> = {};
   let includePrelimRows = false;
   const f0 = nextFiling(); $('p-due')!.textContent = `다음 신고 ${f0.name} D-${f0.days}`;
 
@@ -85,10 +85,16 @@ function init(D: Data) {
       <label>안분 기준 <select data-basis>${[['supply', '공급가액 비율(기본, 시행령 제81조 제1항)'], ['purchase', '매입가액 비율 — 공급가액이 없을 때 1순위(제4항 제1호)'], ['planned', '예정공급가액 비율 — 2순위(제4항 제2호)'], ['area', '예정사용면적 비율 — 3순위, 건물 신축·취득은 1순위(제4항 제3호·단서)']].map(([v, n]) => `<option value="${v}" ${(basisIn[k]?.basis ?? 'supply') === v ? 'selected' : ''}>${n}</option>`).join('')}</select><span class="note" data-basis-note></span></label>
       <label class="choices"><span><input type="checkbox" data-bld ${basisIn[k]?.building ? 'checked' : ''}/> 이 공통매입세액은 <strong>건물·구축물 신축·취득분</strong>이고 과세·면세 예정사용면적을 나눌 수 있다(제4항 단서 — 공급가액이 있어도 면적 비율 우선)</span></label>
       <div class="full" data-basis-in ${(basisIn[k]?.basis ?? 'supply') === 'supply' ? 'hidden' : ''}><label>면세 몫(매입가액·예정공급가액·면적) <input type="text" inputmode="decimal" data-bex value="${basisIn[k]?.ex ? fmt(basisIn[k].ex) : ''}" /></label> <label>전체(같은 단위) <input type="text" inputmode="decimal" data-btot value="${basisIn[k]?.tot ? fmt(basisIn[k].tot) : ''}" /></label><span class="note">공급가액 비율을 쓸 수 없는 기간(과세·면세 어느 한쪽 공급가액이 없음)에만. 건물·구축물을 예정사용면적으로 안분했으면 면적이 확정될 때까지 같은 기준(제5항).</span></div>
+      <details class="vat-more full" data-admin-wrap><summary><strong>본청·행정 공통</strong>('사무실·행정 일과 함께'로 적은 지출) — 공급가액 비율을 못 쓰므로 기준을 따로 넣습니다 <span class="note">유권해석 확인</span></summary>
+      <p class="note">${esc(D.rules.admin_common?.summary ?? '')}</p>
+      <div class="vc-form"><label>안분 기준(시행령 제81조 제4항 순서) <select data-abasis>${[['', '— 아직 안 정함(본청 공통은 (54)에 넣지 않고 처리할 것에 표시) —'], ['purchase', '1순위 매입가액 비율 — 면세등 관련 매입가액 ÷ 총매입가액(공통 제외)'], ['planned', '2순위 예정공급가액 비율'], ['area', '3순위 예정사용면적 비율']].map(([v, n]) => `<option value="${v}" ${(adminIn[k]?.basis ?? '') === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+      <label>면세·행정(면세사업등) 몫 <input type="text" inputmode="decimal" data-aex value="${adminIn[k]?.ex ? fmt(adminIn[k].ex) : ''}" /></label><label>전체(같은 단위) <input type="text" inputmode="decimal" data-atot value="${adminIn[k]?.tot ? fmt(adminIn[k].tot) : ''}" /></label></div>
+      <p class="note">${esc(D.rules.admin_common?.caution ?? '')}</p></details>
       ${P.kind === 'F' ? `<p class="note full">예정신고(${P.prelim[0]}~${P.prelim[2]}) 때 값 ${pre ? '— 저장된 기록에서 가져옴' : '— 예정신고서를 보고 넣으세요'}</p>
       <label>예정 과세 공급가액 <input type="text" inputmode="numeric" data-p="taxable" value="${pi.taxable ? fmt(pi.taxable) : ''}" /></label><label>예정 면세 공급가액 <input type="text" inputmode="numeric" data-p="exempt" value="${pi.exempt ? fmt(pi.exempt) : ''}" /></label>
       <label>예정 공통매입세액 <input type="text" inputmode="numeric" data-p="common" value="${pi.common ? fmt(pi.common) : ''}" /></label><label>예정 때 불공제한 면세분(54) <input type="text" inputmode="numeric" data-p="nondeduct" value="${pi.nondeduct ? fmt(pi.nondeduct) : ''}" /></label>` : ''}</div>`; }).join('');
     $('p-groups')!.querySelectorAll<HTMLInputElement>('input[data-ex]').forEach(i => i.addEventListener('change', () => { exemptIn[i.closest<HTMLElement>('[data-g]')!.dataset.g!] = num(i.value); i.value = fmt(num(i.value)); readBasis(i.closest<HTMLElement>('[data-g]')!); }));
+    $('p-groups')!.querySelectorAll<HTMLElement>('[data-admin-wrap]').forEach(w => w.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-abasis],[data-aex],[data-atot]').forEach(el => el.addEventListener('change', () => { const k = w.closest<HTMLElement>('[data-g]')!.dataset.g!; adminIn[k] = { basis: w.querySelector<HTMLSelectElement>('[data-abasis]')!.value, ex: num(w.querySelector<HTMLInputElement>('[data-aex]')!.value), tot: num(w.querySelector<HTMLInputElement>('[data-atot]')!.value) }; })));
     $('p-groups')!.querySelectorAll<HTMLInputElement>('input[data-one]').forEach(i => i.addEventListener('change', () => { oneoffIn[i.closest<HTMLElement>('[data-g]')!.dataset.g!] = num(i.value); i.value = num(i.value) ? fmt(num(i.value)) : ''; }));
     const readBasis = (box: HTMLElement) => { const k = box.dataset.g!; const b = basisIn[k] ?? (basisIn[k] = { basis: 'supply', ex: 0, tot: 0 }); b.building = box.querySelector<HTMLInputElement>('[data-bld]')!.checked; lockBasis(box, b); b.basis = box.querySelector<HTMLSelectElement>('[data-basis]')!.value; b.ex = num(box.querySelector<HTMLInputElement>('[data-bex]')!.value); b.tot = num(box.querySelector<HTMLInputElement>('[data-btot]')!.value); box.querySelector<HTMLElement>('[data-basis-in]')!.hidden = b.basis === 'supply'; };
     $('p-groups')!.querySelectorAll<HTMLElement>('[data-g]').forEach(box => { box.querySelectorAll<HTMLElement>('[data-basis],[data-bex],[data-btot],[data-bld]').forEach(el => el.addEventListener('change', () => readBasis(box))); readBasis(box); });
@@ -108,7 +114,7 @@ function init(D: Data) {
     if (!org) return; const P = periodInfo(sel.value); const prelimSaved = P.prelimKey ? getFilings()[P.prelimKey] : undefined; const prevIds = new Set(prelimSaved?.row_ids ?? []);
     const facs = org.facilities.filter(f => inFiling(D, f)); const gs = groupsOf(facs);
     const cells: Record<string, { amt: number; tax: number }> = {}; const add = (no: string, amt: number, tax: number) => { const c = cells[no] ?? (cells[no] = { amt: 0, tax: 0 }); c.amt += amt; c.tax += tax; };
-    const common: Record<string, number> = {}; const commonAmt: Record<string, number> = {}; const rowIds: string[] = []; const unresolved: string[] = [], excluded: string[] = [], lateNote: string[] = [], missing: string[] = [];
+    const common: Record<string, number> = {}; const commonAmt: Record<string, number> = {}; const adminC: Record<string, number> = {}; const adminNote: string[] = []; const subsidyRows: { f: OrgFacility; r: LedgerRow; ded: number }[] = []; const rowIds: string[] = []; const unresolved: string[] = [], excluded: string[] = [], lateNote: string[] = [], missing: string[] = [];
     const assets: Filing['assets'] = []; let nInv = 0, nCard = 0, nNo = 0; const used: UsedRow[] = [];
     for (const f of facs) {
       const months = includePrelimRows ? [...P.prelim, ...P.own] : P.own;
@@ -128,7 +134,8 @@ function init(D: Data) {
           add(main, r.amt, r.tax); if (inv) nInv++; else nCard++;
           const gk = groupKey(f);
           if (r.v === 'no') { add('53', r.amt, r.tax); nNo++; }
-          if (r.v === 'split') { common[gk] = (common[gk] ?? 0) + r.tax; commonAmt[gk] = (commonAmt[gk] ?? 0) + r.amt; }
+          if (r.v === 'split' && r.use === 'admin') { adminC[gk] = (adminC[gk] ?? 0) + r.tax; }
+          else if (r.v === 'split') { common[gk] = (common[gk] ?? 0) + r.tax; commonAmt[gk] = (commonAmt[gk] ?? 0) + r.amt; }
           if (r.asset) assets.push({ id: r.id, facility: f.name, desc: r.desc, period: sel.value, tax: r.tax, kind: r.what === 'repair' ? 'building' : 'other', common: r.v === 'split', ratio0: 0, group: gk });
         }
       }
@@ -149,6 +156,12 @@ function init(D: Data) {
       groups.push({ key: k, name: groupName(k), taxable: tx, exempt: ex, ratio, common_tax: ct, nondeduct: nd, skipped: skipped ?? (alt ? `${BASIS_NAME[b.basis]}로 안분(${fmt(b.ex)} ÷ ${fmt(b.tot)})` : undefined), basis: alt ? b.basis : 'supply', oneoff: oneoffIn[k] || undefined });
       assets.filter(a => a.group === k && a.common).forEach(a => { a.ratio0 = ratio; });
     }
+    /* 본청·행정 공통(세무회계법인 2차 1번): 공급가액 비율 대신 입력한 기준으로, 기준이 없으면 (54)에 넣지 않고 처리할 것에 */
+    for (const [k] of gs) { const at = adminC[k] ?? 0; if (!at) continue; const a = adminIn[k]; const g = groups.find(x => x.key === k) ?? (() => { const ng = { key: k, name: groupName(k), taxable: taxableOf(gs.get(k)!), exempt: exemptIn[k] ?? 0, ratio: 0, common_tax: 0, nondeduct: 0 }; groups.push(ng); return ng; })();
+      g.admin_tax = at; if (a && a.basis && a.tot > 0) { g.admin_basis = a.basis; g.admin_ex = a.ex; g.admin_tot = a.tot; g.admin_ratio = Math.min(1, a.ex / a.tot); g.admin_nondeduct = Math.floor(at * g.admin_ratio); add('54', 0, g.admin_nondeduct); }
+      else adminNote.push(`${groupName(k)}: 본청·행정 공통 ${fmt(at)}원 — 3절에서 안분 기준(매입가액·예정공급가액·예정사용면적)을 넣기 전에는 (54)에 넣지 않았습니다(전액 공제로 보이지만 그대로 신고하면 과대공제). 기준은 유권해석으로 확인`); }
+    /* 보조사업 지출(세무회계법인 2차 3번): 공제받은 부가세는 보조금 정산과 연결 */
+    for (const u of used) if (u.r.subsidy && (u.r.v === 'ok' || u.r.v === 'split')) { const g = groups.find(x => x.key === groupKey(u.f)); const ded = u.r.v === 'ok' ? u.r.tax : Math.floor(u.r.tax * (1 - (u.r.use === 'admin' ? (g?.admin_ratio ?? 0) : (g?.ratio ?? 0)))); subsidyRows.push({ f: u.f, r: u.r, ded }); }
     /* 재계산(지난 신고 기록의 공통 자산) */
     const hi = (k: PeriodKey) => { const p = periodInfo(k); return p.y * 2 + p.half - 1; }; const curH = hi(sel.value);
     const recalc: { a: Filing['assets'][number]; from: PeriodKey; ratio: number; n: number; amt: number }[] = [];
@@ -161,7 +174,7 @@ function init(D: Data) {
       const c: Record<string, { amt: number; tax: number }> = {}; const ad = (no: string, amt: number, tax: number) => { const x = c[no] ?? (c[no] = { amt: 0, tax: 0 }); x.amt += amt; x.tax += tax; };
       for (const u of us) { const main = u.isPre ? '13' : u.inv ? (u.r.asset ? '12' : '10') : (u.r.asset ? '45' : '44'); ad(main, u.r.amt, u.r.tax); if (u.r.v === 'no') ad('53', u.r.amt, u.r.tax); if (u.r.late && u.inv) ad('66', u.r.amt, Math.floor(u.r.amt * 5 / 1000)); }
       for (const f of fs) { const sl = sales[f.id]; if (!sl) continue; if (sl.c1) ad('1', sl.c1, Math.floor(sl.c1 * 0.1)); if (sl.c3) ad('3', sl.c3, Math.floor(sl.c3 * 0.1)); if (sl.c4) ad('4', sl.c4, Math.floor(sl.c4 * 0.1)); }
-      for (const g of groups.filter(g => org!.unit === 'entity' || g.key === gk)) if (g.nondeduct) ad('54', 0, g.nondeduct);
+      for (const g of groups.filter(g => org!.unit === 'entity' || g.key === gk)) { if (g.nondeduct) ad('54', 0, g.nondeduct); if (g.admin_nondeduct) ad('54', 0, g.admin_nondeduct); }
       const rc = recalc.filter(r => org!.unit === 'entity' || r.a.group === gk).reduce((s, r) => s + r.amt, 0); if (rc) ad('54', 0, rc);
       const cv = convAll.filter(v => org!.unit === 'entity' || v.gkey === gk).reduce((s, v) => s + v.credit, 0); if (cv) ad('48', 0, cv);
       return c; };
@@ -190,6 +203,8 @@ function init(D: Data) {
       <p class="meta">근거: ${lawLink(D, { law: 'act', art: '제40조' })} · ${lawLink(D, { law: 'decree', art: '제81조' })} · ${lawLink(D, { law: 'decree', art: '제82조' })} · ${lawLink(D, { law: 'decree', art: '제83조' })} · ${lawLink(D, { law: 'decree', art: '제85조' })} · ${lawLink(D, { law: 'act', art: '제48조' })} · ${lawLink(D, { law: 'act', art: '제60조' })} — 면세공급가액에는 면세사업 관련 국고·공공보조금을 넣습니다(제81조 제1항 단서). 세금계산서 ${nInv}건 · 카드·현금영수증 ${nCard}건 · 불공제 명세 ${nNo}건.</p>
       <h3>처리할 것</h3>
       <ul class="meta-list">${missing.length ? `<li><strong>인계표가 아직 없는 시설·달 ${missing.length}</strong>: ${esc(missing.join(', '))} — 시설 담당에게 요청</li>` : '<li>이 기간 모든 시설·달의 기록이 있습니다.</li>'}
+        ${adminNote.length ? `<li><strong>본청·행정 공통 안분 기준 없음 ${adminNote.length}</strong>:<br>${adminNote.map(esc).join('<br>')}</li>` : ''}
+        ${subsidyRows.length ? `<li><strong>보조사업 지출 ${subsidyRows.length}건 — 공제받는 부가세 ${fmt(subsidyRows.reduce((s, x) => s + x.ded, 0))}원</strong>: ${esc(D.rules.subsidy_settle?.summary ?? '')} ${esc(D.rules.subsidy_settle?.todo ?? '')}<br>${subsidyRows.slice(0, 10).map(x => esc(`${x.f.name} · ${x.r.d} ${x.r.desc} (공제 ${fmt(x.ded)}원)`)).join('<br>')}${subsidyRows.length > 10 ? `<br>… 외 ${subsidyRows.length - 10}건` : ''}</li>` : ''}
         ${unresolved.length ? `<li><strong>노랑(확인 필요) ${unresolved.length}건 — 신고서에서 뺐습니다</strong>:<br>${unresolved.map(esc).join('<br>')}</li>` : ''}
         ${excluded.length ? `<li><strong>신고서 밖 ${excluded.length}건(증빙 요건 미달·다른 명의 등)</strong> — 수정세금계산서를 받으면 다음 신고(또는 경정청구)에 넣습니다:<br>${excluded.map(esc).join('<br>')}</li>` : ''}
         ${((): string => { /* 세무회계법인 관점 4번 — 전용(초록)인데 실지귀속 근거가 없는 지출: 조사 때 공통으로 뒤집히면 면세비율만큼 추징 + 가산세 */

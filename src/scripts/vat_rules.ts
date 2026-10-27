@@ -18,6 +18,11 @@ export type Data = {
     /** 세무회계법인 관점 검토(2026-10-27) — 면세비율 관리·신축 설계·조기환급·가산세 */
     ratio_mgmt?: { proof: { key: Evid; name: string; text: string }[]; exempt_supply: string[]; timing: string; basis: Basis[] };
     build?: { area: string; early_refund: string; refund_days: { file_within: number; refund_within: number; normal_within: number }; pre_reg: string; land: string; basis: Basis[] };
+    admin_common?: { summary: string; caution: string; interp?: boolean; basis: Basis[] };
+    subsidy_settle?: { summary: string; todo: string };
+    develop?: { land_sale: string; land_cost: string; timing: string; refund: string; housing: string; basis: Basis[] };
+    entity_unit?: { summary: string; caution: string; basis: Basis[] };
+    agency_contract?: { key: string; text: string }[];
     penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; note: string; basis: Basis[] } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
@@ -100,7 +105,8 @@ export type Preset = { key: string; org: string; read: string; note: string; fin
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };
 export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string; map?: MapRule[] };
-const normPat = (s: string) => String(s ?? '').replace(/\s/g, '').toLowerCase();
+/** 매핑 글자 정규화 — 공백·대소문자 외에 '2026년'·'2026회계연도'·'제3차'·'(2026)' 같은 연도·차수 표시를 떼어 해마다 새 규칙이 되지 않게(세무회계법인 2차 7번) */
+const normPat = (s: string) => String(s ?? '').replace(/\(?\d{4}(년도?|회계연도)?\)?/g, '').replace(/제?\d+(차|회|기)/g, '').replace(/[\s\-_·.,()]/g, '').toLowerCase();
 /** 사업명·부서 글자에 맞는 규칙 — 사업명 정확히 → 부서 정확히 → 4자 이상 규칙이 사업명에 포함 순 */
 export function matchMap(org: Org | null, biz: string, dept: string): MapRule | undefined {
   const rules = org?.map ?? []; if (!rules.length) return undefined; const b = normPat(biz), d = normPat(dept);
@@ -175,7 +181,11 @@ export function toInput(D: Data, org: Org, f: OrgFacility, q: { proof: ProofQ; p
   const use = q.use === 'this' ? (st === 'taxable' || (st === 'own' && f.fee === 'taxable') ? 'taxable' : st === 'exempt' ? 'exempt' : 'unknown') : q.use === 'multi' ? (hasOther ? 'common' : 'taxable') : q.use === 'admin' ? 'common' : 'unknown';
   const kind = ({ utility: 'general', service: 'general', repair: q.asset ? 'building' : 'general', equip: q.asset ? 'equip' : 'general', car_pass: 'car', car_other: q.asset ? 'equip' : 'general', guest: 'entertain', staff: 'welfare', payroll_tax: 'payroll', insurance: 'insurance', land: 'land', water: 'exempt_goods', other: 'general' } as Record<string, string>)[q.what] ?? 'general';
   const notes = [st === 'check' && q.use === 'this' ? (f.kind === 'contractor' ? `이 시설 유형은 수탁기관 기준으로 확인이 필요합니다: ${facilityRule(D, f)?.contractor_note ?? '유권해석·분류'}.` : '이 시설 유형은 과세인지 면세인지 유권해석·분류로 정해야 합니다(기관 설정의 "확인 필요"). 신고 담당 부서가 정하면 다시 판정됩니다.') : '', f.run === 'unknown' ? '이 시설의 운영 방식(우리 기관 명의 대행인지 수탁기관 자기 사업인지)이 아직 정해지지 않았습니다. 수탁기관 자기 사업이면 이 매입세액은 우리 것이 아닙니다 — 기관 설정에서 위·수탁 계약대로 고르세요.' : '', st === 'own' ? '수탁기관 자기 사업 시설이지만 우리 기관이 사용료·임대료를 받아 과세(부동산임대)로 신고하는 시설이므로, 우리 기관이 직접 낸 이 돈은 그 임대사업의 지출로 봅니다 — 사용료가 과세로 신고되고 있어야 합니다.' : '', q.subsidy ? '국비·시비 보조금으로 집행한 지출이라도 공제 여부는 쓰임(과세·면세)으로만 정합니다 — 보조금이라서 공제가 안 되는 것이 아닙니다. 면세사업 보조금을 받았다면 신고 담당이 안분 때 면세공급가액에 넣습니다(시행령 제81조 제1항).' : ''].filter(Boolean); const note = notes.length ? notes.join(' ') : undefined;
-  return { input: { use, kind, proof, supplier, timing: q.late ? 'late' : 'now' }, note };
+  const extra: string[] = [];
+  if (q.use === 'admin' && use === 'common') extra.push('행정 일과 함께 쓴 지출은 본청·행정 공통으로 따로 모읍니다 — 고유 행정사무는 공급가액이 없어 공급가액 비율로 못 나누고 매입가액·예정공급가액·예정사용면적 비율 순서(시행령 제81조 제4항)로 안분하며, 안분 기준은 유권해석으로 확인합니다.');
+  if (q.subsidy && D.rules.subsidy_settle) extra.push(`보조사업 지출: ${D.rules.subsidy_settle.summary}`);
+  const note2 = [note, ...extra].filter(Boolean).join(' ') || undefined;
+  return { input: { use, kind, proof, supplier, timing: q.late ? 'late' : 'now' }, note: note2 };
 }
 
 /* ---------- 마감 ---------- */
@@ -215,7 +225,9 @@ export const CELLS: { no: string; name: string; group: string }[] = [
   { no: '44', name: '그 밖의 공제매입세액 — 신용카드매출전표등 수령명세서 제출분 일반매입', group: '매입(15)' }, { no: '45', name: '그 밖의 공제매입세액 — 신용카드매출전표등 수령명세서 제출분 고정자산매입', group: '매입(15)' },
   { no: '53', name: '공제받지 못할 매입세액', group: '불공제(17)' }, { no: '54', name: '공통매입세액 중 면세사업등 해당 세액', group: '불공제(17)' }];
 export type Filing = { v: 1; org: string; period: PeriodKey; saved: string; cells: Record<string, { amt: number; tax: number }>; row_ids: string[];
-  groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string; basis?: string; oneoff?: number }[];
+  groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string; basis?: string; oneoff?: number;
+    /** 본청·행정 공통(세무회계법인 2차 1번): 행정 일과 함께 쓴 지출은 공급가액 비율을 못 쓰므로 따로 — 기준(매입가액·예정공급가액·예정사용면적)·면세등 몫·전체·비율·불공제 */
+    admin_tax?: number; admin_basis?: string; admin_ex?: number; admin_tot?: number; admin_ratio?: number; admin_nondeduct?: number }[];
   assets: { id: string; facility: string; desc: string; period: PeriodKey; tax: number; kind: 'building' | 'other'; common: boolean; ratio0: number; group: string }[];
   sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }>;
   /** 등록 단위(사업장)별 신고서 값 — 사업장별 등록이면 등록번호마다 신고서 한 장(세무사 평가 3차) */

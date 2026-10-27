@@ -1,0 +1,39 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import '../../../styles/vat.css';
+/** /vat/develop/ — 공영개발·분양 사업 부가세(세무회계법인 2차 검토 2026-10-27, 4번): 산업단지·택지 조성(토지 면세)과 공설시장·지식산업센터 분양(건물 과세). 매입세액 갈래·과세기간별 흐름·조기환급·점검표. 브라우저 안 계산만, 평가 없음 */
+---
+<Base title="공영개발·분양 부가세 — 산단·택지·지식산업센터" description="지자체 공영개발(산업단지·택지 조성, 공설시장·지식산업센터 분양)의 부가가치세: 토지 분양 면세·건물 분양 과세, 토지 관련 매입세액 불공제, 공통비 예정공급가액 안분, 중간지급조건부 공급시기, 조기환급을 과세기간별 흐름표와 점검표로 계산합니다." current="vat" crumb={[{ name: '지자체 부가세 절감 점검기', href: '/vat/' }]}>
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/build/">신축·대수선</a> · <a href="/vat/schedule/">환급·기한 일정표</a></p>
+  <div class="section-head"><h1>공영개발·분양 — 토지는 면세, 건물은 과세, 조성비는 갈라서</h1><span class="meta">법 제26조·제29조·제39조·제59조 · 시행령 제28조·제64조·제81조·제82조·제107조</span></div>
+  <p class="lede">군 단위 부가세에서 가장 큰 금액은 시설 운영이 아니라 <strong>산업단지·택지 조성과 공설시장·지식산업센터 분양</strong>에 있습니다. 토지 분양은 면세라 토지 관련 공사비의 매입세액은 돌려받지 못하고, 건물 분양은 과세라 건축비 매입세액은 돌려받습니다. 둘에 함께 드는 비용은 예정공급가액 비율로 나누고, 중도금을 받을 때마다 매출세액이 생깁니다. 조성 중에는 조기환급으로 받고 분양이 시작되면 납부로 바뀌는 흐름을 과세기간별로 보입니다.</p>
+  <form class="vc-form no-print" id="dv-form" autocomplete="off" onsubmit="return false">
+    <label class="full">저장된 사업 불러오기 <select id="dv-saved"><option value="">— 저장된 사업 —</option></select></label>
+    <label>사업 이름 <input type="text" id="dv-name" placeholder="예: ○○일반산업단지 조성" maxlength="60" /></label>
+    <label>토지 예정 분양가액(원, 면세) <input type="text" id="dv-ls" inputmode="numeric" placeholder="예: 80,000,000,000" /></label>
+    <label>건물 예정 분양가액(원, 과세 — 지식산업센터·공설시장 건물) <input type="text" id="dv-bs" inputmode="numeric" placeholder="없으면 비움" /></label>
+    <label>토지 관련 공사비(조성·토목·형질변경·철거, 공급가액) <input type="text" id="dv-lc" inputmode="numeric" placeholder="예: 30,000,000,000" /></label>
+    <label>건물·구축물 건축비(공급가액) <input type="text" id="dv-bc" inputmode="numeric" placeholder="없으면 비움" /></label>
+    <label>공통비(설계·감리·기반시설·판촉, 공급가액) <input type="text" id="dv-cc" inputmode="numeric" placeholder="예: 2,000,000,000" /></label>
+    <label>공사 시작 <input type="month" id="dv-start" /></label>
+    <label>준공(인도) 예정 <input type="month" id="dv-end" /></label>
+    <label>분양 계약(계약금) 달 <input type="month" id="dv-cm" /></label>
+    <label>계약금 비율(%) <input type="text" id="dv-cp" inputmode="numeric" value="10" /></label>
+    <label>중도금 횟수 <input type="text" id="dv-mn" inputmode="numeric" value="4" /></label>
+    <label>중도금 합계 비율(%) <input type="text" id="dv-mp" inputmode="numeric" value="60" /></label>
+    <label>조기환급 신고 주기 <select id="dv-every"><option value="1">매월</option><option value="2">매 2월</option><option value="0">조기환급 없이</option></select></label>
+    <div class="actions"><button type="button" class="btn" id="dv-run">계산</button><button type="button" class="btn secondary" id="dv-save">저장(이 브라우저)</button><button type="button" class="btn secondary" id="dv-print">인쇄</button><button type="button" class="link-btn" id="dv-del">저장 지우기</button><span class="meta" id="dv-msg"></span></div>
+  </form>
+  <div id="dv-result" aria-live="polite"></div>
+  <details class="vat-more"><summary>이 화면이 하는 계산과 하지 않는 것</summary>
+    <ul class="meta-list">
+      <li>공통비 안분 비율 = 건물 예정 분양가 ÷ (토지 + 건물 예정 분양가). 분양 전이라 공급가액이 없을 때의 2순위 기준(영 제81조 제4항 제2호)이며, 분양 공급가액이 확정되는 과세기간에 정산합니다(제82조).</li>
+      <li>매출세액 일정은 계약금(계약 달), 중도금(계약 달과 준공 달 사이 균등), 잔금(준공 달)으로 놓은 가정입니다. 실제 계약 조건으로 바꾸려면 CSV를 받아 고치세요. 토지 분양은 면세라 매출세액이 없습니다.</li>
+      <li>토지·건물을 한 계약으로 팔 때 건물 가액의 구분·안분(법 제29조 제9항·영 제64조)은 점검표 항목으로만 두고 계산하지 않습니다.</li>
+      <li>국민주택 규모 주택 분양의 면세(조세특례제한법)와 재개발·재건축 조합 특례는 다루지 않습니다. 조문 번호와 뜻만 적었고 평가가 아닙니다.</li>
+    </ul>
+  </details>
+  <VatData />
+  <script>import '../../../scripts/vat_develop';</script>
+</Base>

@@ -66,13 +66,13 @@ def to_text(pdf: Path, txt: Path) -> bool:
 
 def cms_token(g: dict, jar: Path) -> str:
     """동구·서구 누리집(같은 CMS): 화면의 download 폼 csrfToken(세션 쿠키와 짝) — POST /file/direct/download.do (csrfToken, filename, path)"""
-    page = get(g["page"], jar=jar).decode("utf-8", "ignore")
+    page = get(g["page"], jar=jar, tries=3, timeout=60).decode("utf-8", "ignore")
     m = re.search(r'name=["\']csrfToken["\'][^>]*value=["\']([^"\']+)', page) or re.search(r'value=["\']([^"\']+)["\'][^>]*name=["\']csrfToken', page)
     return m.group(1) if m else ""
 
 
 def cms_post(g: dict, jar: Path, token: str, filename: str, out: Path | None = None) -> bytes:
-    return get(g["download_url"], out, post={"csrfToken": token, "filename": filename, "path": g["path"]}, referer=g["page"], jar=jar)
+    return get(g["download_url"], out, post={"csrfToken": token, "filename": filename, "path": g["path"]}, referer=g["page"], jar=jar, tries=2, timeout=90)
 
 
 def probe_post(g: dict) -> None:
@@ -82,6 +82,9 @@ def probe_post(g: dict) -> None:
     jar = tmp / f"{g['key']}.jar"
     token = cms_token(g, jar)
     print(f"[revenue] {g['name']} probe_post token={'있음' if token else '없음'} path={g['path']}")
+    if not token:
+        print(f"[revenue] {g['name']}: 화면을 못 받아 토큰이 없다 — 이번 실행은 건너뜀(누리집이 러너 연결을 간헐적으로 끊는다)")
+        return
     miss = 0
     for i in range(1, int(g.get("probe_n", 30)) + 1):
         fn = g.get("probe_fmt", "{:02d}.pdf").format(i)

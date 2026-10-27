@@ -2,12 +2,12 @@
 import Base from '../../../layouts/Base.astro';
 import VatData from '../../../components/VatData.astro';
 import '../../../styles/vat.css';
-/** /vat/monthly/ — 시설 지출 기록(수탁기관·시설 부서, 매달. v2 1단계 2026-10-27). 기관 설정(org.json)을 열고 시설·달을 고른 뒤 지출을 한 건씩 현장 질문 5개로 넣으면 신호등 판정과 '지금 할 일'이 나오고, 월말에 매입 인계표(한글 표 복사·CSV·JSON)를 만든다. 판정은 vat_rules.judge(공용). 서버 없음. 스크립트 src/scripts/vat_monthly.ts */
+/** /vat/monthly/ — 시설 지출 기록(신고 담당 공무원이 직접, 또는 수탁기관·시설 부서가 대신 — 운영자 지시 2026-10-27 '사용목적은 신고하는 공무원용'. v2 1단계 2026-10-27). 기관 설정(org.json)을 열고 시설·달을 고른 뒤 지출을 한 건씩 현장 질문 5개로 넣으면 신호등 판정과 '지금 할 일'이 나오고, 월말에 매입 인계표(한글 표 복사·CSV·JSON)를 만든다. 판정은 vat_rules.judge(공용). 서버 없음. 스크립트 src/scripts/vat_monthly.ts */
 ---
-<Base title="시설 지출 기록 — 매입 인계표" description="수탁기관·시설 부서가 이번 달 지출을 한 건씩 넣으면 부가세 매입세액을 공제받을 수 있는지 신호등으로 알려 주고, 월말에 신고 담당에게 보낼 매입 인계표를 만듭니다. 브라우저 안에서만 저장." current="vat" crumb="시설 지출 기록">
+<Base title="시설 지출 기록" description="신고 담당 공무원이 홈택스 매입 목록·카드 내역을 붙여넣거나 한 건씩 넣어 시설별로 기록하면 부가세 매입세액을 공제받을 수 있는지 신호등으로 알려 줍니다. 수탁기관·시설 부서가 대신 기록해 인계표로 보낼 수도 있습니다. 브라우저 안에서만 저장." current="vat" crumb="시설 지출 기록">
   <p class="meta no-print"><a href="/vat/">← 시작 화면</a></p>
-  <div class="section-head"><h1>시설 지출 기록 — 매입 인계표 만들기</h1><span class="meta" id="m-dday"></span></div>
-  <p class="lede">이번 달 시설에 쓴 돈을 영수증 한 장에 한 건씩 넣습니다. 세법 용어는 몰라도 됩니다 — <strong>영수증이 어떤 것인지, 받는 사람이 누구인지, 어디에 썼는지</strong>만 고르면 신호등으로 알려 줍니다. 월말에 「매입 인계표」를 만들어 신고 담당에게 보내면 끝입니다. 입력은 이 브라우저에만 저장됩니다.</p>
+  <div class="section-head"><h1>③ 지출 기록 — 시설별로 어디에 쓴 돈인지 남기기</h1><span class="meta" id="m-dday"></span></div>
+  <p class="lede">신고 담당이 홈택스 「전자세금계산서 목록(매입)」·사업용 카드 내역을 아래 「여러 건 한꺼번에」에 붙여넣고 건마다 <strong>어느 시설에 썼는지</strong>만 고르는 것이 기본입니다. 영수증 한 장씩 넣을 수도 있습니다(영수증 종류·받는 사람·어디에·무엇). 수탁기관·시설 부서에 기록을 맡길 때는 이 주소와 기관 설정 파일을 보내면 같은 화면으로 기록해 월말에 「매입 인계표」를 돌려줍니다. 입력은 이 브라우저에만 저장됩니다.</p>
 
   <section id="m-org" class="vc-card no-print">
     <h3>기관 설정</h3>

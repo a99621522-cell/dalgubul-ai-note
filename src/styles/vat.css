@@ -2,6 +2,9 @@
 .vat-toc { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: var(--s2) 0 var(--s3); font-size: var(--small); }
 .vat-toc a { color: var(--primary); text-decoration: none; font-weight: 600; padding: 4px 0; }
 .vat-roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s2); margin: var(--s3) 0; }
+.vat-steps { list-style: none; padding: 0; margin: var(--s3) 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s2); counter-reset: none; }
+.vat-steps > li { margin: 0; }
+.vat-steps .vat-role { min-height: 150px; height: 100%; }
 .vat-role { display: flex; flex-direction: column; gap: 6px; padding: var(--s3); border: 2px solid var(--line-strong); border-radius: var(--radius-2); background: var(--bg); color: var(--ink); text-decoration: none; min-height: 132px; }
 .vat-role:hover, .vat-role:focus-visible { border-color: var(--primary); }
 .vat-role strong { font-size: 1.15rem; color: var(--primary); }

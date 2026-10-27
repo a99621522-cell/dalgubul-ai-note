@@ -20,6 +20,7 @@ import '../../../styles/vat.css';
   <div id="rv-cols" class="no-print"></div>
   <div id="rv-result" aria-live="polite"></div>
 
+  <section id="pn-box" class="vc-card"></section>
   <details class="vat-more"><summary>무엇을 보는 것인가</summary>
     <ul class="meta-list">
       <li>과세기간은 확정신고 기준(1~6월 → 7월 25일, 7~12월 → 다음 해 1월 25일)으로 묶습니다. 예정신고 때 넣은 것도 확정 기간 안에 있으면 같은 묶음입니다.</li>
@@ -31,5 +32,5 @@ import '../../../styles/vat.css';
     </ul>
   </details>
   <VatData />
-  <script>import '../../../scripts/vat_review';</script>
+  <script>import '../../../scripts/vat_review'; import '../../../scripts/vat_penalty';</script>
 </Base>

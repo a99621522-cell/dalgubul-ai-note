@@ -1,6 +1,6 @@
 /** /vat/prepare/ 신고 준비(신고 담당). 인계표 → 신고서 칸별 숫자표 + 안분·정산·재계산 + 신고 기록. 참고용 계산, 서버 없음. */
 import { renderForms, renderUnitSummary, renderSavings, type UsedRow, type ConvRow } from './vat_forms';
-import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, prevPeriodKey, PRELIM_NOTICE_LIMIT, getFilings, saveFiling, deemedRent, nextFiling, ymd, lawLink, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
+import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, prevPeriodKey, PRELIM_NOTICE_LIMIT, getFilings, saveFiling, penaltyCalc, lawLink, deemedRent, nextFiling, ymd, lawLink, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
 type Ledger = { fid: string; name: string; type: string; month: string; rows: LedgerRow[]; src: string };
 const D = loadData();
 if (D) init(D);
@@ -8,7 +8,7 @@ function init(D: Data) {
   let org: Org | null = getOrg();
   const ledgers = new Map<string, Ledger>();
   const sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }> = {};
-  const exemptIn: Record<string, number> = {}; const basisIn: Record<string, { basis: string; ex: number; tot: number; building?: boolean }> = {}; const prelimIn: Record<string, { taxable: number; exempt: number; common: number; nondeduct: number }> = {};
+  const exemptIn: Record<string, number> = {}; const oneoffIn: Record<string, number> = {}; const basisIn: Record<string, { basis: string; ex: number; tot: number; building?: boolean }> = {}; const prelimIn: Record<string, { taxable: number; exempt: number; common: number; nondeduct: number }> = {};
   let includePrelimRows = false;
   const f0 = nextFiling(); $('p-due')!.textContent = `다음 신고 ${f0.name} D-${f0.days}`;
 
@@ -35,8 +35,8 @@ function init(D: Data) {
   function renderPeriod() {
     const P = periodInfo(sel.value); const saved = getFilings()[sel.value];
     if (lastPeriod !== sel.value) {   // 기간이 바뀌면 매출·면세 입력은 그 기간 것으로(저장된 신고 기록이 있으면 되살림)
-      lastPeriod = sel.value; for (const k of Object.keys(sales)) delete sales[k]; for (const k of Object.keys(exemptIn)) delete exemptIn[k]; for (const k of Object.keys(prelimIn)) delete prelimIn[k];
-      if (saved) { Object.assign(sales, saved.sales ?? {}); for (const g of saved.groups ?? []) exemptIn[g.key] = g.exempt; }
+      lastPeriod = sel.value; for (const k of Object.keys(sales)) delete sales[k]; for (const k of Object.keys(exemptIn)) delete exemptIn[k]; for (const k of Object.keys(oneoffIn)) delete oneoffIn[k]; for (const k of Object.keys(prelimIn)) delete prelimIn[k];
+      if (saved) { Object.assign(sales, saved.sales ?? {}); for (const g of saved.groups ?? []) { exemptIn[g.key] = g.exempt; if (g.oneoff) oneoffIn[g.key] = g.oneoff; } }
     } const prelimSaved = P.prelimKey ? getFilings()[P.prelimKey] : undefined;
     $('p-period-note')!.innerHTML = `${P.name}: 매입은 ${P.own[0]}~${P.own[P.own.length - 1]} 인계표${P.kind === 'F' ? `, 안분은 ${P.full[0]}~${P.full[5]} 전체 공급가액으로 정산(예정신고 ${prelimSaved ? `기록 ${prelimSaved.saved} 저장분을 씀` : '기록이 이 브라우저에 없음 — 아래에서 예정 때 값을 넣으세요'})` : ''}. 신고·납부 ${P.due}.${saved ? ` <strong>이 기간 신고 기록이 ${saved.saved}에 저장돼 있습니다</strong>(다시 만들면 덮어씀).` : ''}`;
     if (!org) { $('p-coverage')!.innerHTML = '<p class="empty">기관 설정을 먼저 여세요.</p>'; return; }
@@ -81,6 +81,7 @@ function init(D: Data) {
       return `<div class="vc-form" data-g="${esc(k)}"><p class="q-title full">${esc(groupName(k))}</p>
       <label>과세 공급가액(이 기간, 2절 합계) <input type="text" data-tax readonly value="${fmt(taxableOf(fs))}" /></label>
       <label>면세 공급가액(이 기간 — 면세 수입 + 면세사업 보조금) <input type="text" inputmode="numeric" data-ex value="${exemptIn[k] ? fmt(exemptIn[k]) : ''}" placeholder="없으면 0" /></label>
+      <label>그중 일회성 면세 공급(토지 매각 등, 참고용 — 면세비율 관리) <input type="text" inputmode="numeric" data-one value="${oneoffIn[k] ? fmt(oneoffIn[k]) : ''}" placeholder="없으면 비움" /></label>
       <label>안분 기준 <select data-basis>${[['supply', '공급가액 비율(기본, 시행령 제81조 제1항)'], ['purchase', '매입가액 비율 — 공급가액이 없을 때 1순위(제4항 제1호)'], ['planned', '예정공급가액 비율 — 2순위(제4항 제2호)'], ['area', '예정사용면적 비율 — 3순위, 건물 신축·취득은 1순위(제4항 제3호·단서)']].map(([v, n]) => `<option value="${v}" ${(basisIn[k]?.basis ?? 'supply') === v ? 'selected' : ''}>${n}</option>`).join('')}</select><span class="note" data-basis-note></span></label>
       <label class="choices"><span><input type="checkbox" data-bld ${basisIn[k]?.building ? 'checked' : ''}/> 이 공통매입세액은 <strong>건물·구축물 신축·취득분</strong>이고 과세·면세 예정사용면적을 나눌 수 있다(제4항 단서 — 공급가액이 있어도 면적 비율 우선)</span></label>
       <div class="full" data-basis-in ${(basisIn[k]?.basis ?? 'supply') === 'supply' ? 'hidden' : ''}><label>면세 몫(매입가액·예정공급가액·면적) <input type="text" inputmode="decimal" data-bex value="${basisIn[k]?.ex ? fmt(basisIn[k].ex) : ''}" /></label> <label>전체(같은 단위) <input type="text" inputmode="decimal" data-btot value="${basisIn[k]?.tot ? fmt(basisIn[k].tot) : ''}" /></label><span class="note">공급가액 비율을 쓸 수 없는 기간(과세·면세 어느 한쪽 공급가액이 없음)에만. 건물·구축물을 예정사용면적으로 안분했으면 면적이 확정될 때까지 같은 기준(제5항).</span></div>
@@ -88,6 +89,7 @@ function init(D: Data) {
       <label>예정 과세 공급가액 <input type="text" inputmode="numeric" data-p="taxable" value="${pi.taxable ? fmt(pi.taxable) : ''}" /></label><label>예정 면세 공급가액 <input type="text" inputmode="numeric" data-p="exempt" value="${pi.exempt ? fmt(pi.exempt) : ''}" /></label>
       <label>예정 공통매입세액 <input type="text" inputmode="numeric" data-p="common" value="${pi.common ? fmt(pi.common) : ''}" /></label><label>예정 때 불공제한 면세분(54) <input type="text" inputmode="numeric" data-p="nondeduct" value="${pi.nondeduct ? fmt(pi.nondeduct) : ''}" /></label>` : ''}</div>`; }).join('');
     $('p-groups')!.querySelectorAll<HTMLInputElement>('input[data-ex]').forEach(i => i.addEventListener('change', () => { exemptIn[i.closest<HTMLElement>('[data-g]')!.dataset.g!] = num(i.value); i.value = fmt(num(i.value)); readBasis(i.closest<HTMLElement>('[data-g]')!); }));
+    $('p-groups')!.querySelectorAll<HTMLInputElement>('input[data-one]').forEach(i => i.addEventListener('change', () => { oneoffIn[i.closest<HTMLElement>('[data-g]')!.dataset.g!] = num(i.value); i.value = num(i.value) ? fmt(num(i.value)) : ''; }));
     const readBasis = (box: HTMLElement) => { const k = box.dataset.g!; const b = basisIn[k] ?? (basisIn[k] = { basis: 'supply', ex: 0, tot: 0 }); b.building = box.querySelector<HTMLInputElement>('[data-bld]')!.checked; lockBasis(box, b); b.basis = box.querySelector<HTMLSelectElement>('[data-basis]')!.value; b.ex = num(box.querySelector<HTMLInputElement>('[data-bex]')!.value); b.tot = num(box.querySelector<HTMLInputElement>('[data-btot]')!.value); box.querySelector<HTMLElement>('[data-basis-in]')!.hidden = b.basis === 'supply'; };
     $('p-groups')!.querySelectorAll<HTMLElement>('[data-g]').forEach(box => { box.querySelectorAll<HTMLElement>('[data-basis],[data-bex],[data-btot],[data-bld]').forEach(el => el.addEventListener('change', () => readBasis(box))); readBasis(box); });
     $('p-groups')!.querySelectorAll<HTMLInputElement>('input[data-p]').forEach(i => i.addEventListener('change', () => { const k = i.closest<HTMLElement>('[data-g]')!.dataset.g!; (prelimIn[k] as unknown as Record<string, number>)[i.dataset.p!] = num(i.value); i.value = num(i.value) ? fmt(num(i.value)) : ''; }));
@@ -137,14 +139,14 @@ function init(D: Data) {
     for (const [k, fs] of gs) {
       const ct = common[k] ?? 0; const tx = taxableOf(fs), ex = exemptIn[k] ?? 0; const pi = prelimIn[k];
       const fullT = tx + (P.kind === 'F' ? pi?.taxable ?? 0 : 0), fullE = ex + (P.kind === 'F' ? pi?.exempt ?? 0 : 0), fullC = ct + (P.kind === 'F' ? pi?.common ?? 0 : 0);
-      if (!fullC) { if (ct || ex) groups.push({ key: k, name: groupName(k), taxable: tx, exempt: ex, ratio: fullT + fullE ? fullE / (fullT + fullE) : 0, common_tax: 0, nondeduct: 0 }); continue; }
+      if (!fullC) { if (ct || ex) groups.push({ key: k, name: groupName(k), taxable: tx, exempt: ex, ratio: fullT + fullE ? fullE / (fullT + fullE) : 0, common_tax: 0, nondeduct: 0, oneoff: oneoffIn[k] || undefined }); continue; }
       const b = basisIn[k]; const alt = b && b.basis !== 'supply' && b.tot > 0; const tot = fullT + fullE; const ratio = alt ? b.ex / b.tot : tot ? fullE / tot : 0; let skipped: string | undefined;
       const BASIS_NAME: Record<string, string> = { purchase: '매입가액 비율', planned: '예정공급가액 비율', area: '예정사용면적 비율' };
       if (!alt && !tot) skipped = '공급가액 없음 — 3절에서 안분 기준을 매입가액·예정공급가액·예정사용면적 비율로 고르면 계산합니다(시행령 제81조 제4항)';
       else if (fullC < (small.amount_lt ?? 50000)) skipped = small.name; else if (ratio < (r5.ratio_lt ?? 0.05) && fullC < (r5.amount_lt ?? 5000000)) skipped = r5.name;
       const fullNd = skipped ? 0 : Math.floor(fullC * ratio); const nd = P.kind === 'F' ? fullNd - (pi?.nondeduct ?? 0) : fullNd;
       if (!skipped || P.kind === 'F') add('54', 0, nd);
-      groups.push({ key: k, name: groupName(k), taxable: tx, exempt: ex, ratio, common_tax: ct, nondeduct: nd, skipped: skipped ?? (alt ? `${BASIS_NAME[b.basis]}로 안분(${fmt(b.ex)} ÷ ${fmt(b.tot)})` : undefined), basis: alt ? b.basis : 'supply' });
+      groups.push({ key: k, name: groupName(k), taxable: tx, exempt: ex, ratio, common_tax: ct, nondeduct: nd, skipped: skipped ?? (alt ? `${BASIS_NAME[b.basis]}로 안분(${fmt(b.ex)} ÷ ${fmt(b.tot)})` : undefined), basis: alt ? b.basis : 'supply', oneoff: oneoffIn[k] || undefined });
       assets.filter(a => a.group === k && a.common).forEach(a => { a.ratio0 = ratio; });
     }
     /* 재계산(지난 신고 기록의 공통 자산) */
@@ -190,6 +192,10 @@ function init(D: Data) {
       <ul class="meta-list">${missing.length ? `<li><strong>인계표가 아직 없는 시설·달 ${missing.length}</strong>: ${esc(missing.join(', '))} — 시설 담당에게 요청</li>` : '<li>이 기간 모든 시설·달의 기록이 있습니다.</li>'}
         ${unresolved.length ? `<li><strong>노랑(확인 필요) ${unresolved.length}건 — 신고서에서 뺐습니다</strong>:<br>${unresolved.map(esc).join('<br>')}</li>` : ''}
         ${excluded.length ? `<li><strong>신고서 밖 ${excluded.length}건(증빙 요건 미달·다른 명의 등)</strong> — 수정세금계산서를 받으면 다음 신고(또는 경정청구)에 넣습니다:<br>${excluded.map(esc).join('<br>')}</li>` : ''}
+        ${((): string => { /* 세무회계법인 관점 4번 — 전용(초록)인데 실지귀속 근거가 없는 지출: 조사 때 공통으로 뒤집히면 면세비율만큼 추징 + 가산세 */
+          const risky = used.filter(u => u.r.v === 'ok' && u.r.use === 'this' && (!u.r.evid || u.r.evid === 'none') && u.r.tax > 0).map(u => { const g = groups.find(x => x.key === groupKey(u.f)); return { u, ratio: g?.ratio ?? 0 }; }).filter(x => x.ratio > 0);
+          if (!risky.length) return ''; const exp = risky.reduce((s, x) => s + Math.floor(x.u.r.tax * x.ratio), 0); const today = ymd(new Date()); const pen = today > P.due ? penaltyCalc(D, { tax: exp, due: P.due, payDate: today, kind: 'under' }) : null;
+          return `<li><strong>실지귀속 근거 없는 전용 지출 ${risky.length}건</strong>(세액 ${fmt(risky.reduce((s, x) => s + x.u.r.tax, 0))}원) — 계약·계량·검수 기록이 없으면 조사 때 공통으로 보아 면세비율만큼 <b>${fmt(exp)}</b>원이 추징될 수 있고${pen ? `, 지금 수정신고하면 과소신고 가산세 ${fmt(pen.fileAfter)}원(10% × 감면 뒤) + 납부지연 ${fmt(pen.late)}원(${pen.days}일 × 22/100,000) 어림` : ' 신고 뒤에는 과소신고(10%)·납부지연(1일 22/100,000) 가산세가 붙습니다'}. 지출 기록에서 '이 시설만 썼다는 근거'를 채우거나 공통으로 바꾸세요(국세기본법 제47조의3·제47조의4).<br>${risky.slice(0, 12).map(x => esc(`${x.u.f.name} · ${x.u.r.d} ${x.u.r.desc} (${fmt(x.u.r.tax)}원)`)).join('<br>')}${risky.length > 12 ? `<br>… 외 ${risky.length - 12}건` : ''}</li>`; })()}
         ${lateNote.length ? `<li><strong>지연 수취 ${lateNote.length}건</strong>: 확정신고기한 안에 받았으면 공제하되 (66) 지연수취 가산세 5/1,000, 그 뒤 1년 안이면 수정신고·경정청구서와 함께(시행령 제75조 제7호)<br>${lateNote.map(esc).join('<br>')}</li>` : ''}</ul>
       <div class="actions no-print"><button type="button" class="btn" id="p-save">신고 기록 저장(filing JSON 내려받기)</button><button type="button" class="btn secondary" id="p-csv">서식 표 CSV</button><button type="button" class="btn secondary" id="p-print">인쇄</button></div>
       <p class="meta">저장하면 이 브라우저에도 남아 확정신고 정산·다음 기간 재계산·예정고지 판단·인수인계에 쓰입니다. 표 아래 「한글 표 복사」로 공문에 붙일 수 있습니다. 참고용 계산이며 신고서의 최종 숫자와 책임은 신고인에게 있습니다.</p>`;

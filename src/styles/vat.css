@@ -83,3 +83,10 @@
 .vat-table.form td:nth-child(3), .vat-table.form td:nth-child(4) { text-align: right; font-variant-numeric: tabular-nums; }
 .unit-head { margin-top: var(--s4); padding: 8px 12px; background: var(--band, var(--surface)); border-left: 4px solid var(--primary); }
 hr.unit-sep { border: 0; border-top: 3px double var(--line-strong); margin: var(--s4) 0; }
+/* 세무회계법인 관점 검토(2026-10-27): 점검표·경고 줄 */
+.checks { list-style: none; padding: 0; margin: 4px 0 var(--s2); }
+.checks li { margin: 4px 0; }
+.checks label { display: flex; gap: 8px; align-items: flex-start; font-size: var(--small); color: var(--ink); }
+.checks input { margin-top: 3px; }
+.meta-list li.warn { color: #8a5200; }
+@media (prefers-color-scheme: dark) { .meta-list li.warn { color: #ffd98a; } }

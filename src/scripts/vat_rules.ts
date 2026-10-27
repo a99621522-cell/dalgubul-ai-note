@@ -14,7 +14,11 @@ export type Data = {
   rules: { nondeductible: { key: string; no: string; name: string; fix: string; basis: Basis[] }[]; card: { summary: string; not_allowed: string; verify?: boolean; practice?: string[] }; late_invoice: { summary: string; verify?: boolean };
     common: { summary: string; formula: string; skip: { key: string; name: string; cond: string; ratio_lt?: number; amount_lt?: number }[]; no_supply: string; prelim: string };
     recalc: { rates: { building: number; other: number }; threshold_pp: number };
-    filing: { periods: { name: string; span: string; due: string }[]; notes: string[]; claim?: string; verify?: boolean } };
+    filing: { periods: { name: string; span: string; due: string }[]; notes: string[]; claim?: string; verify?: boolean };
+    /** 세무회계법인 관점 검토(2026-10-27) — 면세비율 관리·신축 설계·조기환급·가산세 */
+    ratio_mgmt?: { proof: { key: Evid; name: string; text: string }[]; exempt_supply: string[]; timing: string; basis: Basis[] };
+    build?: { area: string; early_refund: string; refund_days: { file_within: number; refund_within: number; normal_within: number }; pre_reg: string; land: string; basis: Basis[] };
+    penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; note: string; basis: Basis[] } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
   revenue_items?: RevenueItem[];
@@ -93,11 +97,23 @@ export type Fee = 'taxable' | 'paid_check' | 'free' | 'unknown';
 export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고, 그 사용료를 과세(부동산임대)로 신고하고 있다', paid_check: '사용료·임대료를 받지만 과세로 신고하는지 모름(면세로 보고 있음)', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
 export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind };
 export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; contractor?: string; term?: string; note?: string }[] };
-export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string };
+/** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
+export type MapRule = { pat: string; fid: string; use?: UseQ };
+export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string; map?: MapRule[] };
+const normPat = (s: string) => String(s ?? '').replace(/\s/g, '').toLowerCase();
+/** 사업명·부서 글자에 맞는 규칙 — 사업명 정확히 → 부서 정확히 → 4자 이상 규칙이 사업명에 포함 순 */
+export function matchMap(org: Org | null, biz: string, dept: string): MapRule | undefined {
+  const rules = org?.map ?? []; if (!rules.length) return undefined; const b = normPat(biz), d = normPat(dept);
+  return (b && rules.find(r => normPat(r.pat) === b)) || (d && rules.find(r => normPat(r.pat) === d)) || (b && rules.find(r => normPat(r.pat).length >= 4 && b.includes(normPat(r.pat)))) || undefined;
+}
+export function learnMap(org: Org, pat: string, fid: string, use?: UseQ) { const p = String(pat ?? '').trim(); if (!p || !fid) return false; const rules = org.map ?? (org.map = []); const i = rules.findIndex(r => normPat(r.pat) === normPat(p)); const r = { pat: p, fid, use }; if (i >= 0) { if (rules[i].fid === fid && rules[i].use === use) return false; rules[i] = r; } else rules.push(r); return true; }
 export type ProofQ = 'e_invoice' | 'p_invoice' | 'card' | 'cash' | 'bill' | 'none';
 export type PayeeQ = 'org' | 'contractor' | 'person' | 'unknown';
 export type UseQ = 'this' | 'multi' | 'admin' | 'unknown';
-export type LedgerRow = { id: string; d: string; desc: string; amt: number; tax: number; proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean; subsidy?: boolean; fix_due?: string; sup?: string; sreg?: string; v: Verdict; title: string; todo: string; basis: string; done: boolean };
+/** 전용(이 시설만) 지출의 실지귀속 근거 — rules.yml ratio_mgmt.proof 와 같은 키(세무회계법인 관점 4번: 증빙 없는 전용은 조사 때 공통으로 뒤집힐 수 있다) */
+export type Evid = 'contract' | 'meter' | 'inspection' | 'none';
+export const EVID_Q: Opt[] = [{ key: 'contract', name: '계약·발주서에 시설이 적혀 있다' }, { key: 'meter', name: '시설별 계량기·검침 기록' }, { key: 'inspection', name: '검수 조서·작업 일지에 시설 표시' }, { key: 'none', name: '아직 없음' }];
+export type LedgerRow = { id: string; d: string; desc: string; amt: number; tax: number; proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean; subsidy?: boolean; fix_due?: string; sup?: string; sreg?: string; evid?: Evid; biz?: string; v: Verdict; title: string; todo: string; basis: string; done: boolean };
 export const PROOF_Q: Opt[] = [
   { key: 'e_invoice', name: '전자세금계산서(홈택스·메일로 온 것)' }, { key: 'p_invoice', name: '종이 세금계산서' },
   { key: 'card', name: '신용카드 전표(법인·클린카드)' }, { key: 'cash', name: '현금영수증(사업자 지출증빙)' },
@@ -199,7 +215,7 @@ export const CELLS: { no: string; name: string; group: string }[] = [
   { no: '44', name: '그 밖의 공제매입세액 — 신용카드매출전표등 수령명세서 제출분 일반매입', group: '매입(15)' }, { no: '45', name: '그 밖의 공제매입세액 — 신용카드매출전표등 수령명세서 제출분 고정자산매입', group: '매입(15)' },
   { no: '53', name: '공제받지 못할 매입세액', group: '불공제(17)' }, { no: '54', name: '공통매입세액 중 면세사업등 해당 세액', group: '불공제(17)' }];
 export type Filing = { v: 1; org: string; period: PeriodKey; saved: string; cells: Record<string, { amt: number; tax: number }>; row_ids: string[];
-  groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string; basis?: string }[];
+  groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string; basis?: string; oneoff?: number }[];
   assets: { id: string; facility: string; desc: string; period: PeriodKey; tax: number; kind: 'building' | 'other'; common: boolean; ratio0: number; group: string }[];
   sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }>;
   /** 등록 단위(사업장)별 신고서 값 — 사업장별 등록이면 등록번호마다 신고서 한 장(세무사 평가 3차) */
@@ -230,6 +246,8 @@ export const COL_GUESS: { key: string; name: string; re: RegExp }[] = [
   { key: 'payee_reg', name: '공급받는자 등록번호', re: /공급받는자.*등록번호|공급받는자등록|매입자.*등록번호/ },
   { key: 'supplier_reg', name: '공급자 등록번호', re: /^(?!.*공급받는자)(?!.*매입자).*(공급자.*등록번호|공급자등록|사업자등록번호|사업자번호|등록번호)/ },   // 등록번호 열은 상호보다 먼저 — '공급자등록번호' 가 상호로 잡히지 않게(2026-10-27 경정청구 집계 비교 오류)
   { key: 'supplier', name: '공급자(상호·가맹점)', re: /^(?!.*번호)(?!.*등록).*(공급자상호|공급자|상호|가맹점|거래처|판매자|업체)/ },
+  { key: 'biz', name: '사업명(세부사업·예산과목)', re: /세부사업|단위사업|사업명|사업코드|예산과목|과목|사업$/ },   // 세출 사업 → 시설 자동 귀속(세무회계법인 관점 3번)
+  { key: 'dept', name: '부서(실·과·팀)', re: /부서|실과|담당과|^과$|^팀$|소속/ },
   { key: 'amt', name: '공급가액', re: /공급가액|공급가|과세금액|순금액/ },
   { key: 'tax', name: '세액(부가세)', re: /세액|부가세|부가가치세|vat/i },
   { key: 'total', name: '합계(부가세 포함)', re: /합계금액|합계|총액|총금액|승인금액|결제금액|이용금액/ }];
@@ -273,3 +291,25 @@ export const utf8 = (d: Uint8Array) => dec.decode(d);
 export function downloadBlob(name: string, blob: Blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0); }
 export const setAllLedgers = (a: Record<string, LedgerRow[]>) => lsSet(LEDGER_KEY, a);
 export const setFilings = (a: Record<PeriodKey, Filing>) => lsSet(FILINGS_KEY, a);
+
+/* ── 세무회계법인 관점 검토(2026-10-27) 도우미 ── */
+/** 조기환급 일정(법 제59조 제2항 제2호·시행령 제107조 제4항): 공사 기간을 매월 또는 매 2월 조기환급기간으로 끊고, 기간 끝 +25일 신고기한, 신고기한 +15일 환급 기한. 예정·확정신고기간 경계는 넘기지 않는다 */
+export function earlyRefundSchedule(startMonth: string, endMonth: string, every: 1 | 2, D?: Data | null) {
+  const fw = D?.rules.build?.refund_days.file_within ?? 25, rw = D?.rules.build?.refund_days.refund_within ?? 15;
+  const toN = (m: string) => Number(m.slice(0, 4)) * 12 + Number(m.slice(5, 7)) - 1; const toM = (n: number) => `${Math.floor(n / 12)}-${String(n % 12 + 1).padStart(2, '0')}`;
+  const a = toN(startMonth), b = toN(endMonth); const out: { from: string; to: string; fileDue: string; refundBy: string; quarterDue: string }[] = []; if (!(a <= b) || b - a > 60) return out;
+  let i = a; while (i <= b) { const q = Math.floor((i % 12) / 3); const qEnd = Math.floor(i / 12) * 12 + q * 3 + 2; let j = Math.min(i + every - 1, b, qEnd);
+    const last = new Date(Math.floor(j / 12), j % 12 + 1, 0); const fileDue = new Date(last.getFullYear(), last.getMonth(), last.getDate() + fw); const refundBy = new Date(fileDue.getFullYear(), fileDue.getMonth(), fileDue.getDate() + rw);
+    const qd = new Date(Math.floor(qEnd / 12), qEnd % 12 + 1, 25);
+    out.push({ from: toM(i), to: toM(j), fileDue: ymd(fileDue), refundBy: ymd(refundBy), quarterDue: ymd(qd) }); i = j + 1; }
+  return out;
+}
+/** 가산세 어림(국세기본법 제47조의2·제47조의3·제47조의4·제48조, 부정행위 아님): 과소(또는 무)신고 세액, 법정신고기한, 수정신고·납부일 → 신고 가산세(감면 뒤)·납부지연 가산세 */
+export function penaltyCalc(D: Data | null, p: { tax: number; due: string; payDate: string; kind: 'under' | 'none' }) {
+  const R = D?.rules.penalty; const rateFile = p.kind === 'none' ? (R?.no_report ?? 0.2) : (R?.under_report ?? 0.1); const daily = R?.late_pay_daily ?? 0.00022; const maxY = R?.late_pay_max_years ?? 5;
+  const d0 = new Date(p.due), d1 = new Date(p.payDate); const days = Math.max(0, Math.min(Math.round((d1.getTime() - d0.getTime()) / 86400000), maxY * 365));
+  const months = (d1.getFullYear() - d0.getFullYear()) * 12 + (d1.getMonth() - d0.getMonth()) - (d1.getDate() <= d0.getDate() ? 1 : 0) + 1;   // 경과 개월(이하 기준)
+  const relief = (p.kind === 'none' ? R?.late_file_relief : R?.amend_relief) ?? []; const rl = relief.find(r => months <= r.months)?.rate ?? 0;
+  const file = Math.floor(p.tax * rateFile); const fileAfter = Math.floor(file * (1 - rl)); const late = Math.floor(p.tax * days * daily);
+  return { days, months, rateFile, file, relief: rl, fileAfter, late, total: fileAfter + late };
+}

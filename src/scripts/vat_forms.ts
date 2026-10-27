@@ -3,7 +3,7 @@
  *  ① 일반과세자 부가가치세 신고서(제21호) 1쪽 (1)~(30) + 4쪽 명세 (36)~(56)  ② 매입처별 세금계산서합계표(갑)(제39호(1))  ③ 신용카드매출전표등 수령명세서(갑)(제16호(1))
  *  ④ 공제받지 못할 매입세액 명세서(제22호: 사유별 ①~⑨ · 안분 ⑩~⑭ · 정산 ⑮~ · 재계산)  ⑤ 부동산임대공급가액명세서(제25호)  ⑥ 과세사업전환 감가상각자산 신고서(제17호)  ⑦ 홈택스 입력 순서표.
  *  이 도구가 채우지 못하는 칸(영세율·대손·경감공제·가산세·예정고지 등)은 비워 두고 '홈택스에서 직접'으로 표시한다. 참고용, 신고 책임은 신고인. */
-import { esc, fmt, pct, facilityRule, PRELIM_NOTICE_LIMIT, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
+import { esc, fmt, pct, facilityRule, getFilings, lawLink, PRELIM_NOTICE_LIMIT, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
 export type UsedRow = { f: OrgFacility; r: LedgerRow; isPre: boolean; inv: boolean; card: boolean };
 export type ConvRow = { desc: string; tax: number; kind: 'building' | 'other'; acq: PeriodKey; common: boolean; gkey?: string; credit: number; n: number; remain: number };
 export type RecalcRow = { a: Filing['assets'][number]; from: PeriodKey; ratio: number; n: number; amt: number };
@@ -109,7 +109,7 @@ export function renderUnitSummary(org: Org, P: { name: string }, facs: OrgFacili
 /** 절감 사유 ② '공통매입세액(면세와 과세) 중 면세부분 매입세액 최소화' — 공통(파랑) 지출을 금액순으로 늘어놓고 전용(실지귀속)으로 바꿀 때 돌아오는 세액, 면세비율 1%p 효과, 안분 생략 기준까지의 거리, 등록 단위·수탁 구조 선택지를 숫자로. 평가 아님, 결정은 기관 */
 export function renderSavings(D: Data, org: Org, P: { kind: 'P' | 'F'; name: string }, groups: Filing['groups'], prelimIn: FormCtx['prelimIn'], used: UsedRow[], groupName: (k: string) => string): string {
   const sk = D.rules.common.skip; const r5 = sk.find(s => s.key === 'ratio5'); const limit = r5?.amount_lt ?? 5_000_000, rlim = r5?.ratio_lt ?? 0.05;
-  const gUse = groups.filter(g => g.common_tax > 0); if (!gUse.length) return '<h3>절감 분석 — 공통매입세액의 면세부분 줄이기</h3><p class="meta">이 기간에 공통(파랑) 지출이 없어 줄일 면세분이 없습니다.</p>';
+  const gUse = groups.filter(g => g.common_tax > 0); if (!gUse.length) return '<h3>절감 분석 — 공통매입세액의 면세부분 줄이기</h3><p class="meta">이 기간에 공통(파랑) 지출이 없어 줄일 면세분이 없습니다.</p>' + renderRatioMgmt(D, org, P, groups, used, groupName);
   const out: string[] = [];
   for (const g of gUse) {
     const pi = prelimIn[g.key]; const fullT = g.taxable + (P.kind === 'F' ? pi?.taxable ?? 0 : 0), fullE = g.exempt + (P.kind === 'F' ? pi?.exempt ?? 0 : 0), fullC = g.common_tax + (P.kind === 'F' ? pi?.common ?? 0 : 0);
@@ -127,5 +127,36 @@ export function renderSavings(D: Data, org: Org, P: { kind: 'P' | 'F'; name: str
     if (org.kind !== 'contractor' && org.facilities.some(f => f.run !== 'direct')) lines.push(`<li><b>수탁 구조</b>: 수탁기관(공단)이 자기 명의로 낸 공통 지출은 우리 기관이 공제하지 못합니다. 군 명의 사업의 대행이면 세금계산서를 군 등록번호로 받게 계약·발주 절차를 맞추고, 공단 자기 사업이면 사용료를 받는 과세 임대로 두어 군 부담 수선·설비의 매입세액을 살립니다(기관 설정 '받는 것').</li>`);
     out.push(`<div class="vc-card"><h4>${esc(groupName(g.key))}</h4><ul class="meta-list">${lines.join('')}</ul>${top.length ? tbl('공통 지출 — 전용으로 바꾸면 돌아오는 세액(세액 큰 순)', ['시설', '날짜', '내용', '세액', '전용이면 돌아오는 세액', '나누는 방법'], top.map(u => `<tr><th scope="row">${esc(u.f.name)}</th><td>${u.r.d}</td><td>${esc(u.r.desc)}</td><td>${fmt(u.r.tax)}</td><td><strong>${fmt(split(u.r.tax))}</strong></td><td class="note">${u.r.what === 'utility' ? '시설별 계량기·계약 분리' : u.r.what === 'service' ? '용역 계약을 시설별로 나눠 세금계산서 분리' : u.r.what === 'repair' ? '공사 내역을 시설별로 나눠 발주' : '지출 결의서에 시설별 귀속을 적고 세금계산서 분리'}</td></tr>`).join('')) : ''}</div>`);
   }
-  return `<h3>절감 분석 — 공통매입세액의 면세부분 줄이기</h3><p class="meta">공통(파랑) 지출을 과세 시설 전용으로 바꾸거나 면세비율을 낮추면 (54)가 줄어 공제가 늘어납니다. 숫자는 이 기간 기록 기준이며, 계약·계량기 분리는 다음 과세기간부터 효과가 납니다.</p>${out.join('')}`;
+  return `<h3>절감 분석 — 공통매입세액의 면세부분 줄이기</h3><p class="meta">공통(파랑) 지출을 과세 시설 전용으로 바꾸거나 면세비율을 낮추면 (54)가 줄어 공제가 늘어납니다. 숫자는 이 기간 기록 기준이며, 계약·계량기 분리는 다음 과세기간부터 효과가 납니다.</p>${out.join('')}${renderRatioMgmt(D, org, P, groups, used, groupName)}`;
+}
+
+/** 면세비율 관리(세무회계법인 관점 검토 2026-10-27, 1번 — 구조가 정해진 뒤에도 남는 지렛대): ① 실지귀속 입증 방법 3가지 ② 과세기간별 면세비율 표(저장된 신고 기록 + 이번 계산) ③ 공통 감가상각자산 취득 시기 — 취득 과세기간 비율이 굳는다(시행령 제83조 제1항 5%p) ④ 면세 공급가액 구성. 조문·숫자만, 평가 없음 */
+export function renderRatioMgmt(D: Data, org: Org, P: { y: number; half: number; kind: 'P' | 'F'; name: string }, groups: Filing['groups'], used: UsedRow[], groupName: (k: string) => string): string {
+  const RM = D.rules.ratio_mgmt; if (!RM) return '';
+  const curKey = `${P.y}-${P.half}${P.kind}`; const pp = D.rules.recalc.threshold_pp;
+  const keys = [...new Set([...groups.map(g => g.key), ...Object.values(getFilings()).flatMap(f => f.groups.map(g => g.key))])].filter(k => groups.some(g => g.key === k) || org.unit === 'entity' ? true : org.facilities.some(f => f.reg_no === k));
+  const blocks: string[] = [];
+  for (const k of keys) {
+    const past = Object.values(getFilings()).filter(f => f.period !== curKey).map(f => ({ period: f.period, g: f.groups.find(g => g.key === k) })).filter(x => x.g && (x.g.taxable || x.g.exempt)).sort((a, b) => a.period.localeCompare(b.period)) as { period: string; g: Filing['groups'][number] }[];
+    const cur = groups.find(g => g.key === k); if (!past.length && !cur) continue;
+    const rows = [...past.map(x => ({ period: x.period, g: x.g, now: false })), ...(cur ? [{ period: curKey, g: cur, now: true }] : [])];
+    const avg = past.length ? past.reduce((s, x) => s + x.g.ratio, 0) / past.length : null;
+    const assets = used.filter(u => u.r.asset && u.r.v === 'split' && (org.unit === 'entity' || (u.f.reg_no || 'noreg') === k)); const aTax = assets.reduce((s, u) => s + u.r.tax, 0);
+    const lines: string[] = [];
+    if (cur) {
+      const tot = cur.taxable + cur.exempt; const one = cur.oneoff ?? 0; const exWithout = Math.max(0, cur.exempt - one); const rWithout = cur.taxable + exWithout ? exWithout / (cur.taxable + exWithout) : 0;
+      if (one > 0) lines.push(`<li>이 기간 면세 공급가액 ${fmt(cur.exempt)}원 가운데 <b>일회성 면세 공급(토지 매각 등) ${fmt(one)}</b>원 — 법대로 넣어 비율 ${pct(cur.ratio)}로 안분하되, 이 금액이 없었다면 ${pct(rWithout)}입니다(참고). ${tot ? '' : ''}</li>`);
+      if (avg !== null) lines.push(`<li>지난 신고 ${past.length}기의 평균 면세비율 <b>${pct(avg)}</b> ↔ 이번 ${pct(cur.ratio)}(${cur.ratio - avg >= 0 ? '+' : '−'}${pct(Math.abs(cur.ratio - avg))}p${Math.abs(cur.ratio - avg) >= pp ? ' — 재계산 기준 5%p 이상, 지난 기 취득 공통 자산은 재계산 대상' : ''}).</li>`);
+      if (assets.length) { const hot = (avg !== null && cur.ratio - avg >= pp) || one > 0;
+        lines.push(`<li class="${hot ? 'warn' : ''}"><b>이 기간 취득한 공통 감가상각자산 ${assets.length}건, 세액 ${fmt(aTax)}원</b>은 이번 비율 ${pct(cur.ratio)}로 안분돼 면세분 ${fmt(Math.floor(aTax * cur.ratio))}원이 빠지고, 뒤 과세기간 비율 차이가 ${pct(pp)}p 미만이면 그대로 남습니다(시행령 제83조 제1항).${hot ? ` 이번 비율이 평소보다 높은 기간이라(일회성 면세 공급·평균 대비 ${pct(pp)}p 이상) 아직 집행 전인 공통 자산이 있으면 집행 시기를 과세기간 단위로 검토할 자리입니다.` : ''}</li>`); }
+      else lines.push(`<li>이 기간 취득한 공통 감가상각자산은 없습니다. 공통 자산(건물 공사·장비)은 <b>취득 과세기간의 면세비율</b>로 안분되고 ${pct(pp)}p 안의 변동은 재계산되지 않으므로, 면세 공급이 몰리는 과세기간(토지 매각·면세 보조금 수령)과 겹치지 않게 집행 일정을 봅니다.</li>`);
+    }
+    blocks.push(`<div class="vc-card"><h4>${esc(groupName(k))} — 과세기간별 면세비율</h4>${tbl('과세기간별 면세비율(저장된 신고 기록 + 이번 계산)', ['과세기간', '과세 공급가액', '면세 공급가액', '그중 일회성(토지 매각 등)', '면세비율', '공통매입세액', '면세분(54)'], rows.map(x => `<tr class="${x.now ? 'total' : ''}"><th scope="row">${x.period}${x.now ? ' (이번)' : ''}</th><td>${fmt(x.g.taxable)}</td><td>${fmt(x.g.exempt)}</td><td>${x.g.oneoff ? fmt(x.g.oneoff) : ''}</td><td>${pct(x.g.ratio)}</td><td>${fmt(x.g.common_tax)}</td><td>${fmt(x.g.nondeduct)}</td></tr>`).join(''))}${lines.length ? `<ul class="meta-list">${lines.join('')}</ul>` : ''}</div>`);
+  }
+  if (!blocks.length) blocks.push('<p class="meta">면세 공급가액이 있는 등록 단위가 없어 비율 표를 만들지 않았습니다(면세 수입이 없으면 공통매입세액은 전액 공제).</p>');
+  return `<h3>면세비율 관리 — 공통을 전용으로 입증하는 법, 비율을 튀게 하는 것, 취득 시기</h3>
+    <p class="meta">공통매입세액 면세분은 '면세비율 × 공통'이므로, 공통을 줄이려면 <b>실지귀속을 서류로 입증</b>해야 하고 비율은 <b>면세 공급가액 구성</b>과 <b>취득 시기</b>가 정합니다. 운영 구조(직영·위탁)를 바꾸지 않아도 움직일 수 있는 것만 적었습니다.</p>
+    ${tbl('실지귀속 입증 방법 — 전용(초록)으로 적으려면 이 가운데 하나가 남아야(시행령 제81조 제1항)', ['방법', '무엇을 남기나'], RM.proof.map(x => `<tr><th scope="row">${esc(x.name)}</th><td>${esc(x.text)}</td></tr>`).join(''))}
+    ${blocks.join('')}
+    <details class="vat-more"><summary><strong>면세 공급가액에 들어가 비율을 올리는 것</strong></summary><ul class="meta-list">${RM.exempt_supply.map(t => `<li>${esc(t)}</li>`).join('')}<li>${esc(RM.timing)}</li></ul><p class="meta">근거: ${RM.basis.map(b => lawLink(D, b)).join(' · ')}</p></details>`;
 }

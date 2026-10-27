@@ -1,0 +1,24 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import '../../../styles/vat.css';
+/** /vat/schedule/ — 환급·기한 일정표(세무회계법인 관점 검토 2026-10-27, 5번): 신고기한·환급 예정·조기환급·수정세금계산서·경정청구·재계산 확인·인계표 마감을 한 표로. 이 브라우저 기록만, 서버 없음 */
+---
+<Base title="부가세 환급·기한 일정표" description="지자체 부가가치세 신고·납부 기한, 환급 예정일, 조기환급 신고기한, 수정세금계산서 기한, 경정청구 기한, 공통 자산 재계산 확인을 한 달력으로 보입니다. 이 브라우저의 설정·기록으로만 계산." current="vat" crumb={[{ name: '지자체 부가세 절감 점검기', href: '/vat/' }]}>
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/build/">신축·조기환급</a> · <a href="/vat/review/">지난 신고 점검</a></p>
+  <div class="section-head"><h1>환급·기한 일정표 — 언제 받고, 언제까지 내나</h1><span class="meta" id="sc-sum"></span></div>
+  <p class="lede">돌려받는 돈은 <strong>언제 받느냐</strong>도 금액입니다. 신고·납부 기한, 환급 예정 상한(확정 30일·설비 투자 15일), 신축 사업의 조기환급 신고기한, 다른 명의 세금계산서의 수정 발급 기한, 지난 과세기간의 경정청구 기한(5년), 공통 자산 재계산 확인을 날짜순으로 모았습니다.</p>
+  <div class="actions no-print"><label class="choices"><span><input type="checkbox" id="sc-past" /> 지난 것도 보기</span></label><button type="button" class="btn secondary" id="sc-csv">CSV</button><button type="button" class="btn secondary" id="sc-print">인쇄</button></div>
+  <div id="sc-list" aria-live="polite"></div>
+  <details class="vat-more"><summary>날짜의 근거</summary>
+    <ul class="meta-list">
+      <li>신고·납부 기한: 예정 4월 25일·10월 25일, 확정 7월 25일·다음 해 1월 25일(법 제48조·제49조).</li>
+      <li>환급: 확정신고기한 뒤 30일 안(법 제59조 제1항), 영세율·사업 설비 투자·재무구조개선은 15일 안(같은 항 괄호·시행령 제107조 제1항). 조기환급기간(매월·매 2월) 신고는 신고기한(기간 끝 +25일) 뒤 15일 안(제107조 제4항).</li>
+      <li>수정세금계산서: 착오 외 사유는 확정신고기한 다음 날부터 1년 안(시행령 제70조 제1항 제6호) — 지출 기록의 '다른 명의' 빨강 행.</li>
+      <li>경정청구: 법정신고기한이 지난 뒤 5년 안(국세기본법 제45조의2 제1항).</li>
+      <li>재계산 확인: 확정신고 때 지난 과세기간에 취득한 공통 감가상각자산의 면세비율이 5%p 이상 달라졌는지(시행령 제83조).</li>
+    </ul>
+  </details>
+  <VatData />
+  <script>import '../../../scripts/vat_schedule';</script>
+</Base>

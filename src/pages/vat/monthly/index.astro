@@ -33,6 +33,7 @@ import '../../../styles/vat.css';
     <div class="q full" id="m-vat-q" hidden><span class="q-title">②-1 전표에 부가세(세액) 금액이 따로 적혀 있나요</span><div class="choices"><label><input type="radio" name="m-vatsep" value="1" checked /> 네, 따로 적혀 있다</label><label><input type="radio" name="m-vatsep" value="0" /> 아니요 · 모름</label></div></div>
     <div class="q full"><span class="q-title">③ 이 돈은 어디에 쓰였나요</span><div class="choices" id="m-use"></div></div>
     <div class="q full"><span class="q-title">④ 무엇을 샀나요</span><div class="choices" id="m-what"></div></div>
+    <div class="q full" id="m-evid-q"><span class="q-title">⑤ '이 시설만' 썼다는 근거가 무엇인가요</span><div class="choices" id="m-evid"></div><span class="note">과세·면세를 함께 하는 기관은 전용 지출의 실지귀속을 서류로 입증해야 안분을 피합니다(시행령 제81조 제1항). '아직 없음'이면 신고 준비의 '처리할 것'에 올라옵니다.</span></div>
     <div class="q full" id="m-asset-q" hidden><label class="choices"><span><input type="checkbox" id="m-asset" /> 건물 공사·장비처럼 <strong>여러 해 쓰는 것</strong>입니다(500만 원 넘는 수선·설비 등)</span></label></div>
     <div class="q full"><label class="choices"><span><input type="checkbox" id="m-late" /> 지난 과세기간(6개월 전 이전) 지출인데 영수증을 이제 받았다</span></label><label class="choices"><span><input type="checkbox" id="m-subsidy" /> 국비·시비 <strong>보조금</strong>으로 집행한 지출이다(보조금이라서 공제가 안 되는 것은 아닙니다 — 표시만 남깁니다)</span></label></div>
     <div class="actions"><button type="submit" class="btn">판정하고 기록에 넣기</button><button type="reset" class="btn secondary">비우기</button></div>
@@ -45,18 +46,21 @@ import '../../../styles/vat.css';
       <label class="full">붙여넣기 <textarea id="mb-text" rows="6" placeholder="작성일자	공급자상호	품목	공급가액	세액	공급받는자등록번호&#10;2026-10-02	○○전력	전기요금	1,500,000	150,000	555-83-00001" style="min-height:8em;padding:8px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--bg);color:var(--ink);font:inherit"></textarea></label>
       <div class="q full"><span class="q-title">이 목록의 영수증 종류</span><div class="choices"><label><input type="radio" name="mb-proof" value="e_invoice" checked /> 전자세금계산서 목록</label><label><input type="radio" name="mb-proof" value="card" /> 신용카드 이용내역</label><label><input type="radio" name="mb-proof" value="cash" /> 현금영수증 내역</label></div></div>
       <div class="q full" id="mb-payee-q"><span class="q-title">받는 사람(공급받는 자)이 우리 기관인가요 — 등록번호 열이 있으면 자동으로 견줍니다</span><div class="choices"><label><input type="radio" name="mb-payee" value="org" checked /> 모두 우리 기관</label><label><input type="radio" name="mb-payee" value="contractor" /> 모두 공단·수탁기관 명의</label><label><input type="radio" name="mb-payee" value="unknown" /> 모름(노랑으로)</label></div></div>
+      <div class="q full" id="mb-evid-q"><span class="q-title">'이 시설만' 쓴 지출의 근거(기본값 — 행마다 바꿀 수 있음)</span><div class="choices"><label><input type="radio" name="mb-evid" value="contract" checked /> 계약·발주서에 시설이 적혀 있다</label><label><input type="radio" name="mb-evid" value="meter" /> 시설별 계량기·검침</label><label><input type="radio" name="mb-evid" value="inspection" /> 검수 조서·작업 일지</label><label><input type="radio" name="mb-evid" value="none" /> 아직 없음</label></div></div>
       <div class="q full" id="mb-vat-q" hidden><span class="q-title">카드 전표에 부가세가 따로 적혀 있나요</span><div class="choices"><label><input type="radio" name="mb-vatsep" value="1" checked /> 네(세액 열이 있음)</label><label><input type="radio" name="mb-vatsep" value="0" /> 아니요·모름</label></div></div>
       <div class="actions"><button type="submit" class="btn secondary">열 읽기</button></div>
     </form>
+    <p class="meta">붙여넣은 표에 <strong>사업명(세부사업·예산과목)이나 부서 열</strong>이 있으면 그 글자로 시설을 자동으로 고릅니다 — 처음엔 행마다 시설을 고르고, 그 선택을 <strong>매핑표</strong>로 기억해 다음 달부터 자동으로 채웁니다(e호조 지출 목록을 그대로 붙여넣는 길).</p>
     <div id="mb-map"></div>
     <div id="mb-preview"></div>
+    <details class="vat-more" id="mb-rules-wrap"><summary><strong>사업·부서 → 시설 매핑표</strong> <span id="mb-rules-n" class="note"></span></summary><p class="meta">기관 설정(org.json)에 함께 저장되고 인수인계 꾸러미에 들어갑니다. 틀린 줄은 지우면 다음 붙여넣기 때 다시 고릅니다.</p><div id="mb-rules"></div></details>
   </details>
 
   <section id="m-list" hidden>
     <div class="section-head"><h2 id="m-list-title">이 달 기록</h2><span class="meta" id="m-sum"></span></div>
     <div class="scroll-x"><table class="data-table vat-table" id="m-table" data-stack="off">
       <caption id="m-caption">매입 인계표</caption>
-      <thead><tr><th scope="col">날짜</th><th scope="col">내용</th><th scope="col">공급가액</th><th scope="col">부가세</th><th scope="col">영수증</th><th scope="col">받는 사람</th><th scope="col">어디에</th><th scope="col">무엇</th><th scope="col">신호</th><th scope="col">지금 할 일</th><th scope="col">근거</th><th scope="col" class="no-print">처리</th></tr></thead>
+      <thead><tr><th scope="col">날짜</th><th scope="col">내용</th><th scope="col">공급가액</th><th scope="col">부가세</th><th scope="col">영수증</th><th scope="col">받는 사람</th><th scope="col">어디에</th><th scope="col">무엇</th><th scope="col">근거·사업</th><th scope="col">신호</th><th scope="col">지금 할 일</th><th scope="col">근거</th><th scope="col" class="no-print">처리</th></tr></thead>
       <tbody></tbody></table></div>
     <div class="actions no-print"><button type="button" class="btn" id="m-csv">매입 인계표 CSV 내려받기</button><button type="button" class="btn secondary" id="m-json">인계 파일(JSON) 내려받기</button><button type="button" class="btn secondary" id="m-print">인쇄</button><button type="button" class="link-btn" id="m-clear">이 달 기록 지우기</button></div>
     <p class="meta">표 아래 「한글 표 복사」로 공문에 바로 붙일 수 있습니다. 빨강·노랑이 남아 있으면 '지금 할 일'을 먼저 처리하고(수정세금계산서 요청 등) 처리 칸에 표시하세요. 인계표는 신고 담당이 신고서 칸으로 옮깁니다(참고용 판정, 신고 책임은 신고인).</p>

@@ -82,7 +82,7 @@ const B = (law: string, art: string): Basis => ({ law, art });
 export type Run = 'direct' | 'entrusted_org' | 'entrusted_own' | 'unknown';
 export const RUN_NAME: Record<Run, string> = { direct: '우리 기관이 직접 운영', entrusted_org: '위탁 — 우리 기관 명의 사업(수탁기관은 대행)', entrusted_own: '위탁 — 수탁기관 자기 사업(수탁기관이 신고)', unknown: '확인 필요 — 위·수탁 계약으로 정하세요' };
 export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string };
-export type Preset = { key: string; org: string; read: string; note: string; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; note?: string }[] };
+export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; note?: string }[] };
 export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string };
 export type ProofQ = 'e_invoice' | 'p_invoice' | 'card' | 'cash' | 'bill' | 'none';
 export type PayeeQ = 'org' | 'contractor' | 'person' | 'unknown';

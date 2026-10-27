@@ -1,5 +1,5 @@
 /** /vat/setup/ 기관 설정 마법사(신고 담당). 5문항 → org.json + 시설 카드. localStorage 저장, 서버 없음, 개인정보 없음. */
-import { $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, STATUS_WORD, RUN_NAME, uid, ymd, type Data, type Org, type OrgFacility, type Run } from './vat_rules';
+import { $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, uid, ymd, type Data, type Org, type OrgFacility, type Run } from './vat_rules';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
@@ -21,10 +21,19 @@ function init(D: Data) {
   const read2 = () => {
     const types = [...document.querySelectorAll<HTMLInputElement>('input[name=st-type]:checked')].map(c => c.value);
     for (const t of types) if (!org.facilities.some(f => f.type === t)) org.facilities.push({ id: uid(), type: t, name: facilityRule(D, { type: t } as OrgFacility)?.name.split('(')[0].trim() ?? t, run: 'direct', income: ['card'], deposit: false });
-    org.facilities = org.facilities.filter(f => f.type === 'other' || types.includes(f.type));
+    org.facilities = org.facilities.filter(f => f.type === 'other' || f.note || types.includes(f.type));
     const others = ($<HTMLInputElement>('st-other')!).value.split(',').map(s => s.trim()).filter(Boolean);
     for (const o of others) if (!org.facilities.some(f => f.type === 'other' && f.name === o)) org.facilities.push({ id: uid(), type: 'other', name: o, run: 'direct', income: ['card'], deposit: false });
   };
+  /* 예시 불러오기(공개 조례로 만든 시설 목록, 운영 방식은 '확인 필요') */
+  document.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach(b => b.addEventListener('click', () => {
+    const p = (D.presets ?? []).find(x => x.key === b.dataset.preset); if (!p) return;
+    if (org.facilities.length && !confirm(`지금 시설 ${org.facilities.length}곳을 지우고 ${p.org} 예시 ${p.facilities.length}곳으로 바꿉니다.`)) return;
+    read1(); if (!org.org) { org.org = p.org; ($<HTMLInputElement>('st-org')!).value = p.org; }
+    org.facilities = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, run: 'unknown' as Run, income: ['card'], deposit: false, note: f.note }));
+    document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
+    save(); show(3);
+  }));
   /* 3단계 */
   const facBox = $('st-fac')!;
   function renderFac() {
@@ -40,7 +49,7 @@ function init(D: Data) {
         <label><input type="checkbox" data-inc="card" ${f.income.includes('card') ? 'checked' : ''}/> 카드·현금영수증(개인 손님)</label>
         <label><input type="checkbox" data-k="deposit" ${f.deposit ? 'checked' : ''}/> 임대 보증금을 받는다</label></div></div>
       <div class="actions"><button type="button" class="link-btn" data-dup>같은 유형 하나 더</button><button type="button" class="link-btn" data-del>이 시설 빼기</button></div>
-      ${r?.note ? `<p class="note full">${esc(r.note)}</p>` : ''}</div>`; }).join('');
+      ${f.note ? `<p class="note full">예시 출처 메모: ${esc(f.note)}</p>` : ''}${r?.note ? `<p class="note full">${esc(r.note)}</p>` : ''}</div>`; }).join('');
     facBox.querySelectorAll<HTMLButtonElement>('[data-dup]').forEach(b => b.addEventListener('click', () => { read3(); const f = org.facilities.find(x => x.id === b.closest<HTMLElement>('[data-fid]')!.dataset.fid)!; org.facilities.splice(org.facilities.indexOf(f) + 1, 0, { ...f, id: uid(), name: f.name + ' 2', reg_no: '' }); renderFac(); }));
     facBox.querySelectorAll<HTMLButtonElement>('[data-del]').forEach(b => b.addEventListener('click', () => { read3(); org.facilities = org.facilities.filter(x => x.id !== b.closest<HTMLElement>('[data-fid]')!.dataset.fid); renderFac(); }));
   }
@@ -49,7 +58,7 @@ function init(D: Data) {
 
   /* 5단계 */
   function renderResult() {
-    const rows = org.facilities.map(f => { const st = facilityStatus(D, f); return `<tr><th scope="row">${esc(f.name)}</th><td><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : st === 'own' ? '수탁기관 신고' : '확인 필요'}</span></td><td>${esc(RUN_NAME[f.run])}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}</td><td>${esc(org.unit === 'entity' ? (org.reg_no || '—') : (f.reg_no || '—'))}</td><td>${f.income.map(i => i === 'invoice' ? '세금계산서' : '카드·현금영수증').join('·')}${f.deposit ? ' · 보증금' : ''}</td></tr>`; }).join('');
+    const rows = org.facilities.map(f => { const st = facilityStatus(D, f); return `<tr><th scope="row">${esc(f.name)}</th><td><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : st === 'own' ? '수탁기관 신고' : '확인 필요'}</span></td><td>${f.run === 'unknown' ? '<span class="verdict check">운영 방식 확인</span> ' : ''}${esc(RUN_NAME[f.run])}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}</td><td>${esc(org.unit === 'entity' ? (org.reg_no || '—') : (f.reg_no || '—'))}</td><td>${f.income.map(i => i === 'invoice' ? '세금계산서' : '카드·현금영수증').join('·')}${f.deposit ? ' · 보증금' : ''}</td></tr>`; }).join('');
     $('st-summary')!.innerHTML = `<p><strong>${esc(org.org || '(기관 이름 없음)')}</strong> · ${esc(org.dept || '부서 없음')} · ${org.unit === 'entity' ? '사업자 단위 과세' : '사업장별 등록'} · 인계표 매달 ${org.handover_day}일까지 · 저장 ${org.created}</p>
       <div class="scroll-x"><table class="data-table vat-table" data-stack="off"><caption>${esc(org.org)} 과세사업 시설 설정</caption><thead><tr><th scope="col">시설</th><th scope="col">부가세</th><th scope="col">운영</th><th scope="col">세금계산서 받을 번호</th><th scope="col">수입 종류</th></tr></thead><tbody>${rows || '<tr><td colspan="5">시설 없음</td></tr>'}</tbody></table></div>`;
     $('cards')!.innerHTML = org.facilities.map(f => card(f)).join('');
@@ -62,7 +71,7 @@ function init(D: Data) {
       : `과세인지 면세인지 법령 글자로 정해지지 않아 <strong>${esc(org.dept || '신고 담당 부서')}</strong>가 유권해석으로 정합니다. 정해질 때까지 영수증은 ${esc(org.org)} 이름으로 받고 기록은 계속합니다.`;
     return `<article class="fcard"><h3>${esc(f.name)} <span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : st === 'own' ? '수탁기관 신고' : '확인 필요'}</span></h3>
       <dl class="kv"><dt>기관</dt><dd>${esc(org.org)} · ${esc(org.dept || '')}</dd><dt>운영</dt><dd>${esc(RUN_NAME[f.run])}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}</dd><dt>시설 유형</dt><dd>${esc(r?.name ?? '직접 추가')} — ${esc(r?.group ?? '')}</dd><dt>등록번호</dt><dd>${esc(reg || '—')}</dd></dl>
-      <p>${what}</p>
+      <p>${what}</p>${f.run === 'unknown' ? '<p class="callout warn">운영 방식이 아직 정해지지 않았습니다. 위·수탁 계약서로 "우리 기관 명의 사업(대행)"인지 "수탁기관 자기 사업"인지 확인해 기관 설정에서 고르세요. 수탁기관 자기 사업이면 이 카드의 매입세액 안내는 적용되지 않습니다.</p>' : ''}
       ${st !== 'own' ? `<h4>매달 할 일</h4><ol>
         <li>영수증마다 <strong>어느 시설에 쓴 돈인지</strong> 적어 둡니다(이 시설만 / 여러 시설 / 사무실과 함께).</li>
         <li>세금계산서의 <strong>공급받는 자</strong>가 ${esc(org.org)} 등록번호인지 봅니다. 공단·개인 이름이면 그 자리에서 수정 요청.</li>

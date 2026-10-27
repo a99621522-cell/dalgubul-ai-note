@@ -17,6 +17,7 @@ export type Data = {
     filing: { periods: { name: string; span: string; due: string }[]; notes: string[] } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
+  presets?: Preset[];
 };
 export type Verdict = 'ok' | 'split' | 'no' | 'none' | 'check';
 export const LABEL: Record<Verdict, string> = { ok: '공제', split: '안분 뒤 공제(공통)', no: '불공제', none: '매입세액 없음', check: '확인 필요' };
@@ -78,9 +79,10 @@ const B = (law: string, art: string): Basis => ({ law, art });
 }
 
 /* ---------- v2: 기관 설정(org.json) · 시설 기록 · 인계표 ---------- */
-export type Run = 'direct' | 'entrusted_org' | 'entrusted_own';
-export const RUN_NAME: Record<Run, string> = { direct: '우리 기관이 직접 운영', entrusted_org: '위탁 — 우리 기관 명의 사업(수탁기관은 대행)', entrusted_own: '위탁 — 수탁기관 자기 사업(수탁기관이 신고)' };
-export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean };
+export type Run = 'direct' | 'entrusted_org' | 'entrusted_own' | 'unknown';
+export const RUN_NAME: Record<Run, string> = { direct: '우리 기관이 직접 운영', entrusted_org: '위탁 — 우리 기관 명의 사업(수탁기관은 대행)', entrusted_own: '위탁 — 수탁기관 자기 사업(수탁기관이 신고)', unknown: '확인 필요 — 위·수탁 계약으로 정하세요' };
+export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string };
+export type Preset = { key: string; org: string; read: string; note: string; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; note?: string }[] };
 export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string };
 export type ProofQ = 'e_invoice' | 'p_invoice' | 'card' | 'cash' | 'bill' | 'none';
 export type PayeeQ = 'org' | 'contractor' | 'person' | 'unknown';
@@ -122,7 +124,7 @@ export function toInput(D: Data, org: Org, f: OrgFacility, q: { proof: ProofQ; p
   const hasOther = org.facilities.some(x => x.id !== f.id && facilityStatus(D, x) !== 'taxable');
   const use = q.use === 'this' ? (st === 'taxable' ? 'taxable' : st === 'exempt' ? 'exempt' : 'unknown') : q.use === 'multi' ? (hasOther ? 'common' : 'taxable') : q.use === 'admin' ? 'common' : 'unknown';
   const kind = ({ utility: 'general', service: 'general', repair: q.asset ? 'building' : 'general', equip: q.asset ? 'equip' : 'general', car_pass: 'car', car_other: q.asset ? 'equip' : 'general', guest: 'entertain', staff: 'welfare', payroll_tax: 'payroll', insurance: 'insurance', land: 'land', water: 'exempt_goods', other: 'general' } as Record<string, string>)[q.what] ?? 'general';
-  const note = st === 'check' && q.use === 'this' ? '이 시설 유형은 과세인지 면세인지 유권해석·분류로 정해야 합니다(기관 설정의 "확인 필요"). 신고 담당 부서가 정하면 다시 판정됩니다.' : undefined;
+  const notes = [st === 'check' && q.use === 'this' ? '이 시설 유형은 과세인지 면세인지 유권해석·분류로 정해야 합니다(기관 설정의 "확인 필요"). 신고 담당 부서가 정하면 다시 판정됩니다.' : '', f.run === 'unknown' ? '이 시설의 운영 방식(우리 기관 명의 대행인지 수탁기관 자기 사업인지)이 아직 정해지지 않았습니다. 수탁기관 자기 사업이면 이 매입세액은 우리 것이 아닙니다 — 기관 설정에서 위·수탁 계약대로 고르세요.' : ''].filter(Boolean); const note = notes.length ? notes.join(' ') : undefined;
   return { input: { use, kind, proof, supplier, timing: q.late ? 'late' : 'now' }, note };
 }
 

@@ -7,6 +7,7 @@ export type Opt = { key: string; name: string };
 export type NonDed = { key: string; no: string; name: string; fix: string; basis: Basis[] };
 export type Skip = { key: string; name: string; cond: string; ratio_lt?: number; amount_lt?: number };
 export type CheckItem = { stage: string; id: string; text: string; basis: Basis[] };
+export type Preset = { key: string; org: string; read: string; note: string; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; note?: string }[] };
 export type VatRules = {
   version: string; verified?: { date: string; act: string; decree: string; rule: string }; law_url: string; laws: Record<string, string>;
   taxable_principle: { summary: string; basis: Basis[]; notes: string[] };
@@ -36,4 +37,9 @@ export function vatRules(): VatRules | null {
 /** 국가법령정보센터 조문 링크: https://www.law.go.kr/법령/부가가치세법/제39조 */
 export const lawUrl = (r: VatRules, b: Basis) => r.law_url.replace('{law}', r.laws[b.law]).replace('{art}', b.art);
 export const lawName = (r: VatRules, b: Basis) => ({ act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법' } as Record<string, string>)[b.law] + ' ' + b.art;
+/** 예시 설정(data/vat/presets/*.yml — 공개 자치법규로 만든 시설 목록, 운영 방식·등록번호 없음) */
+export function vatPresets(): Preset[] {
+  const dir = 'data/vat/presets'; if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir).filter(f => f.endsWith('.yml')).sort().map(f => yaml.load(fs.readFileSync(`${dir}/${f}`, 'utf-8')) as Preset);
+}
 export const STATUS_LABEL: Record<Facility['status'], string> = { taxable: '과세', exempt: '면세', check: '확인 필요' };

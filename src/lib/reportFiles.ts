@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'isu-petasys-ai-mlb', summary: '대구 달성군 유가증권 상장사 이수페타시스가 서버용 고다층 기판(MLB)에서 AI 가속기·800G 스위치용 다중적층 기판으로 넓히고 대구 5·6공장과 달성2차 공장으로 증설하는 흐름을 DART 공시(2025 사업보고서, 2026 1분기·반기보고서)와 키움증권 기업브리프(2026-10-12)·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '반도체', '인공지능'],
+    title: '이수페타시스, 고다층 기판(MLB) → AI 가속기·800G 스위치용 다중적층 기판', name: '이수페타시스, 고다층 기판(MLB) → AI 가속기·800G 스위치용 다중적층 기판',
+    hwpx: '/hwpx/isu-petasys-ai-mlb.hwpx', hwpxSize: '143KB', date: '2026-10-27' },
   { slug: 'guyoung-tech-ev-us', summary: '대구 달성군(대구국가산단) 코스닥 상장사 구영테크가 시트·브라켓 등 차체 프레스 부품에서 전기차 배터리 상부 하우징(구지2공장)과 미국 생산(카테크 인수, 앨라배마)으로 넓히는 흐름을 DART 공시(2025 사업보고서, 2026 1분기·반기보고서)와 보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '미래차', '자동차부품'],
     title: '구영테크, 차체 프레스 부품 → 전기차 배터리 하우징·미국 생산 확대', name: '구영테크, 차체 프레스 부품 → 전기차 배터리 하우징·미국 생산 확대',
     hwpx: '/hwpx/guyoung-tech-ev-us.hwpx', hwpxSize: '119KB', date: '2026-10-27' },

@@ -76,3 +76,8 @@
   body.print-cards main > *:not(#cards) { display: none !important; }
   body.print-cards #cards { display: block !important; }
 }
+/* 서식 모양 결과(별지 서식 칸 배치) */
+.vat-table.form tr.sec th { background: var(--surface); font-weight: 700; text-align: left; padding-top: 10px; }
+.vat-table.form tr.total th, .vat-table.form tr.total td { font-weight: 700; background: var(--surface); }
+.vat-table.form td:first-child { white-space: nowrap; color: var(--muted); }
+.vat-table.form td:nth-child(3), .vat-table.form td:nth-child(4) { text-align: right; font-variant-numeric: tabular-nums; }

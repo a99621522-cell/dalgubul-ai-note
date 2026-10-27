@@ -90,7 +90,7 @@ export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; re
 export type ProofQ = 'e_invoice' | 'p_invoice' | 'card' | 'cash' | 'bill' | 'none';
 export type PayeeQ = 'org' | 'contractor' | 'person' | 'unknown';
 export type UseQ = 'this' | 'multi' | 'admin' | 'unknown';
-export type LedgerRow = { id: string; d: string; desc: string; amt: number; tax: number; proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean; subsidy?: boolean; fix_due?: string; v: Verdict; title: string; todo: string; basis: string; done: boolean };
+export type LedgerRow = { id: string; d: string; desc: string; amt: number; tax: number; proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean; subsidy?: boolean; fix_due?: string; sup?: string; sreg?: string; v: Verdict; title: string; todo: string; basis: string; done: boolean };
 export const PROOF_Q: Opt[] = [
   { key: 'e_invoice', name: '전자세금계산서(홈택스·메일로 온 것)' }, { key: 'p_invoice', name: '종이 세금계산서' },
   { key: 'card', name: '신용카드 전표(법인·클린카드)' }, { key: 'cash', name: '현금영수증(사업자 지출증빙)' },
@@ -183,7 +183,7 @@ export const CELLS: { no: string; name: string; group: string }[] = [
 export type Filing = { v: 1; org: string; period: PeriodKey; saved: string; cells: Record<string, { amt: number; tax: number }>; row_ids: string[];
   groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string; basis?: string }[];
   assets: { id: string; facility: string; desc: string; period: PeriodKey; tax: number; kind: 'building' | 'other'; common: boolean; ratio0: number; group: string }[];
-  sales: Record<string, { c1: number; c3: number; c4: number }> };
+  sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }> };
 export const FILINGS_KEY = 'vat-filings-v1';
 export const getFilings = (): Record<PeriodKey, Filing> => lsGet<Record<PeriodKey, Filing>>(FILINGS_KEY) ?? {};
 export const saveFiling = (f: Filing) => { const a = getFilings(); a[f.period] = f; lsSet(FILINGS_KEY, a); };

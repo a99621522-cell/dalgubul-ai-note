@@ -147,6 +147,21 @@ def discover(g: dict) -> None:
                 print(f"   {t[:40]} | {full[:180]}")
                 if depth == 0 and urlparse(full).netloc == host and not re.search(r"\.(pdf|hwpx?|xlsx?|zip)$|download|atch", full, re.I) and re.search(r"예산서|세입|명세|20\d\d년", t):
                     queue.append((full, 1))
+        if g.get("dump") and depth == 0:
+            # 링크가 스크립트로 그려지는 누리집(서구·동구·달서구): iframe·form·스크립트·onclick 과 '예산서' 둘레 글자를 보여 다음 조사 주소를 고른다
+            for tag, attr in (("iframe", "src"), ("form", "action"), ("script", "src")):
+                for v in re.findall(rf'<{tag}[^>]+{attr}=["\']([^"\']+)', html, re.I):
+                    if tag != "script" or re.search(r"budget|yesan|예산|fin|cms", v, re.I):
+                        print(f"   [{tag}] {urljoin(url, v)[:200]}")
+            for v in dict.fromkeys(re.findall(r'(?:onclick|data-url|data-href|data-file)=["\']([^"\']{6,200})', html, re.I)):
+                if re.search(r"budget|yesan|file|down|pdf|hwp|예산|view|list|go", v, re.I):
+                    print(f"   [onclick] {v[:200]}")
+            text = re.sub(r"<script.*?</script>|<style.*?</style>", " ", html, flags=re.S | re.I)
+            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", text))
+            for i, m in enumerate(re.finditer(r"사업명세서|세입예산서|세입세출예산서|본예산", text)):
+                if i >= 8:
+                    break
+                print(f"   [글자] …{text[max(0, m.start() - 160):m.end() + 160]}…")
         extra = 0
         for f in dict.fromkeys(files):
             full = urljoin(url, f)

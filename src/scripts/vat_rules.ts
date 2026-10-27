@@ -1,0 +1,145 @@
+/**
+ * 지자체 부가가치세 점검기 — 공용 규칙·도구 모듈 (운영자 지시 2026-10-27, v2 1단계)
+ * data/vat/rules.yml 을 페이지가 JSON(#vat-data, VatData.astro)으로 묻어 주면 여기서 읽는다.
+ * judge(): 지출 한 건 판정(공제·안분·불공제·세액 없음·확인) — /vat/tools/ 판정기와 /vat/monthly/ 시설 기록이 같은 규칙을 쓴다.
+ * 그 아래는 v2 의 기관 설정(org.json)·시설 월간 기록(ledger)·인계표(CSV)·신고 마감 D-day 도구. 서버 없음, localStorage 와 파일만. 개인정보(이름·전화)는 담지 않는다.
+ */
+export type Basis = { law: string; art: string };
+export type Opt = { key: string; name: string };
+export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[] };
+export type Data = {
+  version: string; verified?: { date: string; act: string; decree: string; rule: string }; law_url: string; laws: Record<string, string>;
+  taxable_principle: { summary: string; basis: Basis[]; notes: string[] };
+  facilities: FacilityRule[];
+  rules: { nondeductible: { key: string; no: string; name: string; fix: string; basis: Basis[] }[]; card: { summary: string; not_allowed: string; verify?: boolean }; late_invoice: { summary: string; verify?: boolean };
+    common: { summary: string; formula: string; skip: { key: string; name: string; cond: string; ratio_lt?: number; amount_lt?: number }[]; no_supply: string; prelim: string };
+    recalc: { rates: { building: number; other: number }; threshold_pp: number };
+    filing: { periods: { name: string; span: string; due: string }[]; notes: string[] } };
+  inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
+  checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
+};
+export type Verdict = 'ok' | 'split' | 'no' | 'none' | 'check';
+export const LABEL: Record<Verdict, string> = { ok: '공제', split: '안분 뒤 공제(공통)', no: '불공제', none: '매입세액 없음', check: '확인 필요' };
+/** 시설 담당 화면의 신호등 이름(세법 용어 대신) */
+export const SIGNAL: Record<Verdict, string> = { ok: '초록 · 공제됩니다', split: '파랑 · 공통 — 신고 때 나눕니다', no: '빨강 · 공제 안 됩니다', none: '회색 · 부가세가 없는 지출', check: '노랑 · 확인이 필요합니다' };
+export type Input = { use: string; kind: string; proof: string; supplier: string; timing: string };
+export type Out = { v: Verdict; title: string; why: string[]; todo: string[]; basis: Basis[]; verify?: boolean; recalc?: boolean; split?: boolean };
+export const LAW: Record<string, string> = { act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법' };
+
+export const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
+export const num = (s: string | undefined | null) => { const v = Number(String(s ?? '').replace(/[^0-9.\-]/g, '')); return Number.isFinite(v) ? v : 0; };
+export const fmt = (n: number) => Math.round(n).toLocaleString('ko-KR');
+export const pct = (r: number) => (r * 100).toFixed(2).replace(/\.?0+$/, '') + '%';
+export const esc = (s: string) => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as Record<string, string>)[c]);
+
+export function loadData(): Data | null { const el = document.getElementById('vat-data'); if (!el) return null; try { return JSON.parse(el.textContent || '') as Data; } catch { return null; } }
+export const lawUrl = (D: Data, b: Basis) => D.law_url.replace('{law}', D.laws[b.law]).replace('{art}', b.art);
+export const lawText = (b: Basis) => `${LAW[b.law]} ${b.art}`;
+export const lawLink = (D: Data, b: Basis) => `<a href="${lawUrl(D, b)}" target="_blank" rel="noopener">${lawText(b)}</a>`;
+export function uniq(b: Basis[]) { const seen = new Set<string>(); return b.filter(x => { const k = x.law + x.art; if (seen.has(k)) return false; seen.add(k); return true; }); }
+export const optName = (D: Data, g: keyof Data['inputs'], k: string) => D.inputs[g].find(o => o.key === k)?.name ?? k;
+
+/* ---------- 지출 한 건 판정 (조문 번호·뜻만, 평가 아님) ---------- */
+export function judge(D: Data, i: Input): Out {
+const nd = (k: string) => D.rules.nondeductible.find(n => n.key === k)!;
+const B = (law: string, art: string): Basis => ({ law, art });
+  const why: string[] = [], todo: string[] = [], basis: Basis[] = []; let verify = false;
+  const done = (v: Verdict, title: string, extra: Partial<Out> = {}): Out => ({ v, title, why, todo, basis, verify, ...extra });
+  // 1. 부가가치세 거래가 아니거나 면세 거래 — 공제할 세액 자체가 없다
+  if (i.kind === 'payroll' || i.kind === 'tax') { why.push('급여·세금·공과금·과태료는 재화·용역의 공급이 아니어서 부가가치세가 붙지 않습니다.'); return done('none', '매입세액이 없는 지출'); }
+  if (i.kind === 'insurance' || i.kind === 'exempt_goods') { why.push('보험·금융 용역, 수돗물·도서·교육·의료 같은 면세 재화·용역에는 매입세액이 없습니다.'); basis.push(B('act', '제26조')); return done('none', '면세 거래 — 매입세액 없음'); }
+  if (i.proof === 'bill') { why.push('계산서는 면세 거래의 증빙이라 공제할 세액이 없습니다.'); todo.push('과세 거래인데 계산서를 받았다면 공급자에게 세금계산서로 다시 발급을 요청합니다.'); basis.push(B('act', '제26조'), B('act', '제38조')); return done('none', '계산서(면세 거래) — 매입세액 없음'); }
+  // 2. 증빙 요건
+  if (i.proof === 'receipt') { const n = nd('no_invoice'); why.push(`세금계산서(또는 요건을 갖춘 신용카드매출전표)를 받지 않은 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('공급자가 일반과세자면 공급받는 자를 우리 기관 사업자등록번호로 한 세금계산서를, 카드 결제면 부가가치세액이 따로 적힌 전표를 받습니다.'); basis.push(...n.basis); return done('no', '증빙 없음 — 불공제'); }
+  if (i.proof === 'tax_invoice_other') { const n = nd('no_invoice'); why.push(`공급받는 자가 우리 기관이 아닌 세금계산서는 '사실과 다른 세금계산서'로 공제하지 않습니다(${n.no}).`); todo.push('공급자에게 공급받는 자를 지자체(과세사업 등록번호)로 한 수정세금계산서를 요청합니다. 그 시설이 수탁기관 자기 사업이라면 그 기관의 매입세액이지 우리 것이 아닙니다 — 위·수탁 계약에서 사업자가 누구인지 확인합니다.'); basis.push(...n.basis, B('decree', '제75조')); return done('no', '다른 명의 세금계산서 — 불공제'); }
+  if (i.proof === 'card_novat') { why.push('부가가치세액이 따로 적히지 않은 전표, 세금계산서를 발급할 수 없는 간이과세자·면세사업자의 전표는 공제 요건을 갖추지 못합니다.'); todo.push('공급자가 일반과세자면 부가가치세액이 구분된 전표 재발급 또는 세금계산서를 요청합니다. 간이(발급 불가)·면세 공급자면 공제할 수 없습니다.'); basis.push(B('act', '제46조')); verify = !!D.rules.card.verify; return done('no', '요건 못 갖춘 카드 전표 — 불공제'); }
+  if (i.proof === 'card_vat') {
+    if (i.supplier === 'simple_no') { why.push('세금계산서를 발급할 수 없는 간이과세자·면세사업자의 카드 전표는 공제하지 못합니다.'); basis.push(B('act', '제46조')); return done('no', '영수증 발급 기간 간이과세자·면세 공급자 카드 전표 — 불공제'); }
+    if (i.supplier === 'unknown') { why.push('카드 전표로 공제하려면 공급자가 일반과세자(또는 세금계산서를 발급할 수 있는 간이과세자)여야 합니다.'); todo.push('홈택스 「사업자등록 상태 조회」로 공급자의 과세 유형을 확인한 뒤 다시 판정합니다.'); basis.push(B('act', '제46조')); return done('check', '공급자 과세 유형 확인 필요'); }
+    todo.push('신고 때 「신용카드매출전표등 수령명세서」에 적고 전표를 5년 보관합니다. 목욕·이발·미용업, 여객운송업(전세버스 제외), 입장권 발행 사업, 비급여 미용 진료, 무도·자동차운전학원의 전표는 공제하지 못합니다(시행령 제88조 제5항).'); basis.push(B('decree', '제88조')); basis.push(B('act', '제46조'), B('act', '제71조')); verify = !!D.rules.card.verify;
+  }
+  // 3. 종류로 불공제
+  if (i.kind === 'land') { const n = nd('land'); why.push(`토지 취득·조성·형질변경, 토지만 쓰려는 건물 철거비의 매입세액은 공제하지 않습니다(${n.no}, 시행령 제80조).`); todo.push('건물 신축·수선 몫이 섞여 있으면 계약·견적에서 토지 관련분과 나눠 적습니다 — 건물분은 공제 대상입니다.'); basis.push(...n.basis); return done('no', '토지 관련 매입세액 — 불공제'); }
+  if (i.kind === 'car') { const n = nd('car'); why.push(`8인승 이하 비영업용 승용차의 구입·임차·유지(유류·수리) 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('9인승 이상 승합차·화물차·경차·운수업 등 영업용이면 대상이 아니므로 차종을 확인합니다.'); basis.push(...n.basis); return done('no', '비영업용 승용차 — 불공제'); }
+  if (i.kind === 'entertain') { const n = nd('entertain'); why.push(`기업업무추진비(접대비)와 이와 유사한 비용의 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('직원 복리후생비·광고선전비는 여기 들지 않으므로 지출 성격을 서류에 적습니다.'); basis.push(...n.basis); return done('no', '접대·기념품 — 불공제'); }
+  // 4. 시기
+  if (i.timing === 'prereg') { const n = nd('pre_reg'); why.push(`사업자등록 신청 전의 매입세액은 공제하지 않습니다(${n.no}). 다만 공급시기가 속하는 과세기간이 끝난 뒤 20일 이내에 등록을 신청하면 그 과세기간 시작일까지의 매입세액은 공제됩니다.`); todo.push('등록 신청일과 공급시기가 속한 과세기간 종료일을 견주어 20일 이내인지 확인합니다. 새 과세사업은 시작 전에 등록(또는 업종 추가)합니다.'); basis.push(...n.basis); return done('check', '등록 전 매입세액 — 20일 요건 확인'); }
+  if (i.timing === 'late') { why.push(D.rules.late_invoice.summary); todo.push('공급시기가 속한 과세기간의 확정신고기한까지 받았으면 그대로 공제(시행령 제75조 제3호). 그 뒤 1년 안에 받았으면 수정신고·경정청구서와 함께 내야 공제(제7호). 1년이 지났으면 공제할 수 없습니다.'); basis.push(B('decree', '제75조')); verify = verify || !!D.rules.late_invoice.verify; }
+  // 5. 위탁수수료·복리후생 성격
+  if (i.kind === 'outsource') { why.push('수탁기관(지방공단 등)은 지자체가 아니므로 그 기관이 지자체에 공급하는 용역은 과세이고 세금계산서를 받습니다. 다만 실비를 전달·정산하는 돈이면 용역 공급이 아니어서 세금계산서 대상이 아닙니다.'); todo.push('위·수탁 계약서에서 대행 수수료(용역)와 사업비 실비 정산을 나눠 보고, 용역분은 아래 귀속(과세·면세·공통)에 따라 공제·안분합니다.'); basis.push(B('act', '제26조'), B('act', '제38조'), B('decree', '제75조')); if (i.use === 'unknown') return done('check', '위탁수수료 — 용역인지 실비 정산인지 확인'); }
+  if (i.kind === 'welfare') { why.push('직원 복리후생비는 접대비가 아니며 사업 관련 지출입니다. 그 직원이 어느 사업(과세·면세) 일을 하는지에 따라 귀속이 정해집니다.'); }
+  // 6. 귀속
+  const cap = i.kind === 'building' || i.kind === 'equip';
+  if (i.use === 'exempt') { const n = nd('exempt_use'); why.push(`면세사업·고유 행정사무에 쓰인 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('과세 시설과 함께 쓰인 지출이라면 "면세"가 아니라 "공통"으로 다시 판정합니다.'); basis.push(...n.basis); return done('no', '면세사업 관련 — 불공제'); }
+  if (i.use === 'taxable') { why.push('과세사업에만 쓰인 지출의 매입세액은 전액 공제합니다. 실지귀속이 분명하므로 안분하지 않습니다.'); todo.push('지출 원장·계약서에 어느 과세 시설인지 적어 실지귀속 근거를 남깁니다.'); if (cap) todo.push('감가상각자산은 뒤에 면세사업에도 쓰이게 되면 재계산 대상이 되므로 취득 과세기간·매입세액을 자산 대장에 적어 둡니다.'); basis.push(B('act', '제38조'), B('act', '제40조'), B('decree', '제81조')); return done('ok', '과세사업 실지귀속 — 전액 공제', { recalc: cap }); }
+  if (i.use === 'common') { why.push('과세·면세에 함께 쓰여 실지귀속을 가를 수 없는 공통매입세액은 총공급가액 중 면세공급가액 비율로 안분해 면세분을 뺍니다.'); todo.push('아래 「공통매입세액 안분 계산기」로 불공제분을 구합니다(면세비율 5% 미만·공통매입세액 500만 원 미만, 5만 원 미만이면 안분 생략). 예정신고 때 안분한 것은 확정신고 때 정산합니다.'); todo.push('계량기·계약을 시설별로 나눌 수 있으면 나눠 실지귀속으로 바꿉니다 — 과세 시설분은 전액 공제됩니다.'); if (cap) todo.push('감가상각자산은 뒤 과세기간 면세비율이 5%p 이상 바뀌면 납부세액을 재계산합니다(법 제41조, 시행령 제83조).'); basis.push(B('act', '제40조'), B('decree', '제81조'), B('decree', '제82조')); if (cap) basis.push(B('act', '제41조'), B('decree', '제83조')); return done('split', '공통매입세액 — 안분 뒤 공제', { recalc: cap, split: true }); }
+  why.push('어느 사업에 쓰였는지 모르면 공제 여부를 정할 수 없습니다. 실지귀속을 먼저 가릅니다.'); todo.push('지출 결의서·계약서·검수 조서에서 어느 시설(과세 시설/행정청사/겸용)에 쓰였는지 확인합니다. 시설이 과세사업인지는 「3. 우리 시설은 과세사업인가」 표로 봅니다.'); basis.push(B('act', '제40조'), B('decree', '제81조'));
+  return done('check', '귀속(과세·면세·공통) 확인 필요');
+}
+
+/* ---------- v2: 기관 설정(org.json) · 시설 기록 · 인계표 ---------- */
+export type Run = 'direct' | 'entrusted_org' | 'entrusted_own';
+export const RUN_NAME: Record<Run, string> = { direct: '우리 기관이 직접 운영', entrusted_org: '위탁 — 우리 기관 명의 사업(수탁기관은 대행)', entrusted_own: '위탁 — 수탁기관 자기 사업(수탁기관이 신고)' };
+export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean };
+export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string };
+export type ProofQ = 'e_invoice' | 'p_invoice' | 'card' | 'cash' | 'bill' | 'none';
+export type PayeeQ = 'org' | 'contractor' | 'person' | 'unknown';
+export type UseQ = 'this' | 'multi' | 'admin' | 'unknown';
+export type LedgerRow = { id: string; d: string; desc: string; amt: number; tax: number; proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean; v: Verdict; title: string; todo: string; basis: string; done: boolean };
+export const PROOF_Q: Opt[] = [
+  { key: 'e_invoice', name: '전자세금계산서(홈택스·메일로 온 것)' }, { key: 'p_invoice', name: '종이 세금계산서' },
+  { key: 'card', name: '신용카드 전표(법인·클린카드)' }, { key: 'cash', name: '현금영수증(사업자 지출증빙)' },
+  { key: 'bill', name: '계산서(세금계산서가 아닌 것, 면세)' }, { key: 'none', name: '간이영수증·없음' }];
+export const PAYEE_Q: Opt[] = [{ key: 'org', name: '우리 기관(군·시)' }, { key: 'contractor', name: '공단·수탁기관' }, { key: 'person', name: '직원 개인' }, { key: 'unknown', name: '모름·안 적혀 있음' }];
+export const USE_Q: Opt[] = [{ key: 'this', name: '이 시설만' }, { key: 'multi', name: '여러 시설이 같이' }, { key: 'admin', name: '사무실·행정 일과 함께' }, { key: 'unknown', name: '모름' }];
+export const WHAT_Q: Opt[] = [
+  { key: 'utility', name: '전기·가스·통신 요금' }, { key: 'service', name: '청소·경비·용역·인쇄' }, { key: 'repair', name: '수선·공사' }, { key: 'equip', name: '비품·장비·소모품' },
+  { key: 'car_pass', name: '승용차(8인승 이하) 기름·수리·리스' }, { key: 'car_other', name: '승합·화물·경차 관련' }, { key: 'guest', name: '손님 접대·선물·기념품' }, { key: 'staff', name: '직원 식사·복리후생' },
+  { key: 'payroll_tax', name: '급여·세금·공과금·과태료' }, { key: 'insurance', name: '보험료·금융 수수료' }, { key: 'land', name: '토지 매입·부지 조성' }, { key: 'water', name: '수도요금·도서·교육 등 면세' }, { key: 'other', name: '그 밖의 것' }];
+export const ASSET_WHAT = new Set(['repair', 'equip', 'car_other']);
+export const ORG_KEY = 'vat-org-v1', LEDGER_KEY = 'vat-ledger-v1';
+const lsGet = <T,>(k: string): T | null => { try { const s = localStorage.getItem(k); return s ? JSON.parse(s) as T : null; } catch { return null; } };
+const lsSet = (k: string, v: unknown) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* 저장 못 해도 계속 */ } };
+export const getOrg = () => lsGet<Org>(ORG_KEY);
+export const setOrg = (o: Org | null) => { if (o) lsSet(ORG_KEY, o); else { try { localStorage.removeItem(ORG_KEY); } catch { /* */ } } };
+export const allLedgers = () => lsGet<Record<string, LedgerRow[]>>(LEDGER_KEY) ?? {};
+export const getLedger = (fid: string, month: string) => allLedgers()[`${fid}:${month}`] ?? [];
+export const setLedger = (fid: string, month: string, rows: LedgerRow[]) => { const a = allLedgers(); a[`${fid}:${month}`] = rows; lsSet(LEDGER_KEY, a); };
+export const facilityRule = (D: Data, f: OrgFacility) => D.facilities.find(x => x.key === f.type);
+export function facilityStatus(D: Data, f: OrgFacility): 'taxable' | 'exempt' | 'check' | 'own' { if (f.run === 'entrusted_own') return 'own'; return facilityRule(D, f)?.status ?? 'check'; }
+export const STATUS_WORD: Record<string, string> = { taxable: '과세 — 부가세를 신고하는 시설', exempt: '면세 — 매출세액도 매입세액 공제도 없음', check: '확인 필요 — 유권해석·분류에 따라 다름', own: '수탁기관 자기 사업 — 우리 신고 아님' };
+
+/** 시설 담당의 현장 질문 답 → 판정 입력. 조문은 judge 가 붙인다. */
+export function toInput(D: Data, org: Org, f: OrgFacility, q: { proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean }): { input: Input; override?: Out; note?: string } {
+  const st = facilityStatus(D, f);
+  if (st === 'own') return { input: { use: 'unknown', kind: 'general', proof: 'receipt', supplier: 'unknown', timing: 'now' }, override: { v: 'check', title: '이 시설의 부가세는 수탁기관이 신고합니다', why: ['수탁기관 자기 사업으로 설정된 시설입니다. 그 기관이 지자체가 아니므로 매입세액도 그 기관 것입니다.'], todo: ['이 지출은 수탁기관의 장부에 적습니다. 설정이 틀렸으면 신고 담당 부서에 알려 기관 설정을 고칩니다.'], basis: [{ law: 'act', art: '제3조' }, { law: 'act', art: '제26조' }] } };
+  let proof: string, supplier = 'general';
+  if (q.proof === 'e_invoice' || q.proof === 'p_invoice') {
+    if (q.payee === 'unknown') return { input: { use: 'unknown', kind: 'general', proof: 'tax_invoice', supplier: 'general', timing: 'now' }, override: { v: 'check', title: '세금계산서의 "공급받는 자"를 확인하세요', why: ['세금계산서는 공급받는 자가 우리 기관 등록번호로 돼 있어야 우리 매입세액입니다.'], todo: [`세금계산서 오른쪽 "공급받는 자" 칸의 등록번호가 ${org.unit === 'entity' ? (org.reg_no || '우리 기관 번호') : (f.reg_no || '이 시설의 등록번호')} 인지 봅니다. 수탁기관 번호면 수정세금계산서를 요청합니다.`], basis: [{ law: 'act', art: '제32조' }, { law: 'act', art: '제39조' }] } };
+    proof = q.payee === 'org' ? 'tax_invoice' : 'tax_invoice_other';
+  } else if (q.proof === 'card' || q.proof === 'cash') { proof = q.vat_sep ? 'card_vat' : 'card_novat'; supplier = q.vat_sep ? 'general' : 'unknown'; }
+  else proof = q.proof === 'bill' ? 'bill' : 'receipt';
+  const hasOther = org.facilities.some(x => x.id !== f.id && facilityStatus(D, x) !== 'taxable');
+  const use = q.use === 'this' ? (st === 'taxable' ? 'taxable' : st === 'exempt' ? 'exempt' : 'unknown') : q.use === 'multi' ? (hasOther ? 'common' : 'taxable') : q.use === 'admin' ? 'common' : 'unknown';
+  const kind = ({ utility: 'general', service: 'general', repair: q.asset ? 'building' : 'general', equip: q.asset ? 'equip' : 'general', car_pass: 'car', car_other: q.asset ? 'equip' : 'general', guest: 'entertain', staff: 'welfare', payroll_tax: 'payroll', insurance: 'insurance', land: 'land', water: 'exempt_goods', other: 'general' } as Record<string, string>)[q.what] ?? 'general';
+  const note = st === 'check' && q.use === 'this' ? '이 시설 유형은 과세인지 면세인지 유권해석·분류로 정해야 합니다(기관 설정의 "확인 필요"). 신고 담당 부서가 정하면 다시 판정됩니다.' : undefined;
+  return { input: { use, kind, proof, supplier, timing: q.late ? 'late' : 'now' }, note };
+}
+
+/* ---------- 마감 ---------- */
+export const DEADLINES = [{ m: 1, d: 25, name: '제2기 확정신고(지난해 7~12월)' }, { m: 4, d: 25, name: '제1기 예정신고(1~3월)' }, { m: 7, d: 25, name: '제1기 확정신고(1~6월)' }, { m: 10, d: 25, name: '제2기 예정신고(7~9월)' }];
+export function nextFiling(today = new Date()) {
+  const t = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  for (let y = t.getFullYear(); y <= t.getFullYear() + 1; y++) for (const x of DEADLINES) { const due = new Date(y, x.m - 1, x.d); if (due >= t) return { name: x.name, due, days: Math.round((due.getTime() - t.getTime()) / 86400000) }; }
+  return { name: '', due: t, days: 0 };
+}
+export function handoverDue(day: number, today = new Date()) { const t = new Date(today.getFullYear(), today.getMonth(), today.getDate()); let due = new Date(t.getFullYear(), t.getMonth(), day); if (due < t) due = new Date(t.getFullYear(), t.getMonth() + 1, day); return { due, days: Math.round((due.getTime() - t.getTime()) / 86400000) }; }
+export const ymd = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+export const monthStr = (d = new Date()) => ymd(d).slice(0, 7);
+export const periodOf = (month: string) => { const m = Number(month.slice(5, 7)); return m <= 3 ? '제1기 예정' : m <= 6 ? '제1기 확정' : m <= 9 ? '제2기 예정' : '제2기 확정'; };
+
+/* ---------- 파일 ---------- */
+export function toCsv(rows: (string | number)[][]) { return '\ufeff' + rows.map(r => r.map(c => { const s = String(c ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\r\n'); }
+export function downloadText(name: string, text: string, mime = 'text/plain;charset=utf-8') { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: mime })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0); }
+export function readJsonFile(file: File): Promise<unknown> { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => { try { res(JSON.parse(String(r.result))); } catch (e) { rej(e); } }; r.onerror = rej; r.readAsText(file, 'utf-8'); }); }
+export const uid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);

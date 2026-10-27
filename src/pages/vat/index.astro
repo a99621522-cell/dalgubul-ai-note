@@ -1,192 +1,69 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { vatRules, lawUrl, lawName, STATUS_LABEL, type Basis } from '../../lib/vat';
-/** /vat/ — 지자체 부가가치세 매입세액 점검기(운영자 지시 2026-10-27: '군청이나 대구시청 같은 지자체가 신고하는 부가가치세의 매입세액을 누락 없이 할 수 있는 사이트').
- *  규칙은 data/vat/rules.yml(조문 번호·뜻만, 평가 없음). 지출 건 판정·공통매입세액 안분·재계산·점검표는 브라우저 안에서만 계산한다(서버·AI 호출 없음, 입력값은 밖으로 나가지 않음). 스크립트 src/scripts/vat_check.ts */
+import VatData from '../../components/VatData.astro';
+import { vatRules } from '../../lib/vat';
+import '../../styles/vat.css';
+/** /vat/ — 지자체 부가세 점검기 시작 화면(v2 1단계, 운영자 지시 2026-10-27 '처음 맡은 공무원과 수탁기관이 쉽게 쓰도록' → '1단계부터 해봐', 설계 docs/design/vat-first-timer.md).
+ *  역할 둘로 들어간다: 시설을 운영하는 사람 → /vat/monthly/(지출 기록·매입 인계표), 신고를 맡은 사람 → /vat/setup/(기관 설정·시설 카드). 아는 사람용 한 건 판정·안분 계산기는 /vat/tools/. D-day 는 브라우저에서 계산(src/scripts/vat_start.ts). */
 const R = vatRules();
-if (!R) throw new Error('data/vat/rules.yml 없음');
-const basisLinks = (b: Basis[]) => b.map(x => ({ name: lawName(R, x), url: lawUrl(R, x) }));
-const json = JSON.stringify(R).replace(/</g, '\\u003c');
-const stages = [...new Set(R.checklist.map(c => c.stage))];
-const nVerify = R.facilities.filter(f => f.verify).length;
-const nInterp = R.facilities.filter(f => f.interp).length;
-const V = R.verified;
 ---
-<Base title="지자체 부가가치세 매입세액 점검기" description="시·군·구가 하는 과세사업(임대·체육시설·식당·숙박 등)의 지출을 한 건씩 넣으면 매입세액 공제·불공제·공통매입세액 안분·확인 필요로 나눠 근거 조문과 할 일을 보여 줍니다. 공통매입세액 안분·재계산 계산기와 신고 전 점검표. 브라우저 안에서만 계산합니다." current="vat">
-  <div class="section-head"><h1>지자체 부가가치세 매입세액 점검기</h1><span class="meta">규칙 {R.version} · 시설 유형 {R.facilities.length} · 점검 항목 {R.checklist.length}</span></div>
-  <p class="lede">시·군·구가 하는 <strong>과세사업</strong>(공유재산 임대, 체육시설, 직영 식당·매점, 숙박시설 등)에 쓴 지출을 한 건씩 넣으면 <strong>매입세액을 공제할 수 있는지, 불공제인지, 과세·면세 공통이라 안분해야 하는지</strong>를 부가가치세법 조문과 함께 보여 줍니다. 위탁(대행) 시설에서 생기는 지출이 어느 사업에 귀속되는지 가르는 것이 핵심이며, 실지귀속이 분명한 과세사업 지출은 안분하지 않고 전액 공제합니다. 모든 계산은 <strong>이 브라우저 안에서만</strong> 하고 입력값은 어디로도 보내지 않습니다.</p>
-  <p class="callout warn">판정은 조문을 낱말 규칙으로 맞춘 <strong>참고용</strong>이며 세무 해석·평가가 아닙니다. 조문은 국가법령정보센터 본문{V && <>(부가가치세법 {V.act} 시행 · 시행령 {V.decree} 시행 · 시행규칙 {V.rule} 시행 판, {V.date} 대조)</>}과 맞췄습니다. '유권해석·분류 확인' 표시가 있는 항목({nInterp}개 시설 유형)은 법령 글자가 아니라 표준산업분류·국세청 유권해석으로 정해지므로 담당자가 확인해야 하고{nVerify > 0 && <>, '원문 확인 필요' 표시({nVerify}개)는 아직 조문과 대조하지 못한 것입니다</>}. 신고 책임은 신고인에게 있습니다. 금액 기준(5%·500만 원·5만 원 등)은 법령이 바뀌면 달라집니다.</p>
+<Base title="지자체 부가세 점검기" description="시·군·구와 수탁기관이 과세사업(임대·체육시설·식당·숙박 등) 지출의 매입세액을 빠짐없이 챙기도록 돕는 도구. 시설 담당은 지출을 기록해 매입 인계표를 만들고, 신고 담당은 기관 설정과 신고 준비를 합니다. 브라우저 안에서만 계산합니다." current="vat">
+  <div class="section-head"><h1>지자체 부가세 점검기</h1><span class="meta">규칙 {R?.version} · 조문 대조 {R?.verified?.date}</span></div>
+  <p class="lede">시·군·구가 하는 <strong>과세사업</strong>(공유재산 임대, 체육시설, 직영 식당·매점, 숙박시설 등)은 이용료에 부가가치세가 붙고 기관이 직접 신고합니다. 그 시설에 쓴 돈의 부가세(매입세액)는 <strong>어느 시설에 썼는지 적혀 있을 때만</strong> 돌려받습니다. 이 도구는 세법을 모르는 시설 담당과 처음 신고를 맡은 담당자가 그 기록을 빠짐없이 남기도록 돕습니다. 입력은 이 브라우저와 내려받는 파일에만 남고 서버로 가지 않습니다.</p>
 
-  <nav class="vat-toc" aria-label="이 페이지 차례"><a href="#judge">지출 건 판정</a><a href="#common">공통매입세액 안분·재계산</a><a href="#facility">우리 시설은 과세인가</a><a href="#rules">불공제 사유·증빙 요건</a><a href="#items">위탁 시설 지출 사례</a><a href="#checklist">신고 전 점검표</a></nav>
+  <div class="dday" id="dday" aria-live="polite"><span>다음 신고 기한 계산 중…</span></div>
 
-  <section id="judge">
-    <div class="section-head"><h2>1. 지출 건 판정 — 이 매입세액은 공제되나</h2></div>
-    <p class="meta">지출 하나를 고르고 「판정」을 누르면 결과와 근거 조문, 해야 할 일이 나옵니다. 「표에 추가」로 모아 두면 아래 표를 「한글 표 복사」「CSV」로 옮길 수 있습니다(새로고침하면 지워집니다).</p>
-    <form class="vc-form" id="vc-form" autocomplete="off">
-      <label class="full">지출 내용 <input id="vc-desc" type="text" placeholder="예: ○○체육관 청소 용역 9월분" maxlength="80" /></label>
-      <label>어느 사업에 쓰였나 <select id="vc-use">{R.inputs.use.map(o => <option value={o.key}>{o.name}</option>)}</select></label>
-      <label>지출 종류 <select id="vc-kind">{R.inputs.kind.map(o => <option value={o.key}>{o.name}</option>)}</select></label>
-      <label>증빙 <select id="vc-proof">{R.inputs.proof.map(o => <option value={o.key}>{o.name}</option>)}</select></label>
-      <label>공급자 <select id="vc-supplier">{R.inputs.supplier.map(o => <option value={o.key}>{o.name}</option>)}</select></label>
-      <label>시기 <select id="vc-timing">{R.inputs.timing.map(o => <option value={o.key}>{o.name}</option>)}</select></label>
-      <label>공급가액(원, 선택) <input id="vc-amount" type="text" inputmode="numeric" placeholder="예: 3,000,000" /></label>
-      <label>세액(원, 선택) <input id="vc-tax" type="text" inputmode="numeric" placeholder="비우면 공급가액의 10%" /></label>
-      <div class="actions"><button type="submit" class="btn" id="vc-judge">판정</button><button type="button" class="btn secondary" id="vc-add" disabled>표에 추가</button></div>
-    </form>
-    <div id="vc-result" aria-live="polite"></div>
-    <div class="scroll-x" id="vc-table-wrap" hidden>
-      <table class="data-table vat-table" id="vc-table" data-stack="off">
-        <caption>지출 건 판정 결과 (이 브라우저에서 입력한 값, 참고용)</caption>
-        <thead><tr><th scope="col">지출 내용</th><th scope="col">귀속</th><th scope="col">종류</th><th scope="col">증빙</th><th scope="col">공급가액</th><th scope="col">세액</th><th scope="col">판정</th><th scope="col">공제 가능 세액</th><th scope="col">근거</th><th scope="col">해야 할 일</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <p class="meta" id="vc-sum" hidden></p>
-    <p class="meta"><button type="button" class="link-btn" id="vc-clear" hidden>표 비우기</button></p>
-  </section>
+  <figure class="vat-fig">
+    <svg viewBox="0 0 760 236" role="img" aria-labelledby="vf-t vf-d" xmlns="http://www.w3.org/2000/svg">
+      <title id="vf-t">돈이 세금이 되는 길</title>
+      <desc id="vf-d">이용자가 시설에 낸 요금의 10%가 매출세액, 시설에 쓴 지출의 10%가 매입세액. 신고 때 매출세액에서 매입세액을 빼고 남는 것을 낸다. 지출이 어느 시설 것인지 적혀 있어야 뺄 수 있다.</desc>
+      <g font-family="inherit" font-size="15" fill="currentColor" stroke="currentColor" stroke-width="1.4">
+        <rect x="12" y="78" width="120" height="60" rx="8" fill="var(--surface)"/><text x="72" y="103" text-anchor="middle" stroke="none" font-weight="700">이용자</text><text x="72" y="124" text-anchor="middle" stroke="none" font-size="12" fill="var(--muted)">요금을 낸다</text>
+        <rect x="236" y="78" width="140" height="60" rx="8" fill="var(--surface)"/><text x="306" y="103" text-anchor="middle" stroke="none" font-weight="700">시설</text><text x="306" y="124" text-anchor="middle" stroke="none" font-size="12" fill="var(--muted)">체육관·임대 상가·식당</text>
+        <rect x="236" y="166" width="140" height="56" rx="8" fill="var(--surface)"/><text x="306" y="189" text-anchor="middle" stroke="none" font-weight="700">거래처</text><text x="306" y="209" text-anchor="middle" stroke="none" font-size="12" fill="var(--muted)">전기·청소·수선…</text>
+        <rect x="476" y="22" width="130" height="52" rx="8" fill="var(--surface)"/><text x="541" y="44" text-anchor="middle" stroke="none" font-weight="700">매출세액</text><text x="541" y="63" text-anchor="middle" stroke="none" font-size="12" fill="var(--muted)">요금의 10%</text>
+        <rect x="476" y="166" width="130" height="56" rx="8" fill="var(--surface)"/><text x="541" y="189" text-anchor="middle" stroke="none" font-weight="700">매입세액</text><text x="541" y="209" text-anchor="middle" stroke="none" font-size="12" fill="var(--muted)">지출의 10%</text>
+        <rect x="636" y="78" width="112" height="60" rx="8" fill="var(--band, var(--surface))"/><text x="692" y="103" text-anchor="middle" stroke="none" font-weight="700">낼 세금</text><text x="692" y="124" text-anchor="middle" stroke="none" font-size="12" fill="var(--muted)">매출 − 매입</text>
+        <path d="M132 108 H236" marker-end="url(#ar)"/><path d="M376 100 L476 52" marker-end="url(#ar)"/><path d="M376 194 H476" marker-end="url(#ar)"/><path d="M306 138 V166" marker-end="url(#ar)"/>
+        <path d="M606 48 L636 96" marker-end="url(#ar)"/><path d="M606 194 L636 122" marker-end="url(#ar)"/>
+        <text x="416" y="66" text-anchor="middle" stroke="none" font-size="12" fill="var(--muted)">수입</text><text x="426" y="186" text-anchor="middle" stroke="none" font-size="12" fill="var(--muted)">지출(영수증)</text>
+      </g>
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>
+    </svg>
+    <figcaption>매입세액은 "어느 시설에 쓴 지출인지"가 적혀 있을 때만 뺄 수 있습니다. 시설 담당이 적고, 신고 담당이 모읍니다.</figcaption>
+  </figure>
 
-  <section id="common">
-    <div class="section-head"><h2>2. 공통매입세액 안분 계산기</h2></div>
-    <p>{R.rules.common.summary}</p>
-    <p class="meta">식: {R.rules.common.formula}. {R.rules.common.prelim} 근거: {basisLinks(R.rules.common.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</p>
-    <form class="vc-form" id="ap-form" autocomplete="off">
-      <label>과세 공급가액(원) <input id="ap-t" type="text" inputmode="numeric" placeholder="예: 250,000,000" /></label>
-      <label>면세 공급가액(원) <input id="ap-e" type="text" inputmode="numeric" placeholder="예: 40,000,000" /></label>
-      <label>공통매입세액(원) <input id="ap-c" type="text" inputmode="numeric" placeholder="예: 12,000,000" /></label>
-      <label>신고 종류 <select id="ap-type"><option value="prelim">예정신고(예정신고기간 공급가액)</option><option value="final">확정신고(과세기간 전체 공급가액)</option></select></label>
-      <div class="actions"><button type="submit" class="btn">계산</button></div>
-    </form>
-    <div id="ap-result" aria-live="polite"></div>
-    <details class="vat-more"><summary>안분을 생략하는 경우 · 공급가액이 없을 때</summary>
-      <ul>{R.rules.common.skip.map(s => <li><strong>{s.name}</strong> — {s.cond}</li>)}<li><strong>공급가액이 없거나 한쪽만 있을 때</strong> — {R.rules.common.no_supply}</li></ul>
-    </details>
+  <h2>무엇을 하시나요</h2>
+  <div class="vat-roles">
+    <a class="vat-role" href="/vat/monthly/"><span class="who">수탁기관 · 시설 부서</span><strong>시설을 운영합니다</strong><p class="meta">이번 달 지출을 하나씩 넣으면 신호등으로 알려 주고, 월말에 <b>매입 인계표</b>를 만들어 신고 담당에게 보냅니다.</p><span class="meta" id="role-a-state"></span></a>
+    <a class="vat-role" href="/vat/setup/"><span class="who">회계·세무 담당 공무원</span><strong>신고를 맡았습니다</strong><p class="meta">우리 기관이 돈을 받는 시설을 5문항으로 정리해 <b>기관 설정</b>과 <b>시설 카드</b>를 만들고 수탁기관에 보냅니다. 처음 한 번, 시설이 바뀔 때 다시.</p><span class="meta" id="role-b-state"></span></a>
+  </div>
+  <p class="meta">세법을 아는 분은 <a href="/vat/tools/">한 건씩 바로 확인하는 도구</a>(지출 건 판정·공통매입세액 안분·재계산·점검표)로 가셔도 됩니다.</p>
 
-    <h3>감가상각자산 납부세액 재계산</h3>
-    <p>{R.rules.recalc.summary}</p>
-    <p class="meta">식: {R.rules.recalc.formula} 근거: {basisLinks(R.rules.recalc.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</p>
-    <form class="vc-form" id="rc-form" autocomplete="off">
-      <label>자산 종류 <select id="rc-asset"><option value="building">건물·구축물(체감률 5%)</option><option value="other">그 밖의 감가상각자산(체감률 25%)</option></select></label>
-      <label>취득 때 공통매입세액(원) <input id="rc-c0" type="text" inputmode="numeric" placeholder="예: 50,000,000" /></label>
-      <label>취득(직전 재계산) 때 면세비율(%) <input id="rc-r0" type="text" inputmode="decimal" placeholder="예: 10" /></label>
-      <label>이번 과세기간 면세비율(%) <input id="rc-r1" type="text" inputmode="decimal" placeholder="예: 18" /></label>
-      <label>경과 과세기간 수 <input id="rc-n" type="text" inputmode="numeric" placeholder="예: 3 (6개월 단위)" /></label>
-      <div class="actions"><button type="submit" class="btn">계산</button></div>
-    </form>
-    <div id="rc-result" aria-live="polite"></div>
-    <p class="meta">{R.rules.convert.summary} {R.rules.convert.verify && <span class="vbadge">원문 확인 필요</span>} 근거: {basisLinks(R.rules.convert.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</p>
-  </section>
-
-  <section id="facility">
-    <div class="section-head"><h2>3. 우리 시설은 과세사업인가</h2></div>
-    <p>{R.taxable_principle.summary}</p>
-    <ul class="meta-list">{R.taxable_principle.notes.map(n => <li>{n}</li>)}</ul>
-    <div class="scroll-x">
-      <table class="data-table vat-table" data-stack="off">
-        <caption>지자체 시설 유형별 과세·면세 (시행령 제46조 열거 업종 기준, 참고용)</caption>
-        <thead><tr><th scope="col">시설·수입</th><th scope="col">과세 여부</th><th scope="col">어느 업종·조항</th><th scope="col">참고</th><th scope="col">근거</th></tr></thead>
-        <tbody>{R.facilities.map(f => <tr class={`st-${f.status}`}>
-          <th scope="row">{f.name}</th>
-          <td><span class={`verdict ${f.status}`}>{STATUS_LABEL[f.status]}</span>{f.verify && <span class="vbadge">원문 확인 필요</span>}{f.interp && <span class="vbadge">유권해석·분류 확인</span>}</td>
-          <td>{f.group}</td>
-          <td class="note">{f.note}</td>
-          <td class="note">{basisLinks(f.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</td>
-        </tr>)}</tbody>
-      </table>
-    </div>
-    <p class="meta">근거: {basisLinks(R.taxable_principle.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</p>
-  </section>
-
-  <section id="rules">
-    <div class="section-head"><h2>4. 공제하지 않는 매입세액 · 증빙 요건</h2></div>
-    <p>{R.rules.deductible.summary} <span class="meta">({basisLinks(R.rules.deductible.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)})</span></p>
-    <div class="scroll-x">
-      <table class="data-table vat-table" data-stack="off">
-        <caption>공제하지 아니하는 매입세액 (부가가치세법 제39조 제1항)</caption>
-        <thead><tr><th scope="col">호</th><th scope="col">사유</th><th scope="col">실무에서 볼 것</th><th scope="col">근거</th></tr></thead>
-        <tbody>{R.rules.nondeductible.map(n => <tr><td>{n.no}</td><th scope="row">{n.name}</th><td class="note">{n.fix}</td><td class="note">{basisLinks(n.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</td></tr>)}</tbody>
-      </table>
-    </div>
-    <h3>신용카드매출전표·현금영수증으로 공제할 때 {R.rules.card.verify && <span class="vbadge">원문 확인 필요</span>}</h3>
-    <p>{R.rules.card.summary}</p>
-    <p class="meta">{R.rules.card.not_allowed} 근거: {basisLinks(R.rules.card.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</p>
-    <h3>늦게 받은 세금계산서 {R.rules.late_invoice.verify && <span class="vbadge">원문 확인 필요</span>}</h3>
-    <p>{R.rules.late_invoice.summary} <span class="meta">근거: {basisLinks(R.rules.late_invoice.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</span></p>
-    <h3>신고 기간</h3>
-    <div class="scroll-x"><table class="data-table compact" data-stack="off"><caption>부가가치세 예정·확정신고 (법인 기준 — 지방자치단체 포함)</caption>
-      <thead><tr><th scope="col">신고</th><th scope="col">대상 기간</th><th scope="col">신고·납부 기한</th></tr></thead>
-      <tbody>{R.rules.filing.periods.map(p => <tr><th scope="row">{p.name}</th><td>{p.span}</td><td>{p.due}</td></tr>)}</tbody></table></div>
-    <ul class="meta-list">{R.rules.filing.notes.map(n => <li>{n}</li>)}</ul>
-    <p class="meta">{R.rules.filing.verify && <span class="vbadge">국세기본법 조문은 원문 미대조</span>} 근거: {basisLinks(R.rules.filing.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</p>
-  </section>
-
-  <section id="items">
-    <div class="section-head"><h2>5. 위탁 시설 운영에서 자주 나오는 지출</h2></div>
-    <p class="meta">매입세액이 있는 지출인지, 어느 시설에 귀속되는지 적는 방법. 시설별 계량기·계약·원장으로 실지귀속을 남기면 안분 대상이 줄어듭니다(시행령 제81조 제1항).</p>
-    <div class="scroll-x">
-      <table class="data-table vat-table" data-stack="off">
-        <caption>위탁 시설 운영 지출과 매입세액</caption>
-        <thead><tr><th scope="col">지출</th><th scope="col">매입세액</th><th scope="col">확인할 것</th></tr></thead>
-        <tbody>{R.common_items.map(c => <tr><th scope="row">{c.item}</th><td>{c.vat}</td><td class="note">{c.tip}</td></tr>)}</tbody>
-      </table>
-    </div>
-  </section>
-
-  <section id="checklist">
-    <div class="section-head"><h2>6. 신고 전 점검표</h2><span class="meta">체크 상태는 이 브라우저에만 저장</span></div>
-    {stages.map(st => <div class="ck-stage"><h3>{st === '상시' ? '상시 — 지출할 때마다' : st === '신고' ? '예정·확정신고 때' : '확정신고 때 더 볼 것'}</h3>
-      <ul class="ck-list">{R.checklist.filter(c => c.stage === st).map(c => <li><label><input type="checkbox" data-ck={c.id} /> <span>{c.text}</span></label> <span class="note">{basisLinks(c.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</span></li>)}</ul></div>)}
-    <p class="actions"><button type="button" class="btn secondary" id="ck-print">점검표 인쇄</button> <button type="button" class="btn secondary" id="ck-reset">체크 지우기</button> <span class="meta" id="ck-count"></span></p>
-  </section>
+  <details class="vat-more"><summary><strong>3분 안내</strong> — 지자체 부가세는 이렇게 돌아갑니다</summary>
+    <ol>
+      <li><strong>등록</strong> — 과세사업을 하는 시설은 사업자등록을 합니다(시설마다 또는 기관 단위). 등록 전 지출은 공제받지 못합니다.</li>
+      <li><strong>발급</strong> — 이용료를 받을 때 세금계산서(기관 손님)나 카드 전표(개인 손님)를 끊습니다. 이 10%가 매출세액입니다.</li>
+      <li><strong>수취</strong> — 시설에 쓴 돈의 영수증을 <em>우리 기관 이름</em>으로 받고, 어느 시설에 썼는지 적습니다. 이 10%가 매입세액입니다.</li>
+      <li><strong>신고</strong> — 1월·4월·7월·10월 25일까지 홈택스에서 매출세액 − 매입세액을 신고·납부합니다. 과세·면세에 함께 쓴 지출은 면세 비율만큼 빼고 공제합니다.</li>
+    </ol>
+    <div class="scroll-x"><table class="data-table compact" data-stack="off"><caption>누가 무엇을 하나</caption>
+      <thead><tr><th scope="col">사람</th><th scope="col">매달</th><th scope="col">분기(신고 때)</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">시설 담당·수탁기관</th><td>지출마다 영수증 종류·받는 사람·어디에 썼는지 기록 → 월말 매입 인계표</td><td>신고 담당이 물어보는 것에 답(시설 수입, 안 받은 영수증)</td></tr>
+        <tr><th scope="row">신고 담당 공무원</th><td>인계표가 왔는지 확인, 빨강·노랑 처리 독려</td><td>인계표를 모아 신고서 칸에 옮기고 공통 지출을 안분, 홈택스 신고·납부</td></tr>
+      </tbody></table></div>
+    <p class="meta">금액이 담당자마다 달라지는 자리는 '지출이 어느 시설 것인지'와 '영수증 받는 사람 이름'입니다. 세무사에게 맡겨도 이 둘은 기관 안에서 적어야 합니다.</p>
+  </details>
 
   <section class="how">
-    <h2>이 점검기의 기준과 한계</h2>
+    <h2>지키는 것</h2>
     <ul>
-      <li>규칙은 <code>data/vat/rules.yml</code> 에 조문 번호와 조문의 뜻으로 적혀 있고, 조문 링크는 국가법령정보센터(law.go.kr) 현행 법령으로 갑니다. 부가가치세법·시행령·시행규칙 본문은 <a href="/programs/guidelines/">사업 지침 창고</a>에 받아 두고 조문과 대조했습니다{V && <>({V.date})</>}. 기준 금액·비율은 법령 값이라 개정되면 규칙 파일을 고칩니다.</li>
-      <li>'유권해석·분류 확인' 표시는 법령 글자가 아니라 한국표준산업분류나 국세청 해석에 따라 결론이 달라지는 항목입니다. 국세청 상담(126)·국세법령정보시스템 유권해석 검색으로 확인한 뒤 적용합니다. '원문 확인 필요' 표시는 아직 본문을 받지 못한 법령(국세기본법)의 조문입니다.</li>
-      <li>판정은 입력한 선택지만으로 하므로 계약 내용·시설 운영 방식에 따라 결론이 달라질 수 있습니다. 평가·해석이 아니며 신고 책임은 신고인에게 있습니다.</li>
-      <li>개별 기관의 신고 금액·내부 자료는 싣지 않습니다. 입력값은 서버로 보내지 않고 새로고침하면 지워집니다(점검표 체크만 이 브라우저에 남습니다).</li>
+      <li>판정은 부가가치세법·시행령·시행규칙 조문(2026-10-27 국가법령정보센터 본문 대조)을 선택지에 맞춘 참고용이며 세무 해석·평가가 아닙니다. 신고 책임은 신고인에게 있습니다.</li>
+      <li>서버가 없습니다. 입력은 이 브라우저(localStorage)와 내려받는 파일에만 남고, 기관 간 공유는 파일로 합니다. 파일에 담당자 이름·전화를 넣지 않습니다.</li>
+      <li>개별 기관의 신고 금액은 사이트에 싣지 않습니다.</li>
     </ul>
   </section>
-  <script type="application/json" id="vat-data" set:html={json}></script>
-  <script>import '../../scripts/vat_check';</script>
+  <VatData />
+  <script>import '../../scripts/vat_start';</script>
 </Base>
-<style>
-  .vat-toc { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: var(--s2) 0 var(--s3); font-size: var(--small); }
-  .vat-toc a { color: var(--primary); text-decoration: none; font-weight: 600; padding: 4px 0; }
-  .vc-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s2) var(--s3); margin: var(--s2) 0; padding: var(--s3); border: 1px solid var(--line); border-radius: var(--radius-2); background: var(--surface); }
-  .vc-form label { display: flex; flex-direction: column; gap: 4px; font-size: var(--small); color: var(--muted); min-width: 0; }
-  .vc-form label.full { grid-column: 1 / -1; }
-  .vc-form select, .vc-form input { min-height: var(--touch); padding: 0 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); font-size: 1rem; max-width: 100%; }
-  .vc-form .actions { grid-column: 1 / -1; display: flex; gap: var(--s2); flex-wrap: wrap; }
-  .actions { display: flex; gap: var(--s2); flex-wrap: wrap; align-items: center; }
-  .link-btn { background: none; border: 0; color: var(--primary); text-decoration: underline; cursor: pointer; padding: 0; font-size: var(--small); }
-  :global(.vat-table) { font-size: 0.92rem; min-width: 760px; }
-  :global(.vat-table td.note), .note { color: var(--muted); font-size: 0.85rem; }
-  :global(.vat-table td.note) { max-width: 26em; }
-  :global(.verdict) { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: var(--small); font-weight: 700; white-space: nowrap; border: 1px solid var(--line-strong); }
-  :global(.verdict.ok), :global(.verdict.taxable) { background: #e6f4ea; color: #1e6b3a; border-color: #9fd3b0; }
-  :global(.verdict.split) { background: #e8f0fe; color: #1a4b9c; border-color: #a9c4f5; }
-  :global(.verdict.check), :global(.verdict.exempt) { background: #fff4e0; color: #8a5200; border-color: #f0c674; }
-  :global(.verdict.no) { background: #fde8e8; color: #9b1c1c; border-color: #f1a5a5; }
-  :global(.verdict.none) { background: var(--surface); color: var(--muted); }
-  :global(.vbadge) { display: inline-block; margin-left: 6px; padding: 1px 6px; border: 1px dashed var(--line-strong); border-radius: var(--radius); font-size: var(--tiny); color: var(--muted); white-space: nowrap; }
-  :global(.vc-card) { margin: var(--s2) 0; padding: var(--s3); border: 1px solid var(--line-strong); border-radius: var(--radius-2); background: var(--bg); }
-  :global(.vc-card h3) { margin: 0 0 var(--s1); display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
-  :global(.vc-card ul) { padding-left: 1.2em; margin: var(--s1) 0; }
-  :global(.vc-card .label) { font-size: var(--small); color: var(--muted); font-weight: 700; margin: var(--s2) 0 2px; }
-  :global(.vc-card .big) { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .meta-list { padding-left: 1.2em; font-size: var(--small); color: var(--muted); }
-  .vat-more { margin: var(--s2) 0; } .vat-more ul { padding-left: 1.2em; font-size: var(--small); }
-  .ck-stage h3 { margin: var(--s3) 0 var(--s1); font-size: 1.05rem; }
-  .ck-list { list-style: none; padding: 0; margin: 0; }
-  .ck-list li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--line); }
-  .ck-list label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; flex: 1 1 32em; }
-  .ck-list input { width: 20px; height: 20px; margin-top: 2px; flex: none; }
-  .ck-list input:checked + span { color: var(--muted); text-decoration: line-through; }
-  .how { margin-top: var(--s5); } .how ul { padding-left: 1.2em; }
-  @media (prefers-color-scheme: dark) {
-    :global(.verdict.ok), :global(.verdict.taxable) { background: #173d27; color: #b7e4c7; } :global(.verdict.split) { background: #13284d; color: #b9d0f7; }
-    :global(.verdict.check), :global(.verdict.exempt) { background: #4a3306; color: #ffd98a; } :global(.verdict.no) { background: #4a1616; color: #ffb3b3; }
-  }
-  @media print { .vc-form, .vat-toc, .actions, #vc-result, #ap-result, #rc-result { display: none !important; } }
-</style>

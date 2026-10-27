@@ -1,0 +1,62 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import '../../../styles/vat.css';
+/** /vat/monthly/ — 시설 지출 기록(수탁기관·시설 부서, 매달. v2 1단계 2026-10-27). 기관 설정(org.json)을 열고 시설·달을 고른 뒤 지출을 한 건씩 현장 질문 5개로 넣으면 신호등 판정과 '지금 할 일'이 나오고, 월말에 매입 인계표(한글 표 복사·CSV·JSON)를 만든다. 판정은 vat_rules.judge(공용). 서버 없음. 스크립트 src/scripts/vat_monthly.ts */
+---
+<Base title="시설 지출 기록 — 매입 인계표" description="수탁기관·시설 부서가 이번 달 지출을 한 건씩 넣으면 부가세 매입세액을 공제받을 수 있는지 신호등으로 알려 주고, 월말에 신고 담당에게 보낼 매입 인계표를 만듭니다. 브라우저 안에서만 저장." current="vat" crumb="시설 지출 기록">
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a></p>
+  <div class="section-head"><h1>시설 지출 기록 — 매입 인계표 만들기</h1><span class="meta" id="m-dday"></span></div>
+  <p class="lede">이번 달 시설에 쓴 돈을 영수증 한 장에 한 건씩 넣습니다. 세법 용어는 몰라도 됩니다 — <strong>영수증이 어떤 것인지, 받는 사람이 누구인지, 어디에 썼는지</strong>만 고르면 신호등으로 알려 줍니다. 월말에 「매입 인계표」를 만들어 신고 담당에게 보내면 끝입니다. 입력은 이 브라우저에만 저장됩니다.</p>
+
+  <section id="m-org" class="vc-card no-print">
+    <h3>기관 설정</h3>
+    <p id="m-org-state" class="meta">확인 중…</p>
+    <p class="meta">신고 담당에게 받은 <strong>기관 설정 파일(org.json)</strong>을 여세요: <input type="file" id="m-open" accept=".json,application/json" /> · 파일이 없으면 신고 담당 부서에 요청하거나 <a href="/vat/setup/">기관 설정</a>에서 만듭니다.</p>
+  </section>
+
+  <form class="vc-form no-print" id="m-sel" autocomplete="off">
+    <label>시설 <select id="m-fac"><option value="">— 기관 설정을 먼저 여세요 —</option></select></label>
+    <label>달 <input type="month" id="m-month" /></label>
+    <p class="note full" id="m-facnote"></p>
+  </form>
+
+  <form class="vc-form no-print" id="m-form" autocomplete="off" hidden>
+    <p class="q-title full">지출 한 건 넣기</p>
+    <label>날짜 <input type="date" id="m-d" /></label>
+    <label class="full">내용(영수증에 적힌 대로 짧게) <input type="text" id="m-desc" placeholder="예: 9월 전기요금, 체육관 바닥 수선" maxlength="80" /></label>
+    <label>공급가액(부가세 뺀 금액, 원) <input type="text" id="m-amt" inputmode="numeric" placeholder="예: 1,500,000" /></label>
+    <label>부가세(세액, 원) <input type="text" id="m-tax" inputmode="numeric" placeholder="영수증의 세액 칸 · 비우면 10%" /></label>
+    <div class="q full"><span class="q-title">① 영수증이 어떤 것인가요</span><div class="choices" id="m-proof"></div></div>
+    <div class="q full" id="m-payee-q"><span class="q-title">② 영수증의 "받는 사람(공급받는 자)" 이름이 누구인가요</span><div class="choices" id="m-payee"></div><span class="note">세금계산서는 오른쪽 "공급받는 자" 칸, 카드 전표는 카드 명의입니다.</span></div>
+    <div class="q full" id="m-vat-q" hidden><span class="q-title">②-1 전표에 부가세(세액) 금액이 따로 적혀 있나요</span><div class="choices"><label><input type="radio" name="m-vatsep" value="1" checked /> 네, 따로 적혀 있다</label><label><input type="radio" name="m-vatsep" value="0" /> 아니요 · 모름</label></div></div>
+    <div class="q full"><span class="q-title">③ 이 돈은 어디에 쓰였나요</span><div class="choices" id="m-use"></div></div>
+    <div class="q full"><span class="q-title">④ 무엇을 샀나요</span><div class="choices" id="m-what"></div></div>
+    <div class="q full" id="m-asset-q" hidden><label class="choices"><span><input type="checkbox" id="m-asset" /> 건물 공사·장비처럼 <strong>여러 해 쓰는 것</strong>입니다(500만 원 넘는 수선·설비 등)</span></label></div>
+    <div class="q full"><label class="choices"><span><input type="checkbox" id="m-late" /> 지난 과세기간(6개월 전 이전) 지출인데 영수증을 이제 받았다</span></label></div>
+    <div class="actions"><button type="submit" class="btn">판정하고 기록에 넣기</button><button type="reset" class="btn secondary">비우기</button></div>
+  </form>
+  <div id="m-result" aria-live="polite"></div>
+
+  <section id="m-list" hidden>
+    <div class="section-head"><h2 id="m-list-title">이 달 기록</h2><span class="meta" id="m-sum"></span></div>
+    <div class="scroll-x"><table class="data-table vat-table" id="m-table" data-stack="off">
+      <caption id="m-caption">매입 인계표</caption>
+      <thead><tr><th scope="col">날짜</th><th scope="col">내용</th><th scope="col">공급가액</th><th scope="col">부가세</th><th scope="col">영수증</th><th scope="col">받는 사람</th><th scope="col">어디에</th><th scope="col">무엇</th><th scope="col">신호</th><th scope="col">지금 할 일</th><th scope="col">근거</th><th scope="col" class="no-print">처리</th></tr></thead>
+      <tbody></tbody></table></div>
+    <div class="actions no-print"><button type="button" class="btn" id="m-csv">매입 인계표 CSV 내려받기</button><button type="button" class="btn secondary" id="m-json">인계 파일(JSON) 내려받기</button><button type="button" class="btn secondary" id="m-print">인쇄</button><button type="button" class="link-btn" id="m-clear">이 달 기록 지우기</button></div>
+    <p class="meta">표 아래 「한글 표 복사」로 공문에 바로 붙일 수 있습니다. 빨강·노랑이 남아 있으면 '지금 할 일'을 먼저 처리하고(수정세금계산서 요청 등) 처리 칸에 표시하세요. 인계표는 신고 담당이 신고서 칸으로 옮깁니다(참고용 판정, 신고 책임은 신고인).</p>
+  </section>
+
+  <details class="vat-more"><summary>신호등이 뜻하는 것</summary>
+    <ul class="meta-list">
+      <li><span class="sig ok"></span><strong>초록</strong> — 이 영수증의 부가세는 돌려받습니다(매입세액 공제). 그대로 인계.</li>
+      <li><span class="sig split"></span><strong>파랑</strong> — 과세 시설과 면세·행정 일에 함께 쓴 돈입니다. 신고 담당이 면세 비율만큼 빼고 공제합니다(공통매입세액 안분). 시설별로 나눌 수 있으면 다음부터 나눠 받으세요.</li>
+      <li><span class="sig no"></span><strong>빨강</strong> — 지금 상태로는 공제가 안 됩니다. '지금 할 일'(수정세금계산서 요청 등)을 하면 바뀔 수 있는 것과 원래 안 되는 것(토지·승용차·접대)이 있습니다.</li>
+      <li><span class="sig none"></span><strong>회색</strong> — 부가세가 애초에 없는 지출(급여·보험·수도·세금)입니다. 기록만 남깁니다.</li>
+      <li><span class="sig check"></span><strong>노랑</strong> — 영수증이나 시설 성격을 확인해야 판정할 수 있습니다.</li>
+    </ul>
+  </details>
+  <VatData />
+  <script>import '../../../scripts/vat_monthly';</script>
+</Base>

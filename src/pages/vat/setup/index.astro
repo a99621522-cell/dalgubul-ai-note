@@ -1,0 +1,59 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import { vatRules, STATUS_LABEL } from '../../../lib/vat';
+import '../../../styles/vat.css';
+/** /vat/setup/ — 기관 설정 마법사(신고 담당 공무원, 처음 1회·시설 바뀔 때. v2 1단계 2026-10-27). 5문항 → org.json(개인정보 없음) + 시설 카드(시설마다 한 장, 인쇄). 저장은 localStorage 와 내려받는 파일. 스크립트 src/scripts/vat_setup.ts */
+const R = vatRules();
+if (!R) throw new Error('data/vat/rules.yml 없음');
+---
+<Base title="부가세 기관 설정 — 신고 담당" description="우리 기관이 돈을 받는 시설을 5문항으로 정리해 기관 설정 파일(org.json)과 시설 카드를 만듭니다. 수탁기관은 이 파일로 지출을 기록합니다. 브라우저 안에서만 저장." current="vat" crumb="기관 설정">
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a></p>
+  <div class="section-head"><h1>기관 설정 — 신고 담당이 한 번만</h1><span class="meta">5문항 · 약 10분</span></div>
+  <p class="lede">우리 기관이 <strong>돈을 받는 시설</strong>을 적으면 시설마다 과세인지 면세인지, 세금계산서를 어느 번호로 받아야 하는지가 정해집니다. 끝나면 <strong>기관 설정 파일(org.json)</strong>과 <strong>시설 카드</strong>(시설마다 한 장)를 내려받아 수탁기관·시설 부서에 보냅니다. 담당자 이름·전화는 넣지 않습니다(부서명만).</p>
+  <p class="meta no-print">이미 만든 설정을 고치려면 파일을 여세요: <input type="file" id="st-open" accept=".json,application/json" /> <span id="st-loaded"></span></p>
+
+  <div class="steps" id="st-steps" aria-label="단계"><span aria-current="step">1 기관</span><span>2 시설 고르기</span><span>3 시설마다</span><span>4 인계</span><span>5 결과</span></div>
+
+  <section class="step vc-form" data-step="1">
+    <p class="q-title full">1. 우리 기관과 사업자등록</p>
+    <label>기관 이름 <input type="text" id="st-org" placeholder="예: ○○군" maxlength="30" /></label>
+    <label>신고 담당 부서(이름·전화 없이) <input type="text" id="st-dept" placeholder="예: 회계과 경리팀" maxlength="40" /></label>
+    <div class="q full"><span class="q-title">사업자등록은 어떻게 돼 있나요</span>
+      <div class="choices"><label><input type="radio" name="st-unit" value="site" checked /> 시설(사업장)마다 따로 등록번호가 있다</label><label><input type="radio" name="st-unit" value="entity" /> 기관 하나의 번호로 묶어 신고한다(사업자 단위 과세)</label></div>
+      <span class="note">모르면 홈택스 → 조회/발급 → 사업자등록 상태 조회, 또는 지난 신고서의 등록번호를 봅니다(법 제8조).</span></div>
+    <label id="st-regno-wrap" hidden>기관 사업자등록번호 <input type="text" id="st-regno" placeholder="000-00-00000" inputmode="numeric" /></label>
+    <div class="actions"><button type="button" class="btn" data-next>다음</button></div>
+  </section>
+
+  <section class="step vc-form" data-step="2" hidden>
+    <p class="q-title full">2. 우리 기관이 이용료·임대료·판매 대금을 받는 시설을 모두 고르세요</p>
+    <div class="tiles full" id="st-tiles">{R.facilities.filter(f => f.key !== 'admin').map(f => <label><input type="checkbox" name="st-type" value={f.key} /><span><span class="t-name">{f.name}</span><br/><span class="t-st">{STATUS_LABEL[f.status]}{f.interp ? ' · 유권해석 확인' : ''} — {f.group}</span></span></label>)}</div>
+    <label class="full">목록에 없는 시설(쉼표로 여럿) <input type="text" id="st-other" placeholder="예: 공영 자전거, 캠핑장 매점" /></label>
+    <div class="actions"><button type="button" class="btn secondary" data-prev>이전</button><button type="button" class="btn" data-next>다음</button></div>
+  </section>
+
+  <section class="step" data-step="3" hidden>
+    <p class="q-title">3. 시설마다 이름과 운영 방식</p>
+    <p class="meta">같은 유형 시설이 여럿이면 「같은 유형 하나 더」로 늘립니다. <strong>운영 방식</strong>이 핵심입니다 — 수탁기관이 자기 이름으로 하는 사업이면 그 시설의 부가세는 수탁기관이 신고하고, 우리 매입세액이 아닙니다.</p>
+    <div id="st-fac"></div>
+    <div class="actions"><button type="button" class="btn secondary" data-prev>이전</button><button type="button" class="btn" data-next>다음</button></div>
+  </section>
+
+  <section class="step vc-form" data-step="4" hidden>
+    <p class="q-title full">4. 인계 약속</p>
+    <label>시설 담당이 매달 며칠까지 인계표를 보내나요 <input type="number" id="st-day" min="1" max="28" value="5" /></label>
+    <span class="note full">신고는 1·4·7·10월 25일입니다. 예정·확정신고 달에는 인계표가 늦으면 신고에 못 넣습니다(다음 신고에서 보완은 가능).</span>
+    <div class="actions"><button type="button" class="btn secondary" data-prev>이전</button><button type="button" class="btn" data-next>결과 보기</button></div>
+  </section>
+
+  <section class="step" data-step="5" hidden>
+    <p class="q-title">5. 결과 — 이 브라우저에 저장됐습니다</p>
+    <div id="st-summary"></div>
+    <div class="actions no-print"><button type="button" class="btn" id="st-download">기관 설정 파일(org.json) 내려받기</button><button type="button" class="btn secondary" id="st-print">시설 카드 인쇄</button><button type="button" class="btn secondary" data-prev>고치기</button><button type="button" class="link-btn" id="st-reset">처음부터 다시</button></div>
+    <p class="meta">파일은 수탁기관·시설 부서에 공문 첨부나 업무망 메일로 보냅니다. 시설 카드는 시설 사무실에 붙여 두는 한 장입니다. 시설이 늘거나 운영 방식이 바뀌면 이 화면에서 파일을 열어 고치고 다시 보냅니다.</p>
+    <div id="cards"></div>
+  </section>
+  <VatData />
+  <script>import '../../../scripts/vat_setup';</script>
+</Base>

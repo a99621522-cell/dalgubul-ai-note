@@ -3,71 +3,17 @@
  * 페이지에 묻어 온 규칙 JSON(#vat-data ← data/vat/rules.yml)으로 ① 지출 건 판정(공제·안분·불공제·세액 없음·확인 필요) ② 공통매입세액 안분 ③ 감가상각자산 재계산 ④ 점검표(localStorage)를 브라우저 안에서만 한다.
  * 서버·AI 호출 없음. 판정은 선택지만으로 하는 참고용이며 조문 번호를 함께 보인다(평가·해석 아님).
  */
-type Basis = { law: string; art: string };
-type Opt = { key: string; name: string };
-type Data = {
-  law_url: string; laws: Record<string, string>;
-  rules: { nondeductible: { key: string; no: string; name: string; fix: string; basis: Basis[] }[]; card: { summary: string; not_allowed: string; verify?: boolean }; late_invoice: { summary: string; verify?: boolean };
-    common: { summary: string; formula: string; skip: { key: string; name: string; cond: string; ratio_lt?: number; amount_lt?: number }[]; no_supply: string; prelim: string };
-    recalc: { rates: { building: number; other: number }; threshold_pp: number } };
-  inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
-};
-type Verdict = 'ok' | 'split' | 'no' | 'none' | 'check';
-const LABEL: Record<Verdict, string> = { ok: '공제', split: '안분 뒤 공제(공통)', no: '불공제', none: '매입세액 없음', check: '확인 필요' };
-const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
-const num = (s: string | undefined | null) => { const v = Number(String(s ?? '').replace(/[^0-9.\-]/g, '')); return Number.isFinite(v) ? v : 0; };
-const fmt = (n: number) => Math.round(n).toLocaleString('ko-KR');
-const pct = (r: number) => (r * 100).toFixed(2).replace(/\.?0+$/, '') + '%';
-const esc = (s: string) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as Record<string, string>)[c]);
+import { loadData, judge, LABEL, lawLink, lawText, uniq, optName, num, fmt, pct, esc, $, type Data, type Input, type Out, type Basis } from './vat_rules';
 
-const dataEl = $('vat-data');
-if (dataEl) init(JSON.parse(dataEl.textContent || '{}') as Data);
+const D0 = loadData();
+if (D0) init(D0);
 
 function init(D: Data) {
-  const LAW: Record<string, string> = { act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법' };
   const B = (law: string, art: string): Basis => ({ law, art });
-  const link = (b: Basis) => `<a href="${D.law_url.replace('{law}', D.laws[b.law]).replace('{art}', b.art)}" target="_blank" rel="noopener">${LAW[b.law]} ${b.art}</a>`;
-  const bText = (b: Basis) => `${LAW[b.law]} ${b.art}`;
-  const nd = (k: string) => D.rules.nondeductible.find(n => n.key === k)!;
-  const name = (g: keyof Data['inputs'], k: string) => D.inputs[g].find(o => o.key === k)?.name ?? k;
-
-  /* ---------- ① 지출 건 판정 ---------- */
-  type Input = { use: string; kind: string; proof: string; supplier: string; timing: string };
-  type Out = { v: Verdict; title: string; why: string[]; todo: string[]; basis: Basis[]; verify?: boolean; recalc?: boolean; split?: boolean };
-  function judge(i: Input): Out {
-    const why: string[] = [], todo: string[] = [], basis: Basis[] = []; let verify = false;
-    const done = (v: Verdict, title: string, extra: Partial<Out> = {}): Out => ({ v, title, why, todo, basis, verify, ...extra });
-    // 1. 부가가치세 거래가 아니거나 면세 거래 — 공제할 세액 자체가 없다
-    if (i.kind === 'payroll' || i.kind === 'tax') { why.push('급여·세금·공과금·과태료는 재화·용역의 공급이 아니어서 부가가치세가 붙지 않습니다.'); return done('none', '매입세액이 없는 지출'); }
-    if (i.kind === 'insurance' || i.kind === 'exempt_goods') { why.push('보험·금융 용역, 수돗물·도서·교육·의료 같은 면세 재화·용역에는 매입세액이 없습니다.'); basis.push(B('act', '제26조')); return done('none', '면세 거래 — 매입세액 없음'); }
-    if (i.proof === 'bill') { why.push('계산서는 면세 거래의 증빙이라 공제할 세액이 없습니다.'); todo.push('과세 거래인데 계산서를 받았다면 공급자에게 세금계산서로 다시 발급을 요청합니다.'); basis.push(B('act', '제26조'), B('act', '제38조')); return done('none', '계산서(면세 거래) — 매입세액 없음'); }
-    // 2. 증빙 요건
-    if (i.proof === 'receipt') { const n = nd('no_invoice'); why.push(`세금계산서(또는 요건을 갖춘 신용카드매출전표)를 받지 않은 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('공급자가 일반과세자면 공급받는 자를 우리 기관 사업자등록번호로 한 세금계산서를, 카드 결제면 부가가치세액이 따로 적힌 전표를 받습니다.'); basis.push(...n.basis); return done('no', '증빙 없음 — 불공제'); }
-    if (i.proof === 'tax_invoice_other') { const n = nd('no_invoice'); why.push(`공급받는 자가 우리 기관이 아닌 세금계산서는 '사실과 다른 세금계산서'로 공제하지 않습니다(${n.no}).`); todo.push('공급자에게 공급받는 자를 지자체(과세사업 등록번호)로 한 수정세금계산서를 요청합니다. 그 시설이 수탁기관 자기 사업이라면 그 기관의 매입세액이지 우리 것이 아닙니다 — 위·수탁 계약에서 사업자가 누구인지 확인합니다.'); basis.push(...n.basis, B('decree', '제75조')); return done('no', '다른 명의 세금계산서 — 불공제'); }
-    if (i.proof === 'card_novat') { why.push('부가가치세액이 따로 적히지 않은 전표, 세금계산서를 발급할 수 없는 간이과세자·면세사업자의 전표는 공제 요건을 갖추지 못합니다.'); todo.push('공급자가 일반과세자면 부가가치세액이 구분된 전표 재발급 또는 세금계산서를 요청합니다. 간이(발급 불가)·면세 공급자면 공제할 수 없습니다.'); basis.push(B('act', '제46조')); verify = !!D.rules.card.verify; return done('no', '요건 못 갖춘 카드 전표 — 불공제'); }
-    if (i.proof === 'card_vat') {
-      if (i.supplier === 'simple_no') { why.push('세금계산서를 발급할 수 없는 간이과세자·면세사업자의 카드 전표는 공제하지 못합니다.'); basis.push(B('act', '제46조')); return done('no', '영수증 발급 기간 간이과세자·면세 공급자 카드 전표 — 불공제'); }
-      if (i.supplier === 'unknown') { why.push('카드 전표로 공제하려면 공급자가 일반과세자(또는 세금계산서를 발급할 수 있는 간이과세자)여야 합니다.'); todo.push('홈택스 「사업자등록 상태 조회」로 공급자의 과세 유형을 확인한 뒤 다시 판정합니다.'); basis.push(B('act', '제46조')); return done('check', '공급자 과세 유형 확인 필요'); }
-      todo.push('신고 때 「신용카드매출전표등 수령명세서」에 적고 전표를 5년 보관합니다. 목욕·이발·미용업, 여객운송업(전세버스 제외), 입장권 발행 사업, 비급여 미용 진료, 무도·자동차운전학원의 전표는 공제하지 못합니다(시행령 제88조 제5항).'); basis.push(B('decree', '제88조')); basis.push(B('act', '제46조'), B('act', '제71조')); verify = !!D.rules.card.verify;
-    }
-    // 3. 종류로 불공제
-    if (i.kind === 'land') { const n = nd('land'); why.push(`토지 취득·조성·형질변경, 토지만 쓰려는 건물 철거비의 매입세액은 공제하지 않습니다(${n.no}, 시행령 제80조).`); todo.push('건물 신축·수선 몫이 섞여 있으면 계약·견적에서 토지 관련분과 나눠 적습니다 — 건물분은 공제 대상입니다.'); basis.push(...n.basis); return done('no', '토지 관련 매입세액 — 불공제'); }
-    if (i.kind === 'car') { const n = nd('car'); why.push(`8인승 이하 비영업용 승용차의 구입·임차·유지(유류·수리) 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('9인승 이상 승합차·화물차·경차·운수업 등 영업용이면 대상이 아니므로 차종을 확인합니다.'); basis.push(...n.basis); return done('no', '비영업용 승용차 — 불공제'); }
-    if (i.kind === 'entertain') { const n = nd('entertain'); why.push(`기업업무추진비(접대비)와 이와 유사한 비용의 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('직원 복리후생비·광고선전비는 여기 들지 않으므로 지출 성격을 서류에 적습니다.'); basis.push(...n.basis); return done('no', '접대·기념품 — 불공제'); }
-    // 4. 시기
-    if (i.timing === 'prereg') { const n = nd('pre_reg'); why.push(`사업자등록 신청 전의 매입세액은 공제하지 않습니다(${n.no}). 다만 공급시기가 속하는 과세기간이 끝난 뒤 20일 이내에 등록을 신청하면 그 과세기간 시작일까지의 매입세액은 공제됩니다.`); todo.push('등록 신청일과 공급시기가 속한 과세기간 종료일을 견주어 20일 이내인지 확인합니다. 새 과세사업은 시작 전에 등록(또는 업종 추가)합니다.'); basis.push(...n.basis); return done('check', '등록 전 매입세액 — 20일 요건 확인'); }
-    if (i.timing === 'late') { why.push(D.rules.late_invoice.summary); todo.push('공급시기가 속한 과세기간의 확정신고기한까지 받았으면 그대로 공제(시행령 제75조 제3호). 그 뒤 1년 안에 받았으면 수정신고·경정청구서와 함께 내야 공제(제7호). 1년이 지났으면 공제할 수 없습니다.'); basis.push(B('decree', '제75조')); verify = verify || !!D.rules.late_invoice.verify; }
-    // 5. 위탁수수료·복리후생 성격
-    if (i.kind === 'outsource') { why.push('수탁기관(지방공단 등)은 지자체가 아니므로 그 기관이 지자체에 공급하는 용역은 과세이고 세금계산서를 받습니다. 다만 실비를 전달·정산하는 돈이면 용역 공급이 아니어서 세금계산서 대상이 아닙니다.'); todo.push('위·수탁 계약서에서 대행 수수료(용역)와 사업비 실비 정산을 나눠 보고, 용역분은 아래 귀속(과세·면세·공통)에 따라 공제·안분합니다.'); basis.push(B('act', '제26조'), B('act', '제38조'), B('decree', '제75조')); if (i.use === 'unknown') return done('check', '위탁수수료 — 용역인지 실비 정산인지 확인'); }
-    if (i.kind === 'welfare') { why.push('직원 복리후생비는 접대비가 아니며 사업 관련 지출입니다. 그 직원이 어느 사업(과세·면세) 일을 하는지에 따라 귀속이 정해집니다.'); }
-    // 6. 귀속
-    const cap = i.kind === 'building' || i.kind === 'equip';
-    if (i.use === 'exempt') { const n = nd('exempt_use'); why.push(`면세사업·고유 행정사무에 쓰인 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('과세 시설과 함께 쓰인 지출이라면 "면세"가 아니라 "공통"으로 다시 판정합니다.'); basis.push(...n.basis); return done('no', '면세사업 관련 — 불공제'); }
-    if (i.use === 'taxable') { why.push('과세사업에만 쓰인 지출의 매입세액은 전액 공제합니다. 실지귀속이 분명하므로 안분하지 않습니다.'); todo.push('지출 원장·계약서에 어느 과세 시설인지 적어 실지귀속 근거를 남깁니다.'); if (cap) todo.push('감가상각자산은 뒤에 면세사업에도 쓰이게 되면 재계산 대상이 되므로 취득 과세기간·매입세액을 자산 대장에 적어 둡니다.'); basis.push(B('act', '제38조'), B('act', '제40조'), B('decree', '제81조')); return done('ok', '과세사업 실지귀속 — 전액 공제', { recalc: cap }); }
-    if (i.use === 'common') { why.push('과세·면세에 함께 쓰여 실지귀속을 가를 수 없는 공통매입세액은 총공급가액 중 면세공급가액 비율로 안분해 면세분을 뺍니다.'); todo.push('아래 「공통매입세액 안분 계산기」로 불공제분을 구합니다(면세비율 5% 미만·공통매입세액 500만 원 미만, 5만 원 미만이면 안분 생략). 예정신고 때 안분한 것은 확정신고 때 정산합니다.'); todo.push('계량기·계약을 시설별로 나눌 수 있으면 나눠 실지귀속으로 바꿉니다 — 과세 시설분은 전액 공제됩니다.'); if (cap) todo.push('감가상각자산은 뒤 과세기간 면세비율이 5%p 이상 바뀌면 납부세액을 재계산합니다(법 제41조, 시행령 제83조).'); basis.push(B('act', '제40조'), B('decree', '제81조'), B('decree', '제82조')); if (cap) basis.push(B('act', '제41조'), B('decree', '제83조')); return done('split', '공통매입세액 — 안분 뒤 공제', { recalc: cap, split: true }); }
-    why.push('어느 사업에 쓰였는지 모르면 공제 여부를 정할 수 없습니다. 실지귀속을 먼저 가릅니다.'); todo.push('지출 결의서·계약서·검수 조서에서 어느 시설(과세 시설/행정청사/겸용)에 쓰였는지 확인합니다. 시설이 과세사업인지는 「3. 우리 시설은 과세사업인가」 표로 봅니다.'); basis.push(B('act', '제40조'), B('decree', '제81조'));
-    return done('check', '귀속(과세·면세·공통) 확인 필요');
-  }
+  const link = (b: Basis) => lawLink(D, b);
+  const bText = lawText;
+  const name = (g: keyof Data['inputs'], k: string) => optName(D, g, k);
+  const judge1 = (i: Input): Out => judge(D, i);
 
   const form = $<HTMLFormElement>('vc-form'), res = $('vc-result'), addBtn = $<HTMLButtonElement>('vc-add'), tbl = $<HTMLTableElement>('vc-table'), wrap = $('vc-table-wrap'), sum = $('vc-sum'), clr = $('vc-clear');
   let last: { i: Input; o: Out; desc: string; amount: number; tax: number } | null = null;
@@ -77,7 +23,7 @@ function init(D: Data) {
   const read = (): Input => ({ use: $<HTMLSelectElement>('vc-use')!.value, kind: $<HTMLSelectElement>('vc-kind')!.value, proof: $<HTMLSelectElement>('vc-proof')!.value, supplier: $<HTMLSelectElement>('vc-supplier')!.value, timing: $<HTMLSelectElement>('vc-timing')!.value });
   form?.addEventListener('submit', e => {
     e.preventDefault();
-    const i = read(); const o = judge(i);
+    const i = read(); const o = judge1(i);
     const amount = num($<HTMLInputElement>('vc-amount')?.value); let tax = num($<HTMLInputElement>('vc-tax')?.value); if (!tax && amount) tax = Math.floor(amount * 0.1);
     const desc = ($<HTMLInputElement>('vc-desc')?.value || '').trim() || '(내용 없음)';
     last = { i, o, desc, amount, tax };
@@ -149,4 +95,3 @@ function init(D: Data) {
   $('ck-reset')?.addEventListener('click', () => { boxes.forEach(b => { b.checked = false; }); try { localStorage.removeItem(KEY); } catch { /* */ } refresh(); });
   $('ck-print')?.addEventListener('click', () => window.print());
 }
-function uniq(b: Basis[]) { const seen = new Set<string>(); return b.filter(x => { const k = x.law + x.art; if (seen.has(k)) return false; seen.add(k); return true; }); }

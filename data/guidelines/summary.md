@@ -1,6 +1,6 @@
 # 사업 지침 창고 (data/guidelines)
 
-받은 날짜: 2026-10-13 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
+받은 날짜: 2026-10-27 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
 
 | key | 지침 | 종류 | 소관 | 시행일 | 상태 | 글자 | 검토 단계 | 원문 |
 |---|---|---|---|---|---|---|---|---|
@@ -47,3 +47,6 @@
 | subsidy-act | 보조금 관리에 관한 법률 | 법률 | 기획예산처 | 2026-06-02 | OK | 43,159 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/법령/보조금관리에관한법률 |
 | subsidy-decree | 보조금 관리에 관한 법률 시행령 | 대통령령 | 기획예산처 | 2026-08-25 | OK | 66,943 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/법령/보조금관리에관한법률시행령 |
 | subsidy-guide | 국고보조금 통합관리지침 | 공고 | 기획예산처 | 2026-05-20 | OK | 55,867 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000279462 |
+| vat-act | 부가가치세법 | 법률 | 재정경제부 | 2026-01-02 | OK | 87,257 | 부가가치세 신고 | https://www.law.go.kr/법령/부가가치세법 |
+| vat-decree | 부가가치세법 시행령 | 대통령령 | 재정경제부 | 2026-04-01 | OK | 184,852 | 부가가치세 신고 | https://www.law.go.kr/법령/부가가치세법시행령 |
+| vat-rule | 부가가치세법 시행규칙 | 재정경제부령 | 재정경제부 | 2026-04-01 | OK | 358,350 | 부가가치세 신고 | https://www.law.go.kr/법령/부가가치세법시행규칙 |

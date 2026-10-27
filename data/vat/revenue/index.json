@@ -270,26 +270,5 @@
   "depts": 18,
   "facility_rows": 204,
   "fac_rows": 85
- },
- "suseong_2026": {
-  "gov": "수성구",
-  "year": "2026",
-  "source": "https://www.suseong.kr/index.do?menu_id=00042630",
-  "fetched": "2026-10-27",
-  "_check": [],
-  "rows": 4,
-  "sum_k": 0,
-  "grant_k": 1279460,
-  "check": []
- },
- "suseong_2026_exp": {
-  "gov": "수성구",
-  "year": "2026",
-  "source": "https://www.suseong.kr/index.do?menu_id=00042630",
-  "fetched": "2026-10-27",
-  "rows": 3,
-  "depts": 1,
-  "facility_rows": 0,
-  "fac_rows": 1
  }
 }

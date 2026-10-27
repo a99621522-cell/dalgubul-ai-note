@@ -140,7 +140,12 @@ def discover(g: dict) -> None:
             t = re.sub(r"\s+", " ", t)
             full = urljoin(url, href)
             key = (t, full)
-            if key in shown or href.startswith(("#", "javascript")) and not re.search(r"\.pdf|\.hwp|download|atch", href, re.I):
+            if key in shown:
+                continue
+            if href.startswith(("#", "javascript")) and not re.search(r"\.pdf|\.hwp|download|atch", href, re.I):
+                if re.search(r"예산서|세입|명세|본예산", t):   # 달서구 게시판처럼 글 제목이 javascript: 링크일 때 — 함수 이름·인자를 본다
+                    shown.add(key)
+                    print(f"   [js] {t[:50]} | {href[:200]}")
                 continue
             if re.search(r"세입|세출|예산서|명세|\.pdf|\.hwp|\.xls|download|atch|attach|fileDown", t + href, re.I):
                 shown.add(key)
@@ -180,6 +185,36 @@ def discover(g: dict) -> None:
         time.sleep(1.0)
 
 
+def probe_files(g: dict) -> None:
+    """번호만 다른 파일 묶음(서구 /file/yesan/2026_00/NN.pdf)을 차례로 받아 첫 쪽 글자 앞부분을 로그로 — 어느 번호가 세입예산사업명세서인지 고른다. 저장 없음."""
+    base = g["probe_base"]
+    fmt = g.get("probe_fmt", "{:02d}.pdf")
+    n = int(g.get("probe_n", 30))
+    tmp = RAW / "_probe"
+    tmp.mkdir(parents=True, exist_ok=True)
+    miss = 0
+    for i in range(1, n + 1):
+        url = base + fmt.format(i)
+        f = tmp / f"p{i:03d}.pdf"
+        data = get(url, f, tries=1, timeout=90)
+        if not data or not data[:5].startswith(b"%PDF"):
+            print(f"   [{i:02d}] 없음/비PDF {url} ({len(data)}B)")
+            miss += 1
+            if miss >= 3 and i > 10:
+                break
+            continue
+        miss = 0
+        r = subprocess.run(["pdftotext", "-l", "2", "-layout", str(f), "-"], capture_output=True)
+        head = re.sub(r"\s+", " ", r.stdout.decode("utf-8", "ignore"))[:200]
+        print(f"   [{i:02d}] {len(data):,}B {url} :: {head}")
+        f.unlink(missing_ok=True)
+        time.sleep(0.8)
+    try:
+        tmp.rmdir()
+    except OSError:
+        pass
+
+
 def main() -> int:
     only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
     year = str(CFG["year"])
@@ -188,7 +223,10 @@ def main() -> int:
             continue
         if g["kind"] == "discover":
             if "--parse-only" not in sys.argv:
-                discover(g)
+                if g.get("probe_base"):
+                    probe_files(g)
+                else:
+                    discover(g)
             continue
         txt = RAW / f"{g['key']}_{year}.txt"
         if "--parse-only" not in sys.argv:

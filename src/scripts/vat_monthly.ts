@@ -1,5 +1,5 @@
 /** /vat/monthly/ 시설 지출 기록 → 매입 인계표(수탁기관·시설 부서). 판정은 vat_rules.judge(공용), 질문은 현장 말. localStorage 저장, 서버 없음. */
-import { $, esc, num, fmt, loadData, judge, toInput, fixDue, FEE_NAME, parseTable, guessColumns, COL_GUESS, guessWhat, getOrg, setOrg, getLedger, setLedger, readJsonFile, downloadText, toCsv, facilityStatus, STATUS_WORD, RUN_NAME, PROOF_Q, PAYEE_Q, USE_Q, WHAT_Q, ASSET_WHAT, SIGNAL, LABEL, lawLink, lawText, uniq, uid, ymd, monthStr, periodOf, nextFiling, handoverDue, type Data, type Org, type OrgFacility, type LedgerRow, type ProofQ, type PayeeQ, type UseQ, type Out } from './vat_rules';
+import { $, esc, num, fmt, loadData, judge, toInput, fixDue, FEE_NAME, payeeQ, runName, STATUS_LABEL_SHORT, parseTable, guessColumns, COL_GUESS, guessWhat, getOrg, setOrg, getLedger, setLedger, readJsonFile, downloadText, toCsv, facilityStatus, STATUS_WORD, RUN_NAME, PROOF_Q, PAYEE_Q, USE_Q, WHAT_Q, ASSET_WHAT, SIGNAL, LABEL, lawLink, lawText, uniq, uid, ymd, monthStr, periodOf, nextFiling, handoverDue, type Data, type Org, type OrgFacility, type LedgerRow, type ProofQ, type PayeeQ, type UseQ, type Out } from './vat_rules';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
@@ -8,7 +8,7 @@ function init(D: Data) {
   monthIn.value = month; ($<HTMLInputElement>('m-d')!).value = ymd(new Date());
   const f0 = nextFiling(); $('m-dday')!.textContent = `다음 신고 ${f0.name} D-${f0.days}` + (org ? ` · 인계표 마감 D-${handoverDue(org.handover_day || 5).days}` : '');
   const chips = (id: string, name: string, opts: { key: string; name: string }[], first = true) => { $(id)!.innerHTML = opts.map((o, i) => `<label><input type="radio" name="${name}" value="${o.key}" ${first && i === 0 ? 'checked' : ''}/> ${esc(o.name)}</label>`).join(''); };
-  chips('m-proof', 'm-proof', PROOF_Q); chips('m-payee', 'm-payee', PAYEE_Q); chips('m-use', 'm-use', USE_Q); chips('m-what', 'm-what', WHAT_Q);
+  chips('m-proof', 'm-proof', PROOF_Q); chips('m-payee', 'm-payee', payeeQ(org?.kind)); chips('m-use', 'm-use', USE_Q); chips('m-what', 'm-what', WHAT_Q);
   const val = (name: string) => (document.querySelector<HTMLInputElement>(`input[name=${name}]:checked`)?.value ?? '');
   const syncQ = () => { const p = val('m-proof'); const card = p === 'card' || p === 'cash'; $('m-vat-q')!.hidden = !card; $('m-payee-q')!.hidden = p === 'bill' || p === 'none'; $('m-asset-q')!.hidden = !ASSET_WHAT.has(val('m-what')); };
   form.addEventListener('change', syncQ); syncQ();
@@ -16,8 +16,8 @@ function init(D: Data) {
   function renderOrg() {
     const st = $('m-org-state')!;
     if (!org) { st.innerHTML = '이 브라우저에 기관 설정이 없습니다. 아래에서 파일을 여세요.'; facSel.innerHTML = '<option value="">— 기관 설정을 먼저 여세요 —</option>'; form.hidden = true; return; }
-    st.innerHTML = `<strong>${esc(org.org)}</strong> · ${esc(org.dept || '')} · 시설 ${org.facilities.length}곳 · 인계표 매달 ${org.handover_day}일까지 · 설정 ${org.created}`;
-    facSel.innerHTML = '<option value="">— 시설을 고르세요 —</option>' + org.facilities.map(f => { const s = facilityStatus(D, f); return `<option value="${f.id}">${esc(f.name)} (${s === 'taxable' ? '과세' : s === 'exempt' ? '면세' : s === 'own' ? '수탁기관 신고' : '확인 필요'})</option>`; }).join('');
+    st.innerHTML = `<strong>${esc(org.org)}</strong>${org.kind === 'contractor' ? ' <span class="verdict check">수탁기관</span>' : ''} · ${esc(org.dept || '')} · 시설 ${org.facilities.length}곳 · 인계표 매달 ${org.handover_day}일까지 · 설정 ${org.created}`; chips('m-payee', 'm-payee', payeeQ(org.kind));
+    facSel.innerHTML = '<option value="">— 시설을 고르세요 —</option>' + org.facilities.map(f => { const s = facilityStatus(D, f); return `<option value="${f.id}">${esc(f.name)} (${STATUS_LABEL_SHORT[s]})</option>`; }).join('');
     const last = sessionStorage.getItem('vat-fac'); if (last && org.facilities.some(f => f.id === last)) { facSel.value = last; pick(); }
   }
   function pick() {
@@ -26,8 +26,8 @@ function init(D: Data) {
     if (!fac) { form.hidden = true; $('m-list')!.hidden = true; note.textContent = ''; return; }
     sessionStorage.setItem('vat-fac', fac.id);
     const s = facilityStatus(D, fac); const reg = org!.unit === 'entity' ? org!.reg_no : fac.reg_no;
-    note.innerHTML = `<span class="verdict ${s}">${STATUS_WORD[s]}</span> · ${esc(RUN_NAME[fac.run])}${reg ? ` · 영수증 받을 번호 <strong>${esc(reg)}</strong>` : ''} · ${periodOf(month)}신고 대상 달`;
-    form.hidden = false; if (s === 'own') note.innerHTML += `<br>수탁기관이 쓴 돈은 수탁기관 장부에 적습니다. <strong>${esc(org!.org)}가 이 시설에 직접 낸 돈(수선·장비·공사)</strong>만 여기에 넣으세요 — ${esc(org!.org)}가 수탁기관에게 받는 것: ${esc(FEE_NAME[fac.fee ?? 'unknown'])}.`;
+    note.innerHTML = `<span class="verdict ${s === 'agency' ? 'none' : s}">${STATUS_WORD[s]}</span> · ${esc(runName(org!.kind, fac.run))}${reg ? ` · 영수증 받을 번호 <strong>${esc(reg)}</strong>` : ''} · ${periodOf(month)}신고 대상 달`;
+    form.hidden = false; if (s === 'agency') note.innerHTML += `<br>군 명의 사업이라 지출 영수증은 <strong>${esc(org!.parent || '군')} 등록번호</strong>로 받습니다. 여기 넣으면 공단 명의인지 군 명의인지 가려 줍니다(군 명의는 군 신고 담당에게 인계).`; if (s === 'own') note.innerHTML += `<br>수탁기관이 쓴 돈은 수탁기관 장부에 적습니다. <strong>${esc(org!.org)}가 이 시설에 직접 낸 돈(수선·장비·공사)</strong>만 여기에 넣으세요 — ${esc(org!.org)}가 수탁기관에게 받는 것: ${esc(FEE_NAME[fac.fee ?? 'unknown'])}.`;
     renderList();
   }
   facSel.addEventListener('change', pick); monthIn.addEventListener('change', pick);

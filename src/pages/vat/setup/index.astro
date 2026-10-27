@@ -20,6 +20,10 @@ const presets = vatPresets();
     <p class="q-title full">1. 우리 기관과 사업자등록</p>
     <label>기관 이름 <input type="text" id="st-org" placeholder="예: ○○군" maxlength="30" /></label>
     <label>신고 담당 부서(이름·전화 없이) <input type="text" id="st-dept" placeholder="예: 회계과 경리팀" maxlength="40" /></label>
+    <div class="q full"><span class="q-title">우리 기관은</span>
+      <div class="choices"><label><input type="radio" name="st-kind" value="gov" checked /> 지자체(시·군·구) — 공급하는 재화·용역은 원칙 면세(법 제26조 제1항 제19호), 열거 업종만 과세</label><label><input type="radio" name="st-kind" value="contractor" /> 수탁기관(시설관리공단·재단 등) — 일반 사업자 기준으로 과세·면세, 군·시 사업의 대행은 군 명의</label></div>
+      <span class="note">시설관리공단은 지자체가 아니라서 제19호 면세가 미치지 않습니다(주차장도 공단 자기 사업이면 과세). 군 사업을 대행하는 시설은 군 명의 사업이라 그 지출의 세금계산서는 군 등록번호로 받고, 공단 수입은 대행수수료(과세 용역)입니다.</span>
+      <label id="st-parent-wrap" hidden>위탁기관(군·시) 이름 <input type="text" id="st-parent" placeholder="예: ○○군" maxlength="30" /></label></div>
     <div class="q full"><span class="q-title">사업자등록은 어떻게 돼 있나요</span>
       <div class="choices"><label><input type="radio" name="st-unit" value="site" checked /> 시설(사업장)마다 따로 등록번호가 있다</label><label><input type="radio" name="st-unit" value="entity" /> 기관 하나의 번호로 묶어 신고한다(사업자 단위 과세)</label></div>
       <span class="note">모르면 홈택스 → 조회/발급 → 사업자등록 상태 조회, 또는 지난 신고서의 등록번호를 봅니다(법 제8조).</span></div>

@@ -1,5 +1,5 @@
 /** /vat/setup/ 기관 설정 마법사(신고 담당). 5문항 → org.json + 시설 카드. localStorage 저장, 서버 없음, 개인정보 없음. */
-import { FEE_NAME, type Fee, $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, uid, ymd, type Data, type Org, type OrgFacility, type Run } from './vat_rules';
+import { FEE_NAME, type Fee, $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, runName, STATUS_LABEL_SHORT, uid, ymd, type Data, type Org, type OrgFacility, type Run, type OrgKind } from './vat_rules';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
@@ -8,15 +8,18 @@ function init(D: Data) {
   const steps = [...document.querySelectorAll<HTMLElement>('.step')];
   const chips = [...document.querySelectorAll<HTMLElement>('#st-steps span')];
   const show = (n: number) => { step = n; steps.forEach(s => { s.hidden = Number(s.dataset.step) !== n; }); chips.forEach((c, i) => { if (i + 1 === n) c.setAttribute('aria-current', 'step'); else c.removeAttribute('aria-current'); }); if (n === 3) renderFac(); if (n === 5) renderResult(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  const save = () => { org.created = ymd(new Date()); setOrg(org); };
+  const save = () => { org.created = ymd(new Date()); org.facilities.forEach(f => { f.kind = org.kind ?? 'gov'; if (f.kind === 'contractor' && f.run === 'entrusted_own') f.run = 'unknown'; }); setOrg(org); };
+  const kindRadios = [...document.querySelectorAll<HTMLInputElement>('input[name=st-kind]')]; const parentWrap = $('st-parent-wrap')!;
+  const syncKind = () => { org.kind = (kindRadios.find(r => r.checked)?.value as OrgKind) ?? 'gov'; parentWrap.hidden = org.kind !== 'contractor'; };
+  kindRadios.forEach(r => r.addEventListener('change', syncKind));
 
   /* 1단계 */
   const unitRadios = [...document.querySelectorAll<HTMLInputElement>('input[name=st-unit]')];
   const regWrap = $('st-regno-wrap')!;
   const syncUnit = () => { const u = (unitRadios.find(r => r.checked)?.value ?? 'site') as Org['unit']; org.unit = u; regWrap.hidden = u !== 'entity'; };
   unitRadios.forEach(r => r.addEventListener('change', syncUnit));
-  const fill1 = () => { ($<HTMLInputElement>('st-org')!).value = org.org; ($<HTMLInputElement>('st-dept')!).value = org.dept; unitRadios.forEach(r => { r.checked = r.value === org.unit; }); ($<HTMLInputElement>('st-regno')!).value = org.reg_no ?? ''; syncUnit(); ($<HTMLInputElement>('st-day')!).value = String(org.handover_day || 5); document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); }); };
-  const read1 = () => { org.org = ($<HTMLInputElement>('st-org')!).value.trim(); org.dept = ($<HTMLInputElement>('st-dept')!).value.trim(); syncUnit(); org.reg_no = ($<HTMLInputElement>('st-regno')!).value.trim() || undefined; };
+  const fill1 = () => { ($<HTMLInputElement>('st-org')!).value = org.org; ($<HTMLInputElement>('st-dept')!).value = org.dept; kindRadios.forEach(r => { r.checked = r.value === (org.kind ?? 'gov'); }); ($<HTMLInputElement>('st-parent')!).value = org.parent ?? ''; syncKind(); unitRadios.forEach(r => { r.checked = r.value === org.unit; }); ($<HTMLInputElement>('st-regno')!).value = org.reg_no ?? ''; syncUnit(); ($<HTMLInputElement>('st-day')!).value = String(org.handover_day || 5); document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); }); };
+  const read1 = () => { org.org = ($<HTMLInputElement>('st-org')!).value.trim(); org.dept = ($<HTMLInputElement>('st-dept')!).value.trim(); syncKind(); org.parent = ($<HTMLInputElement>('st-parent')!).value.trim() || undefined; syncUnit(); org.reg_no = ($<HTMLInputElement>('st-regno')!).value.trim() || undefined; };
   /* 2단계 */
   const read2 = () => {
     const types = [...document.querySelectorAll<HTMLInputElement>('input[name=st-type]:checked')].map(c => c.value);
@@ -38,12 +41,12 @@ function init(D: Data) {
   const facBox = $('st-fac')!;
   function renderFac() {
     if (!org.facilities.length) { facBox.innerHTML = '<p class="empty">2단계에서 시설을 고르세요.</p>'; return; }
-    facBox.innerHTML = org.facilities.map(f => { const r = facilityRule(D, f); const st = r?.status ?? 'check'; return `<div class="vc-form" data-fid="${f.id}">
-      <p class="q-title full"><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : '확인 필요'}</span> ${esc(r?.name ?? '직접 추가')}${r?.interp ? '<span class="vbadge">유권해석·분류 확인</span>' : ''}</p>
+    facBox.innerHTML = org.facilities.map(f => { f.kind = org.kind ?? 'gov'; const r = facilityRule(D, f); const C = org.kind === 'contractor'; const st0 = (C ? (r?.contractor_status === 'none' ? 'exempt' : r?.contractor_status) : r?.status) ?? r?.status ?? 'check'; const st = st0; return `<div class="vc-form" data-fid="${f.id}">
+      <p class="q-title full"><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : '확인 필요'}</span> ${esc(r?.name ?? '직접 추가')}${C ? ' <span class="note">수탁기관 기준' + (r?.contractor_note ? ' — ' + esc(r.contractor_note) : '') + '</span>' : r?.interp ? '<span class="vbadge">유권해석·분류 확인</span>' : ''}</p>
       <label>시설 이름 <input type="text" data-k="name" value="${esc(f.name)}" maxlength="40" /></label>
-      <label>운영 방식 <select data-k="run">${(Object.keys(RUN_NAME) as Run[]).map(k => `<option value="${k}" ${f.run === k ? 'selected' : ''}>${RUN_NAME[k]}</option>`).join('')}</select></label>
-      <label>수탁기관·담당 부서(위탁일 때, 부서명만) <input type="text" data-k="contractor_dept" value="${esc(f.contractor_dept ?? '')}" placeholder="예: 시설관리공단 체육사업팀" /></label>
-      <label class="full" data-fee-q ${f.run === 'entrusted_own' ? '' : 'hidden'}>수탁기관 자기 사업일 때 — 우리 기관이 수탁기관에게 받는 것 <select data-k="fee">${(Object.keys(FEE_NAME) as Fee[]).map(k => `<option value="${k}" ${(f.fee ?? 'unknown') === k ? 'selected' : ''}>${FEE_NAME[k]}</option>`).join('')}</select><span class="note">사용료·임대료를 받아 과세로 신고하고 있을 때만 우리 기관이 이 시설에 직접 낸 돈(수선·장비)의 부가세를 공제할 수 있습니다. 받지만 과세 신고 여부를 모르면 노랑, 무상이면 불공제. <strong>무상 → 유상(과세)으로 바꾸면</strong> 그 전에 산 건물·설비의 불공제 매입세액을 과세사업 전환 매입세액(시행령 제85조)으로 일부 되살릴 수 있습니다 — <a href="/vat/prepare/#p-convert">신고 준비의 전환 계산기</a>.</span></label>
+      <label>운영 방식 <select data-k="run">${(Object.keys(RUN_NAME) as Run[]).filter(k => !(C && k === 'entrusted_own')).map(k => `<option value="${k}" ${f.run === k ? 'selected' : ''}>${runName(org.kind, k)}</option>`).join('')}</select></label>
+      <label>${C ? '담당 부서·위탁 부서(부서명만)' : '수탁기관·담당 부서(위탁일 때, 부서명만)'} <input type="text" data-k="contractor_dept" value="${esc(f.contractor_dept ?? '')}" placeholder="${C ? '예: 체육사업팀 / 군 ○○과' : '예: 시설관리공단 체육사업팀'}" /></label>
+      <label class="full" data-fee-q ${f.run === 'entrusted_own' && !C ? '' : 'hidden'}>수탁기관 자기 사업일 때 — 우리 기관이 수탁기관에게 받는 것 <select data-k="fee">${(Object.keys(FEE_NAME) as Fee[]).map(k => `<option value="${k}" ${(f.fee ?? 'unknown') === k ? 'selected' : ''}>${FEE_NAME[k]}</option>`).join('')}</select><span class="note">사용료·임대료를 받아 과세로 신고하고 있을 때만 우리 기관이 이 시설에 직접 낸 돈(수선·장비)의 부가세를 공제할 수 있습니다. 받지만 과세 신고 여부를 모르면 노랑, 무상이면 불공제. <strong>무상 → 유상(과세)으로 바꾸면</strong> 그 전에 산 건물·설비의 불공제 매입세액을 과세사업 전환 매입세액(시행령 제85조)으로 일부 되살릴 수 있습니다 — <a href="/vat/prepare/#p-convert">신고 준비의 전환 계산기</a>.</span></label>
       ${st === 'check' ? `<label class="full">확인 결과·근거(유권해석·질의회신 번호, 결정일 — 정해졌으면 위 시설 유형을 과세·면세 유형으로 바꾸고 여기 근거를 남깁니다) <input type="text" data-k="decision" value="${esc(f.decision ?? '')}" maxlength="120" placeholder="예: 2026-09-01 세무서 질의회신 ○○, 과세로 처리" /></label>` : ''}
       ${org.unit === 'site' ? `<label>이 시설(사업장)의 사업자등록번호 <input type="text" data-k="reg_no" value="${esc(f.reg_no ?? '')}" placeholder="000-00-00000" inputmode="numeric" /></label>` : ''}
       <div class="q"><span class="q-title" style="font-size:var(--small)">수입은 어떻게 받나요(여럿)</span><div class="choices">
@@ -61,8 +64,8 @@ function init(D: Data) {
 
   /* 5단계 */
   function renderResult() {
-    const rows = org.facilities.map(f => { const st = facilityStatus(D, f); return `<tr><th scope="row">${esc(f.name)}</th><td><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : st === 'own' ? '수탁기관 신고' : '확인 필요'}</span></td><td>${f.run === 'unknown' ? '<span class="verdict check">운영 방식 확인</span> ' : ''}${esc(RUN_NAME[f.run])}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}${f.run === 'entrusted_own' ? ` · 받는 것: ${esc(FEE_NAME[f.fee ?? 'unknown'].split('(')[0])}` : ''}${f.decision ? ` · 근거: ${esc(f.decision)}` : ''}</td><td>${esc(org.unit === 'entity' ? (org.reg_no || '—') : (f.reg_no || '—'))}</td><td>${f.income.map(i => i === 'invoice' ? '세금계산서' : '카드·현금영수증').join('·')}${f.deposit ? ' · 보증금' : ''}</td></tr>`; }).join('');
-    $('st-summary')!.innerHTML = `<p><strong>${esc(org.org || '(기관 이름 없음)')}</strong> · ${esc(org.dept || '부서 없음')} · ${org.unit === 'entity' ? '사업자 단위 과세' : '사업장별 등록'} · 인계표 매달 ${org.handover_day}일까지 · 저장 ${org.created}</p>
+    const rows = org.facilities.map(f => { const st = facilityStatus(D, f); return `<tr><th scope="row">${esc(f.name)}</th><td><span class="verdict ${st === 'agency' ? 'none' : st}">${STATUS_LABEL_SHORT[st]}</span></td><td>${f.run === 'unknown' ? '<span class="verdict check">운영 방식 확인</span> ' : ''}${esc(runName(org.kind, f.run))}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}${f.run === 'entrusted_own' ? ` · 받는 것: ${esc(FEE_NAME[f.fee ?? 'unknown'].split('(')[0])}` : ''}${f.decision ? ` · 근거: ${esc(f.decision)}` : ''}</td><td>${esc(org.unit === 'entity' ? (org.reg_no || '—') : (f.reg_no || '—'))}</td><td>${f.income.map(i => i === 'invoice' ? '세금계산서' : '카드·현금영수증').join('·')}${f.deposit ? ' · 보증금' : ''}</td></tr>`; }).join('');
+    $('st-summary')!.innerHTML = `<p><strong>${esc(org.org || '(기관 이름 없음)')}</strong>${org.kind === 'contractor' ? ` <span class="verdict check">수탁기관${org.parent ? ' · 위탁기관 ' + esc(org.parent) : ''}</span>` : ''} · ${esc(org.dept || '부서 없음')} · ${org.unit === 'entity' ? '사업자 단위 과세' : '사업장별 등록'} · 인계표 매달 ${org.handover_day}일까지 · 저장 ${org.created}</p>
       <div class="scroll-x"><table class="data-table vat-table" data-stack="off"><caption>${esc(org.org)} 과세사업 시설 설정</caption><thead><tr><th scope="col">시설</th><th scope="col">부가세</th><th scope="col">운영</th><th scope="col">세금계산서 받을 번호</th><th scope="col">수입 종류</th></tr></thead><tbody>${rows || '<tr><td colspan="5">시설 없음</td></tr>'}</tbody></table></div>`;
     $('cards')!.innerHTML = org.facilities.map(f => card(f)).join('');
   }
@@ -70,12 +73,13 @@ function init(D: Data) {
     const st = facilityStatus(D, f); const r = facilityRule(D, f); const reg = org.unit === 'entity' ? org.reg_no : f.reg_no;
     const what = st === 'taxable' ? `이용료·임대료에 부가세 10%가 붙고 <strong>${esc(org.org)}</strong>에서 신고합니다. 이 시설에 쓴 돈의 영수증(세금계산서·카드 전표)은 <strong>${esc(org.org)} 등록번호 ${esc(reg || '(번호 확인)')}</strong>로 받습니다. 그래야 그 부가세를 돌려받습니다.`
       : st === 'exempt' ? `이 시설 수입에는 부가세가 붙지 않고, 이 시설에만 쓴 돈의 부가세도 돌려받지 못합니다. 다만 <strong>다른 과세 시설과 함께 쓴 지출</strong>(공동 전기·청소 등)은 '여러 시설이 같이'로 표시해 주세요 — 나눠서 공제합니다.`
+      : st === 'agency' ? `<strong>${esc(org.parent || '군·시')}</strong>의 사업을 ${esc(org.org)}가 대행하는 시설입니다. 이용료는 군 수입(군이 신고)이고, 이 시설에 쓴 돈의 세금계산서는 <strong>군 등록번호</strong>로 받아 군이 공제합니다. ${esc(org.org)}의 수입은 대행수수료(과세 용역 — 군에 세금계산서 발급)뿐이며, 공단 명의로 받은 지출은 재청구 구조가 아니면 누구도 공제하지 못합니다.`
       : st === 'own' ? `수탁기관이 자기 이름으로 하는 사업입니다. 수탁기관이 쓰는 돈의 부가세 신고는 수탁기관이 하고, 영수증도 수탁기관 이름으로 받습니다. <strong>${esc(org.org)}가 이 시설에 직접 내는 돈(수선·장비·공사)</strong>은 따로입니다 — ${f.fee === 'taxable' ? `${esc(org.org)}가 수탁기관에게 사용료·임대료를 받아 과세로 신고하므로 그 돈의 영수증은 ${esc(org.org)} 등록번호 ${esc(reg || '(번호 확인)')}로 받고 기록합니다(공제 대상).` : f.fee === 'free' ? `${esc(org.org)}가 사용료를 받지 않는 무상 사용이라 그 돈의 부가세는 돌려받지 못합니다. 큰 수선·설비가 예정돼 있으면 유상 사용허가로 바꿀 수 있는지 재산 담당과 검토합니다.` : `${esc(org.org)}가 수탁기관에게 사용료를 받는지(위·수탁 계약·사용허가서) 확인해 기관 설정에서 고르세요. 받으면 공제 대상, 무상이면 공제 불가.`}`
       : `과세인지 면세인지 법령 글자로 정해지지 않아 <strong>${esc(org.dept || '신고 담당 부서')}</strong>가 유권해석으로 정합니다. 정해질 때까지 영수증은 ${esc(org.org)} 이름으로 받고 기록은 계속합니다.`;
-    return `<article class="fcard"><h3>${esc(f.name)} <span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : st === 'own' ? '수탁기관 신고' : '확인 필요'}</span></h3>
-      <dl class="kv"><dt>기관</dt><dd>${esc(org.org)} · ${esc(org.dept || '')}</dd><dt>운영</dt><dd>${esc(RUN_NAME[f.run])}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}</dd><dt>시설 유형</dt><dd>${esc(r?.name ?? '직접 추가')} — ${esc(r?.group ?? '')}</dd><dt>등록번호</dt><dd>${esc(reg || '—')}</dd></dl>
+    return `<article class="fcard"><h3>${esc(f.name)} <span class="verdict ${st === 'agency' ? 'none' : st}">${STATUS_LABEL_SHORT[st]}</span></h3>
+      <dl class="kv"><dt>기관</dt><dd>${esc(org.org)} · ${esc(org.dept || '')}</dd><dt>운영</dt><dd>${esc(runName(org.kind, f.run))}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}</dd><dt>시설 유형</dt><dd>${esc(r?.name ?? '직접 추가')} — ${esc(r?.group ?? '')}</dd><dt>등록번호</dt><dd>${esc(reg || '—')}</dd></dl>
       <p>${what}</p>${st === 'own' && (f.fee ?? 'unknown') === 'unknown' ? '<p class="callout warn">우리 기관이 수탁기관에게 사용료·임대료를 받는지 아직 정하지 않았습니다. 그때까지 우리 기관이 이 시설에 직접 낸 돈은 노랑(확인 필요)으로 기록됩니다.</p>' : ''}${f.run === 'unknown' ? '<p class="callout warn">운영 방식이 아직 정해지지 않았습니다. 위·수탁 계약서로 "우리 기관 명의 사업(대행)"인지 "수탁기관 자기 사업"인지 확인해 기관 설정에서 고르세요. 수탁기관 자기 사업이면 이 카드의 매입세액 안내는 적용되지 않습니다.</p>' : ''}
-      ${st !== 'own' || f.fee === 'taxable' ? `<h4>매달 할 일</h4><ol>
+      ${(st !== 'own' && st !== 'agency') || f.fee === 'taxable' ? `<h4>매달 할 일</h4><ol>
         <li>영수증마다 <strong>어느 시설에 쓴 돈인지</strong> 적어 둡니다(이 시설만 / 여러 시설 / 사무실과 함께).</li>
         <li>세금계산서의 <strong>공급받는 자</strong>가 ${esc(org.org)} 등록번호인지 봅니다. 공단·개인 이름이면 그 자리에서 수정 요청.</li>
         <li>카드 전표는 <strong>부가세 금액이 따로 적힌 것</strong>을 받습니다(간이영수증은 안 됩니다). 기관 법인카드는 홈택스 「사업용 신용카드」에 등록해 두면 자동 집계됩니다(신고 담당이 한 번).</li>

@@ -32,52 +32,52 @@ taxable_principle:
     - 지방자치단체는 법인에 포함돼 납세의무자다(법 제3조 제1항). 과세사업을 하면 사업장마다 사업 개시일부터 20일 안에 등록하고(법 제8조 제1항, 사업장이 여럿이면 사업자 단위 과세 선택 가능 제8조 제3항) 세금계산서를 발급하며(법 제32조) 예정·확정신고를 한다(법 제48조·제49조).
     - 위탁(대행) 운영 시설은 '누가 사업자인가'(지자체 명의 사업인지, 수탁기관 자기 사업인지)에 따라 신고 주체가 달라진다. 지자체 명의 사업이면 그 시설의 매입 세금계산서도 지자체 등록번호로 받아야 매입세액으로 공제된다. 수탁기관(지방공단 등)은 지자체가 아니므로 제19호 면세를 받지 못한다.
 facilities:
-  - { key: lease,     name: 공유재산 임대(건물·상가·토지 대부료),            status: taxable, group: 부동산임대업(시행령 제46조 제3호),
+  - { key: lease,     name: 공유재산 임대(건물·상가·토지 대부료),            status: taxable, contractor_status: taxable, contractor_note: "수탁기관의 임대는 부동산임대업 과세", group: 부동산임대업(시행령 제46조 제3호),
       note: 토지 '공급'은 면세(법 제26조 제1항 제14호)이지만 토지 '임대'는 과세. 주택과 그 부수토지 임대는 면세(제12호, 시행령 제41조), 전·답·과수원·목장용지·임야·염전 임대업은 과세 대상 사업에서 뺀다(시행령 제3조 제1항 제6호 가목). 임대보증금은 간주임대료를 공급가액에 넣는다(법 제29조 제10항 제1호, 시행령 제65조).,
       basis: [{ law: decree, art: 제46조 }, { law: decree, art: 제41조 }, { law: decree, art: 제3조 }, { law: decree, art: 제65조 }] }
-  - { key: use_permit, name: 행정재산 사용·수익허가 사용료,                   status: check,   group: 부동산임대업 해당 여부,
+  - { key: use_permit, name: 행정재산 사용·수익허가 사용료,                   status: check, contractor_status: taxable, contractor_note: "수탁기관이 자기 이름으로 공간을 빌려주면 부동산임대업 과세(사용허가 분류 논점 없음)",   group: 부동산임대업 해당 여부,
       note: 공유재산법상 '사용허가'라도 실질이 부동산 임대이면 부동산임대업으로 보는 해석 사례가 있다. 허가 대상(건물 일부·부지·자판기 자리 등)과 사용 방식으로 판단하고 국세청 유권해석을 확인한다., interp: true,
       basis: [{ law: decree, art: 제46조 }] }
-  - { key: sports,    name: 체육시설(수영장·헬스장·체육관·구장 대관·빙상장 등), status: taxable, group: 기타 스포츠시설 운영업(시행령 제46조 제3호),
+  - { key: sports,    name: 체육시설(수영장·헬스장·체육관·구장 대관·빙상장 등), status: taxable, contractor_status: taxable, contractor_note: "운영 주체와 무관하게 기타 스포츠시설 운영업 과세", group: 기타 스포츠시설 운영업(시행령 제46조 제3호),
       note: 강습료·대관료·입장료 모두 그 시설 운영의 공급가액. 지자체 체육시설을 면세로 남기는 제외 규정은 현행 시행령·시행규칙에 없다(제외는 국군 관계자 대상뿐).,
       basis: [{ law: decree, art: 제46조 }, { law: rule, art: 제35조 }] }
-  - { key: golf,      name: 골프장·스키장(파크골프장 포함 여부는 분류 확인),   status: taxable, group: 골프장 및 스키장 운영업(시행령 제46조 제3호),
+  - { key: golf,      name: 골프장·스키장(파크골프장 포함 여부는 분류 확인),   status: taxable, contractor_status: taxable, contractor_note: "과세", group: 골프장 및 스키장 운영업(시행령 제46조 제3호),
       note: 파크골프장·골프연습장이 '골프장 운영업'인지 '기타 스포츠시설 운영업'인지는 표준산업분류로 확인 — 어느 쪽이든 열거 업종이면 과세., interp: true,
       basis: [{ law: decree, art: 제46조 }] }
-  - { key: food,      name: 직영 식당·카페·매점·기념품점·농산물 판매장,          status: taxable, group: 음식점업·도매 및 소매업(시행령 제46조 제3호),
+  - { key: food,      name: 직영 식당·카페·매점·기념품점·농산물 판매장,          status: taxable, contractor_status: taxable, contractor_note: "과세", group: 음식점업·도매 및 소매업(시행령 제46조 제3호),
       note: 소속 직원 복리후생을 위해 구내에서 직접 경영하는 식당은 제외(면세, 제3호 나목). 판매장의 미가공 농축수산물은 품목 자체가 면세(법 제26조 제1항 제1호)라 과세 품목과 나눠 적는다.,
       basis: [{ law: decree, art: 제46조 }, { law: act, art: 제26조 }] }
-  - { key: lodging,   name: 숙박시설(자연휴양림 숙박동·수련원·야영장 등),         status: taxable, group: 숙박업(시행령 제46조 제3호),
+  - { key: lodging,   name: 숙박시설(자연휴양림 숙박동·수련원·야영장 등),         status: taxable, contractor_status: taxable, contractor_note: "과세", group: 숙박업(시행령 제46조 제3호),
       note: 야영장(캠핑장)이 표준산업분류 숙박업에 드는지 확인. 입장료·시설사용료가 숙박 공급가액에 드는지도 계약·요금 체계로 본다., interp: true,
       basis: [{ law: decree, art: 제46조 }] }
-  - { key: parking,   name: 공영주차장(직영) 주차요금,                             status: exempt,  group: 열거 업종 아님 → 지자체 공급 면세(제19호),
+  - { key: parking,   name: 공영주차장(직영) 주차요금,                             status: exempt, contractor_status: taxable, contractor_note: "지자체 면세(제19호)는 수탁기관에 미치지 않아 주차장 운영업 과세 — 군 명의 대행이면 면세",  group: 열거 업종 아님 → 지자체 공급 면세(제19호),
       note: 시행령 제46조 제3호 열거 업종에 주차장 운영업은 없다(2026-04-01 시행 원문으로 확인). 지자체가 직접 운영하는 주차장은 제19호 면세. 수탁기관이 자기 사업으로 운영하면 그 기관은 지자체가 아니므로 과세이고, 과세 임대 상가의 부설주차장은 그 임대에 부수되는지 계약으로 본다.,
       basis: [{ law: decree, art: 제46조 }, { law: act, art: 제26조 }] }
-  - { key: funeral,   name: 공설 장례식장·화장시설·봉안시설 사용료,                 status: exempt,  group: 지자체 공급 면세(제19호)·장의 용역 면세(제5호),
+  - { key: funeral,   name: 공설 장례식장·화장시설·봉안시설 사용료,                 status: exempt, contractor_status: exempt, contractor_note: "지자체로부터 공설묘지·화장시설·봉안시설·자연장지 관리를 위탁받은 자의 용역 면세(시행령 제35조 제8호)",  group: 지자체 공급 면세(제19호)·장의 용역 면세(제5호),
       note: 장의업자의 장의용역(시행령 제35조 제6호)과 지자체로부터 공설묘지·화장시설·봉안시설 관리를 위탁받은 자가 제공하는 화장·안치·관리 용역(제35조 제8호)도 면세. 장례식장 안 식당·매점·용품 판매는 음식점업·도소매업으로 과세가 될 수 있어 따로 본다.,
       basis: [{ law: act, art: 제26조 }, { law: decree, art: 제35조 }] }
-  - { key: water,     name: 상수도(수돗물)·하수도 사용료,                           status: exempt,  group: 수돗물 면세(제2호)·지자체 공급 면세(제19호),
+  - { key: water,     name: 상수도(수돗물)·하수도 사용료,                           status: exempt, contractor_status: exempt, contractor_note: "수돗물 공급 면세(제2호) — 위탁 운영 용역 대가는 따로 봄",  group: 수돗물 면세(제2호)·지자체 공급 면세(제19호),
       note: 수돗물은 누가 공급하든 면세 품목. 상하수도 공기업 특별회계도 매입세액 공제가 없다(면세사업).,
       basis: [{ law: act, art: 제26조 }] }
-  - { key: waste_bag, name: 종량제 봉투 판매·폐기물 처리 수수료,                   status: check,   group: 도소매업 해당 여부,
+  - { key: waste_bag, name: 종량제 봉투 판매·폐기물 처리 수수료,                   status: check, contractor_status: check, contractor_note: "종량제 봉투는 보통 군 명의 판매 대행 — 수탁기관 자기 매출이면 도소매 과세",   group: 도소매업 해당 여부,
       note: 법령에는 종량제 봉투 규정이 없다. 봉투 판매를 폐기물 처리 용역의 대가로 보아 면세로 본 해석 사례가 있으니 국세청 유권해석을 확인한다., interp: true,
       basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }] }
-  - { key: culture,   name: 박물관·미술관·과학관·도서관 입장료,                     status: exempt,  group: 입장 용역 면세(제17호)·지자체 공급 면세(제19호),
+  - { key: culture,   name: 박물관·미술관·과학관·도서관 입장료,                     status: exempt, contractor_status: exempt, contractor_note: "박물관·미술관·과학관·도서관 입장은 운영 주체와 무관하게 면세(제17호)",  group: 입장 용역 면세(제17호)·지자체 공급 면세(제19호),
       note: 안의 매점·카페·기념품점은 과세 사업으로 따로 본다.,
       basis: [{ law: act, art: 제26조 }] }
-  - { key: venue,     name: 공연장·전시장·회의실 대관료,                            status: check,   group: 부동산임대업 해당 여부,
+  - { key: venue,     name: 공연장·전시장·회의실 대관료,                            status: check, contractor_status: taxable, contractor_note: "수탁기관의 대관은 부동산임대업(또는 행사장 임대) 과세",   group: 부동산임대업 해당 여부,
       note: 시설을 일정 기간 빌려주는 대관이 부동산임대업인지, 문화행사 용역(제16호)인지 계약 내용으로 본다. 유권해석 확인., interp: true,
       basis: [{ law: decree, art: 제46조 }, { law: act, art: 제26조 }] }
-  - { key: transit,   name: 시내버스·마을버스 등 여객운송(직영),                   status: exempt,  group: 여객운송 용역 면세(제7호)·지자체 공급 면세(제19호),
+  - { key: transit,   name: 시내버스·마을버스 등 여객운송(직영),                   status: exempt, contractor_status: exempt, contractor_note: "시내·마을버스 여객운송 면세(제7호) — 전세·관광 목적 운송은 과세",  group: 여객운송 용역 면세(제7호)·지자체 공급 면세(제19호),
       note: 지자체 공급 중 과세인 여객운송은 고속철도뿐(시행령 제46조 제2호). 제7호 단서의 항공기·고속버스·전세버스·택시·삭도·유람선 등은 일반 사업자 기준이고 지자체 직영이면 제19호로 돌아간다.,
       basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }] }
-  - { key: admin,     name: 고유 행정사무(민원 수수료·증명 발급·과태료 등),         status: exempt,  group: 과세 대상 아님·지자체 공급 면세(제19호),
+  - { key: admin,     name: 고유 행정사무(민원 수수료·증명 발급·과태료 등),         status: exempt, contractor_status: none, contractor_note: "행정사무는 수탁기관 매출이 아님",  group: 과세 대상 아님·지자체 공급 면세(제19호),
       note: 사업자가 아닌 지위에서 하는 행정 행위는 부가가치세 대상이 아니다. 여기 쓰인 지출의 매입세액은 공제할 수 없고, 과세사업 시설과 함께 쓰인 지출이면 공통매입세액.,
       basis: [{ law: act, art: 제26조 }] }
-  - { key: program,   name: 체험·강습 프로그램 참가비(산림치유·청소년수련·체험관 등),  status: exempt,  group: 열거 업종 아님 → 지자체 공급 면세(제19호),
+  - { key: program,   name: 체험·강습 프로그램 참가비(산림치유·청소년수련·체험관 등),  status: exempt, contractor_status: check, contractor_note: "교육 용역 면세는 시행령 제36조 요건(주무관청 허가·등록 학원·청소년수련시설 등)을 갖출 때만 — 아니면 과세",  group: 열거 업종 아님 → 지자체 공급 면세(제19호),
       note: 지자체가 직접 제공하는 체험·강습 용역은 열거 업종이 아니라 면세. 다만 체육시설 안 강습료는 그 체육시설 운영의 공급가액(과세)이고, 교육 용역(제6호)·문화행사(제16호)도 면세 조항이 따로 있다.,
       basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }] }
-  - { key: ad_space,  name: 시설물 광고 게시료(옥외광고·전광판),                   status: check,   group: 광고업·임대업 해당 여부,
+  - { key: ad_space,  name: 시설물 광고 게시료(옥외광고·전광판),                   status: check, contractor_status: taxable, contractor_note: "광고업 과세",   group: 광고업·임대업 해당 여부,
       note: 광고 매체 제공이 어느 업종인지(광고업은 열거 업종이 아니고, 자리를 빌려주는 것이면 부동산임대업일 수 있다) 유권해석으로 확인., interp: true,
       basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }] }
 
@@ -214,16 +214,19 @@ revenue_items:
   - { key: admin_fee, group: 수수료수입, name: 민원·증명 발급 수수료, 인허가 수수료, status: none, type: admin, basis: [{ law: act, art: 제26조 }], deduct: 없음(고유 행정사무 — 공급가액에 넣지 않음) }
   - { key: waste_bag, group: 수수료수입, name: 종량제 봉투 판매·폐기물 처리(반입) 수수료, status: check, type: waste_bag, basis: [{ law: decree, art: 제46조 }], deduct: 봉투 제작·판매 관련 지출(도소매업으로 보면), note: 유권해석·분류 확인 }
   - { key: food, group: 사업수입, name: 직영 매점·카페·기념품점·식당·농산물 판매장(가공품), status: taxable, type: food, basis: [{ law: decree, art: 제46조 }], deduct: 상품 매입, 매장 관리·수선, 장비 }
-  - { key: canteen, group: 사업수입, name: 소속 직원 복리후생 구내식당(직영) 음식 공급, status: exempt, basis: [{ law: decree, art: 제46조 }], deduct: 없음(시행령 제46조 제3호 나목 제외) — 외부인에게도 팔면 그 부분 확인 }
+  - { key: canteen, group: 사업수입, name: 소속 직원 복리후생 구내식당(직영) 음식 공급, status: exempt, contractor_status: taxable, contractor_note: "수탁기관 직원 식당 직영은 제외 규정(지자체 소속 직원)이 없어 과세", basis: [{ law: decree, art: 제46조 }], deduct: 없음(시행령 제46조 제3호 나목 제외) — 외부인에게도 팔면 그 부분 확인 }
   - { key: farm, group: 사업수입, name: 미가공 농산물·임산물·축산물 판매(시험장·휴양림 임산물 등), status: exempt, basis: [{ law: act, art: 제26조 }], deduct: 없음(제1호 면세) — 가공품은 과세 }
   - { key: books, group: 사업수입, name: 간행물·도서·지도 판매, status: exempt, basis: [{ law: act, art: 제26조 }], deduct: 없음(제8호 면세) — 기념품·굿즈는 과세 }
   - { key: medical, group: 사업수입, name: 보건소 진료비·예방접종·검사 수수료, status: exempt, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제35조 }], deduct: 없음(의료보건 용역 제5호) }
   - { key: ad_space, group: 사업수입, name: 시설물·전광판·버스승강장 광고 게시료, status: check, type: ad_space, basis: [{ law: decree, art: 제46조 }], deduct: 광고 시설 설치·관리 지출(광고업·임대업으로 보면) }
   - { key: vending, group: 사업수입, name: 자판기 직영 판매 수입, status: taxable, type: food, basis: [{ law: decree, art: 제46조 }], deduct: 자판기 구입·임차, 상품 매입, 전기(계량 가능하면), note: 자리만 빌려주면 사용허가 사용료 항목으로 }
-  - { key: scrap, group: 재산매각·기타, name: 고철·폐품·불용품 매각 대금, status: check, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 없음(단발 매각)·반복 매각이면 도소매업 여부 확인, note: 유권해석·분류 확인 }
+  - { key: scrap, group: 재산매각·기타, name: 고철·폐품·불용품 매각 대금, status: check, contractor_status: taxable, contractor_note: "사업자의 재화 공급 — 과세", basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 없음(단발 매각)·반복 매각이면 도소매업 여부 확인, note: 유권해석·분류 확인 }
   - { key: land_sale, group: 재산매각·기타, name: 토지 매각 대금, status: exempt, basis: [{ law: act, art: 제26조 }], deduct: 없음(토지 제14호) — 면세공급가액에 들어가 그 과세기간 면세비율을 크게 올림 }
-  - { key: bldg_sale, group: 재산매각·기타, name: 건물·구축물 매각 대금, status: check, basis: [{ law: act, art: 제26조 }], deduct: 과세사업에 쓰던 건물이면 과세 공급(공급가액 포함), note: 지자체 공급 재화 면세(제19호)와 과세사업용 건물 공급의 구분 — 유권해석 확인 }
+  - { key: bldg_sale, group: 재산매각·기타, name: 건물·구축물 매각 대금, status: check, contractor_status: taxable, contractor_note: "사업자의 건물 공급 — 과세", basis: [{ law: act, art: 제26조 }], deduct: 과세사업에 쓰던 건물이면 과세 공급(공급가액 포함), note: 지자체 공급 재화 면세(제19호)와 과세사업용 건물 공급의 구분 — 유권해석 확인 }
   - { key: non_supply, group: 재산매각·기타, name: 이자수입·과태료·과징금·부담금·보조금·기부금·전입금, status: none, basis: [{ law: act, art: 제26조 }], deduct: 없음(재화·용역의 공급이 아님 — 면세공급가액에도 넣지 않음; 다만 면세사업 관련 국고·공공보조금은 안분 때 면세공급가액에 포함 — 시행령 제81조 제1항 단서) }
+  - { key: agency_fee, group: 수탁기관만, only: contractor, name: 군·시 사업 대행수수료(위탁사업비 가운데 수수료·관리비 몫), status: none, contractor_status: taxable, basis: [{ law: act, art: 제26조 }, { law: act, art: 제38조 }], deduct: 대행 업무에 쓴 공단 지출(인건비 제외 용역·장비), contractor_note: "수탁기관이 지자체에 제공하는 용역은 과세 — 군에 세금계산서 발급. 사업비 실비를 단순히 전달받는 몫은 공급이 아님" }
+  - { key: agency_cost, group: 수탁기관만, only: contractor, name: 군 명의 대행사업의 사업비(실비 정산), status: none, contractor_status: none, basis: [{ law: act, art: 제38조 }], deduct: 없음 — 그 지출은 군 명의 세금계산서로 군이 공제, contractor_note: "공단 명의로 받으면 공단은 대행 용역 매출과 함께 공제, 군은 못 함 — 어느 쪽인지 계약으로 하나만" }
+  - { key: subsidy_in, group: 수탁기관만, only: contractor, name: 군 출연금·보조금·전입금, status: none, contractor_status: none, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제81조 }], deduct: 없음(공급 아님), contractor_note: "면세사업 관련 보조금은 안분 때 면세공급가액에 포함(시행령 제81조 제1항 단서)" }
 
 checklist:
   - { stage: 상시, id: c01, text: 과세사업 목록이 지금 하는 시설·계약과 같은가 — 새로 생긴 임대 계약·매점·체육시설·숙박시설이 사업자등록(업종)에 들어 있는가, basis: [{ law: act, art: 제8조 }] }

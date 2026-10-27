@@ -21,3 +21,4 @@
 - `rules.yml`: `card.practice`(사업용 신용카드 등록 등 실무 절차, 조문 아님), `filing.claim`(경정청구 — 국세기본법 제45조의2 를 law.go.kr DRF 로 직접 대조해 `verified.basic: "2026-10-02"`, `filing.verify: false`), `form_version`(신고서 별지 제21호서식 확인 판).
 - 기관 설정 시설에 `fee`(수탁기관 자기 사업일 때 우리 기관이 받는 것: taxable/free/unknown)·`decision`(확인 결과·근거). 기록 행에 `subsidy`·`fix_due`(수정세금계산서 기한, 시행령 제70조 제1항 제6호). 신고 기록 `groups[].basis`(안분 기준 supply/purchase/planned/area, 시행령 제81조 제4항).
 - 새 화면 `/vat/review/`(지난 신고 점검·경정청구 후보). 설계 기록은 `docs/design/vat-first-timer.md` 끝 표.
+- 2차(같은 날): `/vat/review/` 는 공급자별 집계 비교(합계표 서식)와 기한후신고 구분, 신고 준비는 안분 기준 잠금·과세사업 전환 매입세액 계산기(영 제85조), fee 선택지에 `paid_check`. 설계 기록 같은 파일 '2차 평가' 표.

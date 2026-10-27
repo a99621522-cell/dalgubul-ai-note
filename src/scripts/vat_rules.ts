@@ -51,8 +51,8 @@ const B = (law: string, art: string): Basis => ({ law, art });
   if (i.kind === 'insurance' || i.kind === 'exempt_goods') { why.push('보험·금융 용역, 수돗물·도서·교육·의료 같은 면세 재화·용역에는 매입세액이 없습니다.'); basis.push(B('act', '제26조')); return done('none', '면세 거래 — 매입세액 없음'); }
   if (i.proof === 'bill') { why.push('계산서는 면세 거래의 증빙이라 공제할 세액이 없습니다.'); todo.push('과세 거래인데 계산서를 받았다면 공급자에게 세금계산서로 다시 발급을 요청합니다.'); basis.push(B('act', '제26조'), B('act', '제38조')); return done('none', '계산서(면세 거래) — 매입세액 없음'); }
   // 2. 증빙 요건
-  if (i.proof === 'receipt') { const n = nd('no_invoice'); why.push(`세금계산서(또는 요건을 갖춘 신용카드매출전표)를 받지 않은 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('공급자가 일반과세자면 공급받는 자를 우리 기관 사업자등록번호로 한 세금계산서를, 카드 결제면 부가가치세액이 따로 적힌 전표를 받습니다.'); basis.push(...n.basis); return done('no', '증빙 없음 — 불공제'); }
-  if (i.proof === 'tax_invoice_other') { const n = nd('no_invoice'); why.push(`공급받는 자가 우리 기관이 아닌 세금계산서는 '사실과 다른 세금계산서'로 공제하지 않습니다(${n.no}).`); todo.push('공급자에게 공급받는 자를 지자체(과세사업 등록번호)로 한 수정세금계산서를 요청합니다. 기한이 있습니다 — 착오로 잘못 적힌 것이면 기한 없이(시행령 제70조 제1항 제5호), 착오가 아닌 사유면 공급일이 속한 과세기간의 확정신고기한 다음 날부터 1년 안에만(제6호) 수정세금계산서를 발급할 수 있고, 그 뒤에는 공제가 영구히 막힙니다. 그 시설이 수탁기관 자기 사업이라면 그 기관의 매입세액이지 우리 것이 아닙니다 — 위·수탁 계약에서 사업자가 누구인지 확인합니다.'); basis.push(...n.basis, B('decree', '제75조'), B('decree', '제70조')); return done('no', '다른 명의 세금계산서 — 불공제'); }
+  if (i.proof === 'receipt') { const n = nd('no_invoice'); why.push(`세금계산서(또는 요건을 갖춘 신용카드매출전표)를 받지 않은 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('공급자가 일반과세자면 공급받는 자를 우리 기관 사업자등록번호로 한 세금계산서를, 카드 결제면 부가가치세액이 따로 적힌 전표를 받습니다.'); todo.push('공급자가 세금계산서를 끊어 주지 않거나 부도·폐업했으면 매입자발행세금계산서(법 제34조의2 — 거래사실확인 신청, 세무서 확인 뒤 매입자가 발급)로 공제받는 길이 있습니다.'); basis.push(...n.basis, B('act', '제34조의2')); return done('no', '증빙 없음 — 불공제'); }
+  if (i.proof === 'tax_invoice_other') { const n = nd('no_invoice'); why.push(`공급받는 자가 우리 기관이 아닌 세금계산서는 '사실과 다른 세금계산서'로 공제하지 않습니다(${n.no}).`); todo.push('공급자에게 공급받는 자를 지자체(과세사업 등록번호)로 한 수정세금계산서를 요청합니다. 기한이 있습니다 — 착오로 잘못 적힌 것이면 기한 없이(시행령 제70조 제1항 제5호), 착오가 아닌 사유면 공급일이 속한 과세기간의 확정신고기한 다음 날부터 1년 안에만(제6호) 수정세금계산서를 발급할 수 있고, 그 뒤에는 공제가 영구히 막힙니다. 그 시설이 수탁기관 자기 사업이라면 그 기관의 매입세액이지 우리 것이 아닙니다 — 위·수탁 계약에서 사업자가 누구인지 확인합니다.'); todo.push('공급자가 폐업·부도로 수정세금계산서를 못 끊어 주면 매입자발행세금계산서(법 제34조의2, 거래사실확인 신청)를 검토합니다.'); basis.push(...n.basis, B('decree', '제75조'), B('decree', '제70조'), B('act', '제34조의2')); return done('no', '다른 명의 세금계산서 — 불공제'); }
   if (i.proof === 'card_novat') { why.push('부가가치세액이 따로 적히지 않은 전표, 세금계산서를 발급할 수 없는 간이과세자·면세사업자의 전표는 공제 요건을 갖추지 못합니다.'); todo.push('공급자가 일반과세자면 부가가치세액이 구분된 전표 재발급 또는 세금계산서를 요청합니다. 간이(발급 불가)·면세 공급자면 공제할 수 없습니다.'); basis.push(B('act', '제46조')); verify = !!D.rules.card.verify; return done('no', '요건 못 갖춘 카드 전표 — 불공제'); }
   if (i.proof === 'card_vat') {
     if (i.supplier === 'simple_no') { why.push('세금계산서를 발급할 수 없는 간이과세자·면세사업자의 카드 전표는 공제하지 못합니다.'); basis.push(B('act', '제46조')); return done('no', '영수증 발급 기간 간이과세자·면세 공급자 카드 전표 — 불공제'); }
@@ -67,7 +67,7 @@ const B = (law: string, art: string): Basis => ({ law, art });
   if (i.timing === 'prereg') { const n = nd('pre_reg'); why.push(`사업자등록 신청 전의 매입세액은 공제하지 않습니다(${n.no}). 다만 공급시기가 속하는 과세기간이 끝난 뒤 20일 이내에 등록을 신청하면 그 과세기간 시작일까지의 매입세액은 공제됩니다.`); todo.push('등록 신청일과 공급시기가 속한 과세기간 종료일을 견주어 20일 이내인지 확인합니다. 새 과세사업은 시작 전에 등록(또는 업종 추가)합니다.'); basis.push(...n.basis); return done('check', '등록 전 매입세액 — 20일 요건 확인'); }
   if (i.timing === 'late') { why.push(D.rules.late_invoice.summary); todo.push('공급시기가 속한 과세기간의 확정신고기한까지 받았으면 그대로 공제(시행령 제75조 제3호). 그 뒤 1년 안에 받았으면 수정신고·경정청구서와 함께 내야 공제(제7호). 1년이 지났으면 공제할 수 없습니다.'); basis.push(B('decree', '제75조')); verify = verify || !!D.rules.late_invoice.verify; }
   // 5. 위탁수수료·복리후생 성격
-  if (i.kind === 'outsource') { why.push('수탁기관(지방공단 등)은 지자체가 아니므로 그 기관이 지자체에 공급하는 용역은 과세이고 세금계산서를 받습니다. 다만 실비를 전달·정산하는 돈이면 용역 공급이 아니어서 세금계산서 대상이 아닙니다.'); todo.push('위·수탁 계약서에서 대행 수수료(용역)와 사업비 실비 정산을 나눠 보고, 용역분은 아래 귀속(과세·면세·공통)에 따라 공제·안분합니다.'); basis.push(B('act', '제26조'), B('act', '제38조'), B('decree', '제75조')); if (i.use === 'unknown') return done('check', '위탁수수료 — 용역인지 실비 정산인지 확인'); }
+  if (i.kind === 'outsource') { why.push('수탁기관(지방공단 등)은 지자체가 아니므로 그 기관이 지자체에 공급하는 용역은 과세이고 세금계산서를 받습니다. 다만 실비를 전달·정산하는 돈이면 용역 공급이 아니어서 세금계산서 대상이 아닙니다.'); todo.push('위·수탁 계약서에서 대행 수수료(용역)와 사업비 실비 정산을 나눠 보고, 용역분은 아래 귀속(과세·면세·공통)에 따라 공제·안분합니다.'); todo.push('민간위탁 사업비가 보조금 교부(수탁자 사업에 대한 지원)면 용역 대가가 아니어서 세금계산서 대상이 아니고, 수탁자가 문화원·재단·협의회 같은 공익 목적 단체면 그 용역이 면세(법 제26조 제1항 제18호, 시행령 제45조 — 주무관청 허가·등록 단체의 실비·무상 공급 등)일 수 있어 계산서가 옵니다. 어느 쪽인지 협약서의 대가 조항으로 가릅니다.'); basis.push(B('act', '제26조'), B('act', '제38조'), B('decree', '제75조')); if (i.use === 'unknown') return done('check', '위탁수수료 — 용역인지 실비 정산인지 확인'); }
   if (i.kind === 'welfare') { why.push('직원 복리후생비는 접대비가 아니며 사업 관련 지출입니다. 그 직원이 어느 사업(과세·면세) 일을 하는지에 따라 귀속이 정해집니다.'); }
   // 6. 귀속
   const cap = i.kind === 'building' || i.kind === 'equip';
@@ -81,9 +81,9 @@ const B = (law: string, art: string): Basis => ({ law, art });
 /* ---------- v2: 기관 설정(org.json) · 시설 기록 · 인계표 ---------- */
 export type Run = 'direct' | 'entrusted_org' | 'entrusted_own' | 'unknown';
 export const RUN_NAME: Record<Run, string> = { direct: '우리 기관이 직접 운영', entrusted_org: '위탁 — 우리 기관 명의 사업(수탁기관은 대행)', entrusted_own: '위탁 — 수탁기관 자기 사업(수탁기관이 신고)', unknown: '확인 필요 — 위·수탁 계약으로 정하세요' };
-export type Fee = 'taxable' | 'free' | 'unknown';
-/** 수탁기관 자기 사업 시설에서 우리 기관이 수탁기관에게 받는 것 — 군 부담 지출(수선·장비)의 매입세액 공제 여부를 가른다 */
-export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고 과세(부동산임대)로 신고한다', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
+export type Fee = 'taxable' | 'paid_check' | 'free' | 'unknown';
+/** 수탁기관 자기 사업 시설에서 우리 기관이 수탁기관에게 받는 것 — 군 부담 지출(수선·장비)의 매입세액 공제 여부를 가른다. 초록은 사용료를 과세로 신고하고 있을 때만(세무사 평가 2차) */
+export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고, 그 사용료를 과세(부동산임대)로 신고하고 있다', paid_check: '사용료·임대료를 받지만 과세로 신고하는지 모름(면세로 보고 있음)', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
 export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string };
 export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; contractor?: string; term?: string; note?: string }[] };
 export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string };
@@ -127,8 +127,9 @@ export function toInput(D: Data, org: Org, f: OrgFacility, q: { proof: ProofQ; p
   const st = facilityStatus(D, f);
   if (st === 'own') {   // 수탁기관 자기 사업 시설 — 수탁기관이 낸 돈은 그 기관 것, 우리 기관이 직접 낸 돈(수선·장비 등)은 사용료를 받는 임대(과세)인지로 가른다
     if (q.payee === 'contractor') return { input: { use: 'unknown', kind: 'general', proof: 'receipt', supplier: 'unknown', timing: 'now' }, override: { v: 'check', title: '수탁기관 명의 지출 — 그 기관이 신고합니다', why: ['수탁기관 자기 사업으로 설정된 시설에서 수탁기관 이름으로 낸 돈입니다. 그 기관이 지자체가 아니므로 매입세액도 그 기관 것입니다.'], todo: ['이 지출은 수탁기관의 장부에 적습니다. 우리 기관이 낸 돈(수선·장비 등)만 여기에 적습니다. 설정이 틀렸으면 신고 담당 부서에 알려 기관 설정을 고칩니다.'], basis: [{ law: 'act', art: '제3조' }, { law: 'act', art: '제26조' }] } };
+    if (f.fee === 'paid_check') return { input: { use: 'unknown', kind: 'general', proof: 'tax_invoice', supplier: 'general', timing: 'now' }, override: { v: 'check', title: '받는 사용료가 과세로 신고되는지 확인', why: ['우리 기관이 수탁기관에게 사용료·임대료를 받지만 그 사용료를 과세(부동산임대)로 신고하는지 정해지지 않았습니다. 행정재산 사용허가 사용료가 부동산임대업에 드는지는 유권해석·분류로 정해지며, 과세로 신고할 때만 이 시설에 우리 기관이 낸 돈의 매입세액을 공제할 수 있습니다.'], todo: ['신고 담당 부서가 그 사용료를 과세로 신고하는지(사업자등록·매출 신고) 확인해 기관 설정에서 "과세로 신고하고 있다"로 바꾸면 다시 판정됩니다. 면세로 보고 있다면 이 돈은 공제하지 못합니다.'], basis: [{ law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }, { law: 'act', art: '제39조' }] } };
     if ((f.fee ?? 'unknown') === 'unknown') return { input: { use: 'unknown', kind: 'general', proof: 'tax_invoice', supplier: 'general', timing: 'now' }, override: { v: 'check', title: '우리 기관이 수탁기관에게 사용료를 받는지 확인', why: ['수탁기관 자기 사업 시설에 우리 기관이 직접 낸 돈입니다. 우리 기관이 수탁기관에게 사용료·임대료를 받아 과세(부동산임대)로 신고하면 이 돈은 그 임대사업의 매입세액이라 공제할 수 있고, 무상으로 쓰게 하면 우리 기관의 과세사업이 아니어서 공제하지 못합니다.'], todo: ['위·수탁 계약서·사용허가서에서 사용료·임대료 조항을 보고 기관 설정(이 시설의 "수탁기관에게 받는 것")을 고르면 다시 판정됩니다.'], basis: [{ law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }, { law: 'act', art: '제39조' }] } };
-    if (f.fee === 'free') return { input: { use: 'exempt', kind: 'general', proof: 'tax_invoice', supplier: 'general', timing: 'now' }, override: { v: 'no', title: '무상 사용 시설의 군 부담 지출 — 불공제', why: ['우리 기관이 수탁기관에게 사용료를 받지 않는 시설입니다. 무상으로 쓰게 하는 것은 우리 기관의 과세사업이 아니어서, 우리 기관이 낸 수선·장비 비용의 매입세액은 면세사업등 관련 매입세액으로 공제하지 못합니다(법 제39조 제1항 제7호).'], todo: ['앞으로 이 시설에 큰 수선·설비 지출이 예정돼 있으면, 사용료를 받는 유상 사용허가(과세)로 바꿀 수 있는지 재산 담당·세무대리인과 검토합니다 — 유상이면 그 지출의 매입세액을 공제할 수 있습니다(판단은 기관 몫).'], basis: [{ law: 'act', art: '제39조' }, { law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }] } };
+    if (f.fee === 'free') return { input: { use: 'exempt', kind: 'general', proof: 'tax_invoice', supplier: 'general', timing: 'now' }, override: { v: 'no', title: '무상 사용 시설의 군 부담 지출 — 불공제', why: ['우리 기관이 수탁기관에게 사용료를 받지 않는 시설입니다. 무상으로 쓰게 하는 것은 우리 기관의 과세사업이 아니어서, 우리 기관이 낸 수선·장비 비용의 매입세액은 면세사업등 관련 매입세액으로 공제하지 못합니다(법 제39조 제1항 제7호).'], todo: ['앞으로 이 시설에 큰 수선·설비 지출이 예정돼 있으면, 사용료를 받는 유상 사용허가(과세)로 바꿀 수 있는지 재산 담당·세무대리인과 검토합니다 — 유상으로 바꾸면 그 뒤 지출을 공제할 수 있고, 그 전에 산 건물·설비의 불공제 매입세액도 과세사업 전환 매입세액(시행령 제85조)으로 일부 되살릴 수 있습니다(판단은 기관 몫).'], basis: [{ law: 'act', art: '제39조' }, { law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }] } };
   }
   let proof: string, supplier = 'general';
   if (q.proof === 'e_invoice' || q.proof === 'p_invoice') {
@@ -186,6 +187,8 @@ export type Filing = { v: 1; org: string; period: PeriodKey; saved: string; cell
 export const FILINGS_KEY = 'vat-filings-v1';
 export const getFilings = (): Record<PeriodKey, Filing> => lsGet<Record<PeriodKey, Filing>>(FILINGS_KEY) ?? {};
 export const saveFiling = (f: Filing) => { const a = getFilings(); a[f.period] = f; lsSet(FILINGS_KEY, a); };
+/** 과세사업 전환 매입세액(시행령 제85조): 면세사업용으로 불공제됐던 감가상각자산을 과세사업에 쓰기 시작하면 불공제 매입세액 × (1 − 체감률(건물 5%·그 밖 25%) × 경과 과세기간 수)를 전환한 과세기간 확정신고에 공제. 공통으로 쓰면 × 그 과세기간 과세공급가액 비율(5% 미만이면 없음, 제2항). 취득이 과세기간 개시일 뒤면 개시일 취득으로 봄(제6항) */
+export function convertCredit(tax: number, kind: 'building' | 'other', acquired: PeriodKey, convertTo: PeriodKey, taxableRatio = 1) { const hi = (k: PeriodKey) => Number(k.slice(0, 4)) * 2 + (Number(k[5]) - 1); const n = Math.max(0, hi(convertTo) - hi(acquired)); const remain = Math.max(0, 1 - (kind === 'building' ? 0.05 : 0.25) * n); const ratio = taxableRatio < 0.05 ? 0 : taxableRatio; return { n, remain, credit: Math.floor(tax * remain * ratio) }; }
 /** 간주임대료 공급가액(시행령 제65조 제1항): 보증금 × 과세대상 기간 일수 × 이자율 ÷ 365(윤년 366). 이자율은 기획재정부령 정기예금 이자율 — 사용자가 넣는다 */
 export const deemedRent = (deposit: number, days: number, rate: number, year: number) => Math.floor(deposit * days * rate / ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 366 : 365));
 
@@ -201,12 +204,12 @@ export function parseTable(text: string): string[][] {
 export const COL_GUESS: { key: string; name: string; re: RegExp }[] = [
   { key: 'date', name: '날짜', re: /작성일|거래일|발급일|승인일|이용일|일자|날짜|date/i },
   { key: 'desc', name: '내용(품목)', re: /품목|내용|적요|품명|비고|메모|사용처/ },
-  { key: 'supplier', name: '공급자(상호·가맹점)', re: /공급자상호|공급자|상호|가맹점|거래처|판매자|업체/ },
+  { key: 'payee_reg', name: '공급받는자 등록번호', re: /공급받는자.*등록번호|공급받는자등록|매입자.*등록번호/ },
+  { key: 'supplier_reg', name: '공급자 등록번호', re: /^(?!.*공급받는자)(?!.*매입자).*(공급자.*등록번호|공급자등록|사업자등록번호|사업자번호|등록번호)/ },   // 등록번호 열은 상호보다 먼저 — '공급자등록번호' 가 상호로 잡히지 않게(2026-10-27 경정청구 집계 비교 오류)
+  { key: 'supplier', name: '공급자(상호·가맹점)', re: /^(?!.*번호)(?!.*등록).*(공급자상호|공급자|상호|가맹점|거래처|판매자|업체)/ },
   { key: 'amt', name: '공급가액', re: /공급가액|공급가|과세금액|순금액/ },
   { key: 'tax', name: '세액(부가세)', re: /세액|부가세|부가가치세|vat/i },
-  { key: 'total', name: '합계(부가세 포함)', re: /합계금액|합계|총액|총금액|승인금액|결제금액|이용금액/ },
-  { key: 'payee_reg', name: '공급받는자 등록번호', re: /공급받는자.*등록번호|공급받는자등록|매입자.*등록번호/ },
-  { key: 'supplier_reg', name: '공급자 등록번호', re: /공급자.*등록번호|공급자등록|사업자등록번호|사업자번호|등록번호/ }];
+  { key: 'total', name: '합계(부가세 포함)', re: /합계금액|합계|총액|총금액|승인금액|결제금액|이용금액/ }];
 export function guessColumns(header: string[]) { const m: Record<string, number> = {}; for (const g of COL_GUESS) { const i = header.findIndex(h => g.re.test(h.replace(/\s/g, ''))); if (i >= 0 && !Object.values(m).includes(i)) m[g.key] = i; } return m; }
 export const WHAT_GUESS: { re: RegExp; key: string }[] = [
   { re: /전기|한전|한국전력|가스|도시가스|통신|KT|SKT|LGU|인터넷|전화|수도|상하수도/i, key: 'utility' }, { re: /수도요금|상수도|도서|교육|진료/, key: 'water' }, { re: /청소|경비|용역|인쇄|홍보|방역|소독|위탁/, key: 'service' },

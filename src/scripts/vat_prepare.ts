@@ -1,5 +1,5 @@
 /** /vat/prepare/ 신고 준비(신고 담당). 인계표 → 신고서 칸별 숫자표 + 안분·정산·재계산 + 신고 기록. 참고용 계산, 서버 없음. */
-import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, periodInfo, periodKeyOf, CELLS, getFilings, saveFiling, deemedRent, nextFiling, ymd, lawLink, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
+import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, CELLS, getFilings, saveFiling, deemedRent, nextFiling, ymd, lawLink, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
 type Ledger = { fid: string; name: string; type: string; month: string; rows: LedgerRow[]; src: string };
 const D = loadData();
 if (D) init(D);
@@ -7,7 +7,7 @@ function init(D: Data) {
   let org: Org | null = getOrg();
   const ledgers = new Map<string, Ledger>();
   const sales: Record<string, { c1: number; c3: number; c4: number }> = {};
-  const exemptIn: Record<string, number> = {}; const basisIn: Record<string, { basis: string; ex: number; tot: number }> = {}; const prelimIn: Record<string, { taxable: number; exempt: number; common: number; nondeduct: number }> = {};
+  const exemptIn: Record<string, number> = {}; const basisIn: Record<string, { basis: string; ex: number; tot: number; building?: boolean }> = {}; const prelimIn: Record<string, { taxable: number; exempt: number; common: number; nondeduct: number }> = {};
   let includePrelimRows = false;
   const f0 = nextFiling(); $('p-due')!.textContent = `다음 신고 ${f0.name} D-${f0.days}`;
 
@@ -45,7 +45,7 @@ function init(D: Data) {
     $('p-coverage')!.innerHTML = `<div class="scroll-x"><table class="data-table compact" data-stack="off"><caption>인계표 도착 현황 — ${esc(P.name)}</caption><thead><tr><th scope="col">시설</th>${months.map(m => `<th scope="col">${m}${P.prelim.includes(m) ? '<br><span class="note">예정분</span>' : ''}</th>`).join('')}</tr></thead><tbody>${facs.map(f => `<tr><th scope="row">${esc(f.name)}</th>${months.map(m => cell(f, m)).join('')}</tr>`).join('')}</tbody></table></div>
       ${P.kind === 'F' ? `<label class="choices" style="margin-top:8px"><span><input type="checkbox" id="p-inc-prelim" ${prelimSaved ? 'checked disabled' : ''}/> 예정 달(${P.prelim[0]}~${P.prelim[2]}) 기록 중 예정신고에 넣지 않은 것을 <strong>(13) 예정신고 누락분</strong>으로 넣기 ${prelimSaved ? '— 저장된 예정신고 기록과 견줘 빠진 행만 자동으로 넣습니다' : '— 예정신고 때 이미 넣은 행이 섞이면 이중 공제가 되니, 확실할 때만 켜세요'}</span></label>` : ''}`;
     includePrelimRows = !!prelimSaved; $<HTMLInputElement>('p-inc-prelim')?.addEventListener('change', e => { includePrelimRows = (e.target as HTMLInputElement).checked; });
-    renderSales(P, facs); renderGroups(P, facs, prelimSaved); $('p-run-wrap')!.hidden = false; $('p-result')!.innerHTML = '';
+    renderSales(P, facs); renderGroups(P, facs, prelimSaved); renderConvert(P); $('p-run-wrap')!.hidden = false; $('p-result')!.innerHTML = '';
   }
   function renderSales(P: ReturnType<typeof periodInfo>, facs: OrgFacility[]) {
     const wrap = $('p-sales-wrap')!; const tax = facs.filter(f => salesFacility(D, f)); wrap.hidden = !tax.length;
@@ -58,6 +58,18 @@ function init(D: Data) {
     $('p-sales')!.querySelectorAll<HTMLInputElement>('input[data-c]').forEach(i => i.addEventListener('change', () => { const fid = i.closest<HTMLElement>('[data-fid]')!.dataset.fid!; sales[fid][i.dataset.c as 'c1' | 'c3' | 'c4'] = num(i.value); i.value = num(i.value) ? fmt(num(i.value)) : ''; refreshGroupTaxable(); }));
     $('p-sales')!.querySelectorAll<HTMLButtonElement>('[data-deem]').forEach(b => b.addEventListener('click', () => { const box = b.closest<HTMLElement>('[data-fid]')!; const fid = box.dataset.fid!; const g = (k: string) => num(box.querySelector<HTMLInputElement>(`[data-d=${k}]`)!.value); const r = deemedRent(g('dep'), g('days'), g('rate') / 100, P.y); sales[fid].c4 += r; const c4 = box.querySelector<HTMLInputElement>('[data-c=c4]')!; c4.value = fmt(sales[fid].c4); refreshGroupTaxable(); alert(`간주임대료 ${fmt(r)}원을 (4)에 더했습니다.`); }));
   }
+  /** 과세사업 전환 매입세액(시행령 제85조) — 무상(면세)이던 시설을 유상(과세)으로 바꾼 과세기간의 확정신고에 */
+  const convRows: { desc: string; tax: number; kind: 'building' | 'other'; acq: PeriodKey; common: boolean }[] = [];
+  function renderConvert(P: ReturnType<typeof periodInfo>) {
+    const wrap = $('p-convert')!; if (!wrap) return; wrap.hidden = false;
+    const y = P.y; const acqOpts: PeriodKey[] = []; for (let yy = y - 10; yy <= y; yy++) acqOpts.push(`${yy}-1F`, `${yy}-2F`);
+    const ratioEl = () => { const gs = Object.values(prelimIn); void gs; const tx = (org?.facilities.filter(f => inFiling(D, f)) ?? []).reduce((s, f) => s + (sales[f.id] ? sales[f.id].c1 + sales[f.id].c3 + sales[f.id].c4 : 0), 0); const ex = Object.values(exemptIn).reduce((s, v) => s + v, 0); return tx + ex ? tx / (tx + ex) : 1; };
+    const draw = () => { const r = ratioEl(); $('p-conv-list')!.innerHTML = convRows.length ? `<div class="scroll-x"><table class="data-table vat-table" data-stack="off"><caption>과세사업 전환 매입세액 — ${esc(P.name)} 확정신고에 공제(참고용)</caption><thead><tr><th scope="col">자산</th><th scope="col">불공제됐던 매입세액</th><th scope="col">종류</th><th scope="col">취득 과세기간</th><th scope="col">경과 과세기간</th><th scope="col">남은 비율</th><th scope="col">공통 사용</th><th scope="col">공제 세액</th><th scope="col" class="no-print"></th></tr></thead><tbody>${convRows.map((c, i) => { const cc = convertCredit(c.tax, c.kind, c.acq, sel.value, c.common ? r : 1); return `<tr><th scope="row">${esc(c.desc)}</th><td>${fmt(c.tax)}</td><td>${c.kind === 'building' ? '건물·구축물(5%)' : '그 밖(25%)'}</td><td>${c.acq}</td><td>${cc.n}</td><td>${pct(cc.remain)}</td><td>${c.common ? `과세 비율 ${pct(r)}${r < 0.05 ? ' — 5% 미만, 공제 없음' : ''}` : '과세 전용'}</td><td><strong>${fmt(cc.credit)}</strong></td><td class="no-print"><button type="button" class="link-btn" data-cdel="${i}">삭제</button></td></tr>`; }).join('')}<tr class="total"><th scope="row">합계</th><td colspan="6"></td><td>${fmt(convRows.reduce((s, c) => s + convertCredit(c.tax, c.kind, c.acq, sel.value, c.common ? r : 1).credit, 0))}</td><td></td></tr></tbody></table></div><p class="meta">확정신고 때 「과세사업전환 감가상각자산 신고서」를 함께 냅니다(제85조 제5항). 뒤에 면세비율이 5%p 이상 바뀌면 재계산(제7항 → 제83조). 취득이 과세기간 개시일 뒤면 개시일에 취득한 것으로 봅니다(제6항).</p>` : '<p class="meta">전환할 자산을 넣으면 공제 세액을 계산합니다.</p>'; $('p-conv-list')!.querySelectorAll<HTMLButtonElement>('[data-cdel]').forEach(b => b.addEventListener('click', () => { convRows.splice(Number(b.dataset.cdel), 1); draw(); })); };
+    wrap.querySelector<HTMLSelectElement>('[data-cacq]')!.innerHTML = acqOpts.filter(k => k <= sel.value).map(k => `<option value="${k}">${periodInfo(k).name.replace(' 확정신고', '')}</option>`).join('');
+    const addBtn = wrap.querySelector<HTMLButtonElement>('[data-cadd]')!; const fresh = addBtn.cloneNode(true) as HTMLButtonElement; addBtn.replaceWith(fresh);
+    fresh.addEventListener('click', () => { const g = (k: string) => wrap.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-${k}]`)!; const tax = num(g('ctax').value); if (!tax) { alert('불공제됐던 매입세액을 넣으세요.'); return; } convRows.push({ desc: g('cdesc').value.trim() || '(자산)', tax, kind: (g('ckind').value as 'building' | 'other'), acq: g('cacq').value, common: (g('ccommon') as HTMLInputElement).checked }); (g('cdesc') as HTMLInputElement).value = ''; (g('ctax') as HTMLInputElement).value = ''; draw(); });
+    draw();
+  }
   const groupsOf = (facs: OrgFacility[]) => { const m = new Map<string, OrgFacility[]>(); facs.forEach(f => { const k = groupKey(f); m.set(k, [...(m.get(k) ?? []), f]); }); return m; };
   const taxableOf = (fs: OrgFacility[]) => fs.reduce((s, f) => { const x = sales[f.id]; return s + (x ? x.c1 + x.c3 + x.c4 : 0); }, 0);
   function renderGroups(P: ReturnType<typeof periodInfo>, facs: OrgFacility[], prelimSaved?: Filing) {
@@ -66,17 +78,25 @@ function init(D: Data) {
       return `<div class="vc-form" data-g="${esc(k)}"><p class="q-title full">${esc(groupName(k))}</p>
       <label>과세 공급가액(이 기간, 2절 합계) <input type="text" data-tax readonly value="${fmt(taxableOf(fs))}" /></label>
       <label>면세 공급가액(이 기간 — 면세 수입 + 면세사업 보조금) <input type="text" inputmode="numeric" data-ex value="${exemptIn[k] ? fmt(exemptIn[k]) : ''}" placeholder="없으면 0" /></label>
-      <label>안분 기준 <select data-basis>${[['supply', '공급가액 비율(기본, 시행령 제81조 제1항)'], ['purchase', '매입가액 비율 — 공급가액이 없을 때 1순위(제4항 제1호)'], ['planned', '예정공급가액 비율 — 2순위(제4항 제2호)'], ['area', '예정사용면적 비율 — 3순위, 건물 신축·취득은 1순위(제4항 제3호·단서)']].map(([v, n]) => `<option value="${v}" ${(basisIn[k]?.basis ?? 'supply') === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+      <label>안분 기준 <select data-basis>${[['supply', '공급가액 비율(기본, 시행령 제81조 제1항)'], ['purchase', '매입가액 비율 — 공급가액이 없을 때 1순위(제4항 제1호)'], ['planned', '예정공급가액 비율 — 2순위(제4항 제2호)'], ['area', '예정사용면적 비율 — 3순위, 건물 신축·취득은 1순위(제4항 제3호·단서)']].map(([v, n]) => `<option value="${v}" ${(basisIn[k]?.basis ?? 'supply') === v ? 'selected' : ''}>${n}</option>`).join('')}</select><span class="note" data-basis-note></span></label>
+      <label class="choices"><span><input type="checkbox" data-bld ${basisIn[k]?.building ? 'checked' : ''}/> 이 공통매입세액은 <strong>건물·구축물 신축·취득분</strong>이고 과세·면세 예정사용면적을 나눌 수 있다(제4항 단서 — 공급가액이 있어도 면적 비율 우선)</span></label>
       <div class="full" data-basis-in ${(basisIn[k]?.basis ?? 'supply') === 'supply' ? 'hidden' : ''}><label>면세 몫(매입가액·예정공급가액·면적) <input type="text" inputmode="decimal" data-bex value="${basisIn[k]?.ex ? fmt(basisIn[k].ex) : ''}" /></label> <label>전체(같은 단위) <input type="text" inputmode="decimal" data-btot value="${basisIn[k]?.tot ? fmt(basisIn[k].tot) : ''}" /></label><span class="note">공급가액 비율을 쓸 수 없는 기간(과세·면세 어느 한쪽 공급가액이 없음)에만. 건물·구축물을 예정사용면적으로 안분했으면 면적이 확정될 때까지 같은 기준(제5항).</span></div>
       ${P.kind === 'F' ? `<p class="note full">예정신고(${P.prelim[0]}~${P.prelim[2]}) 때 값 ${pre ? '— 저장된 기록에서 가져옴' : '— 예정신고서를 보고 넣으세요'}</p>
       <label>예정 과세 공급가액 <input type="text" inputmode="numeric" data-p="taxable" value="${pi.taxable ? fmt(pi.taxable) : ''}" /></label><label>예정 면세 공급가액 <input type="text" inputmode="numeric" data-p="exempt" value="${pi.exempt ? fmt(pi.exempt) : ''}" /></label>
       <label>예정 공통매입세액 <input type="text" inputmode="numeric" data-p="common" value="${pi.common ? fmt(pi.common) : ''}" /></label><label>예정 때 불공제한 면세분(54) <input type="text" inputmode="numeric" data-p="nondeduct" value="${pi.nondeduct ? fmt(pi.nondeduct) : ''}" /></label>` : ''}</div>`; }).join('');
-    $('p-groups')!.querySelectorAll<HTMLInputElement>('input[data-ex]').forEach(i => i.addEventListener('change', () => { exemptIn[i.closest<HTMLElement>('[data-g]')!.dataset.g!] = num(i.value); i.value = fmt(num(i.value)); }));
-    const readBasis = (box: HTMLElement) => { const k = box.dataset.g!; const b = basisIn[k] ?? (basisIn[k] = { basis: 'supply', ex: 0, tot: 0 }); b.basis = box.querySelector<HTMLSelectElement>('[data-basis]')!.value; b.ex = num(box.querySelector<HTMLInputElement>('[data-bex]')!.value); b.tot = num(box.querySelector<HTMLInputElement>('[data-btot]')!.value); box.querySelector<HTMLElement>('[data-basis-in]')!.hidden = b.basis === 'supply'; };
-    $('p-groups')!.querySelectorAll<HTMLElement>('[data-g]').forEach(box => { box.querySelectorAll<HTMLElement>('[data-basis],[data-bex],[data-btot]').forEach(el => el.addEventListener('change', () => readBasis(box))); });
+    $('p-groups')!.querySelectorAll<HTMLInputElement>('input[data-ex]').forEach(i => i.addEventListener('change', () => { exemptIn[i.closest<HTMLElement>('[data-g]')!.dataset.g!] = num(i.value); i.value = fmt(num(i.value)); readBasis(i.closest<HTMLElement>('[data-g]')!); }));
+    const readBasis = (box: HTMLElement) => { const k = box.dataset.g!; const b = basisIn[k] ?? (basisIn[k] = { basis: 'supply', ex: 0, tot: 0 }); b.building = box.querySelector<HTMLInputElement>('[data-bld]')!.checked; lockBasis(box, b); b.basis = box.querySelector<HTMLSelectElement>('[data-basis]')!.value; b.ex = num(box.querySelector<HTMLInputElement>('[data-bex]')!.value); b.tot = num(box.querySelector<HTMLInputElement>('[data-btot]')!.value); box.querySelector<HTMLElement>('[data-basis-in]')!.hidden = b.basis === 'supply'; };
+    $('p-groups')!.querySelectorAll<HTMLElement>('[data-g]').forEach(box => { box.querySelectorAll<HTMLElement>('[data-basis],[data-bex],[data-btot],[data-bld]').forEach(el => el.addEventListener('change', () => readBasis(box))); readBasis(box); });
     $('p-groups')!.querySelectorAll<HTMLInputElement>('input[data-p]').forEach(i => i.addEventListener('change', () => { const k = i.closest<HTMLElement>('[data-g]')!.dataset.g!; (prelimIn[k] as unknown as Record<string, number>)[i.dataset.p!] = num(i.value); i.value = num(i.value) ? fmt(num(i.value)) : ''; }));
   }
-  const refreshGroupTaxable = () => { if (!org) return; const gs = groupsOf(org.facilities.filter(f => inFiling(D, f))); $('p-groups')!.querySelectorAll<HTMLElement>('[data-g]').forEach(box => { const fs = gs.get(box.dataset.g!) ?? []; box.querySelector<HTMLInputElement>('[data-tax]')!.value = fmt(taxableOf(fs)); }); };
+  /** 안분 기준 잠금(세무사 평가 2차): 과세·면세 공급가액이 둘 다 있으면 공급가액 비율만(시행령 제81조 제1항). 어느 한쪽이 없을 때만 매입가액 → 예정공급가액 → 예정사용면적 순서(제4항), 건물·구축물 신축·취득은 면적을 먼저(단서) */
+  function lockBasis(box: HTMLElement, b: { basis: string; building?: boolean }) {
+    const tx = num(box.querySelector<HTMLInputElement>('[data-tax]')!.value), ex = num(box.querySelector<HTMLInputElement>('[data-ex]')!.value); const sel = box.querySelector<HTMLSelectElement>('[data-basis]')!; const note = box.querySelector<HTMLElement>('[data-basis-note]')!;
+    const both = tx > 0 && ex > 0; const allow = (v: string) => v === 'supply' || (b.building && v === 'area') || (!both && v !== 'supply');
+    [...sel.options].forEach(o => { o.disabled = !allow(o.value); }); if (!allow(sel.value)) sel.value = b.building ? 'area' : 'supply';
+    note.textContent = both ? (b.building ? '건물·구축물 신축·취득분 — 공급가액이 있어도 예정사용면적 비율을 먼저 씁니다(제4항 단서).' : '과세·면세 공급가액이 둘 다 있어 공급가액 비율만 쓸 수 있습니다(제1항). 다른 기준은 어느 한쪽 공급가액이 없을 때만 엽니다.') : '어느 한쪽 공급가액이 없어 제4항의 순서(매입가액 → 예정공급가액 → 예정사용면적)로 고릅니다.';
+  }
+  const refreshGroupTaxable = () => { if (!org) return; const gs = groupsOf(org.facilities.filter(f => inFiling(D, f))); $('p-groups')!.querySelectorAll<HTMLElement>('[data-g]').forEach(box => { const fs = gs.get(box.dataset.g!) ?? []; box.querySelector<HTMLInputElement>('[data-tax]')!.value = fmt(taxableOf(fs)); const b = basisIn[box.dataset.g!] ?? (basisIn[box.dataset.g!] = { basis: 'supply', ex: 0, tot: 0 }); lockBasis(box, b); b.basis = box.querySelector<HTMLSelectElement>('[data-basis]')!.value; box.querySelector<HTMLElement>('[data-basis-in]')!.hidden = b.basis === 'supply'; }); };
 
   /* ---------- 숫자표 ---------- */
   $('p-run')?.addEventListener('click', () => {

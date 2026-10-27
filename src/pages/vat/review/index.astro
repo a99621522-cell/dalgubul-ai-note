@@ -13,8 +13,8 @@ import '../../../styles/vat.css';
     <label>우리 기관(과세사업) 사업자등록번호 — 공급받는 자가 다른 번호인 행을 가려냅니다 <input type="text" id="rv-reg" placeholder="000-00-00000" inputmode="numeric" /></label>
     <label class="full">① 받은 매입 목록 — 홈택스 「전자세금계산서 목록 조회(매입)」 또는 「사업용 신용카드 매입 내역」을 엑셀로 내려받아 <strong>머리글 줄부터</strong> 붙여넣기(5년치를 한 번에, 탭·쉼표 모두 됨)
       <textarea id="rv-a" rows="7" placeholder="작성일자	공급자등록번호	공급자상호	품목	공급가액	세액	공급받는자등록번호&#10;2024-03-05	123-45-67890	○○전력	전기요금	1,500,000	150,000	555-83-00001" style="min-height:9em;padding:8px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--bg);color:var(--ink);font:inherit"></textarea></label>
-    <label class="full">② (있으면) 신고한 매입 내역 — 홈택스 「신고내역 조회」의 매입처별 세금계산서합계표·신용카드매출전표등 수령명세서를 같은 식으로 붙여넣기. 없으면 비워 두고 아래 표에 과세기간별 신고 매입세액만 넣습니다
-      <textarea id="rv-b" rows="4" placeholder="공급자등록번호	공급자상호	작성일자	공급가액	세액" style="min-height:6em;padding:8px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--bg);color:var(--ink);font:inherit"></textarea></label>
+    <div class="full"><span class="q-title">② (있으면) 신고한 매입 내역 — 홈택스 「신고내역 조회」의 <strong>매입처별 세금계산서합계표</strong>(공급자별 합계)·<strong>신용카드매출전표등 수령명세서</strong>. 과세기간마다 하나씩 붙여넣습니다. 없으면 비워 두고 아래 표에 신고 매입세액만 넣습니다.</span>
+      <div id="rv-bs"></div><div class="actions"><button type="button" class="btn secondary" id="rv-addb">신고 내역 추가</button></div></div>
     <div class="actions"><button type="submit" class="btn">열 읽기</button></div>
   </form>
   <div id="rv-cols" class="no-print"></div>
@@ -24,7 +24,8 @@ import '../../../styles/vat.css';
     <ul class="meta-list">
       <li>과세기간은 확정신고 기준(1~6월 → 7월 25일, 7~12월 → 다음 해 1월 25일)으로 묶습니다. 예정신고 때 넣은 것도 확정 기간 안에 있으면 같은 묶음입니다.</li>
       <li>경정청구 기한 = 법정신고기한이 지난 후 5년(국세기본법 제45조의2 제1항). 기한이 지난 과세기간은 되돌리지 못합니다.</li>
-      <li>신고 내역을 붙여넣으면 과세기간·공급자 등록번호·세액이 같은 행을 하나씩 맞추고, 남는 행을 '빠진 후보'로 봅니다. 등록번호 열이 없으면 공급가액·세액으로 맞춥니다.</li>
+      <li>신고 내역(합계표·수령명세서)은 공급자별 합계이므로, 받은 목록도 과세기간·공급자 등록번호(없으면 상호)별로 합쳐 세액을 견줍니다. 받은 쪽이 많으면 '빠진 후보', 신고 쪽이 많으면 '신고가 더 많음(확인)'입니다.</li>
+      <li>신고 자체를 안 한 과세기간은 '신고' 칸을 '안 함'으로 — 경정청구가 아니라 기한후신고(국세기본법 제45조의3)입니다.</li>
       <li>우리 명의가 아닌 세금계산서는 경정청구가 아니라 수정세금계산서(시행령 제70조 제1항 제6호, 확정신고기한 다음 날부터 1년) 문제입니다.</li>
       <li>참고용 계산입니다. 경정청구 여부와 금액은 신고인이 정하고, 큰 금액은 세무대리인과 확인합니다.</li>
     </ul>

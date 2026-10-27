@@ -270,5 +270,449 @@
   "depts": 18,
   "facility_rows": 204,
   "fac_rows": 85
+ },
+ "nam_2026": {
+  "gov": "남구",
+  "year": "2026",
+  "source": "https://nam.daegu.kr/index.do?menu_id=00205330",
+  "fetched": "2026-10-27",
+  "_check": [
+   {
+    "mok": "211-02",
+    "mok_total_k": 87326,
+    "items_k": 0,
+    "diff_k": 87326
+   },
+   {
+    "mok": "212-01",
+    "mok_total_k": 460576,
+    "items_k": 452592,
+    "diff_k": 7984
+   },
+   {
+    "mok": "212-07",
+    "mok_total_k": 30000,
+    "items_k": 0,
+    "diff_k": 30000
+   },
+   {
+    "mok": "212-08",
+    "mok_total_k": 24000,
+    "items_k": 0,
+    "diff_k": 24000
+   },
+   {
+    "mok": "212-09",
+    "mok_total_k": 122129,
+    "items_k": 0,
+    "diff_k": 122129
+   },
+   {
+    "mok": "213-01",
+    "mok_total_k": 271673,
+    "items_k": 88923,
+    "diff_k": 182750
+   },
+   {
+    "mok": "213-02",
+    "mok_total_k": 3572120,
+    "items_k": 3272120,
+    "diff_k": 300000
+   },
+   {
+    "mok": "213-05",
+    "mok_total_k": 82919,
+    "items_k": 0,
+    "diff_k": 82919
+   },
+   {
+    "mok": "215-01",
+    "mok_total_k": 3478790,
+    "items_k": 3438790,
+    "diff_k": 40000
+   },
+   {
+    "mok": "216-01",
+    "mok_total_k": 1900000,
+    "items_k": 0,
+    "diff_k": 1900000
+   },
+   {
+    "mok": "216-03",
+    "mok_total_k": 5000,
+    "items_k": 0,
+    "diff_k": 5000
+   },
+   {
+    "mok": "221-03",
+    "mok_total_k": 300000,
+    "items_k": 0,
+    "diff_k": 300000
+   },
+   {
+    "mok": "221-04",
+    "mok_total_k": 5000,
+    "items_k": 0,
+    "diff_k": 5000
+   },
+   {
+    "mok": "224-04",
+    "mok_total_k": 400000,
+    "items_k": 0,
+    "diff_k": 400000
+   },
+   {
+    "mok": "224-07",
+    "mok_total_k": 311890,
+    "items_k": 0,
+    "diff_k": 311890
+   },
+   {
+    "mok": "231-01",
+    "mok_total_k": 10500,
+    "items_k": 0,
+    "diff_k": 10500
+   },
+   {
+    "mok": "232-01",
+    "mok_total_k": 75000,
+    "items_k": 0,
+    "diff_k": 75000
+   },
+   {
+    "mok": "233-01",
+    "mok_total_k": 4200,
+    "items_k": 0,
+    "diff_k": 4200
+   },
+   {
+    "mok": "234-01",
+    "mok_total_k": 180000,
+    "items_k": 0,
+    "diff_k": 180000
+   },
+   {
+    "mok": "234-02",
+    "mok_total_k": 148800,
+    "items_k": 0,
+    "diff_k": 148800
+   },
+   {
+    "mok": "236-01",
+    "mok_total_k": 835000,
+    "items_k": 0,
+    "diff_k": 835000
+   },
+   {
+    "mok": "237-01",
+    "mok_total_k": 15200,
+    "items_k": 0,
+    "diff_k": 15200
+   },
+   {
+    "mok": "241-01",
+    "mok_total_k": 605000,
+    "items_k": 0,
+    "diff_k": 605000
+   },
+   {
+    "mok": "511-01",
+    "mok_total_k": 257968897,
+    "items_k": 0,
+    "diff_k": 257968897
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 18698517,
+    "items_k": 0,
+    "diff_k": 18698517
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 9856887,
+    "items_k": 748524,
+    "diff_k": 9108363
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 83375973,
+    "items_k": 97000,
+    "diff_k": 83278973
+   }
+  ],
+  "rows": 90,
+  "sum_k": 7446562,
+  "grant_k": 845524,
+  "check": [
+   {
+    "mok": "211-02",
+    "mok_total_k": 87326,
+    "items_k": 0,
+    "diff_k": 87326
+   },
+   {
+    "mok": "212-01",
+    "mok_total_k": 460576,
+    "items_k": 452592,
+    "diff_k": 7984
+   },
+   {
+    "mok": "212-07",
+    "mok_total_k": 30000,
+    "items_k": 0,
+    "diff_k": 30000
+   },
+   {
+    "mok": "212-08",
+    "mok_total_k": 24000,
+    "items_k": 0,
+    "diff_k": 24000
+   },
+   {
+    "mok": "212-09",
+    "mok_total_k": 122129,
+    "items_k": 0,
+    "diff_k": 122129
+   },
+   {
+    "mok": "213-01",
+    "mok_total_k": 271673,
+    "items_k": 88923,
+    "diff_k": 182750
+   },
+   {
+    "mok": "213-02",
+    "mok_total_k": 3572120,
+    "items_k": 3272120,
+    "diff_k": 300000
+   },
+   {
+    "mok": "213-05",
+    "mok_total_k": 82919,
+    "items_k": 0,
+    "diff_k": 82919
+   },
+   {
+    "mok": "215-01",
+    "mok_total_k": 3478790,
+    "items_k": 3438790,
+    "diff_k": 40000
+   },
+   {
+    "mok": "216-01",
+    "mok_total_k": 1900000,
+    "items_k": 0,
+    "diff_k": 1900000
+   },
+   {
+    "mok": "216-03",
+    "mok_total_k": 5000,
+    "items_k": 0,
+    "diff_k": 5000
+   },
+   {
+    "mok": "221-03",
+    "mok_total_k": 300000,
+    "items_k": 0,
+    "diff_k": 300000
+   },
+   {
+    "mok": "221-04",
+    "mok_total_k": 5000,
+    "items_k": 0,
+    "diff_k": 5000
+   },
+   {
+    "mok": "224-04",
+    "mok_total_k": 400000,
+    "items_k": 0,
+    "diff_k": 400000
+   },
+   {
+    "mok": "224-07",
+    "mok_total_k": 311890,
+    "items_k": 0,
+    "diff_k": 311890
+   },
+   {
+    "mok": "231-01",
+    "mok_total_k": 10500,
+    "items_k": 0,
+    "diff_k": 10500
+   },
+   {
+    "mok": "232-01",
+    "mok_total_k": 75000,
+    "items_k": 0,
+    "diff_k": 75000
+   },
+   {
+    "mok": "233-01",
+    "mok_total_k": 4200,
+    "items_k": 0,
+    "diff_k": 4200
+   },
+   {
+    "mok": "234-01",
+    "mok_total_k": 180000,
+    "items_k": 0,
+    "diff_k": 180000
+   },
+   {
+    "mok": "234-02",
+    "mok_total_k": 148800,
+    "items_k": 0,
+    "diff_k": 148800
+   },
+   {
+    "mok": "236-01",
+    "mok_total_k": 835000,
+    "items_k": 0,
+    "diff_k": 835000
+   },
+   {
+    "mok": "237-01",
+    "mok_total_k": 15200,
+    "items_k": 0,
+    "diff_k": 15200
+   },
+   {
+    "mok": "241-01",
+    "mok_total_k": 605000,
+    "items_k": 0,
+    "diff_k": 605000
+   },
+   {
+    "mok": "511-01",
+    "mok_total_k": 257968897,
+    "items_k": 0,
+    "diff_k": 257968897
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 18698517,
+    "items_k": 0,
+    "diff_k": 18698517
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 9856887,
+    "items_k": 748524,
+    "diff_k": 9108363
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 83375973,
+    "items_k": 97000,
+    "diff_k": 83278973
+   }
+  ]
+ },
+ "nam_2026_exp": {
+  "gov": "남구",
+  "year": "2026",
+  "source": "https://nam.daegu.kr/index.do?menu_id=00205330",
+  "fetched": "2026-10-27",
+  "rows": 794,
+  "depts": 39,
+  "facility_rows": 135,
+  "fac_rows": 143
+ },
+ "suseong_2026": {
+  "gov": "수성구",
+  "year": "2026",
+  "source": "https://www.suseong.kr/index.do?menu_id=00042630",
+  "fetched": "2026-10-27",
+  "_check": [
+   {
+    "mok": "212-09",
+    "mok_total_k": 2758178,
+    "items_k": 2748678,
+    "diff_k": 9500
+   },
+   {
+    "mok": "213-01",
+    "mok_total_k": 1053770,
+    "items_k": 1017770,
+    "diff_k": 36000
+   },
+   {
+    "mok": "213-02",
+    "mok_total_k": 11279513,
+    "items_k": 11311459,
+    "diff_k": -31946
+   },
+   {
+    "mok": "511-01",
+    "mok_total_k": 402614295,
+    "items_k": 402165238,
+    "diff_k": 449057
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 39810018,
+    "items_k": 39463480,
+    "diff_k": 346538
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 16666749,
+    "items_k": 16665288,
+    "diff_k": 1461
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 159068144,
+    "items_k": 158795963,
+    "diff_k": 272181
+   }
+  ],
+  "rows": 853,
+  "sum_k": 45573846,
+  "grant_k": 617089969,
+  "check": [
+   {
+    "mok": "212-09",
+    "mok_total_k": 2758178,
+    "items_k": 2748678,
+    "diff_k": 9500
+   },
+   {
+    "mok": "213-01",
+    "mok_total_k": 1053770,
+    "items_k": 1017770,
+    "diff_k": 36000
+   },
+   {
+    "mok": "213-02",
+    "mok_total_k": 11279513,
+    "items_k": 11311459,
+    "diff_k": -31946
+   },
+   {
+    "mok": "511-01",
+    "mok_total_k": 402614295,
+    "items_k": 402165238,
+    "diff_k": 449057
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 39810018,
+    "items_k": 39463480,
+    "diff_k": 346538
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 16666749,
+    "items_k": 16665288,
+    "diff_k": 1461
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 159068144,
+    "items_k": 158795963,
+    "diff_k": 272181
+   }
+  ]
  }
 }

@@ -153,9 +153,14 @@ def discover(g: dict) -> None:
                 for v in re.findall(rf'<{tag}[^>]+{attr}=["\']([^"\']+)', html, re.I):
                     if tag != "script" or re.search(r"budget|yesan|예산|fin|cms", v, re.I):
                         print(f"   [{tag}] {urljoin(url, v)[:200]}")
-            for v in dict.fromkeys(re.findall(r'(?:onclick|data-url|data-href|data-file)=["\']([^"\']{6,200})', html, re.I)):
-                if re.search(r"budget|yesan|file|down|pdf|hwp|예산|view|list|go", v, re.I):
-                    print(f"   [onclick] {v[:200]}")
+            # onclick 안의 따옴표가 섞여도 전부(앞 글자와 함께) — 동구·서구 goSelect/goFile(…), 달서구 게시판 글 제목
+            for m2 in re.finditer(r'<(a|button|input|li|tr)\b[^>]*?onclick=(["\'])(.*?)\2[^>]*>(.*?)(?=<(?:a|button|input|li|tr)\b|</(?:a|button|li|tr)>)', html, re.I | re.S):
+                oc = m2.group(3); t2 = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m2.group(4))).strip()
+                if re.search(r"budget|yesan|file|down|pdf|hwp|예산|select|view|detail", oc, re.I) or re.search(r"예산서|세입|명세|본예산", t2):
+                    print(f"   [onclick] {t2[:50]} | {oc[:220]}")
+            for fm in re.finditer(r'<form\b[^>]*action=["\']([^"\']*(?:download|viewer|file)[^"\']*)["\'][^>]*>(.*?)</form>', html, re.I | re.S):
+                hid = re.findall(r'<input[^>]+name=["\']([^"\']+)["\'][^>]*value=["\']([^"\']*)["\']', fm.group(2), re.I)
+                print(f"   [form-hidden] {fm.group(1)} :: {'; '.join(f'{a}={b[:60]}' for a, b in hid)[:300]}")
             text = re.sub(r"<script.*?</script>|<style.*?</style>", " ", html, flags=re.S | re.I)
             text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", text))
             for i, m in enumerate(re.finditer(r"사업명세서|세입예산서|세입세출예산서|본예산", text)):

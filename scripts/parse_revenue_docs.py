@@ -21,6 +21,9 @@ ACCT = re.compile(r"^\s*\[\s*(.+?)\s*\]")
 DEPT = re.compile(r"^\s*<\s*(.+?)\s*>")
 ITEM = re.compile(r"^\s*(?:○|◦|\d{1,2}\.)\s*(.*?)\s*$")
 SUB = re.compile(r"^\s*[―－\-]\s*")
+# 남구 서식(2026-10-27): ◎사업(합계가 같은 줄) 아래 ○세부 — ◎ 가 하나라도 있으면 ◎ 를 사업, ○ 를 세부로 읽는다
+ITEM_DIA = re.compile(r"^\s*(?:◎|\d{1,2}\.)\s*(.*?)\s*$")
+SUB_DIA = re.compile(r"^\s*[―－\-○◦]\s*")
 NUM = re.compile(r"^[\d,]+$")
 NAMEAMT = re.compile(r"^\s{0,2}(\S[^\d]*?)\s{2,}([\d,]+)\s+([\d,]+)\s+([\d,△\-]+)\s*$")   # 대구시 배치의 실국·부서 줄(코드 없음)
 HEADER_SKIP = re.compile(r"^(장|관|항|실국|부서)\s*:|장ㆍ관ㆍ항ㆍ목|실국ㆍ부서|\(단위|세 ?입 ?예 ?산 ?사 ?업 ?명 ?세 ?서|^\d{4}년도|총\s+계")
@@ -111,6 +114,7 @@ def guess_key(hang: str, mok_code: str, mok: str, item: str) -> str:
 
 
 def parse(text: str, key: str, name: str, year: str, acct_default: str = "일반회계") -> list[dict]:
+    ITEM, SUB = (ITEM_DIA, SUB_DIA) if re.search(r"^\s*◎", text, re.M) else (globals()["ITEM"], globals()["SUB"])
     lines = text.splitlines()
     rows: list[dict] = []
     layoutB = "실국ㆍ부서" in text or "실국:" in text

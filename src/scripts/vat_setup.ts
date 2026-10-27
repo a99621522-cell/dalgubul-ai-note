@@ -37,6 +37,25 @@ function init(D: Data) {
     document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
     save(); show(3);
   }));
+  /* 세입예산서에서 시설 후보(운영자 지시 2026-10-27 '세입 자료부터 받아서 해'): /vat-revenue.json 의 세외수입 사업 가운데 시설 성격(사용료·임대·입장료·숙박·주차 …) 행을 시설로 */
+  const FAC_KEYS = new Set(['sports', 'golf', 'lodging', 'culture', 'venue', 'program', 'parking', 'water', 'funeral', 'transit', 'marina', 'lease_bldg', 'use_permit', 'food', 'vending', 'welfare', 'equip_rent', 'ad_space', 'waste_bag']);
+  type RevRow = { mok_code: string; mok: string; dept: string; item: string; amount_k: number; vat_key: string; fac_key: string; grant: boolean };
+  type RevGov = { key: string; name: string; year: string; rows: RevRow[] };
+  const govSel = $<HTMLSelectElement>('st-gov'); let govs: RevGov[] = [];
+  if (govSel) fetch('/vat-revenue.json').then(r => r.json()).then((j: { govs: RevGov[] }) => { govs = j.govs; govSel.innerHTML = '<option value="">— 지자체 —</option>' + govs.map(g => `<option value="${g.key}">${esc(g.name)} ${g.year}</option>`).join(''); }).catch(() => { /* */ });
+  govSel?.addEventListener('change', () => { const g = govs.find(x => x.key === govSel.value); ($<HTMLButtonElement>('st-rev-add')!).disabled = !g; $('st-rev-note')!.textContent = g ? `시설 성격 사업 ${g.rows.filter(r => !r.grant && FAC_KEYS.has(r.vat_key)).length}개` : ''; });
+  $('st-rev-add')?.addEventListener('click', () => {
+    const g = govs.find(x => x.key === govSel!.value); if (!g) return; read1(); if (!org.org) { org.org = g.name; ($<HTMLInputElement>('st-org')!).value = g.name; }
+    const clean = (s: string) => s.replace(/\s*(수입|입장료|사용료|임대료|이용료|관람료|주차요금|주차료|대관료|수강료|회비|요금)\s*(수입)?$/g, '').replace(/\(.*?\)/g, '').trim() || s;
+    let n = 0; const seen = new Set(org.facilities.map(f => f.name));
+    for (const r of g.rows.filter(x => !x.grant && FAC_KEYS.has(x.vat_key)).sort((a, b) => b.amount_k - a.amount_k)) {
+      const it = (D.revenue_items ?? []).find(i => i.key === r.vat_key); const type = it?.type && D.facilities.some(f => f.key === it.type) ? it.type : (D.facilities.some(f => f.key === r.vat_key) ? r.vat_key : 'use_permit');
+      const name = clean(r.item); if (seen.has(name)) continue; seen.add(name);
+      org.facilities.push({ id: uid(), type, name: name.slice(0, 40), run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: '', kind: org.kind ?? 'gov', note: `[세입예산서 ${g.year}] ${r.dept} · ${r.mok_code} ${r.mok} · ${r.item} ${r.amount_k.toLocaleString('ko-KR')}천원 — 운영 방식·등록번호 확인` }); n++;
+    }
+    document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
+    save(); alert(`${n}곳을 시설 후보로 넣었습니다. 3단계에서 운영 방식·등록번호를 채우고 필요 없는 것은 지우세요.`); show(3);
+  });
   /* 3단계 */
   const facBox = $('st-fac')!;
   function renderFac() {

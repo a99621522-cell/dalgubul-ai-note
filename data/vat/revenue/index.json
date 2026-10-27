@@ -1,0 +1,234 @@
+{
+ "daegu_2026": {
+  "gov": "대구광역시",
+  "year": "2026",
+  "source": "https://jumin.daegu.go.kr/budget/information/informationBudgetBill.do",
+  "fetched": "2026-10-27",
+  "_check": [
+   {
+    "mok": "211-02",
+    "mok_total_k": 15471443,
+    "items_k": 15420062,
+    "diff_k": 51381
+   },
+   {
+    "mok": "511-01",
+    "mok_total_k": 3275368403,
+    "items_k": 3274288694,
+    "diff_k": 1079709
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 427279604,
+    "items_k": 424379604,
+    "diff_k": 2900000
+   },
+   {
+    "mok": "224-07",
+    "mok_total_k": 52733684,
+    "items_k": 52239484,
+    "diff_k": 494200
+   },
+   {
+    "mok": "216-03",
+    "mok_total_k": 274000,
+    "items_k": 184000,
+    "diff_k": 90000
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 213594763,
+    "items_k": 212594763,
+    "diff_k": 1000000
+   },
+   {
+    "mok": "222-01",
+    "mok_total_k": 1017000,
+    "items_k": 167000,
+    "diff_k": 850000
+   },
+   {
+    "mok": "223-03",
+    "mok_total_k": 220000,
+    "items_k": 0,
+    "diff_k": 220000
+   }
+  ],
+  "rows": 638,
+  "sum_k": 145689226,
+  "grant_k": 3911263061,
+  "check": [
+   {
+    "mok": "211-02",
+    "mok_total_k": 15471443,
+    "items_k": 15420062,
+    "diff_k": 51381
+   },
+   {
+    "mok": "511-01",
+    "mok_total_k": 3275368403,
+    "items_k": 3274288694,
+    "diff_k": 1079709
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 427279604,
+    "items_k": 424379604,
+    "diff_k": 2900000
+   },
+   {
+    "mok": "224-07",
+    "mok_total_k": 52733684,
+    "items_k": 52239484,
+    "diff_k": 494200
+   },
+   {
+    "mok": "216-03",
+    "mok_total_k": 274000,
+    "items_k": 184000,
+    "diff_k": 90000
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 213594763,
+    "items_k": 212594763,
+    "diff_k": 1000000
+   },
+   {
+    "mok": "222-01",
+    "mok_total_k": 1017000,
+    "items_k": 167000,
+    "diff_k": 850000
+   },
+   {
+    "mok": "223-03",
+    "mok_total_k": 220000,
+    "items_k": 0,
+    "diff_k": 220000
+   }
+  ]
+ },
+ "buk_2026": {
+  "gov": "북구",
+  "year": "2026",
+  "source": "https://www.buk.daegu.kr/index.do?menu_id=00000129",
+  "fetched": "2026-10-27",
+  "_check": [
+   {
+    "mok": "511-02",
+    "mok_total_k": 35662497,
+    "items_k": 35645924,
+    "diff_k": 16573
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 168703586,
+    "items_k": 168569615,
+    "diff_k": 133971
+   }
+  ],
+  "rows": 884,
+  "sum_k": 39889702,
+  "grant_k": 680727646,
+  "check": [
+   {
+    "mok": "511-02",
+    "mok_total_k": 35662497,
+    "items_k": 35645924,
+    "diff_k": 16573
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 168703586,
+    "items_k": 168569615,
+    "diff_k": 133971
+   }
+  ]
+ },
+ "dalseong_2026": {
+  "gov": "달성군",
+  "year": "2026",
+  "source": "https://www.dalseong.daegu.kr/index.do?menu_id=00001707",
+  "fetched": "2026-10-27",
+  "_check": [
+   {
+    "mok": "234-02",
+    "mok_total_k": 427700,
+    "items_k": 420800,
+    "diff_k": 6900
+   },
+   {
+    "mok": "511-01",
+    "mok_total_k": 298329109,
+    "items_k": 298287109,
+    "diff_k": 42000
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 30027043,
+    "items_k": 29737053,
+    "diff_k": 289990
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 136748321,
+    "items_k": 135394873,
+    "diff_k": 1353448
+   }
+  ],
+  "rows": 970,
+  "sum_k": 44578289,
+  "grant_k": 486810258,
+  "check": [
+   {
+    "mok": "234-02",
+    "mok_total_k": 427700,
+    "items_k": 420800,
+    "diff_k": 6900
+   },
+   {
+    "mok": "511-01",
+    "mok_total_k": 298329109,
+    "items_k": 298287109,
+    "diff_k": 42000
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 30027043,
+    "items_k": 29737053,
+    "diff_k": 289990
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 136748321,
+    "items_k": 135394873,
+    "diff_k": 1353448
+   }
+  ]
+ },
+ "gunwi_2026": {
+  "gov": "군위군",
+  "year": "2026",
+  "source": "https://www.gunwi.go.kr/ko/page.do?mnu_uid=164&code_uid=24",
+  "fetched": "2026-10-27",
+  "_check": [
+   {
+    "mok": "521-01",
+    "mok_total_k": 28602265,
+    "items_k": 28317265,
+    "diff_k": 285000
+   }
+  ],
+  "rows": 773,
+  "sum_k": 11182849,
+  "grant_k": 119836539,
+  "check": [
+   {
+    "mok": "521-01",
+    "mok_total_k": 28602265,
+    "items_k": 28317265,
+    "diff_k": 285000
+   }
+  ]
+ }
+}

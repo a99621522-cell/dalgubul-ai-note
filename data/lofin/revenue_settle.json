@@ -1,0 +1,14 @@
+{
+ "title": "성질별 단체별 세입결산",
+ "pdtaId": "88R4QJFQDPDV7D8X8VAE916854",
+ "rows": 1785,
+ "years": [
+  "2002",
+  "2024"
+ ],
+ "unit": "원",
+ "source": "행정안전부 지방재정365 재정 데이터셋",
+ "url": "https://www.lofin365.go.kr/portal/LF5110000.do?pdtaId=88R4QJFQDPDV7D8X8VAE916854&rdIncrYn=Y",
+ "fetched": "2026-10-27",
+ "note": "이 세션은 curl 로 받음(requests 는 프록시 TLS 리셋) — 러너는 fetch_lofin.py 그대로"
+}

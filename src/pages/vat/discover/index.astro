@@ -9,6 +9,12 @@ import '../../../styles/vat.css';
   <div class="section-head"><h1>② 과세사업 찾기 — 우리 기관 수입 가운데 과세사업은 어디까지인가</h1><span class="meta">법 제26조 제1항 제19호 · 시행령 제46조</span></div>
   <p class="lede">매입세액은 <strong>과세사업</strong>에 쓴 지출만 돌려받습니다. 그래서 먼저 우리 기관 수입 가운데 과세사업이 어디까지인지 훑어야 합니다. 세외수입 항목마다 '없음 / 있음·과세로 신고 중 / 있음·신고 안 함 또는 모름'을 고르면, <strong>과세사업인데 신고하지 않는 후보</strong>(발굴), 신고 중인 사업의 <strong>공제 대상 지출</strong>(대상 확대), 유권해석이 필요한 것, 면세·비과세를 나눠 보여 줍니다. 과세 여부 표시는 조문 기준 참고이지 기관의 판단이 아닙니다.</p>
   <div class="vc-form no-print"><div class="q full"><span class="q-title">우리 기관은</span><div class="choices"><label><input type="radio" name="dc-kind" value="gov" checked /> 지자체(시·군·구) — 원칙 면세, 열거 업종만 과세</label><label><input type="radio" name="dc-kind" value="contractor" /> 수탁기관(시설관리공단·재단) — 일반 사업자 기준, 제19호 면세 없음</label></div><span class="note">기관 설정을 했으면 거기서 고른 종류가 기본입니다. 공단 기준에서는 주차장·대관·사용허가도 과세이고, 군 사업 대행수수료는 과세 용역, 군 대행사업의 사업비 실비·출연금은 공급이 아닙니다.</span></div></div>
+  <section class="vc-card no-print" id="dc-govbox">
+    <h3>우리 지자체 세입예산서로 보기 — 실제 수입 항목과 금액</h3>
+    <p class="meta">지자체를 고르면 그 지자체 누리집 재정공시의 <strong>세입예산사업명세서</strong>(2026년 본예산, 일반회계)에 적힌 세외수입 사업을 금액 순으로 보이고, 사업명 낱말로 과세·면세·확인을 짐작해 아래 점검표에 '있음'으로 미리 표시할 수 있습니다. 보조금은 시설 종류 낱말이 있는 것만(면세 시설 관련 보조금은 면세공급가액에 들어감). 값은 예산서 그대로(천원), 판정은 참고입니다.</p>
+    <div class="vc-form"><label>지자체 <select id="dc-gov"><option value="">— 고르세요 —</option></select></label><div class="actions"><button type="button" class="btn secondary" id="dc-prefill" hidden>이 세입 항목을 점검표에 '있음·모름'으로 미리 표시</button><button type="button" class="btn secondary" id="dc-revcsv" hidden>세입 항목 CSV</button></div></div>
+    <div id="dc-rev"></div>
+  </section>
   <div id="dc-list"></div>
   <div id="dc-result" aria-live="polite"></div>
   <details class="vat-more"><summary>어떻게 보는가</summary><ul class="meta-list"><li>국가·지자체가 공급하는 재화·용역은 면세(법 제26조 제1항 제19호)이지만, 부동산임대업·도매 및 소매업·음식점업·숙박업·골프장 및 스키장 운영업·기타 스포츠시설 운영업은 과세(시행령 제46조 제3호). 소속 직원 구내식당 직영은 제외(나목).</li><li>과세사업을 새로 시작하면 사업자등록(또는 업종 추가)을 먼저 — 등록 전 매입세액은 공제하지 못합니다(법 제39조 제1항 제8호, 20일 안 등록 예외).</li><li>'확인' 항목은 표준산업분류·유권해석에 달린 것입니다. 결정 근거는 기관 설정의 시설 '확인 결과·근거'에 남깁니다.</li><li>면세 수입은 공제가 없지만 면세공급가액에 들어가 공통매입세액 안분 비율을 올립니다. 토지 매각이 있는 과세기간은 특히 그렇습니다.</li></ul></details>

@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: sudo apt-get install -y -q poppler-utils
+      - run: sudo apt-get install -y -qq poppler-utils >/dev/null || (sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq poppler-utils >/dev/null)
       - run: pip install -q -r scripts/requirements.txt
       - run: python scripts/fetch_revenue_docs.py ${{ github.event.inputs.only && format('--only {0}', github.event.inputs.only) || '' }}
       - name: 커밋

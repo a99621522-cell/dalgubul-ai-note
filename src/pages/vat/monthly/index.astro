@@ -12,6 +12,7 @@ import '../../../styles/vat.css';
   <section id="m-org" class="vc-card no-print">
     <h3>기관 설정</h3>
     <p id="m-org-state" class="meta">확인 중…</p>
+    <p class="meta">카드 지출이 많으면 신고 담당에게 기관 법인카드의 홈택스 <strong>「사업용 신용카드 등록」</strong>을 부탁하세요 — 등록 뒤에는 카드 매입이 홈택스에 자동 집계됩니다(여기 기록은 '어디에 썼는지'를 남기는 용도).</p>
     <p class="meta">신고 담당에게 받은 <strong>기관 설정 파일(org.json)</strong>을 여세요: <input type="file" id="m-open" accept=".json,application/json" /> · 파일이 없으면 신고 담당 부서에 요청하거나 <a href="/vat/setup/">기관 설정</a>에서 만듭니다.</p>
   </section>
 
@@ -33,7 +34,7 @@ import '../../../styles/vat.css';
     <div class="q full"><span class="q-title">③ 이 돈은 어디에 쓰였나요</span><div class="choices" id="m-use"></div></div>
     <div class="q full"><span class="q-title">④ 무엇을 샀나요</span><div class="choices" id="m-what"></div></div>
     <div class="q full" id="m-asset-q" hidden><label class="choices"><span><input type="checkbox" id="m-asset" /> 건물 공사·장비처럼 <strong>여러 해 쓰는 것</strong>입니다(500만 원 넘는 수선·설비 등)</span></label></div>
-    <div class="q full"><label class="choices"><span><input type="checkbox" id="m-late" /> 지난 과세기간(6개월 전 이전) 지출인데 영수증을 이제 받았다</span></label></div>
+    <div class="q full"><label class="choices"><span><input type="checkbox" id="m-late" /> 지난 과세기간(6개월 전 이전) 지출인데 영수증을 이제 받았다</span></label><label class="choices"><span><input type="checkbox" id="m-subsidy" /> 국비·시비 <strong>보조금</strong>으로 집행한 지출이다(보조금이라서 공제가 안 되는 것은 아닙니다 — 표시만 남깁니다)</span></label></div>
     <div class="actions"><button type="submit" class="btn">판정하고 기록에 넣기</button><button type="reset" class="btn secondary">비우기</button></div>
   </form>
   <div id="m-result" aria-live="polite"></div>

@@ -8,13 +8,13 @@ export type Basis = { law: string; art: string };
 export type Opt = { key: string; name: string };
 export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[] };
 export type Data = {
-  version: string; verified?: { date: string; act: string; decree: string; rule: string }; law_url: string; laws: Record<string, string>;
+  version: string; verified?: { date: string; act: string; decree: string; rule: string; basic?: string }; law_url: string; form_version?: string; laws: Record<string, string>;
   taxable_principle: { summary: string; basis: Basis[]; notes: string[] };
   facilities: FacilityRule[];
-  rules: { nondeductible: { key: string; no: string; name: string; fix: string; basis: Basis[] }[]; card: { summary: string; not_allowed: string; verify?: boolean }; late_invoice: { summary: string; verify?: boolean };
+  rules: { nondeductible: { key: string; no: string; name: string; fix: string; basis: Basis[] }[]; card: { summary: string; not_allowed: string; verify?: boolean; practice?: string[] }; late_invoice: { summary: string; verify?: boolean };
     common: { summary: string; formula: string; skip: { key: string; name: string; cond: string; ratio_lt?: number; amount_lt?: number }[]; no_supply: string; prelim: string };
     recalc: { rates: { building: number; other: number }; threshold_pp: number };
-    filing: { periods: { name: string; span: string; due: string }[]; notes: string[] } };
+    filing: { periods: { name: string; span: string; due: string }[]; notes: string[]; claim?: string; verify?: boolean } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
   presets?: Preset[];
@@ -52,7 +52,7 @@ const B = (law: string, art: string): Basis => ({ law, art });
   if (i.proof === 'bill') { why.push('계산서는 면세 거래의 증빙이라 공제할 세액이 없습니다.'); todo.push('과세 거래인데 계산서를 받았다면 공급자에게 세금계산서로 다시 발급을 요청합니다.'); basis.push(B('act', '제26조'), B('act', '제38조')); return done('none', '계산서(면세 거래) — 매입세액 없음'); }
   // 2. 증빙 요건
   if (i.proof === 'receipt') { const n = nd('no_invoice'); why.push(`세금계산서(또는 요건을 갖춘 신용카드매출전표)를 받지 않은 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('공급자가 일반과세자면 공급받는 자를 우리 기관 사업자등록번호로 한 세금계산서를, 카드 결제면 부가가치세액이 따로 적힌 전표를 받습니다.'); basis.push(...n.basis); return done('no', '증빙 없음 — 불공제'); }
-  if (i.proof === 'tax_invoice_other') { const n = nd('no_invoice'); why.push(`공급받는 자가 우리 기관이 아닌 세금계산서는 '사실과 다른 세금계산서'로 공제하지 않습니다(${n.no}).`); todo.push('공급자에게 공급받는 자를 지자체(과세사업 등록번호)로 한 수정세금계산서를 요청합니다. 그 시설이 수탁기관 자기 사업이라면 그 기관의 매입세액이지 우리 것이 아닙니다 — 위·수탁 계약에서 사업자가 누구인지 확인합니다.'); basis.push(...n.basis, B('decree', '제75조')); return done('no', '다른 명의 세금계산서 — 불공제'); }
+  if (i.proof === 'tax_invoice_other') { const n = nd('no_invoice'); why.push(`공급받는 자가 우리 기관이 아닌 세금계산서는 '사실과 다른 세금계산서'로 공제하지 않습니다(${n.no}).`); todo.push('공급자에게 공급받는 자를 지자체(과세사업 등록번호)로 한 수정세금계산서를 요청합니다. 기한이 있습니다 — 착오로 잘못 적힌 것이면 기한 없이(시행령 제70조 제1항 제5호), 착오가 아닌 사유면 공급일이 속한 과세기간의 확정신고기한 다음 날부터 1년 안에만(제6호) 수정세금계산서를 발급할 수 있고, 그 뒤에는 공제가 영구히 막힙니다. 그 시설이 수탁기관 자기 사업이라면 그 기관의 매입세액이지 우리 것이 아닙니다 — 위·수탁 계약에서 사업자가 누구인지 확인합니다.'); basis.push(...n.basis, B('decree', '제75조'), B('decree', '제70조')); return done('no', '다른 명의 세금계산서 — 불공제'); }
   if (i.proof === 'card_novat') { why.push('부가가치세액이 따로 적히지 않은 전표, 세금계산서를 발급할 수 없는 간이과세자·면세사업자의 전표는 공제 요건을 갖추지 못합니다.'); todo.push('공급자가 일반과세자면 부가가치세액이 구분된 전표 재발급 또는 세금계산서를 요청합니다. 간이(발급 불가)·면세 공급자면 공제할 수 없습니다.'); basis.push(B('act', '제46조')); verify = !!D.rules.card.verify; return done('no', '요건 못 갖춘 카드 전표 — 불공제'); }
   if (i.proof === 'card_vat') {
     if (i.supplier === 'simple_no') { why.push('세금계산서를 발급할 수 없는 간이과세자·면세사업자의 카드 전표는 공제하지 못합니다.'); basis.push(B('act', '제46조')); return done('no', '영수증 발급 기간 간이과세자·면세 공급자 카드 전표 — 불공제'); }
@@ -81,13 +81,16 @@ const B = (law: string, art: string): Basis => ({ law, art });
 /* ---------- v2: 기관 설정(org.json) · 시설 기록 · 인계표 ---------- */
 export type Run = 'direct' | 'entrusted_org' | 'entrusted_own' | 'unknown';
 export const RUN_NAME: Record<Run, string> = { direct: '우리 기관이 직접 운영', entrusted_org: '위탁 — 우리 기관 명의 사업(수탁기관은 대행)', entrusted_own: '위탁 — 수탁기관 자기 사업(수탁기관이 신고)', unknown: '확인 필요 — 위·수탁 계약으로 정하세요' };
-export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string };
+export type Fee = 'taxable' | 'free' | 'unknown';
+/** 수탁기관 자기 사업 시설에서 우리 기관이 수탁기관에게 받는 것 — 군 부담 지출(수선·장비)의 매입세액 공제 여부를 가른다 */
+export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고 과세(부동산임대)로 신고한다', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
+export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string };
 export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; contractor?: string; term?: string; note?: string }[] };
 export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string };
 export type ProofQ = 'e_invoice' | 'p_invoice' | 'card' | 'cash' | 'bill' | 'none';
 export type PayeeQ = 'org' | 'contractor' | 'person' | 'unknown';
 export type UseQ = 'this' | 'multi' | 'admin' | 'unknown';
-export type LedgerRow = { id: string; d: string; desc: string; amt: number; tax: number; proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean; v: Verdict; title: string; todo: string; basis: string; done: boolean };
+export type LedgerRow = { id: string; d: string; desc: string; amt: number; tax: number; proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean; subsidy?: boolean; fix_due?: string; v: Verdict; title: string; todo: string; basis: string; done: boolean };
 export const PROOF_Q: Opt[] = [
   { key: 'e_invoice', name: '전자세금계산서(홈택스·메일로 온 것)' }, { key: 'p_invoice', name: '종이 세금계산서' },
   { key: 'card', name: '신용카드 전표(법인·클린카드)' }, { key: 'cash', name: '현금영수증(사업자 지출증빙)' },
@@ -109,12 +112,24 @@ export const getLedger = (fid: string, month: string) => allLedgers()[`${fid}:${
 export const setLedger = (fid: string, month: string, rows: LedgerRow[]) => { const a = allLedgers(); a[`${fid}:${month}`] = rows; lsSet(LEDGER_KEY, a); };
 export const facilityRule = (D: Data, f: OrgFacility) => D.facilities.find(x => x.key === f.type);
 export function facilityStatus(D: Data, f: OrgFacility): 'taxable' | 'exempt' | 'check' | 'own' { if (f.run === 'entrusted_own') return 'own'; return facilityRule(D, f)?.status ?? 'check'; }
+/** 신고 준비에 넣을 시설: 우리 기관 사업이거나, 수탁기관 자기 사업이어도 우리 기관이 사용료를 받아 과세(임대)로 신고하는 시설(군 부담 지출이 그 임대사업의 매입) */
+export const inFiling = (D: Data, f: OrgFacility) => facilityStatus(D, f) !== 'own' || f.fee === 'taxable';
+/** 매출(1)(3)(4)을 묻는 시설: 과세·확인 필요 + 사용료를 받는 수탁 시설 */
+export const salesFacility = (D: Data, f: OrgFacility) => { const s = facilityStatus(D, f); return s === 'taxable' || s === 'check' || (s === 'own' && f.fee === 'taxable'); };
+/** 수정세금계산서 발급 기한(착오 외 사유, 시행령 제70조 제1항 제6호): 공급일이 속한 과세기간의 확정신고기한 다음 날부터 1년 */
+export function fixDue(d: string, today = new Date()) { const y = Number(d.slice(0, 4)), m = Number(d.slice(5, 7)); if (!y || !m) return null; const due = m <= 6 ? new Date(y + 1, 6, 25) : new Date(y + 2, 0, 25); const t = new Date(today.getFullYear(), today.getMonth(), today.getDate()); return { due: ymd(due), days: Math.round((due.getTime() - t.getTime()) / 86400000) }; }
+/** 과세기간(확정 기준)과 경정청구 기한(법정신고기한이 지난 후 5년, 국세기본법 제45조의2 제1항 — 2026-10-02 시행 판 대조) */
+export function claimPeriod(d: string, today = new Date()) { const y = Number(d.slice(0, 4)), m = Number(d.slice(5, 7)); if (!y || !m) return null; const half = m <= 6 ? 1 : 2; const due = half === 1 ? new Date(y, 6, 25) : new Date(y + 1, 0, 25); const claim = new Date(due.getFullYear() + 5, due.getMonth(), due.getDate()); const t = new Date(today.getFullYear(), today.getMonth(), today.getDate()); return { key: `${y}-${half}`, name: `${y}년 제${half}기(${half === 1 ? '1~6' : '7~12'}월)`, due: ymd(due), claim: ymd(claim), days: Math.round((claim.getTime() - t.getTime()) / 86400000) }; }
 export const STATUS_WORD: Record<string, string> = { taxable: '과세 — 부가세를 신고하는 시설', exempt: '면세 — 매출세액도 매입세액 공제도 없음', check: '확인 필요 — 유권해석·분류에 따라 다름', own: '수탁기관 자기 사업 — 우리 신고 아님' };
 
 /** 시설 담당의 현장 질문 답 → 판정 입력. 조문은 judge 가 붙인다. */
-export function toInput(D: Data, org: Org, f: OrgFacility, q: { proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean }): { input: Input; override?: Out; note?: string } {
+export function toInput(D: Data, org: Org, f: OrgFacility, q: { proof: ProofQ; payee: PayeeQ; vat_sep: boolean; use: UseQ; what: string; asset: boolean; late: boolean; subsidy?: boolean }): { input: Input; override?: Out; note?: string } {
   const st = facilityStatus(D, f);
-  if (st === 'own') return { input: { use: 'unknown', kind: 'general', proof: 'receipt', supplier: 'unknown', timing: 'now' }, override: { v: 'check', title: '이 시설의 부가세는 수탁기관이 신고합니다', why: ['수탁기관 자기 사업으로 설정된 시설입니다. 그 기관이 지자체가 아니므로 매입세액도 그 기관 것입니다.'], todo: ['이 지출은 수탁기관의 장부에 적습니다. 설정이 틀렸으면 신고 담당 부서에 알려 기관 설정을 고칩니다.'], basis: [{ law: 'act', art: '제3조' }, { law: 'act', art: '제26조' }] } };
+  if (st === 'own') {   // 수탁기관 자기 사업 시설 — 수탁기관이 낸 돈은 그 기관 것, 우리 기관이 직접 낸 돈(수선·장비 등)은 사용료를 받는 임대(과세)인지로 가른다
+    if (q.payee === 'contractor') return { input: { use: 'unknown', kind: 'general', proof: 'receipt', supplier: 'unknown', timing: 'now' }, override: { v: 'check', title: '수탁기관 명의 지출 — 그 기관이 신고합니다', why: ['수탁기관 자기 사업으로 설정된 시설에서 수탁기관 이름으로 낸 돈입니다. 그 기관이 지자체가 아니므로 매입세액도 그 기관 것입니다.'], todo: ['이 지출은 수탁기관의 장부에 적습니다. 우리 기관이 낸 돈(수선·장비 등)만 여기에 적습니다. 설정이 틀렸으면 신고 담당 부서에 알려 기관 설정을 고칩니다.'], basis: [{ law: 'act', art: '제3조' }, { law: 'act', art: '제26조' }] } };
+    if ((f.fee ?? 'unknown') === 'unknown') return { input: { use: 'unknown', kind: 'general', proof: 'tax_invoice', supplier: 'general', timing: 'now' }, override: { v: 'check', title: '우리 기관이 수탁기관에게 사용료를 받는지 확인', why: ['수탁기관 자기 사업 시설에 우리 기관이 직접 낸 돈입니다. 우리 기관이 수탁기관에게 사용료·임대료를 받아 과세(부동산임대)로 신고하면 이 돈은 그 임대사업의 매입세액이라 공제할 수 있고, 무상으로 쓰게 하면 우리 기관의 과세사업이 아니어서 공제하지 못합니다.'], todo: ['위·수탁 계약서·사용허가서에서 사용료·임대료 조항을 보고 기관 설정(이 시설의 "수탁기관에게 받는 것")을 고르면 다시 판정됩니다.'], basis: [{ law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }, { law: 'act', art: '제39조' }] } };
+    if (f.fee === 'free') return { input: { use: 'exempt', kind: 'general', proof: 'tax_invoice', supplier: 'general', timing: 'now' }, override: { v: 'no', title: '무상 사용 시설의 군 부담 지출 — 불공제', why: ['우리 기관이 수탁기관에게 사용료를 받지 않는 시설입니다. 무상으로 쓰게 하는 것은 우리 기관의 과세사업이 아니어서, 우리 기관이 낸 수선·장비 비용의 매입세액은 면세사업등 관련 매입세액으로 공제하지 못합니다(법 제39조 제1항 제7호).'], todo: ['앞으로 이 시설에 큰 수선·설비 지출이 예정돼 있으면, 사용료를 받는 유상 사용허가(과세)로 바꿀 수 있는지 재산 담당·세무대리인과 검토합니다 — 유상이면 그 지출의 매입세액을 공제할 수 있습니다(판단은 기관 몫).'], basis: [{ law: 'act', art: '제39조' }, { law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }] } };
+  }
   let proof: string, supplier = 'general';
   if (q.proof === 'e_invoice' || q.proof === 'p_invoice') {
     if (q.payee === 'unknown') return { input: { use: 'unknown', kind: 'general', proof: 'tax_invoice', supplier: 'general', timing: 'now' }, override: { v: 'check', title: '세금계산서의 "공급받는 자"를 확인하세요', why: ['세금계산서는 공급받는 자가 우리 기관 등록번호로 돼 있어야 우리 매입세액입니다.'], todo: [`세금계산서 오른쪽 "공급받는 자" 칸의 등록번호가 ${org.unit === 'entity' ? (org.reg_no || '우리 기관 번호') : (f.reg_no || '이 시설의 등록번호')} 인지 봅니다. 수탁기관 번호면 수정세금계산서를 요청합니다.`], basis: [{ law: 'act', art: '제32조' }, { law: 'act', art: '제39조' }] } };
@@ -122,9 +137,9 @@ export function toInput(D: Data, org: Org, f: OrgFacility, q: { proof: ProofQ; p
   } else if (q.proof === 'card' || q.proof === 'cash') { proof = q.vat_sep ? 'card_vat' : 'card_novat'; supplier = q.vat_sep ? 'general' : 'unknown'; }
   else proof = q.proof === 'bill' ? 'bill' : 'receipt';
   const hasOther = org.facilities.some(x => x.id !== f.id && facilityStatus(D, x) !== 'taxable');
-  const use = q.use === 'this' ? (st === 'taxable' ? 'taxable' : st === 'exempt' ? 'exempt' : 'unknown') : q.use === 'multi' ? (hasOther ? 'common' : 'taxable') : q.use === 'admin' ? 'common' : 'unknown';
+  const use = q.use === 'this' ? (st === 'taxable' || (st === 'own' && f.fee === 'taxable') ? 'taxable' : st === 'exempt' ? 'exempt' : 'unknown') : q.use === 'multi' ? (hasOther ? 'common' : 'taxable') : q.use === 'admin' ? 'common' : 'unknown';
   const kind = ({ utility: 'general', service: 'general', repair: q.asset ? 'building' : 'general', equip: q.asset ? 'equip' : 'general', car_pass: 'car', car_other: q.asset ? 'equip' : 'general', guest: 'entertain', staff: 'welfare', payroll_tax: 'payroll', insurance: 'insurance', land: 'land', water: 'exempt_goods', other: 'general' } as Record<string, string>)[q.what] ?? 'general';
-  const notes = [st === 'check' && q.use === 'this' ? '이 시설 유형은 과세인지 면세인지 유권해석·분류로 정해야 합니다(기관 설정의 "확인 필요"). 신고 담당 부서가 정하면 다시 판정됩니다.' : '', f.run === 'unknown' ? '이 시설의 운영 방식(우리 기관 명의 대행인지 수탁기관 자기 사업인지)이 아직 정해지지 않았습니다. 수탁기관 자기 사업이면 이 매입세액은 우리 것이 아닙니다 — 기관 설정에서 위·수탁 계약대로 고르세요.' : ''].filter(Boolean); const note = notes.length ? notes.join(' ') : undefined;
+  const notes = [st === 'check' && q.use === 'this' ? '이 시설 유형은 과세인지 면세인지 유권해석·분류로 정해야 합니다(기관 설정의 "확인 필요"). 신고 담당 부서가 정하면 다시 판정됩니다.' : '', f.run === 'unknown' ? '이 시설의 운영 방식(우리 기관 명의 대행인지 수탁기관 자기 사업인지)이 아직 정해지지 않았습니다. 수탁기관 자기 사업이면 이 매입세액은 우리 것이 아닙니다 — 기관 설정에서 위·수탁 계약대로 고르세요.' : '', st === 'own' ? '수탁기관 자기 사업 시설이지만 우리 기관이 사용료·임대료를 받아 과세(부동산임대)로 신고하는 시설이므로, 우리 기관이 직접 낸 이 돈은 그 임대사업의 지출로 봅니다 — 사용료가 과세로 신고되고 있어야 합니다.' : '', q.subsidy ? '국비·시비 보조금으로 집행한 지출이라도 공제 여부는 쓰임(과세·면세)으로만 정합니다 — 보조금이라서 공제가 안 되는 것이 아닙니다. 면세사업 보조금을 받았다면 신고 담당이 안분 때 면세공급가액에 넣습니다(시행령 제81조 제1항).' : ''].filter(Boolean); const note = notes.length ? notes.join(' ') : undefined;
   return { input: { use, kind, proof, supplier, timing: q.late ? 'late' : 'now' }, note };
 }
 
@@ -165,7 +180,7 @@ export const CELLS: { no: string; name: string; group: string }[] = [
   { no: '44', name: '그 밖의 공제매입세액 — 신용카드매출전표등 수령명세서 제출분 일반매입', group: '매입(15)' }, { no: '45', name: '그 밖의 공제매입세액 — 신용카드매출전표등 수령명세서 제출분 고정자산매입', group: '매입(15)' },
   { no: '53', name: '공제받지 못할 매입세액', group: '불공제(17)' }, { no: '54', name: '공통매입세액 중 면세사업등 해당 세액', group: '불공제(17)' }];
 export type Filing = { v: 1; org: string; period: PeriodKey; saved: string; cells: Record<string, { amt: number; tax: number }>; row_ids: string[];
-  groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string }[];
+  groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string; basis?: string }[];
   assets: { id: string; facility: string; desc: string; period: PeriodKey; tax: number; kind: 'building' | 'other'; common: boolean; ratio0: number; group: string }[];
   sales: Record<string, { c1: number; c3: number; c4: number }> };
 export const FILINGS_KEY = 'vat-filings-v1';
@@ -190,7 +205,8 @@ export const COL_GUESS: { key: string; name: string; re: RegExp }[] = [
   { key: 'amt', name: '공급가액', re: /공급가액|공급가|과세금액|순금액/ },
   { key: 'tax', name: '세액(부가세)', re: /세액|부가세|부가가치세|vat/i },
   { key: 'total', name: '합계(부가세 포함)', re: /합계금액|합계|총액|총금액|승인금액|결제금액|이용금액/ },
-  { key: 'payee_reg', name: '공급받는자 등록번호', re: /공급받는자.*등록번호|공급받는자등록|매입자.*등록번호/ }];
+  { key: 'payee_reg', name: '공급받는자 등록번호', re: /공급받는자.*등록번호|공급받는자등록|매입자.*등록번호/ },
+  { key: 'supplier_reg', name: '공급자 등록번호', re: /공급자.*등록번호|공급자등록|사업자등록번호|사업자번호|등록번호/ }];
 export function guessColumns(header: string[]) { const m: Record<string, number> = {}; for (const g of COL_GUESS) { const i = header.findIndex(h => g.re.test(h.replace(/\s/g, ''))); if (i >= 0 && !Object.values(m).includes(i)) m[g.key] = i; } return m; }
 export const WHAT_GUESS: { re: RegExp; key: string }[] = [
   { re: /전기|한전|한국전력|가스|도시가스|통신|KT|SKT|LGU|인터넷|전화|수도|상하수도/i, key: 'utility' }, { re: /수도요금|상수도|도서|교육|진료/, key: 'water' }, { re: /청소|경비|용역|인쇄|홍보|방역|소독|위탁/, key: 'service' },

@@ -10,5 +10,5 @@ if (dd) {
   const a = $('role-a-state'), b = $('role-b-state');
   const n = Object.values(allLedgers()).reduce((s, r) => s + r.length, 0);
   if (a) a.textContent = org ? `설정 있음: ${org.org} 시설 ${org.facilities.length}곳 · 이 브라우저 기록 ${n}건` : '먼저 신고 담당에게 기관 설정 파일(org.json)을 받으세요';
-  if (b) b.textContent = org ? `이 브라우저의 설정: ${org.org} · ${org.created} 저장 — 고치려면 누르세요` : '아직 설정이 없습니다 — 5문항, 약 10분';
+  if (b) b.textContent = org ? `이 브라우저의 설정: ${org.org} · ${org.created} 저장 — 고치려면 누르고, 신고 때는 '신고 준비'로` : '아직 설정이 없습니다 — 5문항, 약 10분';
 }

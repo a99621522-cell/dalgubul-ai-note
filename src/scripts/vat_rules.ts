@@ -143,3 +143,31 @@ export function toCsv(rows: (string | number)[][]) { return '\ufeff' + rows.map(
 export function downloadText(name: string, text: string, mime = 'text/plain;charset=utf-8') { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: mime })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0); }
 export function readJsonFile(file: File): Promise<unknown> { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => { try { res(JSON.parse(String(r.result))); } catch (e) { rej(e); } }; r.onerror = rej; r.readAsText(file, 'utf-8'); }); }
 export const uid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+
+/* ---------- v2 2단계: 신고 준비(/vat/prepare/) — 기간·칸·신고 기록 ---------- */
+export type PeriodKey = string; // '2026-1P' 제1기 예정 · '2026-1F' 제1기 확정 · '2026-2P' · '2026-2F'
+export function periodInfo(key: PeriodKey) {
+  const y = Number(key.slice(0, 4)); const half = Number(key[5]) as 1 | 2; const kind = key[6] as 'P' | 'F';
+  const mm = (a: number, b: number) => Array.from({ length: b - a + 1 }, (_, i) => `${y}-${String(a + i).padStart(2, '0')}`);
+  const own = kind === 'P' ? (half === 1 ? mm(1, 3) : mm(7, 9)) : (half === 1 ? mm(4, 6) : mm(10, 12));
+  const prelim = kind === 'F' ? (half === 1 ? mm(1, 3) : mm(7, 9)) : [];
+  const full = half === 1 ? mm(1, 6) : mm(7, 12);
+  const due = kind === 'P' ? (half === 1 ? `${y}-04-25` : `${y}-10-25`) : (half === 1 ? `${y}-07-25` : `${y + 1}-01-25`);
+  return { y, half, kind, own, prelim, full, due, name: `${y}년 제${half}기 ${kind === 'P' ? '예정' : '확정'}신고`, prelimKey: kind === 'F' ? `${y}-${half}P` : null };
+}
+export const periodKeyOf = (month: string): PeriodKey => { const y = month.slice(0, 4); const m = Number(month.slice(5, 7)); return `${y}-${m <= 3 ? '1P' : m <= 6 ? '1F' : m <= 9 ? '2P' : '2F'}`; };
+/** 일반과세자 부가가치세 신고서(시행규칙 별지 제21호서식, 2026-04-01 시행 판에서 확인) 칸 */
+export const CELLS: { no: string; name: string; group: string }[] = [
+  { no: '1', name: '과세 — 세금계산서 발급분', group: '매출' }, { no: '3', name: '과세 — 신용카드·현금영수증 발행분', group: '매출' }, { no: '4', name: '과세 — 기타(정규영수증 외 매출분, 간주임대료 포함)', group: '매출' },
+  { no: '10', name: '세금계산서 수취분 — 일반매입', group: '매입' }, { no: '12', name: '세금계산서 수취분 — 고정자산매입', group: '매입' }, { no: '13', name: '예정신고 누락분', group: '매입' },
+  { no: '44', name: '그 밖의 공제매입세액 — 신용카드매출전표등 수령명세서 제출분 일반매입', group: '매입(15)' }, { no: '45', name: '그 밖의 공제매입세액 — 신용카드매출전표등 수령명세서 제출분 고정자산매입', group: '매입(15)' },
+  { no: '53', name: '공제받지 못할 매입세액', group: '불공제(17)' }, { no: '54', name: '공통매입세액 중 면세사업등 해당 세액', group: '불공제(17)' }];
+export type Filing = { v: 1; org: string; period: PeriodKey; saved: string; cells: Record<string, { amt: number; tax: number }>; row_ids: string[];
+  groups: { key: string; name: string; taxable: number; exempt: number; ratio: number; common_tax: number; nondeduct: number; skipped?: string }[];
+  assets: { id: string; facility: string; desc: string; period: PeriodKey; tax: number; kind: 'building' | 'other'; common: boolean; ratio0: number; group: string }[];
+  sales: Record<string, { c1: number; c3: number; c4: number }> };
+export const FILINGS_KEY = 'vat-filings-v1';
+export const getFilings = (): Record<PeriodKey, Filing> => lsGet<Record<PeriodKey, Filing>>(FILINGS_KEY) ?? {};
+export const saveFiling = (f: Filing) => { const a = getFilings(); a[f.period] = f; lsSet(FILINGS_KEY, a); };
+/** 간주임대료 공급가액(시행령 제65조 제1항): 보증금 × 과세대상 기간 일수 × 이자율 ÷ 365(윤년 366). 이자율은 기획재정부령 정기예금 이자율 — 사용자가 넣는다 */
+export const deemedRent = (deposit: number, days: number, rate: number, year: number) => Math.floor(deposit * days * rate / ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 366 : 365));

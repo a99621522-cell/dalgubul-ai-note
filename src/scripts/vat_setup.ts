@@ -30,7 +30,7 @@ function init(D: Data) {
     const p = (D.presets ?? []).find(x => x.key === b.dataset.preset); if (!p) return;
     if (org.facilities.length && !confirm(`지금 시설 ${org.facilities.length}곳을 지우고 ${p.org} 예시 ${p.facilities.length}곳으로 바꿉니다.`)) return;
     read1(); if (!org.org) { org.org = p.org; ($<HTMLInputElement>('st-org')!).value = p.org; }
-    org.facilities = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.note ?? '') }));
+    org.facilities = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? '') }));
     document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
     save(); show(3);
   }));

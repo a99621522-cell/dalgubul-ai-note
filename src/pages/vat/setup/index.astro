@@ -29,7 +29,7 @@ const presets = vatPresets();
 
   <section class="step vc-form" data-step="2" hidden>
     <p class="q-title full">2. 우리 기관이 이용료·임대료·판매 대금을 받는 시설을 모두 고르세요</p>
-    {presets.length > 0 && <div class="q full" id="st-presets"><span class="q-title" style="font-size:var(--small)">예시에서 시작하기 — 공개 조례로 만든 시설 목록(운영 방식·등록번호는 비어 있음)</span>
+    {presets.length > 0 && <div class="q full" id="st-presets"><span class="q-title" style="font-size:var(--small)">예시에서 시작하기 — 공개 조례·군의회 의안·회의록으로 만든 시설 목록(민간위탁 시설은 수탁자·기간을 의회 제안설명 기준으로 적음, 운영 방식·등록번호는 비어 있음)</span>
       <div class="choices">{presets.map(p => <button type="button" class="btn secondary" data-preset={p.key}>{p.org} 예시 불러오기 ({p.facilities.length}곳)</button>)}</div>
       <details class="vat-more"><summary>예시의 출처와 조사 결과</summary>{presets.map(p => <div><p class="note">{p.org}: {p.note} 읽은 날 {p.read}. 과세 여부는 이 사이트 규칙의 유형 기준 참고 표시이며 기관의 공식 판단이 아닙니다.</p>{p.findings && <ul class="meta-list">{p.findings.map(f => <li>{f}</li>)}</ul>}<p class="note">출처</p><ul class="meta-list">{p.sources.map(s => <li><a href={s.url} target="_blank" rel="noopener">{s.title}</a> ({s.eff})</li>)}</ul></div>)}</details></div>}
     <div class="tiles full" id="st-tiles">{R.facilities.filter(f => f.key !== 'admin').map(f => <label><input type="checkbox" name="st-type" value={f.key} /><span><span class="t-name">{f.name}</span><br/><span class="t-st">{STATUS_LABEL[f.status]}{f.interp ? ' · 유권해석 확인' : ''} — {f.group}</span></span></label>)}</div>

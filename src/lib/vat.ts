@@ -7,7 +7,7 @@ export type Opt = { key: string; name: string };
 export type NonDed = { key: string; no: string; name: string; fix: string; basis: Basis[] };
 export type Skip = { key: string; name: string; cond: string; ratio_lt?: number; amount_lt?: number };
 export type CheckItem = { stage: string; id: string; text: string; basis: Basis[] };
-export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; note?: string }[] };
+export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; contractor?: string; term?: string; note?: string }[] };
 export type VatRules = {
   version: string; verified?: { date: string; act: string; decree: string; rule: string }; law_url: string; laws: Record<string, string>;
   taxable_principle: { summary: string; basis: Basis[]; notes: string[] };

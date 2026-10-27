@@ -126,7 +126,7 @@ def discover(g: dict) -> None:
         if url in seen:
             continue
         seen.add(url)
-        html = get(url, tries=1, timeout=45).decode("utf-8", "ignore")
+        html = get(url, tries=2, timeout=45).decode("utf-8", "ignore")   # 5차: 4차에 열리던 동구·서구·달서구가 1회 시도에서 연결 실패 → 2회
         opened += 1
         if not html:
             print(f"[revenue] {g['name']}: 페이지 못 받음 {url}")

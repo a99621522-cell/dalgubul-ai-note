@@ -33,9 +33,12 @@ function init(D: Data) {
     const p = (D.presets ?? []).find(x => x.key === b.dataset.preset); if (!p) return;
     if (org.facilities.length && !confirm(`지금 시설 ${org.facilities.length}곳을 지우고 ${p.org} 예시 ${p.facilities.length}곳으로 바꿉니다.`)) return;
     read1(); if (!org.org) { org.org = p.org; ($<HTMLInputElement>('st-org')!).value = p.org; }
-    org.facilities = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? '') }));
+    org.facilities = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? ''), ...(f.alias?.length ? { alias: f.alias } : {}) }));
     document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
-    save(); show(3);
+    save();
+    /* 같은 지자체의 세입예산서가 있으면 골라 두고(조례 시설 ↔ 세입 사업을 이름으로 합치는 순서: 예시 → 세입 후보), 없으면 3단계로 */
+    if (govSel && govs.some(g => g.key === p.key)) { govSel.value = p.key; govSel.dispatchEvent(new Event('change')); $('st-rev-note')!.textContent += ' — 「시설 후보 불러오기」를 누르면 세입 사업을 이름이 같은 예시 시설에 붙이고, 없는 것만 새 시설로 넣습니다.'; }
+    else show(3);
   }));
   /* 세입예산서에서 시설 후보(운영자 지시 2026-10-27 '세입 자료부터 받아서 해'): /vat-revenue.json 의 세외수입 사업 가운데 시설 성격(사용료·임대·입장료·숙박·주차 …) 행을 시설로 */
   const FAC_KEYS = new Set(['sports', 'golf', 'lodging', 'culture', 'venue', 'program', 'parking', 'water', 'funeral', 'transit', 'marina', 'lease_bldg', 'use_permit', 'food', 'vending', 'welfare', 'equip_rent', 'ad_space', 'waste_bag']);
@@ -57,14 +60,21 @@ function init(D: Data) {
   $('st-rev-add')?.addEventListener('click', () => {
     const g = govs.find(x => x.key === govSel!.value); if (!g) return; read1(); if (!org.org) { org.org = g.name; ($<HTMLInputElement>('st-org')!).value = g.name; }
     const clean = (s: string) => s.replace(/\s*(수입|입장료|사용료|임대료|이용료|관람료|주차요금|주차료|대관료|수강료|회비|요금)\s*(수입)?$/g, '').replace(/\(.*?\)/g, '').trim() || s;
-    let n = 0; const seen = new Set(org.facilities.map(f => f.name));
+    /* 이미 있는 시설(조례 예시·직접 입력)과 이름으로 합치기(운영자 지시 2026-10-27 '1번부터 니가 할 수 있는 일을 해' — 5번 조례 시설 ↔ 세입 시설 후보): 정리한 이름이 서로 품거나(달성화석박물관 ⊂ 달성화석박물관 관람료), 앞 6글자 이상 같고 나머지 낱말도 들어 있으면(낙동강 레포츠밸리 오토캠핑장 ↔ 낙동강 레포츠밸리 구지오토캠핑장; 앞글자만 같은 음식물류폐기물 납부필증 ↔ 처리수수료는 안 합침) 그 시설에 세입 사업을 붙인다. 별칭(alias)도 같이 본다 */
+    const pref = (a: string, b: string) => { let n = 0; while (n < a.length && n < b.length && a[n] === b[n]) n++; return n; };
+    const score = (fn: string, b: string) => { const a = normN(fn); if (a.length < 3 || b.length < 3) return 0; if (b.includes(a) || (a.length >= 4 && b.length >= 4 && a.includes(b))) return 100 + Math.min(a.length, b.length); const p = pref(a, b); return p >= 6 && a.length > p && b.includes(a.slice(p)) ? p + 20 : 0; };
+    const pick = (item: string) => { const b = normN(clean(item)); let best: OrgFacility | undefined, bs = 0; for (const f of org.facilities) { const sc = Math.max(score(f.name, b), ...(f.alias ?? []).map(x => score(x, b))); if (sc > bs) { bs = sc; best = f; } } return best; };
+    let n = 0, k = 0; const merged = new Set<string>(); const seen = new Set(org.facilities.map(f => f.name));
     for (const r of g.rows.filter(x => !x.grant && FAC_KEYS.has(x.vat_key)).sort((a, b) => b.amount_k - a.amount_k)) {
+      const line = `[세입예산서 ${g.year}] ${r.dept} · ${r.mok_code} ${r.mok} · ${r.item} ${r.amount_k.toLocaleString('ko-KR')}천원`;
+      const hit = pick(r.item);
+      if (hit) { hit.rev = hit.rev ?? []; if (hit.rev.includes(r.item)) continue; hit.rev.push(r.item); hit.note = (hit.note ? hit.note.replace(/\s*$/, ' ') : '') + line + '.'; merged.add(hit.id); k++; continue; }
       const it = (D.revenue_items ?? []).find(i => i.key === r.vat_key); const type = it?.type && D.facilities.some(f => f.key === it.type) ? it.type : (D.facilities.some(f => f.key === r.vat_key) ? r.vat_key : 'use_permit');
       const name = clean(r.item); if (seen.has(name)) continue; seen.add(name);
-      org.facilities.push({ id: uid(), type, name: name.slice(0, 40), run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: '', kind: org.kind ?? 'gov', note: `[세입예산서 ${g.year}] ${r.dept} · ${r.mok_code} ${r.mok} · ${r.item} ${r.amount_k.toLocaleString('ko-KR')}천원 — 운영 방식·등록번호 확인` }); n++;
+      org.facilities.push({ id: uid(), type, name: name.slice(0, 40), run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: '', kind: org.kind ?? 'gov', rev: [r.item], note: `${line} — 운영 방식·등록번호 확인` }); n++;
     }
     document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
-    save(); alert(`${n}곳을 시설 후보로 넣었습니다. 3단계에서 운영 방식·등록번호를 채우고 필요 없는 것은 지우세요.`); show(3);
+    save(); alert(`새 시설 후보 ${n}곳을 넣고, 이미 있는 시설 ${merged.size}곳에 세입 사업 ${k}건을 붙였습니다(시설 메모에 부서·목·예산). 3단계에서 운영 방식·등록번호를 채우고 필요 없는 것은 지우세요.`); show(3);
   });
   /* 3단계 */
   const facBox = $('st-fac')!;
@@ -83,7 +93,7 @@ function init(D: Data) {
         <label><input type="checkbox" data-inc="card" ${f.income.includes('card') ? 'checked' : ''}/> 카드·현금영수증(개인 손님)</label>
         <label><input type="checkbox" data-k="deposit" ${f.deposit ? 'checked' : ''}/> 임대 보증금을 받는다</label></div></div>
       <div class="actions"><button type="button" class="link-btn" data-dup>같은 유형 하나 더</button><button type="button" class="link-btn" data-del>이 시설 빼기</button></div>
-      ${f.note ? `<p class="note full">예시 출처 메모: ${esc(f.note)}</p>` : ''}${r?.note ? `<p class="note full">${esc(r.note)}</p>` : ''}</div>`; }).join('');
+      ${f.note ? `<p class="note full">출처 메모: ${esc(f.note)}</p>` : ''}${r?.note ? `<p class="note full">${esc(r.note)}</p>` : ''}</div>`; }).join('');
     facBox.querySelectorAll<HTMLSelectElement>('select[data-k=run]').forEach(sel => sel.addEventListener('change', () => { const q = sel.closest<HTMLElement>('[data-fid]')!.querySelector<HTMLElement>('[data-fee-q]'); if (q) q.hidden = sel.value !== 'entrusted_own'; }));
     facBox.querySelectorAll<HTMLButtonElement>('[data-dup]').forEach(b => b.addEventListener('click', () => { read3(); const f = org.facilities.find(x => x.id === b.closest<HTMLElement>('[data-fid]')!.dataset.fid)!; org.facilities.splice(org.facilities.indexOf(f) + 1, 0, { ...f, id: uid(), name: f.name + ' 2', reg_no: '' }); renderFac(); }));
     facBox.querySelectorAll<HTMLButtonElement>('[data-del]').forEach(b => b.addEventListener('click', () => { read3(); org.facilities = org.facilities.filter(x => x.id !== b.closest<HTMLElement>('[data-fid]')!.dataset.fid); renderFac(); }));

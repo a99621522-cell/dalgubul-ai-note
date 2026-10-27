@@ -110,16 +110,51 @@ def fetch_expense(g: dict, year: str) -> Path | None:
 
 
 def discover(g: dict) -> None:
-    html = get(g["page"]).decode("utf-8", "ignore")
-    if not html:
-        print(f"[revenue] {g['name']}: 페이지 못 받음 {g['page']}")
-        return
-    links = re.findall(r'href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', html, re.S)
-    print(f"[revenue] {g['name']} discover {g['page']} ({len(html)}B)")
-    for href, txt in links:
-        t = re.sub(r"<[^>]+>", "", txt).strip()
-        if re.search(r"세입|예산서|명세|\.pdf|\.hwp|\.xls", t + href, re.I):
-            print(f"   {t[:40]} | {href[:160]}")
+    """누리집 재정공시 메뉴에서 세입·세출예산서 첨부 후보를 로그로. `page`(또는 `pages` 목록)를 읽고, 예산서·세입 글자가 든 같은 누리집 안 링크를 한 단계 더 열어(최대 `depth_max`, 기본 25쪽) 첨부(pdf·hwp·xls·download·attach·file) 링크를 적는다. 저장 없음 — 보고 config 에 url 을 채운다."""
+    from urllib.parse import urljoin, urlparse
+    pages = g.get("pages") or [g["page"]]
+    host = urlparse(pages[0]).netloc
+    seen: set[str] = set()
+    queue = [(u, 0) for u in pages]
+    limit = int(g.get("depth_max", 25))
+    opened = 0
+    while queue and opened < limit:
+        url, depth = queue.pop(0)
+        if url in seen:
+            continue
+        seen.add(url)
+        html = get(url).decode("utf-8", "ignore")
+        opened += 1
+        if not html:
+            print(f"[revenue] {g['name']}: 페이지 못 받음 {url}")
+            continue
+        links = re.findall(r'href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', html, re.S)
+        files = re.findall(r'(?:src|href|data-url|onclick)=["\']([^"\']*(?:\.pdf|\.hwpx?|\.xlsx?|download|atch|attach|fileDown)[^"\']*)["\']', html, re.I)
+        print(f"[revenue] {g['name']} discover d{depth} {url} ({len(html)}B, 링크 {len(links)}, 파일형 {len(files)})")
+        shown: set[str] = set()
+        for href, txt in links:
+            t = re.sub(r"<[^>]+>", "", txt).strip()
+            t = re.sub(r"\s+", " ", t)
+            full = urljoin(url, href)
+            key = (t, full)
+            if key in shown or href.startswith(("#", "javascript")) and not re.search(r"\.pdf|\.hwp|download|atch", href, re.I):
+                continue
+            if re.search(r"세입|세출|예산서|명세|\.pdf|\.hwp|\.xls|download|atch|attach|fileDown", t + href, re.I):
+                shown.add(key)
+                print(f"   {t[:40]} | {full[:180]}")
+                if depth == 0 and urlparse(full).netloc == host and not re.search(r"\.(pdf|hwpx?|xlsx?|zip)$|download|atch", full, re.I) and re.search(r"예산서|세입|명세|20\d\d년", t):
+                    queue.append((full, 1))
+        extra = 0
+        for f in dict.fromkeys(files):
+            full = urljoin(url, f)
+            if any(full == k[1] for k in shown) or not re.search(r"예산|budget|세입|세출|\.pdf|\.hwp", full, re.I):
+                continue
+            extra += 1
+            if extra <= 60:
+                print(f"   [파일형] {full[:200]}")
+        if extra > 60:
+            print(f"   [파일형] … {extra - 60}개 더")
+        time.sleep(1.0)
 
 
 def main() -> int:

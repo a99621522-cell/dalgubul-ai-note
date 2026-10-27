@@ -170,6 +170,9 @@ def discover(g: dict) -> None:
     """누리집 재정공시 메뉴에서 세입·세출예산서 첨부 후보를 로그로. `page`(또는 `pages` 목록)를 읽고, 예산서·세입 글자가 든 같은 누리집 안 링크를 한 단계 더 열어(최대 `depth_max`, 기본 25쪽) 첨부(pdf·hwp·xls·download·attach·file) 링크를 적는다. 저장 없음 — 보고 config 에 url 을 채운다."""
     from urllib.parse import urljoin, urlparse
     pages = g.get("pages") or [g["page"]]
+    # 항목이 {url, post} 면 POST 로 연다(달서구 icmsBudgetDetail: category=yeasan·budget_id)
+    posts = {p["url"]: p.get("post") for p in pages if isinstance(p, dict)}
+    pages = [p["url"] if isinstance(p, dict) else p for p in pages]
     host = urlparse(pages[0]).netloc
     seen: set[str] = set()
     queue = [(u, 0) for u in pages]
@@ -181,7 +184,7 @@ def discover(g: dict) -> None:
         if url in seen:
             continue
         seen.add(url)
-        html = get(url, tries=2, timeout=45).decode("utf-8", "ignore")   # 5차: 4차에 열리던 동구·서구·달서구가 1회 시도에서 연결 실패 → 2회
+        html = get(url, post=posts.get(url), tries=2, timeout=45).decode("utf-8", "ignore")   # 5차: 4차에 열리던 동구·서구·달서구가 1회 시도에서 연결 실패 → 2회
         opened += 1
         if not html:
             print(f"[revenue] {g['name']}: 페이지 못 받음 {url}")

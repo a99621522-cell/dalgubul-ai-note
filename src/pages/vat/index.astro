@@ -34,15 +34,16 @@ const R = vatRules();
   </figure>
 
   <h2>신고 담당이 밟는 순서</h2>
-  <p class="meta">이 도구는 <strong>부가가치세를 신고하는 공무원</strong>이 씁니다(운영자 지시 2026-10-27). 처음 맡았으면 ①부터, 이미 신고하고 있으면 ②·③부터. 수탁기관·시설 부서에 기록을 맡기는 것은 선택입니다(③ 안의 안내).</p>
+  <p class="meta">이 도구는 <strong>부가가치세를 신고하는 공무원</strong>이 씁니다(운영자 지시 2026-10-27). 처음 맡았으면 ①부터, 이미 신고하고 있으면 ②·④부터. 납부액을 줄이는 두 자리는 ② 과세사업 찾기(발굴·대상 확대)와 ⑤ 안의 공통매입세액 면세부분 줄이기입니다. 수탁기관·시설 부서에 기록을 맡기는 것은 선택입니다.</p>
   <ol class="vat-steps">
-    <li><a class="vat-role" href="/vat/review/"><span class="who">처음 맡았을 때 · 한 번</span><strong>① 지난 신고 점검</strong><p class="meta">홈택스 매입 목록 5년치와 신고 내역을 견줘 <b>빠진 매입세액</b>과 경정청구 기한을 찾습니다. 담당자 바뀔 때 가장 큰 돈이 여기 있습니다.</p></a></li>
-    <li><a class="vat-role" href="/vat/setup/"><span class="who">한 번 · 약 10분</span><strong>② 기관 설정 · 시설 카드</strong><p class="meta">돈을 받는 시설을 적으면 시설마다 과세·면세, 영수증 받을 등록번호, 수탁 시설의 군 부담 지출 처리가 정해집니다. 달성군 예시로 시작할 수 있습니다.</p><span class="meta" id="role-b-state"></span></a></li>
-    <li><a class="vat-role" href="/vat/monthly/"><span class="who">매달</span><strong>③ 지출 기록</strong><p class="meta">홈택스 전자세금계산서 목록·사업용 카드 내역을 붙여넣고 건마다 <b>어느 시설에 썼는지</b>만 고르면 신호등으로 공제 여부가 나옵니다. 수탁기관이 같은 화면으로 기록해 인계표를 보내게 해도 됩니다.</p><span class="meta" id="role-a-state"></span></a></li>
-    <li><a class="vat-role" href="/vat/prepare/"><span class="who">분기 · 신고 전</span><strong>④ 신고 준비</strong><p class="meta">기록을 모아 신고서 칸별 숫자표, 공통매입세액 안분·정산·재계산, 과세사업 전환 매입세액까지 계산합니다.</p></a></li>
-    <li><a class="vat-role" href="/vat/handover/"><span class="who">담당이 바뀔 때</span><strong>⑤ 인수인계 꾸러미</strong><p class="meta">설정·기록·신고 기록을 zip 하나로 넘기고, 후임자가 그대로 되살립니다.</p></a></li>
+    <li><a class="vat-role" href="/vat/review/"><span class="who">처음 맡았을 때 · 한 번</span><strong>① 지난 신고 점검</strong><p class="meta">홈택스 매입 목록 5년치와 신고 내역을 견줘 <b>빠진 매입세액</b>과 경정청구 기한을 찾습니다.</p></a></li>
+    <li><a class="vat-role" href="/vat/discover/"><span class="who">한 번 · 해마다 다시</span><strong>② 과세사업 찾기</strong><p class="meta">세외수입 항목을 훑어 <b>과세사업인데 신고하지 않는 수입</b>과 신고 중인 사업의 공제 대상 지출을 찾습니다(발굴·대상 확대).</p></a></li>
+    <li><a class="vat-role" href="/vat/setup/"><span class="who">한 번 · 약 10분</span><strong>③ 기관 설정 · 시설 카드</strong><p class="meta">돈을 받는 시설을 적으면 시설마다 과세·면세, 영수증 받을 등록번호, 수탁 시설의 군 부담 지출 처리가 정해집니다.</p><span class="meta" id="role-b-state"></span></a></li>
+    <li><a class="vat-role" href="/vat/monthly/"><span class="who">매달</span><strong>④ 지출 기록</strong><p class="meta">홈택스 전자세금계산서 목록·사업용 카드 내역을 붙여넣고 건마다 <b>어느 시설에 썼는지</b>만 고르면 신호등으로 공제 여부가 나옵니다.</p><span class="meta" id="role-a-state"></span></a></li>
+    <li><a class="vat-role" href="/vat/prepare/"><span class="who">분기 · 신고 전</span><strong>⑤ 신고 준비</strong><p class="meta">기록을 모아 신고서·부속서류 모양 결과와 <b>공통매입세액 면세부분 줄이기</b> 분석, 전환 매입세액까지 계산합니다. 납부액 추이(절감 현황표)는 저장한 기록으로 자동.</p></a></li>
+    <li><a class="vat-role" href="/vat/handover/"><span class="who">담당이 바뀔 때</span><strong>⑥ 인수인계 꾸러미</strong><p class="meta">설정·기록·신고 기록을 zip 하나로 넘기고, 후임자가 그대로 되살립니다.</p></a></li>
   </ol>
-  <p class="meta">세법을 아는 분은 <a href="/vat/tools/">한 건씩 바로 확인하는 도구</a>(지출 건 판정·공통매입세액 안분·재계산·점검표)로 가셔도 됩니다.</p>
+  <p class="meta">보고서용 <a href="/vat/trend/">납부액 추이·절감 현황표</a>는 ⑤에서 저장한 신고 기록으로 만들어집니다. 세법을 아는 분은 <a href="/vat/tools/">한 건씩 바로 확인하는 도구</a>(지출 건 판정·공통매입세액 안분·재계산·점검표)로 가셔도 됩니다.</p>
 
   <details class="vat-more"><summary><strong>3분 안내</strong> — 지자체 부가세는 이렇게 돌아갑니다</summary>
     <ol>
@@ -50,6 +51,7 @@ const R = vatRules();
       <li><strong>발급</strong> — 이용료를 받을 때 세금계산서(기관 손님)나 카드 전표(개인 손님)를 끊습니다. 이 10%가 매출세액입니다.</li>
       <li><strong>수취</strong> — 시설에 쓴 돈의 영수증을 <em>우리 기관 이름</em>으로 받고, 어느 시설에 썼는지 적습니다. 이 10%가 매입세액입니다. 기관 법인카드는 홈택스 「사업용 신용카드」에 등록해 두면 자동 집계됩니다.</li>
       <li><strong>신고</strong> — 1월·4월·7월·10월 25일까지 홈택스에서 매출세액 − 매입세액을 신고·납부합니다. 과세·면세에 함께 쓴 지출은 면세 비율만큼 빼고 공제합니다.</li>
+      <li><strong>줄이기</strong> — 납부액은 과세사업을 빠짐없이 잡고(발굴) 공통 지출을 과세 시설 전용으로 나눠 면세분을 줄일수록 줄어듭니다. <a href="/vat/discover/">과세사업 찾기</a>와 신고 준비의 절감 분석.</li>
       <li><strong>되돌리기</strong> — 지난 신고에서 빠뜨린 매입세액은 법정신고기한 뒤 5년 안에 경정청구로 돌려받습니다(국세기본법 제45조의2). 처음 맡았으면 <a href="/vat/review/">지난 신고 점검</a>부터.</li>
     </ol>
     <div class="scroll-x"><table class="data-table compact" data-stack="off"><caption>누가 무엇을 하나</caption>

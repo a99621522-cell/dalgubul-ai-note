@@ -23,3 +23,4 @@
 - 새 화면 `/vat/review/`(지난 신고 점검·경정청구 후보). 설계 기록은 `docs/design/vat-first-timer.md` 끝 표.
 - 2차(같은 날): `/vat/review/` 는 공급자별 집계 비교(합계표 서식)와 기한후신고 구분, 신고 준비는 안분 기준 잠금·과세사업 전환 매입세액 계산기(영 제85조), fee 선택지에 `paid_check`. 설계 기록 같은 파일 '2차 평가' 표.
 - 서식 모양 결과(같은 날): `src/scripts/vat_forms.ts` — 별지 제21호·39호(1)·16호(1)·22호·25호·17호 칸 배치. 기록 행에 `sup`·`sreg`(붙여넣기의 공급자 상호·등록번호), 신고 기록 `sales[]` 에 간주임대료 입력값. 설계 기록은 `docs/design/vat-first-timer.md` 끝.
+- `revenue_items`(같은 날, 절감 사유 ①): 세외수입 27항목 점검표 — `/vat/discover/` 가 읽음. 항목 추가는 여기만(status·type·basis·deduct).

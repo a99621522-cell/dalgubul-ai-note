@@ -1,0 +1,16 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import '../../../styles/vat.css';
+/** /vat/discover/ — 과세사업 찾기(절감 사유 ① 본청 과세사업 검토·매입세액 발굴·대상 확대, 운영자 지시 2026-10-27). 세외수입 항목 점검표(rules.yml revenue_items) → 발굴 후보·공제 대상·확인 항목. 스크립트 src/scripts/vat_discover.ts */
+---
+<Base title="과세사업 찾기 — 세외수입 점검표" description="지자체 세외수입 항목(재산임대·사용료·수수료·사업수입·재산매각)을 과세·면세·확인으로 나눈 점검표. 있다고 표시하면 과세사업인데 신고하지 않는 후보와 공제 대상 지출을 보여 줍니다. 브라우저 안에서만." current="vat" crumb="과세사업 찾기">
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/setup/">기관 설정</a></p>
+  <div class="section-head"><h1>② 과세사업 찾기 — 본청 수입 가운데 과세사업은 어디까지인가</h1><span class="meta">법 제26조 제1항 제19호 · 시행령 제46조</span></div>
+  <p class="lede">매입세액은 <strong>과세사업</strong>에 쓴 지출만 돌려받습니다. 그래서 먼저 우리 기관 수입 가운데 과세사업이 어디까지인지 훑어야 합니다. 세외수입 항목마다 '없음 / 있음·과세로 신고 중 / 있음·신고 안 함 또는 모름'을 고르면, <strong>과세사업인데 신고하지 않는 후보</strong>(발굴), 신고 중인 사업의 <strong>공제 대상 지출</strong>(대상 확대), 유권해석이 필요한 것, 면세·비과세를 나눠 보여 줍니다. 과세 여부 표시는 조문 기준 참고이지 기관의 판단이 아닙니다.</p>
+  <div id="dc-list"></div>
+  <div id="dc-result" aria-live="polite"></div>
+  <details class="vat-more"><summary>어떻게 보는가</summary><ul class="meta-list"><li>국가·지자체가 공급하는 재화·용역은 면세(법 제26조 제1항 제19호)이지만, 부동산임대업·도매 및 소매업·음식점업·숙박업·골프장 및 스키장 운영업·기타 스포츠시설 운영업은 과세(시행령 제46조 제3호). 소속 직원 구내식당 직영은 제외(나목).</li><li>과세사업을 새로 시작하면 사업자등록(또는 업종 추가)을 먼저 — 등록 전 매입세액은 공제하지 못합니다(법 제39조 제1항 제8호, 20일 안 등록 예외).</li><li>'확인' 항목은 표준산업분류·유권해석에 달린 것입니다. 결정 근거는 기관 설정의 시설 '확인 결과·근거'에 남깁니다.</li><li>면세 수입은 공제가 없지만 면세공급가액에 들어가 공통매입세액 안분 비율을 올립니다. 토지 매각이 있는 과세기간은 특히 그렇습니다.</li></ul></details>
+  <VatData />
+  <script>import '../../../scripts/vat_discover';</script>
+</Base>

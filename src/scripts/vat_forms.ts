@@ -105,3 +105,26 @@ export function renderUnitSummary(org: Org, P: { name: string }, facs: OrgFacili
   const nd = groups.reduce((s, g) => s + g.nondeduct, 0);
   return tbl(`사업자 단위 과세 — 사업장별 과세표준·납부세액 신고명세서(첨부 15) · ${esc(org.org)} · ${esc(P.name)}`, ['종된 사업장(시설)', '과세표준(공급가액)', '매출세액', '매입세액(수취분)', '그중 불공제', '납부세액(참고)'], rows.map(r => `<tr><th scope="row">${esc(r.f.name)}${r.f.reg_no ? ` <span class="note">${esc(r.f.reg_no)}</span>` : ''}</th><td>${fmt(r.sup)}</td><td>${fmt(r.outTax)}</td><td>${fmt(r.inTax + r.noTax)}</td><td>${fmt(r.noTax)}</td><td>${fmt(r.outTax - r.inTax)}</td></tr>`).join('') + `<tr class="total"><th scope="row">합계 <span class="note">공통매입세액 면세분 ${fmt(nd)}은 등록 단위 전체에서 한 번 뺌</span></th><td>${fmt(rows.reduce((s, r) => s + r.sup, 0))}</td><td>${fmt(rows.reduce((s, r) => s + r.outTax, 0))}</td><td>${fmt(rows.reduce((s, r) => s + r.inTax + r.noTax, 0))}</td><td>${fmt(rows.reduce((s, r) => s + r.noTax, 0))}</td><td>${fmt(rows.reduce((s, r) => s + r.outTax - r.inTax, 0) + nd)}</td></tr>`) + '<p class="meta">사업자 단위 과세 사업자만 첨부합니다(서식 첨부서류 15). 시설(종된 사업장) 일련번호는 홈택스 등록 순서대로.</p>';
 }
+
+/** 절감 사유 ② '공통매입세액(면세와 과세) 중 면세부분 매입세액 최소화' — 공통(파랑) 지출을 금액순으로 늘어놓고 전용(실지귀속)으로 바꿀 때 돌아오는 세액, 면세비율 1%p 효과, 안분 생략 기준까지의 거리, 등록 단위·수탁 구조 선택지를 숫자로. 평가 아님, 결정은 기관 */
+export function renderSavings(D: Data, org: Org, P: { kind: 'P' | 'F'; name: string }, groups: Filing['groups'], prelimIn: FormCtx['prelimIn'], used: UsedRow[], groupName: (k: string) => string): string {
+  const sk = D.rules.common.skip; const r5 = sk.find(s => s.key === 'ratio5'); const limit = r5?.amount_lt ?? 5_000_000, rlim = r5?.ratio_lt ?? 0.05;
+  const gUse = groups.filter(g => g.common_tax > 0); if (!gUse.length) return '<h3>절감 분석 — 공통매입세액의 면세부분 줄이기</h3><p class="meta">이 기간에 공통(파랑) 지출이 없어 줄일 면세분이 없습니다.</p>';
+  const out: string[] = [];
+  for (const g of gUse) {
+    const pi = prelimIn[g.key]; const fullT = g.taxable + (P.kind === 'F' ? pi?.taxable ?? 0 : 0), fullE = g.exempt + (P.kind === 'F' ? pi?.exempt ?? 0 : 0), fullC = g.common_tax + (P.kind === 'F' ? pi?.common ?? 0 : 0);
+    const ratio = g.ratio; const nd = Math.floor(fullC * ratio); const rows = used.filter(u => u.r.v === 'split' && (org.unit === 'entity' || (u.f.reg_no || 'noreg') === g.key)).sort((a, b) => b.r.tax - a.r.tax);
+    const top = rows.slice(0, 10); const split = (t: number) => Math.floor(t * ratio);
+    const needEx = fullT > 0 ? Math.floor(fullT * rlim / (1 - rlim)) : 0;   // 면세비율 5% 미만이 되는 면세공급가액 상한
+    const lines: string[] = [];
+    lines.push(`<li>이 기간 공통매입세액 <b>${fmt(fullC)}</b>원 가운데 면세비율 ${pct(ratio)}만큼 <b>${fmt(nd)}</b>원이 공제에서 빠집니다${g.skipped && !g.skipped.includes('안분(') ? ` — 다만 ${esc(g.skipped)}에 들어 실제로는 전액 공제` : ''}.</li>`);
+    lines.push(`<li><b>전용으로 바꾸기(실지귀속)</b>: 공통 지출 한 건을 과세 시설 전용 계약·계량기로 나누면 그 건의 세액 × ${pct(ratio)}가 돌아옵니다. 아래 표의 '전용이면 돌아오는 세액' 합계 ${fmt(top.reduce((s, u) => s + split(u.r.tax), 0))}원(상위 ${top.length}건).</li>`);
+    lines.push(`<li><b>면세비율 낮추기</b>: 비율 1%p 아래로 → 약 ${fmt(Math.floor(fullC * 0.01))}원씩 공제가 늘어납니다. 면세공급가액에 면세사업 보조금·토지 매각이 들어 있는지, 등록 단위 밖 수입이 섞이지 않았는지 확인(시행령 제81조 제1항).</li>`);
+    if (fullC < limit) lines.push(`<li><b>안분 생략 기준까지</b>: 공통매입세액이 ${fmt(limit)}원 미만이라 면세비율이 ${pct(rlim)} 미만이면 전액 공제(시행령 제81조 제2항 제1호). 이 기간 과세 공급가액 ${fmt(fullT)}원 기준으로 면세공급가액이 <b>${fmt(needEx)}</b>원 미만이어야 합니다(지금 ${fmt(fullE)}원${fullE > needEx ? `, ${fmt(fullE - needEx)}원 초과` : ' — 충족'}).</li>`);
+    else lines.push(`<li><b>안분 생략 기준</b>: 공통매입세액이 ${fmt(limit)}원 이상이라 5% 기준을 쓸 수 없습니다. 전용으로 나눠 공통을 ${fmt(limit)}원 아래로 내리면 면세비율 ${pct(rlim)} 미만일 때 전액 공제가 됩니다.</li>`);
+    if (org.unit === 'site') lines.push(`<li><b>등록 단위 설계</b>: 면세 시설과 과세 시설이 같은 등록번호에 있으면 그 단위의 면세비율이 올라갑니다. 면세 시설을 다른 사업장으로 두면 과세 단위의 면세공급가액이 줄지만, 두 시설이 같이 쓰는 지출은 여전히 공통입니다 — 등록 변경은 세무대리인과 검토.</li>`);
+    if (org.facilities.some(f => f.run !== 'direct')) lines.push(`<li><b>수탁 구조</b>: 수탁기관(공단)이 자기 명의로 낸 공통 지출은 우리 기관이 공제하지 못합니다. 군 명의 사업의 대행이면 세금계산서를 군 등록번호로 받게 계약·발주 절차를 맞추고, 공단 자기 사업이면 사용료를 받는 과세 임대로 두어 군 부담 수선·설비의 매입세액을 살립니다(기관 설정 '받는 것').</li>`);
+    out.push(`<div class="vc-card"><h4>${esc(groupName(g.key))}</h4><ul class="meta-list">${lines.join('')}</ul>${top.length ? tbl('공통 지출 — 전용으로 바꾸면 돌아오는 세액(세액 큰 순)', ['시설', '날짜', '내용', '세액', '전용이면 돌아오는 세액', '나누는 방법'], top.map(u => `<tr><th scope="row">${esc(u.f.name)}</th><td>${u.r.d}</td><td>${esc(u.r.desc)}</td><td>${fmt(u.r.tax)}</td><td><strong>${fmt(split(u.r.tax))}</strong></td><td class="note">${u.r.what === 'utility' ? '시설별 계량기·계약 분리' : u.r.what === 'service' ? '용역 계약을 시설별로 나눠 세금계산서 분리' : u.r.what === 'repair' ? '공사 내역을 시설별로 나눠 발주' : '지출 결의서에 시설별 귀속을 적고 세금계산서 분리'}</td></tr>`).join('')) : ''}</div>`);
+  }
+  return `<h3>절감 분석 — 공통매입세액의 면세부분 줄이기</h3><p class="meta">공통(파랑) 지출을 과세 시설 전용으로 바꾸거나 면세비율을 낮추면 (54)가 줄어 공제가 늘어납니다. 숫자는 이 기간 기록 기준이며, 계약·계량기 분리는 다음 과세기간부터 효과가 납니다.</p>${out.join('')}`;
+}

@@ -9,6 +9,6 @@ if (dd) {
   dd.innerHTML = parts.join('');
   const a = $('role-a-state'), b = $('role-b-state');
   const n = Object.values(allLedgers()).reduce((s, r) => s + r.length, 0);
-  if (a) a.textContent = org ? `이 브라우저 기록 ${n}건 · 시설 ${org.facilities.length}곳` : '② 기관 설정을 먼저 하면 시설을 고를 수 있습니다';
+  if (a) a.textContent = org ? `이 브라우저 기록 ${n}건 · 시설 ${org.facilities.length}곳` : '③ 기관 설정을 먼저 하면 시설을 고를 수 있습니다';
   if (b) b.textContent = org ? `이 브라우저의 설정: ${org.org} · ${org.created} 저장 — 고치려면 누르고, 신고 때는 '신고 준비'로` : '아직 설정이 없습니다 — 5문항, 약 10분';
 }

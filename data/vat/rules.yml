@@ -193,6 +193,38 @@ common_items:
   - { item: 승용차 유류·수리, vat: 있음(불공제), tip: 개별소비세 과세 대상 승용차(비영업용)는 불공제. 승합·화물·경차는 공제. }
 
 # ── 5. 신고 전 점검표 (브라우저 체크 상태는 localStorage) ──
+# ── 7. 과세사업 발굴 점검표 — 지자체 세외수입 항목별 과세·면세(운영자 지시 2026-10-27 '절감 사유에 맞게 → 순서대로 해': 절감 사유 ① 본청 과세사업 검토 후 매입세액 발굴·대상 확대) ──
+# status: taxable(과세 — 과세사업 등록·신고 대상, 그 시설 지출 공제) | exempt(면세 — 공제 없음, 면세공급가액에 넣음) | check(유권해석·분류 확인) | none(재화·용역 공급이 아님 — 공급가액에 넣지 않음).
+# type 은 facilities 의 key(기관 설정 시설로 넣을 때 유형). deduct 는 과세로 볼 때 공제 대상이 되는 지출. 값·조문만, 평가 없음.
+revenue_items:
+  - { key: lease_bldg, group: 재산임대수입, name: 공유재산(일반재산) 건물·상가·토지 대부료, status: taxable, type: lease, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 그 건물·토지의 수선·관리·경비·중개 지출 }
+  - { key: use_permit, group: 재산임대수입, name: 행정재산 사용·수익허가 사용료(청사 안 매점·카페·은행 공간, 자판기 자리, 통신 중계기 자리), status: check, type: use_permit, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 그 공간의 수선·관리 지출(부동산임대업으로 보면), note: 사용허가 사용료가 부동산임대업에 드는지는 유권해석·분류로 — 과세로 신고하는 기관이 많다 }
+  - { key: housing, group: 재산임대수입, name: 주택(관사·공공임대주택) 임대료, status: exempt, basis: [{ law: act, art: 제26조 }], deduct: 없음(주택 임대 면세 — 제12호), note: 상가·토지가 섞이면 그 부분은 과세 }
+  - { key: sports, group: 사용료수입, name: 체육시설 이용료(수영장·헬스장·체육관·구장 대관·빙상장·파크골프장), status: taxable, type: sports, basis: [{ law: decree, art: 제46조 }], deduct: 시설 전기·가스·수도 외 관리비, 청소·경비 용역, 수선·공사, 장비·비품 }
+  - { key: lodging, group: 사용료수입, name: 숙박시설 이용료(자연휴양림 숙박동·수련원·유스호스텔·야영장·오토캠핑장), status: taxable, type: lodging, basis: [{ law: decree, art: 제46조 }], deduct: 숙박동·캠핑장 관리비, 침구·비품, 수선·공사 }
+  - { key: golf, group: 사용료수입, name: 골프장·스키장 이용료, status: taxable, type: golf, basis: [{ law: decree, art: 제46조 }], deduct: 코스·슬로프 관리, 장비, 수선 }
+  - { key: culture, group: 사용료수입, name: 박물관·미술관·과학관·도서관·동물원·식물원 입장료, status: exempt, type: culture, basis: [{ law: act, art: 제26조 }], deduct: 없음(제17호 면세) — 안의 매점·카페·기념품점은 따로 과세 }
+  - { key: venue, group: 사용료수입, name: 공연장·전시장·회의실·강당 대관료, status: check, type: venue, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 대관 공간의 관리·수선(부동산임대업으로 보면), note: 공연·문화행사 자체 입장료는 제16호 면세일 수 있음 }
+  - { key: program, group: 사용료수입, name: 강습·체험 프로그램 참가비(문화강좌·산림치유·청소년수련·체험관), status: exempt, type: program, basis: [{ law: act, art: 제26조 }], deduct: 없음(열거 업종 아님 → 제19호 면세) }
+  - { key: parking, group: 사용료수입, name: 공영주차장 주차요금(직영), status: exempt, type: parking, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 없음(주차장 운영업은 열거 업종 아님) — 수탁 공단이 자기 사업으로 하면 공단이 과세 }
+  - { key: water, group: 사용료수입, name: 상수도·하수도 사용료, status: exempt, type: water, basis: [{ law: act, art: 제26조 }], deduct: 없음(수돗물 제2호·지자체 공급 제19호) }
+  - { key: funeral, group: 사용료수입, name: 공설 장례식장·화장시설·봉안시설 사용료, status: exempt, type: funeral, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제35조 }], deduct: 없음 }
+  - { key: transit, group: 사용료수입, name: 마을버스·공영버스 요금(직영), status: exempt, type: transit, basis: [{ law: act, art: 제26조 }], deduct: 없음(여객운송 제7호) }
+  - { key: marina, group: 사용료수입, name: 계류장·선착장·캠핑 사이트 등 시설 사용료, status: check, type: use_permit, basis: [{ law: decree, art: 제46조 }], deduct: 그 시설 관리·수선(임대업·스포츠시설로 보면), note: 숙박·스포츠·임대 어느 분류인지 확인 }
+  - { key: admin_fee, group: 수수료수입, name: 민원·증명 발급 수수료, 인허가 수수료, status: none, type: admin, basis: [{ law: act, art: 제26조 }], deduct: 없음(고유 행정사무 — 공급가액에 넣지 않음) }
+  - { key: waste_bag, group: 수수료수입, name: 종량제 봉투 판매·폐기물 처리(반입) 수수료, status: check, type: waste_bag, basis: [{ law: decree, art: 제46조 }], deduct: 봉투 제작·판매 관련 지출(도소매업으로 보면), note: 유권해석·분류 확인 }
+  - { key: food, group: 사업수입, name: 직영 매점·카페·기념품점·식당·농산물 판매장(가공품), status: taxable, type: food, basis: [{ law: decree, art: 제46조 }], deduct: 상품 매입, 매장 관리·수선, 장비 }
+  - { key: canteen, group: 사업수입, name: 소속 직원 복리후생 구내식당(직영) 음식 공급, status: exempt, basis: [{ law: decree, art: 제46조 }], deduct: 없음(시행령 제46조 제3호 나목 제외) — 외부인에게도 팔면 그 부분 확인 }
+  - { key: farm, group: 사업수입, name: 미가공 농산물·임산물·축산물 판매(시험장·휴양림 임산물 등), status: exempt, basis: [{ law: act, art: 제26조 }], deduct: 없음(제1호 면세) — 가공품은 과세 }
+  - { key: books, group: 사업수입, name: 간행물·도서·지도 판매, status: exempt, basis: [{ law: act, art: 제26조 }], deduct: 없음(제8호 면세) — 기념품·굿즈는 과세 }
+  - { key: medical, group: 사업수입, name: 보건소 진료비·예방접종·검사 수수료, status: exempt, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제35조 }], deduct: 없음(의료보건 용역 제5호) }
+  - { key: ad_space, group: 사업수입, name: 시설물·전광판·버스승강장 광고 게시료, status: check, type: ad_space, basis: [{ law: decree, art: 제46조 }], deduct: 광고 시설 설치·관리 지출(광고업·임대업으로 보면) }
+  - { key: vending, group: 사업수입, name: 자판기 직영 판매 수입, status: taxable, type: food, basis: [{ law: decree, art: 제46조 }], deduct: 자판기 구입·임차, 상품 매입, 전기(계량 가능하면), note: 자리만 빌려주면 사용허가 사용료 항목으로 }
+  - { key: scrap, group: 재산매각·기타, name: 고철·폐품·불용품 매각 대금, status: check, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 없음(단발 매각)·반복 매각이면 도소매업 여부 확인, note: 유권해석·분류 확인 }
+  - { key: land_sale, group: 재산매각·기타, name: 토지 매각 대금, status: exempt, basis: [{ law: act, art: 제26조 }], deduct: 없음(토지 제14호) — 면세공급가액에 들어가 그 과세기간 면세비율을 크게 올림 }
+  - { key: bldg_sale, group: 재산매각·기타, name: 건물·구축물 매각 대금, status: check, basis: [{ law: act, art: 제26조 }], deduct: 과세사업에 쓰던 건물이면 과세 공급(공급가액 포함), note: 지자체 공급 재화 면세(제19호)와 과세사업용 건물 공급의 구분 — 유권해석 확인 }
+  - { key: non_supply, group: 재산매각·기타, name: 이자수입·과태료·과징금·부담금·보조금·기부금·전입금, status: none, basis: [{ law: act, art: 제26조 }], deduct: 없음(재화·용역의 공급이 아님 — 면세공급가액에도 넣지 않음; 다만 면세사업 관련 국고·공공보조금은 안분 때 면세공급가액에 포함 — 시행령 제81조 제1항 단서) }
+
 checklist:
   - { stage: 상시, id: c01, text: 과세사업 목록이 지금 하는 시설·계약과 같은가 — 새로 생긴 임대 계약·매점·체육시설·숙박시설이 사업자등록(업종)에 들어 있는가, basis: [{ law: act, art: 제8조 }] }
   - { stage: 상시, id: c02, text: 위탁(대행) 시설의 세금계산서 공급받는 자가 지자체 사업자등록번호로 돼 있는가 — 수탁기관 명의로 받은 것은 우리 매입세액이 아니다, basis: [{ law: act, art: 제39조 }] }

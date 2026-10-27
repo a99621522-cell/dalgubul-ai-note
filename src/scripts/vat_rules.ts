@@ -17,8 +17,10 @@ export type Data = {
     filing: { periods: { name: string; span: string; due: string }[]; notes: string[]; claim?: string; verify?: boolean } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
+  revenue_items?: RevenueItem[];
   presets?: Preset[];
 };
+export type RevenueItem = { key: string; group: string; name: string; status: 'taxable' | 'exempt' | 'check' | 'none'; type?: string; basis: Basis[]; deduct: string; note?: string };
 export type Verdict = 'ok' | 'split' | 'no' | 'none' | 'check';
 export const LABEL: Record<Verdict, string> = { ok: '공제', split: '안분 뒤 공제(공통)', no: '불공제', none: '매입세액 없음', check: '확인 필요' };
 /** 시설 담당 화면의 신호등 이름(세법 용어 대신) */

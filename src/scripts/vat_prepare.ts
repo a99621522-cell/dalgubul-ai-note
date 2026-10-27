@@ -1,5 +1,5 @@
 /** /vat/prepare/ 신고 준비(신고 담당). 인계표 → 신고서 칸별 숫자표 + 안분·정산·재계산 + 신고 기록. 참고용 계산, 서버 없음. */
-import { renderForms, renderUnitSummary, type UsedRow, type ConvRow } from './vat_forms';
+import { renderForms, renderUnitSummary, renderSavings, type UsedRow, type ConvRow } from './vat_forms';
 import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, prevPeriodKey, PRELIM_NOTICE_LIMIT, getFilings, saveFiling, deemedRent, nextFiling, ymd, lawLink, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
 type Ledger = { fid: string; name: string; type: string; month: string; rows: LedgerRow[]; src: string };
 const D = loadData();
@@ -182,6 +182,7 @@ function init(D: Data) {
       ${org.unit === 'site' && units.length > 1 ? `<div class="callout info"><strong>사업장별 등록</strong> — 등록번호마다 신고서와 부속서류를 따로 냅니다(아래 ${units.length}묶음). 안분·예정고지도 등록 단위마다 따로 봅니다.</div>` : ''}
       ${org.unit === 'entity' ? renderUnitSummary(org, P, facs, used, sales, groups) : ''}
       ${unitHtml.join('<hr class="unit-sep" />')}
+      ${renderSavings(D, org, P, groups, prelimIn, used, groupName)}
       <h3>자산대장 — 이번 기간 취득 ${assets.length}건</h3>
       ${assets.length ? `<div class="scroll-x"><table class="data-table vat-table" data-stack="off"><caption>자산대장에 올릴 것(재계산·전환 추적용)</caption><thead><tr><th scope="col">시설</th><th scope="col">내용</th><th scope="col">세액</th><th scope="col">종류</th><th scope="col">공통 여부</th><th scope="col">취득 때 면세비율</th></tr></thead><tbody>${assets.map(a => `<tr><th scope="row">${esc(a.facility)}</th><td>${esc(a.desc)}</td><td>${fmt(a.tax)}</td><td>${a.kind === 'building' ? '건물·구축물(5%)' : '그 밖(25%)'}</td><td>${a.common ? '공통(안분)' : '과세 전용'}</td><td>${a.common ? pct(a.ratio0) : '—'}</td></tr>`).join('')}</tbody></table></div>` : '<p class="meta">이번 기간에 \'여러 해 쓰는 것\'으로 표시한 지출이 없습니다.</p>'}
       <p class="meta">근거: ${lawLink(D, { law: 'act', art: '제40조' })} · ${lawLink(D, { law: 'decree', art: '제81조' })} · ${lawLink(D, { law: 'decree', art: '제82조' })} · ${lawLink(D, { law: 'decree', art: '제83조' })} · ${lawLink(D, { law: 'decree', art: '제85조' })} · ${lawLink(D, { law: 'act', art: '제48조' })} · ${lawLink(D, { law: 'act', art: '제60조' })} — 면세공급가액에는 면세사업 관련 국고·공공보조금을 넣습니다(제81조 제1항 단서). 세금계산서 ${nInv}건 · 카드·현금영수증 ${nCard}건 · 불공제 명세 ${nNo}건.</p>

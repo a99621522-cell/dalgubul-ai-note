@@ -1,0 +1,30 @@
+/** /vat/discover/ 과세사업 찾기 — 절감 사유 ① '본청에서 발생하는 과세사업 검토 후 매입세액 발굴 및 대상 확대'(운영자 지시 2026-10-27 '절감 사유에 맞게 → 순서대로 해').
+ *  지자체 세외수입 항목(rules.yml revenue_items)을 하나씩 '없음 / 있음·과세사업으로 신고 중 / 있음·신고 안 함 또는 모름'으로 체크하면
+ *  과세인데 신고하지 않는 후보(발굴), 신고 중인 항목의 공제 대상 지출(대상 확대), 유권해석 확인 항목, 면세·비과세 항목을 나누고, 후보를 기관 설정 시설로 넣는다. 저장은 localStorage(vat-discover-v1). 평가 없음, 판단은 기관. */
+import { $, esc, loadData, getOrg, setOrg, lawLink, uid, ymd, downloadText, toCsv, type Data, type RevenueItem, type Org } from './vat_rules';
+type Ans = 'none' | 'filed' | 'unfiled';
+const KEY = 'vat-discover-v1';
+const D = loadData();
+if (D) init(D);
+function init(D: Data) {
+  const items = D.revenue_items ?? []; let ans: Record<string, Ans> = {}; try { ans = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { /* */ }
+  const groups = [...new Set(items.map(i => i.group))];
+  const ST: Record<string, string> = { taxable: '과세', exempt: '면세', check: '확인', none: '공급 아님' };
+  $('dc-list')!.innerHTML = groups.map(g => `<div class="vc-card"><h3>${esc(g)}</h3><div class="scroll-x"><table class="data-table vat-table" data-stack="off"><thead><tr><th scope="col">수입 항목</th><th scope="col">과세 여부(참고)</th><th scope="col">우리 기관에</th></tr></thead><tbody>${items.filter(i => i.group === g).map(i => `<tr data-k="${i.key}"><th scope="row">${esc(i.name)}${i.note ? `<br><span class="note">${esc(i.note)}</span>` : ''}</th><td><span class="verdict ${i.status === 'none' ? 'none' : i.status}">${ST[i.status]}</span><br><span class="note">${i.basis.map(b => lawLink(D, b)).join(' · ')}</span></td><td class="keep"><label><input type="radio" name="dc-${i.key}" value="none" ${(ans[i.key] ?? 'none') === 'none' ? 'checked' : ''}/> 없음</label> <label><input type="radio" name="dc-${i.key}" value="filed" ${ans[i.key] === 'filed' ? 'checked' : ''}/> 있음 · 과세로 신고 중</label> <label><input type="radio" name="dc-${i.key}" value="unfiled" ${ans[i.key] === 'unfiled' ? 'checked' : ''}/> 있음 · 신고 안 함/모름</label></td></tr>`).join('')}</tbody></table></div></div>`).join('');
+  const read = () => { ans = {}; items.forEach(i => { ans[i.key] = (document.querySelector<HTMLInputElement>(`input[name=dc-${i.key}]:checked`)?.value ?? 'none') as Ans; }); try { localStorage.setItem(KEY, JSON.stringify(ans)); } catch { /* */ } };
+  function render() {
+    read(); const have = items.filter(i => ans[i.key] !== 'none');
+    const cand = have.filter(i => i.status === 'taxable' && ans[i.key] === 'unfiled'); const filed = have.filter(i => i.status === 'taxable' && ans[i.key] === 'filed'); const chk = have.filter(i => i.status === 'check'); const ex = have.filter(i => i.status === 'exempt'); const no = have.filter(i => i.status === 'none'); const filedWrong = have.filter(i => (i.status === 'exempt' || i.status === 'none') && ans[i.key] === 'filed');
+    const li = (i: RevenueItem, body: string) => `<li><strong>${esc(i.name)}</strong> — ${body}</li>`;
+    $('dc-result')!.innerHTML = have.length ? `<div class="section-head"><h2>결과 <span class="meta">있다고 표시한 ${have.length}항목</span></div>
+      <div class="vc-card"><h3><span class="sig no"></span>발굴 후보 — 과세사업인데 신고하지 않는 수입 ${cand.length}</h3>${cand.length ? `<ul class="meta-list">${cand.map(i => li(i, `과세사업 등록(사업자등록 또는 업종 추가)과 신고를 검토합니다. 등록 전 매입세액은 공제하지 못하므로(법 제39조 제1항 제8호) 먼저 등록. <b>공제 대상이 되는 지출</b>: ${esc(i.deduct)}`)).join('')}</ul><div class="actions"><button type="button" class="btn" id="dc-add">이 후보를 기관 설정의 시설로 넣기</button><span class="meta">운영 방식은 '직접 운영', 비고에 '발굴 후보 — 등록 여부 확인'으로 들어갑니다.</span></div>` : '<p class="meta">없습니다.</p>'}</div>
+      <div class="vc-card"><h3><span class="sig ok"></span>신고 중인 과세사업 — 공제 대상 넓히기 ${filed.length}</h3>${filed.length ? `<ul class="meta-list">${filed.map(i => li(i, `이 수입에 쓰인 지출은 전액 공제 대상: ${esc(i.deduct)}. 면세·행정과 함께 쓴 지출은 공통으로 안분(계량기·계약을 나누면 전용으로).`)).join('')}</ul>` : '<p class="meta">없습니다.</p>'}</div>
+      <div class="vc-card"><h3><span class="sig check"></span>유권해석·분류 확인 ${chk.length}</h3>${chk.length ? `<ul class="meta-list">${chk.map(i => li(i, `과세로 보면 공제 대상: ${esc(i.deduct)}. 세무서 질의·분류 확인 결과를 기관 설정의 '확인 결과·근거'에 남깁니다.${ans[i.key] === 'filed' ? ' (지금 과세로 신고 중)' : ''}`)).join('')}</ul>` : '<p class="meta">없습니다.</p>'}</div>
+      <div class="vc-card"><h3><span class="sig none"></span>면세·공급 아님 ${ex.length + no.length}</h3>${ex.length ? `<p class="meta">면세(${ex.map(i => esc(i.name.split('(')[0])).join(', ')}): 그 수입에만 쓴 지출은 공제 없음. 과세 시설과 함께 쓴 지출은 공통 안분하고, 이 수입은 <b>면세공급가액</b>에 넣습니다(비율에 영향).</p>` : ''}${no.length ? `<p class="meta">공급 아님(${no.map(i => esc(i.name.split('(')[0])).join(', ')}): 공급가액에 넣지 않습니다.</p>` : ''}${filedWrong.length ? `<p class="callout warn">면세·공급 아님 항목인데 '과세로 신고 중'으로 표시한 것 ${filedWrong.length}: ${filedWrong.map(i => esc(i.name.split('(')[0])).join(', ')} — 과세로 신고하고 있다면 그 근거(유권해석)를 확인하세요.</p>` : ''}</div>
+      <div class="actions no-print"><button type="button" class="btn secondary" id="dc-csv">점검표 CSV</button><button type="button" class="btn secondary" id="dc-print">인쇄</button></div>` : '<p class="meta">항목을 표시하면 결과가 나옵니다.</p>';
+    $('dc-add')?.addEventListener('click', () => { const org: Org = getOrg() ?? { v: 1, org: '', dept: '', unit: 'site', facilities: [], handover_day: 5, created: ymd(new Date()) }; let n = 0; for (const i of cand) { if (!i.type || org.facilities.some(f => f.note?.includes(`[발굴] ${i.name}`))) continue; org.facilities.push({ id: uid(), type: i.type, name: i.name.split('(')[0], run: 'direct', income: ['card'], deposit: false, note: `[발굴] ${i.name} — 과세사업 등록 여부 확인 뒤 신고. 공제 대상: ${i.deduct}` }); n++; } setOrg(org); alert(`${n}곳을 기관 설정에 넣었습니다. 기관 설정 화면에서 등록번호·수입 종류를 채우세요.`); });
+    $('dc-csv')?.addEventListener('click', () => downloadText(`과세사업점검표-${ymd(new Date())}.csv`, toCsv([['구분', '수입 항목', '과세 여부(참고)', '우리 기관', '공제 대상 지출'], ...items.map(i => [i.group, i.name, ST[i.status], ans[i.key] === 'filed' ? '있음·신고 중' : ans[i.key] === 'unfiled' ? '있음·신고 안 함/모름' : '없음', i.deduct])]), 'text/csv;charset=utf-8'));
+    $('dc-print')?.addEventListener('click', () => window.print());
+  }
+  $('dc-list')!.addEventListener('change', render); render();
+}

@@ -16,6 +16,8 @@ from pathlib import Path
 import requests
 import yaml
 
+sys.stdout.reconfigure(line_buffering=True)  # 러너 로그가 중간에 끊겨도 남게
+
 ROOT = Path(__file__).resolve().parent.parent
 CFG = yaml.safe_load((ROOT / "config" / "revenue_docs.yml").read_text(encoding="utf-8"))
 RAW = ROOT / "data" / "vat" / "revenue" / "raw"
@@ -25,11 +27,11 @@ S = requests.Session()
 S.headers["User-Agent"] = UA
 
 
-def get(url: str, out: Path | None = None, post: dict | None = None, referer: str = "", jar: Path | None = None) -> bytes:
-    for i in range(4):
+def get(url: str, out: Path | None = None, post: dict | None = None, referer: str = "", jar: Path | None = None, tries: int = 4, timeout: int = 240) -> bytes:
+    for i in range(tries):
         try:
             if USE_CURL:
-                cmd = ["curl", "-sS", "-m", "240", "-L", "-A", UA]
+                cmd = ["curl", "-sS", "-m", str(timeout), "-L", "-A", UA]
                 if jar:
                     cmd += ["-c", str(jar), "-b", str(jar)]
                 if referer:
@@ -46,7 +48,7 @@ def get(url: str, out: Path | None = None, post: dict | None = None, referer: st
                     return r.stdout
             else:
                 h = {"Referer": referer} if referer else {}
-                r2 = S.post(url, data=post, headers=h, timeout=240) if post else S.get(url, headers=h, timeout=240)
+                r2 = S.post(url, data=post, headers=h, timeout=timeout) if post else S.get(url, headers=h, timeout=timeout)
                 if r2.ok and r2.content:
                     if out:
                         out.write_bytes(r2.content)
@@ -117,13 +119,14 @@ def discover(g: dict) -> None:
     seen: set[str] = set()
     queue = [(u, 0) for u in pages]
     limit = int(g.get("depth_max", 25))
+    deadline = time.time() + float(g.get("budget_s", 360))   # 지자체마다 6분 — 러너 30분 상한 안에 6곳(2026-10-27 3차: 응답 없는 호스트가 240초×4회 재시도로 30분을 다 써 로그도 못 남겼다)
     opened = 0
-    while queue and opened < limit:
+    while queue and opened < limit and time.time() < deadline:
         url, depth = queue.pop(0)
         if url in seen:
             continue
         seen.add(url)
-        html = get(url).decode("utf-8", "ignore")
+        html = get(url, tries=1, timeout=45).decode("utf-8", "ignore")
         opened += 1
         if not html:
             print(f"[revenue] {g['name']}: 페이지 못 받음 {url}")

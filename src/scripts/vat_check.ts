@@ -46,9 +46,9 @@ function init(D: Data) {
     if (i.proof === 'tax_invoice_other') { const n = nd('no_invoice'); why.push(`공급받는 자가 우리 기관이 아닌 세금계산서는 '사실과 다른 세금계산서'로 공제하지 않습니다(${n.no}).`); todo.push('공급자에게 공급받는 자를 지자체(과세사업 등록번호)로 한 수정세금계산서를 요청합니다. 그 시설이 수탁기관 자기 사업이라면 그 기관의 매입세액이지 우리 것이 아닙니다 — 위·수탁 계약에서 사업자가 누구인지 확인합니다.'); basis.push(...n.basis, B('decree', '제75조')); return done('no', '다른 명의 세금계산서 — 불공제'); }
     if (i.proof === 'card_novat') { why.push('부가가치세액이 따로 적히지 않은 전표, 세금계산서를 발급할 수 없는 간이과세자·면세사업자의 전표는 공제 요건을 갖추지 못합니다.'); todo.push('공급자가 일반과세자면 부가가치세액이 구분된 전표 재발급 또는 세금계산서를 요청합니다. 간이(발급 불가)·면세 공급자면 공제할 수 없습니다.'); basis.push(B('act', '제46조')); verify = !!D.rules.card.verify; return done('no', '요건 못 갖춘 카드 전표 — 불공제'); }
     if (i.proof === 'card_vat') {
-      if (i.supplier === 'simple_no') { why.push('세금계산서를 발급할 수 없는 간이과세자·면세사업자의 카드 전표는 공제하지 못합니다.'); basis.push(B('act', '제46조')); return done('no', '간이(발급 불가)·면세 공급자 카드 전표 — 불공제'); }
+      if (i.supplier === 'simple_no') { why.push('세금계산서를 발급할 수 없는 간이과세자·면세사업자의 카드 전표는 공제하지 못합니다.'); basis.push(B('act', '제46조')); return done('no', '영수증 발급 기간 간이과세자·면세 공급자 카드 전표 — 불공제'); }
       if (i.supplier === 'unknown') { why.push('카드 전표로 공제하려면 공급자가 일반과세자(또는 세금계산서를 발급할 수 있는 간이과세자)여야 합니다.'); todo.push('홈택스 「사업자등록 상태 조회」로 공급자의 과세 유형을 확인한 뒤 다시 판정합니다.'); basis.push(B('act', '제46조')); return done('check', '공급자 과세 유형 확인 필요'); }
-      todo.push('신고 때 「신용카드매출전표등 수령명세서」에 적고 전표를 5년 보관합니다. 세금계산서 발급 금지 업종(목욕·이발·미용, 여객운송, 입장권 등)의 전표는 공제하지 못합니다.'); basis.push(B('act', '제46조'), B('act', '제71조')); verify = !!D.rules.card.verify;
+      todo.push('신고 때 「신용카드매출전표등 수령명세서」에 적고 전표를 5년 보관합니다. 목욕·이발·미용업, 여객운송업(전세버스 제외), 입장권 발행 사업, 비급여 미용 진료, 무도·자동차운전학원의 전표는 공제하지 못합니다(시행령 제88조 제5항).'); basis.push(B('decree', '제88조')); basis.push(B('act', '제46조'), B('act', '제71조')); verify = !!D.rules.card.verify;
     }
     // 3. 종류로 불공제
     if (i.kind === 'land') { const n = nd('land'); why.push(`토지 취득·조성·형질변경, 토지만 쓰려는 건물 철거비의 매입세액은 공제하지 않습니다(${n.no}, 시행령 제80조).`); todo.push('건물 신축·수선 몫이 섞여 있으면 계약·견적에서 토지 관련분과 나눠 적습니다 — 건물분은 공제 대상입니다.'); basis.push(...n.basis); return done('no', '토지 관련 매입세액 — 불공제'); }
@@ -56,15 +56,15 @@ function init(D: Data) {
     if (i.kind === 'entertain') { const n = nd('entertain'); why.push(`기업업무추진비(접대비)와 이와 유사한 비용의 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('직원 복리후생비·광고선전비는 여기 들지 않으므로 지출 성격을 서류에 적습니다.'); basis.push(...n.basis); return done('no', '접대·기념품 — 불공제'); }
     // 4. 시기
     if (i.timing === 'prereg') { const n = nd('pre_reg'); why.push(`사업자등록 신청 전의 매입세액은 공제하지 않습니다(${n.no}). 다만 공급시기가 속하는 과세기간이 끝난 뒤 20일 이내에 등록을 신청하면 그 과세기간 시작일까지의 매입세액은 공제됩니다.`); todo.push('등록 신청일과 공급시기가 속한 과세기간 종료일을 견주어 20일 이내인지 확인합니다. 새 과세사업은 시작 전에 등록(또는 업종 추가)합니다.'); basis.push(...n.basis); return done('check', '등록 전 매입세액 — 20일 요건 확인'); }
-    if (i.timing === 'late') { why.push(D.rules.late_invoice.summary); todo.push('공급시기가 속한 과세기간의 확정신고기한부터 1년이 지났는지 확인합니다. 지났으면 공제할 수 없습니다.'); basis.push(B('decree', '제75조')); verify = verify || !!D.rules.late_invoice.verify; }
+    if (i.timing === 'late') { why.push(D.rules.late_invoice.summary); todo.push('공급시기가 속한 과세기간의 확정신고기한까지 받았으면 그대로 공제(시행령 제75조 제3호). 그 뒤 1년 안에 받았으면 수정신고·경정청구서와 함께 내야 공제(제7호). 1년이 지났으면 공제할 수 없습니다.'); basis.push(B('decree', '제75조')); verify = verify || !!D.rules.late_invoice.verify; }
     // 5. 위탁수수료·복리후생 성격
-    if (i.kind === 'outsource') { why.push('수탁기관(지방공단 등)은 지자체가 아니므로 그 기관이 지자체에 공급하는 용역은 과세이고 세금계산서를 받습니다. 다만 실비를 전달·정산하는 돈이면 용역 공급이 아니어서 세금계산서 대상이 아닙니다.'); todo.push('위·수탁 계약서에서 대행 수수료(용역)와 사업비 실비 정산을 나눠 보고, 용역분은 아래 귀속(과세·면세·공통)에 따라 공제·안분합니다.'); basis.push(B('act', '제26조'), B('act', '제38조')); verify = true; if (i.use === 'unknown') return done('check', '위탁수수료 — 용역인지 실비 정산인지 확인'); }
+    if (i.kind === 'outsource') { why.push('수탁기관(지방공단 등)은 지자체가 아니므로 그 기관이 지자체에 공급하는 용역은 과세이고 세금계산서를 받습니다. 다만 실비를 전달·정산하는 돈이면 용역 공급이 아니어서 세금계산서 대상이 아닙니다.'); todo.push('위·수탁 계약서에서 대행 수수료(용역)와 사업비 실비 정산을 나눠 보고, 용역분은 아래 귀속(과세·면세·공통)에 따라 공제·안분합니다.'); basis.push(B('act', '제26조'), B('act', '제38조'), B('decree', '제75조')); if (i.use === 'unknown') return done('check', '위탁수수료 — 용역인지 실비 정산인지 확인'); }
     if (i.kind === 'welfare') { why.push('직원 복리후생비는 접대비가 아니며 사업 관련 지출입니다. 그 직원이 어느 사업(과세·면세) 일을 하는지에 따라 귀속이 정해집니다.'); }
     // 6. 귀속
     const cap = i.kind === 'building' || i.kind === 'equip';
     if (i.use === 'exempt') { const n = nd('exempt_use'); why.push(`면세사업·고유 행정사무에 쓰인 매입세액은 공제하지 않습니다(${n.no}).`); todo.push('과세 시설과 함께 쓰인 지출이라면 "면세"가 아니라 "공통"으로 다시 판정합니다.'); basis.push(...n.basis); return done('no', '면세사업 관련 — 불공제'); }
     if (i.use === 'taxable') { why.push('과세사업에만 쓰인 지출의 매입세액은 전액 공제합니다. 실지귀속이 분명하므로 안분하지 않습니다.'); todo.push('지출 원장·계약서에 어느 과세 시설인지 적어 실지귀속 근거를 남깁니다.'); if (cap) todo.push('감가상각자산은 뒤에 면세사업에도 쓰이게 되면 재계산 대상이 되므로 취득 과세기간·매입세액을 자산 대장에 적어 둡니다.'); basis.push(B('act', '제38조'), B('act', '제40조'), B('decree', '제81조')); return done('ok', '과세사업 실지귀속 — 전액 공제', { recalc: cap }); }
-    if (i.use === 'common') { why.push('과세·면세에 함께 쓰여 실지귀속을 가를 수 없는 공통매입세액은 총공급가액 중 면세공급가액 비율로 안분해 면세분을 뺍니다.'); todo.push('아래 「공통매입세액 안분 계산기」로 불공제분을 구합니다(면세비율 5% 미만·공통매입세액 500만 원 미만, 5만 원 미만이면 안분 생략). 예정신고 때 안분한 것은 확정신고 때 정산합니다.'); todo.push('계량기·계약을 시설별로 나눌 수 있으면 나눠 실지귀속으로 바꿉니다 — 과세 시설분은 전액 공제됩니다.'); if (cap) todo.push('감가상각자산은 뒤 과세기간 면세비율이 5%p 이상 바뀌면 납부세액을 재계산합니다(법 제41조).'); basis.push(B('act', '제40조'), B('decree', '제81조'), B('decree', '제82조')); if (cap) basis.push(B('act', '제41조')); return done('split', '공통매입세액 — 안분 뒤 공제', { recalc: cap, split: true }); }
+    if (i.use === 'common') { why.push('과세·면세에 함께 쓰여 실지귀속을 가를 수 없는 공통매입세액은 총공급가액 중 면세공급가액 비율로 안분해 면세분을 뺍니다.'); todo.push('아래 「공통매입세액 안분 계산기」로 불공제분을 구합니다(면세비율 5% 미만·공통매입세액 500만 원 미만, 5만 원 미만이면 안분 생략). 예정신고 때 안분한 것은 확정신고 때 정산합니다.'); todo.push('계량기·계약을 시설별로 나눌 수 있으면 나눠 실지귀속으로 바꿉니다 — 과세 시설분은 전액 공제됩니다.'); if (cap) todo.push('감가상각자산은 뒤 과세기간 면세비율이 5%p 이상 바뀌면 납부세액을 재계산합니다(법 제41조, 시행령 제83조).'); basis.push(B('act', '제40조'), B('decree', '제81조'), B('decree', '제82조')); if (cap) basis.push(B('act', '제41조'), B('decree', '제83조')); return done('split', '공통매입세액 — 안분 뒤 공제', { recalc: cap, split: true }); }
     why.push('어느 사업에 쓰였는지 모르면 공제 여부를 정할 수 없습니다. 실지귀속을 먼저 가릅니다.'); todo.push('지출 결의서·계약서·검수 조서에서 어느 시설(과세 시설/행정청사/겸용)에 쓰였는지 확인합니다. 시설이 과세사업인지는 「3. 우리 시설은 과세사업인가」 표로 봅니다.'); basis.push(B('act', '제40조'), B('decree', '제81조'));
     return done('check', '귀속(과세·면세·공통) 확인 필요');
   }
@@ -110,7 +110,7 @@ function init(D: Data) {
     const t = num($<HTMLInputElement>('ap-t')?.value), ex = num($<HTMLInputElement>('ap-e')?.value), c = num($<HTMLInputElement>('ap-c')?.value), type = $<HTMLSelectElement>('ap-type')!.value;
     const out = $('ap-result')!; const total = t + ex;
     if (!c) { out.innerHTML = `<p class="callout info">공통매입세액을 넣으세요.</p>`; return; }
-    if (total <= 0) { out.innerHTML = `<div class="vc-card"><h3><span class="verdict check">확인 필요</span> 공급가액이 없음</h3><p>${esc(D.rules.common.no_supply)}</p><p class="meta">근거: ${link(B('decree', '제82조'))} · ${link(B('decree', '제83조'))}</p></div>`; return; }
+    if (total <= 0) { out.innerHTML = `<div class="vc-card"><h3><span class="verdict check">확인 필요</span> 공급가액이 없음</h3><p>${esc(D.rules.common.no_supply)}</p><p class="meta">근거: ${link(B('decree', '제81조'))} · ${link(B('decree', '제82조'))}</p></div>`; return; }
     const ratio = ex / total;
     const sk = D.rules.common.skip; const small = sk.find(s => s.key === 'small')!, r5 = sk.find(s => s.key === 'ratio5')!;
     let skip: string | null = null;
@@ -131,14 +131,14 @@ function init(D: Data) {
     const asset = $<HTMLSelectElement>('rc-asset')!.value as 'building' | 'other'; const c0 = num($<HTMLInputElement>('rc-c0')?.value); const r0 = num($<HTMLInputElement>('rc-r0')?.value) / 100, r1 = num($<HTMLInputElement>('rc-r1')?.value) / 100; const n = Math.max(0, Math.floor(num($<HTMLInputElement>('rc-n')?.value)));
     const out = $('rc-result')!; if (!c0) { out.innerHTML = `<p class="callout info">취득 때 공통매입세액을 넣으세요.</p>`; return; }
     const diff = r1 - r0; const th = D.rules.recalc.threshold_pp;
-    if (Math.abs(diff) < th - 1e-9) { out.innerHTML = `<div class="vc-card"><h3><span class="verdict none">재계산 없음</span> 면세비율 변동 ${(diff * 100).toFixed(2)}%p</h3><p>취득(직전 재계산) 때와 견주어 5%p 이상 늘거나 줄지 않아 재계산하지 않습니다.</p><p class="meta">근거: ${link(B('act', '제41조'))} · ${link(B('decree', '제85조'))}</p></div>`; return; }
+    if (Math.abs(diff) < th - 1e-9) { out.innerHTML = `<div class="vc-card"><h3><span class="verdict none">재계산 없음</span> 면세비율 변동 ${(diff * 100).toFixed(2)}%p</h3><p>취득(직전 재계산) 때와 견주어 5%p 이상 늘거나 줄지 않아 재계산하지 않습니다.</p><p class="meta">근거: ${link(B('act', '제41조'))} · ${link(B('decree', '제83조'))}</p></div>`; return; }
     const rate = D.rules.recalc.rates[asset]; const remain = Math.max(0, 1 - rate * n);
     if (remain <= 0) { out.innerHTML = `<div class="vc-card"><h3><span class="verdict none">재계산 없음</span> 체감 기간 지남</h3><p>경과 과세기간 ${n}회 × 체감률 ${rate * 100}% ≥ 100% 라 재계산할 잔액이 없습니다.</p></div>`; return; }
     const amt = c0 * remain * diff; const add = amt > 0;
     out.innerHTML = `<div class="vc-card"><h3><span class="verdict ${add ? 'no' : 'ok'}">${add ? '납부세액에 가산' : '납부세액에서 공제'}</span> ${fmt(Math.abs(amt))}원</h3>
       <p class="meta">= ${fmt(c0)} × (1 − ${rate * 100}% × ${n}) × ${add ? '+' : '−'}${(Math.abs(diff) * 100).toFixed(2)}%p · 남은 비율 ${pct(remain)}</p>
       <p>면세비율이 ${add ? '늘어' : '줄어'} 취득 때 ${add ? '공제했던' : '불공제했던'} 매입세액 일부를 ${add ? '가산' : '공제'}합니다. 이번 과세기간 확정신고서에 반영하고 다음 재계산의 기준 비율은 이번 비율(${pct(r1)})입니다.</p>
-      <p class="label">근거</p><p class="meta">${link(B('act', '제41조'))} · ${link(B('decree', '제85조'))}</p></div>`;
+      <p class="label">근거</p><p class="meta">${link(B('act', '제41조'))} · ${link(B('decree', '제83조'))} · ${link(B('rule', '제55조'))}</p></div>`;
   });
 
   /* ---------- ④ 점검표 ---------- */

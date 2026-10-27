@@ -1,0 +1,21 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import '../../../styles/vat.css';
+/** /vat/trend/ — 납부액 추이·절감 현황표(운영자 지시 2026-10-27 '절감 사유에 맞게 → 순서대로 해' ③). 신고 기록·filing JSON·직접 입력을 모아 기수별 매출세액·매입세액·납부액과 연도 합계·전년 대비 차이 표. 스크립트 src/scripts/vat_trend.ts */
+---
+<Base title="부가세 납부액 추이 — 절감 현황표" description="지자체 부가가치세 기수별 매출세액·매입세액·납부액과 연도 합계, 전년 대비 차이를 저장된 신고 기록으로 만듭니다. 보고서에 붙이는 절감 현황표. 브라우저 안에서만." current="vat" crumb="납부액 추이">
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/prepare/">신고 준비</a></p>
+  <div class="section-head"><h1>납부액 추이 — 절감 현황표</h1><span class="meta">신고 기록에서 자동</span></div>
+  <p class="lede">신고 준비에서 저장한 기록이 쌓이면 기수별 <strong>매출세액·매입세액·납부액</strong>과 연도 합계, 전년 대비 차이가 표로 나옵니다. 이 도구를 쓰기 전 기수는 지난 신고서 값을 직접 넣습니다. 표는 「한글 표 복사」로 보고서에 붙이고, 늘고 준 까닭(절감 사유)은 기관이 아래 메모에 적습니다 — 이 도구는 값을 옮길 뿐 평가하지 않습니다.</p>
+  <div id="tr-table"></div>
+  <form class="vc-form no-print" autocomplete="off" onsubmit="return false">
+    <p class="q-title full">지난 기수 값 직접 넣기 — 신고서 (9) 매출세액, (18) 차감 매입세액</p>
+    <label>기수 <select id="tr-period"></select></label><label>매출세액(a, 원) <input type="text" inputmode="numeric" id="tr-out" /></label><label>매입세액(b, 원) <input type="text" inputmode="numeric" id="tr-in" /></label>
+    <div class="actions"><button type="button" class="btn secondary" id="tr-add">표에 넣기</button><span class="meta">신고 기록 파일: <input type="file" id="tr-open" accept=".json,application/json" multiple /></span></div>
+    <label class="full">절감 사유 메모(보고서에 붙일 문장 — 기관이 적음) <textarea id="tr-memo" rows="3" style="min-height:5em;padding:8px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--bg);color:var(--ink);font:inherit"></textarea></label>
+    <div class="actions"><button type="button" class="btn secondary" id="tr-csv">CSV</button><button type="button" class="btn secondary" id="tr-print">인쇄</button></div>
+  </form>
+  <VatData />
+  <script>import '../../../scripts/vat_trend';</script>
+</Base>

@@ -1,0 +1,56 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import '../../../styles/vat.css';
+/** /vat/prepare/ — 신고 준비(신고 담당 공무원, 예정·확정신고 때. v2 2단계 2026-10-27, 설계 docs/design/vat-first-timer.md 4.4).
+ *  시설 담당이 보낸 매입 인계표(JSON)와 이 브라우저의 기록을 모아 ① 자료가 다 왔는지 ② 시설별 매출 ③ 공통매입세액 안분(예정→확정 정산) ④ 일반과세자 부가가치세 신고서(별지 제21호서식, 2026-04-01 판) 칸별 숫자표 ⑤ 자산대장·재계산 ⑥ 미해결 목록을 만들고 신고 기록(filing JSON)을 남긴다. 서버 없음. 스크립트 src/scripts/vat_prepare.ts */
+---
+<Base title="부가세 신고 준비 — 신고서 칸별 숫자표" description="시설 담당이 보낸 매입 인계표를 모아 홈택스 부가가치세 신고서 칸별 숫자표(세금계산서 수취분·카드 수령명세서분·불공제·공통매입세액 면세분)를 만들고 공통매입세액 안분·예정 정산·재계산을 계산합니다. 브라우저 안에서만." current="vat" crumb="신고 준비">
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/setup/">기관 설정</a> · <a href="/vat/monthly/">시설 지출 기록</a> · <a href="/vat/trend/">납부액 추이(절감 현황표)</a></p>
+  <div class="section-head"><h1>⑤ 신고 준비 — 기록을 신고서 칸으로</h1><span class="meta" id="p-due"></span></div>
+  <p class="lede">이 브라우저의 기록(과 수탁기관이 보낸 <strong>매입 인계표 JSON</strong>이 있으면 그것도)을 모아 신고 기간을 고르면, 홈택스 <strong>일반과세자 부가가치세 신고서</strong>의 매입 칸에 적을 숫자가 나옵니다. 과세·면세에 함께 쓴 지출(파랑)은 시설 매출을 넣으면 면세 비율만큼 나눠 줍니다(공통매입세액 안분). 결과는 참고용 계산이며 신고서의 최종 숫자와 책임은 신고인에게 있습니다. 결과 아래 <strong>절감 분석</strong>이 공통매입세액 면세부분을 줄일 길을 숫자로 보입니다.</p>
+
+  <section class="vc-card no-print" id="p-src">
+    <h3>1. 자료 모으기</h3>
+    <p id="p-org-state" class="meta">확인 중…</p>
+    <p class="meta">기관 설정 파일: <input type="file" id="p-open-org" accept=".json,application/json" /> &nbsp; 매입 인계표 파일(여러 개): <input type="file" id="p-open-ledgers" accept=".json,application/json" multiple /></p>
+    <p class="meta" id="p-ledger-state">이 브라우저의 시설 기록도 자동으로 들어갑니다(시설 담당과 같은 컴퓨터를 쓸 때).</p>
+  </section>
+
+  <form class="vc-form no-print" id="p-sel" autocomplete="off">
+    <label>신고 기간 <select id="p-period"></select></label>
+    <p class="note full" id="p-period-note"></p>
+    <div class="full" id="p-coverage"></div>
+  </form>
+
+  <section id="p-sales-wrap" hidden>
+    <div class="section-head"><h2>2. 시설별 매출(이 신고 기간)</h2><span class="meta">신고서 (1)(3)(4)칸 · 안분의 과세 공급가액</span></div>
+    <p class="meta">이 기간에 각 시설이 <strong>받은 돈(부가세 뺀 공급가액)</strong>을 넣습니다. 세금계산서를 끊어 준 것은 (1), 카드·현금영수증은 (3), 그 밖(현금 영수증 없는 수입, 간주임대료)은 (4). 보증금이 있는 시설은 간주임대료 계산기로 (4)에 더합니다.</p>
+    <div id="p-sales"></div>
+  </section>
+
+  <section id="p-groups-wrap" hidden>
+    <div class="section-head"><h2>3. 공통매입세액 안분 — 사업자등록 단위마다</h2><span class="meta">시행령 제81조·제82조</span></div>
+    <p class="meta">파랑(공통) 지출이 있는 등록 단위마다 <strong>면세 수입</strong>(면세사업 공급가액 + 면세사업 관련 국고·공공보조금)을 넣으면 면세 비율을 계산합니다. 과세 수입은 위 2절 합계가 자동으로 들어갑니다. 확정신고는 과세기간 전체(6개월)로 다시 계산해 예정신고분을 정산합니다.</p>
+    <details class="vat-more"><summary><strong>면세 공급가액에 넣는 것·넣지 않는 것</strong> — 여기서 자주 틀립니다</summary>
+      <ul class="meta-list">
+        <li><strong>넣는다</strong>: 이 등록 단위가 한 면세 공급(법 제26조 면세 시설의 이용료 — 박물관 입장료, 면세 프로그램 참가비 등)과 면세사업에 관련된 국고·공공보조금(시행령 제81조 제1항 단서).</li>
+        <li><strong>넣는다, 그러나 비율이 튄다</strong>: 그 기간에 공유재산 <strong>토지</strong>를 팔았으면 토지 매각액은 면세 공급가액(법 제26조 제1항 제14호)이라 그 기간 면세 비율이 크게 올라 공통매입세액 공제가 줄어듭니다. 법대로 넣되, 큰 매입(공사·설비)은 되도록 그 기간을 피해 실지귀속을 나누는 쪽을 검토합니다.</li>
+        <li><strong>넣지 않는다</strong>: 과태료·수수료·증명 발급비 같은 고유 행정 수입은 재화·용역의 공급이 아니라서 면세 공급가액이 아닙니다. 등록 단위 밖(다른 사업장·본청)의 수입도 넣지 않습니다.</li>
+        <li><strong>등록 단위가 시설별 사업장이면</strong> 그 사업장의 공급가액으로만 안분합니다. 본청 행정 일과 함께 쓴 지출을 '행정과 함께'(공통)로 받았더라도 그 사업장에 면세 공급가액이 없으면 공급가액 비율이 성립하지 않으므로 아래 안분 기준을 매입가액·예정사용면적 비율로 고릅니다.</li>
+      </ul></details>
+    <div id="p-groups"></div>
+  </section>
+
+  <section id="p-convert" hidden>
+    <div class="section-head"><h2>3-1. 과세사업 전환 매입세액 — 무상(면세)이던 시설을 유상(과세)으로 바꿨을 때</h2><span class="meta">시행령 제85조 · 전환한 과세기간의 확정신고</span></div>
+    <p class="meta">수탁 시설을 무상 사용에서 사용료를 받는 과세 임대로 바꾸거나, 면세로 쓰던 건물·설비를 과세사업에 쓰기 시작하면, <strong>그 전에 불공제됐던 매입세액</strong>의 일부를 돌려받습니다: 불공제 매입세액 × (1 − 건물 5%·그 밖 25% × 경과 과세기간 수). 과세·면세에 함께 쓰면 이 과세기간의 과세 공급가액 비율을 곱하고, 그 비율이 5% 미만이면 공제가 없습니다(제2항). 자산대장(취득 과세기간·매입세액)이 있어야 합니다.</p>
+    <div class="vc-form no-print"><label>자산(내용) <input type="text" data-cdesc placeholder="예: 문화회관 공연장 음향 설비" maxlength="60" /></label><label>취득 때 불공제됐던 매입세액(원) <input type="text" inputmode="numeric" data-ctax /></label><label>종류 <select data-ckind><option value="building">건물·구축물(체감률 5%)</option><option value="other">그 밖의 감가상각자산(25%)</option></select></label><label>취득 과세기간 <select data-cacq></select></label><label data-cunit-wrap hidden>등록 단위(사업장) <select data-cunit></select></label><label class="choices"><span><input type="checkbox" data-ccommon /> 전환 뒤에도 과세·면세에 함께 쓴다(과세 공급가액 비율 적용)</span></label><div class="actions"><button type="button" class="btn secondary" data-cadd>전환 자산 추가</button></div></div>
+    <div id="p-conv-list"></div>
+  </section>
+
+  <div class="actions no-print" id="p-run-wrap" hidden><button type="button" class="btn" id="p-run">숫자표 만들기</button></div>
+  <div id="p-result" aria-live="polite"></div>
+  <VatData />
+  <script>import '../../../scripts/vat_prepare';</script>
+</Base>

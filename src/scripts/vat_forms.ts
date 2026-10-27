@@ -1,0 +1,175 @@
+/** 신고 준비 결과를 국세청 서식 모양으로 — 운영자 지시 2026-10-27 '결과물이 국세청에 신고하는 시스템과 유사하게 → 순서대로 해'.
+ *  홈택스 화면을 흉내 내지 않고(기관 로고·문구 없음) 부가가치세법 시행규칙 별지 서식의 칸 배치·번호만 따른다(시행규칙 2026-04-01 시행 판 본문의 서식, 별지 제21호 <개정 2026.3.20.>):
+ *  ① 일반과세자 부가가치세 신고서(제21호) 1쪽 (1)~(30) + 4쪽 명세 (36)~(56)  ② 매입처별 세금계산서합계표(갑)(제39호(1))  ③ 신용카드매출전표등 수령명세서(갑)(제16호(1))
+ *  ④ 공제받지 못할 매입세액 명세서(제22호: 사유별 ①~⑨ · 안분 ⑩~⑭ · 정산 ⑮~ · 재계산)  ⑤ 부동산임대공급가액명세서(제25호)  ⑥ 과세사업전환 감가상각자산 신고서(제17호)  ⑦ 홈택스 입력 순서표.
+ *  이 도구가 채우지 못하는 칸(영세율·대손·경감공제·가산세·예정고지 등)은 비워 두고 '홈택스에서 직접'으로 표시한다. 참고용, 신고 책임은 신고인. */
+import { esc, fmt, pct, facilityRule, getFilings, lawLink, PRELIM_NOTICE_LIMIT, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey } from './vat_rules';
+export type UsedRow = { f: OrgFacility; r: LedgerRow; isPre: boolean; inv: boolean; card: boolean };
+export type ConvRow = { desc: string; tax: number; kind: 'building' | 'other'; acq: PeriodKey; common: boolean; gkey?: string; credit: number; n: number; remain: number };
+export type RecalcRow = { a: Filing['assets'][number]; from: PeriodKey; ratio: number; n: number; amt: number };
+export type FormCtx = { D: Data; org: Org; P: { y: number; half: number; kind: 'P' | 'F'; name: string; own: string[]; prelim: string[]; full: string[]; due: string }; cells: Record<string, { amt: number; tax: number }>; used: UsedRow[]; groups: Filing['groups']; commonAmt: Record<string, number>; unitName: string; unitIndex: string; notice: { state: 'notice' | 'file' | 'unknown'; prevSupply: number; prevPay: number; prevKey: PeriodKey }; prelimIn: Record<string, { taxable: number; exempt: number; common: number; nondeduct: number }>; recalc: RecalcRow[]; conv: ConvRow[]; convRatio: number; sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }>; facs: OrgFacility[]; unresolved: string[]; excluded: string[]; missing: string[] };
+const W = (n?: number) => n ? fmt(n) : '';
+const cell = (c: Record<string, { amt: number; tax: number }>, no: string) => c[no] ?? { amt: 0, tax: 0 };
+const supKey = (r: LedgerRow) => r.sreg || ('n:' + (r.sup || r.desc).replace(/\s|\(주\)|주식회사|㈜/g, ''));
+const supName = (r: LedgerRow) => r.sup || r.desc.split(' · ')[0];
+type Agg = { sreg: string; name: string; n: number; amt: number; tax: number };
+function aggregate(rows: LedgerRow[]) { const m = new Map<string, Agg>(); for (const r of rows) { const k = supKey(r); const a = m.get(k) ?? { sreg: r.sreg || '', name: supName(r), n: 0, amt: 0, tax: 0 }; a.n++; a.amt += r.amt; a.tax += r.tax; m.set(k, a); } return [...m.values()].sort((a, b) => b.tax - a.tax); }
+const tbl = (cap: string, head: string[], body: string, foot = '') => `<div class="scroll-x"><table class="data-table vat-table form" data-stack="off"><caption>${cap}</caption><thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${body}${foot}</tbody></table></div>`;
+const DIRECT = '<td class="note" colspan="2">홈택스에서 직접</td>';
+const NA = '<td class="note" colspan="2">해당 없음이면 비움</td>';
+
+export function renderForms(x: FormCtx): string {
+  const { D, org, P, cells, used, groups, recalc, conv, convRatio, sales, facs, notice } = x; const c = (no: string) => cell(cells, no);
+  const c66 = c('66'); const penalty = c66.tax; const noticeEst = Math.floor(notice.prevPay * 0.5);
+  const sum = (nos: string[], k: 'amt' | 'tax' = 'tax') => nos.reduce((s, n) => s + c(n)[k], 0);
+  const c9t = sum(['1', '3', '4']), c9a = sum(['1', '3', '4'], 'amt'); const c15 = sum(['44', '45', '48']); const c16 = sum(['10', '12', '13', '14']) + c15; const c17 = sum(['53', '54']); const c18 = c16 - c17; const pay = c9t - c18; const c29 = penalty; const c30 = pay - (P.kind === 'F' && notice.state === 'notice' ? noticeEst : 0) + c29;
+  const row = (no: string, name: string, v?: { amt: number; tax: number } | null, rate = '', cls = '') => `<tr class="${cls}"><td>(${no})</td><th scope="row">${name}</th>${v === undefined ? DIRECT : v === null ? NA : `<td>${W(v.amt)}</td><td>${rate ? `<span class="note">${rate}</span> ` : ''}${fmt(v.tax)}</td>`}</tr>`;
+  const sec = (t: string) => `<tr class="sec"><th colspan="4">${t}</th></tr>`;
+  /* ── ① 신고서 1쪽 ── */
+  const p1 = tbl(`일반과세자 부가가치세 ${P.kind === 'P' ? '예정' : '확정'}신고서 — ① 신고내용 (별지 제21호서식 제1쪽 배치) · ${esc(x.unitName)} · ${esc(P.name)}`, ['칸', '구분', '금액', '세액'],
+    sec('과세표준 및 매출세액') + row('1', '과세 — 세금계산서 발급분', c('1'), '10/100') + row('2', '과세 — 매입자발행 세금계산서', null) + row('3', '과세 — 신용카드·현금영수증 발행분', c('3'), '10/100') + row('4', '과세 — 기타(정규영수증 외 매출분)', c('4'), '10/100') + row('5', '영세율 — 세금계산서 발급분', null) + row('6', '영세율 — 기타', null) + row('7', '예정신고 누락분(매출) — 4쪽 (40)', P.kind === 'F' ? undefined : null) + row('8', '대손세액 가감', null) + row('9', '합계 ㉮', { amt: c9a, tax: c9t }, '', 'total')
+    + sec('매입세액') + row('10', '세금계산서 수취분 — 일반매입', c('10')) + row('11', '세금계산서 수취분 — 수출기업 수입분 납부유예', null) + row('12', '세금계산서 수취분 — 고정자산매입', c('12')) + row('13', '예정신고 누락분 — 4쪽 (43)', c('13')) + row('14', '매입자발행 세금계산서', c('14')) + row('15', '그 밖의 공제매입세액 — 4쪽 (52)', { amt: sum(['44', '45', '48'], 'amt'), tax: c15 }) + row('16', '합계 (10)−(11)+(12)+(13)+(14)+(15)', { amt: sum(['10', '12', '13', '14', '44', '45', '48'], 'amt'), tax: c16 }, '', 'total') + row('17', '공제받지 못할 매입세액 — 4쪽 (56)', { amt: sum(['53', '54'], 'amt'), tax: c17 }) + row('18', '차감계 (16)−(17) ㉯', { amt: 0, tax: c18 }, '', 'total')
+    + `<tr class="total"><td></td><th scope="row">납부(환급)세액 ㉰ = 매출세액 ㉮ − 매입세액 ㉯</th><td></td><td><strong>${fmt(pay)}</strong>${pay < 0 ? ' <span class="note">(환급)</span>' : ''}</td></tr>`
+    + sec('경감·공제세액 등 — 이 도구 범위 밖, 홈택스에서 직접') + row('19', '그 밖의 경감·공제세액 — 4쪽 (63)') + row('20', '신용카드매출전표등 발행공제 등(개인사업자) ', null) + row('21', '합계 ㉱') + row('22', '소규모 개인사업자 감면세액 ㉲', null) + row('23', '예정신고 미환급세액 ㉳', P.kind === 'F' ? undefined : null) + (P.kind === 'F' && notice.state === 'notice' ? `<tr><td>(24)</td><th scope="row">예정고지세액 ㉴ — 고지서 금액을 적음(참고 어림: 직전 과세기간 납부세액 ${fmt(notice.prevPay)}의 50%)</th><td></td><td>${fmt(noticeEst)} <span class="note">고지서로 확인</span></td></tr>` : row('24', '예정고지세액 ㉴', notice.state === 'file' ? null : undefined)) + row('25', '수시부과세액 ㉵', null) + row('26', '사업양수자가 대리납부한 세액 ㉶', null) + row('27', '매입자 납부특례에 따라 납부한 세액 ㉷', null) + row('28', '신용카드업자가 대리납부한 세액 ㉸', null) + (penalty ? `<tr><td>(29)</td><th scope="row">가산세액 계 ㉹ — 4쪽 (84), 이 도구는 (66) 지연수취만 계산</th><td></td><td>${fmt(c29)} <span class="note">그 밖의 가산세는 홈택스에서</span></td></tr>` : row('29', '가산세액 계 ㉹ — 4쪽 (84)'))
+    + `<tr class="total"><td>(30)</td><th scope="row">차감·가감하여 납부할 세액(환급받을 세액) = ㉰−㉱−㉲−㉳−㉴−㉵−㉶−㉷−㉸+㉹</th><td></td><td>${penalty || (P.kind === 'F' && notice.state === 'notice') ? `${fmt(c30)} <span class="note">= ㉰ ${fmt(pay)}${P.kind === 'F' && notice.state === 'notice' ? ` − ㉴ ${fmt(noticeEst)}(어림)` : ''}${penalty ? ` + ㉹ ${fmt(c29)}` : ''}, 그 밖의 (19)~(28)은 홈택스에서</span>` : `<span class="note">㉰ ${fmt(pay)} 에서 (19)~(29)를 홈택스에서 반영</span>`}</td></tr>`
+    /* 과세표준명세 (31)~(35): 시설 유형(업태·종목)별로 (9)를 나눔 — (35) = (9) */
+    + ((): string => { const by = new Map<string, number>(); for (const f of facs) { const sl = sales[f.id]; if (!sl) continue; const amt = sl.c1 + sl.c3 + sl.c4; if (!amt) continue; const r = facilityRule(D, f); const k = (r?.group ?? '그 밖').split('(')[0].replace(/ 해당 여부$/, ''); by.set(k, (by.get(k) ?? 0) + amt); } const rows = [...by.entries()].sort((a, b) => b[1] - a[1]); const top = rows.slice(0, 3); const rest = rows.slice(3).reduce((t, r) => t + r[1], 0); return sec('⑤ 과세표준명세 — 업태·종목별 (35) 합계 = (9)') + top.map((r, i) => `<tr><td>(${31 + i})</td><th scope="row">${esc(r[0])}${i === 2 && rest ? ' 외(나머지 합산)' : ''}</th><td>${fmt(r[1] + (i === 2 ? rest : 0))}</td><td class="note">업태·종목 코드는 홈택스 선택</td></tr>`).join('') + row('34', '수입금액 제외(고정자산 매각 등)', null) + `<tr class="total"><td>(35)</td><th scope="row">합계</th><td>${fmt(c9a)}</td><td></td></tr>`; })());
+  /* 예정고지 안내 */
+  const noticeBox = notice.state === 'notice' ? (P.kind === 'P' ? `<div class="callout warn"><strong>이 등록 단위는 예정고지 대상입니다</strong> — 직전 과세기간(${notice.prevKey}) 공급가액 ${fmt(notice.prevSupply)}원이 1억 5천만 원 미만인 법인사업자는 예정신고 대신 세무서가 고지한 세액(직전 과세기간 납부세액의 50%, 참고 어림 ${fmt(noticeEst)}원)을 납부합니다(법 제48조 제3항, 시행령 제90조 제4항). 아래 예정신고서는 내지 않고, 이 기간 기록은 확정신고에 합칩니다. 휴업·사업 부진으로 실적이 나빠졌으면 예정신고를 택할 수 있습니다(제48조 제4항).</div>` : `<div class="callout info">직전 과세기간 공급가액 ${fmt(notice.prevSupply)}원(1억 5천만 원 미만) — 예정고지 대상이라 예정신고 없이 고지 납부했으면 (24)에 고지서 금액을 적습니다. 예정 기간(${P.prelim[0]}~${P.prelim[2]})의 매입은 (13)이 아니라 (10)(12)(44)(45)에 합쳐 넣습니다(예정신고가 없었으므로 누락분이 아님).</div>`) : notice.state === 'unknown' ? `<p class="meta">예정고지 대상 여부는 직전 과세기간(${notice.prevKey}) 신고 기록이 있어야 판단합니다(공급가액 1억 5천만 원 미만 법인은 예정고지). 지난 신고를 저장해 두면 다음부터 자동으로 봅니다.</p>` : `<p class="meta">직전 과세기간(${notice.prevKey}) 공급가액 ${fmt(notice.prevSupply)}원 — 예정신고 대상(1억 5천만 원 이상).</p>`;
+  /* ── ① 신고서 4쪽 명세 ── */
+  const preInv = used.filter(u => u.isPre && u.inv), preCard = used.filter(u => u.isPre && u.card);
+  const sumRows = (rs: UsedRow[]) => ({ amt: rs.reduce((s, u) => s + u.r.amt, 0), tax: rs.reduce((s, u) => s + u.r.tax, 0) });
+  const p4 = tbl('신고서 제4쪽 — 예정신고 누락분 · (15) 그 밖의 공제매입세액 · (17) 공제받지 못할 매입세액 명세', ['칸', '구분', '금액', '세액'],
+    (P.kind === 'F' ? sec('예정신고 누락분 명세') + row('36', '(7) 매출 — 과세 세금계산서') + row('37', '(7) 매출 — 과세 기타') + row('38', '(7) 매출 — 영세율 세금계산서', null) + row('39', '(7) 매출 — 영세율 기타', null) + row('40', '(7) 합계') + row('41', '(13) 매입 — 세금계산서', sumRows(preInv)) + row('42', '(13) 매입 — 그 밖의 공제매입세액', sumRows(preCard)) + row('43', '(13) 합계', sumRows([...preInv, ...preCard]), '', 'total') : '')
+    + sec('(15) 그 밖의 공제매입세액 명세') + row('44', '신용카드매출전표등 수령명세서 제출분 — 일반매입', c('44')) + row('45', '신용카드매출전표등 수령명세서 제출분 — 고정자산매입', c('45')) + row('46', '의제매입세액', null) + row('47', '재활용폐자원등 매입세액', null) + row('48', '과세사업전환 매입세액(제17호서식)', c('48')) + row('49', '재고매입세액', null) + row('50', '변제대손세액', null) + row('51', '외국인 관광객에 대한 환급세액', null) + row('52', '합계 → (15)', { amt: sum(['44', '45', '48'], 'amt'), tax: c15 }, '', 'total')
+    + sec('(17) 공제받지 못할 매입세액 명세') + row('53', '공제받지 못할 매입세액(제22호서식 2.)', c('53')) + row('54', '공통매입세액 중 면세사업등 해당 세액(제22호서식 3.~5.)', c('54')) + row('55', '대손처분받은 세액', null) + row('56', '합계 → (17)', { amt: sum(['53', '54'], 'amt'), tax: c17 }, '', 'total')
+    + (penalty ? sec('(29) 가산세액 명세 — 이 도구가 계산하는 것만') + `<tr><td>(66)</td><th scope="row">세금계산서 지연수취(공급시기 뒤 확정신고기한 안에 받은 분, 법 제60조 제7항 제1호) — 공급가액 × 5/1,000</th><td>${fmt(c66.amt)}</td><td>${fmt(c66.tax)}</td></tr><tr class="total"><td>(84)</td><th scope="row">합계 → (29) <span class="note">다른 가산세가 있으면 홈택스에서 더함</span></th><td></td><td>${fmt(c29)}</td></tr>` : ''));
+  /* ── ② 매입처별 세금계산서합계표(갑) ── */
+  const eRows = used.filter(u => u.inv && !u.isPre && u.r.proof === 'e_invoice').map(u => u.r), pRows = used.filter(u => u.inv && !u.isPre && u.r.proof === 'p_invoice').map(u => u.r);
+  const eAgg = aggregate(eRows), pAgg = aggregate(pRows);
+  const tot = (a: Agg[]) => ({ n: a.length, cnt: a.reduce((s, r) => s + r.n, 0), amt: a.reduce((s, r) => s + r.amt, 0), tax: a.reduce((s, r) => s + r.tax, 0) });
+  const te = tot(eAgg), tp = tot(pAgg);
+  const f39 = tbl('매입처별 세금계산서합계표(갑) — 2. 매입세금계산서 총합계 (별지 제39호서식(1))', ['구분', '⑦ 매입처수', '⑧ 매수', '⑨ 공급가액', '⑩ 세액'],
+    `<tr class="total"><th scope="row">합계</th><td>${te.n + tp.n}</td><td>${te.cnt + tp.cnt}</td><td>${fmt(te.amt + tp.amt)}</td><td>${fmt(te.tax + tp.tax)}</td></tr>
+     <tr><th scope="row">과세기간 종료일 다음 달 11일까지 전송된 전자세금계산서 발급받은 분 — 사업자등록번호 발급받은 분 <span class="note">홈택스 자동 조회와 맞춰 봄</span></th><td>${te.n}</td><td>${te.cnt}</td><td>${fmt(te.amt)}</td><td>${fmt(te.tax)}</td></tr>
+     <tr><th scope="row">위 전자세금계산서 외의 발급받은 분(종이·늦게 전송) — 사업자등록번호 발급받은 분 <span class="note">아래 3. 명세를 직접 입력</span></th><td>${tp.n}</td><td>${tp.cnt}</td><td>${fmt(tp.amt)}</td><td>${fmt(tp.tax)}</td></tr>`)
+    + `<p class="meta">서식의 전자·전자 외 구분은 영수증 종류가 아니라 <strong>과세기간 종료일 다음 달 11일까지 전송됐는지</strong>입니다. 늦게 전송된 전자세금계산서는 홈택스에서 '전자 외'로 잡혀 위 두 줄이 홈택스 자동 조회와 다를 수 있습니다 — 합계가 같으면 됩니다. 한 건씩 넣은 지출은 등록번호가 없어 매입처수가 실제보다 많게 셀 수 있습니다.</p>`
+    + (pAgg.length ? tbl('3. 전자세금계산서 외 발급받은 매입처별 명세(합계금액으로)', ['⑪ 번호', '⑫ 사업자등록번호', '⑬ 상호(법인명)', '⑭ 매수', '⑮ 공급가액', '⑯ 세액'], pAgg.map((a, i) => `<tr><td>${i + 1}</td><td>${a.sreg ? esc(a.sreg) : '<span class="verdict check">등록번호 확인</span>'}</td><th scope="row">${esc(a.name)}</th><td>${a.n}</td><td>${fmt(a.amt)}</td><td>${fmt(a.tax)}</td></tr>`).join('')) : '<p class="meta">종이 세금계산서 수취분이 없습니다 — 전자분은 홈택스가 자동으로 불러옵니다.</p>')
+    + (eAgg.length ? `<details class="vat-more"><summary>전자세금계산서 발급받은 분 공급자별 ${eAgg.length}곳(홈택스 자동 조회분과 대조용)</summary>${tbl('전자세금계산서 매입 — 공급자별', ['사업자등록번호', '상호', '매수', '공급가액', '세액'], eAgg.map(a => `<tr><td>${esc(a.sreg || '—')}</td><th scope="row">${esc(a.name)}</th><td>${a.n}</td><td>${fmt(a.amt)}</td><td>${fmt(a.tax)}</td></tr>`).join(''))}</details>` : '');
+  /* ── ③ 신용카드매출전표등 수령명세서(갑) ── */
+  const cardRows = used.filter(u => u.card && !u.isPre).map(u => u.r); const cashR = cardRows.filter(r => r.proof === 'cash'), crdR = cardRows.filter(r => r.proof === 'card');
+  const S = (rs: LedgerRow[]) => ({ n: rs.length, amt: rs.reduce((s, r) => s + r.amt, 0), tax: rs.reduce((s, r) => s + r.tax, 0) }); const sc = S(cashR), sk = S(crdR), sa = S(cardRows);
+  const f16 = tbl('신용카드매출전표등 수령명세서(갑) — 2. 신용카드 등 매입명세 합계 (별지 제16호서식(1))', ['구분', '거래건수', '공급가액', '세액'],
+    `<tr class="total"><th scope="row">④ 합계</th><td>${sa.n}</td><td>${fmt(sa.amt)}</td><td>${fmt(sa.tax)}</td></tr><tr><th scope="row">⑤ 현금영수증</th><td>${sc.n}</td><td>${fmt(sc.amt)}</td><td>${fmt(sc.tax)}</td></tr><tr><th scope="row">⑥ 화물운전자복지카드</th><td colspan="3" class="note">해당 없음</td></tr><tr><th scope="row">⑦ 사업용 신용카드 <span class="note">홈택스에 등록한 카드면 자동 집계 — 등록하지 않은 카드는 ⑧에 가맹점별로</span></th><td>${sk.n}</td><td>${fmt(sk.amt)}</td><td>${fmt(sk.tax)}</td></tr><tr><th scope="row">⑧ 그 밖의 신용카드 등 — 3. 가맹점별 명세</th><td colspan="3" class="note">등록 안 한 카드 지출은 아래 공급자별 합계를 옮김</td></tr>`)
+    + (crdR.length ? `<details class="vat-more"><summary>카드 지출 공급자(가맹점)별 ${aggregate(crdR).length}곳 — ⑧ 명세에 쓸 때</summary>${tbl('3. 그 밖의 신용카드 등 거래명세 합계(가맹점별)', ['⑩ 공급자(가맹점) 사업자등록번호', '가맹점', '거래건수', '공급가액', '세액'], aggregate(crdR).map(a => `<tr><td>${esc(a.sreg || '—')}</td><th scope="row">${esc(a.name)}</th><td>${a.n}</td><td>${fmt(a.amt)}</td><td>${fmt(a.tax)}</td></tr>`).join(''))}</details>` : '');
+  /* ── ④ 공제받지 못할 매입세액 명세서 ── */
+  const noRows = used.filter(u => u.inv && u.r.v === 'no').map(u => u.r); const reason = (r: LedgerRow) => r.what === 'car_pass' ? '③' : r.what === 'guest' ? '④' : r.what === 'land' ? '⑥' : '⑤';
+  const RS: [string, string][] = [['①', '필요적 기재사항 누락 등'], ['②', '사업과 직접 관련 없는 지출'], ['③', '개별소비세법 제1조 제2항 제3호 자동차 구입·유지·임차'], ['④', '기업업무추진비 및 이와 유사한 비용 관련'], ['⑤', '면세사업등 관련'], ['⑥', '토지의 자본적 지출 관련'], ['⑦', '사업자등록 전 매입세액'], ['⑧', '금·구리 스크랩 거래계좌 미사용 관련']];
+  const byR = (k: string) => S(noRows.filter(r => reason(r) === k));
+  const f22a = tbl('공제받지 못할 매입세액 명세서 — 2. 공제받지 못할 매입세액 명세 (별지 제22호서식)', ['불공제 사유', '매수', '공급가액', '매입세액'], RS.map(([k, n]) => { const s = byR(k); return `<tr><th scope="row">${k} ${n}</th><td>${s.n || ''}</td><td>${W(s.amt)}</td><td>${W(s.tax)}</td></tr>`; }).join('') + `<tr class="total"><th scope="row">⑨ 합계 → (53)</th><td>${noRows.length}</td><td>${fmt(S(noRows).amt)}</td><td>${fmt(S(noRows).tax)}</td></tr>`);
+  const gUse = groups.filter(g => g.common_tax || g.nondeduct);
+  const f22b = gUse.length ? tbl('3. 공통매입세액 안분 계산 명세', ['번호', '등록 단위', '⑩ 공통매입 공급가액', '⑪ 세액', '⑫ 총공급가액 등', '⑬ 면세공급가액 등', '⑭ 불공제 매입세액 ⑪×(⑬÷⑫)'], gUse.map((g, i) => { const pi = x.prelimIn[g.key]; const fullT = g.taxable + (P.kind === 'F' ? pi?.taxable ?? 0 : 0), fullE = g.exempt + (P.kind === 'F' ? pi?.exempt ?? 0 : 0), fullC = g.common_tax + (P.kind === 'F' ? pi?.common ?? 0 : 0); const nd = g.skipped && !g.skipped.includes('안분(') ? 0 : Math.floor(fullC * g.ratio); const ca = (x.commonAmt[g.key] ?? 0) + (P.kind === 'F' ? (pi?.common ?? 0) * 10 : 0); return `<tr><td>${i + 1}</td><th scope="row">${esc(g.name)}${g.basis && g.basis !== 'supply' ? ` <span class="note">(${esc(g.skipped ?? '')})</span>` : ''}</th><td>${fmt(ca)}</td><td>${fmt(fullC)}</td><td>${fmt(fullT + fullE)}</td><td>${fmt(fullE)}</td><td>${fmt(nd)}</td></tr>`; }).join('')) + `<p class="meta">⑩ 공급가액은 공통(파랑) 지출 행의 공급가액 합계${P.kind === 'F' ? '(예정분은 저장된 세액 × 10으로 어림)' : ''}. 안분 생략 기준(5%·500만 원·5만 원)에 든 단위는 ⑭ 0.${P.kind === 'F' ? ' 확정신고는 6개월 전체 값.' : ''}</p>` : '<p class="meta">공통매입세액이 없어 3.~4. 명세는 비웁니다.</p>';
+  const gAdm = groups.filter(g => g.admin_tax); const BN: Record<string, string> = { purchase: '매입가액 비율', planned: '예정공급가액 비율', area: '예정사용면적 비율' };
+  const f22ab = gAdm.length ? tbl('3-1. 본청·행정 공통매입세액 안분 — 공급가액 비율 대신 시행령 제81조 제4항 순서(유권해석 확인)', ['등록 단위', '본청·행정 공통 세액', '기준', '면세등 몫 ÷ 전체', '비율', '불공제(→ 54)'], gAdm.map(g => `<tr><th scope="row">${esc(g.name)}</th><td>${fmt(g.admin_tax!)}</td><td>${g.admin_basis ? BN[g.admin_basis] : '<span class="verdict check">기준 없음</span>'}</td><td>${g.admin_tot ? `${fmt(g.admin_ex!)} ÷ ${fmt(g.admin_tot)}` : ''}</td><td>${g.admin_ratio !== undefined ? pct(g.admin_ratio) : ''}</td><td>${g.admin_nondeduct !== undefined ? fmt(g.admin_nondeduct) : '<span class="note">(54)에 미반영</span>'}</td></tr>`).join('')) + `<p class="meta">${esc(D.rules.admin_common?.caution ?? '')}</p>` : '';
+  const f22c = P.kind === 'F' && gUse.length ? tbl('4. 공통매입세액의 정산 명세(확정신고)', ['번호', '등록 단위', '⑮ 총공통매입세액', '⑯ 면세사업등 확정비율', '⑰ 불공제 매입세액 총액 ⑮×⑯', '⑱ 기 불공제 매입세액(예정)', '⑲ 가산 또는 공제되는 매입세액 ⑰−⑱'], gUse.map((g, i) => { const pi = x.prelimIn[g.key]; const fullC = g.common_tax + (pi?.common ?? 0); const total = Math.floor(fullC * g.ratio); return `<tr><td>${i + 1}</td><th scope="row">${esc(g.name)}</th><td>${fmt(fullC)}</td><td>${pct(g.ratio)}</td><td>${fmt(total)}</td><td>${fmt(pi?.nondeduct ?? 0)}</td><td>${fmt(total - (pi?.nondeduct ?? 0))}</td></tr>`; }).join('')) : '';
+  const f22d = recalc.length ? tbl('5. 납부세액 또는 환급세액 재계산 명세', ['번호', '자산', '해당 재화의 매입세액', '경감률 1−(5/100 또는 25/100 × 경과 과세기간 수)', '증가 또는 감소된 면세 비율', '가산(+) 또는 공제(−)되는 매입세액'], recalc.map((r, i) => `<tr><td>${i + 1}</td><th scope="row">${esc(r.a.facility)} ${esc(r.a.desc)} (${r.from} 취득)</th><td>${fmt(r.a.tax)}</td><td>${pct(Math.max(0, 1 - (r.a.kind === 'building' ? 0.05 : 0.25) * r.n))}</td><td>${(r.ratio - r.a.ratio0) >= 0 ? '+' : ''}${pct(r.ratio - r.a.ratio0)}</td><td>${r.amt >= 0 ? '+' : ''}${fmt(r.amt)}</td></tr>`).join('') + `<tr class="total"><td></td><th scope="row">합계 — 홈택스 공제받지 못할 매입세액 명세서의 '재계산' 탭에 넣음(이 표는 (54)에 합산해 보였으나 서식 작성방법에 합산 칸이 명시돼 있지 않아 홈택스 반영 칸을 확인)</th><td colspan="3"></td><td>${fmt(recalc.reduce((s, r) => s + r.amt, 0))}</td></tr>`) : '';
+  /* ── ⑤ 부동산임대공급가액명세서 ── */
+  const depF = facs.filter(f => f.deposit);
+  const f25 = depF.length ? tbl('부동산임대공급가액명세서 — 임대수입금액(과세표준) (별지 제25호서식)', ['① 부동산(시설)', '⑭ 보증금', '⑮ 월 임대료(기간 합)', '보증금 이자(간주임대료, 시행령 제65조)', '⑱ 합계 → (4)에 포함'], depF.map(f => { const s = sales[f.id]; return `<tr><th scope="row">${esc(f.name)}</th><td>${s?.dep ? fmt(s.dep) : '<span class="note">2절 간주임대료 계산기에 넣은 값</span>'}</td><td class="note">임대료 수입은 (1)(3)(4)에 넣은 값에서 임대 몫만 — 홈택스에서 임차인별로</td><td>${s?.deem ? fmt(s.deem) : ''}</td><td>${s?.deem ? fmt(s.deem) : ''}</td></tr>`; }).join('')) + '<p class="meta">임차인 상호·등록번호·입주일·면적은 임대차 계약서에서 홈택스에 직접 적습니다(개인 임차인의 주민등록번호는 이 도구에 넣지 않습니다).</p>' : '';
+  /* ── ⑥ 과세사업전환 감가상각자산 신고서 ── */
+  const f17 = conv.length ? tbl('과세사업전환 감가상각자산 신고서 — 3. 감가상각자산명세서 (별지 제17호서식) → 신고서 (48)', ['구분(건물·구축물·기타)', '수량', '취득 과세기간', '면세사업등 관련 불공제세액', '경과 과세기간', '과세사업 전환 공제매입세액'], conv.map(cv => `<tr><th scope="row">${cv.kind === 'building' ? '건물·구축물' : '기타'} — ${esc(cv.desc)}</th><td>1</td><td>${cv.acq}</td><td>${fmt(cv.tax)}</td><td>${cv.n}</td><td>${fmt(cv.credit)}${cv.common ? ` <span class="note">(과세 비율 ${pct(convRatio)})</span>` : ''}</td></tr>`).join('') + `<tr class="total"><th scope="row">합계 → (48)</th><td colspan="4"></td><td>${fmt(conv.reduce((s, v) => s + v.credit, 0))}</td></tr>`) + '<p class="meta">과세사업 사용·소비 시기(전환일)와 전환 전 면세사업자 인적사항은 홈택스 서식에 직접 적습니다. 확정신고와 함께 냅니다(시행령 제85조 제5항).</p>' : '';
+  /* ── ⑦ 홈택스 입력 순서 ── */
+  const steps = [
+    ['기본정보', '홈택스 → 신고/납부 → 부가가치세 → 일반과세자 → ' + (P.kind === 'P' ? '예정신고' : '확정신고') + ' → 사업자등록번호·신고기간 확인', `등록번호 ${org.unit === 'entity' ? esc(org.reg_no || '—') : '시설(사업장)별'} · ${esc(P.name)}`],
+    ['매출', '과세표준 및 매출세액: (1) 세금계산서 발급분은 「전자세금계산서 불러오기」로 자동, (3)(4)는 직접 입력, 보증금 시설은 부동산임대공급가액명세서 작성', `(1) ${fmt(c('1').amt)} · (3) ${fmt(c('3').amt)} · (4) ${fmt(c('4').amt)}`],
+    ['매입 ①', '매입처별 세금계산서합계표 「작성하기」: 전자분은 불러오기 → 위 ② 총합계와 맞춰 봄, 종이분은 3. 명세를 공급자별로 입력 → (10)(12)에 반영', `전자 ${te.cnt}매 ${fmt(te.tax)} · 종이 ${tp.cnt}매 ${fmt(tp.tax)}`],
+    ['매입 ②', '그 밖의 공제매입세액 (15) 「작성하기」: 신용카드매출전표등 수령명세서(사업용 카드 불러오기, 그 밖 카드는 가맹점별) → (44)(45)' + (conv.length ? '; 과세사업전환 매입세액 → (48)(별도 신고서 첨부)' : ''), `(44) ${fmt(c('44').tax)} · (45) ${fmt(c('45').tax)}` + (conv.length ? ` · (48) ${fmt(c('48').tax)}` : '')],
+    ['매입 ③', '공제받지 못할 매입세액 (17) 「작성하기」: 사유별 명세 → (53), 공통매입세액 안분' + (P.kind === 'F' ? '·정산' : '') + (recalc.length ? '·재계산' : '') + ' → (54)', `(53) ${fmt(c('53').tax)} · (54) ${fmt(c('54').tax)}`],
+    ...(P.kind === 'F' ? [['누락분', '예정신고 누락분 (7)(13): 4쪽 명세 (36)~(43)에 예정 때 빠진 것을 적음', `(13) ${fmt(c('13').tax)}`]] : []),
+    ['경감·공제·가산세', '(19)~(28): 전자신고 세액공제(57) 등은 홈택스 안내대로' + (P.kind === 'F' && notice.state === 'notice' ? '; (24) 예정고지세액은 고지서 금액' : '') + (penalty ? '; 가산세 (66) 지연수취는 이 표 값, 다른 가산세는 홈택스에서' : '; 가산세는 해당 때만'), (P.kind === 'F' && notice.state === 'notice' ? `(24) ${fmt(noticeEst)}(어림) ` : '') + (penalty ? `(66) ${fmt(c29)}` : '—')],
+    ['제출', '신고서 미리보기에서 위 표와 칸마다 맞춰 본 뒤 제출 → 접수증 저장 → 납부서(또는 환급 계좌) 확인 → 신고 기록 저장(이 화면 아래 단추)', `㉰ ${fmt(pay)}`]];
+  const order = tbl('홈택스 입력 순서 — 어느 서류를 먼저 쓰면 어느 칸이 채워지나', ['순서', '홈택스에서 할 일', '이 표의 값'], steps.map((s, i) => `<tr><td>${i + 1}. ${esc(s[0])}</td><td>${s[1]}</td><td>${s[2]}</td></tr>`).join(''));
+  return `<div class="unit"><h3 class="unit-head">${x.unitIndex ? `신고서 ${x.unitIndex} — ` : ''}${esc(x.unitName)} <span class="meta">시설 ${facs.map(f => esc(f.name)).join(' · ')}</span></h3>
+    ${noticeBox}
+    <p class="meta">이 도구가 채우는 칸은 값이 있고, 못 채우는 칸은 '홈택스에서 직접' 또는 '해당 없음이면 비움'입니다. 원 미만 버림. 표 아래 「한글 표 복사」로 결재 문서에 붙일 수 있습니다.</p>
+    ${p1}${p4}
+    <h3>부속서류 — 홈택스 '작성하기' 순서대로</h3>
+    <h4>② 매입처별 세금계산서합계표</h4>${f39}
+    <h4>③ 신용카드매출전표등 수령명세서</h4>${f16}
+    <h4>④ 공제받지 못할 매입세액 명세서</h4>${f22a}${f22b}${f22ab}${f22c}${f22d}
+    ${depF.length ? `<h4>⑤ 부동산임대공급가액명세서</h4>${f25}` : ''}${conv.length ? `<h4>⑥ 과세사업전환 감가상각자산 신고서</h4>${f17}` : ''}
+    <h3>⑦ 홈택스 입력 순서</h3>${order}</div>`;
+}
+
+/** 사업자 단위 과세 — 첨부 15 '사업자 단위 과세의 사업장별 부가가치세 과세표준 및 납부세액(환급세액) 신고명세서': 종된 사업장(시설)마다 과세표준·매입세액·납부세액 */
+export function renderUnitSummary(org: Org, P: { name: string }, facs: OrgFacility[], used: UsedRow[], sales: FormCtx['sales'], groups: Filing['groups']): string {
+  const rows = facs.map(f => { const sl = sales[f.id]; const sup = sl ? sl.c1 + sl.c3 + sl.c4 : 0; const us = used.filter(u => u.f.id === f.id); const inTax = us.filter(u => u.r.v !== 'no').reduce((s, u) => s + u.r.tax, 0); const noTax = us.filter(u => u.r.v === 'no').reduce((s, u) => s + u.r.tax, 0); return { f, sup, outTax: Math.floor(sup * 0.1), inTax, noTax }; });
+  const nd = groups.reduce((s, g) => s + g.nondeduct, 0);
+  return tbl(`사업자 단위 과세 — 사업장별 과세표준·납부세액 신고명세서(첨부 15) · ${esc(org.org)} · ${esc(P.name)}`, ['종된 사업장(시설)', '과세표준(공급가액)', '매출세액', '매입세액(수취분)', '그중 불공제', '납부세액(참고)'], rows.map(r => `<tr><th scope="row">${esc(r.f.name)}${r.f.reg_no ? ` <span class="note">${esc(r.f.reg_no)}</span>` : ''}</th><td>${fmt(r.sup)}</td><td>${fmt(r.outTax)}</td><td>${fmt(r.inTax + r.noTax)}</td><td>${fmt(r.noTax)}</td><td>${fmt(r.outTax - r.inTax)}</td></tr>`).join('') + `<tr class="total"><th scope="row">합계 <span class="note">공통매입세액 면세분 ${fmt(nd)}은 등록 단위 전체에서 한 번 뺌</span></th><td>${fmt(rows.reduce((s, r) => s + r.sup, 0))}</td><td>${fmt(rows.reduce((s, r) => s + r.outTax, 0))}</td><td>${fmt(rows.reduce((s, r) => s + r.inTax + r.noTax, 0))}</td><td>${fmt(rows.reduce((s, r) => s + r.noTax, 0))}</td><td>${fmt(rows.reduce((s, r) => s + r.outTax - r.inTax, 0) + nd)}</td></tr>`) + '<p class="meta">사업자 단위 과세 사업자만 첨부합니다(서식 첨부서류 15). 시설(종된 사업장) 일련번호는 홈택스 등록 순서대로.</p>';
+}
+
+/** 절감 사유 ② '공통매입세액(면세와 과세) 중 면세부분 매입세액 최소화' — 공통(파랑) 지출을 금액순으로 늘어놓고 전용(실지귀속)으로 바꿀 때 돌아오는 세액, 면세비율 1%p 효과, 안분 생략 기준까지의 거리, 등록 단위·수탁 구조 선택지를 숫자로. 평가 아님, 결정은 기관 */
+export function renderSavings(D: Data, org: Org, P: { kind: 'P' | 'F'; name: string }, groups: Filing['groups'], prelimIn: FormCtx['prelimIn'], used: UsedRow[], groupName: (k: string) => string): string {
+  const sk = D.rules.common.skip; const r5 = sk.find(s => s.key === 'ratio5'); const limit = r5?.amount_lt ?? 5_000_000, rlim = r5?.ratio_lt ?? 0.05;
+  const gUse = groups.filter(g => g.common_tax > 0); if (!gUse.length) return '<h3>절감 분석 — 공통매입세액의 면세부분 줄이기</h3><p class="meta">이 기간에 공통(파랑) 지출이 없어 줄일 면세분이 없습니다.</p>' + renderEntityUnit(D, org, P, groups, prelimIn) + renderRatioMgmt(D, org, P, groups, used, groupName);
+  const out: string[] = [];
+  for (const g of gUse) {
+    const pi = prelimIn[g.key]; const fullT = g.taxable + (P.kind === 'F' ? pi?.taxable ?? 0 : 0), fullE = g.exempt + (P.kind === 'F' ? pi?.exempt ?? 0 : 0), fullC = g.common_tax + (P.kind === 'F' ? pi?.common ?? 0 : 0);
+    const ratio = g.ratio; const nd = Math.floor(fullC * ratio); const rows = used.filter(u => u.r.v === 'split' && (org.unit === 'entity' || (u.f.reg_no || 'noreg') === g.key)).sort((a, b) => b.r.tax - a.r.tax);
+    const top = rows.slice(0, 10); const split = (t: number) => Math.floor(t * ratio);
+    const needEx = fullT > 0 ? Math.floor(fullT * rlim / (1 - rlim)) : 0;   // 면세비율 5% 미만이 되는 면세공급가액 상한
+    const lines: string[] = [];
+    lines.push(`<li>이 기간 공통매입세액 <b>${fmt(fullC)}</b>원 가운데 면세비율 ${pct(ratio)}만큼 <b>${fmt(nd)}</b>원이 공제에서 빠집니다${g.skipped && !g.skipped.includes('안분(') ? ` — 다만 ${esc(g.skipped)}에 들어 실제로는 전액 공제` : ''}.</li>`);
+    lines.push(`<li><b>전용으로 바꾸기(실지귀속)</b>: 공통 지출 한 건을 과세 시설 전용 계약·계량기로 나누면 그 건의 세액 × ${pct(ratio)}가 돌아옵니다. 아래 표의 '전용이면 돌아오는 세액' 합계 ${fmt(top.reduce((s, u) => s + split(u.r.tax), 0))}원(상위 ${top.length}건).</li>`);
+    lines.push(`<li><b>면세비율 낮추기</b>: 비율 1%p 아래로 → 약 ${fmt(Math.floor(fullC * 0.01))}원씩 공제가 늘어납니다. 면세공급가액에 면세사업 보조금·토지 매각이 들어 있는지, 등록 단위 밖 수입이 섞이지 않았는지 확인(시행령 제81조 제1항).</li>`);
+    if (fullC < limit) lines.push(`<li><b>안분 생략 기준까지</b>: 공통매입세액이 ${fmt(limit)}원 미만이라 면세비율이 ${pct(rlim)} 미만이면 전액 공제(시행령 제81조 제2항 제1호). 이 기간 과세 공급가액 ${fmt(fullT)}원 기준으로 면세공급가액이 <b>${fmt(needEx)}</b>원 미만이어야 합니다(지금 ${fmt(fullE)}원${fullE > needEx ? `, ${fmt(fullE - needEx)}원 초과` : ' — 충족'}).</li>`);
+    else lines.push(`<li><b>안분 생략 기준</b>: 공통매입세액이 ${fmt(limit)}원 이상이라 5% 기준을 쓸 수 없습니다. 전용으로 나눠 공통을 ${fmt(limit)}원 아래로 내리면 면세비율 ${pct(rlim)} 미만일 때 전액 공제가 됩니다.</li>`);
+    if (org.unit === 'site') lines.push(`<li><b>등록 단위 설계</b>: 면세 시설과 과세 시설이 같은 등록번호에 있으면 그 단위의 면세비율이 올라갑니다. 면세 시설을 다른 사업장으로 두면 과세 단위의 면세공급가액이 줄지만, 두 시설이 같이 쓰는 지출은 여전히 공통입니다 — 등록 변경은 세무대리인과 검토.</li>`);
+    if (org.kind === 'contractor') lines.push(`<li><b>공단 자기 사업과 군 대행의 경계</b>: 군 대행 시설(군 명의)에 쓴 지출은 군 등록번호 세금계산서로 받아 군이 공제하고, 공단은 대행수수료(과세)만 신고합니다. 공단 명의로 받은 대행 지출은 공단이 군에 대행 용역 세금계산서를 발급하는 재청구 구조일 때만 공단이 공제합니다 — 둘 사이에 떨어지는 매입세액이 가장 큰 누수입니다. 공단 면세 수입(박물관 입장·공설 장사시설 수탁 용역·시내버스 등)이 공통 비율을 올리므로 면세 시설 전용 지출은 처음부터 전용으로 적습니다.</li>`);
+    if (org.kind !== 'contractor' && org.facilities.some(f => f.run !== 'direct')) lines.push(`<li><b>수탁 구조</b>: 수탁기관(공단)이 자기 명의로 낸 공통 지출은 우리 기관이 공제하지 못합니다. 군 명의 사업의 대행이면 세금계산서를 군 등록번호로 받게 계약·발주 절차를 맞추고, 공단 자기 사업이면 사용료를 받는 과세 임대로 두어 군 부담 수선·설비의 매입세액을 살립니다(기관 설정 '받는 것').</li>`);
+    out.push(`<div class="vc-card"><h4>${esc(groupName(g.key))}</h4><ul class="meta-list">${lines.join('')}</ul>${top.length ? tbl('공통 지출 — 전용으로 바꾸면 돌아오는 세액(세액 큰 순)', ['시설', '날짜', '내용', '세액', '전용이면 돌아오는 세액', '나누는 방법'], top.map(u => `<tr><th scope="row">${esc(u.f.name)}</th><td>${u.r.d}</td><td>${esc(u.r.desc)}</td><td>${fmt(u.r.tax)}</td><td><strong>${fmt(split(u.r.tax))}</strong></td><td class="note">${u.r.what === 'utility' ? '시설별 계량기·계약 분리' : u.r.what === 'service' ? '용역 계약을 시설별로 나눠 세금계산서 분리' : u.r.what === 'repair' ? '공사 내역을 시설별로 나눠 발주' : '지출 결의서에 시설별 귀속을 적고 세금계산서 분리'}</td></tr>`).join('')) : ''}</div>`);
+  }
+  return `<h3>절감 분석 — 공통매입세액의 면세부분 줄이기</h3><p class="meta">공통(파랑) 지출을 과세 시설 전용으로 바꾸거나 면세비율을 낮추면 (54)가 줄어 공제가 늘어납니다. 숫자는 이 기간 기록 기준이며, 계약·계량기 분리는 다음 과세기간부터 효과가 납니다.</p>${out.join('')}${renderEntityUnit(D, org, P, groups, prelimIn)}${renderRatioMgmt(D, org, P, groups, used, groupName)}`;
+}
+
+/** 사업자 단위 과세 전환 효과(세무회계법인 2차 5번): 사업장별 등록이면 단위별 면세분 합계 ↔ 전부 합친 비율로 한 면세분을 숫자로. 법 제8조 제3항·제4항(과세기간 개시 20일 전 변경등록). 결정은 기관 몫 */
+export function renderEntityUnit(D: Data, org: Org, P: { kind: 'P' | 'F' }, groups: Filing['groups'], prelimIn: FormCtx['prelimIn']): string {
+  const EU = D.rules.entity_unit; if (!EU || org.unit !== 'site') return '';
+  const full = groups.map(g => { const pi = prelimIn[g.key]; const add = P.kind === 'F'; return { g, T: g.taxable + (add ? pi?.taxable ?? 0 : 0), E: g.exempt + (add ? pi?.exempt ?? 0 : 0), C: g.common_tax + (add ? pi?.common ?? 0 : 0) }; }).filter(x => x.T + x.E > 0);
+  if (full.length < 2) return '';
+  const T = full.reduce((s, x) => s + x.T, 0), E = full.reduce((s, x) => s + x.E, 0), C = full.reduce((s, x) => s + x.C, 0); const r = T + E ? E / (T + E) : 0;
+  const sep = full.reduce((s, x) => s + Math.floor(x.C * (x.T + x.E ? x.E / (x.T + x.E) : 0)), 0), comb = Math.floor(C * r); const diff = sep - comb;
+  return `<div class="vc-card"><h4>등록 단위를 합치면(사업자 단위 과세) — 면세분 비교</h4>${tbl('등록 단위별 ↔ 합친 비율(이 과세기간 값, 안분 생략 기준 적용 전)', ['등록 단위', '과세 공급가액', '면세 공급가액', '면세비율', '공통매입세액', '면세분'], full.map(x => `<tr><th scope="row">${esc(x.g.name)}</th><td>${fmt(x.T)}</td><td>${fmt(x.E)}</td><td>${pct(x.T + x.E ? x.E / (x.T + x.E) : 0)}</td><td>${fmt(x.C)}</td><td>${fmt(Math.floor(x.C * (x.T + x.E ? x.E / (x.T + x.E) : 0)))}</td></tr>`).join('') + `<tr class="total"><th scope="row">단위별 합계</th><td>${fmt(T)}</td><td>${fmt(E)}</td><td></td><td>${fmt(C)}</td><td>${fmt(sep)}</td></tr><tr class="total"><th scope="row">사업자 단위로 합치면</th><td>${fmt(T)}</td><td>${fmt(E)}</td><td>${pct(r)}</td><td>${fmt(C)}</td><td>${fmt(comb)}</td></tr>`)}
+    <ul class="meta-list"><li>이 기간 값으로는 합치면 면세분이 <b>${diff >= 0 ? `${fmt(diff)}원 줄어듭니다` : `${fmt(-diff)}원 늘어납니다`}</b>(단위별 ${fmt(sep)} → 합친 ${fmt(comb)}). 면세 시설이 어느 단위에 있느냐에 따라 방향이 바뀌므로 여러 과세기간으로 확인합니다.</li><li>${esc(EU.summary)}</li><li>${esc(EU.caution)}</li></ul><p class="meta">근거: ${EU.basis.map(b => lawLink(D, b)).join(' · ')}</p></div>`;
+}
+
+/** 면세비율 관리(세무회계법인 관점 검토 2026-10-27, 1번 — 구조가 정해진 뒤에도 남는 지렛대): ① 실지귀속 입증 방법 3가지 ② 과세기간별 면세비율 표(저장된 신고 기록 + 이번 계산) ③ 공통 감가상각자산 취득 시기 — 취득 과세기간 비율이 굳는다(시행령 제83조 제1항 5%p) ④ 면세 공급가액 구성. 조문·숫자만, 평가 없음 */
+export function renderRatioMgmt(D: Data, org: Org, P: { y: number; half: number; kind: 'P' | 'F'; name: string }, groups: Filing['groups'], used: UsedRow[], groupName: (k: string) => string): string {
+  const RM = D.rules.ratio_mgmt; if (!RM) return '';
+  const curKey = `${P.y}-${P.half}${P.kind}`; const pp = D.rules.recalc.threshold_pp;
+  const keys = [...new Set([...groups.map(g => g.key), ...Object.values(getFilings()).flatMap(f => f.groups.map(g => g.key))])].filter(k => groups.some(g => g.key === k) || org.unit === 'entity' ? true : org.facilities.some(f => f.reg_no === k));
+  const blocks: string[] = [];
+  for (const k of keys) {
+    const past = Object.values(getFilings()).filter(f => f.period !== curKey).map(f => ({ period: f.period, g: f.groups.find(g => g.key === k) })).filter(x => x.g && (x.g.taxable || x.g.exempt)).sort((a, b) => a.period.localeCompare(b.period)) as { period: string; g: Filing['groups'][number] }[];
+    const cur = groups.find(g => g.key === k); if (!past.length && !cur) continue;
+    const rows = [...past.map(x => ({ period: x.period, g: x.g, now: false })), ...(cur ? [{ period: curKey, g: cur, now: true }] : [])];
+    const avg = past.length ? past.reduce((s, x) => s + x.g.ratio, 0) / past.length : null;
+    const assets = used.filter(u => u.r.asset && u.r.v === 'split' && (org.unit === 'entity' || (u.f.reg_no || 'noreg') === k)); const aTax = assets.reduce((s, u) => s + u.r.tax, 0);
+    const lines: string[] = [];
+    if (cur) {
+      const tot = cur.taxable + cur.exempt; const one = cur.oneoff ?? 0; const exWithout = Math.max(0, cur.exempt - one); const rWithout = cur.taxable + exWithout ? exWithout / (cur.taxable + exWithout) : 0;
+      if (one > 0) lines.push(`<li>이 기간 면세 공급가액 ${fmt(cur.exempt)}원 가운데 <b>일회성 면세 공급(토지 매각 등) ${fmt(one)}</b>원 — 법대로 넣어 비율 ${pct(cur.ratio)}로 안분하되, 이 금액이 없었다면 ${pct(rWithout)}입니다(참고). ${tot ? '' : ''}</li>`);
+      if (avg !== null) lines.push(`<li>지난 신고 ${past.length}기의 평균 면세비율 <b>${pct(avg)}</b> ↔ 이번 ${pct(cur.ratio)}(${cur.ratio - avg >= 0 ? '+' : '−'}${pct(Math.abs(cur.ratio - avg))}p${Math.abs(cur.ratio - avg) >= pp ? ' — 재계산 기준 5%p 이상, 지난 기 취득 공통 자산은 재계산 대상' : ''}).</li>`);
+      if (assets.length) { const hot = (avg !== null && cur.ratio - avg >= pp) || one > 0;
+        lines.push(`<li class="${hot ? 'warn' : ''}"><b>이 기간 취득한 공통 감가상각자산 ${assets.length}건, 세액 ${fmt(aTax)}원</b>은 이번 비율 ${pct(cur.ratio)}로 안분돼 면세분 ${fmt(Math.floor(aTax * cur.ratio))}원이 빠지고, 뒤 과세기간 비율 차이가 ${pct(pp)}p 미만이면 그대로 남습니다(시행령 제83조 제1항).${hot ? ` 이번 비율이 평소보다 높은 기간이라(일회성 면세 공급·평균 대비 ${pct(pp)}p 이상) 아직 집행 전인 공통 자산이 있으면 집행 시기를 과세기간 단위로 검토할 자리입니다.` : ''}</li>`); }
+      else lines.push(`<li>이 기간 취득한 공통 감가상각자산은 없습니다. 공통 자산(건물 공사·장비)은 <b>취득 과세기간의 면세비율</b>로 안분되고 ${pct(pp)}p 안의 변동은 재계산되지 않으므로, 면세 공급이 몰리는 과세기간(토지 매각·면세 보조금 수령)과 겹치지 않게 집행 일정을 봅니다.</li>`);
+    }
+    blocks.push(`<div class="vc-card"><h4>${esc(groupName(k))} — 과세기간별 면세비율</h4>${tbl('과세기간별 면세비율(저장된 신고 기록 + 이번 계산)', ['과세기간', '과세 공급가액', '면세 공급가액', '그중 일회성(토지 매각 등)', '면세비율', '공통매입세액', '면세분(54)'], rows.map(x => `<tr class="${x.now ? 'total' : ''}"><th scope="row">${x.period}${x.now ? ' (이번)' : ''}</th><td>${fmt(x.g.taxable)}</td><td>${fmt(x.g.exempt)}</td><td>${x.g.oneoff ? fmt(x.g.oneoff) : ''}</td><td>${pct(x.g.ratio)}</td><td>${fmt(x.g.common_tax)}</td><td>${fmt(x.g.nondeduct)}</td></tr>`).join(''))}${lines.length ? `<ul class="meta-list">${lines.join('')}</ul>` : ''}</div>`);
+  }
+  if (!blocks.length) blocks.push('<p class="meta">면세 공급가액이 있는 등록 단위가 없어 비율 표를 만들지 않았습니다(면세 수입이 없으면 공통매입세액은 전액 공제).</p>');
+  return `<h3>면세비율 관리 — 공통을 전용으로 입증하는 법, 비율을 튀게 하는 것, 취득 시기</h3>
+    <p class="meta">공통매입세액 면세분은 '면세비율 × 공통'이므로, 공통을 줄이려면 <b>실지귀속을 서류로 입증</b>해야 하고 비율은 <b>면세 공급가액 구성</b>과 <b>취득 시기</b>가 정합니다. 운영 구조(직영·위탁)를 바꾸지 않아도 움직일 수 있는 것만 적었습니다.</p>
+    ${tbl('실지귀속 입증 방법 — 전용(초록)으로 적으려면 이 가운데 하나가 남아야(시행령 제81조 제1항)', ['방법', '무엇을 남기나'], RM.proof.map(x => `<tr><th scope="row">${esc(x.name)}</th><td>${esc(x.text)}</td></tr>`).join(''))}
+    ${blocks.join('')}
+    <details class="vat-more"><summary><strong>면세 공급가액에 들어가 비율을 올리는 것</strong></summary><ul class="meta-list">${RM.exempt_supply.map(t => `<li>${esc(t)}</li>`).join('')}<li>${esc(RM.timing)}</li></ul><p class="meta">근거: ${RM.basis.map(b => lawLink(D, b)).join(' · ')}</p></details>`;
+}

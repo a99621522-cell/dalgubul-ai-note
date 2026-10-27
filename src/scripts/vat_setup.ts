@@ -40,10 +40,20 @@ function init(D: Data) {
   /* 세입예산서에서 시설 후보(운영자 지시 2026-10-27 '세입 자료부터 받아서 해'): /vat-revenue.json 의 세외수입 사업 가운데 시설 성격(사용료·임대·입장료·숙박·주차 …) 행을 시설로 */
   const FAC_KEYS = new Set(['sports', 'golf', 'lodging', 'culture', 'venue', 'program', 'parking', 'water', 'funeral', 'transit', 'marina', 'lease_bldg', 'use_permit', 'food', 'vending', 'welfare', 'equip_rent', 'ad_space', 'waste_bag']);
   type RevRow = { mok_code: string; mok: string; dept: string; item: string; amount_k: number; vat_key: string; fac_key: string; grant: boolean };
-  type RevGov = { key: string; name: string; year: string; rows: RevRow[] };
+  type ExpRow = { bureau: string; dept: string; detail: string; codes: string[]; facility: boolean; public_ops: boolean; grant: boolean; fac_key: string };
+  type RevGov = { key: string; name: string; year: string; rows: RevRow[]; expense: ExpRow[] };
   const govSel = $<HTMLSelectElement>('st-gov'); let govs: RevGov[] = [];
   if (govSel) fetch('/vat-revenue.json').then(r => r.json()).then((j: { govs: RevGov[] }) => { govs = j.govs; govSel.innerHTML = '<option value="">— 지자체 —</option>' + govs.map(g => `<option value="${g.key}">${esc(g.name)} ${g.year}</option>`).join(''); }).catch(() => { /* */ });
-  govSel?.addEventListener('change', () => { const g = govs.find(x => x.key === govSel.value); ($<HTMLButtonElement>('st-rev-add')!).disabled = !g; $('st-rev-note')!.textContent = g ? `시설 성격 사업 ${g.rows.filter(r => !r.grant && FAC_KEYS.has(r.vat_key)).length}개` : ''; });
+  govSel?.addEventListener('change', () => { const g = govs.find(x => x.key === govSel.value); ($<HTMLButtonElement>('st-rev-add')!).disabled = !g; ($<HTMLButtonElement>('st-exp-map')!).disabled = !g || !g.expense?.length; $('st-rev-note')!.textContent = g ? `시설 성격 사업 ${g.rows.filter(r => !r.grant && FAC_KEYS.has(r.vat_key)).length}개${g.expense?.length ? ` · 세출 세부사업 ${g.expense.length}개` : ''}` : ''; });
+  /* 세출 세부사업명 → 시설 매핑표 밑그림(운영자 '세출도 해봐'): 시설 이름 낱말이 든 세부사업을 그 시설로, 금액 없음. 붙여넣기 때 사업명 열이 이 글자면 자동 귀속 */
+  const normN = (x: string) => x.replace(/\s|\(.*?\)|운영|관리|사업|비|지원|센터$/g, '').toLowerCase();
+  $('st-exp-map')?.addEventListener('click', () => {
+    const g = govs.find(x => x.key === govSel!.value); if (!g || !g.expense?.length) return; read1(); const rules = org.map ?? (org.map = []); let n = 0, ops = 0;
+    for (const e of g.expense) { const d = e.detail; const hit = org.facilities.find(f => { const a = normN(f.name), b = normN(d); return a.length >= 3 && (b.includes(a) || (a.length >= 4 && a.includes(b) && b.length >= 4)); });
+      if (hit) { if (!rules.some(r => r.pat === d)) { rules.push({ pat: d, fid: hit.id, use: 'this' }); n++; } }
+      else if (e.public_ops) ops++; }
+    save(); $('st-rev-note')!.textContent = `매핑표에 ${n}줄 추가(세출 세부사업 → 시설). 시설 이름과 맞지 않는 공공운영비 사업 ${ops}개는 붙여넣기 때 '행정과 함께'(본청 공통) 후보입니다.`;
+  });
   $('st-rev-add')?.addEventListener('click', () => {
     const g = govs.find(x => x.key === govSel!.value); if (!g) return; read1(); if (!org.org) { org.org = g.name; ($<HTMLInputElement>('st-org')!).value = g.name; }
     const clean = (s: string) => s.replace(/\s*(수입|입장료|사용료|임대료|이용료|관람료|주차요금|주차료|대관료|수강료|회비|요금)\s*(수입)?$/g, '').replace(/\(.*?\)/g, '').trim() || s;

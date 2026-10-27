@@ -85,6 +85,30 @@ def fetch_pdf(g: dict, year: str) -> Path | None:
     return pdf
 
 
+def fetch_expense(g: dict, year: str) -> Path | None:
+    """세출예산사업명세서 부서별 파일을 받아 글자로 이어 붙인다(파일 사이 '#### 파일명'). 금액은 CSV(내부)에만 — 사이트에는 사업명·부서·편성목만"""
+    urls = g.get("expense_urls") or []; files = g.get("expense_files") or []
+    if not urls and not files:
+        return None
+    RAW.mkdir(parents=True, exist_ok=True)
+    out = RAW / f"{g['key']}_{year}_exp.txt"; parts: list[str] = []
+    jar = RAW / f"{g['key']}_exp.jar"; tok = ""
+    if files:
+        page = get(g["page"], jar=jar).decode("utf-8", "ignore"); m = re.search(r'name="CSRFToken" value="([^"]+)"', page); tok = m.group(1) if m else ""
+    for i, item in enumerate(urls or files):
+        pdf = RAW / f"_exp_{g['key']}_{i}.pdf"; txt = RAW / f"_exp_{g['key']}_{i}.txt"
+        data = get(item, pdf) if urls else get(g["page"].rsplit("/", 1)[0] + "/fileDownload.do", pdf, post={"CSRFToken": tok, "fileName": item, "startGubun": "budetBill"}, referer=g["page"], jar=jar)
+        if not data or not data.startswith(b"%PDF") or not to_text(pdf, txt):
+            print(f"[revenue] {g['name']} 세출 {i + 1}/{len(urls or files)} 실패: {str(item)[-40:]}")
+            pdf.unlink(missing_ok=True); txt.unlink(missing_ok=True); time.sleep(1.5); continue
+        parts.append(f"#### {item}\n" + txt.read_text(encoding="utf-8", errors="ignore")); pdf.unlink(missing_ok=True); txt.unlink(missing_ok=True); time.sleep(1.5)
+    jar.unlink(missing_ok=True)
+    if not parts:
+        return None
+    out.write_text("\n".join(parts), encoding="utf-8"); print(f"[revenue] {g['name']} 세출 {len(parts)}개 파일 → {out.name}")
+    return out
+
+
 def discover(g: dict) -> None:
     html = get(g["page"]).decode("utf-8", "ignore")
     if not html:
@@ -121,6 +145,11 @@ def main() -> int:
             continue
         subprocess.run([sys.executable, str(ROOT / "scripts" / "parse_revenue_docs.py"), g["key"], year, str(txt), "--name", g["name"], "--src", g["page"], "--date", time.strftime("%Y-%m-%d"), "--acct", g.get("acct", "일반회계")])
         time.sleep(1.5)
+        etxt = RAW / f"{g['key']}_{year}_exp.txt"
+        if "--parse-only" not in sys.argv and "--no-expense" not in sys.argv:
+            fetch_expense(g, year)
+        if etxt.exists():
+            subprocess.run([sys.executable, str(ROOT / "scripts" / "parse_expense_docs.py"), g["key"], year, str(etxt), "--name", g["name"], "--src", g["page"], "--date", time.strftime("%Y-%m-%d")])
     return 0
 
 

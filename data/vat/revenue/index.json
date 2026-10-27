@@ -230,5 +230,45 @@
     "diff_k": 285000
    }
   ]
+ },
+ "buk_2026_exp": {
+  "gov": "북구",
+  "year": "2026",
+  "source": "https://www.buk.daegu.kr/index.do?menu_id=00000129",
+  "fetched": "2026-10-27",
+  "rows": 1215,
+  "depts": 58,
+  "facility_rows": 242,
+  "fac_rows": 184
+ },
+ "dalseong_2026_exp": {
+  "gov": "달성군",
+  "year": "2026",
+  "source": "https://www.dalseong.daegu.kr/index.do?menu_id=00001707",
+  "fetched": "2026-10-27",
+  "rows": 1629,
+  "depts": 47,
+  "facility_rows": 718,
+  "fac_rows": 249
+ },
+ "daegu_2026_exp": {
+  "gov": "대구광역시",
+  "year": "2026",
+  "source": "https://jumin.daegu.go.kr/budget/information/informationBudgetBill.do",
+  "fetched": "2026-10-27",
+  "rows": 2534,
+  "depts": 92,
+  "facility_rows": 505,
+  "fac_rows": 332
+ },
+ "gunwi_2026_exp": {
+  "gov": "군위군",
+  "year": "2026",
+  "source": "https://www.gunwi.go.kr/ko/page.do?mnu_uid=164&code_uid=24",
+  "fetched": "2026-10-27",
+  "rows": 571,
+  "depts": 18,
+  "facility_rows": 204,
+  "fac_rows": 85
  }
 }

@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'guyoung-tech-ev-us', summary: '대구 달성군(대구국가산단) 코스닥 상장사 구영테크가 시트·브라켓 등 차체 프레스 부품에서 전기차 배터리 상부 하우징(구지2공장)과 미국 생산(카테크 인수, 앨라배마)으로 넓히는 흐름을 DART 공시(2025 사업보고서, 2026 1분기·반기보고서)와 보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '미래차', '자동차부품'],
+    title: '구영테크, 차체 프레스 부품 → 전기차 배터리 하우징·미국 생산 확대', name: '구영테크, 차체 프레스 부품 → 전기차 배터리 하우징·미국 생산 확대',
+    hwpx: '/hwpx/guyoung-tech-ev-us.hwpx', hwpxSize: '119KB', date: '2026-10-27' },
   { slug: 'connext-collagenase-dupuytren', summary: '대구 동구 한국메디벤처센터에 연구소를 둔 비상장 바이오 기업 코넥스트가 연구용 재조합 효소에서 재조합 콜라겐분해효소(CNT201) 듀피트렌 구축 치료제 호주 2상·파마리서치 라이선스로 넓혀 온 과정을 DART 연결감사보고서(2025년 첫 감사)·국민연금·첨복단지 명단과 보도로 정리한 자료. 본점 이전 날짜는 확인 필요로 적음. 개인 주주 이름·평가·전망은 싣지 않음.', topics: ['의료·바이오', '비상장기업', '투자'],
     title: '코넥스트, 재조합 콜라겐분해효소 → 듀피트렌 구축 치료제 호주 2상', name: '코넥스트, 재조합 콜라겐분해효소 → 듀피트렌 구축 치료제 호주 2상',
     hwpx: '/hwpx/connext-collagenase-dupuytren.hwpx', hwpxSize: '42KB', date: '2026-10-19' },

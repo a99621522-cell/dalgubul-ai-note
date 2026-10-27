@@ -11,6 +11,7 @@ export const NAV = [
   { key: 'support', name: '지원받은 기업', href: '/support/' },
   { key: 'programs', name: '부처 사업·예산', href: '/programs/' },
   { key: 'check', name: '사업계획서 지침 검토기', href: '/programs/guidelines/check/' },
+  { key: 'vat', name: '지자체 부가세 점검기', href: '/vat/' },   // 운영자 지시 2026-10-27 — 지자체 과세사업 매입세액 공제·안분 점검(브라우저 계산, data/vat/rules.yml)
   { key: 'policy', name: '리포트', href: '/policy/' },
   { key: 'growth', name: '성장 계산기', href: '/growth/' },
 ] as const;
@@ -20,7 +21,7 @@ export const NAV = [
 export const NAV_GROUPS: { key: string; name: string; items: (typeof NAV)[number]['key'][]; href?: string }[] = [
   { key: 'data', name: '통계', items: ['stats', 'dashboard', 'industry', 'explore'] },
   { key: 'firms', name: '기업', items: ['companies', 'startups', 'listed', 'sme'] },
-  { key: 'biz', name: '사업·지원', items: ['programs', 'check', 'support'] },
+  { key: 'biz', name: '사업·지원', items: ['programs', 'check', 'vat', 'support'] },
   { key: 'report', name: '리포트', items: ['policy'], href: '/policy/' },
   { key: 'growth', name: '성장 계산기', items: ['growth'], href: '/growth/' },
 ];

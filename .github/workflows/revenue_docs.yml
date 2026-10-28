@@ -9,6 +9,10 @@ on:
         description: "받을 지자체 key(쉼표, 비우면 전부)"
         required: false
         default: ""
+      runner:
+        description: "korea 면 국내 self-hosted 러너(라벨 korea)에서 — 중구·서구·달서구 누리집이 미국 러너 연결을 끊을 때"
+        required: false
+        default: ""
   schedule:
     - cron: "0 20 10 1,4,7,10 *"   # 분기 첫 달 11일 05:00 KST(본예산·추경 뒤)
 
@@ -21,7 +25,7 @@ concurrency:
 
 jobs:
   fetch:
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.runner == 'korea' && fromJSON('["self-hosted","korea"]') || 'ubuntu-latest' }}
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4

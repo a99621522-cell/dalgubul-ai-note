@@ -6,6 +6,7 @@
  */
 export type Basis = { law: string; art: string };
 /** 유권해석·판례·심판례(rules.yml rulings, 2026-10-28) — 번호·요지만, 평가 없음 */
+export type Inquiry = { key: string; fac?: string; title: string; channel: string; facts: string[]; questions: string[]; views: { name: string; text: string }[]; laws: Basis[]; rulings?: string[]; attach?: string[] };
 export type Ruling = { id: string; kind: string; no: string; title: string; gist: string; note?: string; src?: string; url?: string; verify?: boolean };
 export type Opt = { key: string; name: string };
 export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
@@ -31,6 +32,7 @@ export type Data = {
   revenue_items?: RevenueItem[];
   presets?: Preset[];
   rulings?: Ruling[];
+  inquiries?: Inquiry[];
 };
 export type RevenueItem = { key: string; group: string; name: string; status: 'taxable' | 'exempt' | 'check' | 'none'; type?: string; basis: Basis[]; deduct: string; note?: string; only?: 'contractor' | 'gov'; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
 /** 기관 종류(운영자 2026-10-27 '시설관리공단 분야도 해야지'): gov = 지자체(제19호 면세 적용), contractor = 수탁기관(시설관리공단·재단 — 일반 사업자 기준, 군 대행사업은 군 명의) */
@@ -335,4 +337,34 @@ export function rulingsHtml(D: Data, ids: string[] | undefined, title = '근거 
   const list = (ids ?? []).map(id => (D.rulings ?? []).find(r => r.id === id)).filter((r): r is Ruling => !!r);
   if (!list.length) return '';
   return `<details class="vat-more rulings"><summary><strong>${esc(title)}</strong> ${list.length}건 — 번호·요지만, 원문은 국세법령정보시스템·조세심판원·대법원에서 번호로</summary><ul class="meta-list">${list.map(r => `<li><span class="vbadge">${esc(r.kind)}</span> <strong>${esc(r.no)}</strong> ${esc(r.title)}${r.verify ? ' <span class="verdict check">원문 확인 필요</span>' : ''}<br/><span class="note">${esc(r.gist)}${r.note ? ' — ' + esc(r.note) : ''}${r.src ? ` <em>(${esc(r.src)}${r.url ? `, <a href="${esc(r.url)}" target="_blank" rel="noopener">읽은 곳</a>` : ''})</em>` : ''}</span></li>`).join('')}</ul></details>`;
+}
+
+/** 국세청 질의서 초안 글자(운영자 2026-10-28 '국세청 질의도 붙여'): {org}·{facilities}·{basis} 를 채우고 [ ] 는 기관이 채운다. 사람 이름·전화·금액 없음 */
+export function inquiryText(D: Data, q: Inquiry, ctx: Record<string, string> = {}): string {
+  const fill = (t: string) => t.replace(/\{(org|facilities|basis)\}/g, (_, k) => ctx[k] || ({ org: '[기관명]', facilities: '[과세 시설 목록]', basis: '[안분 기준: 매입가액 비율 / 예정사용면적 비율 가운데 기관이 고른 것]' } as Record<string, string>)[k]);
+  const laws = q.laws.map(b => `${D.laws[b.law] ?? b.law} ${b.art}`).join(', ');
+  const rl = (q.rulings ?? []).map(id => (D.rulings ?? []).find(r => r.id === id)).filter((r): r is Ruling => !!r);
+  const L: string[] = [];
+  L.push(`부가가치세 법령해석 질의서 (초안)`, ``, `제목: ${q.title}`, `질의 기관: ${fill('{org}')} (사업자등록번호: [          ])`, `보내는 길: ${q.channel}`, ``);
+  L.push(`1. 사실관계`); q.facts.forEach((f, i) => L.push(`  ${i + 1}) ${fill(f)}`)); L.push(``);
+  L.push(`2. 질의 내용`); q.questions.forEach((f, i) => L.push(`  ${i + 1}) ${fill(f)}`)); L.push(``);
+  L.push(`3. 질의자 의견(쟁점을 보이는 두 읽기이며 기관의 입장이 아님)`); q.views.forEach(v => L.push(`  ${v.name}: ${fill(v.text)}`)); L.push(``);
+  L.push(`4. 관련 법령: ${laws}`);
+  if (rl.length) { L.push(`5. 참고한 유권해석·판례`); rl.forEach(r => L.push(`  - ${r.no} ${r.title}: ${r.gist}`)); }
+  if (q.attach?.length) L.push(``, `붙임: ${q.attach.join(', ')}`);
+  L.push(``, `※ 이 초안은 지자체 부가세 절감 점검기(daitda.co.kr/vat/)가 만든 틀입니다. [ ] 안을 기관의 사실관계로 채우고, 담당 부서·연락처는 제출 때 적습니다. 답변을 받으면 그 번호·날짜를 기관 설정의 '확인 결과·근거'에 남깁니다.`);
+  return L.join('\n');
+}
+/** 질의서 펼침 상자 — 복사·txt 내려받기 단추. 만든 뒤 wireInquiry(상자 부모) 를 불러야 단추가 움직인다 */
+export function inquiryHtml(D: Data, q: Inquiry, ctx: Record<string, string> = {}, open = false): string {
+  const esc2 = (x: string) => x.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  const txt = inquiryText(D, q, ctx);
+  return `<details class="vat-more inquiry" data-inq="${esc2(q.key)}" ${open ? 'open' : ''}><summary><strong>국세청 질의서 초안</strong> — ${esc2(q.title)}</summary><p class="note">[ ] 안을 기관의 사실관계로 채워 보냅니다. ${esc2(q.channel)}</p><pre class="inq-text" style="white-space:pre-wrap;font-size:var(--small);line-height:1.5;max-height:28rem;overflow:auto;border:1px solid var(--line-strong);padding:.75rem;border-radius:var(--radius)">${esc2(txt)}</pre><div class="actions"><button type="button" class="btn secondary" data-inq-copy>글자 복사</button><button type="button" class="btn secondary" data-inq-dl>txt 내려받기</button></div></details>`;
+}
+export function wireInquiry(root: ParentNode) {
+  root.querySelectorAll<HTMLElement>('details.inquiry').forEach(d => {
+    const pre = d.querySelector('pre.inq-text')!; const key = d.dataset.inq ?? 'inquiry';
+    d.querySelector('[data-inq-copy]')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(pre.textContent ?? ''); } catch { /* */ } });
+    d.querySelector('[data-inq-dl]')?.addEventListener('click', () => downloadText(`부가세_질의서_초안_${key}.txt`, pre.textContent ?? ''));
+  });
 }

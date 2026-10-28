@@ -3,12 +3,13 @@
  * 페이지에 묻어 온 규칙 JSON(#vat-data ← data/vat/rules.yml)으로 ① 지출 건 판정(공제·안분·불공제·세액 없음·확인 필요) ② 공통매입세액 안분 ③ 감가상각자산 재계산 ④ 점검표(localStorage)를 브라우저 안에서만 한다.
  * 서버·AI 호출 없음. 판정은 선택지만으로 하는 참고용이며 조문 번호를 함께 보인다(평가·해석 아님).
  */
-import { loadData, judge, LABEL, lawLink, lawText, uniq, optName, num, fmt, pct, esc, $, type Data, type Input, type Out, type Basis } from './vat_rules';
+import { loadData, judge, LABEL, lawLink, lawText, uniq, optName, num, fmt, pct, esc, $, inquiryHtml, wireInquiry, type Data, type Input, type Out, type Basis } from './vat_rules';
 
 const D0 = loadData();
 if (D0) init(D0);
 
 function init(D: Data) {
+  const inq = $('inq-list'); if (inq) { inq.innerHTML = (D.inquiries ?? []).map(q => inquiryHtml(D, q)).join(''); wireInquiry(inq); }
   const B = (law: string, art: string): Basis => ({ law, art });
   const link = (b: Basis) => lawLink(D, b);
   const bText = lawText;

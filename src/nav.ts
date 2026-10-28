@@ -11,7 +11,7 @@ export const NAV = [
   { key: 'support', name: '지원받은 기업', href: '/support/' },
   { key: 'programs', name: '부처 사업·예산', href: '/programs/' },
   { key: 'check', name: '사업계획서 지침 검토기', href: '/programs/guidelines/check/' },
-  { key: 'vat', name: '지자체 부가세 절감 점검기', href: '/vat/' },   // 다잇다 메뉴에는 넣지 않는다(운영자 지시 2026-10-28 '다잇다 사이트에서는 내려, 성격이 다르잖아') — 독립 사이트(deploy_vat.yml, VAT_SITE=1 빌드)에서만 열리고, 다잇다 배포(deploy.yml)는 빌드 뒤 dist/vat 를 지워 다잇다에는 /vat/ 가 아예 없다(운영자 2026-10-28 '다잇다와 분리하라고 했잖아' — 두 사이트는 서로 링크하지 않는다). key 는 current 용으로 남김
+  { key: 'vat', name: '지자체 부가세 절감 점검기', href: '/vat/' },   // 다잇다 메뉴에는 넣지 않는다(운영자 지시 2026-10-28 '다잇다 사이트에서는 내려, 성격이 다르잖아') — 독립 사이트(deploy_vat.yml, VAT_SITE=1 빌드)에서만 열리고, 다잇다 배포(deploy.yml)는 빌드 뒤 dist/vat 를 지워 다잇다에는 /vat/ 가 아예 없다(운영자 2026-10-28 '다잇다와 분리하라고 했잖아' — 두 사이트는 서로 링크하지 않는다 — 404 목록도 거른다, '링크도 빼, 사용자가 달라'). key 는 current 용으로 남김
   { key: 'policy', name: '리포트', href: '/policy/' },
   { key: 'growth', name: '성장 계산기', href: '/growth/' },
 ] as const;

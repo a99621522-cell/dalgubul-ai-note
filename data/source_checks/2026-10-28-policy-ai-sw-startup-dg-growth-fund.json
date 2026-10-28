@@ -1,0 +1,143 @@
+{
+ "file": "src/content/posts/2026-10-28-policy-ai-sw-startup-dg-growth-fund.md",
+ "checked": "2026-10-28",
+ "ok": 11,
+ "total": 11,
+ "ratio": 1.0,
+ "official_bad": [],
+ "pass": true,
+ "sources": [
+  {
+   "title": "중소벤처기업부, 「최초의 지역 통합 모펀드, '대구·경북 통합 지역성장펀드' 1,300억 원 규모로 출범」 보도자료(정책브리핑 게재)",
+   "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148974021",
+   "date": "2026-10-22",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "대구·경북 통합 지역성장펀드 출범…모펀드 1300억 원 결성 - 정책뉴스 | 뉴스 | 대한민국 정책브리핑",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "매일신문, 대구·경북 통합 지역성장펀드 결성식 보도",
+   "url": "https://www.imaeil.com/page/view/2026102116092574248",
+   "date": "2026-10-21",
+   "kind": "news",
+   "status": 200,
+   "page_title": "대구경북 벤처펀드 1천294억 출범…80% 이상 지역기업 투자(종합) - 매일신문",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "머니투데이 유니콘팩토리, 「중기부, 3500억 지역성장펀드 조성…대경·서남권 등 4개 지역 선정」",
+   "url": "https://www.unicornfactory.co.kr/article/2026032909410791213",
+   "date": "2026-03-29",
+   "kind": "news",
+   "status": 200,
+   "page_title": "중기부, 3500억 지역성장펀드 조성…대경·서남권 등 4개 지역 선정 - 유니콘팩토리",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "트윅24, 「'전남·광주 지역성장펀드' 1250억 원 규모 조성」",
+   "url": "https://www.twig24.com/news/local_govern/2026/03/31/20260331500051",
+   "date": "2026-03-31",
+   "kind": "news",
+   "status": 200,
+   "page_title": "‘전남·광주 지역성장펀드’ 1250억 원 규모 조성",
+   "title_match": 1.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "머니투데이 유니콘팩토리, 「한국벤처투자, '지역성장펀드'에 전북 추가…1000억 모펀드 조성」",
+   "url": "https://www.unicornfactory.co.kr/article/2026041515250548328",
+   "date": "2026-04-15",
+   "kind": "news",
+   "status": 200,
+   "page_title": "한국벤처투자, &#039;지역성장펀드&#039;에 전북 추가…1000억 모펀드 조성 - 유니콘팩토리",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "British Business Bank, 「New £140m investment fund to unlock growth for smaller businesses in the East of England」",
+   "url": "https://www.british-business-bank.co.uk/news-and-events/news/new-ps140m-investment-fund-unlock-growth-smaller-businesses-east-england",
+   "date": "2026-09-23",
+   "kind": "gov",
+   "status": 200,
+   "page_title": "Press release - 23 September, 2026 | British Business Bank",
+   "title_match": 1.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "뉴스서울, 「중기부, 2026년 1분기 벤처투자 3.3조원(역대 두번째) 벤처펀드 신규 결성 4.4조원(역대 최대)」",
+   "url": "https://www.newsseoul.co.kr/news/view/1065583215028863",
+   "date": "2026-05-17",
+   "kind": "news",
+   "status": 200,
+   "page_title": "중기부, 2026년 1분기 벤처투자 3.3조원(역대 두번째) 벤처펀드 신규 결성 4.4조원(역대 최대)",
+   "title_match": 1.0,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "매일신문, 2025년 지역별 벤처투자(한국벤처캐피탈협회 벤처투자종합포털 인용) 보도",
+   "url": "https://www.imaeil.com/page/view/2026031502121026267",
+   "date": "2026-03-15",
+   "kind": "news",
+   "status": 200,
+   "page_title": "벤처투자 `수도권 쏠림` 여전…대구경북 비중 2% - 매일신문",
+   "title_match": 0.8,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "중소벤처기업부, 「벤처기업명단」(공공데이터포털 15084581, 2026-04 판, 대구 행)",
+   "url": "https://www.data.go.kr/data/15084581/fileData.do",
+   "date": "2026-04",
+   "kind": "official",
+   "status": 200,
+   "page_title": "중소벤처기업부_벤처기업명단_20260521 | 공공데이터포털",
+   "title_match": 1.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "한국은행 ECOS, 「예금은행 지역별 기업대출(말잔)」 통계표 141Y004",
+   "url": "https://ecos.bok.or.kr/#/Short/141Y004",
+   "date": "2026-10-27",
+   "kind": "data",
+   "status": 200,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": true,
+   "note": ""
+  },
+  {
+   "title": "기업 사전(팩토리온 2026-09 공장등록 + 산단 외 목록, 벤처 태그)·사업 DB(사업명만)",
+   "url": "https://daitda.co.kr/companies/?tag=venture",
+   "date": "2026-10-28",
+   "kind": "data",
+   "status": 200,
+   "page_title": "대구 기업 사전 — 다잇다",
+   "title_match": 0.33,
+   "date_found": true,
+   "ok": true,
+   "note": ""
+  }
+ ]
+}

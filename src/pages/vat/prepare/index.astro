@@ -9,8 +9,12 @@ import '../../../styles/vat.css';
 <Base title="부가세 신고 준비 — 신고서 칸별 숫자표" description="시설 담당이 보낸 매입 인계표를 모아 홈택스 부가가치세 신고서 칸별 숫자표(세금계산서 수취분·카드 수령명세서분·불공제·공통매입세액 면세분)를 만들고 공통매입세액 안분·예정 정산·재계산을 계산합니다. 브라우저 안에서만." current="vat" crumb="신고 준비">
   <div class="section-head"><h1>⑤ 신고 준비 — 기록을 신고서 칸으로</h1><span class="meta" id="p-due"></span></div>
   <VatNav current="prepare" />
-  <p class="lede">이 브라우저의 기록(과 수탁기관이 보낸 <strong>매입 인계표 JSON</strong>이 있으면 그것도)을 모아 신고 기간을 고르면, 홈택스 <strong>일반과세자 부가가치세 신고서</strong>의 매입 칸에 적을 숫자가 나옵니다. 과세·면세에 함께 쓴 지출(파랑)은 시설 매출을 넣으면 면세 비율만큼 나눠 줍니다(공통매입세액 안분). 결과는 참고용 계산이며 신고서의 최종 숫자와 책임은 신고인에게 있습니다. 결과 아래 <strong>절감 분석</strong>이 공통매입세액 면세부분을 줄일 길을 숫자로 보입니다.</p>
+  <p class="lede">이 브라우저의 기록(과 수탁기관이 보낸 <strong>매입 인계표 JSON</strong>이 있으면 그것도)을 모아 네 단계로 홈택스 <strong>일반과세자 부가가치세 신고서</strong>에 적을 숫자를 만듭니다. 결과는 참고용 계산이며 신고서의 최종 숫자와 책임은 신고인에게 있습니다. 오른쪽(좁은 화면은 위) 요약이 어디까지 됐는지 늘 보여 줍니다.</p>
 
+  <div class="steps" id="p-steps" role="list" aria-label="신고 준비 단계"><button type="button" role="listitem" aria-current="step" data-pgo="1">1 자료·기간</button><button type="button" role="listitem" data-pgo="2" disabled>2 매출</button><button type="button" role="listitem" data-pgo="3" disabled>3 안분·전환</button><button type="button" role="listitem" data-pgo="4" disabled>4 결과</button></div><p class="sr-only" id="p-step-live" aria-live="polite"></p>
+  <div class="p-layout">
+  <div class="p-main">
+  <div class="pstep" data-pstep="1">
   <section class="vc-card no-print" id="p-src">
     <h3>1. 자료 모으기</h3>
     <p id="p-org-state" class="meta">확인 중…</p>
@@ -23,13 +27,20 @@ import '../../../styles/vat.css';
     <p class="note full" id="p-period-note"></p>
     <div class="full" id="p-coverage"></div>
   </form>
+  <div class="actions no-print"><button type="button" class="btn" data-pnext>다음: 매출</button></div>
+  </div>
 
+  <div class="pstep" data-pstep="2" hidden>
+  <p class="empty" id="p-sales-none" hidden>매출을 넣을 과세 시설이 없습니다(모두 면세·수탁기관 신고). 다음으로 가세요.</p>
   <section id="p-sales-wrap" hidden>
     <div class="section-head"><h2>2. 시설별 매출(이 신고 기간) <button type="button" class="help" data-term="deemed_rent" aria-expanded="false" aria-label="간주임대료 설명">?</button></h2><span class="meta">신고서 (1)(3)(4)칸 · 안분의 과세 공급가액</span></div>
     <p class="meta">이 기간에 각 시설이 <strong>받은 돈(부가세 뺀 공급가액)</strong>을 넣습니다. 세금계산서를 끊어 준 것은 (1), 카드·현금영수증은 (3), 그 밖(현금 영수증 없는 수입, 간주임대료)은 (4). 보증금이 있는 시설은 간주임대료 계산기로 (4)에 더합니다.</p>
     <div id="p-sales"></div>
   </section>
+  <div class="actions no-print"><button type="button" class="btn secondary" data-pprev>이전</button><button type="button" class="btn" data-pnext>다음: 안분·전환</button></div>
+  </div>
 
+  <div class="pstep" data-pstep="3" hidden>
   <section id="p-groups-wrap" hidden>
     <div class="section-head"><h2>3. 공통매입세액 안분 — 사업자등록 단위마다 <button type="button" class="help" data-term="apportion" aria-expanded="false" aria-label="안분 설명">?</button> <button type="button" class="help" data-term="exempt_ratio" aria-expanded="false" aria-label="면세비율 설명">?</button></h2><span class="meta">시행령 제81조·제82조</span></div>
     <p class="meta">파랑(공통) 지출이 있는 등록 단위마다 <strong>면세 수입</strong>(면세사업 공급가액 + 면세사업 관련 국고·공공보조금)을 넣으면 면세 비율을 계산합니다. 과세 수입은 위 2절 합계가 자동으로 들어갑니다. 확정신고는 과세기간 전체(6개월)로 다시 계산해 예정신고분을 정산합니다.</p>
@@ -49,9 +60,16 @@ import '../../../styles/vat.css';
     <div class="vc-form no-print"><label>자산(내용) <input type="text" data-cdesc placeholder="예: 문화회관 공연장 음향 설비" maxlength="60" /></label><label>취득 때 불공제됐던 매입세액(원) <input type="text" inputmode="numeric" data-ctax /></label><label>종류 <select data-ckind><option value="building">건물·구축물(체감률 5%)</option><option value="other">그 밖의 감가상각자산(25%)</option></select></label><label>취득 과세기간 <select data-cacq></select></label><label data-cunit-wrap hidden>등록 단위(사업장) <select data-cunit></select></label><label class="choices"><span><input type="checkbox" data-ccommon /> 전환 뒤에도 과세·면세에 함께 쓴다(과세 공급가액 비율 적용)</span></label><div class="actions"><button type="button" class="btn secondary" data-cadd>전환 자산 추가</button></div></div>
     <div id="p-conv-list"></div>
   </section>
+  <div class="actions no-print" id="p-run-wrap" hidden><button type="button" class="btn secondary" data-pprev>이전</button><button type="button" class="btn" id="p-run">숫자표 만들기</button></div>
+  </div>
 
-  <div class="actions no-print" id="p-run-wrap" hidden><button type="button" class="btn" id="p-run">숫자표 만들기</button></div>
+  <div class="pstep" data-pstep="4" hidden>
+  <p class="empty" id="p-result-none">3단계에서 「숫자표 만들기」를 누르면 여기 결과가 나옵니다.</p>
   <div id="p-result" aria-live="polite"></div>
+  </div>
+  </div>
+  <aside class="p-sum no-print" id="p-sum" aria-label="진행 요약"><div class="meta">요약 준비 중…</div></aside>
+  </div>
   <VatData />
   <script>import '../../../scripts/vat_prepare';</script>
 </Base>

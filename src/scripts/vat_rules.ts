@@ -388,12 +388,12 @@ export function openItems(rows = Object.values(allLedgers()).flat()) {
 /** 용어 사전 ? 단추(rules.yml glossary) — <button class="help" data-term=key>: 누르면 뒤에 <span class="pop" role="note"> 두 문장 + 조문. Esc·바깥 클릭·포커스 이탈로 닫힘 */
 export const helpBtn = (D: Data | null, key: string, label?: string) => { const g = D?.glossary?.find(x => x.key === key); return g ? `<button type="button" class="help" data-term="${esc(key)}" aria-expanded="false" aria-label="${esc(label ?? g.term)} 설명">?</button>` : ''; };
 export function helpWire(root: ParentNode, D: Data | null) {
-  if (!D?.glossary) return;
+  if (!D) return;
   const close = (b: HTMLButtonElement) => { b.setAttribute('aria-expanded', 'false'); b.nextElementSibling?.classList.contains('pop') && b.nextElementSibling.remove(); };
   const closeAll = () => root.querySelectorAll<HTMLButtonElement>('button.help[aria-expanded=true]').forEach(close);
-  root.querySelectorAll<HTMLButtonElement>('button.help[data-term]:not([data-wired])').forEach(b => { b.dataset.wired = '1';
-    b.addEventListener('click', e => { e.stopPropagation(); const open = b.getAttribute('aria-expanded') === 'true'; closeAll(); if (open) return; const g = D.glossary!.find(x => x.key === b.dataset.term); if (!g) return;
-      const sp = document.createElement('span'); sp.className = 'pop'; sp.setAttribute('role', 'note'); sp.innerHTML = `<b>${esc(g.term)}</b> <span class="note">= ${esc(g.plain)}</span><br>${esc(g.text)}${g.basis?.length ? `<br><span class="note">${uniq(g.basis).map(x => lawLink(D, x)).join(' · ')}</span>` : ''} <button type="button" class="link-btn pop-x" aria-label="설명 닫기">닫기</button>`;
+  root.querySelectorAll<HTMLButtonElement>('button.help[data-term], button.help[data-text]').forEach(b => { if (b.dataset.wired) return; b.dataset.wired = '1';
+    b.addEventListener('click', e => { e.stopPropagation(); const open = b.getAttribute('aria-expanded') === 'true'; closeAll(); if (open) return; const g = b.dataset.term ? D.glossary!.find(x => x.key === b.dataset.term) : undefined; if (!g && !b.dataset.text) return;
+      const sp = document.createElement('span'); sp.className = 'pop'; sp.setAttribute('role', 'note'); sp.innerHTML = (g ? `<b>${esc(g.term)}</b> <span class="note">= ${esc(g.plain)}</span><br>${esc(g.text)}${g.basis?.length ? `<br><span class="note">${uniq(g.basis).map(x => lawLink(D, x)).join(' · ')}</span>` : ''}` : esc(b.dataset.text ?? '').replace(/\n/g, '<br>')) + ` <button type="button" class="link-btn pop-x" aria-label="설명 닫기">닫기</button>`;
       b.after(sp); b.setAttribute('aria-expanded', 'true'); sp.querySelector('.pop-x')!.addEventListener('click', () => { close(b); b.focus(); }); });
     b.addEventListener('keydown', e => { if (e.key === 'Escape') { close(b); } }); });
   if (!(root as HTMLElement & { __helpWired?: boolean }).__helpWired) { (root as HTMLElement & { __helpWired?: boolean }).__helpWired = true; document.addEventListener('click', e => { if (!(e.target as HTMLElement).closest('.pop, button.help')) closeAll(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); }); }

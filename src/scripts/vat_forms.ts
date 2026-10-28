@@ -9,6 +9,26 @@ export type ConvRow = { desc: string; tax: number; kind: 'building' | 'other'; a
 export type RecalcRow = { a: Filing['assets'][number]; from: PeriodKey; ratio: number; n: number; amt: number };
 export type FormCtx = { D: Data; org: Org; P: { y: number; half: number; kind: 'P' | 'F'; name: string; own: string[]; prelim: string[]; full: string[]; due: string }; cells: Record<string, { amt: number; tax: number }>; used: UsedRow[]; groups: Filing['groups']; commonAmt: Record<string, number>; unitName: string; unitIndex: string; notice: { state: 'notice' | 'file' | 'unknown'; prevSupply: number; prevPay: number; prevKey: PeriodKey }; prelimIn: Record<string, { taxable: number; exempt: number; common: number; nondeduct: number }>; recalc: RecalcRow[]; conv: ConvRow[]; convRatio: number; sales: Record<string, { c1: number; c3: number; c4: number; dep?: number; days?: number; rate?: number; deem?: number }>; facs: OrgFacility[]; unresolved: string[]; excluded: string[]; missing: string[] };
 const W = (n?: number) => n ? fmt(n) : '';
+/** 신고서 1쪽 칸의 산출 근거(공무원 UX 재설계 2026-10-28 — 칸 옆 ? 단추): 식·어느 기록이 들어갔나·조문. 계산은 vat_prepare.ts 그대로, 설명만 */
+const CALC: Record<string, string> = {
+  '1': '(1) = 2단계에서 넣은 시설별 「세금계산서 발급분 공급가액」의 합. 세액 = 공급가액의 10/100(원 미만 버림).',
+  '3': '(3) = 시설별 「카드·현금영수증 발행분 공급가액」의 합. 세액 10/100.',
+  '4': '(4) = 시설별 「기타 공급가액」의 합(간주임대료 포함 — 보증금 × 일수 × 이자율 ÷ 365, 시행령 제65조).',
+  '9': '(9) = (1)+(2)+(3)+(4)+(5)+(6)+(7)+(8) 가운데 이 도구가 채운 (1)(3)(4)의 합.',
+  '10': '(10) = 이 기간 달의 기록 가운데 우리 명의 세금계산서(전자·종이)이고 여러 해 쓰는 것이 아닌 행(초록·파랑·불공제 모두)의 공급가액·세액 합. 노랑(확인 필요)·증빙 미달·다른 명의는 뺐습니다.',
+  '12': '(12) = 우리 명의 세금계산서 가운데 「여러 해 쓰는 것」(건물 공사·장비)으로 표시한 행의 합.',
+  '13': '(13) = 확정신고에서 예정 달(1~3월·7~9월) 기록 가운데 저장된 예정신고 기록에 없던 행(예정신고 누락분).',
+  '15': '(15) = 4쪽 (52) — (44)+(45)+(48).',
+  '16': '(16) = (10)−(11)+(12)+(13)+(14)+(15).',
+  '17': '(17) = 4쪽 (56) — (53)+(54).',
+  '18': '(18) = (16)−(17). 납부(환급)세액은 (9) 세액 − (18).',
+  '44': '(44) = 부가세가 따로 적힌 카드·현금영수증 가운데 여러 해 쓰는 것이 아닌 행의 합(신용카드매출전표등 수령명세서 제출분).',
+  '45': '(45) = 카드·현금영수증 가운데 「여러 해 쓰는 것」 행의 합.',
+  '48': '(48) = 3-1절에서 넣은 과세사업 전환 자산의 공제 세액 합(시행령 제85조: 불공제 매입세액 × (1 − 체감률 × 경과 과세기간 수) × 과세 비율).',
+  '53': '(53) = 우리 명의 세금계산서인데 빨강(불공제)인 행의 합 — 승용차·접대·토지·면세사업 전용 등(법 제39조).',
+  '54': '(54) = 등록 단위마다 공통매입세액(파랑) × 면세비율(면세 공급가액 ÷ 총공급가액) [+ 본청·행정 공통 × 입력한 기준 비율] [+ 지난 기 공통 자산 재계산]. 확정신고는 6개월 전체로 계산한 값에서 예정 때 불공제분을 뺀 값(음수 가능). 안분 생략 기준(5%·500만 원·5만 원)에 들면 0.',
+};
+const calcBtn = (no: string, v?: { amt: number; tax: number } | null) => CALC[no] ? ` <button type="button" class="help" data-text="${esc(CALC[no])}${v ? esc(`\n이번 값: 금액 ${fmt(v.amt)} · 세액 ${fmt(v.tax)}`) : ''}" aria-expanded="false" aria-label="(${no}) 산출 근거">?</button>` : '';
 const cell = (c: Record<string, { amt: number; tax: number }>, no: string) => c[no] ?? { amt: 0, tax: 0 };
 const supKey = (r: LedgerRow) => r.sreg || ('n:' + (r.sup || r.desc).replace(/\s|\(주\)|주식회사|㈜/g, ''));
 const supName = (r: LedgerRow) => r.sup || r.desc.split(' · ')[0];
@@ -23,7 +43,7 @@ export function renderForms(x: FormCtx): string {
   const c66 = c('66'); const penalty = c66.tax; const noticeEst = Math.floor(notice.prevPay * 0.5);
   const sum = (nos: string[], k: 'amt' | 'tax' = 'tax') => nos.reduce((s, n) => s + c(n)[k], 0);
   const c9t = sum(['1', '3', '4']), c9a = sum(['1', '3', '4'], 'amt'); const c15 = sum(['44', '45', '48']); const c16 = sum(['10', '12', '13', '14']) + c15; const c17 = sum(['53', '54']); const c18 = c16 - c17; const pay = c9t - c18; const c29 = penalty; const c30 = pay - (P.kind === 'F' && notice.state === 'notice' ? noticeEst : 0) + c29;
-  const row = (no: string, name: string, v?: { amt: number; tax: number } | null, rate = '', cls = '') => `<tr class="${cls}"><td>(${no})</td><th scope="row">${name}</th>${v === undefined ? DIRECT : v === null ? NA : `<td>${W(v.amt)}</td><td>${rate ? `<span class="note">${rate}</span> ` : ''}${fmt(v.tax)}</td>`}</tr>`;
+  const row = (no: string, name: string, v?: { amt: number; tax: number } | null, rate = '', cls = '') => `<tr class="${cls}"><td>(${no})</td><th scope="row">${name}${v ? calcBtn(no, v) : ''}</th>${v === undefined ? DIRECT : v === null ? NA : `<td>${W(v.amt)}</td><td>${rate ? `<span class="note">${rate}</span> ` : ''}${fmt(v.tax)}</td>`}</tr>`;
   const sec = (t: string) => `<tr class="sec"><th colspan="4">${t}</th></tr>`;
   /* ── ① 신고서 1쪽 ── */
   const p1 = tbl(`일반과세자 부가가치세 ${P.kind === 'P' ? '예정' : '확정'}신고서 — ① 신고내용 (별지 제21호서식 제1쪽 배치) · ${esc(x.unitName)} · ${esc(P.name)}`, ['칸', '구분', '금액', '세액'],
@@ -89,16 +109,16 @@ export function renderForms(x: FormCtx): string {
     ['경감·공제·가산세', '(19)~(28): 전자신고 세액공제(57) 등은 홈택스 안내대로' + (P.kind === 'F' && notice.state === 'notice' ? '; (24) 예정고지세액은 고지서 금액' : '') + (penalty ? '; 가산세 (66) 지연수취는 이 표 값, 다른 가산세는 홈택스에서' : '; 가산세는 해당 때만'), (P.kind === 'F' && notice.state === 'notice' ? `(24) ${fmt(noticeEst)}(어림) ` : '') + (penalty ? `(66) ${fmt(c29)}` : '—')],
     ['제출', '신고서 미리보기에서 위 표와 칸마다 맞춰 본 뒤 제출 → 접수증 저장 → 납부서(또는 환급 계좌) 확인 → 신고 기록 저장(이 화면 아래 단추)', `㉰ ${fmt(pay)}`]];
   const order = tbl('홈택스 입력 순서 — 어느 서류를 먼저 쓰면 어느 칸이 채워지나', ['순서', '홈택스에서 할 일', '이 표의 값'], steps.map((s, i) => `<tr><td>${i + 1}. ${esc(s[0])}</td><td>${s[1]}</td><td>${s[2]}</td></tr>`).join(''));
+  /* 서식 7종은 탭 묶음(공무원 UX 재설계 2026-10-28): section.ftab[data-tab] — vat_prepare.ts 가 tablist 를 붙이고 기본 '신고서'만 보인다. 인쇄 때는 전부 */
   return `<div class="unit"><h3 class="unit-head">${x.unitIndex ? `신고서 ${x.unitIndex} — ` : ''}${esc(x.unitName)} <span class="meta">시설 ${facs.map(f => esc(f.name)).join(' · ')}</span></h3>
     ${noticeBox}
-    <p class="meta">이 도구가 채우는 칸은 값이 있고, 못 채우는 칸은 '홈택스에서 직접' 또는 '해당 없음이면 비움'입니다. 원 미만 버림. 표 아래 「한글 표 복사」로 결재 문서에 붙일 수 있습니다.</p>
-    ${p1}${p4}
-    <h3>부속서류 — 홈택스 '작성하기' 순서대로</h3>
-    <h4>② 매입처별 세금계산서합계표</h4>${f39}
-    <h4>③ 신용카드매출전표등 수령명세서</h4>${f16}
-    <h4>④ 공제받지 못할 매입세액 명세서</h4>${f22a}${f22b}${f22ab}${f22c}${f22d}
-    ${depF.length ? `<h4>⑤ 부동산임대공급가액명세서</h4>${f25}` : ''}${conv.length ? `<h4>⑥ 과세사업전환 감가상각자산 신고서</h4>${f17}` : ''}
-    <h3>⑦ 홈택스 입력 순서</h3>${order}</div>`;
+    <p class="meta">이 도구가 채우는 칸은 값이 있고, 못 채우는 칸은 '홈택스에서 직접' 또는 '해당 없음이면 비움'입니다. 원 미만 버림. 칸 이름 옆 ? 가 산출 근거입니다. 표 아래 「한글 표 복사」로 결재 문서에 붙일 수 있습니다.</p>
+    <section class="ftab" data-tab="form" data-name="① 신고서">${p1}${p4}</section>
+    <section class="ftab" data-tab="f39" data-name="② 세금계산서합계표"><h4>② 매입처별 세금계산서합계표</h4>${f39}</section>
+    <section class="ftab" data-tab="f16" data-name="③ 카드 수령명세서"><h4>③ 신용카드매출전표등 수령명세서</h4>${f16}</section>
+    <section class="ftab" data-tab="f22" data-name="④ 불공제 명세서"><h4>④ 공제받지 못할 매입세액 명세서</h4>${f22a}${f22b}${f22ab}${f22c}${f22d}</section>
+    ${depF.length ? `<section class="ftab" data-tab="f25" data-name="⑤ 임대 명세서"><h4>⑤ 부동산임대공급가액명세서</h4>${f25}</section>` : ''}${conv.length ? `<section class="ftab" data-tab="f17" data-name="⑥ 전환 신고서"><h4>⑥ 과세사업전환 감가상각자산 신고서</h4>${f17}</section>` : ''}
+    <section class="ftab" data-tab="order" data-name="⑦ 홈택스 입력 순서"><h3>⑦ 홈택스 입력 순서</h3>${order}</section></div>`;
 }
 
 /** 사업자 단위 과세 — 첨부 15 '사업자 단위 과세의 사업장별 부가가치세 과세표준 및 납부세액(환급세액) 신고명세서': 종된 사업장(시설)마다 과세표준·매입세액·납부세액 */

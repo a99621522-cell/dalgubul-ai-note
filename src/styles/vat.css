@@ -141,3 +141,18 @@ dialog.vat-dlg::backdrop { background: rgba(0,0,0,.4); }
 #mb-table { min-width: 1180px; } #mb-table tr.colmap td { background: var(--surface); padding: 4px; } .colsel { font: inherit; font-size: var(--tiny); max-width: 11em; display: block; margin: 2px 0; min-height: 28px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); }
 #mb-table tr.auto td, #mb-table tr.auto th { background: #f3f7fc; } @media (prefers-color-scheme: dark) { #mb-table tr.auto td { background: #1b2436; } }
 #mb-table td[data-v] { white-space: nowrap; }
+/* 신고 준비 위저드 + 고정 요약 + 예외 우선 + 서식 탭(공무원 UX 재설계) */
+.p-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s3); align-items: start; }
+@media (min-width: 1024px) { .p-layout { grid-template-columns: minmax(0, 1fr) 280px; } .p-sum { position: sticky; top: 72px; } }
+.p-sum { padding: var(--s2) var(--s3); border: 2px solid var(--line-strong); border-radius: var(--radius-2); background: var(--bg); font-size: var(--small); }
+.p-sum .ps-title { margin: 0 0 var(--s1); font-weight: 700; font-size: 1rem; }
+.ps-row { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-top: 1px solid var(--line); } .ps-row .k { color: var(--muted); } .ps-row .v { font-variant-numeric: tabular-nums; text-align: right; } .ps-row.warn .v { color: #8a5200; font-weight: 700; }
+.p-sum .actions { margin-top: var(--s2); flex-direction: column; align-items: stretch; } .p-sum .btn { width: 100%; }
+@media (max-width: 1023px) { .p-sum { order: -1; } .p-sum .actions { flex-direction: row; } .p-sum .btn { width: auto; } }
+.pstep[hidden] { display: none !important; }
+.p-todo h3 b { font-size: 1.4rem; } .todo { list-style: none; padding: 0; margin: var(--s1) 0 0; } .todo li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: var(--small); } .todo .btn { margin-left: auto; padding: 6px 12px; font-size: var(--small); }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: var(--s2) 0 var(--s1); border-bottom: 2px solid var(--line-strong); }
+.tabs [role=tab] { font: inherit; font-size: var(--small); padding: 8px 14px; min-height: 40px; border: 1px solid var(--line-strong); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; background: var(--surface); color: var(--ink); cursor: pointer; margin-bottom: -2px; }
+.tabs [role=tab][aria-selected=true] { background: var(--bg); border-bottom: 2px solid var(--bg); font-weight: 700; color: var(--primary); }
+@media (prefers-color-scheme: dark) { .ps-row.warn .v { color: #ffd98a; } }
+@media print { .tabs, .p-sum, #p-steps { display: none !important; } section.ftab[hidden], .pstep[hidden] { display: block !important; } #p-sav-wrap, details.vat-more { open: 1; } }

@@ -47,6 +47,10 @@ on:
         description: "xhr 때 응답 본문을 찍는 길이(기본 600 — action.do 식 JSON 화면은 20000 처럼 늘림)"
         required: false
         default: ""
+      js:
+        description: "xhr 때 화면 스크립트(/js/) 속 이 낱말이 든 줄을 찍기(예: actionId — 내부 요청 이름·인자 찾기)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -78,6 +82,6 @@ jobs:
         env:
           URL: ${{ inputs.url }}
           CLICK: ${{ inputs.click }}
-        run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK" $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ -n "${{ inputs.pages }}" ] && echo --pages ${{ inputs.pages }}) $([ -n "${{ inputs.body }}" ] && echo --body ${{ inputs.body }})
+        run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK" $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ -n "${{ inputs.pages }}" ] && echo --pages ${{ inputs.pages }}) $([ -n "${{ inputs.body }}" ] && echo --body ${{ inputs.body }}) $([ -n "${{ inputs.js }}" ] && echo --js "${{ inputs.js }}")
       - if: inputs.xhr != 'true' && inputs.datalab != 'true' && inputs.file != 'true'
         run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)

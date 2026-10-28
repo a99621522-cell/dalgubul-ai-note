@@ -584,5 +584,76 @@
     "diff_k": 907080
    }
   ]
+ },
+ "seo_2026": {
+  "gov": "서구",
+  "year": "2026",
+  "source": "https://www.dgs.go.kr/portal/contents.do?mid=0505011902",
+  "fetched": "2026-10-28",
+  "_check": [
+   {
+    "mok": "213-01",
+    "mok_total_k": 443856,
+    "items_k": 443676,
+    "diff_k": 180
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 22492470,
+    "items_k": 20912076,
+    "diff_k": 1580394
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 10990667,
+    "items_k": 10989667,
+    "diff_k": 1000
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 84302389,
+    "items_k": 83453293,
+    "diff_k": 849096
+   }
+  ],
+  "rows": 715,
+  "sum_k": 17354085,
+  "grant_k": 416993683,
+  "check": [
+   {
+    "mok": "213-01",
+    "mok_total_k": 443856,
+    "items_k": 443676,
+    "diff_k": 180
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 22492470,
+    "items_k": 20912076,
+    "diff_k": 1580394
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 10990667,
+    "items_k": 10989667,
+    "diff_k": 1000
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 84302389,
+    "items_k": 83453293,
+    "diff_k": 849096
+   }
+  ]
+ },
+ "seo_2026_exp": {
+  "gov": "서구",
+  "year": "2026",
+  "source": "https://www.dgs.go.kr/portal/contents.do?mid=0505011902",
+  "fetched": "2026-10-28",
+  "rows": 854,
+  "depts": 41,
+  "facility_rows": 173,
+  "fac_rows": 160
  }
 }

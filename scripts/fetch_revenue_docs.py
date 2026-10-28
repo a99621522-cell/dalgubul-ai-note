@@ -43,6 +43,8 @@ def get(url: str, out: Path | None = None, post: dict | None = None, referer: st
                         cmd += ["--data-urlencode", f"{k}={v}"]
                 cmd.append(url)
                 r = subprocess.run(cmd, capture_output=True, timeout=300)
+                if r.returncode != 0:
+                    print(f"  [{i + 1}] curl {r.returncode} {url[:80]} {r.stderr.decode('utf-8', 'ignore')[:120].strip()}")
                 if r.returncode == 0 and r.stdout:
                     if out:
                         out.write_bytes(r.stdout)
@@ -70,6 +72,8 @@ def cms_token(g: dict, jar: Path) -> str:
     """동구·서구 누리집(같은 CMS): 화면의 download 폼 csrfToken(세션 쿠키와 짝) — POST /file/direct/download.do (csrfToken, filename, path)"""
     page = get(g["page"], jar=jar, tries=4, timeout=60, backoff=40).decode("utf-8", "ignore")
     m = re.search(r'name=["\']csrfToken["\'][^>]*value=["\']([^"\']+)', page) or re.search(r'value=["\']([^"\']+)["\'][^>]*name=["\']csrfToken', page)
+    if not m:
+        print(f"[revenue] {g['name']} 화면 {len(page)}B, csrfToken 없음 :: {re.sub(r'\\s+', ' ', page)[:600]}")
     return m.group(1) if m else ""
 
 
@@ -267,6 +271,8 @@ def discover(g: dict) -> None:
         links = [(m.group(2), m.group(3)) for m in re.finditer(r'href=(["\'])(.*?)\1[^>]*>(.*?)</a>', html, re.S)]
         files = re.findall(r'(?:src|href|data-url|onclick)=["\']([^"\']*(?:\.pdf|\.hwpx?|\.xlsx?|download|atch|attach|fileDown)[^"\']*)["\']', html, re.I)
         print(f"[revenue] {g['name']} discover d{depth} {url} ({len(html)}B, 링크 {len(links)}, 파일형 {len(files)})")
+        if len(html) < 4000:   # 차단 안내·스크립트 넘김처럼 짧은 응답은 본문을 그대로 보여 무엇이 왔는지 안다(중구 1,414B)
+            print("   [본문] " + re.sub(r"\s+", " ", html)[:1500])
         shown: set[str] = set()
         for href, txt in links:
             t = re.sub(r"<[^>]+>", "", txt).strip()

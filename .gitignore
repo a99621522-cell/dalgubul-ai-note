@@ -13,3 +13,4 @@ data/*.xlsx
 *_정리.xlsx
 data/raw/
 data/ui_audit/
+out/   # deploy_vat.yml 이 추리는 독립 사이트 출력

@@ -1,0 +1,76 @@
+name: 부가세 점검기 독립 사이트 배포
+
+# 운영자 지시 2026-10-28 '새로운 사이트에 올려': 지자체 부가세 절감 점검기(/vat/*)만 있는 별도 Cloudflare Pages 프로젝트(vat-daitda → https://vat-daitda.pages.dev).
+# 같은 저장소를 VAT_SITE=1 로 빌드(Base.astro 가 헤더·바닥글을 점검기용으로 바꿈)한 뒤 dist/vat·_astro·fonts·vat-revenue.json 만 추려 올린다. 첫 화면은 /vat/ 로 넘김.
+# 프로젝트가 없으면 API 로 만든다(토큰에 Pages 쓰기 권한 필요). 사용자 지정 도메인(예: vat.daitda.co.kr)은 Cloudflare 대시보드에서 CNAME 으로 붙인다.
+
+on:
+  push:
+    branches: [main]
+    paths: ["scripts/vat_ux_test.mjs", "src/pages/vat/**", "src/scripts/vat_*.ts", "src/components/VatNav.astro", "src/components/VatData.astro", "src/styles/vat.css", "src/layouts/Base.astro", "src/lib/vat*.ts", "data/vat/**", "astro.config.mjs", ".github/workflows/deploy_vat.yml"]
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "Cloudflare Pages 프로젝트 이름"
+        required: false
+        default: "vat-daitda"
+
+concurrency:
+  group: pages-deploy-vat
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT: ${{ inputs.project || 'vat-daitda' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: 빌드(독립 사이트 모드)
+        env:
+          VAT_SITE: "1"
+          VAT_SITE_URL: https://${{ inputs.project || 'vat-daitda' }}.pages.dev
+        run: npm run build
+      - name: 점검기 부분만 추리기
+        run: |
+          rm -rf out && mkdir -p out
+          cp -r dist/vat out/vat
+          cp -r dist/_astro out/_astro
+          cp -r dist/fonts out/fonts
+          cp dist/favicon.svg out/ 2>/dev/null || true
+          for f in vat-revenue.json typeahead.json; do [ -f "dist/$f" ] && cp "dist/$f" out/; done
+          printf '/ /vat/ 302\n' > out/_redirects
+          printf '<!doctype html><html lang="ko"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/vat/"><title>지자체 부가세 절감 점검기</title><p><a href="/vat/">지자체 부가세 절감 점검기로 가기</a></p></html>\n' > out/404.html
+          echo "파일 $(find out -type f | wc -l)개, $(du -sh out | cut -f1)"
+      - name: 과업 8개 수용 시험(scripts/vat_ux_test.mjs — 키보드 변형·axe 5쪽·인쇄, 계산 값은 식으로 견줌)
+        run: |
+          npm i --no-save @axe-core/playwright playwright
+          npx playwright install chromium --with-deps
+          (cd out && python3 -m http.server 4399 >/dev/null 2>&1 &) && sleep 2
+          export PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright
+          node scripts/vat_ux_test.mjs --base http://localhost:4399
+      - name: 프로젝트 확인·생성
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          base="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects"
+          code=$(curl -s -o /tmp/p.json -w '%{http_code}' -H "Authorization: Bearer $CF_TOKEN" "$base/$PROJECT")
+          if [ "$code" = "200" ]; then echo "프로젝트 $PROJECT 있음"; else
+            echo "프로젝트 없음($code) — 만듭니다"
+            curl -s -X POST -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" "$base" --data "{\"name\":\"$PROJECT\",\"production_branch\":\"main\"}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("생성", "ok" if d.get("success") else d.get("errors"))'
+          fi
+      - name: Cloudflare Pages 업로드
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy out --project-name "$PROJECT" --branch main --commit-dirty=true
+      - name: 응답 확인
+        run: |
+          sleep 20
+          for h in "https://$PROJECT.pages.dev/" "https://$PROJECT.pages.dev/vat/" "https://$PROJECT.pages.dev/vat/setup/"; do printf '%s ' "$h"; curl -s -o /dev/null -m 30 -w '%{http_code} %{redirect_url}\n' "$h" || true; done

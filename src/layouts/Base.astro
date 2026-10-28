@@ -45,13 +45,13 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
   {!VAT && <div class="util-bar" aria-label="출처 기관 바로가기">
     <div class="wrap util-row">
       <ul>{UTIL_LINKS.map(u => <li><a href={u.href} rel="noopener">{u.name}</a></li>)}</ul>
-      <ul><li><a href="/posts/2026-09-13-about/">이 사이트에 대하여</a></li><li><a href="/search/">통합 검색</a></li></ul>
+      <ul><li><a href={VAT_PUBLIC + '/vat/'} rel="noopener">지자체 부가세 절감 점검기 ↗</a></li><li><a href="/posts/2026-09-13-about/">이 사이트에 대하여</a></li><li><a href="/search/">통합 검색</a></li></ul>
     </div>
   </div>}
   <header class="site-head">
     <div class="wrap row">
       {VAT ? <a class="brand" href="/vat/">지자체 부가세 절감 점검기<span class="tagline">신고하는 공무원용 · 브라우저 안 계산</span></a> : <a class="brand" href="/">다잇다<span class="tagline">대구 산업·기업 자료</span></a>}
-      {VAT && <nav class="nav" aria-label="바깥 링크"><a class="ng-link" href="https://daitda.co.kr/" rel="noopener">다잇다(대구 산업·기업 자료)</a></nav>}
+      {VAT && <nav class="vat-ext" aria-label="바깥 링크"><a href="https://daitda.co.kr/" rel="noopener">다잇다 ↗ <span class="note">대구 산업·기업 자료</span></a></nav>}
       {!VAT && <nav class="nav" aria-label="주요 메뉴">
         {NAV_GROUPS.map(g => g.href ? <a class="ng-link" href={g.href} aria-current={g.items.includes(current as any) ? 'page' : undefined}>{g.name}</a> : (
           <div class="ng" data-open={g.items.includes(current as any) ? 'cur' : undefined}>
@@ -66,7 +66,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
       <div class="drawer-head wrap"><span>전체 메뉴</span><button type="button" class="drawer-close" aria-label="메뉴 닫기">✕</button></div>
       <nav aria-label="전체 메뉴" class="wrap drawer-grid">
         {NAV_GROUPS.map(g => <section class="drawer-g"><h2>{g.name}</h2><ul>{g.items.map(k => { const n = navItem(k); return <li><a href={n.href} aria-current={current === k ? 'page' : undefined}>{n.name}</a></li>; })}</ul></section>)}
-        <section class="drawer-g"><h2>더 보기</h2><ul><li><a href="/search/">통합 검색</a></li><li><a href="/posts/">전체 글</a></li><li><a href="/supply-map/">대구·경북 품목 지도</a></li><li><a href="/posts/2026-09-13-about/">이 사이트에 대하여</a></li></ul></section>
+        <section class="drawer-g"><h2>더 보기</h2><ul><li><a href={VAT_PUBLIC + '/vat/'} rel="noopener">지자체 부가세 절감 점검기 ↗ <span class="note">(별도 사이트)</span></a></li><li><a href="/search/">통합 검색</a></li><li><a href="/posts/">전체 글</a></li><li><a href="/supply-map/">대구·경북 품목 지도</a></li><li><a href="/posts/2026-09-13-about/">이 사이트에 대하여</a></li></ul></section>
       </nav>
     </div>}
   </header>
@@ -136,6 +136,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
         <li><a href="/posts/2026-09-13-about/">이 사이트에 대하여</a></li>
         <li><a href="/posts/2026-09-13-about/">정정 요청</a></li>
         <li><a href="/rss.xml">RSS</a></li>
+        <li><a href={VAT_PUBLIC + '/vat/'} rel="noopener">지자체 부가세 절감 점검기(별도 사이트) ↗</a></li>
       </ul>
       <p>출처: 한국산업단지공단 팩토리온 입주업체현황{lm && ` (${monthLabel(lm)} 기준)`}, 기업마당·부처 사업설명자료·보도자료(공공누리 조건에 따라 출처 표시). 공개 자료를 같은 형식으로 옮긴 것이며 평가·순위·추천을 하지 않습니다.</p>
       <p>"AI 작성" 표시가 있는 글은 자동으로 쓰고 사람이 검토한 뒤 발행한 것입니다. 개인 의견은 소속 기관의 입장이 아닙니다. 사이트 갱신일 {built}.</p>

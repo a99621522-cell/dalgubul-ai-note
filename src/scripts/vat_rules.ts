@@ -5,6 +5,8 @@
  * 그 아래는 v2 의 기관 설정(org.json)·시설 월간 기록(ledger)·인계표(CSV)·신고 마감 D-day 도구. 서버 없음, localStorage 와 파일만. 개인정보(이름·전화)는 담지 않는다.
  */
 export type Basis = { law: string; art: string };
+/** 유권해석·판례·심판례(rules.yml rulings, 2026-10-28) — 번호·요지만, 평가 없음 */
+export type Ruling = { id: string; kind: string; no: string; title: string; gist: string; note?: string; src?: string; url?: string; verify?: boolean };
 export type Opt = { key: string; name: string };
 export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
 export type Data = {
@@ -16,9 +18,9 @@ export type Data = {
     recalc: { rates: { building: number; other: number }; threshold_pp: number };
     filing: { periods: { name: string; span: string; due: string }[]; notes: string[]; claim?: string; verify?: boolean };
     /** 세무회계법인 관점 검토(2026-10-27) — 면세비율 관리·신축 설계·조기환급·가산세 */
-    ratio_mgmt?: { proof: { key: Evid; name: string; text: string }[]; exempt_supply: string[]; timing: string; basis: Basis[] };
+    ratio_mgmt?: { proof: { key: Evid; name: string; text: string }[]; exempt_supply: string[]; timing: string; basis: Basis[]; rulings?: string[] };
     build?: { area: string; early_refund: string; refund_days: { file_within: number; refund_within: number; normal_within: number }; pre_reg: string; land: string; basis: Basis[] };
-    admin_common?: { summary: string; caution: string; interp?: boolean; basis: Basis[] };
+    admin_common?: { summary: string; caution: string; interp?: boolean; basis: Basis[]; rulings?: string[] };
     subsidy_settle?: { summary: string; todo: string };
     develop?: { land_sale: string; land_cost: string; timing: string; refund: string; housing: string; basis: Basis[] };
     entity_unit?: { summary: string; caution: string; basis: Basis[] };
@@ -28,6 +30,7 @@ export type Data = {
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
   revenue_items?: RevenueItem[];
   presets?: Preset[];
+  rulings?: Ruling[];
 };
 export type RevenueItem = { key: string; group: string; name: string; status: 'taxable' | 'exempt' | 'check' | 'none'; type?: string; basis: Basis[]; deduct: string; note?: string; only?: 'contractor' | 'gov'; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
 /** 기관 종류(운영자 2026-10-27 '시설관리공단 분야도 해야지'): gov = 지자체(제19호 면세 적용), contractor = 수탁기관(시설관리공단·재단 — 일반 사업자 기준, 군 대행사업은 군 명의) */
@@ -324,4 +327,12 @@ export function penaltyCalc(D: Data | null, p: { tax: number; due: string; payDa
   const relief = (p.kind === 'none' ? R?.late_file_relief : R?.amend_relief) ?? []; const rl = relief.find(r => months <= r.months)?.rate ?? 0;
   const file = Math.floor(p.tax * rateFile); const fileAfter = Math.floor(file * (1 - rl)); const late = Math.floor(p.tax * days * daily);
   return { days, months, rateFile, file, relief: rl, fileAfter, late, total: fileAfter + late };
+}
+
+/** 유권해석·판례 목록 HTML(번호·제목·요지·출처) — 평가 없이 요지만. ids 가 없으면 빈 문자열 */
+export function rulingsHtml(D: Data, ids: string[] | undefined, title = '근거 유권해석·판례'): string {
+  const esc = (x: string) => x.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  const list = (ids ?? []).map(id => (D.rulings ?? []).find(r => r.id === id)).filter((r): r is Ruling => !!r);
+  if (!list.length) return '';
+  return `<details class="vat-more rulings"><summary><strong>${esc(title)}</strong> ${list.length}건 — 번호·요지만, 원문은 국세법령정보시스템·조세심판원·대법원에서 번호로</summary><ul class="meta-list">${list.map(r => `<li><span class="vbadge">${esc(r.kind)}</span> <strong>${esc(r.no)}</strong> ${esc(r.title)}${r.verify ? ' <span class="verdict check">원문 확인 필요</span>' : ''}<br/><span class="note">${esc(r.gist)}${r.note ? ' — ' + esc(r.note) : ''}${r.src ? ` <em>(${esc(r.src)}${r.url ? `, <a href="${esc(r.url)}" target="_blank" rel="noopener">읽은 곳</a>` : ''})</em>` : ''}</span></li>`).join('')}</ul></details>`;
 }

@@ -7,7 +7,7 @@
 export type Basis = { law: string; art: string };
 /** 유권해석·판례·심판례(rules.yml rulings, 2026-10-28) — 번호·요지만, 평가 없음 */
 export type Inquiry = { key: string; fac?: string; title: string; channel: string; facts: string[]; questions: string[]; views: { name: string; text: string }[]; laws: Basis[]; rulings?: string[]; attach?: string[] };
-export type Ruling = { id: string; kind: string; no: string; title: string; gist: string; note?: string; src?: string; url?: string; verify?: boolean };
+export type Ruling = { id: string; kind: string; no: string; title: string; gist: string; note?: string; src?: string; url?: string; verify?: boolean; law_id?: number; ulex?: string; tt?: string; text?: string };
 export type Opt = { key: string; name: string };
 export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
 export type Data = {
@@ -336,7 +336,7 @@ export function rulingsHtml(D: Data, ids: string[] | undefined, title = '근거 
   const esc = (x: string) => x.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
   const list = (ids ?? []).map(id => (D.rulings ?? []).find(r => r.id === id)).filter((r): r is Ruling => !!r);
   if (!list.length) return '';
-  return `<details class="vat-more rulings"><summary><strong>${esc(title)}</strong> ${list.length}건 — 번호·요지만, 원문은 국세법령정보시스템·조세심판원·대법원에서 번호로</summary><ul class="meta-list">${list.map(r => `<li><span class="vbadge">${esc(r.kind)}</span> <strong>${esc(r.no)}</strong> ${esc(r.title)}${r.verify ? ' <span class="verdict check">원문 확인 필요</span>' : ''}<br/><span class="note">${esc(r.gist)}${r.note ? ' — ' + esc(r.note) : ''}${r.src ? ` <em>(${esc(r.src)}${r.url ? `, <a href="${esc(r.url)}" target="_blank" rel="noopener">읽은 곳</a>` : ''})</em>` : ''}</span></li>`).join('')}</ul></details>`;
+  return `<details class="vat-more rulings"><summary><strong>${esc(title)}</strong> ${list.length}건 — 번호·요지만, 원문은 국세법령정보시스템·조세심판원·대법원에서 번호로</summary><ul class="meta-list">${list.map(r => `<li><span class="vbadge">${esc(r.kind)}</span> <strong>${esc(r.no)}</strong> ${esc(r.title)}${r.verify ? ' <span class="verdict check">원문 확인 필요</span>' : ''}<br/><span class="note">${esc(r.gist)}${r.note ? ' — ' + esc(r.note) : ''}${r.src ? ` <em>(${esc(r.src)}${r.url ? `, <a href="${esc(r.url)}" target="_blank" rel="noopener">읽은 곳</a>` : ''})</em>` : ''}</span>${r.text ? `<details class="vat-more"><summary>원문 보기 (${r.text.length.toLocaleString('ko-KR')}자)</summary><pre style="white-space:pre-wrap;font-size:var(--small);line-height:1.5;max-height:24rem;overflow:auto;border:1px solid var(--line-strong);padding:.75rem;border-radius:var(--radius)">${esc(r.text)}</pre></details>` : ''}</li>`).join('')}</ul></details>`;
 }
 
 /** 국세청 질의서 초안 글자(운영자 2026-10-28 '국세청 질의도 붙여'): {org}·{facilities}·{basis} 를 채우고 [ ] 는 기관이 채운다. 사람 이름·전화·금액 없음 */

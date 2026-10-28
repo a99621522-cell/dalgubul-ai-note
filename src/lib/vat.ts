@@ -32,6 +32,9 @@ export function vatRules(): VatRules | null {
   const p = 'data/vat/rules.yml';
   if (!fs.existsSync(p)) return null;
   cache = yaml.load(fs.readFileSync(p, 'utf-8')) as VatRules;
+  /* 유권해석·판례 원문(data/vat/rulings/<id>.txt, scripts/fetch_vat_rulings.py 가 국가법령정보센터·조세심판원·U-LEX 에서 받음 — 운영자 2026-10-28 '니가 받아서 붙여') */
+  const dir = 'data/vat/rulings';
+  for (const r of ((cache as unknown as { rulings?: { id: string; text?: string }[] }).rulings ?? [])) { const f = `${dir}/${r.id}.txt`; if (fs.existsSync(f)) r.text = fs.readFileSync(f, 'utf-8'); }
   return cache;
 }
 /** 국가법령정보센터 조문 링크: https://www.law.go.kr/법령/부가가치세법/제39조 */

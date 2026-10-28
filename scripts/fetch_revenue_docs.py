@@ -69,20 +69,28 @@ def to_text(pdf: Path, txt: Path) -> bool:
 
 
 def cms_token(g: dict, jar: Path) -> str:
-    """동구·서구 누리집(같은 CMS): 화면의 download 폼 csrfToken(세션 쿠키와 짝) — POST /file/direct/download.do (csrfToken, filename, path)"""
+    """동구·서구 누리집(같은 CMS): download 폼의 CSRF 숨은 값 — 동구는 name=csrfToken, 서구는 name=_csrf(16차). 폼 안의 csrf 이름을 찾아 g["_csrf_name"] 에 두고 값을 돌려준다. POST /file/direct/download.do (<csrf 이름>, filename, path)"""
     # curl: true 지자체(서구·중구)는 러너 IP 에 따라 TCP 연결 자체가 막히므로(45~60초 시간 초과) 1회 25초로 빨리 끝내고, 워크플로를 다시 돌려 다른 IP 를 받는 쪽이 빠르다(2026-10-28 14차)
     page = (get(g["page"], jar=jar, tries=1, timeout=25) if g.get("curl") else get(g["page"], jar=jar, tries=4, timeout=60, backoff=40)).decode("utf-8", "ignore")
-    m = (re.search(r'name=["\']csrfToken["\'][^>]*value=["\']([^"\']+)', page) or re.search(r'value=["\']([^"\']+)["\'][^>]*name=["\']csrfToken', page)
-         or re.search(r'<meta[^>]+name=["\'](?:_csrf|csrf-token|csrfToken)["\'][^>]+content=["\']([^"\']+)', page)
-         or re.search(r'csrfToken["\']?\s*[:=]\s*["\']([A-Za-z0-9_\-]{8,})', page))
-    if not m:
-        ctx = [re.sub(r"\s+", " ", page[max(0, x.start() - 100):x.end() + 160]) for x in list(re.finditer(r"csrf", page, re.I))[:6]]
-        print(f"[revenue] {g['name']} 화면 {len(page)}B, csrfToken 없음 :: " + " ‖ ".join(ctx)[:1500])
-    return m.group(1) if m else ""
+    form = re.search(r'<form\b[^>]*action=["\'][^"\']*/file/direct/download\.do["\'][^>]*>(.*?)</form>', page, re.S | re.I)
+    scope = form.group(1) if form else page
+    m = re.search(r'<input[^>]+name=["\']([^"\']*csrf[^"\']*)["\'][^>]*value=["\']([^"\']+)["\']', scope, re.I) or re.search(r'<input[^>]+value=["\']([^"\']+)["\'][^>]*name=["\']([^"\']*csrf[^"\']*)["\']', scope, re.I)
+    if m:
+        a, b = m.group(1), m.group(2)
+        name, val = (a, b) if "csrf" in a.lower() else (b, a)
+        g["_csrf_name"] = name
+        return val
+    m2 = re.search(r'<meta[^>]+name=["\'](?:_csrf|csrf-token|csrfToken)["\'][^>]+content=["\']([^"\']+)', page) or re.search(r'csrfToken["\']?\s*[:=]\s*["\']([A-Za-z0-9_\-]{8,})', page)
+    if m2:
+        g.setdefault("_csrf_name", "csrfToken")
+        return m2.group(1)
+    ctx = [re.sub(r"\s+", " ", page[max(0, x.start() - 100):x.end() + 160]) for x in list(re.finditer(r"csrf", page, re.I))[:6]]
+    print(f"[revenue] {g['name']} 화면 {len(page)}B, csrf 값 없음 :: " + " ‖ ".join(ctx)[:1500])
+    return ""
 
 
 def cms_post(g: dict, jar: Path, token: str, filename: str, out: Path | None = None) -> bytes:
-    return get(g["download_url"], out, post={"csrfToken": token, "filename": filename, "path": g["path"]}, referer=g["page"], jar=jar, tries=2, timeout=90)
+    return get(g["download_url"], out, post={g.get("_csrf_name", "csrfToken"): token, "filename": filename, "path": g["path"]}, referer=g["page"], jar=jar, tries=2, timeout=90)
 
 
 def probe_post(g: dict) -> None:

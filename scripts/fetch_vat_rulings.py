@@ -148,10 +148,11 @@ def from_pdf(spec: dict) -> tuple[str, dict]:
     body = txt[best.start(): best.start() + e.start()] if e else txt[best.start():]
     # 줄 머리의 장식 공백·쪽 머리글(책 제목 … 쪽수)은 지우고 본문만
     body = re.sub(r"^[ \t]+", "", body, flags=re.M)
-    body = re.sub(r"^\f?(?:부가가치세 집행기준|제\s*\d+\s*장[^\n]*_\s*\d+)[^\n]*\n", "", body, flags=re.M)
+    body = re.sub(r"^\f?[ \t]*(?:\d+_\s*부가가치세 집행기준|부가가치세 집행기준\s+제\s*\d+\s*장[^\n]*_\s*\d+)[ \t]*$\n?", "", body, flags=re.M)   # 쪽 머리글·꼬리글
     body = re.sub(r"\f", "\n", body)
     body = re.sub(r"[ \t]{2,}", " ", body)
     body = re.sub(r"\n{3,}", "\n\n", body).strip()
+    body = re.sub(r"\n\s*집행기준\s*$", "", body)   # 다음 번호의 머리말 '집행기준' 이 잘려 남은 것
     p1 = txt[: best.start()].count("\f") + 1
     p2 = txt[: best.start() + (e.start() if e else 0)].count("\f") + 1
     head = f"{spec.get('book', '')} 중 집행기준 {spec['start']} ~ {spec['end']} 앞까지 발췌 (PDF {pages}쪽 가운데 {p1}~{p2}쪽, 글자는 pdftotext 로 풀어 줄바꿈·표 배치가 원본과 다를 수 있음)\n"

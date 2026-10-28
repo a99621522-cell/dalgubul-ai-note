@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """소스 추가 전 확인용: robots.txt 와 첫 화면의 메뉴·게시판 링크를 찍는다(첫 화면 1회, 그 밖의 쪽은 열지 않는다).
 이 세션 환경은 외부 사이트가 막혀 있어 GitHub Actions(site_probe.yml)로 돌리고 로그로 본다.
-사용: python3 scripts/site_probe.py <url> [--render] [--dump] [--text] [--raw] [--xhr [--click 글자1,글자2@2] [--body N] [--js 낱말]]
+사용: python3 scripts/site_probe.py <url> [--render] [--dump] [--text] [--raw] [--xhr [--click 글자1,글자2@2] [--body N] [--js 정규식]]
 --xhr: 브라우저로 열어 화면이 숫자를 받아 오는 내부 요청(XHR·fetch)의 주소·방식·보낸 값·응답 앞 600자를 찍는다.
   --click 은 연 뒤 그 글자가 든 요소를 차례로 누른다(지역·메뉴 고르기). 화면 하나 확인용이지 수집기가 아니다.
 --text: 운영자가 준 기사·공지 한 쪽의 제목·날짜·본문 글자만 찍는다(robots.txt 가 그 경로를 막으면 본문은 찍지 않는다). 수집기가 아니라 한 번 읽기용.
@@ -118,7 +118,7 @@ def xhr(url):
         if jsgrep and req.resource_type == "script":
             try: js = resp.text()
             except Exception: js = ""
-            hits = [l.strip()[:300] for l in js.splitlines() if jsgrep in l]
+            hits = [l.strip()[:300] for l in js.splitlines() if re.search(jsgrep, l)]
             print(f"\n## script {req.url} ({len(js):,}자) — '{jsgrep}' 든 줄 {len(hits)}개" + ("\n   " + "\n   ".join(hits[:150]) if hits and not re.search(r"jquery|lib/|plugin|vendor", req.url) else ""))
             return
         if req.resource_type not in ("xhr", "fetch"): return
@@ -145,7 +145,7 @@ def xhr(url):
         print(f"== title: {pg.title()}  최종 주소: {pg.url}")
         if jsgrep:   # 화면 안(inline) 스크립트 속 줄도
             for i, sc in enumerate(BeautifulSoup(pg.content(), "html.parser").find_all("script")):
-                hits = [l.strip()[:300] for l in (sc.string or "").splitlines() if jsgrep in l]
+                hits = [l.strip()[:300] for l in (sc.string or "").splitlines() if re.search(jsgrep, l)]
                 if hits: print(f"## inline script[{i}] — '{jsgrep}' 든 줄 {len(hits)}개\n   " + "\n   ".join(hits[:150]))
         for c in clicks:
             print(f"\n==== 누름: {c}")

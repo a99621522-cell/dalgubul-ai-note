@@ -48,7 +48,7 @@ on:
         required: false
         default: ""
       js:
-        description: "xhr 때 화면 스크립트(/js/) 속 이 낱말이 든 줄을 찍기(예: actionId — 내부 요청 이름·인자 찾기)"
+        description: "xhr 때 화면 스크립트 속 이 정규식에 맞는 줄을 찍기(예: actionId|paramData — 내부 요청 이름·인자 찾기)"
         required: false
         default: ""
 

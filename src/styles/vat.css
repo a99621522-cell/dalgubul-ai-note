@@ -124,3 +124,16 @@ dialog.vat-dlg::backdrop { background: rgba(0,0,0,.4); }
 .steps button[aria-current] { border-color: var(--primary); color: var(--primary); font-weight: 700; }
 @media print { .vat-nav, .vat-ctx, #vat-toast, button.help, .vat-skip { display: none !important; } }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* 기관 설정 3단계 시설 그리드(공무원 UX 재설계) */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: var(--s2) 0; }
+.chip { font: inherit; font-size: var(--small); padding: 6px 12px; min-height: 32px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--bg); color: var(--ink); cursor: pointer; }
+.chip[aria-pressed=true] { background: var(--band, var(--surface)); border-color: var(--primary); font-weight: 700; color: var(--primary); }
+.bulk { margin: var(--s1) 0 var(--s2); }
+.vat-grid { min-width: 980px; }
+.vat-grid th input[type=text], .vat-grid td input[type=text] { width: 100%; min-width: 7em; min-height: 36px; padding: 0 8px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); font: inherit; font-size: var(--small); }
+.vat-grid td select { min-height: 36px; max-width: 15em; font: inherit; font-size: var(--small); padding: 0 6px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); }
+.vat-grid td.inc { white-space: nowrap; } .vat-grid td.inc label { display: inline-flex; align-items: center; gap: 4px; margin-right: 8px; font-size: var(--tiny); }
+.vat-grid tr[data-pending] th, .vat-grid tr[data-pending] td { background: #fffbf0; }
+.vat-grid tr.sub td { background: var(--surface); } .vat-grid tr.sub .vc-form { margin: 0; }
+.vat-grid input[type=checkbox] { width: 20px; height: 20px; }
+@media (prefers-color-scheme: dark) { .vat-grid tr[data-pending] th, .vat-grid tr[data-pending] td { background: #2e2a1a; } }

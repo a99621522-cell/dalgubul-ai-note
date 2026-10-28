@@ -1,5 +1,5 @@
 /** /vat/setup/ 기관 설정 마법사(신고 담당). 5문항 → org.json + 시설 카드. localStorage 저장, 서버 없음, 개인정보 없음. */
-import { FEE_NAME, type Fee, $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, runName, STATUS_LABEL_SHORT, uid, ymd, reduceMotion, type Data, type Org, type OrgFacility, type Run, type OrgKind } from './vat_rules';
+import { FEE_NAME, type Fee, $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, runName, STATUS_LABEL_SHORT, uid, ymd, reduceMotion, toast, vatConfirm, gridKeys, helpWire, type Data, type Org, type OrgFacility, type Run, type OrgKind } from './vat_rules';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
@@ -23,17 +23,23 @@ function init(D: Data) {
   const fill1 = () => { ($<HTMLInputElement>('st-org')!).value = org.org; ($<HTMLInputElement>('st-dept')!).value = org.dept; kindRadios.forEach(r => { r.checked = r.value === (org.kind ?? 'gov'); }); ($<HTMLInputElement>('st-parent')!).value = org.parent ?? ''; syncKind(); unitRadios.forEach(r => { r.checked = r.value === org.unit; }); ($<HTMLInputElement>('st-regno')!).value = org.reg_no ?? ''; syncUnit(); ($<HTMLInputElement>('st-day')!).value = String(org.handover_day || 5); document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); }); };
   const read1 = () => { org.org = ($<HTMLInputElement>('st-org')!).value.trim(); org.dept = ($<HTMLInputElement>('st-dept')!).value.trim(); syncKind(); org.parent = ($<HTMLInputElement>('st-parent')!).value.trim() || undefined; syncUnit(); org.reg_no = ($<HTMLInputElement>('st-regno')!).value.trim() || undefined; };
   /* 2단계 */
+  /* smart default(공무원 UX 재설계 2026-10-28): 새로 고른 시설의 수입 종류 기본값을 유형으로 — 임대·사용허가는 세금계산서(+보증금), 그 밖은 카드. 불러온 시설은 그대로 */
+  const DEF_INV = new Set(['lease', 'use_permit', 'lease_bldg', 'ad_space']);
+  const defIncome = (t: string) => DEF_INV.has(t) ? ['invoice'] : ['card'];
   const read2 = () => {
     const types = [...document.querySelectorAll<HTMLInputElement>('input[name=st-type]:checked')].map(c => c.value);
-    for (const t of types) if (!org.facilities.some(f => f.type === t)) org.facilities.push({ id: uid(), type: t, name: facilityRule(D, { type: t } as OrgFacility)?.name.split('(')[0].trim() ?? t, run: 'direct', income: ['card'], deposit: false });
+    for (const t of types) if (!org.facilities.some(f => f.type === t)) org.facilities.push({ id: uid(), type: t, name: facilityRule(D, { type: t } as OrgFacility)?.name.split('(')[0].trim() ?? t, run: 'direct', income: defIncome(t), deposit: t === 'lease' });
     org.facilities = org.facilities.filter(f => f.type === 'other' || f.note || types.includes(f.type));
     const others = ($<HTMLInputElement>('st-other')!).value.split(',').map(s => s.trim()).filter(Boolean);
     for (const o of others) if (!org.facilities.some(f => f.type === 'other' && f.name === o)) org.facilities.push({ id: uid(), type: 'other', name: o, run: 'direct', income: ['card'], deposit: false });
   };
   /* 예시 불러오기(공개 조례로 만든 시설 목록, 운영 방식은 '확인 필요') */
-  document.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach(b => b.addEventListener('click', () => {
+  /* 되돌리기(공무원 UX 재설계): 덮어쓰기·지우기 전에 직전 설정을 vat-org-backup-v1 에 두고 토스트로 되돌린다 */
+  const backup = () => { const snap = JSON.stringify(org); try { localStorage.setItem('vat-org-backup-v1', snap); } catch { /* */ } return () => { org = JSON.parse(snap) as Org; save(); fill1(); show(org.facilities.length ? 3 : 1); }; };
+  document.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach(b => b.addEventListener('click', async () => {
     const p = (D.presets ?? []).find(x => x.key === b.dataset.preset); if (!p) return;
-    if (org.facilities.length && !confirm(`지금 시설 ${org.facilities.length}곳을 지우고 ${p.org} 예시 ${p.facilities.length}곳으로 바꿉니다.`)) return;
+    if (org.facilities.length && !(await vatConfirm(`지금 시설 ${org.facilities.length}곳을 지우고 ${p.org} 예시 ${p.facilities.length}곳으로 바꿉니다. 바꾼 뒤 10초 안에 되돌릴 수 있습니다.`, '바꾸기'))) return;
+    const undo = backup(); toast(`${p.org} 예시 ${p.facilities.length}곳으로 바꿨습니다`, { fn: undo });
     read1(); if (!org.org) { org.org = p.org; ($<HTMLInputElement>('st-org')!).value = p.org; }
     org.facilities = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? ''), ...(f.alias?.length ? { alias: f.alias } : {}) }));
     document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
@@ -60,7 +66,7 @@ function init(D: Data) {
     save(); $('st-rev-note')!.textContent = `매핑표에 ${n}줄 추가(세출 세부사업 → 시설). 시설 이름과 맞지 않는 공공운영비 사업 ${ops}개는 붙여넣기 때 '행정과 함께'(본청 공통) 후보입니다.`;
   });
   $('st-rev-add')?.addEventListener('click', () => {
-    const g = govs.find(x => x.key === govSel!.value); if (!g) return; read1(); if (!org.org) { org.org = g.name; ($<HTMLInputElement>('st-org')!).value = g.name; }
+    const g = govs.find(x => x.key === govSel!.value); if (!g) return; read1(); const undoRev = backup(); if (!org.org) { org.org = g.name; ($<HTMLInputElement>('st-org')!).value = g.name; }
     const clean = (s: string) => s.replace(/\s*(수입|입장료|사용료|임대료|이용료|관람료|주차요금|주차료|대관료|수강료|회비|요금)\s*(수입)?$/g, '').replace(/\(.*?\)/g, '').trim() || s;
     /* 이미 있는 시설(조례 예시·직접 입력)과 이름으로 합치기(운영자 지시 2026-10-27 '1번부터 니가 할 수 있는 일을 해' — 5번 조례 시설 ↔ 세입 시설 후보): 정리한 이름이 서로 품거나(달성화석박물관 ⊂ 달성화석박물관 관람료), 앞 6글자 이상 같고 나머지 낱말도 들어 있으면(낙동강 레포츠밸리 오토캠핑장 ↔ 낙동강 레포츠밸리 구지오토캠핑장; 앞글자만 같은 음식물류폐기물 납부필증 ↔ 처리수수료는 안 합침) 그 시설에 세입 사업을 붙인다. 별칭(alias)도 같이 본다 */
     const pref = (a: string, b: string) => { let n = 0; while (n < a.length && n < b.length && a[n] === b[n]) n++; return n; };
@@ -76,31 +82,64 @@ function init(D: Data) {
       org.facilities.push({ id: uid(), type, name: name.slice(0, 40), run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: '', kind: org.kind ?? 'gov', rev: [r.item], note: `${line} — 운영 방식·등록번호 확인` }); n++;
     }
     document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
-    save(); alert(`새 시설 후보 ${n}곳을 넣고, 이미 있는 시설 ${merged.size}곳에 세입 사업 ${k}건을 붙였습니다(시설 메모에 부서·목·예산). 3단계에서 운영 방식·등록번호를 채우고 필요 없는 것은 지우세요.`); show(3);
+    save(); toast(`새 시설 후보 ${n}곳을 넣고, 이미 있는 시설 ${merged.size}곳에 세입 사업 ${k}건을 붙였습니다 — 3단계에서 운영 방식·등록번호를 채우세요`, { fn: undoRev }); show(3);
   });
-  /* 3단계 */
+  /* 3단계 — 시설 그리드(공무원 UX 재설계 2026-10-28, docs/design/vat-ux-spec.md §3.1): 시설마다 카드 한 장 대신 표 한 줄. 필터(전체·검토 대기·확인 필요·번호 없음)·행 선택·일괄 적용·펼침 행(받는 것·확인 근거·메모·복제·빼기). 저장 로직(read3)은 같은 [data-k]·[data-inc] 를 읽는다 */
   const facBox = $('st-fac')!;
+  let facFilter: 'all' | 'pending' | 'check' | 'noreg' = 'all';
+  const rowSt = (f: OrgFacility) => { const r = facilityRule(D, f); const C = org.kind === 'contractor'; return ((C ? (r?.contractor_status === 'none' ? 'exempt' : r?.contractor_status) : r?.status) ?? r?.status ?? 'check') as 'taxable' | 'exempt' | 'check'; };
+  const matches = (f: OrgFacility) => facFilter === 'all' || (facFilter === 'pending' && f.run === 'unknown') || (facFilter === 'check' && rowSt(f) === 'check') || (facFilter === 'noreg' && org.unit === 'site' && !f.reg_no);
   function renderFac() {
-    if (!org.facilities.length) { facBox.innerHTML = '<p class="empty">2단계에서 시설을 고르세요.</p>'; return; }
-    facBox.innerHTML = org.facilities.map(f => { f.kind = org.kind ?? 'gov'; const r = facilityRule(D, f); const C = org.kind === 'contractor'; const st0 = (C ? (r?.contractor_status === 'none' ? 'exempt' : r?.contractor_status) : r?.status) ?? r?.status ?? 'check'; const st = st0; return `<div class="vc-form" data-fid="${f.id}">
-      <p class="q-title full"><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : '확인 필요'}</span> ${esc(r?.name ?? '직접 추가')}${C ? ' <span class="note">수탁기관 기준' + (r?.contractor_note ? ' — ' + esc(r.contractor_note) : '') + '</span>' : r?.interp ? '<span class="vbadge">유권해석·분류 확인</span>' : ''}</p>
-      <label>시설 이름 <input type="text" data-k="name" value="${esc(f.name)}" maxlength="40" /></label>
-      <label>운영 방식 <select data-k="run">${(Object.keys(RUN_NAME) as Run[]).filter(k => !(C && k === 'entrusted_own')).map(k => `<option value="${k}" ${f.run === k ? 'selected' : ''}>${runName(org.kind, k)}</option>`).join('')}</select></label>
-      <label>${C ? '담당 부서·위탁 부서(부서명만)' : '수탁기관·담당 부서(위탁일 때, 부서명만)'} <input type="text" data-k="contractor_dept" value="${esc(f.contractor_dept ?? '')}" placeholder="${C ? '예: 체육사업팀 / 군 ○○과' : '예: 시설관리공단 체육사업팀'}" /></label>
-      <label class="full" data-fee-q ${f.run === 'entrusted_own' && !C ? '' : 'hidden'}>수탁기관 자기 사업일 때 — 우리 기관이 수탁기관에게 받는 것 <select data-k="fee">${(Object.keys(FEE_NAME) as Fee[]).map(k => `<option value="${k}" ${(f.fee ?? 'unknown') === k ? 'selected' : ''}>${FEE_NAME[k]}</option>`).join('')}</select><span class="note">사용료·임대료를 받아 과세로 신고하고 있을 때만 우리 기관이 이 시설에 직접 낸 돈(수선·장비)의 부가세를 공제할 수 있습니다. 받지만 과세 신고 여부를 모르면 노랑, 무상이면 불공제. <strong>무상 → 유상(과세)으로 바꾸면</strong> 그 전에 산 건물·설비의 불공제 매입세액을 과세사업 전환 매입세액(시행령 제85조)으로 일부 되살릴 수 있습니다 — <a href="/vat/prepare/#p-convert">신고 준비의 전환 계산기</a>.</span></label>
-      ${st === 'check' ? `<label class="full">확인 결과·근거(유권해석·질의회신 번호, 결정일 — 정해졌으면 위 시설 유형을 과세·면세 유형으로 바꾸고 여기 근거를 남깁니다) <input type="text" data-k="decision" value="${esc(f.decision ?? '')}" maxlength="120" placeholder="예: 2026-09-01 세무서 질의회신 ○○, 과세로 처리" /></label>` : ''}
-      ${org.unit === 'site' ? `<label>이 시설(사업장)의 사업자등록번호 <input type="text" data-k="reg_no" value="${esc(f.reg_no ?? '')}" placeholder="000-00-00000" inputmode="numeric" /></label>` : ''}
-      <div class="q"><span class="q-title" style="font-size:var(--small)">수입은 어떻게 받나요(여럿)</span><div class="choices">
-        <label><input type="checkbox" data-inc="invoice" ${f.income.includes('invoice') ? 'checked' : ''}/> 세금계산서 발급(기관·법인 손님)</label>
-        <label><input type="checkbox" data-inc="card" ${f.income.includes('card') ? 'checked' : ''}/> 카드·현금영수증(개인 손님)</label>
-        <label><input type="checkbox" data-k="deposit" ${f.deposit ? 'checked' : ''}/> 임대 보증금을 받는다</label></div></div>
-      <div class="actions"><button type="button" class="link-btn" data-dup>같은 유형 하나 더</button><button type="button" class="link-btn" data-del>이 시설 빼기</button></div>
-      ${f.note ? `<p class="note full">출처 메모: ${esc(f.note)}</p>` : ''}${r?.note ? `<p class="note full">${esc(r.note)}</p>` : ''}</div>`; }).join('');
-    facBox.querySelectorAll<HTMLSelectElement>('select[data-k=run]').forEach(sel => sel.addEventListener('change', () => { const q = sel.closest<HTMLElement>('[data-fid]')!.querySelector<HTMLElement>('[data-fee-q]'); if (q) q.hidden = sel.value !== 'entrusted_own'; }));
-    facBox.querySelectorAll<HTMLButtonElement>('[data-dup]').forEach(b => b.addEventListener('click', () => { read3(); const f = org.facilities.find(x => x.id === b.closest<HTMLElement>('[data-fid]')!.dataset.fid)!; org.facilities.splice(org.facilities.indexOf(f) + 1, 0, { ...f, id: uid(), name: f.name + ' 2', reg_no: '' }); renderFac(); }));
-    facBox.querySelectorAll<HTMLButtonElement>('[data-del]').forEach(b => b.addEventListener('click', () => { read3(); org.facilities = org.facilities.filter(x => x.id !== b.closest<HTMLElement>('[data-fid]')!.dataset.fid); renderFac(); }));
+    if (!org.facilities.length) { facBox.innerHTML = '<p class="empty">2단계에서 시설을 고르세요. <a class="btn secondary" href="#" data-go2>시설 고르기</a></p>'; facBox.querySelector('[data-go2]')?.addEventListener('click', e => { e.preventDefault(); show(2); }); return; }
+    const C = org.kind === 'contractor'; const site = org.unit === 'site';
+    const nPend = org.facilities.filter(f => f.run === 'unknown').length, nChk = org.facilities.filter(f => rowSt(f) === 'check').length, nNoReg = site ? org.facilities.filter(f => !f.reg_no).length : 0;
+    if (!facBox.dataset.filterSet) { facBox.dataset.filterSet = '1'; facFilter = nPend ? 'pending' : 'all'; }
+    if ((facFilter === 'pending' && !nPend) || (facFilter === 'check' && !nChk) || (facFilter === 'noreg' && !nNoReg)) facFilter = 'all';   // 거른 결과가 비면 전체로(일괄 적용 뒤 화면이 비지 않게)
+    const chip = (k: typeof facFilter, name: string, n: number) => `<button type="button" class="chip" data-filter="${k}" aria-pressed="${facFilter === k}">${name} <b>${n}</b></button>`;
+    const runOpts = (sel: Run) => (Object.keys(RUN_NAME) as Run[]).filter(k => !(C && k === 'entrusted_own')).map(k => `<option value="${k}" ${sel === k ? 'selected' : ''}>${runName(org.kind, k)}</option>`).join('');
+    const row = (f: OrgFacility) => { f.kind = org.kind ?? 'gov'; const r = facilityRule(D, f); const st = rowSt(f); const pend = f.run === 'unknown'; const hid = matches(f) ? '' : 'hidden';
+      return `<tr data-fid="${f.id}" ${pend ? 'data-pending' : ''} ${hid}>
+        <td><input type="checkbox" data-sel aria-label="${esc(f.name)} 선택" /></td>
+        <th scope="row"><input type="text" data-k="name" value="${esc(f.name)}" maxlength="40" aria-label="시설 이름" /></th>
+        <td class="note"><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : '확인 필요'}</span> ${esc((r?.name ?? '직접 추가').split('(')[0])}${!C && r?.interp ? ' <span class="vbadge">유권해석</span>' : ''}</td>
+        <td><select data-k="run" aria-label="운영 방식">${runOpts(f.run)}</select></td>
+        <td><input type="text" data-k="contractor_dept" value="${esc(f.contractor_dept ?? '')}" placeholder="${C ? '체육사업팀 / 군 ○○과' : '공단 체육사업팀'}" aria-label="수탁기관·담당 부서" /></td>
+        ${site ? `<td><input type="text" data-k="reg_no" value="${esc(f.reg_no ?? '')}" placeholder="000-00-00000" inputmode="numeric" aria-label="사업자등록번호" /></td>` : ''}
+        <td class="inc"><label><input type="checkbox" data-inc="invoice" ${f.income.includes('invoice') ? 'checked' : ''}/> 계산서</label><label><input type="checkbox" data-inc="card" ${f.income.includes('card') ? 'checked' : ''}/> 카드</label><label><input type="checkbox" data-k="deposit" ${f.deposit ? 'checked' : ''}/> 보증금</label></td>
+        <td class="st"><span class="verdict check" data-pend-badge ${pend ? '' : 'hidden'}>검토 대기</span></td>
+        <td><button type="button" class="link-btn" data-more aria-expanded="false" aria-controls="sub-${f.id}">더보기</button></td></tr>
+      <tr class="sub" id="sub-${f.id}" data-sub="${f.id}" hidden><td colspan="${site ? 9 : 8}"><div class="vc-form">
+        <label class="full" data-fee-q ${f.run === 'entrusted_own' && !C ? '' : 'hidden'}>수탁기관 자기 사업일 때 — 우리 기관이 수탁기관에게 받는 것 <select data-k="fee">${(Object.keys(FEE_NAME) as Fee[]).map(k => `<option value="${k}" ${(f.fee ?? 'unknown') === k ? 'selected' : ''}>${FEE_NAME[k]}</option>`).join('')}</select><span class="note">사용료·임대료를 받아 과세로 신고하고 있을 때만 우리 기관이 이 시설에 직접 낸 돈(수선·장비)의 부가세를 공제할 수 있습니다. 받지만 과세 신고 여부를 모르면 노랑, 무상이면 불공제. 무상 → 유상(과세)으로 바꾸면 그 전에 산 건물·설비의 불공제 매입세액을 과세사업 전환 매입세액(시행령 제85조)으로 일부 되살릴 수 있습니다 — <a href="/vat/prepare/#p-convert">신고 준비의 전환 계산기</a>.</span></label>
+        ${st === 'check' ? `<label class="full">확인 결과·근거(유권해석·질의회신 번호, 결정일 — 정해졌으면 2단계에서 시설 유형을 과세·면세 유형으로 바꾸고 여기 근거를 남깁니다) <input type="text" data-k="decision" value="${esc(f.decision ?? '')}" maxlength="120" placeholder="예: 2026-09-01 세무서 질의회신 ○○, 과세로 처리" /></label>` : ''}
+        ${f.note ? `<p class="note full">출처 메모: ${esc(f.note)}</p>` : ''}${r?.note ? `<p class="note full">${esc(r.note)}</p>` : ''}${C && r?.contractor_note ? `<p class="note full">수탁기관 기준 — ${esc(r.contractor_note)}</p>` : ''}
+        <div class="actions"><button type="button" class="link-btn" data-dup>같은 유형 하나 더</button><button type="button" class="link-btn" data-del>이 시설 빼기</button></div></div></td></tr>`; };
+    facBox.innerHTML = `<div class="filters" role="group" aria-label="시설 거르기">${chip('all', '전체', org.facilities.length)}${chip('pending', '검토 대기', nPend)}${chip('check', '과세 여부 확인', nChk)}${site ? chip('noreg', '등록번호 없음', nNoReg) : ''}<span class="note" id="st-fac-live" aria-live="polite"></span></div>
+      <div class="bulk vc-form"><span class="q-title full" style="font-size:var(--small)">선택한 행에 한꺼번에 — 비워 둔 칸은 바꾸지 않습니다</span>
+        <label>운영 방식 <select data-bk="run"><option value="">— 바꾸지 않음 —</option>${runOpts('' as Run)}</select></label>
+        <label>${C ? '담당 부서' : '수탁기관·담당 부서'} <input type="text" data-bk="contractor_dept" placeholder="비우면 그대로" /></label>
+        ${site ? '<label>사업자등록번호 <input type="text" data-bk="reg_no" placeholder="비우면 그대로" inputmode="numeric" /></label>' : ''}
+        <div class="actions"><button type="button" class="btn secondary" data-bulk="sel">선택 행에 적용</button><button type="button" class="btn secondary" data-bulk="vis">보이는 행 전체에 적용</button></div></div>
+      <div class="scroll-x" tabindex="0" role="region" aria-label="시설 표"><table class="data-table vat-table vat-grid" id="st-grid" data-stack="off"><caption class="sr-only">시설마다 이름·운영 방식·등록번호·수입 종류</caption>
+      <thead><tr><th scope="col"><input type="checkbox" data-sel-all aria-label="보이는 행 모두 선택" /></th><th scope="col">시설 이름</th><th scope="col">유형 · 부가세</th><th scope="col">운영 방식</th><th scope="col">${C ? '담당 부서' : '수탁기관·부서'}</th>${site ? '<th scope="col">등록번호</th>' : ''}<th scope="col">수입</th><th scope="col">상태</th><th scope="col"><span class="sr-only">더보기</span></th></tr></thead>
+      <tbody>${org.facilities.map(row).join('')}</tbody></table></div>`;
+    const tbl = facBox.querySelector<HTMLTableElement>('#st-grid')!; gridKeys(tbl); helpWire(facBox, D);
+    const vis = () => [...tbl.querySelectorAll<HTMLTableRowElement>('tbody tr[data-fid]')].filter(tr => !tr.hidden);
+    const live = (m: string) => { const l = $('st-fac-live'); if (l) l.textContent = m; };
+    facBox.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(b => b.addEventListener('click', () => { facFilter = b.dataset.filter as typeof facFilter; facBox.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); read3(); tbl.querySelectorAll<HTMLTableRowElement>('tbody tr[data-fid]').forEach(tr => { const f = org.facilities.find(x => x.id === tr.dataset.fid)!; tr.hidden = !matches(f); if (tr.hidden) { const sub = tbl.querySelector<HTMLTableRowElement>(`tr[data-sub="${f.id}"]`); if (sub) { sub.hidden = true; tr.querySelector('[data-more]')?.setAttribute('aria-expanded', 'false'); } } }); live(`${vis().length}곳 보임`); }));
+    tbl.querySelector<HTMLInputElement>('[data-sel-all]')?.addEventListener('change', e => { const on = (e.target as HTMLInputElement).checked; vis().forEach(tr => { tr.querySelector<HTMLInputElement>('[data-sel]')!.checked = on; }); });
+    tbl.querySelectorAll<HTMLButtonElement>('[data-more]').forEach(b => b.addEventListener('click', () => { const tr = b.closest<HTMLTableRowElement>('tr')!; const sub = tbl.querySelector<HTMLTableRowElement>(`tr[data-sub="${tr.dataset.fid}"]`)!; const open = sub.hidden; sub.hidden = !open; b.setAttribute('aria-expanded', String(open)); b.textContent = open ? '접기' : '더보기'; }));
+    tbl.querySelectorAll<HTMLSelectElement>('select[data-k=run]').forEach(sel => sel.addEventListener('change', () => { const tr = sel.closest<HTMLTableRowElement>('tr')!; const sub = tbl.querySelector<HTMLElement>(`tr[data-sub="${tr.dataset.fid}"]`)!; const q = sub.querySelector<HTMLElement>('[data-fee-q]'); if (q) q.hidden = sel.value !== 'entrusted_own'; const pend = sel.value === 'unknown'; tr.toggleAttribute('data-pending', pend); tr.querySelector<HTMLElement>('[data-pend-badge]')!.hidden = !pend; if (sel.value === 'entrusted_own' && sub.hidden) { sub.hidden = false; tr.querySelector('[data-more]')?.setAttribute('aria-expanded', 'true'); } }));
+    tbl.querySelectorAll<HTMLButtonElement>('[data-dup]').forEach(b => b.addEventListener('click', () => { read3(); const fid = b.closest<HTMLElement>('[data-sub]')!.dataset.sub; const f = org.facilities.find(x => x.id === fid)!; org.facilities.splice(org.facilities.indexOf(f) + 1, 0, { ...f, id: uid(), name: f.name + ' 2', reg_no: '' }); renderFac(); }));
+    tbl.querySelectorAll<HTMLButtonElement>('[data-del]').forEach(b => b.addEventListener('click', () => { read3(); const fid = b.closest<HTMLElement>('[data-sub]')!.dataset.sub; const f = org.facilities.find(x => x.id === fid); if (!f) return; const snap = JSON.stringify(org.facilities); org.facilities = org.facilities.filter(x => x.id !== fid); renderFac(); toast(`'${f.name}'을 뺐습니다`, { fn: () => { org.facilities = JSON.parse(snap); renderFac(); } }); }));
+    /* 일괄 적용: 선택 행 또는 보이는 행 전체에 운영 방식·부서·등록번호 중 채운 것만 */
+    facBox.querySelectorAll<HTMLButtonElement>('[data-bulk]').forEach(b => b.addEventListener('click', () => {
+      read3(); const rows = b.dataset.bulk === 'sel' ? vis().filter(tr => tr.querySelector<HTMLInputElement>('[data-sel]')!.checked) : vis(); if (!rows.length) { live('선택한 행이 없습니다 — 왼쪽 체크 상자로 고르세요'); return; }
+      const g = (k: string) => facBox.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-bk=${k}]`)?.value.trim() ?? ''; const run = g('run') as Run | '', dept = g('contractor_dept'), reg = g('reg_no'); if (!run && !dept && !reg) { live('바꿀 값을 하나 이상 넣으세요'); return; }
+      const snap = JSON.stringify(org.facilities); let n = 0; for (const tr of rows) { const f = org.facilities.find(x => x.id === tr.dataset.fid)!; if (run) f.run = run; if (dept) f.contractor_dept = dept; if (reg) f.reg_no = reg; n++; }
+      renderFac(); live(`${n}행에 적용했습니다`); toast(`${n}행에 ${[run && `운영 방식 '${runName(org.kind, run).split('(')[0].trim()}'`, dept && '부서', reg && '등록번호'].filter(Boolean).join('·')} 적용`, { fn: () => { org.facilities = JSON.parse(snap); renderFac(); } }); }));
+    live(`${vis().length}곳 보임${nPend ? ` · 검토 대기 ${nPend}` : ''}`);
   }
-  const read3 = () => { facBox.querySelectorAll<HTMLElement>('[data-fid]').forEach(box => { const f = org.facilities.find(x => x.id === box.dataset.fid); if (!f) return; box.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]').forEach(el => { const k = el.dataset.k!; if (k === 'deposit') f.deposit = (el as HTMLInputElement).checked; else (f as unknown as Record<string, unknown>)[k] = el.value.trim(); }); f.income = [...box.querySelectorAll<HTMLInputElement>('[data-inc]:checked')].map(c => c.dataset.inc!); }); };
+  const read3 = () => { facBox.querySelectorAll<HTMLElement>('tr[data-fid]').forEach(box => { const f = org.facilities.find(x => x.id === box.dataset.fid); if (!f) return; const sub = facBox.querySelector<HTMLElement>(`tr[data-sub="${f.id}"]`); const els = [...box.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]'), ...(sub ? sub.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]') : [])]; els.forEach(el => { const k = el.dataset.k!; if (k === 'deposit') f.deposit = (el as HTMLInputElement).checked; else (f as unknown as Record<string, unknown>)[k] = el.value.trim(); }); f.income = [...box.querySelectorAll<HTMLInputElement>('[data-inc]:checked')].map(c => c.dataset.inc!); }); };
   const read4 = () => { org.handover_day = Math.min(28, Math.max(1, Number(($<HTMLInputElement>('st-day')!).value) || 5)); };
 
   /* 5단계 */
@@ -139,7 +178,7 @@ function init(D: Data) {
   document.querySelectorAll<HTMLButtonElement>('[data-prev]').forEach(b => b.addEventListener('click', () => { if (step === 3) read3(); save(); show(step - 1); }));
   $('st-download')?.addEventListener('click', () => { save(); downloadText(`org-${org.org || 'vat'}.json`, JSON.stringify(org, null, 2), 'application/json'); });
   $('st-print')?.addEventListener('click', () => { document.body.classList.add('print-cards'); window.print(); setTimeout(() => document.body.classList.remove('print-cards'), 500); });
-  $('st-reset')?.addEventListener('click', () => { if (!confirm('이 브라우저의 기관 설정을 지우고 처음부터 합니다. 내려받은 파일은 남습니다.')) return; setOrg(null); org = { v: 1, org: '', dept: '', unit: 'site', facilities: [], handover_day: 5, created: ymd(new Date()) }; fill1(); ($<HTMLInputElement>('st-other')!).value = ''; show(1); });
+  $('st-reset')?.addEventListener('click', async () => { if (!(await vatConfirm('이 브라우저의 기관 설정을 지우고 처음부터 합니다. 내려받은 파일은 남고, 10초 안에 되돌릴 수 있습니다.', '지우기'))) return; const undo = backup(); toast('기관 설정을 지웠습니다', { fn: undo }); setOrg(null); org = { v: 1, org: '', dept: '', unit: 'site', facilities: [], handover_day: 5, created: ymd(new Date()) }; fill1(); ($<HTMLInputElement>('st-other')!).value = ''; show(1); });
   $<HTMLInputElement>('st-open')?.addEventListener('change', async e => { const f = (e.target as HTMLInputElement).files?.[0]; if (!f) return; try { const o = await readJsonFile(f) as Org; if (!o || o.v !== 1 || !Array.isArray(o.facilities)) throw new Error('형식'); org = o; save(); fill1(); $('st-loaded')!.textContent = `열었습니다: ${o.org} · 시설 ${o.facilities.length}곳`; show(5); } catch { $('st-loaded')!.textContent = '기관 설정 파일(org.json)이 아닙니다.'; } });
   fill1(); show(getOrg() ? 5 : 1);
 }

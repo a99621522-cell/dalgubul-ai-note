@@ -23,6 +23,7 @@ CFG = yaml.safe_load((ROOT / "config" / "revenue_docs.yml").read_text(encoding="
 RAW = ROOT / "data" / "vat" / "revenue" / "raw"
 UA = "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"
 USE_CURL = "--curl" in sys.argv
+CURL_FOR = False   # 지자체 설정 curl: true 면 그 지자체 요청은 curl 로(2026-10-28: 서구·달서구·중구 누리집이 requests 연결은 끊고 크로미움·curl 은 받는다 — TLS 지문 차단으로 보임)
 S = requests.Session()
 S.headers["User-Agent"] = UA
 
@@ -30,7 +31,7 @@ S.headers["User-Agent"] = UA
 def get(url: str, out: Path | None = None, post: dict | None = None, referer: str = "", jar: Path | None = None, tries: int = 4, timeout: int = 240, backoff: float | None = None) -> bytes:
     for i in range(tries):
         try:
-            if USE_CURL:
+            if USE_CURL or CURL_FOR:
                 cmd = ["curl", "-sS", "-m", str(timeout), "-L", "-A", UA]
                 if jar:
                     cmd += ["-c", str(jar), "-b", str(jar)]
@@ -356,9 +357,11 @@ def probe_files(g: dict) -> None:
 def main() -> int:
     only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
     year = str(CFG["year"])
+    global CURL_FOR
     for g in CFG["govs"]:
         if only and g["key"] not in only:
             continue
+        CURL_FOR = bool(g.get("curl"))
         if g["kind"] == "discover":
             if "--parse-only" not in sys.argv:
                 if g.get("probe_base"):

@@ -145,6 +145,12 @@ rulings:
     verify: true
     src: 선우회계법인 정리(2차)
     url: https://m.cafe.daum.net/transtax/6wwY/595
+    pdf:   # 국세법령정보시스템 세법집행기준은 책자 PDF 로만 — 러너 vat_rulings.yml 이 받아 40-81-1 ~ 40-82-2(안분·정산) 를 발췌
+      url: https://taxlaw.nts.go.kr/downloadPDFFile.do?fleId=300000000000988310&fleSn=893309
+      page_url: https://taxlaw.nts.go.kr/st/USESTE001M.do?ntstBscId=100000000000001571
+      book: 국세청 「부가가치세 집행기준」(국세법령정보시스템 세법집행기준 책자 PDF, 게시 2024-10-31)
+      start: 40-81-1
+      end: 41-83-1
 
 # 국세청 질의서 초안(운영자 지시 2026-10-28 '국세청 질의도 붙여'): 유권해석이 없거나 분류에 달린 자리마다 기관이 그대로 보낼 수 있는 질의서 틀.
 # {org}·{facilities}·{basis} 는 화면이 기관 설정값으로 채우고, [ ] 안은 기관이 사실관계를 채운다. 사람 이름·전화·금액은 틀에 넣지 않는다. 갑설·을설은 쟁점을 보이는 두 읽기일 뿐 기관 입장이 아니다.

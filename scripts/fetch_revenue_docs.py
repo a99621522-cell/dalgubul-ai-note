@@ -32,7 +32,7 @@ def get(url: str, out: Path | None = None, post: dict | None = None, referer: st
     for i in range(tries):
         try:
             if USE_CURL or CURL_FOR:
-                cmd = ["curl", "-sS", "-m", str(timeout), "-L", "-A", UA]
+                cmd = ["curl", "-sS", "-m", str(timeout), "-L", "-A", UA, "-H", "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "-H", "Accept-Language: ko-KR,ko;q=0.9,en;q=0.5"]   # 중구 WAF 가 헤더 없는 요청에 400 을 돌려줘(15차) 보통 브라우저가 보내는 Accept 머리만 더함(UA 는 그대로)
                 if jar:
                     cmd += ["-c", str(jar), "-b", str(jar)]
                 if referer:
@@ -72,9 +72,12 @@ def cms_token(g: dict, jar: Path) -> str:
     """동구·서구 누리집(같은 CMS): 화면의 download 폼 csrfToken(세션 쿠키와 짝) — POST /file/direct/download.do (csrfToken, filename, path)"""
     # curl: true 지자체(서구·중구)는 러너 IP 에 따라 TCP 연결 자체가 막히므로(45~60초 시간 초과) 1회 25초로 빨리 끝내고, 워크플로를 다시 돌려 다른 IP 를 받는 쪽이 빠르다(2026-10-28 14차)
     page = (get(g["page"], jar=jar, tries=1, timeout=25) if g.get("curl") else get(g["page"], jar=jar, tries=4, timeout=60, backoff=40)).decode("utf-8", "ignore")
-    m = re.search(r'name=["\']csrfToken["\'][^>]*value=["\']([^"\']+)', page) or re.search(r'value=["\']([^"\']+)["\'][^>]*name=["\']csrfToken', page)
+    m = (re.search(r'name=["\']csrfToken["\'][^>]*value=["\']([^"\']+)', page) or re.search(r'value=["\']([^"\']+)["\'][^>]*name=["\']csrfToken', page)
+         or re.search(r'<meta[^>]+name=["\'](?:_csrf|csrf-token|csrfToken)["\'][^>]+content=["\']([^"\']+)', page)
+         or re.search(r'csrfToken["\']?\s*[:=]\s*["\']([A-Za-z0-9_\-]{8,})', page))
     if not m:
-        print(f"[revenue] {g['name']} 화면 {len(page)}B, csrfToken 없음 :: {re.sub(r'\\s+', ' ', page)[:600]}")
+        ctx = [re.sub(r"\s+", " ", page[max(0, x.start() - 100):x.end() + 160]) for x in list(re.finditer(r"csrf", page, re.I))[:6]]
+        print(f"[revenue] {g['name']} 화면 {len(page)}B, csrfToken 없음 :: " + " ‖ ".join(ctx)[:1500])
     return m.group(1) if m else ""
 
 

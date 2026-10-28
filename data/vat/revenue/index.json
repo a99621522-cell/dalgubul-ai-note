@@ -523,5 +523,66 @@
     "diff_k": 3096763
    }
   ]
+ },
+ "dalseo_2026": {
+  "gov": "달서구",
+  "year": "2026",
+  "source": "https://dalseo.daegu.kr/index.do?menu_id=10000139&menu_link=/front/icmsBudget/icmsBudgetDetail.do",
+  "fetched": "2026-10-28",
+  "_check": [
+   {
+    "mok": "511-01",
+    "mok_total_k": 605271098,
+    "items_k": 605216986,
+    "diff_k": 54112
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 22895616,
+    "items_k": 20145616,
+    "diff_k": 2750000
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 20958085,
+    "items_k": 20955748,
+    "diff_k": 2337
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 195560978,
+    "items_k": 194653898,
+    "diff_k": 907080
+   }
+  ],
+  "rows": 819,
+  "sum_k": 46700526,
+  "grant_k": 840972248,
+  "check": [
+   {
+    "mok": "511-01",
+    "mok_total_k": 605271098,
+    "items_k": 605216986,
+    "diff_k": 54112
+   },
+   {
+    "mok": "511-02",
+    "mok_total_k": 22895616,
+    "items_k": 20145616,
+    "diff_k": 2750000
+   },
+   {
+    "mok": "511-03",
+    "mok_total_k": 20958085,
+    "items_k": 20955748,
+    "diff_k": 2337
+   },
+   {
+    "mok": "521-01",
+    "mok_total_k": 195560978,
+    "items_k": 194653898,
+    "diff_k": 907080
+   }
+  ]
  }
 }

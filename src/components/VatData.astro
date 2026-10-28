@@ -1,0 +1,7 @@
+---
+import { vatRules, vatPresets } from '../lib/vat';
+/** 부가세 점검기 규칙(data/vat/rules.yml)을 페이지에 JSON 으로 묻는다 — src/scripts/vat_rules.ts loadData() 가 읽는다 */
+const R = vatRules();
+const json = JSON.stringify({ ...(R ?? {}), presets: vatPresets() }).replace(/</g, '\\u003c');
+---
+<script type="application/json" id="vat-data" set:html={json}></script>

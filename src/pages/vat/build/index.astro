@@ -1,0 +1,37 @@
+---
+import Base from '../../../layouts/Base.astro';
+import VatData from '../../../components/VatData.astro';
+import '../../../styles/vat.css';
+/** /vat/build/ — 신축·대수선 설계 단계 점검 + 조기환급 일정(세무회계법인 관점 검토 2026-10-27, 운영자 '니가 권장하는 순서대로' 2번). 공사비·예정사용면적·기간 → 공제·불공제 예상, 조기환급 신고·환급 기한, 설계·계약·집행·완공 점검표. 브라우저 안 계산만 */
+---
+<Base title="신축·대수선 부가세 설계 점검 — 조기환급" description="지자체 시설을 새로 짓거나 크게 고칠 때 공사비 매입세액의 공제 몫은 설계 단계의 과세·면세 예정사용면적과 계약 분리로 정해집니다. 공제·불공제 예상, 조기환급(매월·매 2월) 신고·환급 기한, 설계·계약·집행·완공 점검표를 브라우저 안에서 계산합니다." current="vat" crumb={[{ name: '지자체 부가세 절감 점검기', href: '/vat/' }]}>
+  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/schedule/">환급·기한 일정표</a> · <a href="/vat/prepare/">신고 준비</a></p>
+  <div class="section-head"><h1>신축·대수선 — 설계 단계에서 정해지는 공제 몫과 조기환급</h1><span class="meta">법 제59조 · 시행령 제81조 제4항 · 제107조</span></div>
+  <p class="lede">수백억 원 공사의 매입세액 가운데 돌려받는 몫은 <strong>착공 전</strong>에 정해집니다 — 과세·면세 예정사용면적, 계약 내역의 용도 구분, 세금계산서 명의, 사업자등록 시점. 공사 중에는 <strong>조기환급</strong>으로 매월(또는 2개월) 환급을 당깁니다. 운영을 직영하든 위탁하든 투자 주체는 기관이므로 이 점검은 같습니다.</p>
+
+  <form class="vc-form no-print" id="b-form" autocomplete="off" onsubmit="return false">
+    <label class="full">저장된 사업 불러오기 <select id="b-saved"><option value="">— 저장된 사업 —</option></select></label>
+    <label>사업 이름 <input type="text" id="b-name" placeholder="예: ○○체육센터 신축" maxlength="60" /></label>
+    <label>공사비 공급가액(원, 부가세 뺀 금액) <input type="text" id="b-cost" inputmode="numeric" placeholder="예: 20,000,000,000" /></label>
+    <label>그중 토지 관련 공사비(조성·형질변경·철거, 원) <input type="text" id="b-land" inputmode="numeric" placeholder="없으면 비움" /></label>
+    <label>과세 용도 전용 면적(㎡ — 체육·대관·임대·매점) <input type="text" id="b-tax" inputmode="decimal" placeholder="예: 3,200" /></label>
+    <label>면세·행정 용도 전용 면적(㎡ — 사무실·면세 프로그램실) <input type="text" id="b-ex" inputmode="decimal" placeholder="예: 800" /></label>
+    <label>공용 면적(㎡ — 복도·기계실, 전용 비율로 배분) <input type="text" id="b-shared" inputmode="decimal" placeholder="없으면 비움" /></label>
+    <label>공사 시작(첫 세금계산서) <input type="month" id="b-start" /></label>
+    <label>준공 예정 <input type="month" id="b-end" /></label>
+    <label>조기환급 신고 주기 <select id="b-every"><option value="1">매월</option><option value="2">매 2월</option><option value="0">조기환급 없이 예정·확정신고로만</option></select></label>
+    <label>이 시설의 사업자등록(사업장 추가) <select id="b-reg"><option value="yes">착공 전에 마침</option><option value="no">아직 안 함</option></select></label>
+    <div class="actions"><button type="button" class="btn" id="b-run">계산</button><button type="button" class="btn secondary" id="b-save">저장(이 브라우저)</button><button type="button" class="btn secondary" id="b-print">인쇄</button><button type="button" class="link-btn" id="b-del">저장 지우기</button><span class="meta" id="b-msg"></span></div>
+  </form>
+  <div id="b-result" aria-live="polite"></div>
+  <details class="vat-more"><summary>이 화면이 하는 계산</summary>
+    <ul class="meta-list">
+      <li>공제 예상 = (공사비 − 토지분) × 10% × 과세 예정사용면적 비율. 면세 비율 = 면세 전용 ÷ (과세 전용 + 면세 전용), 공용 면적은 그 비율로 배분(참고). 실제 안분·정산은 신고 준비 화면의 등록 단위 계산을 따릅니다.</li>
+      <li>조기환급기간은 예정신고기간(1~3월·7~9월)과 과세기간 최종 3개월(4~6월·10~12월) 안에서 매월 또는 매 2월로 끊고 분기 경계를 넘기지 않습니다. 신고기한 = 기간 끝난 날부터 25일, 환급 기한 = 신고기한 뒤 15일(시행령 제107조 제4항). 비교 열의 '분기 신고로만'은 예정·확정신고기한 뒤 15일(설비 투자는 법 제59조 제1항 괄호).</li>
+      <li>집행은 공사 기간에 균등하다고 가정합니다. 실제 기성 청구 일정으로 바꾸려면 표를 CSV로 받아 고치세요.</li>
+      <li>조문 번호와 뜻만 적었고 평가가 아닙니다. 신고 책임은 신고인에게 있습니다.</li>
+    </ul>
+  </details>
+  <VatData />
+  <script>import '../../../scripts/vat_build';</script>
+</Base>

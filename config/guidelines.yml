@@ -76,3 +76,10 @@ guidelines:
       applies: { layer: 기관, program_type: [출연, 전체] }, review: [예산요구서, 결산서] }
   - { key: daegu-industry-ord, kind: 조례,   issuer: 대구광역시,      name: 대구광역시 지역산업 육성 및 지원 조례,      source: { type: ordin,  name: 대구광역시지역산업육성및지원조례 },
       applies: { layer: 시비, program_type: [보조금, 출연, 전체], name_pattern: "산업|기업|육성|지원" }, review: [예산요구서] }
+  # ── 부가가치세(지자체 과세사업 신고 — /vat/ 점검기 근거, 운영자 지시 2026-10-27). 사업 DB 연결(applies) 없음, 본문은 data/vat/rules.yml 의 verify 항목 검토용 ──
+  - { key: vat-act,            kind: 법률,   issuer: 기획재정부,      name: 부가가치세법,                             source: { type: law,    name: 부가가치세법 },
+      review: [부가가치세 신고] }
+  - { key: vat-decree,         kind: 시행령, issuer: 기획재정부,      name: 부가가치세법 시행령,                      source: { type: law,    name: 부가가치세법시행령 },
+      review: [부가가치세 신고] }
+  - { key: vat-rule,           kind: 시행규칙, issuer: 기획재정부,    name: 부가가치세법 시행규칙,                    source: { type: law,    name: 부가가치세법시행규칙 },
+      review: [부가가치세 신고] }

@@ -1,0 +1,45 @@
+name: 지자체 세입예산사업명세서 받기
+
+# scripts/fetch_revenue_docs.py — 대구시·구군 누리집 재정공시의 세입예산사업명세서 PDF → data/vat/revenue/. 지자체 부가세 점검기 '과세사업 찾기' 맞춤형(운영자 지시 2026-10-27).
+# discover 종류(중구·동구·서구·남구·수성구·달서구)는 첨부 후보만 로그에 — 보고 config/revenue_docs.yml 에 url 을 채운다.
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "받을 지자체 key(쉼표, 비우면 전부)"
+        required: false
+        default: ""
+      runner:
+        description: "korea 면 국내 self-hosted 러너(라벨 korea)에서 — 중구·서구·달서구 누리집이 미국 러너 연결을 끊을 때"
+        required: false
+        default: ""
+  schedule:
+    - cron: "0 20 10 1,4,7,10 *"   # 분기 첫 달 11일 05:00 KST(본예산·추경 뒤)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: revenue-docs
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ${{ github.event.inputs.runner == 'korea' && fromJSON('["self-hosted","korea"]') || 'ubuntu-latest' }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get install -y -qq poppler-utils >/dev/null || (sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq poppler-utils >/dev/null)
+      - run: pip install -q -r scripts/requirements.txt
+      - run: python scripts/fetch_revenue_docs.py ${{ github.event.inputs.only && format('--only {0}', github.event.inputs.only) || '' }}
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vat/revenue || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 지자체 세입예산사업명세서 $(date +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done

@@ -1,0 +1,36 @@
+name: 부가세 점검기 유권해석 원문 받기
+
+# data/vat/rules.yml `rulings` 의 원문(국가법령정보센터 판례·조세심판원 결정문·U-LEX 전재 질의회신·국세법령정보시스템 집행기준 PDF)을 받아
+# data/vat/rulings/ 에 커밋한다. 국세법령정보시스템(taxlaw.nts.go.kr)은 작성 세션에서 막혀 있어 러너로 받는다(러너 IP 에 따라 연결이 안 되면 다시 실행).
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "받을 항목 id(쉼표, 비우면 전부) — 예: guide-40-81-4"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get install -y -qq poppler-utils >/dev/null || (sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq poppler-utils >/dev/null)
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          ONLY: ${{ inputs.only }}
+        run: python3 scripts/fetch_vat_rulings.py $([ -n "$ONLY" ] && echo --only "$ONLY")
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vat/rulings || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 부가세 점검기 유권해석 원문 $(date +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done

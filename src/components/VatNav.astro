@@ -15,5 +15,7 @@ const GROUPS: { name: string; items: { key: string; name: string; href: string }
   {GROUPS.map(g => <div class="vn-group"><span class="vn-name">{g.name}</span>{g.items.map(i => <a href={i.href} aria-current={i.key === current ? 'page' : undefined}>{i.name}</a>)}</div>)}
 </nav>
 <div id="vat-ctx" class="vat-ctx no-print" role="status" aria-live="polite"><span class="meta">이 브라우저의 설정·기록 확인 중…</span></div>
+<div class="vat-util no-print"><div class="vat-fs" role="group" aria-label="글자 크기"><button type="button" data-fs="0" aria-pressed="true">가 기본</button><button type="button" data-fs="1" aria-pressed="false">가 크게</button><button type="button" data-fs="2" aria-pressed="false">가 더 크게</button></div></div>
+<script is:inline>try{var f=localStorage.getItem('vat-fs');if(f==='1'||f==='2')document.documentElement.setAttribute('data-fs',f);}catch(e){}</script>
 <span id="vat-main" tabindex="-1"></span>
 <script>import '../scripts/vat_ctx';</script>

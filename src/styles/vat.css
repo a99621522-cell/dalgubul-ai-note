@@ -156,3 +156,23 @@ dialog.vat-dlg::backdrop { background: rgba(0,0,0,.4); }
 .tabs [role=tab][aria-selected=true] { background: var(--bg); border-bottom: 2px solid var(--bg); font-weight: 700; color: var(--primary); }
 @media (prefers-color-scheme: dark) { .ps-row.warn .v { color: #ffd98a; } }
 @media print { .tabs, .p-sum, #p-steps { display: none !important; } section.ftab[hidden], .pstep[hidden] { display: block !important; } #p-sav-wrap, details.vat-more { open: 1; } }
+/* 신호등: 색 + 모양(WCAG 1.4.1, 공무원 UX 재설계) — 초록 ● 파랑 ◆ 빨강 ■ 노랑 ▲ 회색 ○ */
+.sig { border: 0; background: currentColor; }
+.sig.ok { color: #2f9e4f; border-radius: 50%; } .sig.split { color: #2a6fdb; border-radius: 0; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); } .sig.no { color: #d7263d; border-radius: 2px; }
+.sig.check { color: #c99400; border-radius: 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); } .sig.none { color: #9aa0a6; background: transparent; border: 3px solid currentColor; border-radius: 50%; box-sizing: border-box; }
+@media (forced-colors: active) { .sig { forced-color-adjust: none; color: CanvasText; } .sig.none { border-color: CanvasText; } }
+/* 글자 크기 토글(/vat/* 만, localStorage vat-fs) */
+html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; }
+.vat-fs { display: inline-flex; gap: 2px; margin-left: auto; } .vat-fs button { font: inherit; font-size: var(--tiny); min-width: 32px; min-height: 28px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--ink); border-radius: var(--radius); cursor: pointer; }
+.vat-fs button[aria-pressed=true] { background: var(--band, var(--surface)); border-color: var(--primary); font-weight: 700; }
+/* 인쇄(A4·머리글·표 머리 반복) — 결과·기록·시설 카드 */
+@media print {
+  @page { size: A4; margin: 12mm; }
+  body[data-print-head]::before { content: attr(data-print-head); display: block; font-size: 9pt; color: #555; border-bottom: 1px solid #999; padding-bottom: 4pt; margin-bottom: 8pt; }
+  thead { display: table-header-group; } tr { break-inside: avoid; page-break-inside: avoid; }
+  .vat-grid tr.sub, .bulk, .filters, .colmap, .todo .btn, .p-main > .actions, .vat-more > summary::marker { display: none !important; }
+  .vc-card, .fcard, .p-todo { border-color: #999; }
+  a[href]::after { content: none; }
+}
+/* 과세사업 찾기 묶음 펼침 */
+#dc-list details.vat-more > summary { font-size: 1.05rem; }

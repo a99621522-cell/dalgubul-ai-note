@@ -18,3 +18,15 @@ render();
 document.addEventListener('vat:saved', render);
 window.addEventListener('storage', render);
 helpWire(document, loadData());
+
+/* 글자 크기 토글(공무원 UX 재설계 §5): html[data-fs] 0/1/2 → --text-base 18/20/22px, /vat/* 에서만 */
+const fsBtns = [...document.querySelectorAll<HTMLButtonElement>('.vat-fs button')];
+const fsApply = (v: string) => { if (v === '0') document.documentElement.removeAttribute('data-fs'); else document.documentElement.setAttribute('data-fs', v); fsBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fs === v))); try { localStorage.setItem('vat-fs', v); } catch { /* */ } };
+fsBtns.forEach(b => b.addEventListener('click', () => fsApply(b.dataset.fs ?? '0')));
+{ const cur = document.documentElement.getAttribute('data-fs') ?? '0'; fsBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fs === cur))); }
+/* 인쇄 머리글(기관 · 화면 · 만든 날) + 인쇄 때 결과의 펼침·탭을 모두 열고 끝나면 되돌림 */
+const head = () => { const org = getOrg(); document.body.setAttribute('data-print-head', `${org ? org.org + ' · ' : ''}${document.title.replace(/ — .*$/, '')} · ${ymd(new Date())} · 참고용 계산(판정은 기관의 판단이 아님)`); };
+head(); document.addEventListener('vat:saved', head);
+let opened: HTMLDetailsElement[] = [];
+window.addEventListener('beforeprint', () => { opened = [...document.querySelectorAll<HTMLDetailsElement>('main details:not([open])')].filter(d => !d.closest('.no-print')); opened.forEach(d => { d.open = true; }); });
+window.addEventListener('afterprint', () => { opened.forEach(d => { d.open = false; }); opened = []; });

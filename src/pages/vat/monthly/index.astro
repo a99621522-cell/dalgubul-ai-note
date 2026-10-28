@@ -58,7 +58,7 @@ import '../../../styles/vat.css';
   </details>
 
   <section id="m-list" hidden>
-    <div class="section-head"><h2 id="m-list-title">이 달 기록</h2><span class="meta" id="m-sum"></span></div>
+    <div class="section-head"><h2 id="m-list-title">이 달 기록</h2><span class="meta" id="m-sum" role="status" aria-live="polite"></span></div>
     <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" id="m-table" data-stack="off">
       <caption id="m-caption">매입 인계표</caption>
       <thead><tr><th scope="col">날짜</th><th scope="col">내용</th><th scope="col">공급가액</th><th scope="col">부가세</th><th scope="col">영수증</th><th scope="col">받는 사람</th><th scope="col">어디에</th><th scope="col">무엇</th><th scope="col">근거·사업</th><th scope="col">신호</th><th scope="col">지금 할 일</th><th scope="col">근거</th><th scope="col" class="no-print">처리</th></tr></thead>
@@ -69,11 +69,11 @@ import '../../../styles/vat.css';
 
   <details class="vat-more"><summary>신호등이 뜻하는 것</summary>
     <ul class="meta-list">
-      <li><span class="sig ok"></span><strong>초록</strong> — 이 영수증의 부가세는 돌려받습니다(매입세액 공제). 그대로 인계.</li>
-      <li><span class="sig split"></span><strong>파랑</strong> — 과세 시설과 면세·행정 일에 함께 쓴 돈입니다. 신고 담당이 면세 비율만큼 빼고 공제합니다(공통매입세액 안분). 시설별로 나눌 수 있으면 다음부터 나눠 받으세요.</li>
-      <li><span class="sig no"></span><strong>빨강</strong> — 지금 상태로는 공제가 안 됩니다. '지금 할 일'(수정세금계산서 요청 등)을 하면 바뀔 수 있는 것과 원래 안 되는 것(토지·승용차·접대)이 있습니다.</li>
-      <li><span class="sig none"></span><strong>회색</strong> — 부가세가 애초에 없는 지출(급여·보험·수도·세금)입니다. 기록만 남깁니다.</li>
-      <li><span class="sig check"></span><strong>노랑</strong> — 영수증이나 시설 성격을 확인해야 판정할 수 있습니다.</li>
+      <li><span class="sig ok" aria-hidden="true"></span><span class="sr-only">●</span><strong>초록</strong> — 이 영수증의 부가세는 돌려받습니다(매입세액 공제). 그대로 인계.</li>
+      <li><span class="sig split" aria-hidden="true"></span><span class="sr-only">◆</span><strong>파랑</strong> — 과세 시설과 면세·행정 일에 함께 쓴 돈입니다. 신고 담당이 면세 비율만큼 빼고 공제합니다(공통매입세액 안분). 시설별로 나눌 수 있으면 다음부터 나눠 받으세요.</li>
+      <li><span class="sig no" aria-hidden="true"></span><span class="sr-only">■</span><strong>빨강</strong> — 지금 상태로는 공제가 안 됩니다. '지금 할 일'(수정세금계산서 요청 등)을 하면 바뀔 수 있는 것과 원래 안 되는 것(토지·승용차·접대)이 있습니다.</li>
+      <li><span class="sig none" aria-hidden="true"></span><span class="sr-only">○</span><strong>회색</strong> — 부가세가 애초에 없는 지출(급여·보험·수도·세금)입니다. 기록만 남깁니다.</li>
+      <li><span class="sig check" aria-hidden="true"></span><span class="sr-only">▲</span><strong>노랑</strong> — 영수증이나 시설 성격을 확인해야 판정할 수 있습니다.</li>
     </ul>
   </details>
   <VatData />

@@ -3,6 +3,7 @@ import { $, esc, num, fmt, loadData, judge, toInput, fixDue, FEE_NAME, payeeQ, r
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
+  const VSHAPE: Record<Verdict, string> = { ok: '●', split: '◆', no: '■', none: '○', check: '▲' };   // 색 + 모양 + 글자(1.4.1)
   let org: Org | null = getOrg(); let fac: OrgFacility | null = null; let month = monthStr();
   const facSel = $<HTMLSelectElement>('m-fac')!, monthIn = $<HTMLInputElement>('m-month')!, form = $<HTMLFormElement>('m-form')!, res = $('m-result')!;
   /* 깊은 링크(공무원 UX 재설계 2026-10-28): ?fac=<id>&month=YYYY-MM&open=1 — 대시보드·신고 준비 '지금 고치기'가 쓴다 */
@@ -45,7 +46,7 @@ function init(D: Data) {
     const amt = num($<HTMLInputElement>('m-amt')!.value); let tax = num($<HTMLInputElement>('m-tax')!.value); if (!tax && amt && o.v !== 'none') tax = Math.floor(amt * 0.1);
     const row: LedgerRow = { id: uid(), d: $<HTMLInputElement>('m-d')!.value || ymd(new Date()), desc: $<HTMLInputElement>('m-desc')!.value.trim() || '(내용 없음)', amt, tax, proof: q.proof, payee: q.payee, vat_sep: q.vat_sep, use: q.use, what: q.what, asset: q.asset, late: q.late, subsidy: q.subsidy, fix_due: fd?.due, evid: q.use === 'this' ? (val('m-evid') as Evid) : undefined, v: o.v, title: o.title, todo: o.todo[0] || '', basis: uniq(o.basis).map(lawText).join(', '), done: false };
     const rows = getLedger(fac.id, month); rows.push(row); setLedger(fac.id, month, rows);
-    res.innerHTML = `<div class="vc-card"><p class="note">판정은 참고이며 기관의 판단이 아닙니다.</p><h3><span class="sig ${o.v}"></span>${esc(SIGNAL[o.v])}<span class="verdict ${o.v}">${LABEL[o.v]}</span></h3><p><strong>${esc(o.title)}</strong> — ${esc(row.desc)}${tax ? ` · 부가세 ${fmt(tax)}원` : ''}</p>
+    res.innerHTML = `<div class="vc-card"><p class="note">판정은 참고이며 기관의 판단이 아닙니다.</p><h3><span class="sig ${o.v}" aria-hidden="true"></span>${esc(SIGNAL[o.v])}<span class="verdict ${o.v}">${LABEL[o.v]}</span></h3><p><strong>${esc(o.title)}</strong> — ${esc(row.desc)}${tax ? ` · 부가세 ${fmt(tax)}원` : ''}</p>
       <p class="label">왜</p><ul>${o.why.map(w => `<li>${esc(w)}</li>`).join('')}</ul>${o.todo.length ? `<p class="label">지금 할 일</p><ul>${o.todo.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}
       <p class="label">근거 조문</p><p class="meta">${uniq(o.basis).map(b => lawLink(D, b)).join(' · ')}</p><p class="meta">기록에 넣었습니다. 아래 표에서 확인하세요.</p></div>`;
     renderList(); ($<HTMLInputElement>('m-desc')!).value = ''; ($<HTMLInputElement>('m-amt')!).value = ''; ($<HTMLInputElement>('m-tax')!).value = ''; ($<HTMLInputElement>('m-desc')!).focus();
@@ -55,7 +56,7 @@ function init(D: Data) {
     if (!fac) return; const rows = getLedger(fac.id, month); const list = $('m-list')!; list.hidden = !rows.length; if (!rows.length) return;
     $('m-list-title')!.textContent = `${fac.name} · ${month.replace('-', '년 ')}월 기록`; $('m-caption')!.textContent = `매입 인계표 — ${org!.org} ${fac.name} ${month.replace('-', '년 ')}월 (${periodOf(month)}신고 대상, 참고용 판정)`;
     const tb = $<HTMLTableElement>('m-table')!.tBodies[0];
-    tb.innerHTML = rows.map(r => `<tr class="v-${r.v}${r.done ? ' done' : ''}" data-id="${r.id}"><td>${r.d}</td><td>${esc(r.desc)}</td><td>${r.amt ? fmt(r.amt) : ''}</td><td>${r.tax ? fmt(r.tax) : ''}</td><td>${esc(name(PROOF_Q, r.proof))}</td><td>${esc(name(PAYEE_Q, r.payee))}</td><td>${esc(name(USE_Q, r.use))}</td><td>${esc(name(WHAT_Q, r.what))}${r.asset ? ' · 여러 해 씀' : ''}${r.late ? ' · 지연' : ''}${r.subsidy ? ' · 보조금' : ''}</td><td class="note">${r.use === 'this' ? (!r.evid || r.evid === 'none' ? '<span class="verdict check">근거 없음</span>' : esc(name(EVID_Q, r.evid))) : ''}${r.biz ? `<br>${esc(r.biz)}` : ''}</td><td class="keep"><span class="sig ${r.v}"></span>${LABEL[r.v]}</td><td class="note">${esc(r.todo)}</td><td class="note">${esc(r.basis)}</td><td class="no-print keep"><label><input type="checkbox" data-done ${r.done ? 'checked' : ''}/> 처리</label> <button type="button" class="link-btn" data-del>삭제</button></td></tr>`).join('');
+    tb.innerHTML = rows.map(r => `<tr class="v-${r.v}${r.done ? ' done' : ''}" data-id="${r.id}"><td>${r.d}</td><td>${esc(r.desc)}</td><td>${r.amt ? fmt(r.amt) : ''}</td><td>${r.tax ? fmt(r.tax) : ''}</td><td>${esc(name(PROOF_Q, r.proof))}</td><td>${esc(name(PAYEE_Q, r.payee))}</td><td>${esc(name(USE_Q, r.use))}</td><td>${esc(name(WHAT_Q, r.what))}${r.asset ? ' · 여러 해 씀' : ''}${r.late ? ' · 지연' : ''}${r.subsidy ? ' · 보조금' : ''}</td><td class="note">${r.use === 'this' ? (!r.evid || r.evid === 'none' ? '<span class="verdict check">근거 없음</span>' : esc(name(EVID_Q, r.evid))) : ''}${r.biz ? `<br>${esc(r.biz)}` : ''}</td><td class="keep"><span class="sig ${r.v}" aria-hidden="true"></span><span class="sr-only">${VSHAPE[r.v]}</span>${LABEL[r.v]}</td><td class="note">${esc(r.todo)}</td><td class="note">${esc(r.basis)}</td><td class="no-print keep"><label><input type="checkbox" data-done ${r.done ? 'checked' : ''}/> 처리</label> <button type="button" class="link-btn" data-del>삭제</button></td></tr>`).join('');
     const n = (v: string) => rows.filter(r => r.v === v).length; const t = (v: string) => rows.filter(r => r.v === v).reduce((s, r) => s + r.tax, 0);
     $('m-sum')!.textContent = `${rows.length}건 · 초록 ${n('ok')}건 ${fmt(t('ok'))}원 · 파랑 ${n('split')}건 ${fmt(t('split'))}원 · 빨강 ${n('no')}건 · 노랑 ${n('check')}건 · 회색 ${n('none')}건 — 미처리 빨강·노랑 ${rows.filter(r => (r.v === 'no' || r.v === 'check') && !r.done).length}건`;
     tb.querySelectorAll<HTMLInputElement>('[data-done]').forEach(c => c.addEventListener('change', () => { const r = rows.find(x => x.id === c.closest('tr')!.getAttribute('data-id'))!; r.done = c.checked; setLedger(fac!.id, month, rows); renderList(); }));
@@ -80,7 +81,6 @@ function init(D: Data) {
   });
   /** 행 하나를 넣을 때와 똑같이 판정(미리보기용, 저장 안 함) */
   const judgeItem = (it: Item, proof: string, vatSep: boolean) => { const rf = org!.facilities.find(f => f.id === it.fid); if (!rf) return { v: 'check' as Verdict, title: '시설 없음' }; const q = { proof: proof as ProofQ, payee: it.payee, vat_sep: vatSep, use: it.use, what: it.what, asset: ASSET_WHAT.has(it.what) && it.asset, late: false }; const m = toInput(D, org!, rf, q); const o: Out = m.override ?? judge(D, m.input); return { v: o.v, title: o.title }; };
-  const VSHAPE: Record<Verdict, string> = { ok: '●', split: '◆', no: '■', none: '○', check: '▲' };
   const vcell = (it: Item) => `<span class="sig ${it.v}" aria-hidden="true"></span><span class="sr-only">${VSHAPE[it.v]}</span> ${LABEL[it.v]}${it.v === 'no' || it.v === 'check' ? `<br><span class="note">${esc(it.title)}</span>` : ''}`;
   function buildPreview() {
     if (!org || !fac) return; const rowsRaw = grid.slice(hasHeader ? 1 : 0); const reg = (org.unit === 'entity' ? org.reg_no : fac.reg_no)?.replace(/\D/g, '') ?? '';

@@ -1,4 +1,5 @@
 /** /vat/ 대시보드(공무원 UX 재설계 2026-10-28, docs/design/vat-ux-spec.md §2) — 상태 카드 4개 + 1차 행동 단추 하나 + '지금 살릴 수 있는 세액'(이전 그대로). 서버 없음, 이 브라우저 기록만 */
+import { mountQuickStart } from './vat_org';
 import { $, getOrg, allLedgers, getFilings, nextFiling, handoverDue, ymd, esc, fmt, loadData, openItems, periodInfo, periodKeyOf, monthStr, inFiling } from './vat_rules';
 const D = loadData(); const now = new Date(); const f = nextFiling(now); const org = getOrg();
 const ledgers = allLedgers(); const rows = Object.values(ledgers).flat(); const oi = openItems(rows);
@@ -12,11 +13,12 @@ const st = $('vat-status');
 if (st) {
   const card = (href: string, k: string, v: string, d: string, go: string, cls = '') => `<li class="${cls}"><a href="${href}"><span class="k">${k}</span><span class="v">${v}</span><span class="d">${d}</span><span class="go">${go} →</span></a></li>`;
   st.innerHTML = !org
-    ? `<li><a href="/vat/setup/"><span class="k">시작</span><span class="v">설정 없음</span><span class="d">우리 기관과 돈을 받는 시설을 적으면 그때부터 기록·신고 준비가 됩니다(약 5~10분).</span><span class="go">기관 설정 →</span></a></li>`
+    ? `<li class="wide"><div class="qs-card"><span class="k">시작 — 아직 기관 설정이 없습니다</span><div id="d-qs-wrap"></div></div></li>`
     : card('/vat/prepare/', '다음 신고', `D-${f.days}`, `${esc(f.name)} · ${ymd(f.due)}`, '신고 준비', f.days <= 14 ? 'warn' : '')
       + card('/vat/monthly/', '기록 없는 시설·달', `${empty.length}<span class="d"> / ${facs.length * months.length}</span>`, empty.length ? esc(empty.slice(0, 3).join(', ')) + (empty.length > 3 ? ` 외 ${empty.length - 3}` : '') : `${esc(P.name)} 기간의 지난 달까지 모두 기록됨`, '지출 기록', empty.length ? 'warn' : '')
       + card('/vat/monthly/', '처리할 것', String(oi.total), oi.total ? `다른 명의 ${oi.red.length}건 ${fmt(oi.redTax)}원 · 확인 필요 ${oi.yellow.length}건 · 근거 없는 전용 ${oi.noEvid.length}건${oi.expired ? ` · 수정 기한 지남 ${oi.expired}` : ''}` : '빨강·노랑·근거 없음이 없습니다', '처리하기', oi.red.length ? 'alert' : oi.total ? 'warn' : '')
       + card('/vat/prepare/', '지난 기 공통 면세분', fl ? `${fmt(nd)}<span class="d">원</span>` : '—', fl ? `${fl.period} 신고 기록의 (54) — 전용 분리·비율 관리로 줄일 수 있는 상한` : '신고 기록을 저장하면 보입니다', '절감 분석');
+  if (!org && D) mountQuickStart($('d-qs-wrap'), D, () => location.reload(), 'd-qs');
   /* 1차 행동 단추 하나: 설정 없음 → 설정 / 처리할 것 → 처리 / 기한 30일 안 → 신고 준비 / 그 밖 → 이번 달 기록 */
   const cta = $<HTMLAnchorElement>('vat-cta')!, why = $('vat-cta-why')!;
   if (!org) { cta.href = '/vat/setup/'; cta.textContent = '기관 설정 시작'; why.textContent = '5문항 · 예시(달성군)와 세입예산서에서 시설을 불러올 수 있습니다.'; }

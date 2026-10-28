@@ -1,4 +1,5 @@
 /** /vat/monthly/ 시설 지출 기록 → 매입 인계표(수탁기관·시설 부서). 판정은 vat_rules.judge(공용), 질문은 현장 말. localStorage 저장, 서버 없음. */
+import { mountQuickStart } from './vat_org';
 import { $, esc, num, fmt, loadData, judge, toInput, fixDue, FEE_NAME, payeeQ, runName, STATUS_LABEL_SHORT, parseTable, guessColumns, COL_GUESS, guessWhat, EVID_Q, matchMap, learnMap, type Evid, getOrg, setOrg, getLedger, setLedger, readJsonFile, downloadText, toCsv, facilityStatus, STATUS_WORD, RUN_NAME, PROOF_Q, PAYEE_Q, USE_Q, WHAT_Q, ASSET_WHAT, SIGNAL, LABEL, lawLink, lawText, uniq, uid, ymd, monthStr, periodOf, nextFiling, handoverDue, toast, vatConfirm, gridKeys, helpWire, scrollTo, type Data, type Org, type OrgFacility, type LedgerRow, type ProofQ, type PayeeQ, type UseQ, type Out, type Verdict } from './vat_rules';
 const D = loadData();
 if (D) init(D);
@@ -18,7 +19,7 @@ function init(D: Data) {
 
   function renderOrg() {
     const st = $('m-org-state')!;
-    if (!org) { st.innerHTML = `<strong>이 브라우저에는 아직 기관 설정이 없습니다.</strong> 설정은 사이트 주소마다 따로 저장됩니다(서버 없음). 셋 중 하나로 시작하세요.<div class="actions" style="margin-top:8px"><a class="btn" href="/vat/setup/">기관 설정 만들기(5~10분)</a><a class="btn secondary" href="/vat/handover/">전임자·옛 사이트 꾸러미(zip) 열기</a><span class="meta">또는 아래에서 org.json 파일 열기</span></div>`; facSel.innerHTML = '<option value="">— 먼저 기관 설정을 만들거나 파일을 여세요 —</option>'; form.hidden = true; return; }
+    if (!org) { st.innerHTML = `<strong>이 브라우저에는 아직 기관 설정이 없습니다.</strong> 설정은 사이트 주소마다 따로 저장됩니다(서버 없음). 아래에서 기관을 고르면 바로 이어집니다.<div id="m-qs-wrap"></div>`; mountQuickStart($('m-qs-wrap'), D, o => { org = o; renderOrg(); scrollTo($('m-sel')); }, 'm-qs'); facSel.innerHTML = '<option value="">— 먼저 기관을 고르세요 —</option>'; form.hidden = true; return; }
     st.innerHTML = `<strong>${esc(org.org)}</strong>${org.kind === 'contractor' ? ' <span class="verdict check">수탁기관</span>' : ''} · ${esc(org.dept || '')} · 시설 ${org.facilities.length}곳 · 인계표 매달 ${org.handover_day}일까지 · 설정 ${org.created}`; chips('m-payee', 'm-payee', payeeQ(org.kind));
     facSel.innerHTML = '<option value="">— 시설을 고르세요 —</option>' + org.facilities.map(f => { const s = facilityStatus(D, f); return `<option value="${f.id}">${esc(f.name)} (${STATUS_LABEL_SHORT[s]})</option>`; }).join('');
     const last = qs.get('fac') || sessionStorage.getItem('vat-fac'); if (last && org.facilities.some(f => f.id === last)) { facSel.value = last; pick(); if (qs.get('open') === '1') { const w = $<HTMLDetailsElement>('mb-wrap'); if (w) { w.open = true; } } if (qs.get('fac')) scrollTo(qs.get('open') === '1' ? $('mb-wrap') : $('m-list')); }

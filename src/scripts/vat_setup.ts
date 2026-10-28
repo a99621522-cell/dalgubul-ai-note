@@ -1,4 +1,5 @@
 /** /vat/setup/ 기관 설정 마법사(신고 담당). 5문항 → org.json + 시설 카드. localStorage 저장, 서버 없음, 개인정보 없음. */
+import { loadGovs, addRevenueFacilities, presetFacilities, facRows, normN, type RevGov } from './vat_org';
 import { FEE_NAME, type Fee, $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, runName, STATUS_LABEL_SHORT, uid, ymd, reduceMotion, toast, vatConfirm, gridKeys, helpWire, type Data, type Org, type OrgFacility, type Run, type OrgKind } from './vat_rules';
 const D = loadData();
 if (D) init(D);
@@ -42,7 +43,7 @@ function init(D: Data) {
     if (org.facilities.length && !(await vatConfirm(`지금 시설 ${org.facilities.length}곳을 지우고 ${p.org} 예시 ${p.facilities.length}곳으로 바꿉니다. 바꾼 뒤 10초 안에 되돌릴 수 있습니다.`, '바꾸기'))) return;
     const undo = backup(); toast(`${p.org} 예시 ${p.facilities.length}곳으로 바꿨습니다`, { fn: undo });
     read1(); if (!org.org) { org.org = p.org; ($<HTMLInputElement>('st-org')!).value = p.org; }
-    org.facilities = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? ''), ...(f.alias?.length ? { alias: f.alias } : {}) }));
+    org.facilities = presetFacilities(p);
     document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
     save();
     /* 같은 지자체의 세입예산서가 있으면 골라 두고(조례 시설 ↔ 세입 사업을 이름으로 합치는 순서: 예시 → 세입 후보), 없으면 3단계로 */
@@ -50,15 +51,10 @@ function init(D: Data) {
     else show(3);
   }));
   /* 세입예산서에서 시설 후보(운영자 지시 2026-10-27 '세입 자료부터 받아서 해'): /vat-revenue.json 의 세외수입 사업 가운데 시설 성격(사용료·임대·입장료·숙박·주차 …) 행을 시설로 */
-  const FAC_KEYS = new Set(['sports', 'golf', 'lodging', 'culture', 'venue', 'program', 'parking', 'water', 'funeral', 'transit', 'marina', 'lease_bldg', 'use_permit', 'food', 'vending', 'welfare', 'equip_rent', 'ad_space', 'waste_bag']);
-  type RevRow = { mok_code: string; mok: string; dept: string; item: string; amount_k: number; vat_key: string; fac_key: string; grant: boolean };
-  type ExpRow = { bureau: string; dept: string; detail: string; codes: string[]; facility: boolean; public_ops: boolean; grant: boolean; fac_key: string };
-  type RevGov = { key: string; name: string; year: string; note?: string; rows: RevRow[]; expense: ExpRow[] };
   const govSel = $<HTMLSelectElement>('st-gov'); let govs: RevGov[] = [];
-  if (govSel) fetch('/vat-revenue.json').then(r => r.json()).then((j: { govs: RevGov[] }) => { govs = j.govs; govSel.innerHTML = '<option value="">— 지자체 —</option>' + govs.map(g => `<option value="${g.key}">${esc(g.name)} ${g.year}</option>`).join(''); }).catch(() => { /* */ });
-  govSel?.addEventListener('change', () => { const g = govs.find(x => x.key === govSel.value); ($<HTMLButtonElement>('st-rev-add')!).disabled = !g; ($<HTMLButtonElement>('st-exp-map')!).disabled = !g || !g.expense?.length; $('st-rev-note')!.textContent = g ? `시설 성격 사업 ${g.rows.filter(r => !r.grant && FAC_KEYS.has(r.vat_key)).length}개${g.expense?.length ? ` · 세출 세부사업 ${g.expense.length}개` : ''}${g.note ? ` — 자료 한계: ${g.note}` : ''}` : ''; });
+  if (govSel) loadGovs().then(gs => { govs = gs; govSel.innerHTML = '<option value="">— 지자체 —</option>' + govs.map(g => `<option value="${g.key}">${esc(g.name)} ${g.year}</option>`).join(''); let saved = ''; try { saved = localStorage.getItem('vat-gov') || ''; } catch { /* */ } if (saved && govs.some(g => g.key === saved)) { govSel.value = saved; govSel.dispatchEvent(new Event('change')); } });   // 과세사업 찾기에서 고른 지자체(vat-gov)를 이어받음
+  govSel?.addEventListener('change', () => { const g = govs.find(x => x.key === govSel.value); ($<HTMLButtonElement>('st-rev-add')!).disabled = !g; ($<HTMLButtonElement>('st-exp-map')!).disabled = !g || !g.expense?.length; $('st-rev-note')!.textContent = g ? `시설 성격 사업 ${facRows(g).length}개${g.expense?.length ? ` · 세출 세부사업 ${g.expense.length}개` : ''}${g.note ? ` — 자료 한계: ${g.note}` : ''}` : ''; });
   /* 세출 세부사업명 → 시설 매핑표 밑그림(운영자 '세출도 해봐'): 시설 이름 낱말이 든 세부사업을 그 시설로, 금액 없음. 붙여넣기 때 사업명 열이 이 글자면 자동 귀속 */
-  const normN = (x: string) => x.replace(/\s|\(.*?\)|운영|관리|사업|비|지원|센터$/g, '').toLowerCase();
   $('st-exp-map')?.addEventListener('click', () => {
     const g = govs.find(x => x.key === govSel!.value); if (!g || !g.expense?.length) return; read1(); const rules = org.map ?? (org.map = []); let n = 0, ops = 0;
     for (const e of g.expense) { const d = e.detail; const hit = org.facilities.find(f => { const a = normN(f.name), b = normN(d); return a.length >= 3 && (b.includes(a) || (a.length >= 4 && a.includes(b) && b.length >= 4)); });
@@ -68,22 +64,9 @@ function init(D: Data) {
   });
   $('st-rev-add')?.addEventListener('click', () => {
     const g = govs.find(x => x.key === govSel!.value); if (!g) return; read1(); const undoRev = backup(); if (!org.org) { org.org = g.name; ($<HTMLInputElement>('st-org')!).value = g.name; }
-    const clean = (s: string) => s.replace(/\s*(수입|입장료|사용료|임대료|이용료|관람료|주차요금|주차료|대관료|수강료|회비|요금)\s*(수입)?$/g, '').replace(/\(.*?\)/g, '').trim() || s;
-    /* 이미 있는 시설(조례 예시·직접 입력)과 이름으로 합치기(운영자 지시 2026-10-27 '1번부터 니가 할 수 있는 일을 해' — 5번 조례 시설 ↔ 세입 시설 후보): 정리한 이름이 서로 품거나(달성화석박물관 ⊂ 달성화석박물관 관람료), 앞 6글자 이상 같고 나머지 낱말도 들어 있으면(낙동강 레포츠밸리 오토캠핑장 ↔ 낙동강 레포츠밸리 구지오토캠핑장; 앞글자만 같은 음식물류폐기물 납부필증 ↔ 처리수수료는 안 합침) 그 시설에 세입 사업을 붙인다. 별칭(alias)도 같이 본다 */
-    const pref = (a: string, b: string) => { let n = 0; while (n < a.length && n < b.length && a[n] === b[n]) n++; return n; };
-    const score = (fn: string, b: string) => { const a = normN(fn); if (a.length < 3 || b.length < 3) return 0; if (b.includes(a) || (a.length >= 4 && b.length >= 4 && a.includes(b))) return 100 + Math.min(a.length, b.length); const p = pref(a, b); return p >= 6 && a.length > p && b.includes(a.slice(p)) ? p + 20 : 0; };
-    const pick = (item: string) => { const b = normN(clean(item)); let best: OrgFacility | undefined, bs = 0; for (const f of org.facilities) { const sc = Math.max(score(f.name, b), ...(f.alias ?? []).map(x => score(x, b))); if (sc > bs) { bs = sc; best = f; } } return best; };
-    let n = 0, k = 0; const merged = new Set<string>(); const seen = new Set(org.facilities.map(f => f.name));
-    for (const r of g.rows.filter(x => !x.grant && FAC_KEYS.has(x.vat_key)).sort((a, b) => b.amount_k - a.amount_k)) {
-      const line = `[세입예산서 ${g.year}] ${r.dept} · ${r.mok_code} ${r.mok} · ${r.item} ${r.amount_k.toLocaleString('ko-KR')}천원`;
-      const hit = pick(r.item);
-      if (hit) { hit.rev = hit.rev ?? []; if (hit.rev.includes(r.item)) continue; hit.rev.push(r.item); hit.note = (hit.note ? hit.note.replace(/\s*$/, ' ') : '') + line + '.'; merged.add(hit.id); k++; continue; }
-      const it = (D.revenue_items ?? []).find(i => i.key === r.vat_key); const type = it?.type && D.facilities.some(f => f.key === it.type) ? it.type : (D.facilities.some(f => f.key === r.vat_key) ? r.vat_key : 'use_permit');
-      const name = clean(r.item); if (seen.has(name)) continue; seen.add(name);
-      org.facilities.push({ id: uid(), type, name: name.slice(0, 40), run: 'unknown' as Run, income: ['card'], deposit: false, contractor_dept: '', kind: org.kind ?? 'gov', rev: [r.item], note: `${line} — 운영 방식·등록번호 확인` }); n++;
-    }
+    const { n, merged, k } = addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ }
     document.querySelectorAll<HTMLInputElement>('input[name=st-type]').forEach(c => { c.checked = org.facilities.some(f => f.type === c.value); });
-    save(); toast(`새 시설 후보 ${n}곳을 넣고, 이미 있는 시설 ${merged.size}곳에 세입 사업 ${k}건을 붙였습니다 — 3단계에서 운영 방식·등록번호를 채우세요`, { fn: undoRev }); show(3);
+    save(); toast(`새 시설 후보 ${n}곳을 넣고, 이미 있는 시설 ${merged}곳에 세입 사업 ${k}건을 붙였습니다 — 3단계에서 운영 방식·등록번호를 채우세요`, { fn: undoRev }); show(3);
   });
   /* 3단계 — 시설 그리드(공무원 UX 재설계 2026-10-28, docs/design/vat-ux-spec.md §3.1): 시설마다 카드 한 장 대신 표 한 줄. 필터(전체·검토 대기·확인 필요·번호 없음)·행 선택·일괄 적용·펼침 행(받는 것·확인 근거·메모·복제·빼기). 저장 로직(read3)은 같은 [data-k]·[data-inc] 를 읽는다 */
   const facBox = $('st-fac')!;

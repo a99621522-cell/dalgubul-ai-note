@@ -1,5 +1,6 @@
 /** /vat/prepare/ 신고 준비(신고 담당). 인계표 → 신고서 칸별 숫자표 + 안분·정산·재계산 + 신고 기록. 참고용 계산, 서버 없음. */
 import { renderForms, renderUnitSummary, renderSavings, type UsedRow, type ConvRow } from './vat_forms';
+import { mountQuickStart } from './vat_org';
 import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, prevPeriodKey, PRELIM_NOTICE_LIMIT, getFilings, saveFiling, penaltyCalc, lawLink, deemedRent, nextFiling, ymd, toast, helpWire, scrollTo, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey , rulingsHtml , inquiryHtml, wireInquiry } from './vat_rules';
 type Ledger = { fid: string; name: string; type: string; month: string; rows: LedgerRow[]; src: string };
 const D = loadData();
@@ -40,7 +41,7 @@ function init(D: Data) {
 
   /* ---------- 자료 ---------- */
   const loadLocal = () => { for (const [k, rows] of Object.entries(allLedgers())) { const [fid, month] = k.split(':'); const f = org?.facilities.find(x => x.id === fid); if (!ledgers.has(k) || ledgers.get(k)!.src === 'local') ledgers.set(k, { fid, name: f?.name ?? fid, type: f?.type ?? 'other', month, rows, src: 'local' }); } };
-  const renderOrg = () => { $('p-org-state')!.innerHTML = org ? `<strong>${esc(org.org)}</strong> · ${esc(org.dept || '')} · 시설 ${org.facilities.length}곳 · ${org.unit === 'entity' ? '사업자 단위 과세' : '사업장별 등록'}` : '기관 설정이 없습니다 — 파일을 열거나 <a href="/vat/setup/">기관 설정</a>에서 만드세요.'; };
+  const renderOrg = () => { $('p-org-state')!.innerHTML = org ? `<strong>${esc(org.org)}</strong> · ${esc(org.dept || '')} · 시설 ${org.facilities.length}곳 · ${org.unit === 'entity' ? '사업자 단위 과세' : '사업장별 등록'}` : '기관 설정이 없습니다 — 아래에서 기관을 고르거나 파일을 여세요.<div id="p-qs-wrap"></div>'; if (!org) mountQuickStart($('p-qs-wrap'), D, o => { org = o; loadLocal(); renderOrg(); renderPeriods(); renderSum(); }, 'p-qs'); };
   $<HTMLInputElement>('p-open-org')?.addEventListener('change', async e => { const f = (e.target as HTMLInputElement).files?.[0]; if (!f) return; try { const o = await readJsonFile(f) as Org; if (!o || o.v !== 1) throw new Error(); org = o; setOrg(o); loadLocal(); renderOrg(); renderPeriods(); } catch { $('p-org-state')!.textContent = '기관 설정 파일(org.json)이 아닙니다.'; } });
   $<HTMLInputElement>('p-open-ledgers')?.addEventListener('change', async e => { const files = [...((e.target as HTMLInputElement).files ?? [])]; let n = 0; for (const f of files) { try { const j = await readJsonFile(f) as { v: number; facility: string; facility_name: string; type: string; month: string; rows: LedgerRow[] }; if (!j || j.v !== 1 || !j.month || !Array.isArray(j.rows)) throw new Error(); ledgers.set(`${j.facility}:${j.month}`, { fid: j.facility, name: j.facility_name, type: j.type, month: j.month, rows: j.rows, src: f.name }); n++; } catch { /* 건너뜀 */ } } $('p-ledger-state')!.textContent = `파일 ${n}개 읽음 · 인계표 ${ledgers.size}개(시설·달)`; renderPeriods(); });
 

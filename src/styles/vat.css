@@ -176,3 +176,7 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 }
 /* 과세사업 찾기 묶음 펼침 */
 #dc-list details.vat-more > summary { font-size: 1.05rem; }
+/* 기관 선택 → 바로 시작(vat_org.ts quickStart) */
+.vat-qs { margin: var(--s2) 0; border-color: var(--primary); }
+.vat-qs select { min-height: var(--touch); padding: 0 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); font-size: 1rem; max-width: 100%; }
+.vat-status li.wide { grid-column: 1 / -1; } .qs-card { padding: 14px 16px; border: 2px solid var(--primary); border-radius: var(--radius-2); background: var(--bg); } .qs-card .k { font-size: var(--small); color: var(--muted); font-weight: 700; }

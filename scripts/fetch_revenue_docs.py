@@ -3,6 +3,7 @@
 설정 config/revenue_docs.yml. kind: pdf / daegu_jumin / discover(첨부 후보만 로그). robots.txt 는 공시 페이지(지자체 누리집)라 확인 뒤 받는다(기본 허용).
 러너(.github/workflows/revenue_docs.yml)에서 돌리며, 이 세션처럼 requests 가 프록시에서 막히면 curl 로 대신한다(--curl).
 사용: python3 scripts/fetch_revenue_docs.py [--only key,key] [--curl] [--parse-only]
+kind: manual — 누리집에서 못 받는 지자체(중구): 운영자가 올린 PDF 를 세션이 `pdftotext -layout` 로 raw/<key>_<year>.txt 에 두면 그 글자만 읽는다(date·note 는 설정에)
 """
 from __future__ import annotations
 
@@ -432,7 +433,8 @@ def main() -> int:
                     discover(g)
             continue
         txt = RAW / f"{g['key']}_{year}.txt"
-        if "--parse-only" not in sys.argv:
+        manual = g["kind"] == "manual"   # 운영자가 올린 PDF 를 세션이 pdftotext 로 풀어 raw 에 둔 지자체(중구) — 받지 않고 글자만 다시 읽는다
+        if "--parse-only" not in sys.argv and not manual:
             pdf = fetch_pdf(g, year)
             if not pdf:
                 continue
@@ -442,10 +444,10 @@ def main() -> int:
             pdf.unlink(missing_ok=True)   # 원본 PDF 는 저장소에 두지 않고 글자만
         if not txt.exists():
             continue
-        subprocess.run([sys.executable, str(ROOT / "scripts" / "parse_revenue_docs.py"), g["key"], year, str(txt), "--name", g["name"], "--src", g["page"], "--date", time.strftime("%Y-%m-%d"), "--acct", g.get("acct", "일반회계")])
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "parse_revenue_docs.py"), g["key"], year, str(txt), "--name", g["name"], "--src", g["page"], "--date", g.get("date") or time.strftime("%Y-%m-%d"), "--acct", g.get("acct", "일반회계")] + (["--note", g["note"]] if g.get("note") else []))
         time.sleep(1.5)
         etxt = RAW / f"{g['key']}_{year}_exp.txt"
-        if "--parse-only" not in sys.argv and "--no-expense" not in sys.argv:
+        if "--parse-only" not in sys.argv and "--no-expense" not in sys.argv and not manual:
             fetch_expense(g, year)
         if etxt.exists():
             subprocess.run([sys.executable, str(ROOT / "scripts" / "parse_expense_docs.py"), g["key"], year, str(etxt), "--name", g["name"], "--src", g["page"], "--date", time.strftime("%Y-%m-%d")])

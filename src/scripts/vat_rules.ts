@@ -359,7 +359,7 @@ export function inquiryText(D: Data, q: Inquiry, ctx: Record<string, string> = {
   L.push(`4. 관련 법령: ${laws}`);
   if (rl.length) { L.push(`5. 참고한 유권해석·판례`); rl.forEach(r => L.push(`  - ${r.no} ${r.title}: ${r.gist}`)); }
   if (q.attach?.length) L.push(``, `붙임: ${q.attach.join(', ')}`);
-  L.push(``, `※ 이 초안은 지자체 부가세 절감 점검기(daitda.co.kr/vat/)가 만든 틀입니다. [ ] 안을 기관의 사실관계로 채우고, 담당 부서·연락처는 제출 때 적습니다. 답변을 받으면 그 번호·날짜를 기관 설정의 '확인 결과·근거'에 남깁니다.`);
+  L.push(``, `※ 이 초안은 지자체 부가세 절감 점검기(${location.host}/vat/)가 만든 틀입니다. [ ] 안을 기관의 사실관계로 채우고, 담당 부서·연락처는 제출 때 적습니다. 답변을 받으면 그 번호·날짜를 기관 설정의 '확인 결과·근거'에 남깁니다.`);
   return L.join('\n');
 }
 /** 질의서 펼침 상자 — 복사·txt 내려받기 단추. 만든 뒤 wireInquiry(상자 부모) 를 불러야 단추가 움직인다 */

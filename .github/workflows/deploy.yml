@@ -30,6 +30,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: 부가세 점검기 제외   # 별도 사이트(deploy_vat.yml)에서만 — 다잇다에는 /vat/ 가 없다(운영자 2026-10-28 '다잇다와 분리')
+        run: rm -rf dist/vat dist/vat-revenue.json
       - name: Cloudflare Pages 업로드
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

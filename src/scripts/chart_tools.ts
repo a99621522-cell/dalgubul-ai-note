@@ -34,8 +34,8 @@ async function toPng(svg: SVGSVGElement, scale = 2): Promise<Blob> {
   } finally { URL.revokeObjectURL(url); }
 }
 function captionOf(fig: HTMLElement): string {
-  const cap = fig.querySelector('figcaption'); const t = cap ? clean((cap as HTMLElement).innerText) : clean(document.title.replace(/\s*[|·-]\s*다잇다.*$/, ''));
-  const src = /자료|출처/.test(t) ? '' : ' — 자료: daitda.co.kr' + location.pathname;
+  const cap = fig.querySelector('figcaption'); const t = cap ? clean((cap as HTMLElement).innerText) : clean(document.title.replace(/\s*[|·—-]\s*(다잇다|지자체 부가세 절감 점검기).*$/, ''));
+  const src = /자료|출처/.test(t) ? '' : ' — 자료: ' + location.host + location.pathname;
   return `그림. ${t}${src} (${today()} 받음)`;
 }
 function toast(msg: string): void {

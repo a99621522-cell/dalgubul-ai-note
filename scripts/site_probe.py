@@ -115,11 +115,11 @@ def xhr(url):
 
     def on_resp(resp):
         req = resp.request
-        if jsgrep and req.resource_type == "script" and "/js/" in req.url and not re.search(r"jquery|lib/|plugin|vendor|common/", req.url):
+        if jsgrep and req.resource_type == "script":
             try: js = resp.text()
             except Exception: js = ""
-            hits = [l.strip()[:300] for l in js.splitlines() if jsgrep in l][:150]
-            if hits: print(f"\n## script {req.url} ({len(js):,}자) — '{jsgrep}' 든 줄 {len(hits)}개\n   " + "\n   ".join(hits))
+            hits = [l.strip()[:300] for l in js.splitlines() if jsgrep in l]
+            print(f"\n## script {req.url} ({len(js):,}자) — '{jsgrep}' 든 줄 {len(hits)}개" + ("\n   " + "\n   ".join(hits[:150]) if hits and not re.search(r"jquery|lib/|plugin|vendor", req.url) else ""))
             return
         if req.resource_type not in ("xhr", "fetch"): return
         key = (req.method, req.url, req.post_data or "")
@@ -143,6 +143,10 @@ def xhr(url):
                 print(f"  다시 시도: {str(e)[:120]}"); pg.wait_for_timeout(10000)
         pg.wait_for_timeout(3000)
         print(f"== title: {pg.title()}  최종 주소: {pg.url}")
+        if jsgrep:   # 화면 안(inline) 스크립트 속 줄도
+            for i, sc in enumerate(BeautifulSoup(pg.content(), "html.parser").find_all("script")):
+                hits = [l.strip()[:300] for l in (sc.string or "").splitlines() if jsgrep in l]
+                if hits: print(f"## inline script[{i}] — '{jsgrep}' 든 줄 {len(hits)}개\n   " + "\n   ".join(hits[:150]))
         for c in clicks:
             print(f"\n==== 누름: {c}")
             try:

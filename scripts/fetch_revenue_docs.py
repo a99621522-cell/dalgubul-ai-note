@@ -27,7 +27,7 @@ S = requests.Session()
 S.headers["User-Agent"] = UA
 
 
-def get(url: str, out: Path | None = None, post: dict | None = None, referer: str = "", jar: Path | None = None, tries: int = 4, timeout: int = 240) -> bytes:
+def get(url: str, out: Path | None = None, post: dict | None = None, referer: str = "", jar: Path | None = None, tries: int = 4, timeout: int = 240, backoff: float | None = None) -> bytes:
     for i in range(tries):
         try:
             if USE_CURL:
@@ -55,7 +55,8 @@ def get(url: str, out: Path | None = None, post: dict | None = None, referer: st
                     return r2.content
         except Exception as e:  # noqa: BLE001
             print(f"  [{i + 1}] {url[:80]} 실패: {str(e)[:100]}")
-        time.sleep(2 + i * 3)
+        if i + 1 < tries:
+            time.sleep(backoff if backoff is not None else 2 + i * 3)   # backoff: 러너 연결을 끊는 누리집(서구·달서구)은 40초쯤 쉬었다 다시
     return b""
 
 
@@ -66,7 +67,7 @@ def to_text(pdf: Path, txt: Path) -> bool:
 
 def cms_token(g: dict, jar: Path) -> str:
     """동구·서구 누리집(같은 CMS): 화면의 download 폼 csrfToken(세션 쿠키와 짝) — POST /file/direct/download.do (csrfToken, filename, path)"""
-    page = get(g["page"], jar=jar, tries=3, timeout=60).decode("utf-8", "ignore")
+    page = get(g["page"], jar=jar, tries=4, timeout=60, backoff=40).decode("utf-8", "ignore")
     m = re.search(r'name=["\']csrfToken["\'][^>]*value=["\']([^"\']+)', page) or re.search(r'value=["\']([^"\']+)["\'][^>]*name=["\']csrfToken', page)
     return m.group(1) if m else ""
 
@@ -118,6 +119,69 @@ def fetch_pdf(g: dict, year: str) -> Path | None:
             print(f"[revenue] {g['name']}: csrfToken 못 찾음")
             return None
         data = cms_post(g, jar, token, g["file"], pdf)
+    elif g["kind"] == "cms_auto":
+        # 서구(2026-10-28 운영자 '안 한 구도 다해'): 번호만 다른 파일(01.pdf …)을 POST 로 차례로 받아 첫 두 쪽 글자로 고른다 — '세입예산사업명세서'+'일반회계' 첫 파일 = 세입, '세출예산사업명세서'+'일반회계' 파일들 = 부서별 세출. 어느 번호인지 미리 몰라도 한 번에 끝낸다
+        jar = RAW / f"{g['key']}.jar"
+        token = cms_token(g, jar)
+        if not token:
+            print(f"[revenue] {g['name']}: 화면을 못 받아 토큰이 없다 — 건너뜀")
+            return None
+        found = False; exps: list[Path] = []; miss = 0
+        for i in range(1, int(g.get("probe_n", 40)) + 1):
+            fn = g.get("probe_fmt", "{:02d}.pdf").format(i)
+            tmp = RAW / f"_auto_{g['key']}_{i:03d}.pdf"
+            data = cms_post(g, jar, token, fn, tmp)
+            if not data or not data[:5].startswith(b"%PDF"):
+                print(f"   [{fn}] 없음/비PDF ({len(data)}B)"); tmp.unlink(missing_ok=True); miss += 1
+                if miss >= 3 and i > 10:
+                    break
+                continue
+            miss = 0
+            r = subprocess.run(["pdftotext", "-l", "2", "-layout", str(tmp), "-"], capture_output=True)
+            head = re.sub(r"\s+", " ", r.stdout.decode("utf-8", "ignore"))
+            kind = ""
+            if re.search(r"세\s*입\s*예\s*산\s*사\s*업\s*명\s*세\s*서", head) and "일반회계" in head and not found:
+                kind = "세입(일반)"; found = True; tmp.replace(pdf)
+            elif re.search(r"세\s*출\s*예\s*산\s*사\s*업\s*명\s*세\s*서", head) and "일반회계" in head:
+                kind = "세출(일반)"; exps.append(tmp)
+            else:
+                tmp.unlink(missing_ok=True)
+            print(f"   [{fn}] {len(data):,}B {kind or '-'} :: {head[:150]}")
+            time.sleep(0.8)
+        jar.unlink(missing_ok=True)
+        g["_exp_paths"] = exps
+        if not found:
+            for e in exps:
+                e.unlink(missing_ok=True)
+            print(f"[revenue] {g['name']}: 세입예산사업명세서(일반회계) 파일을 못 골랐다")
+            return None
+        print(f"[revenue] {g['name']}: 세입 1개 · 세출 {len(exps)}개 파일 골라 받음")
+        return pdf
+    elif g["kind"] == "icms_auto":
+        # 달서구(같은 날): icms 예산서 상세(POST category·budget_id)의 FileDownDirect 링크 — 글자가 '세입예산사업명세서'인 첫 링크 = 일반회계 세입, '세출예산서' 다음부터 다음 '세입예산사업명세서' 전까지의 부서 이름 링크 = 부서별 세출(남구와 같은 배치)
+        html = get(g["page"], post=g.get("post"), referer=g["page"], tries=4, timeout=60, backoff=40).decode("utf-8", "ignore")
+        if not html:
+            print(f"[revenue] {g['name']}: 상세 화면을 못 받았다 — 건너뜀")
+            return None
+        from urllib.parse import urljoin
+        links = [(urljoin(g["page"], m.group(2)), re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(3))).strip()) for m in re.finditer(r'href=(["\'])([^"\']*FileDownDirect[^"\']*)\1[^>]*>(.*?)</a>', html, re.S)]
+        links = [(u.replace("&amp;", "&"), t) for u, t in links]
+        print(f"[revenue] {g['name']} icms 파일 링크 {len(links)}개: " + " · ".join(t for _, t in links)[:600])
+        sein = next((u for u, t in links if "세입예산사업명세서" in t), None)
+        if not sein:
+            print(f"[revenue] {g['name']}: '세입예산사업명세서' 링크 없음")
+            return None
+        i0 = next((i for i, (_, t) in enumerate(links) if "세출예산서" in t), None)
+        exp_urls: list[str] = []
+        if i0 is not None:
+            for u, t in links[i0 + 1:]:
+                if "세입예산사업명세서" in t:
+                    break
+                if not re.search(r"예산|총괄|총칙|규모|명세|기금|추경", t):
+                    exp_urls.append(u)
+        g["expense_urls"] = exp_urls
+        print(f"[revenue] {g['name']}: 세입 {sein[-60:]} · 부서별 세출 {len(exp_urls)}개")
+        data = get(sein, pdf, referer=g["page"], tries=3, timeout=120, backoff=30)
     elif g["kind"] == "pdf":
         data = get(g["url"], pdf)
     elif g["kind"] == "daegu_jumin":
@@ -141,10 +205,20 @@ def fetch_pdf(g: dict, year: str) -> Path | None:
 def fetch_expense(g: dict, year: str) -> Path | None:
     """세출예산사업명세서 부서별 파일을 받아 글자로 이어 붙인다(파일 사이 '#### 파일명'). 금액은 CSV(내부)에만 — 사이트에는 사업명·부서·편성목만"""
     urls = g.get("expense_urls") or []; files = g.get("expense_files") or []
-    if not urls and not files:
-        return None
     RAW.mkdir(parents=True, exist_ok=True)
     out = RAW / f"{g['key']}_{year}_exp.txt"; parts: list[str] = []
+    if g.get("_exp_paths"):   # cms_auto 가 이미 받아 둔 세출 파일
+        for i, pdfp in enumerate(g["_exp_paths"]):
+            txt = pdfp.with_suffix(".txt")
+            if to_text(pdfp, txt):
+                parts.append(f"#### {pdfp.name}\n" + txt.read_text(encoding="utf-8", errors="ignore"))
+            pdfp.unlink(missing_ok=True); txt.unlink(missing_ok=True)
+        if not parts:
+            return None
+        out.write_text("\n".join(parts), encoding="utf-8"); print(f"[revenue] {g['name']} 세출 {len(parts)}개 파일 → {out.name}")
+        return out
+    if not urls and not files:
+        return None
     jar = RAW / f"{g['key']}_exp.jar"; tok = ""
     cms = g["kind"] == "cms_post"
     if files:
@@ -184,7 +258,7 @@ def discover(g: dict) -> None:
         if url in seen:
             continue
         seen.add(url)
-        html = get(url, post=posts.get(url), tries=2, timeout=45).decode("utf-8", "ignore")   # 5차: 4차에 열리던 동구·서구·달서구가 1회 시도에서 연결 실패 → 2회
+        html = get(url, post=posts.get(url), tries=3, timeout=45, backoff=30).decode("utf-8", "ignore")   # 5차·12차: 끊기면 30초 쉬고 다시: 4차에 열리던 동구·서구·달서구가 1회 시도에서 연결 실패 → 2회
         opened += 1
         if not html:
             print(f"[revenue] {g['name']}: 페이지 못 받음 {url}")

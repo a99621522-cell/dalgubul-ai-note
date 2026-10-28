@@ -9,7 +9,7 @@ import path from 'node:path';
 const args = process.argv.slice(2);
 const base = args.includes('--base') ? args[args.indexOf('--base') + 1] : 'http://localhost:4399';
 const noLh = args.includes('--no-lh');
-const PAGES = ['/', '/companies/', '/listed/', '/stats/', '/growth/', '/search/?q=자동차', '/listed/00102353/', '/programs/'];
+const PAGES = ['/', '/companies/', '/listed/', '/stats/', '/growth/', '/search/?q=자동차', '/listed/00102353/', '/programs/', '/vat/', '/vat/setup/', '/vat/monthly/', '/vat/prepare/', '/vat/review/'];   // /vat/ 5쪽은 공무원 UX 재설계(2026-10-28) 수용 기준 — axe·가로 스크롤만(Lighthouse 는 앞 4쪽)
 const out = { generated: new Date().toISOString().slice(0, 10), base, pages: [] };
 const browser = await chromium.launch(process.env.PLAYWRIGHT_BROWSERS_PATH ? {} : { executablePath: '/opt/pw-browsers/chromium' }).catch(() => chromium.launch());
 let fail = 0;

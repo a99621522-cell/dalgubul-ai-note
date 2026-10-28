@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """소스 추가 전 확인용: robots.txt 와 첫 화면의 메뉴·게시판 링크를 찍는다(첫 화면 1회, 그 밖의 쪽은 열지 않는다).
 이 세션 환경은 외부 사이트가 막혀 있어 GitHub Actions(site_probe.yml)로 돌리고 로그로 본다.
-사용: python3 scripts/site_probe.py <url> [--render] [--dump] [--text] [--raw] [--xhr [--click 글자1,글자2]]
+사용: python3 scripts/site_probe.py <url> [--render] [--dump] [--text] [--raw] [--xhr [--click 글자1,글자2@2] [--body N]]
 --xhr: 브라우저로 열어 화면이 숫자를 받아 오는 내부 요청(XHR·fetch)의 주소·방식·보낸 값·응답 앞 600자를 찍는다.
   --click 은 연 뒤 그 글자가 든 요소를 차례로 누른다(지역·메뉴 고르기). 화면 하나 확인용이지 수집기가 아니다.
 --text: 운영자가 준 기사·공지 한 쪽의 제목·날짜·본문 글자만 찍는다(robots.txt 가 그 경로를 막으면 본문은 찍지 않는다). 수집기가 아니라 한 번 읽기용.
@@ -103,6 +103,9 @@ def main():
 def xhr(url):
     from playwright.sync_api import sync_playwright
     clicks = []
+    nbody = 600   # 응답 본문을 찍는 길이(--body N 으로 늘림: action.do 식으로 본문을 JSON 으로 주는 화면)
+    if "--body" in sys.argv:
+        nbody = int(sys.argv[sys.argv.index("--body") + 1])
     if "--click" in sys.argv:
         i = sys.argv.index("--click")
         clicks = [c.strip() for c in (sys.argv[i + 1] if i + 1 < len(sys.argv) else "").split(",") if c.strip()]
@@ -119,7 +122,7 @@ def xhr(url):
         except Exception: body = ""
         print(f"\n## {req.method} {resp.status} {req.url}\n   type={ct[:60]} len={len(body)}")
         if req.post_data: print(f"   post={req.post_data[:600]}")
-        print("   body=" + re.sub(r"\s+", " ", body[:600]))
+        print("   body=" + re.sub(r"\s+", " ", body[:nbody]))
 
     with sync_playwright() as p:
         b = p.chromium.launch(); pg = b.new_page(user_agent=UA, viewport={"width": 1400, "height": 1000})
@@ -135,7 +138,13 @@ def xhr(url):
         for c in clicks:
             print(f"\n==== 누름: {c}")
             try:
-                el = pg.get_by_text(c, exact=True).first if pg.get_by_text(c, exact=True).count() else pg.get_by_text(c, exact=False).first
+                nth = 0   # '글자@2' 면 두 번째 일치, 없으면 보이는 첫 요소(숨은 전체 메뉴에 같은 글자가 있을 때)
+                m = re.match(r"^(.*)@(\d+)$", c)
+                if m: c, nth = m.group(1), int(m.group(2)) - 1
+                loc = pg.get_by_text(c, exact=True) if pg.get_by_text(c, exact=True).count() else pg.get_by_text(c, exact=False)
+                vis = [k for k in range(loc.count()) if loc.nth(k).is_visible()]
+                el = loc.nth(nth) if m else (loc.nth(vis[0]) if vis else loc.first)
+                print(f"   일치 {loc.count()}개(보이는 것 {len(vis)}개) → {nth + 1 if m else (vis[0] + 1 if vis else 1)}번째")
                 try: el.click(timeout=5000)
                 except Exception: el.evaluate("e => e.click()")   # 접힌 메뉴 속 항목
                 pg.wait_for_load_state("networkidle", timeout=30000); pg.wait_for_timeout(3000)

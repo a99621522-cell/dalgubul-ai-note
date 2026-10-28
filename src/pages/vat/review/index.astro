@@ -1,12 +1,13 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import VatData from '../../../components/VatData.astro';
+import VatNav from '../../../components/VatNav.astro';
 import '../../../styles/vat.css';
 /** /vat/review/ — 지난 신고 점검·경정청구 후보(신고 담당, 세무사 평가 반영 2026-10-27 '경정청구가 없다'). 홈택스 매입 목록과 신고한 매입 내역을 과세기간별로 견줘 빠진 매입세액과 경정청구 기한(국세기본법 제45조의2, 법정신고기한 뒤 5년 — 2026-10-02 시행 판 대조)을 보인다. 저장 없음, 서버 없음. 스크립트 src/scripts/vat_review.ts */
 ---
 <Base title="지난 신고 점검 — 경정청구 후보" description="지자체가 지난 5년 동안 받은 세금계산서·카드 매입을 신고한 매입세액과 과세기간별로 견줘 빠진 매입세액 후보와 경정청구 기한을 계산합니다. 브라우저 안에서만." current="vat" crumb="지난 신고 점검">
-  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/prepare/">신고 준비</a> · <a href="/vat/tools/">한 건 판정</a></p>
   <div class="section-head"><h1>① 지난 신고 점검 — 빠진 매입세액과 경정청구 기한</h1><span class="meta">국세기본법 제45조의2 · 법정신고기한 뒤 5년</span></div>
+  <VatNav current="review" />
   <p class="lede">처음 맡았다면 앞으로의 신고보다 <strong>지난 5년</strong>이 더 큽니다. 홈택스에서 우리 기관 등록번호로 받은 매입 목록을 붙여넣고, 그 기간에 신고한 매입세액을 넣으면(또는 신고한 매입 내역을 함께 붙여넣으면) 과세기간마다 <strong>받았지만 신고에 없는 매입세액</strong>과 <strong>경정청구 기한</strong>이 나옵니다. 입력은 이 화면에만 있고 저장하지 않습니다.</p>
 
   <form class="vc-form no-print" id="rv-form" autocomplete="off">

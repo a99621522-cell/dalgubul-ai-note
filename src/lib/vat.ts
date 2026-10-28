@@ -25,6 +25,7 @@ export type VatRules = {
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   common_items: { item: string; vat: string; tip: string }[];
   checklist: CheckItem[];
+  glossary?: { key: string; term: string; plain: string; text: string; basis?: Basis[] }[];
 };
 let cache: VatRules | null = null;
 export function vatRules(): VatRules | null {

@@ -14,7 +14,7 @@ const supKey = (r: LedgerRow) => r.sreg || ('n:' + (r.sup || r.desc).replace(/\s
 const supName = (r: LedgerRow) => r.sup || r.desc.split(' · ')[0];
 type Agg = { sreg: string; name: string; n: number; amt: number; tax: number };
 function aggregate(rows: LedgerRow[]) { const m = new Map<string, Agg>(); for (const r of rows) { const k = supKey(r); const a = m.get(k) ?? { sreg: r.sreg || '', name: supName(r), n: 0, amt: 0, tax: 0 }; a.n++; a.amt += r.amt; a.tax += r.tax; m.set(k, a); } return [...m.values()].sort((a, b) => b.tax - a.tax); }
-const tbl = (cap: string, head: string[], body: string, foot = '') => `<div class="scroll-x"><table class="data-table vat-table form" data-stack="off"><caption>${cap}</caption><thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${body}${foot}</tbody></table></div>`;
+const tbl = (cap: string, head: string[], body: string, foot = '') => `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table form" data-stack="off"><caption>${cap}</caption><thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${body}${foot}</tbody></table></div>`;
 const DIRECT = '<td class="note" colspan="2">홈택스에서 직접</td>';
 const NA = '<td class="note" colspan="2">해당 없음이면 비움</td>';
 

@@ -1,13 +1,15 @@
 /** /vat/setup/ 기관 설정 마법사(신고 담당). 5문항 → org.json + 시설 카드. localStorage 저장, 서버 없음, 개인정보 없음. */
-import { FEE_NAME, type Fee, $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, runName, STATUS_LABEL_SHORT, uid, ymd, type Data, type Org, type OrgFacility, type Run, type OrgKind } from './vat_rules';
+import { FEE_NAME, type Fee, $, esc, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, runName, STATUS_LABEL_SHORT, uid, ymd, reduceMotion, type Data, type Org, type OrgFacility, type Run, type OrgKind } from './vat_rules';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
   let org: Org = getOrg() ?? { v: 1, org: '', dept: '', unit: 'site', facilities: [], handover_day: 5, created: ymd(new Date()) };
-  let step = 1;
+  let step = 1, maxStep = 1;
   const steps = [...document.querySelectorAll<HTMLElement>('.step')];
-  const chips = [...document.querySelectorAll<HTMLElement>('#st-steps span')];
-  const show = (n: number) => { step = n; steps.forEach(s => { s.hidden = Number(s.dataset.step) !== n; }); chips.forEach((c, i) => { if (i + 1 === n) c.setAttribute('aria-current', 'step'); else c.removeAttribute('aria-current'); }); if (n === 3) renderFac(); if (n === 5) renderResult(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('#st-steps button')];
+  /* 단계 표시줄은 단추(공무원 UX 재설계 2026-10-28): 간 적 있는 단계는 눌러 되돌아가고, 아직 안 간 단계는 비활성. aria-live 로 단계 바뀜을 읽는다 */
+  const show = (n: number) => { step = n; maxStep = Math.max(maxStep, n); steps.forEach(s => { s.hidden = Number(s.dataset.step) !== n; }); chips.forEach((c, i) => { if (i + 1 === n) c.setAttribute('aria-current', 'step'); else c.removeAttribute('aria-current'); c.disabled = i + 1 > maxStep; }); const live = $('st-step-live'); if (live) live.textContent = `${n}/5 단계 ${chips[n - 1]?.textContent ?? ''}`; if (n === 3) renderFac(); if (n === 5) renderResult(); window.scrollTo({ top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' }); };
+  chips.forEach(c => c.addEventListener('click', () => { const n = Number(c.dataset.go); if (!n || n === step || c.disabled) return; if (step === 1) read1(); if (step === 2) read2(); if (step === 3) read3(); if (step === 4) read4(); save(); show(n); }));
   const save = () => { org.created = ymd(new Date()); org.facilities.forEach(f => { f.kind = org.kind ?? 'gov'; if (f.kind === 'contractor' && f.run === 'entrusted_own') f.run = 'unknown'; }); setOrg(org); };
   const kindRadios = [...document.querySelectorAll<HTMLInputElement>('input[name=st-kind]')]; const parentWrap = $('st-parent-wrap')!;
   const syncKind = () => { org.kind = (kindRadios.find(r => r.checked)?.value as OrgKind) ?? 'gov'; parentWrap.hidden = org.kind !== 'contractor'; };
@@ -105,7 +107,7 @@ function init(D: Data) {
   function renderResult() {
     const rows = org.facilities.map(f => { const st = facilityStatus(D, f); return `<tr><th scope="row">${esc(f.name)}</th><td><span class="verdict ${st === 'agency' ? 'none' : st}">${STATUS_LABEL_SHORT[st]}</span></td><td>${f.run === 'unknown' ? '<span class="verdict check">운영 방식 확인</span> ' : ''}${esc(runName(org.kind, f.run))}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}${f.run === 'entrusted_own' ? ` · 받는 것: ${esc(FEE_NAME[f.fee ?? 'unknown'].split('(')[0])}` : ''}${f.decision ? ` · 근거: ${esc(f.decision)}` : ''}</td><td>${esc(org.unit === 'entity' ? (org.reg_no || '—') : (f.reg_no || '—'))}</td><td>${f.income.map(i => i === 'invoice' ? '세금계산서' : '카드·현금영수증').join('·')}${f.deposit ? ' · 보증금' : ''}</td></tr>`; }).join('');
     $('st-summary')!.innerHTML = `<p><strong>${esc(org.org || '(기관 이름 없음)')}</strong>${org.kind === 'contractor' ? ` <span class="verdict check">수탁기관${org.parent ? ' · 위탁기관 ' + esc(org.parent) : ''}</span>` : ''} · ${esc(org.dept || '부서 없음')} · ${org.unit === 'entity' ? '사업자 단위 과세' : '사업장별 등록'} · 인계표 매달 ${org.handover_day}일까지 · 저장 ${org.created}</p>
-      <div class="scroll-x"><table class="data-table vat-table" data-stack="off"><caption>${esc(org.org)} 과세사업 시설 설정</caption><thead><tr><th scope="col">시설</th><th scope="col">부가세</th><th scope="col">운영</th><th scope="col">세금계산서 받을 번호</th><th scope="col">수입 종류</th></tr></thead><tbody>${rows || '<tr><td colspan="5">시설 없음</td></tr>'}</tbody></table></div>`;
+      <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off"><caption>${esc(org.org)} 과세사업 시설 설정</caption><thead><tr><th scope="col">시설</th><th scope="col">부가세</th><th scope="col">운영</th><th scope="col">세금계산서 받을 번호</th><th scope="col">수입 종류</th></tr></thead><tbody>${rows || '<tr><td colspan="5">시설 없음</td></tr>'}</tbody></table></div>`;
     $('cards')!.innerHTML = org.facilities.map(f => card(f)).join('');
     /* 대행 협약서 점검표(세무회계법인 2차 6번): 군 명의 사업의 지출 매입세액이 군·공단 사이에 떨어지지 않게 — 수탁기관이거나 위탁 시설이 있을 때, 체크는 이 브라우저(vat-contract-v1) */
     const AC = D.rules.agency_contract ?? []; const box = $('st-contract'); if (box) { const need = org.kind === 'contractor' || org.facilities.some(f => f.run === 'entrusted_org' || f.run === 'entrusted_own'); box.hidden = !need || !AC.length;

@@ -1,0 +1,19 @@
+---
+/** 부가세 점검기 3단 메뉴 + 영속 문맥 바(공무원 UX 재설계 2026-10-28, docs/design/vat-ux-spec.md §1) — 모든 /vat/* 페이지의 제목 아래.
+ *  주소는 바꾸지 않았고(넘김 없음) 묶음만 업무 주기 순(지금 할 일 · 기록 · 신고 · 설정·인수인계 · 참고). 문맥 바는 src/scripts/vat_ctx.ts 가 브라우저에서 채운다(기관·기수·마지막 저장). */
+const { current = '' } = Astro.props as { current?: string };
+const GROUPS: { name: string; items: { key: string; name: string; href: string }[] }[] = [
+  { name: '지금 할 일', items: [{ key: 'start', name: '대시보드', href: '/vat/' }] },
+  { name: '기록', items: [{ key: 'monthly', name: '지출 기록', href: '/vat/monthly/' }] },
+  { name: '신고', items: [{ key: 'prepare', name: '신고 준비', href: '/vat/prepare/' }, { key: 'review', name: '지난 신고 점검', href: '/vat/review/' }, { key: 'schedule', name: '일정표', href: '/vat/schedule/' }, { key: 'trend', name: '납부액 추이', href: '/vat/trend/' }] },
+  { name: '설정·인수인계', items: [{ key: 'setup', name: '기관 설정', href: '/vat/setup/' }, { key: 'discover', name: '과세사업 찾기', href: '/vat/discover/' }, { key: 'handover', name: '인수인계', href: '/vat/handover/' }] },
+  { name: '참고', items: [{ key: 'tools', name: '한 건 판정·계산기', href: '/vat/tools/' }, { key: 'build', name: '신축·대수선', href: '/vat/build/' }, { key: 'develop', name: '공영개발', href: '/vat/develop/' }] },
+];
+---
+<a class="skip vat-skip" href="#vat-main">메뉴 건너뛰기</a>
+<nav class="vat-nav no-print" aria-label="부가세 점검기 메뉴">
+  {GROUPS.map(g => <div class="vn-group"><span class="vn-name">{g.name}</span>{g.items.map(i => <a href={i.href} aria-current={i.key === current ? 'page' : undefined}>{i.name}</a>)}</div>)}
+</nav>
+<div id="vat-ctx" class="vat-ctx no-print" role="status" aria-live="polite"><span class="meta">이 브라우저의 설정·기록 확인 중…</span></div>
+<span id="vat-main" tabindex="-1"></span>
+<script>import '../scripts/vat_ctx';</script>

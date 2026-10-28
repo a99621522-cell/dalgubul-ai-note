@@ -1,19 +1,20 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import VatData from '../../../components/VatData.astro';
+import VatNav from '../../../components/VatNav.astro';
 import '../../../styles/vat.css';
 /** /vat/monthly/ — 시설 지출 기록(신고 담당 공무원이 직접, 또는 수탁기관·시설 부서가 대신 — 운영자 지시 2026-10-27 '사용목적은 신고하는 공무원용'. v2 1단계 2026-10-27). 기관 설정(org.json)을 열고 시설·달을 고른 뒤 지출을 한 건씩 현장 질문 5개로 넣으면 신호등 판정과 '지금 할 일'이 나오고, 월말에 매입 인계표(한글 표 복사·CSV·JSON)를 만든다. 판정은 vat_rules.judge(공용). 서버 없음. 스크립트 src/scripts/vat_monthly.ts */
 ---
 <Base title="시설 지출 기록" description="신고 담당 공무원이 홈택스 매입 목록·카드 내역을 붙여넣거나 한 건씩 넣어 시설별로 기록하면 부가세 매입세액을 공제받을 수 있는지 신호등으로 알려 줍니다. 수탁기관·시설 부서가 대신 기록해 인계표로 보낼 수도 있습니다. 브라우저 안에서만 저장." current="vat" crumb="시설 지출 기록">
-  <p class="meta no-print"><a href="/vat/">← 시작 화면</a></p>
   <div class="section-head"><h1>④ 지출 기록 — 시설별로 어디에 쓴 돈인지 남기기</h1><span class="meta" id="m-dday"></span></div>
+  <VatNav current="monthly" />
   <p class="lede">신고 담당이 홈택스 「전자세금계산서 목록(매입)」·사업용 카드 내역을 아래 「여러 건 한꺼번에」에 붙여넣고 건마다 <strong>어느 시설에 썼는지</strong>만 고르는 것이 기본입니다. 영수증 한 장씩 넣을 수도 있습니다(영수증 종류·받는 사람·어디에·무엇). 수탁기관·시설 부서에 기록을 맡길 때는 이 주소와 기관 설정 파일을 보내면 같은 화면으로 기록해 월말에 「매입 인계표」를 돌려줍니다. 입력은 이 브라우저에만 저장됩니다. <strong>빨강(다른 명의·증빙 미달)을 기한 안에 처리하는 것이 곧 절감</strong>입니다 — 처리하지 않으면 그 세액은 영구히 빠집니다.</p>
 
   <section id="m-org" class="vc-card no-print">
     <h3>기관 설정</h3>
     <p id="m-org-state" class="meta">확인 중…</p>
     <p class="meta">카드 지출이 많으면 신고 담당에게 기관 법인카드의 홈택스 <strong>「사업용 신용카드 등록」</strong>을 부탁하세요 — 등록 뒤에는 카드 매입이 홈택스에 자동 집계됩니다(여기 기록은 '어디에 썼는지'를 남기는 용도).</p>
-    <p class="meta">신고 담당에게 받은 <strong>기관 설정 파일(org.json)</strong>을 여세요: <input type="file" id="m-open" accept=".json,application/json" /> · 파일이 없으면 신고 담당 부서에 요청하거나 <a href="/vat/setup/">기관 설정</a>에서 만듭니다.</p>
+    <p class="meta">신고 담당에게 받은 <strong>기관 설정 파일(org.json)</strong>을 여세요: <input type="file" id="m-open" aria-label="기관 설정 파일 열기" accept=".json,application/json" /> · 파일이 없으면 신고 담당 부서에 요청하거나 <a href="/vat/setup/">기관 설정</a>에서 만듭니다.</p>
   </section>
 
   <form class="vc-form no-print" id="m-sel" autocomplete="off">
@@ -31,9 +32,9 @@ import '../../../styles/vat.css';
     <div class="q full"><span class="q-title">① 영수증이 어떤 것인가요</span><div class="choices" id="m-proof"></div></div>
     <div class="q full" id="m-payee-q"><span class="q-title">② 영수증의 "받는 사람(공급받는 자)" 이름이 누구인가요</span><div class="choices" id="m-payee"></div><span class="note">세금계산서는 오른쪽 "공급받는 자" 칸, 카드 전표는 카드 명의입니다.</span></div>
     <div class="q full" id="m-vat-q" hidden><span class="q-title">②-1 전표에 부가세(세액) 금액이 따로 적혀 있나요</span><div class="choices"><label><input type="radio" name="m-vatsep" value="1" checked /> 네, 따로 적혀 있다</label><label><input type="radio" name="m-vatsep" value="0" /> 아니요 · 모름</label></div></div>
-    <div class="q full"><span class="q-title">③ 이 돈은 어디에 쓰였나요</span><div class="choices" id="m-use"></div></div>
+    <div class="q full"><span class="q-title">③ 이 돈은 어디에 쓰였나요 <button type="button" class="help" data-term="common_tax" aria-expanded="false" aria-label="공통매입세액 설명">?</button></span><div class="choices" id="m-use"></div></div>
     <div class="q full"><span class="q-title">④ 무엇을 샀나요</span><div class="choices" id="m-what"></div></div>
-    <div class="q full" id="m-evid-q"><span class="q-title">⑤ '이 시설만' 썼다는 근거가 무엇인가요</span><div class="choices" id="m-evid"></div><span class="note">과세·면세를 함께 하는 기관은 전용 지출의 실지귀속을 서류로 입증해야 안분을 피합니다(시행령 제81조 제1항). '아직 없음'이면 신고 준비의 '처리할 것'에 올라옵니다.</span></div>
+    <div class="q full" id="m-evid-q"><span class="q-title">⑤ '이 시설만' 썼다는 근거가 무엇인가요 <button type="button" class="help" data-term="actual_use" aria-expanded="false" aria-label="실지귀속 설명">?</button></span><div class="choices" id="m-evid"></div><span class="note">과세·면세를 함께 하는 기관은 전용 지출의 실지귀속을 서류로 입증해야 안분을 피합니다(시행령 제81조 제1항). '아직 없음'이면 신고 준비의 '처리할 것'에 올라옵니다.</span></div>
     <div class="q full" id="m-asset-q" hidden><label class="choices"><span><input type="checkbox" id="m-asset" /> 건물 공사·장비처럼 <strong>여러 해 쓰는 것</strong>입니다(500만 원 넘는 수선·설비 등)</span></label></div>
     <div class="q full"><label class="choices"><span><input type="checkbox" id="m-late" /> 지난 과세기간(6개월 전 이전) 지출인데 영수증을 이제 받았다</span></label><label class="choices"><span><input type="checkbox" id="m-subsidy" /> 국비·시비 <strong>보조금</strong>으로 집행한 지출이다(보조금이라서 공제가 안 되는 것은 아닙니다 — 표시만 남깁니다)</span></label></div>
     <div class="actions"><button type="submit" class="btn">판정하고 기록에 넣기</button><button type="reset" class="btn secondary">비우기</button></div>
@@ -58,7 +59,7 @@ import '../../../styles/vat.css';
 
   <section id="m-list" hidden>
     <div class="section-head"><h2 id="m-list-title">이 달 기록</h2><span class="meta" id="m-sum"></span></div>
-    <div class="scroll-x"><table class="data-table vat-table" id="m-table" data-stack="off">
+    <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" id="m-table" data-stack="off">
       <caption id="m-caption">매입 인계표</caption>
       <thead><tr><th scope="col">날짜</th><th scope="col">내용</th><th scope="col">공급가액</th><th scope="col">부가세</th><th scope="col">영수증</th><th scope="col">받는 사람</th><th scope="col">어디에</th><th scope="col">무엇</th><th scope="col">근거·사업</th><th scope="col">신호</th><th scope="col">지금 할 일</th><th scope="col">근거</th><th scope="col" class="no-print">처리</th></tr></thead>
       <tbody></tbody></table></div>

@@ -9,6 +9,7 @@ export type Basis = { law: string; art: string };
 export type Inquiry = { key: string; fac?: string; title: string; channel: string; facts: string[]; questions: string[]; views: { name: string; text: string }[]; laws: Basis[]; rulings?: string[]; attach?: string[] };
 export type Ruling = { id: string; kind: string; no: string; title: string; gist: string; note?: string; src?: string; url?: string; verify?: boolean; law_id?: number; ulex?: string; tt?: string; text?: string };
 export type Opt = { key: string; name: string };
+export type Glossary = { key: string; term: string; plain: string; text: string; basis?: Basis[] };
 export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
 export type Data = {
   version: string; verified?: { date: string; act: string; decree: string; rule: string; basic?: string }; law_url: string; form_version?: string; laws: Record<string, string>;
@@ -33,6 +34,7 @@ export type Data = {
   presets?: Preset[];
   rulings?: Ruling[];
   inquiries?: Inquiry[];
+  glossary?: Glossary[];
 };
 export type RevenueItem = { key: string; group: string; name: string; status: 'taxable' | 'exempt' | 'check' | 'none'; type?: string; basis: Basis[]; deduct: string; note?: string; only?: 'contractor' | 'gov'; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
 /** 기관 종류(운영자 2026-10-27 '시설관리공단 분야도 해야지'): gov = 지자체(제19호 면세 적용), contractor = 수탁기관(시설관리공단·재단 — 일반 사업자 기준, 군 대행사업은 군 명의) */
@@ -142,10 +144,15 @@ export const ORG_KEY = 'vat-org-v1', LEDGER_KEY = 'vat-ledger-v1';
 const lsGet = <T,>(k: string): T | null => { try { const s = localStorage.getItem(k); return s ? JSON.parse(s) as T : null; } catch { return null; } };
 const lsSet = (k: string, v: unknown) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* 저장 못 해도 계속 */ } };
 export const getOrg = () => lsGet<Org>(ORG_KEY);
-export const setOrg = (o: Org | null) => { if (o) lsSet(ORG_KEY, o); else { try { localStorage.removeItem(ORG_KEY); } catch { /* */ } } };
+/** 마지막 저장 시각(공무원 UX 재설계 2026-10-28, 문맥 바) — 새 키, 기존 키·파일 형식은 그대로 */
+export const SAVED_KEY = 'vat-saved-v1';
+export type SavedAt = { org?: string; ledger?: string; filings?: string };
+export const getSaved = (): SavedAt => lsGet<SavedAt>(SAVED_KEY) ?? {};
+export function markSaved(what: keyof SavedAt) { const a = getSaved(); a[what] = new Date().toISOString(); lsSet(SAVED_KEY, a); try { document.dispatchEvent(new CustomEvent('vat:saved', { detail: { what } })); } catch { /* */ } }
+export const setOrg = (o: Org | null) => { if (o) { lsSet(ORG_KEY, o); markSaved('org'); } else { try { localStorage.removeItem(ORG_KEY); } catch { /* */ } } };
 export const allLedgers = () => lsGet<Record<string, LedgerRow[]>>(LEDGER_KEY) ?? {};
 export const getLedger = (fid: string, month: string) => allLedgers()[`${fid}:${month}`] ?? [];
-export const setLedger = (fid: string, month: string, rows: LedgerRow[]) => { const a = allLedgers(); a[`${fid}:${month}`] = rows; lsSet(LEDGER_KEY, a); };
+export const setLedger = (fid: string, month: string, rows: LedgerRow[]) => { const a = allLedgers(); a[`${fid}:${month}`] = rows; lsSet(LEDGER_KEY, a); markSaved('ledger'); };
 export const facilityRule = (D: Data, f: OrgFacility) => D.facilities.find(x => x.key === f.type);
 export type FacStatus = 'taxable' | 'exempt' | 'check' | 'own' | 'agency';
 export function facilityStatus(D: Data, f: OrgFacility): FacStatus {
@@ -242,7 +249,7 @@ export const prevPeriodKey = (k: PeriodKey): PeriodKey => { const y = Number(k.s
 export const PRELIM_NOTICE_LIMIT = 150_000_000;
 export const FILINGS_KEY = 'vat-filings-v1';
 export const getFilings = (): Record<PeriodKey, Filing> => lsGet<Record<PeriodKey, Filing>>(FILINGS_KEY) ?? {};
-export const saveFiling = (f: Filing) => { const a = getFilings(); a[f.period] = f; lsSet(FILINGS_KEY, a); };
+export const saveFiling = (f: Filing) => { const a = getFilings(); a[f.period] = f; lsSet(FILINGS_KEY, a); markSaved('filings'); };
 /** 과세사업 전환 매입세액(시행령 제85조): 면세사업용으로 불공제됐던 감가상각자산을 과세사업에 쓰기 시작하면 불공제 매입세액 × (1 − 체감률(건물 5%·그 밖 25%) × 경과 과세기간 수)를 전환한 과세기간 확정신고에 공제. 공통으로 쓰면 × 그 과세기간 과세공급가액 비율(5% 미만이면 없음, 제2항). 취득이 과세기간 개시일 뒤면 개시일 취득으로 봄(제6항) */
 export function convertCredit(tax: number, kind: 'building' | 'other', acquired: PeriodKey, convertTo: PeriodKey, taxableRatio = 1) { const hi = (k: PeriodKey) => Number(k.slice(0, 4)) * 2 + (Number(k[5]) - 1); const n = Math.max(0, hi(convertTo) - hi(acquired)); const remain = Math.max(0, 1 - (kind === 'building' ? 0.05 : 0.25) * n); const ratio = taxableRatio < 0.05 ? 0 : taxableRatio; return { n, remain, credit: Math.floor(tax * remain * ratio) }; }
 /** 간주임대료 공급가액(시행령 제65조 제1항): 보증금 × 과세대상 기간 일수 × 이자율 ÷ 365(윤년 366). 이자율은 기획재정부령 정기예금 이자율 — 사용자가 넣는다 */
@@ -306,8 +313,8 @@ export async function unzip(buf: ArrayBuffer): Promise<{ name: string; data: Uin
 }
 export const utf8 = (d: Uint8Array) => dec.decode(d);
 export function downloadBlob(name: string, blob: Blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0); }
-export const setAllLedgers = (a: Record<string, LedgerRow[]>) => lsSet(LEDGER_KEY, a);
-export const setFilings = (a: Record<PeriodKey, Filing>) => lsSet(FILINGS_KEY, a);
+export const setAllLedgers = (a: Record<string, LedgerRow[]>) => { lsSet(LEDGER_KEY, a); markSaved('ledger'); };
+export const setFilings = (a: Record<PeriodKey, Filing>) => { lsSet(FILINGS_KEY, a); markSaved('filings'); };
 
 /* ── 세무회계법인 관점 검토(2026-10-27) 도우미 ── */
 /** 조기환급 일정(법 제59조 제2항 제2호·시행령 제107조 제4항): 공사 기간을 매월 또는 매 2월 조기환급기간으로 끊고, 기간 끝 +25일 신고기한, 신고기한 +15일 환급 기한. 예정·확정신고기간 경계는 넘기지 않는다 */
@@ -368,3 +375,60 @@ export function wireInquiry(root: ParentNode) {
     d.querySelector('[data-inq-dl]')?.addEventListener('click', () => downloadText(`부가세_질의서_초안_${key}.txt`, pre.textContent ?? ''));
   });
 }
+
+/* ── 공무원 UX 재설계(2026-10-28, docs/design/vat-ux-spec.md) 공용 UI 도우미 — 규칙·계산과 무관 ── */
+/** 처리할 것 집계(대시보드·문맥 바·신고 준비 요약이 같은 식으로): 빨강·노랑 미처리 + 근거 없는 전용 지출 */
+export function openItems(rows = Object.values(allLedgers()).flat()) {
+  const today = ymd(new Date());
+  const red = rows.filter(r => r.v === 'no' && !r.done && r.payee === 'contractor'), yellow = rows.filter(r => r.v === 'check' && !r.done);
+  const noEvid = rows.filter(r => r.v === 'ok' && r.use === 'this' && (!r.evid || r.evid === 'none') && r.tax > 0 && !r.done);
+  const sum = (a: LedgerRow[]) => a.reduce((s, r) => s + r.tax, 0);
+  return { red, yellow, noEvid, redTax: sum(red), yellowTax: sum(yellow), noEvidTax: sum(noEvid), expired: red.filter(r => r.fix_due && r.fix_due < today).length, total: red.length + yellow.length + noEvid.length };
+}
+/** 용어 사전 ? 단추(rules.yml glossary) — <button class="help" data-term=key>: 누르면 뒤에 <span class="pop" role="note"> 두 문장 + 조문. Esc·바깥 클릭·포커스 이탈로 닫힘 */
+export const helpBtn = (D: Data | null, key: string, label?: string) => { const g = D?.glossary?.find(x => x.key === key); return g ? `<button type="button" class="help" data-term="${esc(key)}" aria-expanded="false" aria-label="${esc(label ?? g.term)} 설명">?</button>` : ''; };
+export function helpWire(root: ParentNode, D: Data | null) {
+  if (!D?.glossary) return;
+  const close = (b: HTMLButtonElement) => { b.setAttribute('aria-expanded', 'false'); b.nextElementSibling?.classList.contains('pop') && b.nextElementSibling.remove(); };
+  const closeAll = () => root.querySelectorAll<HTMLButtonElement>('button.help[aria-expanded=true]').forEach(close);
+  root.querySelectorAll<HTMLButtonElement>('button.help[data-term]:not([data-wired])').forEach(b => { b.dataset.wired = '1';
+    b.addEventListener('click', e => { e.stopPropagation(); const open = b.getAttribute('aria-expanded') === 'true'; closeAll(); if (open) return; const g = D.glossary!.find(x => x.key === b.dataset.term); if (!g) return;
+      const sp = document.createElement('span'); sp.className = 'pop'; sp.setAttribute('role', 'note'); sp.innerHTML = `<b>${esc(g.term)}</b> <span class="note">= ${esc(g.plain)}</span><br>${esc(g.text)}${g.basis?.length ? `<br><span class="note">${uniq(g.basis).map(x => lawLink(D, x)).join(' · ')}</span>` : ''} <button type="button" class="link-btn pop-x" aria-label="설명 닫기">닫기</button>`;
+      b.after(sp); b.setAttribute('aria-expanded', 'true'); sp.querySelector('.pop-x')!.addEventListener('click', () => { close(b); b.focus(); }); });
+    b.addEventListener('keydown', e => { if (e.key === 'Escape') { close(b); } }); });
+  if (!(root as HTMLElement & { __helpWired?: boolean }).__helpWired) { (root as HTMLElement & { __helpWired?: boolean }).__helpWired = true; document.addEventListener('click', e => { if (!(e.target as HTMLElement).closest('.pop, button.help')) closeAll(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); }); }
+}
+/** 토스트(role=status) + 되돌리기 명령 스택 — 넣기·삭제·덮어쓰기 뒤 10초 안에 되돌림. 세션 안 최대 20개 */
+const undoStack: { label: string; undo: () => void }[] = [];
+let toastTimer = 0;
+export function toast(msg: string, undo?: { label?: string; fn: () => void }, ms = 10000) {
+  let t = document.getElementById('vat-toast'); if (!t) { t = document.createElement('div'); t.id = 'vat-toast'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+  if (undo) { undoStack.push({ label: msg, undo: undo.fn }); if (undoStack.length > 20) undoStack.shift(); }
+  t.innerHTML = `<span>${esc(msg)}</span>${undo ? ` <button type="button" class="link-btn" data-undo>${esc(undo.label ?? '되돌리기')}</button>` : ''} <button type="button" class="link-btn" data-x aria-label="알림 닫기">닫기</button>`; t.hidden = false;
+  t.querySelector('[data-undo]')?.addEventListener('click', () => { const u = undoStack.pop(); if (u) { try { u.undo(); } catch { /* */ } } t!.hidden = true; });
+  t.querySelector('[data-x]')!.addEventListener('click', () => { t!.hidden = true; });
+  window.clearTimeout(toastTimer); toastTimer = window.setTimeout(() => { t!.hidden = true; }, ms);
+}
+export function undoLast() { const u = undoStack.pop(); if (!u) return false; try { u.undo(); } catch { /* */ } toast(`되돌렸습니다: ${u.label}`); return true; }
+/** 확인 대화상자(<dialog>, 스크린리더 포커스 유지) — 지우기·덮어쓰기 같은 되돌리기 어려운 동작 앞에서만. dialog 가 없으면 confirm */
+export function vatConfirm(msg: string, ok = '계속', cancel = '취소'): Promise<boolean> {
+  return new Promise(res => {
+    if (typeof HTMLDialogElement === 'undefined') { res(window.confirm(msg)); return; }
+    let d = document.getElementById('vat-dlg') as HTMLDialogElement | null; if (!d) { d = document.createElement('dialog'); d.id = 'vat-dlg'; d.className = 'vat-dlg'; document.body.appendChild(d); }
+    d.innerHTML = `<form method="dialog"><p>${esc(msg)}</p><div class="actions"><button type="submit" class="btn" value="ok">${esc(ok)}</button><button type="submit" class="btn secondary" value="cancel" autofocus>${esc(cancel)}</button></div></form>`;
+    d.onclose = () => res(d!.returnValue === 'ok'); d.showModal();
+  });
+}
+/** 표 안 키보드 이동(스프레드시트 느낌, ARIA grid 아님): ↑↓ 같은 열의 위·아래 칸 입력으로, 체크 칸에서 Space 는 기본 토글 */
+export function gridKeys(table: HTMLTableElement) {
+  if (table.dataset.gridKeys) return; table.dataset.gridKeys = '1';
+  table.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return; const el = e.target as HTMLElement; if (!/^(INPUT|SELECT|BUTTON)$/.test(el.tagName) || (el as HTMLInputElement).type === 'text' && e.altKey) return;
+    if (el.tagName === 'SELECT' && !e.altKey) return;   // select 는 화살표로 값을 바꾸므로 Alt+화살표로 이동
+    const td = el.closest('td,th'); const tr = td?.parentElement as HTMLTableRowElement | null; if (!td || !tr) return; const col = [...tr.children].indexOf(td);
+    let nx = e.key === 'ArrowDown' ? tr.nextElementSibling : tr.previousElementSibling; while (nx && (nx as HTMLElement).hidden) nx = e.key === 'ArrowDown' ? nx.nextElementSibling : nx.previousElementSibling;
+    const cell = nx?.children[col] as HTMLElement | undefined; const f = cell?.querySelector<HTMLElement>('input,select,button'); if (f) { e.preventDefault(); f.focus(); }
+  });
+}
+export const reduceMotion = () => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; } };
+export const scrollTo = (el: Element | null | undefined) => el?.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });

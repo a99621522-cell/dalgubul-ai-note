@@ -1,12 +1,13 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import VatData from '../../../components/VatData.astro';
+import VatNav from '../../../components/VatNav.astro';
 import '../../../styles/vat.css';
 /** /vat/discover/ — 과세사업 찾기(절감 사유 ① 본청 과세사업 검토·매입세액 발굴·대상 확대, 운영자 지시 2026-10-27). 세외수입 항목 점검표(rules.yml revenue_items) → 발굴 후보·공제 대상·확인 항목. 스크립트 src/scripts/vat_discover.ts */
 ---
 <Base title="과세사업 찾기 — 세외수입 점검표" description="지자체 세외수입 항목(재산임대·사용료·수수료·사업수입·재산매각)을 과세·면세·확인으로 나눈 점검표. 있다고 표시하면 과세사업인데 신고하지 않는 후보와 공제 대상 지출을 보여 줍니다. 브라우저 안에서만." current="vat" crumb="과세사업 찾기">
-  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/setup/">기관 설정</a></p>
   <div class="section-head"><h1>② 과세사업 찾기 — 우리 기관 수입 가운데 과세사업은 어디까지인가</h1><span class="meta">법 제26조 제1항 제19호 · 시행령 제46조</span></div>
+  <VatNav current="discover" />
   <p class="lede">매입세액은 <strong>과세사업</strong>에 쓴 지출만 돌려받습니다. 그래서 먼저 우리 기관 수입 가운데 과세사업이 어디까지인지 훑어야 합니다. 세외수입 항목마다 '없음 / 있음·과세로 신고 중 / 있음·신고 안 함 또는 모름'을 고르면, <strong>과세사업인데 신고하지 않는 후보</strong>(발굴), 신고 중인 사업의 <strong>공제 대상 지출</strong>(대상 확대), 유권해석이 필요한 것, 면세·비과세를 나눠 보여 줍니다. 과세 여부 표시는 조문 기준 참고이지 기관의 판단이 아닙니다.</p>
   <div class="vc-form no-print"><div class="q full"><span class="q-title">우리 기관은</span><div class="choices"><label><input type="radio" name="dc-kind" value="gov" checked /> 지자체(시·군·구) — 원칙 면세, 열거 업종만 과세</label><label><input type="radio" name="dc-kind" value="contractor" /> 수탁기관(시설관리공단·재단) — 일반 사업자 기준, 제19호 면세 없음</label></div><span class="note">기관 설정을 했으면 거기서 고른 종류가 기본입니다. 공단 기준에서는 주차장·대관·사용허가도 과세이고, 군 사업 대행수수료는 과세 용역, 군 대행사업의 사업비 실비·출연금은 공급이 아닙니다.</span></div></div>
   <section class="vc-card no-print" id="dc-govbox">

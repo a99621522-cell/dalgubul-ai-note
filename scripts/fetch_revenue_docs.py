@@ -70,7 +70,8 @@ def to_text(pdf: Path, txt: Path) -> bool:
 
 def cms_token(g: dict, jar: Path) -> str:
     """동구·서구 누리집(같은 CMS): 화면의 download 폼 csrfToken(세션 쿠키와 짝) — POST /file/direct/download.do (csrfToken, filename, path)"""
-    page = get(g["page"], jar=jar, tries=4, timeout=60, backoff=40).decode("utf-8", "ignore")
+    # curl: true 지자체(서구·중구)는 러너 IP 에 따라 TCP 연결 자체가 막히므로(45~60초 시간 초과) 1회 25초로 빨리 끝내고, 워크플로를 다시 돌려 다른 IP 를 받는 쪽이 빠르다(2026-10-28 14차)
+    page = (get(g["page"], jar=jar, tries=1, timeout=25) if g.get("curl") else get(g["page"], jar=jar, tries=4, timeout=60, backoff=40)).decode("utf-8", "ignore")
     m = re.search(r'name=["\']csrfToken["\'][^>]*value=["\']([^"\']+)', page) or re.search(r'value=["\']([^"\']+)["\'][^>]*name=["\']csrfToken', page)
     if not m:
         print(f"[revenue] {g['name']} 화면 {len(page)}B, csrfToken 없음 :: {re.sub(r'\\s+', ' ', page)[:600]}")
@@ -263,7 +264,7 @@ def discover(g: dict) -> None:
         if url in seen:
             continue
         seen.add(url)
-        html = get(url, post=posts.get(url), tries=3, timeout=45, backoff=30).decode("utf-8", "ignore")   # 5차·12차: 끊기면 30초 쉬고 다시: 4차에 열리던 동구·서구·달서구가 1회 시도에서 연결 실패 → 2회
+        html = (get(url, post=posts.get(url), tries=1, timeout=25) if g.get("curl") else get(url, post=posts.get(url), tries=3, timeout=45, backoff=30)).decode("utf-8", "ignore")   # 5차·12차: 끊기면 30초 쉬고 다시; curl 지자체는 1회 25초(IP 차단은 재시도로 안 풀림): 4차에 열리던 동구·서구·달서구가 1회 시도에서 연결 실패 → 2회
         opened += 1
         if not html:
             print(f"[revenue] {g['name']}: 페이지 못 받음 {url}")

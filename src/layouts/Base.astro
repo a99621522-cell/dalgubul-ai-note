@@ -10,7 +10,7 @@ const { title, seoTitle, description = '대구 산업단지·기업 현황과 �
 const VAT = !!process.env.VAT_SITE;
 /** 다잇다 빌드에서는 점검기를 내린다(운영자 지시 2026-10-28 '다잇다 사이트에서는 내려. 성격이 다르잖아'): current='vat' 페이지는 본문 대신 옮김 안내(새 사이트 링크 + 5초 뒤 넘김)만 낸다 */
 const VAT_PUBLIC = 'https://vat-daitda.pages.dev';
-const MOVED = !VAT && current === 'vat';
+const MOVED = !VAT && current === 'vat' && Astro.url.pathname !== '/vat/handover/';   // 인수인계는 다잇다에서도 그대로 — 옛 주소에 남은 설정·기록을 zip 으로 가져가는 길(운영자 2026-10-28 '사이트가 안되네')
 const SITE_NAME = VAT ? '지자체 부가세 절감 점검기' : '다잇다';
 const crumbMenu = NAV.find(n => n.key === current);
 const crumbGroup = VAT || !crumbMenu ? undefined : NAV_GROUPS.find(g => (g.items as readonly string[]).includes(current));
@@ -125,7 +125,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
           <button type="button" class="pa-btn" data-pa="print"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2M6 14h12v7H6z"/></svg><span>인쇄</span></button>
         </div>
       </div>)}
-    {MOVED ? <div class="section-head"><h1>지자체 부가세 절감 점검기는 따로 운영합니다</h1></div><p class="lede">이 도구는 대구 산업·기업 자료와 성격이 달라 별도 사이트로 옮겼습니다. <a href={VAT_PUBLIC + Astro.url.pathname}>{VAT_PUBLIC + Astro.url.pathname}</a> 에서 같은 화면이 열립니다(5초 뒤 자동으로 넘어갑니다). 이 브라우저에 두었던 설정·기록은 사이트(주소)마다 따로 저장되므로, 옮긴 뒤에는 <strong>인수인계 꾸러미(zip)</strong>나 org.json 파일로 가져가세요.</p><p class="meta"><a class="btn" href={VAT_PUBLIC + Astro.url.pathname}>새 사이트로 가기</a></p> : <slot />}
+    {MOVED ? <div class="section-head"><h1>지자체 부가세 절감 점검기는 따로 운영합니다</h1></div><p class="lede">이 도구는 대구 산업·기업 자료와 성격이 달라 별도 사이트로 옮겼습니다. <a href={VAT_PUBLIC + Astro.url.pathname}>{VAT_PUBLIC + Astro.url.pathname}</a> 에서 같은 화면이 열립니다(5초 뒤 자동으로 넘어갑니다). 이 브라우저에 두었던 설정·기록은 사이트(주소)마다 따로 저장되므로, 옮긴 뒤에는 <strong>인수인계 꾸러미(zip)</strong>로 가져가세요.</p><p class="meta"><a class="btn" href={VAT_PUBLIC + Astro.url.pathname}>새 사이트로 가기</a> <a class="btn secondary" href="/vat/handover/" id="mv-keep" hidden>이 브라우저의 설정·기록 꾸러미 받기(여기서)</a></p><script is:inline>try{if(localStorage.getItem('vat-org-v1')||localStorage.getItem('vat-ledger-v1')){var e=document.getElementById('mv-keep');if(e){e.hidden=false;document.querySelector('meta[http-equiv=refresh]')?.remove();}}}catch(err){}</script> : <slot />}
   </main>
   {VAT ? <footer class="site-foot"><div class="wrap">
       <p>지자체(시·군·구)와 시설관리공단이 내는 부가가치세의 매입세액을 조문대로 빠짐없이 공제하도록 돕는 도구입니다. 판정은 부가가치세법·시행령·시행규칙 조문의 참고용 계산이며 기관의 판단이 아니고, 신고 책임은 신고인에게 있습니다. 서버가 없어 입력은 이 브라우저와 내려받는 파일에만 남습니다. 담당자 이름·전화·개별 기관의 신고 금액은 싣지 않습니다.</p>

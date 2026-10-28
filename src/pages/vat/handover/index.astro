@@ -8,6 +8,7 @@ import '../../../styles/vat.css';
 <Base title="부가세 인수인계 꾸러미" description="지자체 부가세 담당이 바뀔 때 기관 설정·시설 기록·신고 기록·자산대장·미처리 목록과 한 쪽 안내를 zip 하나로 넘기고, 다음 담당자는 그 파일을 열어 이어받습니다. 브라우저 안에서만." current="vat" crumb="인수인계">
   <div class="section-head"><h1>⑥ 인수인계 꾸러미</h1><span class="meta">담당이 바뀔 때</span></div>
   <VatNav current="handover" />
+  {!process.env.VAT_SITE && <div class="callout info"><strong>이 도구는 별도 사이트(<a href="https://vat-daitda.pages.dev/vat/">vat-daitda.pages.dev</a>)로 옮겼습니다.</strong> 이 화면은 daitda.co.kr 브라우저에 남아 있던 설정·기록을 <strong>꾸러미(zip)로 내려받기 위해</strong> 남겨 두었습니다. 받은 zip 을 새 사이트의 <a href="https://vat-daitda.pages.dev/vat/handover/">인수인계</a>에서 열면 그대로 되살아납니다.</div>
   <p class="lede">부가세 신고는 반년마다 한 번이라 담당이 바뀌면 지난 신고가 어떻게 됐는지 아무도 모르기 쉽습니다. 이 화면은 <strong>이 브라우저에 있는 것 전부</strong>(기관 설정, 시설 기록, 신고 기록, 자산대장, 아직 처리 안 된 것)와 <strong>한 쪽 안내</strong>를 zip 하나로 묶습니다. 다음 담당자는 자기 컴퓨터에서 그 파일을 열면 끝입니다.</p>
   <section class="vc-card" id="h-state"><h3>이 브라우저에 있는 것</h3><div id="h-inv">확인 중…</div></section>
   <div class="actions no-print"><button type="button" class="btn" id="h-zip">인수인계 꾸러미(zip) 내려받기</button><button type="button" class="btn secondary" id="h-readme">한 쪽 안내 인쇄</button></div>

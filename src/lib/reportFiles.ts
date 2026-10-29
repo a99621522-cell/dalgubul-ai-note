@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'jinyang-oilseal-ev-motor-seal', summary: '대구 달성군 다사읍(성서5차첨단산업단지) 비상장 오일씰 제조사 진양오일씰의 허브 베어링 씰·변속기·파워트레인 씰 사업과, 전기차 모터 씰·경상개발비 확대(48억 → 95억 원)·설비 투자 등 새 분야를 DART 연결·별도 감사보고서(2025년 연결 매출 1,288억 원·영업이익 7억 원)와 관계회사 주석, 국민연금·공장등록·회사 누리집으로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '자동차부품', '미래차'],
+    title: '진양오일씰, 허브 베어링 씰에서 전기차 모터 씰로', name: '진양오일씰, 허브 베어링 씰에서 전기차 모터 씰로',
+    hwpx: '/hwpx/jinyang-oilseal-ev-motor-seal.hwpx', hwpxSize: '97KB', date: '2026-10-29' },
   { slug: 'ase-wafer-equipment', summary: '대구 달성군 다사읍(성서5차첨단산업단지) 비상장 장비 회사 에이에스이가 반도체 웨이퍼 세정장비에서 디스플레이·신재생에너지 공정 장비로 사업을 넓혀 온 구조를 DART 감사보고서(매출 482억 원(2023) → 466억 원(2024) → 519억 원(2025), 2025년 영업이익 129억 원)와 재무 구조·선수금·경상개발비, 국민연금·공장등록·국가 R&D 자료로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '반도체', '에너지'],
     title: '에이에스이, 웨이퍼 세정장비에서 디스플레이·신재생에너지 공정 장비로', name: '에이에스이, 웨이퍼 세정장비에서 디스플레이·신재생에너지 공정 장비로',
     hwpx: '/hwpx/ase-wafer-equipment.hwpx', hwpxSize: '94KB', date: '2026-10-29' },

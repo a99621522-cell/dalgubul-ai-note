@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'morgan-semiconductor-ceramic-fuelcell', summary: '대구 달성군 논공읍에 본점을 둔 외국인투자기업 모간(영국 Morgan Advanced Materials 100%, 1978년 설립)의 카본 브러시·세라믹 단열재 사업과, 구지 3공장의 반도체용 세라믹 제품·수소 연료 발전용 25kW급 연료전지(PEMFC) 스택 개발 과제·인조흑연 소재 과제 등 새 분야를 DART 감사보고서(2025년 매출 871억 원·영업이익 154억 원)와 공장등록·국민연금·국가 R&D 자료로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '반도체', '소재'],
+    title: '모간, 카본 브러시·세라믹에서 반도체 세라믹·연료전지 스택으로', name: '모간, 카본 브러시·세라믹에서 반도체 세라믹·연료전지 스택으로',
+    hwpx: '/hwpx/morgan-semiconductor-ceramic-fuelcell.hwpx', hwpxSize: '100KB', date: '2026-10-29' },
   { slug: 'pyeonghwa-valeo-hev-clutch', summary: '대구 달성군 유가읍(대구테크노폴리스) 비상장 자동차 부품 회사 평화발레오(1988년 피에이치씨·Valeo 합작, 지분 각 50%)가 클러치·마찰재에서 현대자동차 하이브리드 엔진클러치·전자식 변속(SBW) 액추에이터·전동화 차량용 댐퍼 등 하이브리드·전동화 동력 부품으로 개발 대상을 옮기는 흐름을 DART 연결감사보고서(2025년 매출 7,084억 원·영업이익 216억 원, 주요 개발비 현황·연구개발 지출 354억 원)와 국민연금·공장등록·국가 R&D 자료로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['비상장기업', '자동차부품', '미래차'],
     title: '평화발레오, 클러치·마찰재에서 하이브리드 엔진클러치로', name: '평화발레오, 클러치·마찰재에서 하이브리드 엔진클러치로',
     hwpx: '/hwpx/pyeonghwa-valeo-hev-clutch.hwpx', hwpxSize: '132KB', date: '2026-10-29' },

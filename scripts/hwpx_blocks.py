@@ -24,10 +24,10 @@ import hwpx_report as H  # noqa: E402
 
 ROMAN = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ"]
 # 양식 문단 인덱스(config/hwpx_forms.yml 과 같다)
-FORM = {"cover": 3, "sec": 19, "h1": 26, "o": 27, "dash": 28, "note": 29, "blank": 35, "tbl": 64}
+FORM = {"cover": 3, "sec": 19, "h1": 26, "o": 27, "plain": 27, "dash": 28, "note": 29, "blank": 35, "tbl": 64}   # plain = ○ 문단 모양에 기호 없이(원문 줄글)
 # Block 문단 이름 → 양식 역할
 ROLE = {"title": "sec", "h2": "sec", "h3": "h1", "box_title": "h1", "faq_q": "h1", "body": "o", "box_body": "o", "lead": "o", "td": "o", "th": "o",
-        "bullet": "dash", "box_item": "dash", "note": "note", "caption": "note", "src": "note", "kicker": "note", "spacer": "blank", "rule": None, "fig": "blank"}
+        "para": "plain", "bullet": "dash", "box_item": "dash", "note": "note", "caption": "note", "src": "note", "kicker": "note", "spacer": "blank", "rule": None, "fig": "blank"}
 MARK = {"h1": "□ ", "o": "○ ", "dash": "- ", "note": "※ "}
 
 

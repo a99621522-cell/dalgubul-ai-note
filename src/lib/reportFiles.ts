@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'megagen-dental-implant', summary: '대구 달성군 다사읍(성서5차첨단산업단지)에 본사·공장을 둔 K-OTC 지정 치과 의료기기 회사 메가젠임플란트의 임플란트·진료용 의자 사업과 수출(2025년 매출의 68%), 미국 BIOLASE 인수(2024-11), 세천 제2공장을 DART 공시(2025 사업보고서 별도 매출 2,807억 원·영업이익 581억 원, 2026 반기보고서 매출 1,720억 원)와 국민연금·보도로 정리한 자료. 첫 장은 DART 실적 표·그래프. 연결 실적은 회사 발표 보도 값만 적음. 평가·전망은 싣지 않음.', topics: ['의료·바이오', '비상장기업', '수출'],
+    title: '메가젠임플란트, 임플란트 수출로 키운 달성 다사의 치과 의료기기 회사', name: '메가젠임플란트, 임플란트 수출로 키운 달성 다사의 치과 의료기기 회사',
+    hwpx: '/hwpx/megagen-dental-implant.hwpx', hwpxSize: '93KB', date: '2026-10-29' },
   { slug: 'lnf-highnickel-lfp', summary: '대구 달서구 본사 유가증권 상장사 엘앤에프가 니켈 95% NCMA 등 하이니켈 양극재에서 리튬인산철(LFP) 양극재로 넓히는 흐름 — LFP 전담 자회사 엘앤에프플러스(달성군 구지면 대구국가산업단지, 연 3만 t → 6만 t), 삼성SDI 1조 6,067억 원·SK온 1,617억 원 LFP 공급계약, 수주잔고, 전구체 합작법인 LLBS — 를 DART 공시(2025 사업보고서, 2026 1분기·반기보고서, 공급계약·투자판단 공시)와 하나증권 기업분석(2026-10-23)·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '이차전지', '증권사 리포트'],
     title: '엘앤에프, 하이니켈 양극재에서 대구 LFP 양극재 양산으로', name: '엘앤에프, 하이니켈 양극재에서 대구 LFP 양극재 양산으로',
     hwpx: '/hwpx/lnf-highnickel-lfp.hwpx', hwpxSize: '164KB', date: '2026-10-29' },

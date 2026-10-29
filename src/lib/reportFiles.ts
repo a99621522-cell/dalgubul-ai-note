@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'taegutec-aero-tungsten', summary: '대구 달성군 가창면 초경 절삭공구·텅스텐 분말 제조사 대구텍(IMC그룹 소속 유한책임회사)과, 같은 부지 계열사 아이엠씨엔드밀이 맡는 항공기 부품용 고성능 공구·반도체 특수가스용 텅스텐 분말 사업을 국민연금 가입자 추이·공장등록·국가 R&D 과제와 대구시 투자협약 보도(2008·2018·2024년)로 정리한 자료. DART 공시가 없어 재무 값은 싣지 않음. 평가·전망은 싣지 않음.', topics: ['비상장기업', '기계', '반도체'],
+    title: '대구텍, 초경 절삭공구에서 항공 공구·반도체용 텅스텐 분말로', name: '대구텍, 초경 절삭공구에서 항공 공구·반도체용 텅스텐 분말로',
+    hwpx: '/hwpx/taegutec-aero-tungsten.hwpx', hwpxSize: '70KB', date: '2026-10-29' },
   { slug: 'morgan-semiconductor-ceramic-fuelcell', summary: '대구 달성군 논공읍에 본점을 둔 외국인투자기업 모간(영국 Morgan Advanced Materials 100%, 1978년 설립)의 카본 브러시·세라믹 단열재 사업과, 구지 3공장의 반도체용 세라믹 제품·수소 연료 발전용 25kW급 연료전지(PEMFC) 스택 개발 과제·인조흑연 소재 과제 등 새 분야를 DART 감사보고서(2025년 매출 871억 원·영업이익 154억 원)와 공장등록·국민연금·국가 R&D 자료로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '반도체', '소재'],
     title: '모간, 카본 브러시·세라믹에서 반도체 세라믹·연료전지 스택으로', name: '모간, 카본 브러시·세라믹에서 반도체 세라믹·연료전지 스택으로',
     hwpx: '/hwpx/morgan-semiconductor-ceramic-fuelcell.hwpx', hwpxSize: '100KB', date: '2026-10-29' },

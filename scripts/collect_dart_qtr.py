@@ -316,6 +316,8 @@ def prelim_rows(perf: list[dict], probe: bool, max_docs: list[int]) -> list[dict
     for p in perf:
         if p["kind"] != "잠정실적" or p["rcept_dt"] < cutoff or p["rcept_no"] in done or max_docs[0] <= 0:
             continue
+        if "자회사" in p["report_nm"]:   # '(자회사의 주요경영사항)' 은 자회사(예: iM뱅크) 실적이라 그 회사 행으로 넣지 않는다(2026-10-29 iM금융지주 2025년 4분기)
+            continue
         text = doc_text(p["rcept_no"])
         max_docs[0] -= 1
         time.sleep(0.2)
@@ -327,7 +329,7 @@ def prelim_rows(perf: list[dict], probe: bool, max_docs: list[int]) -> list[dict
         rec.update({"rcept_dt": p["rcept_dt"], "corp_code": p["corp_code"], "name": p["name"], "report_nm": p["report_nm"],
                     "fs": "연결" if "연결" in p["report_nm"] else "개별", "rcept_no": p["rcept_no"], "url": p["url"]})
         out.append({c: rec.get(c, "") for c in COLS_PRE})
-    keep = [r for r in old if r["rcept_dt"] >= cutoff]
+    keep = [r for r in old if r["rcept_dt"] >= cutoff and "자회사" not in r.get("report_nm", "")]
     return keep + out
 
 

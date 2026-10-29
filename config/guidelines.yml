@@ -83,3 +83,8 @@ guidelines:
       review: [부가가치세 신고] }
   - { key: vat-rule,           kind: 시행규칙, issuer: 기획재정부,    name: 부가가치세법 시행규칙,                    source: { type: law,    name: 부가가치세법시행규칙 },
       review: [부가가치세 신고] }
+  # ── 공유재산(행정재산 사용허가·관리위탁 — 위탁 시설 안 임대 공간 검토, 운영자 지시 2026-10-29). 사업 DB 연결(applies) 없음 ──
+  - { key: pubprop-act,        kind: 법률,   issuer: 행정안전부,      name: 공유재산 및 물품 관리법,                  source: { type: law,    name: 공유재산및물품관리법 },
+      review: [사용허가·관리위탁] }
+  - { key: pubprop-decree,     kind: 시행령, issuer: 행정안전부,      name: 공유재산 및 물품 관리법 시행령,           source: { type: law,    name: 공유재산및물품관리법시행령 },
+      review: [사용허가·관리위탁] }

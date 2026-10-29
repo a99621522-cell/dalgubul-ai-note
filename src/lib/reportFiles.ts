@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'stech-ingot-grower', summary: '대구 달성군 다사읍(성서5차첨단산업단지) 비상장 장비 회사 에스테크(S-Tech)의 태양광·반도체용 단결정 실리콘 잉곳 성장로 사업을 DART 감사보고서(매출 783억 원(2022) → 476억 원(2023) → 1,046억 원(2024) → 680억 원(2025), 2025년 영업이익 168억 원)와 매출 계약 잔액·선수금·재고 주석, 국민연금·공장등록 자료로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '반도체', '에너지'],
+    title: '에스테크, 달성 다사의 실리콘 잉곳 성장로 장비 회사', name: '에스테크, 달성 다사의 실리콘 잉곳 성장로 장비 회사',
+    hwpx: '/hwpx/stech-ingot-grower.hwpx', hwpxSize: '100KB', date: '2026-10-29' },
   { slug: 'sangsin-brake-emb', summary: '대구 달성군 논공읍에 본점을 둔 유가증권 상장사 상신브레이크(1975년 설립)가 자동차 브레이크 패드·라이닝 등 마찰재에서 전기기계식 디스크 브레이크(EMB)·Euro 7 대응 친환경 마찰재로 넓히는 흐름을 DART 공시(2025 사업보고서 연결 매출 5,423억 원·영업손실 14억 원, 2026 반기보고서 매출 2,802억 원·영업이익 31억 원)와 국민연금·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·분기 그래프, 품목별 수출·내수 매출과 국내 마찰재 시장(회사 집계)을 함께 실음. 평가·전망은 싣지 않음.', topics: ['상장기업', '자동차부품', '미래차'],
     title: '상신브레이크, 브레이크 마찰재에서 전기기계식 브레이크로', name: '상신브레이크, 브레이크 마찰재에서 전기기계식 브레이크로',
     hwpx: '/hwpx/sangsin-brake-emb.hwpx', hwpxSize: '109KB', date: '2026-10-29' },

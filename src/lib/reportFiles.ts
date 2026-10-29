@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'pyeonghwa-valeo-hev-clutch', summary: '대구 달성군 유가읍(대구테크노폴리스) 비상장 자동차 부품 회사 평화발레오(1988년 피에이치씨·Valeo 합작, 지분 각 50%)가 클러치·마찰재에서 현대자동차 하이브리드 엔진클러치·전자식 변속(SBW) 액추에이터·전동화 차량용 댐퍼 등 하이브리드·전동화 동력 부품으로 개발 대상을 옮기는 흐름을 DART 연결감사보고서(2025년 매출 7,084억 원·영업이익 216억 원, 주요 개발비 현황·연구개발 지출 354억 원)와 국민연금·공장등록·국가 R&D 자료로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['비상장기업', '자동차부품', '미래차'],
+    title: '평화발레오, 클러치·마찰재에서 하이브리드 엔진클러치로', name: '평화발레오, 클러치·마찰재에서 하이브리드 엔진클러치로',
+    hwpx: '/hwpx/pyeonghwa-valeo-hev-clutch.hwpx', hwpxSize: '132KB', date: '2026-10-29' },
   { slug: 'stech-ingot-grower', summary: '대구 달성군 다사읍(성서5차첨단산업단지) 비상장 장비 회사 에스테크(S-Tech)의 태양광·반도체용 단결정 실리콘 잉곳 성장로 사업을 DART 감사보고서(매출 783억 원(2022) → 476억 원(2023) → 1,046억 원(2024) → 680억 원(2025), 2025년 영업이익 168억 원)와 매출 계약 잔액·선수금·재고 주석, 국민연금·공장등록 자료로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '반도체', '에너지'],
     title: '에스테크, 달성 다사의 실리콘 잉곳 성장로 장비 회사', name: '에스테크, 달성 다사의 실리콘 잉곳 성장로 장비 회사',
     hwpx: '/hwpx/stech-ingot-grower.hwpx', hwpxSize: '100KB', date: '2026-10-29' },

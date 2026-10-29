@@ -149,7 +149,7 @@
  ],
  "public_url": "https://www.bok.or.kr/portal/bbs/P0000800/list.do?menuNo=200560&searchBbsSeCd=z12",
  "added": "2026-10-05",
- "read_status": "mostly",
+ "read_status": "partial",
  "note": "2026-10-29 운영자가 같은 파일을 다시 올림(drive_id_2). Drive 커넥터는 여전히 인쇄 78쪽까지만 글자를 돌려줘, 러너(drive_ocr.yml echo 85-130, 글자 층 pdftotext)로 PDF 85~101쪽(인쇄 83~92쪽 III장 5절 후반·6절 소결·IV장 전부, 참고문헌 첫 쪽)을 읽어 보탬. 인쇄 79~82쪽(III장 5절 앞부분: 역외 공동연구 네트워크 구성)과 부록 표는 읽지 않음. 표 안 숫자 가운데 본문에 나온 값만 옮김. 발행일은 문서에 없고 검색 결과에 조사연구자료 등록일 2026-08-21. public_url 은 한국은행 지역본부 조사연구자료 목록 페이지(개별 글 주소 미확인). 작성자 이름·소속은 옮기지 않았다. 정책 시사점 문장은 보고서 작성자 견해이므로 리포트에 옮길 때 보고서의 제안이라고 밝히고 평가하지 않는다.",
  "drive_id_2": "1h-xEKWGUsJSu4UJ3SUV3s2R3oz7zv2l7"
 }

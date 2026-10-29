@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'sangsin-brake-emb', summary: '대구 달성군 논공읍에 본점을 둔 유가증권 상장사 상신브레이크(1975년 설립)가 자동차 브레이크 패드·라이닝 등 마찰재에서 전기기계식 디스크 브레이크(EMB)·Euro 7 대응 친환경 마찰재로 넓히는 흐름을 DART 공시(2025 사업보고서 연결 매출 5,423억 원·영업손실 14억 원, 2026 반기보고서 매출 2,802억 원·영업이익 31억 원)와 국민연금·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·분기 그래프, 품목별 수출·내수 매출과 국내 마찰재 시장(회사 집계)을 함께 실음. 평가·전망은 싣지 않음.', topics: ['상장기업', '자동차부품', '미래차'],
+    title: '상신브레이크, 브레이크 마찰재에서 전기기계식 브레이크로', name: '상신브레이크, 브레이크 마찰재에서 전기기계식 브레이크로',
+    hwpx: '/hwpx/sangsin-brake-emb.hwpx', hwpxSize: '109KB', date: '2026-10-29' },
   { slug: 'megagen-dental-implant', summary: '대구 달성군 다사읍(성서5차첨단산업단지)에 본사·공장을 둔 K-OTC 지정 치과 의료기기 회사 메가젠임플란트의 임플란트·진료용 의자 사업과 수출(2025년 매출의 68%), 미국 BIOLASE 인수(2024-11), 세천 제2공장을 DART 공시(2025 사업보고서 별도 매출 2,807억 원·영업이익 581억 원, 2026 반기보고서 매출 1,720억 원)와 국민연금·보도로 정리한 자료. 첫 장은 DART 실적 표·그래프. 연결 실적은 회사 발표 보도 값만 적음. 평가·전망은 싣지 않음.', topics: ['의료·바이오', '비상장기업', '수출'],
     title: '메가젠임플란트, 임플란트 수출로 키운 달성 다사의 치과 의료기기 회사', name: '메가젠임플란트, 임플란트 수출로 키운 달성 다사의 치과 의료기기 회사',
     hwpx: '/hwpx/megagen-dental-implant.hwpx', hwpxSize: '93KB', date: '2026-10-29' },

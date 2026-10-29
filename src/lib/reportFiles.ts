@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'im-financial-2026q3-results', summary: '대구 북구에 본점을 둔 유가증권 상장 금융지주회사 iM금융지주의 2026년 3분기 연결 잠정실적(2026-10-27 공시: 3분기 지배기업 소유주지분 순이익 1,207억 원, 1~9월 누계 4,163억 원·전년 대비 3.6% 감소)을 DART 공시 중심으로 정리한 자료. 분기 흐름 그래프, iM뱅크·iM증권 자회사 실적, 2025 사업보고서 「이사의 경영진단 및 분석의견」과 실적 발표 때 회사 설명(보도 기준)을 함께 실음. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '실적', '금융'],
+    title: 'iM금융지주 3분기 실적, 누적 순이익 4,163억 원(전년 대비 3.6% 감소)', name: 'iM금융지주 3분기 실적, 누적 순이익 4,163억 원(전년 대비 3.6% 감소)',
+    hwpx: '/hwpx/im-financial-2026q3-results.hwpx', hwpxSize: '117KB', date: '2026-10-29' },
   { slug: 'asys-tech-dry-electrode', summary: '대구 달성군(대구국가산단) 비상장 장비 기업 에이시스테크놀로지가 공작기계·다이캐스팅 후가공·협동로봇 등 공정 자동화 설비에서 이차전지 전극 장비, 특히 건식 전극 제조 장비로 넓혀 가는 흐름을 DART 감사보고서(2023 – 2025 매출 97.1 → 61.6억 원)·국민연금·벤처기업명단·국가 R&D 과제와 보도로 정리한 자료. 첫 장은 DART 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['이차전지', '비상장기업', '투자'],
     title: '에이시스테크놀로지, 공정 자동화 설비 → 이차전지 건식 전극 장비', name: '에이시스테크놀로지, 공정 자동화 설비 → 이차전지 건식 전극 장비',
     hwpx: '/hwpx/asys-tech-dry-electrode.hwpx', hwpxSize: '98KB', date: '2026-10-28' },

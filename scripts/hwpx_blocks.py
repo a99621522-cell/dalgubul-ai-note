@@ -8,6 +8,10 @@ scripts/data/hwpx/report_basic.hwpx 의 문단·표를 deepcopy 해 글자만 �
   Block = {"p": 문단 모양 이름, "segs": [[글, 글자 모양 이름], ...]}   # 이름 → 양식 역할: title/h2 → 절 머리표, h3 → □, body → ○, bullet → -, note/caption/src → ※
         | {"table": rows, "head": bool, "headRows": n, "widths": [HWPUNIT...]}
         | {"pic": "public/ 아래 경로 또는 파일 경로", "caption": 글}
+        | {"chart": {"type": "bar"|"hbar"|"line", "title": 글, "unit": 글, "categories": [...], "series": [{"name": 글, "values": [...]}]},
+           "caption": 글, "png": 그림(한글이 아닌 프로그램용 대체 그림, 없어도 됨)}
+          → 한글 차트 개체(hp:chart + Chart/chartN.xml, ECMA-376 chartML) — 한글에서 차트 편집·데이터 고치기가 된다(운영자 지시 2026-10-29
+            '그래프도 한글 프로그램 형식으로'). png 가 있으면 한글 저장 방식처럼 hp:switch(case ooxmlchart → 차트, default → 그림)로 감싼다.
   칸    = str | {"t": 글, "cs": colspan, "rs": rowspan} | [Block, ...]
 옵션: cover=True 면 표지(제목 표)를 앞에 두고 첫 절은 새 쪽에서 시작. lineseg=True 는 줄 배치 어림값 실험. all_ns 는 루트 네임스페이스 선언 14개 유지.
 """
@@ -183,12 +187,115 @@ def form_pic(ctx: Ctx, src: str, caption: str):
     return [pic, form_para(ctx, "note", caption)] if caption else [pic]
 
 
+C_NS = "http://schemas.openxmlformats.org/drawingml/2006/chart"
+A_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
+CHART_COLORS = ["1B4F9B", "E69F00", "009E73", "D55E00", "CC79A7", "56B4E9"]   # figure.py 팔레트와 같은 순서
+
+
+def _x(t) -> str:
+    return str(t).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+
+
+def chart_xml(spec: dict) -> str:
+    """막대(세로·가로)·꺾은선 chartML. 값은 캐시(strCache·numCache)로 넣는다 — 한글은 이 캐시로 그리고, 데이터 편집 창에도 이 값이 뜬다."""
+    kind = spec.get("type", "bar")
+    cats = [str(c) for c in spec["categories"]]
+    series = spec["series"]
+    font = '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="{sz}"{b}><a:latin typeface="맑은 고딕"/><a:ea typeface="맑은 고딕"/></a:defRPr></a:pPr><a:endParaRPr lang="ko-KR"/></a:p></c:txPr>'
+    col = lambda i: chr(ord("B") + i)
+    sers = []
+    for i, se in enumerate(series):
+        pts_c = "".join(f'<c:pt idx="{k}"><c:v>{_x(c)}</c:v></c:pt>' for k, c in enumerate(cats))
+        pts_v = "".join(f'<c:pt idx="{k}"><c:v>{v}</c:v></c:pt>' for k, v in enumerate(se["values"]) if v is not None)
+        color = CHART_COLORS[i % len(CHART_COLORS)]
+        sp = (f'<c:spPr><a:ln w="28575" cap="rnd"><a:solidFill><a:srgbClr val="{color}"/></a:solidFill></a:ln></c:spPr><c:marker><c:symbol val="circle"/><c:size val="5"/></c:marker>'
+              if kind == "line" else f'<c:spPr><a:solidFill><a:srgbClr val="{color}"/></a:solidFill></c:spPr><c:invertIfNegative val="0"/>')
+        n = len(cats) + 1
+        sers.append(f'<c:ser><c:idx val="{i}"/><c:order val="{i}"/>'
+                    f'<c:tx><c:strRef><c:f>Sheet1!${col(i)}$1</c:f><c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>{_x(se.get("name", ""))}</c:v></c:pt></c:strCache></c:strRef></c:tx>{sp}'
+                    f'<c:dLbls><c:numFmt formatCode="General" sourceLinked="0"/><c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr>{font.format(sz=900, b="")}'
+                    f'<c:showLegendKey val="0"/><c:showVal val="1"/><c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="0"/><c:showBubbleSize val="0"/></c:dLbls>'
+                    f'<c:cat><c:strRef><c:f>Sheet1!$A$2:$A${n}</c:f><c:strCache><c:ptCount val="{len(cats)}"/>{pts_c}</c:strCache></c:strRef></c:cat>'
+                    f'<c:val><c:numRef><c:f>Sheet1!${col(i)}$2:${col(i)}${n}</c:f><c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="{len(cats)}"/>{pts_v}</c:numCache></c:numRef></c:val>'
+                    + ('<c:smooth val="0"/>' if kind == "line" else "") + '</c:ser>')
+    ax = '<c:axId val="50010001"/><c:axId val="50010002"/>'
+    if kind == "line":
+        plot = f'<c:lineChart><c:grouping val="standard"/><c:varyColors val="0"/>{"".join(sers)}<c:marker val="1"/>{ax}</c:lineChart>'
+    else:
+        plot = (f'<c:barChart><c:barDir val="{"bar" if kind == "hbar" else "col"}"/><c:grouping val="clustered"/><c:varyColors val="0"/>{"".join(sers)}'
+                f'<c:gapWidth val="80"/>{ax}</c:barChart>')
+    hbar = kind == "hbar"
+    grid = '<c:majorGridlines><c:spPr><a:ln w="6350"><a:solidFill><a:srgbClr val="D9D9D9"/></a:solidFill></a:ln></c:spPr></c:majorGridlines>'
+    line = '<c:spPr><a:ln w="6350"><a:solidFill><a:srgbClr val="BFBFBF"/></a:solidFill></a:ln></c:spPr>'
+    cat_ax = (f'<c:catAx><c:axId val="50010001"/><c:scaling><c:orientation val="{"maxMin" if hbar else "minMax"}"/></c:scaling><c:delete val="0"/>'
+              f'<c:axPos val="{"l" if hbar else "b"}"/><c:numFmt formatCode="General" sourceLinked="0"/><c:majorTickMark val="none"/><c:minorTickMark val="none"/>'
+              f'<c:tickLblPos val="nextTo"/>{line}{font.format(sz=1000, b="")}<c:crossAx val="50010002"/><c:crosses val="autoZero"/><c:auto val="1"/><c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/></c:catAx>')
+    unit = spec.get("unit") or ""
+    val_title = (f'<c:title><c:tx><c:rich><a:bodyPr rot="{0 if hbar else -5400000}" vert="horz"/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="900" b="0"><a:latin typeface="맑은 고딕"/><a:ea typeface="맑은 고딕"/></a:defRPr></a:pPr>'
+                 f'<a:r><a:rPr lang="ko-KR" sz="900" b="0"><a:latin typeface="맑은 고딕"/><a:ea typeface="맑은 고딕"/></a:rPr><a:t>{_x(unit)}</a:t></a:r></a:p></c:rich></c:tx><c:overlay val="0"/></c:title>') if unit else ""
+    val_ax = (f'<c:valAx><c:axId val="50010002"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="{"b" if hbar else "l"}"/>{grid}{val_title}'
+              f'<c:numFmt formatCode="#,##0.##" sourceLinked="0"/><c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
+              f'<c:spPr><a:ln><a:noFill/></a:ln></c:spPr>{font.format(sz=900, b="")}<c:crossAx val="50010001"/><c:crosses val="{"max" if hbar else "autoZero"}"/><c:crossBetween val="between"/></c:valAx>')
+    title = spec.get("title") or ""
+    t = (f'<c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="1200" b="1"><a:latin typeface="맑은 고딕"/><a:ea typeface="맑은 고딕"/></a:defRPr></a:pPr>'
+         f'<a:r><a:rPr lang="ko-KR" sz="1200" b="1"><a:latin typeface="맑은 고딕"/><a:ea typeface="맑은 고딕"/></a:rPr><a:t>{_x(title)}</a:t></a:r></a:p></c:rich></c:tx><c:overlay val="0"/></c:title>'
+         '<c:autoTitleDeleted val="0"/>') if title else '<c:autoTitleDeleted val="1"/>'
+    legend = (f'<c:legend><c:legendPos val="b"/><c:overlay val="0"/>{font.format(sz=900, b="")}</c:legend>') if len(series) > 1 else ""
+    return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            f'<c:chartSpace xmlns:c="{C_NS}" xmlns:a="{A_NS}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+            '<c:date1904 val="0"/><c:lang val="ko-KR"/><c:roundedCorners val="0"/>'
+            f'<c:chart>{t}<c:plotArea><c:layout/>{plot}{cat_ax}{val_ax}<c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr></c:plotArea>{legend}'
+            '<c:plotVisOnly val="1"/><c:dispBlanksAs val="gap"/></c:chart>'
+            '<c:spPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln><a:noFill/></a:ln></c:spPr>'
+            f'{font.format(sz=1000, b="")}</c:chartSpace>')
+
+
+def form_chart(ctx: Ctx, spec: dict, caption: str, png: str = ""):
+    """한글 차트 개체 문단(가운데, 글자처럼 취급) + ※ 캡션."""
+    if not hasattr(ctx, "charts"):
+        ctx.charts = []
+    n = len(ctx.charts) + 1
+    path = f"Chart/chart{n}.xml"
+    ctx.charts.append((path, chart_xml(spec).encode("utf-8")))
+    w = H.MAX_IMG_W
+    h = int(spec.get("height") or (min(26000, 9000 + 2200 * len(spec["categories"])) if spec.get("type") == "hbar" else 22000))
+    HPN = H.NS["hp"]
+    oid = 1900000000 + n
+    chart = (f'<hp:chart xmlns:hp="{HPN}" id="{oid}" zOrder="{20 + n}" numberingType="PICTURE" textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" chartIDRef="{path}">'
+             f'<hp:sz width="{w}" widthRelTo="ABSOLUTE" height="{h}" heightRelTo="ABSOLUTE" protect="0"/>'
+             '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="PARA" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
+             '<hp:outMargin left="0" right="0" top="0" bottom="0"/></hp:chart>')
+    blank = ctx.proto["blank"]
+    p = copy.deepcopy(blank)
+    for r in p.findall(H.HP + "run"):
+        p.remove(r)
+    char_id = ctx.proto["note"].find(H.HP + "run").get("charPrIDRef")
+    run = ET.SubElement(p, H.HP + "run", {"charPrIDRef": char_id})
+    el = ET.fromstring(chart)
+    if png and Path(png).exists():
+        # 한글 저장 방식처럼 hp:switch — 차트를 읽는 프로그램은 차트, 그 밖은 그림
+        pic_p = form_pic(ctx, png, "")[0]
+        pic = pic_p.find(f".//{H.HP}pic")
+        sw = ET.SubElement(run, H.HP + "switch")
+        case = ET.SubElement(sw, H.HP + "case", {H.HP + "required-namespace": H.NS["ooxmlchart"]})
+        case.append(el)
+        if pic is not None:
+            pic.find(H.HP + "sz").set("width", str(w)); pic.find(H.HP + "sz").set("height", str(h))
+            ET.SubElement(sw, H.HP + "default").append(pic)
+    else:
+        run.append(el)
+    ET.SubElement(run, H.HP + "t")
+    return [p, form_para(ctx, "note", caption)] if caption else [p]
+
+
 def block_elems(ctx: Ctx, b: dict) -> list:
     """Block 하나 → 양식 문단 원소 목록(그림은 캡션까지 두 개)."""
     if "table" in b:
         return [form_table(ctx, b["table"], head=b.get("head", True), widths=b.get("widths"), head_rows=b.get("headRows"))]
     if "pic" in b:
         return form_pic(ctx, str(b["pic"]), str(b.get("caption") or ""))
+    if "chart" in b:
+        return form_chart(ctx, b["chart"], str(b.get("caption") or ""), str(b.get("png") or ""))
     text = "".join(str(t) for t, _ in (b.get("segs") or []))
     role = ROLE.get(b.get("p", "body"), "o")
     if role is None or (role == "note" and b.get("p") == "kicker"):
@@ -330,6 +437,7 @@ def build_hwpx(blocks: list[dict], out: Path, preview: str = "", all_ns: bool = 
         sec = re.sub(r"^<hs:sec\b[^>]*>", ctx.root_tag, sec, count=1)
     new_sec = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>' + sec
     manifest = "".join(f'<opf:item id="{bid}" href="BinData/{bid}.{ext}" media-type="image/{"jpeg" if ext == "jpg" else ext}" isEmbeded="1"/>' for bid, _, ext in ctx.images.files)
+    out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(out, "w") as zo:
         for n in ctx.z.namelist():
@@ -341,6 +449,8 @@ def build_hwpx(blocks: list[dict], out: Path, preview: str = "", all_ns: bool = 
             zo.writestr(zipfile.ZipInfo(n), data, compress_type=zipfile.ZIP_STORED if n == "mimetype" else zipfile.ZIP_DEFLATED)
         for bid, data, ext in ctx.images.files:
             zo.writestr(zipfile.ZipInfo(f"BinData/{bid}.{ext}"), data, compress_type=zipfile.ZIP_DEFLATED)
+        for path, data in getattr(ctx, "charts", []):   # 차트 부분은 manifest 에 올리지 않는다(한글 저장 파일과 같음)
+            zo.writestr(zipfile.ZipInfo(path), data, compress_type=zipfile.ZIP_DEFLATED)
     return out
 
 

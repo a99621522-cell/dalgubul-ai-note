@@ -1,6 +1,6 @@
 # 사업 지침 창고 (data/guidelines)
 
-받은 날짜: 2026-10-27 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
+받은 날짜: 2026-10-29 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
 
 | key | 지침 | 종류 | 소관 | 시행일 | 상태 | 글자 | 검토 단계 | 원문 |
 |---|---|---|---|---|---|---|---|---|
@@ -41,6 +41,8 @@
 | mss-rnd-mgmt | 중소기업기술개발 지원사업 기술료 관리규정 | 고시 | 중소벤처기업부 | 2026-04-02 | OK | 9,896 | 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000276844 |
 | mss-smart | 중소기업 스마트제조혁신 지원사업 운영 등에 관한 고시 | 고시 | 중소벤처기업부 | 2023-08-07 | OK | 6,292 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000227710 |
 | mss-startup | 창업지원사업 통합관리지침 | 고시 | 중소벤처기업부 |  | 없음 | 0 | 예산요구서 · 집행 · 결산서 |  |
+| pubprop-act | 공유재산 및 물품 관리법 | 법률 | 행정안전부 |  | 없음 | 0 | 사용허가·관리위탁 |  |
+| pubprop-decree | 공유재산 및 물품 관리법 시행령 | 시행령 | 행정안전부 |  | 없음 | 0 | 사용허가·관리위탁 |  |
 | rnd-act | 국가연구개발혁신법 | 법률 | 과학기술정보통신부 | 2026-10-02 | OK | 30,503 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/법령/국가연구개발혁신법 |
 | rnd-cost | 국가연구개발사업 연구개발비 사용 기준 | 고시 | 과학기술정보통신부 | 2026-05-06 | OK | 133,723 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000278740 |
 | rnd-decree | 국가연구개발혁신법 시행령 | 대통령령 | 과학기술정보통신부 | 2026-09-11 | OK | 81,800 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/법령/국가연구개발혁신법시행령 |

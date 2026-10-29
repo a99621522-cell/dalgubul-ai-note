@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27",
+ "fetched": "2026-10-29",
  "items": {
   "daegu-corp-ord": {
    "key": "daegu-corp-ord",
@@ -1926,6 +1926,52 @@
     "영세율 매출명세서",
     "동물 진료용역 매출명세서"
    ]
+  },
+  "pubprop-act": {
+   "key": "pubprop-act",
+   "name": "공유재산 및 물품 관리법",
+   "kind": "법률",
+   "issuer": "행정안전부",
+   "source": {
+    "type": "law",
+    "name": "공유재산및물품관리법"
+   },
+   "applies": {},
+   "review": [
+    "사용허가·관리위탁"
+   ],
+   "fetched": "2026-10-29",
+   "status": "없음",
+   "found": "",
+   "id": "",
+   "date": "",
+   "eff": "",
+   "url": "",
+   "chars": 0,
+   "candidates": []
+  },
+  "pubprop-decree": {
+   "key": "pubprop-decree",
+   "name": "공유재산 및 물품 관리법 시행령",
+   "kind": "시행령",
+   "issuer": "행정안전부",
+   "source": {
+    "type": "law",
+    "name": "공유재산및물품관리법시행령"
+   },
+   "applies": {},
+   "review": [
+    "사용허가·관리위탁"
+   ],
+   "fetched": "2026-10-29",
+   "status": "없음",
+   "found": "",
+   "id": "",
+   "date": "",
+   "eff": "",
+   "url": "",
+   "chars": 0,
+   "candidates": []
   }
  },
  "skipped": [

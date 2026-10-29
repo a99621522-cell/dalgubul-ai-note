@@ -790,8 +790,10 @@ def main(argv: list[str]) -> int:
         return 0
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}
+    if probe and "--any" in argv:   # --any: 캐시 전체(대구 밖 본사·비상장 사업보고서 제출 회사 포함)에서 찾는다, --exact 면 이름 완전 일치(2026-10-29)
+        corps = dict(cache)
     if probe:
-        corps = {c: v for c, v in corps.items() if probe in (v.get("name") or "")}
+        corps = {c: v for c, v in corps.items() if (probe == (v.get("name") or "") if "--exact" in argv else probe in (v.get("name") or ""))}
     if not corps:
         print("대상 회사 없음")
         return 0

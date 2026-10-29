@@ -820,6 +820,20 @@ def main(argv: list[str]) -> int:
     seen_i = {r["rcept_no"] for r in old_i if r.get("pdf")}      # 첨부까지 본 공시만 건너뛴다
     budget = [80 if not probe else 3]
     for i, (code, meta) in enumerate(sorted(corps.items()), 1):
+        if probe and "--any" in argv and code not in reps:   # 분기 실적 CSV 밖 회사 — 공시 목록에서 최근 정기보고서를 찾는다
+            j = get("list.json", corp_code=code, bgn_de=(date.today() - timedelta(days=480)).strftime("%Y%m%d"),
+                    end_de=date.today().strftime("%Y%m%d"), pblntf_ty="A", page_count=100) or {}
+            lst = []
+            for x in j.get("list", []):
+                m = re.search(r"(사업|반기|분기)보고서\s*\((\d{4})\.(\d{2})\)", x.get("report_nm") or "")
+                if m and "정정" not in x.get("report_nm", ""):
+                    q = {"03": 1, "06": 2, "09": 3, "12": 4}.get(m.group(3), 4)
+                    lst.append({"rcept_no": x["rcept_no"], "year": m.group(2), "quarter": str(q), "report_nm": f"{m.group(2)} {x['report_nm']}"})
+            lst.sort(key=lambda x: (int(x["year"]), int(x["quarter"])), reverse=True)
+            pick = lst[:2]
+            ann = next((x for x in lst if x["quarter"] == "4"), None)
+            if ann and ann not in pick: pick.append(ann)
+            reps[code] = pick
         if "--no-report" not in argv:
             for rep in reps.get(code, []):
                 rrows += report_notes(code, meta, rep, bool(probe))

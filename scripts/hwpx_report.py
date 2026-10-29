@@ -15,6 +15,7 @@ LG경영연구원 리포트 형식(운영자 지시 2026-09-27 「이 파일처�
 """
 import argparse, copy, io, re, shutil, struct, subprocess, sys, zipfile
 import xml.etree.ElementTree as ET
+from xml.sax.saxutils import escape as xml_escape
 from datetime import date
 from pathlib import Path
 import yaml
@@ -258,7 +259,7 @@ def pic_paragraph(ids: dict, bid: str, px_w: int, px_h: int, comment: str):
            f'<hc:img binaryItemIDRef="{bid}" bright="0" contrast="0" effect="REAL_PIC" alpha="0"/><hp:effects/>'
            f'<hp:sz width="{w}" widthRelTo="ABSOLUTE" height="{h}" heightRelTo="ABSOLUTE" protect="0"/>'
            f'<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
-           f'<hp:outMargin left="0" right="0" top="0" bottom="0"/><hp:shapeComment>{comment}</hp:shapeComment></hp:pic><hp:t/></hp:run>')
+           f'<hp:outMargin left="0" right="0" top="0" bottom="0"/><hp:shapeComment>{xml_escape(comment)}</hp:shapeComment></hp:pic><hp:t/></hp:run>')
     p = para(ids, "fig", [])
     for r in p.findall(HP + "run"):
         p.remove(r)

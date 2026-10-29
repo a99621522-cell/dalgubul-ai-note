@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'lnf-highnickel-lfp', summary: '대구 달서구 본사 유가증권 상장사 엘앤에프가 니켈 95% NCMA 등 하이니켈 양극재에서 리튬인산철(LFP) 양극재로 넓히는 흐름 — LFP 전담 자회사 엘앤에프플러스(달성군 구지면 대구국가산업단지, 연 3만 t → 6만 t), 삼성SDI 1조 6,067억 원·SK온 1,617억 원 LFP 공급계약, 수주잔고, 전구체 합작법인 LLBS — 를 DART 공시(2025 사업보고서, 2026 1분기·반기보고서, 공급계약·투자판단 공시)와 하나증권 기업분석(2026-10-23)·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '이차전지', '증권사 리포트'],
+    title: '엘앤에프, 하이니켈 양극재에서 대구 LFP 양극재 양산으로', name: '엘앤에프, 하이니켈 양극재에서 대구 LFP 양극재 양산으로',
+    hwpx: '/hwpx/lnf-highnickel-lfp.hwpx', hwpxSize: '164KB', date: '2026-10-29' },
   { slug: 'im-financial-2026q3-results', summary: '대구 북구에 본점을 둔 유가증권 상장 금융지주회사 iM금융지주의 2026년 3분기 연결 잠정실적(2026-10-27 공시: 3분기 지배기업 소유주지분 순이익 1,207억 원, 1~9월 누계 4,163억 원·전년 대비 3.6% 감소)을 DART 공시 중심으로 정리한 자료. 분기 흐름 그래프, iM뱅크·iM증권 자회사 실적, 2025 사업보고서 「이사의 경영진단 및 분석의견」과 실적 발표 때 회사 설명(보도 기준)을 함께 실음. 투자의견·목표주가·실적 전망치는 싣지 않음.', topics: ['상장기업', '실적', '금융'],
     title: 'iM금융지주 3분기 실적, 누적 순이익 4,163억 원(전년 대비 3.6% 감소)', name: 'iM금융지주 3분기 실적, 누적 순이익 4,163억 원(전년 대비 3.6% 감소)',
     hwpx: '/hwpx/im-financial-2026q3-results.hwpx', hwpxSize: '117KB', date: '2026-10-29' },

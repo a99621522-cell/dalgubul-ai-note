@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'mirae-lithium-canada-lfp', summary: '대구 달성군 구지면(달성2차일반산업단지) 비상장 이차전지 소재 회사 미래첨단소재가 수산화리튬 분쇄 가공에서 캐나다 퀘벡 공장(캐나다 법인 출자 709억 원)·구미 공장 인수와 LFP 소재 가공으로 넓히는 과정을 DART 감사보고서·연결감사보고서(2025년 별도 매출 656억 원·영업손실 24억 원)와 전환사채·차입 주석, 국민연금·공장등록·대구시 스타기업 명단·보도로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '이차전지', '미래 신산업'],
+    title: '미래첨단소재, 수산화리튬 분쇄에서 캐나다 공장·LFP 소재로', name: '미래첨단소재, 수산화리튬 분쇄에서 캐나다 공장·LFP 소재로',
+    hwpx: '/hwpx/mirae-lithium-canada-lfp.hwpx', hwpxSize: '93KB', date: '2026-10-30' },
   { slug: 'jinyang-oilseal-ev-motor-seal', summary: '대구 달성군 다사읍(성서5차첨단산업단지) 비상장 오일씰 제조사 진양오일씰의 허브 베어링 씰·변속기·파워트레인 씰 사업과, 전기차 모터 씰·경상개발비 확대(48억 → 95억 원)·설비 투자 등 새 분야를 DART 연결·별도 감사보고서(2025년 연결 매출 1,288억 원·영업이익 7억 원)와 관계회사 주석, 국민연금·공장등록·회사 누리집으로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '자동차부품', '미래차'],
     title: '진양오일씰, 허브 베어링 씰에서 전기차 모터 씰로', name: '진양오일씰, 허브 베어링 씰에서 전기차 모터 씰로',
     hwpx: '/hwpx/jinyang-oilseal-ev-motor-seal.hwpx', hwpxSize: '97KB', date: '2026-10-29' },

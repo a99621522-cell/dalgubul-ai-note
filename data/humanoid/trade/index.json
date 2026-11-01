@@ -1,0 +1,15 @@
+{
+ "source": "UN Comtrade public preview API (reporter 410 Korea, annual, HS)",
+ "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS",
+ "fetched": "2026-11-01",
+ "rows": 4564,
+ "missing": [
+  "847950 2022 X",
+  "847950 2023 M",
+  "847950 2023 X",
+  "847950 2024 M",
+  "847950 2024 X",
+  "847950 2025 M",
+  "847950 2025 X"
+ ]
+}

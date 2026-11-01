@@ -3,10 +3,41 @@
  "name": "대구광역시 주요뉴스(시청 첫 화면)",
  "group": "대구 기관",
  "home": "https://www.daegu.go.kr",
- "fetched": "2026-10-25",
- "status": "접속 실패",
- "method": "",
- "items": [],
+ "fetched": "2026-11-01",
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "대구문화예술진흥원, 공연본부장 재공모 2026.10.30",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=279558",
+   "date": "2026-10-30",
+   "summary": ""
+  },
+  {
+   "title": "가을빛 물든 달성습지에서 인생사진 한 컷! 2026.10.29",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=279537",
+   "date": "2026-10-29",
+   "summary": ""
+  },
+  {
+   "title": "‘제31회 대구광역시 조경상’ 수상작 발표 2026.10.29",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=279542",
+   "date": "2026-10-29",
+   "summary": ""
+  },
+  {
+   "title": "대구소식당(뉴스레터) 구독신청하고 이벤트 참여하기 2026.10.28",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=1&aid=279504",
+   "date": "2026-10-28",
+   "summary": ""
+  },
+  {
+   "title": "대구시, 2026년 저소득주민 장학금 지원대상자 모집 2026.10.14",
+   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=279300",
+   "date": "2026-10-14",
+   "summary": ""
+  }
+ ],
  "note": "",
  "areas": []
 }

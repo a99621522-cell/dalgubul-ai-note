@@ -3,10 +3,41 @@
  "name": "Semiconductor Industry Association (SIA)",
  "group": "해외 협회",
  "home": "https://www.semiconductors.org",
- "fetched": "2026-10-25",
- "status": "접속 실패",
- "method": "",
- "items": [],
+ "fetched": "2026-11-01",
+ "status": "OK",
+ "method": "목록 페이지",
+ "items": [
+  {
+   "title": "Professors from Columbia University and MIT to be Honored for Excellence in Semiconductor Research",
+   "url": "https://www.semiconductors.org/professors-from-columbia-university-and-mit-to-be-honored-for-excellence-in-semiconductor-research/",
+   "date": "2026-10-28",
+   "summary": ""
+  },
+  {
+   "title": "SIA Applauds GlobalFoundries Expansion Under U.S.-Japan Initiative",
+   "url": "https://www.semiconductors.org/sia-applauds-globalfoundries-expansion-under-u-s-japan-initiative/",
+   "date": "2026-10-14",
+   "summary": ""
+  },
+  {
+   "title": "Year-to-Date Global Semiconductor Sales Top $1 Trillion Through August",
+   "url": "https://www.semiconductors.org/year-to-date-global-semiconductor-sales-top-1-trillion-through-august/",
+   "date": "2026-10-05",
+   "summary": ""
+  },
+  {
+   "title": "Apple Executive Chair Tim Cook to Receive Semiconductor Industry’s Top Honor",
+   "url": "https://www.semiconductors.org/apple-executive-chair-tim-cook-to-receive-semiconductor-industrys-top-honor/",
+   "date": "2026-09-22",
+   "summary": ""
+  },
+  {
+   "title": "Global Semiconductor Sales Increase 6.4% Month-to-Month in July",
+   "url": "https://www.semiconductors.org/global-semiconductor-sales-increase-6-4-month-to-month-in-july/",
+   "date": "2026-09-04",
+   "summary": ""
+  }
+ ],
  "note": "",
  "areas": []
 }

@@ -15,7 +15,7 @@ function rehypeFootnoteComma() {
 }
 
 export default defineConfig({
-  site: 'https://daitda.co.kr',
+  site: process.env.VAT_SITE_URL || 'https://daitda.co.kr',   // 독립 부가세 점검기 사이트 빌드(deploy_vat.yml)는 VAT_SITE_URL 로 바꿈
   output: 'static',
   // 기본 GFM 은 '10~49인' 의 물결표 하나를 취소선으로 읽는다 → 두 개(~~)일 때만 취소선
   markdown: { gfm: false, remarkPlugins: [[remarkGfm, { singleTilde: false }]], remarkRehype: { footnoteLabel: '각주', footnoteBackLabel: '본문으로' }, rehypePlugins: [rehypeFootnoteComma] },

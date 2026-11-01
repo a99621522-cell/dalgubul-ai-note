@@ -562,3 +562,5 @@ main .section-head:has(> h1) h1, main .page-head h1, main article.post > header 
 .sbadge.sb-nat { border-color: var(--primary); color: var(--primary); }
 .sbadge.sb-adm { border-style: dashed; }
 .sbadge.sb-calc { border-style: dotted; color: var(--ink); }
+
+/* 독립 부가세 점검기 사이트의 헤더 바깥 링크(모든 폭에서 보임) — 2026-10-28 */

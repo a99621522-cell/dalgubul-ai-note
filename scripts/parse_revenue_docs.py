@@ -4,7 +4,8 @@
 두 배치를 읽는다 — ① 구·군: 장/관/항/목 → [회계] → <부서> → ○사업(또는 'N.사업') ② 대구시: 실국 → 부서 → 장/관/항/목 → ○사업.
 세외수입(장 200)과 보조금(장 500)만 남기고, 목 코드·사업명 낱말로 rules.yml revenue_items 의 key(과세·면세·확인·공급 아님)를 짐작한다 — 참고 표시이지 기관 판단이 아니다.
 값은 예산서 그대로(천원). 사람 이름·전화 없음(예산서에는 없다).
-사용: python3 scripts/parse_revenue_docs.py <key> <year> <txt> [--acct 일반회계]  → data/vat/revenue/<key>_<year>.csv
+사용: python3 scripts/parse_revenue_docs.py <key> <year> <txt> [--acct 일반회계] [--note 글]  → data/vat/revenue/<key>_<year>.csv
+글자가 '세입총괄표'(장·관·항·목만, 사업 줄 없음)면 목마다 한 행으로 읽는다(parse_summary — 2026-10-28 중구, 운영자가 올린 PDF).
 """
 from __future__ import annotations
 
@@ -201,6 +202,59 @@ def parse(text: str, key: str, name: str, year: str, acct_default: str = "일반
     return rows
 
 
+SUMMARY = re.compile(r"세\s*입\s*총\s*괄\s*표")
+SUMCODE = re.compile(r"^\s*(\d{3})(?:-(\d{2}))?\s+(\S.*?)\s{2,}([\d,△\-]+)\s")
+
+
+def parse_summary(text: str, key: str, name: str, year: str, acct_default: str) -> list[dict]:
+    """세입총괄표(장·관·항·목 + 예산액·구성비·전년도·증감, 사업 줄 없음 — 2026-10-28 중구: 운영자가 올린 PDF). 목마다 한 행(item = 목 이름, 부서 없음).
+    사업 단위 명세서가 아니므로 시설 낱말은 목 이름에서만 짐작한다(주차요금수입 → parking 정도)."""
+    lines = text.splitlines()
+    rows: list[dict] = []
+    st = {"jang": "", "gwan": "", "hang": "", "acct": acct_default}
+    i = 0
+    skip = False   # 총괄표는 절마다 회계를 달리해 되풀이된다('일반회계,기타특별회계 전체' → '일반회계 전체' …) — 회계 하나만 적힌 절을 쓰고, 그것이 없으면 첫 절
+    seen_single = any(re.search(r"^\d{4}년도 .*본예산\s+(?!.*,)\S*회계\s+전체", l) for l in lines)
+    while i < len(lines):
+        ln = lines[i].rstrip(); i += 1
+        if not ln.strip():
+            continue
+        mh = re.match(r"^\d{4}년도 \S+\s+(.+?)\s+전체", ln)
+        if mh:
+            title = mh.group(1).strip()
+            skip = ("," in title) if seen_single else bool(rows)
+            if not skip:
+                st["acct"] = title.replace(",", "·")
+            continue
+        if skip or HEADER_SKIP.search(ln):
+            continue
+        m = SUMCODE.match(ln + " ")
+        if not m:
+            continue
+        code, mk, nm, amt = m.group(1), m.group(2), m.group(3).strip(), to_k(m.group(4))
+        j = i
+        while j < len(lines) and not lines[j].strip():
+            j += 1
+        if j < len(lines) and re.match(r"^\s{6,}[가-힣()·ㆍ\s]+$", lines[j]) and len(lines[j].strip()) <= 8:   # 줄바꿈된 목 이름('자치구일반조정교부' + '금')
+            nm += lines[j].strip(); i = j + 1
+        if mk:
+            if st["jang"][:3] not in ("200", "500") or not st["hang"]:
+                continue
+            k = guess_key(st["hang"], f"{code}-{mk}", nm, nm)
+            fac = next((fk for pat, fk in FAC_KW if re.search(pat, nm)), "")
+            rows.append({"gov": name, "key": key, "year": year, "acct": st["acct"], "jang": st["jang"], "gwan": st["gwan"], "hang": st["hang"],
+                         "mok_code": f"{code}-{mk}", "mok": nm, "bureau": "", "dept": "", "item": nm, "calc": "총괄표(목 단위)", "amount_k": amt, "vat_key": k, "fac_key": fac})
+            continue
+        n = int(code)
+        if n % 100 == 0:
+            st["jang"], st["gwan"], st["hang"] = f"{code} {nm}", "", ""
+        elif n % 10 == 0:
+            st["gwan"], st["hang"] = f"{code} {nm}", ""
+        else:
+            st["hang"] = f"{code} {nm}"
+    return rows
+
+
 def check(text: str, rows: list[dict]) -> list[dict]:
     """목 줄의 예산액 ↔ 그 목에 붙은 사업 합계(회계 구분 없이) — 다르면 줄바꿈·산출식 때문에 못 읽은 사업이 있다는 뜻. index.json 에 남겨 투명하게"""
     tot: dict[str, int] = {}
@@ -247,10 +301,16 @@ if __name__ == "__main__":
     key, year, txt = a[0], a[1], a[2]
     name = a[a.index("--name") + 1] if "--name" in a else key
     acct = a[a.index("--acct") + 1] if "--acct" in a else "일반회계"
-    rows = parse(Path(txt).read_text(encoding="utf-8", errors="ignore"), key, name, year, acct)
     text = Path(txt).read_text(encoding="utf-8", errors="ignore")
-    chk = check(text, rows)
-    write(rows, key, year, {"gov": name, "year": year, "source": a[a.index("--src") + 1] if "--src" in a else "", "fetched": a[a.index("--date") + 1] if "--date" in a else "", "_check": chk})
+    summary = bool(SUMMARY.search(text[:400]))
+    rows = parse_summary(text, key, name, year, acct) if summary else parse(text, key, name, year, acct)
+    chk = [] if summary else check(text, rows)
+    meta = {"gov": name, "year": year, "source": a[a.index("--src") + 1] if "--src" in a else "", "fetched": a[a.index("--date") + 1] if "--date" in a else "", "_check": chk}
+    if summary:
+        meta["note"] = "세입총괄표(장·관·항·목 단위, 사업 줄 없음) — 사업 단위 세입예산사업명세서가 아니다"
+    if "--note" in a:
+        meta["note"] = (meta.get("note", "") + " " + a[a.index("--note") + 1]).strip()
+    write(rows, key, year, meta)
     if chk:
         print(f"  목 합계와 다른 곳 {len(chk)}: " + ", ".join(f"{c['mok']} {c['diff_k']:+,}" for c in chk[:12]))
     from collections import Counter

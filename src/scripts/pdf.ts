@@ -86,7 +86,7 @@ export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: b
       x += measure(F, piece, o.size);
     }
   };
-  doc.setTitle(title); doc.setCreator('다잇다 daitda.co.kr'); doc.setProducer('daitda.co.kr'); doc.setLanguage('ko-KR');
+  doc.setTitle(title); doc.setCreator(location.host); doc.setProducer(location.host); doc.setLanguage('ko-KR');
   const wide = opt.landscape ?? blocks.some(b => 'table' in b && Math.max(...b.table.map(r => r.length)) >= 7);
   const [PW, PH] = wide ? [297 * MM, 210 * MM] : [210 * MM, 297 * MM];
   const M = 15 * MM, W = PW - 2 * M, BOTTOM = M + 8;
@@ -154,7 +154,7 @@ export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: b
   // 쪽 번호
   const pages = doc.getPages();
   pages.forEach((pg, i) => {
-    const t = `daitda.co.kr  ·  ${i + 1} / ${pages.length}`;
+    const t = `${location.host}  ·  ${i + 1} / ${pages.length}`;
     text(pg, t, { x: PW - M - measure(F, t, 7.5), y: M / 2, size: 7.5, color: MUTED });
   });
   const bytes = await doc.save();

@@ -1,12 +1,13 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import VatData from '../../../components/VatData.astro';
+import VatNav from '../../../components/VatNav.astro';
 import '../../../styles/vat.css';
 /** /vat/develop/ — 공영개발·분양 사업 부가세(세무회계법인 2차 검토 2026-10-27, 4번): 산업단지·택지 조성(토지 면세)과 공설시장·지식산업센터 분양(건물 과세). 매입세액 갈래·과세기간별 흐름·조기환급·점검표. 브라우저 안 계산만, 평가 없음 */
 ---
 <Base title="공영개발·분양 부가세 — 산단·택지·지식산업센터" description="지자체 공영개발(산업단지·택지 조성, 공설시장·지식산업센터 분양)의 부가가치세: 토지 분양 면세·건물 분양 과세, 토지 관련 매입세액 불공제, 공통비 예정공급가액 안분, 중간지급조건부 공급시기, 조기환급을 과세기간별 흐름표와 점검표로 계산합니다." current="vat" crumb={[{ name: '지자체 부가세 절감 점검기', href: '/vat/' }]}>
-  <p class="meta no-print"><a href="/vat/">← 시작 화면</a> · <a href="/vat/build/">신축·대수선</a> · <a href="/vat/schedule/">환급·기한 일정표</a></p>
   <div class="section-head"><h1>공영개발·분양 — 토지는 면세, 건물은 과세, 조성비는 갈라서</h1><span class="meta">법 제26조·제29조·제39조·제59조 · 시행령 제28조·제64조·제81조·제82조·제107조</span></div>
+  <VatNav current="develop" />
   <p class="lede">군 단위 부가세에서 가장 큰 금액은 시설 운영이 아니라 <strong>산업단지·택지 조성과 공설시장·지식산업센터 분양</strong>에 있습니다. 토지 분양은 면세라 토지 관련 공사비의 매입세액은 돌려받지 못하고, 건물 분양은 과세라 건축비 매입세액은 돌려받습니다. 둘에 함께 드는 비용은 예정공급가액 비율로 나누고, 중도금을 받을 때마다 매출세액이 생깁니다. 조성 중에는 조기환급으로 받고 분양이 시작되면 납부로 바뀌는 흐름을 과세기간별로 보입니다.</p>
   <form class="vc-form no-print" id="dv-form" autocomplete="off" onsubmit="return false">
     <label class="full">저장된 사업 불러오기 <select id="dv-saved"><option value="">— 저장된 사업 —</option></select></label>

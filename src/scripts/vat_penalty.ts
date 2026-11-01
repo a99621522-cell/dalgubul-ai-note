@@ -13,7 +13,7 @@ if (D && box) {
     const kind = ($<HTMLSelectElement>('pn-kind')!).value as 'under' | 'none'; const key = ($<HTMLSelectElement>('pn-period')!).value; const tax = num(($<HTMLInputElement>('pn-tax')!).value); const pay = ($<HTMLInputElement>('pn-date')!).value || ymd(now);
     if (!tax) { $('pn-out')!.innerHTML = '<p class="callout info">덜 낸 세액을 넣으세요.</p>'; return; }
     const P = periodInfo(key); const r = penaltyCalc(D, { tax, due: P.due, payDate: pay, kind });
-    $('pn-out')!.innerHTML = `<div class="scroll-x"><table class="data-table vat-table form" data-stack="off"><caption>가산세 어림 — ${esc(P.name)} 덜 낸 세액 ${fmt(tax)}원을 ${pay}에 ${kind === 'none' ? '기한후신고' : '수정신고'}·납부할 때</caption><thead><tr><th scope="col">항목</th><th scope="col">계산</th><th scope="col">금액</th></tr></thead><tbody>
+    $('pn-out')!.innerHTML = `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table form" data-stack="off"><caption>가산세 어림 — ${esc(P.name)} 덜 낸 세액 ${fmt(tax)}원을 ${pay}에 ${kind === 'none' ? '기한후신고' : '수정신고'}·납부할 때</caption><thead><tr><th scope="col">항목</th><th scope="col">계산</th><th scope="col">금액</th></tr></thead><tbody>
       <tr><th scope="row">${kind === 'none' ? '무신고 가산세(제47조의2)' : '과소신고 가산세(제47조의3)'}</th><td>${fmt(tax)} × ${pct(r.rateFile)}</td><td>${fmt(r.file)}</td></tr>
       <tr><th scope="row">${kind === 'none' ? '기한후신고 감면(제48조 제2항 제2호)' : '수정신고 감면(제48조 제2항 제1호)'}</th><td>법정신고기한 뒤 ${r.months}개월째 → ${r.relief ? `${pct(r.relief)} 감면` : '감면 없음(기한 경과)'}</td><td>−${fmt(r.file - r.fileAfter)}</td></tr>
       <tr><th scope="row">납부지연 가산세(제47조의4)</th><td>${fmt(tax)} × ${r.days}일 × 22/100,000</td><td>${fmt(r.late)}</td></tr>

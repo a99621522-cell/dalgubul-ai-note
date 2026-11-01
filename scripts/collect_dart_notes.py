@@ -18,7 +18,7 @@ API·접속 실패는 로그 후 건너뛰고 못 받은 회사는 기존 행을
 사용: python3 scripts/collect_dart_notes.py [--months 15] [--probe 회사명] [--no-ir] [--no-report]
   --probe: 그 회사만, 섹션 제목·뽑은 문장·IR 첨부 페이지 구조를 로그로(저장 안 함)
   --disclosure <낱말>: --probe 와 함께 쓰면 최근 --months 달 공시 중 제목에 그 낱말이 든 공시(예: 전환사채)의 원문을 표까지 로그로(저장 안 함). 전환사채면 주요사항보고서 API(cvbdIsDecsn)의 자금조달 목적별 금액도 찍는다
-  --corp-search <낱말>: 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 기업개황·최근 --months 달 공시 목록을 로그로(저장 안 함). --dump 면 가장 최근 공시 원문, --dump-all 이면 최대 5건 원문
+  --corp-search <낱말> [--exact] [--doc-kw 감사보고서,사업보고서]: 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 기업개황·최근 --months 달 공시 목록을 로그로(저장 안 함). --dump 면 가장 최근 공시 원문, --dump-all 이면 최대 5건 원문
   --robot-scan [--names-file 경로]: 대구 본사 공시 회사 + 이름 파일의 회사(본사 대구)의 최근 정기보고서·감사보고서에서 로봇 낱말 줄 → data/dart/robot_scan.csv
   --dump: --probe 와 함께 쓰면 보고서의 '회사의 개요'(정관 사업목적 등)·'사업의 내용'·'경영진단' 본문을 표까지 글자로 로그에(공시 원문 확인용)
 """
@@ -797,7 +797,7 @@ def main(argv: list[str]) -> int:
             return 0
         hits = [(clean(m.group(1)), clean(m.group(2)), clean(m.group(3)))
                 for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)
-                if kw.replace(" ", "") in clean(m.group(2)).replace(" ", "")]
+                if (kw.replace(" ", "") == clean(m.group(2)).replace(" ", "") if "--exact" in argv else kw.replace(" ", "") in clean(m.group(2)).replace(" ", ""))]
         print(f"[dart_notes] 고유번호 목록에서 '{kw}' {len(hits)}곳")
         bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
         for code, name, stock in hits[:10]:
@@ -808,6 +808,9 @@ def main(argv: list[str]) -> int:
             print(f"    최근 {months}달 공시 {len(rows)}건")
             for x in rows:
                 print(f"    {x.get('rcept_dt')} {x.get('report_nm')} ({x.get('flr_nm')}) https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
+            if "--doc-kw" in argv:   # --doc-kw 사업보고서,감사보고서 — 제목에 그 낱말이 든 공시만 원문 대상(--exact 는 이름 완전 일치, 2026-10-29)
+                kws = argv[argv.index("--doc-kw") + 1].split(",")
+                rows = [x for x in rows if any(k in (x.get("report_nm") or "") for k in kws)]
             if "--dump" in argv and rows:   # 가장 최근 공시(비상장 외감 회사는 감사보고서) 원문을 표까지 로그로, --dump-all 이면 목록 전부(최대 5건)
                 for x in (rows[:5] if "--dump-all" in argv else rows[:1]):
                     xml = doc_xml(x["rcept_no"])
@@ -816,8 +819,10 @@ def main(argv: list[str]) -> int:
         return 0
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}
+    if probe and "--any" in argv:   # --any: 캐시 전체(대구 밖 본사·비상장 사업보고서 제출 회사 포함)에서 찾는다, --exact 면 이름 완전 일치(2026-10-29)
+        corps = dict(cache)
     if probe:
-        corps = {c: v for c, v in corps.items() if probe in (v.get("name") or "")}
+        corps = {c: v for c, v in corps.items() if (probe == (v.get("name") or "") if "--exact" in argv else probe in (v.get("name") or ""))}
     if not corps:
         print("대상 회사 없음")
         return 0
@@ -847,6 +852,20 @@ def main(argv: list[str]) -> int:
     seen_i = {r["rcept_no"] for r in old_i if r.get("pdf")}      # 첨부까지 본 공시만 건너뛴다
     budget = [80 if not probe else 3]
     for i, (code, meta) in enumerate(sorted(corps.items()), 1):
+        if probe and "--any" in argv and code not in reps:   # 분기 실적 CSV 밖 회사 — 공시 목록에서 최근 정기보고서를 찾는다
+            j = get("list.json", corp_code=code, bgn_de=(date.today() - timedelta(days=480)).strftime("%Y%m%d"),
+                    end_de=date.today().strftime("%Y%m%d"), pblntf_ty="A", page_count=100) or {}
+            lst = []
+            for x in j.get("list", []):
+                m = re.search(r"(사업|반기|분기)보고서\s*\((\d{4})\.(\d{2})\)", x.get("report_nm") or "")
+                if m and "정정" not in x.get("report_nm", ""):
+                    q = {"03": 1, "06": 2, "09": 3, "12": 4}.get(m.group(3), 4)
+                    lst.append({"rcept_no": x["rcept_no"], "year": m.group(2), "quarter": str(q), "report_nm": f"{m.group(2)} {x['report_nm']}"})
+            lst.sort(key=lambda x: (int(x["year"]), int(x["quarter"])), reverse=True)
+            pick = lst[:2]
+            ann = next((x for x in lst if x["quarter"] == "4"), None)
+            if ann and ann not in pick: pick.append(ann)
+            reps[code] = pick
         if "--no-report" not in argv:
             for rep in reps.get(code, []):
                 rrows += report_notes(code, meta, rep, bool(probe))

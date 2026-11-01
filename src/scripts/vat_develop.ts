@@ -61,4 +61,4 @@ function init(D: Data) {
   }
   renderSaved();
 }
-const tbl = (cap: string, head: string[], body: string) => `<div class="scroll-x"><table class="data-table vat-table form" data-stack="off"><caption>${cap}</caption><thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
+const tbl = (cap: string, head: string[], body: string) => `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table form" data-stack="off"><caption>${cap}</caption><thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;

@@ -20,6 +20,10 @@ on:
         description: "리다이렉트 출발 도메인(비우면 안 함)"
         required: false
         default: ""
+      project:
+        description: "Cloudflare Pages 프로젝트 이름(다잇다 dalgubul-ai-note / 부가세 점검기 vat-daitda — 2026-10-28 'vat.daitda.co.kr 도메인 붙여')"
+        required: false
+        default: "dalgubul-ai-note"
 
 jobs:
   domain:
@@ -32,10 +36,11 @@ jobs:
           MODE: ${{ inputs.mode }}
           DOMAIN: ${{ inputs.domain }}
           FROM: ${{ inputs.redirect_from }}
+          PROJECT: ${{ inputs.project || 'dalgubul-ai-note' }}
         run: |
           set +e
           api() { curl -s -m 30 -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" "$@"; }
-          base="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/dalgubul-ai-note"
+          base="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/$PROJECT"
           echo "== 프로젝트"; api "$base" | python3 -c 'import sys,json; d=json.load(sys.stdin); r=d.get("result") or {}; print("ok" if d.get("success") else d.get("errors")); print("subdomain:", r.get("subdomain"), "domains:", r.get("domains"))'
           echo "== 도메인 목록"; api "$base/domains" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("ok" if d.get("success") else d.get("errors")); [print(" ", x.get("name"), "status:", x.get("status"), "cert:", (x.get("certificate_authority") or ""), "validation:", (x.get("validation_data") or {}).get("status")) for x in d.get("result") or []]'
           if [ "$MODE" = "add" ] && [ -n "$DOMAIN" ]; then
@@ -45,9 +50,9 @@ jobs:
             zid() { api "https://api.cloudflare.com/client/v4/zones?name=$1" | python3 -c 'import sys,json; d=json.load(sys.stdin); r=d.get("result") or []; print(r[0]["id"] if r else "")'; }
             echo "== 존(DNS) 확인"; zone=$(zid "$DOMAIN"); [ -z "$zone" ] && zone=$(zid "${DOMAIN#*.}")
             if [ -n "$zone" ]; then
-              echo "zone $zone 있음 — CNAME $DOMAIN → dalgubul-ai-note.pages.dev 확인·생성"
+              echo "zone $zone 있음 — CNAME $DOMAIN → $PROJECT.pages.dev 확인·생성"
               have=$(api "https://api.cloudflare.com/client/v4/zones/$zone/dns_records?name=$DOMAIN" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(len(d.get("result") or []))')
-              [ "$have" = "0" ] && api -X POST "https://api.cloudflare.com/client/v4/zones/$zone/dns_records" --data "{\"type\":\"CNAME\",\"name\":\"$DOMAIN\",\"content\":\"dalgubul-ai-note.pages.dev\",\"proxied\":true}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("CNAME", "ok" if d.get("success") else d.get("errors"))'
+              [ "$have" = "0" ] && api -X POST "https://api.cloudflare.com/client/v4/zones/$zone/dns_records" --data "{\"type\":\"CNAME\",\"name\":\"$DOMAIN\",\"content\":\"$PROJECT.pages.dev\",\"proxied\":true}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("CNAME", "ok" if d.get("success") else d.get("errors"))'
               if [ -n "$FROM" ]; then
                 echo "== 리다이렉트 $FROM → https://$DOMAIN (존 규칙)"
                 api -X PUT "https://api.cloudflare.com/client/v4/zones/$zone/rulesets/phases/http_request_dynamic_redirect/entrypoint" --data "{\"rules\":[{\"expression\":\"(http.host eq \\\"$FROM\\\") or (http.host eq \\\"www.$FROM\\\")\",\"action\":\"redirect\",\"action_parameters\":{\"from_value\":{\"status_code\":301,\"target_url\":{\"expression\":\"concat(\\\"https://$DOMAIN\\\", http.request.uri.path)\"},\"preserve_query_string\":true}},\"description\":\"daitda.co.kr → note (앱 전까지)\"}]}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("redirect", "ok" if d.get("success") else d.get("errors"))'
@@ -55,7 +60,7 @@ jobs:
                 [ "$have" = "0" ] && api -X POST "https://api.cloudflare.com/client/v4/zones/$zone/dns_records" --data "{\"type\":\"A\",\"name\":\"$FROM\",\"content\":\"192.0.2.1\",\"proxied\":true}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("A(더미, 프록시)", "ok" if d.get("success") else d.get("errors"))'
               fi
             else
-              echo "존 없음 또는 토큰에 Zone 권한 없음 — DNS 는 Cloudflare 대시보드(또는 등록기관)에서 CNAME $DOMAIN → dalgubul-ai-note.pages.dev"
+              echo "존 없음 또는 토큰에 Zone 권한 없음 — DNS 는 Cloudflare 대시보드(또는 등록기관)에서 CNAME $DOMAIN → $PROJECT.pages.dev"
             fi
           fi
           if [ "$MODE" = "retry" ] && [ -n "$DOMAIN" ]; then
@@ -91,11 +96,11 @@ jobs:
               for n in "$DOMAIN" "www.$DOMAIN" "note.$DOMAIN"; do
                 have=$(api "https://api.cloudflare.com/client/v4/zones/$zone/dns_records?name=$n" | python3 -c 'import sys,json; print(len(json.load(sys.stdin).get("result") or []))')
                 if [ "$have" = "0" ]; then
-                  api -X POST "https://api.cloudflare.com/client/v4/zones/$zone/dns_records" --data "{\"type\":\"CNAME\",\"name\":\"$n\",\"content\":\"dalgubul-ai-note.pages.dev\",\"proxied\":true}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("CNAME '"$n"' →  pages.dev", "ok" if d.get("success") else d.get("errors"))'
+                  api -X POST "https://api.cloudflare.com/client/v4/zones/$zone/dns_records" --data "{\"type\":\"CNAME\",\"name\":\"$n\",\"content\":\"$PROJECT.pages.dev\",\"proxied\":true}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("CNAME '"$n"' →  pages.dev", "ok" if d.get("success") else d.get("errors"))'
                 else echo "$n 기록 있음 — 그대로 둠"; fi
               done
               echo "== DNS 기록 목록"; api "https://api.cloudflare.com/client/v4/zones/$zone/dns_records?per_page=100" | python3 -c 'import sys,json; [print(" ", x.get("type"), x.get("name"), "→", x.get("content"), "proxied" if x.get("proxied") else "") for x in json.load(sys.stdin).get("result") or []]'
             fi
           fi
-          echo "== 응답 확인"; for h in "https://dalgubul-ai-note.pages.dev/" "https://$DOMAIN/" ${FROM:+"https://$FROM/"}; do printf '%s ' "$h"; curl -s -o /dev/null -m 20 -w '%{http_code} %{redirect_url}\n' "$h"; done
+          echo "== 응답 확인"; for h in "https://$PROJECT.pages.dev/" "https://$DOMAIN/" ${FROM:+"https://$FROM/"}; do printf '%s ' "$h"; curl -s -o /dev/null -m 20 -w '%{http_code} %{redirect_url}\n' "$h"; done
           exit 0

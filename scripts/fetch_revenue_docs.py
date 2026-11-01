@@ -3,6 +3,7 @@
 설정 config/revenue_docs.yml. kind: pdf / daegu_jumin / discover(첨부 후보만 로그). robots.txt 는 공시 페이지(지자체 누리집)라 확인 뒤 받는다(기본 허용).
 러너(.github/workflows/revenue_docs.yml)에서 돌리며, 이 세션처럼 requests 가 프록시에서 막히면 curl 로 대신한다(--curl).
 사용: python3 scripts/fetch_revenue_docs.py [--only key,key] [--curl] [--parse-only]
+kind: manual — 누리집에서 못 받는 지자체(중구): 운영자가 올린 PDF 를 세션이 `pdftotext -layout` 로 raw/<key>_<year>.txt 에 두면 그 글자만 읽는다(date·note 는 설정에)
 """
 from __future__ import annotations
 
@@ -26,9 +27,50 @@ USE_CURL = "--curl" in sys.argv
 CURL_FOR = False   # 지자체 설정 curl: true 면 그 지자체 요청은 curl 로(2026-10-28: 서구·달서구·중구 누리집이 requests 연결은 끊고 크로미움·curl 은 받는다 — TLS 지문 차단으로 보임)
 S = requests.Session()
 S.headers["User-Agent"] = UA
+WAYBACK_FOR = False   # 지자체 설정 wayback: true 면 누리집 대신 웨이백 머신(web.archive.org)에 남은 사본을 받는다(2026-10-28 중구: 누리집이 해외 IP 에 400 — 보관된 쪽·첨부만, POST 는 불가)
+CDX = "https://web.archive.org/cdx/search/cdx"
+
+
+def wayback_get(url: str, out: Path | None = None) -> bytes:
+    """웨이백 머신에서 url 의 가장 최근 200 사본을 받는다(CDX 로 시각을 찾고 /web/<ts>id_/ 원본 그대로). 429·시간 초과는 기다렸다 다시."""
+    rows = []
+    for i, wait in enumerate((0, 15, 40)):
+        if wait:
+            time.sleep(wait)
+        try:
+            r = S.get(CDX, params={"url": url, "output": "json", "from": "2024", "filter": "statuscode:200", "limit": "-3"}, timeout=120)
+            if r.status_code == 200:
+                rows = r.json()[1:] if r.text.strip() else []
+                break
+            print(f"  [wb {i + 1}] CDX {r.status_code} {url[:80]}")
+        except Exception as e:  # noqa: BLE001
+            print(f"  [wb {i + 1}] CDX 실패 {url[:80]}: {str(e)[:80]}")
+    if not rows:
+        print(f"  [wb] 보관 사본 없음: {url[:100]}")
+        return b""
+    ts = rows[-1][1]
+    for i, wait in enumerate((0, 20, 45)):
+        if wait:
+            time.sleep(wait)
+        try:
+            r = S.get(f"https://web.archive.org/web/{ts}id_/{url}", timeout=180)
+            if r.status_code == 200 and r.content:
+                print(f"  [wb] {ts} {url[:100]} ({len(r.content):,}B)")
+                if out:
+                    out.write_bytes(r.content)
+                return r.content
+            print(f"  [wb {i + 1}] {r.status_code} {url[:80]}")
+        except Exception as e:  # noqa: BLE001
+            print(f"  [wb {i + 1}] 실패 {url[:80]}: {str(e)[:80]}")
+    return b""
 
 
 def get(url: str, out: Path | None = None, post: dict | None = None, referer: str = "", jar: Path | None = None, tries: int = 4, timeout: int = 240, backoff: float | None = None) -> bytes:
+    if WAYBACK_FOR and "web.archive.org" not in url:
+        if post:
+            print(f"  [wb] POST 는 웨이백에 없음: {url[:80]}")
+            return b""
+        return wayback_get(url, out)
     for i in range(tries):
         try:
             if USE_CURL or CURL_FOR:
@@ -375,11 +417,12 @@ def probe_files(g: dict) -> None:
 def main() -> int:
     only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
     year = str(CFG["year"])
-    global CURL_FOR
+    global CURL_FOR, WAYBACK_FOR
     for g in CFG["govs"]:
         if only and g["key"] not in only:
             continue
         CURL_FOR = bool(g.get("curl"))
+        WAYBACK_FOR = bool(g.get("wayback"))
         if g["kind"] == "discover":
             if "--parse-only" not in sys.argv:
                 if g.get("probe_base"):
@@ -390,7 +433,8 @@ def main() -> int:
                     discover(g)
             continue
         txt = RAW / f"{g['key']}_{year}.txt"
-        if "--parse-only" not in sys.argv:
+        manual = g["kind"] == "manual"   # 운영자가 올린 PDF 를 세션이 pdftotext 로 풀어 raw 에 둔 지자체(중구) — 받지 않고 글자만 다시 읽는다
+        if "--parse-only" not in sys.argv and not manual:
             pdf = fetch_pdf(g, year)
             if not pdf:
                 continue
@@ -400,10 +444,10 @@ def main() -> int:
             pdf.unlink(missing_ok=True)   # 원본 PDF 는 저장소에 두지 않고 글자만
         if not txt.exists():
             continue
-        subprocess.run([sys.executable, str(ROOT / "scripts" / "parse_revenue_docs.py"), g["key"], year, str(txt), "--name", g["name"], "--src", g["page"], "--date", time.strftime("%Y-%m-%d"), "--acct", g.get("acct", "일반회계")])
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "parse_revenue_docs.py"), g["key"], year, str(txt), "--name", g["name"], "--src", g["page"], "--date", g.get("date") or time.strftime("%Y-%m-%d"), "--acct", g.get("acct", "일반회계")] + (["--note", g["note"]] if g.get("note") else []))
         time.sleep(1.5)
         etxt = RAW / f"{g['key']}_{year}_exp.txt"
-        if "--parse-only" not in sys.argv and "--no-expense" not in sys.argv:
+        if "--parse-only" not in sys.argv and "--no-expense" not in sys.argv and not manual:
             fetch_expense(g, year)
         if etxt.exists():
             subprocess.run([sys.executable, str(ROOT / "scripts" / "parse_expense_docs.py"), g["key"], year, str(etxt), "--name", g["name"], "--src", g["page"], "--date", time.strftime("%Y-%m-%d")])

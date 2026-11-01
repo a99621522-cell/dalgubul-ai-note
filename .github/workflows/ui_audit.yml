@@ -1,11 +1,11 @@
 name: UI 감사(axe·Lighthouse)
 
-# scripts/ui_audit.mjs — 빌드한 사이트를 띄워 대표 페이지 8개에 axe(WCAG 2.x AA)와 Lighthouse(모바일)를 돌린다. axe 위반·페이지 가로 스크롤이 있으면 실패.
+# scripts/ui_audit.mjs — 빌드한 사이트를 띄워 대표 페이지 8개에 axe(WCAG 2.x AA)와 Lighthouse(모바일)를 돌린다(부가세 점검기 5쪽은 deploy_vat.yml 이 scripts/vat_ux_test.mjs 로). axe 위반·페이지 가로 스크롤이 있으면 실패.
 # 결과는 Job Summary 와 아티팩트(data/ui_audit/latest.json). 저장소에는 커밋하지 않는다. 디자인·UI 개선 2차(2026-10-06)
 on:
   workflow_dispatch:
   push:
-    branches: ["claude/factorion-file-repair-tyqnlb"]
+    branches: ["main", "claude/factorion-file-repair-tyqnlb", "claude/local-govt-vat-reporting-w38wkz"]
     paths: ["src/**", "public/**", "scripts/ui_audit.mjs", ".github/workflows/ui_audit.yml"]
 
 permissions:

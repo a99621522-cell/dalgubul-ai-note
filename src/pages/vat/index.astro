@@ -1,19 +1,39 @@
 ---
 import Base from '../../layouts/Base.astro';
 import VatData from '../../components/VatData.astro';
+import VatNav from '../../components/VatNav.astro';
 import { vatRules } from '../../lib/vat';
 import '../../styles/vat.css';
 /** /vat/ — 지자체 부가세 점검기 시작 화면(v2 1단계, 운영자 지시 2026-10-27 '처음 맡은 공무원과 수탁기관이 쉽게 쓰도록' → '1단계부터 해봐', 설계 docs/design/vat-first-timer.md).
  *  사용 목적은 신고하는 공무원용(운영자 지시 2026-10-27 '사용목적은 신고하는 공무원용이야'): 역할 둘 대신 공무원 한 사람의 순서 ① 지난 신고 점검 ② 기관 설정 ③ 매달 지출 기록(수탁기관에 맡기는 것은 선택) ④ 신고 준비 ⑤ 인수인계. 아는 사람용 한 건 판정·안분 계산기는 /vat/tools/. D-day 는 브라우저에서 계산(src/scripts/vat_start.ts). */
 const R = vatRules();
+/** 공무원 UX 재설계(2026-10-28, docs/design/vat-ux-spec.md §2): 첫 화면 = 업무 주기 대시보드 — 상태 카드 4개(다음 신고·기록 없는 달·처리할 것·지난 기 공통 면세분) + 상태로 고른 1차 행동 단추 하나. 네 가지 길·6단계·3분 안내는 펼침으로. */
 ---
 <Base title="지자체 부가세 절감 점검기" description="시·군·구가 내는 부가가치세 납부액을 법대로 줄이는 네 가지 길 — 과세사업 빠짐없이 잡기, 지출 매입세액 빠짐없이 공제, 공통매입세액 면세부분 줄이기, 지난 5년 되찾기(경정청구). 신고하는 공무원용, 브라우저 안에서만 계산합니다." current="vat">
   <div class="section-head"><h1>지자체 부가세 절감 점검기</h1><span class="meta">규칙 {R?.version} · 조문 대조 {R?.verified?.date}</span></div>
-  <p class="lede"><strong>목적은 납부액 절감입니다.</strong> 시·군·구가 내는 부가가치세는 매출세액에서 매입세액을 뺀 것이라, 법이 허용하는 매입세액을 빠짐없이 공제할수록 줄어듭니다. 담당자마다 금액이 달라지는 자리는 네 곳이고, 이 도구는 그 네 곳을 숫자로 보여 줍니다. 평가·절세 기법이 아니라 조문대로 공제받을 것을 빠뜨리지 않는 일입니다. 입력은 이 브라우저에만 남습니다.</p>
+  <VatNav current="start" />
+  <p class="lede">시·군·구가 내는 부가가치세는 매출세액에서 매입세액을 뺀 것이라, 법이 허용하는 매입세액을 빠짐없이 공제할수록 줄어듭니다. 이 화면은 <strong>지금 할 일</strong>을 먼저 보입니다. 판정은 참고이며 기관의 판단이 아닙니다. 입력은 이 브라우저에만 남습니다.</p>
 
-  <section class="vc-card" id="sv-box" aria-live="polite"><h3>이 브라우저 기록으로 본 '지금 살릴 수 있는 세액'</h3><div id="sv-sum" class="meta">확인 중…</div></section>
+  <section aria-labelledby="h-now">
+    <h2 id="h-now" class="sr-only">지금 상태</h2>
+    <ul class="vat-status" id="vat-status" aria-live="polite"><li><a href="/vat/setup/"><span class="k">확인 중…</span></a></li></ul>
+    <div class="vat-cta" id="vat-cta-wrap"><a class="btn" id="vat-cta" href="/vat/setup/">기관 설정 시작</a><span class="meta" id="vat-cta-why"></span></div>
+  </section>
 
-  <h2>납부액을 줄이는 네 가지 길</h2>
+  <details class="vat-more" id="sv-wrap"><summary><strong>이 브라우저 기록으로 본 '지금 살릴 수 있는 세액'</strong></summary><section class="vc-card" id="sv-box"><div id="sv-sum" class="meta">확인 중…</div></section></details>
+
+  <details class="vat-more"><summary><strong>일하는 순서</strong> — 신고 담당 공무원 한 사람 기준, 6단계</summary>
+  <p class="meta">처음 맡았으면 ①부터, 이미 신고하고 있으면 ③·④부터. 수탁기관·시설 부서에 기록을 맡기는 것은 선택입니다.</p>
+  <ol class="vat-steps">
+    <li><a class="vat-role" href="/vat/review/"><span class="who">처음 맡았을 때 · 한 번</span><strong>① 지난 신고 점검</strong><p class="meta">홈택스 매입 목록 5년치와 신고 내역을 견줘 <b>빠진 매입세액</b>과 경정청구 기한을 찾습니다.</p></a></li>
+    <li><a class="vat-role" href="/vat/discover/"><span class="who">한 번 · 해마다 다시</span><strong>② 과세사업 찾기</strong><p class="meta">세외수입 항목을 훑어 <b>과세사업인데 신고하지 않는 수입</b>과 신고 중인 사업의 공제 대상 지출을 찾습니다.</p></a></li>
+    <li><a class="vat-role" href="/vat/setup/"><span class="who">한 번 · 약 10분</span><strong>③ 기관 설정 · 시설 카드</strong><p class="meta">돈을 받는 시설을 적으면 시설마다 과세·면세, 영수증 받을 등록번호, 수탁 시설의 군 부담 지출 처리가 정해집니다.</p><span class="meta" id="role-b-state"></span></a></li>
+    <li><a class="vat-role" href="/vat/monthly/"><span class="who">매달</span><strong>④ 지출 기록</strong><p class="meta">홈택스 전자세금계산서 목록·사업용 카드 내역을 붙여넣고 건마다 <b>어느 시설에 썼는지</b>만 고르면 신호등으로 공제 여부가 나옵니다.</p><span class="meta" id="role-a-state"></span></a></li>
+    <li><a class="vat-role" href="/vat/prepare/"><span class="who">분기 · 신고 전</span><strong>⑤ 신고 준비</strong><p class="meta">기록을 모아 신고서·부속서류 모양 결과와 <b>공통매입세액 면세부분 줄이기</b> 분석, 전환 매입세액까지 계산합니다.</p></a></li>
+    <li><a class="vat-role" href="/vat/handover/"><span class="who">담당이 바뀔 때</span><strong>⑥ 인수인계 꾸러미</strong><p class="meta">설정·기록·신고 기록을 zip 하나로 넘기고, 후임자가 그대로 되살립니다.</p></a></li>
+  </ol></details>
+
+  <details class="vat-more"><summary><strong>납부액을 줄이는 네 가지 길</strong></summary>
   <div class="vat-roles">
     <a class="vat-role" href="/vat/discover/"><span class="who">길 1 · 과세사업 빠짐없이 잡기</span><strong>과세사업 찾기</strong><p class="meta">세외수입 항목을 훑어 <b>과세사업인데 신고하지 않는 수입</b>을 찾습니다. 과세사업이 하나 늘면 그 시설에 쓴 지출 전부가 공제 대상이 됩니다.</p></a>
     <a class="vat-role" href="/vat/monthly/"><span class="who">길 2 · 지출 매입세액 빠짐없이</span><strong>지출 기록 · 명의 · 증빙</strong><p class="meta">홈택스 매입 목록을 붙여넣고 어느 시설 지출인지만 고릅니다. <b>우리 기관 명의 세금계산서, 부가세가 적힌 카드 전표</b>가 아니면 공제가 사라집니다 — 빨강·노랑을 기한 안에 처리하는 것이 절감입니다.</p></a>
@@ -21,10 +41,13 @@ const R = vatRules();
     <a class="vat-role" href="/vat/review/"><span class="who">길 4 · 지난 5년 되찾기</span><strong>지난 신고 점검(경정청구)</strong><p class="meta">받았지만 신고에 빠진 매입세액을 과세기간별로 찾아 <b>경정청구 기한</b> 안에 돌려받습니다. 처음 맡았을 때 가장 큰 돈이 여기 있습니다.</p></a>
   </div>
   <p class="meta"><strong>구조가 정해진 뒤에도 남는 지렛대</strong>(세무회계법인 관점 검토) — <a href="/vat/prepare/">신고 준비</a>의 <b>면세비율 관리</b>(전용 입증·면세 공급가액 구성·취득 시기), <a href="/vat/build/"><b>신축·대수선 설계 점검과 조기환급</b></a>, 지출 기록의 <b>사업·부서 → 시설 자동 귀속</b>과 <b>전용 근거</b>, <a href="/vat/review/">가산세 어림</a>, <a href="/vat/schedule/"><b>환급·기한 일정표</b></a>. 2차: 본청·행정 공통의 안분 기준, 경정청구의 안분, 보조금 정산 경고, <a href="/vat/develop/"><b>공영개발·분양(산단·택지·지식산업센터)</b></a>, 사업자 단위 전환 효과 숫자, 협약서 점검표.</p>
-  <p class="meta"><strong>시설관리공단·재단(수탁기관)도 같은 도구를 씁니다.</strong> 기관 설정에서 '수탁기관'을 고르면 공단 기준(지자체 면세 제19호가 없어 주차장·대관도 과세, 군 사업 대행은 군 명의·대행수수료만 과세)으로 판정하고, 공단 명의로 받은 대행 지출이 군·공단 사이에서 떨어지는 자리를 짚어 줍니다. 절감 결과는 <a href="/vat/trend/">납부액 추이·절감 현황표</a>로 보고서에 붙입니다. 정확한 신고(서식 모양 결과·등록 단위별 신고서·예정고지·가산세)는 절감을 지키는 바탕이라 ⑤ 신고 준비 안에 두었습니다.</p>
+  <p class="meta"><strong>시설관리공단·재단(수탁기관)도 같은 도구를 씁니다.</strong> 기관 설정에서 '수탁기관'을 고르면 공단 기준(지자체 면세 제19호가 없어 주차장·대관도 과세, 군 사업 대행은 군 명의·대행수수료만 과세)으로 판정하고, 공단 명의로 받은 대행 지출이 군·공단 사이에서 떨어지는 자리를 짚어 줍니다. 절감 결과는 <a href="/vat/trend/">납부액 추이·절감 현황표</a>로 보고서에 붙입니다.</p>
+  <p class="meta">세법을 아는 분은 <a href="/vat/tools/">한 건씩 바로 확인하는 도구</a>(지출 건 판정·공통매입세액 안분·재계산·점검표)로 가셔도 됩니다.</p>
+  </details>
 
   <div class="dday" id="dday" aria-live="polite"><span>다음 신고 기한 계산 중…</span></div>
 
+  <details class="vat-more"><summary><strong>돈이 세금이 되는 길</strong> — 그림 한 장</summary>
   <figure class="vat-fig">
     <svg viewBox="0 0 760 236" role="img" aria-labelledby="vf-t vf-d" xmlns="http://www.w3.org/2000/svg">
       <title id="vf-t">돈이 세금이 되는 길</title>
@@ -44,18 +67,7 @@ const R = vatRules();
     </svg>
     <figcaption>매입세액은 "어느 시설에 쓴 지출인지"가 적혀 있을 때만 뺄 수 있습니다. 시설 담당이 적고, 신고 담당이 모읍니다.</figcaption>
   </figure>
-
-  <details class="vat-more" open><summary><strong>일하는 순서</strong> — 신고 담당 공무원 한 사람 기준</summary>
-  <p class="meta">처음 맡았으면 ①부터, 이미 신고하고 있으면 ②·④부터. 수탁기관·시설 부서에 기록을 맡기는 것은 선택입니다.</p>
-  <ol class="vat-steps">
-    <li><a class="vat-role" href="/vat/review/"><span class="who">처음 맡았을 때 · 한 번</span><strong>① 지난 신고 점검</strong><p class="meta">홈택스 매입 목록 5년치와 신고 내역을 견줘 <b>빠진 매입세액</b>과 경정청구 기한을 찾습니다.</p></a></li>
-    <li><a class="vat-role" href="/vat/discover/"><span class="who">한 번 · 해마다 다시</span><strong>② 과세사업 찾기</strong><p class="meta">세외수입 항목을 훑어 <b>과세사업인데 신고하지 않는 수입</b>과 신고 중인 사업의 공제 대상 지출을 찾습니다(발굴·대상 확대).</p></a></li>
-    <li><a class="vat-role" href="/vat/setup/"><span class="who">한 번 · 약 10분</span><strong>③ 기관 설정 · 시설 카드</strong><p class="meta">돈을 받는 시설을 적으면 시설마다 과세·면세, 영수증 받을 등록번호, 수탁 시설의 군 부담 지출 처리가 정해집니다.</p><span class="meta" id="role-b-state"></span></a></li>
-    <li><a class="vat-role" href="/vat/monthly/"><span class="who">매달</span><strong>④ 지출 기록</strong><p class="meta">홈택스 전자세금계산서 목록·사업용 카드 내역을 붙여넣고 건마다 <b>어느 시설에 썼는지</b>만 고르면 신호등으로 공제 여부가 나옵니다.</p><span class="meta" id="role-a-state"></span></a></li>
-    <li><a class="vat-role" href="/vat/prepare/"><span class="who">분기 · 신고 전</span><strong>⑤ 신고 준비</strong><p class="meta">기록을 모아 신고서·부속서류 모양 결과와 <b>공통매입세액 면세부분 줄이기</b> 분석, 전환 매입세액까지 계산합니다. 납부액 추이(절감 현황표)는 저장한 기록으로 자동.</p></a></li>
-    <li><a class="vat-role" href="/vat/handover/"><span class="who">담당이 바뀔 때</span><strong>⑥ 인수인계 꾸러미</strong><p class="meta">설정·기록·신고 기록을 zip 하나로 넘기고, 후임자가 그대로 되살립니다.</p></a></li>
-  </ol></details>
-  <p class="meta">세법을 아는 분은 <a href="/vat/tools/">한 건씩 바로 확인하는 도구</a>(지출 건 판정·공통매입세액 안분·재계산·점검표)로 가셔도 됩니다.</p>
+  </details>
 
   <details class="vat-more"><summary><strong>3분 안내</strong> — 지자체 부가세는 이렇게 돌아갑니다</summary>
     <ol>
@@ -66,7 +78,7 @@ const R = vatRules();
       <li><strong>줄이기</strong> — 납부액은 과세사업을 빠짐없이 잡고(발굴) 공통 지출을 과세 시설 전용으로 나눠 면세분을 줄일수록 줄어듭니다. <a href="/vat/discover/">과세사업 찾기</a>와 신고 준비의 절감 분석.</li>
       <li><strong>되돌리기</strong> — 지난 신고에서 빠뜨린 매입세액은 법정신고기한 뒤 5년 안에 경정청구로 돌려받습니다(국세기본법 제45조의2). 처음 맡았으면 <a href="/vat/review/">지난 신고 점검</a>부터.</li>
     </ol>
-    <div class="scroll-x"><table class="data-table compact" data-stack="off"><caption>누가 무엇을 하나</caption>
+    <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table compact" data-stack="off"><caption>누가 무엇을 하나</caption>
       <thead><tr><th scope="col">사람</th><th scope="col">매달</th><th scope="col">분기(신고 때)</th></tr></thead>
       <tbody>
         <tr><th scope="row">신고 담당 공무원</th><td>홈택스 매입 목록·카드 내역을 붙여넣고 건마다 어느 시설 지출인지 기록, 빨강·노랑 처리(수정세금계산서 요청 등)</td><td>기록을 모아 신고서 칸에 옮기고 공통 지출을 안분, 홈택스 신고·납부. 처음 맡았으면 지난 5년 경정청구 먼저</td></tr>

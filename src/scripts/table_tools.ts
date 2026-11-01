@@ -69,7 +69,7 @@ function titleOf(tbl: HTMLTableElement, anchor: Element): string {
     el = el.parentElement;
     if (!el || el.tagName === 'MAIN') break;
   }
-  return document.title.replace(/\s*[|·-]\s*다잇다.*$/, '');
+  return document.title.replace(/\s*[|·—-]\s*(다잇다|지자체 부가세 절감 점검기).*$/, '');
 }
 
 /** 표 바로 뒤의 '출처…·기준…' 문장 */
@@ -79,7 +79,7 @@ function sourceOf(anchor: Element): string {
   if (n && n.matches('p.meta, .meta, .tiny') && /출처|기준|자료/.test((n as HTMLElement).innerText)) return clean((n as HTMLElement).innerText).slice(0, 300);
   return '';
 }
-const sourceLine = (src: string) => `자료: ${src || '다잇다(daitda.co.kr) — 공개 자료를 같은 형식으로 옮긴 것이며 평가·순위·추천이 아닙니다'} · daitda.co.kr${location.pathname} · ${today()} 받음`;
+const sourceLine = (src: string) => `자료: ${src || '다잇다(daitda.co.kr) — 공개 자료를 같은 형식으로 옮긴 것이며 평가·순위·추천이 아닙니다'} · ${location.host}${location.pathname} · ${today()} 받음`;
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 /** 한글·워드·엑셀이 읽는 HTML 표(인라인 스타일만). 테두리 0.5pt ≈ 한글 0.12mm, 머리 음영, 숫자 오른쪽 */
@@ -202,11 +202,11 @@ export function attach(tbl: HTMLTableElement): void {
     if (!g.body.length) return flash(hwp, '표가 비어 있음');
     const title = titleOf(tbl, anchor), src = sourceOf(anchor);
     const blocks: Block[] = [
-      p('kicker', [document.title.replace(/\s*[|·-]\s*다잇다.*$/, ''), 'kicker']),
+      p('kicker', [document.title.replace(/\s*[|·—-]\s*(다잇다|지자체 부가세 절감 점검기).*$/, ''), 'kicker']),
       p('title', [title, 'title']), p('rule', ['', 'caption']),
       table([...g.headFlat.slice(-1), ...g.bodyFlat], { head: g.headFlat.length > 0 }),
       p('spacer', ['', 'caption']),
-      p('src', [`출처: daitda.co.kr${location.pathname}, ${today()} 내려받음. ${src || '공개 자료를 같은 형식으로 집계한 것이며 평가·순위·추천이 아닙니다.'}`, 'src']),
+      p('src', [`출처: ${location.host}${location.pathname}, ${today()} 내려받음. ${src || '공개 자료를 같은 형식으로 집계한 것이며 평가·순위·추천이 아닙니다.'}`, 'src']),
     ];
     try {
       hwp.disabled = true; hwp.textContent = '만드는 중…';
@@ -222,7 +222,7 @@ export function attach(tbl: HTMLTableElement): void {
       if (!g.body.length) return flash(hx, '표가 비어 있음');
       const title = titleOf(tbl, anchor), src = sourceOf(anchor);
       const rows = [...g.head, ...g.body].map(r => r.map(c => ({ t: c.text, cs: c.cs, rs: c.rs })));
-      const blocks: Block[] = [p('kicker', [document.title.replace(/\s*[|·-]\s*다잇다.*$/, ''), 'kicker']), p('title', [title, 'title']), p('rule', ['', 'caption']),
+      const blocks: Block[] = [p('kicker', [document.title.replace(/\s*[|·—-]\s*(다잇다|지자체 부가세 절감 점검기).*$/, ''), 'kicker']), p('title', [title, 'title']), p('rule', ['', 'caption']),
         table(rows, { head: g.head.length > 0, headRows: g.head.length, widths: g.widths.map(w => Math.round(w * 48188)) }), p('spacer', ['', 'caption']), p('src', [sourceLine(src), 'src'])];
       try { hx.disabled = true; hx.textContent = '만드는 중…'; download(`${safeName(title)}.hwpx`, await buildHwpx(blocks, title)); hx.textContent = 'HWP 표 내려받기'; hx.disabled = false; }
       catch { hx.disabled = false; flash(hx, '만들기 실패'); }

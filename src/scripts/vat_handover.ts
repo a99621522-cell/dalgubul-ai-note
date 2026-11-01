@@ -17,7 +17,7 @@ function init(D: Data) {
     const facs = org.facilities.map(f => { const s = facilityStatus(D, f); return `- ${f.name}: ${s === 'taxable' ? '과세' : s === 'exempt' ? '면세' : s === 'own' ? '수탁기관 신고' : '확인 필요'} · ${RUN_NAME[f.run]}${f.contractor_dept ? ' · ' + f.contractor_dept : ''}${(org.unit === 'site' && f.reg_no) ? ' · 등록번호 ' + f.reg_no : ''}`; }).join('\n');
     const keys = Object.keys(fil).sort(); const last = keys.length ? fil[keys[keys.length - 1]] : null;
     const rows = Object.values(led).flat(); const open = rows.filter(r => (r.v === 'no' || r.v === 'check') && !r.done);
-    return `${org.org} 부가가치세 인수인계 안내 (${ymd(new Date())} 작성, 다잇다 지자체 부가세 절감 점검기 꾸러미)
+    return `${org.org} 부가가치세 인수인계 안내 (${ymd(new Date())} 작성, 지자체 부가세 절감 점검기 꾸러미)
 
 1. 이 기관의 부가세는 이렇게 돌아갑니다
 - 신고 주체: ${org.org} (${org.unit === 'entity' ? '사업자 단위 과세, 등록번호 ' + (org.reg_no || '미입력') : '시설(사업장)마다 등록'}), 담당 부서 ${org.dept || '미입력'}

@@ -1,0 +1,40 @@
+name: 한국 HS 수출입(UN Comtrade, 휴머노이드 부품 조사)
+
+# scripts/fetch_comtrade.py — UN Comtrade 공개 미리보기 API(키 없음) → data/humanoid/trade/.
+# 이 세션 환경은 comtradeapi.un.org 차단. 사이트는 이 자료를 읽지 않는다.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/fetch_comtrade.py", "config/humanoid_hs.yml", ".github/workflows/comtrade.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: comtrade
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python3 scripts/fetch_comtrade.py
+      - name: 커밋
+        if: ${{ !cancelled() }}
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/humanoid 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 한국 HS 수출입(UN Comtrade, 휴머노이드 부품) $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

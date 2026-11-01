@@ -1,11 +1,13 @@
 {
  "file": "src/content/posts/2026-10-13-policy-semiconductor-export-baseline.md",
- "checked": "2026-10-25",
- "ok": 13,
+ "checked": "2026-11-01",
+ "ok": 12,
  "total": 13,
- "ratio": 1.0,
- "official_bad": [],
- "pass": true,
+ "ratio": 0.92,
+ "official_bad": [
+  "SEMI, 글로벌 반도체 장비 매출 2028년 2,290억 달러 전망 보도자료(SEMI 한국 자료실)"
+ ],
+ "pass": false,
  "sources": [
   {
    "title": "산업통상부, 「2026년 9월 수출입 동향」 보도자료",
@@ -84,11 +86,11 @@
    "url": "https://www.semi.org/ko/resources/library",
    "date": "2026-07-21",
    "kind": "report",
-   "status": 200,
-   "page_title": "Resource Library | SEMI",
-   "title_match": 1.0,
+   "status": 403,
+   "page_title": "Just a moment...",
+   "title_match": 0.0,
    "date_found": false,
-   "ok": true,
+   "ok": false,
    "note": ""
   },
   {
@@ -159,7 +161,7 @@
    "status": 200,
    "page_title": "대구 기업 사전 — 다잇다",
    "title_match": 0.33,
-   "date_found": true,
+   "date_found": false,
    "ok": true,
    "note": ""
   }

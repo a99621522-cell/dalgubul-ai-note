@@ -1,6 +1,6 @@
 {
  "file": "src/content/posts/2026-10-07-policy-ai-sw-startup-ax-suppliers.md",
- "checked": "2026-10-25",
+ "checked": "2026-11-01",
  "ok": 13,
  "total": 14,
  "ratio": 0.93,
@@ -16,8 +16,8 @@
    "kind": "report",
    "status": 200,
    "page_title": "| BOK 이슈노트 | 조사연구 | 뉴스/자료 | 한국은행 홈페이지",
-   "title_match": 1.0,
-   "date_found": true,
+   "title_match": 0.75,
+   "date_found": false,
    "ok": true,
    "note": ""
   },
@@ -161,7 +161,7 @@
    "status": 200,
    "page_title": "대구 기업 사전 — 다잇다",
    "title_match": 0.25,
-   "date_found": true,
+   "date_found": false,
    "ok": true,
    "note": ""
   },

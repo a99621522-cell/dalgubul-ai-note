@@ -1,9 +1,9 @@
 {
  "file": "src/content/posts/2026-10-27-policy-semiconductor-auto-chip-demand.md",
  "checked": "2026-10-26",
- "ok": 9,
+ "ok": 8,
  "total": 11,
- "ratio": 0.82,
+ "ratio": 0.73,
  "official_bad": [
   "CLEPA(유럽 자동차부품협회), 「Chips Act position paper」"
  ],
@@ -98,12 +98,12 @@
    "url": "https://www.heraldk.com/article/2026020818294517789",
    "date": "2026-02-08",
    "kind": "news",
-   "status": 200,
-   "page_title": "경기도, 팹리스 사업화 ‘양산성능평가 지원’ 참여기업 모집 - 헤럴드경제 미주판",
-   "title_match": 1.0,
-   "date_found": true,
-   "ok": true,
-   "note": ""
+   "status": null,
+   "page_title": "",
+   "title_match": 0.0,
+   "date_found": false,
+   "ok": false,
+   "note": "ConnectTimeout"
   },
   {
    "title": "통계청 KOSIS, 광업·제조업조사 「시도/산업분류별 출하액·생산액·부가가치 및 주요생산비(10명 이상)」 2024",

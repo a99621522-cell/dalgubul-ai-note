@@ -1,0 +1,54 @@
+name: 공개 PDF 쪽 OCR(주소 → 글자 로그)
+
+# 공개 주소의 PDF 가 글자 층 없이 그림으로 된 쪽(예: FCC 공고 부록)을 러너가 받아 tesseract 로 읽어 로그로만 찍는다.
+# 저장소에 아무것도 남기지 않는다(원문 전재 금지). 2026-11-02 휴머노이드 정책보고서 v3 원문 확인용.
+on:
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["data/ocr_probe.txt"]   # 새 워크플로는 기본 브랜치에 없으면 수동 실행이 안 돼, 이 파일 첫 줄(주소 쪽범위 언어)을 푸시해 돌린다
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "PDF 주소(공개)"
+        required: true
+      pages:
+        description: "쪽 범위(예: 5-12, 비우면 전체 — 40쪽까지)"
+        required: false
+        default: ""
+      lang:
+        description: "tesseract 언어(eng, kor+eng)"
+        required: false
+        default: "eng"
+
+permissions:
+  contents: read
+
+jobs:
+  ocr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: 도구 설치
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils tesseract-ocr tesseract-ocr-kor > /dev/null
+      - name: 받기 + 쪽 그림 + OCR
+        env:
+          URL: ${{ inputs.url }}
+          PAGES: ${{ inputs.pages }}
+          LANGS: ${{ inputs.lang }}
+        run: |
+          if [ -z "$URL" ] && [ -f data/ocr_probe.txt ]; then read -r URL PAGES LANGS < data/ocr_probe.txt; fi
+          LANGS=${LANGS:-eng}; [ "$PAGES" = "-" ] && PAGES=""
+          curl -sSL -A "daitda.co.kr research (public documents)" -o f.pdf "$URL" || { echo "받기 실패"; exit 0; }
+          file f.pdf; pdfinfo f.pdf | grep -E "Pages|Title" || true
+          N=$(pdfinfo f.pdf | awk '/^Pages/{print $2}')
+          F=1; L=$(( N < 40 ? N : 40 ))
+          if [ -n "$PAGES" ]; then F=${PAGES%-*}; L=${PAGES#*-}; fi
+          pdftoppm -r 250 -f "$F" -l "$L" -png f.pdf pg
+          for p in pg-*.png; do
+            echo "======== $p ========"
+            pdftotext -f "$(echo $p | sed -E 's/pg-0*([0-9]+).png/\1/')" -l "$(echo $p | sed -E 's/pg-0*([0-9]+).png/\1/')" -layout f.pdf - 2>/dev/null | head -c 300 | sed 's/^/[글자층] /'
+            tesseract "$p" - -l "$LANGS" 2>/dev/null
+          done

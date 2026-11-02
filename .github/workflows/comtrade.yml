@@ -4,9 +4,14 @@ name: 한국 HS 수출입(UN Comtrade, 휴머노이드 부품 조사)
 # 이 세션 환경은 comtradeapi.un.org 차단. 사이트는 이 자료를 읽지 않는다.
 on:
   workflow_dispatch:
+    inputs:
+      set:
+        description: "main(부품) | upstream(상류 소재·장비) | all"
+        required: false
+        default: "upstream"
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: ["scripts/fetch_comtrade.py", "config/humanoid_hs.yml", ".github/workflows/comtrade.yml"]
+    paths: ["scripts/fetch_comtrade.py", "config/humanoid_hs.yml", "config/humanoid_hs_upstream.yml", ".github/workflows/comtrade.yml"]
 
 permissions:
   contents: write
@@ -28,7 +33,10 @@ jobs:
       - name: 받기
         env:
           PYTHONUNBUFFERED: "1"
-        run: python3 scripts/fetch_comtrade.py
+        run: |
+          SET="${{ github.event.inputs.set || 'upstream' }}"
+          if [ "$SET" = "main" ] || [ "$SET" = "all" ]; then python3 scripts/fetch_comtrade.py; fi
+          if [ "$SET" = "upstream" ] || [ "$SET" = "all" ]; then python3 scripts/fetch_comtrade.py --cfg config/humanoid_hs_upstream.yml --out data/humanoid/trade_upstream; fi
       - name: 커밋
         if: ${{ !cancelled() }}
         run: |

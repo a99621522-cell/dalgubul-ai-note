@@ -21,6 +21,11 @@ import yaml
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFG = os.path.join(ROOT, "config", "humanoid_hs.yml")
 OUT = os.path.join(ROOT, "data", "humanoid", "trade")
+# --cfg <yml> --out <폴더> 로 다른 품목 목록(상류 소재·장비 config/humanoid_hs_upstream.yml)을 따로 받는다(2026-11-02)
+if "--cfg" in sys.argv:
+    CFG = os.path.join(ROOT, sys.argv[sys.argv.index("--cfg") + 1])
+if "--out" in sys.argv:
+    OUT = os.path.join(ROOT, sys.argv[sys.argv.index("--out") + 1])
 API = "https://comtradeapi.un.org/public/v1/preview/C/A/HS"
 UA = {"User-Agent": "daitda.co.kr research (public data)"}
 PARTNERS = {0: "세계", 156: "중국", 392: "일본", 276: "독일", 842: "미국", 344: "홍콩",

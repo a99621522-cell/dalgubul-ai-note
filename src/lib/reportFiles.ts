@@ -5,7 +5,7 @@ export type ReportFile = { slug: string; summary: string; topics: string[]; page
 export const REPORT_FILES: ReportFile[] = [
   { slug: 'sambo-motors-ev-robot', summary: '대구 달서구 성서산단 코스닥 상장사 삼보모터스가 자동변속기 플레이트·파이프와 자회사(프라코·나전·프라코체코)의 플라스틱 내외장 부품에서 친환경차 부품(모터오일쿨러·버스바·HEV 로터 어셈블리·BMS, 금속 분리판 라인)·멕시코·미국 생산·로봇 부품(DGIST 공동연구랩)으로 넓히는 흐름을 DART 공시(2025 사업보고서 연결 매출 1조 6,846억 원·영업이익 617억 원, 2026 반기보고서 매출 8,896억 원·영업이익 189억 원, 기업가치제고계획·전환사채 발행 결정)와 팩토리온·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프와 종속회사 실적. 투자의견·목표주가·PBR 등 목표 수치는 싣지 않음.', topics: ['상장기업', '자동차부품', '미래차'],
     title: '삼보모터스, 변속기 플레이트·파이프에서 친환경차 부품·북미 생산·로봇 부품으로', name: '삼보모터스, 변속기 플레이트·파이프에서 친환경차 부품·북미 생산·로봇 부품으로',
-    hwpx: '/hwpx/sambo-motors-ev-robot.hwpx', hwpxSize: '142KB', date: '2026-11-02' },
+    hwpx: '/hwpx/sambo-motors-ev-robot.hwpx', hwpxSize: '134KB', date: '2026-11-02' },
   { slug: 'mirae-lithium-canada-lfp', summary: '대구 달성군 구지면(달성2차일반산업단지) 비상장 이차전지 소재 회사 미래첨단소재가 수산화리튬 분쇄 가공에서 캐나다 퀘벡 공장(캐나다 법인 출자 709억 원)·구미 공장 인수와 LFP 소재 가공으로 넓히는 과정을 DART 감사보고서·연결감사보고서(2025년 별도 매출 656억 원·영업손실 24억 원)와 전환사채·차입 주석, 국민연금·공장등록·대구시 스타기업 명단·보도로 정리한 자료. 첫 장은 감사보고서 실적 표·그래프. 평가·전망은 싣지 않음.', topics: ['비상장기업', '이차전지', '미래 신산업'],
     title: '미래첨단소재, 수산화리튬 분쇄에서 캐나다 공장·LFP 소재로', name: '미래첨단소재, 수산화리튬 분쇄에서 캐나다 공장·LFP 소재로',
     hwpx: '/hwpx/mirae-lithium-canada-lfp.hwpx', hwpxSize: '93KB', date: '2026-10-30' },

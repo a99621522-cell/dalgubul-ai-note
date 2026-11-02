@@ -16,7 +16,7 @@ on:
         required: false
         default: "false"
       text:
-        description: "기사·공지 한 쪽의 제목·날짜·본문 글자만 찍기(true) — 운영자가 준 링크를 세션이 읽을 때"
+        description: "기사·공지 한 쪽의 제목·날짜·본문 글자만 찍기(true) — 운영자가 준 링크를 세션이 읽을 때. 숫자면 그 글자부터 8,000자(긴 본문 이어 읽기)"
         required: false
         default: "false"
       raw:
@@ -84,4 +84,4 @@ jobs:
           CLICK: ${{ inputs.click }}
         run: python3 scripts/site_probe.py "$URL" --xhr --click "$CLICK" $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ -n "${{ inputs.pages }}" ] && echo --pages ${{ inputs.pages }}) $([ -n "${{ inputs.body }}" ] && echo --body ${{ inputs.body }}) $([ -n "${{ inputs.js }}" ] && echo --js "${{ inputs.js }}")
       - if: inputs.xhr != 'true' && inputs.datalab != 'true' && inputs.file != 'true'
-        run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)
+        run: python3 scripts/site_probe.py "${{ inputs.url }}" $([ "${{ inputs.render }}" = "true" ] && echo --render) $([ "${{ inputs.dump }}" = "true" ] && echo --dump) $([ "${{ inputs.text }}" = "true" ] && echo --text) $(echo "${{ inputs.text }}" | grep -qE '^[0-9]+$' && echo --text --text-from ${{ inputs.text }}) $([ "${{ inputs.raw }}" = "true" ] && echo --raw)

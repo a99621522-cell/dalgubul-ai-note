@@ -40,7 +40,7 @@ jobs:
           LANGS: ${{ inputs.lang }}
         run: |
           if [ -z "$URL" ] && [ -f data/ocr_probe.txt ]; then read -r URL PAGES LANGS < data/ocr_probe.txt; fi
-          LANGS=${LANGS:-eng}
+          LANGS=${LANGS:-eng}; [ "$PAGES" = "-" ] && PAGES=""
           curl -sSL -A "daitda.co.kr research (public documents)" -o f.pdf "$URL" || { echo "받기 실패"; exit 0; }
           file f.pdf; pdfinfo f.pdf | grep -E "Pages|Title" || true
           N=$(pdfinfo f.pdf | awk '/^Pages/{print $2}')

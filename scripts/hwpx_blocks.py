@@ -22,7 +22,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import hwpx_report as H  # noqa: E402
 
-ROMAN = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ"]
+ROMAN = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ", "ⅩⅢ", "ⅩⅣ", "ⅩⅤ", "ⅩⅥ", "ⅩⅦ", "ⅩⅧ", "ⅩⅨ", "ⅩⅩ"]   # 13절부터 ⅩⅢ…(Ⅻ 뒤에 Ⅰ로 돌아가던 것 수정, 2026-11-02)
 # 양식 문단 인덱스(config/hwpx_forms.yml 과 같다)
 FORM = {"cover": 3, "sec": 19, "h1": 26, "o": 27, "plain": 27, "dash": 28, "note": 29, "blank": 35, "tbl": 64}   # plain = ○ 문단 모양에 기호 없이(원문 줄글)
 # Block 문단 이름 → 양식 역할

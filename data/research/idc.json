@@ -3,10 +3,52 @@
  "name": "IDC Press Releases",
  "group": "해외 컨설팅",
  "home": "https://www.idc.com",
- "fetched": "2026-10-25",
+ "fetched": "2026-11-01",
  "status": "OK",
  "method": "rss(/feed)",
  "items": [
+  {
+   "title": "FutureScape 2027: Three Decisions Are Closing on You. Here’s What to Do Before They Shut.",
+   "url": "https://www.idc.com/resource-center/blog/futurescape-2027-webinar-the-closing-window/",
+   "date": "2026-10-30",
+   "summary": "Sometime in the next planning cycle, someone will ask you a question with no comfortable answer. Could you justify a double-digit increase in AI infrastructure spending to your board, and would your sovereignty audit back you up? For a growing number of enterprises, the question is already live. IDC"
+  },
+  {
+   "title": "IDC Connects Claude to IDC Quanta and Uses Claude Across the Company",
+   "url": "https://www.idc.com/resource-center/blog/idc-anthropic-case-study-blog/",
+   "date": "2026-10-28",
+   "summary": "IDC Quanta has been available in Claude since July, and IDC&#8217;s teams use Claude every day to drive speed and agility throughout the organization. Recently, IDC and Anthropic shared a case study on how IDC is using Claude to extend IDC Quanta to customers and to change how the company works. Thi"
+  },
+  {
+   "title": "Security Budgets Are Up. CEOs Still Rank It Their Top Tech Risk",
+   "url": "https://www.idc.com/resource-center/blog/security-budgets-are-up-ceos-still-rank-it-their-top-tech-risk/",
+   "date": "2026-10-28",
+   "summary": "The logic is solid. Invest more in security, and you’ll reduce your risk. IDC data suggests otherwise. IDC’s 2026 Worldwide Security Spending Guide (V2 release) forecasts that organizations will spend $310.42 billion on security this year, up 13.2% from 2025. Yet in IDC’s February 2026 CEO Survey of"
+  },
+  {
+   "title": "61.3% Are Still Early in AI Maturity. Where Are You?",
+   "url": "https://www.idc.com/resource-center/blog/61-3-are-still-early-in-ai-maturity-where-are-you/",
+   "date": "2026-10-27",
+   "summary": "When your board asks how you compare with peers, expect questions on AI transformation, IT spend, and governance maturity. IDC’s MaturityScape Benchmark covers the AI side of that comparison. 61.3% of organizations sit in the two earliest stages of AI maturity, and only 3.1% have reached the most ma"
+  },
+  {
+   "title": "PHP2Shell: When the Patch Is Ready, but the Organization Isn’t",
+   "url": "https://www.idc.com/resource-center/blog/php2shell-when-the-patch-is-ready-but-the-organization-isnt/",
+   "date": "2026-10-27",
+   "summary": "On October 21, two critical flaws in PHP left organizations with a choice that cybersecurity authorities stated plainly: update affected systems immediately or take them offline. Known together as PHP2Shell, the flaws (CVE-2026-109618 and CVE-2026-109619) can allow attackers to run code on affected "
+  },
+  {
+   "title": "IDC FutureScape 2027: The Great Rewrite Comes With Deadlines",
+   "url": "https://www.idc.com/resource-center/blog/idc-futurescape-2027-the-great-rewrite/",
+   "date": "2026-10-27",
+   "summary": "AI agents now act on behalf of organizations, and the work, the money, and the technology around them are being rebuilt to match. FutureScape 2027 calls this the Great Rewrite and sorts what is changing into three windows: closing, open, and emerging. IDC FutureScape 2027 begins rolling out today, w"
+  },
+  {
+   "title": "Growth Is the Top Priority. So Why Do So Many Plans Stall?",
+   "url": "https://www.idc.com/resource-center/blog/growth-is-the-top-priority-so-why-do-so-many-plans-stall/",
+   "date": "2026-10-26",
+   "summary": "Your growth plan has a reader you may never meet: the buyer&#8217;s CFO. CFOs or their delegates approve 78% of technology purchases, and they want evidence that is independent of the vendor. That scrutiny arrives alongside pressure from the top. 64% of CEOs rank growth as their number one priority,"
+  },
   {
    "title": "Spatial Intelligence: What It Is, How It Works, Where It Delivers Value",
    "url": "https://www.idc.com/resource-center/blog/spatial-intelligence-what-it-is-how-it-works-where-it-delivers-value/",
@@ -24,48 +66,6 @@
    "url": "https://www.idc.com/resource-center/blog/ai-is-short-of-capacity-not-demand/",
    "date": "2026-10-22",
    "summary": "Talk of an AI correction usually starts with a change in investor sentiment. Coupled with rocky macroeconomic headwinds, this impacts company valuations, thereby straining financing for AI-specific buildouts. In short, it affects supply. IDC tracks markets, not balance sheets, so we start with the d"
-  },
-  {
-   "title": "The US Robotics Ban Hits Humanoids Hardest and Sends Volume to Europe",
-   "url": "https://www.idc.com/resource-center/blog/us-robotics-ban-humanoids-europe/",
-   "date": "2026-10-22",
-   "summary": "The US robotics ban puts humanoid revenue 58% below baseline by 2030, per IDC. See category impacts, where volume shifts, and how to respond. The post The US Robotics Ban Hits Humanoids Hardest and Sends Volume to Europe appeared first on IDC ."
-  },
-  {
-   "title": "Compute, Power, and Trust Together Will Decide Asia/Pacific’s AI Infrastructure Race",
-   "url": "https://www.idc.com/resource-center/blog/asia-pacific-ai-infrastructure/",
-   "date": "2026-10-22",
-   "summary": "AI hardware spending in Asia/Pacific excluding Japan will reach US$265.4B by 2030. Plan compute, power and trust together to decide where inference runs. The post Compute, Power, and Trust Together Will Decide Asia/Pacific’s AI Infrastructure Race appeared first on IDC ."
-  },
-  {
-   "title": "AI Orchestration: Are Your Employees Ready?",
-   "url": "https://www.idc.com/resource-center/blog/ai-orchestration-are-your-employees-ready/",
-   "date": "2026-10-21",
-   "summary": "Agentic AI is changing what employees do all day. As agents take on much of the work, employees are left to scope the task, write the instructions, watch the run and check the output. That is AI orchestration. Problem is, almost no one was hired or trained for this. So can employees do it? The [&#82"
-  },
-  {
-   "title": "Cybersecurity Fundamentals Still Come First: Know What You Own and Who Owns It",
-   "url": "https://www.idc.com/resource-center/blog/cybersecurity-fundamentals-still-come-first-know-what-you-own-and-who-owns-it/",
-   "date": "2026-10-21",
-   "summary": "If your most critical systems went down tomorrow because of a cyber attack, how long would it take to get running again? And when did you last test that? Michelle Abraham, Research Vice President on IDC’s Security and Trust team, says leadership should know both answers. In a recent conversation, sh"
-  },
-  {
-   "title": "The Enterprise AI Deal Has Changed. Here’s What Vendors Need to Prove.",
-   "url": "https://www.idc.com/resource-center/blog/the-enterprise-ai-deal-has-changed-heres-what-vendors-need-to-prove/",
-   "date": "2026-10-20",
-   "summary": "AI spending is arriving before the business case. In IDC&#8217;s 2026 Worldwide AI Economics and Cost of Ownership Survey, 69% of organizations said there is a significant gap between AI spending and measurable financial outcomes. Only 15% had realized an AI ROI above 100% to date. That gap is why e"
-  },
-  {
-   "title": "Does IDC’s 75% Specialized Cloud Prediction Hold?",
-   "url": "https://www.idc.com/resource-center/blog/does-idcs-75-specialized-cloud-prediction-hold/",
-   "date": "2026-10-16",
-   "summary": "In October 2024, IDC&#8217;s FutureScape: Worldwide Cloud 2025 Predictions forecast that by 2026, 75% of organizations would use specialized accelerated cloud computing services to speed up deployment and scale their AI and other accelerated applications. Two years later, Dave McCarthy, Group Vice P"
-  },
-  {
-   "title": "Why “Lights Out” Is the Wrong Way to Think About Physical AI",
-   "url": "https://www.idc.com/resource-center/blog/why-lights-out-is-the-wrong-way-to-think-about-physical-ai/",
-   "date": "2026-10-16",
-   "summary": "The robot arm putting parts together on a factory floor is the easy image. It’s not the whole story, and according to Sarah Lee, IDC’s Senior Research Director of Manufacturing IT Strategies, thinking it is the whole story is exactly what’s slowing companies down. Physical AI has become one of those"
   }
  ],
  "note": "",

@@ -3,62 +3,86 @@
  "name": "BCG Publications",
  "group": "해외 컨설팅",
  "home": "https://www.bcg.com",
- "fetched": "2026-10-25",
+ "fetched": "2026-11-01",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
   {
+   "title": "Technology Industry",
+   "url": "https://www.bcg.com/industries/technology-media-telecommunications/technology-industry",
+   "date": "2026-10-30",
+   "summary": ""
+  },
+  {
+   "title": "As AI Reshapes SaaS, Companies Need Pivot-Ready Pricing",
+   "url": "https://www.bcg.com/publications/2026/saas-pricing-must-change-agentic-ai",
+   "date": "2026-10-30",
+   "summary": ""
+  },
+  {
    "title": "Consumer Products Industry",
    "url": "https://www.bcg.com/industries/consumer-products-industry/overview",
-   "date": "2026-10-23",
+   "date": "2026-10-30",
    "summary": ""
   },
   {
-   "title": "The Saudi Consumer in 2026: Confident, but Disciplined",
-   "url": "https://www.bcg.com/publications/2026/saudi-arabia-consumer-outlook",
-   "date": "2026-10-23",
+   "title": "Are CPG Companies Ready for Agentic Commerce?",
+   "url": "https://www.bcg.com/publications/2026/how-cpg-companies-win-agentic-commerce",
+   "date": "2026-10-30",
    "summary": ""
   },
   {
-   "title": "Biopharma",
-   "url": "https://www.bcg.com/industries/health-care/biopharma",
-   "date": "2026-10-22",
+   "title": "How Leading Companies Can Stay Resilient in an Era of Policy Uncertainty",
+   "url": "https://www.bcg.com/publications/2026/navigate-energy-policy-uncertainty",
+   "date": "2026-10-29",
    "summary": ""
   },
   {
-   "title": "New Drug Modalities 2026",
-   "url": "https://www.bcg.com/publications/2026/new-drug-modalities-pipeline-plateau",
-   "date": "2026-10-22",
+   "title": "Artificial Intelligence",
+   "url": "https://www.bcg.com/capabilities/artificial-intelligence",
+   "date": "2026-10-29",
    "summary": ""
   },
   {
-   "title": "Insurance Industry",
-   "url": "https://www.bcg.com/industries/insurance/overview",
-   "date": "2026-10-21",
+   "title": "Who Will Pay the $2.6 Trillion AI Infrastructure Bill?",
+   "url": "https://www.bcg.com/publications/2026/who-pays-for-ai-infrastructure",
+   "date": "2026-10-29",
    "summary": ""
   },
   {
-   "title": "The Case for the Unified Agentic Core in Insurance",
-   "url": "https://www.bcg.com/publications/2026/unified-agentic-core-insurance",
-   "date": "2026-10-21",
+   "title": "Fashion Industry",
+   "url": "https://www.bcg.com/industries/retail/fashion-industry",
+   "date": "2026-10-28",
    "summary": ""
   },
   {
-   "title": "Marketing and Sales",
-   "url": "https://www.bcg.com/capabilities/marketing-sales/overview",
-   "date": "2026-10-21",
+   "title": "Decoding Growth in Uncertain Times",
+   "url": "https://www.bcg.com/publications/2026/what-us-fashion-shoppers-value",
+   "date": "2026-10-28",
    "summary": ""
   },
   {
-   "title": "How Retailers Can Reinvent the Digital Flywheel for Agentic Commerce",
-   "url": "https://www.bcg.com/publications/2026/retailers-win-ai-shopping-agents",
-   "date": "2026-10-21",
+   "title": "M&A, Transactions, and PMI",
+   "url": "https://www.bcg.com/capabilities/mergers-acquisitions-transactions-pmi/overview",
+   "date": "2026-10-28",
    "summary": ""
   },
   {
-   "title": "How the Composable Shelf Reinvents Marketing",
-   "url": "https://www.bcg.com/publications/2026/composable-shelf-agentic-marketing",
-   "date": "2026-10-20",
+   "title": "Better Apart: When a Carve-Out Transforms Both Companies",
+   "url": "https://www.bcg.com/publications/2026/carve-out-strategy-both-companies",
+   "date": "2026-10-28",
+   "summary": ""
+  },
+  {
+   "title": "Corporate Finance and Strategy",
+   "url": "https://www.bcg.com/capabilities/corporate-finance-strategy/overview",
+   "date": "2026-10-27",
+   "summary": ""
+  },
+  {
+   "title": "The CEO’s Guide to Productive Tension with Your CFO",
+   "url": "https://www.bcg.com/publications/2026/ceo-cfo-relationship-build-trust",
+   "date": "2026-10-27",
    "summary": ""
   }
  ],

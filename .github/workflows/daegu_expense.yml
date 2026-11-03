@@ -104,4 +104,4 @@ jobs:
           if [ -z "$G" ]; then echo "다시 받을 지자체 없음"; exit 0; fi
           if [ "$A" -ge 8 ]; then echo "::warning::$G — $A번째 시도까지 포털 연결이 막혀 중단(국내 PC 또는 수동 재실행)"; exit 0; fi
           echo "다시 받기: $G (시도 $((A+1)))"
-          gh workflow run daegu_expense.yml --ref "${{ github.ref_name }}" -f gov="$G" -f years="${{ github.event.inputs.years || '2021,2022,2023' }}" -f probe=false -f attempt="$((A+1))"
+          gh workflow run daegu_expense.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f gov="$G" -f years="${{ github.event.inputs.years || '2021,2022,2023' }}" -f probe=false -f attempt="$((A+1))"

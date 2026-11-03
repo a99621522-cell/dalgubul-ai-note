@@ -3,12 +3,15 @@ import Base from '../../../layouts/Base.astro';
 import VatData from '../../../components/VatData.astro';
 import VatNav from '../../../components/VatNav.astro';
 import '../../../styles/vat.css';
+import { vatCases } from '../../../lib/vat';
+const BUILD_CASES = vatCases().filter(c => c.keys.includes('build') && c.kind === '정부합동감사' && c.keys.includes('lease'));
 /** /vat/build/ — 신축·대수선 설계 단계 점검 + 조기환급 일정(세무회계법인 관점 검토 2026-10-27, 운영자 '니가 권장하는 순서대로' 2번). 공사비·예정사용면적·기간 → 공제·불공제 예상, 조기환급 신고·환급 기한, 설계·계약·집행·완공 점검표. 브라우저 안 계산만 */
 ---
 <Base title="신축·대수선 부가세 설계 점검 — 조기환급" description="지자체 시설을 새로 짓거나 크게 고칠 때 공사비 매입세액의 공제 몫은 설계 단계의 과세·면세 예정사용면적과 계약 분리로 정해집니다. 공제·불공제 예상, 조기환급(매월·매 2월) 신고·환급 기한, 설계·계약·집행·완공 점검표를 브라우저 안에서 계산합니다." current="vat" crumb={[{ name: '지자체 부가세 절감 점검기', href: '/vat/' }]}>
   <div class="section-head"><h1>신축·대수선 — 설계 단계에서 정해지는 공제 몫과 조기환급</h1><span class="meta">법 제59조 · 시행령 제81조 제4항 · 제107조</span></div>
   <VatNav current="build" />
   <p class="lede">수백억 원 공사의 매입세액 가운데 돌려받는 몫은 <strong>착공 전</strong>에 정해집니다 — 과세·면세 예정사용면적, 계약 내역의 용도 구분, 세금계산서 명의, 사업자등록 시점. 공사 중에는 <strong>조기환급</strong>으로 매월(또는 2개월) 환급을 당깁니다. 운영을 직영하든 위탁하든 투자 주체는 기관이므로 이 점검은 같습니다.</p>
+  <p class="callout info">정부합동감사가 같은 일을 지적한 공표 사례 — {BUILD_CASES.map((c, i) => <>{i ? ' · ' : ''}<strong>{c.org}</strong> {c.amount}{c.url && <> (<a href={c.url} target="_blank" rel="noopener">{c.src.split(' — ')[0]}</a>)</>}</>)}: 임대용 건물을 지으면서 건축비 매입세액을 임대예정면적으로 안분해 공제하지 않아 과다 납부했고, 사업 부서가 '공제가 가능하다'는 것을 몰라 회계 부서에 매입 자료를 주지 않은 것이 원인으로 적혔습니다. 이 화면의 점검표는 그 자리를 착공 전에 메우는 것입니다. 전체 사례는 <a href="/vat/tools/#cases">참고 도구 6절</a>.</p>
 
   <form class="vc-form no-print" id="b-form" autocomplete="off" onsubmit="return false">
     <label class="full">저장된 사업 불러오기 <select id="b-saved"><option value="">— 저장된 사업 —</option></select></label>

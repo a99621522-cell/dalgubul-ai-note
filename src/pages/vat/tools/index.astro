@@ -1,7 +1,9 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import VatNav from '../../../components/VatNav.astro';
-import { vatRules, lawUrl, lawName, STATUS_LABEL, type Basis } from '../../../lib/vat';
+import { vatRules, vatCases, lawUrl, lawName, STATUS_LABEL, type Basis } from '../../../lib/vat';
+const CASES = vatCases();
+const KEY_NAME: Record<string, string> = { claim: '지난 신고 점검(경정청구)', build: '신축·대수선 매입세액', cashout: '납부잔액·환급금 세입 처리(점검표 c14)', subsidy: '보조사업 정산(점검표 c15)', agency: '위탁·대행 시설 명의', sports: '체육시설', venue: '대관', parking: '주차장', lodging: '숙박·캠핑장', lease: '공유재산 임대', transit: '버스' };
 /** /vat/tools/ — 지자체 부가가치세 매입세액 점검 도구(아는 사람이 한 건씩 확인; v2 1단계 2026-10-27 에 /vat/ 에서 옮김 — /vat/ 는 역할 선택 시작 화면)(운영자 지시 2026-10-27: '군청이나 대구시청 같은 지자체가 신고하는 부가가치세의 매입세액을 누락 없이 할 수 있는 사이트').
  *  규칙은 data/vat/rules.yml(조문 번호·뜻만, 평가 없음). 지출 건 판정·공통매입세액 안분·재계산·점검표는 브라우저 안에서만 계산한다(서버·AI 호출 없음, 입력값은 밖으로 나가지 않음). 스크립트 src/scripts/vat_check.ts */
 const R = vatRules();
@@ -143,8 +145,26 @@ const V = R.verified;
     </div>
   </section>
 
+  <section id="cases">
+    <div class="section-head"><h2>6. 감사·권익위·경정청구 공표 사례</h2><span class="meta">{CASES.length}건 · 공표 문서·보도의 사실만</span></div>
+    <p class="meta">기초 지자체는 광역시·감사원, 광역시는 행정안전부 정부합동감사·감사원의 감사를 받고 결과가 공개됩니다. 부가가치세 신고와 닿는 지적·의결·환급 사례를 모았습니다(기관은 공표 자료 표기대로, 개인 이름 없음). 같은 일이 우리 기관에도 있는지 보는 용도이며 평가가 아닙니다. 행정안전부 「감사(감찰)계획 및 결과공개」 게시판의 다른 합동감사 결과 PDF 에서 '부가가치세'를 찾으면 사례가 늘어납니다.</p>
+    <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤">
+      <table class="data-table vat-table" data-stack="off">
+        <caption>감사·권익위·경정청구 공표 사례</caption>
+        <thead><tr><th scope="col">구분</th><th scope="col">기관·날짜</th><th scope="col">무엇이 있었나</th><th scope="col">금액</th><th scope="col">닿는 곳</th><th scope="col">출처</th></tr></thead>
+        <tbody>{CASES.map(c => <tr>
+          <td>{c.kind}</td><td>{c.org}<br /><span class="meta">{c.date}</span></td>
+          <td><strong>{c.title}</strong><p class="note">{c.facts}</p></td>
+          <td>{c.amount ?? '—'}</td>
+          <td class="note">{c.keys.map(k => KEY_NAME[k] ?? k).join(' · ')}</td>
+          <td class="note">{c.url ? <a href={c.url} target="_blank" rel="noopener">{c.src}</a> : c.src}{c.verify && <span class="vbadge">원문 미대조</span>}</td>
+        </tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
   <section id="checklist">
-    <div class="section-head"><h2>6. 신고 전 점검표</h2><span class="meta">체크 상태는 이 브라우저에만 저장</span></div>
+    <div class="section-head"><h2>7. 신고 전 점검표</h2><span class="meta">체크 상태는 이 브라우저에만 저장</span></div>
     {stages.map(st => <div class="ck-stage"><h3>{st === '상시' ? '상시 — 지출할 때마다' : st === '신고' ? '예정·확정신고 때' : '확정신고 때 더 볼 것'}</h3>
       <ul class="ck-list">{R.checklist.filter(c => c.stage === st).map(c => <li><label><input type="checkbox" data-ck={c.id} /> <span>{c.text}</span></label> <span class="note">{basisLinks(c.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}</span></li>)}</ul></div>)}
     <p class="actions"><button type="button" class="btn secondary" id="ck-print">점검표 인쇄</button> <button type="button" class="btn secondary" id="ck-reset">체크 지우기</button> <span class="meta" id="ck-count"></span></p>

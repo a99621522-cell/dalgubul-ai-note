@@ -46,6 +46,7 @@ def curl(url: str, post: dict | None = None, referer: str = "", timeout: int = 1
 
 
 def years_of(code: str) -> list[str]:
+    curl(f"{BASE}/texoperateExpenditureAll.do?localGovCd={code}", timeout=60)   # 화면을 먼저 열어 세션 쿠키를 받는다(쿠키 없이 부르면 400 — 2026-11-03 이 세션에서 확인)
     raw = curl(f"{BASE}/selectFisYearJiList.do?localGovCd={code}", referer=f"{BASE}/texoperateExpenditureAll.do?localGovCd={code}")
     try:
         return [str(x.get("fisYear")) for x in json.loads(raw.decode("utf-8", "ignore")) if x.get("fisYear")]

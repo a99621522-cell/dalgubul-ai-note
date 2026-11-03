@@ -115,7 +115,7 @@ export type Preset = { key: string; org: string; read: string; note: string; fin
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };
 /** filing: 신고를 누가 하나 — self 기관이 직접(기본) / agent 세무대리인(회계사·세무사)에게 의뢰(agent_org 는 대리인 기관 이름만, 사람 이름·전화 없음). 어느 쪽이든 근거 자료는 기관이 만든다(운영자 2026-11-03) */
-export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string; map?: MapRule[]; filing?: 'self' | 'agent'; agent_org?: string };
+export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string; map?: MapRule[]; filing?: 'self' | 'agent'; agent_org?: string; agent_days?: number };
 /** 매핑 글자 정규화 — 공백·대소문자 외에 '2026년'·'2026회계연도'·'제3차'·'(2026)' 같은 연도·차수 표시를 떼어 해마다 새 규칙이 되지 않게(세무회계법인 2차 7번) */
 const normPat = (s: string) => String(s ?? '').replace(/\(?\d{4}(년도?|회계연도)?\)?/g, '').replace(/제?\d+(차|회|기)/g, '').replace(/[\s\-_·.,()]/g, '').toLowerCase();
 /** 사업명·부서 글자에 맞는 규칙 — 사업명 정확히 → 부서 정확히 → 4자 이상 규칙이 사업명에 포함 순 */
@@ -287,7 +287,7 @@ export const COL_GUESS: { key: string; name: string; re: RegExp }[] = [
   { key: 'desc', name: '내용(품목)', re: /품목|내용|적요|품명|비고|메모|사용처/ },
   { key: 'payee_reg', name: '공급받는자 등록번호', re: /공급받는자.*등록번호|공급받는자등록|매입자.*등록번호/ },
   { key: 'supplier_reg', name: '공급자 등록번호', re: /^(?!.*공급받는자)(?!.*매입자).*(공급자.*등록번호|공급자등록|사업자등록번호|사업자번호|등록번호)/ },   // 등록번호 열은 상호보다 먼저 — '공급자등록번호' 가 상호로 잡히지 않게(2026-10-27 경정청구 집계 비교 오류)
-  { key: 'supplier', name: '공급자(상호·가맹점)', re: /^(?!.*번호)(?!.*등록).*(공급자상호|공급자|상호|가맹점|거래처|판매자|업체)/ },
+  { key: 'supplier', name: '공급자(상호·가맹점)', re: /^(?!.*번호)(?!.*등록)(?!.*대표자)(?!.*공급받는자).*(공급자상호|공급자|상호|가맹점|거래처|판매자|업체)/ },   // 홈택스 목록의 '공급자대표자명'·'공급받는자상호'는 뺌
   { key: 'biz', name: '사업명(세부사업·예산과목)', re: /세부사업|단위사업|사업명|사업코드|예산과목|과목|사업$/ },   // 세출 사업 → 시설 자동 귀속(세무회계법인 관점 3번)
   { key: 'dept', name: '부서(실·과·팀)', re: /부서|실과|담당과|^과$|^팀$|소속/ },
   { key: 'amt', name: '공급가액', re: /공급가액|공급가|과세금액|순금액/ },

@@ -357,6 +357,8 @@ tables:
     org_id: 301
     search: ["기업경영분석 중위수"]
     prd_se: Y
+    years: 3
+    min_levels: 4
     area: []
     note: 대구 외감·상장 제조업 중앙값의 전국 공식 기준선(같은 정의). 2026-11-03 discover
   - key: corp-mgmt-growth

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import yaml from 'js-yaml';
 /** 지자체 부가가치세 매입세액 점검기 규칙(data/vat/rules.yml, 운영자 지시 2026-10-27). 조문 번호·뜻만, 평가 없음. 브라우저 판정은 src/scripts/vat_check.ts */
 export type Basis = { law: 'act' | 'decree' | 'rule' | 'basic'; art: string };
-export type Facility = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[] };
+export type Facility = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; cond?: string; rulings?: string[]; basis: Basis[] };
 export type Opt = { key: string; name: string };
 export type NonDed = { key: string; no: string; name: string; fix: string; basis: Basis[] };
 export type Skip = { key: string; name: string; cond: string; ratio_lt?: number; amount_lt?: number };

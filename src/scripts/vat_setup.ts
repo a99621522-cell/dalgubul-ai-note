@@ -1,6 +1,6 @@
 /** /vat/setup/ 기관 설정 마법사(신고 담당). 5문항 → org.json + 시설 카드. localStorage 저장, 서버 없음, 개인정보 없음. */
 import { loadGovs, addRevenueFacilities, presetFacilities, facRows, normN, type RevGov } from './vat_org';
-import { FEE_NAME, type Fee, $, esc, setupGaps, srcBtn, helpWire, parseTable, matchFacilityName, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, runName, STATUS_LABEL_SHORT, uid, ymd, reduceMotion, toast, vatConfirm, gridKeys, helpWire, type Data, type Org, type OrgFacility, type Run, type OrgKind , findOrgNo, orgNoNote } from './vat_rules';
+import { FEE_NAME, type Fee, $, esc, setupGaps, srcBtn, helpWire, parseTable, matchFacilityName, loadData, getOrg, setOrg, downloadText, readJsonFile, facilityRule, facilityStatus, RUN_NAME, runName, STATUS_LABEL_SHORT, uid, ymd, reduceMotion, toast, vatConfirm, gridKeys, helpWire, type Data, type Org, type OrgFacility, type Run, type OrgKind , findOrgNo, orgNoNote , rulingsHtml } from './vat_rules';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
@@ -94,7 +94,7 @@ function init(D: Data) {
       return `<tr data-fid="${f.id}" ${pend ? 'data-pending' : ''} ${hid}>
         <td><input type="checkbox" data-sel aria-label="${esc(f.name)} 선택" /></td>
         <th scope="row"><input type="text" data-k="name" value="${esc(f.name)}" maxlength="40" aria-label="시설 이름" /></th>
-        <td class="note"><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : '확인 필요'}</span> ${esc((r?.name ?? '직접 추가').split('(')[0])}${!C && r?.interp ? ' <span class="vbadge">유권해석</span>' : ''}</td>
+        <td class="note"><span class="verdict ${st}">${st === 'taxable' ? '과세' : st === 'exempt' ? '면세' : r?.cond ? '방식 따라' : '확인 필요'}</span> ${esc((r?.name ?? '직접 추가').split('(')[0])}${!C && r?.interp ? ' <span class="vbadge">유권해석</span>' : ''}</td>
         <td><select data-k="run" aria-label="운영 방식">${runOpts(f.run)}</select></td>
         <td><input type="text" data-k="contractor_dept" value="${esc(f.contractor_dept ?? '')}" placeholder="${C ? '체육사업팀 / 군 ○○과' : '공단 체육사업팀'}" aria-label="수탁기관·담당 부서" /></td>
         ${site ? `<td><input type="text" data-k="reg_no" value="${esc(f.reg_no ?? '')}" placeholder="000-00-00000" inputmode="numeric" aria-label="사업자등록번호" /></td>` : ''}
@@ -161,10 +161,13 @@ function init(D: Data) {
       : st === 'exempt' ? `이 시설 수입에는 부가세가 붙지 않고, 이 시설에만 쓴 돈의 부가세도 돌려받지 못합니다. 다만 <strong>다른 과세 시설과 함께 쓴 지출</strong>(공동 전기·청소 등)은 '여러 시설이 같이'로 표시해 주세요 — 나눠서 공제합니다.`
       : st === 'agency' ? `<strong>${esc(org.parent || '군·시')}</strong>의 사업을 ${esc(org.org)}가 대행하는 시설입니다. 이용료는 군 수입(군이 신고)이고, 이 시설에 쓴 돈의 세금계산서는 <strong>군 등록번호</strong>로 받아 군이 공제합니다. ${esc(org.org)}의 수입은 대행수수료(과세 용역 — 군에 세금계산서 발급)뿐이며, 공단 명의로 받은 지출은 재청구 구조가 아니면 누구도 공제하지 못합니다.`
       : st === 'own' ? `수탁기관이 자기 이름으로 하는 사업입니다. 수탁기관이 쓰는 돈의 부가세 신고는 수탁기관이 하고, 영수증도 수탁기관 이름으로 받습니다. <strong>${esc(org.org)}가 이 시설에 직접 내는 돈(수선·장비·공사)</strong>은 따로입니다 — ${f.fee === 'taxable' ? `${esc(org.org)}가 수탁기관에게 사용료·임대료를 받아 과세로 신고하므로 그 돈의 영수증은 ${esc(org.org)} 등록번호 ${esc(reg || '(번호 확인)')}로 받고 기록합니다(공제 대상).` : f.fee === 'free' ? `${esc(org.org)}가 사용료를 받지 않는 무상 사용이라 그 돈의 부가세는 돌려받지 못합니다. 큰 수선·설비가 예정돼 있으면 유상 사용허가로 바꿀 수 있는지 재산 담당과 검토합니다.` : `${esc(org.org)}가 수탁기관에게 사용료를 받는지(위·수탁 계약·사용허가서) 확인해 기관 설정에서 고르세요. 받으면 공제 대상, 무상이면 공제 불가.`}`
-      : `과세인지 면세인지 법령 글자로 정해지지 않아 <strong>${esc(org.dept || '신고 담당 부서')}</strong>가 유권해석으로 정합니다. 정해질 때까지 영수증은 ${esc(org.org)} 이름으로 받고 기록은 계속합니다.`;
+      : r?.cond ? `<strong>과세·면세 기준(기존 유권해석):</strong> ${esc(r.cond)} 이 시설이 어느 쪽인지 운영 방식(계약·요금표·대관 실적)으로 가려 2단계 '확인 결과·근거' 칸에 적고 과세·면세로 고릅니다. 고르기 전까지 영수증은 ${esc(org.org)} 이름으로 받고 기록은 계속합니다.`
+      : `과세인지 면세인지 법령 글자로 정해지지 않은 항목입니다. 국세법령정보시스템 유권해석 검색·국세청 상담으로 확인해 2단계 '확인 결과·근거' 칸에 적습니다. 정해질 때까지 영수증은 ${esc(org.org)} 이름으로 받고 기록은 계속합니다.`;
+    const condNote = st !== 'check' && r?.cond ? `<p class="note"><strong>기준:</strong> ${esc(r.cond)}</p>` : '';
+    const rulingsBox = r?.rulings?.length ? rulingsHtml(D, r.rulings, '근거 유권해석') : '';
     return `<article class="fcard"><h3>${esc(f.name)} <span class="verdict ${st === 'agency' ? 'none' : st}">${STATUS_LABEL_SHORT[st]}</span></h3>
       <dl class="kv"><dt>기관</dt><dd>${esc(org.org)} · ${esc(org.dept || '')}</dd><dt>운영</dt><dd>${esc(runName(org.kind, f.run))}${f.contractor_dept ? ' · ' + esc(f.contractor_dept) : ''}</dd><dt>시설 유형</dt><dd>${esc(r?.name ?? '직접 추가')} — ${esc(r?.group ?? '')}</dd><dt>등록번호</dt><dd>${esc(reg || '—')}</dd></dl>
-      <p>${what}</p>${st === 'own' && (f.fee ?? 'unknown') === 'unknown' ? '<p class="callout warn">우리 기관이 수탁기관에게 사용료·임대료를 받는지 아직 정하지 않았습니다. 그때까지 우리 기관이 이 시설에 직접 낸 돈은 노랑(확인 필요)으로 기록됩니다.</p>' : ''}${f.run === 'unknown' ? '<p class="callout warn">운영 방식이 아직 정해지지 않았습니다. 위·수탁 계약서로 "우리 기관 명의 사업(대행)"인지 "수탁기관 자기 사업"인지 확인해 기관 설정에서 고르세요. 수탁기관 자기 사업이면 이 카드의 매입세액 안내는 적용되지 않습니다.</p>' : ''}
+      <p>${what}</p>${condNote}${rulingsBox}${st === 'own' && (f.fee ?? 'unknown') === 'unknown' ? '<p class="callout warn">우리 기관이 수탁기관에게 사용료·임대료를 받는지 아직 정하지 않았습니다. 그때까지 우리 기관이 이 시설에 직접 낸 돈은 노랑(확인 필요)으로 기록됩니다.</p>' : ''}${f.run === 'unknown' ? '<p class="callout warn">운영 방식이 아직 정해지지 않았습니다. 위·수탁 계약서로 "우리 기관 명의 사업(대행)"인지 "수탁기관 자기 사업"인지 확인해 기관 설정에서 고르세요. 수탁기관 자기 사업이면 이 카드의 매입세액 안내는 적용되지 않습니다.</p>' : ''}
       ${(st !== 'own' && st !== 'agency') || f.fee === 'taxable' ? `<h4>매달 할 일</h4><ol>
         <li>영수증마다 <strong>어느 시설에 쓴 돈인지</strong> 적어 둡니다(이 시설만 / 여러 시설 / 사무실과 함께).</li>
         <li>세금계산서의 <strong>공급받는 자</strong>가 ${esc(org.org)} 등록번호인지 봅니다. 공단·개인 이름이면 그 자리에서 수정 요청.</li>

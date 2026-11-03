@@ -172,6 +172,28 @@ def bok_baseline(fy: str) -> dict:
     return out
 
 
+def bok_by_ksic(year: str) -> dict:
+    """중분류(C10~C34)별 한국은행 중위수 — {"C25": {"name": …, "growth": {"med":…,"q1":…,"q3":…}, …}} (기업 규모 '종합')."""
+    rows = read(BOK_Q)
+    out: dict = {}
+    for r in rows:
+        if r["PRD_DE"] != year or (r.get("C2_NM") or "").strip() != "종합":
+            continue
+        code = (r.get("C1_NM") or "").split(" ")[0]
+        if not (len(code) == 3 and code.startswith("C")):
+            continue
+        key = next((k for k, ns in BOK_NAMES.items() if any((r.get("C3_NM") or "").replace(" ", "").startswith(n) for n in ns)), None)
+        v = num(r.get("DT"))
+        if not key or v is None:
+            continue
+        sel = (r.get("C4_NM") or "").replace(" ", "")
+        slot = "med" if "중위" in sel else "q1" if "1분위" in sel else "q3" if "3분위" in sel else "mean" if "평균" in sel else ""
+        if slot:
+            d = out.setdefault(code, {"name": r.get("C1_NM")})
+            d.setdefault(key, {})[slot] = v
+    return out
+
+
 def ecos_region() -> dict:
     """ECOS 지역별 기업경영분석(503Y005~7) 대구 행 — 받아 둔 경우 항목 이름·시점·값만 옮긴다."""
     out = {}
@@ -202,7 +224,7 @@ def main() -> int:
             "daegu_listed": stats(dl), "national_listed": stats(nl),
             "daegu_unlisted": stats(dg), "national_unlisted": stats(ns, boot=True),
         },
-        "by_group": [], "by_district": [],
+        "by_group": [], "by_ksic": [], "by_district": [],
         "bok": bok_baseline(fy_dg or fy_nl), "ecos_region": ecos_region(),
         "sample": json.loads(NS_META.read_text(encoding="utf-8")) if NS_META.exists() else {},
         "summary": json.loads(SUMMARY.read_text(encoding="utf-8")) if SUMMARY.exists() else {},
@@ -213,6 +235,15 @@ def main() -> int:
                                 "national_listed": stats([r for r in nl if r.get("group") == g]),
                                 "daegu_unlisted": stats([r for r in dg if r.get("group") == g]),
                                 "national_unlisted": stats([r for r in ns if r.get("group") == g], boot=True)})
+    bok_year = res["bok"].get("year", "")
+    bk = bok_by_ksic(bok_year) if bok_year else {}
+    res["bok_year_ksic"] = bok_year
+    for code in sorted({"C" + (r.get("ksic") or "")[:2] for r in dg + nl + ns if (r.get("ksic") or "")[:2].isdigit()}):
+        sel = lambda rows: [r for r in rows if "C" + (r.get("ksic") or "")[:2] == code]
+        res["by_ksic"].append({"code": code, "name": (bk.get(code) or {}).get("name", code),
+                               "daegu_listed": stats(sel(dl)), "national_listed": stats(sel(nl)),
+                               "daegu_unlisted": stats(sel(dg)), "national_unlisted": stats(sel(ns), boot=True),
+                               "bok": {k: v for k, v in (bk.get(code) or {}).items() if k != "name"}})
     for d in sorted({r.get("district", "") for r in dg if r.get("district")}):
         res["by_district"].append({"district": d, "daegu_unlisted": stats([r for r in dg if r.get("district") == d])})
     OUT.parent.mkdir(parents=True, exist_ok=True)

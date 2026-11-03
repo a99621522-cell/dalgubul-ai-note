@@ -1,0 +1,126 @@
+---
+/** /listed/audit/ — 대구 비상장 외감·상장 제조업 재무 현황과 전국 비교
+ *  (운영자 지시 2026-11-03 '대구 비상장 재무 현황표 조사해봐' → '전국과 비교하는 것도 구현해야지' → '진행해').
+ *  대구일보 「대구·경북 CSAI」(2026-11-03 보도)의 '무엇을 재고 어떻게 묶나'만 참고 — 회사별 위험 판정·우수기업 선정·사분면 칸 이름은 쓰지 않는다.
+ *  값은 scripts/audit_compare.py 결과 그대로. 회사 이름·순위 없음, 기업 수 5곳 미만 칸은 비움, 판정 낱말 없음. */
+import { auditCompare, cell, f1, diff, inRange, ksicName, KSIC2, type Scope } from '../lib/dartAudit';
+const A = auditCompare();
+const IND = A?.indicators ?? [];
+const T = A?.total;
+const S = A?.summary?.daegu;
+const SM = A?.sample ?? {};
+const bok = A?.bok?.by ?? {};
+const bokYear = A?.bok?.year ?? '';
+const yrs = A?.years;
+const n = (s?: Scope) => (s ? s.n : 0);
+const medTxt = (s: Scope | undefined, k: string) => { const c = cell(s, k); return c?.med == null ? (c && c.n > 0 ? '표본 적음' : '—') : f1(c.med); };
+const iqr = (s: Scope | undefined, k: string) => { const c = cell(s, k); return c?.q1 == null ? '' : `${f1(c.q1)} ~ ${f1(c.q3)}`; };
+const nOf = (s: Scope | undefined, k: string) => cell(s, k)?.n ?? 0;
+
+/** 업종 중분류 덤벨 그림(대구 비상장 ● · 전국 비상장 표본 ○) — 지표 하나, 업종 코드 순서(값 크기 정렬 아님) */
+function dumbbell(key: string, name: string): string {
+  const rows = (A?.by_ksic ?? []).map(r => ({ code: r.code, label: KSIC2[r.code] ?? r.code, d: cell(r.daegu_unlisted, key)?.med, nat: cell(r.national_unlisted, key)?.med }))
+    .filter(r => r.d != null || r.nat != null);
+  if (rows.length < 2) return '';
+  const vals = rows.flatMap(r => [r.d, r.nat]).filter((v): v is number => v != null);
+  let lo = Math.min(0, ...vals), hi = Math.max(0, ...vals);
+  const pad = (hi - lo) * 0.08 || 1; lo -= pad; hi += pad;
+  const W = 680, L = 190, R = 24, top = 30, rowH = 26, H = top + rows.length * rowH + 30;
+  const x = (v: number) => L + (v - lo) / (hi - lo) * (W - L - R);
+  const ticks = 5, step = (hi - lo) / ticks;
+  let g = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${name} 업종 중분류별 중앙값 — 대구 비상장 외감과 전국 비상장 외감 표본" xmlns="http://www.w3.org/2000/svg" font-family="Pretendard, sans-serif" font-size="12">`;
+  g += `<rect width="${W}" height="${H}" fill="var(--color-surface-1, #fff)"/>`;
+  for (let i = 0; i <= ticks; i++) { const v = lo + step * i; g += `<line x1="${x(v)}" x2="${x(v)}" y1="${top - 6}" y2="${H - 26}" stroke="var(--border, #ddd)" stroke-width="1"/><text x="${x(v)}" y="${H - 10}" text-anchor="middle" fill="var(--muted, #666)">${f1(v)}</text>`; }
+  g += `<line x1="${x(0)}" x2="${x(0)}" y1="${top - 6}" y2="${H - 26}" stroke="var(--text, #333)" stroke-width="1"/>`;
+  g += `<circle cx="${L}" cy="12" r="5" fill="var(--chart-1)"/><text x="${L + 10}" y="16" fill="var(--text, #222)">대구 비상장 외감</text>`;
+  g += `<circle cx="${L + 140}" cy="12" r="5" fill="var(--color-surface-1, #fff)" stroke="var(--chart-2)" stroke-width="2.5"/><text x="${L + 150}" y="16" fill="var(--text, #222)">전국 비상장 외감(표본)</text>`;
+  rows.forEach((r, i) => {
+    const y = top + i * rowH + rowH / 2;
+    g += `<text x="${L - 8}" y="${y + 4}" text-anchor="end" fill="var(--text, #222)">${r.code} ${r.label}</text>`;
+    if (r.d != null && r.nat != null) g += `<line x1="${x(r.d)}" x2="${x(r.nat)}" y1="${y}" y2="${y}" stroke="var(--muted, #999)" stroke-width="2"/>`;
+    if (r.nat != null) g += `<circle cx="${x(r.nat)}" cy="${y}" r="6" fill="var(--color-surface-1, #fff)" stroke="var(--chart-2)" stroke-width="2.5"><title>${r.code} 전국 비상장 표본 ${f1(r.nat)}%</title></circle>`;
+    if (r.d != null) g += `<circle cx="${x(r.d)}" cy="${y}" r="6" fill="var(--chart-1)" stroke="var(--color-surface-1, #fff)" stroke-width="2"><title>${r.code} 대구 비상장 ${f1(r.d)}%</title></circle>`;
+  });
+  return g + '</svg>';
+}
+const SCOPES: [keyof NonNullable<typeof T>, string][] = [['daegu_listed', '대구 상장'], ['national_listed', '전국 상장'], ['daegu_unlisted', '대구 비상장 외감'], ['national_unlisted', '전국 비상장 외감(표본)']];
+---
+{!A ? <p class="meta">자료를 받는 중입니다. DART 감사보고서 수집(`dart_audit.yml`)이 끝나면 이 페이지에 표가 생깁니다.</p> : (<>
+<section id="audit">
+  <p class="lede">본사가 대구인 <strong>비상장 외부감사 대상 제조업 회사</strong>의 감사보고서 재무와, 대구·전국 상장 제조업, 전국 비상장 외감 표본, 한국은행 「기업경영분석」 값을 같은 지표로 나란히 놓았습니다. 묶음별 중앙값과 합계 비율만 싣고 회사 이름·순위·평가는 싣지 않습니다.</p>
+
+  <details class="basis" open>
+    <summary>이 숫자의 기준</summary>
+    <dl>
+      <dt>대구 비상장 외감 {n(T?.daegu_unlisted)}곳 ({yrs?.daegu_unlisted} 사업연도)</dt>
+      <dd>DART 에 감사보고서를 낸 비상장 회사{S ? ` ${S.filers.toLocaleString('ko-KR')}곳` : ''} 가운데 이 사이트 기업 사전의 회사 이름과 일치하고{S ? `(${S.name_matched.toLocaleString('ko-KR')}곳)` : ''} 기업개황 본사 주소가 대구인 제조업(업종 10~34) 회사{S ? ` ${S.daegu_mfg.toLocaleString('ko-KR')}곳` : ''}의 최근 별도 감사보고서 값입니다. 외부감사는 법정 기준(자산·매출·부채·종업원 규모)을 넘는 회사만 받아 소규모 회사는 빠지고, 이름이 기업 사전과 다른 회사도 빠질 수 있습니다. 소재지는 본사 기준입니다.</dd>
+      <dt>상장 제조업 — 대구 {n(T?.daegu_listed)}곳 · 전국 {n(T?.national_listed)}곳 ({yrs?.listed} 사업연도)</dt>
+      <dd>유가증권·코스닥 상장 제조업 회사의 사업보고서 <strong>별도</strong>재무제표(비상장 감사보고서와 같은 기준으로 맞춤 — 다른 상장기업 탭은 연결 우선이라 값이 다를 수 있습니다). 전국은 대구를 포함한 전수입니다.</dd>
+      <dt>전국 비상장 외감 표본 {n(T?.national_unlisted)}곳 ({yrs?.national_unlisted} 사업연도)</dt>
+      <dd>감사보고서 제출 비상장 회사{SM.population ? ` ${SM.population.toLocaleString('ko-KR')}곳` : ''} 전체에서 고정 시드({SM.seed}) 무작위 순서로 {SM.looked?.toLocaleString('ko-KR')}곳을 보고 제조업만, 업종 묶음당 최대 {SM.cap_per_group}곳까지 읽었습니다. 표본이라 중앙값 옆에 부트스트랩 95% 범위를 적습니다.</dd>
+      <dt>한국은행 「기업경영분석」 ({bokYear})</dt>
+      <dd>법인세 신고 법인 전수(외감 여부와 무관, 소규모 법인 포함)의 재무비율 분위수(KOSIS DT_501Y086, 제조업, 기업 규모 '종합')입니다. 대상이 넓어 외감·상장 표본의 값과 같은 집단이 아닙니다. 영업현금흐름 비율은 이 표에 없습니다.</dd>
+      <dt>지표</dt>
+      <dd>매출액 증가율 = (당기 매출 ÷ 전기 매출 − 1) × 100, 매출액 영업이익률 = 영업이익 ÷ 매출 × 100, 영업현금흐름 대 매출액 = 영업활동현금흐름 ÷ 매출 × 100, 부채비율 = 부채총계 ÷ 자본총계 × 100(자본 0 이하 제외), 이자보상비율 = 영업이익 ÷ 이자비용 × 100(이자비용 0 제외, 한국은행과 같은 %). 중앙값은 회사마다 비율을 구해 가운데 값, 합계 비율은 묶음의 분자 합 ÷ 분모 합입니다. 기업 수 {A.min_n}곳 미만 칸은 비웠습니다.</dd>
+    </dl>
+  </details>
+
+  <div class="section-head"><h2>지표별 중앙값 — 대구와 전국</h2><span class="meta">% · 차이는 대구 − 전국(%p) · 괄호 안은 1~3사분위</span></div>
+  <div class="scroll-x"><table class="data-table" data-title="대구·전국 제조업 재무 지표 중앙값(상장·비상장 외감)">
+    <thead>
+      <tr><th rowspan="2">지표</th><th colspan="3" class="c">상장 제조업</th><th colspan="3" class="c">비상장 외감 제조업</th><th rowspan="2" class="n">한국은행<br />제조업 중위수<br />({bokYear})</th></tr>
+      <tr><th class="n">대구<br />({n(T?.daegu_listed)}곳)</th><th class="n">전국<br />({n(T?.national_listed)}곳)</th><th class="n">차이</th><th class="n">대구<br />({n(T?.daegu_unlisted)}곳)</th><th class="n">전국 표본<br />({n(T?.national_unlisted)}곳)</th><th class="n">차이</th></tr>
+    </thead>
+    <tbody>{IND.map(i => { const dl = cell(T?.daegu_listed, i.key), nl = cell(T?.national_listed, i.key), du = cell(T?.daegu_unlisted, i.key), nu = cell(T?.national_unlisted, i.key); return (
+      <tr>
+        <th scope="row">{i.name}</th>
+        <td class="n">{medTxt(T?.daegu_listed, i.key)}<span class="meta"> {iqr(T?.daegu_listed, i.key) && `(${iqr(T?.daegu_listed, i.key)})`}</span></td>
+        <td class="n">{medTxt(T?.national_listed, i.key)}<span class="meta"> {iqr(T?.national_listed, i.key) && `(${iqr(T?.national_listed, i.key)})`}</span></td>
+        <td class="n">{diff(dl?.med, nl?.med)}</td>
+        <td class="n">{medTxt(T?.daegu_unlisted, i.key)}<span class="meta"> {iqr(T?.daegu_unlisted, i.key) && `(${iqr(T?.daegu_unlisted, i.key)})`}</span></td>
+        <td class="n">{medTxt(T?.national_unlisted, i.key)}{nu?.ci && <span class="meta"> 범위 {f1(nu.ci[0])}~{f1(nu.ci[1])}</span>}</td>
+        <td class="n">{diff(du?.med, nu?.med)}{inRange(du?.med, nu?.ci) && <span class="meta"> 표본 범위 안</span>}</td>
+        <td class="n">{f1(bok[i.key]?.med)}</td>
+      </tr>); })}</tbody>
+  </table></div>
+  <p class="meta">'표본 범위 안'은 대구 중앙값이 전국 표본 중앙값의 부트스트랩 95% 범위 안에 든다는 뜻으로, 표본만으로는 둘의 차이를 가르기 어렵다는 표시입니다. 비율을 가리는 판정이 아닙니다.</p>
+
+  <div class="section-head"><h2>합계 비율</h2><span class="meta">묶음의 분자 합 ÷ 분모 합(%) — 큰 회사의 값이 크게 반영됩니다</span></div>
+  <div class="scroll-x"><table class="data-table" data-title="대구·전국 제조업 재무 지표 합계 비율">
+    <thead><tr><th>지표</th>{SCOPES.map(([, nm]) => <th class="n">{nm}</th>)}</tr></thead>
+    <tbody>{IND.map(i => <tr><th scope="row">{i.name}</th>{SCOPES.map(([k]) => <td class="n">{f1(cell(T?.[k], i.key)?.pooled ?? null)}</td>)}</tr>)}</tbody>
+  </table></div>
+
+  <div class="section-head"><h2>업종 중분류별 중앙값</h2><span class="meta">KSIC 중분류 · 한국은행 값은 같은 중분류의 중위수({A.bok_year_ksic})</span></div>
+  {IND.map((i, idx) => { const svg = dumbbell(i.key, i.name); return (
+  <details open={idx === 0}>
+    <summary>{i.name}</summary>
+    {svg && <figure class="chart"><div set:html={svg} /><figcaption>{i.name} 중앙값(%) — 대구 비상장 외감과 전국 비상장 외감 표본, 업종 코드 순서(값 크기 순서 아님). 기업 수 {A.min_n}곳 미만 업종은 점이 없습니다. 자료: DART 감사보고서</figcaption></figure>}
+    <div class="scroll-x"><table class="data-table" data-title={`업종 중분류별 ${i.name} 중앙값`}>
+      <thead><tr><th>업종</th>{SCOPES.map(([, nm]) => <th class="n">{nm}</th>)}<th class="n">한국은행 중위수</th></tr></thead>
+      <tbody>{(A.by_ksic ?? []).map(r => (
+        <tr><th scope="row">{ksicName(r.code)}</th>
+          {SCOPES.map(([k]) => <td class="n">{medTxt(r[k], i.key)}<span class="meta"> {nOf(r[k], i.key) > 0 && `${nOf(r[k], i.key)}곳`}</span></td>)}
+          <td class="n">{f1(r.bok?.[i.key]?.med)}</td></tr>))}</tbody>
+    </table></div>
+  </details>); })}
+
+  <div class="section-head"><h2>이 사이트 산업 그룹별 중앙값</h2><span class="meta">config/industry_groups.yml 11개 그룹 · 한국은행 값 없음(분류가 다름)</span></div>
+  <details>
+    <summary>펼쳐 보기</summary>
+    <div class="scroll-x"><table class="data-table" data-title="산업 그룹별 제조업 재무 지표 중앙값">
+      <thead><tr><th rowspan="2">산업 그룹</th>{IND.map(i => <th colspan="2" class="c">{i.name}</th>)}</tr>
+        <tr>{IND.map(() => <><th class="n">대구 비상장</th><th class="n">전국 표본</th></>)}</tr></thead>
+      <tbody>{(A.by_group ?? []).map(r => <tr><th scope="row">{r.group}</th>{IND.map(i => <><td class="n">{medTxt(r.daegu_unlisted, i.key)}</td><td class="n">{medTxt(r.national_unlisted, i.key)}</td></>)}</tr>)}</tbody>
+    </table></div>
+  </details>
+
+  <div class="section-head"><h2>구·군별 중앙값(대구 비상장 외감)</h2><span class="meta">본사 주소 기준 · 전국 비교 없음</span></div>
+  <div class="scroll-x"><table class="data-table" data-title="구·군별 대구 비상장 외감 제조업 재무 지표 중앙값">
+    <thead><tr><th>구·군</th><th class="n">회사</th>{IND.map(i => <th class="n">{i.name}</th>)}</tr></thead>
+    <tbody>{(A.by_district ?? []).map(r => <tr><th scope="row">{r.district}</th><td class="n">{r.daegu_unlisted.n}</td>{IND.map(i => <td class="n">{medTxt(r.daegu_unlisted, i.key)}</td>)}</tr>)}</tbody>
+  </table></div>
+
+  <p class="meta">자료: 금융감독원 전자공시(DART) 감사보고서·사업보고서(별도재무제표), 한국은행 「기업경영분석」(KOSIS). {A.updated} 계산. 값은 공시 원 단위로 이 사이트가 나눈 비율이며, 회사 이름·순위·평가가 아닙니다. 상장 회사별 값은 <a href="/listed/">재무</a> 탭에 있습니다.</p>
+</section>
+</>)}

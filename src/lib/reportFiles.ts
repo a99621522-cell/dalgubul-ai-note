@@ -1,8 +1,13 @@
 /** 리포트 자료(운영자가 올린 보고서 PDF·Word). 파일은 public/files/ 에 두고 여기 한 줄씩 더한다.
  *  한글(HWPX)판은 `scripts/docx_to_hwpx.py`(Word → 공무원 양식 복제, hwpx_check PASS)로 `public/hwpx/` 에 만든다(운영자 지시 2026-10-06 '옮긴 리포트도 한글로').
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
+/** 한글 파일 확장자 — hwpx 칸에 운영자가 올린 옛 형식 .hwp 를 그대로 둘 때도 있다(2026-11-03 씨엘테크놀로지) */
+export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'cl-technology-battery-automation', summary: '대구 달성군 구지면(달성2차일반산업단지) 비상장 설비 회사 씨엘테크놀로지(2018년 설립)가 2차전지·디스플레이 공장자동화 설비를 진행기준 공사계약으로 수주해 2025년 신규·추가 계약 710억 원, 연말 공사계약잔액 384억 원(전년 말 44억 원)으로 늘어난 흐름을 DART 감사보고서(매출액 2023년 312억 원 → 2025년 371억 원, 영업이익 71억 원 → 31억 원)와 국민연금·벤처기업명단·팩토리온 자료로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['비상장기업', '이차전지', '설비'],
+    title: '씨엘테크놀로지, 달성2차산단의 2차전지 공장자동화 설비 회사', name: '씨엘테크놀로지, 달성2차산단의 2차전지 공장자동화 설비 회사',
+    hwpx: '/hwpx/cl-technology-battery-automation.hwpx', hwpxSize: '132KB', date: '2026-11-03' },
   { slug: 'jvm-pharmacy-automation', summary: '대구 달서구 성서산단 코스닥 상장사 제이브이엠(1977년 대구 설립, 2016년 한미사이언스 자회사 편입)이 약국·병원 조제 자동화 장비(ATDPS)와 소모품·유지보수(MRO)에서 로봇 조제 장비(MENITH)·북미 카운팅 장비(COUNTMATE)·중국 쑤저우 생산법인으로 넓히는 흐름을 DART 공시(2025 사업보고서 연결 매출 1,731억 원·영업이익 333억 원, 2026년 1~9월 매출 1,353억 원·영업이익 327억 원(3분기 잠정실적 포함))와 보도로 정리한 자료. 첫 장은 DART 연결 실적 표·분기 그래프, 품목·수출 매출과 판매 구조. 평가·전망은 싣지 않음.', topics: ['상장기업', '의료·바이오', '로봇'],
     title: '제이브이엠, 약국 조제 자동화에서 로봇 조제·중국 생산으로', name: '제이브이엠, 약국 조제 자동화에서 로봇 조제·중국 생산으로',
     hwpx: '/hwpx/jvm-pharmacy-automation.hwpx', hwpxSize: '152KB', date: '2026-11-03' },

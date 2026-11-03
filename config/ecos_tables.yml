@@ -105,6 +105,8 @@ tables:
     stat_code: "503Y005"
     cycle: A
     years: 4
+    item_codes: ["?", "?", "Z51"]   # Group3 지역 = 대구
+    max_pages: 150
     area: ["대구"]
     note: 대구 법인 합계 비율의 공식 값(2026-11-03 discover). 대구 외감·상장 합계 비율과 나란히
   - key: corp-mgmt-region-profit
@@ -112,10 +114,23 @@ tables:
     stat_code: "503Y006"
     cycle: A
     years: 4
+    item_codes: ["?", "?", "Z51"]   # Group3 지역 = 대구
+    max_pages: 150
     area: ["대구"]
   - key: corp-mgmt-region-stability
     name: 지역별 기업경영분석 — 자산/자본 지표(11차 KSIC)
     stat_code: "503Y007"
     cycle: A
     years: 4
+    item_codes: ["?", "?", "Z51"]   # Group3 지역 = 대구
+    max_pages: 150
     area: ["대구"]
+  - key: corp-mgmt-region-income
+    name: 지역별 기업경영분석 — 손익계산서(11차 KSIC)
+    stat_code: "503Y002"
+    cycle: A
+    years: 4
+    item_codes: ["?", "?", "Z51"]
+    max_pages: 150
+    area: ["대구"]
+    note: 대구 법인 전체 매출액 — 외감 회사 매출이 차지하는 몫 계산용(2026-11-03)

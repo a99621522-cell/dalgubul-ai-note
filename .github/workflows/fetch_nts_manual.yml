@@ -41,7 +41,9 @@ jobs:
           PAGE: ${{ inputs.page }}
           KEY: ${{ inputs.key }}
           TITLE: ${{ inputs.title }}
-        run: python3 scripts/fetch_nts_manual.py $([ -n "$URL" ] && echo --url "$URL") $([ -n "$PAGE" ] && echo --page "$PAGE") $([ -n "$KEY" ] && echo --key "$KEY") $([ -n "$TITLE" ] && echo --title "$TITLE")
+        run: |
+          ARGS=(); [ -n "$URL" ] && ARGS+=(--url "$URL"); [ -n "$PAGE" ] && ARGS+=(--page "$PAGE"); [ -n "$KEY" ] && ARGS+=(--key "$KEY"); [ -n "$TITLE" ] && ARGS+=(--title "$TITLE")
+          python3 scripts/fetch_nts_manual.py "${ARGS[@]}"
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

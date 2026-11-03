@@ -67,7 +67,7 @@ def main():
         if not url: print("첨부 링크를 못 찾음"); sys.exit(3)
         print("첨부:", at, url)
     if not key:
-        m = re.search(r"(\d{4})\s*년?\s*(?:제)?\s*([12])\s*기\s*(예정|확정)", title or "")
+        m = re.search(r"(\d{4})\s*[.년]?\s*(?:제)?\s*([12])\s*기\s*(예정|확정)", title or "")
         key = f"{m.group(1)}-{m.group(2)}{'P' if m.group(3) == '예정' else 'F'}" if m else "latest"
     r = get(url)
     with tempfile.TemporaryDirectory() as d:

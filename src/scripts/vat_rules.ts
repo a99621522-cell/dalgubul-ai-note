@@ -27,7 +27,8 @@ export type Data = {
     develop?: { land_sale: string; land_cost: string; timing: string; refund: string; housing: string; basis: Basis[] };
     entity_unit?: { summary: string; caution: string; basis: Basis[] };
     agency_contract?: { key: string; text: string }[];
-    penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; note: string; basis: Basis[] } };
+    penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
+    deemed_rent?: { rates: Record<string, number>; src: string } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
   revenue_items?: RevenueItem[];

@@ -17,7 +17,7 @@ if (D && box) {
     $('pn-out')!.innerHTML = `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table form" data-stack="off"><caption>가산세 어림 — ${esc(P.name)} 덜 낸 세액 ${fmt(tax)}원을 ${pay}에 ${kind === 'none' ? '기한후신고' : '수정신고'}·납부할 때</caption><thead><tr><th scope="col">항목</th><th scope="col">계산</th><th scope="col">금액</th></tr></thead><tbody>
       <tr><th scope="row">${kind === 'none' ? '무신고 가산세(제47조의2)' : '과소신고 가산세(제47조의3)'}</th><td>${fmt(tax)} × ${pct(r.rateFile)}</td><td>${fmt(r.file)}</td></tr>
       <tr><th scope="row">${kind === 'none' ? '기한후신고 감면(제48조 제2항 제2호)' : '수정신고 감면(제48조 제2항 제1호)'}</th><td>법정신고기한 뒤 ${r.months}개월째 → ${r.relief ? `${pct(r.relief)} 감면` : '감면 없음(기한 경과)'}</td><td>−${fmt(r.file - r.fileAfter)}</td></tr>
-      <tr><th scope="row">납부지연 가산세(제47조의4)</th><td>${fmt(tax)} × ${r.days}일 × 22/100,000</td><td>${fmt(r.late)}</td></tr>
+      <tr><th scope="row">납부지연 가산세(제47조의4)</th><td>${fmt(tax)} × ${r.days}일(법정납부기한 다음 날부터 납부일 전날까지) × 22/100,000</td><td>${fmt(r.late)}</td></tr>
       <tr class="total"><th scope="row">가산세 합계(어림)</th><td>본세 ${fmt(tax)} 별도</td><td>${fmt(r.total)}</td></tr></tbody></table></div>
       <ul class="meta-list"><li>${esc(R?.note ?? '')}</li><li>부정행위(40%)·영세율 과세표준 가산·지정납부기한 뒤 3% 가산(제47조의4 제1항 제3호)은 넣지 않았습니다. 예정신고 때 과소신고분을 확정신고기한까지 수정신고하면 감면이 다릅니다(제48조 제2항 제3호 다목).</li><li>근거: ${(R?.basis ?? []).map(b => lawLink(D, b)).join(' · ')}</li></ul>`;
   });

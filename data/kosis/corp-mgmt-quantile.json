@@ -1,0 +1,20 @@
+{
+ "key": "corp-mgmt-quantile",
+ "name": "기업경영분석 — 분위수(제11차 KSIC, 2013~)",
+ "tbl_nm": "분위수(제11차 한국표준산업분류 2013~)",
+ "org_id": "301",
+ "tbl_id": "DT_501Y086",
+ "prd_se": "Y",
+ "period": [
+  "2023",
+  "2026"
+ ],
+ "rows_total": 13461,
+ "rows_kept": 3593,
+ "latest": "2025",
+ "unit": "%",
+ "areas": [],
+ "fetched": "2026-11-03",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=301&tblId=DT_501Y086",
+ "note": "대구 외감·상장 제조업 중앙값의 전국 공식 기준선(같은 정의). 2026-11-03 discover"
+}

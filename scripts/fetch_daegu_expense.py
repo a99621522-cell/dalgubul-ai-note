@@ -27,8 +27,10 @@ JAR = Path(f"/tmp/daegu_expense_cookies_{os.getpid()}.txt")   # 프로세스마�
 NAME_RE = re.compile(r"(?:(?<![가-힣])[가-힣]{3}\s*,\s*){2,}[가-힣]{3}(?![가-힣])|(?<![가-힣])[가-힣]{3}(?=\s*(?:외\s*\d|님(?![가-힣])|씨(?![가-힣])))")   # 적요 속 사람 이름 묶음 — 3자 이름이 쉼표로 셋 이상 이어지거나 '외 N'·'님'·'씨'가 붙은 것만(토목,건축 같은 두 낱말은 남김)
 
 
-def curl(url: str, post: dict | None = None, referer: str = "", timeout: int = 120) -> bytes:
+def curl(url: str, post: dict | None = None, referer: str = "", timeout: int = 120, headers: list[str] | None = None) -> bytes:
     cmd = ["curl", "-sS", "-m", str(timeout), "--connect-timeout", "20", "-L", "-A", UA, "-c", str(JAR), "-b", str(JAR), "-H", "Accept-Language: ko-KR,ko;q=0.9"]
+    for h in headers or []:
+        cmd += ["-H", h]
     if referer:
         cmd += ["-e", referer]
     if post is not None:
@@ -46,13 +48,26 @@ def curl(url: str, post: dict | None = None, referer: str = "", timeout: int = 1
 
 
 def years_of(code: str) -> list[str]:
-    raw = curl(f"{BASE}/selectFisYearJiList.do?localGovCd={code}", referer=f"{BASE}/texoperateExpenditureAll.do?localGovCd={code}")
-    try:
-        return [str(x.get("fisYear")) for x in json.loads(raw.decode("utf-8", "ignore")) if x.get("fisYear")]
-    except Exception:
-        if raw:   # 연결은 됐는데 JSON 이 아님 — 무엇이 왔는지 남긴다(2026-11-03: 화면을 먼저 열어 쿠키를 받게 했더니 러너가 모두 이 경우로 빠져 그 단계를 뺐다)
-            print(f"  연도 목록 응답이 JSON 이 아님({len(raw)}B): {raw[:160].decode('utf-8', 'ignore')!r}", flush=True)
-        return []
+    """연도 목록(JSON). 2026-11-03 저녁부터 포털이 맨 요청에 400 쪽(1,414B)을 돌려줘 — 세 가지 길을 차례로 해 보고 무엇이 왔는지 남긴다:
+    ① 그대로 ② 화면을 먼저 열어 세션 쿠키를 받은 뒤 ③ 쿠키 + 브라우저가 보내는 XHR 머리글(X-Requested-With·Accept)."""
+    page = f"{BASE}/texoperateExpenditureAll.do?localGovCd={code}"
+    url = f"{BASE}/selectFisYearJiList.do?localGovCd={code}"
+    xhr = ["X-Requested-With: XMLHttpRequest", "Accept: application/json, text/javascript, */*; q=0.01"]
+    for way in ("plain", "cookie", "cookie+xhr"):
+        if way == "cookie":
+            curl(page, timeout=60)
+        raw = curl(url, referer=page, headers=xhr if way == "cookie+xhr" else None)
+        try:
+            ys = [str(x.get("fisYear")) for x in json.loads(raw.decode("utf-8", "ignore")) if x.get("fisYear")]
+            if ys:
+                print(f"  연도 목록: {way} 로 받음", flush=True)
+                return ys
+        except Exception:
+            pass
+        if not raw:
+            return []   # 연결 자체가 안 됨(러너 IP 차단) — 다른 길도 같다
+        print(f"  연도 목록 {way}: JSON 이 아님({len(raw)}B) {raw[:120].decode('utf-8', 'ignore')!r}", flush=True)
+    return []
 
 
 def day_rows(code: str, year: str, ymd: str) -> list[list[str]] | None:

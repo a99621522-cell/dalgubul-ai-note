@@ -351,10 +351,35 @@ tables:
     keep: {C1_level: [2]}
     area: []
   # ── 기업경영분석(운영자 지시 2026-11-03 — 대구 비상장·상장 제조업 재무의 전국·시도 공식 기준선). discover 로 표·정의(합계 비율·중위수·시도별 여부) 확인 ──
-  - key: corp-mgmt-analysis
-    name: 기업경영분석 — 산업별·규모별·지역별 재무비율
-    tbl_id: ""
+  - key: corp-mgmt-quantile
+    name: 기업경영분석 — 분위수(제11차 KSIC, 2013~)
+    tbl_id: "DT_501Y086"
     org_id: 301
-    search: ["기업경영분석", "기업경영분석 지역별", "기업경영분석 시도", "기업경영분석 외부감사대상", "기업경영분석 제조업 중분류", "기업경영분석 중위수"]
+    search: ["기업경영분석 중위수"]
+    prd_se: Y
+    area: []
+    note: 대구 외감·상장 제조업 중앙값의 전국 공식 기준선(같은 정의). 2026-11-03 discover
+  - key: corp-mgmt-growth
+    name: 기업경영분석 — 성장성 지표(제11차 KSIC, 2009~)
+    tbl_id: "DT_501Y005"
+    org_id: 301
+    prd_se: Y
+    area: []
+  - key: corp-mgmt-profit
+    name: 기업경영분석 — 손익 지표(제11차 KSIC, 2009~)
+    tbl_id: "DT_501Y006"
+    org_id: 301
+    prd_se: Y
+    area: []
+  - key: corp-mgmt-stability
+    name: 기업경영분석 — 자산/자본 지표(제11차 KSIC, 2009~)
+    tbl_id: "DT_501Y007"
+    org_id: 301
+    prd_se: Y
+    area: []
+  - key: corp-mgmt-cashflow
+    name: 기업경영분석 — 현금흐름비율(2012~)
+    tbl_id: "DT_501Y015"
+    org_id: 301
     prd_se: Y
     area: []

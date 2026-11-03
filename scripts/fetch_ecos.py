@@ -124,6 +124,13 @@ def discover(t: dict, key: str) -> None:
             print(f"[discover] {t['key']} ← '{' '.join(words)}' 후보 {len(cand)}개")
             for x in cand[:25]:
                 print(f"   {x.get('STAT_CODE')} | {x.get('STAT_NAME')} | {x.get('CYCLE', '')} | {x.get('ORG_NAME', '')} | 검색 {x.get('SRCH_YN', '')} | 하위 {x.get('P_STAT_CODE', '')}")
+            # 묶음(검색 N)이면 그 아래 표까지 두 단계 찍는다(2026-11-03 '5.9 지역별 기업경영분석' 하위 표 확인)
+            parents = {x.get("STAT_CODE") for x in cand if x.get("SRCH_YN") == "N"}
+            for depth in (1, 2):
+                kids = [x for x in _TABLES if x.get("P_STAT_CODE") in parents]
+                for x in kids[:80]:
+                    print(f"   {'  ' * depth}└ {x.get('STAT_CODE')} | {x.get('STAT_NAME')} | {x.get('CYCLE', '')} | 검색 {x.get('SRCH_YN', '')} | 상위 {x.get('P_STAT_CODE', '')}")
+                parents = {x.get("STAT_CODE") for x in kids if x.get("SRCH_YN") == "N"}
     except Exception as e:  # noqa: BLE001
         print(f"[discover] {t['key']}: 실패 {e}")
 

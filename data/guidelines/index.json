@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27",
+ "fetched": "2026-11-03",
  "items": {
   "daegu-corp-ord": {
    "key": "daegu-corp-ord",
@@ -1926,6 +1926,52 @@
     "영세율 매출명세서",
     "동물 진료용역 매출명세서"
    ]
+  },
+  "special-tax-act": {
+   "key": "special-tax-act",
+   "name": "조세특례제한법",
+   "kind": "법률",
+   "issuer": "기획재정부",
+   "source": {
+    "type": "law",
+    "name": "조세특례제한법"
+   },
+   "applies": {},
+   "review": [
+    "부가가치세 신고"
+   ],
+   "fetched": "2026-11-03",
+   "status": "없음",
+   "found": "",
+   "id": "",
+   "date": "",
+   "eff": "",
+   "url": "",
+   "chars": 0,
+   "candidates": []
+  },
+  "special-tax-decree": {
+   "key": "special-tax-decree",
+   "name": "조세특례제한법 시행령",
+   "kind": "시행령",
+   "issuer": "기획재정부",
+   "source": {
+    "type": "law",
+    "name": "조세특례제한법 시행령"
+   },
+   "applies": {},
+   "review": [
+    "부가가치세 신고"
+   ],
+   "fetched": "2026-11-03",
+   "status": "없음",
+   "found": "",
+   "id": "",
+   "date": "",
+   "eff": "",
+   "url": "",
+   "chars": 0,
+   "candidates": []
   }
  },
  "skipped": [

@@ -3,8 +3,8 @@ import Base from '../../../layouts/Base.astro';
 import VatData from '../../../components/VatData.astro';
 import VatNav from '../../../components/VatNav.astro';
 import '../../../styles/vat.css';
-import { vatCases } from '../../../lib/vat';
-const ALL = vatCases(); const CLAIMS = ALL.filter(c => /경정청구|권익위/.test(c.kind)); const AUDITS = ALL.filter(c => /감사/.test(c.kind));
+import { vatCases, vatBai } from '../../../lib/vat';
+const ALL = vatCases(); const BAI = vatBai(); const CLAIMS = ALL.filter(c => /경정청구|권익위/.test(c.kind)); const AUDITS = ALL.filter(c => /감사/.test(c.kind));
 const KEY_NAME: Record<string, string> = { claim: '경정청구', build: '신축·대수선', sports: '체육시설', lease: '임대', cashout: '납부잔액·환급금 세입 처리', lodging: '숙박·캠핑장', subsidy: '보조사업 환급금', venue: '대관', parking: '주차장', transit: '버스', agency: '대행', use_permit: '사용허가' };
 /** /vat/review/ — 지난 돈 돌려받기(경정청구 후보, 핵심 기능 — 운영자 2026-11-03 '경정청구 후보를 잘 구현하는 게 핵심' · '지난 돈 돌려받기 쉽게 만들어').
  *  홈택스 매입 목록 5년치를 붙여넣고 건마다 시설을 정하면 과세기간별로 '있어야 할 공제 세액 − 신고한 공제 세액' = 돌려받을 후보와 기한(국세기본법 제45조의2, 5년)·붙임 서류가 나온다.
@@ -44,6 +44,8 @@ const KEY_NAME: Record<string, string> = { claim: '경정청구', build: '신축
     <div class="vc-card"><h3>감사에서 지적된 것 {AUDITS.length}건</h3><p class="note">정부합동감사·감사원 — 부가가치세 신고와 관련해 지자체가 지적받은 사실</p>
       <ul class="meta-list">{AUDITS.map(c => <li><strong>{c.org}</strong> <span class="meta">{c.date} · {c.kind}</span> — {c.title}{c.amount && <> (<strong>{c.amount}</strong>)</>}<br /><span class="note">{c.facts}</span> <span class="meta">{c.keys.filter(k => KEY_NAME[k]).map(k => KEY_NAME[k]).join('·')} · {c.url ? <a href={c.url} target="_blank" rel="noopener">{c.src}</a> : c.src}{c.verify && ' · 원문 확인 필요'}</span></li>)}</ul>
       <p class="note">전체 목록과 닿는 시설 유형은 <a href="/vat/tools/#cases">참고 도구 6절</a>. 신고 전 점검표 c14·c15 가 합동감사 지적을 반영합니다.</p></div>
+    <div class="vc-card" id="rv-bai"><h3>감사원 감사결과 공개문에서 부가가치세 신고·납부가 나온 지적 {BAI.reports.filter(r => r.core > 0).length}건</h3><p class="note">지방 분야 공개문 {BAI.scanned}건의 PDF 를 읽어 부가가치세·매입세액·경정청구·세금계산서 문단을 그대로 발췌(배포용 한글 {BAI.noPdf}건은 못 읽음). 낱말이 나온 문단이라 모두 지적은 아닙니다. 전체는 <a href="/vat/tools/#bai">참고 도구 6절</a>.</p>
+      <ul class="meta-list">{BAI.reports.filter(r => r.core > 0).slice(0, 12).map(r => <li><a href={r.url} target="_blank" rel="noopener">{r.title}</a> <span class="meta">{r.openDt.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')} · {r.field} · 관련 문단 {r.core}</span>{[...new Set(r.hits.filter(h => h.rel === 'core').map(h => h.head).filter(Boolean))].slice(0, 2).map(h => <><br /><span class="note">{h}</span></>)}</li>)}</ul>{BAI.reports.filter(r => r.core > 0).length > 12 && <p class="note">나머지는 참고 도구 6절에.</p>}</div>
   </section>
   <details class="vat-more"><summary>무엇을 보는 것인가</summary>
     <ul class="meta-list">

@@ -218,3 +218,4 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 #pub-biz td:last-child { min-width: 18em; max-width: 28em; white-space: normal; }
 #pub-biz th:nth-child(6) { white-space: nowrap; }
 .rv-src-tabs button[aria-selected="true"] .note { color: inherit; }
+#bai-table tr.bai-mention td { color: var(--ink-2, #595959); }

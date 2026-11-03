@@ -1,8 +1,9 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import VatNav from '../../../components/VatNav.astro';
-import { vatRules, vatCases, lawUrl, lawName, STATUS_LABEL, type Basis } from '../../../lib/vat';
+import { vatRules, vatCases, lawUrl, lawName, STATUS_LABEL, type Basis, vatBai } from '../../../lib/vat';
 const CASES = vatCases();
+const BAI = vatBai();
 const KEY_NAME: Record<string, string> = { claim: '지난 신고 점검(경정청구)', build: '신축·대수선 매입세액', cashout: '납부잔액·환급금 세입 처리(점검표 c14)', subsidy: '보조사업 정산(점검표 c15)', agency: '위탁·대행 시설 명의', sports: '체육시설', venue: '대관', parking: '주차장', lodging: '숙박·캠핑장', lease: '공유재산 임대', transit: '버스' };
 /** /vat/tools/ — 지자체 부가가치세 매입세액 점검 도구(아는 사람이 한 건씩 확인; v2 1단계 2026-10-27 에 /vat/ 에서 옮김 — /vat/ 는 역할 선택 시작 화면)(운영자 지시 2026-10-27: '군청이나 대구시청 같은 지자체가 신고하는 부가가치세의 매입세액을 누락 없이 할 수 있는 사이트').
  *  규칙은 data/vat/rules.yml(조문 번호·뜻만, 평가 없음). 지출 건 판정·공통매입세액 안분·재계산·점검표는 브라우저 안에서만 계산한다(서버·AI 호출 없음, 입력값은 밖으로 나가지 않음). 스크립트 src/scripts/vat_check.ts */
@@ -162,6 +163,19 @@ const V = R.verified;
         </tr>)}</tbody>
       </table>
     </div>
+    <h3 id="bai">감사원 감사결과 공개문에서 부가가치세가 나온 지적 <span class="meta">신고·납부와 닿는 문단이 있는 보고서 {BAI.reports.filter(r => r.core > 0).length}건 · 금액 표기('부가가치세 포함')만 {BAI.reports.filter(r => !r.core).length}건 / 지방 분야 공개문 {BAI.scanned}건 읽음 · PDF 가 없는 배포용 한글 {BAI.noPdf}건은 못 읽음{BAI.fetched && ` · ${BAI.fetched}`}</span></h3>
+    <p class="meta">감사원 누리집 공개문(기관정기감사·특정감사·국민제안 감사) 가운데 감사 분야가 지방자치단체·지방재정·지방세이거나 제목에 지방공기업·공유재산이 든 보고서의 PDF 를 받아 <strong>부가가치세·매입세액·경정청구·세금계산서·과세사업·면세사업</strong>이 나온 문단을 그대로 발췌했습니다(<code>scripts/fetch_bai_vat.py</code>, 자세한 것은 <code>data/vat/audits/bai/README.md</code>). 낱말이 나온 문단일 뿐 모두 지적 항목은 아니며(계약 금액 '부가가치세 포함' 같은 줄도 잡힘), 평가 없이 공개문 글자 그대로입니다. 전체 문단은 펼쳐 보세요.</p>
+    {BAI.reports.length ? <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off" id="bai-table">
+      <caption>감사원 공개문 부가가치세 발췌 — 공개일 순</caption>
+      <thead><tr><th scope="col">공개일</th><th scope="col">보고서</th><th scope="col">분야·종류</th><th scope="col">문단(신고·납부 관련 / 전체)</th><th scope="col">가까운 지적 제목(발췌)</th></tr></thead>
+      <tbody>{BAI.reports.map(r => <tr class={r.core ? '' : 'bai-mention'}>
+        <td>{r.openDt.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}</td>
+        <td><a href={r.url} target="_blank" rel="noopener">{r.title}</a><br /><span class="note">{r.files.join(' · ')}</span></td>
+        <td class="note">{r.field}{r.kind ? ` · ${r.kind}` : ''}</td>
+        <td>{r.core} / {r.hits.length}</td>
+        <td class="note">{[...new Set(r.hits.filter(h => h.rel === 'core').map(h => h.head).filter(Boolean))].slice(0, 4).join(' / ') || (r.core ? '(지적 제목 못 찾음)' : '금액 표기만')}<details class="vat-more"><summary>문단 {r.hits.length}개 보기</summary><ul class="meta-list">{r.hits.map(h => <li><span class="vbadge">{h.page}쪽 · {h.kw}{h.rel === 'mention' ? ' · 금액 표기' : ''}</span> {h.head && <strong>{h.head} — </strong>}{h.text}</li>)}</ul></details></td>
+      </tr>)}</tbody>
+    </table></div> : <p class="note">아직 받은 발췌가 없습니다(워크플로 bai_vat.yml 이 모으는 중).</p>}
   </section>
 
   <section id="checklist">

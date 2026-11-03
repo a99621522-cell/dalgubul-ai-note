@@ -156,7 +156,9 @@ const nW = await pg.locator('#vat-week li').count(); ok('W1 이번 주 할 일 1
 await pg.check('#vat-week [data-week]:first-child, #vat-week li:first-child input'); await pg.reload(); await pg.waitForTimeout(800); ok('W1 체크가 새로 고침 뒤 남음', await pg.locator('#vat-week li:first-child input').isChecked());
 // W2 setup deep link + warning
 await pg.goto(base + '/vat/setup/?step=3&filter=noreg'); await pg.waitForTimeout(900);
-ok('W2 3단계로 열리고 noreg 칩이 눌림', !(await pg.locator('.step[data-step="3"]').isHidden()) && (await pg.locator('#st-fac [data-filter=noreg]').getAttribute('aria-pressed')) === 'true');
+// 바로 시작이 본청 번호를 시설마다 채우므로(2026-11-03) '등록번호 없음'은 0 → 칩이 '전체'로 돌아간다
+const nNoReg = await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1')).facilities.filter(f => !f.reg_no && f.run !== 'entrusted_own').length);
+ok('W2 3단계로 열리고 noreg 0 → 전체 칩', !(await pg.locator('.step[data-step="3"]').isHidden()) && nNoReg === 0 && (await pg.locator('#st-fac [data-filter=all]').getAttribute('aria-pressed')) === 'true', String(nNoReg));
 ok('W2 등록번호 열 출처 ? 단추', await pg.locator('#st-fac button.help.src').count() >= 1);
 await pg.goto(base + '/vat/setup/'); await pg.waitForTimeout(800); ok('W2 5단계 경고 상자 + 단추 2개', await pg.locator('#st-gaps').count() === 1 && (await pg.locator('#st-gaps button').count()) >= 2);
 await pg.click('#st-gaps [data-gofilter=pending]'); await pg.waitForTimeout(400); ok('W2 경고 단추 → 3단계 pending 필터', !(await pg.locator('.step[data-step="3"]').isHidden()) && (await pg.locator('#st-fac [data-filter=pending]').getAttribute('aria-pressed')) === 'true');

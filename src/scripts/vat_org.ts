@@ -2,7 +2,7 @@
  *  ① 예시(조례·의회 시설, data/vat/presets) → 시설 목록  ② 지자체 세입예산서(/vat-revenue.json) → 시설 후보(이미 있는 시설과 이름으로 합침)
  *  ③ 「기관 선택 → 바로 시작」 조각(quickStart): 기관 설정이 없는 화면(대시보드·지출 기록·신고 준비·과세사업 찾기)에서 기관을 고르면 그 자리에서 org 를 만들어 저장하고 화면을 잇는다.
  *  기관 설정 마법사(vat_setup.ts)도 같은 함수를 쓴다. 서버 없음, 개인정보 없음, 평가 없음. */
-import { $, esc, uid, ymd, setOrg, toast, type Data, type Org, type OrgFacility, type Preset, type Run } from './vat_rules';
+import { $, esc, uid, ymd, setOrg, toast, type Data, type Org, type OrgFacility, type Preset, type Run , findOrgNo, orgNoNote , type OrgNo } from './vat_rules';
 
 export type RevRow = { mok_code: string; mok: string; dept: string; item: string; amount_k: number; vat_key: string; fac_key: string; grant: boolean };
 export type ExpRow = { bureau: string; dept: string; detail: string; codes: string[]; facility: boolean; public_ops: boolean; grant: boolean; fac_key: string };
@@ -40,6 +40,15 @@ export function addRevenueFacilities(D: Data, org: Org, g: RevGov) {
 }
 
 /** 「기관 선택 → 바로 시작」 조각. 선택지 = 예시(preset) + 세입예산서 지자체. 고르고 누르면 org 를 만들어 저장하고 onDone(org) */
+/** 공개 자료의 기관 번호를 시설마다 채운다(운영자 지시 2026-11-03 '기관번호를 넣어 그것은 할 수 있잖아'): 비어 있는 시설 등록번호는 본청 번호로(사업장별로 따로 등록한 시설이면 담당자가 고친다 — 메모에 출처), 수탁기관 칸에 적힌 공단·재단 이름이 공개 자료에 있으면 그 번호를 덧붙인다 */
+export function fillFacilityNos(D: Data, org: Org, on: OrgNo) {
+  let n = 0, c = 0;
+  for (const f of org.facilities) {
+    if (!f.reg_no && f.run !== 'entrusted_own') { f.reg_no = on.bizno; f.note = (f.note ? f.note + ' ' : '') + `등록번호는 본청 번호(${on.verify ? '2차 자료' : '나라장터'}) — 이 시설이 사업장별로 따로 등록돼 있으면 그 번호로 고치기.`; n++; }
+    if (f.contractor_dept) { const nm = f.contractor_dept.replace(/\(.*?\)/g, '').trim(); const co = nm ? findOrgNo(D, nm) : undefined; if (co && !f.contractor_dept.includes(co.bizno)) { f.contractor_dept = f.contractor_dept.replace(nm, `${nm} ${co.bizno}`); c++; } }
+  }
+  return { n, c };
+}
 export const quickStartHtml = (id: string, lead = '기관을 고르면 그 자리에서 기관 설정을 만들어 바로 이어집니다. 시설의 운영 방식·등록번호는 뒤에 기관 설정에서 채웁니다.') =>
   `<div class="vat-qs vc-form" id="${id}" data-qs><p class="q-title full">기관 선택 → 바로 시작</p><p class="note full">${esc(lead)}</p><label>기관 <select data-qs-sel aria-label="기관 선택"><option value="">불러오는 중…</option></select></label><div class="actions"><button type="button" class="btn" data-qs-go disabled>이 기관으로 시작</button><a class="btn secondary" href="/vat/setup/">직접 적기(기관 설정)</a><a class="btn secondary" href="/vat/handover/">꾸러미(zip) 열기</a></div><p class="note full" data-qs-msg role="status"></p></div>`;
 export function wireQuickStart(root: ParentNode, D: Data, onDone: (o: Org) => void, preferGov?: string | null) {
@@ -64,8 +73,8 @@ export function wireQuickStart(root: ParentNode, D: Data, onDone: (o: Org) => vo
       else { const [kind, key] = v.split(':'); const p = presets.find(x => x.key === key); const g = govs.find(x => x.key === key);
         if (kind === 'preset' && p) { org.org = p.org; org.facilities = presetFacilities(p); }
         if (g) { if (!org.org) org.org = g.name; addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ } } }
-      org.facilities.forEach(f => { f.kind = 'gov'; }); setOrg(org);
-      toast(`${org.org} 기관 설정을 만들었습니다 — 시설 ${org.facilities.length}곳(운영 방식·등록번호는 기관 설정에서)`); msg.textContent = `${org.org} · 시설 ${org.facilities.length}곳으로 시작합니다.`; onDone(org);
+      org.facilities.forEach(f => { f.kind = 'gov'; }); const on = findOrgNo(D, org.org); if (on) { org.reg_no = on.bizno; org.reg_src = orgNoNote(on); fillFacilityNos(D, org, on); } setOrg(org);
+      toast(`${org.org} 기관 설정을 만들었습니다 — 시설 ${org.facilities.length}곳${on ? ` · 기관 번호 ${on.bizno}(${on.verify ? '2차 자료, 확인 필요' : '나라장터'})를 시설마다 넣었습니다` : ''}(운영 방식은 기관 설정에서, 사업장별로 따로 등록한 시설은 번호를 고치세요)`); msg.textContent = `${org.org} · 시설 ${org.facilities.length}곳으로 시작합니다.`; onDone(org);
     });
   });
 }

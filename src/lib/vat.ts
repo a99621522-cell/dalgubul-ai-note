@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import yaml from 'js-yaml';
 /** 지자체 부가가치세 매입세액 점검기 규칙(data/vat/rules.yml, 운영자 지시 2026-10-27). 조문 번호·뜻만, 평가 없음. 브라우저 판정은 src/scripts/vat_check.ts */
-export type Basis = { law: 'act' | 'decree' | 'rule' | 'basic'; art: string };
-export type Facility = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[] };
+export type Basis = { law: 'act' | 'decree' | 'rule' | 'basic' | 'special' | 'special_decree'; art: string };
+export type Facility = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; cond?: string; rulings?: string[]; basis: Basis[] };
 export type Opt = { key: string; name: string };
 export type NonDed = { key: string; no: string; name: string; fix: string; basis: Basis[] };
 export type Skip = { key: string; name: string; cond: string; ratio_lt?: number; amount_lt?: number };
@@ -40,10 +40,22 @@ export function vatRules(): VatRules | null {
 }
 /** 국가법령정보센터 조문 링크: https://www.law.go.kr/법령/부가가치세법/제39조 */
 export const lawUrl = (r: VatRules, b: Basis) => r.law_url.replace('{law}', r.laws[b.law]).replace('{art}', b.art);
-export const lawName = (r: VatRules, b: Basis) => ({ act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법' } as Record<string, string>)[b.law] + ' ' + b.art;
+export const lawName = (r: VatRules, b: Basis) => ({ act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법', special: '조특법', special_decree: '조특법 시행령' } as Record<string, string>)[b.law] + ' ' + b.art;
 /** 예시 설정(data/vat/presets/*.yml — 공개 자치법규로 만든 시설 목록, 운영 방식·등록번호 없음) */
 export function vatPresets(): Preset[] {
   const dir = 'data/vat/presets'; if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir).filter(f => f.endsWith('.yml')).sort().map(f => yaml.load(fs.readFileSync(`${dir}/${f}`, 'utf-8')) as Preset);
 }
+/** 기관 사업자등록번호(data/vat/orgs — 나라장터 수요기관 CSV 가 있으면 먼저, 그다음 2차 자료 yml) */
+export function vatOrgNumbers(): OrgNo[] {
+  const out: OrgNo[] = []; const csvp = 'data/vat/orgs/daegu_g2b.csv', ymlp = 'data/vat/orgs/daegu_orgs.yml';
+  if (fs.existsSync(csvp)) { const lines = fs.readFileSync(csvp, 'utf-8').replace(/\r/g, '').split('\n').filter(Boolean); const head = lines[0].split(','); const ix = (k: string) => head.indexOf(k);
+    for (const l of lines.slice(1)) { const c = l.split(','); const bz = (c[ix('bizno')] ?? '').replace(/\D/g, ''); if (bz.length !== 10) continue; out.push({ name: c[ix('name')] ?? '', code: c[ix('code')] || undefined, bizno: `${bz.slice(0, 3)}-${bz.slice(3, 5)}-${bz.slice(5)}`, src: '나라장터 수요기관정보(조달청, 공공데이터포털 15129466)' }); } }
+  if (fs.existsSync(ymlp)) { const y = yaml.load(fs.readFileSync(ymlp, 'utf-8')) as { orgs?: OrgNo[] }; for (const o of y.orgs ?? []) if (!out.some(x => x.bizno === o.bizno)) out.push(o); }
+  return out;
+}
+/** 감사·권익위·경정청구 공표 사례(data/vat/cases.yml) */
+export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; src: string; url?: string; verify?: boolean };
+export function vatCases(): AuditCase[] { const p = 'data/vat/cases.yml'; if (!fs.existsSync(p)) return []; return ((yaml.load(fs.readFileSync(p, 'utf-8')) as { cases?: AuditCase[] }).cases ?? []); }
+export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
 export const STATUS_LABEL: Record<Facility['status'], string> = { taxable: '과세', exempt: '면세', check: '확인 필요' };

@@ -1,6 +1,6 @@
 # 사업 지침 창고 (data/guidelines)
 
-받은 날짜: 2026-10-27 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
+받은 날짜: 2026-11-03 · 출처: 국가법령정보센터 오픈API(law.go.kr/DRF). 본문은 `<key>.txt.gz`, 검색은 `python3 scripts/fetch_guidelines.py --query 낱말`.
 
 | key | 지침 | 종류 | 소관 | 시행일 | 상태 | 글자 | 검토 단계 | 원문 |
 |---|---|---|---|---|---|---|---|---|
@@ -44,6 +44,8 @@
 | rnd-act | 국가연구개발혁신법 | 법률 | 과학기술정보통신부 | 2026-10-02 | OK | 30,503 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/법령/국가연구개발혁신법 |
 | rnd-cost | 국가연구개발사업 연구개발비 사용 기준 | 고시 | 과학기술정보통신부 | 2026-05-06 | OK | 133,723 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000278740 |
 | rnd-decree | 국가연구개발혁신법 시행령 | 대통령령 | 과학기술정보통신부 | 2026-09-11 | OK | 81,800 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/법령/국가연구개발혁신법시행령 |
+| special-tax-act | 조세특례제한법 | 법률 | 기획재정부 |  | 없음 | 0 | 부가가치세 신고 |  |
+| special-tax-decree | 조세특례제한법 시행령 | 시행령 | 기획재정부 |  | 없음 | 0 | 부가가치세 신고 |  |
 | subsidy-act | 보조금 관리에 관한 법률 | 법률 | 기획예산처 | 2026-06-02 | OK | 43,159 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/법령/보조금관리에관한법률 |
 | subsidy-decree | 보조금 관리에 관한 법률 시행령 | 대통령령 | 기획예산처 | 2026-08-25 | OK | 66,943 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/법령/보조금관리에관한법률시행령 |
 | subsidy-guide | 국고보조금 통합관리지침 | 공고 | 기획예산처 | 2026-05-20 | OK | 55,867 | 예산요구서 · 집행 · 결산서 | https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000279462 |

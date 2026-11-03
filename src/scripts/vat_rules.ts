@@ -10,7 +10,7 @@ export type Inquiry = { key: string; fac?: string; title: string; channel: strin
 export type Ruling = { id: string; kind: string; no: string; title: string; gist: string; note?: string; src?: string; url?: string; verify?: boolean; law_id?: number; ulex?: string; tt?: string; text?: string };
 export type Opt = { key: string; name: string };
 export type Glossary = { key: string; term: string; plain: string; text: string; basis?: Basis[] };
-export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string; rulings?: string[] };
+export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; cond?: string; rulings?: string[]; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string; rulings?: string[] };
 export type Data = {
   version: string; verified?: { date: string; act: string; decree: string; rule: string; basic?: string }; law_url: string; form_version?: string; laws: Record<string, string>;
   taxable_principle: { summary: string; basis: Basis[]; notes: string[] };
@@ -27,12 +27,15 @@ export type Data = {
     develop?: { land_sale: string; land_cost: string; timing: string; refund: string; housing: string; basis: Basis[] };
     entity_unit?: { summary: string; caution: string; basis: Basis[] };
     agency_contract?: { key: string; text: string }[];
+    agency_exempt?: { summary: string; exclusions: string[]; caution: string; basis: Basis[]; rulings?: string[] };
     penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
     deemed_rent?: { rates: Record<string, number>; src: string } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
   revenue_items?: RevenueItem[];
   presets?: Preset[];
+  cases?: AuditCase[];   // 감사·권익위·경정청구 공표 사례(data/vat/cases.yml)
+  orgs?: OrgNo[];   // 기관 사업자등록번호(data/vat/orgs — 나라장터 수요기관정보 또는 2차 자료, verify 면 홈택스 상태조회로 확인)
   rulings?: Ruling[];
   inquiries?: Inquiry[];
   glossary?: Glossary[];
@@ -47,7 +50,7 @@ export const LABEL: Record<Verdict, string> = { ok: '공제', split: '안분 뒤
 export const SIGNAL: Record<Verdict, string> = { ok: '초록 · 공제됩니다', split: '파랑 · 공통 — 신고 때 나눕니다', no: '빨강 · 공제 안 됩니다', none: '회색 · 부가세가 없는 지출', check: '노랑 · 확인이 필요합니다' };
 export type Input = { use: string; kind: string; proof: string; supplier: string; timing: string };
 export type Out = { v: Verdict; title: string; why: string[]; todo: string[]; basis: Basis[]; verify?: boolean; recalc?: boolean; split?: boolean };
-export const LAW: Record<string, string> = { act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법' };
+export const LAW: Record<string, string> = { act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법', special: '조특법', special_decree: '조특법 시행령' };
 
 export const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
 export const num = (s: string | undefined | null) => { const v = Number(String(s ?? '').replace(/[^0-9.\-]/g, '')); return Number.isFinite(v) ? v : 0; };
@@ -115,7 +118,7 @@ export type Preset = { key: string; org: string; read: string; note: string; fin
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };
 /** filing: 신고를 누가 하나 — self 기관이 직접(기본) / agent 세무대리인(회계사·세무사)에게 의뢰(agent_org 는 대리인 기관 이름만, 사람 이름·전화 없음). 어느 쪽이든 근거 자료는 기관이 만든다(운영자 2026-11-03) */
-export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string; map?: MapRule[]; filing?: 'self' | 'agent'; agent_org?: string; agent_days?: number };
+export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; reg_src?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string; map?: MapRule[]; filing?: 'self' | 'agent'; agent_org?: string; agent_days?: number };
 /** 매핑 글자 정규화 — 공백·대소문자 외에 '2026년'·'2026회계연도'·'제3차'·'(2026)' 같은 연도·차수 표시를 떼어 해마다 새 규칙이 되지 않게(세무회계법인 2차 7번) */
 const normPat = (s: string) => String(s ?? '').replace(/\(?\d{4}(년도?|회계연도)?\)?/g, '').replace(/제?\d+(차|회|기)/g, '').replace(/[\s\-_·.,()]/g, '').toLowerCase();
 /** 사업명·부서 글자에 맞는 규칙 — 사업명 정확히 → 부서 정확히 → 4자 이상 규칙이 사업명에 포함 순 */
@@ -421,6 +424,12 @@ export function wireInquiry(root: ParentNode) {
 /* ── 공무원 UX 재설계(2026-10-28, docs/design/vat-ux-spec.md) 공용 UI 도우미 — 규칙·계산과 무관 ── */
 /** 처리할 것 집계(대시보드·문맥 바·신고 준비 요약이 같은 식으로): 빨강·노랑 미처리 + 근거 없는 전용 지출 */
 /** 설정 완성도(2차 UX 마찰 1·10, 2026-11-03): 운영 방식 '확인 필요'·등록번호 없음(사업장별)·담당 부서 없음 — 비어 있으면 대시보드 1차 행동이 '설정 마저 채우기' */
+export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; src: string; url?: string; verify?: boolean };
+export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
+const normOrgName = (x: string) => x.replace(/\s/g, '').replace(/^대구광역시/, '').replace(/^대구/, '').replace(/청$/, '');
+/** 기관 이름으로 공개 자료의 사업자등록번호 찾기 — 이름·별칭을 띄어쓰기·'대구광역시'·'청' 을 떼고 견준다 */
+export function findOrgNo(D: Data | null, name: string): OrgNo | undefined { if (!D?.orgs || !name.trim()) return undefined; const n = normOrgName(name); if (!n) return undefined; return D.orgs.find(o => [o.name, ...(o.aliases ?? [])].some(a => normOrgName(a) === n)); }
+export const orgNoNote = (o: OrgNo) => `${o.src}${o.verify ? ' — 2차 자료라 홈택스 「사업자등록 상태조회」로 확인' : ''}`;
 export function setupGaps(org: Org | null) { if (!org) return null; const pending = org.facilities.filter(f => f.run === 'unknown' && f.track !== false).length; const noreg = org.unit === 'site' ? org.facilities.filter(f => !f.reg_no && f.track !== false).length : (org.reg_no ? 0 : 1); const dept = !org.dept; return { pending, noreg, dept, total: pending + noreg + (dept ? 1 : 0) }; }
 /** '지출 없음' 표시(마찰 3): 시설·달에 지출이 없었다고 담당자가 표시한 것 — 기록이 아니라 범위 표시. 처리할 것·대시보드의 '기록 없는 시설·달'에서 뺀다. 인수인계 zip 에 포함 */
 export const NOLOG_KEY = 'vat-nolog-v1';

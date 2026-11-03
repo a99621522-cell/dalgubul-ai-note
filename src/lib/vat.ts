@@ -46,4 +46,13 @@ export function vatPresets(): Preset[] {
   const dir = 'data/vat/presets'; if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir).filter(f => f.endsWith('.yml')).sort().map(f => yaml.load(fs.readFileSync(`${dir}/${f}`, 'utf-8')) as Preset);
 }
+/** 기관 사업자등록번호(data/vat/orgs — 나라장터 수요기관 CSV 가 있으면 먼저, 그다음 2차 자료 yml) */
+export function vatOrgNumbers(): OrgNo[] {
+  const out: OrgNo[] = []; const csvp = 'data/vat/orgs/daegu_g2b.csv', ymlp = 'data/vat/orgs/daegu_orgs.yml';
+  if (fs.existsSync(csvp)) { const lines = fs.readFileSync(csvp, 'utf-8').replace(/\r/g, '').split('\n').filter(Boolean); const head = lines[0].split(','); const ix = (k: string) => head.indexOf(k);
+    for (const l of lines.slice(1)) { const c = l.split(','); const bz = (c[ix('bizno')] ?? '').replace(/\D/g, ''); if (bz.length !== 10) continue; out.push({ name: c[ix('name')] ?? '', code: c[ix('code')] || undefined, bizno: `${bz.slice(0, 3)}-${bz.slice(3, 5)}-${bz.slice(5)}`, src: '나라장터 수요기관정보(조달청, 공공데이터포털 15129466)' }); } }
+  if (fs.existsSync(ymlp)) { const y = yaml.load(fs.readFileSync(ymlp, 'utf-8')) as { orgs?: OrgNo[] }; for (const o of y.orgs ?? []) if (!out.some(x => x.bizno === o.bizno)) out.push(o); }
+  return out;
+}
+export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
 export const STATUS_LABEL: Record<Facility['status'], string> = { taxable: '과세', exempt: '면세', check: '확인 필요' };

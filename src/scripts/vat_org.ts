@@ -2,7 +2,7 @@
  *  ① 예시(조례·의회 시설, data/vat/presets) → 시설 목록  ② 지자체 세입예산서(/vat-revenue.json) → 시설 후보(이미 있는 시설과 이름으로 합침)
  *  ③ 「기관 선택 → 바로 시작」 조각(quickStart): 기관 설정이 없는 화면(대시보드·지출 기록·신고 준비·과세사업 찾기)에서 기관을 고르면 그 자리에서 org 를 만들어 저장하고 화면을 잇는다.
  *  기관 설정 마법사(vat_setup.ts)도 같은 함수를 쓴다. 서버 없음, 개인정보 없음, 평가 없음. */
-import { $, esc, uid, ymd, setOrg, toast, type Data, type Org, type OrgFacility, type Preset, type Run } from './vat_rules';
+import { $, esc, uid, ymd, setOrg, toast, type Data, type Org, type OrgFacility, type Preset, type Run , findOrgNo, orgNoNote } from './vat_rules';
 
 export type RevRow = { mok_code: string; mok: string; dept: string; item: string; amount_k: number; vat_key: string; fac_key: string; grant: boolean };
 export type ExpRow = { bureau: string; dept: string; detail: string; codes: string[]; facility: boolean; public_ops: boolean; grant: boolean; fac_key: string };
@@ -64,8 +64,8 @@ export function wireQuickStart(root: ParentNode, D: Data, onDone: (o: Org) => vo
       else { const [kind, key] = v.split(':'); const p = presets.find(x => x.key === key); const g = govs.find(x => x.key === key);
         if (kind === 'preset' && p) { org.org = p.org; org.facilities = presetFacilities(p); }
         if (g) { if (!org.org) org.org = g.name; addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ } } }
-      org.facilities.forEach(f => { f.kind = 'gov'; }); setOrg(org);
-      toast(`${org.org} 기관 설정을 만들었습니다 — 시설 ${org.facilities.length}곳(운영 방식·등록번호는 기관 설정에서)`); msg.textContent = `${org.org} · 시설 ${org.facilities.length}곳으로 시작합니다.`; onDone(org);
+      org.facilities.forEach(f => { f.kind = 'gov'; }); const on = findOrgNo(D, org.org); if (on) { org.reg_no = on.bizno; org.reg_src = orgNoNote(on); } setOrg(org);
+      toast(`${org.org} 기관 설정을 만들었습니다 — 시설 ${org.facilities.length}곳${on ? ` · 기관 번호 ${on.bizno}(${on.verify ? '2차 자료, 확인 필요' : '나라장터'})` : ''}(운영 방식·시설별 등록번호는 기관 설정에서)`); msg.textContent = `${org.org} · 시설 ${org.facilities.length}곳으로 시작합니다.`; onDone(org);
     });
   });
 }

@@ -31,6 +31,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -q -r scripts/requirements.txt
+      - name: 앞 실행이 커밋한 목록·캐시 받기
+        run: git pull -q --ff-only origin "${GITHUB_REF_NAME}" || echo "최신 받기 건너뜀"   # 수동 실행은 누른 때의 커밋으로 받아 와서, 줄 서 있던 실행이 앞 실행의 감사보고서 목록을 못 보던 것
       - name: 받기
         env:
           DART_KEY: ${{ secrets.DART_KEY }}

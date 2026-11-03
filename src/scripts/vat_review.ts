@@ -1,12 +1,15 @@
 /** /vat/review/ 지난 신고 점검 — 경정청구 후보(신고 담당). 홈택스 매입 목록(전자세금계산서·사업용 카드, 건별)과 신고한 매입 내역(매입처별 세금계산서합계표·신용카드매출전표등 수령명세서 = 공급자별 합계)을 과세기간·공급자별로 합쳐 견주고, 빠진 매입세액 후보와 경정청구 기한(국세기본법 제45조의2, 법정신고기한 뒤 5년)·신고 자체가 없던 기간의 기한후신고(제45조의3)를 보인다.
  *  세무사 평가 반영(2026-10-27) 2차: 합계표는 공급자별 합계라 건별 맞추기가 아니라 집계 비교여야 한다. 차이는 후보일 뿐 — 불공제·면세 귀속 건은 빼야 하고 판단·청구는 신고인 몫. 서버 없음, 저장 없음. */
-import { $, esc, num, fmt, loadData, getOrg, parseTable, guessColumns, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, lawLink, ymd, getFilings, type Data } from './vat_rules';
+import { $, esc, num, fmt, loadData, getOrg, parseTable, guessColumns, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, lawLink, ymd, getFilings, zipStore, downloadBlob, srcBtn, helpWire, type Data } from './vat_rules';
 type Row = { d: string; supplier: string; sreg: string; desc: string; amt: number; tax: number; preg: string; pkey: string };
 type Agg = { key: string; sreg: string; name: string; n: number; amt: number; tax: number };
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
   const org = getOrg(); const regIn = $<HTMLInputElement>('rv-reg')!; if (org && org.unit === 'entity' && org.reg_no) regIn.value = org.reg_no;
+  /* 사업장별 등록(2차 UX 마찰 8): 기관 설정의 등록번호 목록을 선택 상자로 — 등록번호마다 따로 견준다 */
+  if (org && org.unit === 'site') { const regs = [...new Set(org.facilities.map(f => f.reg_no).filter(Boolean))] as string[]; const lb = regIn.closest('label'); if (lb) { lb.insertAdjacentHTML('beforeend', `<span class="note full" style="display:block">사업장별 등록 — 등록번호마다 따로 견줍니다(시설 ${org.facilities.length}곳, 등록번호 ${regs.length}개). ${regs.length ? `<select id="rv-reg-sel" aria-label="기관 설정의 등록번호"><option value="">— 기관 설정의 등록번호 고르기 —</option>${regs.map(r => `<option value="${esc(r)}">${esc(r)} — ${esc(org.facilities.filter(f => f.reg_no === r).map(f => f.name).slice(0, 3).join('·'))}${org.facilities.filter(f => f.reg_no === r).length > 3 ? ' 외' : ''}</option>`).join('')}</select>` : '기관 설정에 등록번호가 없습니다 — <a href="/vat/setup/?step=3&filter=noreg">채우기</a>'}</span>`); $<HTMLSelectElement>('rv-reg-sel')?.addEventListener('change', e => { regIn.value = (e.target as HTMLSelectElement).value; }); if (regs.length === 1) regIn.value = regs[0]; } }
+  { const la = $('rv-a')?.closest('label'); if (la) la.insertAdjacentHTML('afterbegin', srcBtn(D, 'purchase_list') + ' ' + srcBtn(D, 'card_list') + ' '); const qb = $('rv-bs')?.previousElementSibling; if (qb) qb.insertAdjacentHTML('beforeend', ' ' + srcBtn(D, 'filed_list')); helpWire($('rv-form')!, D); }
   const today = ymd(new Date());
   const A_KEYS = ['date', 'supplier', 'supplier_reg', 'desc', 'amt', 'tax', 'total', 'payee_reg'], B_KEYS = ['date', 'supplier', 'supplier_reg', 'amt', 'tax', 'total'];
   let gridA: string[][] = []; let periods: string[] = [];
@@ -44,22 +47,25 @@ function init(D: Data) {
     const other = A.filter(r => reg && r.preg && r.preg !== reg); const mine = A.filter(r => !(reg && r.preg && r.preg !== reg));
     const B: Row[] = []; const bPeriods = new Set<string>();
     bWrap.querySelectorAll<HTMLElement>('[data-b]').forEach(el => { const g = parseTable(el.querySelector<HTMLTextAreaElement>('[data-bt]')!.value); if (g.length < 2) return; const box = el.querySelector('[data-bcols]')!; const map = box.querySelector('select') ? readMap(box) : guessColumns(g[0]); const fp = el.querySelector<HTMLSelectElement>('[data-bp]')!.value; const rows = toRows(g, map, fp); rows.forEach(r => bPeriods.add(r.pkey)); B.push(...rows); });
-    const aAgg = aggregate(mine), bAgg = aggregate(B);
+    const aAgg = aggregate(mine), bAgg = aggregate(B); const missAll: (string | number)[][] = [];
     out = [['과세기간', '신고', '수취 건수', '수취 매입세액', '신고 내역 매입세액', '빠진 후보 세액', '공통 몫 %', '면세비율 %', '안분 뒤 청구 후보', '신고가 더 많은 세액', '법정신고기한', '경정청구 기한', '상태']];
     const detail: string[] = [];
     const rows = periods.map(k => { const P = pInfo(k); const pa = aAgg.get(k) ?? new Map<string, Agg>(); const pb = bAgg.get(k); const hasB = bPeriods.has(k); const filed = filedSel[k] ?? 'filed';
       const aTax = [...pa.values()].reduce((s, a) => s + a.tax, 0), aN = [...pa.values()].reduce((s, a) => s + a.n, 0);
-      let bTax = 0, miss = 0, over = 0; const lines: string[] = [];
+      let bTax = 0, miss = 0, over = 0; const lines: string[] = []; const missData: (string | number)[][] = [];
       if (filed === 'none') { miss = aTax; }
-      else if (hasB) { const keys = new Set([...pa.keys(), ...(pb?.keys() ?? [])]); for (const sk of keys) { const a = pa.get(sk), b = pb?.get(sk); const at = a?.tax ?? 0, bt = b?.tax ?? 0; bTax += bt; const d = at - bt; if (d > 0) { miss += d; lines.push(`<li>${esc(a?.name || b?.name || sk)}${a?.sreg ? ` (${esc(a.sreg)})` : ''} — 받은 ${a?.n ?? 0}건 ${fmt(at)} · 신고 ${fmt(bt)} → <strong>빠진 후보 ${fmt(d)}</strong></li>`); } else if (d < 0) { over += -d; lines.push(`<li>${esc(b?.name || sk)} — 받은 ${fmt(at)} · 신고 ${fmt(bt)} → 신고가 ${fmt(-d)} 더 많음(과다 공제·다른 증빙인지 확인)</li>`); } } }
+      else if (hasB) { const keys = new Set([...pa.keys(), ...(pb?.keys() ?? [])]); for (const sk of keys) { const a = pa.get(sk), b = pb?.get(sk); const at = a?.tax ?? 0, bt = b?.tax ?? 0; bTax += bt; const d = at - bt; if (d > 0) { miss += d; missData.push([pName(k), a?.name || b?.name || sk, a?.sreg ?? '', a?.n ?? 0, at, bt, d]); lines.push(`<li>${esc(a?.name || b?.name || sk)}${a?.sreg ? ` (${esc(a.sreg)})` : ''} — 받은 ${a?.n ?? 0}건 ${fmt(at)} · 신고 ${fmt(bt)} → <strong>빠진 후보 ${fmt(d)}</strong></li>`); } else if (d < 0) { over += -d; lines.push(`<li>${esc(b?.name || sk)} — 받은 ${fmt(at)} · 신고 ${fmt(bt)} → 신고가 ${fmt(-d)} 더 많음(과다 공제·다른 증빙인지 확인)</li>`); } } }
       else { bTax = manualIn[k] ?? 0; miss = Math.max(0, aTax - bTax); }
       const st = filed === 'none' ? (P.due > today ? '아직 신고 전 — 확정신고에 넣는다' : '신고 없음 — 기한후신고(국세기본법 제45조의3), 세무서 결정 통지 전까지') : P.days < 0 ? '경정청구 기한 지남' : P.due > today ? '아직 신고 전 — 확정신고에 넣는다' : `청구 가능 D-${P.days}`;
       const adj = adjIn[k] ?? (adjIn[k] = { cs: 0, er: Math.round((savedRatio(k) ?? 0) * 10000) / 100 }); const claim = Math.max(0, Math.floor(miss * (1 - (adj.cs / 100) * (adj.er / 100))));
+      if (filed === 'none') { for (const [sk, a] of pa) missData.push([pName(k), a.name || sk, a.sreg ?? '', a.n, a.tax, 0, a.tax]); } else if (!hasB) { missData.push([pName(k), '(공급자별 신고 내역 없음 — 과세기간 합계로만 견줌)', '', aN, aTax, bTax, miss]); }
+      missAll.push(...missData);
       out.push([pName(k), filed === 'none' ? '안 함' : '함', aN, aTax, filed === 'none' ? 0 : bTax, miss, adj.cs, adj.er, claim, over, P.due, filed === 'none' ? '(기한후신고)' : P.claim, st]);
       if (lines.length) detail.push(`<details class="vat-more"><summary>${esc(pName(k))} 공급자별 차이 ${lines.length}건</summary><ul class="meta-list">${lines.join('')}</ul></details>`);
       return `<tr class="${miss && filed !== 'none' && P.days >= 0 && P.due <= today ? 'v-check' : ''}"><th scope="row">${esc(pName(k))}</th><td><select data-filed="${k}"><option value="filed" ${filed === 'filed' ? 'selected' : ''}>함</option><option value="none" ${filed === 'none' ? 'selected' : ''}>안 함</option></select></td><td>${aN}</td><td>${fmt(aTax)}</td><td>${filed === 'none' ? '—' : hasB ? fmt(bTax) : `<input type="text" inputmode="numeric" data-man="${k}" value="${bTax ? fmt(bTax) : ''}" placeholder="신고서 (10)+(12)+(44)+(45) 세액" style="width:11em" />`}</td><td>${fmt(miss)}</td><td><input type="text" inputmode="decimal" data-adj="cs:${k}" value="${adj.cs || ''}" placeholder="0" style="width:4.5em" /></td><td><input type="text" inputmode="decimal" data-adj="er:${k}" value="${adj.er || ''}" placeholder="0" style="width:4.5em" /></td><td><strong>${fmt(claim)}</strong></td><td>${over ? fmt(over) : ''}</td><td>${P.due}</td><td>${filed === 'none' ? '—' : P.claim}</td><td class="keep">${esc(st)}</td></tr>`; }).join('');
     const otherList = other.map(r => { const fd = fixDue(r.d); return `<li>${r.d} ${esc(r.supplier || r.desc)} — 세액 ${fmt(r.tax)} · 공급받는 자 ${esc(r.preg)} — 우리 명의가 아니라 경정청구 대상이 아닙니다. 수정세금계산서 기한 ${fd?.due ?? '?'}${fd && fd.days < 0 ? '(지남 — 착오 정정이 아니면 불가)' : ''}</li>`; });
-    $('rv-result')!.innerHTML = `<div class="section-head"><h2>과세기간별 비교 <span class="meta">${B.length ? `신고 내역 ${B.length}행을 공급자별로 합쳐 견줌` : '신고 내역이 없으면 과세기간마다 신고한 매입세액을 넣으세요'}</span></h2></div>
+    const noB = !B.length ? `<div class="callout info"><strong>신고 내역을 아직 넣지 않았습니다.</strong> 이 상태에서 '신고' 칸이 '안 함'이면 그 과세기간은 경정청구가 아니라 <strong>기한후신고</strong> 대상으로 보이고, '함'이면 받은 매입세액 전부가 '빠진 후보'로 셉니다. 실제로 신고했다면 홈택스 신고내역 조회의 매입처별 합계표(공급자별)를 ② 에 붙여넣거나, 표의 '신고 내역 매입세액' 칸에 합계만 넣으세요.</div>` : '';
+    $('rv-result')!.innerHTML = noB + `<div class="section-head"><h2>과세기간별 비교 <span class="meta">${B.length ? `신고 내역 ${B.length}행을 공급자별로 합쳐 견줌` : '신고 내역이 없으면 과세기간마다 신고한 매입세액을 넣으세요'}</span></h2></div>
       <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off"><caption>지난 신고 점검 — 받은 매입세액과 신고한 매입세액(참고용, ${today})</caption><thead><tr>${out[0].map(h => `<th scope="col">${esc(String(h))}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
       <p class="meta">'신고' 칸을 '안 함'으로 바꾸면 그 과세기간은 경정청구가 아니라 <strong>기한후신고</strong>(국세기본법 제45조의3 — 법정신고기한까지 신고하지 않은 자는 세무서장이 결정·통지하기 전까지 기한후신고서를 낼 수 있음) 길로 표시됩니다. 신고 내역을 붙여넣은 기간은 공급자별 합계로 견주고, 아니면 신고서 세액을 직접 넣습니다.</p>
       ${detail.join('')}
@@ -67,8 +73,28 @@ function init(D: Data) {
       <p class="meta"><strong>안분 뒤 청구 후보</strong> = 빠진 후보 × (1 − 공통 몫 % × 면세비율 %). 빠진 건 가운데 과세·면세(행정 포함)에 함께 쓴 공통의 비율과 그 과세기간의 면세비율(저장된 확정신고 기록이 있으면 미리 채움)을 넣으세요. 공통 몫 0%면 전액이 후보입니다. 과다 청구는 초과환급 가산세(국세기본법 제47조의3·제47조의4)로 돌아오므로 공통은 반드시 안분합니다.</p>
       <div class="callout warn"><strong>차이가 곧 환급액은 아닙니다.</strong> 빠진 후보 가운데 ① 면세·행정 일에만 쓴 것(불공제) ② 토지·승용차·접대비 ③ 과세·면세 공통 지출(안분해야 함) ④ 증빙 요건을 못 갖춘 것은 빼야 합니다. 건마다 <a href="/vat/tools/">지출 건 판정</a>으로 확인하고, 남는 것을 과세기간별로 경정청구합니다. '신고가 더 많음'은 과다 공제이거나 다른 증빙(종이 세금계산서 등)일 수 있으니 확인합니다. 매출을 빠뜨린 것이 있으면 수정신고 대상입니다.</div>
       <h3>경정청구·기한후신고 절차</h3><ul class="meta-list"><li>${esc(D.rules.filing.claim ?? '')}</li><li>홈택스 「경정청구」에서 과세기간을 고르고 매입세액을 고친 신고서와 매입처별 세금계산서합계표·신용카드매출전표등 수령명세서(추가분)를 냅니다. 세무서는 2개월 안에 결과를 통지합니다.</li><li>신고 자체가 없던 과세기간은 기한후신고서(과세표준·세액·가산세 포함)를 내고 낼 세액이 있으면 납부합니다(제45조의3 제1항·제2항). 세무서는 신고일부터 3개월 안에 결정·경정해 통지합니다(제3항).</li><li>근거: ${lawLink(D, { law: 'basic', art: '제45조의2' })} · ${lawLink(D, { law: 'basic', art: '제45조의3' })} · ${lawLink(D, { law: 'decree', art: '제74조' })} · ${lawLink(D, { law: 'act', art: '제54조' })}</li></ul>
-      <div class="actions no-print"><button type="button" class="btn secondary" id="rv-csv">비교표 CSV 내려받기</button></div>`;
+      <div class="actions no-print"><button type="button" class="btn" id="rv-zip">청구서 붙임 자료 묶음(zip)</button><button type="button" class="btn secondary" id="rv-csv">비교표 CSV 내려받기</button><span class="note">zip = 과세기간별 비교표 · 공급자별 빠진 후보 · 청구 순서 안내(가산세 0.5% 참고)</span></div>`;
     $('rv-csv')?.addEventListener('click', () => downloadText(`지난신고점검-${today}.csv`, toCsv(out), 'text/csv;charset=utf-8'));
+    /* 청구서 붙임 자료 묶음(2차 UX 마찰 8): 경정청구서에 붙일 표를 한 번에 — 새 계산 없음 */
+    $('rv-zip')?.addEventListener('click', () => { const P0 = D.rules.penalty; const guide = `경정청구 붙임 자료 안내 (${today} 작성, 지자체 부가세 절감 점검기 — 참고용, 신고 책임은 신고인)
+
+1. 파일
+- 01_과세기간별_비교표.csv — 받은 매입세액·신고한 매입세액·빠진 후보·안분 뒤 청구 후보·기한·상태
+- 02_공급자별_빠진후보.csv — 과세기간 × 공급자(등록번호) 단위로 받은 세액과 신고 세액의 차이(합계표 추가분의 밑자료)
+- 이 안내
+
+2. 청구 순서(국세기본법 제45조의2, 부가가치세법 시행령 제74조 제2호)
+- 과세기간마다: 빠진 후보 건을 지출 건 판정으로 다시 확인(면세·행정 전용·토지·승용차·접대비·증빙 미달은 뺌, 공통은 안분)
+- 홈택스 → 신고/납부 → 경정청구: 그 과세기간 신고서의 매입세액을 고치고, 추가분의 매입처별 세금계산서합계표·신용카드매출전표등 수령명세서를 붙임
+- 기한: 법정신고기한이 지난 후 5년. 세무서는 청구받은 날부터 2개월 안에 통지
+- 신고 자체를 안 한 과세기간은 기한후신고(국세기본법 제45조의3)
+
+3. 가산세 참고(국세청 신고안내 매뉴얼 가산세 표)
+- 처음 신고 때 합계표·수령명세서에 없던 분을 경정으로 공제받으면: 세금계산서 분은 매입처별 합계표 미제출분 ${((P0.list_missing ?? 0.005) * 100).toFixed(1)}%, 신용카드 분은 '경정 등에 따라 공제되는 신용카드수취 매입세액' ${((P0.card_claim_after_assess ?? 0.005) * 100).toFixed(1)}% (공급가액 기준). 돌려받는 세액(10%)보다 작지만 청구서에 미리 셈합니다.
+
+4. 보관
+- 세금계산서·카드 전표 원본, 계약·계량·검수 기록(실지귀속 근거), 청구서 사본·접수증`;
+      downloadBlob(`경정청구-붙임-${org?.org ?? '기관'}-${today}.zip`, zipStore([{ name: '00_안내.txt', data: guide }, { name: '01_과세기간별_비교표.csv', data: toCsv(out) }, { name: '02_공급자별_빠진후보.csv', data: toCsv([['과세기간', '공급자', '공급자 등록번호', '받은 건수', '받은 세액', '신고 세액', '차이(빠진 후보)'], ...missAll]) }])); });
     $('rv-result')!.querySelectorAll<HTMLInputElement>('[data-adj]').forEach(i => i.addEventListener('change', () => { const [f, k] = i.dataset.adj!.split(':'); const a = adjIn[k] ?? (adjIn[k] = { cs: 0, er: 0 }); (a as unknown as Record<string, number>)[f] = Math.min(100, Math.max(0, num(i.value))); build(); }));
     $('rv-result')!.querySelectorAll<HTMLInputElement>('[data-man]').forEach(i => i.addEventListener('change', () => { manualIn[i.dataset.man!] = num(i.value); build(); }));
     $('rv-result')!.querySelectorAll<HTMLSelectElement>('[data-filed]').forEach(s => s.addEventListener('change', () => { filedSel[s.dataset.filed!] = s.value as 'filed' | 'none'; build(); }));

@@ -36,6 +36,7 @@ export type Data = {
   rulings?: Ruling[];
   inquiries?: Inquiry[];
   glossary?: Glossary[];
+  sources_help?: { key: string; name: string; where: string; note?: string }[];
 };
 export type RevenueItem = { key: string; group: string; name: string; status: 'taxable' | 'exempt' | 'check' | 'none'; type?: string; basis: Basis[]; deduct: string; note?: string; only?: 'contractor' | 'gov'; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
 /** 기관 종류(운영자 2026-10-27 '시설관리공단 분야도 해야지'): gov = 지자체(제19호 면세 적용), contractor = 수탁기관(시설관리공단·재단 — 일반 사업자 기준, 군 대행사업은 군 명의) */
@@ -108,7 +109,8 @@ export const RUN_NAME: Record<Run, string> = { direct: '우리 기관이 직접 
 export type Fee = 'taxable' | 'paid_check' | 'free' | 'unknown';
 /** 수탁기관 자기 사업 시설에서 우리 기관이 수탁기관에게 받는 것 — 군 부담 지출(수선·장비)의 매입세액 공제 여부를 가른다. 초록은 사용료를 과세로 신고하고 있을 때만(세무사 평가 2차) */
 export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고, 그 사용료를 과세(부동산임대)로 신고하고 있다', paid_check: '사용료·임대료를 받지만 과세로 신고하는지 모름(면세로 보고 있음)', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
-export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[] };
+/** track=false: '지출 기록 대상 아님'(마찰 3) — 면세 시설·수탁기관 자기 사업처럼 우리 공제와 무관한 시설. 판정이 아니라 기록 범위 표시 */
+export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[]; track?: boolean };
 export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; contractor?: string; term?: string; note?: string; alias?: string[] }[] };
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };
@@ -120,6 +122,20 @@ const normPat = (s: string) => String(s ?? '').replace(/\(?\d{4}(년도?|회계�
 export function matchMap(org: Org | null, biz: string, dept: string): MapRule | undefined {
   const rules = org?.map ?? []; if (!rules.length) return undefined; const b = normPat(biz), d = normPat(dept);
   return (b && rules.find(r => normPat(r.pat) === b)) || (d && rules.find(r => normPat(r.pat) === d)) || (b && rules.find(r => normPat(r.pat).length >= 4 && b.includes(normPat(r.pat)))) || undefined;
+}
+/** 시설 이름 일치(2차 UX 마찰 6): 매핑표가 없을 때 사업명·부서·내용 글자에 시설 이름(별칭 포함, 공백·괄호 제거 2글자 이상)이 들어가면 가장 긴 일치 시설을 제안 — 기관 설정의 이름만 쓰고 규칙 판정과 무관 */
+export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacility | undefined {
+  if (!org) return undefined; const norm = (x: string) => String(x ?? '').replace(/[\s()（）·,.\-_/]/g, '').toLowerCase(); const hay = norm(texts.filter(Boolean).join(' ')); if (hay.length < 2) return undefined;
+  /* 낱말 사전: 시설 이름·별칭을 괄호·공백·가운뎃점으로 나눈 낱말(2글자 이상)이 몇 시설에 나오는지 — 3곳 이상에 나오는 낱말('달성'·'체육' 등)은 가름에 쓰지 않는다 */
+  const tokOf = (nm: string) => String(nm ?? '').split(/[\s()（）·,.\-_/]+/).map(t => t.toLowerCase()).filter(t => t.length >= 2);
+  const STOP = new Set(['운영', '관리', '사업', '시설', '센터', '공단', '본부', '지원', '위탁', '직영', '조리', '이용', '주민', '복지', '체육', '문화', '공원', '회관', '종합', '생활', '지역', '청사', '사무소', '사무실', '행정', '군청', '시청', '구청', '기타', '일반']);   // 가름에 못 쓰는 흔한 낱말
+  const freq = new Map<string, number>(); for (const f of org.facilities) { const ts = new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf)); for (const t of ts) freq.set(t, (freq.get(t) ?? 0) + 1); }
+  let best: OrgFacility | undefined, bl = 0;
+  for (const f of org.facilities) {
+    for (const nm of [f.name, ...(f.alias ?? [])]) { const n = norm(nm.replace(/\(.*$/, '')); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
+    for (const t of new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf))) { if ((freq.get(t) ?? 0) >= 3 || STOP.has(t)) continue; const n = norm(t); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
+  }
+  return best;
 }
 export function learnMap(org: Org, pat: string, fid: string, use?: UseQ) { const p = String(pat ?? '').trim(); if (!p || !fid) return false; const rules = org.map ?? (org.map = []); const i = rules.findIndex(r => normPat(r.pat) === normPat(p)); const r = { pat: p, fid, use }; if (i >= 0) { if (rules[i].fid === fid && rules[i].use === use) return false; rules[i] = r; } else rules.push(r); return true; }
 export type ProofQ = 'e_invoice' | 'p_invoice' | 'card' | 'cash' | 'bill' | 'none';
@@ -380,6 +396,15 @@ export function wireInquiry(root: ParentNode) {
 
 /* ── 공무원 UX 재설계(2026-10-28, docs/design/vat-ux-spec.md) 공용 UI 도우미 — 규칙·계산과 무관 ── */
 /** 처리할 것 집계(대시보드·문맥 바·신고 준비 요약이 같은 식으로): 빨강·노랑 미처리 + 근거 없는 전용 지출 */
+/** 설정 완성도(2차 UX 마찰 1·10, 2026-11-03): 운영 방식 '확인 필요'·등록번호 없음(사업장별)·담당 부서 없음 — 비어 있으면 대시보드 1차 행동이 '설정 마저 채우기' */
+export function setupGaps(org: Org | null) { if (!org) return null; const pending = org.facilities.filter(f => f.run === 'unknown' && f.track !== false).length; const noreg = org.unit === 'site' ? org.facilities.filter(f => !f.reg_no && f.track !== false).length : (org.reg_no ? 0 : 1); const dept = !org.dept; return { pending, noreg, dept, total: pending + noreg + (dept ? 1 : 0) }; }
+/** '지출 없음' 표시(마찰 3): 시설·달에 지출이 없었다고 담당자가 표시한 것 — 기록이 아니라 범위 표시. 처리할 것·대시보드의 '기록 없는 시설·달'에서 뺀다. 인수인계 zip 에 포함 */
+export const NOLOG_KEY = 'vat-nolog-v1';
+export const getNolog = (): Record<string, true> => lsGet<Record<string, true>>(NOLOG_KEY) ?? {};
+export const setNolog = (m: Record<string, true>) => lsSet(NOLOG_KEY, m);
+export const isNolog = (fid: string, month: string, m = getNolog()) => !!m[`${fid}:${month}`];
+/** 이번 주 열쇠(월요일 날짜) — 대시보드 '이번 주 할 일' 체크 저장용 */
+export function weekKey(d = new Date()) { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); const wd = (x.getDay() + 6) % 7; x.setDate(x.getDate() - wd); return ymd(x); }
 export function openItems(rows = Object.values(allLedgers()).flat()) {
   const today = ymd(new Date());
   const red = rows.filter(r => r.v === 'no' && !r.done && r.payee === 'contractor'), yellow = rows.filter(r => r.v === 'check' && !r.done);
@@ -389,6 +414,8 @@ export function openItems(rows = Object.values(allLedgers()).flat()) {
 }
 /** 용어 사전 ? 단추(rules.yml glossary) — <button class="help" data-term=key>: 누르면 뒤에 <span class="pop" role="note"> 두 문장 + 조문. Esc·바깥 클릭·포커스 이탈로 닫힘 */
 export const helpBtn = (D: Data | null, key: string, label?: string) => { const g = D?.glossary?.find(x => x.key === key); return g ? `<button type="button" class="help" data-term="${esc(key)}" aria-expanded="false" aria-label="${esc(label ?? g.term)} 설명">?</button>` : ''; };
+/** 입력값 출처 ? 단추(rules.yml sources_help, 2차 UX 마찰 5): helpWire 가 data-text 로 띄운다 */
+export const srcBtn = (D: Data | null, key: string) => { const h = D?.sources_help?.find(x => x.key === key); return h ? `<button type="button" class="help src" data-src="${esc(key)}" data-text="${esc(`어디서 가져오나 — ${h.name}\n${h.where}${h.note ? '\n※ ' + h.note : ''}`)}" aria-expanded="false" aria-label="${esc(h.name)} 어디서 가져오나">?</button>` : ''; };
 export function helpWire(root: ParentNode, D: Data | null) {
   if (!D) return;
   const close = (b: HTMLButtonElement) => { b.setAttribute('aria-expanded', 'false'); b.nextElementSibling?.classList.contains('pop') && b.nextElementSibling.remove(); };

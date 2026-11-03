@@ -28,6 +28,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+from audit_checks import scale_check  # noqa: E402  (손익 단위·열 오독 행 거르기 — 수집과 같은 규칙)
 DG = ROOT / "scripts" / "data" / "company_financials_audit.csv"
 NL = ROOT / "data" / "dart" / "national_listed.csv"
 NS = ROOT / "data" / "dart" / "national_audit_sample.csv"
@@ -61,10 +62,10 @@ def read(p: Path) -> list[dict]:
 class Panel:
     """회사 × 사업연도. 옛 형식(basis 없음, 한 회사 한 줄)도 받는다 — sales_prev 로 전기 매출을 채운다."""
 
-    def __init__(self, rows: list[dict]):
+    def __init__(self, rows: list[dict], scan: bool = True):
         self.by: dict[str, dict[str, dict]] = {}
         for r in rows:
-            if not r.get("fy") or r.get("check"):   # 검산이 어긋난 행(collect_dart_audit.py check 칸)은 뺀다
+            if not r.get("fy") or r.get("check") or (scan and scale_check(r)):   # 검산이 어긋난 행(check 칸)·감사보고서 판독 규모 검사(비상장만 — 상장은 DART API 값)는 뺀다
                 continue
             d = self.by.setdefault(r["corp_code"], {})
             if r["fy"] in d and d[r["fy"]].get("basis") == "당기" and r.get("basis") != "당기":
@@ -314,7 +315,7 @@ def emp_stats(emp: dict, items: list[tuple[str, dict]]) -> dict:
 
 
 def main() -> int:
-    DGp, NLp, NSp = Panel(read(DG)), Panel(read(NL)), Panel(read(NS))
+    DGp, NLp, NSp = Panel(read(DG)), Panel(read(NL), scan=False), Panel(read(NS))
     if not (DGp.by or NLp.by or NSp.by):
         print("[compare] 입력 없음 — 건너뜀")
         return 0

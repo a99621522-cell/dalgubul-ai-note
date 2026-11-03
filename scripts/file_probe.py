@@ -93,7 +93,21 @@ def main():
                 show_text("PDF 글자", out, words)
             elif d[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":
                 if low.endswith(".xls"):
-                    print("== 옛 xls — 글자만 찾지 않음(xlrd 없음)")
+                    try:
+                        import xlrd
+                        wb = xlrd.open_workbook(file_contents=d)
+                        for sh in wb.sheets():
+                            rows = [[str(sh.cell_value(r, c)).strip() for c in range(sh.ncols)] for r in range(min(sh.nrows, 400))]
+                            print(f"== 시트 「{sh.name}」 {sh.nrows}행 — 앞 8행")
+                            for r in rows[:8]: print("  ", " | ".join(r))
+                            hit = [r for r in rows if any(w in " ".join(r) for w in words)]
+                            if hit:
+                                print(f"   {'·'.join(words)} 든 행 {len(hit)}개:")
+                                for r in hit[:12]: print("     ", " | ".join(r))
+                    except ImportError:
+                        print("== 옛 xls — 글자만 찾지 않음(xlrd 없음)")
+                    except Exception as e:
+                        print("== 옛 xls 읽기 실패:", e)
                 else:
                     sys.path.insert(0, str(Path(__file__).parent))
                     import hwp_text

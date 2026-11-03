@@ -32,7 +32,7 @@ const presets = vatPresets();
     <div class="q full"><span class="q-title">신고는 누가 하나요</span>
       <div class="choices"><label><input type="radio" name="st-filing" value="self" checked /> 우리 기관이 직접 홈택스에 신고한다 — 신고 준비 결과가 신고서 서식 모양으로</label><label><input type="radio" name="st-filing" value="agent" /> 회계사·세무사(세무대리인)에게 맡긴다 — 신고 준비 결과가 「대리인 인계 꾸러미」(근거 표 7개)로 먼저</label></div>
       <span class="note">어느 쪽이든 세입(매출)의 과세·면세 금액, 지출의 시설·용도 귀속, 안분 기준은 기관만 알 수 있어 기관이 만듭니다. 장부 보관·신고 책임도 기관에 남습니다(법 제71조). 두 결과는 같은 계산이라 언제든 바꿀 수 있습니다.</span>
-      <label id="st-agent-wrap" hidden>세무대리인(기관 이름만, 담당자 이름·전화 없이) <input type="text" id="st-agent" placeholder="예: ○○세무법인" maxlength="40" /></label></div>
+      <label id="st-agent-wrap" hidden>세무대리인(기관 이름만, 담당자 이름·전화 없이) <input type="text" id="st-agent" placeholder="예: ○○세무법인" maxlength="40" /> <span class="note">넘길 날 — 신고기한 며칠 전</span> <input type="number" id="st-agent-days" min="0" max="30" value="10" style="width:5em" aria-label="대리인에게 넘길 날(신고기한 며칠 전)" /></label></div>
     <div class="actions"><button type="button" class="btn" data-next>다음</button></div>
   </section>
 

@@ -1,0 +1,20 @@
+{
+ "key": "corp-mgmt-region-profit",
+ "name": "지역별 기업경영분석 — 손익 지표(11차 KSIC)",
+ "stat_name": "5.9.1.2. 손익 지표",
+ "stat_code": "503Y006",
+ "cycle": "A",
+ "period": [
+  "2022",
+  "2026"
+ ],
+ "rows_total": 20000,
+ "rows_kept": 916,
+ "latest": "2022",
+ "unit": "%",
+ "areas": [],
+ "fetched": "2026-11-03",
+ "source_url": "https://ecos.bok.or.kr/#/Short/503Y006",
+ "source_note": "한국은행 ECOS 통계표 503Y006",
+ "note": ""
+}

@@ -1,0 +1,61 @@
+name: 대구 공개 지출 자료(지출건별) 집계
+
+# scripts/fetch_daegu_expense.py — 대구 주민참여 재정 포털 '세출현황 지출건별' 하루치 엑셀을 2021~2023(포털에 있는 마지막 해) 날짜마다 받아
+# (과세기간·회계·부서·세부사업·통계목) 집계만 data/vat/expense/<gov>.json 에 둔다 — 지자체 부가세 절감 점검기 '공개 지출 자료로 후보 찾기'
+# (운영자 2026-11-03 '홈택스 붙여넣는 것은 공무원이 안 할 것 같은데 방법을 찾아봐'). 원본 행·거래처 없음. 지자체마다 1시간쯤(요청 사이 1.2초).
+on:
+  workflow_dispatch:
+    inputs:
+      gov:
+        description: "지자체 key(쉼표: daegu,jung,dong,seo,nam,buk,suseong,dalseo,dalseong,gunwi — 비우면 전부)"
+        required: false
+        default: ""
+      years:
+        description: "연도(쉼표)"
+        required: false
+        default: "2021,2022,2023"
+      probe:
+        description: "true 면 연도 목록·한 날짜 행 수만 로그"
+        required: false
+        default: "false"
+  schedule:
+    - cron: "0 19 15 2,8 *"   # 2월·8월 16일 04:00 KST — 포털이 2024년 뒤 자료를 다시 싣는지 확인(없으면 그대로)
+
+permissions:
+  contents: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      govs: ${{ steps.p.outputs.govs }}
+    steps:
+      - id: p
+        run: |
+          IN="${{ github.event.inputs.gov }}"; [ -z "$IN" ] && IN="daegu,jung,dong,seo,nam,buk,suseong,dalseo,dalseong,gunwi"
+          echo "govs=$(echo "$IN" | python3 -c 'import sys,json; print(json.dumps([x.strip() for x in sys.stdin.read().split(",") if x.strip()]))')" >> "$GITHUB_OUTPUT"
+  fetch:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        gov: ${{ fromJSON(needs.plan.outputs.govs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q xlrd
+      - run: python scripts/fetch_daegu_expense.py --gov ${{ matrix.gov }} --years "${{ github.event.inputs.years || '2021,2022,2023' }}" ${{ github.event.inputs.probe == 'true' && '--probe' || '' }}
+      - name: 커밋
+        if: github.event.inputs.probe != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vat/expense
+          git diff --cached --quiet && echo "변경 없음" && exit 0
+          git commit -m "대구 공개 지출 자료 집계: ${{ matrix.gov }} $(date +%Y-%m-%d)"
+          for i in 1 2 3 4 5 6; do git pull --rebase -q origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }} && break; sleep $((i*10)); done

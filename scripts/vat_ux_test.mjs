@@ -282,6 +282,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   const byK = Object.fromEntries(supRows.map(r => [r.k, r]));
   ok('R1 이름 일치 자동 귀속: 한전·건설사 → 체육센터(초록), 청소업체 → 도서관(빨강), 문구사 미지정(노랑)', byK['1111111111']?.fid === 'f1' && /v-ok/.test(byK['1111111111'].cls) && byK['4444444444']?.fid === 'f1' && byK['2222222222']?.fid === 'f2' && /v-no/.test(byK['2222222222'].cls) && byK['3333333333']?.fid === '' && /v-check/.test(byK['3333333333'].cls), JSON.stringify(supRows.map(r => [r.k, r.fid, r.cls])));
   ok('R1 다른 명의 1건 따로', /우리 명의가 아닌 세금계산서 1건/.test(T(await pg.locator('#rv-result').textContent())));
+  ok('R7 신고 값 넣기 전 맨 위 카드: 지금 0 · 상한 300,000(한전 100,000 + 건설사 200,000, 문구사는 미지정)', T(await pg.locator('#rv-total').textContent()).startsWith('0') && T(await pg.locator('#rv-cap').textContent()).startsWith('300,000'), T(await pg.locator('#rv-money').textContent()).slice(0, 200));
   await pg.selectOption('[data-filed="2025-1"]', 'filed'); await pg.waitForTimeout(300); await pg.fill('[data-fin="deduct:2025-1"]', '20000'); await pg.press('[data-fin="deduct:2025-1"]', 'Tab'); await pg.waitForTimeout(300); await pg.fill('[data-fin="er:2025-1"]', '40'); await pg.press('[data-fin="er:2025-1"]', 'Tab'); await pg.waitForTimeout(300);
   await pg.selectOption('[data-filed="2025-2"]', 'none'); await pg.waitForTimeout(300);
   const perA = await pg.$$eval('#rv-per tbody tr', trs => trs.map(t => [...t.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim())));
@@ -291,6 +292,8 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('R3 문구사 → 본청·행정 공통(면세비율 40%): 2025-1 118,000 − 20,000 = 98,000 · 못 센 0', perB[0][2] === '118,000' && perB[0][4].startsWith('98,000') && perB[0][6] === '0', JSON.stringify(perB[0]));
   ok('R3 2025-2 신고 없음 → 기한후신고 · 차이 200,000(건설사 수선, 다른 명의 제외)', perB[1][2] === '200,000' && perB[1][4].startsWith('200,000') && /기한후신고/.test(perB[1][7] + perB[1][8]), JSON.stringify(perB[1]));
   ok('R4 합계 카드 298,000 · 사유 초안에 금액', T(await pg.locator('#rv-total').textContent()).startsWith('298,000') && /298,000/.test(await pg.locator('#rv-reason').inputValue()));
+  ok('R7 가산세 빼면 281,500(= 298,000 − 공급가액 3,300,000 × 0.5%)', T(await pg.locator('#rv-net').textContent()).startsWith('281,500'), T(await pg.locator('#rv-net').textContent()));
+  await pg.selectOption('[data-filed="2025-1"]', 'excluded'); await pg.waitForTimeout(400); ok('R7 \'함 — 이 목록은 안 넣었음\' → 2025-1 전액 118,000, 합계 318,000', T(await pg.locator('#rv-total').textContent()).startsWith('318,000')); await pg.selectOption('[data-filed="2025-1"]', 'filed'); await pg.waitForTimeout(400); await pg.fill('[data-fin="deduct:2025-1"]', '20000'); await pg.press('[data-fin="deduct:2025-1"]', 'Tab'); await pg.waitForTimeout(400);
   const [dz] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zr = path.join(os.tmpdir(), 'vat-rv2.zip'); await dz.saveAs(zr); const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); const det = execSync(`unzip -p "${zr}" 02_건별_명세.csv`).toString();
   ok('R5 zip 6파일 · 건별 명세에 본청·행정 공통 18,000', zl.length === 6 && /본청·행정 공통/.test(det) && /18000/.test(det), zl.join('|'));
   await pg.reload(); await pg.waitForTimeout(700); ok('R6 새로 고침 뒤 자료·귀속·신고 값 유지(5건, 298,000)', /5건/.test(T(await pg.locator('#rv-stat').textContent())) && T(await pg.locator('#rv-total').textContent()).startsWith('298,000'));

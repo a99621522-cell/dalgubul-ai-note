@@ -195,3 +195,7 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 #rv-sup td, #rv-sup th { padding-left: 4px; padding-right: 4px; }
 #rv-sup td:nth-child(8), #rv-sup .rv-rows td:nth-child(8) { min-width: 10em; font-size: var(--small); }
 #rv-sup .rv-rows > td { padding: 0 0 8px 24px; background: var(--color-surface-2, var(--bg-soft, transparent)); }
+
+/* 지난 돈 돌려받기 — 맨 위 금액 카드(운영자 2026-11-03 '얼마나 돌려받는지가 나와야') */
+.rv-money { border: 2px solid var(--color-link, #1a56b8); }
+.rv-money .vc-card .big { font-size: 1.8rem; }

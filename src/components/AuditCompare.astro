@@ -20,7 +20,7 @@ const iqr = (s: Scope | undefined, k: string) => { const c = cell(s, k); return 
 const nOf = (s: Scope | undefined, k: string) => cell(s, k)?.n ?? 0;
 const SCOPES = [['daegu_listed', '대구 상장'], ['national_listed', '전국 상장'], ['daegu_unlisted', '대구 비상장 외감'], ['national_unlisted', '전국 비상장 외감(표본)']] as const;
 const REG = A?.bok_region;
-const SCALES = ['종합', '대기업', '중기업', '소기업'].filter(x => REG?.by_scale?.[x]);
+const SCALES = ['종합', '대기업', '중소기업', '중기업', '소기업'].filter(x => REG?.by_scale?.[x]);
 const COV = A?.coverage;
 const TR = A?.trend ?? {};
 const EMP = A?.employment;

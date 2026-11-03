@@ -37,7 +37,7 @@
 | mining-mfg-survey-sido | [시도/산업분류별 출하액생산액부가가치 및 주요생산비(10명 이상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104) | Y 2020~2026 | 2024 | 7501 | 개 |
 | population-age-sido | [고령인구비율(시도/시/군/구)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631) | Y 2020~2026 | 2025 | 288 | 명 |
 | population-sido | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | Y 2014~2026 | 2025 | 10257 | 명 |
-| population-sigungu-monthly | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | M 202401~202612 | 202609 | 29055 | 명 |
+| population-sigungu-monthly | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | M 202401~202612 | 202610 | 29940 | 명 |
 | regional-employment-sigungu | [시군구/산업별 취업자(11차)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3A30S) | H 202001~202602 | 202601 | 911 | 천명 |
 | retail-sales-index-sido | [시도별 소매판매액지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K41018) | Y 2014~2026 | 2025 | 1156 | 2020＝100 |
 | self-employed-sido | [행정구역(시도)/종사상지위별 취업자](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7035S) | M 202301~202612 | 202609 | 8310 | 천명 |

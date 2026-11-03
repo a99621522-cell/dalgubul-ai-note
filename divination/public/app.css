@@ -111,3 +111,6 @@ footer.foot p{margin:6px 0}
 .coinhex .final span:last-child{font-size:.82rem;color:var(--mute)}
 @keyframes pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.coinhex .final{animation:none}.coinhex .yao.new{animation:none}}
+
+.reading details.basis{margin:10px 0;padding:8px 12px;border:1px dashed var(--line);border-radius:8px;font-size:.92rem}
+.reading details.basis summary{cursor:pointer;font-weight:600}

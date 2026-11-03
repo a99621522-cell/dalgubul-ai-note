@@ -158,19 +158,19 @@
 
   // --- 마크다운 최소 변환 (제목·목록·문단) ---
   function md(text) {
-    const lines = String(text).split(/\r?\n/); let out = ''; let inList = false; let para = [];
+    const lines = String(text).split(/\r?\n/); let out = ''; let inList = false; let para = []; let openBasis = false;
     const flush = () => { if (para.length) { out += `<p>${esc(para.join(' '))}</p>`; para = []; } };
     const closeList = () => { if (inList) { out += '</ul>'; inList = false; } };
     for (const raw of lines) {
       const l = raw.trim();
       if (!l) { flush(); closeList(); continue; }
       const h = /^(#{1,3})\s+(.*)$/.exec(l);
-      if (h) { flush(); closeList(); out += `<h3>${esc(h[2])}</h3>`; continue; }
+      if (h) { flush(); closeList(); if (/^근거/.test(h[2])) { out += `<details class="basis"><summary>${esc(h[2].replace(/\s*\(펼쳐 보기\)/, ''))}</summary>`; openBasis = true; } else { if (openBasis) { out += '</details>'; openBasis = false; } out += `<h3>${esc(h[2])}</h3>`; } continue; }
       const li = /^[-*•]\s+(.*)$/.exec(l);
       if (li) { flush(); if (!inList) { out += '<ul>'; inList = true; } out += `<li>${esc(li[1])}</li>`; continue; }
       para.push(l);
     }
-    flush(); closeList();
+    flush(); closeList(); if (openBasis) out += '</details>';
     return out.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
   }
 

@@ -639,20 +639,28 @@ def stmt_of(text: str) -> str | None:
 def fin_from_audit(xml: str) -> tuple[dict, dict]:
     """감사보고서 원문에서 주요 계정의 (당기, 전기) 값. 표 앞 제목(또는 표 첫 줄)로 어느 재무제표인지 보고 그 안에서만 찾는다.
     표 칸 금액이 2개면 (당기, 전기), 4개면 (2번째, 4번째: 소계 열·합계 열), 3개면 (첫째, 셋째)."""
-    unit = 1
-    m = re.search(r"단위\s*[:：]\s*(백만원|천원|원)", re.sub(r"<[^>]+>", " ", xml))
-    if m:
-        unit = {"원": 1, "천원": 1000, "백만원": 1000000}[m.group(1)]
+    UNIT = {"원": 1, "천원": 1000, "백만원": 1000000}
+    UNIT_RE = re.compile(r"단위\s*[:：]?\s*(백만원|천원|원)")
+    unit = 1   # 표 바로 앞 글·표 머리에 적힌 단위를 그때그때 쓴다(2026-11-03 우성파워텍: 문서 첫 '단위'가 재무제표와 달라 매출이 1,000배)
     got, raw = {}, {}
     weak: dict = {}   # 금액 칸이 3개인 줄(정정 보고서의 '수정 전·후·차이' 표 등) — 2·4칸 줄이 없을 때만 쓴다(2026-11-03 금용기계 정정 감사보고서)
     ctx = None
     for tok in re.finditer(r"<TABLE.*?</TABLE>|<(?:P|TITLE|SPAN)[^>]*>(.*?)</(?:P|TITLE|SPAN)>", xml, re.S | re.I):
         if tok.group(0)[:6].upper() != "<TABLE":
-            st = stmt_of(clean(tok.group(1) or ""))
+            txt = clean(tok.group(1) or "")
+            st = stmt_of(txt)
             if st:
                 ctx = st
+            mu = UNIT_RE.search(txt.replace(" ", ""))
+            if mu:
+                unit = UNIT[mu.group(1)]
             continue
         trs = re.findall(r"<TR[^>]*>(.*?)</TR>", tok.group(0), re.S | re.I)
+        for tr in trs[:3]:   # 표 머리 줄의 '(단위 : 원)'
+            mu = UNIT_RE.search(clean(tr).replace(" ", ""))
+            if mu:
+                unit = UNIT[mu.group(1)]
+                break
         for tr in trs[:2]:   # 제목이 표 첫 줄에 든 양식
             st = stmt_of(clean(tr))
             if st:

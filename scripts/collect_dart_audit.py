@@ -44,7 +44,7 @@ OUT_NS_META = ROOT / "data" / "dart" / "national_audit_sample.json"
 SUMMARY = ROOT / "data" / "dart" / "audit_summary.json"
 
 COLS = ["corp_code", "name", "region", "district", "ksic", "group", "fy", "basis", "fs", "report", "rcept_no",
-        "sales", "sales_prev", "op", "op_prev", "net", "assets", "liab", "equity", "interest", "interest_src", "ocf", "read_at"]
+        "sales", "sales_prev", "op", "op_prev", "net", "assets", "liab", "equity", "interest", "interest_src", "ocf", "check", "read_at"]
 MAXC = [9000]
 
 
@@ -212,6 +212,10 @@ def read_rows(code: str, info: dict, rep: tuple) -> list[dict]:
                 cur[k + "_prev"] = got[k][1] if got[k][1] is not None else ""
     if "interest" in got:
         cur["interest_src"] = prev["interest_src"] = "손익계산서 이자비용"
+    for row in (cur, prev):   # 검산: 자산 = 부채 + 자본(1% 안). 어긋나면 check='자산≠부채+자본' — 집계(audit_compare.py)에서 뺀다
+        a, l, e = row.get("assets"), row.get("liab"), row.get("equity")
+        if a is not None and l is not None and e is not None and a and abs(a - l - e) > abs(a) * 0.01:
+            row["check"] = "자산≠부채+자본"
     out = [cur]
     if prev["fy"] and any(k in prev for k in ("sales", "assets")):
         out.append(prev)

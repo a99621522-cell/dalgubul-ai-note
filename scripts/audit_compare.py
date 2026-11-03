@@ -64,7 +64,7 @@ class Panel:
     def __init__(self, rows: list[dict]):
         self.by: dict[str, dict[str, dict]] = {}
         for r in rows:
-            if not r.get("fy"):
+            if not r.get("fy") or r.get("check"):   # 검산이 어긋난 행(collect_dart_audit.py check 칸)은 뺀다
                 continue
             d = self.by.setdefault(r["corp_code"], {})
             if r["fy"] in d and d[r["fy"]].get("basis") == "당기" and r.get("basis") != "당기":

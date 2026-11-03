@@ -66,7 +66,7 @@ function dumbbell(key: string, name: string): string {
       <dt>대구 비상장 외감 {n(T?.daegu_unlisted)}곳 ({yrs?.daegu_unlisted} 사업연도)</dt>
       <dd>DART 에 감사보고서를 낸 비상장 회사{S ? ` ${S.filers.toLocaleString('ko-KR')}곳` : ''} 가운데 이 사이트 기업 사전의 회사 이름과 일치하고{S ? `(${S.name_matched.toLocaleString('ko-KR')}곳)` : ''} 기업개황 본사 주소가 대구인 제조업(업종 10~34) 회사{S ? ` ${S.daegu_mfg.toLocaleString('ko-KR')}곳` : ''}의 최근 2건 별도 감사보고서 값입니다(보고서마다 당기·전기가 있어 세 사업연도). 외부감사는 법정 기준(자산·매출·부채·종업원 규모)을 넘는 회사만 받아 소규모 회사는 빠지고, 이름이 기업 사전과 다른 회사도 빠질 수 있습니다. 소재지는 본사 기준입니다.</dd>
       <dt>상장 제조업 — 대구 {n(T?.daegu_listed)}곳 · 전국 {n(T?.national_listed)}곳 ({yrs?.listed} 사업연도)</dt>
-      <dd>유가증권·코스닥 상장 제조업 회사의 사업보고서 <strong>별도</strong>재무제표(비상장 감사보고서와 같은 기준 — 다른 상장기업 탭은 연결 우선이라 값이 다를 수 있습니다). 전국은 대구를 포함한 전수입니다.</dd>
+      <dd>유가증권·코스닥 상장 제조업 회사의 사업보고서 <strong>별도</strong>재무제표(비상장 감사보고서와 같은 기준 — 다른 상장기업 탭은 연결 우선이라 값이 다를 수 있습니다). 전국은 대구를 포함한 전수입니다. 한국채택국제회계기준 손익계산서에는 대개 이자비용 줄이 따로 없어(금융원가로 묶음), 이자보상비율의 이자비용은 현금흐름표의 '이자의 지급'으로 대신한 회사가 많습니다(비상장 감사보고서는 손익계산서 이자비용).</dd>
       <dt>전국 비상장 외감 표본 {n(T?.national_unlisted)}곳 ({yrs?.national_unlisted} 사업연도)</dt>
       <dd>감사보고서 제출 비상장 회사{SM.population ? ` ${SM.population.toLocaleString('ko-KR')}곳` : ''} 전체에서 고정 시드({SM.seed}) 무작위 순서로 {SM.looked?.toLocaleString('ko-KR')}곳을 보고 제조업만, 업종 묶음당 최대 {SM.cap_per_group}곳까지 읽었습니다. 표본이라 중앙값 옆에 부트스트랩 95% 범위를 적습니다.</dd>
       <dt>한국은행 「기업경영분석」</dt>

@@ -9,6 +9,10 @@ on:
         description: "PDF 주소를 바로 주면 목록을 읽지 않고 그 파일을 받는다(비우면 참고자료실 목록의 최신 글)"
         required: false
         default: ""
+      page:
+        description: "글 페이지 주소(selectNttInfo.do?…nttSn=…)를 주면 그 글의 첨부를 받는다"
+        required: false
+        default: ""
       key:
         description: "저장 이름(예: 2026-1F). 비우면 제목에서 짐작"
         required: false
@@ -34,9 +38,10 @@ jobs:
       - run: pip install -q -r scripts/requirements.txt
       - env:
           URL: ${{ inputs.url }}
+          PAGE: ${{ inputs.page }}
           KEY: ${{ inputs.key }}
           TITLE: ${{ inputs.title }}
-        run: python3 scripts/fetch_nts_manual.py $([ -n "$URL" ] && echo --url "$URL") $([ -n "$KEY" ] && echo --key "$KEY") $([ -n "$TITLE" ] && echo --title "$TITLE")
+        run: python3 scripts/fetch_nts_manual.py $([ -n "$URL" ] && echo --url "$URL") $([ -n "$PAGE" ] && echo --page "$PAGE") $([ -n "$KEY" ] && echo --key "$KEY") $([ -n "$TITLE" ] && echo --title "$TITLE")
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

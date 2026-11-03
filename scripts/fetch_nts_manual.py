@@ -23,12 +23,16 @@ def get(url, **kw):
 
 def find_latest(list_url):
     s = BeautifulSoup(get(list_url).text, "html.parser")
+    cand = [(a.get_text(" ", strip=True), a.get("href") or "", a.get("onclick") or "", str(a.attrs)[:160]) for a in s.select("a") if "매뉴얼" in a.get_text(" ", strip=True) or "nttSn" in (a.get("href") or "") + (a.get("onclick") or "")]
+    print("목록 링크 후보(매뉴얼·nttSn):", len(cand)); [print("  ", c) for c in cand[:25]]
+    rows = [t.get_text(" ", strip=True)[:120] for t in s.select("tr, li") if "부가가치세" in t.get_text(" ", strip=True)]
+    print("부가가치세 든 행:", len(rows)); [print("  ", r) for r in rows[:15]]
     for a in s.select("a"):
         t = a.get_text(" ", strip=True)
         if "부가가치세 신고안내 매뉴얼" in t or ("부가가치세" in t and "매뉴얼" in t):
             href = a.get("href") or ""
             oc = a.get("onclick") or ""
-            m = re.search(r"nttSn=(\d+)", href + oc) or re.search(r"['\"](\d{6,})['\"]", oc)
+            m = re.search(r"nttSn=(\d+)", href + oc) or re.search(r"['\"](\d{6,})['\"]", oc) or re.search(r"(\d{6,})", str(a.attrs.get("data-id", "")) + str(a.attrs.get("data-nttsn", "")))
             if m:
                 return t, f"https://www.nts.go.kr/nts/na/ntt/selectNttInfo.do?mi=2409&nttSn={m.group(1)}"
     return None, None
@@ -50,11 +54,16 @@ def find_attach(page_url):
 
 def main():
     key = arg("--key", ""); title = arg("--title", ""); url = arg("--url"); list_url = arg("--list", LIST)
-    if not url:
+    page = arg("--page")
+    if not url and not page:
         t, page = find_latest(list_url)
         if not page: print("목록에서 매뉴얼 글을 못 찾음"); sys.exit(2)
         title = title or t; print("글:", t, page)
+    if not url:
         at, url = find_attach(page)
+        if not title:
+            try: title = BeautifulSoup(get(page).text, "html.parser").select_one("h3, h4, .tit, .title, .subject").get_text(" ", strip=True)
+            except Exception: pass
         if not url: print("첨부 링크를 못 찾음"); sys.exit(3)
         print("첨부:", at, url)
     if not key:

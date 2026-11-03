@@ -77,6 +77,8 @@ def fetch_table(t: dict, key: str, dry: bool) -> dict | None:
     cycle = t.get("cycle", "M")
     start, end = period_range(cycle, int(t.get("years", 6)))
     tail = f"{t['stat_code']}/{cycle}/{start}/{end}"
+    if t.get("item_codes"):   # 항목 코드 1~4(전체는 '?') — 전 지역×업종 표에서 대구(Z51 등)만 받을 때(2026-11-03 지역별 기업경영분석: 전 지역을 받다 20쪽에서 잘림)
+        tail += "/" + "/".join(str(x) for x in t["item_codes"])
     if dry:
         print(f"[dry] {t['key']}: {API}/StatisticSearch/***/json/kr/1/{PAGE}/{tail}")
         return None

@@ -15,7 +15,7 @@ data/vat/expense/<key>.json 에 남긴다. 값 그대로·평가 없음. 세액�
   --merge   받은 날짜를 기존 JSON 에 더한다(기본: 지정 연도는 새로 집계). 요청 사이 1.2초, 실패는 3회 재시도 뒤 건너뛰고 index 에 적는다.
 """
 from __future__ import annotations
-import argparse, datetime as dt, io, json, re, subprocess, sys, time
+import argparse, datetime as dt, io, json, os, re, subprocess, sys, time
 from collections import defaultdict
 from pathlib import Path
 
@@ -23,7 +23,7 @@ BASE = "https://jumin.daegu.go.kr/budget/texoperate"
 UA = "Mozilla/5.0 (compatible; daitda-vat/1.0; +https://vat-daitda.pages.dev/vat/)"
 GOVS = [("daegu", "01", "대구광역시"), ("jung", "02", "중구"), ("dong", "03", "동구"), ("seo", "04", "서구"), ("nam", "05", "남구"), ("buk", "06", "북구"), ("suseong", "07", "수성구"), ("dalseo", "08", "달서구"), ("dalseong", "09", "달성군"), ("gunwi", "10", "군위군")]
 OUT = Path("data/vat/expense"); OUT.mkdir(parents=True, exist_ok=True)
-JAR = Path("/tmp/daegu_expense_cookies.txt")
+JAR = Path(f"/tmp/daegu_expense_cookies_{os.getpid()}.txt")   # 프로세스마다 따로(한 PC 에서 지자체 둘을 함께 받을 때 세션이 섞이지 않게)
 NAME_RE = re.compile(r"(?:(?<![가-힣])[가-힣]{3}\s*,\s*){2,}[가-힣]{3}(?![가-힣])|(?<![가-힣])[가-힣]{3}(?=\s*(?:외\s*\d|님(?![가-힣])|씨(?![가-힣])))")   # 적요 속 사람 이름 묶음 — 3자 이름이 쉼표로 셋 이상 이어지거나 '외 N'·'님'·'씨'가 붙은 것만(토목,건축 같은 두 낱말은 남김)
 
 

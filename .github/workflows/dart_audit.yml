@@ -48,9 +48,11 @@ jobs:
         run: |
           git config user.name dalgubul-bot
           git config user.email bot@users.noreply.github.com
-          git add scripts/state/dart_audit_filings.json.gz scripts/state/dart_audit_corp.json scripts/data/company_financials_audit.csv \
-                  data/dart/national_listed.csv data/dart/national_audit_sample.csv data/dart/national_audit_sample.json \
-                  data/dart/audit_summary.json data/dart/audit_compare.json 2>/dev/null || true
+          for f in scripts/state/dart_audit_filings.json.gz scripts/state/dart_audit_corp.json scripts/data/company_financials_audit.csv \
+                   data/dart/national_listed.csv data/dart/national_audit_sample.csv data/dart/national_audit_sample.json \
+                   data/dart/audit_summary.json data/dart/audit_compare.json; do
+            [ -e "$f" ] && git add "$f"     # 없는 파일이 하나라도 섞이면 git add 전체가 실패해 아무것도 커밋되지 않던 것(2026-11-03 전국 상장 1,600회 호출분을 잃음)
+          done
           git diff --cached --quiet && { echo "변경 없음"; exit 0; }
           git commit -m "data: DART 대구 비상장 외감 재무·전국 비교 $(date -u +%Y-%m-%d)"
           for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

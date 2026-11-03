@@ -12,6 +12,7 @@
   --sample N     감사보고서 제출 비상장 회사에서 무작위(시드 고정) N곳 기업개황 → 제조업만 업종 묶음당 --cap 곳까지
                  최근 별도 감사보고서 → data/dart/national_audit_sample.csv + .json(표본 설계)
   --max-calls N  이번 실행 API 호출 상한(기본 9000). 넘으면 쓴 데까지 저장하고 멈춘다(다음 실행이 이어 받음)
+  --reparse      이미 읽은 감사보고서도 다시 읽는다(판독 규칙을 고친 뒤)   --show N  처음 N 곳의 원문 줄을 로그로(대조용)
 
 원칙: 공시 값 그대로(단위만 원으로), 못 읽은 계정은 비움, 추정 없음. 대표자·주주 이름은 읽지 않는다.
 화면에는 회사 이름 목록·순위를 내지 않는다(scripts/audit_compare.py 가 묶음 통계만 만든다). 키: DART_KEY.
@@ -147,12 +148,20 @@ def company(code: str, cache: dict) -> dict:
     return rec
 
 
+SHOW = [0]   # --show N: 처음 N 곳의 원문 줄을 로그로(DART 원문 대조용)
+
+
 def read_row(code: str, info: dict, rep: tuple) -> dict | None:
     rd, rn, rno = rep
     xml = N.doc_xml(rno)
     if not xml:
         return None
-    got, _raw = N.fin_from_audit(xml)
+    got, raw = N.fin_from_audit(xml)
+    if SHOW[0] > 0:
+        SHOW[0] -= 1
+        print(f"CHECK\t{info.get('name')}\t{rn}\thttps://dart.fss.or.kr/dsaf001/main.do?rcpNo={rno}")
+        for k, v in raw.items():
+            print(f"CHECK\t{info.get('name')}\t{k}\t{v}")
     row = {"corp_code": code, "name": info.get("name", ""), "region": info.get("region", ""), "district": info.get("district", ""),
            "ksic": info.get("ksic", ""), "group": group_of(info.get("ksic", "")), "fy": fy_of(rn),
            "fs": "연결" if "연결" in rn else "별도", "report": rn, "rcept_no": rno, "read_at": date.today().isoformat()}
@@ -186,8 +195,8 @@ def daegu(argv: list[str]) -> int:
                     names.add(k)
     matched = [c for c, v in fl.items() if N.norm_name(v["n"]) in names]
     print(f"[daegu] 감사보고서 제출 비상장 {len(fl)}곳 중 기업 사전 이름 일치 {len(matched)}곳", flush=True)
-    old = {r["rcept_no"]: r for r in read_csv(OUT_DG)}
-    rows = {r["corp_code"]: r for r in old.values()}
+    old = {} if "--reparse" in argv else {r["rcept_no"]: r for r in read_csv(OUT_DG)}
+    rows = {r["corp_code"]: r for r in read_csv(OUT_DG)}
     n_dg = n_mfg = 0
     try:
       for i, c in enumerate(matched):
@@ -303,8 +312,7 @@ def sample(argv: list[str]) -> int:
     pop = sorted(fl)
     random.seed(seed)
     order = random.sample(pop, len(pop))   # 시드 고정 순서 — 앞에서부터 n 곳을 본다(이어 받기 가능)
-    old = {r["corp_code"]: r for r in read_csv(OUT_NS)}
-    rows = dict(old)
+    rows = {r["corp_code"]: r for r in read_csv(OUT_NS)}
     per: dict[str, int] = {}
     for r in rows.values():
         per[r["group"]] = per.get(r["group"], 0) + 1
@@ -319,15 +327,16 @@ def sample(argv: list[str]) -> int:
             continue
         mfg += 1
         g = group_of(info["ksic"])
-        if c in rows or per.get(g, 0) >= cap:
+        if (c in rows and "--reparse" not in argv) or (c not in rows and per.get(g, 0) >= cap):
             continue
         rep = pick_report([tuple(a) for a in fl[c]["a"]])
         if not rep:
             continue
         row = read_row(c, info, rep)
         if row:
+            if c not in rows:
+                per[g] = per.get(g, 0) + 1
             rows[c] = row
-            per[g] = per.get(g, 0) + 1
         if seen % 200 == 0:
             print(f"[sample] {seen}/{n} 제조 {mfg} 저장 {len(rows)} (호출 {N.CALLS[0]})", flush=True)
             save_json(CORP, cache)
@@ -348,6 +357,8 @@ def main(argv: list[str]) -> int:
         return 0
     if "--max-calls" in argv:
         MAXC[0] = int(argv[argv.index("--max-calls") + 1])
+    if "--show" in argv:
+        SHOW[0] = int(argv[argv.index("--show") + 1])
     t0 = time.time()
     try:
         if "--filings" in argv:

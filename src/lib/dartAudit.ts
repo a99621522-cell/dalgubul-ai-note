@@ -5,19 +5,27 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export interface Cell { n: number; med?: number; q1?: number; q3?: number; ci?: [number, number]; pooled?: number | null }
-export interface Scope { n: number; [key: string]: Cell | number }
+export interface IcrLow { n: number; k: number | null; share: number | null; n3: number; share3: number | null }
+export interface Scope { n: number; icr_low?: IcrLow; [key: string]: Cell | number | IcrLow | undefined }
 export interface Row4 { daegu_listed: Scope; national_listed: Scope; daegu_unlisted: Scope; national_unlisted: Scope }
 export interface BokCell { med?: number; q1?: number; q3?: number; mean?: number; name?: string }
+export interface EmpStat { n: number; n_both: number; med?: number; sum?: number; chg?: number | null; up?: number; down?: number }
 export interface AuditCompare {
   updated: string; min_n: number;
   indicators: { key: string; name: string; unit: string }[];
   years: { daegu_unlisted: string; listed: string; national_unlisted: string };
   total: Row4;
   by_group: (Row4 & { group: string })[];
-  by_ksic: (Row4 & { code: string; name: string; bok: Record<string, BokCell> })[];
+  by_ksic: (Row4 & { code: string; name?: string; bok: Record<string, BokCell>; bok_region?: Record<string, number> })[];
   by_district: { district: string; daegu_unlisted: Scope }[];
   bok: { year?: string; table?: string; by?: Record<string, BokCell> };
   bok_year_ksic?: string;
+  min_share?: number; bands?: string[];
+  by_band?: (Row4 & { band: string })[];
+  trend?: Record<string, { years: string[]; all: Record<string, Scope>; same: Record<string, Scope>; same_n: number }>;
+  employment?: { months: { last?: string; prev?: string; matched?: number }; total: EmpStat; by_band: (EmpStat & { band: string })[]; by_ksic: (EmpStat & { code: string })[] };
+  bok_region?: { year?: string; table?: string; by_scale?: Record<string, Record<string, number>>; by_ksic?: Record<string, Record<string, number>>; sales?: Record<string, { value: number; unit: string }> };
+  coverage?: { year: string; bok_sales_won: number; unlisted_sales_won: number; listed_sales_won: number; unlisted_n: number; listed_n: number; unlisted_share: number | null; listed_share: number | null };
   sample: { population?: number; seed?: number; looked?: number; cap_per_group?: number; rows?: number; filings_since?: string; note?: string };
   summary: { daegu?: { filers: number; name_matched: number; daegu: number; daegu_mfg: number; rows: number; filings_since?: string; updated?: string }; listed?: { year: string; target: number; rows: number } };
 }
@@ -49,3 +57,6 @@ export const KSIC2: Record<string, string> = {
   C31: '기타 운송장비', C32: '가구', C33: '기타 제품', C34: '산업용 기계 수리',
 };
 export const ksicName = (code: string) => `${code} ${KSIC2[code] ?? ''}`.trim();
+
+export const ym = (m?: string) => (m && m.length === 6 ? `${m.slice(0, 4)}년 ${Number(m.slice(4))}월` : m ?? '');
+export const eokJo = (won?: number) => (won == null ? '—' : won >= 1e12 ? `${(won / 1e12).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}조 원` : `${Math.round(won / 1e8).toLocaleString('ko-KR')}억 원`);

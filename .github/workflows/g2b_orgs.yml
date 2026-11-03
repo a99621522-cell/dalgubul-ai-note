@@ -1,0 +1,41 @@
+name: 나라장터 수요기관 사업자등록번호(대구 지자체·공단)
+
+# 조달청 「나라장터 사용자정보 서비스」(공공데이터포털 15129466, 활용신청 필요)로 대구 지자체·소속기관·공단의 수요기관코드·사업자등록번호를 받아
+# data/vat/orgs/daegu_g2b.csv 로 커밋한다(지자체 부가세 절감 점검기 기관 설정 미리 채움). 수동 실행. probe=true 면 응답 머리를 로그에.
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "응답 머리·예시 행을 로그에(true)"
+        default: "false"
+      names:
+        description: "조회할 기관 이름(쉼표, 비우면 기본 목록)"
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 받기
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          PROBE: ${{ inputs.probe }}
+          NAMES: ${{ inputs.names }}
+        run: |
+          ARGS=()
+          [ "$PROBE" = "true" ] && ARGS+=(--probe)
+          [ -n "$NAMES" ] && ARGS+=(--names "$NAMES")
+          python3 scripts/fetch_g2b_orgs.py "${ARGS[@]}"
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vat/orgs
+          git diff --cached --quiet && echo "변경 없음" || (git commit -m "data: 나라장터 수요기관 사업자등록번호(대구) 갱신" && git push)

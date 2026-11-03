@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'st-youngwon-separator', summary: '대구 달성군 다사읍(성서5차첨단산업단지) 비상장 기계 회사 에스티영원(2021년 설립)이 리튬배터리 습식분리막 제조장비로 매출을 2022년 99억 원에서 2023년 568억 원까지 늘렸다가 2025년 3억 원(영업손실 35억 원)으로 줄고, 2025년 말 선수금 370억 원·재공품 379억 원이 전년 말 규모로 남은 구조를 DART 감사보고서(2023~2025)의 재무상태·차입금·대손충당금 주석과 국민연금·벤처기업명단·공장등록 자료로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['비상장기업', '이차전지', '설비'],
+    title: '에스티영원, 이차전지 습식분리막 장비 회사의 수주와 매출', name: '에스티영원, 이차전지 습식분리막 장비 회사의 수주와 매출',
+    hwpx: '/hwpx/st-youngwon-separator.hwpx', hwpxSize: '140KB', date: '2026-11-03' },
   { slug: 'korea-skf-seal-oilseal', summary: '대구 달성군 논공읍(달성일반산업단지) 비상장 오일씰 회사 한국에스케이에프씰(1988년 설립, 1998년 스웨덴 AB SKF와 합작, SKF 지분 51%)이 자동차·산업용 오일씰을 만들어 매출 960억 원대(2025년 963억 원, 영업이익 46억 원)를 유지하고 그 가운데 160억~180억 원을 미국·멕시코·중국·인도 SKF 그룹사에 공급하는 구조를 DART 감사보고서(2023~2025)와 국민연금·팩토리온 자료로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['비상장기업', '자동차부품', '외국인투자'],
     title: '한국에스케이에프씰, 오일씰 공장과 SKF 그룹 공급', name: '한국에스케이에프씰, 오일씰 공장과 SKF 그룹 공급',
     hwpx: '/hwpx/korea-skf-seal-oilseal.hwpx', hwpxSize: '137KB', date: '2026-11-03' },

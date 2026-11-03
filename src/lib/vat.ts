@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import yaml from 'js-yaml';
 /** 지자체 부가가치세 매입세액 점검기 규칙(data/vat/rules.yml, 운영자 지시 2026-10-27). 조문 번호·뜻만, 평가 없음. 브라우저 판정은 src/scripts/vat_check.ts */
-export type Basis = { law: 'act' | 'decree' | 'rule' | 'basic'; art: string };
+export type Basis = { law: 'act' | 'decree' | 'rule' | 'basic' | 'special' | 'special_decree'; art: string };
 export type Facility = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; cond?: string; rulings?: string[]; basis: Basis[] };
 export type Opt = { key: string; name: string };
 export type NonDed = { key: string; no: string; name: string; fix: string; basis: Basis[] };
@@ -40,7 +40,7 @@ export function vatRules(): VatRules | null {
 }
 /** 국가법령정보센터 조문 링크: https://www.law.go.kr/법령/부가가치세법/제39조 */
 export const lawUrl = (r: VatRules, b: Basis) => r.law_url.replace('{law}', r.laws[b.law]).replace('{art}', b.art);
-export const lawName = (r: VatRules, b: Basis) => ({ act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법' } as Record<string, string>)[b.law] + ' ' + b.art;
+export const lawName = (r: VatRules, b: Basis) => ({ act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법', special: '조특법', special_decree: '조특법 시행령' } as Record<string, string>)[b.law] + ' ' + b.art;
 /** 예시 설정(data/vat/presets/*.yml — 공개 자치법규로 만든 시설 목록, 운영 방식·등록번호 없음) */
 export function vatPresets(): Preset[] {
   const dir = 'data/vat/presets'; if (!fs.existsSync(dir)) return [];

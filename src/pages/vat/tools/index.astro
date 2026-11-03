@@ -92,6 +92,7 @@ const V = R.verified;
 
   <section id="facility">
     <div class="section-head"><h2>3. 우리 시설은 과세사업인가</h2></div>
+    {R.rules.agency_exempt && <p class="callout info"><strong>공단·기초 지방공사의 대행사업은 부가세 면제(조세특례제한법):</strong> {R.rules.agency_exempt.summary} 제외 업종: {R.rules.agency_exempt.exclusions.join(' · ')}. {R.rules.agency_exempt.caution} 근거: {basisLinks(R.rules.agency_exempt.basis).map((b, i) => <> {i ? ' · ' : ''}<a href={b.url} target="_blank" rel="noopener">{b.name}</a></>)}{(R.rules.agency_exempt.rulings ?? []).map(id => { const r = (R.rulings ?? []).find(x => x.id === id); return r ? <> · {r.url ? <a href={r.url} target="_blank" rel="noopener">{r.no}</a> : r.no}</> : null; })}</p>}
     <p>{R.taxable_principle.summary}</p>
     <ul class="meta-list">{R.taxable_principle.notes.map(n => <li>{n}</li>)}</ul>
     <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤">

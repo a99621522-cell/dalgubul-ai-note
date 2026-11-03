@@ -27,6 +27,7 @@ export type Data = {
     develop?: { land_sale: string; land_cost: string; timing: string; refund: string; housing: string; basis: Basis[] };
     entity_unit?: { summary: string; caution: string; basis: Basis[] };
     agency_contract?: { key: string; text: string }[];
+    agency_exempt?: { summary: string; exclusions: string[]; caution: string; basis: Basis[]; rulings?: string[] };
     penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
     deemed_rent?: { rates: Record<string, number>; src: string } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
@@ -49,7 +50,7 @@ export const LABEL: Record<Verdict, string> = { ok: '공제', split: '안분 뒤
 export const SIGNAL: Record<Verdict, string> = { ok: '초록 · 공제됩니다', split: '파랑 · 공통 — 신고 때 나눕니다', no: '빨강 · 공제 안 됩니다', none: '회색 · 부가세가 없는 지출', check: '노랑 · 확인이 필요합니다' };
 export type Input = { use: string; kind: string; proof: string; supplier: string; timing: string };
 export type Out = { v: Verdict; title: string; why: string[]; todo: string[]; basis: Basis[]; verify?: boolean; recalc?: boolean; split?: boolean };
-export const LAW: Record<string, string> = { act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법' };
+export const LAW: Record<string, string> = { act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법', special: '조특법', special_decree: '조특법 시행령' };
 
 export const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
 export const num = (s: string | undefined | null) => { const v = Number(String(s ?? '').replace(/[^0-9.\-]/g, '')); return Number.isFinite(v) ? v : 0; };

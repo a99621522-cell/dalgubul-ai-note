@@ -62,12 +62,12 @@ FAC_KW = [
 MOK_KW = {
     "211": [(r"주택|관사|임대주택", "housing"), (r"사용허가|사용료|점용", "use_permit"), (r"", "lease_bldg")],
     "212": [(r"사용허가|점용|점유", "use_permit"), (r"", "use_permit")],
-    "213": [(r"봉투|폐기물|쓰레기|분뇨|반입|소각|매립|재활용", "waste_bag"), (r"보건|진료|예방접종|검사|의료|진단", "medical"), (r"", "admin_fee")],
+    "213": [(r"재활용품?\s*(매각|판매)|재활용품", "recyclables"), (r"봉투|폐기물|쓰레기|분뇨|반입|소각|매립|재활용", "waste_bag"), (r"보건|진료|예방접종|검사|의료|진단", "medical"), (r"", "admin_fee")],
     "214": [(r"구내식당|직원식당", "canteen"), (r"매점|카페|식당|기념품|판매장|음식|커피|휴게소", "food"), (r"자판기|자동판매", "vending"),
             (r"광고|전광판|승강장", "ad_space"), (r"간행물|도서|지도|책자", "books"),
             (r"농산물|임산물|축산물|묘목|종자|산림|과수|벼|쌀|채소|꽃|예찰|시범포|가축|한우|젖소|버섯", "farm"),
             (r"미생물|퇴비|가공|제품|판매|생산", "goods"), (r"", "goods")],
-    "221": [(r"토지|부지|택지|용지|임야|대지", "land_sale"), (r"고철|폐품|불용|불용품|차량|중고|폐자재", "scrap"), (r"건물|건축물|구축물|주택", "bldg_sale"), (r"", "bldg_sale")]}
+    "221": [(r"토지|부지|택지|용지|임야|대지", "land_sale"), (r"재활용", "recyclables"), (r"고철|폐품|불용|불용품|차량|중고|폐자재", "scrap"), (r"건물|건축물|구축물|주택", "bldg_sale"), (r"", "bldg_sale")]}
 
 
 def guess_key(hang: str, mok_code: str, mok: str, item: str) -> str:
@@ -100,6 +100,8 @@ def guess_key(hang: str, mok_code: str, mok: str, item: str) -> str:
             return "lease_bldg"
         if h == "211" and re.search(r"임대료|대부료|임대수입", item) and not re.search(r"사용허가|사용료", item):
             return "lease_bldg"
+    if re.search(r"재활용품?\s*(매각|판매|수입)", item):   # 생활폐기물 처리 과정의 재활용품 판매 — 면세(국세청 사전-2025-법규부가-0029)
+        return "recyclables"
     if h == "213" and mok_code == "213-03":
         return "scrap"
     if h == "213" and re.search(r"체험|강습|수강|교육|회비", item):

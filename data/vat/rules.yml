@@ -154,6 +154,14 @@ rulings:
 # 국세청 질의서 초안(운영자 지시 2026-10-28 '국세청 질의도 붙여'): 유권해석이 없거나 분류에 달린 자리마다 기관이 그대로 보낼 수 있는 질의서 틀.
 # {org}·{facilities}·{basis} 는 화면이 기관 설정값으로 채우고, [ ] 안은 기관이 사실관계를 채운다. 사람 이름·전화·금액은 틀에 넣지 않는다. 갑설·을설은 쟁점을 보이는 두 읽기일 뿐 기관 입장이 아니다.
 # channel: 국세청 홈택스 '서면질의'(상담/불복/고충/제보/기타 → 세법상담 → 서면질의)는 일반 질의, '세법해석 사전답변'(국세청 법규과, 신고기한 전 특정 거래)은 구속력 있는 답변 — 어느 길로 보낼지는 기관이 고른다.
+  - id: nts-pre-2025-0029
+    kind: 사전답변
+    "no": 국세청 사전-2025-법규부가-0029 (2025. 3. 26.)
+    title: 지자체 재활용품 판매의 부가가치세 면제 여부
+    gist: 지방자치단체가 독립된 사업이 아닌 지방공공행정의 일환으로 생활폐기물을 수집·처리하는 과정에서 발생하는 재활용품을 판매하는 경우, 해당 재활용품의 판매는 부가가치세법 제26조 제1항 제19호에 따라 부가가치세가 면제된다. 사실관계 — 신청 구청이 폐기물관리법 제14조에 따라 관내 재활용폐기물을 수거해 직영 선별장에서 분리·선별한 뒤 공개입찰(소량·특정 품목은 수의계약)로 뽑은 매각업체(폐기물관리법 제25조·제46조 허가·신고 법인)에 잉고트·투명 PET·철캔·알루미늄캔·파지·유리병 등 7종을 반출량(kg)×계약단가로 익월 부과해 판매하고 세외수입으로 처리.
+    note: 재활용 선별·판매를 '독립된 사업'으로 운영하면(별도 사업장·수익사업 구조) 이 답변의 전제가 달라진다. 수탁기관(공단)이 자기 이름으로 파는 재활용품은 사업자의 재화 공급이라 이 답변이 미치지 않는다(2026-11-03 운영자가 알려 준 사례).
+    src: 국세법령정보시스템 사전답변상세(원문 전부 — JS 화면이라 러너 site_probe render·text 로 2026-11-03 받음)
+    url: https://taxlaw.nts.go.kr/qt/USEQTA002P.do?ntstDcmId=200000000000011617
 inquiries:
   - key: admin_common
     title: 지방자치단체 고유사무와 과세사업에 공통되는 매입세액(본청·행정 공통)의 안분 기준
@@ -462,7 +470,8 @@ revenue_items:
   - { key: medical, group: 사업수입, name: 보건소 진료비·예방접종·검사 수수료, status: exempt, basis: [{ law: act, art: 제26조 }, { law: decree, art: 제35조 }], deduct: 없음(의료보건 용역 제5호) }
   - { key: ad_space, group: 사업수입, name: 시설물·전광판·버스승강장 광고 게시료, status: check, type: ad_space, basis: [{ law: decree, art: 제46조 }], deduct: 광고 시설 설치·관리 지출(광고업·임대업으로 보면) }
   - { key: vending, group: 사업수입, name: 자판기 직영 판매 수입, status: taxable, type: food, basis: [{ law: decree, art: 제46조 }], deduct: 자판기 구입·임차, 상품 매입, 전기(계량 가능하면), note: 자리만 빌려주면 사용허가 사용료 항목으로 }
-  - { key: scrap, group: 재산매각·기타, name: 고철·폐품·불용품 매각 대금, status: check, contractor_status: taxable, contractor_note: "사업자의 재화 공급 — 과세", basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 없음(단발 매각)·반복 매각이면 도소매업 여부 확인, note: 유권해석·분류 확인 }
+  - { key: scrap, group: 재산매각·기타, name: 고철·폐품·불용품 매각 대금, status: check, contractor_status: taxable, contractor_note: "사업자의 재화 공급 — 과세", basis: [{ law: act, art: 제26조 }, { law: decree, art: 제46조 }], deduct: 없음(단발 매각)·반복 매각이면 도소매업 여부 확인, note: 유권해석·분류 확인 — 생활폐기물 처리 과정의 재활용품은 아래 항목(면세) }
+  - { key: recyclables, group: 재산매각·기타, name: 재활용품 매각 대금(생활폐기물 수집·처리 과정에서 나온 파지·캔·PET·유리병 등), status: exempt, contractor_status: taxable, contractor_note: "공단이 자기 이름으로 파는 재활용품은 사업자의 재화 공급 — 과세(군 대행이면 군 명의)", basis: [{ law: act, art: 제26조 }, { law: act, art: 제14조 }], deduct: 없음(면세 공급 — 면세 공급가액에 들어가 면세비율을 올림), note: 국세청 사전답변 사전-2025-법규부가-0029(2025-03-26) — 독립된 사업이 아닌 지방공공행정의 일환으로 수집·처리하는 과정의 재활용품 판매는 제19호 면세. 선별·판매를 독립된 사업으로 운영하면 다시 확인, rulings: [nts-pre-2025-0029] }
   - { key: land_sale, group: 재산매각·기타, name: 토지 매각 대금, status: exempt, basis: [{ law: act, art: 제26조 }], deduct: 없음(토지 제14호) — 면세공급가액에 들어가 그 과세기간 면세비율을 크게 올림 }
   - { key: bldg_sale, group: 재산매각·기타, name: 건물·구축물 매각 대금, status: check, contractor_status: taxable, contractor_note: "사업자의 건물 공급 — 과세", basis: [{ law: act, art: 제26조 }], deduct: 과세사업에 쓰던 건물이면 과세 공급(공급가액 포함), note: 지자체 공급 재화 면세(제19호)와 과세사업용 건물 공급의 구분 — 유권해석 확인 }
   - { key: non_supply, group: 재산매각·기타, name: 이자수입·과태료·과징금·부담금·보조금·기부금·전입금, status: none, basis: [{ law: act, art: 제26조 }], deduct: 없음(재화·용역의 공급이 아님 — 면세공급가액에도 넣지 않음; 다만 면세사업 관련 국고·공공보조금은 안분 때 면세공급가액에 포함 — 시행령 제81조 제1항 단서) }

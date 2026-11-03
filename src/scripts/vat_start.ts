@@ -14,7 +14,7 @@ if (st) {
   const card = (href: string, k: string, v: string, d: string, go: string, cls = '') => `<li class="${cls}"><a href="${href}"><span class="k">${k}</span><span class="v">${v}</span><span class="d">${d}</span><span class="go">${go} →</span></a></li>`;
   st.innerHTML = !org
     ? `<li class="wide"><div class="qs-card"><span class="k">시작 — 아직 기관 설정이 없습니다</span><div id="d-qs-wrap"></div></div></li>`
-    : card('/vat/prepare/', '다음 신고', `D-${f.days}`, `${esc(f.name)} · ${ymd(f.due)}`, '신고 준비', f.days <= 14 ? 'warn' : '')
+    : card('/vat/prepare/', '다음 신고', `D-${f.days}`, `${esc(f.name)} · ${ymd(f.due)}${org.filing === 'agent' ? ' · 세무대리인 의뢰 — 근거 자료는 기관이' : ''}`, org.filing === 'agent' ? '대리인 인계 자료 만들기' : '신고 준비', f.days <= 14 ? 'warn' : '')
       + card('/vat/monthly/', '기록 없는 시설·달', `${empty.length}<span class="d"> / ${facs.length * months.length}</span>`, empty.length ? esc(empty.slice(0, 3).join(', ')) + (empty.length > 3 ? ` 외 ${empty.length - 3}` : '') : `${esc(P.name)} 기간의 지난 달까지 모두 기록됨`, '지출 기록', empty.length ? 'warn' : '')
       + card('/vat/monthly/', '처리할 것', String(oi.total), oi.total ? `다른 명의 ${oi.red.length}건 ${fmt(oi.redTax)}원 · 확인 필요 ${oi.yellow.length}건 · 근거 없는 전용 ${oi.noEvid.length}건${oi.expired ? ` · 수정 기한 지남 ${oi.expired}` : ''}` : '빨강·노랑·근거 없음이 없습니다', '처리하기', oi.red.length ? 'alert' : oi.total ? 'warn' : '')
       + card('/vat/prepare/', '지난 기 공통 면세분', fl ? `${fmt(nd)}<span class="d">원</span>` : '—', fl ? `${fl.period} 신고 기록의 (54) — 전용 분리·비율 관리로 줄일 수 있는 상한` : '신고 기록을 저장하면 보입니다', '절감 분석');

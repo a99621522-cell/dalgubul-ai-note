@@ -10,7 +10,7 @@ export type Inquiry = { key: string; fac?: string; title: string; channel: strin
 export type Ruling = { id: string; kind: string; no: string; title: string; gist: string; note?: string; src?: string; url?: string; verify?: boolean; law_id?: number; ulex?: string; tt?: string; text?: string };
 export type Opt = { key: string; name: string };
 export type Glossary = { key: string; term: string; plain: string; text: string; basis?: Basis[] };
-export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string };
+export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string; rulings?: string[] };
 export type Data = {
   version: string; verified?: { date: string; act: string; decree: string; rule: string; basic?: string }; law_url: string; form_version?: string; laws: Record<string, string>;
   taxable_principle: { summary: string; basis: Basis[]; notes: string[] };
@@ -111,7 +111,8 @@ export type OrgFacility = { id: string; type: string; name: string; run: Run; co
 export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; contractor?: string; term?: string; note?: string; alias?: string[] }[] };
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };
-export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string; map?: MapRule[] };
+/** filing: 신고를 누가 하나 — self 기관이 직접(기본) / agent 세무대리인(회계사·세무사)에게 의뢰(agent_org 는 대리인 기관 이름만, 사람 이름·전화 없음). 어느 쪽이든 근거 자료는 기관이 만든다(운영자 2026-11-03) */
+export type Org = { v: 1; org: string; dept: string; unit: 'site' | 'entity'; reg_no?: string; facilities: OrgFacility[]; handover_day: number; created: string; kind?: OrgKind; parent?: string; map?: MapRule[]; filing?: 'self' | 'agent'; agent_org?: string };
 /** 매핑 글자 정규화 — 공백·대소문자 외에 '2026년'·'2026회계연도'·'제3차'·'(2026)' 같은 연도·차수 표시를 떼어 해마다 새 규칙이 되지 않게(세무회계법인 2차 7번) */
 const normPat = (s: string) => String(s ?? '').replace(/\(?\d{4}(년도?|회계연도)?\)?/g, '').replace(/제?\d+(차|회|기)/g, '').replace(/[\s\-_·.,()]/g, '').toLowerCase();
 /** 사업명·부서 글자에 맞는 규칙 — 사업명 정확히 → 부서 정확히 → 4자 이상 규칙이 사업명에 포함 순 */

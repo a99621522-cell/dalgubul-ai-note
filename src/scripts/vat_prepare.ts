@@ -1,7 +1,8 @@
 /** /vat/prepare/ 신고 준비(신고 담당). 인계표 → 신고서 칸별 숫자표 + 안분·정산·재계산 + 신고 기록. 참고용 계산, 서버 없음. */
 import { renderForms, renderUnitSummary, renderSavings, type UsedRow, type ConvRow } from './vat_forms';
+import { agentHtml, wireAgent, type AgentCtx } from './vat_agent';
 import { mountQuickStart } from './vat_org';
-import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, prevPeriodKey, PRELIM_NOTICE_LIMIT, getFilings, saveFiling, penaltyCalc, lawLink, deemedRent, nextFiling, ymd, toast, helpWire, scrollTo, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey , rulingsHtml , inquiryHtml, wireInquiry } from './vat_rules';
+import { $, esc, num, fmt, pct, loadData, getOrg, setOrg, allLedgers, readJsonFile, downloadText, toCsv, facilityStatus, facilityRule, inFiling, salesFacility, convertCredit, periodInfo, periodKeyOf, prevPeriodKey, PRELIM_NOTICE_LIMIT, getFilings, saveFiling, penaltyCalc, lawLink, deemedRent, nextFiling, ymd, toast, helpWire, scrollTo, type Data, type Org, type OrgFacility, type LedgerRow, type Filing, type PeriodKey , rulingsHtml , inquiryHtml, wireInquiry, CELLS } from './vat_rules';
 type Ledger = { fid: string; name: string; type: string; month: string; rows: LedgerRow[]; src: string };
 const D = loadData();
 if (D) init(D);
@@ -240,9 +241,13 @@ function init(D: Data) {
     /* 절감 한 줄: 면세분 합계 + 원인 3개 + 행동 링크. 자세한 표는 펼침 */
     const ndAll = groups.reduce((s, g) => s + Math.max(0, g.nondeduct) + Math.max(0, g.admin_nondeduct ?? 0), 0); const topC = used.filter(u => u.r.v === 'split').sort((a, b) => b.r.tax - a.r.tax)[0]; const gTop = topC ? groups.find(x => x.key === groupKey(topC.f)) : undefined; const sk0 = D.rules.common.skip.find(x => x.key === 'ratio5'); const cAll = groups.reduce((s, g) => s + g.common_tax, 0);
     const sav1 = cAll ? `<div class="vc-card" id="p-sav1"><h3>절감 — 이번 기 공통매입세액 면세분 <b>${fmt(ndAll)}</b>원</h3><ol class="meta-list">${topC ? `<li>가장 큰 공통 지출: ${esc(topC.f.name)} · ${esc(topC.r.desc)} 세액 ${fmt(topC.r.tax)}원 — 전용(계약·계량기 분리)이면 <b>${fmt(Math.floor(topC.r.tax * (gTop?.ratio ?? 0)))}</b>원이 돌아옵니다 → <a href="${link({ f: topC.f, m: topC.r.d.slice(0, 7) })}">지출 기록에서 근거 채우기</a></li>` : ''}<li>면세비율 ${groups.filter(g => g.common_tax).map(g => `${esc(g.name.split(' — ')[0])} ${pct(g.ratio)}`).join(' · ')} — 1%p 낮추면 약 ${fmt(Math.floor(cAll * 0.01))}원 — 면세 공급가액에 보조금·토지 매각·등록 단위 밖 수입이 섞였는지 3단계에서 확인</li><li>안분 생략 기준(${fmt(sk0?.amount_lt ?? 5000000)}원 미만 + 면세비율 ${pct(sk0?.ratio_lt ?? 0.05)} 미만)까지: 공통매입세액 ${fmt(cAll)}원${cAll < (sk0?.amount_lt ?? 5000000) ? ' — 금액 기준은 충족' : ` — ${fmt(cAll - (sk0?.amount_lt ?? 5000000))}원 초과`}</li></ol></div>` : '';
-    out.innerHTML = `<div class="section-head"><h2>4. ${esc(P.name)} — 신고서 모양 결과${units.length > 1 ? ` · 등록 단위 ${units.length}개(신고서 ${units.length}장)` : ''}</h2><span class="meta">참고용 · 부가가치세법 시행규칙 별지 서식의 칸 배치·번호(${esc(D.form_version ?? '2026-04-01')} 시행 판) · 홈택스 화면이 아님</span></div>
+    /* 세무대리인 인계 꾸러미(운영자 2026-11-03 '둘 다 만드는 게 어때?') — 같은 계산 결과를 근거 표 7개로. 의뢰 기관은 처리할 것 바로 아래 펼친 카드, 직접 신고 기관은 접힌 펼침 */
+    const agentCtx: AgentCtx = { D, org, period: sel.value, P, facs, sales, exemptIn, oneoffIn, prelimIn, groups, groupKey, used, excluded: fix.excluded, unresolved: fix.unresolved, missing: missingAt, adminNote, subsidyRows, lateRows: used.filter(u => u.r.late), risky: risky0, assets, recalc, conv: convAll, cells, cellName: (no: string) => CELLS.find(c => c.no === no)?.name ?? '' };
+    const agentCard = agentHtml(agentCtx); const agentFirst = org.filing === 'agent';
+    out.innerHTML = `<div class="section-head"><h2>4. ${esc(P.name)} — ${agentFirst ? '근거 자료와 신고서 모양 결과' : '신고서 모양 결과'}${units.length > 1 ? ` · 등록 단위 ${units.length}개(신고서 ${units.length}장)` : ''}</h2><span class="meta">참고용 · 부가가치세법 시행규칙 별지 서식의 칸 배치·번호(${esc(D.form_version ?? '2026-04-01')} 시행 판) · 홈택스 화면이 아님</span></div>
       <p class="note">판정은 참고이며 기관의 판단이 아닙니다.</p>
       <section class="vc-card p-todo" id="p-todo" aria-live="polite"><h3>처리할 것 <b>${todoCount}</b>${todoCount ? '' : ' — 없음'}</h3>${todoItems.length ? `<ul class="todo">${todoItems.join('')}</ul>` : '<p class="meta">이 기간 모든 시설·달의 기록이 있고 빨강·노랑·근거 없음이 없습니다.</p>'}</section>
+      ${agentFirst ? agentCard : ''}
       ${sav1}
       ${org.unit === 'site' && units.length > 1 ? `<div class="callout info"><strong>사업장별 등록</strong> — 등록번호마다 신고서와 부속서류를 따로 냅니다(아래 ${units.length}묶음). 안분·예정고지도 등록 단위마다 따로 봅니다.</div>` : ''}
       ${org.unit === 'entity' ? renderUnitSummary(org, P, facs, used, sales, groups) : ''}
@@ -250,6 +255,7 @@ function init(D: Data) {
       <details class="vat-more" id="p-sav-wrap"><summary><strong>절감 분석 자세히</strong> — 공통 지출별 전용 전환 효과·면세비율 관리·등록 단위</summary>${renderSavings(D, org, P, groups, prelimIn, used, groupName)}</details>
       <h3>자산대장 — 이번 기간 취득 ${assets.length}건</h3>
       ${assets.length ? `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off"><caption>자산대장에 올릴 것(재계산·전환 추적용)</caption><thead><tr><th scope="col">시설</th><th scope="col">내용</th><th scope="col">세액</th><th scope="col">종류</th><th scope="col">공통 여부</th><th scope="col">취득 때 면세비율</th></tr></thead><tbody>${assets.map(a => `<tr><th scope="row">${esc(a.facility)}</th><td>${esc(a.desc)}</td><td>${fmt(a.tax)}</td><td>${a.kind === 'building' ? '건물·구축물(5%)' : '그 밖(25%)'}</td><td>${a.common ? '공통(안분)' : '과세 전용'}</td><td>${a.common ? pct(a.ratio0) : '—'}</td></tr>`).join('')}</tbody></table></div>` : '<p class="meta">이번 기간에 \'여러 해 쓰는 것\'으로 표시한 지출이 없습니다.</p>'}
+      ${agentFirst ? '' : agentCard}
       <p class="meta">근거: ${lawLink(D, { law: 'act', art: '제40조' })} · ${lawLink(D, { law: 'decree', art: '제81조' })} · ${lawLink(D, { law: 'decree', art: '제82조' })} · ${lawLink(D, { law: 'decree', art: '제83조' })} · ${lawLink(D, { law: 'decree', art: '제85조' })} · ${lawLink(D, { law: 'act', art: '제48조' })} · ${lawLink(D, { law: 'act', art: '제60조' })} — 면세공급가액에는 면세사업 관련 국고·공공보조금을 넣습니다(제81조 제1항 단서). 세금계산서 ${nInv}건 · 카드·현금영수증 ${nCard}건 · 불공제 명세 ${nNo}건.</p>
       <details class="vat-more"><summary><strong>처리할 것 — 건별 목록</strong></summary>
       <ul class="meta-list">${missing.length ? `<li><strong>인계표가 아직 없는 시설·달 ${missing.length}</strong>: ${esc(missing.join(', '))} — 시설 담당에게 요청</li>` : '<li>이 기간 모든 시설·달의 기록이 있습니다.</li>'}
@@ -271,7 +277,7 @@ function init(D: Data) {
       tl.addEventListener('click', e => { const bt = (e.target as HTMLElement).closest<HTMLButtonElement>('[role=tab]'); if (bt) sel2([...tl.children].indexOf(bt)); });
       tl.addEventListener('keydown', e => { const bs = [...tl.children]; const i = bs.indexOf(document.activeElement as HTMLElement); if (i < 0) return; if (e.key === 'ArrowRight') { e.preventDefault(); sel2((i + 1) % bs.length); } if (e.key === 'ArrowLeft') { e.preventDefault(); sel2((i - 1 + bs.length) % bs.length); } if (e.key === 'Home') { e.preventDefault(); sel2(0); } if (e.key === 'End') { e.preventDefault(); sel2(bs.length - 1); } });
       tabs[0].before(tl); });
-    helpWire(out, D); out.querySelector<HTMLButtonElement>('[data-goto-step]')?.addEventListener('click', () => pshow(3));
+    wireAgent(out, agentCtx); helpWire(out, D); out.querySelector<HTMLButtonElement>('[data-goto-step]')?.addEventListener('click', () => pshow(3));
     for (const u of unitRecs) for (const [no, v] of Object.entries(u.cells)) if (no === '48' || no === '66' || (no === '54' && !cells['54'])) add(no, v.amt, v.tax);
     const payAll = unitRecs.reduce((s, u) => s + u.pay, 0); lastRun = { nd: cells['54']?.tax ?? 0, todo: todoCount, pay: payAll, period: sel.value }; pshow(4); scrollTo(out);
     const filing: Filing = { v: 1, org: org.org, period: sel.value, saved: ymd(new Date()), cells, row_ids: rowIds, groups, assets, sales: { ...sales }, units: unitRecs };

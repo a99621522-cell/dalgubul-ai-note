@@ -28,7 +28,7 @@ NAME_RE = re.compile(r"(?:(?<![가-힣])[가-힣]{3}\s*,\s*){2,}[가-힣]{3}(?![
 
 
 def curl(url: str, post: dict | None = None, referer: str = "", timeout: int = 120) -> bytes:
-    cmd = ["curl", "-sS", "-m", str(timeout), "-L", "-A", UA, "-c", str(JAR), "-b", str(JAR), "-H", "Accept-Language: ko-KR,ko;q=0.9"]
+    cmd = ["curl", "-sS", "-m", str(timeout), "--connect-timeout", "20", "-L", "-A", UA, "-c", str(JAR), "-b", str(JAR), "-H", "Accept-Language: ko-KR,ko;q=0.9"]
     if referer:
         cmd += ["-e", referer]
     if post is not None:
@@ -128,6 +128,9 @@ def main():
     for key, code, name in govs:
         yrs = years_of(code)
         print(f"[expense] {name}({code}) 연도 목록: {yrs}", flush=True)
+        if not yrs:   # 연도 목록조차 못 받으면 이 러너 VM 의 IP 가 포털에 막힌 것(2026-11-03 중구 — 3.6시간 동안 연결 0건) → 바로 끝내고 워크플로가 새 러너로 다시 돌린다(종료 코드 3)
+            print(f"[expense] {name}: 포털 연결 실패 — 러너 IP 차단으로 보임, 종료 코드 3(워크플로 retry)", flush=True)
+            sys.exit(3)
         if a.probe:
             d = "2023-06-12"
             rows = day_rows(code, "2023", d)
@@ -158,13 +161,20 @@ def main():
         def save_partial():   # 60일마다 중간 저장 — 러너가 시간 초과로 죽어도 받은 만큼은 남는다(다음 실행이 이어 받음)
             rows_p = [{"p": k[0], "acct": k[1], "dept": k[2], "biz": k[3], "mok": k[4], **v} for k, v in sorted(agg.items())]
             path.write_text(json.dumps({"v": 1, "key": key, "code": code, "name": name, "source": "대구광역시 주민참여 재정 포털 세출현황 지출건별(부분 저장)", "fetched": dt.date.today().isoformat(), "years": sorted({d[:4] for d in days_seen}), "periods": sorted({r["p"] for r in rows_p}), "days": sorted(days_seen), "failed_days": sorted(set(failed)), "note": "부분 저장(수집 중)", "rows": rows_p}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        streak = 0   # 잇단 실패 — 받는 도중 연결이 막히면(12일 연속 실패) 중간 저장하고 종료 코드 3 으로 끝내 새 러너가 이어 받게 한다
         for i, d in enumerate(days):
             rows = day_rows(code, d[:4], d)
             if rows is None:
-                failed.append(d)
+                failed.append(d); streak += 1
+                if streak >= 12:
+                    save_partial()
+                    print(f"[expense] {name}: {streak}일 연속 실패 — 연결이 막힌 것으로 보여 중간 저장 뒤 종료 코드 3(받은 날 {len(days_seen)})", flush=True)
+                    sys.exit(3)
             elif not rows:
+                streak = 0
                 empty += 1; days_seen.add(d)
             else:
+                streak = 0
                 aggregate(rows, head, agg, days_seen)
             if i % 30 == 29:
                 print(f"  {name} {d} … {i + 1}/{len(days)} 묶음 {len(agg)} 실패 {len(failed)} ({int(time.time() - t0)}s)", flush=True)

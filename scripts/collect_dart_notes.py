@@ -692,7 +692,44 @@ def fin_from_audit(xml: str) -> tuple[dict, dict]:
     for key, (v, r) in weak.items():
         if key not in got:
             got[key], raw[key] = v, r
+    if len(got) < 6:
+        fin_from_text(xml, got, raw)
     return got, raw
+
+
+TEXT_KEYS = [   # 재무제표가 표가 아니라 글로 실린 감사보고서(2026-11-03 한국에스케이에프씰) — '과목 금액 금액' 꼴
+    ("assets", "BS", r"자\s*산\s*총\s*계"), ("liab", "BS", r"부\s*채\s*총\s*계"), ("equity", "BS", r"자\s*본\s*총\s*계"),
+    ("sales", "IS", r"(?:Ⅰ\.?\s*)?매\s*출\s*액"), ("op", "IS", r"(?:Ⅴ\.?|Ⅳ\.?)?\s*영\s*업\s*(?:이\s*익|손\s*실|손\s*익)(?:\s*\(\s*손\s*실\s*\))?"),
+    ("net", "IS", r"(?:Ⅹ\.?|Ⅸ\.?|Ⅷ\.?)?\s*당\s*기\s*순\s*(?:이\s*익|손\s*실|손\s*익)(?:\s*\(\s*손\s*실\s*\))?"),
+    ("interest", "IS", r"이\s*자\s*비\s*용"), ("ocf", "CF", r"(?:Ⅰ\.?\s*)?영업활동\s*(?:으로\s*인한|으로부터의)?\s*현금\s*흐름"),
+]
+_AMT = r"(\(?-?\d{1,3}(?:,\d{3})+\)?|-)"
+
+
+def fin_from_text(xml: str, got: dict, raw: dict) -> None:
+    text = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", xml)))
+    secs = {}
+    for st, pat in (("BS", r"재\s*무\s*상\s*태\s*표\s*제\s*\d+"), ("IS", r"손\s*익\s*계\s*산\s*서\s*제\s*\d+"), ("CF", r"현\s*금\s*흐\s*름\s*표\s*제\s*\d+")):
+        m = re.search(pat, text)
+        if m:
+            secs[st] = text[m.start(): m.start() + 12000]
+    for key, st, lab in TEXT_KEYS:
+        if key in got or st not in secs:
+            continue
+        sec = secs[st]
+        mu = re.search(r"단위\s*[:：]?\s*(백만원|천원|원)", sec[:400].replace(" ", ""))
+        unit = {"원": 1, "천원": 1000, "백만원": 1000000}[mu.group(1)] if mu else 1
+        m = re.search(lab + r"(?:\s*\(주석[^)]*\))?\s+" + _AMT + r"\s+" + _AMT, sec)
+        if not m:
+            continue
+        def val(x: str) -> int | None:
+            if x == "-":
+                return 0
+            v = int(re.sub(r"[^\d]", "", x))
+            return -v if x.startswith("(") or x.startswith("-") else v
+        a, b = val(m.group(1)), val(m.group(2))
+        got[key] = (a * unit, b * unit if b is not None else None)
+        raw[key] = f"[{st}·글] " + m.group(0)[:160]
 
 
 def audit_scan(argv: list[str]) -> int:

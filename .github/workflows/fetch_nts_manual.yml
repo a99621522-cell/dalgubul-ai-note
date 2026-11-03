@@ -1,0 +1,46 @@
+name: 국세청 부가가치세 신고안내 매뉴얼 받기
+
+# 국세청 참고자료실의 최신 「부가가치세 신고안내 매뉴얼」 PDF 본문을 data/vat/manuals/ 에 글자로 커밋한다(운영자 2026-11-03 '국세청 신고안내 매뉴얼 받아서 규칙과 비교해봐').
+# nts.go.kr 은 작성 세션에서 연결이 끊겨 러너로 받는다. 원문 파일은 저장소에 두지 않는다.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "PDF 주소를 바로 주면 목록을 읽지 않고 그 파일을 받는다(비우면 참고자료실 목록의 최신 글)"
+        required: false
+        default: ""
+      key:
+        description: "저장 이름(예: 2026-1F). 비우면 제목에서 짐작"
+        required: false
+        default: ""
+      title:
+        description: "제목(url 을 줄 때)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get install -y -qq poppler-utils >/dev/null || (sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq poppler-utils >/dev/null)
+      - run: pip install -q -r scripts/requirements.txt
+      - env:
+          URL: ${{ inputs.url }}
+          KEY: ${{ inputs.key }}
+          TITLE: ${{ inputs.title }}
+        run: python3 scripts/fetch_nts_manual.py $([ -n "$URL" ] && echo --url "$URL") $([ -n "$KEY" ] && echo --key "$KEY") $([ -n "$TITLE" ] && echo --title "$TITLE")
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vat/manuals || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "chore: 국세청 부가가치세 신고안내 매뉴얼 본문 $(date +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done

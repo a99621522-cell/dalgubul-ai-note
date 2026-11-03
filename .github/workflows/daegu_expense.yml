@@ -94,7 +94,7 @@ jobs:
   retry:
     # 러너 VM 의 IP 에 따라 jumin.daegu.go.kr 이 TCP 연결을 막는다(revenue_docs 와 같음) — 종료 코드 3 으로 끝난 지자체만 모아 같은 워크플로를 새 러너로 다시 부른다(30번째 시도까지 — 2026-11-03 러너 약 30대 중 1대꼴로만 연결됨, 막힌 러너는 2분 안에 끝나 시도 한 번이 10분 남짓)
     needs: fetch
-    if: always() && github.event.inputs.probe != 'true'
+    if: ${{ !cancelled() && github.event.inputs.probe != 'true' }}   # 취소된 실행은 다시 부르지 않는다(always() 는 취소 뒤에도 돌아 체인이 둘로 갈라졌다, 2026-11-03)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4

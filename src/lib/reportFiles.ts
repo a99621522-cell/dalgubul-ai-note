@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'korea-skf-seal-oilseal', summary: '대구 달성군 논공읍(달성일반산업단지) 비상장 오일씰 회사 한국에스케이에프씰(1988년 설립, 1998년 스웨덴 AB SKF와 합작, SKF 지분 51%)이 자동차·산업용 오일씰을 만들어 매출 960억 원대(2025년 963억 원, 영업이익 46억 원)를 유지하고 그 가운데 160억~180억 원을 미국·멕시코·중국·인도 SKF 그룹사에 공급하는 구조를 DART 감사보고서(2023~2025)와 국민연금·팩토리온 자료로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['비상장기업', '자동차부품', '외국인투자'],
+    title: '한국에스케이에프씰, 오일씰 공장과 SKF 그룹 공급', name: '한국에스케이에프씰, 오일씰 공장과 SKF 그룹 공급',
+    hwpx: '/hwpx/korea-skf-seal-oilseal.hwpx', hwpxSize: '137KB', date: '2026-11-03' },
   { slug: 'cl-technology-battery-automation', summary: '대구 달성군 구지면(달성2차일반산업단지) 비상장 설비 회사 씨엘테크놀로지(2018년 설립)가 2차전지·디스플레이 공장자동화 설비를 진행기준 공사계약으로 수주해 2025년 신규·추가 계약 710억 원, 연말 공사계약잔액 384억 원(전년 말 44억 원)으로 늘어난 흐름을 DART 감사보고서(매출액 2023년 312억 원 → 2025년 371억 원, 영업이익 71억 원 → 31억 원)와 국민연금·벤처기업명단·팩토리온 자료로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['비상장기업', '이차전지', '설비'],
     title: '씨엘테크놀로지, 달성2차산단의 2차전지 공장자동화 설비 회사', name: '씨엘테크놀로지, 달성2차산단의 2차전지 공장자동화 설비 회사',
     hwpx: '/hwpx/cl-technology-battery-automation.hwpx', hwpxSize: '132KB', date: '2026-11-03' },

@@ -32,6 +32,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import collect_dart_notes as N  # noqa: E402  (get·doc_xml·clean·norm_name·fin_from_audit 재사용)
 import industry  # noqa: E402
+from audit_checks import scale_check  # noqa: E402
 
 ROOT = N.ROOT
 FILINGS = ROOT / "scripts" / "state" / "dart_audit_filings.json.gz"
@@ -216,6 +217,8 @@ def read_rows(code: str, info: dict, rep: tuple) -> list[dict]:
         a, l, e = row.get("assets"), row.get("liab"), row.get("equity")
         if a is not None and l is not None and e is not None and a and abs(a - l - e) > abs(a) * 0.01:
             row["check"] = "자산≠부채+자본"
+        elif scale_check(row):
+            row["check"] = scale_check(row)
     out = [cur]
     if prev["fy"] and any(k in prev for k in ("sales", "assets")):
         out.append(prev)

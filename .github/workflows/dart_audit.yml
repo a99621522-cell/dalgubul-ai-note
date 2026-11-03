@@ -1,0 +1,54 @@
+name: DART 대구 비상장 외감 재무·전국 비교
+
+# scripts/collect_dart_audit.py — 감사보고서 제출 목록(--filings) → 대구 비상장 외감 제조업 재무(--daegu)
+# → 전국 상장 제조업 별도 재무(--listed) → 전국 비상장 외감 표본(--sample N). 하루 호출 한도(20,000회) 안에서 나눠 돈다.
+# 운영자 지시 2026-11-03 '대구 비상장 재무 현황표 조사해봐' → '전국과 비교하는 것도 구현해야지' → '진행해'.
+# 감사보고서는 3~4월에 몰리므로 4·5·6월 25일에 대구·전국 상장을, 수동으로 표본을 돌린다.
+on:
+  schedule:
+    - cron: "17 20 25 4,5,6 *"     # 4·5·6월 26일 05:17 KST
+  workflow_dispatch:
+    inputs:
+      args:
+        description: "인자(예: --filings --daegu / --listed --year 2025 / --sample 6000 --cap 150). 비우면 --filings --daegu"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-audit
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+          ARGS_IN: ${{ inputs.args }}
+        run: |
+          A="$ARGS_IN"
+          [ -z "$A" ] && A="--filings --daegu --max-calls 12000"
+          python3 scripts/collect_dart_audit.py $A
+          python3 scripts/audit_compare.py || echo "비교 계산 건너뜀"
+      - name: 커밋
+        if: always()
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add scripts/state/dart_audit_filings.json.gz scripts/state/dart_audit_corp.json scripts/data/company_financials_audit.csv \
+                  data/dart/national_listed.csv data/dart/national_audit_sample.csv data/dart/national_audit_sample.json \
+                  data/dart/audit_summary.json data/dart/audit_compare.json 2>/dev/null || true
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 대구 비상장 외감 재무·전국 비교 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

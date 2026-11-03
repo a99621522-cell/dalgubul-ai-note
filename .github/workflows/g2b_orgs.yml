@@ -11,6 +11,9 @@ on:
       names:
         description: "조회할 기관 이름(쉼표, 비우면 기본 목록)"
         default: ""
+      ops:
+        description: "시험할 오퍼레이션 이름(쉼표, 비우면 기본)"
+        default: ""
 
 permissions:
   contents: write
@@ -28,6 +31,7 @@ jobs:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
           PROBE: ${{ inputs.probe }}
           NAMES: ${{ inputs.names }}
+          G2B_OPS: ${{ inputs.ops }}
         run: |
           ARGS=()
           [ "$PROBE" = "true" ] && ARGS+=(--probe)
@@ -37,5 +41,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          [ -d data/vat/orgs ] || { echo "받은 파일 없음"; exit 0; }
           git add data/vat/orgs
           git diff --cached --quiet && echo "변경 없음" || (git commit -m "data: 나라장터 수요기관 사업자등록번호(대구) 갱신" && git push)

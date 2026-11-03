@@ -7,10 +7,10 @@
  - 법인등록번호·담당자 같은 칸은 저장하지 않는다. 사업자등록번호는 기관(공공기관) 번호라 개인정보가 아니다.
 공공데이터포털 키는 이 API 에 활용신청이 되어 있어야 한다(없으면 'SERVICE KEY IS NOT REGISTERED ERROR').
 """
-import csv, json, os, sys, time, urllib.parse, urllib.request
+import csv, json, os, sys, time, urllib.error, urllib.parse, urllib.request
 
 BASE = "https://apis.data.go.kr/1230000/ao/UsrInfoService02"
-OPS = ["getDminsttInfo", "getDminsttInfoServc", "getDminsttList"]
+OPS = [o for o in os.environ.get("G2B_OPS", "getDminsttInfo,getDminsttInfoServc,getDminsttList").split(",") if o]
 NAMES = ["대구광역시", "대구광역시 중구", "대구광역시 동구", "대구광역시 서구", "대구광역시 남구", "대구광역시 북구", "대구광역시 수성구", "대구광역시 달서구", "대구광역시 달성군", "대구광역시 군위군",
          "달성군시설관리공단", "달성군 시설관리공단", "대구공공시설관리공단", "달서구시설관리공단", "수성구시설관리공단", "북구시설관리공단", "동구시설관리공단", "서구시설관리공단", "남구시설관리공단", "중구시설관리공단", "군위군시설관리공단",
          "대구광역시시설관리공단", "대구도시개발공사", "대구교통공사", "대구환경공단"]
@@ -22,8 +22,12 @@ def call(op, params, key):
     q = dict(params); q["serviceKey"] = key; q["type"] = "json"
     url = f"{BASE}/{op}?" + urllib.parse.urlencode(q)
     req = urllib.request.Request(url, headers={"User-Agent": "daitda-vat (https://vat-daitda.pages.dev)"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return r.read().decode("utf-8", "replace")
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return r.read().decode("utf-8", "replace")
+    except urllib.error.HTTPError as e:   # 400/500 도 본문(오류 사유)을 돌려준다
+        body = e.read().decode("utf-8", "replace")
+        raise RuntimeError(f"HTTP {e.code}: {body[:300]}")
 
 
 def items_of(text):

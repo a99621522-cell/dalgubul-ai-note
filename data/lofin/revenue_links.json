@@ -1,11 +1,13 @@
 {
  "title": "우리 지자체 세입세출현황",
  "pdtaId": "0VL829Q8THX7CMZ02CX2767211",
- "rows": 10,
- "years": [],
+ "rows": 74,
+ "years": [
+  "",
+  ""
+ ],
  "unit": "원",
  "source": "행정안전부 지방재정365 재정 데이터셋",
  "url": "https://www.lofin365.go.kr/portal/LF5110000.do?pdtaId=0VL829Q8THX7CMZ02CX2767211&rdIncrYn=Y",
- "fetched": "2026-10-27",
- "note": "이 세션은 curl 로 받음(requests 는 프록시 TLS 리셋) — 러너는 fetch_lofin.py 그대로"
+ "fetched": "2026-10-28"
 }

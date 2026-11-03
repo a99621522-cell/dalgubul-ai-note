@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 486" width="100%" role="img" aria-label="대구제3산단 산업별 고용 인원. 기계·금속 1,436명, 기타 서비스 460명, 자동차·부품 283명, 식품 109명, 의료·바이오 91명, 섬유·패션 82명, 기타 제조 80명, 전기·전자 79명, 화학·에너지 79명, 로봇 19명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 486" width="100%" role="img" aria-label="대구제3산단 산업별 고용 인원. 기계·금속 1,436명, 기타 서비스 460명, 자동차·부품 227명, 식품 109명, 의료·바이오 91명, 섬유·패션 82명, 기타 제조 80명, 전기·전자 79명, 화학·에너지 79명, 로봇 19명" style="max-width:360px;height:auto;font-size:14px">
 <title>대구제3산단 산업별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">기계·금속</text>
@@ -8,8 +8,8 @@
 <rect x="8.0" y="98" width="92.9" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="106.9" y="112.0" fill="#1a1a1a">460명</text>
 <text x="8" y="136.0" fill="#1a1a1a">자동차·부품</text>
-<rect x="8.0" y="142" width="57.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="71.2" y="156.0" fill="#1a1a1a">283명</text>
+<rect x="8.0" y="142" width="45.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="59.8" y="156.0" fill="#1a1a1a">227명</text>
 <text x="8" y="180.0" fill="#1a1a1a">식품</text>
 <rect x="8.0" y="186" width="22.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="36.0" y="200.0" fill="#1a1a1a">109명</text>

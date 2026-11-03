@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="전기·전자 산단별 고용 인원. 성서산단 5,046명, 달성산단 2,183명, 산단 외 2,120명, 개별입지 1,898명, 북구검단산단 889명, 대구테크노폴리스산단 490명, 대구연구개발특구 489명, 성서5차산단 475명, 대구국가산단 459명, 서대구산단 253명, 그 밖의 단지 597명" style="max-width:720px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="100%" role="img" aria-label="전기·전자 산단별 고용 인원. 성서산단 5,046명, 달성산단 2,183명, 산단 외 2,120명, 개별입지 1,892명, 북구검단산단 889명, 대구테크노폴리스산단 490명, 대구연구개발특구 489명, 성서5차산단 475명, 대구국가산단 459명, 서대구산단 253명, 그 밖의 단지 659명" style="max-width:720px;height:auto;font-size:14px">
 <title>전기·전자 산단별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
 <text x="138" y="56.0" text-anchor="end" fill="#1a1a1a">성서산단</text>
@@ -11,8 +11,8 @@
 <rect x="148.0" y="108" width="214.3" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="370.3" y="124.0" fill="#1a1a1a">2,120명</text>
 <text x="138" y="158.0" text-anchor="end" fill="#1a1a1a">개별입지</text>
-<rect x="148.0" y="142" width="191.8" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="347.8" y="158.0" fill="#1a1a1a">1,898명</text>
+<rect x="148.0" y="142" width="191.2" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="347.2" y="158.0" fill="#1a1a1a">1,892명</text>
 <text x="138" y="192.0" text-anchor="end" fill="#1a1a1a">북구검단산단</text>
 <rect x="148.0" y="176" width="89.9" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="245.9" y="192.0" fill="#1a1a1a">889명</text>
@@ -32,5 +32,5 @@
 <rect x="148.0" y="346" width="25.6" height="22" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="181.6" y="362.0" fill="#1a1a1a">253명</text>
 <text x="138" y="396.0" text-anchor="end" fill="#1a1a1a">그 밖의 단지</text>
-<rect x="148.0" y="380" width="60.3" height="22" fill="#767676" style="fill:var(--muted,#767676)"/>
-<text x="216.3" y="396.0" fill="#1a1a1a">597명</text></svg>
+<rect x="148.0" y="380" width="66.6" height="22" fill="#767676" style="fill:var(--muted,#767676)"/>
+<text x="222.6" y="396.0" fill="#1a1a1a">659명</text></svg>

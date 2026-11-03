@@ -18,7 +18,8 @@ API·접속 실패는 로그 후 건너뛰고 못 받은 회사는 기존 행을
 사용: python3 scripts/collect_dart_notes.py [--months 15] [--probe 회사명] [--no-ir] [--no-report]
   --probe: 그 회사만, 섹션 제목·뽑은 문장·IR 첨부 페이지 구조를 로그로(저장 안 함)
   --disclosure <낱말>: --probe 와 함께 쓰면 최근 --months 달 공시 중 제목에 그 낱말이 든 공시(예: 전환사채)의 원문을 표까지 로그로(저장 안 함). 전환사채면 주요사항보고서 API(cvbdIsDecsn)의 자금조달 목적별 금액도 찍는다
-  --corp-search <낱말>: 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 기업개황·최근 --months 달 공시 목록을 로그로(저장 안 함). --dump 면 가장 최근 공시 원문, --dump-all 이면 최대 5건 원문
+  --corp-search <낱말> [--exact] [--doc-kw 감사보고서,사업보고서]: 캐시 밖 회사(비상장 계열사 등)를 DART 고유번호 목록에서 이름으로 찾아 기업개황·최근 --months 달 공시 목록을 로그로(저장 안 함). --dump 면 가장 최근 공시 원문, --dump-all 이면 최대 5건 원문
+  --audit-scan [--since YYYYMMDD] [--sample N] [--rand N]: 대구 비상장 외감 회사 재무 현황표 조사(감사보고서 제출 목록 × 기업 사전 이름 × 기업개황 주소, 표본 재무 읽기) — 로그만
   --robot-scan [--names-file 경로]: 대구 본사 공시 회사 + 이름 파일의 회사(본사 대구)의 최근 정기보고서·감사보고서에서 로봇 낱말 줄 → data/dart/robot_scan.csv
   --dump: --probe 와 함께 쓰면 보고서의 '회사의 개요'(정관 사업목적 등)·'사업의 내용'·'경영진단' 본문을 표까지 글자로 로그에(공시 원문 확인용)
 """
@@ -170,6 +171,35 @@ def dump_block(name: str, blk: str, limit: int = 120000) -> None:
                 out.append(t)
     text = "\n".join(out)
     print(f"===== dump {name} ({len(text)}자) =====\n{text[:limit]}\n===== dump 끝 =====")
+
+
+def grep_block(name: str, blk: str, pat: str, before: int = 3, after: int = 30) -> None:
+    """--disclosure … --grep 정규식: 원문을 dump_block 과 같은 줄(제목·문단·표 행)로 바꿔 정규식에 맞는 줄의 앞 3줄·뒤 30줄만 찍는다(겹치면 합침)"""
+    lines = []
+    for m in re.finditer(r"<TITLE[^>]*>(.*?)</TITLE>|<TABLE.*?</TABLE>|<P[^>]*>(.*?)</P>", blk, re.S | re.I):
+        if m.group(1) is not None:
+            lines.append(f"### {clean(m.group(1))}")
+        elif m.group(0)[:6].upper() == "<TABLE":
+            for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", m.group(0), re.S | re.I):
+                cells = [clean(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, re.S | re.I)]
+                if any(cells):
+                    lines.append("| " + " | ".join(cells) + " |")
+        else:
+            t = clean(m.group(2) or "")
+            if t:
+                lines.append(t)
+    rx = re.compile(pat)
+    keep = set()
+    for i, l in enumerate(lines):
+        if rx.search(l):
+            keep.update(range(max(0, i - before), min(len(lines), i + after + 1)))
+    print(f"===== grep {name} /{pat}/ ({len(keep)}줄 / 전체 {len(lines)}줄) =====")
+    prev = -2
+    for i in sorted(keep):
+        if i != prev + 1:
+            print("…")
+        print(lines[i]); prev = i
+    print("===== grep 끝 =====")
 
 
 def sentences(p: str) -> list[str]:
@@ -566,6 +596,163 @@ def invest_scan(argv: list[str]) -> int:
     return 0
 
 
+FIN_KEYS = [   # (항목, 줄 머리 정규식) — 감사보고서 재무제표 표의 과목 칸
+    ("sales", r"^(Ⅰ\.|I\.|1\.)?\s*(매출액|영업수익|수익\(매출액\)|매 ?출 ?액)\b"),
+    ("op", r"^(Ⅴ\.|V\.|Ⅳ\.|IV\.|Ⅲ\.|III\.|\d\.)?\s*영업(이익|손실|이익\(손실\)|손익)"),
+    ("net", r"^(Ⅸ\.|IX\.|Ⅹ\.|X\.|Ⅷ\.|VIII\.|\d\.)?\s*당기순(이익|손실|이익\(손실\)|손익)"),
+    ("assets", r"^자\s*산\s*총\s*계"),
+    ("liab", r"^부\s*채\s*총\s*계"),
+    ("equity", r"^자\s*본\s*총\s*계"),
+    ("interest", r"^(\d\.|\(\d\)|[가-하]\.)?\s*이자비용"),
+    ("ocf", r"^(Ⅰ\.|I\.|1\.)?\s*영업활동(으로 ?인한 ?현금흐름|현금흐름|으로부터의 ?현금흐름)"),
+]
+
+
+def nums(cells: list[str]) -> list[int]:
+    out = []
+    for c in cells:
+        c = c.replace(" ", "")
+        m = re.fullmatch(r"\(?-?[\d,]{4,}\)?", c)
+        if m:
+            v = int(re.sub(r"[^\d]", "", c))
+            out.append(-v if c.startswith("(") or c.startswith("-") else v)
+    return out
+
+
+def fin_from_audit(xml: str) -> tuple[dict, dict]:
+    """감사보고서 원문에서 주요 계정의 (당기, 전기) 값과 단위. 표 칸 숫자가 2개면 (당기, 전기), 4개면 (2번째, 4번째), 3개면 (1·2번째 중 큰 값 열 규칙 없음 → 첫째, 마지막)"""
+    unit = 1
+    m = re.search(r"단위\s*[:：]\s*(백만원|천원|원)", re.sub(r"<[^>]+>", " ", xml))
+    if m:
+        unit = {"원": 1, "천원": 1000, "백만원": 1000000}[m.group(1)]
+    got, raw = {}, {}
+    for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", xml, re.S | re.I):
+        cells = [clean(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, re.S | re.I)]
+        if not cells or not cells[0]:
+            continue
+        head = re.sub(r"\s+", " ", cells[0])
+        for key, pat in FIN_KEYS:
+            if key in got or not re.match(pat, head):
+                continue
+            n = nums(cells[1:])
+            if not n:
+                continue
+            if len(n) >= 4:
+                cur, prev = n[1], n[3]
+            elif len(n) == 3:
+                cur, prev = n[0], n[2]
+            elif len(n) == 2:
+                cur, prev = n
+            else:
+                cur, prev = n[0], None
+            got[key] = (cur * unit, prev * unit if prev is not None else None)
+            raw[key] = " | ".join(cells)[:180]
+    return got, raw
+
+
+def audit_scan(argv: list[str]) -> int:
+    """--audit-scan: 대구 비상장 외부감사 대상 회사 재무 현황표가 만들어지는지 조사(운영자 지시 2026-11-03 '대구 비상장 재무 현황표 조사해봐').
+    ① 공시검색(pblntf_ty=F 외부감사관련, 3개월씩)으로 감사보고서 제출 비상장 회사 목록 ② 기업 사전 이름(법인 표기·공장 표시 뗌)과 일치하는 회사의 기업개황 주소로 대구 판정
+    ③ 일치하지 않은 회사에서 --rand N 곳을 뽑아 대구 비율 어림(이름 일치로 빠지는 대구 회사 수) ④ 대구 회사 --sample N 곳의 최근 감사보고서에서 주요 계정이 읽히는지.
+    로그만(저장 안 함)."""
+    import random
+    since = argv[argv.index("--since") + 1] if "--since" in argv else (date.today() - timedelta(days=600)).strftime("%Y%m%d")
+    sample = int(argv[argv.index("--sample") + 1]) if "--sample" in argv else 60
+    rand_n = int(argv[argv.index("--rand") + 1]) if "--rand" in argv else 800
+    # ① 감사보고서 제출 목록
+    filers: dict[str, dict] = {}
+    d0 = date(int(since[:4]), int(since[4:6]), int(since[6:]))
+    while d0 < date.today():
+        d1 = min(d0 + timedelta(days=89), date.today())
+        page, total = 1, 1
+        while page <= total:
+            j = get("list.json", bgn_de=d0.strftime("%Y%m%d"), end_de=d1.strftime("%Y%m%d"), pblntf_ty="F", page_no=page, page_count=100) or {}
+            total = int(j.get("total_page") or 0)
+            for x in j.get("list", []):
+                nm = x.get("report_nm") or ""
+                if "감사보고서" not in nm or (x.get("stock_code") or "").strip():
+                    continue
+                f = filers.setdefault(x["corp_code"], {"name": x.get("corp_name"), "cls": x.get("corp_cls"), "aud": []})
+                f["aud"].append((x.get("rcept_dt"), nm.strip(), x.get("rcept_no")))
+            page += 1
+        print(f"[audit] {d0}~{d1} 누적 비상장 감사보고서 제출 회사 {len(filers)}곳 (호출 {CALLS[0]})", flush=True)
+        d0 = d1 + timedelta(days=1)
+    # ② 기업 사전 이름
+    def base(n: str) -> str:
+        n = re.sub(r"\s*(제?\d+공장|\S*공장|\S*지점|\S*사업장|\S*연구소|\(\S*공장\))$", "", n or "")
+        return norm_name(n)
+    names: dict[str, list] = {}
+    for f in ("dalseong_companies.csv", "extra_companies.csv"):
+        fp = ROOT / "scripts" / "data" / f
+        if fp.exists():
+            for r in csv.DictReader(open(fp, encoding="utf-8")):
+                for k in {norm_name(r["name"]), base(r["name"])}:
+                    if len(k) >= 2:
+                        names.setdefault(k, []).append((r["id"], r.get("sector_code", ""), r.get("district", "")))
+    matched = [c for c, f in filers.items() if norm_name(f["name"]) in names]
+    rest = [c for c in filers if c not in set(matched)]
+    print(f"[audit] 기업 사전 이름 {len(names)}개 / 감사보고서 제출 회사 중 이름 일치 {len(matched)}곳, 불일치 {len(rest)}곳", flush=True)
+    def info(code: str) -> dict:
+        return get("company.json", corp_code=code) or {}
+    daegu = []
+    by_ind = {}
+    for i, c in enumerate(matched):
+        inf = info(c)
+        adr = inf.get("adres") or ""
+        if adr.startswith("대구"):
+            ind = (inf.get("induty_code") or "")[:2]
+            daegu.append((c, filers[c]["name"], ind, adr.split()[1] if len(adr.split()) > 1 else "", inf.get("corp_cls")))
+            by_ind[ind] = by_ind.get(ind, 0) + 1
+        if i % 200 == 0:
+            print(f"[audit] 기업개황 {i}/{len(matched)} 대구 {len(daegu)}", flush=True)
+    mfg = sum(v for k, v in by_ind.items() if k.isdigit() and 10 <= int(k) <= 34)
+    print(f"[audit] 이름 일치 중 본사 대구 {len(daegu)}곳(제조업 10~34 {mfg}곳)")
+    print("[audit] 업종 앞 2자리별: " + ", ".join(f"{k}:{v}" for k, v in sorted(by_ind.items(), key=lambda x: -x[1])[:25]))
+    gu = {}
+    for x in daegu:
+        gu[x[3]] = gu.get(x[3], 0) + 1
+    print("[audit] 구·군별: " + ", ".join(f"{k}:{v}" for k, v in sorted(gu.items(), key=lambda x: -x[1])))
+    # ③ 불일치 표본
+    random.seed(7)
+    pick = random.sample(rest, min(rand_n, len(rest)))
+    hit, hit_mfg, ex = 0, 0, []
+    for c in pick:
+        inf = info(c)
+        if (inf.get("adres") or "").startswith("대구"):
+            hit += 1
+            ind = (inf.get("induty_code") or "")[:2]
+            if ind.isdigit() and 10 <= int(ind) <= 34:
+                hit_mfg += 1
+                ex.append(f"{filers[c]['name']}({ind})")
+    est = round(hit / max(1, len(pick)) * len(rest))
+    est_m = round(hit_mfg / max(1, len(pick)) * len(rest))
+    print(f"[audit] 불일치 표본 {len(pick)}곳 중 본사 대구 {hit}곳(제조업 {hit_mfg}) → 불일치 {len(rest)}곳 전체 어림 대구 {est}곳(제조업 {est_m}곳)")
+    print("[audit] 불일치 대구 제조업 예: " + ", ".join(ex[:20]))
+    # ④ 재무 읽기 시험
+    ok = {k: 0 for k, _ in FIN_KEYS}
+    tried = 0
+    for c, nm, ind, gu_, cls in random.sample(daegu, min(sample, len(daegu))):
+        aud = sorted(filers[c]["aud"], reverse=True)
+        sep = [a for a in aud if not a[1].startswith("연결") and "[기재정정]연결" not in a[1]] or aud
+        rd, rn, rno = sep[0]
+        xml = doc_xml(rno)
+        if not xml:
+            continue
+        tried += 1
+        got, raw = fin_from_audit(xml)
+        for k in got:
+            ok[k] += 1
+        miss = [k for k, _ in FIN_KEYS if k not in got]
+        print("AUDIT\t" + json.dumps({"name": nm, "ind": ind, "gu": gu_, "report": rn, "rcept": rno,
+                                       "got": {k: v for k, v in got.items()}, "miss": miss}, ensure_ascii=False))
+        if tried <= 12:
+            for k, v in raw.items():
+                print(f"AUDITRAW\t{nm}\t{k}\t{v}")
+    print("[audit] 재무 읽기 성공(표본 %d곳): " % tried + ", ".join(f"{k} {v}" for k, v in ok.items()))
+    print(f"[audit] 끝 — API 호출 {CALLS[0]}회")
+    return 0
+
+
 PLACE = re.compile(r"유상증자결정|전환사채권발행결정|신주인수권부사채권발행결정|교환사채권발행결정")
 PLACE_API = {"유상증자": "piicDecsn.json", "전환사채": "cvbdIsDecsn.json", "신주인수권": "bdwtIsDecsn.json", "교환사채": "exbdIsDecsn.json"}
 PERSON = re.compile(r"^[가-힣]{2,4}$")
@@ -754,6 +941,8 @@ def main(argv: list[str]) -> int:
     DUMP[0] = "--dump" in argv and bool(probe)
     if "--invest-scan" in argv:
         return invest_scan(argv)
+    if "--audit-scan" in argv:
+        return audit_scan(argv)
     if "--placement-scan" in argv:
         return placement_scan(argv)
     if "--robot-scan" in argv:
@@ -768,7 +957,7 @@ def main(argv: list[str]) -> int:
             return 0
         hits = [(clean(m.group(1)), clean(m.group(2)), clean(m.group(3)))
                 for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)
-                if kw.replace(" ", "") in clean(m.group(2)).replace(" ", "")]
+                if (kw.replace(" ", "") == clean(m.group(2)).replace(" ", "") if "--exact" in argv else kw.replace(" ", "") in clean(m.group(2)).replace(" ", ""))]
         print(f"[dart_notes] 고유번호 목록에서 '{kw}' {len(hits)}곳")
         bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
         for code, name, stock in hits[:10]:
@@ -779,6 +968,9 @@ def main(argv: list[str]) -> int:
             print(f"    최근 {months}달 공시 {len(rows)}건")
             for x in rows:
                 print(f"    {x.get('rcept_dt')} {x.get('report_nm')} ({x.get('flr_nm')}) https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
+            if "--doc-kw" in argv:   # --doc-kw 사업보고서,감사보고서 — 제목에 그 낱말이 든 공시만 원문 대상(--exact 는 이름 완전 일치, 2026-10-29)
+                kws = argv[argv.index("--doc-kw") + 1].split(",")
+                rows = [x for x in rows if any(k in (x.get("report_nm") or "") for k in kws)]
             if "--dump" in argv and rows:   # 가장 최근 공시(비상장 외감 회사는 감사보고서) 원문을 표까지 로그로, --dump-all 이면 목록 전부(최대 5건)
                 for x in (rows[:5] if "--dump-all" in argv else rows[:1]):
                     xml = doc_xml(x["rcept_no"])
@@ -787,13 +979,16 @@ def main(argv: list[str]) -> int:
         return 0
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}
+    if probe and "--any" in argv:   # --any: 캐시 전체(대구 밖 본사·비상장 사업보고서 제출 회사 포함)에서 찾는다, --exact 면 이름 완전 일치(2026-10-29)
+        corps = dict(cache)
     if probe:
-        corps = {c: v for c, v in corps.items() if probe in (v.get("name") or "")}
+        corps = {c: v for c, v in corps.items() if (probe == (v.get("name") or "") if "--exact" in argv else probe in (v.get("name") or ""))}
     if not corps:
         print("대상 회사 없음")
         return 0
     if "--disclosure" in argv and probe:   # 정기보고서가 아닌 공시(예: 전환사채권발행결정) 원문을 표까지 로그로 — 저장 안 함(2026-10-17 한국피아이엠 CB 자금 용도 확인)
         kw = argv[argv.index("--disclosure") + 1]
+        grep = argv[argv.index("--grep") + 1] if "--grep" in argv else ""   # 정기보고서처럼 긴 원문은 맞는 줄 둘레만(2026-10-27 구영테크 CAR TECH 주석 확인)
         bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
         for code, meta in sorted(corps.items()):
             j = get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), page_count=100) or {}
@@ -802,7 +997,9 @@ def main(argv: list[str]) -> int:
             for x in hits:
                 print(f"--- {x.get('rcept_dt')} {x.get('report_nm')} rcept_no={x.get('rcept_no')} https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
                 xml = doc_xml(x["rcept_no"])
-                if xml:
+                if xml and grep:
+                    grep_block(f"{meta.get('name')} {x.get('report_nm')}", xml, grep)
+                elif xml:
                     dump_block(f"{meta.get('name')} {x.get('report_nm')}", xml)
             if "전환사채" in kw:   # 주요사항보고서 구조화 API — 자금조달 목적별 금액
                 r = get("cvbdIsDecsn.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d")) or {}
@@ -815,6 +1012,20 @@ def main(argv: list[str]) -> int:
     seen_i = {r["rcept_no"] for r in old_i if r.get("pdf")}      # 첨부까지 본 공시만 건너뛴다
     budget = [80 if not probe else 3]
     for i, (code, meta) in enumerate(sorted(corps.items()), 1):
+        if probe and "--any" in argv and code not in reps:   # 분기 실적 CSV 밖 회사 — 공시 목록에서 최근 정기보고서를 찾는다
+            j = get("list.json", corp_code=code, bgn_de=(date.today() - timedelta(days=480)).strftime("%Y%m%d"),
+                    end_de=date.today().strftime("%Y%m%d"), pblntf_ty="A", page_count=100) or {}
+            lst = []
+            for x in j.get("list", []):
+                m = re.search(r"(사업|반기|분기)보고서\s*\((\d{4})\.(\d{2})\)", x.get("report_nm") or "")
+                if m and "정정" not in x.get("report_nm", ""):
+                    q = {"03": 1, "06": 2, "09": 3, "12": 4}.get(m.group(3), 4)
+                    lst.append({"rcept_no": x["rcept_no"], "year": m.group(2), "quarter": str(q), "report_nm": f"{m.group(2)} {x['report_nm']}"})
+            lst.sort(key=lambda x: (int(x["year"]), int(x["quarter"])), reverse=True)
+            pick = lst[:2]
+            ann = next((x for x in lst if x["quarter"] == "4"), None)
+            if ann and ann not in pick: pick.append(ann)
+            reps[code] = pick
         if "--no-report" not in argv:
             for rep in reps.get(code, []):
                 rrows += report_notes(code, meta, rep, bool(probe))

@@ -81,7 +81,8 @@ def main():
         if len(re.sub(r"\s", "", text)) < 200:   # 큰 틀 안에 본문이 있어 '글 덩어리'를 못 고른 화면: body 전체 글자
             text = re.sub(r"[ \t]+", " ", (soup.body or soup).get_text("\n", strip=True))
         text = re.sub(r"\n{2,}", "\n", text)
-        print(f"== 본문({len(text):,}자, 앞 8,000자) ==\n" + text[:8000])
+        off = int(sys.argv[sys.argv.index("--text-from") + 1]) if "--text-from" in sys.argv else 0   # 긴 본문은 text 칸에 숫자(시작 글자)를 넣어 이어 읽는다(2026-11-02)
+        print(f"== 본문({len(text):,}자, {off:,}자부터 8,000자) ==\n" + text[off:off + 8000])
         return
     if "--dump" in sys.argv:   # 표·선택 상자·스크립트 속 주소까지: 통계표 화면이 어떻게 그려지는지 볼 때
         for i, sel in enumerate(soup.find_all("select")[:12]):

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="동구 산업별 고용 인원. 소프트웨어·IT 3,112명, 의료·바이오 2,546명, 기계·금속 1,095명, 섬유·패션 1,064명, 전기·전자 1,050명, 자동차·부품 422명, 식품 407명, 화학·에너지 266명, 기타 제조 259명, 기타 서비스 219명, 로봇 38명" style="max-width:360px;height:auto;font-size:14px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 530" width="100%" role="img" aria-label="동구 산업별 고용 인원. 소프트웨어·IT 3,112명, 의료·바이오 2,546명, 기계·금속 1,095명, 섬유·패션 1,064명, 전기·전자 1,052명, 자동차·부품 422명, 식품 407명, 화학·에너지 266명, 기타 제조 259명, 기타 서비스 219명, 로봇 38명" style="max-width:360px;height:auto;font-size:14px">
 <title>동구 산업별 고용 인원</title>
 <text x="8" y="16" fill="#767676">고용 인원 = 국민연금 가입자수, 자료 14개월</text>
 <text x="8" y="48.0" fill="#1a1a1a">소프트웨어·IT</text>
@@ -14,8 +14,8 @@
 <rect x="8.0" y="186" width="99.2" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="113.2" y="200.0" fill="#1a1a1a">1,064명</text>
 <text x="8" y="224.0" fill="#1a1a1a">전기·전자</text>
-<rect x="8.0" y="230" width="97.8" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
-<text x="111.8" y="244.0" fill="#1a1a1a">1,050명</text>
+<rect x="8.0" y="230" width="98.0" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
+<text x="112.0" y="244.0" fill="#1a1a1a">1,052명</text>
 <text x="8" y="268.0" fill="#1a1a1a">자동차·부품</text>
 <rect x="8.0" y="274" width="39.3" height="18" fill="#1B4F9B" style="fill:var(--primary,#1B4F9B)"/>
 <text x="53.3" y="288.0" fill="#1a1a1a">422명</text>

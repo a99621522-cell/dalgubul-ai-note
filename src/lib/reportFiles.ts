@@ -3,6 +3,9 @@
  *  /policy/ 목록과 첫 화면 리포트 회전 카드(ReportCarousel)가 같이 읽는다(운영자 지시 2026-10-06: 봉제 AI 브리프를 내리고 이 자료 2건을 첫 화면 카드로). */
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'jvm-pharmacy-automation', summary: '대구 달서구 성서산단 코스닥 상장사 제이브이엠(1977년 대구 설립, 2016년 한미사이언스 자회사 편입)이 약국·병원 조제 자동화 장비(ATDPS)와 소모품·유지보수(MRO)에서 로봇 조제 장비(MENITH)·북미 카운팅 장비(COUNTMATE)·중국 쑤저우 생산법인으로 넓히는 흐름을 DART 공시(2025 사업보고서 연결 매출 1,731억 원·영업이익 333억 원, 2026년 1~9월 매출 1,353억 원·영업이익 327억 원(3분기 잠정실적 포함))와 보도로 정리한 자료. 첫 장은 DART 연결 실적 표·분기 그래프, 품목·수출 매출과 판매 구조. 평가·전망은 싣지 않음.', topics: ['상장기업', '의료·바이오', '로봇'],
+    title: '제이브이엠, 약국 조제 자동화에서 로봇 조제·중국 생산으로', name: '제이브이엠, 약국 조제 자동화에서 로봇 조제·중국 생산으로',
+    hwpx: '/hwpx/jvm-pharmacy-automation.hwpx', hwpxSize: '152KB', date: '2026-11-03' },
   { slug: 'sambo-motors-ev-robot', summary: '대구 달서구 성서산단 코스닥 상장사 삼보모터스가 자동변속기 플레이트·파이프와 자회사(프라코·나전·프라코체코)의 플라스틱 내외장 부품에서 친환경차 부품(모터오일쿨러·버스바·HEV 로터 어셈블리·BMS, 금속 분리판 라인)·멕시코·미국 생산·로봇 부품(DGIST 공동연구랩)으로 넓히는 흐름을 DART 공시(2025 사업보고서 연결 매출 1조 6,846억 원·영업이익 617억 원, 2026 반기보고서 매출 8,896억 원·영업이익 189억 원, 기업가치제고계획·전환사채 발행 결정)와 팩토리온·보도로 정리한 자료. 첫 장은 DART 연결 실적 표·그래프와 종속회사 실적. 투자의견·목표주가·PBR 등 목표 수치는 싣지 않음.', topics: ['상장기업', '자동차부품', '미래차'],
     title: '삼보모터스, 변속기 플레이트·파이프에서 친환경차 부품·북미 생산·로봇 부품으로', name: '삼보모터스, 변속기 플레이트·파이프에서 친환경차 부품·북미 생산·로봇 부품으로',
     hwpx: '/hwpx/sambo-motors-ev-robot.hwpx', hwpxSize: '134KB', date: '2026-11-02' },

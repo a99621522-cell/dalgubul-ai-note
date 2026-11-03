@@ -1,0 +1,6979 @@
+{
+ "updated": "2026-11-03",
+ "min_n": 5,
+ "min_share": 20,
+ "indicators": [
+  {
+   "key": "growth",
+   "name": "매출액 증가율",
+   "unit": "%"
+  },
+  {
+   "key": "opm",
+   "name": "매출액 영업이익률",
+   "unit": "%"
+  },
+  {
+   "key": "ocf",
+   "name": "영업현금흐름 대 매출액",
+   "unit": "%"
+  },
+  {
+   "key": "debt",
+   "name": "부채비율",
+   "unit": "%"
+  },
+  {
+   "key": "icr",
+   "name": "이자보상비율",
+   "unit": "%"
+  }
+ ],
+ "bands": [
+  "100억 원 미만",
+  "100억~500억 원",
+  "500억~1,500억 원",
+  "1,500억 원 이상"
+ ],
+ "years": {
+  "daegu_unlisted": "2024",
+  "listed": "2025",
+  "national_unlisted": ""
+ },
+ "total": {
+  "daegu_listed": {
+   "n": 45,
+   "growth": {
+    "n": 45,
+    "med": 1.8,
+    "q1": -8.5,
+    "q3": 9.3,
+    "pooled": 8.6
+   },
+   "opm": {
+    "n": 45,
+    "med": 1.7,
+    "q1": -3.6,
+    "q3": 6.8,
+    "pooled": 3.2
+   },
+   "ocf": {
+    "n": 45,
+    "med": 4.9,
+    "q1": -0.9,
+    "q3": 11.7,
+    "pooled": 6.8
+   },
+   "debt": {
+    "n": 45,
+    "med": 57.2,
+    "q1": 27.5,
+    "q3": 152.7,
+    "pooled": 79.4
+   },
+   "icr": {
+    "n": 42,
+    "med": 76.5,
+    "q1": -276.5,
+    "q3": 1176.8,
+    "pooled": 221.1
+   },
+   "icr_low": {
+    "n": 42,
+    "k": 23,
+    "share": 54.8,
+    "n3": 40,
+    "share3": 20.0
+   }
+  },
+  "national_listed": {
+   "n": 1597,
+   "growth": {
+    "n": 1592,
+    "med": 1.3,
+    "q1": -9.0,
+    "q3": 13.0,
+    "pooled": 6.2
+   },
+   "opm": {
+    "n": 1596,
+    "med": 2.7,
+    "q1": -4.2,
+    "q3": 8.7,
+    "pooled": 9.1
+   },
+   "ocf": {
+    "n": 1593,
+    "med": 4.8,
+    "q1": -2.6,
+    "q3": 11.9,
+    "pooled": 15.0
+   },
+   "debt": {
+    "n": 1589,
+    "med": 52.1,
+    "q1": 23.2,
+    "q3": 100.4,
+    "pooled": 60.1
+   },
+   "icr": {
+    "n": 1420,
+    "med": 231.3,
+    "q1": -264.4,
+    "q3": 1369.0,
+    "pooled": 943.1
+   },
+   "icr_low": {
+    "n": 1420,
+    "k": 575,
+    "share": 40.5,
+    "n3": 1306,
+    "share3": 24.0
+   }
+  },
+  "daegu_unlisted": {
+   "n": 146,
+   "growth": {
+    "n": 137,
+    "med": -0.1,
+    "q1": -9.3,
+    "q3": 15.4,
+    "pooled": 42.2
+   },
+   "opm": {
+    "n": 136,
+    "med": 4.4,
+    "q1": 1.4,
+    "q3": 9.1,
+    "pooled": 3.5
+   },
+   "ocf": {
+    "n": 131,
+    "med": 7.1,
+    "q1": -0.8,
+    "q3": 12.2,
+    "pooled": -2.6
+   },
+   "debt": {
+    "n": 136,
+    "med": 126.8,
+    "q1": 54.9,
+    "q3": 249.1,
+    "pooled": 433.1
+   },
+   "icr": {
+    "n": 134,
+    "med": 171.7,
+    "q1": 76.4,
+    "q3": 640.5,
+    "pooled": 115.8
+   },
+   "icr_low": {
+    "n": 134,
+    "k": 42,
+    "share": 31.3,
+    "n3": 0,
+    "share3": null
+   }
+  },
+  "national_unlisted": {
+   "n": 0
+  }
+ },
+ "by_group": [
+  {
+   "group": "기계·금속",
+   "daegu_listed": {
+    "n": 16,
+    "growth": {
+     "n": 16,
+     "med": -7.9,
+     "q1": -14.7,
+     "q3": 5.1,
+     "pooled": -1.4
+    },
+    "opm": {
+     "n": 16,
+     "med": 0.9,
+     "q1": -11.5,
+     "q3": 4.3,
+     "pooled": 2.5
+    },
+    "ocf": {
+     "n": 16,
+     "med": -0.4,
+     "q1": -1.9,
+     "q3": 5.9,
+     "pooled": 3.8
+    },
+    "debt": {
+     "n": 16,
+     "med": 62.4,
+     "q1": 40.6,
+     "q3": 139.8,
+     "pooled": 90.2
+    },
+    "icr": {
+     "n": 15,
+     "med": 11.2,
+     "q1": -481.3,
+     "q3": 367.7,
+     "pooled": 122.9
+    },
+    "icr_low": {
+     "n": 15,
+     "k": null,
+     "share": null,
+     "n3": 14,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 369,
+    "growth": {
+     "n": 369,
+     "med": 1.7,
+     "q1": -12.4,
+     "q3": 17.3,
+     "pooled": 6.9
+    },
+    "opm": {
+     "n": 369,
+     "med": 2.7,
+     "q1": -4.2,
+     "q3": 8.8,
+     "pooled": 7.8
+    },
+    "ocf": {
+     "n": 369,
+     "med": 4.2,
+     "q1": -2.9,
+     "q3": 11.7,
+     "pooled": 7.2
+    },
+    "debt": {
+     "n": 365,
+     "med": 53.1,
+     "q1": 23.8,
+     "q3": 100.2,
+     "pooled": 78.9
+    },
+    "icr": {
+     "n": 326,
+     "med": 199.9,
+     "q1": -225.4,
+     "q3": 1286.8,
+     "pooled": 587.9
+    },
+    "icr_low": {
+     "n": 326,
+     "k": 137,
+     "share": 42.0,
+     "n3": 293,
+     "share3": 19.8
+    }
+   },
+   "daegu_unlisted": {
+    "n": 40,
+    "growth": {
+     "n": 38,
+     "med": -1.4,
+     "q1": -12.8,
+     "q3": 16.2,
+     "pooled": 1.8
+    },
+    "opm": {
+     "n": 37,
+     "med": 4.7,
+     "q1": 2.2,
+     "q3": 7.0,
+     "pooled": 3.9
+    },
+    "ocf": {
+     "n": 34,
+     "med": 7.3,
+     "q1": -2.5,
+     "q3": 11.9,
+     "pooled": 5.6
+    },
+    "debt": {
+     "n": 37,
+     "med": 138.4,
+     "q1": 76.4,
+     "q3": 203.7,
+     "pooled": 86.4
+    },
+    "icr": {
+     "n": 35,
+     "med": 146.1,
+     "q1": 76.2,
+     "q3": 453.0,
+     "pooled": 173.0
+    },
+    "icr_low": {
+     "n": 35,
+     "k": 13,
+     "share": 37.1,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "group": "기타 제조",
+   "daegu_listed": {
+    "n": 3,
+    "growth": {
+     "n": 3,
+     "pooled": null
+    },
+    "opm": {
+     "n": 3,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 3,
+     "pooled": null
+    },
+    "debt": {
+     "n": 3,
+     "pooled": null
+    },
+    "icr": {
+     "n": 3,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 3,
+     "k": null,
+     "share": null,
+     "n3": 3,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 88,
+    "growth": {
+     "n": 88,
+     "med": -4.6,
+     "q1": -10.3,
+     "q3": 1.1,
+     "pooled": -6.7
+    },
+    "opm": {
+     "n": 88,
+     "med": 0.5,
+     "q1": -3.8,
+     "q3": 4.6,
+     "pooled": 2.7
+    },
+    "ocf": {
+     "n": 88,
+     "med": 4.5,
+     "q1": 0.8,
+     "q3": 8.7,
+     "pooled": 5.7
+    },
+    "debt": {
+     "n": 88,
+     "med": 59.0,
+     "q1": 25.4,
+     "q3": 102.4,
+     "pooled": 67.4
+    },
+    "icr": {
+     "n": 80,
+     "med": 81.3,
+     "q1": -181.8,
+     "q3": 444.7,
+     "pooled": 133.2
+    },
+    "icr_low": {
+     "n": 80,
+     "k": 41,
+     "share": 51.2,
+     "n3": 75,
+     "share3": 28.0
+    }
+   },
+   "daegu_unlisted": {
+    "n": 11,
+    "growth": {
+     "n": 10,
+     "med": -3.3,
+     "q1": -8.0,
+     "q3": 8.6,
+     "pooled": 5.9
+    },
+    "opm": {
+     "n": 10,
+     "med": 2.0,
+     "q1": -0.1,
+     "q3": 8.3,
+     "pooled": 0.8
+    },
+    "ocf": {
+     "n": 10,
+     "med": 5.9,
+     "q1": -1.5,
+     "q3": 14.1,
+     "pooled": 2.4
+    },
+    "debt": {
+     "n": 10,
+     "med": 79.7,
+     "q1": 43.8,
+     "q3": 170.7,
+     "pooled": 85.9
+    },
+    "icr": {
+     "n": 8,
+     "med": 61.1,
+     "q1": -71.1,
+     "q3": 498.9,
+     "pooled": -21.2
+    },
+    "icr_low": {
+     "n": 8,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "group": "로봇",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 8,
+    "growth": {
+     "n": 8,
+     "med": -4.8,
+     "q1": -15.4,
+     "q3": 9.7,
+     "pooled": -3.4
+    },
+    "opm": {
+     "n": 8,
+     "med": -23.5,
+     "q1": -70.1,
+     "q3": -5.2,
+     "pooled": -17.6
+    },
+    "ocf": {
+     "n": 8,
+     "med": -22.7,
+     "q1": -61.2,
+     "q3": 1.1,
+     "pooled": -11.2
+    },
+    "debt": {
+     "n": 8,
+     "med": 41.9,
+     "q1": 11.9,
+     "q3": 88.9,
+     "pooled": 38.7
+    },
+    "icr": {
+     "n": 8,
+     "med": -2390.1,
+     "q1": -20068.7,
+     "q3": -881.0,
+     "pooled": -1871.6
+    },
+    "icr_low": {
+     "n": 8,
+     "k": null,
+     "share": null,
+     "n3": 7,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "group": "섬유·패션",
+   "daegu_listed": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 1,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 48,
+    "growth": {
+     "n": 48,
+     "med": -1.9,
+     "q1": -8.8,
+     "q3": 8.1,
+     "pooled": 2.4
+    },
+    "opm": {
+     "n": 48,
+     "med": 2.4,
+     "q1": 0.3,
+     "q3": 7.6,
+     "pooled": 7.7
+    },
+    "ocf": {
+     "n": 48,
+     "med": 5.6,
+     "q1": -0.7,
+     "q3": 11.6,
+     "pooled": 7.6
+    },
+    "debt": {
+     "n": 48,
+     "med": 51.2,
+     "q1": 15.5,
+     "q3": 84.3,
+     "pooled": 40.5
+    },
+    "icr": {
+     "n": 42,
+     "med": 159.5,
+     "q1": 4.2,
+     "q3": 773.7,
+     "pooled": 615.4
+    },
+    "icr_low": {
+     "n": 42,
+     "k": 17,
+     "share": 40.5,
+     "n3": 39,
+     "share3": 20.5
+    }
+   },
+   "daegu_unlisted": {
+    "n": 25,
+    "growth": {
+     "n": 22,
+     "med": -0.0,
+     "q1": -5.2,
+     "q3": 14.0,
+     "pooled": 0.9
+    },
+    "opm": {
+     "n": 22,
+     "med": 4.0,
+     "q1": 1.9,
+     "q3": 7.8,
+     "pooled": 3.0
+    },
+    "ocf": {
+     "n": 21,
+     "med": 5.3,
+     "q1": -1.3,
+     "q3": 10.7,
+     "pooled": 2.4
+    },
+    "debt": {
+     "n": 22,
+     "med": 123.4,
+     "q1": 68.4,
+     "q3": 220.0,
+     "pooled": 111.6
+    },
+    "icr": {
+     "n": 24,
+     "med": 142.5,
+     "q1": 64.7,
+     "q3": 433.4,
+     "pooled": 131.2
+    },
+    "icr_low": {
+     "n": 24,
+     "k": 10,
+     "share": 41.7,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "group": "식품",
+   "daegu_listed": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 2,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 85,
+    "growth": {
+     "n": 84,
+     "med": -0.2,
+     "q1": -4.3,
+     "q3": 4.3,
+     "pooled": 1.7
+    },
+    "opm": {
+     "n": 85,
+     "med": 4.2,
+     "q1": 1.8,
+     "q3": 8.1,
+     "pooled": 6.3
+    },
+    "ocf": {
+     "n": 85,
+     "med": 5.8,
+     "q1": 2.6,
+     "q3": 9.9,
+     "pooled": 6.0
+    },
+    "debt": {
+     "n": 85,
+     "med": 61.7,
+     "q1": 26.3,
+     "q3": 108.9,
+     "pooled": 77.5
+    },
+    "icr": {
+     "n": 74,
+     "med": 304.2,
+     "q1": 149.1,
+     "q3": 688.1,
+     "pooled": 640.3
+    },
+    "icr_low": {
+     "n": 74,
+     "k": 14,
+     "share": 18.9,
+     "n3": 70,
+     "share3": 10.0
+    }
+   },
+   "daegu_unlisted": {
+    "n": 10,
+    "growth": {
+     "n": 9,
+     "med": -0.2,
+     "q1": -12.3,
+     "q3": 25.9,
+     "pooled": -2.7
+    },
+    "opm": {
+     "n": 9,
+     "med": 1.1,
+     "q1": -6.0,
+     "q3": 6.6,
+     "pooled": -0.6
+    },
+    "ocf": {
+     "n": 8,
+     "med": 3.4,
+     "q1": -3.3,
+     "q3": 12.3,
+     "pooled": 5.0
+    },
+    "debt": {
+     "n": 9,
+     "med": 166.1,
+     "q1": 108.5,
+     "q3": 334.5,
+     "pooled": 66.2
+    },
+    "icr": {
+     "n": 9,
+     "med": 113.6,
+     "q1": -471.5,
+     "q3": 159.8,
+     "pooled": -21.0
+    },
+    "icr_low": {
+     "n": 9,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "group": "의료·바이오",
+   "daegu_listed": {
+    "n": 3,
+    "growth": {
+     "n": 3,
+     "pooled": null
+    },
+    "opm": {
+     "n": 3,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 3,
+     "pooled": null
+    },
+    "debt": {
+     "n": 3,
+     "pooled": null
+    },
+    "icr": {
+     "n": 3,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 3,
+     "k": null,
+     "share": null,
+     "n3": 3,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 242,
+    "growth": {
+     "n": 241,
+     "med": 5.8,
+     "q1": -5.4,
+     "q3": 15.1,
+     "pooled": 5.8
+    },
+    "opm": {
+     "n": 242,
+     "med": 2.8,
+     "q1": -31.1,
+     "q3": 11.4,
+     "pooled": 12.0
+    },
+    "ocf": {
+     "n": 242,
+     "med": 4.1,
+     "q1": -18.3,
+     "q3": 15.1,
+     "pooled": 13.3
+    },
+    "debt": {
+     "n": 239,
+     "med": 47.7,
+     "q1": 19.5,
+     "q3": 87.9,
+     "pooled": 42.6
+    },
+    "icr": {
+     "n": 213,
+     "med": 239.3,
+     "q1": -1041.8,
+     "q3": 1505.3,
+     "pooled": 1031.2
+    },
+    "icr_low": {
+     "n": 213,
+     "k": 95,
+     "share": 44.6,
+     "n3": 199,
+     "share3": 30.7
+    }
+   },
+   "daegu_unlisted": {
+    "n": 4,
+    "growth": {
+     "n": 4,
+     "pooled": null
+    },
+    "opm": {
+     "n": 4,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 4,
+     "pooled": null
+    },
+    "debt": {
+     "n": 4,
+     "pooled": null
+    },
+    "icr": {
+     "n": 4,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 4,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "group": "자동차·부품",
+   "daegu_listed": {
+    "n": 10,
+    "growth": {
+     "n": 10,
+     "med": 5.2,
+     "q1": 2.3,
+     "q3": 9.5,
+     "pooled": 8.0
+    },
+    "opm": {
+     "n": 10,
+     "med": 2.3,
+     "q1": 1.6,
+     "q3": 6.6,
+     "pooled": 4.7
+    },
+    "ocf": {
+     "n": 10,
+     "med": 7.8,
+     "q1": 3.9,
+     "q3": 10.7,
+     "pooled": 8.1
+    },
+    "debt": {
+     "n": 10,
+     "med": 56.9,
+     "q1": 27.0,
+     "q3": 247.8,
+     "pooled": 56.3
+    },
+    "icr": {
+     "n": 9,
+     "med": 257.5,
+     "q1": 92.0,
+     "q3": 355.1,
+     "pooled": 760.5
+    },
+    "icr_low": {
+     "n": 9,
+     "k": null,
+     "share": null,
+     "n3": 8,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 109,
+    "growth": {
+     "n": 108,
+     "med": 4.7,
+     "q1": -2.2,
+     "q3": 11.1,
+     "pooled": 1.8
+    },
+    "opm": {
+     "n": 108,
+     "med": 2.8,
+     "q1": 1.0,
+     "q3": 5.5,
+     "pooled": 5.6
+    },
+    "ocf": {
+     "n": 108,
+     "med": 6.5,
+     "q1": 2.3,
+     "q3": 9.8,
+     "pooled": 9.0
+    },
+    "debt": {
+     "n": 109,
+     "med": 79.6,
+     "q1": 39.6,
+     "q3": 166.4,
+     "pooled": 48.3
+    },
+    "icr": {
+     "n": 96,
+     "med": 326.9,
+     "q1": 72.4,
+     "q3": 870.8,
+     "pooled": 2061.0
+    },
+    "icr_low": {
+     "n": 96,
+     "k": 27,
+     "share": 28.1,
+     "n3": 92,
+     "share3": 15.2
+    }
+   },
+   "daegu_unlisted": {
+    "n": 25,
+    "growth": {
+     "n": 24,
+     "med": 4.6,
+     "q1": -3.0,
+     "q3": 18.2,
+     "pooled": 6.9
+    },
+    "opm": {
+     "n": 24,
+     "med": 4.2,
+     "q1": 2.8,
+     "q3": 9.7,
+     "pooled": 11.3
+    },
+    "ocf": {
+     "n": 24,
+     "med": 6.4,
+     "q1": 1.9,
+     "q3": 9.8,
+     "pooled": 4.5
+    },
+    "debt": {
+     "n": 25,
+     "med": 167.7,
+     "q1": 38.5,
+     "q3": 264.3,
+     "pooled": 61.4
+    },
+    "icr": {
+     "n": 25,
+     "med": 226.4,
+     "q1": 101.6,
+     "q3": 2284.7,
+     "pooled": 516.7
+    },
+    "icr_low": {
+     "n": 25,
+     "k": 6,
+     "share": 24.0,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "group": "전기·전자",
+   "daegu_listed": {
+    "n": 8,
+    "growth": {
+     "n": 8,
+     "med": 9.2,
+     "q1": -2.7,
+     "q3": 32.2,
+     "pooled": 23.6
+    },
+    "opm": {
+     "n": 8,
+     "med": 4.8,
+     "q1": -4.8,
+     "q3": 9.8,
+     "pooled": 2.3
+    },
+    "ocf": {
+     "n": 8,
+     "med": 7.0,
+     "q1": -1.0,
+     "q3": 12.5,
+     "pooled": 4.5
+    },
+    "debt": {
+     "n": 8,
+     "med": 43.1,
+     "q1": 24.0,
+     "q3": 147.6,
+     "pooled": 144.3
+    },
+    "icr": {
+     "n": 7,
+     "med": 1499.6,
+     "q1": -396.3,
+     "q3": 2334.2,
+     "pooled": 112.3
+    },
+    "icr_low": {
+     "n": 7,
+     "k": null,
+     "share": null,
+     "n3": 7,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 422,
+    "growth": {
+     "n": 420,
+     "med": 2.9,
+     "q1": -10.9,
+     "q3": 19.8,
+     "pooled": 13.0
+    },
+    "opm": {
+     "n": 422,
+     "med": 1.9,
+     "q1": -10.3,
+     "q3": 7.5,
+     "pooled": 13.2
+    },
+    "ocf": {
+     "n": 420,
+     "med": 3.4,
+     "q1": -7.9,
+     "q3": 11.4,
+     "pooled": 23.7
+    },
+    "debt": {
+     "n": 421,
+     "med": 51.1,
+     "q1": 22.5,
+     "q3": 104.1,
+     "pooled": 56.4
+    },
+    "icr": {
+     "n": 376,
+     "med": 148.2,
+     "q1": -739.3,
+     "q3": 1542.5,
+     "pooled": 1650.9
+    },
+    "icr_low": {
+     "n": 376,
+     "k": 167,
+     "share": 44.4,
+     "n3": 342,
+     "share3": 28.9
+    }
+   },
+   "daegu_unlisted": {
+    "n": 17,
+    "growth": {
+     "n": 16,
+     "med": 11.1,
+     "q1": -13.3,
+     "q3": 27.6,
+     "pooled": 44.2
+    },
+    "opm": {
+     "n": 16,
+     "med": 7.8,
+     "q1": 2.2,
+     "q3": 15.3,
+     "pooled": 3.5
+    },
+    "ocf": {
+     "n": 16,
+     "med": 10.2,
+     "q1": 4.7,
+     "q3": 25.8,
+     "pooled": -2.9
+    },
+    "debt": {
+     "n": 16,
+     "med": 91.4,
+     "q1": 29.0,
+     "q3": 187.7,
+     "pooled": 503.5
+    },
+    "icr": {
+     "n": 16,
+     "med": 492.6,
+     "q1": 171.6,
+     "q3": 2666.8,
+     "pooled": 113.3
+    },
+    "icr_low": {
+     "n": 16,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "group": "화학·에너지",
+   "daegu_listed": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 2,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 226,
+    "growth": {
+     "n": 226,
+     "med": -1.3,
+     "q1": -11.5,
+     "q3": 9.1,
+     "pooled": -3.2
+    },
+    "opm": {
+     "n": 226,
+     "med": 4.4,
+     "q1": -1.1,
+     "q3": 10.1,
+     "pooled": 4.2
+    },
+    "ocf": {
+     "n": 225,
+     "med": 7.2,
+     "q1": 1.5,
+     "q3": 14.3,
+     "pooled": 10.4
+    },
+    "debt": {
+     "n": 226,
+     "med": 44.7,
+     "q1": 19.6,
+     "q3": 88.3,
+     "pooled": 65.3
+    },
+    "icr": {
+     "n": 205,
+     "med": 382.4,
+     "q1": -64.5,
+     "q3": 1990.8,
+     "pooled": 225.3
+    },
+    "icr_low": {
+     "n": 205,
+     "k": 70,
+     "share": 34.1,
+     "n3": 189,
+     "share3": 21.2
+    }
+   },
+   "daegu_unlisted": {
+    "n": 13,
+    "growth": {
+     "n": 13,
+     "med": 2.9,
+     "q1": -9.3,
+     "q3": 8.7,
+     "pooled": 7.2
+    },
+    "opm": {
+     "n": 13,
+     "med": 5.3,
+     "q1": 3.4,
+     "q3": 12.0,
+     "pooled": 6.7
+    },
+    "ocf": {
+     "n": 13,
+     "med": 5.7,
+     "q1": 1.7,
+     "q3": 11.0,
+     "pooled": 6.2
+    },
+    "debt": {
+     "n": 12,
+     "med": 150.3,
+     "q1": 87.4,
+     "q3": 239.5,
+     "pooled": 113.8
+    },
+    "icr": {
+     "n": 12,
+     "med": 231.9,
+     "q1": 149.5,
+     "q3": 586.1,
+     "pooled": 243.0
+    },
+    "icr_low": {
+     "n": 12,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  }
+ ],
+ "by_ksic": [
+  {
+   "code": "C10",
+   "daegu_listed": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 1,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 73,
+    "growth": {
+     "n": 72,
+     "med": 0.3,
+     "q1": -4.2,
+     "q3": 5.2,
+     "pooled": 1.7
+    },
+    "opm": {
+     "n": 73,
+     "med": 4.2,
+     "q1": 1.6,
+     "q3": 6.3,
+     "pooled": 4.8
+    },
+    "ocf": {
+     "n": 73,
+     "med": 5.6,
+     "q1": 2.5,
+     "q3": 9.5,
+     "pooled": 5.5
+    },
+    "debt": {
+     "n": 73,
+     "med": 61.7,
+     "q1": 31.7,
+     "q3": 105.4,
+     "pooled": 80.7
+    },
+    "icr": {
+     "n": 64,
+     "med": 294.6,
+     "q1": 114.8,
+     "q3": 656.5,
+     "pooled": 554.9
+    },
+    "icr_low": {
+     "n": 64,
+     "k": 13,
+     "share": 20.3,
+     "n3": 60,
+     "share3": 10.0
+    }
+   },
+   "daegu_unlisted": {
+    "n": 9,
+    "growth": {
+     "n": 9,
+     "med": -0.2,
+     "q1": -12.3,
+     "q3": 25.9,
+     "pooled": -2.7
+    },
+    "opm": {
+     "n": 9,
+     "med": 1.1,
+     "q1": -6.0,
+     "q3": 6.6,
+     "pooled": -0.6
+    },
+    "ocf": {
+     "n": 8,
+     "med": 3.4,
+     "q1": -3.3,
+     "q3": 12.3,
+     "pooled": 5.0
+    },
+    "debt": {
+     "n": 8,
+     "med": 232.6,
+     "q1": 138.0,
+     "q3": 356.0,
+     "pooled": 220.3
+    },
+    "icr": {
+     "n": 9,
+     "med": 113.6,
+     "q1": -471.5,
+     "q3": 159.8,
+     "pooled": -21.0
+    },
+    "icr_low": {
+     "n": 9,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 2.3,
+     "q1": -14.4,
+     "med": 2.3,
+     "q3": 25.2
+    },
+    "opm": {
+     "mean": 3.8,
+     "q1": -3.0,
+     "med": 3.0,
+     "q3": 6.9
+    },
+    "icr": {
+     "mean": 299.7,
+     "q1": -216.2,
+     "med": 194.1,
+     "q3": 999.4
+    },
+    "debt": {
+     "mean": 101.7,
+     "q1": 77.2,
+     "med": 192.6,
+     "q3": 573.5
+    }
+   },
+   "bok_region": {
+    "growth": 3.59,
+    "opm": 2.91,
+    "icr": 189.33,
+    "debt": 159.32
+   }
+  },
+  {
+   "code": "C11",
+   "daegu_listed": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 1,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 11,
+    "growth": {
+     "n": 11,
+     "med": -3.8,
+     "q1": -5.6,
+     "q3": -2.2,
+     "pooled": -4.7
+    },
+    "opm": {
+     "n": 11,
+     "med": 7.7,
+     "q1": 4.1,
+     "q3": 9.1,
+     "pooled": 6.1
+    },
+    "ocf": {
+     "n": 11,
+     "med": 9.9,
+     "q1": 4.9,
+     "q3": 17.0,
+     "pooled": 9.9
+    },
+    "debt": {
+     "n": 11,
+     "med": 62.4,
+     "q1": 12.7,
+     "q3": 119.4,
+     "pooled": 104.8
+    },
+    "icr": {
+     "n": 9,
+     "med": 305.5,
+     "q1": 247.7,
+     "q3": 601.9,
+     "pooled": 333.8
+    },
+    "icr_low": {
+     "n": 9,
+     "k": null,
+     "share": null,
+     "n3": 9,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 1,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 3.3,
+     "q1": -16.9,
+     "med": 0.3,
+     "q3": 30.1
+    },
+    "opm": {
+     "mean": 8.7,
+     "q1": -31.0,
+     "med": 1.7,
+     "q3": 9.5
+    },
+    "icr": {
+     "mean": 588.5,
+     "q1": -1294.9,
+     "med": 89.2,
+     "q3": 779.3
+    },
+    "debt": {
+     "mean": 90.4,
+     "q1": 59.9,
+     "med": 231.3,
+     "q3": 3675.5
+    }
+   },
+   "bok_region": {
+    "growth": -3.75,
+    "opm": 5.48,
+    "icr": 9507.26,
+    "debt": 8.69
+   }
+  },
+  {
+   "code": "C12",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 1,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {},
+   "bok_region": {}
+  },
+  {
+   "code": "C13",
+   "daegu_listed": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 1,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 11,
+    "growth": {
+     "n": 11,
+     "med": 0.4,
+     "q1": -8.7,
+     "q3": 14.1,
+     "pooled": 2.3
+    },
+    "opm": {
+     "n": 11,
+     "med": 0.9,
+     "q1": -0.1,
+     "q3": 3.4,
+     "pooled": 0.6
+    },
+    "ocf": {
+     "n": 11,
+     "med": 5.4,
+     "q1": 3.8,
+     "q3": 7.5,
+     "pooled": 2.2
+    },
+    "debt": {
+     "n": 11,
+     "med": 26.1,
+     "q1": 11.9,
+     "q3": 65.8,
+     "pooled": 26.4
+    },
+    "icr": {
+     "n": 11,
+     "med": 148.1,
+     "q1": -5.5,
+     "q3": 202.5,
+     "pooled": 41.0
+    },
+    "icr_low": {
+     "n": 11,
+     "k": null,
+     "share": null,
+     "n3": 11,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 22,
+    "growth": {
+     "n": 19,
+     "med": 2.1,
+     "q1": -4.6,
+     "q3": 14.5,
+     "pooled": 1.8
+    },
+    "opm": {
+     "n": 19,
+     "med": 3.9,
+     "q1": 2.0,
+     "q3": 7.9,
+     "pooled": 2.8
+    },
+    "ocf": {
+     "n": 18,
+     "med": 6.3,
+     "q1": -1.5,
+     "q3": 10.4,
+     "pooled": 1.9
+    },
+    "debt": {
+     "n": 19,
+     "med": 131.2,
+     "q1": 100.9,
+     "q3": 214.8,
+     "pooled": 115.8
+    },
+    "icr": {
+     "n": 21,
+     "med": 139.1,
+     "q1": 76.8,
+     "q3": 327.7,
+     "pooled": 120.8
+    },
+    "icr_low": {
+     "n": 21,
+     "k": 9,
+     "share": 42.9,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 0.4,
+     "q1": -23.7,
+     "med": -4.3,
+     "q3": 16.3
+    },
+    "opm": {
+     "mean": 2.3,
+     "q1": -6.9,
+     "med": 2.8,
+     "q3": 7.0
+    },
+    "icr": {
+     "mean": 114.2,
+     "q1": -554.6,
+     "med": 140.2,
+     "q3": 844.9
+    },
+    "debt": {
+     "mean": 103.4,
+     "q1": 53.9,
+     "med": 159.4,
+     "q3": 559.2
+    }
+   },
+   "bok_region": {
+    "growth": -0.72,
+    "opm": 2.5,
+    "icr": 100.73,
+    "debt": 117.98
+   }
+  },
+  {
+   "code": "C14",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 30,
+    "growth": {
+     "n": 30,
+     "med": -2.0,
+     "q1": -8.6,
+     "q3": 3.5,
+     "pooled": 2.8
+    },
+    "opm": {
+     "n": 30,
+     "med": 3.1,
+     "q1": 0.8,
+     "q3": 7.1,
+     "pooled": 8.2
+    },
+    "ocf": {
+     "n": 30,
+     "med": 3.6,
+     "q1": -1.7,
+     "q3": 10.5,
+     "pooled": 7.7
+    },
+    "debt": {
+     "n": 30,
+     "med": 60.4,
+     "q1": 21.6,
+     "q3": 103.6,
+     "pooled": 44.5
+    },
+    "icr": {
+     "n": 25,
+     "med": 144.4,
+     "q1": 21.8,
+     "q3": 918.9,
+     "pooled": 717.3
+    },
+    "icr_low": {
+     "n": 25,
+     "k": 10,
+     "share": 40.0,
+     "n3": 22,
+     "share3": 18.2
+    }
+   },
+   "daegu_unlisted": {
+    "n": 3,
+    "growth": {
+     "n": 3,
+     "pooled": null
+    },
+    "opm": {
+     "n": 3,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 3,
+     "pooled": null
+    },
+    "debt": {
+     "n": 3,
+     "pooled": null
+    },
+    "icr": {
+     "n": 3,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 3,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 3.4,
+     "q1": -24.3,
+     "med": -2.8,
+     "q3": 25.6
+    },
+    "opm": {
+     "mean": 5.2,
+     "q1": -6.7,
+     "med": 3.1,
+     "q3": 7.1
+    },
+    "icr": {
+     "mean": 359.7,
+     "q1": -570.3,
+     "med": 203.5,
+     "q3": 2140.8
+    },
+    "debt": {
+     "mean": 83.0,
+     "q1": 61.0,
+     "med": 182.1,
+     "q3": 881.6
+    }
+   },
+   "bok_region": {
+    "growth": 2.29,
+    "opm": 4.94,
+    "icr": 269.5,
+    "debt": 102.52
+   }
+  },
+  {
+   "code": "C15",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 7,
+    "growth": {
+     "n": 7,
+     "med": -3.5,
+     "q1": -10.9,
+     "q3": 8.2,
+     "pooled": -2.2
+    },
+    "opm": {
+     "n": 7,
+     "med": 9.7,
+     "q1": -0.6,
+     "q3": 12.0,
+     "pooled": 8.8
+    },
+    "ocf": {
+     "n": 7,
+     "med": 12.1,
+     "q1": 10.7,
+     "q3": 18.7,
+     "pooled": 12.8
+    },
+    "debt": {
+     "n": 7,
+     "med": 23.7,
+     "q1": 12.4,
+     "q3": 80.6,
+     "pooled": 32.9
+    },
+    "icr": {
+     "n": 6,
+     "med": 568.5,
+     "q1": -6.8,
+     "q3": 2945.2,
+     "pooled": 404.1
+    },
+    "icr_low": {
+     "n": 6,
+     "k": null,
+     "share": null,
+     "n3": 6,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 5.5,
+     "q1": -30.0,
+     "med": -8.0,
+     "q3": 18.1
+    },
+    "opm": {
+     "mean": 6.3,
+     "q1": -12.4,
+     "med": 2.4,
+     "q3": 7.2
+    },
+    "icr": {
+     "mean": 547.4,
+     "q1": -1049.6,
+     "med": 130.9,
+     "q3": 1286.1
+    },
+    "debt": {
+     "mean": 63.9,
+     "q1": 58.0,
+     "med": 181.0,
+     "q3": 1047.8
+    }
+   },
+   "bok_region": {
+    "growth": -0.59,
+    "opm": 3.25,
+    "icr": 231.71,
+    "debt": 165.79
+   }
+  },
+  {
+   "code": "C16",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 5,
+    "growth": {
+     "n": 5,
+     "med": -15.7,
+     "q1": -17.2,
+     "q3": -14.8,
+     "pooled": -16.2
+    },
+    "opm": {
+     "n": 5,
+     "med": -2.1,
+     "q1": -5.8,
+     "q3": -0.7,
+     "pooled": -2.2
+    },
+    "ocf": {
+     "n": 5,
+     "med": 5.5,
+     "q1": 5.2,
+     "q3": 6.1,
+     "pooled": 5.0
+    },
+    "debt": {
+     "n": 5,
+     "med": 102.3,
+     "q1": 14.8,
+     "q3": 105.5,
+     "pooled": 80.8
+    },
+    "icr": {
+     "n": 5,
+     "med": -75.8,
+     "q1": -1065.7,
+     "q3": -9.4,
+     "pooled": -56.2
+    },
+    "icr_low": {
+     "n": 5,
+     "k": null,
+     "share": null,
+     "n3": 5,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": -1.7,
+     "q1": -21.4,
+     "med": -2.6,
+     "q3": 18.0
+    },
+    "opm": {
+     "mean": 2.7,
+     "q1": -3.0,
+     "med": 4.0,
+     "q3": 8.7
+    },
+    "icr": {
+     "mean": 103.1,
+     "q1": -168.0,
+     "med": 180.2,
+     "q3": 928.9
+    },
+    "debt": {
+     "mean": 118.9,
+     "q1": 59.7,
+     "med": 161.4,
+     "q3": 448.0
+    }
+   },
+   "bok_region": {
+    "growth": -4.25,
+    "opm": 4.21,
+    "icr": 133.85,
+    "debt": 177.5
+   }
+  },
+  {
+   "code": "C17",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 22,
+    "growth": {
+     "n": 22,
+     "med": -4.5,
+     "q1": -8.9,
+     "q3": 2.1,
+     "pooled": -2.5
+    },
+    "opm": {
+     "n": 22,
+     "med": 0.3,
+     "q1": -2.1,
+     "q3": 2.9,
+     "pooled": 0.5
+    },
+    "ocf": {
+     "n": 22,
+     "med": 3.4,
+     "q1": 0.1,
+     "q3": 6.6,
+     "pooled": 3.6
+    },
+    "debt": {
+     "n": 22,
+     "med": 60.9,
+     "q1": 17.3,
+     "q3": 140.5,
+     "pooled": 85.5
+    },
+    "icr": {
+     "n": 21,
+     "med": 37.1,
+     "q1": -156.8,
+     "q3": 624.4,
+     "pooled": 31.8
+    },
+    "icr_low": {
+     "n": 21,
+     "k": 11,
+     "share": 52.4,
+     "n3": 20,
+     "share3": 35.0
+    }
+   },
+   "daegu_unlisted": {
+    "n": 6,
+    "growth": {
+     "n": 5,
+     "med": -3.5,
+     "q1": -8.1,
+     "q3": -2.7,
+     "pooled": -0.8
+    },
+    "opm": {
+     "n": 5,
+     "med": 0.5,
+     "q1": -3.1,
+     "q3": 4.1,
+     "pooled": -1.1
+    },
+    "ocf": {
+     "n": 5,
+     "med": -1.4,
+     "q1": -1.5,
+     "q3": 1.8,
+     "pooled": 1.2
+    },
+    "debt": {
+     "n": 5,
+     "med": 139.1,
+     "q1": 73.9,
+     "q3": 187.2,
+     "pooled": 151.3
+    },
+    "icr": {
+     "n": 5,
+     "med": 20.0,
+     "q1": -216.8,
+     "q3": 1213.5,
+     "pooled": -93.5
+    },
+    "icr_low": {
+     "n": 5,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 2.1,
+     "q1": -11.4,
+     "med": 0.1,
+     "q3": 14.2
+    },
+    "opm": {
+     "mean": 3.6,
+     "q1": 0.0,
+     "med": 3.7,
+     "q3": 7.3
+    },
+    "icr": {
+     "mean": 238.1,
+     "q1": 0.3,
+     "med": 203.0,
+     "q3": 1289.9
+    },
+    "debt": {
+     "mean": 94.0,
+     "q1": 60.0,
+     "med": 156.3,
+     "q3": 381.8
+    }
+   },
+   "bok_region": {
+    "growth": 1.89,
+    "opm": 3.5,
+    "icr": 194.26,
+    "debt": 96.4
+   }
+  },
+  {
+   "code": "C18",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 1,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 2.1,
+     "q1": -15.9,
+     "med": -0.8,
+     "q3": 15.4
+    },
+    "opm": {
+     "mean": 3.7,
+     "q1": -4.1,
+     "med": 3.4,
+     "q3": 8.4
+    },
+    "icr": {
+     "mean": 202.2,
+     "q1": -436.6,
+     "med": 188.0,
+     "q3": 3014.0
+    },
+    "debt": {
+     "mean": 108.5,
+     "q1": 34.8,
+     "med": 118.5,
+     "q3": 383.5
+    }
+   },
+   "bok_region": {
+    "growth": 2.5,
+    "opm": -1.39,
+    "icr": -72.53,
+    "debt": 203.5
+   }
+  },
+  {
+   "code": "C19",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 5,
+    "growth": {
+     "n": 5,
+     "med": -3.3,
+     "q1": -6.1,
+     "q3": 5.4,
+     "pooled": 1.6
+    },
+    "opm": {
+     "n": 5,
+     "med": 8.5,
+     "q1": 1.6,
+     "q3": 15.3,
+     "pooled": 7.6
+    },
+    "ocf": {
+     "n": 5,
+     "med": 11.6,
+     "q1": 9.9,
+     "q3": 14.9,
+     "pooled": 11.9
+    },
+    "debt": {
+     "n": 5,
+     "med": 50.4,
+     "q1": 42.7,
+     "q3": 102.6,
+     "pooled": 86.6
+    },
+    "icr": {
+     "n": 4,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 4,
+     "k": null,
+     "share": null,
+     "n3": 4,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 1.4,
+     "q1": -14.3,
+     "med": -0.9,
+     "q3": 11.6
+    },
+    "opm": {
+     "mean": 1.6,
+     "q1": 2.1,
+     "med": 5.2,
+     "q3": 9.7
+    },
+    "icr": {
+     "mean": 185.5,
+     "q1": 119.9,
+     "med": 337.3,
+     "q3": 2134.8
+    },
+    "debt": {
+     "mean": 119.4,
+     "q1": 29.6,
+     "med": 96.5,
+     "q3": 239.3
+    }
+   },
+   "bok_region": {
+    "growth": -4.45,
+    "opm": 0.96,
+    "icr": 215.2,
+    "debt": 20.36
+   }
+  },
+  {
+   "code": "C20",
+   "daegu_listed": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 2,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 169,
+    "growth": {
+     "n": 169,
+     "med": -1.4,
+     "q1": -11.5,
+     "q3": 9.2,
+     "pooled": -5.4
+    },
+    "opm": {
+     "n": 169,
+     "med": 4.1,
+     "q1": -1.9,
+     "q3": 10.0,
+     "pooled": 2.6
+    },
+    "ocf": {
+     "n": 168,
+     "med": 7.1,
+     "q1": 1.7,
+     "q3": 14.0,
+     "pooled": 9.2
+    },
+    "debt": {
+     "n": 169,
+     "med": 44.6,
+     "q1": 19.4,
+     "q3": 88.0,
+     "pooled": 60.1
+    },
+    "icr": {
+     "n": 152,
+     "med": 316.9,
+     "q1": -94.9,
+     "q3": 2094.1,
+     "pooled": 147.9
+    },
+    "icr_low": {
+     "n": 152,
+     "k": 58,
+     "share": 38.2,
+     "n3": 141,
+     "share3": 23.4
+    }
+   },
+   "daegu_unlisted": {
+    "n": 8,
+    "growth": {
+     "n": 8,
+     "med": -0.6,
+     "q1": -12.0,
+     "q3": 8.7,
+     "pooled": 3.2
+    },
+    "opm": {
+     "n": 8,
+     "med": 9.4,
+     "q1": 3.8,
+     "q3": 25.3,
+     "pooled": 8.5
+    },
+    "ocf": {
+     "n": 8,
+     "med": 4.1,
+     "q1": -2.8,
+     "q3": 8.2,
+     "pooled": 6.0
+    },
+    "debt": {
+     "n": 7,
+     "med": 92.1,
+     "q1": 54.9,
+     "q3": 178.0,
+     "pooled": 93.5
+    },
+    "icr": {
+     "n": 7,
+     "med": 223.1,
+     "q1": 135.8,
+     "q3": 4889.5,
+     "pooled": 268.9
+    },
+    "icr_low": {
+     "n": 7,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 0.8,
+     "q1": -15.8,
+     "med": 1.9,
+     "q3": 23.9
+    },
+    "opm": {
+     "mean": 3.2,
+     "q1": -5.0,
+     "med": 4.0,
+     "q3": 9.4
+    },
+    "icr": {
+     "mean": 186.8,
+     "q1": -269.0,
+     "med": 181.0,
+     "q3": 1595.5
+    },
+    "debt": {
+     "mean": 76.8,
+     "q1": 49.5,
+     "med": 147.9,
+     "q3": 473.2
+    }
+   },
+   "bok_region": {
+    "growth": -47.17,
+    "opm": -16.32,
+    "icr": -380.47,
+    "debt": 115.66
+   }
+  },
+  {
+   "code": "C21",
+   "daegu_listed": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 1,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 180,
+    "growth": {
+     "n": 179,
+     "med": 5.1,
+     "q1": -6.6,
+     "q3": 13.7,
+     "pooled": 5.5
+    },
+    "opm": {
+     "n": 180,
+     "med": 3.0,
+     "q1": -34.0,
+     "q3": 10.4,
+     "pooled": 12.3
+    },
+    "ocf": {
+     "n": 180,
+     "med": 4.0,
+     "q1": -11.9,
+     "q3": 14.7,
+     "pooled": 12.7
+    },
+    "debt": {
+     "n": 178,
+     "med": 50.8,
+     "q1": 22.0,
+     "q3": 96.0,
+     "pooled": 44.4
+    },
+    "icr": {
+     "n": 158,
+     "med": 225.4,
+     "q1": -1078.5,
+     "q3": 1298.9,
+     "pooled": 1101.0
+    },
+    "icr_low": {
+     "n": 158,
+     "k": 71,
+     "share": 44.9,
+     "n3": 150,
+     "share3": 32.0
+    }
+   },
+   "daegu_unlisted": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 6.3,
+     "q1": -11.1,
+     "med": 5.4,
+     "q3": 23.6
+    },
+    "opm": {
+     "mean": 10.5,
+     "q1": -20.8,
+     "med": 4.0,
+     "q3": 10.2
+    },
+    "icr": {
+     "mean": 673.8,
+     "q1": -538.6,
+     "med": 170.3,
+     "q3": 1282.6
+    },
+    "debt": {
+     "mean": 41.0,
+     "q1": 36.5,
+     "med": 104.8,
+     "q3": 319.2
+    }
+   },
+   "bok_region": {
+    "growth": -1.09,
+    "opm": 3.54,
+    "icr": 162.18,
+    "debt": 147.68
+   }
+  },
+  {
+   "code": "C22",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 53,
+    "growth": {
+     "n": 53,
+     "med": -1.2,
+     "q1": -14.5,
+     "q3": 8.2,
+     "pooled": -0.0
+    },
+    "opm": {
+     "n": 53,
+     "med": 5.8,
+     "q1": 1.9,
+     "q3": 10.9,
+     "pooled": 5.8
+    },
+    "ocf": {
+     "n": 53,
+     "med": 6.2,
+     "q1": -0.1,
+     "q3": 14.9,
+     "pooled": 14.0
+    },
+    "debt": {
+     "n": 53,
+     "med": 44.9,
+     "q1": 24.5,
+     "q3": 93.3,
+     "pooled": 59.0
+    },
+    "icr": {
+     "n": 50,
+     "med": 457.6,
+     "q1": 108.2,
+     "q3": 1755.9,
+     "pooled": 479.3
+    },
+    "icr_low": {
+     "n": 50,
+     "k": 12,
+     "share": 24.0,
+     "n3": 45,
+     "share3": 17.8
+    }
+   },
+   "daegu_unlisted": {
+    "n": 5,
+    "growth": {
+     "n": 5,
+     "med": 6.2,
+     "q1": -9.3,
+     "q3": 20.0,
+     "pooled": 13.7
+    },
+    "opm": {
+     "n": 5,
+     "med": 4.9,
+     "q1": 3.4,
+     "q3": 5.3,
+     "pooled": 4.0
+    },
+    "ocf": {
+     "n": 5,
+     "med": 5.8,
+     "q1": 5.1,
+     "q3": 11.0,
+     "pooled": 6.4
+    },
+    "debt": {
+     "n": 5,
+     "med": 204.8,
+     "q1": 197.3,
+     "q3": 235.1,
+     "pooled": 148.0
+    },
+    "icr": {
+     "n": 5,
+     "med": 240.6,
+     "q1": 171.4,
+     "q3": 268.4,
+     "pooled": 222.4
+    },
+    "icr_low": {
+     "n": 5,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 3.2,
+     "q1": -16.7,
+     "med": -0.1,
+     "q3": 19.3
+    },
+    "opm": {
+     "mean": 4.8,
+     "q1": -0.9,
+     "med": 3.9,
+     "q3": 8.3
+    },
+    "icr": {
+     "mean": 292.3,
+     "q1": -65.2,
+     "med": 189.3,
+     "q3": 1320.6
+    },
+    "debt": {
+     "mean": 87.9,
+     "q1": 48.8,
+     "med": 141.6,
+     "q3": 355.4
+    }
+   },
+   "bok_region": {
+    "growth": 5.09,
+    "opm": 4.25,
+    "icr": 205.51,
+    "debt": 131.59
+   }
+  },
+  {
+   "code": "C23",
+   "daegu_listed": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 2,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 36,
+    "growth": {
+     "n": 36,
+     "med": -4.0,
+     "q1": -9.9,
+     "q3": 2.6,
+     "pooled": -7.7
+    },
+    "opm": {
+     "n": 36,
+     "med": 2.5,
+     "q1": -0.5,
+     "q3": 9.0,
+     "pooled": 5.3
+    },
+    "ocf": {
+     "n": 36,
+     "med": 5.7,
+     "q1": 1.9,
+     "q3": 10.6,
+     "pooled": 7.3
+    },
+    "debt": {
+     "n": 36,
+     "med": 60.0,
+     "q1": 39.2,
+     "q3": 87.6,
+     "pooled": 66.7
+    },
+    "icr": {
+     "n": 33,
+     "med": 142.6,
+     "q1": -4.7,
+     "q3": 425.2,
+     "pooled": 212.9
+    },
+    "icr_low": {
+     "n": 33,
+     "k": 13,
+     "share": 39.4,
+     "n3": 32,
+     "share3": 12.5
+    }
+   },
+   "daegu_unlisted": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": -4.1,
+     "q1": -22.6,
+     "med": -3.9,
+     "q3": 17.8
+    },
+    "opm": {
+     "mean": 6.0,
+     "q1": 0.2,
+     "med": 4.8,
+     "q3": 9.9
+    },
+    "icr": {
+     "mean": 324.2,
+     "q1": 14.6,
+     "med": 260.6,
+     "q3": 2119.3
+    },
+    "debt": {
+     "mean": 86.3,
+     "q1": 38.0,
+     "med": 109.0,
+     "q3": 298.5
+    }
+   },
+   "bok_region": {
+    "growth": -17.59,
+    "opm": 2.91,
+    "icr": 131.99,
+    "debt": 75.54
+   }
+  },
+  {
+   "code": "C24",
+   "daegu_listed": {
+    "n": 5,
+    "growth": {
+     "n": 5,
+     "med": 2.3,
+     "q1": -11.0,
+     "q3": 9.3,
+     "pooled": 5.0
+    },
+    "opm": {
+     "n": 5,
+     "med": 0.1,
+     "q1": -0.8,
+     "q3": 2.1,
+     "pooled": 1.0
+    },
+    "ocf": {
+     "n": 5,
+     "med": -1.5,
+     "q1": -2.9,
+     "q3": -1.2,
+     "pooled": -2.3
+    },
+    "debt": {
+     "n": 5,
+     "med": 100.2,
+     "q1": 73.3,
+     "q3": 127.0,
+     "pooled": 100.7
+    },
+    "icr": {
+     "n": 5,
+     "med": 11.2,
+     "q1": -297.7,
+     "q3": 182.4,
+     "pooled": 164.2
+    },
+    "icr_low": {
+     "n": 5,
+     "k": null,
+     "share": null,
+     "n3": 5,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 85,
+    "growth": {
+     "n": 85,
+     "med": -1.1,
+     "q1": -9.2,
+     "q3": 8.5,
+     "pooled": 0.4
+    },
+    "opm": {
+     "n": 85,
+     "med": 1.3,
+     "q1": -0.7,
+     "q3": 4.6,
+     "pooled": 4.6
+    },
+    "ocf": {
+     "n": 85,
+     "med": 2.8,
+     "q1": -2.4,
+     "q3": 6.0,
+     "pooled": 4.8
+    },
+    "debt": {
+     "n": 84,
+     "med": 57.0,
+     "q1": 19.3,
+     "q3": 100.0,
+     "pooled": 36.5
+    },
+    "icr": {
+     "n": 76,
+     "med": 139.9,
+     "q1": -56.2,
+     "q3": 724.1,
+     "pooled": 323.0
+    },
+    "icr_low": {
+     "n": 76,
+     "k": 33,
+     "share": 43.4,
+     "n3": 74,
+     "share3": 25.7
+    }
+   },
+   "daegu_unlisted": {
+    "n": 7,
+    "growth": {
+     "n": 7,
+     "med": -7.1,
+     "q1": -16.8,
+     "q3": 7.0,
+     "pooled": 2.1
+    },
+    "opm": {
+     "n": 7,
+     "med": 5.1,
+     "q1": 3.4,
+     "q3": 6.0,
+     "pooled": 4.6
+    },
+    "ocf": {
+     "n": 5,
+     "med": -0.2,
+     "q1": -3.6,
+     "q3": 7.1,
+     "pooled": 5.5
+    },
+    "debt": {
+     "n": 7,
+     "med": 171.7,
+     "q1": 138.4,
+     "q3": 352.6,
+     "pooled": 171.5
+    },
+    "icr": {
+     "n": 7,
+     "med": 146.1,
+     "q1": 101.5,
+     "q3": 259.1,
+     "pooled": 314.6
+    },
+    "icr_low": {
+     "n": 7,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": -3.4,
+     "q1": -19.5,
+     "med": -2.5,
+     "q3": 15.1
+    },
+    "opm": {
+     "mean": 3.6,
+     "q1": 0.4,
+     "med": 3.5,
+     "q3": 7.5
+    },
+    "icr": {
+     "mean": 288.1,
+     "q1": 29.5,
+     "med": 205.6,
+     "q3": 1084.2
+    },
+    "debt": {
+     "mean": 51.7,
+     "q1": 53.6,
+     "med": 136.6,
+     "q3": 299.8
+    }
+   },
+   "bok_region": {
+    "growth": -1.4,
+    "opm": 2.17,
+    "icr": 155.71,
+    "debt": 119.47
+   }
+  },
+  {
+   "code": "C25",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 50,
+    "growth": {
+     "n": 50,
+     "med": -2.4,
+     "q1": -11.7,
+     "q3": 10.3,
+     "pooled": 9.7
+    },
+    "opm": {
+     "n": 50,
+     "med": 2.3,
+     "q1": -2.6,
+     "q3": 8.3,
+     "pooled": 6.9
+    },
+    "ocf": {
+     "n": 50,
+     "med": 7.0,
+     "q1": -1.1,
+     "q3": 12.3,
+     "pooled": 0.5
+    },
+    "debt": {
+     "n": 50,
+     "med": 54.3,
+     "q1": 24.4,
+     "q3": 103.0,
+     "pooled": 122.0
+    },
+    "icr": {
+     "n": 39,
+     "med": 148.7,
+     "q1": -178.5,
+     "q3": 1370.5,
+     "pooled": 614.7
+    },
+    "icr_low": {
+     "n": 39,
+     "k": 17,
+     "share": 43.6,
+     "n3": 34,
+     "share3": 8.8
+    }
+   },
+   "daegu_unlisted": {
+    "n": 13,
+    "growth": {
+     "n": 11,
+     "med": -4.7,
+     "q1": -17.8,
+     "q3": 2.5,
+     "pooled": -3.8
+    },
+    "opm": {
+     "n": 11,
+     "med": 5.6,
+     "q1": 2.5,
+     "q3": 7.1,
+     "pooled": 4.7
+    },
+    "ocf": {
+     "n": 10,
+     "med": 10.2,
+     "q1": 2.7,
+     "q3": 12.6,
+     "pooled": 9.1
+    },
+    "debt": {
+     "n": 12,
+     "med": 101.8,
+     "q1": 71.0,
+     "q3": 214.9,
+     "pooled": 79.0
+    },
+    "icr": {
+     "n": 12,
+     "med": 108.8,
+     "q1": 76.2,
+     "q3": 530.2,
+     "pooled": 206.0
+    },
+    "icr_low": {
+     "n": 12,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": -0.1,
+     "q1": -20.6,
+     "med": -1.8,
+     "q3": 19.5
+    },
+    "opm": {
+     "mean": 5.3,
+     "q1": 0.5,
+     "med": 4.7,
+     "q3": 9.7
+    },
+    "icr": {
+     "mean": 317.4,
+     "q1": 44.1,
+     "med": 246.3,
+     "q3": 2198.8
+    },
+    "debt": {
+     "mean": 109.9,
+     "q1": 45.6,
+     "med": 126.7,
+     "q3": 305.7
+    }
+   },
+   "bok_region": {
+    "growth": -1.2,
+    "opm": 5.06,
+    "icr": 251.94,
+    "debt": 81.63
+   }
+  },
+  {
+   "code": "C26",
+   "daegu_listed": {
+    "n": 6,
+    "growth": {
+     "n": 6,
+     "med": 1.6,
+     "q1": -3.7,
+     "q3": 23.4,
+     "pooled": 23.5
+    },
+    "opm": {
+     "n": 6,
+     "med": 5.8,
+     "q1": -2.0,
+     "q3": 14.2,
+     "pooled": 15.0
+    },
+    "ocf": {
+     "n": 6,
+     "med": 10.3,
+     "q1": 1.4,
+     "q3": 13.2,
+     "pooled": 13.3
+    },
+    "debt": {
+     "n": 6,
+     "med": 28.9,
+     "q1": 14.4,
+     "q3": 50.2,
+     "pooled": 42.6
+    },
+    "icr": {
+     "n": 5,
+     "med": 2148.1,
+     "q1": -579.4,
+     "q3": 2520.4,
+     "pooled": 2483.6
+    },
+    "icr_low": {
+     "n": 5,
+     "k": null,
+     "share": null,
+     "n3": 5,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 293,
+    "growth": {
+     "n": 292,
+     "med": 3.3,
+     "q1": -10.7,
+     "q3": 19.0,
+     "pooled": 16.0
+    },
+    "opm": {
+     "n": 293,
+     "med": 1.9,
+     "q1": -8.4,
+     "q3": 7.2,
+     "pooled": 15.2
+    },
+    "ocf": {
+     "n": 292,
+     "med": 3.1,
+     "q1": -7.7,
+     "q3": 11.0,
+     "pooled": 26.5
+    },
+    "debt": {
+     "n": 293,
+     "med": 49.1,
+     "q1": 22.0,
+     "q3": 99.1,
+     "pooled": 53.1
+    },
+    "icr": {
+     "n": 258,
+     "med": 176.1,
+     "q1": -785.1,
+     "q3": 1510.5,
+     "pooled": 2284.5
+    },
+    "icr_low": {
+     "n": 258,
+     "k": 113,
+     "share": 43.8,
+     "n3": 237,
+     "share3": 29.1
+    }
+   },
+   "daegu_unlisted": {
+    "n": 7,
+    "growth": {
+     "n": 7,
+     "med": 12.8,
+     "q1": -6.7,
+     "q3": 20.3,
+     "pooled": 2.0
+    },
+    "opm": {
+     "n": 7,
+     "med": 7.5,
+     "q1": 3.5,
+     "q3": 12.6,
+     "pooled": 6.0
+    },
+    "ocf": {
+     "n": 7,
+     "med": 9.3,
+     "q1": 8.3,
+     "q3": 15.8,
+     "pooled": 9.3
+    },
+    "debt": {
+     "n": 7,
+     "med": 101.4,
+     "q1": 34.7,
+     "q3": 215.1,
+     "pooled": 144.6
+    },
+    "icr": {
+     "n": 7,
+     "med": 342.9,
+     "q1": 228.3,
+     "q3": 2932.2,
+     "pooled": 357.0
+    },
+    "icr_low": {
+     "n": 7,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 19.6,
+     "q1": -23.4,
+     "med": 0.0,
+     "q3": 27.1
+    },
+    "opm": {
+     "mean": 8.3,
+     "q1": -6.8,
+     "med": 3.3,
+     "q3": 8.6
+    },
+    "icr": {
+     "mean": 811.2,
+     "q1": -488.7,
+     "med": 179.5,
+     "q3": 1919.5
+    },
+    "debt": {
+     "mean": 52.0,
+     "q1": 37.3,
+     "med": 120.4,
+     "q3": 344.9
+    }
+   },
+   "bok_region": {
+    "growth": 7.02,
+    "opm": 7.21,
+    "icr": 537.74,
+    "debt": 84.33
+   }
+  },
+  {
+   "code": "C27",
+   "daegu_listed": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 2,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 104,
+    "growth": {
+     "n": 103,
+     "med": 8.0,
+     "q1": -4.6,
+     "q3": 32.9,
+     "pooled": 8.0
+    },
+    "opm": {
+     "n": 104,
+     "med": 2.5,
+     "q1": -23.4,
+     "q3": 13.4,
+     "pooled": 7.0
+    },
+    "ocf": {
+     "n": 104,
+     "med": 3.1,
+     "q1": -20.9,
+     "q3": 14.3,
+     "pooled": 12.2
+    },
+    "debt": {
+     "n": 103,
+     "med": 33.2,
+     "q1": 16.0,
+     "q3": 65.1,
+     "pooled": 30.5
+    },
+    "icr": {
+     "n": 92,
+     "med": 353.8,
+     "q1": -2120.3,
+     "q3": 2534.7,
+     "pooled": 578.3
+    },
+    "icr_low": {
+     "n": 92,
+     "k": 41,
+     "share": 44.6,
+     "n3": 80,
+     "share3": 26.2
+    }
+   },
+   "daegu_unlisted": {
+    "n": 3,
+    "growth": {
+     "n": 3,
+     "pooled": null
+    },
+    "opm": {
+     "n": 3,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 3,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 3,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 3,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 3.9,
+     "q1": -21.5,
+     "med": 1.0,
+     "q3": 28.6
+    },
+    "opm": {
+     "mean": 5.9,
+     "q1": -8.3,
+     "med": 4.1,
+     "q3": 10.3
+    },
+    "icr": {
+     "mean": 285.2,
+     "q1": -381.7,
+     "med": 197.7,
+     "q3": 2244.5
+    },
+    "debt": {
+     "mean": 80.7,
+     "q1": 37.8,
+     "med": 117.1,
+     "q3": 352.9
+    }
+   },
+   "bok_region": {
+    "growth": 11.87,
+    "opm": 6.78,
+    "icr": 242.72,
+    "debt": 100.23
+   }
+  },
+  {
+   "code": "C28",
+   "daegu_listed": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 2,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 87,
+    "growth": {
+     "n": 87,
+     "med": -1.4,
+     "q1": -15.5,
+     "q3": 12.4,
+     "pooled": -5.6
+    },
+    "opm": {
+     "n": 87,
+     "med": 2.2,
+     "q1": -11.0,
+     "q3": 7.4,
+     "pooled": -2.3
+    },
+    "ocf": {
+     "n": 86,
+     "med": 4.3,
+     "q1": -4.9,
+     "q3": 10.5,
+     "pooled": 3.1
+    },
+    "debt": {
+     "n": 86,
+     "med": 77.2,
+     "q1": 35.2,
+     "q3": 115.4,
+     "pooled": 82.6
+    },
+    "icr": {
+     "n": 81,
+     "med": 121.5,
+     "q1": -415.2,
+     "q3": 1360.0,
+     "pooled": -225.1
+    },
+    "icr_low": {
+     "n": 81,
+     "k": 37,
+     "share": 45.7,
+     "n3": 74,
+     "share3": 29.7
+    }
+   },
+   "daegu_unlisted": {
+    "n": 9,
+    "growth": {
+     "n": 8,
+     "med": 2.3,
+     "q1": -30.0,
+     "q3": 34.1,
+     "pooled": 44.6
+    },
+    "opm": {
+     "n": 8,
+     "med": 7.5,
+     "q1": -12.1,
+     "q3": 12.7,
+     "pooled": 3.4
+    },
+    "ocf": {
+     "n": 8,
+     "med": 10.0,
+     "q1": 0.5,
+     "q3": 27.5,
+     "pooled": -2.9
+    },
+    "debt": {
+     "n": 9,
+     "med": 81.5,
+     "q1": 25.5,
+     "q3": 139.5,
+     "pooled": 509.1
+    },
+    "icr": {
+     "n": 8,
+     "med": 957.0,
+     "q1": 8.1,
+     "q3": 10220.5,
+     "pooled": 112.5
+    },
+    "icr_low": {
+     "n": 8,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": -1.2,
+     "q1": -23.3,
+     "med": 0.4,
+     "q3": 30.9
+    },
+    "opm": {
+     "mean": 1.2,
+     "q1": -2.9,
+     "med": 4.1,
+     "q3": 9.2
+    },
+    "icr": {
+     "mean": 76.6,
+     "q1": -191.0,
+     "med": 224.9,
+     "q3": 2475.9
+    },
+    "debt": {
+     "mean": 103.8,
+     "q1": 41.4,
+     "med": 123.5,
+     "q3": 350.2
+    }
+   },
+   "bok_region": {
+    "growth": 2.37,
+    "opm": 4.84,
+    "icr": 195.95,
+    "debt": 98.6
+   }
+  },
+  {
+   "code": "C29",
+   "daegu_listed": {
+    "n": 11,
+    "growth": {
+     "n": 11,
+     "med": -8.5,
+     "q1": -24.0,
+     "q3": 3.5,
+     "pooled": -4.6
+    },
+    "opm": {
+     "n": 11,
+     "med": 1.7,
+     "q1": -13.1,
+     "q3": 7.5,
+     "pooled": 3.3
+    },
+    "ocf": {
+     "n": 11,
+     "med": 2.6,
+     "q1": -1.0,
+     "q3": 11.5,
+     "pooled": 7.1
+    },
+    "debt": {
+     "n": 11,
+     "med": 46.2,
+     "q1": 31.3,
+     "q3": 141.8,
+     "pooled": 87.6
+    },
+    "icr": {
+     "n": 10,
+     "med": -73.8,
+     "q1": -483.7,
+     "q3": 3712.9,
+     "pooled": 114.7
+    },
+    "icr_low": {
+     "n": 10,
+     "k": null,
+     "share": null,
+     "n3": 9,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 212,
+    "growth": {
+     "n": 212,
+     "med": 3.8,
+     "q1": -16.1,
+     "q3": 21.3,
+     "pooled": 2.8
+    },
+    "opm": {
+     "n": 212,
+     "med": 2.9,
+     "q1": -10.2,
+     "q3": 9.4,
+     "pooled": 6.2
+    },
+    "ocf": {
+     "n": 212,
+     "med": 4.1,
+     "q1": -3.9,
+     "q3": 12.4,
+     "pooled": 6.2
+    },
+    "debt": {
+     "n": 209,
+     "med": 51.5,
+     "q1": 23.8,
+     "q3": 87.3,
+     "pooled": 74.6
+    },
+    "icr": {
+     "n": 190,
+     "med": 188.2,
+     "q1": -483.7,
+     "q3": 1559.6,
+     "pooled": 371.3
+    },
+    "icr_low": {
+     "n": 190,
+     "k": 86,
+     "share": 45.3,
+     "n3": 168,
+     "share3": 21.4
+    }
+   },
+   "daegu_unlisted": {
+    "n": 21,
+    "growth": {
+     "n": 21,
+     "med": 9.9,
+     "q1": -9.0,
+     "q3": 17.0,
+     "pooled": 7.8
+    },
+    "opm": {
+     "n": 20,
+     "med": 4.4,
+     "q1": 1.4,
+     "q3": 7.7,
+     "pooled": 2.8
+    },
+    "ocf": {
+     "n": 20,
+     "med": 7.9,
+     "q1": -4.9,
+     "q3": 13.1,
+     "pooled": 2.5
+    },
+    "debt": {
+     "n": 19,
+     "med": 138.4,
+     "q1": 78.0,
+     "q3": 185.7,
+     "pooled": 81.8
+    },
+    "icr": {
+     "n": 17,
+     "med": 184.2,
+     "q1": 37.9,
+     "q3": 431.2,
+     "pooled": 69.1
+    },
+    "icr_low": {
+     "n": 17,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 2.0,
+     "q1": -22.9,
+     "med": -0.2,
+     "q3": 26.5
+    },
+    "opm": {
+     "mean": 6.1,
+     "q1": -0.7,
+     "med": 4.9,
+     "q3": 10.5
+    },
+    "icr": {
+     "mean": 381.4,
+     "q1": -44.7,
+     "med": 232.3,
+     "q3": 2238.1
+    },
+    "debt": {
+     "mean": 86.5,
+     "q1": 41.3,
+     "med": 121.9,
+     "q3": 302.0
+    }
+   },
+   "bok_region": {
+    "growth": 0.41,
+    "opm": 8.01,
+    "icr": 472.66,
+    "debt": 83.61
+   }
+  },
+  {
+   "code": "C30",
+   "daegu_listed": {
+    "n": 10,
+    "growth": {
+     "n": 10,
+     "med": 5.2,
+     "q1": 2.3,
+     "q3": 9.5,
+     "pooled": 8.0
+    },
+    "opm": {
+     "n": 10,
+     "med": 2.3,
+     "q1": 1.6,
+     "q3": 6.6,
+     "pooled": 4.7
+    },
+    "ocf": {
+     "n": 10,
+     "med": 7.8,
+     "q1": 3.9,
+     "q3": 10.7,
+     "pooled": 8.1
+    },
+    "debt": {
+     "n": 10,
+     "med": 56.9,
+     "q1": 27.0,
+     "q3": 247.8,
+     "pooled": 56.3
+    },
+    "icr": {
+     "n": 9,
+     "med": 257.5,
+     "q1": 92.0,
+     "q3": 355.1,
+     "pooled": 760.5
+    },
+    "icr_low": {
+     "n": 9,
+     "k": null,
+     "share": null,
+     "n3": 8,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 108,
+    "growth": {
+     "n": 107,
+     "med": 4.7,
+     "q1": -2.0,
+     "q3": 11.2,
+     "pooled": 1.8
+    },
+    "opm": {
+     "n": 107,
+     "med": 2.7,
+     "q1": 1.0,
+     "q3": 5.5,
+     "pooled": 5.6
+    },
+    "ocf": {
+     "n": 107,
+     "med": 6.5,
+     "q1": 2.4,
+     "q3": 9.8,
+     "pooled": 9.0
+    },
+    "debt": {
+     "n": 108,
+     "med": 78.3,
+     "q1": 39.6,
+     "q3": 163.2,
+     "pooled": 48.3
+    },
+    "icr": {
+     "n": 95,
+     "med": 328.0,
+     "q1": 83.2,
+     "q3": 876.0,
+     "pooled": 2064.9
+    },
+    "icr_low": {
+     "n": 95,
+     "k": 26,
+     "share": 27.4,
+     "n3": 91,
+     "share3": 14.3
+    }
+   },
+   "daegu_unlisted": {
+    "n": 25,
+    "growth": {
+     "n": 24,
+     "med": 4.6,
+     "q1": -3.0,
+     "q3": 18.2,
+     "pooled": 6.9
+    },
+    "opm": {
+     "n": 24,
+     "med": 4.2,
+     "q1": 2.8,
+     "q3": 9.7,
+     "pooled": 11.3
+    },
+    "ocf": {
+     "n": 24,
+     "med": 6.4,
+     "q1": 1.9,
+     "q3": 9.8,
+     "pooled": 4.5
+    },
+    "debt": {
+     "n": 25,
+     "med": 167.7,
+     "q1": 38.5,
+     "q3": 264.3,
+     "pooled": 61.4
+    },
+    "icr": {
+     "n": 25,
+     "med": 226.4,
+     "q1": 101.6,
+     "q3": 2284.7,
+     "pooled": 516.7
+    },
+    "icr_low": {
+     "n": 25,
+     "k": 6,
+     "share": 24.0,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 2.0,
+     "q1": -13.4,
+     "med": 1.7,
+     "q3": 18.9
+    },
+    "opm": {
+     "mean": 5.9,
+     "q1": 0.2,
+     "med": 3.5,
+     "q3": 7.5
+    },
+    "icr": {
+     "mean": 850.6,
+     "q1": 16.7,
+     "med": 195.3,
+     "q3": 1384.7
+    },
+    "debt": {
+     "mean": 71.1,
+     "q1": 66.1,
+     "med": 170.1,
+     "q3": 381.6
+    }
+   },
+   "bok_region": {
+    "growth": 2.32,
+    "opm": 3.47,
+    "icr": 327.34,
+    "debt": 86.07
+   }
+  },
+  {
+   "code": "C31",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 30,
+    "growth": {
+     "n": 30,
+     "med": 14.7,
+     "q1": 1.3,
+     "q3": 21.1,
+     "pooled": 17.5
+    },
+    "opm": {
+     "n": 30,
+     "med": 8.5,
+     "q1": -3.5,
+     "q3": 16.9,
+     "pooled": 12.3
+    },
+    "ocf": {
+     "n": 30,
+     "med": 7.3,
+     "q1": -18.8,
+     "q3": 14.8,
+     "pooled": 11.6
+    },
+    "debt": {
+     "n": 30,
+     "med": 46.6,
+     "q1": 30.5,
+     "q3": 154.8,
+     "pooled": 192.3
+    },
+    "icr": {
+     "n": 29,
+     "med": 550.7,
+     "q1": -65.0,
+     "q3": 1203.0,
+     "pooled": 1160.1
+    },
+    "icr_low": {
+     "n": 29,
+     "k": 8,
+     "share": 27.6,
+     "n3": 24,
+     "share3": 20.8
+    }
+   },
+   "daegu_unlisted": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 20.5,
+     "q1": -18.1,
+     "med": 8.4,
+     "q3": 41.5
+    },
+    "opm": {
+     "mean": 6.4,
+     "q1": -0.3,
+     "med": 4.0,
+     "q3": 9.2
+    },
+    "icr": {
+     "mean": 417.9,
+     "q1": -17.1,
+     "med": 407.2,
+     "q3": 9269.9
+    },
+    "debt": {
+     "mean": 184.6,
+     "q1": 53.1,
+     "med": 147.7,
+     "q3": 403.2
+    }
+   },
+   "bok_region": {
+    "growth": -0.16,
+    "opm": 6.39,
+    "icr": 232.85,
+    "debt": 200.62
+   }
+  },
+  {
+   "code": "C32",
+   "daegu_listed": {
+    "n": 0,
+    "growth": {
+     "n": 0,
+     "pooled": null
+    },
+    "opm": {
+     "n": 0,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 0,
+     "pooled": null
+    },
+    "debt": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr": {
+     "n": 0,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 0,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 9,
+    "growth": {
+     "n": 9,
+     "med": -8.0,
+     "q1": -18.6,
+     "q3": -5.8,
+     "pooled": -11.3
+    },
+    "opm": {
+     "n": 9,
+     "med": 0.4,
+     "q1": -7.4,
+     "q3": 2.6,
+     "pooled": 2.7
+    },
+    "ocf": {
+     "n": 9,
+     "med": 2.4,
+     "q1": -0.5,
+     "q3": 9.6,
+     "pooled": 6.0
+    },
+    "debt": {
+     "n": 9,
+     "med": 52.1,
+     "q1": 41.4,
+     "q3": 84.6,
+     "pooled": 36.0
+    },
+    "icr": {
+     "n": 7,
+     "med": 57.3,
+     "q1": -625.2,
+     "q3": 879.9,
+     "pooled": 327.6
+    },
+    "icr_low": {
+     "n": 7,
+     "k": null,
+     "share": null,
+     "n3": 6,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 5.8,
+     "q1": -21.3,
+     "med": -0.1,
+     "q3": 24.5
+    },
+    "opm": {
+     "mean": 3.7,
+     "q1": -2.5,
+     "med": 3.5,
+     "q3": 7.7
+    },
+    "icr": {
+     "mean": 266.1,
+     "q1": -158.4,
+     "med": 194.9,
+     "q3": 1408.9
+    },
+    "debt": {
+     "mean": 115.0,
+     "q1": 75.0,
+     "med": 192.8,
+     "q3": 563.7
+    }
+   },
+   "bok_region": {
+    "growth": -2.06,
+    "opm": 4.41,
+    "icr": 258.28,
+    "debt": 152.69
+   }
+  },
+  {
+   "code": "C33",
+   "daegu_listed": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 1,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 14,
+    "growth": {
+     "n": 14,
+     "med": -3.7,
+     "q1": -11.4,
+     "q3": -1.1,
+     "pooled": -5.1
+    },
+    "opm": {
+     "n": 14,
+     "med": -5.3,
+     "q1": -27.4,
+     "q3": 2.4,
+     "pooled": -1.1
+    },
+    "ocf": {
+     "n": 14,
+     "med": 2.9,
+     "q1": -20.9,
+     "q3": 6.8,
+     "pooled": 5.3
+    },
+    "debt": {
+     "n": 14,
+     "med": 69.5,
+     "q1": 24.6,
+     "q3": 110.7,
+     "pooled": 49.0
+    },
+    "icr": {
+     "n": 12,
+     "med": -63.8,
+     "q1": -654.4,
+     "q3": 360.5,
+     "pooled": 8.7
+    },
+    "icr_low": {
+     "n": 12,
+     "k": null,
+     "share": null,
+     "n3": 11,
+     "share3": null
+    }
+   },
+   "daegu_unlisted": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   },
+   "bok": {
+    "growth": {
+     "mean": 2.9,
+     "q1": -24.4,
+     "med": -2.3,
+     "q3": 25.5
+    },
+    "opm": {
+     "mean": 3.8,
+     "q1": -10.1,
+     "med": 2.8,
+     "q3": 8.0
+    },
+    "icr": {
+     "mean": 230.2,
+     "q1": -875.2,
+     "med": 150.9,
+     "q3": 1631.4
+    },
+    "debt": {
+     "mean": 107.8,
+     "q1": 45.5,
+     "med": 154.1,
+     "q3": 776.7
+    }
+   },
+   "bok_region": {
+    "growth": -1.59,
+    "opm": 2.45,
+    "icr": 59.2,
+    "debt": 103.73
+   }
+  }
+ ],
+ "by_band": [
+  {
+   "band": "100억 원 미만",
+   "daegu_listed": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 2,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 98,
+    "growth": {
+     "n": 98,
+     "med": -8.3,
+     "q1": -28.5,
+     "q3": 11.9,
+     "pooled": -20.5
+    },
+    "opm": {
+     "n": 98,
+     "med": -113.3,
+     "q1": -293.4,
+     "q3": -65.7,
+     "pooled": -160.9
+    },
+    "ocf": {
+     "n": 97,
+     "med": -90.8,
+     "q1": -194.7,
+     "q3": -40.9,
+     "pooled": -117.4
+    },
+    "debt": {
+     "n": 96,
+     "med": 39.4,
+     "q1": 17.2,
+     "q3": 98.1,
+     "pooled": 34.8
+    },
+    "icr": {
+     "n": 87,
+     "med": -2930.7,
+     "q1": -6878.1,
+     "q3": -851.2,
+     "pooled": -1707.0
+    },
+    "icr_low": {
+     "n": 87,
+     "k": 82,
+     "share": 94.3,
+     "n3": 82,
+     "share3": 84.1
+    }
+   },
+   "daegu_unlisted": {
+    "n": 19,
+    "growth": {
+     "n": 19,
+     "med": -7.3,
+     "q1": -30.0,
+     "q3": 15.2,
+     "pooled": -18.2
+    },
+    "opm": {
+     "n": 19,
+     "med": 5.6,
+     "q1": 2.6,
+     "q3": 24.8,
+     "pooled": 15.0
+    },
+    "ocf": {
+     "n": 19,
+     "med": -0.3,
+     "q1": -13.8,
+     "q3": 26.3,
+     "pooled": 5.8
+    },
+    "debt": {
+     "n": 17,
+     "med": 138.2,
+     "q1": 103.3,
+     "q3": 225.1,
+     "pooled": 135.9
+    },
+    "icr": {
+     "n": 19,
+     "med": 127.6,
+     "q1": 33.4,
+     "q3": 223.0,
+     "pooled": 208.1
+    },
+    "icr_low": {
+     "n": 19,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "band": "100억~500억 원",
+   "daegu_listed": {
+    "n": 10,
+    "growth": {
+     "n": 10,
+     "med": -5.2,
+     "q1": -24.9,
+     "q3": -0.1,
+     "pooled": -16.5
+    },
+    "opm": {
+     "n": 10,
+     "med": -8.8,
+     "q1": -11.5,
+     "q3": 0.1,
+     "pooled": -7.5
+    },
+    "ocf": {
+     "n": 10,
+     "med": 4.4,
+     "q1": -2.1,
+     "q3": 8.4,
+     "pooled": 7.5
+    },
+    "debt": {
+     "n": 10,
+     "med": 44.2,
+     "q1": 25.3,
+     "q3": 131.3,
+     "pooled": 58.1
+    },
+    "icr": {
+     "n": 10,
+     "med": -476.7,
+     "q1": -901.7,
+     "q3": 39.2,
+     "pooled": -240.1
+    },
+    "icr_low": {
+     "n": 10,
+     "k": null,
+     "share": null,
+     "n3": 9,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 401,
+    "growth": {
+     "n": 399,
+     "med": -1.5,
+     "q1": -17.0,
+     "q3": 18.5,
+     "pooled": -8.7
+    },
+    "opm": {
+     "n": 401,
+     "med": -3.6,
+     "q1": -20.3,
+     "q3": 7.3,
+     "pooled": -7.7
+    },
+    "ocf": {
+     "n": 400,
+     "med": 2.5,
+     "q1": -14.6,
+     "q3": 12.3,
+     "pooled": -1.6
+    },
+    "debt": {
+     "n": 399,
+     "med": 43.2,
+     "q1": 17.0,
+     "q3": 83.5,
+     "pooled": 46.8
+    },
+    "icr": {
+     "n": 354,
+     "med": -210.5,
+     "q1": -1627.8,
+     "q3": 502.2,
+     "pooled": -244.1
+    },
+    "icr_low": {
+     "n": 354,
+     "k": 223,
+     "share": 63.0,
+     "n3": 315,
+     "share3": 39.0
+    }
+   },
+   "daegu_unlisted": {
+    "n": 88,
+    "growth": {
+     "n": 88,
+     "med": -1.1,
+     "q1": -10.6,
+     "q3": 11.7,
+     "pooled": 1.0
+    },
+    "opm": {
+     "n": 87,
+     "med": 4.4,
+     "q1": 1.8,
+     "q3": 9.1,
+     "pooled": 5.4
+    },
+    "ocf": {
+     "n": 84,
+     "med": 8.1,
+     "q1": 1.7,
+     "q3": 13.3,
+     "pooled": 8.4
+    },
+    "debt": {
+     "n": 84,
+     "med": 121.9,
+     "q1": 44.0,
+     "q3": 238.5,
+     "pooled": 95.1
+    },
+    "icr": {
+     "n": 81,
+     "med": 185.4,
+     "q1": 82.4,
+     "q3": 721.0,
+     "pooled": 252.9
+    },
+    "icr_low": {
+     "n": 81,
+     "k": 21,
+     "share": 25.9,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "band": "500억~1,500억 원",
+   "daegu_listed": {
+    "n": 13,
+    "growth": {
+     "n": 13,
+     "med": -4.3,
+     "q1": -8.5,
+     "q3": 4.2,
+     "pooled": -4.0
+    },
+    "opm": {
+     "n": 13,
+     "med": 2.0,
+     "q1": 0.1,
+     "q3": 7.3,
+     "pooled": 3.4
+    },
+    "ocf": {
+     "n": 13,
+     "med": 4.9,
+     "q1": -0.7,
+     "q3": 12.2,
+     "pooled": 7.8
+    },
+    "debt": {
+     "n": 13,
+     "med": 51.5,
+     "q1": 9.4,
+     "q3": 127.0,
+     "pooled": 46.0
+    },
+    "icr": {
+     "n": 11,
+     "med": 78.8,
+     "q1": -16.2,
+     "q3": 785.6,
+     "pooled": 91.6
+    },
+    "icr_low": {
+     "n": 11,
+     "k": null,
+     "share": null,
+     "n3": 11,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 479,
+    "growth": {
+     "n": 479,
+     "med": 0.6,
+     "q1": -9.0,
+     "q3": 12.3,
+     "pooled": -1.9
+    },
+    "opm": {
+     "n": 479,
+     "med": 3.7,
+     "q1": -1.0,
+     "q3": 9.6,
+     "pooled": 3.8
+    },
+    "ocf": {
+     "n": 478,
+     "med": 6.2,
+     "q1": -0.7,
+     "q3": 14.0,
+     "pooled": 6.7
+    },
+    "debt": {
+     "n": 477,
+     "med": 46.3,
+     "q1": 21.1,
+     "q3": 93.7,
+     "pooled": 44.8
+    },
+    "icr": {
+     "n": 420,
+     "med": 314.5,
+     "q1": -67.0,
+     "q3": 1746.5,
+     "pooled": 225.1
+    },
+    "icr_low": {
+     "n": 420,
+     "k": 141,
+     "share": 33.6,
+     "n3": 383,
+     "share3": 17.2
+    }
+   },
+   "daegu_unlisted": {
+    "n": 24,
+    "growth": {
+     "n": 24,
+     "med": 12.5,
+     "q1": -3.1,
+     "q3": 17.8,
+     "pooled": 8.2
+    },
+    "opm": {
+     "n": 24,
+     "med": 2.2,
+     "q1": 0.8,
+     "q3": 6.1,
+     "pooled": 5.1
+    },
+    "ocf": {
+     "n": 22,
+     "med": 2.6,
+     "q1": -1.8,
+     "q3": 9.1,
+     "pooled": 3.1
+    },
+    "debt": {
+     "n": 23,
+     "med": 92.1,
+     "q1": 44.7,
+     "q3": 215.1,
+     "pooled": 59.5
+    },
+    "icr": {
+     "n": 24,
+     "med": 153.2,
+     "q1": 31.7,
+     "q3": 1659.8,
+     "pooled": 329.6
+    },
+    "icr_low": {
+     "n": 24,
+     "k": 11,
+     "share": 45.8,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  },
+  {
+   "band": "1,500억 원 이상",
+   "daegu_listed": {
+    "n": 20,
+    "growth": {
+     "n": 20,
+     "med": 8.5,
+     "q1": 1.8,
+     "q3": 14.4,
+     "pooled": 10.5
+    },
+    "opm": {
+     "n": 20,
+     "med": 2.3,
+     "q1": 1.3,
+     "q3": 7.3,
+     "pooled": 3.4
+    },
+    "ocf": {
+     "n": 20,
+     "med": 6.0,
+     "q1": 1.0,
+     "q3": 11.8,
+     "pooled": 6.7
+    },
+    "debt": {
+     "n": 20,
+     "med": 92.4,
+     "q1": 29.8,
+     "q3": 184.9,
+     "pooled": 88.3
+    },
+    "icr": {
+     "n": 19,
+     "med": 257.5,
+     "q1": 55.3,
+     "q3": 3917.4,
+     "pooled": 264.2
+    },
+    "icr_low": {
+     "n": 19,
+     "k": null,
+     "share": null,
+     "n3": 18,
+     "share3": null
+    }
+   },
+   "national_listed": {
+    "n": 618,
+    "growth": {
+     "n": 616,
+     "med": 3.6,
+     "q1": -4.9,
+     "q3": 12.6,
+     "pooled": 6.7
+    },
+    "opm": {
+     "n": 618,
+     "med": 4.3,
+     "q1": 1.3,
+     "q3": 9.4,
+     "pooled": 9.5
+    },
+    "ocf": {
+     "n": 618,
+     "med": 6.2,
+     "q1": 2.0,
+     "q3": 11.5,
+     "pooled": 15.5
+    },
+    "debt": {
+     "n": 616,
+     "med": 63.7,
+     "q1": 32.9,
+     "q3": 113.7,
+     "pooled": 61.5
+    },
+    "icr": {
+     "n": 558,
+     "med": 512.5,
+     "q1": 111.9,
+     "q3": 2470.6,
+     "pooled": 1037.3
+    },
+    "icr_low": {
+     "n": 558,
+     "k": 129,
+     "share": 23.1,
+     "n3": 525,
+     "share3": 10.5
+    }
+   },
+   "daegu_unlisted": {
+    "n": 6,
+    "growth": {
+     "n": 6,
+     "med": 3.7,
+     "q1": -2.9,
+     "q3": 11.8,
+     "pooled": 44.0
+    },
+    "opm": {
+     "n": 6,
+     "med": 4.1,
+     "q1": 3.5,
+     "q3": 6.8,
+     "pooled": 3.4
+    },
+    "ocf": {
+     "n": 6,
+     "med": 4.0,
+     "q1": -2.0,
+     "q3": 8.6,
+     "pooled": -2.9
+    },
+    "debt": {
+     "n": 5,
+     "med": 269.9,
+     "q1": 203.7,
+     "q3": 349.9,
+     "pooled": 509.4
+    },
+    "icr": {
+     "n": 5,
+     "med": 114.2,
+     "q1": 112.0,
+     "q3": 258.7,
+     "pooled": 112.1
+    },
+    "icr_low": {
+     "n": 5,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   },
+   "national_unlisted": {
+    "n": 0
+   }
+  }
+ ],
+ "by_district": [
+  {
+   "district": "군위군",
+   "daegu_unlisted": {
+    "n": 1,
+    "growth": {
+     "n": 1,
+     "pooled": null
+    },
+    "opm": {
+     "n": 1,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 1,
+     "pooled": null
+    },
+    "debt": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr": {
+     "n": 1,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 1,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   }
+  },
+  {
+   "district": "달서구",
+   "daegu_unlisted": {
+    "n": 80,
+    "growth": {
+     "n": 78,
+     "med": -1.0,
+     "q1": -10.0,
+     "q3": 12.5,
+     "pooled": 2.8
+    },
+    "opm": {
+     "n": 77,
+     "med": 3.9,
+     "q1": 1.1,
+     "q3": 6.6,
+     "pooled": 3.5
+    },
+    "ocf": {
+     "n": 74,
+     "med": 5.6,
+     "q1": -1.5,
+     "q3": 10.0,
+     "pooled": 5.7
+    },
+    "debt": {
+     "n": 76,
+     "med": 159.8,
+     "q1": 60.8,
+     "q3": 263.9,
+     "pooled": 95.9
+    },
+    "icr": {
+     "n": 72,
+     "med": 140.0,
+     "q1": 52.2,
+     "q3": 352.8,
+     "pooled": 162.3
+    },
+    "icr_low": {
+     "n": 72,
+     "k": 28,
+     "share": 38.9,
+     "n3": 0,
+     "share3": null
+    }
+   }
+  },
+  {
+   "district": "달성군",
+   "daegu_unlisted": {
+    "n": 32,
+    "growth": {
+     "n": 28,
+     "med": -1.4,
+     "q1": -12.5,
+     "q3": 18.2,
+     "pooled": 44.2
+    },
+    "opm": {
+     "n": 28,
+     "med": 4.9,
+     "q1": 1.3,
+     "q3": 10.4,
+     "pooled": 3.4
+    },
+    "ocf": {
+     "n": 27,
+     "med": 11.0,
+     "q1": 2.0,
+     "q3": 15.0,
+     "pooled": -2.9
+    },
+    "debt": {
+     "n": 29,
+     "med": 115.6,
+     "q1": 57.2,
+     "q3": 205.7,
+     "pooled": 503.9
+    },
+    "icr": {
+     "n": 29,
+     "med": 184.2,
+     "q1": 103.3,
+     "q3": 880.2,
+     "pooled": 112.8
+    },
+    "icr_low": {
+     "n": 29,
+     "k": 6,
+     "share": 20.7,
+     "n3": 0,
+     "share3": null
+    }
+   }
+  },
+  {
+   "district": "동구",
+   "daegu_unlisted": {
+    "n": 7,
+    "growth": {
+     "n": 7,
+     "med": 24.5,
+     "q1": 5.4,
+     "q3": 55.0,
+     "pooled": 16.8
+    },
+    "opm": {
+     "n": 7,
+     "med": 10.9,
+     "q1": 4.5,
+     "q3": 11.8,
+     "pooled": 9.3
+    },
+    "ocf": {
+     "n": 7,
+     "med": 11.1,
+     "q1": 6.6,
+     "q3": 13.4,
+     "pooled": 9.4
+    },
+    "debt": {
+     "n": 7,
+     "med": 79.5,
+     "q1": 53.7,
+     "q3": 88.9,
+     "pooled": 78.6
+    },
+    "icr": {
+     "n": 6,
+     "med": 888.2,
+     "q1": 482.1,
+     "q3": 1239.1,
+     "pooled": 567.7
+    },
+    "icr_low": {
+     "n": 6,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   }
+  },
+  {
+   "district": "북구",
+   "daegu_unlisted": {
+    "n": 10,
+    "growth": {
+     "n": 9,
+     "med": -2.7,
+     "q1": -12.3,
+     "q3": 16.3,
+     "pooled": 8.7
+    },
+    "opm": {
+     "n": 9,
+     "med": 5.1,
+     "q1": 2.7,
+     "q3": 14.7,
+     "pooled": 8.7
+    },
+    "ocf": {
+     "n": 9,
+     "med": 7.1,
+     "q1": -0.7,
+     "q3": 15.8,
+     "pooled": 10.4
+    },
+    "debt": {
+     "n": 9,
+     "med": 161.5,
+     "q1": 75.4,
+     "q3": 166.3,
+     "pooled": 78.5
+    },
+    "icr": {
+     "n": 10,
+     "med": 138.1,
+     "q1": 120.9,
+     "q3": 396.0,
+     "pooled": 332.3
+    },
+    "icr_low": {
+     "n": 10,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   }
+  },
+  {
+   "district": "서구",
+   "daegu_unlisted": {
+    "n": 14,
+    "growth": {
+     "n": 12,
+     "med": -0.0,
+     "q1": -1.4,
+     "q3": 15.2,
+     "pooled": -0.2
+    },
+    "opm": {
+     "n": 12,
+     "med": 7.1,
+     "q1": 1.5,
+     "q3": 11.2,
+     "pooled": 8.6
+    },
+    "ocf": {
+     "n": 11,
+     "med": 2.5,
+     "q1": -1.2,
+     "q3": 14.6,
+     "pooled": -0.7
+    },
+    "debt": {
+     "n": 12,
+     "med": 124.8,
+     "q1": 49.5,
+     "q3": 318.3,
+     "pooled": 31.8
+    },
+    "icr": {
+     "n": 14,
+     "med": 202.5,
+     "q1": 41.6,
+     "q3": 1789.6,
+     "pooled": 400.3
+    },
+    "icr_low": {
+     "n": 14,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   }
+  },
+  {
+   "district": "수성구",
+   "daegu_unlisted": {
+    "n": 2,
+    "growth": {
+     "n": 2,
+     "pooled": null
+    },
+    "opm": {
+     "n": 2,
+     "pooled": null
+    },
+    "ocf": {
+     "n": 2,
+     "pooled": null
+    },
+    "debt": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr": {
+     "n": 2,
+     "pooled": null
+    },
+    "icr_low": {
+     "n": 2,
+     "k": null,
+     "share": null,
+     "n3": 0,
+     "share3": null
+    }
+   }
+  }
+ ],
+ "trend": {
+  "daegu_listed": {
+   "years": [
+    "2023",
+    "2024",
+    "2025"
+   ],
+   "all": {
+    "2023": {
+     "n": 44,
+     "growth": {
+      "n": 0,
+      "pooled": null
+     },
+     "opm": {
+      "n": 44,
+      "med": 3.6,
+      "q1": 0.4,
+      "q3": 8.9,
+      "pooled": 2.1
+     },
+     "ocf": {
+      "n": 44,
+      "med": 5.1,
+      "q1": -2.4,
+      "q3": 12.0,
+      "pooled": 1.1
+     },
+     "debt": {
+      "n": 44,
+      "med": 71.1,
+      "q1": 29.3,
+      "q3": 131.1,
+      "pooled": 82.7
+     },
+     "icr": {
+      "n": 40,
+      "med": 215.8,
+      "q1": -42.1,
+      "q3": 1078.9,
+      "pooled": 162.8
+     },
+     "icr_low": {
+      "n": 40,
+      "k": 12,
+      "share": 30.0,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2024": {
+     "n": 45,
+     "growth": {
+      "n": 44,
+      "med": 1.2,
+      "q1": -4.9,
+      "q3": 17.0,
+      "pooled": -13.8
+     },
+     "opm": {
+      "n": 45,
+      "med": 3.2,
+      "q1": -0.5,
+      "q3": 6.9,
+      "pooled": 0.0
+     },
+     "ocf": {
+      "n": 45,
+      "med": 5.4,
+      "q1": -0.4,
+      "q3": 11.6,
+      "pooled": 6.2
+     },
+     "debt": {
+      "n": 45,
+      "med": 58.6,
+      "q1": 26.6,
+      "q3": 134.2,
+      "pooled": 80.1
+     },
+     "icr": {
+      "n": 42,
+      "med": 269.8,
+      "q1": -142.9,
+      "q3": 989.4,
+      "pooled": -49.3
+     },
+     "icr_low": {
+      "n": 42,
+      "k": 15,
+      "share": 35.7,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2025": {
+     "n": 45,
+     "growth": {
+      "n": 45,
+      "med": 1.8,
+      "q1": -8.5,
+      "q3": 9.3,
+      "pooled": 8.6
+     },
+     "opm": {
+      "n": 45,
+      "med": 1.7,
+      "q1": -3.6,
+      "q3": 6.8,
+      "pooled": 3.2
+     },
+     "ocf": {
+      "n": 45,
+      "med": 4.9,
+      "q1": -0.9,
+      "q3": 11.7,
+      "pooled": 6.8
+     },
+     "debt": {
+      "n": 45,
+      "med": 57.2,
+      "q1": 27.5,
+      "q3": 152.7,
+      "pooled": 79.4
+     },
+     "icr": {
+      "n": 42,
+      "med": 76.5,
+      "q1": -276.5,
+      "q3": 1176.8,
+      "pooled": 221.1
+     },
+     "icr_low": {
+      "n": 42,
+      "k": 23,
+      "share": 54.8,
+      "n3": 40,
+      "share3": 20.0
+     }
+    }
+   },
+   "same": {
+    "2023": {
+     "n": 44,
+     "growth": {
+      "n": 0,
+      "pooled": null
+     },
+     "opm": {
+      "n": 44,
+      "med": 3.6,
+      "q1": 0.4,
+      "q3": 8.9,
+      "pooled": 2.1
+     },
+     "ocf": {
+      "n": 44,
+      "med": 5.1,
+      "q1": -2.4,
+      "q3": 12.0,
+      "pooled": 1.1
+     },
+     "debt": {
+      "n": 44,
+      "med": 71.1,
+      "q1": 29.3,
+      "q3": 131.1,
+      "pooled": 82.7
+     },
+     "icr": {
+      "n": 40,
+      "med": 215.8,
+      "q1": -42.1,
+      "q3": 1078.9,
+      "pooled": 162.8
+     },
+     "icr_low": {
+      "n": 40,
+      "k": 12,
+      "share": 30.0,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2024": {
+     "n": 44,
+     "growth": {
+      "n": 44,
+      "med": 1.2,
+      "q1": -4.9,
+      "q3": 17.0,
+      "pooled": -13.8
+     },
+     "opm": {
+      "n": 44,
+      "med": 3.1,
+      "q1": -0.6,
+      "q3": 6.7,
+      "pooled": -0.0
+     },
+     "ocf": {
+      "n": 44,
+      "med": 5.4,
+      "q1": -0.5,
+      "q3": 11.8,
+      "pooled": 6.2
+     },
+     "debt": {
+      "n": 44,
+      "med": 58.6,
+      "q1": 26.1,
+      "q3": 136.7,
+      "pooled": 80.2
+     },
+     "icr": {
+      "n": 41,
+      "med": 269.3,
+      "q1": -186.3,
+      "q3": 1059.4,
+      "pooled": -52.3
+     },
+     "icr_low": {
+      "n": 41,
+      "k": 15,
+      "share": 36.6,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2025": {
+     "n": 44,
+     "growth": {
+      "n": 44,
+      "med": 1.8,
+      "q1": -9.1,
+      "q3": 9.6,
+      "pooled": 8.6
+     },
+     "opm": {
+      "n": 44,
+      "med": 1.9,
+      "q1": -3.7,
+      "q3": 6.8,
+      "pooled": 3.2
+     },
+     "ocf": {
+      "n": 44,
+      "med": 4.5,
+      "q1": -1.0,
+      "q3": 11.8,
+      "pooled": 6.8
+     },
+     "debt": {
+      "n": 44,
+      "med": 60.6,
+      "q1": 28.5,
+      "q3": 153.6,
+      "pooled": 79.6
+     },
+     "icr": {
+      "n": 41,
+      "med": 78.8,
+      "q1": -297.7,
+      "q3": 1385.7,
+      "pooled": 221.4
+     },
+     "icr_low": {
+      "n": 41,
+      "k": 22,
+      "share": 53.7,
+      "n3": 40,
+      "share3": 20.0
+     }
+    }
+   },
+   "same_n": 44
+  },
+  "national_listed": {
+   "years": [
+    "2023",
+    "2024",
+    "2025"
+   ],
+   "all": {
+    "2023": {
+     "n": 1551,
+     "growth": {
+      "n": 0,
+      "pooled": null
+     },
+     "opm": {
+      "n": 1549,
+      "med": 3.2,
+      "q1": -4.0,
+      "q3": 8.3,
+      "pooled": 2.2
+     },
+     "ocf": {
+      "n": 1543,
+      "med": 6.1,
+      "q1": -1.6,
+      "q3": 13.3,
+      "pooled": 10.8
+     },
+     "debt": {
+      "n": 1541,
+      "med": 52.7,
+      "q1": 23.6,
+      "q3": 100.6,
+      "pooled": 58.3
+     },
+     "icr": {
+      "n": 1380,
+      "med": 269.4,
+      "q1": -278.2,
+      "q3": 1216.0,
+      "pooled": 198.5
+     },
+     "icr_low": {
+      "n": 1380,
+      "k": 536,
+      "share": 38.8,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2024": {
+     "n": 1597,
+     "growth": {
+      "n": 1549,
+      "med": 2.6,
+      "q1": -8.1,
+      "q3": 14.7,
+      "pooled": 8.5
+     },
+     "opm": {
+      "n": 1593,
+      "med": 3.1,
+      "q1": -3.8,
+      "q3": 8.8,
+      "pooled": 6.7
+     },
+     "ocf": {
+      "n": 1587,
+      "med": 5.8,
+      "q1": -1.5,
+      "q3": 13.9,
+      "pooled": 12.8
+     },
+     "debt": {
+      "n": 1584,
+      "med": 53.1,
+      "q1": 23.1,
+      "q3": 98.4,
+      "pooled": 61.7
+     },
+     "icr": {
+      "n": 1421,
+      "med": 267.9,
+      "q1": -262.8,
+      "q3": 1261.4,
+      "pooled": 640.1
+     },
+     "icr_low": {
+      "n": 1421,
+      "k": 544,
+      "share": 38.3,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2025": {
+     "n": 1597,
+     "growth": {
+      "n": 1592,
+      "med": 1.3,
+      "q1": -9.0,
+      "q3": 13.0,
+      "pooled": 6.2
+     },
+     "opm": {
+      "n": 1596,
+      "med": 2.7,
+      "q1": -4.2,
+      "q3": 8.7,
+      "pooled": 9.1
+     },
+     "ocf": {
+      "n": 1593,
+      "med": 4.8,
+      "q1": -2.6,
+      "q3": 11.9,
+      "pooled": 15.0
+     },
+     "debt": {
+      "n": 1589,
+      "med": 52.1,
+      "q1": 23.2,
+      "q3": 100.4,
+      "pooled": 60.1
+     },
+     "icr": {
+      "n": 1420,
+      "med": 231.3,
+      "q1": -264.4,
+      "q3": 1369.0,
+      "pooled": 943.1
+     },
+     "icr_low": {
+      "n": 1420,
+      "k": 575,
+      "share": 40.5,
+      "n3": 1306,
+      "share3": 24.0
+     }
+    }
+   },
+   "same": {
+    "2023": {
+     "n": 1550,
+     "growth": {
+      "n": 0,
+      "pooled": null
+     },
+     "opm": {
+      "n": 1548,
+      "med": 3.2,
+      "q1": -4.0,
+      "q3": 8.3,
+      "pooled": 2.2
+     },
+     "ocf": {
+      "n": 1542,
+      "med": 6.1,
+      "q1": -1.6,
+      "q3": 13.3,
+      "pooled": 10.8
+     },
+     "debt": {
+      "n": 1540,
+      "med": 52.6,
+      "q1": 23.6,
+      "q3": 100.7,
+      "pooled": 58.3
+     },
+     "icr": {
+      "n": 1379,
+      "med": 269.6,
+      "q1": -277.6,
+      "q3": 1216.9,
+      "pooled": 198.7
+     },
+     "icr_low": {
+      "n": 1379,
+      "k": 535,
+      "share": 38.8,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2024": {
+     "n": 1550,
+     "growth": {
+      "n": 1548,
+      "med": 2.6,
+      "q1": -8.1,
+      "q3": 14.7,
+      "pooled": 8.5
+     },
+     "opm": {
+      "n": 1548,
+      "med": 3.0,
+      "q1": -3.9,
+      "q3": 8.6,
+      "pooled": 6.7
+     },
+     "ocf": {
+      "n": 1542,
+      "med": 5.8,
+      "q1": -1.4,
+      "q3": 13.8,
+      "pooled": 12.8
+     },
+     "debt": {
+      "n": 1544,
+      "med": 52.5,
+      "q1": 22.8,
+      "q3": 97.0,
+      "pooled": 61.6
+     },
+     "icr": {
+      "n": 1382,
+      "med": 255.3,
+      "q1": -263.6,
+      "q3": 1257.3,
+      "pooled": 640.3
+     },
+     "icr_low": {
+      "n": 1382,
+      "k": 533,
+      "share": 38.6,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2025": {
+     "n": 1550,
+     "growth": {
+      "n": 1548,
+      "med": 1.1,
+      "q1": -9.1,
+      "q3": 12.9,
+      "pooled": 6.2
+     },
+     "opm": {
+      "n": 1549,
+      "med": 2.7,
+      "q1": -4.2,
+      "q3": 8.7,
+      "pooled": 9.1
+     },
+     "ocf": {
+      "n": 1546,
+      "med": 4.8,
+      "q1": -2.5,
+      "q3": 11.9,
+      "pooled": 15.0
+     },
+     "debt": {
+      "n": 1542,
+      "med": 52.9,
+      "q1": 23.0,
+      "q3": 101.0,
+      "pooled": 60.2
+     },
+     "icr": {
+      "n": 1379,
+      "med": 231.0,
+      "q1": -264.9,
+      "q3": 1344.2,
+      "pooled": 943.2
+     },
+     "icr_low": {
+      "n": 1379,
+      "k": 558,
+      "share": 40.5,
+      "n3": 1306,
+      "share3": 24.0
+     }
+    }
+   },
+   "same_n": 1550
+  },
+  "daegu_unlisted": {
+   "years": [
+    "2022",
+    "2023",
+    "2024"
+   ],
+   "all": {
+    "2022": {
+     "n": 2,
+     "growth": {
+      "n": 1,
+      "pooled": null
+     },
+     "opm": {
+      "n": 2,
+      "pooled": null
+     },
+     "ocf": {
+      "n": 2,
+      "pooled": null
+     },
+     "debt": {
+      "n": 1,
+      "pooled": null
+     },
+     "icr": {
+      "n": 2,
+      "pooled": null
+     },
+     "icr_low": {
+      "n": 2,
+      "k": null,
+      "share": null,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2023": {
+     "n": 146,
+     "growth": {
+      "n": 2,
+      "pooled": null
+     },
+     "opm": {
+      "n": 138,
+      "med": 4.4,
+      "q1": 1.8,
+      "q3": 9.1,
+      "pooled": 6.8
+     },
+     "ocf": {
+      "n": 132,
+      "med": 5.1,
+      "q1": 0.2,
+      "q3": 13.0,
+      "pooled": -3.7
+     },
+     "debt": {
+      "n": 138,
+      "med": 140.0,
+      "q1": 64.1,
+      "q3": 259.5,
+      "pooled": 450.2
+     },
+     "icr": {
+      "n": 130,
+      "med": 184.6,
+      "q1": 76.4,
+      "q3": 472.0,
+      "pooled": 164.0
+     },
+     "icr_low": {
+      "n": 130,
+      "k": 36,
+      "share": 27.7,
+      "n3": 1,
+      "share3": null
+     }
+    },
+    "2024": {
+     "n": 146,
+     "growth": {
+      "n": 137,
+      "med": -0.1,
+      "q1": -9.3,
+      "q3": 15.4,
+      "pooled": 42.2
+     },
+     "opm": {
+      "n": 136,
+      "med": 4.4,
+      "q1": 1.4,
+      "q3": 9.1,
+      "pooled": 3.5
+     },
+     "ocf": {
+      "n": 131,
+      "med": 7.1,
+      "q1": -0.8,
+      "q3": 12.2,
+      "pooled": -2.6
+     },
+     "debt": {
+      "n": 136,
+      "med": 126.8,
+      "q1": 54.9,
+      "q3": 249.1,
+      "pooled": 433.1
+     },
+     "icr": {
+      "n": 134,
+      "med": 171.7,
+      "q1": 76.4,
+      "q3": 640.5,
+      "pooled": 115.8
+     },
+     "icr_low": {
+      "n": 134,
+      "k": 42,
+      "share": 31.3,
+      "n3": 0,
+      "share3": null
+     }
+    }
+   },
+   "same": {
+    "2022": {
+     "n": 0,
+     "growth": {
+      "n": 0,
+      "pooled": null
+     },
+     "opm": {
+      "n": 0,
+      "pooled": null
+     },
+     "ocf": {
+      "n": 0,
+      "pooled": null
+     },
+     "debt": {
+      "n": 0,
+      "pooled": null
+     },
+     "icr": {
+      "n": 0,
+      "pooled": null
+     },
+     "icr_low": {
+      "n": 0,
+      "k": null,
+      "share": null,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2023": {
+     "n": 0,
+     "growth": {
+      "n": 0,
+      "pooled": null
+     },
+     "opm": {
+      "n": 0,
+      "pooled": null
+     },
+     "ocf": {
+      "n": 0,
+      "pooled": null
+     },
+     "debt": {
+      "n": 0,
+      "pooled": null
+     },
+     "icr": {
+      "n": 0,
+      "pooled": null
+     },
+     "icr_low": {
+      "n": 0,
+      "k": null,
+      "share": null,
+      "n3": 0,
+      "share3": null
+     }
+    },
+    "2024": {
+     "n": 0,
+     "growth": {
+      "n": 0,
+      "pooled": null
+     },
+     "opm": {
+      "n": 0,
+      "pooled": null
+     },
+     "ocf": {
+      "n": 0,
+      "pooled": null
+     },
+     "debt": {
+      "n": 0,
+      "pooled": null
+     },
+     "icr": {
+      "n": 0,
+      "pooled": null
+     },
+     "icr_low": {
+      "n": 0,
+      "k": null,
+      "share": null,
+      "n3": 0,
+      "share3": null
+     }
+    }
+   },
+   "same_n": 0
+  }
+ },
+ "bok": {
+  "year": "2024",
+  "table": "한국은행 기업경영분석 분위수(KOSIS DT_501Y086)",
+  "by": {
+   "growth": {
+    "mean": 4.6,
+    "q1": -20.1,
+    "med": 0.0,
+    "q3": 23.3
+   },
+   "opm": {
+    "mean": 5.1,
+    "q1": -2.5,
+    "med": 3.8,
+    "q3": 8.7
+   },
+   "icr": {
+    "mean": 401.1,
+    "q1": -168.3,
+    "med": 203.4,
+    "q3": 1736.2
+   },
+   "debt": {
+    "mean": 75.8,
+    "q1": 48.0,
+    "med": 140.7,
+    "q3": 385.3
+   }
+  }
+ },
+ "bok_year_ksic": "2024",
+ "bok_region": {
+  "year": "2024",
+  "table": "한국은행 지역별 기업경영분석(ECOS 503Y002·005·006·007, 대구)",
+  "by_scale": {
+   "종합": {
+    "growth": -4.53,
+    "opm": 3.09,
+    "icr": 171.32,
+    "debt": 95.71
+   },
+   "중기업": {
+    "growth": -0.83,
+    "opm": 3.64,
+    "icr": 203.45,
+    "debt": 87.9
+   },
+   "대기업": {
+    "growth": -9.43,
+    "opm": 2.31,
+    "icr": 158.59,
+    "debt": 81.96
+   },
+   "중소기업": {
+    "growth": 0.42,
+    "opm": 3.8,
+    "icr": 179.3,
+    "debt": 107.98
+   },
+   "소기업": {
+    "growth": 2.22,
+    "opm": 4.02,
+    "icr": 155.76,
+    "debt": 137.32
+   }
+  },
+  "by_ksic": {
+   "C10": {
+    "growth": 3.59,
+    "opm": 2.91,
+    "icr": 189.33,
+    "debt": 159.32
+   },
+   "C11": {
+    "growth": -3.75,
+    "opm": 5.48,
+    "icr": 9507.26,
+    "debt": 8.69
+   },
+   "C13": {
+    "growth": -0.72,
+    "opm": 2.5,
+    "icr": 100.73,
+    "debt": 117.98
+   },
+   "C14": {
+    "growth": 2.29,
+    "opm": 4.94,
+    "icr": 269.5,
+    "debt": 102.52
+   },
+   "C15": {
+    "growth": -0.59,
+    "opm": 3.25,
+    "icr": 231.71,
+    "debt": 165.79
+   },
+   "C16": {
+    "growth": -4.25,
+    "opm": 4.21,
+    "icr": 133.85,
+    "debt": 177.5
+   },
+   "C17": {
+    "growth": 1.89,
+    "opm": 3.5,
+    "icr": 194.26,
+    "debt": 96.4
+   },
+   "C18": {
+    "growth": 2.5,
+    "opm": -1.39,
+    "icr": -72.53,
+    "debt": 203.5
+   },
+   "C19": {
+    "growth": -4.45,
+    "opm": 0.96,
+    "icr": 215.2,
+    "debt": 20.36
+   },
+   "C20": {
+    "growth": -47.17,
+    "opm": -16.32,
+    "icr": -380.47,
+    "debt": 115.66
+   },
+   "C21": {
+    "growth": -1.09,
+    "opm": 3.54,
+    "icr": 162.18,
+    "debt": 147.68
+   },
+   "C22": {
+    "growth": 5.09,
+    "opm": 4.25,
+    "icr": 205.51,
+    "debt": 131.59
+   },
+   "C23": {
+    "growth": -17.59,
+    "opm": 2.91,
+    "icr": 131.99,
+    "debt": 75.54
+   },
+   "C24": {
+    "growth": -1.4,
+    "opm": 2.17,
+    "icr": 155.71,
+    "debt": 119.47
+   },
+   "C25": {
+    "growth": -1.2,
+    "opm": 5.06,
+    "icr": 251.94,
+    "debt": 81.63
+   },
+   "C26": {
+    "growth": 7.02,
+    "opm": 7.21,
+    "icr": 537.74,
+    "debt": 84.33
+   },
+   "C27": {
+    "growth": 11.87,
+    "opm": 6.78,
+    "icr": 242.72,
+    "debt": 100.23
+   },
+   "C28": {
+    "growth": 2.37,
+    "opm": 4.84,
+    "icr": 195.95,
+    "debt": 98.6
+   },
+   "C29": {
+    "growth": 0.41,
+    "opm": 8.01,
+    "icr": 472.66,
+    "debt": 83.61
+   },
+   "C30": {
+    "growth": 2.32,
+    "opm": 3.47,
+    "icr": 327.34,
+    "debt": 86.07
+   },
+   "C31": {
+    "growth": -0.16,
+    "opm": 6.39,
+    "icr": 232.85,
+    "debt": 200.62
+   },
+   "C32": {
+    "growth": -2.06,
+    "opm": 4.41,
+    "icr": 258.28,
+    "debt": 152.69
+   },
+   "C33": {
+    "growth": -1.59,
+    "opm": 2.45,
+    "icr": 59.2,
+    "debt": 103.73
+   },
+   "C34": {
+    "growth": 30.66,
+    "opm": -2.45,
+    "icr": -89.66,
+    "debt": 173.35
+   }
+  },
+  "sales": {
+   "종합": {
+    "value": 47028286.0,
+    "unit": "백만원"
+   },
+   "중기업": {
+    "value": 14382469.0,
+    "unit": "백만원"
+   },
+   "대기업": {
+    "value": 22399207.0,
+    "unit": "백만원"
+   },
+   "중소기업": {
+    "value": 24629079.0,
+    "unit": "백만원"
+   },
+   "소기업": {
+    "value": 10246610.0,
+    "unit": "백만원"
+   }
+  }
+ },
+ "sample": {},
+ "summary": {
+  "daegu": {
+   "daegu": 191,
+   "daegu_mfg": 148,
+   "filers": 13600,
+   "filings_since": "20241203",
+   "name_matched": 708,
+   "rows": 148,
+   "updated": "2026-11-03"
+  },
+  "listed": {
+   "firms": 1598,
+   "rows": 4745,
+   "target": 1600,
+   "updated": "2026-11-03",
+   "years": [
+    "2025",
+    "2024"
+   ]
+  }
+ },
+ "employment": {
+  "months": {
+   "last": "202608",
+   "prev": "202506",
+   "matched": 116
+  },
+  "total": {
+   "n": 116,
+   "n_both": 115,
+   "med": 35.5,
+   "sum": 6844,
+   "chg": -2.4,
+   "up": 35.7,
+   "down": 57.4
+  },
+  "by_band": [
+   {
+    "band": "100억 원 미만",
+    "n": 14,
+    "n_both": 14
+   },
+   {
+    "band": "100억~500억 원",
+    "n": 69,
+    "n_both": 69,
+    "med": 29,
+    "sum": 3000,
+    "chg": -2.5,
+    "up": 36.2,
+    "down": 56.5
+   },
+   {
+    "band": "500억~1,500억 원",
+    "n": 21,
+    "n_both": 21,
+    "med": 97,
+    "sum": 2177,
+    "chg": -3.0,
+    "up": 42.9,
+    "down": 57.1
+   },
+   {
+    "band": "1,500억 원 이상",
+    "n": 6,
+    "n_both": 5
+   }
+  ],
+  "by_ksic": [
+   {
+    "code": "C10",
+    "n": 7,
+    "n_both": 7
+   },
+   {
+    "code": "C11",
+    "n": 1,
+    "n_both": 1
+   },
+   {
+    "code": "C13",
+    "n": 18,
+    "n_both": 18
+   },
+   {
+    "code": "C14",
+    "n": 3,
+    "n_both": 3
+   },
+   {
+    "code": "C17",
+    "n": 6,
+    "n_both": 6
+   },
+   {
+    "code": "C18",
+    "n": 1,
+    "n_both": 1
+   },
+   {
+    "code": "C20",
+    "n": 6,
+    "n_both": 5
+   },
+   {
+    "code": "C21",
+    "n": 1,
+    "n_both": 1
+   },
+   {
+    "code": "C22",
+    "n": 1,
+    "n_both": 1
+   },
+   {
+    "code": "C23",
+    "n": 1,
+    "n_both": 1
+   },
+   {
+    "code": "C24",
+    "n": 7,
+    "n_both": 7
+   },
+   {
+    "code": "C25",
+    "n": 10,
+    "n_both": 10
+   },
+   {
+    "code": "C26",
+    "n": 6,
+    "n_both": 6
+   },
+   {
+    "code": "C27",
+    "n": 2,
+    "n_both": 2
+   },
+   {
+    "code": "C28",
+    "n": 8,
+    "n_both": 8
+   },
+   {
+    "code": "C29",
+    "n": 15,
+    "n_both": 15
+   },
+   {
+    "code": "C30",
+    "n": 22,
+    "n_both": 22,
+    "med": 35.0,
+    "sum": 1303,
+    "chg": -6.1,
+    "up": 27.3,
+    "down": 63.6
+   },
+   {
+    "code": "C32",
+    "n": 1,
+    "n_both": 1
+   },
+   {
+    "code": "C33",
+    "n": 0,
+    "n_both": 0
+   }
+  ]
+ },
+ "coverage": {
+  "year": "2024",
+  "bok_sales_won": 47028286000000.0,
+  "unlisted_sales_won": 119493875471156.0,
+  "listed_sales_won": 13986722571204.0,
+  "unlisted_n": 146,
+  "listed_n": 45,
+  "unlisted_share": 254.1,
+  "listed_share": 29.7
+ }
+}

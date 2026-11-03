@@ -1,0 +1,20 @@
+{
+ "key": "corp-mgmt-region-income",
+ "name": "지역별 기업경영분석 — 손익계산서(11차 KSIC)",
+ "stat_name": "5.9.1.7. 손익계산서",
+ "stat_code": "503Y002",
+ "cycle": "A",
+ "period": [
+  "2022",
+  "2026"
+ ],
+ "rows_total": 22824,
+ "rows_kept": 22824,
+ "latest": "2024",
+ "unit": "백만원",
+ "areas": [],
+ "fetched": "2026-11-03",
+ "source_url": "https://ecos.bok.or.kr/#/Short/503Y002",
+ "source_note": "한국은행 ECOS 통계표 503Y002",
+ "note": "대구 법인 전체 매출액 — 외감 회사 매출이 차지하는 몫 계산용(2026-11-03)"
+}

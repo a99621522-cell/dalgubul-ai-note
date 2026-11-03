@@ -1,0 +1,20 @@
+{
+ "key": "corp-mgmt-region-growth",
+ "name": "지역별 기업경영분석 — 성장성 지표(11차 KSIC)",
+ "stat_name": "5.9.1.1. 성장성 지표",
+ "stat_code": "503Y005",
+ "cycle": "A",
+ "period": [
+  "2022",
+  "2026"
+ ],
+ "rows_total": 3804,
+ "rows_kept": 3804,
+ "latest": "2024",
+ "unit": "%",
+ "areas": [],
+ "fetched": "2026-11-03",
+ "source_url": "https://ecos.bok.or.kr/#/Short/503Y005",
+ "source_note": "한국은행 ECOS 통계표 503Y005",
+ "note": "대구 법인 합계 비율의 공식 값(2026-11-03 discover). 대구 외감·상장 합계 비율과 나란히"
+}

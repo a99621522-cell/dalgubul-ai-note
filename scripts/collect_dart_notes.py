@@ -596,58 +596,140 @@ def invest_scan(argv: list[str]) -> int:
     return 0
 
 
-FIN_KEYS = [   # (항목, 줄 머리 정규식) — 감사보고서 재무제표 표의 과목 칸
-    ("sales", r"^(Ⅰ\.|I\.|1\.)?\s*(매출액|영업수익|수익\(매출액\)|매 ?출 ?액)\b"),
-    ("op", r"^(Ⅴ\.|V\.|Ⅳ\.|IV\.|Ⅲ\.|III\.|\d\.)?\s*영업(이익|손실|이익\(손실\)|손익)"),
-    ("net", r"^(Ⅸ\.|IX\.|Ⅹ\.|X\.|Ⅷ\.|VIII\.|\d\.)?\s*당기순(이익|손실|이익\(손실\)|손익)"),
-    ("assets", r"^자\s*산\s*총\s*계"),
-    ("liab", r"^부\s*채\s*총\s*계"),
-    ("equity", r"^자\s*본\s*총\s*계"),
-    ("interest", r"^(\d\.|\(\d\)|[가-하]\.)?\s*이자비용"),
-    ("ocf", r"^(Ⅰ\.|I\.|1\.)?\s*영업활동(으로 ?인한 ?현금흐름|현금흐름|으로부터의 ?현금흐름)"),
+ROMAN = r"(?:(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ]+|[IVX]+|\d+)[.)]?|[가-하][.)]|\(\d+\))"
+FIN_KEYS = [   # (항목, 재무제표, 띄어쓰기를 지운 과목 칸 정규식) — 감사보고서 재무제표 표의 첫 칸(2026-11-03 표본 60곳 점검으로 고침)
+    ("sales", "IS", rf"^(?:{ROMAN})?(매출액|매출|영업수익|수익\(매출액\)|매출액\(주석[\d,]*\)|매출\(주석[\d,]*\))(\(주석[\d,\s]*\))?$"),
+    ("op", "IS", rf"^(?:{ROMAN})?영업(이익|손실|손익|이익\(손실\)|손실\(이익\))(\(주석[\d,\s]*\))?$"),
+    ("net", "IS", rf"^(?:{ROMAN})?당기순(이익|손실|손익|이익\(손실\)|손실\(이익\))(\(주석[\d,\s]*\))?$"),
+    ("interest", "IS", rf"^(?:{ROMAN})?이자비용(\(주석[\d,\s]*\))?$"),
+    ("assets", "BS", r"^자산총계$"),
+    ("liab", "BS", r"^부채총계$"),
+    ("equity", "BS", r"^자본총계$"),
+    ("ocf", "CF", rf"^(?:{ROMAN})?영업활동(으로인한|으로부터의|에서의|으로부터)?(순)?현금(흐름|유입|유출|유입\(유출\))(\(주석[\d,\s]*\))?$"),
 ]
+AMOUNT = re.compile(r"\(?-?\d{1,3}(?:,\d{3})+\)?|\(?-?\d{4,}\)?")
 
 
 def nums(cells: list[str]) -> list[int]:
+    """금액 칸만 — 천 단위 쉼표가 맞는 숫자(또는 쉼표 없는 4자리 이상). '26,37' 같은 주석 번호는 뺀다."""
     out = []
     for c in cells:
         c = c.replace(" ", "")
-        m = re.fullmatch(r"\(?-?[\d,]{4,}\)?", c)
-        if m:
+        if AMOUNT.fullmatch(c):
             v = int(re.sub(r"[^\d]", "", c))
             out.append(-v if c.startswith("(") or c.startswith("-") else v)
     return out
 
 
+def stmt_of(text: str) -> str | None:
+    t = re.sub(r"\s+", "", text)
+    if len(t) > 40:
+        return None
+    if "자본변동표" in t or "이익잉여금처분" in t or "결손금처리" in t:
+        return "SCE"
+    if "현금흐름표" in t:
+        return "CF"
+    if "손익계산서" in t:
+        return "IS"
+    if "재무상태표" in t or "대차대조표" in t:
+        return "BS"
+    return None
+
+
 def fin_from_audit(xml: str) -> tuple[dict, dict]:
-    """감사보고서 원문에서 주요 계정의 (당기, 전기) 값과 단위. 표 칸 숫자가 2개면 (당기, 전기), 4개면 (2번째, 4번째), 3개면 (1·2번째 중 큰 값 열 규칙 없음 → 첫째, 마지막)"""
-    unit = 1
-    m = re.search(r"단위\s*[:：]\s*(백만원|천원|원)", re.sub(r"<[^>]+>", " ", xml))
-    if m:
-        unit = {"원": 1, "천원": 1000, "백만원": 1000000}[m.group(1)]
+    """감사보고서 원문에서 주요 계정의 (당기, 전기) 값. 표 앞 제목(또는 표 첫 줄)로 어느 재무제표인지 보고 그 안에서만 찾는다.
+    표 칸 금액이 2개면 (당기, 전기), 4개면 (2번째, 4번째: 소계 열·합계 열), 3개면 (첫째, 셋째)."""
+    UNIT = {"원": 1, "천원": 1000, "백만원": 1000000}
+    UNIT_RE = re.compile(r"단위\s*[:：]?\s*(백만원|천원|원)")
+    unit = 1   # 표 바로 앞 글·표 머리에 적힌 단위를 그때그때 쓴다(2026-11-03 우성파워텍: 문서 첫 '단위'가 재무제표와 달라 매출이 1,000배)
     got, raw = {}, {}
-    for tr in re.findall(r"<TR[^>]*>(.*?)</TR>", xml, re.S | re.I):
-        cells = [clean(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, re.S | re.I)]
-        if not cells or not cells[0]:
+    weak: dict = {}   # 금액 칸이 3개인 줄(정정 보고서의 '수정 전·후·차이' 표 등) — 2·4칸 줄이 없을 때만 쓴다(2026-11-03 금용기계 정정 감사보고서)
+    ctx = None
+    for tok in re.finditer(r"<TABLE.*?</TABLE>|<(?:P|TITLE|SPAN)[^>]*>(.*?)</(?:P|TITLE|SPAN)>", xml, re.S | re.I):
+        if tok.group(0)[:6].upper() != "<TABLE":
+            txt = clean(tok.group(1) or "")
+            st = stmt_of(txt)
+            if st:
+                ctx = st
+            mu = UNIT_RE.search(txt.replace(" ", ""))
+            if mu:
+                unit = UNIT[mu.group(1)]
             continue
-        head = re.sub(r"\s+", " ", cells[0])
-        for key, pat in FIN_KEYS:
-            if key in got or not re.match(pat, head):
+        trs = re.findall(r"<TR[^>]*>(.*?)</TR>", tok.group(0), re.S | re.I)
+        for tr in trs[:3]:   # 표 머리 줄의 '(단위 : 원)'
+            mu = UNIT_RE.search(clean(tr).replace(" ", ""))
+            if mu:
+                unit = UNIT[mu.group(1)]
+                break
+        for tr in trs[:2]:   # 제목이 표 첫 줄에 든 양식
+            st = stmt_of(clean(tr))
+            if st:
+                ctx = st
+                break
+        for tr in trs:
+            cells = [clean(c) for c in re.findall(r"<T[DHE][^>]*>(.*?)</T[DHE]>", tr, re.S | re.I)]
+            if not cells or not cells[0]:
                 continue
-            n = nums(cells[1:])
-            if not n:
-                continue
-            if len(n) >= 4:
-                cur, prev = n[1], n[3]
-            elif len(n) == 3:
-                cur, prev = n[0], n[2]
-            elif len(n) == 2:
-                cur, prev = n
-            else:
-                cur, prev = n[0], None
-            got[key] = (cur * unit, prev * unit if prev is not None else None)
-            raw[key] = " | ".join(cells)[:180]
+            head = re.sub(r"\s+", "", cells[0])
+            for key, st, pat in FIN_KEYS:
+                if key in got or (ctx and ctx != st) or not re.match(pat, head):
+                    continue
+                n = nums(cells[1:])
+                if not n:
+                    continue
+                if len(n) == 3:
+                    if key not in weak:
+                        weak[key] = ((n[0] * unit, n[1] * unit), f"[{ctx}·3칸] " + " | ".join(cells)[:170])
+                    continue
+                if len(n) >= 4:
+                    cur, prev = n[1], n[3]
+                elif len(n) == 2:
+                    cur, prev = n
+                else:
+                    cur, prev = n[0], None
+                got[key] = (cur * unit, prev * unit if prev is not None else None)
+                raw[key] = f"[{ctx}] " + " | ".join(cells)[:170]
+    for key, (v, r) in weak.items():
+        if key not in got:
+            got[key], raw[key] = v, r
+    if len(got) < 6:
+        fin_from_text(xml, got, raw)
     return got, raw
+
+
+TEXT_KEYS = [   # 재무제표가 표가 아니라 글로 실린 감사보고서(2026-11-03 한국에스케이에프씰) — '과목 금액 금액' 꼴
+    ("assets", "BS", r"자\s*산\s*총\s*계"), ("liab", "BS", r"부\s*채\s*총\s*계"), ("equity", "BS", r"자\s*본\s*총\s*계"),
+    ("sales", "IS", r"(?:Ⅰ\.?\s*)?매\s*출\s*액"), ("op", "IS", r"(?:Ⅴ\.?|Ⅳ\.?)?\s*영\s*업\s*(?:이\s*익|손\s*실|손\s*익)(?:\s*\(\s*손\s*실\s*\))?"),
+    ("net", "IS", r"(?:Ⅹ\.?|Ⅸ\.?|Ⅷ\.?)?\s*당\s*기\s*순\s*(?:이\s*익|손\s*실|손\s*익)(?:\s*\(\s*손\s*실\s*\))?"),
+    ("interest", "IS", r"이\s*자\s*비\s*용"), ("ocf", "CF", r"(?:Ⅰ\.?\s*)?영업활동\s*(?:으로\s*인한|으로부터의)?\s*현금\s*흐름"),
+]
+_AMT = r"(\(?-?\d{1,3}(?:,\d{3})+\)?|-)"
+
+
+def fin_from_text(xml: str, got: dict, raw: dict) -> None:
+    text = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", xml)))
+    secs = {}
+    for st, pat in (("BS", r"재\s*무\s*상\s*태\s*표\s*제\s*\d+"), ("IS", r"손\s*익\s*계\s*산\s*서\s*제\s*\d+"), ("CF", r"현\s*금\s*흐\s*름\s*표\s*제\s*\d+")):
+        m = re.search(pat, text)
+        if m:
+            secs[st] = text[m.start(): m.start() + 12000]
+    for key, st, lab in TEXT_KEYS:
+        if key in got or st not in secs:
+            continue
+        sec = secs[st]
+        mu = re.search(r"단위\s*[:：]?\s*(백만원|천원|원)", sec[:400].replace(" ", ""))
+        unit = {"원": 1, "천원": 1000, "백만원": 1000000}[mu.group(1)] if mu else 1
+        m = re.search(lab + r"(?:\s*\(주석[^)]*\))?\s+" + _AMT + r"\s+" + _AMT, sec)
+        if not m:
+            continue
+        def val(x: str) -> int | None:
+            if x == "-":
+                return 0
+            v = int(re.sub(r"[^\d]", "", x))
+            return -v if x.startswith("(") or x.startswith("-") else v
+        a, b = val(m.group(1)), val(m.group(2))
+        got[key] = (a * unit, b * unit if b is not None else None)
+        raw[key] = f"[{st}·글] " + m.group(0)[:160]
 
 
 def audit_scan(argv: list[str]) -> int:

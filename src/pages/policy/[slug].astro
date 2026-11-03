@@ -1,14 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
 import AttachList from '../../components/AttachList.astro';
-import { REPORT_FILES, type ReportFile } from '../../lib/reportFiles';
+import { REPORT_FILES, hwpExt, type ReportFile } from '../../lib/reportFiles';
 /** /policy/<slug>/ — 리포트 자료 상세(리디자인 v3 2026-10-12, 참조 디자인의 간행물 상세: 제목 띠 · 주제 칩 · 첨부 목록 · 문서 미리보기).
  *  내용은 운영자가 올린 파일 그대로, 요약 한 줄은 reportFiles.ts summary. 조회수·담당 전화는 싣지 않는다. */
 export function getStaticPaths() { return REPORT_FILES.map(f => ({ params: { slug: f.slug }, props: { f } })); }
 const { f } = Astro.props as { f: ReportFile };
 const items = [
   ...(f.pdf ? [{ label: `${f.name}.pdf`, href: f.pdf, kind: 'PDF' as const, size: f.pdfSize, pages: f.pages, download: `${f.name}.pdf` }] : []),
-  ...(f.hwpx ? [{ label: `${f.name}.hwpx`, href: f.hwpx, kind: '한글' as const, size: f.hwpxSize, download: `${f.name}.hwpx` }] : []),
+  ...(f.hwpx ? [{ label: `${f.name}.${hwpExt(f.hwpx)}`, href: f.hwpx, kind: '한글' as const, size: f.hwpxSize, download: `${f.name}.${hwpExt(f.hwpx)}` }] : []),
   ...(f.href ? [{ label: `${f.name}.docx`, href: f.href, kind: 'Word' as const, size: f.size, download: `${f.name}.docx` }] : []),
 ];
 const mb = (s?: string) => Number((s || '').replace(/MB$/, '')) || 0;

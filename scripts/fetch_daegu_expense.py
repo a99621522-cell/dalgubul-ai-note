@@ -123,6 +123,7 @@ def main():
     ap.add_argument("--merge", action="store_true", help="(기본) 있는 JSON 에 이어 받는다 — 받은 날은 건너뛰고 실패한 날은 다시")
     ap.add_argument("--fresh", action="store_true", help="있는 JSON 을 버리고 처음부터")
     ap.add_argument("--sleep", type=float, default=1.2)
+    ap.add_argument("--budget", type=int, default=0, help="초 — 이 시간을 넘기면 중간 저장 뒤 종료 코드 3(러너 시간 초과로 커밋 없이 죽는 것을 막는다, 다음 실행이 이어 받음)")
     a = ap.parse_args()
     govs = [g for g in GOVS if not a.gov or g[0] in a.gov.split(",")]
     for key, code, name in govs:
@@ -180,6 +181,10 @@ def main():
                 print(f"  {name} {d} … {i + 1}/{len(days)} 묶음 {len(agg)} 실패 {len(failed)} ({int(time.time() - t0)}s)", flush=True)
             if i % 60 == 59:
                 save_partial()
+            if a.budget and time.time() - t0 > a.budget:
+                save_partial()
+                print(f"[expense] {name}: 시간 예산 {a.budget}s 초과 — 중간 저장 뒤 종료 코드 3(받은 날 {len(days_seen)}, 남은 날 {len(days) - i - 1})", flush=True)
+                sys.exit(3)
             time.sleep(a.sleep)
         def write_out():
             rows_out = [{"p": k[0], "acct": k[1], "dept": k[2], "biz": k[3], "mok": k[4], **v} for k, v in sorted(agg.items())]

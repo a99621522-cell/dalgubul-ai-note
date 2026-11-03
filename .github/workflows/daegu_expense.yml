@@ -42,7 +42,7 @@ jobs:
   fetch:
     needs: plan
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 340   # 스크립트는 290분(--budget 17400)에서 스스로 멈춰 커밋·retry 가 돌게 한다
     strategy:
       max-parallel: 2
       fail-fast: false
@@ -58,7 +58,7 @@ jobs:
         continue-on-error: true
         run: |
           set +e
-          python scripts/fetch_daegu_expense.py --gov ${{ matrix.gov }} --years "${{ github.event.inputs.years || '2021,2022,2023' }}" ${{ github.event.inputs.probe == 'true' && '--probe' || '' }}
+          python scripts/fetch_daegu_expense.py --gov ${{ matrix.gov }} --years "${{ github.event.inputs.years || '2021,2022,2023' }}" --budget 17400 ${{ github.event.inputs.probe == 'true' && '--probe' || '' }}
           rc=$?
           echo "rc=$rc" >> "$GITHUB_OUTPUT"
           exit $rc

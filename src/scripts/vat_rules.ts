@@ -128,11 +128,12 @@ export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacil
   if (!org) return undefined; const norm = (x: string) => String(x ?? '').replace(/[\s()（）·,.\-_/]/g, '').toLowerCase(); const hay = norm(texts.filter(Boolean).join(' ')); if (hay.length < 2) return undefined;
   /* 낱말 사전: 시설 이름·별칭을 괄호·공백·가운뎃점으로 나눈 낱말(2글자 이상)이 몇 시설에 나오는지 — 3곳 이상에 나오는 낱말('달성'·'체육' 등)은 가름에 쓰지 않는다 */
   const tokOf = (nm: string) => String(nm ?? '').split(/[\s()（）·,.\-_/]+/).map(t => t.toLowerCase()).filter(t => t.length >= 2);
+  const STOP = new Set(['운영', '관리', '사업', '시설', '센터', '공단', '본부', '지원', '위탁', '직영', '조리', '이용', '주민', '복지', '체육', '문화', '공원', '회관', '종합', '생활', '지역', '청사', '사무소', '사무실', '행정', '군청', '시청', '구청', '기타', '일반']);   // 가름에 못 쓰는 흔한 낱말
   const freq = new Map<string, number>(); for (const f of org.facilities) { const ts = new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf)); for (const t of ts) freq.set(t, (freq.get(t) ?? 0) + 1); }
   let best: OrgFacility | undefined, bl = 0;
   for (const f of org.facilities) {
     for (const nm of [f.name, ...(f.alias ?? [])]) { const n = norm(nm.replace(/\(.*$/, '')); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
-    for (const t of new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf))) { if ((freq.get(t) ?? 0) >= 3) continue; const n = norm(t); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
+    for (const t of new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf))) { if ((freq.get(t) ?? 0) >= 3 || STOP.has(t)) continue; const n = norm(t); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
   }
   return best;
 }

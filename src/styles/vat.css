@@ -180,3 +180,9 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .vat-qs { margin: var(--s2) 0; border-color: var(--primary); } #ctx-qs { margin: var(--s2) 0; }
 .vat-qs select { min-height: var(--touch); padding: 0 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); font-size: 1rem; max-width: 100%; }
 .vat-status li.wide { grid-column: 1 / -1; } .qs-card { padding: 14px 16px; border: 2px solid var(--primary); border-radius: var(--radius-2); background: var(--bg); } .qs-card .k { font-size: var(--small); color: var(--muted); font-weight: 700; }
+/* 2차 UX(2026-11-03) — 이번 주 할 일·이번 달 끝·지출 없음 */
+.vat-week-wrap { margin-top: var(--s2); } .vat-week { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.vat-week li { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 6px 8px; border: 1px solid var(--line); border-radius: var(--radius); }
+.vat-week li label { display: flex; align-items: center; gap: 8px; flex: 1 1 320px; cursor: pointer; } .vat-week li.done span { text-decoration: line-through; color: var(--muted); } .vat-week li .btn { margin-left: auto; }
+.mb-done .fsum { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px; margin: 8px 0; } .mb-done .fsum span { display: flex; align-items: center; gap: 6px; }
+.nolog-btn { font-size: var(--tiny); padding: 2px 6px; }

@@ -1,12 +1,13 @@
 /** /vat/ 대시보드(공무원 UX 재설계 2026-10-28, docs/design/vat-ux-spec.md §2) — 상태 카드 4개 + 1차 행동 단추 하나 + '지금 살릴 수 있는 세액'(이전 그대로). 서버 없음, 이 브라우저 기록만 */
 import { mountQuickStart } from './vat_org';
-import { $, getOrg, allLedgers, getFilings, nextFiling, handoverDue, ymd, esc, fmt, loadData, openItems, periodInfo, periodKeyOf, monthStr, inFiling } from './vat_rules';
+import { $, getOrg, allLedgers, getFilings, nextFiling, handoverDue, ymd, esc, fmt, loadData, openItems, periodInfo, periodKeyOf, monthStr, inFiling, setupGaps, getNolog, isNolog, weekKey } from './vat_rules';
 const D = loadData(); const now = new Date(); const f = nextFiling(now); const org = getOrg();
 const ledgers = allLedgers(); const rows = Object.values(ledgers).flat(); const oi = openItems(rows);
 /* 기록 없는 시설·달 — 다음 신고 기간의 달 가운데 지난 달까지 × 신고 대상 시설 */
 const curKey = periodKeyOf(monthStr(new Date(now.getFullYear(), now.getMonth() - 1, 1))); const P = periodInfo(curKey);
-const facs = org && D ? org.facilities.filter(x => inFiling(D, x)) : []; const lastMonth = monthStr(new Date(now.getFullYear(), now.getMonth() - 1, 1));
-const months = P.own.filter(m => m <= lastMonth); const empty: string[] = []; for (const fc of facs) for (const m of months) if (!ledgers[`${fc.id}:${m}`]?.length) empty.push(`${fc.name} ${m}`);
+const facs = org && D ? org.facilities.filter(x => inFiling(D, x) && x.track !== false) : []; const lastMonth = monthStr(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+const nolog = getNolog(); const months = P.own.filter(m => m <= lastMonth); const empty: string[] = []; for (const fc of facs) for (const m of months) if (!ledgers[`${fc.id}:${m}`]?.length && !isNolog(fc.id, m, nolog)) empty.push(`${fc.name} ${m}`);
+const gaps = setupGaps(org);
 const fl = Object.values(getFilings()).sort((a, b) => b.period.localeCompare(a.period))[0]; const nd = fl ? fl.groups.reduce((s, g) => s + Math.max(0, g.nondeduct) + Math.max(0, g.admin_nondeduct ?? 0), 0) : 0;
 
 const st = $('vat-status');
@@ -21,10 +22,23 @@ if (st) {
   if (!org && D) mountQuickStart($('d-qs-wrap'), D, () => location.reload(), 'd-qs');
   /* 1차 행동 단추 하나: 설정 없음 → 설정 / 처리할 것 → 처리 / 기한 30일 안 → 신고 준비 / 그 밖 → 이번 달 기록 */
   const cta = $<HTMLAnchorElement>('vat-cta')!, why = $('vat-cta-why')!;
+  /* 이번 주 할 일(2차 UX 마찰 1, 2026-11-03): 상태에서 자동으로 고른 5개까지 — 설정 빈 곳 → 처음이면 지난 5년 → 이번 달 붙여넣기 → 빨강 → 노랑·근거 없음 → 신고 D-30. 체크는 vat-week-v1 에 주 단위로 */
+  const first = org && !Object.keys(getFilings()).length && !rows.length;
+  const todo: { id: string; text: string; href: string; why: string }[] = [];
+  if (org && gaps && gaps.total) todo.push({ id: 'setup', text: `기관 설정 마저 채우기 — ${[gaps.pending ? `운영 방식 확인 ${gaps.pending}곳` : '', gaps.noreg ? `등록번호 없음 ${gaps.noreg}${org.unit === 'site' ? '곳' : ''}` : '', gaps.dept ? '담당 부서' : ''].filter(Boolean).join(' · ')}`, href: `/vat/setup/?step=${gaps.pending || gaps.noreg ? 3 : 1}&filter=${gaps.noreg ? 'noreg' : 'pending'}`, why: '설정이 비어 있으면 세금계산서가 모두 "받는 사람 모름(노랑)"으로 떨어집니다 — 등록번호부터.' });
+  if (first) todo.push({ id: 'review', text: '처음 맡았다면 지난 5년 점검 — 빠진 매입세액은 경정청구(기한 5년)', href: '/vat/review/', why: '전임자 기록이 없을 때 가장 큰 금액은 앞이 아니라 지난 5년에 있습니다.' });
+  if (empty.length) todo.push({ id: 'paste', text: `${lastMonth} 지출 붙여넣기 — 기록 없는 시설·달 ${empty.length}`, href: '/vat/monthly/?open=1', why: '홈택스 매입 목록을 붙여넣고 어느 시설 지출인지만 고릅니다. 지출이 없던 시설·달은 "지출 없음"으로 표시합니다.' });
+  if (oi.red.length) todo.push({ id: 'red', text: `다른 명의 세금계산서 ${oi.red.length}건 ${fmt(oi.redTax)}원 — 수정세금계산서 요청${oi.expired ? ` (기한 지남 ${oi.expired})` : ''}`, href: '/vat/monthly/', why: '수정세금계산서 기한 안에 공급자에게 요청해야 그 세액이 살아납니다.' });
+  if (oi.yellow.length + oi.noEvid.length) todo.push({ id: 'yellow', text: `확인 필요 ${oi.yellow.length}건 · 근거 없는 전용 ${oi.noEvid.length}건 — 받는 사람·용도·근거 확인`, href: '/vat/monthly/', why: '확인 필요·근거 없음을 정리하면 신고 준비가 짧아집니다.' });
+  if (org && f.days <= 30) todo.push({ id: 'file', text: `${f.name.replace(/\(.*\)/, '').trim()} 준비 — D-${f.days}`, href: '/vat/prepare/', why: `${ymd(f.due)}까지 · 기록을 신고서 칸으로 옮깁니다.` });
+  const week = todo.slice(0, 5); const wk = weekKey(now); let done: Record<string, true> = {}; try { done = JSON.parse(localStorage.getItem('vat-week-v1') || '{}'); } catch { /* */ }
+  const wrap = $('vat-week-wrap'), ul = $('vat-week');
+  if (wrap && ul && org) { wrap.hidden = false; $('vat-week-note')!.textContent = week.length ? `${wk} 주 · ${week.filter(t => done[wk + ':' + t.id]).length}/${week.length} 끝` : '';
+    ul.innerHTML = week.length ? week.map(t => `<li class="${done[wk + ':' + t.id] ? 'done' : ''}"><label><input type="checkbox" data-week="${t.id}" ${done[wk + ':' + t.id] ? 'checked' : ''} /> <span>${esc(t.text)}</span></label> <a class="btn secondary" href="${t.href}">${t.id === 'setup' ? '채우기' : t.id === 'review' ? '점검' : t.id === 'paste' ? '붙여넣기' : t.id === 'file' ? '준비' : '처리'} →</a></li>`).join('') : `<li class="done"><span>이번 주 할 일 없음 — 다음 신고 ${esc(f.name)} D-${f.days}</span></li>`;
+    ul.querySelectorAll<HTMLInputElement>('[data-week]').forEach(c => c.addEventListener('change', () => { const k = wk + ':' + c.dataset.week; if (c.checked) done[k] = true; else delete done[k]; try { localStorage.setItem('vat-week-v1', JSON.stringify(Object.fromEntries(Object.entries(done).filter(([kk]) => kk.startsWith(wk + ':'))))); } catch { /* */ } c.closest('li')!.classList.toggle('done', c.checked); $('vat-week-note')!.textContent = `${wk} 주 · ${week.filter(t => done[wk + ':' + t.id]).length}/${week.length} 끝`; })); }
+  const firstOpen = week.find(t => !done[wk + ':' + t.id]);
   if (!org) { cta.href = '/vat/setup/'; cta.textContent = '기관 설정 시작'; why.textContent = '5문항 · 예시(달성군)와 세입예산서에서 시설을 불러올 수 있습니다.'; }
-  else if (oi.red.length) { cta.href = '/vat/monthly/'; cta.textContent = `다른 명의 ${oi.red.length}건 처리하기`; why.textContent = '수정세금계산서 기한 안에 공급자에게 요청해야 그 세액이 살아납니다.'; }
-  else if (f.days <= 30) { cta.href = '/vat/prepare/'; cta.textContent = `${f.name.replace(/\(.*\)/, '').trim()} 준비`; why.textContent = `${ymd(f.due)}까지 · 기록을 신고서 칸으로 옮깁니다.`; }
-  else if (empty.length) { cta.href = '/vat/monthly/?open=1'; cta.textContent = '이번 달 지출 기록'; why.textContent = '홈택스 매입 목록을 붙여넣고 어느 시설 지출인지만 고릅니다.'; }
+  else if (firstOpen) { cta.href = firstOpen.href; cta.textContent = firstOpen.id === 'setup' ? '기관 설정 마저 채우기' : firstOpen.id === 'review' ? '지난 5년 점검' : firstOpen.id === 'paste' ? '이번 달 지출 기록' : firstOpen.id === 'red' ? `다른 명의 ${oi.red.length}건 처리하기` : firstOpen.id === 'yellow' ? '확인 필요 정리' : `${f.name.replace(/\(.*\)/, '').trim()} 준비`; why.textContent = firstOpen.why; }
   else { cta.href = '/vat/monthly/'; cta.textContent = '지출 기록 보기'; why.textContent = oi.total ? '확인 필요·근거 없음을 정리하면 신고 준비가 짧아집니다.' : '이번 기간 기록이 다 있습니다.'; }
 }
 const dd = $('dday');

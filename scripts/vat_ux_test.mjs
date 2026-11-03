@@ -202,7 +202,7 @@ ok('W7 출처 ? 3개', await pg.locator('#rv-form button.help.src').count() === 
 const rv = ['작성일자\t공급자등록번호\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호']; for (let i = 0; i < 30; i++) rv.push(`2024-0${(i % 6) + 1}-1${i % 9}\t111-11-1111${i % 9}\t업체${i}\t체육관 전기\t${(500000 + i * 1000).toLocaleString()}\t${(50000 + i * 100).toLocaleString()}\t505-83-00001`);
 await pg.fill('#rv-a', rv.join('\n')); await pg.click('#rv-form button[type=submit]'); await pg.waitForTimeout(400); await pg.click('#rv-build'); await pg.waitForTimeout(600);
 ok('W7 신고 값 표 + 공급자별 귀속 표', await pg.locator('#rv-filed').count() === 1 && (await pg.locator('#rv-sup tbody tr[data-sk]').count()) >= 9, String(await pg.locator('#rv-sup tbody tr[data-sk]').count()));
-const [dl] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zp = path.join(os.tmpdir(), 'vat-rv.zip'); await dl.saveAs(zp); const list = execSync(`unzip -Z1 "${zp}"`).toString().trim().split('\n'); ok('W7 붙임 zip 6파일', list.length === 6, list.join('|'));
+const [dl] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zp = path.join(os.tmpdir(), 'vat-rv.zip'); await dl.saveAs(zp); const list = execSync(`unzip -Z1 "${zp}"`).toString().trim().split('\n'); ok('W7 붙임 zip 6파일 이상(근거·질의서 포함)', list.length >= 7, list.join('|'));
 // W8 handover
 await pg.goto(base + '/vat/handover/'); await pg.waitForTimeout(800); const doc = T(await pg.locator('#h-doc').textContent());
 const todoLines = (doc.match(/다음 신고까지 할 일/) ? doc.split('4. 다음 신고까지 할 일')[1]?.split('5. 파일')[0] ?? '' : '').split(' - ').length - 1; ok('W8 README 다음 신고까지 할 일 ≥ 3줄', /다음 신고까지 할 일/.test(doc) && todoLines >= 3, String(todoLines));
@@ -295,7 +295,10 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('R7 가산세 빼면 281,500(= 298,000 − 공급가액 3,300,000 × 0.5%)', T(await pg.locator('#rv-net').textContent()).startsWith('281,500'), T(await pg.locator('#rv-net').textContent()));
   await pg.selectOption('[data-filed="2025-1"]', 'excluded'); await pg.waitForTimeout(400); ok('R7 \'함 — 이 목록은 안 넣었음\' → 2025-1 전액 118,000, 합계 318,000', T(await pg.locator('#rv-total').textContent()).startsWith('318,000')); await pg.selectOption('[data-filed="2025-1"]', 'filed'); await pg.waitForTimeout(400); await pg.fill('[data-fin="deduct:2025-1"]', '20000'); await pg.press('[data-fin="deduct:2025-1"]', 'Tab'); await pg.waitForTimeout(400);
   const [dz] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zr = path.join(os.tmpdir(), 'vat-rv2.zip'); await dz.saveAs(zr); const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); const det = execSync(`unzip -p "${zr}" 02_건별_명세.csv`).toString();
-  ok('R5 zip 6파일 · 건별 명세에 본청·행정 공통 18,000', zl.length === 6 && /본청·행정 공통/.test(det) && /18000/.test(det), zl.join('|'));
+  const basisTxt = T(await pg.locator('#rv-basis').textContent()); const basisN = execSync(`unzip -p "${zr}" 06_근거_조문_유권해석_판례.txt`).toString();
+  ok('R8 근거 절: 경정청구 조문(국세기본법 제45조의2·영 제74조) · 체육시설 기준·유권해석(부가가치세제과-186) · 본청·행정 공통(2017두55329)·질의서 초안 · 건별 조문', /제45조의2/.test(basisTxt) && /제74조/.test(basisTxt) && /체육시설/.test(basisTxt) && /186/.test(basisTxt) && /본청·행정 공통 안분/.test(basisTxt) && /2017두55329/.test(basisTxt) && (await pg.locator('#rv-basis details.inquiry[data-inq="admin_common"]').count()) === 1 && /건별 판정에 걸린 조문/.test(basisTxt), basisTxt.slice(0, 300));
+  ok('R8 건별 표 근거 칸 · 사유 초안에 근거 · zip 8파일(06 근거 + 07 질의서)', /법 제38조/.test(T(await pg.locator('#rv-sup .rv-rows').first().textContent())) && /\[근거 법령·유권해석\]/.test(await pg.locator('#rv-reason').inputValue()) && zl.length === 8 && /체육시설/.test(basisN) && zl.some(z => /07_국세청_질의서_초안_1_admin_common/.test(z)), zl.join('|'));
+  ok('R5 zip 건별 명세에 본청·행정 공통 18,000', /본청·행정 공통/.test(det) && /18000/.test(det), zl.join('|'));
   await pg.reload(); await pg.waitForTimeout(700); ok('R6 새로 고침 뒤 자료·귀속·신고 값 유지(5건, 298,000)', /5건/.test(T(await pg.locator('#rv-stat').textContent())) && T(await pg.locator('#rv-total').textContent()).startsWith('298,000'));
   await pg.evaluate(() => localStorage.removeItem('vat-review-v1'));
 }

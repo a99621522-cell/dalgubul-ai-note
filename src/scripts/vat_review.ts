@@ -4,6 +4,8 @@
  *  판정(judge)해 '있어야 할 공제 세액'을 과세기간별로 셈한 뒤 신고서의 공제 매입세액(18)과 견준다. 차이가 경정청구 후보(국세기본법 제45조의2, 법정신고기한 뒤 5년).
  *  입력은 이 브라우저(localStorage `vat-review-v1`)에 남고 JSON 으로 내려받아 이어 할 수 있다. 서버 없음, 새 규칙 없음(판정은 judge 그대로). 판정은 참고이며 기관의 판단이 아니다. */
 import { mountQuickStart } from './vat_org';
+import { mountDrop } from './vat_files';
+import { mountPublic } from './vat_review_pub';
 import { $, esc, num, fmt, pct, loadData, getOrg, parseTable, parseDateCell, guessColumns, findHeader, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, ymd, getFilings, zipStore, downloadBlob, srcBtn, helpWire, judge, matchMap, matchFacilityName, facilityStatus, facilityRule, lawLink, lawText, rulingsHtml, inquiryHtml, inquiryText, wireInquiry, guessWhat, WHAT_Q, LABEL, toast, vatConfirm, readJsonFile, type Data, type Org, type OrgFacility, type Verdict, type Basis, type Ruling } from './vat_rules';
 
 type Src = 'inv' | 'card';
@@ -49,13 +51,19 @@ function init(D: Data) {
   const filedOf = (k: string): Filed => st.filed[k] ?? (st.filed[k] = { filed: 'unknown', deduct: null, nondeduct: null, er: savedRatio(k) === null ? null : Math.round(savedRatio(k)! * 10000) / 100 });
 
   /* ── ① 붙여넣기 → 열 읽기 → 목록에 더하기 ── */
-  $<HTMLFormElement>('rv-form')!.addEventListener('submit', e => {
-    e.preventDefault(); gridA = withHeader(parseTable($<HTMLTextAreaElement>('rv-a')!.value));
-    if (gridA.length < 2) { $('rv-cols')!.innerHTML = '<p class="callout info">받은 매입 목록을 머리글 줄부터(또는 시트 전체를) 붙여넣으세요.</p>'; return; }
+  const showCols = (grid: string[][]) => {
+    gridA = withHeader(grid);
+    if (gridA.length < 2) { $('rv-cols')!.innerHTML = '<p class="callout info">받은 매입 목록을 머리글 줄부터(또는 시트 전체를) 붙여넣거나 파일로 놓으세요.</p>'; return; }
     const mapA = guessColumns(gridA[0]); const rows = toRows(gridA, mapA, srcOf());
     $('rv-cols')!.innerHTML = colBox(gridA, mapA) + `<div class="actions"><button type="button" class="btn" id="rv-build">목록에 더하기(${rows.length}행)</button><span class="note">같은 날짜·공급자·금액·품목이 이미 있으면 한 번만 둡니다.</span></div>`;
     $('rv-build')!.addEventListener('click', () => { const mapA2 = readMap($('rv-colA')!); const add = toRows(gridA, mapA2, srcOf()); const have = new Set(st.rows.map(rowKey)); let n = 0; for (const r of add) { const k = rowKey(r); if (have.has(k)) continue; have.add(k); st.rows.push(r); n++; } save(); $('rv-cols')!.innerHTML = ''; $<HTMLTextAreaElement>('rv-a')!.value = ''; toast(`${n}행을 더했습니다(겹침 ${add.length - n}행 제외)`); build(); });
-  });
+  };
+  $<HTMLFormElement>('rv-form')!.addEventListener('submit', e => { e.preventDefault(); showCols(parseTable($<HTMLTextAreaElement>('rv-a')!.value)); });
+  /* 자료 넣는 방법 탭(운영자 2026-11-03 '홈택스 붙여넣는 것은 공무원이 안 할 것 같은데'): 공개 지출 자료 / 파일 놓기 / 붙여넣기 */
+  { const tabs = document.querySelectorAll<HTMLButtonElement>('[data-rvsrc]'); let cur = 'drop'; try { cur = localStorage.getItem('vat-rv-src') || 'drop'; } catch { /* */ } let pubMounted = false;
+    const show = (k: string) => { tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.rvsrc === k))); $('rv-pub')!.hidden = k !== 'pub'; $('rv-drop')!.hidden = k !== 'drop'; $('rv-form')!.hidden = k !== 'paste'; try { localStorage.setItem('vat-rv-src', k); } catch { /* */ } if (k === 'pub' && !pubMounted) { pubMounted = true; void mountPublic($('rv-pub')!, D, org, { er: pk => filedOf(pk).er, onLearn: () => build() }); } };
+    tabs.forEach(b => b.addEventListener('click', () => show(b.dataset.rvsrc!))); show(cur);
+    const drop = $('rv-drop'); if (drop) { drop.insertAdjacentHTML('beforeend', `<div id="rv-drop-src" class="note">무엇을 놓나요: <label><input type="radio" name="rv-dsrc" value="inv" checked /> 전자세금계산서 매입 목록·e호조 지출 내역</label> <label><input type="radio" name="rv-dsrc" value="card" /> 사업용 신용카드 매입 내역</label></div><div id="rv-drop-zone"></div>`); mountDrop($('rv-drop-zone')!, t => { const card = document.querySelector<HTMLInputElement>('input[name=rv-dsrc]:checked')?.value === 'card'; $<HTMLInputElement>('rv-src-card')!.checked = card; $<HTMLInputElement>('rv-src-inv')!.checked = !card; showCols(t.rows); $('rv-cols')?.scrollIntoView({ block: 'nearest' }); }, '홈택스·e호조 엑셀 파일을 여기에 놓거나 고르기'); } }
   $('rv-json-dl')?.addEventListener('click', () => downloadText(`지난신고점검-${org?.org ?? '기관'}-${today}.json`, JSON.stringify({ ...st, saved: new Date().toISOString() }, null, 1), 'application/json'));
   $<HTMLInputElement>('rv-json-up')?.addEventListener('change', async e => { const f = (e.target as HTMLInputElement).files?.[0]; if (!f) return; try { const j = await readJsonFile(f) as State; if (j?.v !== 1 || !Array.isArray(j.rows)) throw new Error('형식'); st.rows = j.rows; st.filed = j.filed ?? {}; st.sup = j.sup ?? {}; st.reg = j.reg ?? st.reg; regIn.value = st.reg; save(); toast(`불러왔습니다 — ${st.rows.length}행`); build(); } catch { toast('이 화면에서 내려받은 JSON 이 아닙니다'); } });
   $('rv-clear')?.addEventListener('click', async () => { if (!st.rows.length || !(await vatConfirm(`붙여넣은 매입 ${st.rows.length}행과 귀속·신고 값을 모두 지울까요? (JSON 으로 먼저 내려받아 두면 되살릴 수 있습니다)`, '지우기'))) return; const bak = JSON.stringify(st); st.rows = []; st.filed = {}; st.sup = {}; save(); build(); toast('모두 지웠습니다', { label: '지난 신고 점검 자료', fn: () => { Object.assign(st, JSON.parse(bak)); save(); build(); } }); });

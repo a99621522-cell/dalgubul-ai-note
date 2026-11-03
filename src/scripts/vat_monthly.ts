@@ -1,6 +1,7 @@
 /** /vat/monthly/ 시설 지출 기록 → 매입 인계표(수탁기관·시설 부서). 판정은 vat_rules.judge(공용), 질문은 현장 말. localStorage 저장, 서버 없음. */
 import { mountQuickStart } from './vat_org';
 import { srcBtn, helpWire, nextFiling, matchFacilityName, getNolog, setNolog, isNolog, $, esc, num, fmt, loadData, judge, toInput, fixDue, FEE_NAME, payeeQ, runName, STATUS_LABEL_SHORT, parseTable, parseDateCell, guessColumns, findHeader, COL_GUESS, guessWhat, EVID_Q, matchMap, learnMap, type Evid, getOrg, setOrg, getLedger, setLedger, readJsonFile, downloadText, toCsv, facilityStatus, STATUS_WORD, RUN_NAME, PROOF_Q, PAYEE_Q, USE_Q, WHAT_Q, ASSET_WHAT, SIGNAL, LABEL, lawLink, lawText, uniq, uid, ymd, monthStr, periodOf, nextFiling, handoverDue, toast, vatConfirm, gridKeys, helpWire, scrollTo, type Data, type Org, type OrgFacility, type LedgerRow, type ProofQ, type PayeeQ, type UseQ, type Out, type Verdict } from './vat_rules';
+import { mountDrop } from './vat_files';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
@@ -82,11 +83,11 @@ function init(D: Data) {
   let grid: string[][] = [], hasHeader = false, map: Record<string, number> = {}; let mbView: 'pending' | 'auto' | 'all' | 'asset' = 'pending';
   type Item = { date: string; rawDate: string; desc: string; amt: number; tax: number; payee: PayeeQ; sup: string; sreg: string; what: string; asset: boolean; use: UseQ; evid: Evid; fid: string; auto: boolean; named?: boolean; biz: string; dept: string; on: boolean; flags: string[]; v: Verdict; title: string };
   let items: Item[] = [];
-  mbForm.addEventListener('submit', e => {
-    e.preventDefault(); grid = parseTable($<HTMLTextAreaElement>('mb-text')!.value); $('mb-map')!.innerHTML = ''; if (!grid.length) { $('mb-preview')!.innerHTML = '<p class="callout info" role="status">붙여넣은 글자가 없습니다 — 홈택스 목록을 머리글 줄부터 복사해 위 칸에 붙여넣으세요.</p>'; return; }
+  const takeGrid = (g: string[][]) => { grid = g; $('mb-map')!.innerHTML = ''; if (!grid.length) { $('mb-preview')!.innerHTML = '<p class="callout info" role="status">붙여넣은 글자가 없습니다 — 홈택스 목록을 머리글 줄부터 복사해 위 칸에 붙여넣거나 엑셀 파일을 놓으세요.</p>'; return; }
     const fh = findHeader(grid); hasHeader = fh.i >= 0; if (hasHeader) { grid = [fh.header, ...grid.slice(fh.i + 1)]; map = fh.map; } else map = {}; mbView = 'pending';   // 제목 줄(홈택스 1~3행)은 버리고 머리글 줄부터
-    buildPreview();
-  });
+    buildPreview(); };
+  mbForm.addEventListener('submit', e => { e.preventDefault(); takeGrid(parseTable($<HTMLTextAreaElement>('mb-text')!.value)); });
+  { const d = $('mb-drop'); if (d) mountDrop(d, t => { if (!fac) { toast('먼저 시설을 고르세요'); return; } takeGrid(t.rows); $('mb-preview')?.scrollIntoView({ block: 'nearest' }); }, '홈택스·카드사·e호조 엑셀 파일을 여기에 놓거나 고르기'); }
   /** 행 하나를 넣을 때와 똑같이 판정(미리보기용, 저장 안 함) */
   const judgeItem = (it: Item, proof: string, vatSep: boolean) => { const rf = org!.facilities.find(f => f.id === it.fid); if (!rf) return { v: 'check' as Verdict, title: '시설 없음' }; const q = { proof: proof as ProofQ, payee: it.payee, vat_sep: vatSep, use: it.use, what: it.what, asset: ASSET_WHAT.has(it.what) && it.asset, late: false }; const m = toInput(D, org!, rf, q); const o: Out = m.override ?? judge(D, m.input); return { v: o.v, title: o.title }; };
   const vcell = (it: Item) => `<span class="sig ${it.v}" aria-hidden="true"></span><span class="sr-only">${VSHAPE[it.v]}</span> ${LABEL[it.v]}${it.v === 'no' || it.v === 'check' ? `<br><span class="note">${esc(it.title)}</span>` : ''}`;

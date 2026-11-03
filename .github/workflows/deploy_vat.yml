@@ -44,6 +44,7 @@ jobs:
           cp -r dist/fonts out/fonts
           cp dist/favicon.svg out/ 2>/dev/null || true
           for f in vat-revenue.json typeahead.json; do [ -f "dist/$f" ] && cp "dist/$f" out/; done
+          [ -d dist/vat-expense ] && cp -r dist/vat-expense out/vat-expense
           printf '/ /vat/ 302\n' > out/_redirects
           printf '<!doctype html><html lang="ko"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/vat/"><title>지자체 부가세 절감 점검기</title><p><a href="/vat/">지자체 부가세 절감 점검기로 가기</a></p></html>\n' > out/404.html
           echo "파일 $(find out -type f | wc -l)개, $(du -sh out | cut -f1)"

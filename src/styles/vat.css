@@ -203,3 +203,17 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 #rv-sup .rv-rows td:nth-child(2) { min-width: 12em; white-space: normal; }
 #rv-sup .rv-rows td:nth-child(10) { min-width: 18em; max-width: 26em; white-space: normal; font-size: var(--small); }
 #rv-sup .rv-rows td:nth-child(10) a { white-space: nowrap; }
+/* 파일 놓기(2026-11-03 '붙여넣기 대신 파일 놓기') */
+.vat-drop { border: 2px dashed var(--line-strong); border-radius: var(--radius-2, 8px); padding: 14px 16px; background: var(--color-surface-2, var(--bg-soft, transparent)); margin: var(--s2) 0; }
+.vat-drop.over { border-color: var(--color-link, var(--accent)); background: var(--band, #eef3fb); }
+.vat-drop-in { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
+.vat-drop-in strong::before { content: '⬇ '; }
+.vat-drop-msg:empty { display: none; }
+.rv-src-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--s2) 0 var(--s1); }
+.rv-src-tabs button[aria-selected="true"] { background: var(--color-link, var(--accent)); color: #fff; border-color: transparent; }
+#rv-pub table td.note { max-width: 22em; white-space: normal; }
+#rv-pub select { max-width: 12em; font-size: var(--small); }
+#pub-biz td:nth-child(2) { min-width: 6em; white-space: normal; }
+#pub-biz th[scope="row"] { min-width: 14em; white-space: normal; }
+#pub-biz td:last-child { min-width: 18em; max-width: 28em; white-space: normal; }
+#pub-biz th:nth-child(6) { white-space: nowrap; }

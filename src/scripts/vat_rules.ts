@@ -274,17 +274,29 @@ export function convertCredit(tax: number, kind: 'building' | 'other', acquired:
 export const deemedRent = (deposit: number, days: number, rate: number, year: number) => Math.floor(deposit * days * rate / ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 366 : 365));
 
 /* ---------- v2 3단계: 표 붙여넣기(엑셀·홈택스·카드 명세) · zip(라이브러리 없음) ---------- */
-/** TSV/CSV 글자 → 행렬. 탭이 있으면 탭, 없으면 쉼표(따옴표 처리) */
+/** TSV/CSV 글자 → 행렬. 앞 5줄 안에 탭이 있으면 탭, 없으면 쉼표. 따옴표로 싼 칸은 줄바꿈도 품는다 — 홈택스 사업용신용카드 엑셀의 머리글 '가맹점(줄바꿈)사업자번호'·'공제여부(줄바꿈)결정'을 엑셀에서 복사하면 "…" 로 싸여 온다(2026-11-03 실제 배치로 시험). 빈 줄은 뺀다 */
 export function parseTable(text: string): string[][] {
-  const t = text.replace(/\r\n?/g, '\n').replace(/^﻿/, ''); const lines = t.split('\n').filter(l => l.trim());
-  if (!lines.length) return [];
-  if (lines[0].includes('\t')) return lines.map(l => l.split('\t').map(c => c.trim()));
-  return lines.map(l => { const out: string[] = []; let cur = '', q = false; for (let i = 0; i < l.length; i++) { const ch = l[i]; if (q) { if (ch === '"') { if (l[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; } else if (ch === '"') q = true; else if (ch === ',') { out.push(cur.trim()); cur = ''; } else cur += ch; } out.push(cur.trim()); return out; });
+  const t = text.replace(/\r\n?/g, '\n').replace(/^\uFEFF/, ''); if (!t.trim()) return [];
+  const delim = t.split('\n').slice(0, 5).some(l => l.includes('\t')) ? '\t' : ',';
+  const rows: string[][] = []; let row: string[] = [], cur = '', q = false;
+  for (let i = 0; i < t.length; i++) { const ch = t[i];
+    if (q) { if (ch === '"') { if (t[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; }
+    else if (ch === '"' && cur === '') q = true;
+    else if (ch === delim) { row.push(cur.trim()); cur = ''; }
+    else if (ch === '\n') { row.push(cur.trim()); if (row.some(c => c)) rows.push(row); row = []; cur = ''; }
+    else cur += ch; }
+  row.push(cur.trim()); if (row.some(c => c)) rows.push(row);
+  return rows;
 }
+/** 날짜 칸 → 'YYYY-MM-DD'. 2026-10-01·2026.10.01·20261001·'20261001.0' 과 엑셀 날짜 일련번호(46023 = 2026-01-02, xls 원값)도 읽는다. 못 읽으면 '' */
+export function parseDateCell(v: string): string { const s = (v ?? '').trim(); const m = s.match(/(\d{4})[.\-/]?(\d{2})[.\-/]?(\d{2})/); if (m) return `${m[1]}-${m[2]}-${m[3]}`; const n = s.match(/^(\d{5})(?:\.0+)?$/); if (n) { const d = new Date(Date.UTC(1899, 11, 30) + Number(n[1]) * 86400000); return d.toISOString().slice(0, 10); } return ''; }
 /** 머리글 낱말로 열 짐작(홈택스 전자세금계산서 목록·카드사 이용내역·엑셀 장부 공통) */
-export const COL_GUESS: { key: string; name: string; re: RegExp }[] = [
+/** 머리글 낱말로 열 짐작(홈택스 전자세금계산서 목록·사업용신용카드 매입내역·카드사 이용내역·엑셀 장부 공통). `pri` 가 있으면 그 낱말이 든 열을 먼저 찾고, 없을 때 `re` 로 찾는다 — 홈택스 매입 목록은 '비고'(19열)가 '품목명'(22열)보다 앞이라 품목이 비고로 잡히던 것(2026-11-03 실제 홈택스 엑셀 배치로 시험) */
+export const COL_GUESS: { key: string; name: string; re: RegExp; pri?: RegExp }[] = [
   { key: 'date', name: '날짜', re: /작성일|거래일|발급일|승인일|이용일|일자|날짜|date/i },
-  { key: 'desc', name: '내용(품목)', re: /품목|내용|적요|품명|비고|메모|사용처/ },
+  { key: 'desc', name: '내용(품목)', re: /품목|내용|적요|품명|비고|메모|사용처/, pri: /품목명|품명|^내용$|적요/ },
+  { key: 'kind', name: '분류(세금계산서·계산서)', re: /전자세금계산서분류|^분류$|계산서분류/ },   // 홈택스 목록의 '계산서'(면세) 행은 매입세액이 없다
+  { key: 'deduct', name: '공제여부(홈택스 카드)', re: /공제여부|부가세공제|공제구분/ },   // 사업용신용카드 매입내역의 '공제여부 결정'(공제/불공제) — 간이·면세 공급자는 당연불공제
   { key: 'payee_reg', name: '공급받는자 등록번호', re: /공급받는자.*등록번호|공급받는자등록|매입자.*등록번호/ },
   { key: 'supplier_reg', name: '공급자 등록번호', re: /^(?!.*공급받는자)(?!.*매입자).*(공급자.*등록번호|공급자등록|사업자등록번호|사업자번호|등록번호)/ },   // 등록번호 열은 상호보다 먼저 — '공급자등록번호' 가 상호로 잡히지 않게(2026-10-27 경정청구 집계 비교 오류)
   { key: 'supplier', name: '공급자(상호·가맹점)', re: /^(?!.*번호)(?!.*등록)(?!.*대표자)(?!.*공급받는자).*(공급자상호|공급자|상호|가맹점|거래처|판매자|업체)/ },   // 홈택스 목록의 '공급자대표자명'·'공급받는자상호'는 뺌
@@ -293,7 +305,19 @@ export const COL_GUESS: { key: string; name: string; re: RegExp }[] = [
   { key: 'amt', name: '공급가액', re: /공급가액|공급가|과세금액|순금액/ },
   { key: 'tax', name: '세액(부가세)', re: /세액|부가세|부가가치세|vat/i },
   { key: 'total', name: '합계(부가세 포함)', re: /합계금액|합계|총액|총금액|승인금액|결제금액|이용금액/ }];
-export function guessColumns(header: string[]) { const m: Record<string, number> = {}; for (const g of COL_GUESS) { const i = header.findIndex(h => g.re.test(h.replace(/\s/g, ''))); if (i >= 0 && !Object.values(m).includes(i)) m[g.key] = i; } return m; }
+export function guessColumns(header: string[]) { const m: Record<string, number> = {}; const taken = () => Object.values(m); for (const g of COL_GUESS) { let i = g.pri ? header.findIndex((h, j) => !taken().includes(j) && g.pri!.test(h.replace(/\s/g, ''))) : -1; if (i < 0) i = header.findIndex((h, j) => !taken().includes(j) && g.re.test(h.replace(/\s/g, ''))); if (i >= 0) m[g.key] = i; } return m; }
+/** 붙여넣은 행렬에서 머리글 줄을 찾는다 — 홈택스 엑셀은 1~3행이 제목·조회기간이고 4행이 머리글(시트 전체를 복사해 붙여넣는 담당자가 많다). 앞 20행 가운데 열 짐작이 가장 많이 맞는 줄(2개 이상)을 머리글로 보고, 그 윗줄이 '공급자'·'공급받는자' 같은 묶음 머리(2단 머리글, 병합 칸은 앞 값이 이어짐)면 합쳐 '공급자등록번호'·'공급받는자상호'처럼 만든다. 머리글이 없으면 i = -1 */
+export function findHeader(grid: string[][]): { i: number; header: string[]; map: Record<string, number> } {
+  let best = { i: -1, header: [] as string[], map: {} as Record<string, number>, n: 0 };
+  for (let i = 0; i < Math.min(grid.length, 20); i++) { const row = grid[i]; const m = guessColumns(row); const n = Object.keys(m).length; if (n > best.n) best = { i, header: row, map: m, n }; }
+  if (best.n < 2) return { i: -1, header: [], map: {} };
+  if (best.i > 0) { const above = grid[best.i - 1]; const group = /공급자|공급받는자|매입자|매출자|가맹점/; if (above.some(c => group.test(c.replace(/\s/g, ''))) && above.filter(c => c.trim()).length < best.header.filter(c => c.trim()).length) { let last = ''; const sub = /등록번호|사업자번호|종사업장|상호|대표자|주소|이메일|성명|법인명/; const merged = best.header.map((h, j) => { const a = (above[j] ?? '').trim(); if (a) last = a; const t = h.trim(); if (!t) return a && !group.test(a.replace(/\s/g, '')) ? a : h;   // 세로로 병합된 칸(작성일자 등)은 윗줄 값
+        return group.test(last.replace(/\s/g, '')) && sub.test(t) && !t.includes(last) ? last + t : h; }); const m2 = guessColumns(merged); if (Object.keys(m2).length >= best.n) return { i: best.i, header: merged.map(h => h.replace(/\s*\n\s*/g, ' ')), map: m2 }; } }
+  /* 묶음 머리가 위에 있고 세부 이름(등록번호·상호…)이 그 아래 줄인 2단(세로 병합: 작성일자 같은 일반 열은 윗줄에만 값) — 아랫줄을 합쳐 머리글로 삼고 자료는 그다음 줄부터 */
+  const below = grid[best.i + 1]; const group2 = /공급자|공급받는자|매입자|매출자|가맹점/, sub2 = /^(등록번호|사업자등록번호|사업자번호|종사업장번호|상호|대표자명|주소|이메일\d?|성명|법인명)$/;
+  if (below && best.header.some(c => group2.test(c.replace(/\s/g, ''))) && below.some(c => c.trim()) && below.every(c => !c.trim() || sub2.test(c.trim()))) { let last = ''; const merged = best.header.map((h, j) => { const a = h.trim(); if (a) last = a; const b = (below[j] ?? '').trim(); return b ? (group2.test(last.replace(/\s/g, '')) ? last + b : b) : h; }); const m2 = guessColumns(merged); if (Object.keys(m2).length > best.n) return { i: best.i + 1, header: merged.map(h => h.replace(/\s*\n\s*/g, ' ')), map: m2 }; }
+  return { i: best.i, header: best.header.map(h => h.replace(/\s*\n\s*/g, ' ')), map: best.map };
+}
 export const WHAT_GUESS: { re: RegExp; key: string }[] = [
   { re: /전기|한전|한국전력|가스|도시가스|통신|KT|SKT|LGU|인터넷|전화|수도|상하수도/i, key: 'utility' }, { re: /수도요금|상수도|도서|교육|진료/, key: 'water' }, { re: /청소|경비|용역|인쇄|홍보|방역|소독|위탁/, key: 'service' },
   { re: /수선|공사|보수|교체|도장|방수|설치/, key: 'repair' }, { re: /비품|장비|소모품|사무용품|물품|구입|구매/, key: 'equip' }, { re: /주유|유류|휘발유|경유|세차|정비|타이어|렌트|리스/, key: 'car_pass' },

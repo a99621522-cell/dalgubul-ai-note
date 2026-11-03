@@ -239,6 +239,31 @@ org.filing = 'agent'; org.agent_org = '○○세무법인'; org.agent_days = 60;
 const wk = T(await pg.locator('#vat-week').textContent()); const days = Number((wk.match(/D-(\d+)\(신고기한 60일 전/) || [])[1]);
 ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세무대리인\(○○세무법인\)에게 인계 꾸러미 넘기기/.test(wk) && Number.isFinite(days), wk.slice(0, 160));
 }
+// H. 실제 홈택스 엑셀 배치로 붙여넣기(2026-11-03 운영자 '실제 홈텍스 엑셀 붙여서 테스트 해봐' — 고정 자료 scripts/fixtures/hometax/README.md)
+{
+  const FX = path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax'); const fx = f => fs.readFileSync(path.join(FX, f), 'utf8');
+  const orgH = JSON.parse(JSON.stringify(ORG)); orgH.unit = 'entity'; orgH.reg_no = '555-83-00001'; orgH.facilities.forEach(f => { delete f.reg_no; });
+  const pasteH = async (file, proof) => { await pg.goto(base + '/vat/monthly/'); await pg.evaluate(o => { localStorage.clear(); localStorage.setItem('vat-org-v1', JSON.stringify(o)); }, orgH); await pg.goto(base + '/vat/monthly/?fac=fA&month=2026-08&open=1'); await pg.waitForSelector('#mb-text', { state: 'visible' }); await pg.check(`input[name=mb-proof][value=${proof}]`); await pg.fill('#mb-text', fx(file)); await pg.evaluate(() => document.getElementById('mb-form').requestSubmit()); await pg.waitForTimeout(400);
+    const map = await pg.evaluate(() => Object.fromEntries([...document.querySelectorAll('#mb-table select.colsel')].map(s => [s.dataset.col, s.selectedOptions[0]?.textContent.split('← ')[1] ?? ''])));
+    const rows = await pg.evaluate(() => [...document.querySelectorAll('#mb-table tbody tr')].map(tr => ({ date: tr.children[1].textContent, desc: tr.children[2].textContent.trim(), amt: tr.children[5].textContent, tax: tr.children[6].textContent, payee: tr.children[7].textContent.trim(), on: tr.querySelector('[data-on]').checked, flags: [...tr.querySelectorAll('td:nth-child(3) .verdict')].map(e => e.textContent) })));
+    return { map, rows }; };
+  const F = await pasteH('pc_invoice_list.tsv', 'e_invoice');
+  ok('H1 PC 매입 목록조회(조회조건·총계·제목 5줄 뒤 6행 머리글): 12행·작성일자 20260801→2026-08-01·상호(첫)·등록번호 둘·품목명·분류', F.rows.length === 12 && F.map.date === '작성일자' && F.map.supplier === '상호' && F.map.supplier_reg === '공급자사업자등록번호' && F.map.payee_reg === '공급받는자사업자등록번호' && F.map.desc === '품목명' && F.map.kind === '전자세금계산서 분류' && F.rows[0].date === '2026-08-01', `${F.rows.length}행 ${JSON.stringify(F.map)}`);
+  ok('H2 하이픈 없는 공급받는자 번호(5558300001)도 우리 기관, 쉼표 금액, 계산서(면세) 행만 체크 해제', F.rows.every(r => r.payee === '우리 기관') && F.rows[0].amt === '1,000,000' && F.rows[0].tax === '100,000' && F.rows[5].flags.some(f => /계산서\(면세 매입\)/.test(f)) && F.rows.filter(r => !r.on).length === 1 && F.rows[0].desc === '가전력 · 전기요금', JSON.stringify([F.rows[0], F.rows[5].flags]));
+  const F2 = await pasteH('invoice_list_2row.tsv', 'e_invoice');
+  ok('H3 옛 2단 머리글([공급자]·[공급받는자] 걸침 + 탭 없는 제목 줄): 12행·공급자등록번호·공급받는자등록번호·공급자상호', F2.rows.length === 12 && F2.map.supplier_reg === '공급자등록번호' && F2.map.payee_reg === '공급받는자등록번호' && F2.map.supplier === '공급자상호' && F2.rows.every(r => r.payee === '우리 기관'), `${F2.rows.length}행 ${JSON.stringify(F2.map)}`);
+  const G = await pasteH('pc_card_list.tsv', 'card');
+  ok('H4 PC 사업용신용카드(총 사용금액 줄 + 줄바꿈 든 머리글): 12행·승인일자·가맹점명·"가맹점 사업자번호"·공제여부 결정', G.rows.length === 12 && G.map.date === '승인일자' && G.map.supplier === '가맹점명' && G.map.supplier_reg === '가맹점 사업자번호' && G.map.amt === '공급가액' && G.map.tax === '세액' && G.map.total === '합계' && G.map.deduct === '공제여부 결정', `${G.rows.length}행 ${JSON.stringify(G.map)}`);
+  ok('H5 홈택스 불공제(간이·선택불공제) 2행 표시·체크 해제, 10행 체크', G.rows[1].flags.some(f => /불공제\(간이\)/.test(f)) && !G.rows[1].on && G.rows[2].flags.some(f => /불공제\(선택불공제\)/.test(f)) && !G.rows[2].on && G.rows.filter(r => r.on).length === 10, JSON.stringify(G.rows.map(r => [r.on, r.flags])));
+  const H = await pasteH('old_card_list.tsv', 'card');
+  ok('H6 옛 카드 건별내역(승인일자 엑셀 일련번호 46235·거래처사업자번호·부가세공제여부): 6행·2026-08-01·세액 열', H.rows.length === 6 && H.rows[0].date === '2026-08-01' && H.map.supplier === '가맹점명' && H.map.supplier_reg === '거래처사업자번호' && H.map.tax === '세액' && H.map.deduct === '부가세공제여부' && H.rows.every(r => r.on), `${H.rows.length}행 ${H.rows[0]?.date} ${JSON.stringify(H.map)}`);
+  const I = await pasteH('paper_invoice_ledger.tsv', 'e_invoice');
+  ok('H7 종이세금계산서 장부(제목 줄 + 거래처·등록번호·날짜·적요·공급가액·부가세): 5행', I.rows.length === 5 && I.map.supplier === '거래처' && I.map.supplier_reg === '등록번호' && I.map.date === '날짜' && I.map.desc === '적요' && I.map.tax === '부가세' && I.rows[0].date === '2026-08-01', `${I.rows.length}행 ${JSON.stringify(I.map)}`);
+  await pg.goto(base + '/vat/review/'); await pg.waitForSelector('#rv-a'); await pg.fill('#rv-a', fx('pc_invoice_list.tsv')); await pg.evaluate(() => document.getElementById('rv-form').requestSubmit()); await pg.waitForTimeout(400);
+  const rvNote = T(await pg.locator('#rv-colA .q-title').textContent().catch(() => '')); const rvMap = await pg.evaluate(() => Object.fromEntries([...document.querySelectorAll('#rv-colA select[data-col]')].map(s => [s.dataset.col, s.selectedOptions[0]?.textContent ?? ''])));
+  await pg.click('#rv-build'); await pg.waitForTimeout(500); const rvTbl = T(await pg.locator('#rv-result table').first().textContent().catch(() => ''));
+  ok('H8 지난 신고 점검 A 에 시트 전체 붙여넣기: 제목 줄 버리고 12행·열 짐작·2026년 제2기 수취 매입세액 합계', /12행/.test(rvNote) && rvMap.date === '작성일자' && rvMap.supplier_reg === '공급자사업자등록번호' && /2026년 제2기/.test(rvTbl) && /12/.test(rvTbl), rvNote + ' ' + JSON.stringify(rvMap) + ' ' + rvTbl.slice(0, 120));
+}
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);
 await browser.close(); if (srv) srv.close(); if (fail) process.exitCode = 1;

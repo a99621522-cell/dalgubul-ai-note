@@ -1,6 +1,6 @@
 /** /vat/review/ 지난 신고 점검 — 경정청구 후보(신고 담당). 홈택스 매입 목록(전자세금계산서·사업용 카드, 건별)과 신고한 매입 내역(매입처별 세금계산서합계표·신용카드매출전표등 수령명세서 = 공급자별 합계)을 과세기간·공급자별로 합쳐 견주고, 빠진 매입세액 후보와 경정청구 기한(국세기본법 제45조의2, 법정신고기한 뒤 5년)·신고 자체가 없던 기간의 기한후신고(제45조의3)를 보인다.
  *  세무사 평가 반영(2026-10-27) 2차: 합계표는 공급자별 합계라 건별 맞추기가 아니라 집계 비교여야 한다. 차이는 후보일 뿐 — 불공제·면세 귀속 건은 빼야 하고 판단·청구는 신고인 몫. 서버 없음, 저장 없음. */
-import { $, esc, num, fmt, loadData, getOrg, parseTable, guessColumns, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, lawLink, ymd, getFilings, zipStore, downloadBlob, srcBtn, helpWire, type Data } from './vat_rules';
+import { $, esc, num, fmt, loadData, getOrg, parseTable, parseDateCell, guessColumns, findHeader, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, lawLink, ymd, getFilings, zipStore, downloadBlob, srcBtn, helpWire, type Data } from './vat_rules';
 type Row = { d: string; supplier: string; sreg: string; desc: string; amt: number; tax: number; preg: string; pkey: string };
 type Agg = { key: string; sreg: string; name: string; n: number; amt: number; tax: number };
 const D = loadData();
@@ -15,8 +15,10 @@ function init(D: Data) {
   let gridA: string[][] = []; let periods: string[] = [];
   const colBox = (id: string, grid: string[][], map: Record<string, number>, keys: string[]) => { const names = grid[0] ?? []; return `<div class="vc-form" id="${id}"><p class="q-title full">열 맞추기 <span class="note">${grid.length - 1}행 — 머리글에서 짐작했습니다. 틀리면 고르세요.</span></p>${COL_GUESS.filter(g => keys.includes(g.key)).map(g => `<label>${g.name} <select data-col="${g.key}"><option value="">(없음)</option>${names.map((n, i) => `<option value="${i}" ${map[g.key] === i ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></label>`).join('')}</div>`; };
   const readMap = (root: ParentNode) => { const m: Record<string, number> = {}; root.querySelectorAll<HTMLSelectElement>('select[data-col]').forEach(s => { if (s.value !== '') m[s.dataset.col!] = Number(s.value); }); return m; };
+  /** 제목 줄(홈택스 엑셀 1~3행)을 버리고 머리글 줄부터 — 못 찾으면 그대로 */
+  const withHeader = (g: string[][]) => { const fh = findHeader(g); return fh.i > 0 ? [fh.header, ...g.slice(fh.i + 1)] : fh.i === 0 ? [fh.header, ...g.slice(1)] : g; };
   const toRows = (grid: string[][], map: Record<string, number>, fixedPeriod?: string): Row[] => grid.slice(1).map(r => { const g = (k: string) => map[k] === undefined ? '' : (r[map[k]] ?? ''); let amt = num(g('amt')), tax = num(g('tax')); const total = num(g('total')); if (!amt && total) { amt = Math.round(total / 1.1); tax = total - amt; } if (amt && !tax && map.tax === undefined) tax = Math.floor(amt * 0.1);
-    const dm = g('date').match(/(\d{4})[.\-/]?(\d{2})[.\-/]?(\d{2})/); const d = dm ? `${dm[1]}-${dm[2]}-${dm[3]}` : ''; const p = fixedPeriod && fixedPeriod !== 'date' ? fixedPeriod : (claimPeriod(d)?.key ?? '');
+    const d = parseDateCell(g('date')); const p = fixedPeriod && fixedPeriod !== 'date' ? fixedPeriod : (claimPeriod(d)?.key ?? '');
     return { d, supplier: g('supplier'), sreg: g('supplier_reg').replace(/\D/g, ''), desc: g('desc'), amt, tax, preg: g('payee_reg').replace(/\D/g, ''), pkey: p }; }).filter(r => r.pkey && (r.amt || r.tax || r.supplier));
   const supKey = (r: Row) => r.sreg || ('n:' + r.supplier.replace(/\s|\(주\)|주식회사|㈜/g, ''));
   const aggregate = (rows: Row[]) => { const m = new Map<string, Map<string, Agg>>(); for (const r of rows) { const pm = m.get(r.pkey) ?? new Map<string, Agg>(); m.set(r.pkey, pm); const k = supKey(r); const a = pm.get(k) ?? { key: k, sreg: r.sreg, name: r.supplier || r.desc, n: 0, amt: 0, tax: 0 }; a.n++; a.amt += r.amt; a.tax += r.tax; if (!a.name && r.supplier) a.name = r.supplier; pm.set(k, a); } return m; };
@@ -27,12 +29,12 @@ function init(D: Data) {
   const addB = () => { nB++; const el = document.createElement('div'); el.className = 'vc-form'; el.dataset.b = String(nB); el.innerHTML = `<p class="q-title full">신고 내역 ${nB} <button type="button" class="link-btn" data-del>빼기</button></p>
     <label>어느 신고의 내역인가요 <select data-bp><option value="date">날짜 열로 가름(건별 목록)</option>${periods.map(p => `<option value="${p}">${pName(p)} 신고분</option>`).join('')}</select><span class="note">홈택스 「신고내역 조회」 → 그 신고의 매입처별 세금계산서합계표(공급자별 합계: 등록번호·상호·매수·공급가액·세액) 또는 신용카드매출전표등 수령명세서를 머리글부터 붙여넣기. 합계표에는 날짜가 없으니 어느 신고분인지 고르세요.</span></label>
     <label class="full"><textarea data-bt rows="4" placeholder="사업자등록번호	상호	매수	공급가액	세액&#10;111-11-11111	가전력	2	3,000,000	300,000" style="min-height:6em;padding:8px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--bg);color:var(--ink);font:inherit"></textarea></label><div data-bcols class="full"></div>`;
-    el.querySelector('[data-del]')!.addEventListener('click', () => el.remove()); el.querySelector<HTMLTextAreaElement>('[data-bt]')!.addEventListener('change', () => { const g = parseTable(el.querySelector<HTMLTextAreaElement>('[data-bt]')!.value); el.querySelector('[data-bcols]')!.innerHTML = g.length > 1 ? colBox(`rv-bc${el.dataset.b}`, g, guessColumns(g[0]), B_KEYS) : ''; });
+    el.querySelector('[data-del]')!.addEventListener('click', () => el.remove()); el.querySelector<HTMLTextAreaElement>('[data-bt]')!.addEventListener('change', () => { const g = withHeader(parseTable(el.querySelector<HTMLTextAreaElement>('[data-bt]')!.value)); el.querySelector('[data-bcols]')!.innerHTML = g.length > 1 ? colBox(`rv-bc${el.dataset.b}`, g, guessColumns(g[0]), B_KEYS) : ''; });
     bWrap.appendChild(el); };
   $('rv-addb')!.addEventListener('click', addB);
   const refreshBPeriods = () => bWrap.querySelectorAll<HTMLSelectElement>('[data-bp]').forEach(s => { const cur = s.value; s.innerHTML = `<option value="date">날짜 열로 가름(건별 목록)</option>` + periods.map(p => `<option value="${p}">${pName(p)} 신고분</option>`).join(''); if ([...s.options].some(o => o.value === cur)) s.value = cur; });
   $<HTMLFormElement>('rv-form')!.addEventListener('submit', e => {
-    e.preventDefault(); gridA = parseTable($<HTMLTextAreaElement>('rv-a')!.value);
+    e.preventDefault(); gridA = withHeader(parseTable($<HTMLTextAreaElement>('rv-a')!.value));
     if (gridA.length < 2) { $('rv-cols')!.innerHTML = '<p class="callout info">받은 매입 목록을 머리글 줄부터 붙여넣으세요.</p>'; return; }
     const mapA = guessColumns(gridA[0]); periods = [...new Set(toRows(gridA, mapA).map(r => r.pkey))].sort(); refreshBPeriods();
     $('rv-cols')!.innerHTML = colBox('rv-colA', gridA, mapA, A_KEYS) + '<div class="actions"><button type="button" class="btn" id="rv-build">과세기간별로 견주기</button></div>';
@@ -46,7 +48,7 @@ function init(D: Data) {
     const mapA = readMap($('rv-colA')!); const reg = regIn.value.replace(/\D/g, ''); const A = toRows(gridA, mapA); periods = [...new Set(A.map(r => r.pkey))].sort(); refreshBPeriods();
     const other = A.filter(r => reg && r.preg && r.preg !== reg); const mine = A.filter(r => !(reg && r.preg && r.preg !== reg));
     const B: Row[] = []; const bPeriods = new Set<string>();
-    bWrap.querySelectorAll<HTMLElement>('[data-b]').forEach(el => { const g = parseTable(el.querySelector<HTMLTextAreaElement>('[data-bt]')!.value); if (g.length < 2) return; const box = el.querySelector('[data-bcols]')!; const map = box.querySelector('select') ? readMap(box) : guessColumns(g[0]); const fp = el.querySelector<HTMLSelectElement>('[data-bp]')!.value; const rows = toRows(g, map, fp); rows.forEach(r => bPeriods.add(r.pkey)); B.push(...rows); });
+    bWrap.querySelectorAll<HTMLElement>('[data-b]').forEach(el => { const g = withHeader(parseTable(el.querySelector<HTMLTextAreaElement>('[data-bt]')!.value)); if (g.length < 2) return; const box = el.querySelector('[data-bcols]')!; const map = box.querySelector('select') ? readMap(box) : guessColumns(g[0]); const fp = el.querySelector<HTMLSelectElement>('[data-bp]')!.value; const rows = toRows(g, map, fp); rows.forEach(r => bPeriods.add(r.pkey)); B.push(...rows); });
     const aAgg = aggregate(mine), bAgg = aggregate(B); const missAll: (string | number)[][] = [];
     out = [['과세기간', '신고', '수취 건수', '수취 매입세액', '신고 내역 매입세액', '빠진 후보 세액', '공통 몫 %', '면세비율 %', '안분 뒤 청구 후보', '신고가 더 많은 세액', '법정신고기한', '경정청구 기한', '상태']];
     const detail: string[] = [];

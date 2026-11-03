@@ -115,7 +115,7 @@ const until = async (fn, ms = 3000) => { const t = Date.now(); while (Date.now()
 {
   await pg.goto(base + '/vat/review/'); await pg.waitForTimeout(300); await pg.fill('#rv-reg', '555-83-00001');
   await pg.fill('#rv-a', '작성일자\t공급자등록번호\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호\n2024-03-05\t123-45-67890\t가상전력\t전기요금\t1,500,000\t150,000\t555-83-00001\n2024-09-05\t123-45-67890\t가상전력\t전기요금\t1,000,000\t100,000\t555-83-00001');
-  await pg.evaluate(() => document.getElementById('rv-form').requestSubmit()); await pg.waitForTimeout(400);
+  await pg.evaluate(() => document.getElementById('rv-form').requestSubmit()); await pg.waitForTimeout(400); await pg.click('#rv-build'); await pg.waitForTimeout(500);
   const t = T(await pg.locator('#rv-result').textContent()); ok('T6 review result with 경정청구 기한', t.includes('2024') && /경정청구|기한/.test(t));
 }
 /* ── T7 신축·대수선 ── */
@@ -201,8 +201,8 @@ ok('W7 사업장별 org: 등록번호 선택 상자', await pg.locator('#rv-reg-
 ok('W7 출처 ? 3개', await pg.locator('#rv-form button.help.src').count() === 3);
 const rv = ['작성일자\t공급자등록번호\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호']; for (let i = 0; i < 30; i++) rv.push(`2024-0${(i % 6) + 1}-1${i % 9}\t111-11-1111${i % 9}\t업체${i}\t체육관 전기\t${(500000 + i * 1000).toLocaleString()}\t${(50000 + i * 100).toLocaleString()}\t505-83-00001`);
 await pg.fill('#rv-a', rv.join('\n')); await pg.click('#rv-form button[type=submit]'); await pg.waitForTimeout(400); await pg.click('#rv-build'); await pg.waitForTimeout(600);
-ok('W7 신고 내역 없음 안내', /신고 내역을 아직 넣지 않았습니다/.test(T(await pg.locator('#rv-result').textContent())));
-const [dl] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zp = path.join(os.tmpdir(), 'vat-rv.zip'); await dl.saveAs(zp); const list = execSync(`unzip -Z1 "${zp}"`).toString().trim().split('\n'); ok('W7 붙임 zip 3파일', list.length === 3, list.join('|'));
+ok('W7 신고 값 표 + 공급자별 귀속 표', await pg.locator('#rv-filed').count() === 1 && (await pg.locator('#rv-sup tbody tr[data-sk]').count()) >= 9, String(await pg.locator('#rv-sup tbody tr[data-sk]').count()));
+const [dl] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zp = path.join(os.tmpdir(), 'vat-rv.zip'); await dl.saveAs(zp); const list = execSync(`unzip -Z1 "${zp}"`).toString().trim().split('\n'); ok('W7 붙임 zip 6파일', list.length === 6, list.join('|'));
 // W8 handover
 await pg.goto(base + '/vat/handover/'); await pg.waitForTimeout(800); const doc = T(await pg.locator('#h-doc').textContent());
 const todoLines = (doc.match(/다음 신고까지 할 일/) ? doc.split('4. 다음 신고까지 할 일')[1]?.split('5. 파일')[0] ?? '' : '').split(' - ').length - 1; ok('W8 README 다음 신고까지 할 일 ≥ 3줄', /다음 신고까지 할 일/.test(doc) && todoLines >= 3, String(todoLines));
@@ -263,8 +263,38 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('H7 종이세금계산서 장부(제목 줄 + 거래처·등록번호·날짜·적요·공급가액·부가세): 5행', I.rows.length === 5 && I.map.supplier === '거래처' && I.map.supplier_reg === '등록번호' && I.map.date === '날짜' && I.map.desc === '적요' && I.map.tax === '부가세' && I.rows[0].date === '2026-08-01', `${I.rows.length}행 ${JSON.stringify(I.map)}`);
   await pg.goto(base + '/vat/review/'); await pg.waitForSelector('#rv-a'); await pg.fill('#rv-a', fx('pc_invoice_list.tsv')); await pg.evaluate(() => document.getElementById('rv-form').requestSubmit()); await pg.waitForTimeout(400);
   const rvNote = T(await pg.locator('#rv-colA .q-title').textContent().catch(() => '')); const rvMap = await pg.evaluate(() => Object.fromEntries([...document.querySelectorAll('#rv-colA select[data-col]')].map(s => [s.dataset.col, s.selectedOptions[0]?.textContent ?? ''])));
-  await pg.click('#rv-build'); await pg.waitForTimeout(500); const rvTbl = T(await pg.locator('#rv-result table').first().textContent().catch(() => ''));
+  await pg.evaluate(() => localStorage.removeItem('vat-review-v1')); await pg.click('#rv-build'); await pg.waitForTimeout(500); const rvTbl = T(await pg.locator('#rv-result table').first().textContent().catch(() => ''));
   ok('H8 지난 신고 점검 A 에 시트 전체 붙여넣기: 제목 줄 버리고 12행·열 짐작·2026년 제2기 수취 매입세액 합계', /12행/.test(rvNote) && rvMap.date === '작성일자' && rvMap.supplier_reg === '공급자사업자등록번호' && /2026년 제2기/.test(rvTbl) && /12/.test(rvTbl), rvNote + ' ' + JSON.stringify(rvMap) + ' ' + rvTbl.slice(0, 120));
+}
+
+/* ── R 지난 돈 돌려받기 v2(핵심 기능, 2026-11-03): 건별 시설 귀속 → 있어야 할 공제 세액 − 신고 공제 세액 ── */
+{
+  const { execSync } = await import('node:child_process');
+  const ORG_R = { v: 1, org: '시험군', dept: '재무과', unit: 'entity', reg_no: '555-83-00001', handover_day: 10, created: '2026-01-01', facilities: [{ id: 'f1', type: 'sports', name: '시험체육센터', run: 'direct', income: [], deposit: false }, { id: 'f2', type: 'culture', name: '시험도서관', run: 'direct', income: [], deposit: false }] };
+  await pg.goto(base + '/vat/review/'); await pg.evaluate(o => { localStorage.clear(); localStorage.setItem('vat-org-v1', JSON.stringify(o)); }, ORG_R); await pg.reload(); await pg.waitForSelector('#rv-a');
+  ok('R0 등록번호 미리 채움', (await pg.locator('#rv-reg').inputValue()) === '555-83-00001');
+  const rows = ['작성일자\t공급자등록번호\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호',
+    '2025-02-10\t111-11-11111\t한전\t시험체육센터 전기\t1,000,000\t100,000\t555-83-00001', '2025-03-10\t222-22-22222\t청소업체\t시험도서관 청소\t500,000\t50,000\t555-83-00001',
+    '2025-04-10\t333-33-33333\t문구사\t군청 복사용지\t300,000\t30,000\t555-83-00001', '2025-08-10\t444-44-44444\t건설사\t시험체육센터 지붕 수선\t2,000,000\t200,000\t555-83-00001',
+    '2025-09-10\t555-55-55555\t가게\t물품\t100,000\t10,000\t999-82-00000'];
+  await pg.fill('#rv-a', rows.join('\n')); await pg.evaluate(() => document.getElementById('rv-form').requestSubmit()); await pg.waitForTimeout(400); await pg.click('#rv-build'); await pg.waitForTimeout(600);
+  const supRows = await pg.$$eval('#rv-sup tbody tr[data-sk]', trs => trs.map(t => ({ k: t.dataset.sk, cls: t.className, fid: t.querySelector('[data-sf-fid]').value, txt: t.textContent.replace(/\s+/g, ' ') })));
+  const byK = Object.fromEntries(supRows.map(r => [r.k, r]));
+  ok('R1 이름 일치 자동 귀속: 한전·건설사 → 체육센터(초록), 청소업체 → 도서관(빨강), 문구사 미지정(노랑)', byK['1111111111']?.fid === 'f1' && /v-ok/.test(byK['1111111111'].cls) && byK['4444444444']?.fid === 'f1' && byK['2222222222']?.fid === 'f2' && /v-no/.test(byK['2222222222'].cls) && byK['3333333333']?.fid === '' && /v-check/.test(byK['3333333333'].cls), JSON.stringify(supRows.map(r => [r.k, r.fid, r.cls])));
+  ok('R1 다른 명의 1건 따로', /우리 명의가 아닌 세금계산서 1건/.test(T(await pg.locator('#rv-result').textContent())));
+  await pg.selectOption('[data-filed="2025-1"]', 'filed'); await pg.waitForTimeout(300); await pg.fill('[data-fin="deduct:2025-1"]', '20000'); await pg.press('[data-fin="deduct:2025-1"]', 'Tab'); await pg.waitForTimeout(300); await pg.fill('[data-fin="er:2025-1"]', '40'); await pg.press('[data-fin="er:2025-1"]', 'Tab'); await pg.waitForTimeout(300);
+  await pg.selectOption('[data-filed="2025-2"]', 'none'); await pg.waitForTimeout(300);
+  const perA = await pg.$$eval('#rv-per tbody tr', trs => trs.map(t => [...t.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim())));
+  ok('R2 문구사 미지정 상태: 2025-1 있어야 할 공제 100,000 · 신고 20,000 · 차이 80,000 · 못 센 세액 30,000', perA[0][2] === '100,000' && perA[0][3] === '20,000' && perA[0][4].startsWith('80,000') && perA[0][6] === '30,000', JSON.stringify(perA[0]));
+  await pg.selectOption('[data-sf-fid="3333333333"]', 'admin'); await pg.waitForTimeout(500);
+  const perB = await pg.$$eval('#rv-per tbody tr', trs => trs.map(t => [...t.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim())));
+  ok('R3 문구사 → 본청·행정 공통(면세비율 40%): 2025-1 118,000 − 20,000 = 98,000 · 못 센 0', perB[0][2] === '118,000' && perB[0][4].startsWith('98,000') && perB[0][6] === '0', JSON.stringify(perB[0]));
+  ok('R3 2025-2 신고 없음 → 기한후신고 · 차이 200,000(건설사 수선, 다른 명의 제외)', perB[1][2] === '200,000' && perB[1][4].startsWith('200,000') && /기한후신고/.test(perB[1][7] + perB[1][8]), JSON.stringify(perB[1]));
+  ok('R4 합계 카드 298,000 · 사유 초안에 금액', T(await pg.locator('#rv-total').textContent()).startsWith('298,000') && /298,000/.test(await pg.locator('#rv-reason').inputValue()));
+  const [dz] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zr = path.join(os.tmpdir(), 'vat-rv2.zip'); await dz.saveAs(zr); const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); const det = execSync(`unzip -p "${zr}" 02_건별_명세.csv`).toString();
+  ok('R5 zip 6파일 · 건별 명세에 본청·행정 공통 18,000', zl.length === 6 && /본청·행정 공통/.test(det) && /18000/.test(det), zl.join('|'));
+  await pg.reload(); await pg.waitForTimeout(700); ok('R6 새로 고침 뒤 자료·귀속·신고 값 유지(5건, 298,000)', /5건/.test(T(await pg.locator('#rv-stat').textContent())) && T(await pg.locator('#rv-total').textContent()).startsWith('298,000'));
+  await pg.evaluate(() => localStorage.removeItem('vat-review-v1'));
 }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);

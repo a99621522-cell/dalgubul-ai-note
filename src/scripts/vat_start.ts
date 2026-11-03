@@ -63,6 +63,6 @@ if (sv) {
     `<li>길 1 — 과세사업 찾기에서 '과세인데 신고 안 함'으로 표시한 수입 <b>${cand}</b>개 ${cand ? '→ <a href="/vat/discover/">등록·신고 검토</a>' : '(<a href="/vat/discover/">점검표</a>를 아직 안 채웠거나 후보 없음)'}</li>`,
     `<li>길 2 — 다른 명의 세금계산서로 빠진 세액 <b>${fmt(fixTax)}</b>원(${fixable.length}건, 수정세금계산서 기한 안) → 공급자에게 수정 요청하면 살아납니다${expired ? ` · 기한 지남 ${fmt(expired)}원은 착오 정정이 아니면 불가` : ''}; 확인 필요(노랑) <b>${fmt(oi.yellowTax)}</b>원(${oi.yellow.length}건) → 귀속·공급자 확인</li>`,
     `<li>길 3 — ${fl ? `최근 신고 기록(${fl.period})의 공통매입세액 면세분 <b>${fmt(nd)}</b>원 → 전용 분리·비율 관리로 줄일 수 있는 상한(<a href="/vat/prepare/">절감 분석</a>)` : '신고 기록이 없어 공통매입세액 면세분을 아직 셀 수 없습니다(<a href="/vat/prepare/">신고 준비</a>에서 저장)'}</li>`,
-    `<li>길 4 — 지난 5년 빠진 매입세액은 <a href="/vat/review/">지난 신고 점검</a>에 홈택스 매입 목록을 붙여넣어야 계산됩니다(저장하지 않음)</li>`];
+    `<li>길 4 — 지난 5년 빠진 매입세액은 <a href="/vat/review/">지난 돈 돌려받기</a>에 홈택스 매입 목록을 붙여넣어야 계산됩니다(저장하지 않음)</li>`];
   sv.innerHTML = `<ul class="meta-list">${items.join('')}</ul><p class="note">이 숫자는 이 브라우저에 있는 기록만으로 센 것이고, 공제 여부의 최종 판단은 신고인 몫입니다.</p>`;
 }

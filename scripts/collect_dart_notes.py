@@ -644,6 +644,7 @@ def fin_from_audit(xml: str) -> tuple[dict, dict]:
     if m:
         unit = {"원": 1, "천원": 1000, "백만원": 1000000}[m.group(1)]
     got, raw = {}, {}
+    weak: dict = {}   # 금액 칸이 3개인 줄(정정 보고서의 '수정 전·후·차이' 표 등) — 2·4칸 줄이 없을 때만 쓴다(2026-11-03 금용기계 정정 감사보고서)
     ctx = None
     for tok in re.finditer(r"<TABLE.*?</TABLE>|<(?:P|TITLE|SPAN)[^>]*>(.*?)</(?:P|TITLE|SPAN)>", xml, re.S | re.I):
         if tok.group(0)[:6].upper() != "<TABLE":
@@ -668,16 +669,21 @@ def fin_from_audit(xml: str) -> tuple[dict, dict]:
                 n = nums(cells[1:])
                 if not n:
                     continue
+                if len(n) == 3:
+                    if key not in weak:
+                        weak[key] = ((n[0] * unit, n[1] * unit), f"[{ctx}·3칸] " + " | ".join(cells)[:170])
+                    continue
                 if len(n) >= 4:
                     cur, prev = n[1], n[3]
-                elif len(n) == 3:
-                    cur, prev = n[0], n[2]
                 elif len(n) == 2:
                     cur, prev = n
                 else:
                     cur, prev = n[0], None
                 got[key] = (cur * unit, prev * unit if prev is not None else None)
                 raw[key] = f"[{ctx}] " + " | ".join(cells)[:170]
+    for key, (v, r) in weak.items():
+        if key not in got:
+            got[key], raw[key] = v, r
     return got, raw
 
 

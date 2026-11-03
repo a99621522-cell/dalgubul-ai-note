@@ -1,5 +1,6 @@
 // 지자체 부가세 절감 점검기 — 공무원 과업 8개 수용 시험(공무원 UX 재설계 2026-10-28, docs/design/vat-ux-spec.md §8).
 // 빌드한 dist 를 띄운 뒤 실행: node scripts/vat_ux_test.mjs [--base http://localhost:4399] [--no-axe]   (base 가 없으면 dist 를 4398 에 직접 띄움)
+// 2차(2026-11-03): W1~W8 — 이번 주 할 일·설정 깊은 링크·이름 일치·이번 달 끝 카드·지출 없음·매출 붙여넣기·경정청구 붙임 zip·인수인계 할 일(§11.11)
 // 과업: T1 기관 설정(예시 → 그리드 → 일괄 적용 → org.json) + 키보드 변형 · T2 붙여넣기(열 교정·미확정만·일괄·즉시 신호등·검증·되돌리기·Ctrl+Enter) ·
 //       T3 예정신고 저장 · T4 확정 정산 · T5 다음 기수 재계산 배지 · T6 지난 신고 점검 · T7 신축 설계 점검 · T8 인수인계 zip 복원 · 접근성(axe 5쪽·가로 스크롤) · 인쇄.
 // 계산 값은 규칙(시행령 제81조·제82조·제83조)에서 식으로 세어 견준다 — 재설계는 화면만 바꾸고 계산은 바꾸지 않았다는 확인. 의존: playwright(+ @axe-core/playwright 는 있을 때만).
@@ -142,6 +143,70 @@ const until = async (fn, ms = 3000) => { const t = Date.now(); while (Date.now()
     }
     await c.close();
   }
+}
+
+/* ── W1~W8 (2차 UX, docs/design/vat-ux-spec.md §11.11, 2026-11-03): 이번 주 할 일·설정 깊은 링크·이름 일치·이번 달 끝·지출 없음·매출 붙여넣기·경정청구 붙임·인수인계 할 일 ── */
+{
+  const { execSync } = await import('node:child_process'); pg.removeAllListeners('dialog'); pg.on('dialog', d => d.accept());
+// W1 quick start → dashboard
+await pg.goto(base + '/vat/'); await pg.evaluate(() => localStorage.clear()); await pg.reload(); await pg.waitForFunction(() => document.querySelector('#d-qs [data-qs-sel]')?.options.length > 3, null, { timeout: 10000 }); await pg.click('#d-qs [data-qs-go]'); await pg.waitForTimeout(1500);
+const cta = pg.locator('#vat-cta'); ok('W1 CTA = 기관 설정 마저 채우기 → step=3', T(await cta.textContent()) === '기관 설정 마저 채우기' && /\/vat\/setup\/\?step=3&filter=/.test(await cta.getAttribute('href') || ''));
+const nW = await pg.locator('#vat-week li').count(); ok('W1 이번 주 할 일 1~5개', nW >= 1 && nW <= 5, String(nW));
+await pg.check('#vat-week [data-week]:first-child, #vat-week li:first-child input'); await pg.reload(); await pg.waitForTimeout(800); ok('W1 체크가 새로 고침 뒤 남음', await pg.locator('#vat-week li:first-child input').isChecked());
+// W2 setup deep link + warning
+await pg.goto(base + '/vat/setup/?step=3&filter=noreg'); await pg.waitForTimeout(900);
+ok('W2 3단계로 열리고 noreg 칩이 눌림', !(await pg.locator('.step[data-step="3"]').isHidden()) && (await pg.locator('#st-fac [data-filter=noreg]').getAttribute('aria-pressed')) === 'true');
+ok('W2 등록번호 열 출처 ? 단추', await pg.locator('#st-fac button.help.src').count() >= 1);
+await pg.goto(base + '/vat/setup/'); await pg.waitForTimeout(800); ok('W2 5단계 경고 상자 + 단추 2개', await pg.locator('#st-gaps').count() === 1 && (await pg.locator('#st-gaps button').count()) >= 2);
+await pg.click('#st-gaps [data-gofilter=pending]'); await pg.waitForTimeout(400); ok('W2 경고 단추 → 3단계 pending 필터', !(await pg.locator('.step[data-step="3"]').isHidden()) && (await pg.locator('#st-fac [data-filter=pending]').getAttribute('aria-pressed')) === 'true');
+// make org usable: direct + reg no for all, dept
+await pg.click('#st-fac [data-sel-all]'); await pg.selectOption('#st-fac [data-bk=run]', 'direct'); await pg.fill('#st-fac [data-bk=reg_no]', '505-83-00001'); await pg.click('#st-fac [data-bulk=sel]'); await pg.waitForTimeout(300); await pg.click('.step[data-step="3"] [data-next]'); await pg.waitForTimeout(200); await pg.click('.step[data-step="4"] [data-next]'); await pg.waitForTimeout(400);
+// W3 monthly paste 60 rows with facility names, no map
+const FAC = (await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1')).facilities.slice(0, 10).map(f => f.name.replace(/\(.*$/, '').trim())));   // 기관 설정의 시설 이름 10개(사업명에 들어감)
+const rows = ['작성일자\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호\t사업명\t부서']; for (let i = 0; i < 60; i++) { const f = FAC[i % FAC.length]; const kind = i % 6; const [item, amt] = kind === 0 ? [`${f} 전기요금`, 1200000] : kind === 1 ? [`${f} 청소용역`, 800000] : kind === 2 ? ['군 청사 복사용지', 150000] : kind === 3 ? [`${f} 승강기 수선`, 3000000] : kind === 4 ? ['직원 체육대회 기념품', 400000] : [`${f} 보험료`, 500000]; rows.push(`2026-01-${String((i % 28) + 1).padStart(2, '0')}\t업체${i}\t${item}\t${amt.toLocaleString()}\t${(amt / 10).toLocaleString()}\t${i % 11 === 0 ? '999-82-00000' : '505-83-00001'}\t${f} 운영\t재무과`); }
+await pg.goto(base + '/vat/monthly/'); await pg.waitForTimeout(600); await pg.selectOption('#m-fac', { index: 1 }); await pg.fill('#m-month', '2026-01'); await pg.waitForTimeout(200);
+ok('W3 붙여넣기 상자에 출처 ? 2개', await pg.locator('#mb-wrap button.help.src').count() === 2);
+await pg.evaluate(() => { document.getElementById('mb-wrap').open = true; }); await pg.fill('#mb-text', rows.join('\n')); await pg.click('#mb-form button[type=submit]'); await pg.waitForTimeout(900);
+const named = await pg.locator('#mb-table tbody tr .vbadge', { hasText: '이름 일치' }).count(); ok('W3 이름 일치 ≥ 50 / 60', named >= 50, String(named));
+ok('W3 머리에 시설별 집계', /시설별:/.test(T(await pg.locator('#mb-facsum').textContent())));
+ok('W3 칩 수선·장비 10', T(await pg.locator('#mb-preview [data-view=asset]').textContent()).replace(/\s/g, '') === '수선·장비10');
+await pg.click('#mb-preview [data-view=asset]'); await pg.waitForTimeout(200); ok('W3 수선·장비 보기 → 10행', await pg.locator('#mb-table tbody tr:not([hidden])').count() === 10);
+await pg.click('#mb-preview [data-view=all]'); await pg.waitForTimeout(200);
+// W4 add → end-of-month card
+await pg.click('#mb-add'); await pg.waitForTimeout(900);
+const card = pg.locator('#mb-preview .mb-done'); ok('W4 이번 달 끝 카드: 시설별 표·신호등 5칸·다음 할 일', await card.count() === 1 && (await card.locator('tbody tr').count()) >= 2 && (await card.locator('.fsum span').count()) >= 5 && /다음 할 일/.test(T(await card.textContent())));
+// W5 prepare: nolog bulk → no missing in todo
+await pg.goto(base + '/vat/prepare/'); await pg.waitForTimeout(700); await pg.selectOption('#p-period', '2026-1P'); await pg.waitForTimeout(300);
+const blankBefore = T(await pg.locator('#p-coverage').textContent()); ok('W5 빈 칸 수와 일괄 단추', /빈 칸 \d+개/.test(blankBefore) && await pg.locator('#p-nolog-all').count() === 1);
+await pg.click('#p-nolog-all'); await pg.waitForTimeout(300); await pg.locator('dialog[open] button').filter({ hasText: '모두 표시' }).click(); await pg.waitForTimeout(500);
+ok('W5 일괄 뒤 빈 칸 0', /빈 칸 0개/.test(T(await pg.locator('#p-coverage').textContent())));
+await pg.click('.pstep[data-pstep="1"] [data-pnext]'); await pg.waitForTimeout(300);
+// W6 sales paste
+ok('W6 매출 붙여넣기 상자 + 출처 ?', await pg.locator('#p-sales-paste').count() === 1 && await pg.locator('#p-sales-paste button.help.src').count() === 1);
+await pg.evaluate(() => { document.getElementById('p-sales-paste').open = true; });
+const names = await pg.locator('#p-sales [data-fid] .q-title').allTextContents(); const pick = names.slice(0, 3).map(t => t.split(' ')[0]);
+await pg.fill('#p-sales-text', ['시설\t세금계산서\t카드\t기타', ...pick.map((n, i) => `${n}\t0\t${(i + 1) * 1000000}\t0`), '없는시설이름\t0\t5\t0'].join('\n')); await pg.click('#p-sales-apply'); await pg.waitForTimeout(300);
+const msg = T(await pg.locator('#p-sales-paste-msg').textContent()); ok('W6 3곳 채움 + 못 찾은 이름 1', /3곳을 채웠습니다/.test(msg) && /못 찾은 이름 1/.test(msg), msg);
+ok('W6 (3) 칸 채워짐', (await pg.locator('#p-sales [data-fid] input[data-c=c3]').first().inputValue()) === '1,000,000');
+await pg.click('.pstep[data-pstep="2"] [data-pnext]'); await pg.waitForTimeout(300); ok('W6 면세 공급가액 출처 ?', await pg.locator('#p-groups button.help.src').count() >= 1);
+const g = pg.locator('#p-groups [data-g]').first(); await g.locator('input[data-ex]').fill('30,000,000'); await g.locator('input[data-ex]').dispatchEvent('change'); await pg.click('#p-run'); await pg.waitForTimeout(1200);
+const todo = T(await pg.locator('#p-todo').textContent()); ok('W5 처리할 것에 기록 없는 시설·달 없음', !/기록 없는 시설·달/.test(todo), todo.slice(0, 120));
+await pg.click('#p-save'); await pg.waitForTimeout(300);
+// W7 review
+await pg.goto(base + '/vat/review/'); await pg.waitForTimeout(700);
+ok('W7 사업장별 org: 등록번호 선택 상자', await pg.locator('#rv-reg-sel').count() === 1 && (await pg.locator('#rv-reg').inputValue()) === '505-83-00001');
+ok('W7 출처 ? 3개', await pg.locator('#rv-form button.help.src').count() === 3);
+const rv = ['작성일자\t공급자등록번호\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호']; for (let i = 0; i < 30; i++) rv.push(`2024-0${(i % 6) + 1}-1${i % 9}\t111-11-1111${i % 9}\t업체${i}\t체육관 전기\t${(500000 + i * 1000).toLocaleString()}\t${(50000 + i * 100).toLocaleString()}\t505-83-00001`);
+await pg.fill('#rv-a', rv.join('\n')); await pg.click('#rv-form button[type=submit]'); await pg.waitForTimeout(400); await pg.click('#rv-build'); await pg.waitForTimeout(600);
+ok('W7 신고 내역 없음 안내', /신고 내역을 아직 넣지 않았습니다/.test(T(await pg.locator('#rv-result').textContent())));
+const [dl] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zp = path.join(os.tmpdir(), 'vat-rv.zip'); await dl.saveAs(zp); const list = execSync(`unzip -Z1 "${zp}"`).toString().trim().split('\n'); ok('W7 붙임 zip 3파일', list.length === 3, list.join('|'));
+// W8 handover
+await pg.goto(base + '/vat/handover/'); await pg.waitForTimeout(800); const doc = T(await pg.locator('#h-doc').textContent());
+const todoLines = (doc.match(/다음 신고까지 할 일/) ? doc.split('4. 다음 신고까지 할 일')[1]?.split('5. 파일')[0] ?? '' : '').split(' - ').length - 1; ok('W8 README 다음 신고까지 할 일 ≥ 3줄', /다음 신고까지 할 일/.test(doc) && todoLines >= 3, String(todoLines));
+const [dz] = await Promise.all([pg.waitForEvent('download'), pg.click('#h-zip')]); const hz = path.join(os.tmpdir(), 'vat-h.zip'); await dz.saveAs(hz); ok('W8 zip 에 nolog.json', execSync(`unzip -Z1 "${hz}"`).toString().includes('nolog.json'));
+const ctx2 = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const p2 = await ctx2.newPage(); await p2.goto(base + '/vat/handover/'); await p2.setInputFiles('#h-open', hz); await p2.waitForTimeout(1200);
+ok('W8 복원 뒤 이제 할 일 단추 + nolog 복원', await p2.locator('#h-next').count() === 1 && Object.keys(await p2.evaluate(() => JSON.parse(localStorage.getItem('vat-nolog-v1') || '{}'))).length > 0);
+await p2.goto(base + '/vat/'); await p2.waitForTimeout(800); ok('W8 후임자 대시보드 이번 주 할 일', await p2.locator('#vat-week li').count() >= 1);
 }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);

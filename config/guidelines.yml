@@ -83,3 +83,7 @@ guidelines:
       review: [부가가치세 신고] }
   - { key: vat-rule,           kind: 시행규칙, issuer: 기획재정부,    name: 부가가치세법 시행규칙,                    source: { type: law,    name: 부가가치세법시행규칙 },
       review: [부가가치세 신고] }
+  - { key: special-tax-act,    kind: 법률,   issuer: 기획재정부,      name: 조세특례제한법,                           source: { type: law, name: 조세특례제한법 },
+      note: "제106조 제1항 제6호 — 국가·지자체·지자체조합에 공급하는 재화·용역(정부업무대행단체) 면제. 지자체 부가세 점검기 공단·공사 대행사업 근거(2026-11-03)", review: [부가가치세 신고] }
+  - { key: special-tax-decree, kind: 시행령, issuer: 기획재정부,      name: 조세특례제한법 시행령,                    source: { type: law, name: 조세특례제한법 시행령 },
+      note: "제106조 — 정부업무대행단체의 범위(지방공단, 시군구 설립 지방공사 2017~)와 면제 제외 사업. 지자체 부가세 점검기(2026-11-03)", review: [부가가치세 신고] }

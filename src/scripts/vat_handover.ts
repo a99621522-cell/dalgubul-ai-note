@@ -1,5 +1,5 @@
 /** /vat/handover/ 인수인계 꾸러미 — 이 브라우저의 설정·기록·신고 기록을 zip 으로, 받은 zip 을 되살림. 서버 없음, 개인정보 없음. */
-import { $, esc, fmt, pct, loadData, getOrg, setOrg, allLedgers, setAllLedgers, getFilings, setFilings, zipStore, unzip, utf8, downloadBlob, toCsv, periodInfo, facilityStatus, RUN_NAME, LABEL, ymd, type Data, type Org, type LedgerRow, type Filing } from './vat_rules';
+import { getNolog, setNolog, isNolog, openItems, nextFiling, inFiling, periodKeyOf, $, esc, fmt, pct, loadData, getOrg, setOrg, allLedgers, setAllLedgers, getFilings, setFilings, zipStore, unzip, utf8, downloadBlob, toCsv, periodInfo, facilityStatus, RUN_NAME, LABEL, ymd, type Data, type Org, type LedgerRow, type Filing } from './vat_rules';
 const D = loadData();
 if (D) init(D);
 function init(D: Data) {
@@ -31,9 +31,26 @@ ${keys.map(k => { const f = fil[k]; const c = f.cells; const s = (n: string) => 
 ${last ? `- 다음 신고에서 할 일: ${periodInfo(last.period).kind === 'P' ? '확정신고 때 이 예정신고의 공통매입세액을 6개월 전체 공급가액으로 정산(시행령 제81조)' : '다음 과세기간의 면세비율이 취득 때보다 5%p 이상 바뀐 공통 자산은 재계산(시행령 제83조)'}` : ''}
 
 3. 자산대장(재계산 추적) ${Object.values(fil).flatMap(f => f.assets ?? []).length}건 — assets.csv
+${nextTodo(org, led, fil)}
 4. 아직 처리 안 된 것 ${open.length}건 — open_items.csv (수정세금계산서 요청·확인 필요)
 5. 파일: org.json(기관 설정 — /vat/setup/ 에서 열기), ledgers/(시설·달별 기록 — /vat/monthly/), filings/(신고 기록 — /vat/prepare/), assets.csv, open_items.csv. 이 zip 을 /vat/handover/ 에서 열면 모두 되살아납니다.
 6. 원칙: 영수증은 ${org.org} 등록번호로 받고, 지출마다 어느 시설에 썼는지 적고, 장부·세금계산서는 확정신고기한 뒤 5년 보존(법 제71조). 판정은 참고용이며 신고 책임은 신고인에게 있습니다.`;
+  }
+  /** 다음 신고까지 할 일(2차 UX 마찰 9): 상태에서 자동 — 다음 신고 D-day, 처리 안 된 빨강·노랑, 기록 없는 시설·달, 공통 자산(재계산 후보), 수정세금계산서 기한 지난 건 */
+  function nextTodo(org: Org, led: Record<string, LedgerRow[]>, fil: Record<string, Filing>) {
+    const D = loadData(); const f = nextFiling(); const rows = Object.values(led).flat(); const oi = openItems(rows); const nolog = getNolog();
+    const facs = D ? org.facilities.filter(x => inFiling(D, x) && x.track !== false) : org.facilities; const lastM = ymd(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).slice(0, 7); const P = periodInfo(periodKeyOf(lastM));
+    const miss = facs.flatMap(x => (P.own ?? []).filter(m => m <= lastM && !led[`${x.id}:${m}`]?.length && !isNolog(x.id, m, nolog)).map(m => `${x.name} ${m}`));
+    const assets = Object.values(fil).flatMap(x => (x.assets ?? []).filter(a => a.common));
+    const L = [`4. 다음 신고까지 할 일 (${ymd(new Date())} 기준 자동 요약)`, `- 다음 신고: ${f.name} — ${ymd(f.due)} (D-${f.days})${org.filing === 'agent' ? ' · 세무대리인에게 「대리인 인계 꾸러미」를 넘기기' : ''}`];
+    if (oi.red.length) L.push(`- 다른 명의 세금계산서 ${oi.red.length}건 ${fmt(oi.redTax)}원 — 공급자에게 수정세금계산서 요청${oi.expired ? ` (기한 지난 ${oi.expired}건은 착오 정정이 아니면 불가)` : ''} — open_items.csv`);
+    if (oi.yellow.length) L.push(`- 확인 필요(노랑) ${oi.yellow.length}건 ${fmt(oi.yellowTax)}원 — 받는 사람·용도·공급자 확인 뒤 다시 판정`);
+    if (oi.noEvid.length) L.push(`- 근거 없는 전용 지출 ${oi.noEvid.length}건 — 계약·계량·검수 기록을 채우거나 공통으로`);
+    if (miss.length) L.push(`- 기록 없는 시설·달 ${miss.length}: ${miss.slice(0, 5).join(', ')}${miss.length > 5 ? ` 외 ${miss.length - 5}` : ''} — 붙여넣거나 '지출 없음'으로 표시`);
+    if (assets.length) L.push(`- 공통 자산 ${assets.length}건(assets.csv) — 확정신고마다 면세비율이 취득 때보다 5%p 넘게 바뀌었는지 재계산 확인(시행령 제83조)`);
+    const lastKey = Object.keys(fil).sort().pop(); if (lastKey && periodInfo(lastKey).kind === 'P') L.push(`- ${periodInfo(lastKey).name} 기록이 마지막 — 확정신고 때 6개월 전체 공급가액으로 정산`);
+    if (L.length === 2) L.push('- 처리 안 된 것 없음 — 매달 붙여넣기만 이어 가면 됩니다');
+    return L.join('\n');
   }
   const readmeHtml = (org: Org, led: Record<string, LedgerRow[]>, fil: Record<string, Filing>) => `<div class="fcard" id="h-readme-card"><h3>한 쪽 안내 — 이 기관의 부가세는 이렇게 돌아갑니다</h3><pre style="white-space:pre-wrap;font:inherit;font-size:var(--small);margin:0">${esc(readmeText(org, led, fil))}</pre></div>`;
   $('h-zip')?.addEventListener('click', () => {
@@ -41,6 +58,7 @@ ${last ? `- 다음 신고에서 할 일: ${periodInfo(last.period).kind === 'P' 
     const files: { name: string; data: string }[] = [{ name: 'README.txt', data: readmeText(org, led, fil) }, { name: 'org.json', data: JSON.stringify(org, null, 2) }];
     for (const [k, rows] of Object.entries(led)) { const [fid, month] = k.split(':'); const f = org.facilities.find(x => x.id === fid); files.push({ name: `ledgers/ledger-${month}-${(f?.name ?? fid).replace(/[\\/:*?"<>|]/g, '_')}.json`, data: JSON.stringify({ v: 1, org: org.org, facility: fid, facility_name: f?.name ?? fid, type: f?.type ?? 'other', month, exported: ymd(new Date()), rows }, null, 2) }); }
     for (const [k, f] of Object.entries(fil)) files.push({ name: `filings/filing-${k}.json`, data: JSON.stringify(f, null, 2) });
+    const nolog = getNolog(); if (Object.keys(nolog).length) files.push({ name: 'nolog.json', data: JSON.stringify({ v: 1, note: "시설·달 '지출 없음' 표시(fid:month) — 기록이 아니라 범위 표시", items: nolog }, null, 2) });
     files.push({ name: 'assets.csv', data: toCsv([['신고 기간', '시설', '내용', '세액', '종류', '공통', '취득 때 면세비율'], ...Object.values(fil).flatMap(f => (f.assets ?? []).map(a => [a.period, a.facility, a.desc, a.tax, a.kind === 'building' ? '건물·구축물' : '그 밖', a.common ? '공통' : '과세 전용', a.common ? pct(a.ratio0) : '']))]) });
     files.push({ name: 'open_items.csv', data: toCsv([['시설', '달', '날짜', '내용', '세액', '판정', '지금 할 일'], ...Object.entries(led).flatMap(([k, rows]) => { const [fid, month] = k.split(':'); const f = org.facilities.find(x => x.id === fid); return rows.filter(r => (r.v === 'no' || r.v === 'check') && !r.done).map(r => [f?.name ?? fid, month, r.d, r.desc, r.tax, LABEL[r.v], r.todo]); })]) });
     downloadBlob(`부가세-인수인계-${org.org}-${ymd(new Date())}.zip`, zipStore(files));
@@ -54,7 +72,8 @@ ${last ? `- 다음 신고에서 할 일: ${periodInfo(last.period).kind === 'P' 
       if (getOrg() && !confirm(`이 브라우저의 설정·기록을 꾸러미(${org.org})로 바꿉니다. 계속할까요?`)) return;
       const led: Record<string, LedgerRow[]> = {}; const fil: Record<string, Filing> = {};
       for (const en of entries) { if (/ledgers\/.*\.json$/.test(en.name)) { const j = JSON.parse(utf8(en.data)); if (j.facility && j.month) led[`${j.facility}:${j.month}`] = j.rows; } if (/filings\/.*\.json$/.test(en.name)) { const j = JSON.parse(utf8(en.data)) as Filing; if (j.period) fil[j.period] = j; } }
-      setOrg(org); setAllLedgers(led); setFilings(fil); st.textContent = `되살렸습니다: ${org.org} · 시설 기록 ${Object.keys(led).length}개 · 신고 기록 ${Object.keys(fil).length}개`; render();
+      const nlE = entries.find(x => x.name.endsWith('nolog.json')); if (nlE) { try { const j = JSON.parse(utf8(nlE.data)); if (j && j.items) setNolog(j.items); } catch { /* */ } }
+      setOrg(org); setAllLedgers(led); setFilings(fil); st.innerHTML = `되살렸습니다: ${esc(org.org)} · 시설 기록 ${Object.keys(led).length}개 · 신고 기록 ${Object.keys(fil).length}개 — <a class="btn" href="/vat/" id="h-next">이제 할 일 보기(대시보드 '이번 주 할 일') →</a>`; render();
     } catch (err) { st.textContent = '인수인계 꾸러미(zip)가 아니거나 읽지 못했습니다: ' + (err as Error).message; }
   });
   render();

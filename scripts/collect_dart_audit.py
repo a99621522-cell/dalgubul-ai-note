@@ -99,29 +99,52 @@ def write_csv(p: Path, rows) -> None:
 
 # ── ① 감사보고서 제출 목록 ──
 def filings(argv: list[str]) -> int:
+    """3개월 창마다 바로 저장하고, 다음 실행은 끝난 창을 건너뛴다(가장 최근 창은 늘 다시) — 2026-11-03 DART 응답이 호출당 10초 넘게 느려
+    90분 동안 목록을 끝내지 못하고 아무것도 남지 않았던 것을 고침."""
     since = argv[argv.index("--since") + 1] if "--since" in argv else (date.today() - timedelta(days=700)).strftime("%Y%m%d")
-    data = {"since": since, "corps": {}}
+    data = load_json(FILINGS, {})
+    if data.get("since") != since:
+        data = {"since": since, "corps": data.get("corps", {}), "done": data.get("done", [])}
+    done = set(data.get("done", []))
     d0 = date(int(since[:4]), int(since[4:6]), int(since[6:]))
     while d0 < date.today() and budget():
         d1 = min(d0 + timedelta(days=89), date.today())
-        page, total = 1, 1
-        while page <= total and budget():
-            j = N.get("list.json", bgn_de=d0.strftime("%Y%m%d"), end_de=d1.strftime("%Y%m%d"), pblntf_ty="F", page_no=page, page_count=100) or {}
+        win = f"{d0:%Y%m%d}-{d1:%Y%m%d}"
+        if win in done and d1 < date.today() - timedelta(days=7):
+            d0 = d1 + timedelta(days=1)
+            continue
+        t0, page, total, ok = time.time(), 1, 1, True
+        while page <= total:
+            if not budget():
+                ok = False
+                break
+            j = N.get("list.json", bgn_de=d0.strftime("%Y%m%d"), end_de=d1.strftime("%Y%m%d"), pblntf_ty="F", page_no=page, page_count=100)
+            if j is None:
+                ok = False
+                break
             total = int(j.get("total_page") or 0)
             for x in j.get("list", []):
                 nm = re.sub(r"\s+", " ", x.get("report_nm") or "").strip()
                 if "감사보고서" not in nm or (x.get("stock_code") or "").strip():
                     continue
                 c = data["corps"].setdefault(x["corp_code"], {"n": x.get("corp_name"), "a": []})
-                c["a"].append([x.get("rcept_dt"), nm, x.get("rcept_no")])
+                a = [x.get("rcept_dt"), nm, x.get("rcept_no")]
+                if a not in c["a"]:
+                    c["a"].append(a)
             page += 1
-        print(f"[filings] {d0}~{d1} 누적 {len(data['corps'])}곳 (호출 {N.CALLS[0]})", flush=True)
+        if ok:
+            done.add(win)
+        data["done"] = sorted(done)
+        data["got"] = date.today().isoformat()
+        save_json(FILINGS, data)
+        print(f"[filings] {win} {'끝' if ok else '중단'} — {page - 1}/{total}쪽, 누적 {len(data['corps'])}곳, {int(time.time() - t0)}초 (호출 {N.CALLS[0]})", flush=True)
+        if not ok:
+            break
         d0 = d1 + timedelta(days=1)
     for c in data["corps"].values():
-        c["a"] = sorted({tuple(a) for a in c["a"]}, reverse=True)
-    data["got"] = date.today().isoformat()
+        c["a"] = sorted(c["a"], reverse=True)
     save_json(FILINGS, data)
-    print(f"[filings] 저장 {len(data['corps'])}곳 → {FILINGS.relative_to(ROOT)}")
+    print(f"[filings] 저장 {len(data['corps'])}곳, 끝난 창 {len(done)}개 → {FILINGS.relative_to(ROOT)}")
     return 0
 
 

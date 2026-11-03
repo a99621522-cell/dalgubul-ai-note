@@ -4,6 +4,7 @@ import { dartCorps, eok, countBy, futureDisclosures, ymd, dartEmployees, n0, mil
 import type { DartQuarter } from '../lib/dart';
 import { companies, normName } from '../lib/csv';
 import AuditCompare from './AuditCompare.astro';
+import { auditReady } from '../lib/dartAudit';
 /** /listed/ — 메뉴 '상장기업'(운영자 지시 2026-10-05: DART 자료를 '대구시 상장기업' 메뉴로). 옛 /companies/dart/ 를 옮겼다.
  *  본사 주소가 대구인 유가증권·코스닥·코넥스 상장 회사의 재무·직원·연구개발비·출자·미래 산업 공시, 회사별 상세는 /listed/<corp_code>/.
  *  리디자인 v3 감사(2026-10-12: 한 페이지 568KB·표 59개·DOM 1.1만) 뒤 절마다 하위 페이지로 나눴다 — 이 컴포넌트를 src/pages/listed/{index,quarter,perf,notes,future,employees,rnd,invest}.astro 가 part 로 부른다.
@@ -12,6 +13,7 @@ interface Props { part?: 'fin' | 'half' | 'quarter' | 'perf' | 'notes' | 'future
 const { part = 'fin' } = Astro.props;
 const PARTS = [['fin', '재무', ''], ['half', '상반기 재무', 'half'], ['quarter', '분기 실적', 'quarter'], ['perf', '실적 공시(사유·전망)', 'perf'], ['notes', '보고서·IR 실적 설명', 'notes'], ['future', '미래 산업 공시', 'future'], ['employees', '직원', 'employees'], ['rnd', '연구개발비', 'rnd'], ['invest', '출자', 'invest'], ['audit', '비상장 외감·전국 비교', 'audit']] as const;
 const partName = PARTS.find(x => x[0] === part)![1];
+const TABS = PARTS.filter(x => x[0] !== 'audit' || auditReady() || part === 'audit');
 const all = dartCorps();
 const { years, asOf } = all;
 const corps = all.corps.filter(c => isListed(c.cls));
@@ -114,7 +116,7 @@ const f = (won?: string) => { const v = eok(won); return v == null ? '—' : v.t
 <Base title={part === 'fin' ? '대구시 상장기업' : `대구시 상장기업 — ${partName}`} crumb={part === 'fin' ? undefined : partName} description={`본사가 대구인 상장 회사 ${corps.length}곳(유가증권·코스닥·코넥스)의 최근 3개 사업연도 매출액·영업이익·직원·연구개발비·타법인 출자·미래 산업 관련 공시(DART 공시 값 그대로).`} current="listed" wide>
   <div class="section-head"><h1>{part === 'fin' ? '대구시 상장기업' : `상장기업 ${partName}`}</h1><span class="meta">{corps.length}곳 · {years[0]}~{last} 사업연도 · {asOf} 받음 · 금융감독원 DART</span></div>
   {part !== 'audit' && <p class="lede">금융감독원 전자공시(DART) 기업개황의 본사 주소가 대구인 상장 회사 {corps.length}곳입니다. 회사 이름을 누르면 재무·직원·연구개발비·출자·공시를 한 페이지에서 봅니다. 재무는 연결재무제표가 있으면 연결, 없으면 개별 값이고 원 단위 공시 값을 억 원으로 나눠 적었습니다. 가나다순이며 순위나 평가가 아닙니다.</p>}
-  <nav class="sub-tabs" aria-label="상장기업 자료">{PARTS.map(([k, name, path]) => <a href={`/listed/${path ? path + '/' : ''}`} aria-current={k === part ? 'page' : undefined}>{name}</a>)}<a href="/listed/#unlisted">비상장 공시 회사</a></nav>
+  <nav class="sub-tabs" aria-label="상장기업 자료">{TABS.map(([k, name, path]) => <a href={`/listed/${path ? path + '/' : ''}`} aria-current={k === part ? 'page' : undefined}>{name}</a>)}<a href="/listed/#unlisted">비상장 공시 회사</a></nav>
 
   {part === 'audit' && <AuditCompare />}
   {corps.length === 0 ? <p class="meta">아직 받은 자료가 없습니다.</p> : (<>

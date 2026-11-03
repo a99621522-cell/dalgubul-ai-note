@@ -33,8 +33,11 @@ export interface AuditCompare {
 }
 
 let memo: AuditCompare | null | undefined;
+/** 점검을 마친 뒤 운영 세션이 data/dart/audit_ready.txt 를 만들면 탭·내려받기가 열린다(2026-11-03: 감사보고서 판독 단위 오류 등을 고치는 동안 숨김) */
+export const auditReady = () => fs.existsSync(path.resolve('data/dart/audit_ready.txt'));
 export function auditCompare(): AuditCompare | null {
   if (memo !== undefined) return memo;
+  if (!auditReady()) return (memo = null);
   const p = path.resolve('data/dart/audit_compare.json');
   memo = fs.existsSync(p) ? (JSON.parse(fs.readFileSync(p, 'utf-8')) as AuditCompare) : null;
   return memo;

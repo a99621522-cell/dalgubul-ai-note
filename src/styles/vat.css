@@ -186,3 +186,12 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .vat-week li label { display: flex; align-items: center; gap: 8px; flex: 1 1 320px; cursor: pointer; } .vat-week li.done span { text-decoration: line-through; color: var(--muted); } .vat-week li .btn { margin-left: auto; }
 .mb-done .fsum { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px; margin: 8px 0; } .mb-done .fsum span { display: flex; align-items: center; gap: 6px; }
 .nolog-btn { font-size: var(--tiny); padding: 2px 6px; }
+/* 지난 돈 돌려받기 v2(2026-11-03): 공급자별 귀속 표 — 판정·청구 후보 칸이 눌려 세로로 깨지지 않게, 선택 상자는 폭 제한 */
+#rv-sup td:nth-child(8), #rv-sup .rv-rows td:nth-child(8) { min-width: 13em; white-space: normal; }
+#rv-sup td:nth-child(9) { min-width: 7em; white-space: nowrap; }
+#rv-sup select { max-width: 8.5em; font-size: var(--small); }
+#rv-sup select[data-sf-fid], #rv-sup select[data-rf-fid] { max-width: 11em; }
+#rv-sup th[scope="row"] { min-width: 7em; }
+#rv-sup td, #rv-sup th { padding-left: 4px; padding-right: 4px; }
+#rv-sup td:nth-child(8), #rv-sup .rv-rows td:nth-child(8) { min-width: 10em; font-size: var(--small); }
+#rv-sup .rv-rows > td { padding: 0 0 8px 24px; background: var(--color-surface-2, var(--bg-soft, transparent)); }

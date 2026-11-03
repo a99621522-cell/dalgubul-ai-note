@@ -36,12 +36,12 @@ def curl(url: str, post: dict | None = None, referer: str = "", timeout: int = 1
         for k, v in post.items():
             cmd += ["--data-urlencode", f"{k}={v}"]
     cmd.append(url)
-    for i in range(3):
+    for i in range(2):   # 연결이 끊기면 한 번만 더(러너 6시간 안에 3년치를 끝내려면 실패한 날을 오래 붙들지 않는다 — 실패한 날은 failed_days 에 남아 다음 실행이 다시 받는다)
         r = subprocess.run(cmd, capture_output=True, timeout=timeout + 30)
         if r.returncode == 0 and r.stdout:
             return r.stdout
         print(f"  [{i + 1}] curl {r.returncode} {url[-40:]} {r.stderr.decode('utf-8', 'ignore')[:100].strip()}", flush=True)
-        time.sleep(5 * (i + 1))
+        time.sleep(4 * (i + 1))
     return b""
 
 
@@ -55,7 +55,7 @@ def years_of(code: str) -> list[str]:
 
 def day_rows(code: str, year: str, ymd: str) -> list[list[str]] | None:
     """하루치 엑셀(xls) → 행 목록(머리글 제외). 실패면 None, 자료 없음이면 []"""
-    data = curl(f"{BASE}/expenditureAllExcel.do", post={"pgMv": "", "localGovCd": code, "fisYear": year, "fisFgCd": "All", "deptCd": "All", "dbizCd": "All", "payCmdYmd": ymd, "pageIndex": "1"}, referer=f"{BASE}/texoperateExpenditureAll.do?localGovCd={code}", timeout=200)
+    data = curl(f"{BASE}/expenditureAllExcel.do", post={"pgMv": "", "localGovCd": code, "fisYear": year, "fisFgCd": "All", "deptCd": "All", "dbizCd": "All", "payCmdYmd": ymd, "pageIndex": "1"}, referer=f"{BASE}/texoperateExpenditureAll.do?localGovCd={code}", timeout=90)
     if not data:
         return None
     if data[:4] != b"\xd0\xcf\x11\xe0":   # OLE2 가 아니면 오류 화면
@@ -120,7 +120,8 @@ def main():
     ap.add_argument("--years", default="2021,2022,2023")
     ap.add_argument("--days", default="")
     ap.add_argument("--probe", action="store_true")
-    ap.add_argument("--merge", action="store_true")
+    ap.add_argument("--merge", action="store_true", help="(기본) 있는 JSON 에 이어 받는다 — 받은 날은 건너뛰고 실패한 날은 다시")
+    ap.add_argument("--fresh", action="store_true", help="있는 JSON 을 버리고 처음부터")
     ap.add_argument("--sleep", type=float, default=1.2)
     a = ap.parse_args()
     govs = [g for g in GOVS if not a.gov or g[0] in a.gov.split(",")]
@@ -135,7 +136,7 @@ def main():
                 print("  ", rows[0])
             continue
         path = OUT / f"{key}.json"
-        old = json.loads(path.read_text(encoding="utf-8")) if path.exists() and a.merge else None
+        old = json.loads(path.read_text(encoding="utf-8")) if path.exists() and not a.fresh else None   # 기본 이어 받기(러너가 시간 초과로 끊겨도 중간 저장분부터)
         agg: dict = defaultdict(lambda: {"n": 0, "amt": 0, "card": 0, "petty": 0, "max": 0, "memo": []})
         days_seen: set[str] = set(); failed: list[str] = []; empty = 0
         if old:
@@ -154,6 +155,9 @@ def main():
                     days.append(d0.isoformat()); d0 += dt.timedelta(days=1)
         days = [d for d in days if d not in days_seen]
         t0 = time.time()
+        def save_partial():   # 60일마다 중간 저장 — 러너가 시간 초과로 죽어도 받은 만큼은 남는다(다음 실행이 이어 받음)
+            rows_p = [{"p": k[0], "acct": k[1], "dept": k[2], "biz": k[3], "mok": k[4], **v} for k, v in sorted(agg.items())]
+            path.write_text(json.dumps({"v": 1, "key": key, "code": code, "name": name, "source": "대구광역시 주민참여 재정 포털 세출현황 지출건별(부분 저장)", "fetched": dt.date.today().isoformat(), "years": sorted({d[:4] for d in days_seen}), "periods": sorted({r["p"] for r in rows_p}), "days": sorted(days_seen), "failed_days": sorted(set(failed)), "note": "부분 저장(수집 중)", "rows": rows_p}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         for i, d in enumerate(days):
             rows = day_rows(code, d[:4], d)
             if rows is None:
@@ -164,14 +168,19 @@ def main():
                 aggregate(rows, head, agg, days_seen)
             if i % 30 == 29:
                 print(f"  {name} {d} … {i + 1}/{len(days)} 묶음 {len(agg)} 실패 {len(failed)} ({int(time.time() - t0)}s)", flush=True)
+            if i % 60 == 59:
+                save_partial()
             time.sleep(a.sleep)
-        rows_out = [{"p": k[0], "acct": k[1], "dept": k[2], "biz": k[3], "mok": k[4], **v} for k, v in sorted(agg.items())]
-        periods = sorted({r["p"] for r in rows_out})
-        out = {"v": 1, "key": key, "code": code, "name": name, "source": "대구광역시 주민참여 재정 포털 세출현황 지출건별(jumin.daegu.go.kr/budget/texoperate/texoperateExpenditureAll.do), 지급일자 하루 단위 엑셀",
-               "fetched": dt.date.today().isoformat(), "years": sorted({d[:4] for d in days_seen}), "periods": periods, "days": sorted(days_seen), "failed_days": sorted(set(failed + (old.get("failed_days", []) if old else []))),
-               "note": "거래처·사업자번호·세액 칸이 없는 공개 자료 — 세액은 통계목 성격에 따른 추정(지출액 × 10/110)일 뿐이며, 실제 공제는 세금계산서 원본으로 확인한다. 2024년 이후 건별 자료는 포털에 없음(2026-11-03)",
-               "rows": rows_out}
-        path.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        def write_out():
+            rows_out = [{"p": k[0], "acct": k[1], "dept": k[2], "biz": k[3], "mok": k[4], **v} for k, v in sorted(agg.items())]
+            periods = sorted({r["p"] for r in rows_out})
+            out = {"v": 1, "key": key, "code": code, "name": name, "source": "대구광역시 주민참여 재정 포털 세출현황 지출건별(jumin.daegu.go.kr/budget/texoperate/texoperateExpenditureAll.do), 지급일자 하루 단위 엑셀",
+                   "fetched": dt.date.today().isoformat(), "years": sorted({d[:4] for d in days_seen}), "periods": periods, "days": sorted(days_seen), "failed_days": sorted(set(failed + ([d for d in old.get("failed_days", []) if d not in days_seen] if old else []))),
+                   "note": "거래처·사업자번호·세액 칸이 없는 공개 자료 — 세액은 통계목 성격에 따른 추정(지출액 × 10/110)일 뿐이며, 실제 공제는 세금계산서 원본으로 확인한다. 2024년 이후 건별 자료는 포털에 없음(2026-11-03)",
+                   "rows": rows_out}
+            path.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+            return rows_out
+        rows_out = write_out()
         print(f"[expense] {name}: 묶음 {len(rows_out)} · 날짜 {len(days_seen)}(빈 날 {empty}) · 실패 {len(failed)} → {path} {path.stat().st_size // 1024}KB", flush=True)
     idx = {p.stem: {"name": json.loads(p.read_text(encoding='utf-8'))["name"], "fetched": json.loads(p.read_text(encoding='utf-8'))["fetched"], "periods": json.loads(p.read_text(encoding='utf-8'))["periods"], "rows": len(json.loads(p.read_text(encoding='utf-8'))["rows"])} for p in sorted(OUT.glob("*.json")) if p.stem != "index"}
     (OUT / "index.json").write_text(json.dumps(idx, ensure_ascii=False, indent=1), encoding="utf-8")

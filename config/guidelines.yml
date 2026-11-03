@@ -87,3 +87,8 @@ guidelines:
       note: "제106조 제1항 제6호 — 국가·지자체·지자체조합에 공급하는 재화·용역(정부업무대행단체) 면제. 지자체 부가세 점검기 공단·공사 대행사업 근거(2026-11-03)", review: [부가가치세 신고] }
   - { key: special-tax-decree, kind: 시행령, issuer: 기획재정부,      name: 조세특례제한법 시행령,                    source: { type: law, name: 조세특례제한법 시행령 },
       note: "제106조 — 정부업무대행단체의 범위(지방공단, 시군구 설립 지방공사 2017~)와 면제 제외 사업. 지자체 부가세 점검기(2026-11-03)", review: [부가가치세 신고] }
+  # special-tax-act·special-tax-decree 본문은 2026-11-03 세션이 law.go.kr 화면 본문(LSW/lsInfoR.do?lsiSeq=…)으로 받아 두었다(DRF 는 IP 미등록 거부, 러너는 연결 실패). 러너가 되면 같은 키로 다시 받아 덮어쓴다.
+  - { key: national-tax-basic, kind: 법률, issuer: 기획재정부, name: 국세기본법, source: { type: law, name: 국세기본법 },
+      note: "제45조의2 경정청구·제45조의3 기한후신고·제47조의2~4 가산세·제48조 감면 — 지자체 부가세 점검기 근거(2026-11-03, 세션이 law.go.kr 화면 본문으로 받음)", review: [부가가치세 신고] }
+  - { key: special-tax-rule-annex10, kind: 시행규칙, issuer: 기획재정부, name: 조세특례제한법 시행규칙 별표 10, source: { type: manual, name: "조세특례제한법 시행규칙 [별표 10] 정부업무대행단체의 면세사업(제48조제2항 관련)" },
+      note: "law.go.kr 별표 PDF(LSW/flDownload.do?flSeq=153608695, 개정 2025-03-21)를 pdftotext 로 — 제22호 지방공단·제22호의2 시군구 유일 지방공사의 면세사업 = 국가·지자체 사업 대행. 자동 수집 대상 아님(수동)", review: [부가가치세 신고] }

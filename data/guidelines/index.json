@@ -1941,19 +1941,22 @@
     "부가가치세 신고"
    ],
    "fetched": "2026-11-03",
-   "status": "없음",
-   "found": "",
-   "id": "",
-   "date": "",
-   "eff": "",
-   "url": "",
-   "chars": 0,
-   "candidates": []
+   "status": "OK",
+   "found": "조세특례제한법",
+   "id": "284389",
+   "date": "20260317",
+   "eff": "20260918",
+   "url": "https://www.law.go.kr/법령/조세특례제한법",
+   "chars": 844565,
+   "exact": true,
+   "found_kind": "법률",
+   "articles": 1,
+   "note": "law.go.kr 화면 본문(lsInfoR, 2026-11-03 세션에서 받음 — DRF 오픈API 는 IP 미등록이라 안 됨)"
   },
   "special-tax-decree": {
    "key": "special-tax-decree",
    "name": "조세특례제한법 시행령",
-   "kind": "시행령",
+   "kind": "대통령령",
    "issuer": "기획재정부",
    "source": {
     "type": "law",
@@ -1964,14 +1967,69 @@
     "부가가치세 신고"
    ],
    "fetched": "2026-11-03",
-   "status": "없음",
-   "found": "",
-   "id": "",
-   "date": "",
-   "eff": "",
-   "url": "",
-   "chars": 0,
-   "candidates": []
+   "status": "OK",
+   "found": "조세특례제한법 시행령",
+   "id": "288915",
+   "date": "20260818",
+   "eff": "20260918",
+   "url": "https://www.law.go.kr/법령/조세특례제한법시행령",
+   "chars": 921889,
+   "exact": true,
+   "found_kind": "대통령령",
+   "articles": 1,
+   "note": "law.go.kr 화면 본문(lsInfoR, 2026-11-03 세션에서 받음)"
+  },
+  "special-tax-rule-annex10": {
+   "key": "special-tax-rule-annex10",
+   "name": "조세특례제한법 시행규칙 [별표 10] 정부업무대행단체의 면세사업(제48조제2항 관련)",
+   "kind": "기획재정부령",
+   "issuer": "기획재정부",
+   "source": {
+    "type": "law",
+    "name": "조세특례제한법 시행규칙 [별표 10] 정부업무대행단체의 면세사업(제48조제2항 관련)"
+   },
+   "applies": {},
+   "review": [
+    "부가가치세 신고"
+   ],
+   "fetched": "2026-11-03",
+   "status": "OK",
+   "found": "조세특례제한법 시행규칙 [별표 10] 정부업무대행단체의 면세사업(제48조제2항 관련)",
+   "id": "flSeq=153608695",
+   "date": "20250321",
+   "eff": "20250321",
+   "url": "https://www.law.go.kr/법령/조세특례제한법시행규칙[별표10]정부업무대행단체의면세사업(제48조제2항관련)",
+   "chars": 10075,
+   "exact": true,
+   "found_kind": "기획재정부령",
+   "articles": 0,
+   "note": "law.go.kr 별표 PDF(flDownload.do?flSeq=153608695, 개정 2025-03-21) pdftotext — 시행규칙 본문 전체는 아직 안 받음"
+  },
+  "national-tax-basic": {
+   "key": "national-tax-basic",
+   "name": "국세기본법",
+   "kind": "법률",
+   "issuer": "기획재정부",
+   "source": {
+    "type": "law",
+    "name": "국세기본법"
+   },
+   "applies": {},
+   "review": [
+    "부가가치세 신고"
+   ],
+   "fetched": "2026-11-03",
+   "status": "OK",
+   "found": "국세기본법",
+   "id": "289999",
+   "date": "20260929",
+   "eff": "20261002",
+   "url": "https://www.law.go.kr/법령/국세기본법",
+   "chars": 171587,
+   "exact": true,
+   "found_kind": "법률",
+   "articles": 1,
+   "note": "law.go.kr 화면 본문(lsInfoR, 2026-11-03 세션에서 받음) — 지자체 부가세 점검기 경정청구·기한후신고·가산세 근거"
   }
  },
  "skipped": [

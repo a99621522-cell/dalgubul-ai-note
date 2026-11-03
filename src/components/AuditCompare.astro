@@ -4,7 +4,8 @@
  *   → '같은 회사 여러 해 추이·규모별·국민연금 고용·이자보상비율 100% 미만 비중·한국은행 법인 전수와 빠진 층·내려받기').
  *  대구일보 「대구·경북 CSAI」(2026-11-03 보도)의 '무엇을 재고 어떻게 묶나'만 참고 — 회사별 위험 판정·우수기업 선정·사분면 칸 이름은 쓰지 않는다.
  *  값은 scripts/audit_compare.py 결과 그대로. 회사 이름·순위 없음, 작은 칸은 비움, 판정 낱말 없음. */
-import { auditCompare, cell, f1, diff, inRange, ksicName, KSIC2, ym, eokJo, type Scope } from '../lib/dartAudit';
+import { auditCompare, cell, f1, diff, inRange, ksicName, KSIC2, ym, eokJo, recentSignals, recentByKsic, type Scope } from '../lib/dartAudit';
+import { fmt, fmtChg } from '../lib/monthly';
 const A = auditCompare();
 const IND = A?.indicators ?? [];
 const T = A?.total;
@@ -25,6 +26,8 @@ const COV = A?.coverage;
 const TR = A?.trend ?? {};
 const EMP = A?.employment;
 const low = (s?: Scope) => s?.icr_low;
+const RS = recentSignals();
+const RK = recentByKsic();
 
 /** 업종 중분류 덤벨 그림(대구 비상장 ● · 전국 비상장 표본 ○) — 지표 하나, 업종 코드 순서(값 크기 정렬 아님) */
 function dumbbell(key: string, name: string): string {
@@ -72,6 +75,30 @@ function dumbbell(key: string, name: string): string {
       <dd>매출액 증가율 = (당기 매출 ÷ 전기 매출 − 1) × 100, 매출액 영업이익률 = 영업이익 ÷ 매출 × 100, 영업현금흐름 대 매출액 = 영업활동현금흐름 ÷ 매출 × 100, 부채비율 = 부채총계 ÷ 자본총계 × 100(자본 0 이하 제외), 이자보상비율 = 영업이익 ÷ 이자비용 × 100(이자비용 0 제외, 한국은행과 같은 %). 중앙값은 회사마다 비율을 구한 가운데 값, 합계 비율은 묶음의 분자 합 ÷ 분모 합입니다. 중앙값은 {A.min_n}곳, 비중·고용은 {minShare}곳 미만인 칸을 비웠습니다(작은 칸은 어느 회사인지 짐작될 수 있어서).</dd>
     </dl>
   </details>
+
+  <div class="section-head" id="recent"><h2>최근 신호 — 결산 뒤의 움직임</h2><span class="meta">아래 표들은 {yrs?.daegu_unlisted}년 결산 기준 · 이 칸은 그 뒤 분기·월 자료</span></div>
+  <p class="meta">감사보고서는 1년에 한 번(12월 결산을 이듬해 3~4월에 공시)이라 그 뒤 경기 변화는 담기지 않습니다. 비상장 회사는 분기 실적을 공시하지 않으므로, 이미 받고 있는 빠른 지표를 시점과 함께 둡니다. 출처와 대상이 서로 달라 한 줄로 이어 읽지 않습니다.</p>
+  {RS.listed.length > 0 && (
+  <div class="scroll-x"><table class="data-table" data-title="대구 상장 제조업 최근 실적(분기·반기보고서)">
+    <thead><tr><th>대구 상장 제조업(유가증권·코스닥)</th><th>시점</th><th class="n">회사</th><th class="n">매출액 전년 같은 기간 대비<br />중앙값(%)</th><th class="n">매출이 늘어난<br />회사 비율(%)</th><th class="n">영업이익률 중앙값(%)</th><th class="n">전년 같은 기간<br />영업이익률 중앙값(%)</th></tr></thead>
+    <tbody>{RS.listed.map(r => <tr><th scope="row">{r.label}</th><td>{r.period}</td><td class="n">{r.n}</td><td class="n">{f1(r.growth)}</td><td class="n">{f1(r.up)}</td><td class="n">{f1(r.opm)}</td><td class="n">{f1(r.opmPrev)}</td></tr>)}</tbody>
+  </table></div>)}
+  <p class="meta">분기·반기보고서의 주요계정(연결이 있으면 연결) — 위 결산 표의 별도 기준과 다릅니다. 회사별 값은 <a href="/listed/half/">상반기 재무</a>·<a href="/listed/quarter/">분기 실적</a> 탭에 있습니다.</p>
+  {RS.monthly.length > 0 && (
+  <div class="scroll-x"><table class="data-table" data-title="대구 월간 경기 지표(최근 달)">
+    <thead><tr><th>대구 월간 지표</th><th>최근 달</th><th class="n">값</th><th>단위</th><th class="n">전년 같은 달 대비</th><th>출처</th></tr></thead>
+    <tbody>{RS.monthly.map(x => <tr><th scope="row">{x.s.name}</th><td>{x.m}</td><td class="n">{fmt(x.v, x.s.digits)}</td><td>{x.s.unit}</td><td class="n">{fmtChg(x.yoy, x.s.unit, 1)}{x.yoy != null && (x.s.change === '%' ? '%' : x.s.change === '%p' ? '%p' : '')}</td><td>{x.s.source}</td></tr>)}</tbody>
+  </table></div>)}
+  {RK.length > 0 && (<>
+  <h3>업종별 최근 신호</h3>
+  <div class="scroll-x"><table class="data-table" data-title="업종(KSIC 중분류)별 최근 신호 — 대구">
+    <thead><tr><th rowspan="2">업종</th><th colspan="3" class="c">광공업 생산(KOSIS, {RK[0]?.ipMonth})</th><th colspan="2" class="c">상장 제조업 {RK[0]?.half}년 상반기</th><th colspan="2" class="c">비상장 외감 국민연금 가입자</th></tr>
+      <tr><th class="n">생산지수<br />(2020=100)</th><th class="n">생산 전년 같은 달<br />대비(%)</th><th class="n">출하 전년 같은 달<br />대비(%)</th><th class="n">회사</th><th class="n">매출액 전년 대비<br />중앙값(%)</th><th class="n">회사</th><th class="n">합계 증감률(%)</th></tr></thead>
+    <tbody>{RK.map(r => <tr><th scope="row">{ksicName(r.code)}</th><td class="n">{f1(r.ip)}</td><td class="n">{f1(r.ipYoy)}</td><td class="n">{f1(r.shYoy)}</td><td class="n">{r.halfN || '—'}</td><td class="n">{r.halfGrowth == null ? (r.halfN > 0 ? '표본 적음' : '—') : f1(r.halfGrowth)}</td><td class="n">{r.empN || '—'}</td><td class="n">{f1(r.empChg)}</td></tr>)}</tbody>
+  </table></div>
+  <p class="meta">세 칸은 출처·대상·시점이 다릅니다 — 광공업 생산은 대구 소재 사업체 전체(국가데이터처, 원지수), 상장 실적은 대구 본사 상장 제조업의 반기보고서(5곳 미만 업종은 '표본 적음'), 국민연금은 이 탭의 비상장 외감 회사({ym(EMP?.months.prev)} → {ym(EMP?.months.last)}, {minShare}곳 미만은 비움). 같은 업종이라도 서로 더하거나 견주는 숫자가 아닙니다.</p>
+  </>)}
+  <p class="meta">더 많은 월간 지표와 추이 그래프는 <a href="/stats/monthly/">경기 동향</a>에 있습니다. 비상장 외감 회사의 국민연금 가입자 증감은 <a href="#employment">아래 표</a>(월 자료)에 있습니다.</p>
 
   <div class="section-head"><h2>지표별 중앙값 — 대구와 전국</h2><span class="meta">% · 차이는 대구 − 전국(%p) · 괄호 안은 1~3사분위</span></div>
   <div class="scroll-x"><table class="data-table" data-title="대구·전국 제조업 재무 지표 중앙값(상장·비상장 외감)">

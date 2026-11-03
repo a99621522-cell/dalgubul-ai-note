@@ -19,7 +19,7 @@ on:
         required: false
         default: "false"
       attempt:
-        description: "(자동) 몇 번째 시도인지 — 러너 IP 가 포털에 막혀 종료 코드 3 으로 끝난 지자체는 그 잡이 자기만 새 러너로 다시 부른다(30번까지)"
+        description: "(자동) 몇 번째 시도인지 — 러너 IP 가 포털에 막혀 종료 코드 3 으로 끝난 지자체는 그 잡이 자기만 새 러너로 다시 부른다(50번까지)"
         required: false
         default: "1"
   schedule:
@@ -90,7 +90,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           A="${{ github.event.inputs.attempt || '1' }}"
-          if [ "$A" -ge 30 ]; then echo "::warning::${{ matrix.gov }} — $A번째 시도까지 포털 연결이 막혀 중단(국내 PC 또는 수동 재실행)"; exit 0; fi
+          if [ "$A" -ge 50 ]; then echo "::warning::${{ matrix.gov }} — $A번째 시도까지 포털 연결이 막혀 중단(국내 PC 또는 수동 재실행)"; exit 0; fi
           echo "다시 받기: ${{ matrix.gov }} (시도 $((A+1)))"
           gh workflow run daegu_expense.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f gov="${{ matrix.gov }}" -f years="${{ github.event.inputs.years || '2021,2022,2023' }}" -f probe=false -f attempt="$((A+1))"
       - name: 결과

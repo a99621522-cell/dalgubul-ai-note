@@ -93,7 +93,7 @@ def main():
         return
     if "--dump" in sys.argv:   # 표·선택 상자·스크립트 속 주소까지: 통계표 화면이 어떻게 그려지는지 볼 때
         for i, sel in enumerate(soup.find_all("select")[:12]):
-            opts = [o.get_text(strip=True) for o in sel.find_all("option")]
+            opts = [(f"{o.get('value')}=" if o.get('value') not in (None, o.get_text(strip=True)) else '') + o.get_text(strip=True) for o in sel.find_all("option")]   # 값=글자(값이 글자와 다를 때) — 2026-11-04 주민참여 포털 구·군 코드 확인
             print(f"== select[{i}] name={sel.get('name') or sel.get('id')} ({len(opts)}개): {' | '.join(opts[:40])}")
         for i, tb in enumerate(soup.find_all("table")[:15]):
             cap = tb.find("caption"); rows = tb.find_all("tr")

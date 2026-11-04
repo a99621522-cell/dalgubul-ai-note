@@ -319,6 +319,15 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300); await pg.selectOption('[data-pb-fid="회계과|달성군 여성문화복지센터 증축"]', 'f2'); await pg.waitForTimeout(400);
   const learned = await pg.evaluate(() => (JSON.parse(localStorage.getItem('vat-org-v1')).map || []).map(r => r.pat + '>' + r.fid).join(','));
   ok('R10 시설을 고르면 매핑표에 남음(달성군 여성문화복지센터 증축 → f2) · 면세 시설이라 추정 그대로', /여성문화복지센터 증축>f2/.test(learned) && T(await pg.locator('#pub-claim').textContent()).startsWith('24,237,600'), learned);
+  /* R11 2024년 이후 — 지방재정365 세부사업별 연간 지출액(통계목 없음, 2021~2022 건별 비중을 빌림) */
+  await pg.waitForSelector('#pub-lbiz', { timeout: 10000 });
+  const lh = await pg.$$eval('#pub-lbiz thead th', ths => ths.map(t => t.textContent.trim()).join('|'));
+  const ln = await pg.$$eval('#pub-lbiz tbody tr', trs => trs.length);
+  ok('R11 지방재정365 표: 2024·2025 지출액 열 · 세부사업 줄 · 앞 표에서 고른 여성문화복지센터 증축은 같은 사업으로 이어짐(미지정에서 빠짐)', /2024 지출액/.test(lh) && /2025 지출액/.test(lh) && ln > 20 && !(await pg.$$eval('#pub-lbiz tbody tr', trs => trs.some(t => /여성문화복지센터 증축/.test(t.dataset.lk)))), lh + ' ' + ln);
+  await pg.fill('#pub-lq', '휴양림'); await pg.press('#pub-lq', 'Enter'); await pg.dispatchEvent('#pub-lq', 'change'); await pg.waitForTimeout(300);
+  const lk = await pg.$$eval('#pub-lbiz tbody tr', trs => trs.map(t => t.dataset.lk));
+  if (lk.length) { await pg.selectOption(`[data-pl-fid="${lk[0]}"]`, 'f3'); await pg.waitForTimeout(400); }
+  ok('R11 휴양림 사업을 비슬산(과세)에 지정 → 연도별 추정 표·받아올 사업 메모에 그 사업', lk.length > 0 && (await pg.locator('#pub-lper').count()) === 1 && (await pg.locator('#pub-lmemo').inputValue()).includes(lk[0].split('|')[2]), JSON.stringify(lk.slice(0, 3)));
   await pg.evaluate(() => { localStorage.removeItem('vat-pub-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));

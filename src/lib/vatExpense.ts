@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { vatLofinGovs } from './vatLofinBiz';
 /** 대구 공개 지출 자료 집계(data/vat/expense/<gov>.json, scripts/fetch_daegu_expense.py) → /vat-expense/index.json·/vat-expense/<gov>.json.
  *  지자체 부가세 절감 점검기 '공개 지출 자료로 후보 찾기'(운영자 2026-11-03 '홈택스 붙여넣는 것은 공무원이 안 할 것 같은데 방법을 찾아봐'). 값 그대로, 세액 없음(화면이 통계목 성격으로 추정) */
 export type ExpAgg = { p: string; acct: string; dept: string; biz: string; mok: string; n: number; amt: number; card: number; petty: number; max: number; memo: string[] };
@@ -13,5 +14,11 @@ export function vatExpenseGovs(): ExpGov[] {
   out.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
   return (cache = out);
 }
-/** 목록(행 없이): 지자체 선택 상자용 */
-export const vatExpenseIndex = () => vatExpenseGovs().map(g => ({ key: g.key, code: g.code, name: g.name, fetched: g.fetched, years: g.years, periods: g.periods, days: g.days.length, failed: g.failed_days.length, rows: g.rows.length, note: g.note, source: g.source }));
+/** 목록(행 없이): 지자체 선택 상자용 — 주민참여 포털 건별 집계(2021~2023)와 지방재정365 세부사업별 지출액(2021~, `lofin`)을 지자체마다 합친다 */
+export const vatExpenseIndex = () => {
+  const L = vatLofinGovs(); const P = vatExpenseGovs();
+  const keys = [...new Set([...L.map(g => g.key), ...P.map(g => g.key)])];
+  const order = ['daegu', 'jung', 'dong', 'seo', 'nam', 'buk', 'suseong', 'dalseo', 'dalseong', 'gunwi']; keys.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  return keys.map(k => { const g = P.find(x => x.key === k); const l = L.find(x => x.key === k);
+    return { key: k, code: g?.code ?? '', name: g?.name ?? l!.name, fetched: g?.fetched ?? '', years: g?.years ?? [], periods: g?.periods ?? [], days: g?.days.length ?? 0, failed: g?.failed_days.length ?? 0, rows: g?.rows.length ?? 0, note: g?.note ?? '', source: g?.source ?? '', lofin: l ? { years: l.years, rows: l.rows.length } : null }; });
+};

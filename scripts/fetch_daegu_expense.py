@@ -145,7 +145,7 @@ def main():
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--merge", action="store_true", help="(기본) 있는 JSON 에 이어 받는다 — 받은 날은 건너뛰고 실패한 날은 다시")
     ap.add_argument("--fresh", action="store_true", help="있는 JSON 을 버리고 처음부터")
-    ap.add_argument("--sleep", type=float, default=3.0)  # 2026-11-04: 여러 잡이 함께 받은 뒤 포털이 400 으로 막아 간격을 늘림
+    ap.add_argument("--sleep", type=float, default=6.0)  # 2026-11-04: 포털이 많이 받은 뒤 400 으로 막음(여러 잡 동시 뒤 1번, 남구 870일 뒤 1번) — 1.2 → 3 → 6초
     ap.add_argument("--budget", type=int, default=0, help="초 — 이 시간을 넘기면 중간 저장 뒤 종료 코드 3(러너 시간 초과로 커밋 없이 죽는 것을 막는다, 다음 실행이 이어 받음)")
     a = ap.parse_args()
     govs = [g for g in GOVS if not a.gov or g[0] in a.gov.split(",")]

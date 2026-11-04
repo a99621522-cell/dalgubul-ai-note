@@ -21,7 +21,7 @@
 | grdp-sido-expenditure | [시도별 지역내총생산에 대한 지출](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C93) | Y 2014~2026 | 2024 | 1830 | 백만원 %p |
 | grdp-sido-industry-all | [시도별 경제활동별 지역내총생산](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91) | Y 2014~2026 | 2024 | 19602 | 백만원 %p |
 | grdp-sido-industry | [시도별 경제활동별 지역내총생산](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1C91) | Y 2020~2026 | 2024 | 495 | 백만원 %p |
-| housing-unsold-sigungu | [시·군·구별 미분양현황](https://kosis.kr/statHtml/statHtml.do?orgId=116&tblId=DT_MLTM_2082) | M 202301~202612 | 202608 | 10824 | 호 |
+| housing-unsold-sigungu | [시·군·구별 미분양현황](https://kosis.kr/statHtml/statHtml.do?orgId=116&tblId=DT_MLTM_2082) | M 202301~202612 | 202609 | 11070 | 호 |
 | labor-force-sido-annual-all | [행정구역(시도)별 경제활동인구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S) | Y 2014~2026 | 2025 | 1953 | 천명 |
 | labor-force-sido | [행정구역(시도)별 경제활동인구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S) | M 202301~202612 | 202609 | 7479 | 천명 |
 | large-retail-index-sido | [시도별 대형소매점 판매액지수(2020＝100.0)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K41015) | M 202301~202612 | 202609 | 270 | 2020＝100 |

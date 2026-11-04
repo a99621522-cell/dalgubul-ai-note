@@ -27,6 +27,11 @@ def name_of(r, url):
 
 def show_text(label, text, words):
     lines = [l.strip() for l in text.splitlines() if l.strip()]
+    if words and words[0].startswith("ALL"):   # click 칸 'ALL' 또는 'ALL:3000' — 공개 문서 전체 글자(앞 N줄)를 찍는다(2026-11-04 국민성장펀드 가이드북)
+        n = int(words[0].split(":")[1]) if ":" in words[0] else 3000
+        print(f"== {label}: {len(lines)}줄 — 앞 {n}줄 전부")
+        for l in lines[:n]: print("  ", l)
+        return
     print(f"== {label}: {len(lines)}줄 — 앞 40줄")
     for l in lines[:40]: print("  ", l[:200])
     for w in words:

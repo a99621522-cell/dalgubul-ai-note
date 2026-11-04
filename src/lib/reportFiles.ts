@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'cnm-robotics-pressfit', summary: '서울 금천구에 본사를 둔 압입 자동화 장비 회사 씨앤엠로보틱스(2000년 창업)가 서보프레스(FLEXPRESS)·중심오차보정기기(CENTER MASTER)·압입 인디케이터를 만들고, 대구 달성군 테크노폴리스·연구개발특구·옥포에 공장 3곳을 등록해 I/O보드·스트레인 앰프·서보프레스 등을 생산하는 구조를 회사 누리집과 팩토리온 자료로 정리한 자료. DART 공시가 없어 재무는 싣지 않음.', topics: ['비상장기업', '로봇', '설비'],
+    title: '씨앤엠로보틱스, 압입 자동화 장비와 달성 생산 거점', name: '씨앤엠로보틱스, 압입 자동화 장비와 달성 생산 거점',
+    hwpx: '/hwpx/cnm-robotics-pressfit.hwpx', hwpxSize: '37KB', date: '2026-11-04' },
   { slug: 'st-youngwon-separator', summary: '대구 달성군 다사읍(성서5차첨단산업단지) 비상장 기계 회사 에스티영원(2021년 설립)이 리튬배터리 습식분리막 제조장비로 매출을 2022년 99억 원에서 2023년 568억 원까지 늘렸다가 2025년 3억 원(영업손실 35억 원)으로 줄고, 2025년 말 선수금 370억 원·재공품 379억 원이 전년 말 규모로 남은 구조를 DART 감사보고서(2023~2025)의 재무상태·차입금·대손충당금 주석과 국민연금·벤처기업명단·공장등록 자료로 정리한 자료. 평가·전망은 싣지 않음.', topics: ['비상장기업', '이차전지', '설비'],
     title: '에스티영원, 이차전지 습식분리막 장비 회사의 수주와 매출', name: '에스티영원, 이차전지 습식분리막 장비 회사의 수주와 매출',
     hwpx: '/hwpx/st-youngwon-separator.hwpx', hwpxSize: '140KB', date: '2026-11-03' },

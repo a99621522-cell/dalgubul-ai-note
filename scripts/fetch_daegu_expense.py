@@ -143,11 +143,20 @@ def main():
     ap.add_argument("--years", default="2021,2022,2023")
     ap.add_argument("--days", default="")
     ap.add_argument("--probe", action="store_true")
+    ap.add_argument("--diag", action="store_true", help="10개 지자체의 연도 목록만 차례로 받아 결과를 찍는다(수집·종료 코드 없음) — 포털이 IP 를 막는지, 지자체마다 다른지 가르기")
     ap.add_argument("--merge", action="store_true", help="(기본) 있는 JSON 에 이어 받는다 — 받은 날은 건너뛰고 실패한 날은 다시")
     ap.add_argument("--fresh", action="store_true", help="있는 JSON 을 버리고 처음부터")
     ap.add_argument("--sleep", type=float, default=6.0)  # 2026-11-04: 포털이 많이 받은 뒤 400 으로 막음(여러 잡 동시 뒤 1번, 남구 870일 뒤 1번) — 1.2 → 3 → 6초
     ap.add_argument("--budget", type=int, default=0, help="초 — 이 시간을 넘기면 중간 저장 뒤 종료 코드 3(러너 시간 초과로 커밋 없이 죽는 것을 막는다, 다음 실행이 이어 받음)")
     a = ap.parse_args()
+    if a.diag:   # 2026-11-04: 남구는 되는데 동구·서구만 400 이던 때 원인 가르기
+        for key, code, name in GOVS:
+            global REACHED
+            REACHED = False
+            t0 = time.time(); yrs = years_of(code)
+            print(f"[diag] {name}({code}) 연도 {len(yrs)}개 · 포털 응답 {'있음' if REACHED else '없음(연결 안 됨)'} · {time.time() - t0:.1f}초", flush=True)
+            time.sleep(a.sleep)
+        return
     govs = [g for g in GOVS if not a.gov or g[0] in a.gov.split(",")]
     for key, code, name in govs:
         yrs = years_of(code)

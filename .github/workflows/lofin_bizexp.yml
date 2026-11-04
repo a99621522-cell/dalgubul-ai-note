@@ -1,0 +1,48 @@
+name: 지방재정365 세부사업별 세출 현황 받기 (대구 행)
+
+# scripts/fetch_lofin_bizexp.py — 지방재정365 통합자료실 「N 회계연도 세부사업별 세출 현황」(공공데이터포털 15138684 가 가리킴, 키 없음)
+# 첨부 엑셀(전국)을 받아 대구 본청·구군 행만 data/vat/lofin_biz/<연도>.csv 로 커밋한다. 해마다 1월 하순에 새 회계연도 파일이 올라온다.
+on:
+  schedule:
+    - cron: "23 22 5 2 *"   # 2월 6일 07:23 KST — 전년도 파일(1월 하순 게시) 받기
+  workflow_dispatch:
+    inputs:
+      years:
+        description: "회계연도(쉼표)"
+        required: false
+        default: "2021,2022,2023,2024,2025"
+  push:
+    branches: [main]
+    paths: [scripts/fetch_lofin_bizexp.py, .github/workflows/lofin_bizexp.yml]
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q playwright openpyxl && python -m playwright install --with-deps chromium
+      - name: 받기
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          Y="${{ github.event.inputs.years }}"
+          [ -z "$Y" ] && { [ "${{ github.event_name }}" = "schedule" ] && Y=$(( $(date +%Y) - 1 )) || Y="2021,2022,2023,2024,2025"; }
+          python3 scripts/fetch_lofin_bizexp.py --years "$Y"
+      - name: 커밋
+        id: c
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vat/lofin_biz
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: 지방재정365 세부사업별 세출 현황 대구 행 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done
+          echo "pushed=1" >> "$GITHUB_OUTPUT"

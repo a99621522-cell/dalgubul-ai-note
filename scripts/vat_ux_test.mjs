@@ -308,17 +308,21 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   await pg.click('#rv-build'); await pg.waitForTimeout(500); ok('R9 목록에 더하기 → 2건(엑셀 일련번호 날짜 45700 → 2025-02-12)', /2건/.test(T(await pg.locator('#rv-stat').textContent())) && (await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-review-v1')).rows.map(r => r.d).sort().join(','))) === '2025-02-10,2025-02-12');
   await pg.setInputFiles('#rv-drop-zone input[type=file]', path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax', 'invoice_list_euckr.csv')); await pg.waitForTimeout(500); ok('R9 EUC-KR CSV 파일 놓기: 1행·공급자상호 열', /1행/.test(T(await pg.locator('#rv-colA .q-title').textContent())) && /2행 읽음\(csv\)/.test(T(await pg.locator('#rv-drop-zone .vat-drop-msg').textContent())) && (await pg.evaluate(() => document.querySelector('#rv-colA select[data-col=supplier]').selectedOptions[0].textContent)) === '공급자상호');
   await pg.evaluate(() => localStorage.removeItem('vat-review-v1'));
-  /* R10 공개 지출 자료로 후보 찾기 — 달성군 표본(5일치) */
+  /* R10 공개 지출 자료로 후보 찾기 — 달성군(받은 만큼, 금액은 식으로 견줌) */
   await pg.evaluate(o => localStorage.setItem('vat-org-v1', JSON.stringify(o)), { ...ORG_R, facilities: [...ORG_R.facilities, { id: 'f3', type: 'lodging', name: '비슬산 자연휴양림', run: 'direct', income: [], deposit: false }] }); await pg.reload(); await pg.waitForSelector('#rv-a', { state: 'attached' });
   await pg.click('[data-rvsrc="pub"]'); await pg.waitForSelector('#pub-gov'); await pg.selectOption('#pub-gov', 'dalseong'); await pg.click('#pub-load'); await pg.waitForSelector('#pub-biz', { timeout: 15000 }); await pg.waitForTimeout(300);
   const pubRows = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => ({ k: t.dataset.bk, fid: t.querySelector('[data-pb-fid]').value, badge: !!t.querySelector('.vbadge') })));
   ok('R10 공개 자료 불러오기: 세부사업 표 · 비슬산 휴양림도로 확포장 → 비슬산 자연휴양림 이름 일치(미지정 표에서 빠짐)', pubRows.length > 20 && !pubRows.some(r => /비슬산 휴양림도로/.test(r.k)), String(pubRows.length));
   await pg.click('[data-pf="done"]'); await pg.waitForTimeout(300); const doneRows = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => ({ k: t.dataset.bk, fid: t.querySelector('[data-pb-fid]').value })));
-  ok('R10 지정됨 표에 비슬산(f3·이름 일치) · 공제 대상 추정 24,237,600(266,613,600 × 10/110, 숙박·캠핑장 과세)', doneRows.some(r => /비슬산 휴양림도로/.test(r.k) && r.fid === 'f3') && T(await pg.locator('#pub-claim').textContent()).startsWith('24,237,600'), T(await pg.locator('#pub-claim').textContent()) + JSON.stringify(doneRows));
+  /* 자료가 늘어도(표본 → 3년 전체) 맞는 식으로 견준다: 숙박(과세) 직영 시설은 공제 대상 = 세액 추정, 카드 합계 = 과세기간 표의 공제 대상 합 */
+  const perSum = async () => pg.$$eval('#pub-per tbody tr', trs => { const n = s => Number((s || '').replace(/[^0-9]/g, '')) || 0; let all = 0, f3e = 0, f3c = 0; for (const t of trs) { const td = t.querySelectorAll('td'); const c = n(td[4]?.textContent); all += c; if (/비슬산 자연휴양림/.test(td[0]?.textContent || '')) { f3e += n(td[3]?.textContent); f3c += c; } } return { all, f3e, f3c }; });
+  const claimN = async () => Number(T(await pg.locator('#pub-claim').textContent()).replace(/[^0-9]/g, ''));
+  const ps1 = await perSum(); const c1 = await claimN();
+  ok('R10 지정됨 표에 비슬산(f3·이름 일치) · 숙박·캠핑장 과세라 공제 대상 추정 = 세액 추정(10/110) · 카드 = 표 합계', doneRows.some(r => /비슬산 휴양림도로/.test(r.k) && r.fid === 'f3') && ps1.f3e > 0 && ps1.f3c === ps1.f3e && c1 === ps1.all, c1 + ' ' + JSON.stringify(ps1));
   ok('R10 받아올 사업 목록 메모에 건설과·비슬산 · CSV 단추', /건설과/.test(await pg.locator('#pub-memo').inputValue()) && /비슬산 휴양림도로/.test(await pg.locator('#pub-memo').inputValue()) && (await pg.locator('#pub-csv').count()) === 1);
   await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300); await pg.selectOption('[data-pb-fid="회계과|달성군 여성문화복지센터 증축"]', 'f2'); await pg.waitForTimeout(400);
   const learned = await pg.evaluate(() => (JSON.parse(localStorage.getItem('vat-org-v1')).map || []).map(r => r.pat + '>' + r.fid).join(','));
-  ok('R10 시설을 고르면 매핑표에 남음(달성군 여성문화복지센터 증축 → f2) · 면세 시설이라 추정 그대로', /여성문화복지센터 증축>f2/.test(learned) && T(await pg.locator('#pub-claim').textContent()).startsWith('24,237,600'), learned);
+  ok('R10 시설을 고르면 매핑표에 남음(달성군 여성문화복지센터 증축 → f2) · 면세 시설이라 추정 그대로', /여성문화복지센터 증축>f2/.test(learned) && (await claimN()) === c1, learned + ' ' + (await claimN()) + ' vs ' + c1);
   /* R11 2024년 이후 — 지방재정365 세부사업별 연간 지출액(통계목 없음, 2021~2022 건별 비중을 빌림) */
   await pg.waitForSelector('#pub-lbiz', { timeout: 10000 });
   const lh = await pg.$$eval('#pub-lbiz thead th', ths => ths.map(t => t.textContent.trim()).join('|'));

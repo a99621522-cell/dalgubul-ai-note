@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 340   # 스크립트는 290분(--budget 17400)에서 스스로 멈춰 커밋·retry 가 돌게 한다
     strategy:
-      max-parallel: 2
+      max-parallel: 1   # 포털 부담 — 지자체 하나씩(2026-11-04)
       fail-fast: false
       matrix:
         gov: ${{ fromJSON(needs.plan.outputs.govs) }}

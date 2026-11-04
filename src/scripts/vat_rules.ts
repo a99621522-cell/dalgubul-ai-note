@@ -136,7 +136,21 @@ export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacil
   let best: OrgFacility | undefined, bl = 0;
   for (const f of org.facilities) {
     for (const nm of [f.name, ...(f.alias ?? [])]) { const n = norm(nm.replace(/\(.*$/, '')); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
-    for (const t of new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf))) { if ((freq.get(t) ?? 0) >= 3 || STOP.has(t)) continue; const n = norm(t); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
+    /* 낱말 일치는 시설 종류가 맞을 때만(2026-11-04 — 3년치 공개 지출에서 '비슬산 자연휴양림'이 '비슬산 참꽃 문화제'·'비슬산 유스호스텔 관리' 같은 다른 사업 7개에 붙음):
+       시설 이름의 마지막 낱말(종류: 자연휴양림·파크골프장·유스호스텔)이 있거나, 앞 낱말(지명) + 종류 글자(마지막 낱말 끝 3글자, 예: 휴양림)가 함께 있어야 한다.
+       지명만 둘('화원 동산')은 붙이지 않는다. 마지막 낱말이 흔한 낱말('센터')이면 가를 낱말 둘이 있어야. 낱말이 하나뿐인 이름은 그 하나로 */
+    for (const nm of [f.name, ...(f.alias ?? [])]) {
+      const all = tokOf(nm.replace(/\(.*$/, '')); if (!all.length) continue; const ok = (t: string) => (freq.get(t) ?? 0) < 3 && !STOP.has(t) && norm(t).length >= 2;
+      const last = all[all.length - 1], place = [...new Set(all.slice(0, -1))].filter(ok); const has = (t: string) => hay.includes(norm(t));
+      const stem = last.length >= 4 ? norm(last.slice(-3)) : ''; let n = 0;
+      const road = (w: string) => new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(도로|진입로|길|교량|교)').test(hay);   // '휴양림도로 확포장'·'휴양림길 인도' — 시설로 가는 도로 공사는 시설 지출이 아니다
+      if (all.length === 1) { if (ok(last) && has(last) && !road(norm(last))) n = norm(last).length; }
+      else if (ok(last) && has(last) && !road(norm(last))) n = norm(last).length + place.filter(has).reduce((a, t) => a + norm(t).length, 0);
+      else if (stem && hay.includes(stem) && !road(stem) && place.some(has)) n = stem.length + place.filter(has).reduce((a, t) => a + norm(t).length, 0);
+      else if (all.some(t => norm(t) === hay)) n = hay.length;   // 입력 전체가 시설 이름의 한 낱말과 같을 때(매출 붙여넣기에 '테크노폴리스'만 적음)
+      else if (!ok(last) && place.filter(has).length >= 2) n = place.filter(has).reduce((a, t) => a + norm(t).length, 0);
+      if (n > bl) { bl = n; best = f; }
+    }
   }
   return best;
 }

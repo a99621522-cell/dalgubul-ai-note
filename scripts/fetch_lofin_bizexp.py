@@ -72,7 +72,7 @@ def norm(v) -> str:
 def extract(y: str, path: Path) -> dict:
     """머리글 줄(‘자치단체’ 든 줄)을 찾고, 지역·자치단체 칸이 대구인 행만 남긴다."""
     out = OUT / f"{y}.csv"
-    head, n_all, n_dg, cols = None, 0, 0, {}
+    head, n_all, n_dg, cols, sub = None, 0, 0, {}, False
     with out.open("w", newline="", encoding="utf-8") as fo:
         w = csv.writer(fo)
         for title, rows in sheets(path):
@@ -80,13 +80,25 @@ def extract(y: str, path: Path) -> dict:
             for i, r in enumerate(rows):
                 vals = [norm(v) for v in r]
                 if head is None:
-                    if i < 15:
+                    if i < 4:
                         print(f"  [{title} {i}] {vals[:16]}", flush=True)
                     if any("자치단체" in v for v in vals) and sum(1 for v in vals if v) >= 4:
                         head = vals
-                        w.writerow(["연도"] + head)
                         cols = {k: j for j, k in enumerate(head) if k}
+                        sub = True   # 다음 줄이 묶음 머리(예산현액 → 계·국비·시도비·…)인지 본다
                     continue
+                if sub:
+                    sub = False
+                    if not any(v.startswith("대구") for v in vals) and any(vals[j] for j in range(len(vals)) if j < len(head) and not head[j]):
+                        top = ""
+                        for j in range(len(head)):   # 빈 위 칸은 왼쪽 묶음 이름을 이어 받아 '예산현액_국비' 식으로
+                            top = head[j] or top
+                            if j < len(vals) and vals[j]:
+                                head[j] = f"{top}_{vals[j]}" if vals[j] != top else top
+                        print(f"  머리글: {head}", flush=True)
+                        w.writerow(["연도"] + head)
+                        continue
+                    w.writerow(["연도"] + head)
                 if not any(vals):
                     continue
                 n_all += 1

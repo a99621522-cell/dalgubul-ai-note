@@ -85,7 +85,8 @@ jobs:
       - name: 이 지자체만 새 러너로 다시(연결 차단, 종료 코드 3)
         # 러너 VM 의 IP 에 따라 jumin.daegu.go.kr 이 TCP 연결을 막는다(2026-11-03 러너 약 30대 중 1대꼴로만 연결) — 막힌 지자체는 저마다 따로 다시 부른다.
         # 이전에는 retry 잡이 모든 잡이 끝나길 기다려 한꺼번에 불렀는데, 연결된 잡 하나가 한 시간 넘게 받는 동안 나머지가 멈춰 있었다.
-        if: ${{ !cancelled() && steps.f.outputs.rc == '3' }}
+        # probe 실행(연결 확인용)은 다시 부르지 않는다 — 2026-11-04 probe 하나가 수집 체인을 열었다
+        if: ${{ !cancelled() && steps.f.outputs.rc == '3' && github.event.inputs.probe != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

@@ -299,6 +299,11 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('R8 근거 절: 경정청구 조문(국세기본법 제45조의2·영 제74조) · 체육시설 기준·유권해석(부가가치세제과-186) · 본청·행정 공통(2017두55329)·질의서 초안 · 건별 조문', /제45조의2/.test(basisTxt) && /제74조/.test(basisTxt) && /체육시설/.test(basisTxt) && /186/.test(basisTxt) && /본청·행정 공통 안분/.test(basisTxt) && /2017두55329/.test(basisTxt) && (await pg.locator('#rv-basis details.inquiry[data-inq="admin_common"]').count()) === 1 && /건별 판정에 걸린 조문/.test(basisTxt), basisTxt.slice(0, 300));
   ok('R8 건별 표 근거 칸 · 사유 초안에 근거 · zip 10파일(06 근거 + 07 질의서 + 08·09 자료별·순액)', /법 제38조/.test(T(await pg.locator('#rv-sup .rv-rows').first().textContent())) && /\[근거 법령·유권해석\]/.test(await pg.locator('#rv-reason').inputValue()) && zl.length === 10 && /체육시설/.test(basisN) && zl.some(z => /07_국세청_질의서_초안_1_admin_common/.test(z)), zl.join('|'));
   ok('R5 zip 건별 명세에 본청·행정 공통 18,000', /본청·행정 공통/.test(det) && /18000/.test(det), zl.join('|'));
+  { const sk = await pg.$$eval('#rv-sup tbody tr[data-sk]', trs => trs.filter(t => Number((t.querySelectorAll('td')[8]?.textContent || '').replace(/[^0-9]/g, '').slice(0, -2) || (t.querySelectorAll('td')[8]?.textContent || '').replace(/[^0-9]/g, '')) > 0).map(t => t.dataset.sk));
+    const tot0 = T(await pg.locator('#rv-total').textContent()); let tot1 = '', lab = '', tot2 = '';
+    if (sk.length) { await pg.selectOption(`[data-sf-cw="${sk[0]}"]`, 'c_land'); await pg.waitForTimeout(400); tot1 = T(await pg.locator('#rv-total').textContent()); lab = T(await pg.locator(`tr[data-sk="${sk[0]}"]`).textContent());
+      await pg.selectOption(`[data-sf-cw="${sk[0]}"]`, ''); await pg.waitForTimeout(400); tot2 = T(await pg.locator('#rv-total').textContent()); }
+    ok('C2 ③ 공급자 표 공사라면 칸 · 부지 토목으로 고르면 청구 후보가 줄고 판정에 갈래 이름 · 되돌리면 원래 금액', (await pg.locator('#rv-cw-note').count()) === 1 && sk.length > 0 && tot1 !== tot0 && /부지 토목|토지 관련/.test(lab) && tot2 === tot0, [tot0, tot1, tot2].join(' / ')); }
   await pg.reload(); await pg.waitForTimeout(700); ok('R6 새로 고침 뒤 자료·귀속·신고 값 유지(5건, 298,000)', /5건/.test(T(await pg.locator('#rv-stat').textContent())) && T(await pg.locator('#rv-total').textContent()).startsWith('298,000'));
   await pg.evaluate(() => localStorage.removeItem('vat-review-v1'));
   /* R9 파일 놓기(xlsx) — 붙여넣기 없이 */
@@ -330,8 +335,18 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('R11 지방재정365 표: 2024·2025 지출액 열 · 세부사업 줄 · 앞 표에서 고른 여성문화복지센터 증축은 같은 사업으로 이어짐(미지정에서 빠짐)', /2024 지출액/.test(lh) && /2025 지출액/.test(lh) && ln > 20 && !(await pg.$$eval('#pub-lbiz tbody tr', trs => trs.some(t => /여성문화복지센터 증축/.test(t.dataset.lk)))), lh + ' ' + ln);
   await pg.fill('#pub-lq', '휴양림'); await pg.press('#pub-lq', 'Enter'); await pg.dispatchEvent('#pub-lq', 'change'); await pg.waitForTimeout(300);
   const lk = await pg.$$eval('#pub-lbiz tbody tr', trs => trs.map(t => t.dataset.lk));
-  if (lk.length) { await pg.selectOption(`[data-pl-fid="${lk[0]}"]`, 'f3'); await pg.waitForTimeout(400); }
-  ok('R11 휴양림 사업을 비슬산(과세)에 지정 → 연도별 추정 표·받아올 사업 메모에 그 사업', lk.length > 0 && (await pg.locator('#pub-lper').count()) === 1 && (await pg.locator('#pub-lmemo').inputValue()).includes(lk[0].split('|')[2]), JSON.stringify(lk.slice(0, 3)));
+  const memoL = async () => (await pg.locator('#pub-lmemo').count()) ? await pg.locator('#pub-lmemo').inputValue() : '';
+  const road = lk.find(k => /휴양림도로/.test(k)), plain = lk.find(k => /휴양림 정비/.test(k));
+  if (road) { await pg.selectOption(`[data-pl-fid="${road}"]`, 'f3'); await pg.waitForTimeout(400); }
+  if (plain) { await pg.selectOption(`[data-pl-fid="${plain}"]`, 'f3'); await pg.waitForTimeout(400); }
+  await pg.click('[data-lf="all"]'); await pg.waitForTimeout(300);
+  const m1 = await memoL(); const roadOpt = road ? await pg.locator(`[data-pl-cw="${road}"] option:checked`).textContent() : '';
+  ok('R11 휴양림 사업을 비슬산(과세)에 지정 → 연도별 추정 표·받아올 사업 메모에 휴양림 정비 · 휴양림도로 확포장은 공공 도로로 짐작해 빠짐', !!road && !!plain && (await pg.locator('#pub-lper').count()) === 1 && m1.includes('- 휴양림 정비 (') && !m1.includes('휴양림도로') && /짐작: 공공 도로/.test(roadOpt || ''), JSON.stringify(lk.slice(0, 3)) + ' ' + roadOpt);
+  /* C1 공사 다섯 갈래(2026-11-05): '공사 아님'으로 고치면 도로가 다시 들어오고, '면세 부분 전용'이면 빠짐 */
+  if (road) { await pg.selectOption(`[data-pl-cw="${road}"]`, 'no'); await pg.waitForTimeout(400); }
+  if (plain) { await pg.selectOption(`[data-pl-cw="${plain}"]`, 'c_exempt'); await pg.waitForTimeout(400); }
+  const m2 = await memoL(); const opts = plain ? await pg.$$eval(`[data-pl-cw="${plain}"] option`, os => os.map(o => o.value).join(',')) : '';
+  ok('C1 공사라면 칸 7가지(고르기·공사 아님·5갈래) · 도로를 공사 아님으로 → 메모에 다시 · 휴양림 정비를 면세 부분 전용으로 → 메모에서 빠짐', opts === ',no,c_tax,c_shared,c_exempt,c_land,c_road' && m2.includes('휴양림도로') && !m2.includes('- 휴양림 정비 (') && (await pg.locator('#pub-cw-note').count()) === 1, opts + ' note=' + (await pg.locator('#pub-cw-note').count()) + ' memo=' + m2.split('\n').filter(l => /휴양림/.test(l)).join(' | '));
   await pg.evaluate(() => { localStorage.removeItem('vat-pub-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 

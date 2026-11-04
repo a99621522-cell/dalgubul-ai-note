@@ -6,7 +6,7 @@ const { current = '' } = Astro.props as { current?: string };
 const GROUPS: { name: string; items: { key: string; name: string; href: string }[] }[] = [
   { name: '지금 할 일', items: [{ key: 'start', name: '대시보드', href: '/vat/' }] },
   { name: '기록', items: [{ key: 'monthly', name: '지출 기록', href: '/vat/monthly/' }] },
-  { name: '신고', items: [{ key: 'prepare', name: '신고 준비', href: '/vat/prepare/' }, { key: 'review', name: '지난 신고 점검', href: '/vat/review/' }, { key: 'schedule', name: '일정표', href: '/vat/schedule/' }, { key: 'trend', name: '납부액 추이', href: '/vat/trend/' }] },
+  { name: '신고', items: [{ key: 'prepare', name: '신고 준비', href: '/vat/prepare/' }, { key: 'review', name: '지난 돈 돌려받기', href: '/vat/review/' }, { key: 'schedule', name: '일정표', href: '/vat/schedule/' }, { key: 'trend', name: '납부액 추이', href: '/vat/trend/' }] },
   { name: '설정·인수인계', items: [{ key: 'setup', name: '기관 설정', href: '/vat/setup/' }, { key: 'discover', name: '과세사업 찾기', href: '/vat/discover/' }, { key: 'handover', name: '인수인계', href: '/vat/handover/' }] },
   { name: '참고', items: [{ key: 'tools', name: '한 건 판정·계산기', href: '/vat/tools/' }, { key: 'build', name: '신축·대수선', href: '/vat/build/' }, { key: 'develop', name: '공영개발', href: '/vat/develop/' }] },
 ];

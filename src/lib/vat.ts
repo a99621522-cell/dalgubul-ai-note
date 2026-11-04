@@ -59,3 +59,16 @@ export type AuditCase = { id: string; kind: string; org: string; date: string; t
 export function vatCases(): AuditCase[] { const p = 'data/vat/cases.yml'; if (!fs.existsSync(p)) return []; return ((yaml.load(fs.readFileSync(p, 'utf-8')) as { cases?: AuditCase[] }).cases ?? []); }
 export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
 export const STATUS_LABEL: Record<Facility['status'], string> = { taxable: '과세', exempt: '면세', check: '확인 필요' };
+
+/** 감사원 감사결과 공개문에서 부가가치세·매입세액·경정청구·세금계산서가 나온 문단(data/vat/audits/bai, scripts/fetch_bai_vat.py — 운영자 2026-11-03 '감사원 감사 지적사항도 포함시켜'). 발췌 그대로, 평가 없음 */
+export type BaiHit = { page: number; kw: string; rel?: 'core' | 'mention'; head: string; text: string; file?: string };
+const BAI_CORE = (t: string) => (/부가가치세|부가세|매입세액|매출세액/.test(t) && /매입세액|경정청구|환급|신고|납부|공제|가산세|합계표|안분|납세|과세표준|불공제|과세사업|면세사업|세금계산서/.test(t)) || /매입세액|부가가치세\s*(신고|환급|공제|납부|가산세|경정|예수)/.test(t);
+export type BaiReport = { srno: number; title: string; openDt: string; field: string; kind: string; url: string; files: string[]; fetched?: string; hits: BaiHit[]; core: number };
+export function vatBai(): { reports: BaiReport[]; scanned: number; noPdf: number; fetched: string } {
+  const dir = 'data/vat/audits/bai'; const ip = `${dir}/index.json`; if (!fs.existsSync(ip)) return { reports: [], scanned: 0, noPdf: 0, fetched: '' };
+  const idx = JSON.parse(fs.readFileSync(ip, 'utf-8')) as Record<string, { status: string; hits?: number; openDt?: string }>;
+  const reports: BaiReport[] = []; let fetched = '';
+  for (const [srno, m] of Object.entries(idx)) { if (!m.hits) continue; const p = `${dir}/${srno}.json`; if (!fs.existsSync(p)) continue; const r = JSON.parse(fs.readFileSync(p, 'utf-8')) as BaiReport; r.hits = r.hits.map(h => ({ ...h, rel: h.rel ?? (BAI_CORE(h.text) ? 'core' : 'mention') })).sort((a, b) => (a.rel === 'core' ? 0 : 1) - (b.rel === 'core' ? 0 : 1) || a.page - b.page); r.core = r.hits.filter(h => h.rel === 'core').length; reports.push(r); if ((r.fetched ?? '') > fetched) fetched = r.fetched ?? ''; }
+  reports.sort((a, b) => (b.core > 0 ? 1 : 0) - (a.core > 0 ? 1 : 0) || b.openDt.localeCompare(a.openDt));
+  return { reports, scanned: Object.values(idx).filter(m => m.status === 'done').length, noPdf: Object.values(idx).filter(m => m.status === 'hwp').length, fetched };
+}

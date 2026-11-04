@@ -1,0 +1,113 @@
+name: 대구 공개 지출 자료(지출건별) 집계
+
+# scripts/fetch_daegu_expense.py — 대구 주민참여 재정 포털 '세출현황 지출건별' 하루치 엑셀을 2021~2023(포털에 있는 마지막 해) 날짜마다 받아
+# (과세기간·회계·부서·세부사업·통계목) 집계만 data/vat/expense/<gov>.json 에 둔다 — 지자체 부가세 절감 점검기 '공개 지출 자료로 후보 찾기'
+# (운영자 2026-11-03 '홈택스 붙여넣는 것은 공무원이 안 할 것 같은데 방법을 찾아봐'). 원본 행·거래처 없음. 지자체마다 1시간쯤(요청 사이 1.2초).
+on:
+  workflow_dispatch:
+    inputs:
+      gov:
+        description: "지자체 key(쉼표: daegu,jung,dong,seo,nam,buk,suseong,dalseo,dalseong,gunwi — 비우면 전부)"
+        required: false
+        default: ""
+      years:
+        description: "연도(쉼표)"
+        required: false
+        default: "2021,2022,2023"
+      probe:
+        description: "true 면 연도 목록·한 날짜 행 수만 로그"
+        required: false
+        default: "false"
+      attempt:
+        description: "(자동) 몇 번째 시도인지 — 연결이 안 된 러너(종료 코드 3)는 같은 지자체를 새 러너로 다시 부른다(50번까지). 포털이 거절하면(종료 코드 4) 멈춘다"
+        required: false
+        default: "1"
+  schedule:
+    - cron: "0 19 15 2,8 *"   # 2월·8월 16일 04:00 KST — 포털이 2024년 뒤 자료를 다시 싣는지 확인(없으면 그대로)
+
+permissions:
+  contents: write
+  actions: write   # 막힌 잡이 같은 워크플로를 다시 부른다(GITHUB_TOKEN 의 workflow_dispatch 는 허용 예외)
+
+concurrency:   # 같은 지자체(입력 gov 글자) 실행은 하나씩 — 다시 부르기가 겹쳐도 둘이 함께 받지 않는다
+  group: daegu-expense-${{ github.event.inputs.gov || 'all' }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      govs: ${{ steps.p.outputs.govs }}
+    steps:
+      - id: p
+        run: |
+          IN="${{ github.event.inputs.gov }}"; [ -z "$IN" ] && IN="daegu,jung,dong,seo,nam,buk,suseong,dalseo,dalseong,gunwi"
+          echo "govs=$(echo "$IN" | python3 -c 'import sys,json; print(json.dumps([x.strip() for x in sys.stdin.read().split(",") if x.strip()]))')" >> "$GITHUB_OUTPUT"
+  fetch:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 340   # 스크립트는 290분(--budget 17400)에서 스스로 멈춰 커밋·retry 가 돌게 한다
+    strategy:
+      max-parallel: 1   # 포털 부담 — 지자체 하나씩(2026-11-04)
+      fail-fast: false
+      matrix:
+        gov: ${{ fromJSON(needs.plan.outputs.govs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q xlrd
+      - id: f
+        continue-on-error: true
+        run: |
+          set +e
+          python scripts/fetch_daegu_expense.py --gov ${{ matrix.gov }} --years "${{ github.event.inputs.years || '2021,2022,2023' }}" --budget 17400 ${{ github.event.inputs.probe == 'true' && '--probe' || '' }}
+          rc=$?
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          exit $rc
+      - name: 커밋
+        if: github.event.inputs.probe != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vat/expense
+          git diff --cached --quiet && echo "변경 없음" && exit 0
+          git commit -m "대구 공개 지출 자료 집계: ${{ matrix.gov }} $(date +%Y-%m-%d)"
+          for i in 1 2 3 4 5 6; do git pull --rebase -q origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }} && break; sleep $((i*10)); done
+          echo "pushed=1" >> "$GITHUB_OUTPUT"
+        id: c
+      - name: 점검기 배포(GITHUB_TOKEN 커밋은 push 배포를 깨우지 않는다)
+        if: steps.c.outputs.pushed == '1' && github.ref_name == 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy_vat.yml -R "${{ github.repository }}" --ref main || echo "::warning::deploy_vat 호출 실패"
+      - name: 다음 실행 부르기(종료 코드로)
+        # 3 = 연결 자체가 안 된 러너(러너 IP 에 따라 TCP 차단, 2026-11-03 약 30대 중 1대꼴로만 연결) 또는 시간 예산·연속 실패로 중간 저장 → 같은 지자체·같은 방식으로 새 러너에서 다시(50번까지).
+        #     연결이 안 된 요청은 포털에 닿지 않으므로 다시 불러도 포털 부담이 없다.
+        # 4 = 포털이 거절(JSON 대신 400 쪽, 2026-11-03 밤부터) → 멈춘다(다시 해도 같다).
+        # probe 가 0 = 연도 목록·하루치 엑셀 모두 받음 → 그 지자체 수집을 시작(시도 1).
+        # 수집이 0 = 끝 → ORDER 의 다음 지자체 수집을 부른다(입력 gov 가 하나일 때만, 지자체 하나씩).
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ORDER: "nam dong seo buk suseong dalseo dalseong gunwi"
+        run: |
+          RC="${{ steps.f.outputs.rc }}"; A="${{ github.event.inputs.attempt || '1' }}"; G="${{ matrix.gov }}"
+          P="${{ github.event.inputs.probe || 'false' }}"; IN="${{ github.event.inputs.gov }}"
+          Y="${{ github.event.inputs.years || '2021,2022,2023' }}"
+          run() { gh workflow run daegu_expense.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f years="$Y" "$@"; }
+          if [ "$RC" = "4" ]; then echo "::warning::$G — 포털이 요청을 거절(400 쪽). 체인을 멈춘다 — 나중에 probe 로 다시 확인"; exit 0; fi
+          if [ "$RC" = "3" ]; then
+            if [ "$A" -ge 50 ]; then echo "::warning::$G — $A번째 시도까지 연결이 안 돼 중단(국내 PC 또는 수동 재실행)"; exit 0; fi
+            echo "다시: $G probe=$P (시도 $((A+1)))"; run -f gov="$G" -f probe="$P" -f attempt="$((A+1))"; exit 0
+          fi
+          if [ "$RC" = "0" ] && [ "$P" = "true" ]; then echo "probe 통과 → $G 수집 시작"; run -f gov="$G" -f probe=false -f attempt=1; exit 0; fi
+          if [ "$RC" = "0" ] && [ "$IN" = "$G" ]; then
+            NEXT=$(echo $ORDER | tr ' ' '\n' | grep -A1 -x "$G" | sed -n 2p)
+            if [ -n "$NEXT" ]; then echo "$G 끝 → 다음 $NEXT"; run -f gov="$NEXT" -f probe=false -f attempt=1; else echo "모든 지자체 끝"; fi
+          fi
+      - name: 결과
+        run: |
+          echo "종료 코드 ${{ steps.f.outputs.rc }}"
+          [ "${{ steps.f.outputs.rc }}" = "0" ]

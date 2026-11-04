@@ -1,0 +1,233 @@
+#!/usr/bin/env python3
+"""대구광역시 주민참여 재정 포털(jumin.daegu.go.kr) '세출현황 — 지출건별' 공개 자료 → 지자체 부가세 절감 점검기 '공개 지출 자료로 후보 찾기'
+(운영자 2026-11-03 '홈택스 붙여넣는 것은 공무원이 안 할 것 같은데 방법을 찾아봐').
+
+포털은 본청·9개 구군의 지출을 지급일자 하루 단위로만 보여 주고(회계연도·회계구분·부서명·경비구분명·세부사업명·통계목·사업개요(적요)·지출액·지급일자,
+거래처·사업자번호·세액 칸은 없음) 하루치 엑셀(xls, 2023-06-12 달성군 815행)을 내려 준다. 2026-11-03 확인: 회계연도 목록은 2015~2024 이지만 건별 자료는
+2023년까지만 있고 2024년 뒤는 비어 있다(차세대 e호조 전환 뒤 연계가 끊긴 것으로 보임). 경정청구 기한(법정신고기한 뒤 5년) 안 과세기간 가운데 2021년 2기~2023년 2기를 덮는다.
+
+원본 행은 저장하지 않고(사람 이름이 적요에 들어 있을 수 있음 — '○○○ 외 2명 수당 지급' 같은 줄) (과세기간 × 회계구분 × 부서 × 세부사업 × 통계목)로 묶어
+건수·지출액 합·카드결제 건수('카드' 낱말)·적요 본보기 3개(사람 이름으로 보이는 2~4자 한글 뒤에 '외'·'등'·'님'·'씨'가 붙거나 쉼표로 이어진 이름 묶음은 '(이름)'으로)만
+data/vat/expense/<key>.json 에 남긴다. 값 그대로·평가 없음. 세액은 저장하지 않는다(화면이 통계목 성격에 따라 지출액 × 10/110 을 '추정'으로 보이고 그렇게 적는다).
+
+사용: python3 scripts/fetch_daegu_expense.py [--gov dalseong,daegu] [--years 2021,2022,2023] [--days 2023-06-12,2023-06-13] [--probe]
+  --probe   지자체마다 연도 목록과 한 날짜의 행 수만 로그(저장 안 함)
+종료 코드: 0 끝 / 3 연결 안 됨·중간 저장(새 러너로 다시) / 4 포털이 거절(400 쪽 등, 다시 부르지 않음)
+  --merge   받은 날짜를 기존 JSON 에 더한다(기본: 지정 연도는 새로 집계). 요청 사이 1.2초, 실패는 3회 재시도 뒤 건너뛰고 index 에 적는다.
+"""
+from __future__ import annotations
+import argparse, datetime as dt, io, json, os, re, subprocess, sys, time
+from collections import defaultdict
+from pathlib import Path
+
+BASE = "https://jumin.daegu.go.kr/budget/texoperate"
+UA = "Mozilla/5.0 (compatible; daitda-vat/1.0; +https://vat-daitda.pages.dev/vat/)"
+GOVS = [("daegu", "01", "대구광역시"), ("jung", "02", "중구"), ("dong", "03", "동구"), ("seo", "04", "서구"), ("nam", "05", "남구"), ("buk", "06", "북구"), ("suseong", "07", "수성구"), ("dalseo", "08", "달서구"), ("dalseong", "09", "달성군"), ("gunwi", "10", "군위군")]
+OUT = Path("data/vat/expense"); OUT.mkdir(parents=True, exist_ok=True)
+JAR = Path(f"/tmp/daegu_expense_cookies_{os.getpid()}.txt")   # 프로세스마다 따로(한 PC 에서 지자체 둘을 함께 받을 때 세션이 섞이지 않게)
+NAME_RE = re.compile(r"(?:(?<![가-힣])[가-힣]{3}\s*,\s*){2,}[가-힣]{3}(?![가-힣])|(?<![가-힣])[가-힣]{3}(?=\s*(?:외\s*\d|님(?![가-힣])|씨(?![가-힣])))")   # 적요 속 사람 이름 묶음 — 3자 이름이 쉼표로 셋 이상 이어지거나 '외 N'·'님'·'씨'가 붙은 것만(토목,건축 같은 두 낱말은 남김)
+
+
+def curl(url: str, post: dict | None = None, referer: str = "", timeout: int = 120, headers: list[str] | None = None) -> bytes:
+    cmd = ["curl", "-sS", "-m", str(timeout), "--connect-timeout", "20", "-L", "-A", UA, "-c", str(JAR), "-b", str(JAR), "-H", "Accept-Language: ko-KR,ko;q=0.9"]
+    for h in headers or []:
+        cmd += ["-H", h]
+    if referer:
+        cmd += ["-e", referer]
+    if post is not None:
+        cmd += ["-X", "POST"]
+        for k, v in post.items():
+            cmd += ["--data-urlencode", f"{k}={v}"]
+    cmd.append(url)
+    for i in range(2):   # 연결이 끊기면 한 번만 더(러너 6시간 안에 3년치를 끝내려면 실패한 날을 오래 붙들지 않는다 — 실패한 날은 failed_days 에 남아 다음 실행이 다시 받는다)
+        r = subprocess.run(cmd, capture_output=True, timeout=timeout + 30)
+        if r.returncode == 0 and r.stdout:
+            return r.stdout
+        print(f"  [{i + 1}] curl {r.returncode} {url[-40:]} {r.stderr.decode('utf-8', 'ignore')[:100].strip()}", flush=True)
+        time.sleep(4 * (i + 1))
+    return b""
+
+
+REACHED = False   # 포털이 무언가(400 쪽 등)를 돌려줬는가 — 연결 자체가 안 된 러너(종료 코드 3)와 포털이 거절한 경우(종료 코드 4)를 가른다
+
+
+def years_of(code: str) -> list[str]:
+    """연도 목록(JSON). 2026-11-03 저녁부터 포털이 맨 요청에 400 쪽(1,414B)을 돌려줘 — 세 가지 길을 차례로 해 보고 무엇이 왔는지 남긴다:
+    ① 그대로 ② 화면을 먼저 열어 세션 쿠키를 받은 뒤 ③ 쿠키 + 브라우저가 보내는 XHR 머리글(X-Requested-With·Accept)."""
+    page = f"{BASE}/texoperateExpenditureAll.do?localGovCd={code}"
+    url = f"{BASE}/selectFisYearJiList.do?localGovCd={code}"
+    xhr = ["X-Requested-With: XMLHttpRequest", "Accept: application/json, text/javascript, */*; q=0.01"]
+    for way in ("plain", "cookie", "cookie+xhr"):
+        if way == "cookie":
+            curl(page, timeout=60)
+        raw = curl(url, referer=page, headers=xhr if way == "cookie+xhr" else None)
+        try:
+            ys = [str(x.get("fisYear")) for x in json.loads(raw.decode("utf-8", "ignore")) if x.get("fisYear")]
+            if ys:
+                print(f"  연도 목록: {way} 로 받음", flush=True)
+                return ys
+        except Exception:
+            pass
+        if not raw:
+            return []   # 연결 자체가 안 됨(러너 IP 차단) — 다른 길도 같다
+        global REACHED
+        REACHED = True
+        print(f"  연도 목록 {way}: JSON 이 아님({len(raw)}B) {raw[:120].decode('utf-8', 'ignore')!r}", flush=True)
+    return []
+
+
+def day_rows(code: str, year: str, ymd: str) -> list[list[str]] | None:
+    """하루치 엑셀(xls) → 행 목록(머리글 제외). 실패면 None, 자료 없음이면 []"""
+    data = curl(f"{BASE}/expenditureAllExcel.do", post={"pgMv": "", "localGovCd": code, "fisYear": year, "fisFgCd": "All", "deptCd": "All", "dbizCd": "All", "payCmdYmd": ymd, "pageIndex": "1"}, referer=f"{BASE}/texoperateExpenditureAll.do?localGovCd={code}", timeout=90)
+    if not data:
+        return None
+    if data[:4] != b"\xd0\xcf\x11\xe0":   # OLE2 가 아니면 오류 화면
+        return None if b"<html" in data[:400].lower() and b"\xec\x97\x86" not in data else []
+    try:
+        import xlrd
+        wb = xlrd.open_workbook(file_contents=data)
+        sh = wb.sheet_by_index(0)
+    except Exception as e:
+        print(f"  xls 못 읽음 {ymd}: {e}")
+        return None
+    if sh.nrows < 2:
+        return []
+    head = [str(sh.cell_value(0, c)).strip() for c in range(sh.ncols)]
+    if "세부사업명" not in head or "지출액" not in head:
+        print(f"  머리글 다름 {ymd}: {head}")
+        return None
+    rows = []
+    for r in range(1, sh.nrows):
+        rows.append([str(sh.cell_value(r, c)).strip() for c in range(sh.ncols)])
+    return rows
+
+
+def period_of(ymd: str) -> str:
+    y, m = ymd[:4], int(ymd[5:7])
+    return f"{y}-{1 if m <= 6 else 2}"
+
+
+def mask(s: str) -> str:
+    return NAME_RE.sub("(이름)", s)
+
+
+def aggregate(rows: list[list[str]], head: list[str], agg: dict, days_seen: set[str]):
+    ix = {h: i for i, h in enumerate(head)}
+    for r in rows:
+        g = lambda k: r[ix[k]] if k in ix and ix[k] < len(r) else ""
+        ymd = g("지급일자")[:10]
+        if not re.match(r"\d{4}-\d{2}-\d{2}", ymd):
+            continue
+        days_seen.add(ymd)
+        amt = re.sub(r"[^\d\-]", "", g("지출액"))
+        amt = int(amt) if amt not in ("", "-") else 0
+        key = (period_of(ymd), g("회계구분"), g("부서명"), g("세부사업명"), g("통계목"))
+        a = agg[key]
+        a["n"] += 1; a["amt"] += amt
+        memo = g("사업개요(적요)")
+        if "카드" in memo:
+            a["card"] += 1
+        if g("경비구분명") == "일상경비":
+            a["petty"] += 1
+        if amt > 0 and len(a["memo"]) < 3:
+            m = mask(memo)[:60]
+            if m and m not in a["memo"]:
+                a["memo"].append(m)
+        if amt > a["max"]:
+            a["max"] = amt
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--gov", default="")
+    ap.add_argument("--years", default="2021,2022,2023")
+    ap.add_argument("--days", default="")
+    ap.add_argument("--probe", action="store_true")
+    ap.add_argument("--merge", action="store_true", help="(기본) 있는 JSON 에 이어 받는다 — 받은 날은 건너뛰고 실패한 날은 다시")
+    ap.add_argument("--fresh", action="store_true", help="있는 JSON 을 버리고 처음부터")
+    ap.add_argument("--sleep", type=float, default=3.0)  # 2026-11-04: 여러 잡이 함께 받은 뒤 포털이 400 으로 막아 간격을 늘림
+    ap.add_argument("--budget", type=int, default=0, help="초 — 이 시간을 넘기면 중간 저장 뒤 종료 코드 3(러너 시간 초과로 커밋 없이 죽는 것을 막는다, 다음 실행이 이어 받음)")
+    a = ap.parse_args()
+    govs = [g for g in GOVS if not a.gov or g[0] in a.gov.split(",")]
+    for key, code, name in govs:
+        yrs = years_of(code)
+        print(f"[expense] {name}({code}) 연도 목록: {yrs}", flush=True)
+        if not yrs and REACHED:   # 연결은 됐는데 포털이 JSON 대신 400 쪽 등을 돌려줌(2026-11-03 밤부터) — 새 러너로 다시 해도 같으니 체인을 멈춘다
+            print(f"[expense] {name}: 포털이 요청을 거절함(JSON 아님) — 종료 코드 4(다시 부르지 않음)", flush=True)
+            sys.exit(4)
+        if not yrs:   # 연도 목록조차 못 받으면 이 러너 VM 의 IP 가 포털에 막힌 것(2026-11-03 중구 — 3.6시간 동안 연결 0건) → 바로 끝내고 워크플로가 새 러너로 다시 돌린다(종료 코드 3)
+            print(f"[expense] {name}: 포털 연결 실패 — 러너 IP 차단으로 보임, 종료 코드 3(워크플로 retry)", flush=True)
+            sys.exit(3)
+        if a.probe:
+            d = "2023-06-12"
+            rows = day_rows(code, "2023", d)
+            print(f"  probe {d}: {'실패' if rows is None else f'{len(rows)}행'}", flush=True)
+            if rows:
+                print("  ", rows[0])
+            else:   # 연도 목록은 왔지만 하루치 엑셀이 안 옴 — 아직 받을 수 있는 상태가 아니다
+                sys.exit(4)
+            continue
+        path = OUT / f"{key}.json"
+        old = json.loads(path.read_text(encoding="utf-8")) if path.exists() and not a.fresh else None   # 기본 이어 받기(러너가 시간 초과로 끊겨도 중간 저장분부터)
+        agg: dict = defaultdict(lambda: {"n": 0, "amt": 0, "card": 0, "petty": 0, "max": 0, "memo": []})
+        days_seen: set[str] = set(); failed: list[str] = []; empty = 0
+        if old:
+            for r in old.get("rows", []):
+                k = (r["p"], r["acct"], r["dept"], r["biz"], r["mok"])
+                agg[k].update({"n": r["n"], "amt": r["amt"], "card": r["card"], "petty": r["petty"], "max": r["max"], "memo": r["memo"]})
+            days_seen.update(old.get("days", []))
+        head = ["회계연도", "회계구분", "부서명", "경비구분명", "세부사업명", "통계목", "사업개요(적요)", "지출액", "지급일자"]
+        if a.days:
+            days = a.days.split(",")
+        else:
+            days = []
+            for y in a.years.split(","):
+                d0 = dt.date(int(y), 1, 1)
+                while d0.year == int(y):
+                    days.append(d0.isoformat()); d0 += dt.timedelta(days=1)
+        days = [d for d in days if d not in days_seen]
+        t0 = time.time()
+        def save_partial():   # 60일마다 중간 저장 — 러너가 시간 초과로 죽어도 받은 만큼은 남는다(다음 실행이 이어 받음)
+            rows_p = [{"p": k[0], "acct": k[1], "dept": k[2], "biz": k[3], "mok": k[4], **v} for k, v in sorted(agg.items())]
+            path.write_text(json.dumps({"v": 1, "key": key, "code": code, "name": name, "source": "대구광역시 주민참여 재정 포털 세출현황 지출건별(부분 저장)", "fetched": dt.date.today().isoformat(), "years": sorted({d[:4] for d in days_seen}), "periods": sorted({r["p"] for r in rows_p}), "days": sorted(days_seen), "failed_days": sorted(set(failed)), "note": "부분 저장(수집 중)", "rows": rows_p}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        streak = 0   # 잇단 실패 — 받는 도중 연결이 막히면(12일 연속 실패) 중간 저장하고 종료 코드 3 으로 끝내 새 러너가 이어 받게 한다
+        for i, d in enumerate(days):
+            rows = day_rows(code, d[:4], d)
+            if rows is None:
+                failed.append(d); streak += 1
+                if streak >= 12:
+                    save_partial()
+                    print(f"[expense] {name}: {streak}일 연속 실패 — 연결이 막힌 것으로 보여 중간 저장 뒤 종료 코드 3(받은 날 {len(days_seen)})", flush=True)
+                    sys.exit(3)
+            elif not rows:
+                streak = 0
+                empty += 1; days_seen.add(d)
+            else:
+                streak = 0
+                aggregate(rows, head, agg, days_seen)
+            if i % 30 == 29:
+                print(f"  {name} {d} … {i + 1}/{len(days)} 묶음 {len(agg)} 실패 {len(failed)} ({int(time.time() - t0)}s)", flush=True)
+            if i % 60 == 59:
+                save_partial()
+            if a.budget and time.time() - t0 > a.budget:
+                save_partial()
+                print(f"[expense] {name}: 시간 예산 {a.budget}s 초과 — 중간 저장 뒤 종료 코드 3(받은 날 {len(days_seen)}, 남은 날 {len(days) - i - 1})", flush=True)
+                sys.exit(3)
+            time.sleep(a.sleep)
+        def write_out():
+            rows_out = [{"p": k[0], "acct": k[1], "dept": k[2], "biz": k[3], "mok": k[4], **v} for k, v in sorted(agg.items())]
+            periods = sorted({r["p"] for r in rows_out})
+            out = {"v": 1, "key": key, "code": code, "name": name, "source": "대구광역시 주민참여 재정 포털 세출현황 지출건별(jumin.daegu.go.kr/budget/texoperate/texoperateExpenditureAll.do), 지급일자 하루 단위 엑셀",
+                   "fetched": dt.date.today().isoformat(), "years": sorted({d[:4] for d in days_seen}), "periods": periods, "days": sorted(days_seen), "failed_days": sorted(set(failed + ([d for d in old.get("failed_days", []) if d not in days_seen] if old else []))),
+                   "note": "거래처·사업자번호·세액 칸이 없는 공개 자료 — 세액은 통계목 성격에 따른 추정(지출액 × 10/110)일 뿐이며, 실제 공제는 세금계산서 원본으로 확인한다. 2024년 이후 건별 자료는 포털에 없음(2026-11-03)",
+                   "rows": rows_out}
+            path.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+            return rows_out
+        rows_out = write_out()
+        print(f"[expense] {name}: 묶음 {len(rows_out)} · 날짜 {len(days_seen)}(빈 날 {empty}) · 실패 {len(failed)} → {path} {path.stat().st_size // 1024}KB", flush=True)
+    idx = {p.stem: {"name": json.loads(p.read_text(encoding='utf-8'))["name"], "fetched": json.loads(p.read_text(encoding='utf-8'))["fetched"], "periods": json.loads(p.read_text(encoding='utf-8'))["periods"], "rows": len(json.loads(p.read_text(encoding='utf-8'))["rows"])} for p in sorted(OUT.glob("*.json")) if p.stem != "index"}
+    (OUT / "index.json").write_text(json.dumps(idx, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

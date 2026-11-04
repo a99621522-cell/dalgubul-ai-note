@@ -1,0 +1,20 @@
+{
+ "key": "corp-mgmt-stability",
+ "name": "기업경영분석 — 자산/자본 지표(제11차 KSIC, 2009~)",
+ "tbl_nm": "자산/자본 지표(제11차 한국표준산업분류 2009~)",
+ "org_id": "301",
+ "tbl_id": "DT_501Y007",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 26442,
+ "rows_kept": 26442,
+ "latest": "2025",
+ "unit": "%",
+ "areas": [],
+ "fetched": "2026-11-03",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=301&tblId=DT_501Y007",
+ "note": ""
+}

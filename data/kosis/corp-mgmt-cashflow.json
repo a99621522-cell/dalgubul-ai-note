@@ -1,0 +1,20 @@
+{
+ "key": "corp-mgmt-cashflow",
+ "name": "기업경영분석 — 현금흐름비율(2012~)",
+ "tbl_nm": "현금흐름비율(2012~)",
+ "org_id": "301",
+ "tbl_id": "DT_501Y015",
+ "prd_se": "Y",
+ "period": [
+  "2020",
+  "2026"
+ ],
+ "rows_total": 2715,
+ "rows_kept": 2715,
+ "latest": "2025",
+ "unit": "%",
+ "areas": [],
+ "fetched": "2026-11-03",
+ "source_url": "https://kosis.kr/statHtml/statHtml.do?orgId=301&tblId=DT_501Y015",
+ "note": ""
+}

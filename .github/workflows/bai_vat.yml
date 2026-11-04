@@ -1,0 +1,50 @@
+name: 감사원 감사결과 부가가치세 발췌
+
+# scripts/fetch_bai_vat.py — 감사원 누리집 API 로 지방 분야 공개문 PDF 를 받아 부가가치세 문단만 data/vat/audits/bai/ 에.
+# 운영자 2026-11-03 '감사원 감사 지적사항도 포함시켜'. 이미 받은 보고서는 건너뛴다(--redo 면 다시).
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: "시작 연도"
+        required: false
+        default: "2015"
+      to:
+        description: "끝 연도(비우면 올해)"
+        required: false
+        default: ""
+      srno:
+        description: "특정 보고서 번호(쉼표)"
+        required: false
+        default: ""
+  schedule:
+    - cron: "0 18 1 * *"   # 매달 2일 03:00 KST
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bai-vat
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get install -y -qq poppler-utils >/dev/null || (sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq poppler-utils >/dev/null)
+      - run: |
+          TO="${{ github.event.inputs.to }}"; [ -z "$TO" ] && TO=$(date +%Y)
+          if [ -n "${{ github.event.inputs.srno }}" ]; then python scripts/fetch_bai_vat.py --srno "${{ github.event.inputs.srno }}"; else python scripts/fetch_bai_vat.py --from "${{ github.event.inputs.from || '2015' }}" --to "$TO"; fi
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vat/audits/bai
+          git diff --cached --quiet && echo "변경 없음" && exit 0
+          git commit -m "감사원 감사결과 부가가치세 발췌 $(date +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull --rebase -q origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }} && break; sleep $((i*10)); done

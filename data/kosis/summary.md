@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-11-03 · 표 51개 · 설정 config/kosis_tables.yml
+갱신 2026-11-03 · 표 55개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -9,7 +9,11 @@
 | commute-od-dg | [현 거주지별/성별/통근통학지별 통근통학 인구(대구 경북)(12세 이상)-시군구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1PA2007) | F 2014~2026 | 2020 | 3516 | 명 |
 | commute-sido | [현거주지별/근무지별/산업별 취업인구(15세이상)-시군구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1PC2011) | F 2014~2026 | 2020 | 8226 | 명 |
 | construction-orders-sido | [공사지역/발주자별 건설수주액(경상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1G1B034) | M 202301~202612 | 202609 | 225 | 백만원 |
+| corp-mgmt-cashflow | [현금흐름비율(2012~)](https://kosis.kr/statHtml/statHtml.do?orgId=301&tblId=DT_501Y015) | Y 2020~2026 | 2025 | 2715 | % |
+| corp-mgmt-growth | [성장성 지표(제11차 한국표준산업분류 2009~)](https://kosis.kr/statHtml/statHtml.do?orgId=301&tblId=DT_501Y005) | Y 2020~2026 | 2025 | 12204 | % |
+| corp-mgmt-profit | [손익 지표(제11차 한국표준산업분류 2009~)](https://kosis.kr/statHtml/statHtml.do?orgId=301&tblId=DT_501Y006) | Y 2020~2026 | 2025 | 71086 | % |
 | corp-mgmt-quantile | [분위수(제11차 한국표준산업분류 2013~)](https://kosis.kr/statHtml/statHtml.do?orgId=301&tblId=DT_501Y086) | Y 2023~2026 | 2025 | 3593 | % |
+| corp-mgmt-stability | [자산/자본 지표(제11차 한국표준산업분류 2009~)](https://kosis.kr/statHtml/statHtml.do?orgId=301&tblId=DT_501Y007) | Y 2020~2026 | 2025 | 26442 | % |
 | employed-industry-sido | [시도/산업별 취업자](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3B05J) | H 201401~202602 | 202601 | 51755 | 천명 |
 | export-region-index | [지역별 수출지표 현황](https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N015) | Y 2014~2026 | 2025 | 459 | % |
 | export-region | [지역별 수출현황](https://kosis.kr/statHtml/statHtml.do?orgId=134&tblId=DT_134006_N007) | Y 2014~2026 | 2025 | 1700 | 개 |
@@ -37,7 +41,7 @@
 | mining-mfg-survey-sido | [시도/산업분류별 출하액생산액부가가치 및 주요생산비(10명 이상)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1FS1104) | Y 2020~2026 | 2024 | 7501 | 개 |
 | population-age-sido | [고령인구비율(시도/시/군/구)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1YL20631) | Y 2020~2026 | 2025 | 288 | 명 |
 | population-sido | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | Y 2014~2026 | 2025 | 10257 | 명 |
-| population-sigungu-monthly | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | M 202401~202612 | 202609 | 29055 | 명 |
+| population-sigungu-monthly | [행정구역(시군구)별 성별 인구수](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B040A3) | M 202401~202612 | 202610 | 29940 | 명 |
 | regional-employment-sigungu | [시군구/산업별 취업자(11차)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1ES3A30S) | H 202001~202602 | 202601 | 911 | 천명 |
 | retail-sales-index-sido | [시도별 소매판매액지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K41018) | Y 2014~2026 | 2025 | 1156 | 2020＝100 |
 | self-employed-sido | [행정구역(시도)/종사상지위별 취업자](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7035S) | M 202301~202612 | 202609 | 8310 | 천명 |

@@ -12,6 +12,7 @@ data/vat/expense/<key>.json 에 남긴다. 값 그대로·평가 없음. 세액�
 
 사용: python3 scripts/fetch_daegu_expense.py [--gov dalseong,daegu] [--years 2021,2022,2023] [--days 2023-06-12,2023-06-13] [--probe]
   --probe   지자체마다 연도 목록과 한 날짜의 행 수만 로그(저장 안 함)
+종료 코드: 0 끝 / 3 연결 안 됨·중간 저장(새 러너로 다시) / 4 포털이 거절(400 쪽 등, 다시 부르지 않음)
   --merge   받은 날짜를 기존 JSON 에 더한다(기본: 지정 연도는 새로 집계). 요청 사이 1.2초, 실패는 3회 재시도 뒤 건너뛰고 index 에 적는다.
 """
 from __future__ import annotations
@@ -47,6 +48,9 @@ def curl(url: str, post: dict | None = None, referer: str = "", timeout: int = 1
     return b""
 
 
+REACHED = False   # 포털이 무언가(400 쪽 등)를 돌려줬는가 — 연결 자체가 안 된 러너(종료 코드 3)와 포털이 거절한 경우(종료 코드 4)를 가른다
+
+
 def years_of(code: str) -> list[str]:
     """연도 목록(JSON). 2026-11-03 저녁부터 포털이 맨 요청에 400 쪽(1,414B)을 돌려줘 — 세 가지 길을 차례로 해 보고 무엇이 왔는지 남긴다:
     ① 그대로 ② 화면을 먼저 열어 세션 쿠키를 받은 뒤 ③ 쿠키 + 브라우저가 보내는 XHR 머리글(X-Requested-With·Accept)."""
@@ -66,6 +70,8 @@ def years_of(code: str) -> list[str]:
             pass
         if not raw:
             return []   # 연결 자체가 안 됨(러너 IP 차단) — 다른 길도 같다
+        global REACHED
+        REACHED = True
         print(f"  연도 목록 {way}: JSON 이 아님({len(raw)}B) {raw[:120].decode('utf-8', 'ignore')!r}", flush=True)
     return []
 
@@ -146,6 +152,9 @@ def main():
     for key, code, name in govs:
         yrs = years_of(code)
         print(f"[expense] {name}({code}) 연도 목록: {yrs}", flush=True)
+        if not yrs and REACHED:   # 연결은 됐는데 포털이 JSON 대신 400 쪽 등을 돌려줌(2026-11-03 밤부터) — 새 러너로 다시 해도 같으니 체인을 멈춘다
+            print(f"[expense] {name}: 포털이 요청을 거절함(JSON 아님) — 종료 코드 4(다시 부르지 않음)", flush=True)
+            sys.exit(4)
         if not yrs:   # 연도 목록조차 못 받으면 이 러너 VM 의 IP 가 포털에 막힌 것(2026-11-03 중구 — 3.6시간 동안 연결 0건) → 바로 끝내고 워크플로가 새 러너로 다시 돌린다(종료 코드 3)
             print(f"[expense] {name}: 포털 연결 실패 — 러너 IP 차단으로 보임, 종료 코드 3(워크플로 retry)", flush=True)
             sys.exit(3)
@@ -155,6 +164,8 @@ def main():
             print(f"  probe {d}: {'실패' if rows is None else f'{len(rows)}행'}", flush=True)
             if rows:
                 print("  ", rows[0])
+            else:   # 연도 목록은 왔지만 하루치 엑셀이 안 옴 — 아직 받을 수 있는 상태가 아니다
+                sys.exit(4)
             continue
         path = OUT / f"{key}.json"
         old = json.loads(path.read_text(encoding="utf-8")) if path.exists() and not a.fresh else None   # 기본 이어 받기(러너가 시간 초과로 끊겨도 중간 저장분부터)

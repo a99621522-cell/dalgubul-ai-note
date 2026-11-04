@@ -19,7 +19,7 @@ on:
         required: false
         default: "false"
       attempt:
-        description: "(자동) 몇 번째 시도인지 — 러너 IP 가 포털에 막혀 종료 코드 3 으로 끝난 지자체는 그 잡이 자기만 새 러너로 다시 부른다(50번까지)"
+        description: "(자동) 몇 번째 시도인지 — 연결이 안 된 러너(종료 코드 3)는 같은 지자체를 새 러너로 다시 부른다(50번까지). 포털이 거절하면(종료 코드 4) 멈춘다"
         required: false
         default: "1"
   schedule:
@@ -82,18 +82,31 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run deploy_vat.yml -R "${{ github.repository }}" --ref main || echo "::warning::deploy_vat 호출 실패"
-      - name: 이 지자체만 새 러너로 다시(연결 차단, 종료 코드 3)
-        # 러너 VM 의 IP 에 따라 jumin.daegu.go.kr 이 TCP 연결을 막는다(2026-11-03 러너 약 30대 중 1대꼴로만 연결) — 막힌 지자체는 저마다 따로 다시 부른다.
-        # 이전에는 retry 잡이 모든 잡이 끝나길 기다려 한꺼번에 불렀는데, 연결된 잡 하나가 한 시간 넘게 받는 동안 나머지가 멈춰 있었다.
-        # probe 실행(연결 확인용)은 다시 부르지 않는다 — 2026-11-04 probe 하나가 수집 체인을 열었다
-        if: ${{ !cancelled() && steps.f.outputs.rc == '3' && github.event.inputs.probe != 'true' }}
+      - name: 다음 실행 부르기(종료 코드로)
+        # 3 = 연결 자체가 안 된 러너(러너 IP 에 따라 TCP 차단, 2026-11-03 약 30대 중 1대꼴로만 연결) 또는 시간 예산·연속 실패로 중간 저장 → 같은 지자체·같은 방식으로 새 러너에서 다시(50번까지).
+        #     연결이 안 된 요청은 포털에 닿지 않으므로 다시 불러도 포털 부담이 없다.
+        # 4 = 포털이 거절(JSON 대신 400 쪽, 2026-11-03 밤부터) → 멈춘다(다시 해도 같다).
+        # probe 가 0 = 연도 목록·하루치 엑셀 모두 받음 → 그 지자체 수집을 시작(시도 1).
+        # 수집이 0 = 끝 → ORDER 의 다음 지자체 수집을 부른다(입력 gov 가 하나일 때만, 지자체 하나씩).
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' }}
         env:
           GH_TOKEN: ${{ github.token }}
+          ORDER: "nam dong seo buk suseong dalseo dalseong gunwi"
         run: |
-          A="${{ github.event.inputs.attempt || '1' }}"
-          if [ "$A" -ge 50 ]; then echo "::warning::${{ matrix.gov }} — $A번째 시도까지 포털 연결이 막혀 중단(국내 PC 또는 수동 재실행)"; exit 0; fi
-          echo "다시 받기: ${{ matrix.gov }} (시도 $((A+1)))"
-          gh workflow run daegu_expense.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f gov="${{ matrix.gov }}" -f years="${{ github.event.inputs.years || '2021,2022,2023' }}" -f probe=false -f attempt="$((A+1))"
+          RC="${{ steps.f.outputs.rc }}"; A="${{ github.event.inputs.attempt || '1' }}"; G="${{ matrix.gov }}"
+          P="${{ github.event.inputs.probe || 'false' }}"; IN="${{ github.event.inputs.gov }}"
+          Y="${{ github.event.inputs.years || '2021,2022,2023' }}"
+          run() { gh workflow run daegu_expense.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f years="$Y" "$@"; }
+          if [ "$RC" = "4" ]; then echo "::warning::$G — 포털이 요청을 거절(400 쪽). 체인을 멈춘다 — 나중에 probe 로 다시 확인"; exit 0; fi
+          if [ "$RC" = "3" ]; then
+            if [ "$A" -ge 50 ]; then echo "::warning::$G — $A번째 시도까지 연결이 안 돼 중단(국내 PC 또는 수동 재실행)"; exit 0; fi
+            echo "다시: $G probe=$P (시도 $((A+1)))"; run -f gov="$G" -f probe="$P" -f attempt="$((A+1))"; exit 0
+          fi
+          if [ "$RC" = "0" ] && [ "$P" = "true" ]; then echo "probe 통과 → $G 수집 시작"; run -f gov="$G" -f probe=false -f attempt=1; exit 0; fi
+          if [ "$RC" = "0" ] && [ "$IN" = "$G" ]; then
+            NEXT=$(echo $ORDER | tr ' ' '\n' | grep -A1 -x "$G" | sed -n 2p)
+            if [ -n "$NEXT" ]; then echo "$G 끝 → 다음 $NEXT"; run -f gov="$NEXT" -f probe=false -f attempt=1; else echo "모든 지자체 끝"; fi
+          fi
       - name: 결과
         run: |
           echo "종료 코드 ${{ steps.f.outputs.rc }}"

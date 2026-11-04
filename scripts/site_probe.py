@@ -77,6 +77,13 @@ def main():
             t.decompose()
         cands = soup.find_all(["article", "div", "section"])
         best = max(cands, key=lambda e: len(re.sub(r"\s", "", e.get_text(" ", strip=True))) if len(e.find_all(["div", "section", "article"])) < 40 else 0, default=soup)
+        # 본문 칸 이름이 알려진 누리집은 그 칸 먼저(2026-11-04 정책브리핑: 가장 긴 덩어리가 저작권 안내였다)
+        known = soup.select_one("div.view_cont, div.article_body, #articleBody, div.view-con, div.board_view_cont")
+        if known and len(re.sub(r"\s", "", known.get_text(" ", strip=True))) >= 200:
+            best = known
+        else:   # 어느 칸이 본문인지 다음에 고를 수 있게 글이 많은 칸 이름을 찍는다
+            top = sorted(((len(re.sub(r"\s", "", e.get_text(" ", strip=True))), e.name, " ".join(e.get("class") or []), e.get("id") or "") for e in cands), reverse=True)[:8]
+            print("== 글이 많은 칸: " + " | ".join(f"{n}:{t}.{c}#{i}" for n, t, c, i in top))
         text = re.sub(r"[ \t]+", " ", best.get_text("\n", strip=True))
         if len(re.sub(r"\s", "", text)) < 200:   # 큰 틀 안에 본문이 있어 '글 덩어리'를 못 고른 화면: body 전체 글자
             text = re.sub(r"[ \t]+", " ", (soup.body or soup).get_text("\n", strip=True))

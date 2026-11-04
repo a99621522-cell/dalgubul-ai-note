@@ -28,6 +28,8 @@ export type Data = {
     entity_unit?: { summary: string; caution: string; basis: Basis[] };
     agency_contract?: { key: string; text: string }[];
     agency_exempt?: { summary: string; exclusions: string[]; caution: string; basis: Basis[]; rulings?: string[] };
+    /** 겸용 시설 공사의 다섯 갈래(2026-11-05) — 과세 부분 전용 / 같이 쓰는 시설 / 면세 부분 전용 / 부지 토목 / 공공 도로·인도 */
+    works?: { note: string; options: { key: CwKey; name: string; short: string; why: string; basis: Basis[]; verify?: boolean }[] };
     penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
     deemed_rent?: { rates: Record<string, number>; src: string } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
@@ -339,6 +341,20 @@ export const WHAT_GUESS: { re: RegExp; key: string }[] = [
   { re: /전기|한전|한국전력|가스|도시가스|통신|KT|SKT|LGU|인터넷|전화|수도|상하수도/i, key: 'utility' }, { re: /수도요금|상수도|도서|교육|진료/, key: 'water' }, { re: /청소|경비|용역|인쇄|홍보|방역|소독|위탁/, key: 'service' },
   { re: /수선|공사|보수|교체|도장|방수|설치/, key: 'repair' }, { re: /비품|장비|소모품|사무용품|물품|구입|구매/, key: 'equip' }, { re: /주유|유류|휘발유|경유|세차|정비|타이어|렌트|리스/, key: 'car_pass' },
   { re: /식대|회식|다과|간식|커피|음료|식사/, key: 'staff' }, { re: /선물|기념품|화환|경조|접대/, key: 'guest' }, { re: /보험/, key: 'insurance' }, { re: /토지|부지|조성/, key: 'land' }];
+/** 공사 갈래(rules.yml works) — 휴양림처럼 과세(숙박)·면세(입장)가 한 시설에 섞인 곳의 공사를 다섯 가지로 가른다. 판정은 judge 그대로, 귀속(use)·종류(kind)만 바꾼다 */
+export type CwKey = 'c_tax' | 'c_shared' | 'c_exempt' | 'c_land' | 'c_road';
+export const CW_KEYS: CwKey[] = ['c_tax', 'c_shared', 'c_exempt', 'c_land', 'c_road'];
+export const isCw = (k: string | undefined): k is CwKey => !!k && (CW_KEYS as string[]).includes(k);
+/** 사업명·품목 글자로 짐작하는 것은 도로·토목 둘뿐 — 나머지 셋은 어느 동을 짓는지 사람이 안다 */
+export const guessCw = (s: string): CwKey | undefined => /도로|진입로|인도\s*(설치|정비|개설)|보도\s*(설치|정비)|교량|확\s*포장/.test(s) ? 'c_road' : /부지\s*조성|형질\s*변경|절토|성토|토목|정지\s*작업|매립/.test(s) ? 'c_land' : undefined;
+/** 공사 갈래가 정해졌을 때의 공제 비율 — 0(면세 전용·토목·공공 도로) / 1(과세 전용) / 1 − 면세비율(같이 쓰는 시설) / null(못 셈). base 는 갈래가 없을 때의 비율 */
+export function cwRate(cw: CwKey | undefined, base: number | null, er: number | null, facStatus?: string): number | null {
+  if (!cw) return base;
+  if (cw === 'c_exempt' || cw === 'c_land' || cw === 'c_road') return 0;
+  if (cw === 'c_shared') return er === null ? null : 1 - er / 100;
+  return facStatus === 'exempt' || facStatus === 'own' || facStatus === 'agency' ? 0 : facStatus ? 1 : base;
+}
+export const cwSel = (D: Data, cur: string | undefined, attr: string, guessed?: string) => `<select ${attr} aria-label="공사라면"><option value="">${guessed && isCw(guessed) ? `(짐작: ${esc(D.rules.works?.options.find(o => o.key === guessed)?.short ?? '')})` : '(공사라면 고르기)'}</option><option value="no" ${cur === 'no' ? 'selected' : ''}>공사 아님</option>${(D.rules.works?.options ?? []).map(o => `<option value="${o.key}" title="${esc(o.name)}" ${cur === o.key ? 'selected' : ''}>${esc(o.short)}</option>`).join('')}</select>`;
 export const guessWhat = (s: string) => { for (const g of WHAT_GUESS) if (g.re.test(s)) return g.key; return 'other'; };
 const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
 export const crc32 = (b: Uint8Array) => { let c = 0xffffffff; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };

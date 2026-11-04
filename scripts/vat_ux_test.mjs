@@ -297,7 +297,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   const [dz] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zr = path.join(os.tmpdir(), 'vat-rv2.zip'); await dz.saveAs(zr); const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); const det = execSync(`unzip -p "${zr}" 02_건별_명세.csv`).toString();
   const basisTxt = T(await pg.locator('#rv-basis').textContent()); const basisN = execSync(`unzip -p "${zr}" 06_근거_조문_유권해석_판례.txt`).toString();
   ok('R8 근거 절: 경정청구 조문(국세기본법 제45조의2·영 제74조) · 체육시설 기준·유권해석(부가가치세제과-186) · 본청·행정 공통(2017두55329)·질의서 초안 · 건별 조문', /제45조의2/.test(basisTxt) && /제74조/.test(basisTxt) && /체육시설/.test(basisTxt) && /186/.test(basisTxt) && /본청·행정 공통 안분/.test(basisTxt) && /2017두55329/.test(basisTxt) && (await pg.locator('#rv-basis details.inquiry[data-inq="admin_common"]').count()) === 1 && /건별 판정에 걸린 조문/.test(basisTxt), basisTxt.slice(0, 300));
-  ok('R8 건별 표 근거 칸 · 사유 초안에 근거 · zip 8파일(06 근거 + 07 질의서)', /법 제38조/.test(T(await pg.locator('#rv-sup .rv-rows').first().textContent())) && /\[근거 법령·유권해석\]/.test(await pg.locator('#rv-reason').inputValue()) && zl.length === 8 && /체육시설/.test(basisN) && zl.some(z => /07_국세청_질의서_초안_1_admin_common/.test(z)), zl.join('|'));
+  ok('R8 건별 표 근거 칸 · 사유 초안에 근거 · zip 10파일(06 근거 + 07 질의서 + 08·09 자료별·순액)', /법 제38조/.test(T(await pg.locator('#rv-sup .rv-rows').first().textContent())) && /\[근거 법령·유권해석\]/.test(await pg.locator('#rv-reason').inputValue()) && zl.length === 10 && /체육시설/.test(basisN) && zl.some(z => /07_국세청_질의서_초안_1_admin_common/.test(z)), zl.join('|'));
   ok('R5 zip 건별 명세에 본청·행정 공통 18,000', /본청·행정 공통/.test(det) && /18000/.test(det), zl.join('|'));
   await pg.reload(); await pg.waitForTimeout(700); ok('R6 새로 고침 뒤 자료·귀속·신고 값 유지(5건, 298,000)', /5건/.test(T(await pg.locator('#rv-stat').textContent())) && T(await pg.locator('#rv-total').textContent()).startsWith('298,000'));
   await pg.evaluate(() => localStorage.removeItem('vat-review-v1'));
@@ -329,6 +329,28 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   if (lk.length) { await pg.selectOption(`[data-pl-fid="${lk[0]}"]`, 'f3'); await pg.waitForTimeout(400); }
   ok('R11 휴양림 사업을 비슬산(과세)에 지정 → 연도별 추정 표·받아올 사업 메모에 그 사업', lk.length > 0 && (await pg.locator('#pub-lper').count()) === 1 && (await pg.locator('#pub-lmemo').inputValue()).includes(lk[0].split('|')[2]), JSON.stringify(lk.slice(0, 3)));
   await pg.evaluate(() => { localStorage.removeItem('vat-pub-v1'); localStorage.removeItem('vat-rv-src'); });
+}
+
+/* ── U 지난 신고서 → 자료 → 돌려받을 금액(2026-11-04, docs/design/vat-refund-unlock.md) ── */
+{
+  const FXU = path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax');
+  const ORG_U = { v: 1, org: '시험군', dept: '재무과', unit: 'entity', reg_no: '555-83-00001', handover_day: 10, created: '2026-01-01', facilities: [{ id: 'f1', type: 'sports', name: '시험체육센터', run: 'direct', income: [], deposit: false }] };
+  await pg.goto(base + '/vat/review/'); await pg.evaluate(o => { localStorage.clear(); localStorage.setItem('vat-org-v1', JSON.stringify(o)); localStorage.setItem('vat-rv-src', 'paste'); }, ORG_U); await pg.reload(); await pg.waitForSelector('#rv-a', { state: 'attached' });
+  const rowsU = ['작성일자\t공급자등록번호\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호', '2024-08-05\t777-77-77777\t시공사\t시험체육센터 수선 1\t5,000,000\t500,000\t555-83-00001', '2024-09-05\t777-77-77777\t시공사\t시험체육센터 수선 2\t5,000,000\t500,000\t555-83-00001', '2024-10-05\t777-77-77777\t시공사\t시험체육센터 수선 3\t5,000,000\t500,000\t555-83-00001', '2020-03-05\t888-88-88888\t옛 업체\t시험체육센터 전기\t3,000,000\t300,000\t555-83-00001'];
+  await pg.click('[data-rvsrc="paste"]'); await pg.fill('#rv-a', rowsU.join('\n')); await pg.evaluate(() => document.getElementById('rv-form').requestSubmit()); await pg.waitForTimeout(400); await pg.click('#rv-build'); await pg.waitForTimeout(600);
+  await pg.setInputFiles('#rv-fd-file', [path.join(FXU, 'filed_2024_2.txt'), path.join(FXU, 'filed_2020_1.txt')]); await pg.waitForSelector('#rv-fd-tbl', { timeout: 10000 }); await pg.waitForTimeout(500);
+  ok('U1 신고서 2건 읽기 → ② 표: 2024년 제2기 신고 함 · (18) 1,000,000 · (17) 200,000 · 면세비율 30(⑭ 90,000 ÷ ⑪ 300,000)', (await pg.locator('[data-filed="2024-2"]').inputValue()) === 'filed' && (await pg.locator('[data-fin="deduct:2024-2"]').inputValue()) === '1,000,000' && (await pg.locator('[data-fin="nondeduct:2024-2"]').inputValue()) === '200,000' && (await pg.locator('[data-fin="er:2024-2"]').inputValue()) === '30', await pg.locator('#rv-fd-tbl').textContent());
+  ok('U2 시설 자료가 없으면 지금 0 · 자료를 올리면 500,000(= 1,500,000 − 1,000,000) · 자료 표에 시험체육센터 자료 묶음', T(await pg.locator('#ul-now').textContent()).startsWith('0') && T(await pg.locator('#ul-docs').textContent()).startsWith('500,000') && /시험체육센터 자료 묶음/.test(T(await pg.locator('#ul-docs-tbl').textContent())), T(await pg.locator('#rv-unlock').textContent()).slice(0, 300));
+  await pg.click('[data-have="fac:f1"]'); await pg.waitForTimeout(500);
+  ok('U2 자료 있음 표시 → 지금 자료로 500,000 · 자료를 올리면 0', T(await pg.locator('#ul-now').textContent()).startsWith('500,000') && T(await pg.locator('#ul-docs').textContent()).startsWith('0'));
+  ok('U3 신고서 과세 매출 0 → 매출 신고 확인 안내', /매출 신고를 확인하세요/.test(T(await pg.locator('#rv-unlock').textContent())));
+  await pg.fill('[data-sales="2024-2"]', '1000000'); await pg.press('[data-sales="2024-2"]', 'Tab'); await pg.waitForTimeout(500);
+  const rowU = await pg.$$eval('#ul-per tbody tr', trs => trs.map(t => [...t.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim())));
+  const r24 = rowU.find(r => /2024년 제2기/.test(r[0])); const salesCell = Number((r24?.[7] ?? '').replace(/[^\d]/g, '')); const netNow = Number(T(await pg.locator('#ul-net-now').textContent()).replace(/[^\d-]/g, ''));
+  ok('U3 신고에 없던 매출 1,000,000 → 매출세액 100,000 + 가산세 · 순액 = 500,000 − (매출세액+가산세) − 합계표 가산세 25,000(5,000,000 × 0.5%)', salesCell > 100000 && salesCell < 200000 && netNow === 500000 - salesCell - 25000, JSON.stringify(r24) + ' net ' + netNow);
+  const r20 = rowU.find(r => /2020년 제1기/.test(r[0]));
+  ok('U4 2020년 제1기(기한 지남)는 세 칸에서 빠지고 따로 — 300,000 − 신고 100,000 = 200,000', /기한 지남/.test(r20?.[1] ?? '') && /기한이 지난 과세기간 몫 200,000원/.test(T(await pg.locator('#rv-unlock').textContent())) && T(await pg.locator('#ul-now').textContent()).startsWith('500,000'), JSON.stringify(r20));
+  await pg.evaluate(() => { localStorage.removeItem('vat-review-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);

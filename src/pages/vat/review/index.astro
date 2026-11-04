@@ -17,6 +17,9 @@ const KEY_NAME: Record<string, string> = { claim: '경정청구', build: '신축
   <div class="callout info" id="rv-noorg" hidden><p>시설을 정하려면 기관 설정에 시설 목록이 있어야 합니다. 아래에서 기관을 고르면 그 자리에서 시설이 들어가고, 공급자·품목 이름이 시설 이름과 맞는 건은 자동으로 귀속됩니다.</p></div>
 
 
+  <div class="section-head"><h2>⓪ 지난 신고서 올리기</h2><span class="meta">홈택스 신고내역 조회 → 신고서 보기·인쇄(PDF 저장) · 과세기간마다</span></div>
+  <p class="note">신고서를 올리면 과세기간마다 <strong>공제받은 매입세액 (18)·불공제 (17)·면세비율(불공제 명세서 ⑪·⑭)·과세 매출 (1)~(4)</strong>를 읽어 ②에 넣고, 결과 맨 위 <a href="#rv-unlock">돌려받을 금액 — 자료별</a>에 '지금 자료로 / 자료를 올리면 +얼마 / 판단 필요'가 나옵니다. 매입 목록(①)과 함께 쓰세요.</p>
+  <div id="rv-filedup" class="no-print"></div>
   <div class="section-head"><h2>① 자료 넣기</h2><span class="meta" id="rv-stat"></span></div>
   <div class="vc-form no-print" id="rv-common"><label>우리 기관(과세사업) 사업자등록번호 — 공급받는 자가 다른 번호인 행을 가려냅니다 <input type="text" id="rv-reg" placeholder="000-00-00000" inputmode="numeric" /></label></div>
   <div class="rv-src-tabs no-print" role="tablist" aria-label="자료를 넣는 방법"><button type="button" role="tab" data-rvsrc="pub" aria-selected="false">공개 지출 자료로 후보 찾기 <span class="note">(붙여넣기 없음)</span></button><button type="button" role="tab" data-rvsrc="drop" aria-selected="true">파일 놓기 <span class="note">(홈택스·e호조 엑셀)</span></button><button type="button" role="tab" data-rvsrc="paste" aria-selected="false">붙여넣기</button></div>

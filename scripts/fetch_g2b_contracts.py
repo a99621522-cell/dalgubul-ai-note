@@ -159,6 +159,7 @@ def main():
     ap.add_argument("--kinds", default="공사,용역,물품")
     ap.add_argument("--inqry-div", default=os.environ.get("G2B_INQRY_DIV", "1"))
     ap.add_argument("--instt-div", default=os.environ.get("G2B_INSTT_DIV", "1,2"), help="기관구분코드 — 쉼표로 여럿(계약기관·수요기관)")
+    ap.add_argument("--one", default="", help="지자체 하나만(그 이름으로 묻고 그 지자체 행만) — 운영자 2026-11-05 '한 지자체 다하고 다음 지자체'. daegu 는 '대구광역시'로 묻는다")
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--max-calls", type=int, default=3000)
     ap.add_argument("--rows", type=int, default=999, help="한 쪽 행 수(주지 않으면 100 으로)")
@@ -201,14 +202,16 @@ def main():
             olds[g] = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else None
             store[g] = {r["no"] or f"{r['k']}|{r['nm']}|{r['date']}": {**{k: v for k, v in r.items() if k not in ("bgn", "end")}, "url": short_url(r.get("url", ""))}
                         for r in (olds[g] or {}).get("rows", []) if g in {gov_of(x) for x in [r["inst"], *r["dmn"]]}}   # 가르기 규칙이 바뀌면 옛 행도 다시 가른다
-        want = set(govs)
+        one = a.one if a.one in GOVS else ""
+        want = {one} if one else set(govs)
+        qname = GOVS[one] if one else "대구광역시"   # 구·군 이름으로 물으면 그 구·군(과 소속 기관) 계약만 온다
         size = a.rows
         this_month = dt.date.today().strftime("%Y-%m")
         try:
             for kind in kinds:
                 for ym, b, e in months(a.frm, a.to):
-                    tag = f"{kind}|{ym}|{a.inqry_div}|{a.instt_div}"
-                    if tag in done and ym < this_month:
+                    tag = f"{kind}|{ym}|{a.inqry_div}|{a.instt_div}"; tag1 = f"{one}|{tag}" if one else tag
+                    if (tag in done or tag1 in done) and ym < this_month:
                         continue
                     got, seen = {g: 0 for g in GOVS}, 0
                     for cdiv in [c for c in a.instt_div.split(",") if c] or [""]:
@@ -216,7 +219,7 @@ def main():
                         while True:
                             if calls >= a.max_calls:
                                 raise Stop(3, f"이번 실행 호출 상한 {a.max_calls} — 다음 실행이 이어 받습니다")
-                            p = {"pageNo": page, "numOfRows": size, "inqryDiv": a.inqry_div, "inqryBgnDate": b, "inqryEndDate": e, "insttNm": "대구광역시"}
+                            p = {"pageNo": page, "numOfRows": size, "inqryDiv": a.inqry_div, "inqryBgnDate": b, "inqryEndDate": e, "insttNm": qname}
                             if cdiv: p["insttDivCd"] = cdiv
                             r = call(OPS[kind], p, key); calls += 1; time.sleep(0.3)
                             if not r: break
@@ -227,13 +230,13 @@ def main():
                             for it in r["items"]:
                                 row = row_of(kind, it)
                                 k = row["no"] or f"{row['k']}|{row['nm']}|{row['date']}"
-                                for g in {gov_of(x) for x in [row["inst"], *row["dmn"]]} - {None}:
+                                for g in ({gov_of(x) for x in [row["inst"], *row["dmn"]]} - {None}) & (want if one else set(GOVS)):
                                     if k not in store[g] or (row["chg"] or "") >= (store[g][k].get("chg") or ""):
                                         store[g][k] = row; got[g] += 1
                             if not r["items"] or recv >= r["total"]: break
                             page += 1
-                    done.add(tag)
-                    print(f"  {kind} {ym}: 받은 {seen}행 → " + " ".join(f"{g} {n}" for g, n in got.items() if n) + f" (호출 {calls})", flush=True)
+                    done.add(tag1)
+                    print(f"  {one or '전체'} {kind} {ym}: 받은 {seen}행 → " + " ".join(f"{g} {n}" for g, n in got.items() if n) + f" (호출 {calls})", flush=True)
         finally:
             state["sweep"] = sorted(done)
             state.pop("done", None)

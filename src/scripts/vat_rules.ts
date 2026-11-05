@@ -118,7 +118,7 @@ export type Fee = 'taxable' | 'paid_check' | 'free' | 'unknown';
 export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고, 그 사용료를 과세(부동산임대)로 신고하고 있다', paid_check: '사용료·임대료를 받지만 과세로 신고하는지 모름(면세로 보고 있음)', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
 /** track=false: '지출 기록 대상 아님'(마찰 3) — 면세 시설·수탁기관 자기 사업처럼 우리 공제와 무관한 시설. 판정이 아니라 기록 범위 표시 */
 export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[]; track?: boolean };
-export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; contractor?: string; term?: string; note?: string; alias?: string[] }[] };
+export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; run?: string; contractor?: string; term?: string; note?: string; alias?: string[] }[] };
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };
 /** filing: 신고를 누가 하나 — self 기관이 직접(기본) / agent 세무대리인(회계사·세무사)에게 의뢰(agent_org 는 대리인 기관 이름만, 사람 이름·전화 없음). 어느 쪽이든 근거 자료는 기관이 만든다(운영자 2026-11-03) */
@@ -134,12 +134,12 @@ export function matchMap(org: Org | null, biz: string, dept: string): MapRule | 
 /** 이름 일치에 쓰지 않는 시설 이름 — 세입예산서에서 불러온 수입 항목('도로'·'하천'·'공유재산' 사용료·점용료, '…수수료'·'…수입')과 임차인 이름('사회적협동조합 ○○').
  *  '도로'가 도로 공사 계약 수백 건에 붙어 과세 시설 계약으로 세던 것(2026-11-05 동구 나라장터 계약) */
 const GENERIC_FAC = /^(도로|하천|공유수면|공유재산|국유재산|기타|구유재산|군유재산|시유재산|사용료수입|주차요금수입|시설녹지)$/;
-export const noNameMatch = (name: string) => { const n = String(name ?? '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim(); return !n || GENERIC_FAC.test(n.replace(/\s/g, '')) || /(점용료|수수료|수입|대부료|임대료|사용료|요금|판매|수탁료)(\s*등)?$/.test(n) || /협동조합|조합\s|^\(?(주|사|재)\)/.test(n); };
+export const noNameMatch = (name: string) => { const n = String(name ?? '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim(); return !n || GENERIC_FAC.test(n.replace(/\s/g, '')) || /(점용료|수수료|수입|대부료|임대료|사용료|요금|판매|수탁료)(\s*등)?$/.test(n) || /점용료|사용료|임대료|대부료|수수료/.test(n) || /협동조합|조합\s|^\(?(주|사|재)\)/.test(n); };
 export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacility | undefined {
   if (!org) return undefined; const norm = (x: string) => String(x ?? '').replace(/[\s()（）·,.\-_/]/g, '').toLowerCase(); const hay = norm(texts.filter(Boolean).join(' ')); if (hay.length < 2) return undefined;
   /* 낱말 사전: 시설 이름·별칭을 괄호·공백·가운뎃점으로 나눈 낱말(2글자 이상)이 몇 시설에 나오는지 — 3곳 이상에 나오는 낱말('달성'·'체육' 등)은 가름에 쓰지 않는다 */
   const tokOf = (nm: string) => String(nm ?? '').split(/[\s()（）·,.\-_/]+/).map(t => t.toLowerCase()).filter(t => t.length >= 2);
-  const STOP = new Set(['운영', '관리', '사업', '시설', '센터', '공단', '본부', '지원', '위탁', '직영', '조리', '이용', '주민', '복지', '체육', '문화', '공원', '회관', '종합', '생활', '지역', '청사', '사무소', '사무실', '행정', '군청', '시청', '구청', '기타', '일반', '임대', '임차', '대여', '구입']);   // '임대' — '군유재산 임대'가 '임대주택단지간 도시계획도로'·'정수기 임대'에 붙던 것(2026-11-05 나라장터 계약)   // 가름에 못 쓰는 흔한 낱말
+  const STOP = new Set(['운영', '관리', '사업', '시설', '센터', '공단', '본부', '지원', '위탁', '직영', '조리', '이용', '주민', '복지', '체육', '문화', '공원', '회관', '종합', '생활', '지역', '청사', '사무소', '사무실', '행정', '군청', '시청', '구청', '기타', '일반', '임대', '임차', '대여', '구입', '체육시설', '하천', '하천수', '시설물']);   /* '체육시설' — '하빈지구 체육시설'이 원오교·강창교 체육시설 계약에 붙던 것(2026-11-05) */   // '임대' — '군유재산 임대'가 '임대주택단지간 도시계획도로'·'정수기 임대'에 붙던 것(2026-11-05 나라장터 계약)   // 가름에 못 쓰는 흔한 낱말
   const freq = new Map<string, number>(); for (const f of org.facilities) { const ts = new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf)); for (const t of ts) freq.set(t, (freq.get(t) ?? 0) + 1); }
   let best: OrgFacility | undefined, bl = 0;
   for (const f of org.facilities) {
@@ -360,7 +360,9 @@ export type CwKey = 'c_tax' | 'c_shared' | 'c_exempt' | 'c_land' | 'c_road';
 export const CW_KEYS: CwKey[] = ['c_tax', 'c_shared', 'c_exempt', 'c_land', 'c_road'];
 export const isCw = (k: string | undefined): k is CwKey => !!k && (CW_KEYS as string[]).includes(k);
 /** 사업명·품목 글자로 짐작하는 것은 도로·토목 둘뿐 — 나머지 셋은 어느 동을 짓는지 사람이 안다 */
-export const guessCw = (s: string): CwKey | undefined => /도로|진입로|인도\s*(설치|정비|개설)|보도\s*(설치|정비)|교량|확\s*포장/.test(s) ? 'c_road' : /부지\s*조성|형질\s*변경|절토|성토|토목|정지\s*작업|매립/.test(s) ? 'c_land' : undefined;
+/* 건물 본공사(건축·건립·신축·증축·리모델링·기계 설비)는 계약명에 '토목'이 함께 적혀도(예: '○○센터 건립공사(건축, 토목, 조경, 기계)') 부지 토목으로 보지 않는다 — 2026-11-05 달성군 테크노스포츠센터·교육문화복지센터 건립 본공사가 빠지던 것 */
+const BUILD_RX = /건축|건립|신축|증축|개축|리모델링|기계|설비|전기|소방|통신/;
+export const guessCw = (s: string): CwKey | undefined => /도로|진입로|인도\s*(설치|정비|개설)|보도\s*(설치|정비)|교량|확\s*포장/.test(s) && !/건립|신축|증축/.test(s) ? 'c_road' : /부지\s*조성|택지\s*조성|형질\s*변경|절토|성토|정지\s*작업|매립/.test(s) && !BUILD_RX.test(s) ? 'c_land' : undefined;   /* 맨 '토목'은 빼다 — '체육공원 축구장 개보수 토목공사'는 시설 공사이지 토지 조성(시행령 제80조)이 아니다 */
 /** 공사 갈래가 정해졌을 때의 공제 비율 — 0(면세 전용·토목·공공 도로) / 1(과세 전용) / 1 − 면세비율(같이 쓰는 시설) / null(못 셈). base 는 갈래가 없을 때의 비율 */
 export function cwRate(cw: CwKey | undefined, base: number | null, er: number | null, facStatus?: string): number | null {
   if (!cw) return base;

@@ -5,7 +5,7 @@
 import { matchMap, matchFacilityName, facilityStatus, bizType, bizTypeRank, claimPeriod, guessCw, type Data, type Org } from './vat_rules';
 
 export type GovMeta = { key: string; name: string; contracts?: { from: string; to: string; rows: number; fetched: string } | null };
-export type Ctr = { k: '공사' | '용역' | '물품'; no: string; nm: string; inst: string; dept: string; dmn: string[]; date: string; tot: number; amt: number; mth: string; lng: string; cls: string; corps: { nm: string; no: string; sh?: string }[]; url: string };
+export type Ctr = { k: '공사' | '용역' | '물품'; no: string; nm: string; inst: string; dept: string; dmn: string[]; date: string; tot: number; amt: number; mth: string; lng: string; cls: string; corps: { nm: string; no: string; sh?: string }[]; url: string; fin?: string };
 export type CGov = { key: string; name: string; fetched: string; from: string; to: string; rows: Ctr[] };
 type Asg = { fid: string; use: 'this' | 'multi' | 'admin'; cw?: string };
 export type CtrAsg = { a: Asg | undefined; how: '지정' | '자동' | ''; via?: '지정' | '매핑표' | '이름' };
@@ -33,19 +33,28 @@ export function ctrAssign(org: Org | null, c: Ctr, asg = pubAsg()): CtrAsg {
 export const ctrPeriod = (c: Ctr) => claimPeriod(c.date)?.key ?? '';
 /** 금차 계약금액 먼저 — 장기계속·계속비는 총계약금액이 차수 계약마다 되풀이되어 더하면 몇 배가 된다(2026-11-05 달성군) */
 export const ctrMoney = (c: Ctr) => c.amt || c.tot;
-export type CtrCtx = { gov: GovMeta; cg: CGov; rows: { c: Ctr; p: string; a: Asg | undefined; how: CtrAsg['how']; via?: CtrAsg['via']; cw?: string; taxable: boolean; likely: boolean; est: number }[]; biz: Map<string, { a: Asg; nm: string; n: number }> };
+export type CtrCtx = { gov: GovMeta; cg: CGov; rows: { ck: string; span: string; c: Ctr; p: string; a: Asg | undefined; how: CtrAsg['how']; via?: CtrAsg['via']; cw?: string; taxable: boolean; likely: boolean; est: number }[]; biz: Map<string, { a: Asg; nm: string; n: number }> };
+/** 공사·용역의 세액 어림을 계약일 ~ 끝나는 날(fin) 사이 과세기간(1~6월·7~12월)에 날수대로 나눈다 — 기성·준공 세금계산서가 기간 내내 나오므로(2026-11-05 달성군 교육문화복지센터 건립공사 641일이 계약일 기간 하나로 몰려 경정청구 기한 밖으로 빠지던 것) */
+function spread(date: string, fin: string | undefined, est: number): { p: string; est: number }[] {
+  const p0 = claimPeriod(date)?.key ?? ''; if (!fin || fin <= date) return [{ p: p0, est }];
+  const a = +new Date(date), b = +new Date(fin); const out: { p: string; d: number }[] = []; let t = a;
+  while (t < b) { const d = new Date(t); const y = d.getFullYear(), h = d.getMonth() < 6 ? 1 : 2; const end = +new Date(h === 1 ? `${y}-07-01` : `${y + 1}-01-01`); const e = Math.min(end, b); out.push({ p: `${y}-${h}`, d: e - t }); t = e; }
+  const tot = out.reduce((s, x) => s + x.d, 0) || 1; let left = est;
+  return out.map((x, i) => { const v = i === out.length - 1 ? left : Math.floor(est * x.d / tot); left -= v; return { p: x.p, est: v }; });
+}
 /** 계약 묶음 — taxable: 과세 시설(또는 공통)에 붙은 계약, likely: 시설은 못 붙었지만 공제 가능성 있는 사업 유형(rules.yml biz_types, low 아님) */
 export async function contractsCtx(D: Data, org: Org | null): Promise<CtrCtx | null> {
   const gov = await govOf(org); if (!gov?.contracts) return null; const cg = await loadContracts(gov.key); if (!cg?.rows?.length) return null;
   const asg = pubAsg();
   const rows = cg.rows.map(c => { const { a, how, via } = ctrAssign(org, c, asg); const f = a && org ? org.facilities.find(x => x.id === a.fid) : undefined; const fs = f ? facilityStatus(D, f) : undefined;
     /* 공사 갈래가 도로·부지 토목이면(고른 값 > 짐작) 공제 없음으로 본다 — '파크골프장 진입도로 개설공사'·'임대주택단지간 도시계획도로' */
-    const cw = c.k === '공사' ? (a?.cw || guessCw(c.nm)) : undefined; const zero = cw === 'c_road' || cw === 'c_land' || cw === 'c_exempt';
+    const cw = c.k === '공사' ? (a?.cw || guessCw(c.nm)) : undefined; const gc = guessCw(c.nm); const zero = cw === 'c_road' || cw === 'c_land' || cw === 'c_exempt' || (c.k !== '공사' && gc === 'c_road');   /* 도로 확장 타당성·설계 용역도 시설 지출이 아니다 */
     const taxable = !!a && !zero && (a.fid === 'admin' || a.use !== 'this' || fs === 'taxable' || fs === 'check'); const likely = !a && !zero && bizTypeRank(bizType(D, c.nm)) === 0;
-    return { c, p: ctrPeriod(c), a, how, via, cw, taxable, likely, est: Math.floor(ctrMoney(c) * 10 / 110) }; });
+    const est = Math.floor(ctrMoney(c) * 10 / 110); const parts = spread(c.date, c.fin, est); const span = parts.length > 1 ? `${parts[0].p}~${parts[parts.length - 1].p}` : '';
+    return parts.map(x => ({ ck: ctrKey(c), span, c, p: x.p, a, how, via, cw, taxable, likely, est: x.est })); }).flat();
   /* 업체 등록번호 → 시설: 그 업체의 시설이 붙은 계약이 모두 같은 시설일 때만(여러 시설과 계약한 업체는 사람이 고른다) */
   const by = new Map<string, { a: Asg; nm: string; n: number; bad: boolean }>();
-  for (const r of rows) { if (!r.a || r.a.fid === 'none') continue; for (const p of r.c.corps) { if (!/^\d{10}$/.test(p.no)) continue; const cur = by.get(p.no); if (!cur) by.set(p.no, { a: r.a, nm: r.c.nm, n: 1, bad: false }); else { cur.n++; if (cur.a.fid !== r.a.fid || cur.a.use !== r.a.use) cur.bad = true; } } }
+  const seenCk = new Set<string>(); for (const r of rows) { if (!r.a || r.a.fid === 'none' || seenCk.has(r.ck)) continue; seenCk.add(r.ck); for (const p of r.c.corps) { if (!/^\d{10}$/.test(p.no)) continue; const cur = by.get(p.no); if (!cur) by.set(p.no, { a: r.a, nm: r.c.nm, n: 1, bad: false }); else { cur.n++; if (cur.a.fid !== r.a.fid || cur.a.use !== r.a.use) cur.bad = true; } } }
   const biz = new Map<string, { a: Asg; nm: string; n: number }>(); for (const [k, v] of by) if (!v.bad) biz.set(k, { a: v.a, nm: v.nm, n: v.n });
   return { gov, cg, rows, biz };
 }

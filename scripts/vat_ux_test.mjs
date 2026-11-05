@@ -27,13 +27,13 @@ const until = async (fn, ms = 3000) => { const t = Date.now(); while (Date.now()
   await pg.fill('#st-org', '달성군'); await click('[data-next]'); await pg.waitForTimeout(200); await click('[data-preset]'); await pg.waitForTimeout(600);
   if (await pg.locator('#st-rev-add').isEnabled()) { await click('#st-rev-add'); await pg.waitForTimeout(800); }
   const total = await pg.locator('#st-grid tbody tr[data-fid]').count(); const pend = await pg.locator('#st-grid tbody tr[data-pending]').count();
-  ok('T1 grid: imported rows pending', total > 40 && pend === total);
+  ok('T1 grid: imported rows pending(운영 방식을 근거로 채운 예시 시설은 빼고)', total > 40 && pend > total / 2 && pend <= total, `${pend}/${total}`);
   const fields = await pg.evaluate(() => [...document.querySelectorAll('.step[data-step="3"] input,.step[data-step="3"] select')].filter(e => e.offsetParent !== null && !e.closest('tr.sub')).length);
   const scroll = await pg.evaluate(() => document.documentElement.scrollHeight); console.log(`   T1 rows ${total} · visible fields ${fields} · scroll ${scroll}px (${(scroll / 768).toFixed(1)} screens)`);
   await click('[data-sel-all]'); await pg.selectOption('[data-bk=run]', 'direct'); clicks++; await click('[data-bulk=sel]'); await pg.waitForTimeout(300);
   ok('T1 bulk: no pending', await pg.locator('#st-grid tbody tr[data-pending]').count() === 0);
   await click('.step[data-step="3"] [data-next]'); await click('.step[data-step="4"] [data-next]'); await pg.waitForTimeout(400);
-  const saved = await lsJson('vat-org-v1'); ok('T1 saved: all direct', saved && saved.facilities.length === total && saved.facilities.every(f => f.run === 'direct'));
+  const saved = await lsJson('vat-org-v1'); ok('T1 saved: 운영 방식 모두 정해짐(일괄 직영 + 예시의 대행 근거)', saved && saved.facilities.length === total && saved.facilities.every(f => f.run === 'direct' || f.run === 'entrusted_org') && saved.facilities.filter(f => f.run === 'direct').length > total / 2);
   const [dl] = await Promise.all([pg.waitForEvent('download'), click('#st-download')]); ok('T1 org.json download', !!dl);
   ok(`T1 clicks ≤ 20 (${clicks})`, clicks <= 20);
 }
@@ -165,7 +165,7 @@ ok('W2 등록번호 열 출처 ? 단추', await pg.locator('#st-fac button.help.
 await pg.goto(base + '/vat/setup/'); await pg.waitForTimeout(800); ok('W2 5단계 경고 상자 + 단추 2개', await pg.locator('#st-gaps').count() === 1 && (await pg.locator('#st-gaps button').count()) >= 2);
 await pg.click('#st-gaps [data-gofilter=pending]'); await pg.waitForTimeout(400); ok('W2 경고 단추 → 3단계 pending 필터', !(await pg.locator('.step[data-step="3"]').isHidden()) && (await pg.locator('#st-fac [data-filter=pending]').getAttribute('aria-pressed')) === 'true');
 // make org usable: direct + reg no for all, dept
-await pg.click('#st-fac [data-sel-all]'); await pg.selectOption('#st-fac [data-bk=run]', 'direct'); await pg.fill('#st-fac [data-bk=reg_no]', '505-83-00001'); await pg.click('#st-fac [data-bulk=sel]'); await pg.waitForTimeout(300); await pg.click('.step[data-step="3"] [data-next]'); await pg.waitForTimeout(200); await pg.click('.step[data-step="4"] [data-next]'); await pg.waitForTimeout(400);
+if (await pg.locator('#st-fac [data-filter="all"]').count()) { await pg.click('#st-fac [data-filter="all"]'); await pg.waitForTimeout(200); } await pg.click('#st-fac [data-sel-all]'); await pg.selectOption('#st-fac [data-bk=run]', 'direct'); await pg.fill('#st-fac [data-bk=reg_no]', '505-83-00001'); await pg.click('#st-fac [data-bulk=sel]'); await pg.waitForTimeout(300); await pg.click('.step[data-step="3"] [data-next]'); await pg.waitForTimeout(200); await pg.click('.step[data-step="4"] [data-next]'); await pg.waitForTimeout(400);
 // W3 monthly paste 60 rows with facility names, no map
 const FAC = (await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1')).facilities.slice(0, 10).map(f => f.name.replace(/\(.*$/, '').trim())));   // 기관 설정의 시설 이름 10개(사업명에 들어감)
 const rows = ['작성일자\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호\t사업명\t부서']; for (let i = 0; i < 60; i++) { const f = FAC[i % FAC.length]; const kind = i % 6; const [item, amt] = kind === 0 ? [`${f} 전기요금`, 1200000] : kind === 1 ? [`${f} 청소용역`, 800000] : kind === 2 ? ['군 청사 복사용지', 150000] : kind === 3 ? [`${f} 승강기 수선`, 3000000] : kind === 4 ? ['직원 체육대회 기념품', 400000] : [`${f} 보험료`, 500000]; rows.push(`2026-01-${String((i % 28) + 1).padStart(2, '0')}\t업체${i}\t${item}\t${amt.toLocaleString()}\t${(amt / 10).toLocaleString()}\t${i % 11 === 0 ? '999-82-00000' : '505-83-00001'}\t${f} 운영\t재무과`); }

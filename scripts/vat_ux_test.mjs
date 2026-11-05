@@ -483,6 +483,25 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('S9 엑셀만 내려받기 → xlsx(workbook·시트)', /xl\/workbook\.xml/.test(xl) && /xl\/worksheets\/sheet10\.xml/.test(xl), dx.suggestedFilename());
   await c3.close();
 }
+/* 2026-11-05 운영자 '달성군은 과거 5년치 신고 자료만 올리면' — docs/prompts/vat_dalseong_5y_filings.md, 고정 자료 scripts/fixtures/hometax/dalseong5y(심은 오류는 make_dalseong5y.py 머리) */
+{ const c7 = await browser.newContext({ viewport: { width: 1366, height: 900 }, acceptDownloads: true }); const p7 = await c7.newPage(); const FX5 = path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax', 'dalseong5y');
+  await p7.goto(base + '/vat/review/'); await p7.evaluate(() => localStorage.clear());
+  await p7.goto(base + '/vat/review/?gov=dalseong'); await p7.waitForSelector('#rf-all-file', { state: 'attached', timeout: 20000 }); await p7.waitForTimeout(1500);
+  const g = await p7.evaluate(() => ({ org: JSON.parse(localStorage.getItem('vat-org-v1') || 'null')?.org ?? '', prof: document.querySelector('#rf-s1-body .rf-gov summary')?.textContent ?? '' }));
+  ok('F1 링크 한 번으로 시작 — ?gov=dalseong 이면 기관 고르기 없이 달성군 설정·특성(공단·상태)', g.org === '대구광역시 달성군' && /달성군시설관리공단/.test(g.prof), JSON.stringify(g));
+  await p7.setInputFiles('#rf-all-file', fs.readdirSync(FX5).sort().map(f => path.join(FX5, f))); await p7.waitForTimeout(3000);
+  const r = await p7.evaluate(() => ({ cover: document.querySelector('#rf-cover summary')?.textContent ?? '', sure: document.getElementById('rf-calc-sure')?.textContent ?? '', upto: document.getElementById('rf-calc-upto')?.textContent ?? '', rows: [...document.querySelectorAll('#rf-calc tbody tr')].map(tr => [tr.children[0].textContent, tr.children[1].textContent, tr.children[4].textContent].map(x => x.replace(/\s+/g, ' '))), next: document.querySelector('.rf-next li')?.textContent ?? '' }));
+  const has = (re, amt) => r.rows.some(x => re.test(x[1]) && (!amt || x[2].includes(amt)));
+  ok('F2 5년 신고서 한 번에 — 대상 10개 과세기간 중 확정 9개(2022년 제2기 없음·2023년 제1기 수정신고 한 번만)', /대상 10개 과세기간 가운데 확정 신고서 9개/.test(r.cover) && has(/신고서를 올리지 않은/) && r.rows.some(x => /2022년 제2기/.test(x.join(' '))), JSON.stringify(r).slice(0, 600));
+  ok('F3 심은 오류 — 확정 460,000원(안분 300,000·정산 ⑲ 100,000·예정분 정산 60,000), 확인하면 최대 5,200,000원(⑤ 2,000,000·주차장 매출 3,000,000·① 200,000), 재계산 누락 안내', r.sure === '460,000원' && r.upto === '5,200,000원' && has(/공통매입세액을 더 불공제/, '300,000원') && has(/정산을 더 불공제/, '100,000원') && has(/6개월 비율로 정산하지 않음/, '60,000원') && has(/주차장/, '3,000,000원') && has(/재계산 내역이 없음/), JSON.stringify(r).slice(0, 900));
+  ok('F4 다음에 받으면 금액이 커지는 자료 — 첫째가 2025년 제1기 주차장 수입 세입 결의(최대 3,000,000원)', /2025년 제1기/.test(r.next) && /세입 결의/.test(r.next) && /3,000,000원/.test(r.next), r.next);
+  const { execSync } = await import('node:child_process'); const zr = path.join(os.tmpdir(), 'vat-f5y.zip'); const [dl] = await Promise.all([p7.waitForEvent('download', { timeout: 60000 }), p7.evaluate(() => document.getElementById('rv-zip').click())]); await dl.saveAs(zr);
+  const zl = execSync(`unzip -Z1 "${zr}"`).toString();
+  ok('F5 묶음에 결재용 검토 보고(Word, 한글에서 열림)와 돌려받을 돈 표', /14_경정청구_검토보고/.test(zl) && /13_돌려받을_돈/.test(zl), zl.split('\n').join('|'));
+  await p7.goto(base + '/vat/review/'); await p7.evaluate(() => localStorage.clear()); await p7.reload(); await p7.waitForFunction(() => document.querySelector('[data-qs-sel]')?.options.length > 3, null, { timeout: 15000 });
+  const opts = await p7.$$eval('[data-qs-sel] option', os => os.map(o => o.textContent.split(' — ')[0]).filter(Boolean));
+  ok('G1 지자체 선택 — 대구광역시·9개 구·군 행정 순서', JSON.stringify(opts.slice(1, 11)) === JSON.stringify(['대구광역시', '대구광역시 중구', '대구광역시 동구', '대구광역시 서구', '대구광역시 남구', '대구광역시 북구', '대구광역시 수성구', '대구광역시 달서구', '대구광역시 달성군', '대구광역시 군위군']), JSON.stringify(opts));
+  await c7.close(); }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);
 await browser.close(); if (srv) srv.close(); if (fail) process.exitCode = 1;

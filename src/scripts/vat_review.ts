@@ -12,7 +12,7 @@ import { xlsxBlob, csvRows } from './xlsx_write';
 import { applyDefaults } from './vat_ask';
 import { startFromLink } from './vat_org';
 import { diagnose, diagHtml, diagCsv, filedChecks, missingPeriods, mergeFiled, type Diag, refundCalcCsv, reportBlocks } from './vat_diag';
-import { readFiledText, parseFiledText, filedSummary, unlockCompute, unlockHtml, unlockFiles, type FiledDoc, type URow, type UPer } from './vat_unlock';
+import { readFiledText, parseFiledText, filedSummary, unlockCompute, unlockHtml, unlockFiles, latestDocs, type FiledDoc, type URow, type UPer } from './vat_unlock';
 import { $, esc, num, fmt, pct, loadData, getOrg, parseTable, parseDateCell, guessColumns, findHeader, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, ymd, getFilings, zipStore, downloadBlob, srcBtn, helpWire, judge, matchMap, matchFacilityName, facilityStatus, facilityRule, lawLink, lawText, rulingsHtml, inquiryHtml, inquiryText, wireInquiry, guessWhat, WHAT_Q, LABEL, guessCw, isCw, cwSel, toast, vatConfirm, readJsonFile, type Data, type Org, type OrgFacility, type Verdict, type Basis, type Ruling } from './vat_rules';
 
 type Src = 'inv' | 'card';
@@ -319,7 +319,7 @@ function init(D: Data) {
   /** 세 걸음 화면(vat_refund.ts)에 결과를 알린다 — 금액 띠·할 일 목록·기간 비교가 듣는다 */
   /* 신고서만으로 진단 + 목록 진단을 합친다(운영자 2026-11-05 '과거 국세청에 신고한 자료를 올리면 바로 계산되고 이유가 나와야') */
   const diagAll = () => { const taxable = (org?.facilities ?? []).filter(f => ['taxable', 'check'].includes(facilityStatus(D, f))).map(f => f.name);
-    const fdl = (st.fdocs ?? []) as unknown as Parameters<typeof filedChecks>[1];
+    const fdl = latestDocs((st.fdocs ?? []) as FiledDoc[]) as unknown as Parameters<typeof filedChecks>[1];
     const win: string[] = []; for (let y = new Date().getFullYear() - 6; y <= new Date().getFullYear(); y++) for (const h of [1, 2]) { const k = `${y}-${h}`; const P = pInfo(k); if (P.due <= today && P.days >= 0) win.push(k); }
     const fc = new Map([...missingPeriods(fdl, win), ...filedChecks(D, fdl, taxable)]);
     const m = mergeFiled(rowDiags.map(d => ({ ...d, findings: [...d.findings] })), fc, k => { const P = pInfo(k); return { name: pName(k), claim: P.claim, days: P.days, due: P.due }; });

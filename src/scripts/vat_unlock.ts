@@ -54,7 +54,10 @@ export function parseFiledText(text: string, file = ''): FiledDoc[] {
   const starts: number[] = []; const re = /신\s*고\s*기\s*간/g; let m: RegExpExecArray | null; while ((m = re.exec(t))) starts.push(m.index);
   if (!starts.length) { const p = PERIOD_RE.exec(t); if (p) starts.push(Math.max(0, p.index - 20)); }
   const out: FiledDoc[] = [];
-  starts.forEach((s, i) => { const seg = t.slice(i ? Math.max(starts[i - 1] + 1, s - 400) : 0, starts[i + 1] ?? t.length); const head = t.slice(Math.max(0, s - 600), s + 400); const d = parseOne(seg, head, file); if (d) out.push(d); });
+  /* 신고서 하나의 시작 = 신고기간 앞의 제목 줄('… 부가가치세 … 신고서') — 한 파일에 예정·확정이 이어 붙어 있으면 앞 신고서의 칸·[V] 표시를 읽지 않게 */
+  const TITLE = /[^\n]*부\s*가\s*가\s*치\s*세[^\n]*신\s*고\s*서[^\n]*/g; const titles: number[] = []; while ((m = TITLE.exec(t))) titles.push(m.index);
+  const begin = starts.map((s, i) => { const lo = i ? starts[i - 1] + 1 : 0; const tt = titles.filter(x => x >= lo && x < s && s - x < 600).pop(); return tt ?? (i ? Math.max(lo, s - 400) : 0); });
+  starts.forEach((s, i) => { const seg = t.slice(begin[i], i + 1 < starts.length ? begin[i + 1] : t.length); const head = t.slice(begin[i], s + 400); const d = parseOne(seg, head, file); if (d) out.push(d); });
   return out;
 }
 function parseOne(seg: string, head: string, file: string): FiledDoc | null {
@@ -98,6 +101,8 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
   const exBase = eAt >= 0 ? baseRows(main0.slice(eAt, eAt + 1500).split(/계\s*산\s*서\s*발\s*급|과\s*세\s*표\s*준\s*명\s*세/)[0]) : undefined;
   return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(base?.length ? { base } : {}), ...(exBase?.length ? { exBase } : {}), warn };
 }
+/** 같은 과세기간·구분·등록번호가 두 장이면 뒤 파일만(수정신고) — 진단·합계 모두 이것으로 */
+export function latestDocs<T extends { year: number; half: number; kind: string; reg?: string }>(docs: T[]): T[] { const last = new Map<string, T>(); for (const d of docs) last.set(`${d.year}-${d.half}|${d.kind}|${d.reg ?? ''}`, d); return [...last.values()]; }
 /** 신고서들 → 과세기간(확정 기준)별 합: (18)·(17)은 예정+확정, 같은 기간·구분·번호가 두 번이면 뒤 것이 앞 것을 바꿈(수정신고) */
 export function filedSummary(docs: FiledDoc[]): Map<string, FiledSum> {
   const last = new Map<string, FiledDoc>(); const warns: Record<string, string[]> = {};

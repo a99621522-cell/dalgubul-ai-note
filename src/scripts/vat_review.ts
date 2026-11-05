@@ -4,7 +4,7 @@
  *  판정(judge)해 '있어야 할 공제 세액'을 과세기간별로 셈한 뒤 신고서의 공제 매입세액(18)과 견준다. 차이가 경정청구 후보(국세기본법 제45조의2, 법정신고기한 뒤 5년).
  *  입력은 이 브라우저(localStorage `vat-review-v1`)에 남고 JSON 으로 내려받아 이어 할 수 있다. 서버 없음, 새 규칙 없음(판정은 judge 그대로). 판정은 참고이며 기관의 판단이 아니다. */
 import { mountQuickStart } from './vat_org';
-import { mountDrop } from './vat_files';
+import { mountDrop, readTableFile } from './vat_files';
 import { mountPublic } from './vat_review_pub';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
 import type { FileTable } from './vat_files';
@@ -91,6 +91,27 @@ function init(D: Data) {
     $('rv-cols')!.innerHTML = lines.length > 1 || fails.length || unsure.length ? `<ul class="meta-list" id="rv-files">${lines.join('')}</ul>` : '';
     if (unsure.length) { const keep = $('rv-cols')!.innerHTML; showCols(unsure[0].rows); $('rv-cols')!.insertAdjacentHTML('afterbegin', keep); $('rv-cols')?.scrollIntoView({ block: 'nearest' }); }
   };
+  /* 홈택스 자료 한꺼번에(운영자 2026-11-05 '홈택스 결과 자료를 넣으면 자동으로 계산되는 시스템') — 신고서 PDF·불공제 명세서·매입 세금계산서 목록·사업용 카드 엑셀을
+     섞어 놓으면 종류를 가려 ②·③에 넣고 바로 계산한다(종류는 글자로: 신고서는 '신고기간 ○년 제○기'·칸 번호, 카드는 승인일자·가맹점 머리글) */
+  { const box = $('rf-all'); if (box) {
+    box.innerHTML = `<div class="vat-drop rf-all-drop" id="rf-all-drop"><label class="vat-drop-in"><strong>홈택스에서 받은 파일을 모두 여기에 놓으세요 — 바로 계산합니다</strong><span class="note">지난 신고서 PDF(예정·확정)·공제받지 못할 매입세액 명세서·전자세금계산서 목록조회(매입) 엑셀·사업용 신용카드 매입 엑셀 — 섞어서, 5년치 여러 개를 한꺼번에. 종류는 저절로 가립니다. 파일은 이 브라우저 안에서만 읽습니다.</span><input type="file" id="rf-all-file" multiple accept=".pdf,.txt,.xlsx,.xls,.csv,.tsv,.htm,.html,application/pdf,text/plain,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" /></label><p class="note vat-drop-msg" id="rf-all-msg" aria-live="polite"></p></div>`;
+    const msg = $('rf-all-msg')!;
+    const isCard = (t: FileTable) => { const head = withHeader(t.rows)[0]?.join(' ') ?? ''; return /승인\s*일자|가맹점|카드\s*사|카드번호/.test(head) && !/작성\s*일자|공급받는자/.test(head); };
+    const handle = async (fs: File[]) => { if (!fs.length) return; const filed: FiledDoc[] = [], inv: FileTable[] = [], card: FileTable[] = [], fails: string[] = [];
+      for (const [i, f] of fs.entries()) { msg.textContent = `${i + 1}/${fs.length} ${f.name} 읽는 중…`; const ext = (f.name.split('.').pop() ?? '').toLowerCase();
+        try {
+          if (ext === 'pdf' || ext === 'txt') { const docs = parseFiledText(await readFiledText(f), f.name); if (docs.length) { filed.push(...docs); continue; } if (ext === 'pdf') { fails.push(`${f.name}(신고서 칸을 못 찾음)`); continue; } }
+          const t = await readTableFile(f); (isCard(t) ? card : inv).push(t);
+        } catch (e) { fails.push(`${f.name}(${(e as Error).message})`); } }
+      if (filed.length) addFiled(filed, `${fs.length}개 파일`);
+      const setSrc = (v: 'inv' | 'card') => { const r = document.querySelector<HTMLInputElement>(`input[name=rv-dsrc][value=${v}]`); if (r) r.checked = true; };
+      const n0 = st.rows.length; if (inv.length) { setSrc('inv'); addFiles(inv, []); } if (card.length) { setSrc('card'); addFiles(card, []); setSrc('inv'); }
+      const ks = [...new Set(filed.map(d => `${d.year}년 제${d.half}기`))];
+      msg.innerHTML = `파일 ${fs.length}개 — 신고서 <b>${filed.length}</b>건${ks.length ? `(${esc(ks.join(', '))})` : ''} · 매입 세금계산서 목록 <b>${inv.length}</b>개 · 사업용 카드 <b>${card.length}</b>개 → 매입 ${fmt(st.rows.length - n0)}건 더함${fails.length ? ` · 못 읽음: ${esc(fails.join(', '))}` : ''}. <a href="#rf-diag-wrap">지난 신고 진단 보기 ↓</a>`;
+      if (filed.length || st.rows.length > n0) document.getElementById('rf-diag-wrap')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); };
+    $<HTMLInputElement>('rf-all-file')!.addEventListener('change', e => void handle([...((e.target as HTMLInputElement).files ?? [])]));
+    const dz = $('rf-all-drop')!; dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); }); dz.addEventListener('dragleave', () => dz.classList.remove('over')); dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); void handle([...(e.dataTransfer?.files ?? [])]); });
+  } }
   $<HTMLFormElement>('rv-form')!.addEventListener('submit', e => { e.preventDefault(); showCols(parseTable($<HTMLTextAreaElement>('rv-a')!.value)); });
   /* 자료 넣는 방법 탭(운영자 2026-11-03 '홈택스 붙여넣는 것은 공무원이 안 할 것 같은데'): 공개 지출 자료 / 파일 놓기 / 붙여넣기 */
   { const tabs = document.querySelectorAll<HTMLButtonElement>('[data-rvsrc]'); let cur = ''; try { cur = localStorage.getItem('vat-rv-src') || ''; } catch { /* */ } if (cur === 'drop') cur = ''; let pubMounted = false;   /* 세 걸음 판: 파일 놓기는 ③에 늘 보이고, 탭은 '다른 방법' 펼침 안의 공개 지출 자료·붙여넣기 둘 */

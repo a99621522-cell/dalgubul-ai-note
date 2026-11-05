@@ -54,8 +54,8 @@ def row_of(it, query):
 
 def in_daegu(r):
     """대구에 있는 기관(지역명·주소·최상위 기관)만 — 교육청·교육지원청 소속 학교는 뺀다(점검기는 지자체·공단 신고용)"""
-    where = " ".join((r["addr"], r["top"], r["name"]))
-    return ("대구" in where) and not re.search(r"교육청|교육지원청", r["name"] + r["top"]) and r["dlt"] != "Y"
+    where = (r["addr"], r["top"], r["name"])   # '해운대구'·'강진군 대구면' 같은 이름이 섞이지 않게 앞머리로 본다
+    return any(x.replace(" ", "").startswith("대구") for x in where) and not re.search(r"교육청|교육지원청", r["name"] + r["top"]) and r["dlt"] != "Y"
 
 
 def main():

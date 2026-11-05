@@ -11,8 +11,8 @@ on:
         description: "지자체 키(쉼표, 비우면 10곳 모두: daegu,jung,dong,seo,nam,buk,suseong,dalseo,dalseong,gunwi)"
         default: ""
       from:
-        description: "시작 달 YYYY-MM"
-        default: "2021-01"
+        description: "시작 달 YYYY-MM(비우면 경정청구가 되는 가장 이른 과세기간의 1년 앞 — 기성·준공 세금계산서 몫)"
+        default: ""
       to:
         description: "끝 달 YYYY-MM(비우면 이번 달)"
         default: ""
@@ -63,7 +63,7 @@ jobs:
           set +e
           ARGS=(--inqry-div "${INQ:-1}" --instt-div "${INST:-1,2}" --kinds "${KINDS:-공사,용역,물품}")
           [ -n "$GOVS" ] && ARGS+=(--govs "$GOVS")
-          if [ "${{ github.event_name }}" = "schedule" ]; then ARGS+=(--from "$(date -d '-2 month' +%Y-%m)"); else ARGS+=(--from "${FROM:-2021-01}"); fi
+          if [ "${{ github.event_name }}" = "schedule" ]; then ARGS+=(--from "$(date -d '-2 month' +%Y-%m)"); elif [ -n "$FROM" ]; then ARGS+=(--from "$FROM"); fi
           [ -n "$TO" ] && ARGS+=(--to "$TO")
           [ "$PROBE" = "true" ] && ARGS+=(--probe)
           python3 scripts/fetch_g2b_contracts.py "${ARGS[@]}"

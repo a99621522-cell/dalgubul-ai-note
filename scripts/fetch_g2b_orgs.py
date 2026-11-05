@@ -68,7 +68,7 @@ def main():
     probe = "--probe" in sys.argv
     names = ["대구", "시설관리공단", "시설공단"]
     if "--names" in sys.argv: names = [s.strip() for s in sys.argv[sys.argv.index("--names") + 1].split(",") if s.strip()]
-    y0 = int(sys.argv[sys.argv.index("--from") + 1]) if "--from" in sys.argv else 2000
+    y0 = int(sys.argv[sys.argv.index("--from") + 1]) if "--from" in sys.argv else 1970   # 나라장터 이전에 옮겨 온 기관은 등록일이 2000년 앞(2026-11-05: 2000년부터 묻자 본청·구청이 빠짐)
     op = OPS[0]
     rows, seen, calls = {}, set(), 0
 

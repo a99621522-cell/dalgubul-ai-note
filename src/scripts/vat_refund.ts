@@ -7,7 +7,7 @@ import { contractsCtx, type CtrCtx } from './vat_contracts';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
-type Built = { rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
+type Built = { diag?: string; diagN?: number; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
 
 const D = loadData();
 if (D && $('rf-band')) init(D);
@@ -126,7 +126,8 @@ function init(D: Data) {
     $('rf-print')?.addEventListener('click', () => { document.body.dataset.printHead = `지난 돈 돌려받기 — 할 일 · ${org?.org ?? ''} · ${today}`; document.body.classList.add('print-todo'); window.print(); setTimeout(() => document.body.classList.remove('print-todo'), 500); });
   }
 
-  function draw() { const b = last; band(b); step1(); step2(b); step3(b); todo(b); }
+  function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; if (b?.diag) el.innerHTML = b.diag; else if (b?.rows) el.innerHTML = '<p class="note">지난 과세기간의 매입 목록이 아직 없습니다 — ③에 지난 기간 목록을 올리세요.</p>'; }
+  function draw() { const b = last; band(b); step1(); step2(b); step3(b); diag(b); todo(b); }
   document.addEventListener('vat-rv-built', e => { last = (e as CustomEvent<Built>).detail; draw(); });
   void contractsCtx(D, org).then(c => { ctx = c; draw(); });
   draw();

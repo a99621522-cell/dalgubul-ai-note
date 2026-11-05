@@ -246,7 +246,7 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .vbadge.warn { border-style: solid; color: var(--status-warn-ink); }
 #rv-files { margin: 6px 0; }
 @media (max-width: 600px) { .rf-band { position: static; } }
-@media print { body.print-todo main > *:not(#rf-todo-wrap):not(.section-head) { display: none !important; } body.print-todo .rf-todo-wrap .actions { display: none !important; } .rf-band { position: static; } }
+@media print { body.print-todo main > *:not(#rf-todo-wrap):not(#rf-diag-wrap):not(.section-head) { display: none !important; } body.print-todo .rf-todo-wrap .actions { display: none !important; } .rf-band { position: static; } }
 
 /* 세 걸음 판 — 항목마다 왜·할 일·근거(2026-11-05) */
 .rf-why { margin: 4px 0 2px; padding: 6px 10px; border-left: 3px solid var(--line-strong); background: var(--color-surface-1); font-size: .95em; }
@@ -254,3 +254,11 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .rf-k { display: inline-block; min-width: 3.2em; font-weight: 700; margin-right: 4px; }
 .rf-why-list { padding-left: 1.4em; } .rf-why-list > li { margin: 10px 0; } .rf-ctr { margin: 0; }
 @media print { body.print-todo .rf-why { border-left: 1px solid #999; } }
+
+/* 지난 신고 진단(2026-11-05) */
+.rf-dg { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 12px; margin: 8px 0; }
+.rf-dg > summary { cursor: pointer; padding: 4px 0; }
+.rf-dg-amt { font-size: 1.1em; }
+.rf-dg-list { padding-left: 1.4em; } .rf-dg-list > li { margin: 8px 0; } .rf-dg-t { margin: 0; }
+.rf-dg-eff th, .rf-dg-eff td { font-weight: 600; }
+@media print { body.print-todo #rf-diag-wrap { display: block !important; } body.print-todo .rf-dg { break-inside: avoid; } }

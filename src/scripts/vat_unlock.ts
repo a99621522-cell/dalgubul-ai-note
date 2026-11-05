@@ -9,7 +9,7 @@ import { esc, fmt, num, penaltyCalc, toCsv, type Data } from './vat_rules';
 export type Cell = { amt: number | null; tax: number | null; n?: number | null };
 export type Kind = '예정' | '확정' | '기한후' | '조기환급' | '모름';
 export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null } | null; warn: string[] };
-export type FiledSum = { k: string; deduct: number | null; nondeduct: number | null; er: number | null; salesSup: number | null; salesTax: number | null; kinds: Kind[]; files: string[]; regs: string[]; exemptNd: number | null; warn: string[] };
+export type FiledSum = { k: string; deduct: number | null; nondeduct: number | null; er: number | null; salesSup: number | null; salesTax: number | null; kinds: Kind[]; files: string[]; regs: string[]; exemptNd: number | null; warn: string[]; total: number | null; hasNd: boolean; hasCommon: boolean; ndReasons: Record<number, number> };
 
 /* ── 파일 → 글자 ── */
 export async function readFiledText(file: File): Promise<string> {
@@ -80,9 +80,10 @@ export function filedSummary(docs: FiledDoc[]): Map<string, FiledSum> {
   const last = new Map<string, FiledDoc>(); const warns: Record<string, string[]> = {};
   for (const d of docs) { const k = `${d.year}-${d.half}`; const id = `${k}|${d.kind}|${d.reg}`; if (last.has(id)) (warns[k] ??= []).push(`${d.kind} 신고서가 두 번 들어와 뒤 파일(${d.file})로 바꿨습니다(수정신고면 맞음)`); last.set(id, d); }
   const out = new Map<string, FiledSum>();
-  for (const d of last.values()) { const k = `${d.year}-${d.half}`; const s = out.get(k) ?? { k, deduct: null, nondeduct: null, er: null, salesSup: null, salesTax: null, kinds: [], files: [], regs: [], exemptNd: null, warn: [...(warns[k] ?? [])] };
+  for (const d of last.values()) { const k = `${d.year}-${d.half}`; const s = out.get(k) ?? { k, deduct: null, nondeduct: null, er: null, salesSup: null, salesTax: null, kinds: [], files: [], regs: [], exemptNd: null, warn: [...(warns[k] ?? [])], total: null, hasNd: false, hasCommon: false, ndReasons: {} };
     const add = (a: number | null, b: number | null | undefined) => b == null ? a : (a ?? 0) + b;
-    s.deduct = add(s.deduct, d.cells[18]?.tax); s.nondeduct = add(s.nondeduct, d.cells[17]?.tax);
+    s.deduct = add(s.deduct, d.cells[18]?.tax); s.nondeduct = add(s.nondeduct, d.cells[17]?.tax); s.total = add(s.total, d.cells[16]?.tax);
+    if (d.nd) { s.hasNd = true; if (d.nd.common) s.hasCommon = true; for (const [n, c] of Object.entries(d.nd.reasons)) if (Number(n) <= 8 && c.tax != null) s.ndReasons[Number(n)] = (s.ndReasons[Number(n)] ?? 0) + c.tax; }
     for (const n of [1, 2, 3, 4]) { s.salesSup = add(s.salesSup, d.cells[n]?.amt); s.salesTax = add(s.salesTax, d.cells[n]?.tax); }
     if ([1, 2, 3, 4].every(n => !d.cells[n])) { s.salesSup = add(s.salesSup, 0); s.salesTax = add(s.salesTax, 0); }
     const c = d.nd?.common; if (c && (d.kind === '확정' || s.er === null)) s.er = c.tax > 0 ? Math.round(c.nd / c.tax * 10000) / 100 : c.total > 0 ? Math.round(c.exempt / c.total * 10000) / 100 : s.er;

@@ -105,7 +105,7 @@ def gov_of(name):
     """기관 이름 → 지자체 키. '대구광역시 달성군 …' → dalseong, '대구광역시 …'(본청·사업소·소방·의회) → daegu, 교육청·그 밖 → None.
     군위군은 2023-07 편입 전 '경상북도 군위군' 계약은 '대구광역시' 검색에 잡히지 않는다."""
     n = (name or "").replace(" ", "")
-    if not n.startswith("대구광역시") or n.startswith("대구광역시교육청"):
+    if not n.startswith("대구광역시") or re.search(r"교육청|교육지원청", n):   # 대구광역시교육청·동부·서부·남부·달성교육청 소속 학교
         return None
     m = re.match(r"대구광역시(중구|동구|서구|남구|북구|수성구|달서구|달성군|군위군)", n)
     return GU[m.group(1)] if m else "daegu"
@@ -126,8 +126,14 @@ def row_of(kind, it):
             "date": (it.get("cntrctCnclsDate") or it.get("cntrctDate") or "")[:10], "prd": it.get("cntrctPrd") or "",
             "tot": num(it.get("totCntrctAmt")), "amt": num(it.get("thtmCntrctAmt")), "mth": it.get("cntrctCnclsMthdNm") or "",
             "lng": it.get("lngtrmCtnuDivNm") or "", "cls": it.get("pubPrcrmntClsfcNm") or it.get("pubPrcrmntMidClsfcNm") or "",
-            "corps": parse_corps(it.get("corpList")), "url": it.get("cntrctDtlInfoUrl") or it.get("cntrctInfoUrl") or "",
-            "bgn": it.get("cbgnDate") or it.get("wbgnDate") or "", "end": it.get("ttalCcmpltDate") or it.get("ttalScmpltDate") or "", "chg": it.get("chgDt") or it.get("rgstDt") or ""}
+            "corps": parse_corps(it.get("corpList")), "url": short_url(it.get("cntrctDtlInfoUrl") or it.get("cntrctInfoUrl") or ""),
+            "chg": it.get("chgDt") or it.get("rgstDt") or ""}
+
+
+URL_HEAD, URL_TAIL = "https://www.g2b.go.kr/link/FIUA027_01/single/?", "&srchName=ctrtCrst&openUrl=Y"
+def short_url(u):
+    """나라장터 계약 상세 주소는 앞뒤가 늘 같다 — 가운데 인자만 둔다(화면이 앞뒤를 붙임). 꼴이 다르면 그대로."""
+    return u[len(URL_HEAD):-len(URL_TAIL)] if u.startswith(URL_HEAD) and u.endswith(URL_TAIL) else u
 
 
 def mask(v):   # probe 로그에서 사람 이름처럼 보이는 3글자를 가린다
@@ -179,7 +185,8 @@ def main():
         for g in GOVS:
             path = f"{OUT}/{g}.json"
             olds[g] = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else None
-            store[g] = {r["no"] or f"{r['k']}|{r['nm']}|{r['date']}": r for r in (olds[g] or {}).get("rows", [])}
+            store[g] = {r["no"] or f"{r['k']}|{r['nm']}|{r['date']}": {**{k: v for k, v in r.items() if k not in ("bgn", "end")}, "url": short_url(r.get("url", ""))}
+                        for r in (olds[g] or {}).get("rows", []) if g in {gov_of(x) for x in [r["inst"], *r["dmn"]]}}   # 가르기 규칙이 바뀌면 옛 행도 다시 가른다
         want = set(govs)
         size = a.rows
         this_month = dt.date.today().strftime("%Y-%m")

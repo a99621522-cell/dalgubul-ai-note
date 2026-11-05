@@ -219,3 +219,31 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 #pub-biz th:nth-child(6) { white-space: nowrap; }
 .rv-src-tabs button[aria-selected="true"] .note { color: inherit; }
 #bai-table tr.bai-mention td { color: var(--ink-2, #595959); }
+
+/* 지난 돈 돌려받기 — 세 걸음(2026-11-05, docs/design/vat-refund-3steps.md) */
+.rf-band { position: sticky; top: 0; z-index: 5; margin: 12px 0 16px; padding: 12px 16px; border: 1px solid var(--line-strong); border-radius: var(--radius-2, 8px); background: var(--band, var(--surface)); }
+.rf-band p { margin: 0; }
+.rf-band-l { font-size: var(--small, .9rem); }
+.rf-band-n { font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.rf-band-n small { font-size: 1rem; font-weight: 400; margin-left: 4px; }
+.rf-band-s { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--small, .9rem); }
+.rf-band .rf-est { margin-top: 4px; color: var(--muted); font-size: var(--tiny, .8rem); }
+.rf-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.rf-step { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-2, 8px); padding: 12px 16px; background: var(--bg, #fff); }
+.rf-step.cur { border-color: var(--primary, var(--color-accent)); border-width: 2px; }
+.rf-step.done .rf-n { background: var(--status-ok-bg); color: var(--status-ok-ink); }
+.rf-step.done .rf-n::after { content: ' ✓'; }
+.rf-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.rf-h h2 { margin: 0; font-size: var(--fs-h3, 1.15rem); }
+.rf-n { display: inline-block; min-width: 1.8em; padding: 2px 6px; border-radius: 999px; text-align: center; font-weight: 700; background: var(--surface); border: 1px solid var(--line-strong); }
+.rf-st { font-size: var(--small, .9rem); color: var(--muted); }
+.rf-dl { display: flex; flex-wrap: wrap; gap: 4px 12px; list-style: none; padding: 0; }
+.rf-dl li.soon b { color: var(--status-warn-ink); }
+#rf-cmp tr.rf-hot th, #rf-cmp tr.rf-hot td { background: var(--status-warn-bg); }
+.rf-pick { margin-top: 6px; }
+.rf-todo { padding-left: 1.4em; }
+.rf-todo li { margin: 6px 0; }
+.vbadge.warn { border-style: solid; color: var(--status-warn-ink); }
+#rv-files { margin: 6px 0; }
+@media (max-width: 600px) { .rf-band { position: static; } }
+@media print { body.print-todo main > *:not(#rf-todo-wrap):not(.section-head) { display: none !important; } body.print-todo .rf-todo-wrap .actions { display: none !important; } .rf-band { position: static; } }

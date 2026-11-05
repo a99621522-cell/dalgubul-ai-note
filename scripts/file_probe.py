@@ -25,6 +25,44 @@ def name_of(r, url):
     return n
 
 
+
+def bbox_lines(html: str) -> str:
+    """pdftotext -bbox 낱말 좌표 → 세로로 겹치는 낱말을 한 줄로, 가로 순서대로(한글 PDF 가 쉼표·괄호를 따로 그려 -layout 이 줄을 가르는 것 보정). ALLBBOX:N"""
+    import html as H
+    out = []
+    for pi, page in enumerate(re.findall(r"<page[^>]*>(.*?)</page>", html, flags=re.S), 1):
+        ws = []
+        for m in re.finditer(r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">(.*?)</word>', page):
+            x0, y0, x1, y1 = map(float, m.groups()[:4])
+            ws.append([x0, y0, x1, y1, H.unescape(m.group(5))])
+        ws.sort(key=lambda w: ((w[1] + w[3]) / 2, w[0]))
+        lines = []
+        for w in ws:
+            best = None
+            for L in lines:
+                ov = min(L["y1"], w[3]) - max(L["y0"], w[1])
+                if ov > 0.35 * min(L["y1"] - L["y0"], w[3] - w[1]) and (best is None or ov > best[0]):
+                    best = (ov, L)
+            if best:
+                L = best[1]; L["w"].append(w)
+                big = (w[3] - w[1]) > 0.6 * (L["y1"] - L["y0"])
+                if big: L["y0"] = min(L["y0"], w[1]); L["y1"] = max(L["y1"], w[3])
+            else:
+                lines.append({"y0": w[1], "y1": w[3], "w": [w]})
+        lines.sort(key=lambda L: L["y0"])
+        for L in lines:
+            L["w"].sort(key=lambda w: w[0])
+            h = L["y1"] - L["y0"]; t = ""; prev = None
+            for w in L["w"]:
+                if prev is not None:
+                    gap = w[0] - prev[2]
+                    if gap > 0.22 * h and not re.match(r"^[,.)\]」』’”·‧:;]", w[4]) and not re.search(r"[(\[「『‘“]$", t):
+                        t += " "
+                t += w[4]; prev = w
+            out.append(t)
+        out.append(f"=={pi}==")
+    return "\n".join(out)
+
 def show_text(label, text, words):
     lines = [l.strip() for l in text.splitlines() if l.strip()]
     if words and words[0].startswith("ALL"):   # ALLRAW:N 은 -layout 없이. click 칸 'ALL' 또는 'ALL:3000' — 공개 문서 전체 글자(앞 N줄)를 찍는다(2026-11-04 국민성장펀드 가이드북)
@@ -91,6 +129,11 @@ def main():
         try:
             if d[:2] == b"PK" and (low.endswith((".xlsx", ".xlsm")) or b"xl/" in d[:2000]):
                 xlsx(d, words)
+            elif d[:4] == b"%PDF" and words and words[0].startswith("ALLBBOX"):
+                with tempfile.NamedTemporaryFile(suffix=".pdf") as t:
+                    t.write(d); t.flush()
+                    out = subprocess.run(["pdftotext", "-bbox", t.name, "-"], capture_output=True, text=True).stdout
+                show_text("PDF 글자(좌표로 줄 묶음)", bbox_lines(out), ["ALL:" + (words[0].split(":")[1] if ":" in words[0] else "6000")])
             elif d[:4] == b"%PDF":
                 with tempfile.NamedTemporaryFile(suffix=".pdf") as t:
                     t.write(d); t.flush()

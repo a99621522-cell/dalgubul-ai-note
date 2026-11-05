@@ -38,6 +38,7 @@ export type Data = {
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
   revenue_items?: RevenueItem[];
   presets?: Preset[];
+  govs?: { key: string; name: string; level: string; status: string; corp: { name: string; bizno?: string; src?: string; note?: string }[]; traits: string[]; preset?: number; revenue?: number; contracts?: { from: string; to: string; n: number } }[];   // 지자체별 특성(data/vat/govs.yml)
   cases?: AuditCase[];   // 감사·권익위·경정청구 공표 사례(data/vat/cases.yml)
   orgs?: OrgNo[];   // 기관 사업자등록번호(data/vat/orgs — 나라장터 수요기관정보 또는 2차 자료, verify 면 홈택스 상태조회로 확인)
   rulings?: Ruling[];

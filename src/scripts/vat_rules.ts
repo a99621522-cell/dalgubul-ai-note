@@ -131,6 +131,10 @@ export function matchMap(org: Org | null, biz: string, dept: string): MapRule | 
   return (b && rules.find(r => normPat(r.pat) === b)) || (d && rules.find(r => normPat(r.pat) === d)) || (b && rules.find(r => normPat(r.pat).length >= 4 && b.includes(normPat(r.pat)))) || undefined;
 }
 /** 시설 이름 일치(2차 UX 마찰 6): 매핑표가 없을 때 사업명·부서·내용 글자에 시설 이름(별칭 포함, 공백·괄호 제거 2글자 이상)이 들어가면 가장 긴 일치 시설을 제안 — 기관 설정의 이름만 쓰고 규칙 판정과 무관 */
+/** 이름 일치에 쓰지 않는 시설 이름 — 세입예산서에서 불러온 수입 항목('도로'·'하천'·'공유재산' 사용료·점용료, '…수수료'·'…수입')과 임차인 이름('사회적협동조합 ○○').
+ *  '도로'가 도로 공사 계약 수백 건에 붙어 과세 시설 계약으로 세던 것(2026-11-05 동구 나라장터 계약) */
+const GENERIC_FAC = /^(도로|하천|공유수면|공유재산|국유재산|기타|구유재산|군유재산|시유재산|사용료수입|주차요금수입|시설녹지)$/;
+export const noNameMatch = (name: string) => { const n = String(name ?? '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim(); return !n || GENERIC_FAC.test(n.replace(/\s/g, '')) || /(점용료|수수료|수입|대부료|임대료|사용료|요금|판매|수탁료)(\s*등)?$/.test(n) || /협동조합|조합\s|^\(?(주|사|재)\)/.test(n); };
 export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacility | undefined {
   if (!org) return undefined; const norm = (x: string) => String(x ?? '').replace(/[\s()（）·,.\-_/]/g, '').toLowerCase(); const hay = norm(texts.filter(Boolean).join(' ')); if (hay.length < 2) return undefined;
   /* 낱말 사전: 시설 이름·별칭을 괄호·공백·가운뎃점으로 나눈 낱말(2글자 이상)이 몇 시설에 나오는지 — 3곳 이상에 나오는 낱말('달성'·'체육' 등)은 가름에 쓰지 않는다 */
@@ -139,6 +143,7 @@ export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacil
   const freq = new Map<string, number>(); for (const f of org.facilities) { const ts = new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf)); for (const t of ts) freq.set(t, (freq.get(t) ?? 0) + 1); }
   let best: OrgFacility | undefined, bl = 0;
   for (const f of org.facilities) {
+    if (noNameMatch(f.name)) continue;
     for (const nm of [f.name, ...(f.alias ?? [])]) { const n = norm(nm.replace(/\(.*$/, '')); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
     /* 낱말 일치는 시설 종류가 맞을 때만(2026-11-04 — 3년치 공개 지출에서 '비슬산 자연휴양림'이 '비슬산 참꽃 문화제'·'비슬산 유스호스텔 관리' 같은 다른 사업 7개에 붙음):
        시설 이름의 마지막 낱말(종류: 자연휴양림·파크골프장·유스호스텔)이 있거나, 앞 낱말(지명) + 종류 글자(마지막 낱말 끝 3글자, 예: 휴양림)가 함께 있어야 한다.

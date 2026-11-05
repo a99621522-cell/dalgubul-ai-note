@@ -21,7 +21,7 @@ govs:
   - key: suseong
     name: 대구광역시 수성구
     level: 기초
-    status: 준비 중
+    status: 검증 전(예시 설정 초안)
     bizno: "502-83-02507"
     corp: []
     traits:

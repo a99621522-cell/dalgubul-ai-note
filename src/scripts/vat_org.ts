@@ -19,7 +19,7 @@ export const emptyOrg = (name = ''): Org => ({ v: 1, org: name, dept: '', unit: 
 
 /** 예시(조례·의회 의안·회의록으로 만든 시설 목록) → 시설. 운영 방식은 '확인 필요', 수탁기관은 이름만 */
 export function presetFacilities(p: Preset): OrgFacility[] {
-  const out = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, ...(typeof f.share === 'number' ? { share: f.share } : {}), ...(f.alias?.length ? { alias: f.alias } : {}), run: (['direct', 'entrusted_org', 'entrusted_own'].includes(f.run ?? '') ? f.run : 'unknown') as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? ''), ...(f.alias?.length ? { alias: f.alias } : {}) }));
+  const out = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, ...(typeof f.share === 'number' ? { share: f.share } : {}), ...(f.alias?.length ? { alias: f.alias } : {}), run: (['direct', 'entrusted_org', 'entrusted_own'].includes(f.run ?? '') ? f.run : 'unknown') as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? `${p.org.replace(/^대구광역시\s*/, '')}시설관리공단(부서 확인)` : f.op === '재단' ? '재단(협약서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? ''), ...(f.alias?.length ? { alias: f.alias } : {}) }));
   out.forEach((f, i) => applyAskDefaults(f, p.facilities[i].ask));   // 확인 질문 기본값(vat_ask.ts)
   return out;
 }

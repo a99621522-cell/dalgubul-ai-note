@@ -503,6 +503,9 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   await p7.goto(base + '/vat/review/'); await p7.evaluate(() => localStorage.clear()); await p7.reload(); await p7.waitForFunction(() => document.querySelector('[data-qs-sel]')?.options.length > 3, null, { timeout: 15000 });
   const opts = await p7.$$eval('[data-qs-sel] option', os => os.map(o => o.textContent.split(' — ')[0]).filter(Boolean));
   ok('G1 지자체 선택 — 대구광역시·9개 구·군 행정 순서', JSON.stringify(opts.slice(1, 11)) === JSON.stringify(['대구광역시', '대구광역시 중구', '대구광역시 동구', '대구광역시 서구', '대구광역시 남구', '대구광역시 북구', '대구광역시 수성구', '대구광역시 달서구', '대구광역시 달성군', '대구광역시 군위군']), JSON.stringify(opts));
+  await p7.goto(base + '/vat/review/'); await p7.evaluate(() => localStorage.clear()); await p7.goto(base + '/vat/review/?gov=suseong'); await p7.waitForSelector('#rf-all-file', { state: 'attached', timeout: 20000 }); await p7.waitForTimeout(1500);
+  const sg = await p7.evaluate(() => { const o = JSON.parse(localStorage.getItem('vat-org-v1') || 'null'); return { org: o?.org ?? '', n: o?.facilities?.length ?? 0, direct: (o?.facilities ?? []).filter(f => /반다비|국민체육센터/.test(f.name) && f.run === 'direct').length, prof: document.querySelector('#rf-s1-body .rf-gov')?.textContent ?? '' }; });
+  ok('G2 수성구 — 링크로 시작, 예시 설정(직영 체육시설·재단 위탁), 특성(시설관리공단 없음)', sg.org === '대구광역시 수성구' && sg.n >= 32 && sg.direct >= 2 && /시설관리공단이 없습니다/.test(sg.prof), JSON.stringify(sg).slice(0, 300));
   await c7.close(); }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);

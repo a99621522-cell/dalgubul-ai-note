@@ -59,6 +59,7 @@ jobs:
           PROBE: ${{ inputs.probe }}
           INQ: ${{ inputs.inqry_div }}
           INST: ${{ inputs.instt_div }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set +e
           git config user.name "github-actions[bot]"
@@ -70,6 +71,8 @@ jobs:
           T="${TO:-$(date +%Y-%m)}"
           for Y in $(seq "${F%%-*}" "${T%%-*}"); do
             A="$Y-01"; [ "$Y" = "${F%%-*}" ] && A="$F"
+            # 한 해(공사·용역·물품)에 한 시간 안팎 — 3시간 50분이 지났으면 받은 해까지 두고 다음 해부터 새 실행으로(시간 상한 5시간)
+            if [ "$SECONDS" -gt 13800 ]; then echo "::notice::시간이 다 되어 $A 부터 새 실행으로 이어 받습니다"; gh workflow run g2b_contracts.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f from="$A" -f to="$T" ${GOVS:+-f govs="$GOVS"} -f kinds="${KINDS:-공사,용역,물품}" || echo "::warning::이어 받기 호출 실패"; break; fi
             B="$Y-12"; [ "$Y" = "${T%%-*}" ] && B="$T"
             echo "::group::$A ~ $B"
             python3 scripts/fetch_g2b_contracts.py "${BASE[@]}" --from "$A" --to "$B"

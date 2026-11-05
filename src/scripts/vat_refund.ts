@@ -8,7 +8,7 @@ import { commonMistakesHtml } from './vat_diag';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
-type Built = { diag?: string; diagN?: number; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
+type Built = { diag?: string; fsure?: number; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
 
 const D = loadData();
 if (D && $('rf-band')) init(D);
@@ -53,9 +53,10 @@ function init(D: Data) {
 
   function band(b: Built | null) {
     const el = $('rf-band')!; const U = b?.U; const m = ctrByP(); let est = 0; for (const k of openPeriods()) { const x = m.get(k); if (x) est += x.tax + x.likely; }
-    const sub = U ? `<span>확정(근거 갖춤) <b>${fmt(U.now)}</b>원</span><span>자료를 더 내면 <b>+${fmt(U.docs)}</b>원</span><span>판단 필요 <b>${fmt(U.judge)}</b>원</span>${U.assign ? `<span>시설 정하기 전 <b>${fmt(U.assign)}</b>원(세지 않음)</span>` : ''}` : '<span>③ 매입 목록을 올리면 금액이 나옵니다</span>';
+    const fs = b?.fsure ?? 0;
+    const sub = (U ? `<span>확정(근거 갖춤) <b>${fmt(U.now)}</b>원</span><span>자료를 더 내면 <b>+${fmt(U.docs)}</b>원</span><span>판단 필요 <b>${fmt(U.judge)}</b>원</span>${U.assign ? `<span>시설 정하기 전 <b>${fmt(U.assign)}</b>원(세지 않음)</span>` : ''}` : '') + (fs ? `<span>신고서만으로 다시 계산 <b>+${fmt(fs)}</b>원</span>` : '') + (!U ? `<span>${fs ? '' : '② 지난 신고서를 올리면 바로 계산하고, '}③ 매입 목록을 올리면 더 찾습니다</span>` : '');
     el.innerHTML = `<p class="rf-band-l">지금까지 찾은 돌려받을 수 있는 금액 <span class="meta">경정청구 · 참고 계산, 기관의 판단이 아닙니다</span></p>
-      <p class="rf-band-n"><span id="rf-amt">${fmt(U ? U.now + U.docs : 0)}</span><small>원</small></p>
+      <p class="rf-band-n"><span id="rf-amt">${fmt((U ? U.now + U.docs : 0) + fs)}</span><small>원</small></p>
       <p class="rf-band-s">${sub}</p>
       ${est ? `<p class="rf-est note">참고: 경정청구가 되는 기간의 과세 시설일 법한 나라장터 계약 세액 추정 ${fmt(est)}원(계약금액 × 10/110 — 돌려받을 금액이 아닙니다)</p>` : ''}`;
   }

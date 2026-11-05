@@ -9,7 +9,7 @@ import { mountPublic } from './vat_review_pub';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
 import type { FileTable } from './vat_files';
 import { xlsxBlob, csvRows } from './xlsx_write';
-import { diagnose, diagHtml, diagCsv, type Diag } from './vat_diag';
+import { diagnose, diagHtml, diagCsv, filedChecks, mergeFiled, type Diag } from './vat_diag';
 import { readFiledText, parseFiledText, filedSummary, unlockCompute, unlockHtml, unlockFiles, type FiledDoc, type URow, type UPer } from './vat_unlock';
 import { $, esc, num, fmt, pct, loadData, getOrg, parseTable, parseDateCell, guessColumns, findHeader, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, ymd, getFilings, zipStore, downloadBlob, srcBtn, helpWire, judge, matchMap, matchFacilityName, facilityStatus, facilityRule, lawLink, lawText, rulingsHtml, inquiryHtml, inquiryText, wireInquiry, guessWhat, WHAT_Q, LABEL, guessCw, isCw, cwSel, toast, vatConfirm, readJsonFile, type Data, type Org, type OrgFacility, type Verdict, type Basis, type Ruling } from './vat_rules';
 
@@ -53,6 +53,7 @@ function init(D: Data) {
   const pInfo = (k: string) => claimPeriod(`${k.split('-')[0]}-${k.split('-')[1] === '1' ? '03' : '09'}-01`)!;
   const periods = () => [...new Set(st.rows.map(r => r.pkey))].sort();
   const savedRatio = (k: string): number | null => { const fl = getFilings()[`${k}F`]; if (!fl || !fl.groups.length) return null; const T = fl.groups.reduce((s, g) => s + g.taxable, 0), E = fl.groups.reduce((s, g) => s + g.exempt, 0); return T + E ? E / (T + E) : 0; };
+  let rowDiags: Diag[] = []; let allDiags: Diag[] = [];   // 지난 신고 진단(목록 대조) — emit 이 신고서 진단과 합침
   const filedOf = (k: string): Filed => st.filed[k] ?? (st.filed[k] = { filed: 'unknown', deduct: null, nondeduct: null, er: savedRatio(k) === null ? null : Math.round(savedRatio(k)! * 10000) / 100 });
 
   /* ⓪ 지난 신고서 올리기(vat_unlock.ts) — 신고서·불공제 명세서를 읽어 ② 표의 신고 값을 채운다 */
@@ -137,7 +138,7 @@ function init(D: Data) {
   let supFilter: 'all' | 'todo' | 'check' = (() => { try { const v = localStorage.getItem('vat-rv-supf'); return v === 'all' || v === 'check' ? v : 'todo'; } catch { return 'todo'; } })(); let supLimit = 10;   // 세 걸음 ③: 자동으로 못 붙인 공급자만, 세액 큰 순 10곳씩
   function build() {
     const ps = periods(); const res = $('rv-result')!;
-    if (!st.rows.length) { res.innerHTML = `<p class="callout info">아직 넣은 매입 목록이 없습니다. 홈택스 전자세금계산서 목록(매입) 엑셀 파일을 ③에 놓으세요(5년치 여러 파일을 한꺼번에).</p>`; const sb = $('rv-sup-box'); if (sb) sb.innerHTML = ''; $('rv-stat')!.textContent = ''; emit(null); return; }
+    if (!st.rows.length) { rowDiags = []; res.innerHTML = `<p class="callout info">아직 넣은 매입 목록이 없습니다. 홈택스 전자세금계산서 목록(매입) 엑셀 파일을 ③에 놓으세요(5년치 여러 파일을 한꺼번에).</p>`; const sb = $('rv-sup-box'); if (sb) sb.innerHTML = ''; $('rv-stat')!.textContent = ''; emit(null); return; }
     const outs = new Map<string, RowOut>(); for (const r of st.rows) outs.set(r.id, judgeRow(r));
     /* ② 과세기간별 신고 값 */
     const per = ps.map(k => { const rows = st.rows.filter(r => r.pkey === k); const P = pInfo(k); const F = filedOf(k);
@@ -178,6 +179,7 @@ function init(D: Data) {
         ok: { tax: sum(okR, r => r.tax), claim: sum(okR, r => o(r).claim), n: okR.length, facs: [...facs.values()].sort((a, b) => b.tax - a.tax) },
         split: { tax: sum(spR, r => r.tax), claim: sum(spR, r => o(r).claim), n: spR.length }, undecided: { tax: sum(unR, r => r.tax), n: unR.length },
         other: { tax: sum(otR, r => r.tax), n: otR.length, fixTax: sum(otR.filter(r => (fixDue(r.d)?.days ?? -1) >= 0), r => r.tax) } }); });
+    rowDiags = diags;
     const money = `<div class="vc-card rv-money" id="rv-money"><h2 style="margin-top:0">돌려받을 수 있는 금액(경정청구) <span class="meta">참고 계산 — 기관의 판단이 아닙니다</span></h2>
       <div class="vc-cards"><div class="vc-card"><h3>지금 계산된 금액</h3><p class="big" id="rv-total">${fmt(total)}<span class="note">원</span></p><p class="note">신고 값이 정해진 과세기간의 '있어야 할 공제 세액 − 신고한 공제 세액'(양수만) 합</p></div><div class="vc-card"><h3>${needDed ? '상한(신고 값 넣기 전)' : '상한'}</h3><p class="big" id="rv-cap">${fmt(capTotal)}<span class="note">원</span></p><p class="note">신고 값이 없는 과세기간은 '이 목록이 신고에 하나도 안 들어갔다'고 보고 더한 값</p></div><div class="vc-card"><h3>가산세 빼면</h3><p class="big" id="rv-net">${fmt(net)}<span class="note">원</span></p><p class="note">합계표에 없던 분을 경정으로 공제받을 때 공급가액의 ${(penRate * 100).toFixed(1)}% (법 제60조 제7항 제2호) ≈ ${fmt(penAmt)}원을 뺀 순액</p></div></div>
       ${todoLines.length ? `<p class="q-title">확정하려면</p><ol class="meta-list">${todoLines.join('')}</ol>` : '<p class="note">신고 값·귀속이 모두 정해졌습니다. 아래 ④ 과세기간별 표와 청구서 붙임 자료로 이어 가세요.</p>'}</div>`;
@@ -204,7 +206,7 @@ function init(D: Data) {
       <div class="actions no-print"><button type="button" class="btn" id="rv-zip">청구서 붙임 자료 묶음(zip — 엑셀·PDF·CSV)</button><button type="button" class="btn secondary" id="rv-xlsx">엑셀만</button><button type="button" class="btn secondary" id="rv-pdf">PDF 만</button><button type="button" class="btn secondary" id="rv-csv">건별 명세 CSV</button><span class="note">zip = 과세기간별 결과 · 건별 명세(시설·판정·청구 세액) · 공급자별 합계(합계표 추가분 밑자료) · 시설별 · 사유 초안 · 근거(조문·유권해석·판례) · 질의서 초안 · 안내</span></div>`;
     { const box = $('rv-sup-box'), i = html.indexOf('<!--rv-s3-->'), j = html.indexOf('<!--/rv-s3-->'); if (box && i >= 0 && j > i) { box.innerHTML = html.slice(i, j); res.innerHTML = html.slice(0, i) + html.slice(j); } else res.innerHTML = html; }
     $('rv-sup-more')?.addEventListener('click', () => { supLimit = 400; build(); });
-    emit({ U, total, capTotal, undAll, needDed, per: per.map(p => ({ k: p.k, name: pName(p.k), filed: p.F.filed, deduct: p.F.deduct, open: p.open, days: p.P.days, claim: p.P.claim, due: p.P.due, diff: p.diff, should: p.should })), sup: { n: supList.length, assigned: assigned.length, ctr: supList.filter(x => { const a = assignOf(x.rows[0]); return a.how === '자동' && a.a?.via === 'ctr'; }).length, taxAll, taxAssigned, todo: supList.length - assigned.length }, rows: st.rows.length, diag: diagHtml(D, diags), diagN: diags.filter(d => d.gain > 0).length });
+    emit({ U, total, capTotal, undAll, needDed, per: per.map(p => ({ k: p.k, name: pName(p.k), filed: p.F.filed, deduct: p.F.deduct, open: p.open, days: p.P.days, claim: p.P.claim, due: p.P.due, diff: p.diff, should: p.should })), sup: { n: supList.length, assigned: assigned.length, ctr: supList.filter(x => { const a = assignOf(x.rows[0]); return a.how === '자동' && a.a?.via === 'ctr'; }).length, taxAll, taxAssigned, todo: supList.length - assigned.length }, rows: st.rows.length });
     $('rv-stat')!.textContent = `${st.rows.length}건 · ${ps.length}개 과세기간 · 공급자 ${supList.length}곳 · 저장됨(이 브라우저)`;
     wireInquiry(res);
     document.querySelectorAll<HTMLInputElement>('[data-sales]').forEach(i => { const v = st.sales?.[i.dataset.sales!]; i.value = v ? fmt(v) : ''; i.addEventListener('change', () => { (st.sales ??= {})[i.dataset.sales!] = i.value.trim() === '' ? null : num(i.value); save(); build(); }); });
@@ -240,7 +242,7 @@ function init(D: Data) {
         return await buildPdf(blocks, `경정청구 요약 · ${org?.org ?? ''}`, { landscape: true }); } catch { return null; } })();
       if (want === 'pdf') { if (pdf) downloadBlob(`${base}.pdf`, pdf); else toast('PDF 를 만들지 못했습니다 — 엑셀로 받으세요'); return; }
       const bin = async (b: Blob) => new Uint8Array(await b.arrayBuffer());
-      const files: { name: string; data: string | Uint8Array }[] = [{ name: '00_안내.txt', data: guide }, { name: '12_지난신고_진단.csv', data: toCsv(diagCsv(diags, D)) }, { name: '01_과세기간별_결과.csv', data: perCsv }, { name: '02_건별_명세.csv', data: detailCsv() }, { name: '03_공급자별_합계.csv', data: supCsv }, { name: '04_시설별.csv', data: facCsv }, { name: '05_청구사유_초안.txt', data: reasonTxt }, { name: '06_근거_조문_유권해석_판례.txt', data: legal.text }, { name: '08_자료별_돌려받을_금액.csv', data: UF.csv }, { name: '09_순액_계산.txt', data: UF.txt }, ...legal.inquiries.map((q, i) => ({ name: `07_국세청_질의서_초안_${i + 1}_${q.key}.txt`, data: q.text })), { name: '10_경정청구_자료.xlsx', data: await bin(xl) }];
+      const files: { name: string; data: string | Uint8Array }[] = [{ name: '00_안내.txt', data: guide }, { name: '12_지난신고_진단.csv', data: toCsv(diagCsv(allDiags, D)) }, { name: '01_과세기간별_결과.csv', data: perCsv }, { name: '02_건별_명세.csv', data: detailCsv() }, { name: '03_공급자별_합계.csv', data: supCsv }, { name: '04_시설별.csv', data: facCsv }, { name: '05_청구사유_초안.txt', data: reasonTxt }, { name: '06_근거_조문_유권해석_판례.txt', data: legal.text }, { name: '08_자료별_돌려받을_금액.csv', data: UF.csv }, { name: '09_순액_계산.txt', data: UF.txt }, ...legal.inquiries.map((q, i) => ({ name: `07_국세청_질의서_초안_${i + 1}_${q.key}.txt`, data: q.text })), { name: '10_경정청구_자료.xlsx', data: await bin(xl) }];
       if (pdf) files.push({ name: '11_경정청구_요약.pdf', data: await bin(pdf) }); else toast('PDF 를 만들지 못해 엑셀·CSV 만 넣었습니다');
       downloadBlob(`${base}.zip`, zipStore(files)); };
     $('rv-zip')?.addEventListener('click', () => void bundle('zip')); $('rv-xlsx')?.addEventListener('click', () => void bundle('xlsx')); $('rv-pdf')?.addEventListener('click', () => void bundle('pdf'));
@@ -284,7 +286,12 @@ function init(D: Data) {
     return { html: parts.join(''), text: `경정청구 근거 — 조문·유권해석·판례 (${today}, 지자체 부가세 절감 점검기)\n\n${T.join('\n')}`, lines, inquiries: inqs };
   }
   /** 세 걸음 화면(vat_refund.ts)에 결과를 알린다 — 금액 띠·할 일 목록·기간 비교가 듣는다 */
-  function emit(x: Record<string, unknown> | null) { const S = filedSummary(st.fdocs ?? []); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); }
+  /* 신고서만으로 진단 + 목록 진단을 합친다(운영자 2026-11-05 '과거 국세청에 신고한 자료를 올리면 바로 계산되고 이유가 나와야') */
+  const diagAll = () => { const taxable = (org?.facilities ?? []).filter(f => ['taxable', 'check'].includes(facilityStatus(D, f))).map(f => f.name);
+    const fc = filedChecks(D, (st.fdocs ?? []) as unknown as Parameters<typeof filedChecks>[1], taxable);
+    const m = mergeFiled(rowDiags.map(d => ({ ...d, findings: [...d.findings] })), fc, k => { const P = pInfo(k); return { name: pName(k), claim: P.claim, days: P.days, due: P.due }; });
+    allDiags = m.diags; return m; };
+  function emit(x: Record<string, unknown> | null) { const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), diag: diagHtml(D, dm.diags), fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); }
   function save() { try { localStorage.setItem(KEY, JSON.stringify({ ...st, saved: new Date().toISOString() })); } catch { /* 저장 못 해도 계속 */ } }
   function load(): State | null { try { const s = localStorage.getItem(KEY); if (!s) return null; const j = JSON.parse(s) as State; return j && j.v === 1 && Array.isArray(j.rows) ? j : null; } catch { return null; } }
   build();

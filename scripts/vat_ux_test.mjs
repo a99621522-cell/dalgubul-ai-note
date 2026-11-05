@@ -526,9 +526,8 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     if (vp.width === 1366) {
       const zr = path.join(os.tmpdir(), 'vat-e-submit.zip'); const [dl] = await Promise.all([pe.waitForEvent('download', { timeout: 60000 }), pe.click('#rf-dl-submit')]); await dl.saveAs(zr); const zl = execSync(`unzip -Z1 "${zr}"`).toString();
       ok('E5 과업 C — 강조 단추 「세무서·홈택스에 낼 자료 받기」 한 번 → 엑셀·PDF 가 든 묶음', /10_경정청구_자료\.xlsx/.test(zl) && /11_경정청구_요약\.pdf/.test(zl), zl.replace(/\n/g, ' '));
-      const wp = path.join(os.tmpdir(), 'vat-e-report.docx'); const [dw] = await Promise.all([pe.waitForEvent('download', { timeout: 60000 }), pe.click('#rf-dl-report')]); await dw.saveAs(wp); const wl = execSync(`unzip -Z1 "${wp}"`).toString();
-      const big = await pe.evaluate(() => document.querySelectorAll('#rf-sum .rf-dl > .btn').length);
-      ok('E6 과업 D — 「결재용 보고 받기」 한 번 → Word(word/document.xml), 강조 내려받기 단추는 2개', /word\/document\.xml/.test(wl) && big === 2, `${big} ${wl.split('\n').length}`);
+      const big = await pe.evaluate(() => ({ n: document.querySelectorAll('#rf-sum .rf-dl > .btn').length, rep: !!document.getElementById('rf-dl-report') }));
+      ok('E6 강조 내려받기 단추는 하나(결재용 보고 단추 없음 — 운영자 2026-11-05 \'지워\')', big.n === 1 && !big.rep, JSON.stringify(big));
     }
     await ce.close(); }
   const cf = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const pf = await cf.newPage();

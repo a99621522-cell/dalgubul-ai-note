@@ -193,14 +193,13 @@ function init(D: Data) {
     const exHtml = ex.length ? `<p class="note">경정청구 기한(5년)이 지난 ${ex.length}개 과세기간(${ex.map(d => esc(d.name)).join(' · ')})은 돌려받을 수 없어 뺐습니다.</p>` : '';
     const zero = sure === 0 && upto === 0 ? `<div class="rf-zero"><p><b>찾은 것이 없습니다.</b> 이런 경우일 수 있습니다:</p><ol><li>지난 신고가 맞게 되어 있습니다.</li><li>신고서 숫자만으로는 보이지 않는 것 — 돈을 받는 시설(체육관·주차장·임대 등)에 쓴 비용을 공제하지 않은 경우는 <b>매입 목록 엑셀</b>을 올려야 찾습니다.</li><li>${ex.length && !rows ? '올린 신고서가 모두 경정청구 기한(5년)이 지났습니다.' : '올린 신고서가 일부 기간뿐입니다 — 5년치를 모두 올려 보세요.'}</li></ol></div>` : '';
     const sup = b.sup?.todo ? `<p class="note">매입 목록의 공급자 ${b.sup.todo}곳은 어느 시설 것인지 정하지 못해 아직 셈에 없습니다 — <a href="#rf-files" data-open-sec="rf-files">파일별로 보기·고치기</a>에서 정하세요.</p>` : '';
-    const dl = sure > 0 || upto > 0 ? `<div class="rf-dl actions no-print"><button type="button" class="btn" id="rf-dl-submit">세무서·홈택스에 낼 자료 받기 <small>(엑셀+PDF)</small></button><button type="button" class="btn secondary" id="rf-dl-report">결재용 보고 받기 <small>(Word, 한글에서 열림)</small></button></div>
+    const dl = sure > 0 || upto > 0 ? `<div class="rf-dl actions no-print"><button type="button" class="btn" id="rf-dl-submit">세무서·홈택스에 낼 자료 받기 <small>(엑셀+PDF)</small></button></div>
       <p class="note">돌려받는 신청은 홈택스 → 신고/납부 → 세금신고 → 부가가치세 → 경정청구 메뉴에서, 자료 안의 「고친 신고서」 값을 칸마다 옮겨 적으면 됩니다.</p>
       <details class="vat-more rf-dl-more no-print"><summary>다른 형식 — 엑셀만 · PDF 만</summary><div class="actions"><button type="button" class="btn secondary" id="rf-dl-xlsx">엑셀만</button><button type="button" class="btn secondary" id="rf-dl-pdf">PDF 만</button></div></details>` : '';
     el.innerHTML = head + cells + src + dl + missHtml + zero + sup + listUl + otherHtml + exHtml;
     done3(sure > 0 ? `${fmt(sure)}원` : upto > 0 ? `최대 ${fmt(upto)}원` : '찾은 것 없음');
     const fire = (want: 'zip' | 'xlsx' | 'pdf') => { const id = { zip: 'rv-zip', xlsx: 'rv-xlsx', pdf: 'rv-pdf' }[want]; const z = $(id); if (z) z.click(); else document.dispatchEvent(new CustomEvent('vat-filed-bundle', { detail: { want } })); };
     $('rf-dl-submit')?.addEventListener('click', () => fire('zip')); $('rf-dl-xlsx')?.addEventListener('click', () => fire('xlsx')); $('rf-dl-pdf')?.addEventListener('click', () => fire('pdf'));
-    $('rf-dl-report')?.addEventListener('click', () => document.dispatchEvent(new CustomEvent('vat-report-docx')));
     el.querySelectorAll<HTMLAnchorElement>('[data-open-dg]').forEach(a => a.addEventListener('click', () => { const dd = $('rf-detail') as HTMLDetailsElement | null; if (dd) dd.open = true; const d = document.getElementById(`rf-dg-${a.dataset.openDg}`) as HTMLDetailsElement | null; if (d) d.open = true; }));
     el.querySelectorAll<HTMLAnchorElement>('[data-open-sec]').forEach(a => a.addEventListener('click', () => { const d = $(a.dataset.openSec!) as HTMLDetailsElement | null; if (d) d.open = true; }));
   }

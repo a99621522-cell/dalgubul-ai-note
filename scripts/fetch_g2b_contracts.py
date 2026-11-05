@@ -147,6 +147,25 @@ def short_url(u):
     return u[len(URL_HEAD):-len(URL_TAIL)] if u.startswith(URL_HEAD) and u.endswith(URL_TAIL) else u
 
 
+def ctrt_id(r):
+    """나라장터 원계약번호·변경 차수 — 상세 주소의 ctrtNo·ctrtChgOrd(변경계약마다 통합계약번호가 새로 붙어 같은 계약이 여러 줄이 된다)"""
+    u = r.get("url") or ""
+    m, o = re.search(r"ctrtNo=([^&]+)", u), re.search(r"ctrtChgOrd=([^&]+)", u)
+    return (m.group(1) if m else ""), (o.group(1) if o else "")
+
+
+def latest_by_contract(rows):
+    """같은 원계약번호는 마지막 변경 한 줄만(금액·업체는 마지막 변경, 계약일은 처음 계약일) — 2026-11-05 달성군 25,319줄 → 12,176건.
+    장기계속·계속비의 차수 계약은 원계약번호가 따로라 그대로 남고, 총계약금액이 차수마다 되풀이되므로 화면은 금차 계약금액(amt)을 쓴다."""
+    best, first = {}, {}
+    for r in rows:
+        cid, ord_ = ctrt_id(r); k = cid or r["no"] or f"{r['k']}|{r['nm']}|{r['date']}"
+        cur = best.get(k)
+        if cur is None or (ord_, r.get("chg") or "") > (ctrt_id(cur)[1], cur.get("chg") or ""): best[k] = r
+        if r["date"] and (k not in first or r["date"] < first[k]): first[k] = r["date"]
+    return [{**r, "date": first.get(k, r["date"])} for k, r in best.items()]
+
+
 def mask(v):   # probe 로그에서 사람 이름처럼 보이는 3글자를 가린다
     return re.sub(r"(?<![가-힣])[가-힣]{3}(?![가-힣])", "○○○", str(v))
 
@@ -255,7 +274,7 @@ def main():
                        "source": "조달청 나라장터 계약정보서비스(공공데이터포털 15129427) — 나라장터 검색조건에 의한 계약현황 공사·용역·물품",
                        "note": "나라장터를 거친 계약만(카드 결제·공공요금·나라장터 밖 소액 계약은 없음). 계약금액은 지출액과 다르다(선금·기성·여러 해). 담당자·대표자 이름은 저장하지 않음."
                                + (" 2023-07 편입 전 경상북도 군위군 계약은 없음." if g == "gunwi" else ""),
-                       "rows": sorted((r for r in store[g].values() if (r["date"] or "9")[:7] >= keep_from), key=lambda r: (r["date"], r["no"]))}
+                       "rows": sorted((r for r in latest_by_contract(store[g].values()) if (r["date"] or "9")[:7] >= keep_from), key=lambda r: (r["date"], r["no"]))}
                 if out["rows"] or olds[g]:
                     json.dump(out, open(path, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
                 print(f"[contracts] {GOVS[g]}: {len(store[g])}건 → {path}", flush=True)

@@ -5,10 +5,11 @@
 import { $, esc, fmt, loadData, getOrg, claimPeriod, ymd, lawLink, uniq, facilityRule, facilityStatus, bizType, type Data, type Basis } from './vat_rules';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
 import { commonMistakesHtml } from './vat_diag';
+import { buildQuestions, askHtml, answer, undo } from './vat_ask';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
-type Built = { diag?: string; fsure?: number; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
+type Built = { diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
 
 const D = loadData();
 if (D && $('rf-band')) init(D);
@@ -133,7 +134,16 @@ function init(D: Data) {
   }
 
   function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; el.innerHTML = b?.diag ? b.diag : commonMistakesHtml(D); }
-  function draw() { const b = last; band(b); step1(); step2(b); step3(b); diag(b); todo(b); }
+  let qIdx = 0;
+  function ask(b: Built | null) { const el = $('rf-ask'); if (!el) return; const o = getOrg(); const L = openPeriods();
+    const stake = new Map<string, { tax: number; est: number }>(); for (const [k, v] of Object.entries(b?.facTax ?? {})) stake.set(k, { tax: v, est: 0 });
+    for (const r of ctx?.rows ?? []) { if (!r.a || !L.includes(r.p)) continue; const x = stake.get(r.a.fid) ?? { tax: 0, est: 0 }; x.est += r.est; stake.set(r.a.fid, x); }
+    const qs = buildQuestions(D, o, stake); el.innerHTML = askHtml(D, o, qs, qIdx);
+    el.querySelectorAll<HTMLButtonElement>('[data-ans]').forEach(btn => btn.addEventListener('click', () => { const q = qs[Math.min(qIdx, qs.length - 1)]; const oo = getOrg(); if (!q || !oo) return; answer(oo, q.fid, q.def, btn.dataset.ans === 'x' ? null : Number(btn.dataset.ans)); location.hash = 'rf-ask'; location.reload(); }));
+    el.querySelector<HTMLButtonElement>('[data-qnext]')?.addEventListener('click', () => { qIdx = (qIdx + 1) % Math.max(1, qs.length); ask(last); });
+    el.querySelectorAll<HTMLButtonElement>('[data-undo]').forEach(btn => btn.addEventListener('click', () => { const [fid, id] = btn.dataset.undo!.split('|'); const oo = getOrg(); if (!oo) return; undo(oo, fid, id); location.hash = 'rf-ask'; location.reload(); }));
+  }
+  function draw() { const b = last; band(b); step1(); ask(b); step2(b); step3(b); diag(b); todo(b); }
   document.addEventListener('vat-rv-built', e => { last = (e as CustomEvent<Built>).detail; draw(); });
   void contractsCtx(D, org).then(c => { ctx = c; draw(); });
   draw();

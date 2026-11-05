@@ -49,8 +49,8 @@ export async function contractsCtx(D: Data, org: Org | null): Promise<CtrCtx | n
   const rows = cg.rows.map(c => { const { a, how, via } = ctrAssign(org, c, asg); const f = a && org ? org.facilities.find(x => x.id === a.fid) : undefined; const fs = f ? facilityStatus(D, f) : undefined;
     /* 공사 갈래가 도로·부지 토목이면(고른 값 > 짐작) 공제 없음으로 본다 — '파크골프장 진입도로 개설공사'·'임대주택단지간 도시계획도로' */
     const cw = c.k === '공사' ? (a?.cw || guessCw(c.nm)) : undefined; const gc = guessCw(c.nm); const zero = cw === 'c_road' || cw === 'c_land' || cw === 'c_exempt' || (c.k !== '공사' && gc === 'c_road');   /* 도로 확장 타당성·설계 용역도 시설 지출이 아니다 */
-    const taxable = !!a && !zero && (a.fid === 'admin' || a.use !== 'this' || fs === 'taxable' || fs === 'check'); const likely = !a && !zero && bizTypeRank(bizType(D, c.nm)) === 0;
-    const est = Math.floor(ctrMoney(c) * 10 / 110); const parts = spread(c.date, c.fin, est); const span = parts.length > 1 ? `${parts[0].p}~${parts[parts.length - 1].p}` : '';
+    const taxable = !!a && !zero && (a.fid === 'admin' || a.use !== 'this' || fs === 'taxable' || fs === 'check' || (fs === 'exempt' && typeof f?.share === 'number' && f.share > 0)); const likely = !a && !zero && bizTypeRank(bizType(D, c.nm)) === 0;
+    const sh = f && typeof f.share === 'number' && a?.use === 'this' ? f.share : 1; const est = Math.floor(ctrMoney(c) * 10 / 110 * (taxable ? sh : 1)); const parts = spread(c.date, c.fin, est); const span = parts.length > 1 ? `${parts[0].p}~${parts[parts.length - 1].p}` : '';
     return parts.map(x => ({ ck: ctrKey(c), span, c, p: x.p, a, how, via, cw, taxable, likely, est: x.est })); }).flat();
   /* 업체 등록번호 → 시설: 그 업체의 시설이 붙은 계약이 모두 같은 시설일 때만(여러 시설과 계약한 업체는 사람이 고른다) */
   const by = new Map<string, { a: Asg; nm: string; n: number; bad: boolean }>();

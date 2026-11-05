@@ -441,6 +441,9 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   const dg = await p3.$$eval('#rf-diag details.rf-dg', ds => ds.map(d => ({ id: d.id, open: d.open, sum: d.querySelector('summary').textContent.replace(/\s+/g, ' '), cells: [...d.querySelectorAll('table tbody tr')].map(tr => [...tr.children].map(c => c.textContent.replace(/\s+/g, ' ').trim())), items: [...d.querySelectorAll('.rf-dg-list > li')].map(li => [li.querySelector('.rf-dg-t').textContent.replace(/\s+/g, ' '), /무엇이/.test(li.textContent), /고치기/.test(li.textContent), li.querySelectorAll('a[href*="law.go.kr"]').length, li.querySelectorAll('.rf-cases li').length]) })));
   const d24 = dg.find(d => d.id === 'rf-dg-2024-2'); const r18 = d24?.cells.find(c => c[0] === '(18)');
   ok('S11 지난 신고 진단 — 2024년 제2기: 돌려받을 돈 1,600,000 · 고친 신고서 (18) 1,000,000 → 2,600,000 · 잘못된 항목마다 무엇이·고치기·근거', !!d24 && d24.open && /1,600,000원/.test(d24.sum) && r18?.[2] === '1,000,000' && r18?.[3] === '2,600,000' && d24.items.length >= 1 && d24.items.every(([, w, h, n]) => w && h && n >= 1) && d24.items.some(([t]) => /과세 시설 지출을 공제하지 않음|세금계산서가 신고에서 빠짐/.test(t)) && d24.items.some(([t, , , , c]) => /과세 시설 지출을 공제하지 않음|세금계산서가 신고에서 빠짐/.test(t) && c >= 1), JSON.stringify(d24).slice(0, 400));
+    const gate = await p3.evaluate(() => [...document.querySelectorAll('#rf-dg-2024-2 .rf-gate tbody tr')].map(tr => tr.textContent.replace(/\s+/g, ' ')));
+    const inp = await p3.evaluate(() => document.querySelector('#rf-dg-2024-2 .rf-dg-how')?.textContent ?? '');
+    ok('S15b 대조 관문(목록 ↔ 신고서 (10)+(12)·(16)−(17)=(18)·불공제 명세 합) · 홈택스 경정청구 입력값(당초→경정 후·출처·사유·붙임)', gate.length >= 3 && gate.some(t => /세금계산서/.test(t) && /목록이 많음/.test(t)) && gate.some(t => /칸 계산/.test(t) && /맞음/.test(t)) && /경정청구/.test(inp) && /사유/.test(inp) && /붙임/.test(inp), JSON.stringify({ gate, inp: inp.slice(0, 120) }));
   if (process.env.VAT_SHOT) { await p3.$eval('#rf-diag-wrap', e => e.scrollIntoView()); await p3.screenshot({ path: process.env.VAT_SHOT }); }
   /* 2026-11-05 운영자 '과거 국세청에 신고한 자료를 올리면 바로 계산되고 이유가 나와야' — 매입 목록 없이 신고서만 */
   { const c4 = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const p4 = await c4.newPage();
@@ -455,7 +458,17 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     await p5.setInputFiles('#rf-all-file', [path.join(FX, 'filed_2024_2.txt'), path.join(FX, 'filed_2023_1_err.txt'), path.join(FX, 'invoice_list.xlsx'), path.join(FX, 'pc_card_list.tsv')]); await p5.waitForTimeout(2500);
     const r = await p5.evaluate(() => ({ msg: document.getElementById('rf-all-msg')?.textContent ?? '', cards: [...document.querySelectorAll('#rf-diag details.rf-dg')].map(d => d.id), amt: document.getElementById('rf-amt')?.textContent ?? '', st3: document.getElementById('rf-s3-st')?.textContent ?? '' }));
     ok('S14 홈택스 파일 섞어 한 곳에 — 신고서 2건·매입 목록 1·카드 1을 가려 넣고 바로 진단(2023-1·2024-2 카드)·금액 띠', /신고서 2건/.test(r.msg) && /목록 1개/.test(r.msg) && /카드 1개/.test(r.msg) && r.cards.includes('rf-dg-2023-1') && r.cards.includes('rf-dg-2024-2') && Number(r.amt.replace(/[^\d]/g, '')) > 0, JSON.stringify(r).slice(0, 400));
+    const g5 = await p5.evaluate(() => [...document.querySelectorAll('#rf-dg-2023-1 .rf-gate tbody tr')].map(tr => tr.textContent.replace(/\s+/g, ' ')));
+    ok('S15a 신고서만 있는 기간 대조 — 매입 목록 없음 안내·칸 계산 맞음', g5.some(t => /매입 목록이 없음/.test(t)) && g5.some(t => /칸 계산/.test(t) && /맞음/.test(t)), JSON.stringify(g5).slice(0, 300));
     await c5.close(); }
+  { const c6 = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const p6 = await c6.newPage();
+    await p6.goto(base + '/vat/review/'); await p6.evaluate(() => localStorage.clear()); await p6.reload(); await p6.waitForFunction(() => document.querySelector('[data-qs-sel]')?.options.length > 3, null, { timeout: 15000 }); await p6.click('[data-qs-go]');
+    await p6.waitForSelector('#rf-ask .rf-q', { timeout: 15000 }).catch(() => {});
+    const q1 = await p6.evaluate(() => ({ q: document.querySelector('#rf-ask .rf-q-t')?.textContent ?? '', n: document.querySelector('#rf-ask h2 .meta')?.textContent ?? '', stake: document.querySelector('#rf-ask .rf-q .note b')?.textContent ?? '' }));
+    if (q1.q) { await p6.click('#rf-ask [data-ans="0"]'); await p6.waitForLoadState('load'); await p6.waitForSelector('#rf-ask', { timeout: 15000 }); await p6.waitForTimeout(1500); }
+    const q2 = await p6.evaluate(() => ({ answered: document.querySelector('#rf-ask details summary')?.textContent ?? '', next: document.querySelector('#rf-ask .rf-q-t')?.textContent ?? '' }));
+    ok('S16 달성군 확인 질문 — 걸린 금액 큰 순 10개 이하, 한 번에 하나, 답하면 저장·다시 계산', !!q1.q && /원/.test(q1.stake) && /(\d+)개 남음/.test(q1.n) && Number(q1.n.match(/(\d+)개/)?.[1] ?? 99) <= 10 && /답한 질문 1개/.test(q2.answered) && q2.next !== q1.q, JSON.stringify({ q1, q2 }).slice(0, 400));
+    await c6.close(); }
   const zr = path.join(os.tmpdir(), 'vat-s-bundle.zip'); const [dl] = await Promise.all([p3.waitForEvent('download', { timeout: 60000 }), p3.click('#rf-zip')]); await dl.saveAs(zr);
   const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); execSync(`cd "${os.tmpdir()}" && rm -rf vat-s-x && mkdir vat-s-x && cd vat-s-x && unzip -q "${zr}" && unzip -q -o 10_경정청구_자료.xlsx -d xl`);
   const wb = fs.readFileSync(path.join(os.tmpdir(), 'vat-s-x', 'xl', 'xl', 'workbook.xml'), 'utf8'); const pdfHead = fs.readFileSync(path.join(os.tmpdir(), 'vat-s-x', '11_경정청구_요약.pdf')).subarray(0, 5).toString();

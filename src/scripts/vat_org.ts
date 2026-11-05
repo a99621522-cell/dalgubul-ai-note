@@ -18,7 +18,7 @@ export const emptyOrg = (name = ''): Org => ({ v: 1, org: name, dept: '', unit: 
 
 /** 예시(조례·의회 의안·회의록으로 만든 시설 목록) → 시설. 운영 방식은 '확인 필요', 수탁기관은 이름만 */
 export function presetFacilities(p: Preset): OrgFacility[] {
-  return p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, run: (['direct', 'entrusted_org', 'entrusted_own'].includes(f.run ?? '') ? f.run : 'unknown') as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? ''), ...(f.alias?.length ? { alias: f.alias } : {}) }));
+  return p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, ...(typeof f.share === 'number' ? { share: f.share } : {}), ...(f.alias?.length ? { alias: f.alias } : {}), run: (['direct', 'entrusted_org', 'entrusted_own'].includes(f.run ?? '') ? f.run : 'unknown') as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? '달성군시설관리공단(부서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? ''), ...(f.alias?.length ? { alias: f.alias } : {}) }));
 }
 
 /** 세입예산서의 시설 성격 사업을 시설 후보로. 이미 있는 시설(예시·직접 입력)과 이름이 서로 품거나 앞 6글자 이상 같으면 그 시설에 붙이고(rev·메모), 없는 것만 새로 넣는다(운영 방식 '확인 필요'). 반환: 새 시설 수·합친 시설 수·붙인 사업 수 */

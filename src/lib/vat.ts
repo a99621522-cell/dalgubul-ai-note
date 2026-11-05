@@ -54,6 +54,16 @@ export function vatOrgNumbers(): OrgNo[] {
   if (fs.existsSync(ymlp)) { const y = yaml.load(fs.readFileSync(ymlp, 'utf-8')) as { orgs?: OrgNo[] }; for (const o of y.orgs ?? []) if (!out.some(x => x.bizno === o.bizno)) out.push(o); }
   return out;
 }
+/** 지자체별 특성(data/vat/govs.yml) + 자료 범위(예시 설정 시설 수·세입예산서 줄 수·나라장터 계약 기간과 건수) */
+export type GovProfile = { key: string; name: string; level: string; status: string; corp: { name: string; bizno?: string; src?: string; note?: string }[]; traits: string[]; preset?: number; revenue?: number; contracts?: { from: string; to: string; n: number } };
+export function vatGovs(): GovProfile[] {
+  const p = 'data/vat/govs.yml'; if (!fs.existsSync(p)) return []; const L = ((yaml.load(fs.readFileSync(p, 'utf-8')) as { govs?: GovProfile[] }).govs ?? []);
+  const presets = vatPresets();
+  return L.map(g => { const out: GovProfile = { ...g, corp: g.corp ?? [], traits: g.traits ?? [] }; const pr = presets.find(x => x.key === g.key); if (pr) out.preset = pr.facilities.length;
+    const rv = `data/vat/revenue/${g.key}_2026.csv`; if (fs.existsSync(rv)) out.revenue = fs.readFileSync(rv, 'utf-8').split('\n').filter(Boolean).length - 1;
+    const ct = `data/vat/contracts/${g.key}.json`; if (fs.existsSync(ct)) { try { const j = JSON.parse(fs.readFileSync(ct, 'utf-8')) as { from?: string; to?: string; rows?: unknown[] }; out.contracts = { from: j.from ?? '', to: j.to ?? '', n: j.rows?.length ?? 0 }; } catch { /* */ } }
+    return out; });
+}
 /** 감사·권익위·경정청구 공표 사례(data/vat/cases.yml) */
 export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; mistakes?: string[]; src: string; url?: string; verify?: boolean };
 export function vatCases(): AuditCase[] { const p = 'data/vat/cases.yml'; if (!fs.existsSync(p)) return []; return ((yaml.load(fs.readFileSync(p, 'utf-8')) as { cases?: AuditCase[] }).cases ?? []); }

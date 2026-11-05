@@ -72,19 +72,18 @@ def call(op, params, key):
 
 BIZNO = re.compile(r"^\d{3}-?\d{2}-?\d{5}$")
 def parse_corps(s):
-    """업체목록 '[순번^구분^상호^대표자^…^지분율^사업자등록번호],[…]' 꼴(칸 순서는 판마다 다를 수 있어 모양으로 고른다).
-    대표자 이름은 읽지 않는다 — 상호(법인 표기나 4글자 이상), 사업자등록번호(10자리), 지분율(0~100 숫자)만."""
+    """업체목록 '[순번^구분^공동수급방식^상호^대표자^국적^지분율^상호^…^사업자등록번호],[…]' (2026-11-05 probe 로 확인).
+    대표자 이름(5번째 칸)은 읽지 않는다 — 상호·사업자등록번호·지분율만. 칸 수가 다르면 모양으로 고른다."""
     out = []
     for grp in re.findall(r"\[([^\]]*)\]", s or ""):
         parts = [p.strip() for p in grp.split("^")]
-        no = next((p.replace("-", "") for p in parts if BIZNO.match(p)), "")
-        name = ""
-        for p in parts:
-            if not p or BIZNO.match(p) or re.fullmatch(r"[\d.]+", p) or p in ("대표사", "구성사", "단독", "공동", "대한민국", "국내", "국외"):
-                continue
-            if re.search(r"주식회사|\(주\)|㈜|\(유\)|\(합\)|유한|건설|산업|공사|엔지니어링|기술|개발|종합|전기|통신|조경|토건|기업|상사|협동조합|재단|사단", p) or len(p) >= 5:
-                name = p; break
-        sh = next((p for p in parts if re.fullmatch(r"\d{1,3}(\.\d+)?", p) and float(p) <= 100 and p not in (parts[0],)), "")
+        no = next((p.replace("-", "") for p in reversed(parts) if BIZNO.match(p)), "")
+        if len(parts) >= 7:
+            name = parts[3] or (parts[7] if len(parts) > 7 else "")
+            sh = parts[6] if re.fullmatch(r"\d{1,3}(\.\d+)?", parts[6] or "") else ""
+        else:
+            name = next((p for p in parts if re.search(r"주식회사|\(주\)|㈜|\(유\)|유한|협동조합|재단|사단", p)), "")
+            sh = ""
         if name or no:
             out.append({"nm": name, "no": no, **({"sh": sh} if sh else {})})
     return out
@@ -99,6 +98,17 @@ def parse_instts(s):
             if re.search(r"[가-힣]{2,}", p) and not re.fullmatch(r"\d+", p):
                 names.append(p); break
     return names
+
+
+GU = {"중구": "jung", "동구": "dong", "서구": "seo", "남구": "nam", "북구": "buk", "수성구": "suseong", "달서구": "dalseo", "달성군": "dalseong", "군위군": "gunwi"}
+def gov_of(name):
+    """기관 이름 → 지자체 키. '대구광역시 달성군 …' → dalseong, '대구광역시 …'(본청·사업소·소방·의회) → daegu, 교육청·그 밖 → None.
+    군위군은 2023-07 편입 전 '경상북도 군위군' 계약은 '대구광역시' 검색에 잡히지 않는다."""
+    n = (name or "").replace(" ", "")
+    if not n.startswith("대구광역시") or n.startswith("대구광역시교육청"):
+        return None
+    m = re.match(r"대구광역시(중구|동구|서구|남구|북구|수성구|달서구|달성군|군위군)", n)
+    return GU[m.group(1)] if m else "daegu"
 
 
 def months(a, b):
@@ -133,7 +143,8 @@ def main():
     ap.add_argument("--inqry-div", default=os.environ.get("G2B_INQRY_DIV", "1"))
     ap.add_argument("--instt-div", default=os.environ.get("G2B_INSTT_DIV", "1,2"), help="기관구분코드 — 쉼표로 여럿(계약기관·수요기관)")
     ap.add_argument("--probe", action="store_true")
-    ap.add_argument("--max-calls", type=int, default=900)
+    ap.add_argument("--max-calls", type=int, default=3000)
+    ap.add_argument("--rows", type=int, default=999, help="한 쪽 행 수(주지 않으면 100 으로)")
     a = ap.parse_args()
     key = os.environ.get("DATA_GO_KR_KEY", "")
     if not key:
@@ -159,52 +170,63 @@ def main():
                                 if f in it: print(f"   {f} = {mask(it[f])[:300]}")
                             print("   읽은 행:", json.dumps(row_of(kind, it), ensure_ascii=False)[:500])
             return 0
+        # 한 번 훑기: 기관명 '대구광역시'(부분 일치 — 본청·사업소·구·군·교육청까지 잡힘)로 받아 계약기관·수요기관 이름으로 지자체를 가른다.
+        # 지자체마다 따로 물으면 같은 행을 열 번 받게 된다(2026-11-05 probe: 2026-09 공사 1,292건 대부분 교육청·학교).
         st_path = f"{OUT}/state.json"
-        state = json.load(open(st_path, encoding="utf-8")) if os.path.exists(st_path) else {"done": {}}
-        for g in govs:
+        state = json.load(open(st_path, encoding="utf-8")) if os.path.exists(st_path) else {}
+        done = set(state.get("sweep", []))
+        store, olds = {}, {}
+        for g in GOVS:
             path = f"{OUT}/{g}.json"
-            old = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else None
-            rows = {r["no"] or f"{r['k']}|{r['nm']}|{r['date']}": r for r in (old or {}).get("rows", [])}
-            done = set(state["done"].get(g, []))
-            name = GOVS[g]
-            try:
-                for kind in kinds:
-                    for ym, b, e in months(a.frm, a.to):
-                        tag = f"{kind}|{ym}|{a.inqry_div}|{a.instt_div}"
-                        if tag in done and ym < dt.date.today().strftime("%Y-%m"):
-                            continue
-                        got = 0
-                        for cdiv in [c for c in a.instt_div.split(",") if c] or [""]:
-                            page = 1
-                            while True:
-                                if calls >= a.max_calls:
-                                    raise Stop(3, f"이번 실행 호출 상한 {a.max_calls} — 다음 실행이 이어 받습니다")
-                                p = {"pageNo": page, "numOfRows": 100, "inqryDiv": a.inqry_div, "inqryBgnDate": b, "inqryEndDate": e, "insttNm": name}
-                                if cdiv: p["insttDivCd"] = cdiv
-                                r = call(OPS[kind], p, key); calls += 1; time.sleep(0.3)
-                                if not r: break
-                                for it in r["items"]:
-                                    row = row_of(kind, it)
-                                    # 기관명 검색은 부분 일치('대구광역시'가 구·군·소속기관까지 잡음) — 계약기관 또는 수요기관 이름이 그 지자체와 같은 행만
-                                    if name not in [row["inst"], *row["dmn"]] and not (g == "daegu" and any(x.startswith("대구광역시") and not re.search(r"(중|동|서|남|북|수성|달서)구|달성군|군위군", x) for x in [row["inst"], *row["dmn"]])):
-                                        continue
-                                    k = row["no"] or f"{row['k']}|{row['nm']}|{row['date']}"
-                                    if k not in rows or (row["chg"] or "") >= (rows[k].get("chg") or ""):
-                                        rows[k] = row; got += 1
-                                if page * 100 >= r["total"]: break
-                                page += 1
-                        done.add(tag)
-                        print(f"  {name} {kind} {ym}: {got}건 (누적 {len(rows)}, 호출 {calls})", flush=True)
-            finally:
-                state["done"][g] = sorted(done)
-                out = {"v": 1, "key": g, "name": name, "fetched": dt.date.today().isoformat(), "from": a.frm, "to": a.to,
+            olds[g] = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else None
+            store[g] = {r["no"] or f"{r['k']}|{r['nm']}|{r['date']}": r for r in (olds[g] or {}).get("rows", [])}
+        want = set(govs)
+        size = a.rows
+        this_month = dt.date.today().strftime("%Y-%m")
+        try:
+            for kind in kinds:
+                for ym, b, e in months(a.frm, a.to):
+                    tag = f"{kind}|{ym}|{a.inqry_div}|{a.instt_div}"
+                    if tag in done and ym < this_month:
+                        continue
+                    got, seen = {g: 0 for g in GOVS}, 0
+                    for cdiv in [c for c in a.instt_div.split(",") if c] or [""]:
+                        page, recv = 1, 0
+                        while True:
+                            if calls >= a.max_calls:
+                                raise Stop(3, f"이번 실행 호출 상한 {a.max_calls} — 다음 실행이 이어 받습니다")
+                            p = {"pageNo": page, "numOfRows": size, "inqryDiv": a.inqry_div, "inqryBgnDate": b, "inqryEndDate": e, "insttNm": "대구광역시"}
+                            if cdiv: p["insttDivCd"] = cdiv
+                            r = call(OPS[kind], p, key); calls += 1; time.sleep(0.3)
+                            if not r: break
+                            if page == 1 and size > 100 and r["total"] > len(r["items"]) and len(r["items"]) < size:
+                                print(f"  한 쪽 {size}행을 주지 않음({len(r['items'])}행) — 100행으로 다시", flush=True)
+                                size = 100; continue
+                            recv += len(r["items"]); seen += len(r["items"])
+                            for it in r["items"]:
+                                row = row_of(kind, it)
+                                k = row["no"] or f"{row['k']}|{row['nm']}|{row['date']}"
+                                for g in {gov_of(x) for x in [row["inst"], *row["dmn"]]} - {None}:
+                                    if k not in store[g] or (row["chg"] or "") >= (store[g][k].get("chg") or ""):
+                                        store[g][k] = row; got[g] += 1
+                            if not r["items"] or recv >= r["total"]: break
+                            page += 1
+                    done.add(tag)
+                    print(f"  {kind} {ym}: 받은 {seen}행 → " + " ".join(f"{g} {n}" for g, n in got.items() if n) + f" (호출 {calls})", flush=True)
+        finally:
+            state["sweep"] = sorted(done)
+            state.pop("done", None)
+            for g in want:
+                path = f"{OUT}/{g}.json"
+                out = {"v": 1, "key": g, "name": GOVS[g], "fetched": dt.date.today().isoformat(), "from": a.frm, "to": a.to,
                        "source": "조달청 나라장터 계약정보서비스(공공데이터포털 15129427) — 나라장터 검색조건에 의한 계약현황 공사·용역·물품",
-                       "note": "나라장터를 거친 계약만(카드 결제·공공요금·나라장터 밖 소액 계약은 없음). 계약금액은 지출액과 다르다(선금·기성·여러 해). 담당자·대표자 이름은 저장하지 않음.",
-                       "rows": sorted(rows.values(), key=lambda r: (r["date"], r["no"]))}
-                if out["rows"] or old:
+                       "note": "나라장터를 거친 계약만(카드 결제·공공요금·나라장터 밖 소액 계약은 없음). 계약금액은 지출액과 다르다(선금·기성·여러 해). 담당자·대표자 이름은 저장하지 않음."
+                               + (" 2023-07 편입 전 경상북도 군위군 계약은 없음." if g == "gunwi" else ""),
+                       "rows": sorted(store[g].values(), key=lambda r: (r["date"], r["no"]))}
+                if out["rows"] or olds[g]:
                     json.dump(out, open(path, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-                json.dump(state, open(st_path, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
-                print(f"[contracts] {name}: {len(rows)}건 → {path}", flush=True)
+                print(f"[contracts] {GOVS[g]}: {len(store[g])}건 → {path}", flush=True)
+            json.dump(state, open(st_path, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
     except Stop as s:
         print(f"[contracts] 멈춤: {s}", flush=True)
         return s.code

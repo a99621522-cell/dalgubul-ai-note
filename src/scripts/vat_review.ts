@@ -325,6 +325,16 @@ function init(D: Data) {
     allCorr = correctedFilings(fc);
     const m = mergeFiled(rowDiags.map(d => ({ ...d, findings: [...d.findings] })), fc, k => { const P = pInfo(k); return { name: pName(k), claim: P.claim, days: P.days, due: P.due }; });
     allDiags = m.diags; return m; };
+  /* 신고서만 올렸을 때의 묶음(매입 목록이 없으면 결과 절의 묶음 단추가 없어서) — 돌려받을 돈·고친 신고서·진단·검토 보고 */
+  document.addEventListener('vat-filed-bundle', () => void (async () => {
+    diagAll(); const base = `경정청구_신고서로_다시계산_${org?.org ?? ''}_${today}`.replace(/\s+/g, '_'); const bin = async (b: Blob) => new Uint8Array(await b.arrayBuffer());
+    const dg = diagCsv(allDiags, D); const cut = dg.findIndex(r => !r.length);
+    const xl = xlsxBlob([{ name: '돌려받을 돈', rows: refundCalcCsv(allDiags) }, { name: '고친 신고서', rows: allCorr.size ? correctedCsv(allCorr) : [['신고서 숫자로 고칠 칸이 없습니다']] }, { name: '홈택스 입력값', rows: cut >= 0 ? dg.slice(cut + 1) : [['진단 없음']] }, { name: '지난 신고 진단', rows: cut >= 0 ? dg.slice(0, cut) : dg }]);
+    const guide = `경정청구 자료 — 지난 신고서로 다시 계산 (${today}, 지자체 부가세 절감 점검기 — 참고용, 신고 책임은 신고인. 판정은 참고이며 기관의 판단이 아닙니다)\n\n- 13_돌려받을_돈 — 무엇이 잘못됐나·왜·어떻게·얼마(확정 / 확인하면 최대)\n- 15_고친_신고서 — 과세기간마다 신고서 칸과 명세서 칸의 당초 → 고친 값, 경정청구서의 돌려받을 세액. 홈택스 신고/납부 → 세금신고 → 부가가치세 → 경정청구 화면에 이 값을 넣습니다\n- 12_지난신고_진단 — 항목별 근거와 같은 잘못의 실제 사례\n- 14_경정청구_검토보고 — 결재용(Word, 한글에서 열림)\n- 10_경정청구_자료.xlsx — 위 표를 한 파일로\n\n'확인하면 최대' 항목은 그 과세기간 홈택스 매입 목록 등 자료로 확인한 만큼만 청구합니다. 경정청구로 돌려받는 세금에는 국세환급가산금이 붙고(국세기본법 제52조), 돌려받은 돈은 바로 세입으로 처리합니다.\n`;
+    const files: { name: string; data: string | Uint8Array }[] = [{ name: '00_안내.txt', data: guide }, { name: '12_지난신고_진단.csv', data: toCsv(dg) }, { name: '13_돌려받을_돈_무엇_왜_어떻게_얼마.csv', data: toCsv(refundCalcCsv(allDiags)) }, ...(allCorr.size ? [{ name: '15_고친_신고서_과세기간별(경정청구_입력값).csv', data: toCsv(correctedCsv(allCorr)) }] : []), { name: '10_경정청구_자료.xlsx', data: await bin(xl) }];
+    try { const { buildDocx } = await import('./company_docx'); const ks = allDiags.filter(d => d.days >= 0).map(d => d.k).sort(); const win = ks.length ? `${pName(ks[0])} ~ ${pName(ks[ks.length - 1])}` : '';
+      files.push({ name: '14_경정청구_검토보고(한글에서_열림).docx', data: await bin(await buildDocx(reportBlocks(allDiags, org?.org ?? '', win), '부가가치세 경정청구 검토')) }); } catch { /* Word 를 못 만들어도 나머지는 받음 */ }
+    downloadBlob(`${base}.zip`, zipStore(files)); toast('경정청구 자료 묶음을 내려받았습니다'); })());
   /* 올린 신고서 — 과세기간 × 구분 표(대상 기간 = 경정청구가 되는 과세기간) */
   function cover() { const el = $('rf-cover'); if (!el) return; const docs = (st.fdocs ?? []) as unknown as FiledDoc[]; if (!docs.length) { el.innerHTML = ''; return; }
     const win: string[] = []; for (let y = new Date().getFullYear() - 6; y <= new Date().getFullYear(); y++) for (const h of [1, 2]) { const k = `${y}-${h}`; const P = pInfo(k); if (P.due <= today && P.days >= 0) win.push(k); }

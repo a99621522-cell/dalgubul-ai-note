@@ -54,6 +54,23 @@ export function fillFacilityNos(D: Data, org: Org, on: OrgNo) {
 }
 export const quickStartHtml = (id: string, lead = '기관을 고르면 그 자리에서 기관 설정을 만들어 바로 이어집니다. 시설의 운영 방식·등록번호는 뒤에 기관 설정에서 채웁니다.') =>
   `<div class="vat-qs vc-form" id="${id}" data-qs><p class="q-title full">기관 선택 → 바로 시작</p><p class="note full">${esc(lead)}</p><label>기관 <select data-qs-sel aria-label="기관 선택"><option value="">불러오는 중…</option></select></label><div class="actions"><button type="button" class="btn" data-qs-go disabled>이 기관으로 시작</button><a class="btn secondary" href="/vat/setup/">직접 적기(기관 설정)</a><a class="btn secondary" href="/vat/handover/">꾸러미(zip) 열기</a></div><p class="note full" data-qs-msg role="status"></p></div>`;
+/** 기관 설정 만들기 — v: 'preset:<key>' | 'gov:<key>' | '<key>'(예시가 있으면 예시, 없으면 세입예산서). 예시 시설·세입예산서 시설 후보·기관 번호·확인 질문 기본값을 넣는다(저장은 부르는 쪽) */
+export async function makeOrg(D: Data, v: string): Promise<Org> {
+  const presets = D.presets ?? []; const govs = await loadGovs(); const org = emptyOrg();
+  const [kind, key] = v.includes(':') ? v.split(':') : [presets.some(p => p.key === v) ? 'preset' : 'gov', v];
+  const p = presets.find(x => x.key === key); const g = govs.find(x => x.key === key);
+  if (kind === 'preset' && p) { org.org = p.org; org.facilities = presetFacilities(p); }
+  if (g) { if (!org.org) org.org = g.name; addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ } }
+  org.facilities.forEach(f => { f.kind = 'gov'; }); const on = findOrgNo(D, org.org); if (on) { org.reg_no = on.bizno; org.reg_src = orgNoNote(on); fillFacilityNos(D, org, on); }
+  return org;
+}
+/** 링크 한 번으로 시작(?gov=dalseong) — 이 브라우저에 기관 설정이 없을 때만 만든다. 만들었으면 true */
+export async function startFromLink(D: Data): Promise<boolean> {
+  let key = ''; try { key = new URLSearchParams(location.search).get('gov') ?? ''; } catch { /* */ }
+  if (!/^[a-z]+$/.test(key)) return false; let has = false; try { has = !!localStorage.getItem('vat-org-v1'); } catch { /* */ }
+  if (has) return false; const known = (D.presets ?? []).some(p => p.key === key) || (await loadGovs()).some(g => g.key === key); if (!known) return false;
+  setOrg(await makeOrg(D, key)); try { localStorage.setItem('vat-gov', key); } catch { /* */ } return true;
+}
 export function wireQuickStart(root: ParentNode, D: Data, onDone: (o: Org) => void, preferGov?: string | null) {
   root.querySelectorAll<HTMLElement>('[data-qs]:not([data-wired])').forEach(box => { box.dataset.wired = '1';
     const sel = box.querySelector<HTMLSelectElement>('[data-qs-sel]')!, go = box.querySelector<HTMLButtonElement>('[data-qs-go]')!, msg = box.querySelector<HTMLElement>('[data-qs-msg]')!;
@@ -71,12 +88,10 @@ export function wireQuickStart(root: ParentNode, D: Data, onDone: (o: Org) => vo
     loadGovs().then(draw);
     go.addEventListener('click', async () => {
       const v = sel.value; if (!v) { msg.textContent = '기관을 고르세요.'; sel.focus(); return; }
-      const govs = await loadGovs(); const org = emptyOrg();
-      if (v === 'blank') { const name = window.prompt('기관 이름(예: ○○군)'); if (!name) return; org.org = name.trim(); }
-      else { const [kind, key] = v.split(':'); const p = presets.find(x => x.key === key); const g = govs.find(x => x.key === key);
-        if (kind === 'preset' && p) { org.org = p.org; org.facilities = presetFacilities(p); }
-        if (g) { if (!org.org) org.org = g.name; addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ } } }
-      org.facilities.forEach(f => { f.kind = 'gov'; }); const on = findOrgNo(D, org.org); if (on) { org.reg_no = on.bizno; org.reg_src = orgNoNote(on); fillFacilityNos(D, org, on); } setOrg(org);
+      let org: Org;
+      if (v === 'blank') { const name = window.prompt('기관 이름(예: ○○군)'); if (!name) return; org = emptyOrg(name.trim()); org.facilities.forEach(f => { f.kind = 'gov'; }); }
+      else org = await makeOrg(D, v);
+      const on = findOrgNo(D, org.org); setOrg(org);
       toast(`${org.org} 기관 설정을 만들었습니다 — 시설 ${org.facilities.length}곳${on ? ` · 기관 번호 ${on.bizno}(${on.verify ? '2차 자료, 확인 필요' : '나라장터'})를 시설마다 넣었습니다` : ''}(운영 방식은 기관 설정에서, 사업장별로 따로 등록한 시설은 번호를 고치세요)`); msg.textContent = `${org.org} · 시설 ${org.facilities.length}곳으로 시작합니다.`; onDone(org);
     });
   });

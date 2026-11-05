@@ -4,6 +4,7 @@
  *  금액 나눔: 덜 공제받은 몫 G = 있어야 할 공제 세액 − 신고 (18). 그중 '신고서에 아예 없던 세금계산서' 몫 = 빠진 세액 × (공제 대상 비율), 나머지는 '불공제로 넣은 것'을
  *  과세 시설 전용·공통(안분) 공제 대상 세액 비율로 나눈다(건별로 무엇이 (17)에 들어갔는지는 신고서에 없으므로 나눔은 어림 — 화면에 적음). 판정은 참고이며 기관의 판단이 아니다. */
 import { esc, fmt, lawLink, lawText, uniq, type Basis, type Data, type AuditCase } from './vat_rules';
+import { p as hp, table as htable, type Block as HBlock } from './hwpx';
 
 export type DiagIn = {
   k: string; name: string; filed: 'filed' | 'excluded' | 'none' | 'unknown'; due: string; claim: string; days: number; future: boolean;
@@ -110,15 +111,17 @@ export const reasonLine = (d: Diag) => { const t = d.findings.filter(f => f.effe
 const STATE_TXT: Record<Diag['state'], string> = { claim: '경정청구로 돌려받을 돈 있음', late: '기한후신고로 돌려받을 돈 있음', unknown: '신고서를 올리면 진단', ok: '덜 공제받은 몫 없음', over: '목록보다 더 공제받음', expired: '경정청구 기한 지남' };
 const law = (D: Data, bs: Basis[]) => uniq(bs).map(b => lawLink(D, b)).join(' · ');
 export function diagHtml(D: Data, L: Diag[]): string {
-  const show = L.filter(d => d.findings.length || d.gain);
-  if (!show.length) return '';
+  const onlyNo = (d: Diag) => !d.gain && d.findings.length > 0 && d.findings.every(f => f.key === 'nofile'); const miss = L.filter(onlyNo);
+  const show = L.filter(d => (d.findings.length || d.gain) && !onlyNo(d));
+  const missHtml = miss.length ? `<p class="note rf-miss"><b>신고서를 올리지 않은 과세기간 ${miss.length}개:</b> ${miss.sort((a, b) => a.k.localeCompare(b.k)).map(d => esc(d.name)).join(' · ')} — 홈택스 → 신고/납부 → 세금신고 → 신고내역 조회에서 이 기간 신고서·명세서를 PDF 로 저장해 같은 칸에 놓으면 함께 계산합니다(신고하지 않은 기간이면 기한후신고 대상).</p>` : '';
+  if (!show.length) return missHtml;
   const gain = show.filter(d => d.state !== 'expired').reduce((s, d) => s + d.gain, 0), cond = show.filter(d => d.state !== 'expired').reduce((s, d) => s + d.cond, 0), upto = show.reduce((s, d) => s + (d.upto ?? 0), 0);
   const nF = show.reduce((s, d) => s + d.findings.filter(f => !['undecided', 'nofiled', 'arith', 'nd-missing'].includes(f.key)).length, 0);
   const card = (d: Diag) => `<details class="rf-dg" id="rf-dg-${d.k}" ${d.gain > 0 || d.upto ? 'open' : ''}><summary><b>${esc(d.name)}</b>${d.prov ? ' <span class="vbadge warn">잠정</span>' : ''} — ${esc(d.state === 'unknown' && d.upto ? '신고서로 찾은 확인할 금액' : STATE_TXT[d.state])}${d.gain > 0 ? ` <b class="rf-dg-amt">${fmt(d.gain)}원</b>` : ''}${d.upto ? ` <span class="note">(확인하면 최대 +${fmt(d.upto)}원)</span>` : ''}${d.cond ? ` <span class="note">(+조건부 ${fmt(d.cond)}원)</span>` : ''} <span class="meta">${d.days >= 0 ? `경정청구 기한 ${esc(d.claim)} · D-${d.days}` : '기한 지남'}</span></summary>
     ${d.gate?.length ? `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table rf-gate" data-stack="off"><caption>대조 — 올린 목록과 신고서 칸이 맞나</caption><thead><tr><th scope="col">대조</th><th scope="col">목록·계산</th><th scope="col">신고서</th><th scope="col">결과</th></tr></thead><tbody>${d.gate.map(g => `<tr class="g-${g.state}"><th scope="row">${esc(g.name)}</th><td>${g.list === null ? '—' : fmt(g.list)}</td><td>${g.filed === null ? '—' : fmt(g.filed)}</td><td>${g.state === 'ok' ? '✓ ' : g.state === 'na' ? '' : '△ '}${esc(g.note)}</td></tr>`).join('')}</tbody></table></div>` : ''}
     ${d.fixed.length && d.fixed.some(r => r.before !== r.after) ? `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off"><caption>홈택스 경정청구 입력값 — 신고서 칸 순서(당초 → 경정 후)</caption><thead><tr><th scope="col">칸</th><th scope="col">항목</th><th scope="col">당초 신고</th><th scope="col">경정 후</th><th scope="col">차이</th><th scope="col">출처</th></tr></thead><tbody>${d.fixed.map(r => `<tr><th scope="row">${esc(r.cell)}</th><td>${esc(r.label)}</td><td>${r.before === null ? '<span class="note">—</span>' : fmt(r.before)}</td><td>${r.after === null ? '<span class="note">—</span>' : fmt(r.after)}</td><td>${r.before !== null && r.after !== null && r.after !== r.before ? `${r.after > r.before ? '+' : ''}${fmt(r.after - r.before)}` : ''}</td><td class="note">${esc(r.src ?? '')}</td></tr>`).join('')}<tr class="rf-dg-eff"><th scope="row">효과</th><td colspan="5">납부할 세액이 <b>${fmt(d.gain)}원</b> 줄어 그만큼 돌려받습니다(환급 때 국세환급가산금이 붙습니다 — 국세기본법 제52조)</td></tr></tbody></table></div><p class="note rf-dg-how"><b>홈택스에서:</b> 신고/납부 → 세금신고 → 부가가치세 → 경정청구 → ${esc(d.name)} 확정신고 불러오기 → 위 칸을 '경정 후' 값으로 고침 → 사유: '${esc(reasonLine(d))}' → 붙임: 매입처별 세금계산서합계표 추가분(공급자별)·공제받지못할매입세액명세서(고친 안분)·청구 사유서·근거 조문·진단표(묶음 zip 의 03·06·12 파일) → 환급받을 계좌. 세무서는 2개월 안에 결과를 알립니다(국세기본법 제45조의2 제3항).</p>` : ''}
     <ol class="rf-dg-list">${d.findings.map(f => `<li><p class="rf-dg-t"><b>${esc(f.title)}</b>${f.effect ? ` → <b>${fmt(f.effect)}원</b>` : ''}${f.effectNote ? ` <span class="note">(${esc(f.effectNote)})</span>` : ''}</p><div class="rf-why"><p><span class="rf-k">무엇이</span> ${esc(f.what)}</p><p><span class="rf-k">고치기</span> ${esc(f.how)}</p>${f.basis.length ? `<p><span class="rf-k">근거</span> ${law(D, f.basis)}</p>` : ''}${casesHtml(casesFor(D, f.key, d.types), '같은 잘못의 실제 사례')}</div></li>`).join('')}</ol>${d.gain > 0 ? casesHtml(casesFor(D, 'cashout', [], 2), '돌려받은 뒤 — 환급금은 바로 세입 처리(감사 지적 사례)') : ''}</details>`;
-  return `<p class="rf-dg-sum">지난 신고 ${show.length}개 과세기간을 대조했습니다 — 잘못·누락 <b>${nF}</b>건, 고치면 돌려받는 돈 <b>${fmt(gain)}원</b>${cond ? ` (+ 수정세금계산서를 받으면 ${fmt(cond)}원)` : ''}${upto ? ` · 확인하면 최대 <b>+${fmt(upto)}원</b>(신고서의 불공제 사유 가운데 공제될 수 있는 것)` : ''}.</p>
+  return `${missHtml}<p class="rf-dg-sum">지난 신고 ${show.length}개 과세기간을 대조했습니다 — 잘못·누락 <b>${nF}</b>건, 고치면 돌려받는 돈 <b>${fmt(gain)}원</b>${cond ? ` (+ 수정세금계산서를 받으면 ${fmt(cond)}원)` : ''}${upto ? ` · 확인하면 최대 <b>+${fmt(upto)}원</b>(신고서의 불공제 사유 가운데 공제될 수 있는 것)` : ''}.</p>
     ${show.sort((a, b) => b.gain - a.gain || (b.upto ?? 0) - (a.upto ?? 0) || a.k.localeCompare(b.k)).map(card).join('')}
     <p class="note">'무엇이'의 금액 나눔(빠진 세금계산서 / 불공제로 넣은 것 / 안분 안 함)은 어림입니다 — 신고서에는 건별로 무엇을 (17)에 넣었는지가 없어 매입 목록의 공제 대상 비율로 나눴습니다. 합계(덜 공제받은 몫 = 있어야 할 공제 세액 − 신고 (18))는 정확히 그 차이입니다. 판정은 참고이며 기관의 판단이 아닙니다.</p>`;
 }
@@ -136,12 +139,13 @@ export function diagCsv(L: Diag[], D?: Data): string[][] {
  *  ③ 총공급가액이 신고서의 과세 공급가액((1)~(6))보다 작아 면세비율이 부풀려짐 — 셋을 함께 반영한 '바른 불공제'와의 차이만큼.
  *  확인할 금액(upto): ⑤ 면세사업등 관련(과세 시설 지출이 섞였는지) · ① 필요적 기재사항 누락 등 · ⑦ 사업자등록 전 — 최대 금액과 확인할 곳. */
 type Cellx = { n?: number | null; amt: number | null; tax: number | null };
-export type FiledDocLite = { year: number; half: 1 | 2; kind: string; file: string; cells: Record<number, Cellx>; nd: { reasons: Record<number, Cellx>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null } | null };
+export type FiledDocLite = { year: number; half: 1 | 2; kind: string; file: string; reg?: string; cells: Record<number, Cellx>; nd: { reasons: Record<number, Cellx>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: { label: string; code: string; amt: number }[] };
 export type FiledCheck = { k: string; findings: Finding[]; sure: number; upto: number; docs: string[]; n17: number | null; n18: number | null; n16: number | null; n1012: number | null };
 export function filedChecks(D: Data, docs: FiledDocLite[], taxableFacs: string[]): Map<string, FiledCheck> {
   const out = new Map<string, FiledCheck>(); const skip = D.rules.common?.skip ?? [];
   const r5 = skip.find(s => s.key === 'ratio5') as { ratio_lt?: number; amount_lt?: number } | undefined, sm = skip.find(s => s.key === 'small') as { amount_lt?: number } | undefined;
   const RLT = r5?.ratio_lt ?? 0.05, RAMT = r5?.amount_lt ?? 5000000, SMALL = sm?.amount_lt ?? 50000;
+  const perDoc = new Map<FiledDocLite, { right: number; diff: number }>();
   for (const d of docs) {
     const k = `${d.year}-${d.half}`; const o: FiledCheck = out.get(k) ?? { k, findings: [], sure: 0, upto: 0, docs: [], n17: null, n18: null, n16: null, n1012: null }; o.docs.push(`${d.kind} 신고서(${d.file})`); const tag = `${d.kind}신고`;
     const c16 = d.cells[16]?.tax ?? null, c17 = d.cells[17]?.tax ?? null, c18 = d.cells[18]?.tax ?? null; if (c17 !== null) o.n17 = (o.n17 ?? 0) + c17; if (c18 !== null) o.n18 = (o.n18 ?? 0) + c18; if (c16 !== null) o.n16 = (o.n16 ?? 0) + c16; if (d.cells[10]?.tax != null || d.cells[12]?.tax != null) o.n1012 = (o.n1012 ?? 0) + (d.cells[10]?.tax ?? 0) + (d.cells[12]?.tax ?? 0) + (d.cells[13]?.tax ?? 0);
@@ -154,7 +158,7 @@ export function filedChecks(D: Data, docs: FiledDocLite[], taxableFacs: string[]
       else { right = Math.floor(cm.tax * cm.exempt / totalOk);
         if (totalOk > cm.total + 1000) why.push(`안분에 쓴 총공급가액 ${fmt(cm.total)}원이 신고서의 과세 공급가액 ${fmt(salesT)}원 + 면세공급가액 ${fmt(cm.exempt)}원 = ${fmt(cm.exempt + salesT)}원보다 작아 면세비율이 ${(er * 100).toFixed(2)}%로 부풀려졌습니다(바른 비율 ${(cm.exempt / totalOk * 100).toFixed(2)}%)`);
         if (cm.nd - Math.floor(cm.tax * er) > 1000) why.push(`명세서의 불공제 ${fmt(cm.nd)}원이 안분 식(${fmt(cm.tax)} × ${fmt(cm.exempt)} ÷ ${fmt(cm.total)} = ${fmt(Math.floor(cm.tax * er))}원)보다 큽니다`); }
-      const diff = cm.nd - right;
+      const diff = cm.nd - right; perDoc.set(d, { right, diff: diff > 1000 && why.length ? diff : 0 });
       if (diff > 1000 && why.length) { o.sure += diff; o.findings.push({ key: 'apportion-calc', title: `${tag} — 공통매입세액을 더 불공제함`, what: `${why.join('. ')}. 바른 불공제는 ${fmt(right)}원인데 ${fmt(cm.nd)}원을 불공제했습니다.`, how: `경정청구서의 공제받지못할매입세액명세서 '공통매입세액 안분 계산'을 고쳐 불공제를 ${fmt(cm.nd)} → ${fmt(right)}원으로, 신고서 (17)을 ${fmt(diff)}원 줄이고 (18)을 그만큼 늘립니다.`, effect: diff, effectNote: '신고서 숫자로 다시 계산한 금액', basis: [B('act', '제40조'), B('decree', '제81조'), B('basic', '제45조의2')] }); }
     }
     const R = d.nd?.reasons ?? {}; const t = (n: number) => R[n]?.tax ?? 0;
@@ -163,8 +167,41 @@ export function filedChecks(D: Data, docs: FiledDocLite[], taxableFacs: string[]
     if (t(7) > 0) { o.upto += t(7); o.findings.push({ key: 'prereg', title: `${tag} — '⑦ 사업자등록 전 매입세액' 불공제 ${fmt(t(7))}원 확인`, what: `사업자등록 전 매입세액 ${fmt(t(7))}원을 불공제했습니다. 공급시기가 속한 과세기간이 끝난 뒤 20일 안에 등록을 신청했으면 그 기간 매입세액은 공제됩니다.`, how: '시설(사업장)의 사업자등록 신청일과 세금계산서 작성일을 견줘, 요건 안이면 경정청구에 넣습니다.', effect: t(7), effectNote: '최대 — 등록 신청일 요건 안의 것만', basis: [B('act', '제39조')] }); }
     if ((d.cells[1]?.tax ?? 0) + (d.cells[3]?.tax ?? 0) + (d.cells[4]?.tax ?? 0) > 0 && (c18 ?? 0) === 0) o.findings.push({ key: 'taxable-as-exempt', title: `${tag} — 과세 매출은 있는데 공제받은 매입세액이 0`, what: `과세 매출세액을 신고했는데 공제받은 매입세액 (18)이 0원입니다. 과세 시설의 운영·수선 지출 세금계산서가 하나도 신고에 들어가지 않았을 수 있습니다.`, how: '그 과세 시설의 지출 세금계산서(홈택스 매입 목록)를 ③에 올리면 공제 대상이 계산됩니다.', effect: null, effectNote: '목록을 올리면 계산', basis: [B('act', '제38조')] });
     if ((c17 ?? 0) > 0 && !d.nd) o.findings.push({ key: 'nd-missing', title: `${tag} — 불공제 명세서가 없음`, what: `(17) 공제받지 못할 매입세액 ${fmt(c17!)}원의 사유(면세사업 관련·안분 등)가 보이지 않습니다.`, how: '신고서와 함께 낸 「공제받지못할매입세액명세서」 PDF 도 ②에 올리면 사유별로 다시 계산합니다.', effect: null, effectNote: '명세서를 올리면 계산', basis: [B('decree', '제81조')] });
+    /* 매출 쪽 — 과세표준 명세에 면세 시설 수입으로 보이는 업종이 있으면(낸 매출세액 최대, 그 시설 매입세액 공제분은 빠짐 — 순효과) */
+    for (const b of d.base ?? []) { const t = SALES_KW.find(x => x.re.test(b.label)); const fr = t && D.facilities.find(x => x.key === t.type); if (!t || fr?.status !== 'exempt') continue; const tax = Math.floor(b.amt / 10); o.upto += tax;
+      o.findings.push({ key: 'sales-exempt', title: `${tag} — 면세 수입을 과세 매출로 신고했을 수 있음: ${b.label}`, what: `과세표준 명세에 '${b.label}' ${fmt(b.amt)}원이 과세 매출로 들어 있습니다. ${fr.name}은 지자체가 직접 운영하면 면세(부가가치세법 제26조 제1항 제19호)입니다. 그렇다면 낸 매출세액 ${fmt(tax)}원은 낼 필요가 없던 세금입니다.`, how: `그 수입이 군 직영 ${t.what} 수입인지 세입 결의로 확인 → 맞으면 경정청구서의 과세표준을 ${fmt(b.amt)}원 줄이고 면세 수입금액으로 옮깁니다. 다만 그 시설 지출 매입세액을 공제받아 왔다면 그만큼은 불공제로 바뀝니다(순효과로 봄).`, effect: tax, effectNote: '최대 — 직영 면세 시설 수입으로 확인되는 만큼(그 시설 매입세액 공제분은 빠짐)', basis: [{ law: 'act', art: '제26조' }, { law: 'basic', art: '제45조의2' }] }); }
     out.set(k, o);
   }
+  /* 예정 → 확정 정산(시행령 제82조): 예정 때 안분한 공통매입세액을 확정 때 6개월 면세비율로 다시 셈 */
+  const byK = new Map<string, FiledDocLite[]>(); for (const d of docs) { const k = `${d.year}-${d.half}`; (byK.get(k) ?? byK.set(k, []).get(k)!).push(d); }
+  const ratioOf = new Map<string, number>();
+  for (const [k, L] of byK) { const o = out.get(k)!; const R = [...L].reverse(); const f = R.find(d => d.kind === '확정' && (d.nd?.settle || d.nd?.common)) ?? R.find(d => d.kind === '확정'); const e = R.find(d => d.kind === '예정' && d.nd?.common && d.nd.common.tax > 0 && (!f?.reg || !d.reg || d.reg === f.reg));
+    const st = f?.nd?.settle, ec = e?.nd?.common, fc = f?.nd?.common;
+    if (st && st.tax > 0) { ratioOf.set(k, st.ratio);
+      const right17 = Math.floor(st.tax * st.ratio); const prevRight = ec ? ec.nd - (perDoc.get(e!)?.diff ?? 0) : st.prev; const right19 = right17 - prevRight; const d19 = st.add - right19;
+      if (d19 > 1000) { o.sure += d19; o.findings.push({ key: 'settle', title: '확정신고 — 공통매입세액 정산을 더 불공제함', what: `정산 내역: 총공통매입세액 ${fmt(st.tax)}원 × 확정 면세비율 ${(st.ratio * 100).toFixed(2)}% = ${fmt(right17)}원에서 예정 때 불공제한 ${fmt(prevRight)}원을 빼면 이번에 더할 불공제는 ${fmt(right19)}원인데 ${fmt(st.add)}원을 불공제했습니다${ec && Math.abs(st.prev - ec.nd) > 1000 ? ` (명세서의 기불공제 ${fmt(st.prev)}원이 예정 신고서의 불공제 ${fmt(ec.nd)}원과 다릅니다)` : ''}.`, how: `경정청구서의 공제받지못할매입세액명세서 '공통매입세액의 정산 내역'을 고쳐 ⑲를 ${fmt(st.add)} → ${fmt(right19)}원으로, 신고서 (17)을 ${fmt(d19)}원 줄입니다.`, effect: d19, effectNote: '신고서 숫자로 다시 계산한 금액', basis: [{ law: 'decree', art: '제82조' }, { law: 'basic', art: '제45조의2' }] }); } }
+    else if (ec && f) {
+      if (fc && fc.total + ec.total > 0) { const r6 = (ec.exempt + fc.exempt) / Math.max(ec.total + fc.total, 1); ratioOf.set(k, r6); const right = Math.floor((ec.tax + fc.tax) * r6); const filedNd = ec.nd + fc.nd - (perDoc.get(e!)?.diff ?? 0) - (perDoc.get(f)?.diff ?? 0); const dd = filedNd - right;
+        if (dd > 1000) { o.sure += dd; o.findings.push({ key: 'settle', title: '확정신고 — 예정분 공통매입세액을 6개월 비율로 정산하지 않음', what: `예정(${fmt(ec.tax)}원)·확정(${fmt(fc.tax)}원) 공통매입세액을 6개월 면세비율 ${(r6 * 100).toFixed(2)}%(면세 ${fmt(ec.exempt + fc.exempt)} ÷ 총 ${fmt(ec.total + fc.total)})로 다시 셈하면 불공제는 ${fmt(right)}원인데, 예정·확정 신고에서 ${fmt(filedNd)}원을 불공제했습니다.`, how: `경정청구서의 공제받지못할매입세액명세서에 '공통매입세액의 정산 내역'을 넣어 확정분 불공제를 ${fmt(dd)}원 줄이고 신고서 (17)도 같이 줄입니다.`, effect: dd, effectNote: '신고서 숫자로 다시 계산한 금액', basis: [{ law: 'decree', art: '제82조' }, { law: 'basic', art: '제45조의2' }] }); } }
+      else o.findings.push({ key: 'settle-check', title: '확정신고 — 공통매입세액 정산 내역이 보이지 않음', what: `예정신고 때 공통매입세액 ${fmt(ec.tax)}원 가운데 ${fmt(ec.nd)}원을 불공제했는데, 확정신고 명세서에 정산 내역이 없습니다.`, how: '확정 신고서와 함께 낸 공제받지못할매입세액명세서 PDF 를 올리면 6개월 비율로 다시 계산합니다.', effect: null, effectNote: '명세서를 올리면 계산', basis: [{ law: 'decree', art: '제82조' }] }); }
+    else if (fc && fc.total > 0) ratioOf.set(k, fc.exempt / fc.total);
+  }
+  /* 감가상각자산 재계산(시행령 제83조): 면세비율이 직전 과세기간보다 5%p 넘게 바뀌었는데 재계산 내역이 없으면 */
+  const ks = [...ratioOf.keys()].sort();
+  for (let i = 1; i < ks.length; i++) { const [k0, k1] = [ks[i - 1], ks[i]]; const [y0, h0] = k0.split('-').map(Number), [y1, h1] = k1.split('-').map(Number); if (y1 * 2 + h1 - (y0 * 2 + h0) !== 1) continue;
+    const r0 = ratioOf.get(k0)!, r1 = ratioOf.get(k1)!; if (Math.abs(r1 - r0) < 0.05) continue; const f = [...(byK.get(k1) ?? [])].reverse().find(d => d.kind === '확정'); if (f?.nd?.recalc) continue;
+    const down = r1 < r0; out.get(k1)!.findings.push({ key: 'recalc', title: `확정신고 — 면세비율이 ${(r0 * 100).toFixed(1)}% → ${(r1 * 100).toFixed(1)}%로 바뀌었는데 재계산 내역이 없음`, what: `과세·면세에 같이 쓰는 건물·설비(감가상각자산)를 산 뒤 면세비율이 5%p 넘게 바뀌면 남은 기간 몫을 다시 셉니다(시행령 제83조). 이번에는 면세비율이 ${down ? '줄어 공제가 늘어나는' : '늘어 공제가 줄어드는'} 쪽입니다.`, how: down ? '지난 과세기간에 산 공통 건물·설비(취득가·매입세액·취득 시기)를 자산대장에서 찾아 재계산 내역(⑳×㉑×㉒)을 넣어 경정청구합니다 — 건물 체감률 5%, 그 밖 25%.' : '공제가 줄어드는 쪽이라 돌려받을 돈은 아니지만, 다음 신고에서 빠뜨리면 가산세가 붙을 수 있어 자산대장을 확인합니다.', effect: null, effectNote: down ? '자산대장(취득가·시기)을 올리면 계산' : '확인(돌려받을 돈 아님)', basis: [{ law: 'decree', art: '제83조' }] }); }
+  return out;
+}
+/** 과세표준 명세 업종 글자 → 면세 시설 유형(지자체 직영이면 면세인 것만) */
+const SALES_KW: { re: RegExp; type: string; what: string }[] = [
+  { re: /주차/, type: 'parking', what: '공영주차장' }, { re: /농기계|농업용\s*기계|농업기계/, type: 'equip_rent', what: '농기계 임대' },
+  { re: /체육공원|공원\s*운영/, type: 'park_sports', what: '체육공원 운동시설' }, { re: /종량제|폐기물/, type: 'waste_bag', what: '종량제 봉투·폐기물 처리' }, { re: /상수도|하수도|수도/, type: 'water', what: '상·하수도' }];
+/** 대상 기간 가운데 신고서가 없는 과세기간 — docs 가 하나라도 있을 때만 */
+export function missingPeriods(docs: FiledDocLite[], win: string[]): Map<string, FiledCheck> {
+  const out = new Map<string, FiledCheck>(); if (!docs.length) return out; const has = new Set(docs.map(d => `${d.year}-${d.half}`));
+  for (const k of win) { if (has.has(k)) continue; const [y, h] = k.split('-');
+    out.set(k, { k, findings: [{ key: 'nofile', title: '이 과세기간 신고서를 올리지 않음', what: `${y}년 제${h}기 신고서가 없습니다. 이 기간도 경정청구가 됩니다.`, how: `홈택스 → 신고/납부 → 세금신고 → 신고내역 조회 → ${y}년 제${h}기 부가가치세 신고서(예정·확정)와 공제받지못할매입세액명세서를 PDF 로 저장해 같은 칸에 놓으세요. 실제로 신고하지 않은 기간이면 기한후신고 대상입니다(국세기본법 제45조의3).`, effect: null, effectNote: '신고서를 올리면 계산', basis: [{ law: 'basic', art: '제45조의2' }, { law: 'basic', art: '제45조의3' }] }], sure: 0, upto: 0, docs: [], n17: null, n18: null, n16: null, n1012: null }); }
   return out;
 }
 /* 신고서 진단을 행 진단에 합친다 — 목록으로 진단한 기간은 신고서 확정 금액이 이미 그 차이 안에 들어 있어 더하지 않고 '목록 대조에 포함'으로 둔다 */
@@ -187,14 +224,15 @@ export function mergeFiled(rowDiags: Diag[], fc: Map<string, FiledCheck>, meta: 
  *  합계: 매입 목록을 올린 기간은 그 기간 진단의 gain(항목별 나눔은 어림), 신고서만 있는 기간은 신고서로 다시 계산한 금액. 기한이 지난 기간은 뺌. 새 계산 규칙 없음. */
 export type CalcRow = { k: string; name: string; claim: string; days: number; f: Finding; kind: 'sure' | 'upto' | 'inlist' | 'none'; est: number | null };
 export function refundCalc(L: Diag[], estBy?: Map<string, number>) {
-  const rows: CalcRow[] = []; let sure = 0, upto = 0, est = 0;
+  const rows: CalcRow[] = []; let sure = 0, upto = 0, est = 0; const miss: string[] = [];
   for (const d of L) { if (d.state === 'expired' || d.days < 0) continue; const list = d.types.length > 0; sure += d.gain; let up5 = 0;
-    for (const f of d.findings) { const inl = /이미 들어 있음/.test(f.effectNote); const kind: CalcRow['kind'] = inl ? 'inlist' : f.effect == null ? 'none' : f.effectNote.startsWith('최대') ? 'upto' : 'sure';
+    for (const f of d.findings) { if (f.key === 'nofile') { miss.push(d.name); continue; } const inl = /이미 들어 있음/.test(f.effectNote); const kind: CalcRow['kind'] = inl ? 'inlist' : f.effect == null ? 'none' : f.effectNote.startsWith('최대') ? 'upto' : 'sure';
       let e: number | null = null; if (kind === 'upto') { upto += f.effect!; if (f.key === 'taxable-as-exempt' && estBy?.has(d.k)) { e = Math.min(f.effect!, Math.max(0, (estBy.get(d.k) ?? 0) - up5)); up5 += e; est += e; } }
       if (kind === 'sure' && list) { /* 목록 대조 기간의 항목별 금액은 어림 — 합계는 gain */ }
       rows.push({ k: d.k, name: d.name, claim: d.claim, days: d.days, f, kind, est: e }); } }
   const ord = { sure: 0, upto: 1, none: 2, inlist: 3 } as const;
   rows.sort((a, b) => ord[a.kind] - ord[b.kind] || (b.f.effect ?? 0) - (a.f.effect ?? 0) || a.days - b.days);
+  if (miss.length) { const first = L.filter(d => miss.includes(d.name)).sort((a, b) => a.days - b.days)[0]; rows.push({ k: 'nofile', name: `${miss.length}개 과세기간`, claim: first?.claim ?? '', days: first?.days ?? 0, kind: 'none', est: null, f: { key: 'nofile', title: '신고서를 올리지 않은 과세기간', what: `${miss.sort().join(' · ')} — 이 기간들도 경정청구가 됩니다.`, how: '홈택스 → 신고/납부 → 세금신고 → 신고내역 조회에서 이 기간 신고서·공제받지못할매입세액명세서를 PDF 로 저장해 같은 칸에 놓으세요. 신고하지 않은 기간이면 기한후신고 대상입니다.', effect: null, effectNote: '신고서를 올리면 계산', basis: [{ law: 'basic', art: '제45조의2' }, { law: 'basic', art: '제45조의3' }] } }); }
   return { rows, sure, upto, est };
 }
 export function refundCalcHtml(D: Data, L: Diag[], estBy?: Map<string, number>, win?: string): string {
@@ -210,12 +248,51 @@ export function refundCalcHtml(D: Data, L: Diag[], estBy?: Map<string, number>, 
     <div class="rf-calc-sum"><div><span class="meta">확정</span><b id="rf-calc-sure">${fmt(R.sure)}원</b><span class="meta">신고서·목록 숫자로 다시 계산 — 경정청구하면 돌려받는 돈</span></div>
       <div><span class="meta">확인하면 최대</span><b id="rf-calc-upto">${fmt(R.upto)}원</b><span class="meta">불공제 사유 가운데 과세 시설 지출로 확인되는 만큼</span></div>
       ${R.est ? `<div class="rf-est"><span class="meta">계약 어림(참고)</span><b>${fmt(R.est)}원</b><span class="meta">그 기간 과세 시설 나라장터 계약 세액 어림까지만</span></div>` : ''}</div>
+    ${nextDocsHtml(R.rows)}
     <div class="scroll-x" tabindex="0" role="region" aria-label="돌려받을 돈 표"><table class="data-table rf-calc-t"><thead><tr><th>과세기간</th><th>무엇이 잘못됐나</th><th>왜 (이유·근거)</th><th>어떻게 하면</th><th>돌려받을 돈</th></tr></thead><tbody>
     ${R.rows.map(r => `<tr class="rf-calc-${r.kind}"><td>${dd(r)}</td><td><b>${esc(r.f.title)}</b></td><td>${esc(r.f.what)}${r.f.basis.length ? `<br><span class="meta">근거: ${law(D, r.f.basis)}</span>` : ''}</td><td>${esc(r.f.how)}</td><td class="num">${money(r)}</td></tr>`).join('')}
     </tbody></table></div>
     <p class="note">경정청구로 돌려받는 세금에는 국세환급가산금이 붙습니다(국세기본법 제52조). 돌려받은 돈은 바로 세입으로 처리합니다(2025년 대구광역시 정부합동감사 지적 사항).</p></section>`;
 }
+/** 다음에 받으면 금액이 커지는 자료 — '확인하면 최대' 항목을 자료별로 묶어 금액 큰 순 3개(선택) */
+const NEXT_DOC: Record<string, (name: string) => string> = {
+  'taxable-as-exempt': n => `${n} 홈택스 매입 목록(조회/발급 → 전자세금계산서 → 목록조회 → 매입) 엑셀 — 면세사업 관련으로 불공제한 것 가운데 과세 시설 지출을 가려 확정 금액으로`,
+  'missing': n => `${n} 늦게 받거나 기재사항이 빠진 세금계산서의 수취일·수정세금계산서 — 1년 요건 안의 것은 공제`,
+  'prereg': n => `${n} 사업장 등록 신청일 — 과세기간 끝 20일 안이면 공제`,
+  'sales-exempt': n => `${n} 그 수입의 세입 결의(e호조) — 직영 면세 시설 수입이면 낸 매출세액을 돌려받음`,
+  'recalc': n => `${n} 공통 건물·설비 자산대장(취득가·매입세액·취득 시기) — 재계산으로 공제 늘어남`,
+};
+function nextDocsHtml(rows: CalcRow[]): string {
+  const m = new Map<string, { txt: string; amt: number }>();
+  for (const r of rows) { if (r.kind !== 'upto' && !(r.f.key === 'recalc' && /줄어/.test(r.f.what))) continue; const f = NEXT_DOC[r.f.key]; if (!f) continue; const key = `${r.k}|${r.f.key}`; const x = m.get(key) ?? { txt: f(r.name), amt: 0 }; x.amt += r.est ?? r.f.effect ?? 0; m.set(key, x); }
+  const L = [...m.values()].sort((a, b) => b.amt - a.amt).slice(0, 3); if (!L.length) return '';
+  return `<div class="rf-next"><p><b>다음에 받으면 금액이 커지는 자료</b> <span class="meta">선택 — 여기서 끝내도 위 '확정' 금액은 경정청구할 수 있습니다</span></p><ol>${L.map(x => `<li>${esc(x.txt)}${x.amt ? ` <span class="meta">— 최대 ${fmt(x.amt)}원</span>` : ''}</li>`).join('')}</ol></div>`;
+}
 export function refundCalcCsv(L: Diag[], estBy?: Map<string, number>): string[][] {
   const R = refundCalc(L, estBy); const K = { sure: '확정', upto: '확인하면 최대', inlist: '목록 대조에 포함', none: '자료 필요' };
   return [['과세기간', '경정청구 기한', '무엇이 잘못됐나', '왜(이유)', '근거', '어떻게 하면', '구분', '돌려받을 돈(원)', '계약 어림(참고)', '설명'], ...R.rows.map(r => [r.name, r.claim, r.f.title, r.f.what, uniq(r.f.basis).map(lawText).join(' · '), r.f.how, K[r.kind], r.f.effect == null ? '' : String(r.f.effect), r.est == null ? '' : String(r.est), r.f.effectNote]), [], ['합계', '', '', '', '', '', '확정', String(R.sure)], ['', '', '', '', '', '', '확인하면 최대', String(R.upto)], ['', '', '', '', '', '', '계약 어림(참고)', String(R.est)]];
+}
+
+/** 결재용 검토 보고(Word — 한글에서 바로 열림). 돌려받을 돈 표·고칠 칸·고치는 법·붙임. 숫자는 refundCalc 그대로 */
+export function reportBlocks(L: Diag[], orgName: string, win: string): HBlock[] {
+  const R = refundCalc(L); const K = { sure: '확정', upto: '확인하면 최대', inlist: '목록 대조에 포함', none: '자료 필요' } as const; const today = new Date().toISOString().slice(0, 10);
+  const money = (r: CalcRow) => r.f.effect == null ? '—' : `${fmt(r.f.effect)}원`;
+  const fx = L.filter(d => d.days >= 0).flatMap(d => d.fixed.filter(x => x.before !== x.after).map(x => [d.name, x.cell, x.label, x.before == null ? '' : fmt(x.before), x.after == null ? '' : fmt(x.after), x.before != null && x.after != null ? fmt(x.after - x.before) : '']));
+  const act = R.rows.filter(r => r.kind === 'sure' || r.kind === 'upto');
+  return [hp('title', [`부가가치세 경정청구 검토(${win})`, 'title']),
+    hp('note', [`${orgName} · ${today} · 지자체 부가세 절감 점검기로 계산 · 판정은 참고이며 기관의 판단이 아닙니다`, 'note']),
+    hp('h3', ['1. 개요', 'h3']),
+    hp('body', [`대상 기간(경정청구가 되는 과세기간) ${win}의 신고서를 다시 계산했습니다.`, 'body']),
+    hp('body', [`· 확정 ${fmt(R.sure)}원 — 신고서 숫자로 다시 계산한 금액(경정청구하면 돌려받는 돈)`, 'body']),
+    hp('body', [`· 확인하면 최대 ${fmt(R.upto)}원 — 불공제 사유·과세표준 가운데 과세 시설 지출 또는 면세 수입으로 확인되는 만큼`, 'body']),
+    hp('h3', ['2. 과세기간별 결과', 'h3']),
+    htable([['과세기간', '무엇이 잘못됐나', '돌려받을 돈', '구분', '근거'], ...R.rows.map(r => [r.name, r.f.title, money(r), K[r.kind], uniq(r.f.basis).map(lawText).join(' · ')])], { head: true, widths: [14, 40, 14, 12, 20] }),
+    ...(fx.length ? [hp('h3', ['3. 고칠 칸 — 홈택스 경정청구 입력값', 'h3']), htable([['과세기간', '칸', '항목', '당초', '경정 후', '차이'], ...fx], { head: true, widths: [16, 8, 28, 16, 16, 16] })] : []),
+    hp('h3', [`${fx.length ? 4 : 3}. 어떻게 고치나`, 'h3']),
+    ...act.flatMap(r => [hp('body', [`□ ${r.name} — ${r.f.title}`, 'body']), hp('body', [r.f.what, 'body']), hp('body', ['· ' + r.f.how, 'body'])]),
+    hp('h3', [`${fx.length ? 5 : 4}. 붙임`, 'h3']),
+    hp('body', ['· 경정청구서(홈택스 신고/납부 → 세금신고 → 부가가치세 → 경정청구) — 위 고칠 칸 값', 'body']),
+    hp('body', ['· 공제받지못할매입세액명세서(고친 안분·정산), 매입처별 세금계산서합계표 추가분(매입 목록을 대조한 경우)', 'body']),
+    hp('body', ['· 근거 조문·유권해석(묶음의 06 파일), 돌려받을 돈 표(13 파일)', 'body']),
+    hp('note', ['경정청구로 돌려받는 세금에는 국세환급가산금이 붙습니다(국세기본법 제52조). 돌려받은 돈은 바로 세입으로 처리합니다(2025년 대구광역시 정부합동감사 지적 사항).', 'note'])];
 }

@@ -279,3 +279,26 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .rf-next { border-left: 3px solid var(--line-strong); padding: 4px 10px; margin: 8px 0; } .rf-next p, .rf-next ol { margin: 2px 0; } .rf-miss { margin: 6px 0; }
 .rf-corr { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; margin: 8px 0; } .rf-chg td { background: var(--band, #eef4fb); } .rf-claim { margin: 6px 0 2px; }
 .rf-steps-plain { background: var(--band, #eef4fb); border-radius: var(--radius); padding: 8px 14px; margin: 8px 0; } .rf-steps-plain ol { margin: 4px 0 4px 1.2em; } .rf-steps-plain li { margin: 3px 0; } .rf-tech summary { cursor: pointer; color: var(--muted); } .rf-reason { margin: 6px 0; }
+/* 결과 먼저(2026-11-06 운영자 'UI UX 고쳐봐'): 금액 띠가 화면 위에 붙어 있으므로 바로가기 자리는 띠 아래로, 모바일은 돌려받을 돈 표를 카드로 */
+#rf-calc, #rf-ask, .rf-dg, #rf-diag-wrap, #rf-cover { scroll-margin-top: 150px; }
+@media (max-width: 600px) { #rf-calc, #rf-ask, .rf-dg, #rf-diag-wrap, #rf-cover { scroll-margin-top: 8px; } }
+@media (max-width: 760px) {
+  .rf-calc-t, .rf-calc-t tbody, .rf-calc-t tr, .rf-calc-t td { display: block; width: auto; min-width: 0 !important; }
+  .rf-calc-t thead { display: none; }
+  .rf-calc-t tr { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 10px; margin: 0 0 10px; }
+  .rf-calc-t td { border: 0; padding: 3px 0; text-align: left; }
+  .rf-calc-t td::before { content: attr(data-label); display: block; font-size: var(--tiny, .8rem); color: var(--muted); }
+  .rf-calc-t td.num { font-size: 1.05em; }
+  .rf-calc-sum > div { flex-basis: 100%; }
+  .rf-corr table, .rf-gate { font-size: .9em; }
+}
+.rf-s2-more > summary { cursor: pointer; font-weight: 600; }
+@media (max-width: 760px) {
+  #rf-cmp, #rf-cmp tbody, #rf-cmp tr, #rf-cmp th, #rf-cmp td { display: block; width: auto; min-width: 0 !important; }
+  #rf-cmp thead { display: none; }
+  #rf-cmp tr { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; margin: 0 0 8px; }
+  #rf-cmp th, #rf-cmp td { border: 0; padding: 2px 0; text-align: left; }
+  #rf-cmp td::before { content: attr(data-label) ' '; font-size: var(--tiny, .8rem); color: var(--muted); }
+  #rf-cmp td.rf-cmp-top { font-size: .85em; }
+  #rf-cmp td:empty { display: none; }
+}

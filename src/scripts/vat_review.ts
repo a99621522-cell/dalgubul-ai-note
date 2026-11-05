@@ -110,8 +110,8 @@ function init(D: Data) {
       const setSrc = (v: 'inv' | 'card') => { const r = document.querySelector<HTMLInputElement>(`input[name=rv-dsrc][value=${v}]`); if (r) r.checked = true; };
       const n0 = st.rows.length; if (inv.length) { setSrc('inv'); addFiles(inv, []); } if (card.length) { setSrc('card'); addFiles(card, []); setSrc('inv'); }
       const ks = [...new Set(filed.map(d => `${d.year}년 제${d.half}기`))];
-      msg.innerHTML = `파일 ${fs.length}개 — 신고서 <b>${filed.length}</b>건${ks.length ? `(${esc(ks.join(', '))})` : ''} · 매입 세금계산서 목록 <b>${inv.length}</b>개 · 사업용 카드 <b>${card.length}</b>개 → 매입 ${fmt(st.rows.length - n0)}건 더함${fails.length ? ` · 못 읽음: ${esc(fails.join(', '))}` : ''}. <a href="#rf-diag-wrap">지난 신고 진단 보기 ↓</a>`;
-      if (filed.length || st.rows.length > n0) document.getElementById('rf-diag-wrap')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); };
+      msg.innerHTML = `파일 ${fs.length}개 — 신고서 <b>${filed.length}</b>건${ks.length ? `(${esc(ks.join(', '))})` : ''} · 매입 세금계산서 목록 <b>${inv.length}</b>개 · 사업용 카드 <b>${card.length}</b>개 → 매입 ${fmt(st.rows.length - n0)}건 더함${fails.length ? ` · 못 읽음: ${esc(fails.join(', '))}` : ''}. <a href="#rf-calc">돌려받을 돈 보기 ↓</a>`;
+      if (filed.length || st.rows.length > n0) (document.getElementById('rf-calc') ?? document.getElementById('rf-diag-wrap'))?.scrollIntoView({ block: 'start', behavior: 'smooth' }); };
     $<HTMLInputElement>('rf-all-file')!.addEventListener('change', e => void handle([...((e.target as HTMLInputElement).files ?? [])]));
     const dz = $('rf-all-drop')!; dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); }); dz.addEventListener('dragleave', () => dz.classList.remove('over')); dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); void handle([...(e.dataTransfer?.files ?? [])]); });
   } }
@@ -342,7 +342,7 @@ function init(D: Data) {
     const rows = win.map(k => { const L = docs.filter(d => `${d.year}-${d.half}` === k); const regs = [...new Set(L.map(d => d.reg).filter(Boolean))];
       return `<tr><th scope="row">${esc(pName(k))}</th>${cell(L.filter(d => d.kind === '예정'))}${cell(L.filter(d => d.kind === '확정' || d.kind === '기한후'))}${cell(L.filter(d => d.nd))}<td>${regs.length ? regs.map(esc).join('<br>') : '—'}</td></tr>`; }).join('');
     const nOk = win.filter(k => docs.some(d => `${d.year}-${d.half}` === k && (d.kind === '확정' || d.kind === '기한후'))).length;
-    el.innerHTML = `<details class="vat-more rf-cover" ${nOk < win.length ? 'open' : ''}><summary>읽은 신고서 — 대상 ${win.length}개 과세기간 가운데 확정 신고서 <b>${nOk}</b>개${out.length ? ` · 대상 밖 ${out.length}장은 계산에서 뺌` : ''}</summary>
+    el.innerHTML = `<details class="vat-more rf-cover"><summary>읽은 신고서 — 대상 ${win.length}개 과세기간 가운데 확정 신고서 <b>${nOk}</b>개${out.length ? ` · 대상 밖 ${out.length}장은 계산에서 뺌` : ''}</summary>
       <div class="scroll-x" tabindex="0" role="region" aria-label="읽은 신고서 표"><table class="data-table vat-table" data-stack="off"><thead><tr><th scope="col">과세기간</th><th scope="col">예정</th><th scope="col">확정</th><th scope="col">불공제 명세서</th><th scope="col">사업자등록번호</th></tr></thead><tbody>${rows}</tbody></table></div>
       <p class="note">예정이 '없음'인 기간은 예정고지로 냈을 수 있습니다(직전 과세기간 공급가액 1억 5천만 원 미만). 같은 기간·구분이 두 장이면 뒤 파일(수정신고)을 씁니다. △는 칸을 다 읽지 못한 것 — ②의 표에서 숫자를 확인하세요.</p></details>`; }
   function emit(x: Record<string, unknown> | null) { cover(); const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), diag: diagHtml(D, dm.diags), diags: dm.diags, fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er, salesSup: f.salesSup })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); }

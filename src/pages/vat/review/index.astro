@@ -25,8 +25,9 @@ const KEY_NAME: Record<string, string> = { claim: '경정청구', build: '신축
       <div id="rf-s1-body"></div></li>
     <li class="rf-step" id="rf-s2"><div class="rf-h"><span class="rf-n" aria-hidden="true">2</span><h2>지난 신고서 올리기</h2><span class="rf-st" id="rf-s2-st"></span></div>
       <p class="note">홈택스 → 신고/납부 → 세금신고 → 신고내역 조회 → 신고서 보기 → PDF 저장. <strong>5년치 예정·확정 신고서를 한꺼번에</strong> 놓으면 과세기간마다 공제받은 매입세액 (18)·불공제 (17)·면세비율을 읽습니다.</p>
+      <details class="vat-more rf-s2-more" id="rf-s2-more" open><summary id="rf-s2-more-sum">올린 신고서 목록 · 과세기간별 신고 값</summary>
       <div id="rv-filedup" class="no-print"></div>
-      <div id="rf-s2-cmp"></div></li>
+      <div id="rf-s2-cmp"></div></details></li>
     <li class="rf-step" id="rf-s3"><div class="rf-h"><span class="rf-n" aria-hidden="true">3</span><h2>홈택스 매입 목록 올리기</h2><span class="rf-st" id="rf-s3-st"></span></div>
       <p class="note">홈택스 → 조회/발급 → 전자세금계산서 → 목록조회 → <b>매입</b> → 엑셀 내려받기(법인은 3개월씩). <strong>여러 파일을 한꺼번에</strong> 골라 놓으세요 — 같은 건은 한 번만 셉니다. 시설은 나라장터 계약 업체 번호·매핑표·시설 이름으로 저절로 붙이고, <strong>못 붙인 공급자만</strong> 세액 큰 순으로 아래에 남깁니다.</p>
       <div class="vc-form no-print" id="rv-common"><label>우리 기관(과세사업) 사업자등록번호 — 공급받는 자가 다른 번호인 행을 가려냅니다 <input type="text" id="rv-reg" placeholder="000-00-00000" inputmode="numeric" /></label></div>

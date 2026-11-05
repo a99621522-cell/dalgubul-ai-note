@@ -84,7 +84,7 @@ export function askHtml(D: Data, org: Org | null, qs: Question[], hasList: boole
   const answered = org.facilities.flatMap(f => Object.entries(f.answers ?? {}).filter(([, a]) => !a.auto).map(([id, a]) => ({ f, id, a }))); const so = salesOver(D, org);
   if (!qs.length && !answered.length && !auto.length) return '';
   const vis = qs.slice(0, VISIBLE), more = qs.slice(VISIBLE);
-  const head = qs.length ? `확인 질문 ${vis.length}개 <span class="meta">답에 따라 금액이 크게 달라지는 것만 — 나머지는 기본값으로 계산했습니다</span>` : `확인할 것 없음 <span class="meta">${hasList ? `답에 따라 ${fmt(T_LIST)}원 넘게 달라지는 사실이 없어 기본값으로 계산했습니다` : '매입 목록을 올리면 금액이 걸린 것만 묻습니다 — 지금은 기본값으로 계산'}</span>`;
+  const head = qs.length ? `확인 질문 ${vis.length}개 <span class="meta">답에 따라 금액이 크게 달라지는 것만 — 나머지는 기본값으로 계산했습니다</span>` : `확인할 것 없음 <span class="meta">${hasList ? `답에 따라 ${fmt(T_LIST)}원 넘게 달라지는 사실이 없어 기본값으로 계산했습니다` : '홈택스 매입 목록을 올리면 금액이 크게 갈리는 것만 묻습니다 — 지금은 기본값으로 계산'}</span>`;
   return `<section class="rf-ask" aria-labelledby="rf-ask-h"><div class="rf-h"><h2 id="rf-ask-h">${head}</h2></div>
     ${vis.map(q => qHtml(q, org, hasList)).join('')}
     ${more.length ? `<details class="vat-more"><summary>더 정확히(선택) ${more.length}개</summary>${more.map(q => qHtml(q, org, hasList)).join('')}</details>` : ''}

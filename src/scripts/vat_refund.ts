@@ -61,7 +61,7 @@ function init(D: Data) {
     el.innerHTML = `<p class="rf-band-l">지금까지 찾은 돌려받을 수 있는 금액 <span class="meta">경정청구 · 참고 계산, 기관의 판단이 아닙니다</span></p>
       <p class="rf-band-n"><span id="rf-amt">${fmt((U ? U.now + U.docs : 0) + fs)}</span><small>원</small></p>
       <p class="rf-band-s">${sub}</p>
-      ${est ? `<p class="rf-est note">참고: 경정청구가 되는 기간의 과세 시설일 법한 나라장터 계약 세액 추정 ${fmt(est)}원(계약금액 × 10/110 — 돌려받을 금액이 아닙니다)</p>` : ''}`;
+      ${est && !(b?.filed?.length) ? `<p class="rf-est note">참고: 경정청구가 되는 기간에 과세 시설과 관련된 나라장터 계약의 부가세는 약 ${(est / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원입니다. 이 가운데 공제받지 않은 몫이 있는지 지난 신고서로 확인합니다(돌려받을 금액이 아님).</p>` : ''}`;
   }
 
   function step1() {
@@ -83,7 +83,7 @@ function init(D: Data) {
     const by = new Map<string, CR & { hot: boolean; inWin: string[] }>(); for (const r of (ctx?.rows ?? [])) { if (!(r.taxable || r.likely) || !L.includes(r.p)) continue; const x = by.get(r.ck); if (x) { x.est += r.est; x.inWin.push(r.p); x.hot ||= fs.has(r.p); } else by.set(r.ck, { ...r, hot: fs.has(r.p), inWin: [r.p] }); }
     const all = [...by.values()]; if (!all.length) return '';
     const sorted = all.sort((a, c) => (c.hot ? 1 : 0) - (a.hot ? 1 : 0) || (c.taxable ? 1 : 0) - (a.taxable ? 1 : 0) || c.est - a.est);
-    return `<details class="vat-more rf-whys" id="rf-why" open><summary>계약별로 — 무엇을 · 왜 · 어떻게 (${fmt(all.length)}건 가운데 ${Math.min(whyN, all.length)}건, 먼저 볼 기간·과세 시설·세액 큰 순)</summary>
+    return `<details class="vat-more rf-whys" id="rf-why"><summary>계약별로 — 무엇을 · 왜 · 어떻게 (${fmt(all.length)}건 가운데 ${Math.min(whyN, all.length)}건, 먼저 볼 기간·과세 시설·세액 큰 순)</summary>
       <ol class="rf-why-list">${sorted.slice(0, whyN).map(ctrWhy).join('')}</ol>
       ${all.length > whyN ? `<button type="button" class="btn secondary" id="rf-why-more">${Math.min(20, all.length - whyN)}건 더 보기</button>` : ''}
       <p class="note">계약은 '어느 세금계산서를 찾을지' 알려 줄 뿐입니다. 돌려받을 금액은 ③에 올린 세금계산서로만 셉니다. 판정은 참고이며 기관의 판단이 아닙니다.</p></details>`;
@@ -97,11 +97,13 @@ function init(D: Data) {
     const first = rows.filter(r => r.flag === '먼저 볼 기간' || r.flag === '기한후신고 후보').sort((a, c) => c.est - a.est);
     const look = rows.filter(r => r.flag === '살펴볼 기간').sort((a, c) => c.est - a.est);
     const pick = [...first, ...look]; const pickTxt = pick.length ? pick.map(r => pName(r.k)).join(', ') : '';
-    if (!filed.size && !ctx) { box.innerHTML = ''; } else box.innerHTML = `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off" id="rf-cmp"><caption>과세기간별 — 신고한 매입세액과 과세 시설일 법한 계약(참고)</caption><thead><tr><th scope="col">과세기간</th><th scope="col">신고한 매입세액 (18)</th><th scope="col">계약 세액 추정(참고)</th><th scope="col">큰 계약</th><th scope="col">경정청구 기한</th><th scope="col">표시</th></tr></thead><tbody>${rows.map(r => `<tr data-pk="${r.k}" class="${r.flag === '먼저 볼 기간' || r.flag === '기한후신고 후보' ? 'rf-hot' : ''}"><th scope="row">${esc(pName(r.k))}</th><td>${r.none ? '신고 안 함' : r.ded === null ? '<span class="note">—</span>' : fmt(r.ded)}</td><td class="note">${r.est ? fmt(r.est) : '—'}</td><td class="note">${r.x?.top.map(esc).join('<br>') ?? ''}</td><td>${esc(r.P.claim)} <span class="meta">D-${r.P.days}</span></td><td>${r.flag ? `<span class="vbadge">${esc(r.flag)}</span>` : ''}</td></tr>`).join('')}</tbody></table></div>
+    if (!filed.size && !ctx) { box.innerHTML = ''; } else box.innerHTML = `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off" id="rf-cmp"><caption>과세기간별 — 신고한 매입세액과 과세 시설일 법한 계약(참고)</caption><thead><tr><th scope="col">과세기간</th><th scope="col">신고한 매입세액 (18)</th><th scope="col">계약 세액 추정(참고)</th><th scope="col">큰 계약</th><th scope="col">경정청구 기한</th><th scope="col">표시</th></tr></thead><tbody>${rows.map(r => `<tr data-pk="${r.k}" class="${r.flag === '먼저 볼 기간' || r.flag === '기한후신고 후보' ? 'rf-hot' : ''}"><th scope="row">${esc(pName(r.k))}</th><td data-label="신고한 매입세액 (18)">${r.none ? '신고 안 함' : r.ded === null ? '<span class="note">—</span>' : fmt(r.ded)}</td><td class="note" data-label="계약 세액 추정(참고)">${r.est ? fmt(r.est) : '—'}</td><td class="note rf-cmp-top" data-label="큰 계약">${r.x?.top.map(esc).join('<br>') ?? ''}</td><td data-label="경정청구 기한">${esc(r.P.claim)} <span class="meta">D-${r.P.days}</span></td><td data-label="표시">${r.flag ? `<span class="vbadge">${esc(r.flag)}</span>` : ''}</td></tr>`).join('')}</tbody></table></div>
       <p class="note">계약 세액 추정은 과세 시설(또는 공통)에 붙은 계약과 공제 가능성 있는 사업 유형 계약의 계약금액 × 10/110 입니다. 신고 매입세액은 모든 지출의 합계라 견줌은 '먼저 볼 순서'일 뿐 증거가 아닙니다. 공사 기성·준공 세금계산서는 계약 다음 기에 나올 수 있습니다.</p>
       <p class="rf-pick" id="rf-pick">${pickTxt ? `<strong>홈택스에서 받을 기간:</strong> ${esc(pickTxt)} <span class="note">— ③에서 이 기간의 매입 목록부터 올리세요(나머지 기간은 그다음).</span>` : filed.size ? '<strong>홈택스에서 받을 기간:</strong> 계약으로는 눈에 띄는 기간이 없습니다 — ③에 경정청구가 되는 기간 전부를 올리세요.' : '<span class="note">지난 신고서를 올리면 기간마다 신고한 매입세액이 채워지고, 먼저 볼 기간이 표시됩니다.</span>'}</p>${whyList(pick.map(r => r.k))}`;
     $('rf-why-more')?.addEventListener('click', () => { whyN += 20; step2(last); const d = $('rf-why') as HTMLDetailsElement | null; if (d) d.open = true; });
     const done = !!b && b.filed.length > 0; setStep('rf-s2', done, !!org && !done, done ? `신고서 ${b!.filed.length}개 과세기간` : '신고서 PDF 를 놓으세요');
+    { const det = $('rf-s2-more') as HTMLDetailsElement | null; const sum = $('rf-s2-more-sum'); if (det && det.dataset.done !== String(done)) { det.dataset.done = String(done); det.open = !done; }   /* 신고서를 올렸으면 목록·표는 접고 결과를 먼저 */
+      if (sum) sum.textContent = done ? `올린 신고서 ${b!.filed.length}개 과세기간 — 목록·과세기간별 신고 값 펼치기` : '올린 신고서 목록 · 과세기간별 신고 값'; }
   }
 
   function step3(b: Built | null) {
@@ -148,7 +150,8 @@ function init(D: Data) {
     const stake = new Map<string, { tax: number; est: number }>(); for (const [k, v] of Object.entries(b?.facTax ?? {})) stake.set(k, { tax: v, est: 0 });
     for (const r of ctx?.rows ?? []) { if (!r.a || !L.includes(r.p)) continue; const x = stake.get(r.a.fid) ?? { tax: 0, est: 0 }; x.est += r.est; stake.set(r.a.fid, x); }
     const hasList = (b?.rows ?? 0) > 0; const fl = b?.filed ?? []; const salesFiled = fl.length ? fl.reduce((s, f) => s + (f.salesSup ?? 0), 0) : null;
-    const qs = buildQuestions(D, o, stake, { hasList, salesFiled, forced }); el.innerHTML = askHtml(D, o, qs, hasList);
+    const all = buildQuestions(D, o, stake, { hasList, salesFiled, forced }); const qs = hasList ? all : all.filter(q => forced.has(q.key) || q.members.some(m => forced.has(`${m.fid}|${m.def.id}`)));   /* 매입 목록을 올리기 전에는 묻지 않는다(계약 어림만으로는 금액이 갈리지 않음) — 「바꾸기」로 연 것만 */
+    el.innerHTML = askHtml(D, o, qs, hasList);
     const done = () => { location.hash = 'rf-ask'; location.reload(); };
     el.querySelectorAll<HTMLButtonElement>('.rf-q [data-ans]').forEach(btn => btn.addEventListener('click', () => { const box = btn.closest<HTMLElement>('.rf-q')!; const q = qs.find(x => x.key === box.dataset.qkey); const oo = getOrg(); if (!q || !oo) return; answer(oo, q.members[0].fid, q.members[0].def, btn.dataset.ans === 'x' ? null : Number(btn.dataset.ans)); done(); }));
     el.querySelectorAll<HTMLButtonElement>('[data-gsub],[data-gsub-x]').forEach(btn => btn.addEventListener('click', () => { const key = btn.dataset.gsub ?? btn.dataset.gsubX!; const q = qs.find(x => x.key === key); const oo = getOrg(); if (!q || !oo) return;

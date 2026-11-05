@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'ngf-daegu-approvals', summary: '국민성장펀드(첨단전략산업기금 75조 원 + 민간 75조 원)의 지원대상 업종·대출 요건(가이드북 쪽수)과 2026년 1~10월 기금운용심의회 승인 가운데 회사·사업이 확인되는 33건을 시설 위치별(대구 1·경북 4·부산·울산·경남 2·광주·전남·전북 7·충청·대전 8·수도권 11)로 정리하고, 대구 첫 승인인 엘앤에프플러스(대구국가산단 구지 LFP 양극재 공장, 저리대출 2,200억 원) 사례, 지자체가 프로젝트를 제안하는 경로, 지원대상 업종에 드는 대구 본사 기업을 공개 자료(업종·시설투자 공시·DART 재무)로 대조한 결과를 실은 자료. 붙임으로 가이드북 「자주 묻는 질문(60문 60답)」 전문을 실음. 판정·추천은 싣지 않음.', topics: ['투자', '정책금융', '이차전지', '상장기업'],
+    title: '국민성장펀드와 대구 기업 — 승인 현황·엘앤에프플러스 사례·지원대상 업종 기업 대조', name: '국민성장펀드와 대구 기업 — 승인 현황·엘앤에프플러스 사례·지원대상 업종 기업 대조',
+    hwpx: '/hwpx/ngf-daegu-approvals.hwpx', hwpxSize: '121KB', date: '2026-11-05' },
   { slug: 'cnm-robotics-pressfit', summary: '서울 금천구에 본사를 둔 압입 자동화 장비 회사 씨앤엠로보틱스(2000년 창업)가 서보프레스(FLEXPRESS)·중심오차보정기기(CENTER MASTER)·압입 인디케이터를 만들고, 대구 달성군 테크노폴리스·연구개발특구·옥포에 공장 3곳을 등록해 I/O보드·스트레인 앰프·서보프레스 등을 생산하는 구조를 회사 누리집과 팩토리온 자료로 정리한 자료. DART 공시가 없어 재무는 싣지 않음.', topics: ['비상장기업', '로봇', '설비'],
     title: '씨앤엠로보틱스, 압입 자동화 장비와 달성 생산 거점', name: '씨앤엠로보틱스, 압입 자동화 장비와 달성 생산 거점',
     hwpx: '/hwpx/cnm-robotics-pressfit.hwpx', hwpxSize: '37KB', date: '2026-11-04' },

@@ -117,10 +117,10 @@ export type Fee = 'taxable' | 'paid_check' | 'free' | 'unknown';
 /** 수탁기관 자기 사업 시설에서 우리 기관이 수탁기관에게 받는 것 — 군 부담 지출(수선·장비)의 매입세액 공제 여부를 가른다. 초록은 사용료를 과세로 신고하고 있을 때만(세무사 평가 2차) */
 export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고, 그 사용료를 과세(부동산임대)로 신고하고 있다', paid_check: '사용료·임대료를 받지만 과세로 신고하는지 모름(면세로 보고 있음)', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
 /** track=false: '지출 기록 대상 아님'(마찰 3) — 면세 시설·수탁기관 자기 사업처럼 우리 공제와 무관한 시설. 판정이 아니라 기록 범위 표시 */
-export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[]; track?: boolean; answers?: Record<string, { label: string; at: string; prev?: { type: string; run: Run; share?: number } }>; salesTaxed?: boolean; share?: number };
+export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[]; track?: boolean; answers?: Record<string, { label: string; at: string; auto?: boolean; prev?: { type: string; run: Run; share?: number } }>; salesTaxed?: boolean; share?: number };
 /** 확인 질문(예시 설정 시설의 ask — docs/design/vat-minimize.md 3절): 고르면 시설 유형·운영 방식이 바뀌고 메모가 덧붙는다 */
 export type AskOpt = { label: string; patch?: { type?: string; run?: Run; note?: string; salesTaxed?: boolean; share?: number | null } };
-export type AskDef = { id: string; q: string; why?: string; opts: AskOpt[] };
+export type AskDef = { id: string; q: string; why?: string; opts: AskOpt[]; default?: number; group?: string; gq?: string; gyes?: number };
 export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; run?: string; share?: number; contractor?: string; term?: string; note?: string; alias?: string[]; ask?: AskDef[] }[] };
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };

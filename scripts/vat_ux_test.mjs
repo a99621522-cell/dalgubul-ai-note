@@ -463,19 +463,22 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     await c5.close(); }
   { const c6 = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const p6 = await c6.newPage();
     await p6.goto(base + '/vat/review/'); await p6.evaluate(() => localStorage.clear()); await p6.reload(); await p6.waitForFunction(() => document.querySelector('[data-qs-sel]')?.options.length > 3, null, { timeout: 15000 }); await p6.click('[data-qs-go]');
-    await p6.waitForSelector('#rf-ask .rf-q', { timeout: 15000 }).catch(() => {});
-    const q1 = await p6.evaluate(() => ({ q: document.querySelector('#rf-ask .rf-q-t')?.textContent ?? '', n: document.querySelector('#rf-ask h2 .meta')?.textContent ?? '', stake: document.querySelector('#rf-ask .rf-q .note b')?.textContent ?? '' }));
-    if (q1.q) { await p6.click('#rf-ask [data-ans="0"]'); await p6.waitForLoadState('load'); await p6.waitForSelector('#rf-ask', { timeout: 15000 }); await p6.waitForTimeout(1500); }
-    const q2 = await p6.evaluate(() => ({ answered: document.querySelector('#rf-ask details summary')?.textContent ?? '', next: document.querySelector('#rf-ask .rf-q-t')?.textContent ?? '' }));
-    ok('S16 달성군 확인 질문 — 걸린 금액 큰 순 10개 이하, 한 번에 하나, 답하면 저장·다시 계산', !!q1.q && /원/.test(q1.stake) && /(\d+)개 남음/.test(q1.n) && Number(q1.n.match(/(\d+)개/)?.[1] ?? 99) <= 10 && /답한 질문 1개/.test(q2.answered) && q2.next !== q1.q, JSON.stringify({ q1, q2 }).slice(0, 400));
+    await p6.waitForSelector('#rf-ask h2', { timeout: 15000 }).catch(() => {});
+    const q1 = await p6.evaluate(() => ({ head: document.querySelector('#rf-ask h2')?.textContent ?? '', auto: document.querySelector('#rf-ask-auto summary')?.textContent ?? '', vis: document.querySelectorAll('#rf-ask > .rf-q').length }));
+    ok('S16a 확인 질문 최소화 — 기본값을 묻지 않고 적용, 보이는 질문 3개 이하(금액이 크게 갈리는 것만)', q1.vis <= 3 && (/확인 질문 [0-3]개/.test(q1.head) || /확인할 것 없음/.test(q1.head)) && /기본값으로 계산한 것 \d+개/.test(q1.auto), JSON.stringify(q1));
+    await p6.evaluate(() => { document.getElementById('rf-ask-auto').open = true; document.querySelector('#rf-ask-auto [data-reask]').click(); }); await p6.waitForTimeout(300);
+    const forcedQ = await p6.evaluate(() => document.querySelector('#rf-ask .rf-q [data-ans="0"]') ? document.querySelector('#rf-ask .rf-q-t')?.textContent ?? '' : '');
+    if (forcedQ) { await p6.click('#rf-ask .rf-q [data-ans="0"]'); await p6.waitForLoadState('load'); await p6.waitForSelector('#rf-ask', { timeout: 15000 }); await p6.waitForTimeout(1500); }
+    const q2 = await p6.evaluate(() => ({ answered: [...document.querySelectorAll('#rf-ask details summary')].map(s => s.textContent).join('|') }));
+    ok('S16b 기본값 바꾸기 → 그 질문만 열림 → 답하면 저장·다시 계산', !!forcedQ && /답한 질문 1개/.test(q2.answered), JSON.stringify({ forcedQ, q2 }).slice(0, 400));
     await c6.close(); }
   const zr = path.join(os.tmpdir(), 'vat-s-bundle.zip'); const [dl] = await Promise.all([p3.waitForEvent('download', { timeout: 60000 }), p3.click('#rf-zip')]); await dl.saveAs(zr);
   const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); execSync(`cd "${os.tmpdir()}" && rm -rf vat-s-x && mkdir vat-s-x && cd vat-s-x && unzip -q "${zr}" && unzip -q -o 10_경정청구_자료.xlsx -d xl`);
   const wb = fs.readFileSync(path.join(os.tmpdir(), 'vat-s-x', 'xl', 'xl', 'workbook.xml'), 'utf8'); const pdfHead = fs.readFileSync(path.join(os.tmpdir(), 'vat-s-x', '11_경정청구_요약.pdf')).subarray(0, 5).toString();
-  ok('S8 경정청구 묶음 — 엑셀(시트 7개: 과세기간별·건별·공급자별·시설별·자료별·사유·근거)과 PDF 둘 다', zl.includes('10_경정청구_자료.xlsx') && zl.includes('11_경정청구_요약.pdf') && (wb.match(/<sheet /g) ?? []).length === 7 && /건별 명세/.test(wb) && pdfHead === '%PDF-', zl.join('|'));
+  ok('S8 경정청구 묶음 — 엑셀(시트 9개: 홈택스 입력값·지난 신고 진단·과세기간별·건별·공급자별·시설별·자료별·사유·근거)과 PDF 둘 다', zl.includes('10_경정청구_자료.xlsx') && zl.includes('11_경정청구_요약.pdf') && (wb.match(/<sheet /g) ?? []).length === 9 && /홈택스 입력값/.test(wb) && /건별 명세/.test(wb) && pdfHead === '%PDF-', zl.join('|'));
   const [dx] = await Promise.all([p3.waitForEvent('download', { timeout: 30000 }), p3.evaluate(() => { const d = document.getElementById('rf-more'); d.open = true; document.getElementById('rv-xlsx').click(); })]);
   const xp = path.join(os.tmpdir(), 'vat-s-only.xlsx'); await dx.saveAs(xp); const xl = execSync(`unzip -Z1 "${xp}"`).toString();   /* 헤드리스는 한글 파일 이름을 'download' 로 돌려줘 내용으로 본다 */
-  ok('S9 엑셀만 내려받기 → xlsx(workbook·시트)', /xl\/workbook\.xml/.test(xl) && /xl\/worksheets\/sheet7\.xml/.test(xl), dx.suggestedFilename());
+  ok('S9 엑셀만 내려받기 → xlsx(workbook·시트)', /xl\/workbook\.xml/.test(xl) && /xl\/worksheets\/sheet9\.xml/.test(xl), dx.suggestedFilename());
   await c3.close();
 }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));

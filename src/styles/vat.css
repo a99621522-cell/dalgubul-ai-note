@@ -270,3 +270,4 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .rf-gate .g-ok td:last-child { color: var(--ok, inherit); } .rf-gate .g-less td:last-child, .rf-gate .g-more td:last-child { font-weight: 600; }
 
 .rf-ask { border: 2px solid var(--line-strong); border-radius: var(--radius); padding: 8px 14px; margin: 10px 0; } .rf-ask h2 { font-size: 1.1em; margin: 2px 0; } .rf-q-t { font-size: 1.05em; margin: 4px 0; }
+.rf-ask .rf-q + .rf-q { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 6px; } .rf-q-list { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; } .rf-q-list label { display: flex; gap: 6px; align-items: baseline; }

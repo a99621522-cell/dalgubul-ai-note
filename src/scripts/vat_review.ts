@@ -9,6 +9,7 @@ import { mountPublic } from './vat_review_pub';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
 import type { FileTable } from './vat_files';
 import { xlsxBlob, csvRows } from './xlsx_write';
+import { applyDefaults } from './vat_ask';
 import { diagnose, diagHtml, diagCsv, filedChecks, mergeFiled, type Diag } from './vat_diag';
 import { readFiledText, parseFiledText, filedSummary, unlockCompute, unlockHtml, unlockFiles, type FiledDoc, type URow, type UPer } from './vat_unlock';
 import { $, esc, num, fmt, pct, loadData, getOrg, parseTable, parseDateCell, guessColumns, findHeader, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, ymd, getFilings, zipStore, downloadBlob, srcBtn, helpWire, judge, matchMap, matchFacilityName, facilityStatus, facilityRule, lawLink, lawText, rulingsHtml, inquiryHtml, inquiryText, wireInquiry, guessWhat, WHAT_Q, LABEL, guessCw, isCw, cwSel, toast, vatConfirm, readJsonFile, type Data, type Org, type OrgFacility, type Verdict, type Basis, type Ruling } from './vat_rules';
@@ -27,6 +28,7 @@ const D = loadData();
 if (D) init(D);
 
 function init(D: Data) {
+  applyDefaults(D, getOrg());   // 확인 질문 기본값(묻지 않고 적용 — vat_ask.ts)
   const org = getOrg(); const today = ymd(new Date());
   const st: State = load() ?? { v: 1, reg: '', rows: [], filed: {}, sup: {} };
   const regIn = $<HTMLInputElement>('rv-reg')!; const siteRegs = org && org.unit === 'site' ? [...new Set(org.facilities.map(f => f.reg_no).filter(Boolean))] as string[] : [];
@@ -317,7 +319,7 @@ function init(D: Data) {
     const fc = filedChecks(D, (st.fdocs ?? []) as unknown as Parameters<typeof filedChecks>[1], taxable);
     const m = mergeFiled(rowDiags.map(d => ({ ...d, findings: [...d.findings] })), fc, k => { const P = pInfo(k); return { name: pName(k), claim: P.claim, days: P.days, due: P.due }; });
     allDiags = m.diags; return m; };
-  function emit(x: Record<string, unknown> | null) { const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), diag: diagHtml(D, dm.diags), fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); }
+  function emit(x: Record<string, unknown> | null) { const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), diag: diagHtml(D, dm.diags), fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er, salesSup: f.salesSup })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); }
   function save() { try { localStorage.setItem(KEY, JSON.stringify({ ...st, saved: new Date().toISOString() })); } catch { /* 저장 못 해도 계속 */ } }
   function load(): State | null { try { const s = localStorage.getItem(KEY); if (!s) return null; const j = JSON.parse(s) as State; return j && j.v === 1 && Array.isArray(j.rows) ? j : null; } catch { return null; } }
   build();

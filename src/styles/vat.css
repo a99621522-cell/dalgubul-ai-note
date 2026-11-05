@@ -262,3 +262,5 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .rf-dg-list { padding-left: 1.4em; } .rf-dg-list > li { margin: 8px 0; } .rf-dg-t { margin: 0; }
 .rf-dg-eff th, .rf-dg-eff td { font-weight: 600; }
 @media print { body.print-todo #rf-diag-wrap { display: block !important; } body.print-todo .rf-dg { break-inside: avoid; } }
+
+.rf-cases ul { margin: 2px 0 0; padding-left: 1.2em; } .rf-cases li { margin: 3px 0; } .rf-cases summary { cursor: pointer; }

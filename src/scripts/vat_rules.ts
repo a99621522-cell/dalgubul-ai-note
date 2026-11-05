@@ -469,7 +469,7 @@ export function wireInquiry(root: ParentNode) {
 /* ── 공무원 UX 재설계(2026-10-28, docs/design/vat-ux-spec.md) 공용 UI 도우미 — 규칙·계산과 무관 ── */
 /** 처리할 것 집계(대시보드·문맥 바·신고 준비 요약이 같은 식으로): 빨강·노랑 미처리 + 근거 없는 전용 지출 */
 /** 설정 완성도(2차 UX 마찰 1·10, 2026-11-03): 운영 방식 '확인 필요'·등록번호 없음(사업장별)·담당 부서 없음 — 비어 있으면 대시보드 1차 행동이 '설정 마저 채우기' */
-export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; src: string; url?: string; verify?: boolean };
+export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; mistakes?: string[]; src: string; url?: string; verify?: boolean };
 export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
 const normOrgName = (x: string) => { const y = x.replace(/\s/g, '').replace(/^대구광역시/, '').replace(/^대구/, '').replace(/청$/, ''); return y === '' || y === '시' ? '대구본청' : y; };   // '대구광역시'·'대구시청'은 본청(떼고 나면 빈 글자라 못 찾던 것)
 /** 기관 이름으로 공개 자료의 사업자등록번호 찾기 — 이름·별칭을 띄어쓰기·'대구광역시'·'청' 을 떼고 견준다 */

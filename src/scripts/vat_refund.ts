@@ -4,6 +4,7 @@
  *  추정(계약금액 × 10/110)은 회색 작은 글씨 — 돌려받을 금액이 아니다. 판정은 참고이며 기관의 판단이 아니다. */
 import { $, esc, fmt, loadData, getOrg, claimPeriod, ymd, lawLink, uniq, facilityRule, facilityStatus, bizType, type Data, type Basis } from './vat_rules';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
+import { commonMistakesHtml } from './vat_diag';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
@@ -126,7 +127,7 @@ function init(D: Data) {
     $('rf-print')?.addEventListener('click', () => { document.body.dataset.printHead = `지난 돈 돌려받기 — 할 일 · ${org?.org ?? ''} · ${today}`; document.body.classList.add('print-todo'); window.print(); setTimeout(() => document.body.classList.remove('print-todo'), 500); });
   }
 
-  function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; if (b?.diag) el.innerHTML = b.diag; else if (b?.rows) el.innerHTML = '<p class="note">지난 과세기간의 매입 목록이 아직 없습니다 — ③에 지난 기간 목록을 올리세요.</p>'; }
+  function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; el.innerHTML = b?.diag ? b.diag : commonMistakesHtml(D); }
   function draw() { const b = last; band(b); step1(); step2(b); step3(b); diag(b); todo(b); }
   document.addEventListener('vat-rv-built', e => { last = (e as CustomEvent<Built>).detail; draw(); });
   void contractsCtx(D, org).then(c => { ctx = c; draw(); });

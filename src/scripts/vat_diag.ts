@@ -3,28 +3,28 @@
  *  새 판정 규칙 없음 — vat_review.ts 의 건별 판정(judge)·신고서 값(vat_unlock filedSummary)을 과세기간마다 신고서 칸으로 대조만 한다.
  *  금액 나눔: 덜 공제받은 몫 G = 있어야 할 공제 세액 − 신고 (18). 그중 '신고서에 아예 없던 세금계산서' 몫 = 빠진 세액 × (공제 대상 비율), 나머지는 '불공제로 넣은 것'을
  *  과세 시설 전용·공통(안분) 공제 대상 세액 비율로 나눈다(건별로 무엇이 (17)에 들어갔는지는 신고서에 없으므로 나눔은 어림 — 화면에 적음). 판정은 참고이며 기관의 판단이 아니다. */
-import { esc, fmt, lawLink, lawText, uniq, type Basis, type Data } from './vat_rules';
+import { esc, fmt, lawLink, lawText, uniq, type Basis, type Data, type AuditCase } from './vat_rules';
 
 export type DiagIn = {
   k: string; name: string; filed: 'filed' | 'excluded' | 'none' | 'unknown'; due: string; claim: string; days: number; future: boolean;
   deduct: number | null; nondeduct: number | null; total16: number | null; er: number | null;
   doc: { hasNd: boolean; hasCommon: boolean; ndReasons: Record<number, number>; files: string[] } | null;
   recv: number; should: number;
-  ok: { tax: number; claim: number; n: number; facs: { name: string; tax: number; n: number }[] };
+  ok: { tax: number; claim: number; n: number; facs: { name: string; tax: number; n: number; type?: string }[] };
   split: { tax: number; claim: number; n: number };
   undecided: { tax: number; n: number };
   other: { tax: number; n: number; fixTax: number };
 };
 export type Finding = { key: string; title: string; what: string; how: string; effect: number | null; effectNote: string; basis: Basis[] };
 export type FixRow = { cell: string; label: string; before: number | null; after: number | null };
-export type Diag = { k: string; name: string; state: 'claim' | 'late' | 'unknown' | 'ok' | 'over' | 'expired'; gain: number; cond: number; findings: Finding[]; fixed: FixRow[]; claim: string; days: number; due: string };
+export type Diag = { types: string[]; k: string; name: string; state: 'claim' | 'late' | 'unknown' | 'ok' | 'over' | 'expired'; gain: number; cond: number; findings: Finding[]; fixed: FixRow[]; claim: string; days: number; due: string };
 
 const B = (law: string, art: string): Basis => ({ law, art });
 const ND_NAME: Record<number, string> = { 1: '① 필요적 기재사항 누락 등', 2: '② 사업과 직접 관련 없는 지출', 3: '③ 비영업용 승용자동차 구입·유지·임차', 4: '④ 기업업무추진비 등', 5: '⑤ 면세사업등 관련', 6: '⑥ 토지의 자본적 지출 관련', 7: '⑦ 사업자등록 전 매입세액', 8: '⑧ 금·구리 스크랩 거래계좌 미사용' };
 const TOL = 1000;   // 원 단위 끝수·카드 소액 차이는 '빠짐'으로 보지 않는다
 
 export function diagnose(x: DiagIn): Diag {
-  const F: Finding[] = []; const base = { k: x.k, name: x.name, claim: x.claim, days: x.days, due: x.due };
+  const F: Finding[] = []; const base = { types: [...new Set(x.ok.facs.map(f => f.type).filter(Boolean))] as string[], k: x.k, name: x.name, claim: x.claim, days: x.days, due: x.due };
   const facTxt = x.ok.facs.slice(0, 4).map(f => `「${f.name}」 ${fmt(f.tax)}원(${f.n}건)`).join(', ') + (x.ok.facs.length > 4 ? ` 외 ${x.ok.facs.length - 4}곳` : '');
   const otherF = (): Finding | null => x.other.tax > 0 ? { key: 'other', title: '우리 명의가 아닌 세금계산서', what: `공급받는 자가 우리 등록번호가 아닌 세금계산서 ${x.other.n}건, 세액 ${fmt(x.other.tax)}원 — 이대로는 공제할 수 없습니다.`, how: x.other.fixTax > 0 ? `공급자에게 공급받는 자를 우리 등록번호로 고친 수정세금계산서를 받아(확정신고기한 다음 날부터 1년 안) 경정청구에 넣습니다. 기한 안 세액 ${fmt(x.other.fixTax)}원.` : '수정세금계산서 발급 기한(확정신고기한 다음 날부터 1년)이 지났습니다 — 착오 정정이 아니면 공제가 어렵습니다.', effect: x.other.fixTax || null, effectNote: x.other.fixTax ? '수정세금계산서를 받으면(조건부)' : '', basis: [B('act', '제39조'), B('decree', '제70조')] } : null;
   const undF = (): Finding | null => x.undecided.tax > 0 ? { key: 'undecided', title: '아직 판단하지 못한 세액', what: `시설·용도가 안 정해졌거나(시설 유형이 운영 방식에 달림 포함) 면세비율이 없어 세지 못한 세액 ${fmt(x.undecided.tax)}원(${x.undecided.n}건).`, how: '③에서 공급자의 시설·용도를 고르고, ②에 그 기간 면세비율(공제받지못할매입세액명세서)을 넣으면 효과가 계산됩니다.', effect: null, effectNote: '정하면 늘 수 있음', basis: [B('act', '제40조'), B('decree', '제81조')] } : null;
@@ -69,6 +69,27 @@ export function diagnose(x: DiagIn): Diag {
   return { ...base, state: gain > 0 ? 'claim' : G < -TOL ? 'over' : 'ok', gain, cond: x.other.fixTax, findings: F, fixed };
 }
 
+/* 실제 사례(data/vat/cases.yml mistakes) — 같은 잘못을 겪은 지자체의 경정청구·권익위·감사 지적. 이 기간 시설 유형과 겹치는 사례 먼저, 그다음 최근 순 */
+const MKEY: Record<string, string> = { excluded: 'missing', nofile: 'nofile', missing: 'missing', 'taxable-as-exempt': 'taxable-as-exempt', 'no-apportion': 'no-apportion', cashout: 'cashout' };
+export function casesFor(D: Data, key: string, types: string[] = [], n = 3): AuditCase[] {
+  const mk = MKEY[key]; if (!mk) return [];
+  return (D.cases ?? []).filter(c => c.mistakes?.includes(mk)).map(c => ({ c, o: c.keys.filter(k => types.includes(k)).length })).sort((a, b) => b.o - a.o || String(b.c.date).localeCompare(String(a.c.date))).slice(0, n).map(x => x.c);
+}
+export function casesHtml(L: AuditCase[], head = '실제 사례'): string {
+  if (!L.length) return '';
+  return `<div class="rf-cases"><p><span class="rf-k">${esc(head)}</span></p><ul>${L.map(c => `<li><details><summary><b>${esc(c.org)}</b> <span class="meta">${esc(String(c.date))} · ${esc(c.kind)}</span>${c.amount ? ` — ${esc(c.amount)}` : ''}${c.verify ? ' <span class="vbadge">원문 확인 필요</span>' : ''}<br><span class="note">${esc(c.title)}</span></summary><p class="note">${esc(c.facts)}</p><p class="note">출처: ${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.src)}</a>` : esc(c.src)}</p></details></li>`).join('')}</ul></div>`;
+}
+/* 자료를 올리기 전 — 다른 지자체가 실제로 틀린 것(사례에서 모음): 우리도 확인할 곳 */
+export function commonMistakesHtml(D: Data): string {
+  const G: { key: string; title: string; check: string }[] = [
+    { key: 'taxable-as-exempt', title: '과세 시설 지출을 공제하지 않음', check: '체육센터·문화센터·임대 건물·휴양림·캠핑장처럼 사용료를 받는 시설의 신축·수선·운영 지출을 면세·행정으로 보고 불공제했는지' },
+    { key: 'no-apportion', title: '같이 쓴 지출을 안분하지 않음', check: '임대·과세 공간과 행정 공간이 섞인 건물의 건축비·관리비를 임대(예정)면적 등으로 나누지 않고 전액 불공제했는지' },
+    { key: 'missing', title: '세금계산서가 신고에서 빠짐', check: '신축 공사처럼 사업 부서가 받은 세금계산서가 회계 부서에 넘어가지 않아 매입처별 세금계산서합계표에서 빠졌는지' },
+    { key: 'nofile', title: '과세 매출을 신고하지 않음', check: '공유재산 사용료·대부료에 받은 부가가치세를 예수금으로만 두고 신고하지 않았는지(가산세)' },
+    { key: 'cashout', title: '돌려받은 돈·납부잔액을 세입 처리하지 않음', check: '매입세액 공제로 덜 낸 납부잔액·환급금을 세입세출외현금에 그대로 두었는지' }];
+  return `<p class="rf-dg-sum">아직 대조할 자료가 없습니다. 먼저 <b>다른 지자체가 실제로 틀린 곳</b>을 보고, 우리 기관도 같은 곳을 확인하세요 — ②에 지난 신고서, ③에 매입 목록을 올리면 과세기간마다 무엇이 틀렸는지·얼마인지가 나옵니다.</p>
+    ${G.map(g => { const L = casesFor(D, g.key, [], 6); return L.length ? `<details class="rf-dg"><summary><b>${esc(g.title)}</b> <span class="note">— 사례 ${L.length}건</span></summary><p><span class="rf-k">확인할 곳</span> ${esc(g.check)}</p>${casesHtml(L)}</details>` : ''; }).join('')}`;
+}
 const STATE_TXT: Record<Diag['state'], string> = { claim: '경정청구로 돌려받을 돈 있음', late: '기한후신고로 돌려받을 돈 있음', unknown: '신고서를 올리면 진단', ok: '덜 공제받은 몫 없음', over: '목록보다 더 공제받음', expired: '경정청구 기한 지남' };
 const law = (D: Data, bs: Basis[]) => uniq(bs).map(b => lawLink(D, b)).join(' · ');
 export function diagHtml(D: Data, L: Diag[]): string {
@@ -78,14 +99,14 @@ export function diagHtml(D: Data, L: Diag[]): string {
   const nF = show.reduce((s, d) => s + d.findings.filter(f => !['undecided', 'nofiled'].includes(f.key)).length, 0);
   const card = (d: Diag) => `<details class="rf-dg" id="rf-dg-${d.k}" ${d.gain > 0 ? 'open' : ''}><summary><b>${esc(d.name)}</b> — ${esc(STATE_TXT[d.state])}${d.gain > 0 ? ` <b class="rf-dg-amt">${fmt(d.gain)}원</b>` : ''}${d.cond ? ` <span class="note">(+조건부 ${fmt(d.cond)}원)</span>` : ''} <span class="meta">${d.days >= 0 ? `경정청구 기한 ${esc(d.claim)} · D-${d.days}` : '기한 지남'}</span></summary>
     ${d.fixed.length && d.fixed.some(r => r.before !== r.after) ? `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off"><caption>고친 신고서 — 칸별로 처음 신고한 값과 바르게 고친 값</caption><thead><tr><th scope="col">칸</th><th scope="col">항목</th><th scope="col">처음 신고</th><th scope="col">고친 값</th><th scope="col">차이</th></tr></thead><tbody>${d.fixed.map(r => `<tr><th scope="row">${esc(r.cell)}</th><td>${esc(r.label)}</td><td>${r.before === null ? '<span class="note">—</span>' : fmt(r.before)}</td><td>${r.after === null ? '<span class="note">—</span>' : fmt(r.after)}</td><td>${r.before !== null && r.after !== null && r.after !== r.before ? `${r.after > r.before ? '+' : ''}${fmt(r.after - r.before)}` : ''}</td></tr>`).join('')}<tr class="rf-dg-eff"><th scope="row">효과</th><td colspan="4">납부할 세액이 <b>${fmt(d.gain)}원</b> 줄어 그만큼 돌려받습니다(환급 때 국세환급가산금이 붙습니다 — 국세기본법 제52조)</td></tr></tbody></table></div>` : ''}
-    <ol class="rf-dg-list">${d.findings.map(f => `<li><p class="rf-dg-t"><b>${esc(f.title)}</b>${f.effect ? ` → <b>${fmt(f.effect)}원</b>` : ''}${f.effectNote ? ` <span class="note">(${esc(f.effectNote)})</span>` : ''}</p><div class="rf-why"><p><span class="rf-k">무엇이</span> ${esc(f.what)}</p><p><span class="rf-k">고치기</span> ${esc(f.how)}</p>${f.basis.length ? `<p><span class="rf-k">근거</span> ${law(D, f.basis)}</p>` : ''}</div></li>`).join('')}</ol></details>`;
+    <ol class="rf-dg-list">${d.findings.map(f => `<li><p class="rf-dg-t"><b>${esc(f.title)}</b>${f.effect ? ` → <b>${fmt(f.effect)}원</b>` : ''}${f.effectNote ? ` <span class="note">(${esc(f.effectNote)})</span>` : ''}</p><div class="rf-why"><p><span class="rf-k">무엇이</span> ${esc(f.what)}</p><p><span class="rf-k">고치기</span> ${esc(f.how)}</p>${f.basis.length ? `<p><span class="rf-k">근거</span> ${law(D, f.basis)}</p>` : ''}${casesHtml(casesFor(D, f.key, d.types), '같은 잘못의 실제 사례')}</div></li>`).join('')}</ol>${d.gain > 0 ? casesHtml(casesFor(D, 'cashout', [], 2), '돌려받은 뒤 — 환급금은 바로 세입 처리(감사 지적 사례)') : ''}</details>`;
   return `<p class="rf-dg-sum">지난 신고 ${show.length}개 과세기간을 매입 목록과 대조했습니다 — 잘못·누락 <b>${nF}</b>건, 고치면 돌려받는 돈 <b>${fmt(gain)}원</b>${cond ? ` (+ 수정세금계산서를 받으면 ${fmt(cond)}원)` : ''}.</p>
     ${show.sort((a, b) => b.gain - a.gain || a.k.localeCompare(b.k)).map(card).join('')}
     <p class="note">'무엇이'의 금액 나눔(빠진 세금계산서 / 불공제로 넣은 것 / 안분 안 함)은 어림입니다 — 신고서에는 건별로 무엇을 (17)에 넣었는지가 없어 매입 목록의 공제 대상 비율로 나눴습니다. 합계(덜 공제받은 몫 = 있어야 할 공제 세액 − 신고 (18))는 정확히 그 차이입니다. 판정은 참고이며 기관의 판단이 아닙니다.</p>`;
 }
-export function diagCsv(L: Diag[]): string[][] {
-  const rows: string[][] = [['과세기간', '상태', '돌려받을 돈', '조건부', '경정청구 기한', '항목', '무엇이 잘못·누락', '고치는 법', '효과(원)', '효과 설명', '근거']];
-  for (const d of L) for (const f of d.findings) rows.push([d.name, STATE_TXT[d.state], String(d.gain), String(d.cond), d.claim, f.title, f.what, f.how, f.effect == null ? '' : String(f.effect), f.effectNote, f.basis.map(lawText).join(' · ')]);
+export function diagCsv(L: Diag[], D?: Data): string[][] {
+  const rows: string[][] = [['과세기간', '상태', '돌려받을 돈', '조건부', '경정청구 기한', '항목', '무엇이 잘못·누락', '고치는 법', '효과(원)', '효과 설명', '근거', '같은 잘못의 실제 사례']];
+  for (const d of L) for (const f of d.findings) rows.push([d.name, STATE_TXT[d.state], String(d.gain), String(d.cond), d.claim, f.title, f.what, f.how, f.effect == null ? '' : String(f.effect), f.effectNote, f.basis.map(lawText).join(' · '), D ? casesFor(D, f.key, d.types).map(c => `${c.org}(${c.date}, ${c.kind}${c.amount ? `, ${c.amount}` : ''}) ${c.title}`).join(' / ') : '']);
   rows.push([]); rows.push(['과세기간', '칸', '항목', '처음 신고', '고친 값', '차이']);
   for (const d of L) for (const r of d.fixed) rows.push([d.name, r.cell, r.label, r.before == null ? '' : String(r.before), r.after == null ? '' : String(r.after), r.before != null && r.after != null ? String(r.after - r.before) : '']);
   return rows;

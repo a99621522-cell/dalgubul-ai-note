@@ -171,7 +171,7 @@ function init(D: Data) {
     /* 지난 신고 진단(vat_diag.ts) — 과세기간마다 무엇이 잘못·누락됐나 → 어느 칸을 어떻게 고치나 → 효과 */
     const diags: Diag[] = per.filter(p => p.rows.length && p.P.due <= today).map(p => { const fs = FS.get(p.k); const o = (r: RvRow) => outs.get(r.id)!;
       const okR = p.rows.filter(r => o(r).cat === 'ok'), spR = p.rows.filter(r => o(r).cat === 'split'), unR = p.rows.filter(r => ['check', 'noratio'].includes(o(r).cat)), otR = p.rows.filter(r => o(r).cat === 'other' && /다른 명의/.test(o(r).label));
-      const facs = new Map<string, { name: string; tax: number; n: number }>(); for (const r of okR) { const nm = o(r).f?.name ?? '과세 시설'; const x = facs.get(nm) ?? { name: nm, tax: 0, n: 0 }; x.tax += r.tax; x.n++; facs.set(nm, x); }
+      const facs = new Map<string, { name: string; tax: number; n: number; type?: string }>(); for (const r of okR) { const nm = o(r).f?.name ?? '과세 시설'; const x = facs.get(nm) ?? { name: nm, tax: 0, n: 0, type: o(r).f?.type }; x.tax += r.tax; x.n++; facs.set(nm, x); }
       const sum = (L: RvRow[], f: (r: RvRow) => number) => L.reduce((s, r) => s + f(r), 0);
       return diagnose({ k: p.k, name: pName(p.k), filed: p.F.filed, due: p.P.due, claim: p.P.claim, days: p.P.days, future: p.P.due > today, deduct: p.F.deduct, nondeduct: p.F.nondeduct, total16: fs?.total ?? null, er: p.F.er,
         doc: fs ? { hasNd: fs.hasNd, hasCommon: fs.hasCommon, ndReasons: fs.ndReasons, files: fs.files } : null, recv: p.recv, should: p.should,
@@ -240,7 +240,7 @@ function init(D: Data) {
         return await buildPdf(blocks, `경정청구 요약 · ${org?.org ?? ''}`, { landscape: true }); } catch { return null; } })();
       if (want === 'pdf') { if (pdf) downloadBlob(`${base}.pdf`, pdf); else toast('PDF 를 만들지 못했습니다 — 엑셀로 받으세요'); return; }
       const bin = async (b: Blob) => new Uint8Array(await b.arrayBuffer());
-      const files: { name: string; data: string | Uint8Array }[] = [{ name: '00_안내.txt', data: guide }, { name: '12_지난신고_진단.csv', data: toCsv(diagCsv(diags)) }, { name: '01_과세기간별_결과.csv', data: perCsv }, { name: '02_건별_명세.csv', data: detailCsv() }, { name: '03_공급자별_합계.csv', data: supCsv }, { name: '04_시설별.csv', data: facCsv }, { name: '05_청구사유_초안.txt', data: reasonTxt }, { name: '06_근거_조문_유권해석_판례.txt', data: legal.text }, { name: '08_자료별_돌려받을_금액.csv', data: UF.csv }, { name: '09_순액_계산.txt', data: UF.txt }, ...legal.inquiries.map((q, i) => ({ name: `07_국세청_질의서_초안_${i + 1}_${q.key}.txt`, data: q.text })), { name: '10_경정청구_자료.xlsx', data: await bin(xl) }];
+      const files: { name: string; data: string | Uint8Array }[] = [{ name: '00_안내.txt', data: guide }, { name: '12_지난신고_진단.csv', data: toCsv(diagCsv(diags, D)) }, { name: '01_과세기간별_결과.csv', data: perCsv }, { name: '02_건별_명세.csv', data: detailCsv() }, { name: '03_공급자별_합계.csv', data: supCsv }, { name: '04_시설별.csv', data: facCsv }, { name: '05_청구사유_초안.txt', data: reasonTxt }, { name: '06_근거_조문_유권해석_판례.txt', data: legal.text }, { name: '08_자료별_돌려받을_금액.csv', data: UF.csv }, { name: '09_순액_계산.txt', data: UF.txt }, ...legal.inquiries.map((q, i) => ({ name: `07_국세청_질의서_초안_${i + 1}_${q.key}.txt`, data: q.text })), { name: '10_경정청구_자료.xlsx', data: await bin(xl) }];
       if (pdf) files.push({ name: '11_경정청구_요약.pdf', data: await bin(pdf) }); else toast('PDF 를 만들지 못해 엑셀·CSV 만 넣었습니다');
       downloadBlob(`${base}.zip`, zipStore(files)); };
     $('rv-zip')?.addEventListener('click', () => void bundle('zip')); $('rv-xlsx')?.addEventListener('click', () => void bundle('xlsx')); $('rv-pdf')?.addEventListener('click', () => void bundle('pdf'));

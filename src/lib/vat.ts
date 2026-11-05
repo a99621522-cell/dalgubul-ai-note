@@ -55,7 +55,7 @@ export function vatOrgNumbers(): OrgNo[] {
   return out;
 }
 /** 감사·권익위·경정청구 공표 사례(data/vat/cases.yml) */
-export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; src: string; url?: string; verify?: boolean };
+export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; mistakes?: string[]; src: string; url?: string; verify?: boolean };
 export function vatCases(): AuditCase[] { const p = 'data/vat/cases.yml'; if (!fs.existsSync(p)) return []; return ((yaml.load(fs.readFileSync(p, 'utf-8')) as { cases?: AuditCase[] }).cases ?? []); }
 export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
 export const STATUS_LABEL: Record<Facility['status'], string> = { taxable: '과세', exempt: '면세', check: '확인 필요' };

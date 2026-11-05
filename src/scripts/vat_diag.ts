@@ -180,3 +180,40 @@ export function mergeFiled(rowDiags: Diag[], fc: Map<string, FiledCheck>, meta: 
   }
   return { diags: [...by.values()], fsure };
 }
+
+/* ── 환급 계산서(운영자 2026-11-05 '과거 부가가치 신고세액 자료만 올리면 무엇을 어떤 이유로 어떻게 하면 얼마나 환급받는지로') ──
+ *  진단(diags)의 항목을 한 표로: 과세기간·기한 | 무엇이 잘못됐나 | 왜(이유·근거 조문) | 어떻게 하면(홈택스 경정청구 칸·붙임) | 돌려받을 돈.
+ *  돌려받을 돈은 세 칸으로만 — 확정(신고서·목록 숫자로 다시 계산), 확인하면 최대(불공제 사유의 세액 — 과세 시설 지출만큼만 돌아옴), 계약 어림(그 기간 과세 시설 나라장터 계약 세액 어림과 견준 값, 회색 참고).
+ *  합계: 매입 목록을 올린 기간은 그 기간 진단의 gain(항목별 나눔은 어림), 신고서만 있는 기간은 신고서로 다시 계산한 금액. 기한이 지난 기간은 뺌. 새 계산 규칙 없음. */
+export type CalcRow = { k: string; name: string; claim: string; days: number; f: Finding; kind: 'sure' | 'upto' | 'inlist' | 'none'; est: number | null };
+export function refundCalc(L: Diag[], estBy?: Map<string, number>) {
+  const rows: CalcRow[] = []; let sure = 0, upto = 0, est = 0;
+  for (const d of L) { if (d.state === 'expired' || d.days < 0) continue; const list = d.types.length > 0; sure += d.gain; let up5 = 0;
+    for (const f of d.findings) { const inl = /이미 들어 있음/.test(f.effectNote); const kind: CalcRow['kind'] = inl ? 'inlist' : f.effect == null ? 'none' : f.effectNote.startsWith('최대') ? 'upto' : 'sure';
+      let e: number | null = null; if (kind === 'upto') { upto += f.effect!; if (f.key === 'taxable-as-exempt' && estBy?.has(d.k)) { e = Math.min(f.effect!, Math.max(0, (estBy.get(d.k) ?? 0) - up5)); up5 += e; est += e; } }
+      if (kind === 'sure' && list) { /* 목록 대조 기간의 항목별 금액은 어림 — 합계는 gain */ }
+      rows.push({ k: d.k, name: d.name, claim: d.claim, days: d.days, f, kind, est: e }); } }
+  const ord = { sure: 0, upto: 1, none: 2, inlist: 3 } as const;
+  rows.sort((a, b) => ord[a.kind] - ord[b.kind] || (b.f.effect ?? 0) - (a.f.effect ?? 0) || a.days - b.days);
+  return { rows, sure, upto, est };
+}
+export function refundCalcHtml(D: Data, L: Diag[], estBy?: Map<string, number>): string {
+  const R = refundCalc(L, estBy); if (!R.rows.length) return '';
+  const money = (r: CalcRow) => r.kind === 'sure' ? `<b>${fmt(r.f.effect!)}원</b><br><span class="meta">확정 — ${esc(r.f.effectNote)}</span>`
+    : r.kind === 'upto' ? `최대 <b>${fmt(r.f.effect!)}원</b><br><span class="meta">${esc(r.f.effectNote)}</span>${r.est != null ? `<br><span class="meta rf-est">계약 어림으로 보면 약 ${fmt(r.est)}원(참고)</span>` : ''}`
+    : r.kind === 'inlist' ? `<span class="meta">${esc(r.f.effectNote)}</span>` : `<span class="meta">${esc(r.f.effectNote)}</span>`;
+  const dd = (r: CalcRow) => `${esc(r.name)}<br><span class="meta">경정청구 ${esc(r.claim)}까지 ${r.days <= 90 ? '⚠ ' : ''}D-${r.days}</span>`;
+  return `<section class="rf-calc" aria-labelledby="rf-calc-h"><div class="rf-h"><h2 id="rf-calc-h">돌려받을 돈 — 무엇을 · 왜 · 어떻게 · 얼마</h2></div>
+    <p class="note">판정은 참고이며 기관의 판단이 아닙니다. 올린 신고서(와 매입 목록)의 숫자로 다시 계산했습니다.</p>
+    <div class="rf-calc-sum"><div><span class="meta">확정</span><b id="rf-calc-sure">${fmt(R.sure)}원</b><span class="meta">신고서·목록 숫자로 다시 계산 — 경정청구하면 돌려받는 돈</span></div>
+      <div><span class="meta">확인하면 최대</span><b id="rf-calc-upto">${fmt(R.upto)}원</b><span class="meta">불공제 사유 가운데 과세 시설 지출로 확인되는 만큼</span></div>
+      ${R.est ? `<div class="rf-est"><span class="meta">계약 어림(참고)</span><b>${fmt(R.est)}원</b><span class="meta">그 기간 과세 시설 나라장터 계약 세액 어림까지만</span></div>` : ''}</div>
+    <div class="scroll-x" tabindex="0" role="region" aria-label="돌려받을 돈 표"><table class="data-table rf-calc-t"><thead><tr><th>과세기간</th><th>무엇이 잘못됐나</th><th>왜 (이유·근거)</th><th>어떻게 하면</th><th>돌려받을 돈</th></tr></thead><tbody>
+    ${R.rows.map(r => `<tr class="rf-calc-${r.kind}"><td>${dd(r)}</td><td><b>${esc(r.f.title)}</b></td><td>${esc(r.f.what)}${r.f.basis.length ? `<br><span class="meta">근거: ${law(D, r.f.basis)}</span>` : ''}</td><td>${esc(r.f.how)}</td><td class="num">${money(r)}</td></tr>`).join('')}
+    </tbody></table></div>
+    <p class="note">경정청구로 돌려받는 세금에는 국세환급가산금이 붙습니다(국세기본법 제52조). 돌려받은 돈은 바로 세입으로 처리합니다(2025년 대구광역시 정부합동감사 지적 사항).</p></section>`;
+}
+export function refundCalcCsv(L: Diag[], estBy?: Map<string, number>): string[][] {
+  const R = refundCalc(L, estBy); const K = { sure: '확정', upto: '확인하면 최대', inlist: '목록 대조에 포함', none: '자료 필요' };
+  return [['과세기간', '경정청구 기한', '무엇이 잘못됐나', '왜(이유)', '근거', '어떻게 하면', '구분', '돌려받을 돈(원)', '계약 어림(참고)', '설명'], ...R.rows.map(r => [r.name, r.claim, r.f.title, r.f.what, uniq(r.f.basis).map(lawText).join(' · '), r.f.how, K[r.kind], r.f.effect == null ? '' : String(r.f.effect), r.est == null ? '' : String(r.est), r.f.effectNote]), [], ['합계', '', '', '', '', '', '확정', String(R.sure)], ['', '', '', '', '', '', '확인하면 최대', String(R.upto)], ['', '', '', '', '', '', '계약 어림(참고)', String(R.est)]];
+}

@@ -4,12 +4,12 @@
  *  추정(계약금액 × 10/110)은 회색 작은 글씨 — 돌려받을 금액이 아니다. 판정은 참고이며 기관의 판단이 아니다. */
 import { $, esc, fmt, loadData, getOrg, claimPeriod, ymd, lawLink, uniq, facilityRule, facilityStatus, bizType, type Data, type Basis } from './vat_rules';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
-import { commonMistakesHtml } from './vat_diag';
+import { commonMistakesHtml, refundCalcHtml, type Diag } from './vat_diag';
 import { buildQuestions, askHtml, answer, answerGroup, undo } from './vat_ask';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
-type Built = { diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
+type Built = { diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
 
 const D = loadData();
 if (D && $('rf-band')) init(D);
@@ -133,6 +133,9 @@ function init(D: Data) {
     $('rf-print')?.addEventListener('click', () => { document.body.dataset.printHead = `지난 돈 돌려받기 — 할 일 · ${org?.org ?? ''} · ${today}`; document.body.classList.add('print-todo'); window.print(); setTimeout(() => document.body.classList.remove('print-todo'), 500); });
   }
 
+  function calc(b: Built | null) { const el = $('rf-calc'); if (!el) return; const L = openPeriods(); const estBy = new Map<string, number>();
+    for (const r of ctx?.rows ?? []) if (r.taxable && L.includes(r.p)) estBy.set(r.p, (estBy.get(r.p) ?? 0) + r.est);
+    el.innerHTML = b?.diags?.length ? refundCalcHtml(D, b.diags, estBy) : ''; }
   function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; el.innerHTML = b?.diag ? b.diag : commonMistakesHtml(D); }
   const forced = new Set<string>();
   function ask(b: Built | null) { const el = $('rf-ask'); if (!el) return; const o = getOrg(); const L = openPeriods();
@@ -147,7 +150,7 @@ function init(D: Data) {
     el.querySelectorAll<HTMLButtonElement>('[data-reask]').forEach(btn => btn.addEventListener('click', () => { forced.add(btn.dataset.reask!); ask(last); $('rf-ask')?.scrollIntoView({ block: 'start' }); }));
     el.querySelectorAll<HTMLButtonElement>('[data-undo]').forEach(btn => btn.addEventListener('click', () => { const [fid, id] = btn.dataset.undo!.split('|'); const oo = getOrg(); if (!oo) return; undo(oo, fid, id); done(); }));
   }
-  function draw() { const b = last; band(b); step1(); ask(b); step2(b); step3(b); diag(b); todo(b); }
+  function draw() { const b = last; band(b); calc(b); step1(); ask(b); step2(b); step3(b); diag(b); todo(b); }
   document.addEventListener('vat-rv-built', e => { last = (e as CustomEvent<Built>).detail; draw(); });
   void contractsCtx(D, org).then(c => { ctx = c; draw(); });
   draw();

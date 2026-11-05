@@ -271,3 +271,7 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 
 .rf-ask { border: 2px solid var(--line-strong); border-radius: var(--radius); padding: 8px 14px; margin: 10px 0; } .rf-ask h2 { font-size: 1.1em; margin: 2px 0; } .rf-q-t { font-size: 1.05em; margin: 4px 0; }
 .rf-ask .rf-q + .rf-q { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 6px; } .rf-q-list { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; } .rf-q-list label { display: flex; gap: 6px; align-items: baseline; }
+
+.rf-calc { border: 2px solid var(--line-strong); border-radius: var(--radius); padding: 8px 14px; margin: 10px 0; } .rf-calc h2 { font-size: 1.15em; margin: 2px 0; }
+.rf-calc-sum { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; } .rf-calc-sum > div { flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius); } .rf-calc-sum b { font-size: 1.35em; font-variant-numeric: tabular-nums; }
+.rf-est, .rf-est b { color: var(--muted); } .rf-calc-t td { vertical-align: top; } .rf-calc-t td:nth-child(3), .rf-calc-t td:nth-child(4) { min-width: 16em; } .rf-calc-inlist, .rf-calc-none { color: var(--muted); }

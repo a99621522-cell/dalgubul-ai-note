@@ -197,14 +197,16 @@ export function refundCalc(L: Diag[], estBy?: Map<string, number>) {
   rows.sort((a, b) => ord[a.kind] - ord[b.kind] || (b.f.effect ?? 0) - (a.f.effect ?? 0) || a.days - b.days);
   return { rows, sure, upto, est };
 }
-export function refundCalcHtml(D: Data, L: Diag[], estBy?: Map<string, number>): string {
-  const R = refundCalc(L, estBy); if (!R.rows.length) return '';
+export function refundCalcHtml(D: Data, L: Diag[], estBy?: Map<string, number>, win?: string): string {
+  const R = refundCalc(L, estBy); const ex = L.filter(d => d.state === 'expired' || d.days < 0); if (!R.rows.length && !ex.length) return '';
   const money = (r: CalcRow) => r.kind === 'sure' ? `<b>${fmt(r.f.effect!)}원</b><br><span class="meta">확정 — ${esc(r.f.effectNote)}</span>`
     : r.kind === 'upto' ? `최대 <b>${fmt(r.f.effect!)}원</b><br><span class="meta">${esc(r.f.effectNote)}</span>${r.est != null ? `<br><span class="meta rf-est">계약 어림으로 보면 약 ${fmt(r.est)}원(참고)</span>` : ''}`
     : r.kind === 'inlist' ? `<span class="meta">${esc(r.f.effectNote)}</span>` : `<span class="meta">${esc(r.f.effectNote)}</span>`;
   const dd = (r: CalcRow) => `${esc(r.name)}<br><span class="meta">경정청구 ${esc(r.claim)}까지 ${r.days <= 90 ? '⚠ ' : ''}D-${r.days}</span>`;
   return `<section class="rf-calc" aria-labelledby="rf-calc-h"><div class="rf-h"><h2 id="rf-calc-h">돌려받을 돈 — 무엇을 · 왜 · 어떻게 · 얼마</h2></div>
     <p class="note">판정은 참고이며 기관의 판단이 아닙니다. 올린 신고서(와 매입 목록)의 숫자로 다시 계산했습니다.</p>
+    ${win ? `<p class="rf-win"><b>대상 기간: ${esc(win)}</b> <span class="meta">— 경정청구가 되는 과세기간(법정신고기한 + 5년, 국세기본법 제45조의2). 이 밖의 자료는 계산에서 뺍니다.</span></p>` : ''}
+    ${ex.length ? `<p class="note">경정청구 기한이 지난 과세기간 ${ex.length}개(${ex.map(d => esc(d.name)).join(' · ')})는 돌려받을 수 없어 계산에서 뺐습니다.</p>` : ''}
     <div class="rf-calc-sum"><div><span class="meta">확정</span><b id="rf-calc-sure">${fmt(R.sure)}원</b><span class="meta">신고서·목록 숫자로 다시 계산 — 경정청구하면 돌려받는 돈</span></div>
       <div><span class="meta">확인하면 최대</span><b id="rf-calc-upto">${fmt(R.upto)}원</b><span class="meta">불공제 사유 가운데 과세 시설 지출로 확인되는 만큼</span></div>
       ${R.est ? `<div class="rf-est"><span class="meta">계약 어림(참고)</span><b>${fmt(R.est)}원</b><span class="meta">그 기간 과세 시설 나라장터 계약 세액 어림까지만</span></div>` : ''}</div>

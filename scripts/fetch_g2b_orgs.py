@@ -20,7 +20,7 @@ FIELDS = ["name", "code", "bizno", "kind", "type", "addr", "valid", "regdt", "qu
 
 def call(op, params, key):
     q = dict(params); q["serviceKey"] = key; q["type"] = "json"
-    url = f"{BASE}/{op}?" + urllib.parse.urlencode(q)
+    url = f"{BASE}/{op}?" + urllib.parse.urlencode(q, safe="%")   # 인코딩 키(%2B…)를 다시 인코딩하지 않는다
     req = urllib.request.Request(url, headers={"User-Agent": "daitda-vat (https://vat-daitda.pages.dev)"})
     try:
         with urllib.request.urlopen(req, timeout=60) as r:

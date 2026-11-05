@@ -251,6 +251,7 @@ export function refundCalcHtml(D: Data, L: Diag[], estBy?: Map<string, number>, 
     <div class="rf-calc-sum"><div><span class="meta">확정</span><b id="rf-calc-sure">${fmt(R.sure)}원</b><span class="meta">신고서·목록 숫자로 다시 계산 — 경정청구하면 돌려받는 돈</span></div>
       <div><span class="meta">확인하면 최대</span><b id="rf-calc-upto">${fmt(R.upto)}원</b><span class="meta">불공제 사유 가운데 과세 시설 지출로 확인되는 만큼</span></div>
       ${R.est ? `<div class="rf-est"><span class="meta">계약 어림(참고)</span><b>${fmt(R.est)}원</b><span class="meta">그 기간 과세 시설 나라장터 계약 세액 어림까지만</span></div>` : ''}</div>
+    <div class="actions no-print"><button type="button" class="btn" id="rf-calc-zip">경정청구 자료 내려받기(고친 신고서·근거·결재용 보고 — zip)</button></div>
     ${nextDocsHtml(R.rows)}
     <div class="scroll-x" tabindex="0" role="region" aria-label="돌려받을 돈 표"><table class="data-table rf-calc-t"><thead><tr><th>과세기간</th><th>무엇이 잘못됐나</th><th>왜 (이유·근거)</th><th>어떻게 하면</th><th>돌려받을 돈</th></tr></thead><tbody>
     ${R.rows.map(r => `<tr class="rf-calc-${r.kind}"><td>${dd(r)}</td><td><b>${esc(r.f.title)}</b></td><td>${esc(r.f.what)}${r.f.basis.length ? `<br><span class="meta">근거: ${law(D, r.f.basis)}</span>` : ''}</td><td>${esc(r.f.how)}${r.kind === 'sure' && L.find(d => d.k === r.k)?.corrected?.length ? ` <a href="#rf-dg-${esc(r.k)}" data-open-dg="${esc(r.k)}">고친 신고서 보기 ↓</a>` : ''}</td><td class="num">${money(r)}</td></tr>`).join('')}

@@ -139,6 +139,7 @@ function init(D: Data) {
     for (const r of ctx?.rows ?? []) if (r.taxable && L.includes(r.p)) estBy.set(r.p, (estBy.get(r.p) ?? 0) + r.est);
     const nm = (k: string) => { const [y, h] = k.split('-'); return `${y}년 제${h}기`; }; const win = L.length ? `${nm(L[0])} ~ ${nm(L[L.length - 1])} (${L.length}개 과세기간)` : '';
     el.innerHTML = b?.diags?.length ? refundCalcHtml(D, b.diags, estBy, win) : '';
+    $('rf-calc-zip')?.addEventListener('click', () => { const z = $('rv-zip'); if (z) z.click(); else document.dispatchEvent(new CustomEvent('vat-filed-bundle')); });
     el.querySelectorAll<HTMLAnchorElement>('[data-open-dg]').forEach(a => a.addEventListener('click', () => { const d = document.getElementById(`rf-dg-${a.dataset.openDg}`) as HTMLDetailsElement | null; if (d) d.open = true; })); }
   function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; el.innerHTML = b?.diag ? b.diag : commonMistakesHtml(D); }
   const forced = new Set<string>();

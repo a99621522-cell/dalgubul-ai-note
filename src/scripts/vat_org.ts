@@ -52,8 +52,8 @@ export function fillFacilityNos(D: Data, org: Org, on: OrgNo) {
   }
   return { n, c };
 }
-export const quickStartHtml = (id: string, lead = '기관을 고르면 그 자리에서 기관 설정을 만들어 바로 이어집니다. 시설의 운영 방식·등록번호는 뒤에 기관 설정에서 채웁니다.') =>
-  `<div class="vat-qs vc-form" id="${id}" data-qs><p class="q-title full">기관 선택 → 바로 시작</p><p class="note full">${esc(lead)}</p><label>기관 <select data-qs-sel aria-label="기관 선택"><option value="">불러오는 중…</option></select></label><div class="actions"><button type="button" class="btn" data-qs-go disabled>이 기관으로 시작</button><a class="btn secondary" href="/vat/setup/">직접 적기(기관 설정)</a><a class="btn secondary" href="/vat/handover/">꾸러미(zip) 열기</a></div><p class="note full" data-qs-msg role="status"></p></div>`;
+export const quickStartHtml = (id: string, lead = '기관을 고르면 그 기관의 시설·공개 자료를 불러와 바로 이어집니다.') =>
+  `<div class="vat-qs vc-form" id="${id}" data-qs><p class="q-title full">기관 선택 → 바로 시작</p><p class="note full">${esc(lead)}</p><label>기관 <select data-qs-sel aria-label="기관 선택"><option value="">불러오는 중…</option></select></label><div class="actions"><button type="button" class="btn" data-qs-go disabled>이 기관으로 시작</button></div><p class="note full" data-qs-msg role="status"></p></div>`;
 /** 기관 설정 만들기 — v: 'preset:<key>' | 'gov:<key>' | '<key>'(예시가 있으면 예시, 없으면 세입예산서). 예시 시설·세입예산서 시설 후보·기관 번호·확인 질문 기본값을 넣는다(저장은 부르는 쪽) */
 export async function makeOrg(D: Data, v: string): Promise<Org> {
   const presets = D.presets ?? []; const govs = await loadGovs(); const org = emptyOrg();

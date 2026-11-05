@@ -2,6 +2,8 @@
 /** 부가세 점검기 3단 메뉴 + 영속 문맥 바(공무원 UX 재설계 2026-10-28, docs/design/vat-ux-spec.md §1) — 모든 /vat/* 페이지의 제목 아래.
  *  묶음 이름도 그 묶음 첫 메뉴로 가는 링크(운영자 2026-10-28 '지금 할 일은 클릭이 안 돼'). 주소는 바꾸지 않았고(넘김 없음) 묶음만 업무 주기 순(지금 할 일 · 기록 · 신고 · 설정·인수인계 · 참고). 문맥 바는 src/scripts/vat_ctx.ts 가 브라우저에서 채운다(기관·기수·마지막 저장). */
 const { current = '' } = Astro.props as { current?: string };
+/** 2026-11-05 운영자 '지난돈 돌려 받기 기능만 구현해 다른 기능은 복잡해서 사용하기 힘들어': 배포 사이트는 /vat/review/ 하나뿐이라 메뉴를 내지 않는다. 다른 화면 코드는 저장소에 남아 있고 VAT_FULL=1 로 빌드하면 메뉴가 다시 보인다(deploy_vat.yml 은 review 만 올림). */
+const FULL = !!process.env.VAT_FULL;
 
 const GROUPS: { name: string; items: { key: string; name: string; href: string }[] }[] = [
   { name: '지금 할 일', items: [{ key: 'start', name: '대시보드', href: '/vat/' }] },
@@ -12,9 +14,9 @@ const GROUPS: { name: string; items: { key: string; name: string; href: string }
 ];
 ---
 <a class="skip vat-skip" href="#vat-main">메뉴 건너뛰기</a>
-<nav class="vat-nav no-print" aria-label="부가세 점검기 메뉴">
+{FULL && <nav class="vat-nav no-print" aria-label="부가세 점검기 메뉴">
   {GROUPS.map(g => <div class="vn-group"><a class="vn-name" href={g.items[0].href} aria-label={`${g.name} — ${g.items[0].name}`}>{g.name}</a>{g.items.map(i => <a href={i.href} aria-current={i.key === current ? 'page' : undefined}>{i.name}</a>)}</div>)}
-</nav>
+</nav>}
 <div id="vat-ctx" class="vat-ctx no-print" role="status" aria-live="polite"><span class="meta">이 브라우저의 설정·기록 확인 중…</span></div>
 <div class="vat-util no-print"><div class="vat-fs" role="group" aria-label="글자 크기"><button type="button" data-fs="0" aria-pressed="true">가 기본</button><button type="button" data-fs="1" aria-pressed="false">가 크게</button><button type="button" data-fs="2" aria-pressed="false">가 더 크게</button></div></div>
 <script is:inline>try{var f=localStorage.getItem('vat-fs');if(f==='1'||f==='2')document.documentElement.setAttribute('data-fs',f);}catch(e){}</script>

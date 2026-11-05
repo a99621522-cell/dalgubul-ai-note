@@ -10,7 +10,7 @@
 import csv, json, os, sys, time, urllib.error, urllib.parse, urllib.request
 
 BASE = "https://apis.data.go.kr/1230000/ao/UsrInfoService02"
-OPS = [o for o in os.environ.get("G2B_OPS", "getDminsttInfo,getDminsttInfoServc,getDminsttList").split(",") if o]
+OPS = [o for o in (os.environ.get("G2B_OPS") or "getDminsttInfo02,getDminsttInfo").split(",") if o.strip()]
 NAMES = ["대구광역시", "대구광역시 중구", "대구광역시 동구", "대구광역시 서구", "대구광역시 남구", "대구광역시 북구", "대구광역시 수성구", "대구광역시 달서구", "대구광역시 달성군", "대구광역시 군위군",
          "달성군시설관리공단", "달성군 시설관리공단", "대구공공시설관리공단", "달서구시설관리공단", "수성구시설관리공단", "북구시설관리공단", "동구시설관리공단", "서구시설관리공단", "남구시설관리공단", "중구시설관리공단", "군위군시설관리공단",
          "대구광역시시설관리공단", "대구도시개발공사", "대구교통공사", "대구환경공단"]

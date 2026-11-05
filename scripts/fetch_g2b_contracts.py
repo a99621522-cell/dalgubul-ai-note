@@ -48,6 +48,7 @@ def call(op, params, key):
                 print(f"  연결 실패 {op}: {e}", flush=True); return None
             time.sleep(5 * (i + 1))
     if "SERVICE_KEY_IS_NOT_REGISTERED" in text or "SERVICE KEY IS NOT REGISTERED" in text:
+        print(f"  응답: {text[:300]}", flush=True)
         raise Stop(2, "이 키에 계약정보서비스(15129427) 활용신청이 안 되어 있습니다 — 공공데이터포털에서 활용신청 뒤 다시 실행")
     if "LIMITED_NUMBER_OF_SERVICE_REQUESTS" in text:
         raise Stop(3, "하루 호출 한도를 넘었습니다 — 받은 만큼 저장하고 다음 실행이 이어 받습니다")

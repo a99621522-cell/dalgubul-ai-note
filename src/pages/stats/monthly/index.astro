@@ -3,6 +3,7 @@ import Base from '../../../layouts/Base.astro';
 import StatsNav from '../../../components/StatsNav.astro';
 import BokDaeguTables from '../../../components/BokDaeguTables.astro';
 import BokRegionalDaegu from '../../../components/BokRegionalDaegu.astro';
+import BokDgSurvey from '../../../components/BokDgSurvey.astro';
 import { monthlySeries, change, latest, groups, fmt, fmtChg, trendChart, CYCLES, CYCLE_DESC, cycleSentence } from '../../../lib/monthly';
 import SourceBadge from '../../../components/SourceBadge.astro';
 import { badgeOf } from '../../../lib/keyIndicators';
@@ -101,6 +102,7 @@ const GROUP_DESC: Record<string, string> = {
     </ul>
   </details>
   <BokDaeguTables />
+  <BokDgSurvey />
   <BokRegionalDaegu />
   <style>
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

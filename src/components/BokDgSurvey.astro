@@ -1,0 +1,83 @@
+---
+import fs from 'node:fs';
+import { readCsv } from '../lib/csv';
+/** 대구경북 기업경기실사지수(BSI)·소비자동향지수(CSI) 항목별 표(운영자 지시 2026-11-05 '업데이트 해서 올려').
+ *  BSI: 한국은행 대구경북본부 「대구경북지역 주요 경제지표」 7절(data/bok/dg_bsi.csv — scripts/parse_bok_dg_bsi.py, 엑셀판은 scripts/bok_xlsx_text.py 를 거침).
+ *  CSI: 한국은행 ECOS 511Y004 대구경북(data/ecos/ccsi-region.csv — 같은 주요 경제지표 8절 값과 같고 더 최근 달까지라 ECOS 를 씀).
+ *  둘 다 대구와 경북을 합친 값. 값 그대로, 평가 없음. */
+const N = 13;
+const ym = (m: string) => `${m.slice(0, 4)}.${m.slice(-2)}`;
+// BSI
+const bsi = fs.existsSync('data/bok/dg_bsi.csv') ? readCsv('data/bok/dg_bsi.csv') : [];
+const ITEMS: Record<string, string[]> = { 제조업: ['업황', '매출', '설비투자', '채산성', '인력사정', '자금사정'], 비제조업: ['업황', '매출', '채산성', '인력사정', '자금사정'] };
+const bsiTab = Object.entries(ITEMS).map(([sector, items]) => {
+  const by = new Map<string, Record<string, { a: string; o: string }>>();
+  for (const r of bsi.filter(r => r.sector === sector)) {
+    const o = by.get(r.month) ?? {};
+    o[r.item] = { a: r.actual, o: r.outlook };
+    by.set(r.month, o);
+  }
+  const months = [...by.keys()].sort().reverse().slice(0, N);
+  return { sector, items, rows: months.map(m => ({ m, v: by.get(m)! })) };
+});
+const bsiIssue = bsi[0]?.issue ?? '';
+// CSI
+const cp = 'data/ecos/ccsi-region.csv';
+const csi = fs.existsSync(cp) ? readCsv(cp).filter(r => r.ITEM_NAME2 === '대구경북') : [];
+const cmeta = fs.existsSync('data/ecos/ccsi-region.json') ? JSON.parse(fs.readFileSync('data/ecos/ccsi-region.json', 'utf-8')) : {};
+const MAIN = ['소비자심리지수', '현재생활형편CSI', '생활형편전망CSI', '가계수입전망CSI', '소비지출전망CSI', '현재경기판단CSI', '향후경기전망CSI', '취업기회전망CSI', '물가수준전망CSI', '주택가격전망CSI', '임금수준전망CSI', '금리수준전망CSI'];
+const allItems = [...new Set(csi.map(r => r.ITEM_NAME1))];
+const REST = allItems.filter(i => !MAIN.includes(i));
+const cby = new Map<string, Record<string, string>>();
+for (const r of csi) { const o = cby.get(r.TIME) ?? {}; o[r.ITEM_NAME1] = r.DATA_VALUE; cby.set(r.TIME, o); }
+const cmonths = [...cby.keys()].sort().reverse().slice(0, N);
+const short = (s: string) => s.replace(/CSI$/, '').replace('소비자심리지수', '소비자심리지수(CCSI)');
+const fmt = (v?: string) => (v == null || v === '' ? '—' : v);
+const csiLast = cmonths[0] ? ym(cmonths[0]) : '';
+const bsiLast = bsiTab[0]?.rows.find(r => Object.values(r.v).some(x => x.a !== ''))?.m;
+---
+{(bsi.length > 0 || csi.length > 0) && (
+<section id="dg-survey" aria-labelledby="h-dgs">
+  <div class="section-head"><h2 id="h-dgs">대구경북 기업경기·소비자동향 지수</h2><span class="meta">BSI {bsiLast ? `${ym(bsiLast)} 실적` : ''} · CSI {csiLast}</span></div>
+  <p class="meta">대구와 경북을 합친 조사 값입니다(대구 단독 값은 공표되지 않음). 100보다 크면 긍정(늘었다·좋다) 응답이 부정 응답보다 많다는 뜻이고, 인력사정 BSI 는 「과잉」 − 「부족」 응답이라 100보다 작으면 부족 응답이 많은 것입니다. 값은 표 그대로 옮겼습니다.</p>
+  {bsiTab.map((t, i) => t.rows.length > 0 && (
+    <details open={i === 0}>
+      <summary>{t.sector} 기업경기실사지수 <span class="u">(실적 / 전망)</span></summary>
+      <div class="scroll-x"><table class="data-table" data-title={`대구경북 ${t.sector} 기업경기실사지수(한국은행 대구경북본부)`}>
+        <thead>
+          <tr><th rowspan="2">조사 월</th>{t.items.map(it => <th colspan="2" class="c">{it}</th>)}</tr>
+          <tr>{t.items.map(() => <><th class="n">실적</th><th class="n">전망</th></>)}</tr>
+        </thead>
+        <tbody>
+          {t.rows.map(r => <tr><th scope="row" class="nw">{ym(r.m)}</th>{t.items.map(it => <><td class="n">{fmt(r.v[it]?.a)}</td><td class="n">{fmt(r.v[it]?.o)}</td></>)}</tr>)}
+        </tbody>
+      </table></div>
+    </details>
+  ))}
+  {bsi.length > 0 && <p class="meta">BSI 출처: 한국은행 대구경북본부 「대구경북지역 주요 경제지표」{bsiIssue && ` ${bsiIssue.slice(0, 4)}년 ${Number(bsiIssue.slice(5))}월 판`} 7. 기업경기실사지수. 원표 주석대로 전망은 해당 월에 조사한 다음 달 전망입니다. 실적이 빈 달은 원표에 전망만 실린 달입니다. 2025년 9월까지는 ECOS 지역 BSI 와 값이 같습니다.</p>}
+  {cmonths.length > 0 && (
+    <details open>
+      <summary>소비자동향지수 <span class="u">(주요 12개 항목)</span></summary>
+      <div class="scroll-x"><table class="data-table" data-title="대구경북 소비자동향지수(한국은행)">
+        <thead><tr><th>조사 월</th>{MAIN.filter(i => allItems.includes(i)).map((c, j) => <th class="n" data-pri={j > 5 ? '2' : undefined}>{short(c)}</th>)}</tr></thead>
+        <tbody>{cmonths.map(m => <tr><th scope="row" class="nw">{ym(m)}</th>{MAIN.filter(i => allItems.includes(i)).map(c => <td class="n">{fmt(cby.get(m)![c])}</td>)}</tr>)}</tbody>
+      </table></div>
+    </details>
+  )}
+  {cmonths.length > 0 && REST.length > 0 && (
+    <details>
+      <summary>소비자동향지수 — 가계 저축·부채와 지출 항목별 전망 <span class="u">({REST.length}개 항목)</span></summary>
+      <div class="scroll-x"><table class="data-table" data-title="대구경북 소비자동향지수 세부 항목(한국은행)">
+        <thead><tr><th>조사 월</th>{REST.map((c, j) => <th class="n" data-pri={j > 5 ? '2' : undefined}>{short(c)}</th>)}</tr></thead>
+        <tbody>{cmonths.map(m => <tr><th scope="row" class="nw">{ym(m)}</th>{REST.map(c => <td class="n">{fmt(cby.get(m)![c])}</td>)}</tr>)}</tbody>
+      </table></div>
+    </details>
+  )}
+  {cmonths.length > 0 && <p class="meta">CSI 출처: {cmeta.source_note ?? '한국은행 ECOS 511Y004'} 「소비자동향조사(지역, 월)」 대구경북{cmeta.fetched && ` (받은 날 ${cmeta.fetched})`}. 「대구경북지역 주요 경제지표」 8. 소비자동향지수와 같은 값이며, ECOS 가 더 최근 달까지 있어 ECOS 값을 씁니다.</p>}
+</section>
+)}
+<style>
+  .u { color: var(--muted); font-size: var(--small); font-weight: 400; }
+  .nw { white-space: nowrap; }
+  th.c { text-align: center; }
+</style>

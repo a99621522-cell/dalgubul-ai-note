@@ -10,25 +10,43 @@ const KEY_NAME: Record<string, string> = { claim: '경정청구', build: '신축
  *  홈택스 매입 목록 5년치를 붙여넣고 건마다 시설을 정하면 과세기간별로 '있어야 할 공제 세액 − 신고한 공제 세액' = 돌려받을 후보와 기한(국세기본법 제45조의2, 5년)·붙임 서류가 나온다.
  *  입력은 이 브라우저에 남고(localStorage vat-review-v1) JSON 으로 이어 한다. 서버 없음. 스크립트 src/scripts/vat_review.ts */
 ---
-<Base title="지난 돈 돌려받기 — 세 걸음" description="지자체가 지난 5년 동안 받은 세금계산서를 시설별로 가려 공제받았어야 할 매입세액을 다시 세고, 신고한 금액과의 차이를 과세기간별 경정청구 후보로 보여 줍니다. 브라우저 안에서만." current="vat" crumb="지난 돈 돌려받기">
-  <div class="section-head"><h1>지난 돈 돌려받기 — 세 걸음</h1><span class="meta">국세기본법 제45조의2 · 법정신고기한 뒤 5년</span></div>
+<Base title="지난 부가세 돌려받기" description="지자체가 지난 5년 부가가치세 신고에서 덜 돌려받은 매입세액을 찾아, 얼마를 왜 어떻게 돌려받는지(경정청구)와 낼 자료를 만듭니다. 파일은 브라우저 안에서만 읽습니다." current="vat" crumb="지난 부가세 돌려받기">
+  <div class="section-head"><h1>지난 부가세 돌려받기</h1><span class="meta">경정청구 · 지난 5년</span></div>
   <VatNav current="review" />
-  <p class="lede"><strong>우리 기관이 지난 5년 동안 덜 돌려받은 부가세가 있는지, 얼마인지, 무엇을 내야 받는지</strong>를 셉니다. 세 걸음 — ① 기관 고르기 ② 지난 신고서 올리기 ③ 홈택스 매입 목록 올리기. 걸음마다 아래 금액이 바뀌고, 끝에 할 일 목록과 경정청구 묶음(엑셀·PDF)이 나옵니다. 파일은 이 브라우저 안에서만 읽습니다.</p>
+  <p class="lede rf-lede">지난 5년 신고에서 덜 돌려받은 부가세를 찾아 <strong>얼마를, 왜, 어떻게</strong> 돌려받는지 보여 줍니다. 파일은 이 브라우저 안에서만 읽습니다.</p>
+  <!-- 쉬운 화면(2026-11-05 docs/prompts/vat_review_ux_easiest.md · 설계 docs/design/vat-review-ux-spec.md): ① 기관 → ② 파일 → ③ 결과 순서, 나머지는 접힘 -->
+  <section class="rf-go rf-step" id="rf-s1" aria-labelledby="rf-s1-h"><div class="rf-h"><span class="rf-n" aria-hidden="true">1</span><h2 id="rf-s1-h">기관 고르기</h2><span class="rf-st" id="rf-s1-st"></span></div>
+    <div id="rv-noorg" hidden></div>
+    <div id="rf-s1-body"></div></section>
+  <section class="rf-go rf-step" id="rf-go2" aria-labelledby="rf-go2-h"><div class="rf-h"><span class="rf-n" aria-hidden="true">2</span><h2 id="rf-go2-h">홈택스 파일 올리기</h2><span class="rf-st" id="rf-go2-st"></span></div>
+    <p class="rf-lock" id="rf-lock" hidden>기관을 고르면 열립니다.</p>
+    <div id="rf-all" class="rf-all"></div>
+    <details class="vat-more rf-where" id="rf-where"><summary>어떤 파일을, 홈택스 어디서 받나요?</summary><ul class="meta-list">
+      <li><b>지난 신고서(꼭)</b> — 홈택스 → 신고/납부 → 세금신고 → 신고내역 조회 → 신고서 보기 → PDF 로 저장. 예정·확정 신고서와 함께 낸 「공제받지 못할 매입세액 명세서」까지, 5년치를 한꺼번에 놓으면 됩니다.</li>
+      <li><b>매입 목록(선택 — 더 찾을 때)</b> — 홈택스 → 조회/발급 → 전자세금계산서 → 목록조회 → 매입 → 엑셀 내려받기(법인은 3개월씩). 사업용 신용카드 매입 엑셀도 됩니다.</li>
+      <li>스캔한 PDF 는 글자가 없어 읽지 못합니다 — 홈택스 화면에서 다시 출력해 'PDF 로 저장'하세요.</li></ul></details>
+    <div id="rf-cover"></div></section>
+  <section class="rf-go rf-step" id="rf-go3" aria-labelledby="rf-go3-h"><div class="rf-h"><span class="rf-n" aria-hidden="true">3</span><h2 id="rf-go3-h">결과</h2><span class="rf-st" id="rf-go3-st"></span></div>
+    <div id="rf-sum" aria-live="polite"></div>
+    <div id="rf-ask"></div></section>
+  <details class="vat-more rf-sec" id="rf-detail"><summary><strong>자세히</strong> — 돌려받을 돈 표 전체 · 고친 신고서 · 지난 신고 진단 · 할 일</summary>
   <div class="rf-band" id="rf-band" aria-live="polite"></div>
-  <div id="rf-all" class="rf-all"></div>
-  <div id="rf-cover"></div>
   <div id="rf-calc"></div>
-  <div id="rf-ask"></div>
+  <section class="rf-diag-wrap" id="rf-diag-wrap"><div class="section-head"><h2>지난 신고 진단 — 무엇이 틀렸고, 어떻게 고치면, 얼마를 돌려받나</h2><span class="meta">과세기간마다 신고서 칸으로 대조 — 판정은 참고이며 기관의 판단이 아닙니다</span></div><div id="rf-diag"><p class="note">② 지난 신고서와 ③ 매입 목록을 올리면 과세기간마다 잘못·누락된 것, 고칠 칸, 돌려받는 돈이 나옵니다.</p></div></section>
+  <section class="rf-todo-wrap" id="rf-todo-wrap"><div class="section-head"><h2>할 일</h2><span class="meta">금액 큰 순 · 기한 급한 순 — 판정은 참고이며 기관의 판단이 아닙니다</span></div><div id="rf-todo"></div></section>
+  <details class="vat-more" id="rf-more"><summary><strong>자세히 보기</strong> — 금액 카드·자료별 금액·과세기간별 신고 값(②)·결과(④)·근거·사유 초안 <span class="meta" id="rv-stat"></span></summary>
+    <p class="note">신고서를 올리면 과세기간마다 <strong>공제받은 매입세액 (18)·불공제 (17)·면세비율(불공제 명세서 ⑪·⑭)·과세 매출 (1)~(4)</strong>를 읽어 ②에 넣고, 결과 맨 위 <a href="#rv-unlock">돌려받을 금액 — 자료별</a>에 '지금 자료로 / 자료를 올리면 +얼마 / 판단 필요'가 나옵니다. 매입 목록(①)과 함께 쓰세요.</p>
+    <div id="rv-result" aria-live="polite"></div>
+  </details>
+  </details>
+  <details class="vat-more rf-sec" id="rf-files"><summary><strong>파일별로 보기·고치기</strong> — 올린 신고서 · 매입 목록 · 공급자 시설 정하기 · 다른 방법</summary>
   <ol class="rf-steps">
-    <li class="rf-step" id="rf-s1"><div class="rf-h"><span class="rf-n" aria-hidden="true">1</span><h2>기관 고르기</h2><span class="rf-st" id="rf-s1-st"></span></div>
-      <div class="callout info" id="rv-noorg" hidden><p>기관을 고르면 그 자리에서 시설이 들어가고, 공급자·품목 이름이 시설 이름과 맞는 건은 자동으로 귀속됩니다.</p></div>
-      <div id="rf-s1-body"></div></li>
-    <li class="rf-step" id="rf-s2"><div class="rf-h"><span class="rf-n" aria-hidden="true">2</span><h2>지난 신고서 올리기</h2><span class="rf-st" id="rf-s2-st"></span></div>
+    <li class="rf-sub" id="rf-s2"><div class="rf-h"><span class="rf-n" aria-hidden="true">가</span><h3>올린 신고서</h3><span class="rf-st" id="rf-s2-st"></span></div>
       <p class="note">홈택스 → 신고/납부 → 세금신고 → 신고내역 조회 → 신고서 보기 → PDF 저장. <strong>5년치 예정·확정 신고서를 한꺼번에</strong> 놓으면 과세기간마다 공제받은 매입세액 (18)·불공제 (17)·면세비율을 읽습니다.</p>
       <details class="vat-more rf-s2-more" id="rf-s2-more" open><summary id="rf-s2-more-sum">올린 신고서 목록 · 과세기간별 신고 값</summary>
       <div id="rv-filedup" class="no-print"></div>
       <div id="rf-s2-cmp"></div></details></li>
-    <li class="rf-step" id="rf-s3"><div class="rf-h"><span class="rf-n" aria-hidden="true">3</span><h2>홈택스 매입 목록 올리기</h2><span class="rf-st" id="rf-s3-st"></span></div>
+    <li class="rf-sub" id="rf-s3"><div class="rf-h"><span class="rf-n" aria-hidden="true">나</span><h3>매입 목록 · 공급자 시설 정하기</h3><span class="rf-st" id="rf-s3-st"></span></div>
       <p class="note">홈택스 → 조회/발급 → 전자세금계산서 → 목록조회 → <b>매입</b> → 엑셀 내려받기(법인은 3개월씩). <strong>여러 파일을 한꺼번에</strong> 골라 놓으세요 — 같은 건은 한 번만 셉니다. 시설은 나라장터 계약 업체 번호·매핑표·시설 이름으로 저절로 붙이고, <strong>못 붙인 공급자만</strong> 세액 큰 순으로 아래에 남깁니다.</p>
       <div class="vc-form no-print" id="rv-common"><label>우리 기관(과세사업) 사업자등록번호 — 공급받는 자가 다른 번호인 행을 가려냅니다 <input type="text" id="rv-reg" placeholder="000-00-00000" inputmode="numeric" /></label></div>
       <div id="rv-drop" class="no-print"></div>
@@ -50,12 +68,8 @@ const KEY_NAME: Record<string, string> = { claim: '경정청구', build: '신축
   </form>
       </details></li>
   </ol>
-  <section class="rf-diag-wrap" id="rf-diag-wrap"><div class="section-head"><h2>지난 신고 진단 — 무엇이 틀렸고, 어떻게 고치면, 얼마를 돌려받나</h2><span class="meta">과세기간마다 신고서 칸으로 대조 — 판정은 참고이며 기관의 판단이 아닙니다</span></div><div id="rf-diag"><p class="note">② 지난 신고서와 ③ 매입 목록을 올리면 과세기간마다 잘못·누락된 것, 고칠 칸, 돌려받는 돈이 나옵니다.</p></div></section>
-  <section class="rf-todo-wrap" id="rf-todo-wrap"><div class="section-head"><h2>할 일</h2><span class="meta">금액 큰 순 · 기한 급한 순 — 판정은 참고이며 기관의 판단이 아닙니다</span></div><div id="rf-todo"></div></section>
-  <details class="vat-more" id="rf-more"><summary><strong>자세히 보기</strong> — 금액 카드·자료별 금액·과세기간별 신고 값(②)·결과(④)·근거·사유 초안 <span class="meta" id="rv-stat"></span></summary>
-    <p class="note">신고서를 올리면 과세기간마다 <strong>공제받은 매입세액 (18)·불공제 (17)·면세비율(불공제 명세서 ⑪·⑭)·과세 매출 (1)~(4)</strong>를 읽어 ②에 넣고, 결과 맨 위 <a href="#rv-unlock">돌려받을 금액 — 자료별</a>에 '지금 자료로 / 자료를 올리면 +얼마 / 판단 필요'가 나옵니다. 매입 목록(①)과 함께 쓰세요.</p>
-    <div id="rv-result" aria-live="polite"></div>
   </details>
+  <details class="vat-more rf-sec" id="rf-ref"><summary><strong>참고</strong> — 가산세 계산기 · 다른 지자체가 돌려받은 사례·감사 · 무엇을 보는 것인가</summary>
   <details class="vat-more"><summary>가산세 계산기 — 수정신고·기한후신고</summary><section id="pn-box" class="vc-card"></section></details>
   <details class="vat-more"><summary>다른 지자체가 돌려받은 사례 · 감사에서 지적된 것</summary>
   <section id="rv-cases" class="vc-cards">
@@ -78,6 +92,7 @@ const KEY_NAME: Record<string, string> = { claim: '경정청구', build: '신축
       <li>우리 명의가 아닌 세금계산서는 경정청구가 아니라 수정세금계산서(시행령 제70조 제1항 제6호, 확정신고기한 다음 날부터 1년) 문제입니다.</li>
       <li>참고용 계산입니다. 경정청구 여부와 금액은 신고인이 정하고, 큰 금액은 세무대리인과 확인합니다.</li>
     </ul>
+  </details>
   </details>
   <VatData />
   <script>import '../../../scripts/vat_refund'; import '../../../scripts/vat_review'; import '../../../scripts/vat_penalty';</script>

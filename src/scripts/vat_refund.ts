@@ -4,7 +4,7 @@
  *  추정(계약금액 × 10/110)은 회색 작은 글씨 — 돌려받을 금액이 아니다. 판정은 참고이며 기관의 판단이 아니다. */
 import { $, esc, fmt, loadData, getOrg, claimPeriod, ymd, lawLink, uniq, facilityRule, facilityStatus, bizType, type Data, type Basis } from './vat_rules';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
-import { commonMistakesHtml, refundCalcHtml, type Diag } from './vat_diag';
+import { commonMistakesHtml, refundCalcHtml, refundCalc, PLAIN, type Diag, type CalcRow } from './vat_diag';
 import { buildQuestions, askHtml, answer, answerGroup, undo } from './vat_ask';
 import type { UResult } from './vat_unlock';
 
@@ -66,14 +66,14 @@ function init(D: Data) {
 
   function step1() {
     const body = $('rf-s1-body'); if (!body) return;
-    if (!org) { setStep('rf-s1', false, true, '기관을 고르세요'); return; }
+    if (!org) { setStep('rf-s1', false, true, '먼저 기관을 고르세요'); return; }
     const L = openPeriods(); const m = ctrByP(); const uq = (f: (r: CtrCtx['rows'][number]) => boolean) => new Set((ctx?.rows ?? []).filter(r => f(r) && L.includes(r.p)).map(r => r.ck)).size; const nTax = uq(r => r.taxable), nLik = uq(r => r.likely);
     const bar = L.map(k => { const P = pInfo(k); const x = m.get(k); return `<li class="${P.days < 120 ? 'soon' : ''}"><b>${esc(pName(k))}</b> <span class="meta">${P.days < 120 ? '⚠ ' : ''}D-${P.days} · ${esc(P.claim)}까지</span>${x ? ` <span class="note">계약 ${x.nTax + x.nLikely}건</span>` : ''}</li>`; }).join('');
     const gp = (D.govs ?? []).find(g => org.org === g.name || org.org.endsWith(g.name.replace(/^대구광역시\s*/, '')) && g.level === '기초' || (g.level === '광역' && org.org === '대구광역시'));
     const prof = gp ? `<details class="vat-more rf-gov"><summary>${esc(gp.name)}의 특성 — ${esc(gp.status)}${gp.corp.length ? ` · ${esc(gp.corp.map(c => c.name.replace(/\(.*$/, '')).join('·'))}` : ''}</summary>${gp.traits.length ? `<ul class="meta-list">${gp.traits.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}${gp.corp.length ? `<ul class="meta-list">${gp.corp.map(c => `<li>${esc(c.name)}${c.bizno ? ` ${esc(c.bizno)}` : ''}${c.src ? ` <span class="meta">(${esc(c.src)})</span>` : ''}${c.note ? ` — ${esc(c.note)}` : ''}</li>`).join('')}</ul>` : ''}<p class="note">자료: ${[gp.preset ? `예시 설정 시설 ${gp.preset}곳` : '예시 설정 없음(세입예산서 시설 후보만)', gp.revenue ? `2026 세입예산서 ${gp.revenue}줄` : '', gp.contracts?.n ? `나라장터 계약 ${fmt(gp.contracts.n)}건(${esc(gp.contracts.from)}~${esc(gp.contracts.to)})` : '나라장터 계약 아직 없음'].filter(Boolean).join(' · ')}. 다른 지자체로 바꾸려면 위 「기관 바꾸기」.</p></details>` : '';
     body.innerHTML = `<p><strong>${esc(org.org)}</strong> — 시설 ${org.facilities.length}곳</p>${prof}
-      ${ctx ? `<p class="note">이미 받아 둔 공개 자료를 붙였습니다 — 나라장터 계약 ${fmt(ctx.cg.rows.length)}건(${esc(ctx.gov.name)}, ${esc(ctx.cg.from)}~): 과세 시설에 붙은 계약 <b>${nTax}</b>건, 시설은 못 붙었지만 공제 가능성 있는 사업 유형 <b>${nLik}</b>건. 업체 사업자등록번호는 ③에서 매입 목록과 저절로 맞춥니다.</p>` : '<p class="note">이 기관의 나라장터 계약 자료는 아직 없습니다 — ②·③만으로도 됩니다.</p>'}
-      <details class="vat-more"><summary>경정청구 기한 — 지금 되는 과세기간 ${L.length}개</summary><ul class="rf-dl">${bar}</ul><p class="note">법정신고기한(1~6월 → 7월 25일, 7~12월 → 다음 해 1월 25일) + 5년(국세기본법 제45조의2). ⚠ 는 120일 안.</p></details>`;
+      <details class="vat-more rf-s1-more"><summary>이 기관의 공개 자료 · 경정청구 기한</summary>${ctx ? `<p class="note">이미 받아 둔 공개 자료를 붙였습니다 — 나라장터 계약 ${fmt(ctx.cg.rows.length)}건(${esc(ctx.gov.name)}, ${esc(ctx.cg.from)}~): 과세 시설에 붙은 계약 <b>${nTax}</b>건, 시설은 못 붙었지만 공제 가능성 있는 사업 유형 <b>${nLik}</b>건. 업체 사업자등록번호는 ③에서 매입 목록과 저절로 맞춥니다.</p>` : '<p class="note">이 기관의 나라장터 계약 자료는 아직 없습니다 — ②·③만으로도 됩니다.</p>'}
+      <details class="vat-more"><summary>경정청구 기한 — 지금 되는 과세기간 ${L.length}개</summary><ul class="rf-dl">${bar}</ul><p class="note">법정신고기한(1~6월 → 7월 25일, 7~12월 → 다음 해 1월 25일) + 5년(국세기본법 제45조의2). ⚠ 는 120일 안.</p></details></details>`;
     setStep('rf-s1', true, false, '완료');
   }
 
@@ -159,7 +159,52 @@ function init(D: Data) {
     el.querySelectorAll<HTMLButtonElement>('[data-reask]').forEach(btn => btn.addEventListener('click', () => { forced.add(btn.dataset.reask!); ask(last); $('rf-ask')?.scrollIntoView({ block: 'start' }); }));
     el.querySelectorAll<HTMLButtonElement>('[data-undo]').forEach(btn => btn.addEventListener('click', () => { const [fid, id] = btn.dataset.undo!.split('|'); const oo = getOrg(); if (!oo) return; undo(oo, fid, id); done(); }));
   }
-  function draw() { const b = last; band(b); calc(b); step1(); ask(b); step2(b); step3(b); diag(b); todo(b); }
+  /* ③ 결과 요약 — 쉬운 화면(2026-11-05 docs/prompts/vat_review_ux_easiest.md): 한 문장 → 금액 두 칸(확정 / 확인하면 늘어날 수 있는 몫, 참고 어림은 접힘)
+     → 출처 사슬 → 과세기간별 한 줄(무엇이 · 얼마 · 기한, 펼치면 왜·할 일·근거) → 빠진 기간 · 0원 → 내려받기 둘. 숫자는 refundCalc(돌려받을 돈 표)와 같다 — 새 계산 없음 */
+  const josa = (w: string) => { const c = w.charCodeAt(w.length - 1); return c >= 0xac00 && c <= 0xd7a3 && (c - 0xac00) % 28 ? '은' : '는'; };
+  function summary(b: Built | null) {
+    const el = $('rf-sum'); if (!el) return;
+    const nF = b?.filed.length ?? 0, nR = b?.rows ?? 0;
+    setStep('rf-go2', nF + nR > 0, !!org && nF + nR === 0, nF + nR ? `신고서 ${nF}개 과세기간${nR ? ` · 매입 ${fmt(nR)}건` : ''}` : org ? '파일을 놓으세요' : '기관을 고르면 열립니다');
+    const done3 = (t: string) => setStep('rf-go3', !!t, false, t);
+    if (!org) { el.innerHTML = '<p class="rf-empty">기관을 고르고 파일을 올리면 여기에 돌려받을 금액이 나옵니다.</p>'; done3(''); return; }
+    if (!b || !(nF + nR)) { el.innerHTML = '<p class="rf-empty">2에 홈택스에서 받은 지난 신고서 PDF 를 놓으면 여기에 돌려받을 금액이 나옵니다.</p>'; done3(''); return; }
+    const L = openPeriods(); const estBy = new Map<string, number>(); for (const r of ctx?.rows ?? []) if (r.taxable && L.includes(r.p)) estBy.set(r.p, (estBy.get(r.p) ?? 0) + r.est);
+    const diags = b.diags ?? []; const R = refundCalc(diags, estBy); const U = b.U; const listOnly = !diags.length && !!U;
+    const sure = listOnly ? U!.now : R.sure; const upto = listOnly ? U!.docs + U!.judge : R.upto; const est = listOnly ? 0 : R.est;
+    const ex = diags.filter(d => d.state === 'expired' || d.days < 0);
+    const nm = org.org; const amt = `<b id="rf-sum-amt" class="rf-sum-n">${fmt(sure)}원</b>`;
+    const head = sure > 0 ? `<p class="rf-sum-l"><strong>${esc(nm)}</strong>${josa(nm)} 지난 신고를 고쳐 신청하면(경정청구) ${amt}을 돌려받을 수 있습니다.${upto > 0 ? ` 자료를 더 확인하면 <b>최대 ${fmt(upto)}원</b>까지 늘어날 수 있습니다.` : ''}</p>`
+      : upto > 0 ? `<p class="rf-sum-l">지금 올린 숫자만으로 바로 돌려받을 돈은 ${amt}이지만, 자료를 더 확인하면 <b>최대 ${fmt(upto)}원</b>을 돌려받을 수 있습니다.</p>`
+      : `<p class="rf-sum-l">찾은 돌려받을 돈: ${amt}</p>`;
+    const cells = `<div class="rf-sum-cells"><div><span class="meta">확정 — 신고서 숫자로 다시 계산</span><b>${fmt(sure)}원</b></div><div><span class="meta">확인하면 늘어날 수 있는 몫(최대)</span><b>+${fmt(upto)}원</b></div></div>${est ? `<details class="vat-more rf-est-more"><summary>참고 어림 보기</summary><p class="note">나라장터 계약 금액으로 짐작한 값 약 ${fmt(est)}원 — 신청할 금액이 아닙니다. 매입 목록을 올리면 실제 세금계산서로 셉니다.</p></details>` : ''}`;
+    const src = `<p class="rf-src note">과세기간 ${nF}개의 신고서${nR ? `와 매입 ${fmt(nR)}건` : '로'}${nR ? '으로' : ''} 다시 계산했습니다 · 참고 계산이며 기관의 판단이 아닙니다.</p>`;
+    /* 과세기간별 한 줄 */
+    const byK = new Map<string, CalcRow[]>(); const other: CalcRow[] = []; let miss: CalcRow | null = null;
+    for (const r of R.rows) { if (r.k === 'nofile') { miss = r; continue; } if (r.kind === 'sure' || r.kind === 'upto') { const a = byK.get(r.k) ?? []; a.push(r); byK.set(r.k, a); } else other.push(r); }
+    const plainT = (r: CalcRow) => PLAIN[r.f.key]?.t ?? r.f.title; const plainTodo = (r: CalcRow) => PLAIN[r.f.key]?.todo ?? r.f.how;
+    const money = (r: CalcRow) => r.kind === 'sure' ? `<b class="num">${fmt(r.f.effect ?? 0)}원</b>` : `<span class="num">최대 ${fmt(r.f.effect ?? 0)}원</span>`;
+    const why = (r: CalcRow) => `<details class="rf-row-why"><summary>왜 · 어떻게</summary><p><span class="rf-k">할 일</span> ${esc(plainTodo(r))}</p><p class="note"><span class="rf-k">이유</span> ${esc(r.f.what)}</p>${r.f.basis.length ? `<p class="note"><span class="rf-k">근거</span> ${law(r.f.basis)}</p>` : ''}${r.kind === 'sure' && diags.find(d => d.k === r.k)?.corrected?.length ? `<p><a href="#rf-dg-${esc(r.k)}" data-open-dg="${esc(r.k)}">고친 신고서 보기 ↓</a></p>` : ''}</details>`;
+    const ks = [...byK.keys()].sort((a, c) => { const s = (k: string) => byK.get(k)!.reduce((n, r) => n + (r.kind === 'sure' ? (r.f.effect ?? 0) * 1e3 : (r.f.effect ?? 0)), 0); return s(c) - s(a); });
+    const rows = ks.map(k => { const rs = byK.get(k)!; const r0 = rs[0]; return `<li class="rf-row"><div class="rf-row-h"><b>${esc(r0.name)}</b> <span class="meta">신청 기한 ${esc(r0.claim)}${r0.days <= 120 ? ' ⚠' : ''} · D-${r0.days}</span></div><ul>${rs.map(r => `<li><span class="rf-row-t">${esc(plainT(r))}</span> ${money(r)}${why(r)}</li>`).join('')}</ul></li>`; }).join('');
+    const listUl = rows ? `<h3 class="rf-sum-h">과세기간별</h3><ol class="rf-rows">${rows}</ol>` : '';
+    const otherHtml = other.length ? `<details class="vat-more"><summary>그 밖에 확인할 것 ${other.length}건(금액 없음)</summary><ul class="meta-list">${other.map(r => `<li><b>${esc(r.name)}</b> — ${esc(plainT(r))}<br><span class="note">${esc(plainTodo(r))}</span></li>`).join('')}</ul></details>` : '';
+    const missHtml = miss ? `<p class="callout warn rf-miss-l">⚠ 신고서를 올리지 않은 과세기간이 있습니다 — ${esc(miss.f.what.replace(/ — 이 기간들도.*$/, ''))}. 올리면 더 찾을 수 있습니다.</p>` : '';
+    const exHtml = ex.length ? `<p class="note">경정청구 기한(5년)이 지난 ${ex.length}개 과세기간(${ex.map(d => esc(d.name)).join(' · ')})은 돌려받을 수 없어 뺐습니다.</p>` : '';
+    const zero = sure === 0 && upto === 0 ? `<div class="rf-zero"><p><b>찾은 것이 없습니다.</b> 이런 경우일 수 있습니다:</p><ol><li>지난 신고가 맞게 되어 있습니다.</li><li>신고서 숫자만으로는 보이지 않는 것 — 돈을 받는 시설(체육관·주차장·임대 등)에 쓴 비용을 공제하지 않은 경우는 <b>매입 목록 엑셀</b>을 올려야 찾습니다.</li><li>${ex.length && !rows ? '올린 신고서가 모두 경정청구 기한(5년)이 지났습니다.' : '올린 신고서가 일부 기간뿐입니다 — 5년치를 모두 올려 보세요.'}</li></ol></div>` : '';
+    const sup = b.sup?.todo ? `<p class="note">매입 목록의 공급자 ${b.sup.todo}곳은 어느 시설 것인지 정하지 못해 아직 셈에 없습니다 — <a href="#rf-files" data-open-sec="rf-files">파일별로 보기·고치기</a>에서 정하세요.</p>` : '';
+    const dl = sure > 0 || upto > 0 ? `<div class="rf-dl actions no-print"><button type="button" class="btn" id="rf-dl-submit">세무서·홈택스에 낼 자료 받기 <small>(엑셀+PDF)</small></button><button type="button" class="btn secondary" id="rf-dl-report">결재용 보고 받기 <small>(Word, 한글에서 열림)</small></button></div>
+      <p class="note">돌려받는 신청은 홈택스 → 신고/납부 → 세금신고 → 부가가치세 → 경정청구 메뉴에서, 자료 안의 「고친 신고서」 값을 칸마다 옮겨 적으면 됩니다.</p>
+      <details class="vat-more rf-dl-more no-print"><summary>다른 형식 — 엑셀만 · PDF 만</summary><div class="actions"><button type="button" class="btn secondary" id="rf-dl-xlsx">엑셀만</button><button type="button" class="btn secondary" id="rf-dl-pdf">PDF 만</button></div></details>` : '';
+    el.innerHTML = head + cells + src + dl + missHtml + zero + sup + listUl + otherHtml + exHtml;
+    done3(sure > 0 ? `${fmt(sure)}원` : upto > 0 ? `최대 ${fmt(upto)}원` : '찾은 것 없음');
+    const fire = (want: 'zip' | 'xlsx' | 'pdf') => { const id = { zip: 'rv-zip', xlsx: 'rv-xlsx', pdf: 'rv-pdf' }[want]; const z = $(id); if (z) z.click(); else document.dispatchEvent(new CustomEvent('vat-filed-bundle', { detail: { want } })); };
+    $('rf-dl-submit')?.addEventListener('click', () => fire('zip')); $('rf-dl-xlsx')?.addEventListener('click', () => fire('xlsx')); $('rf-dl-pdf')?.addEventListener('click', () => fire('pdf'));
+    $('rf-dl-report')?.addEventListener('click', () => document.dispatchEvent(new CustomEvent('vat-report-docx')));
+    el.querySelectorAll<HTMLAnchorElement>('[data-open-dg]').forEach(a => a.addEventListener('click', () => { const dd = $('rf-detail') as HTMLDetailsElement | null; if (dd) dd.open = true; const d = document.getElementById(`rf-dg-${a.dataset.openDg}`) as HTMLDetailsElement | null; if (d) d.open = true; }));
+    el.querySelectorAll<HTMLAnchorElement>('[data-open-sec]').forEach(a => a.addEventListener('click', () => { const d = $(a.dataset.openSec!) as HTMLDetailsElement | null; if (d) d.open = true; }));
+  }
+  function draw() { const b = last; summary(b); band(b); calc(b); step1(); ask(b); step2(b); step3(b); diag(b); todo(b); }
   document.addEventListener('vat-rv-built', e => { last = (e as CustomEvent<Built>).detail; draw(); });
   void contractsCtx(D, org).then(c => { ctx = c; draw(); });
   draw();

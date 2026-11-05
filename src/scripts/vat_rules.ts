@@ -465,7 +465,7 @@ export function wireInquiry(root: ParentNode) {
 /** 설정 완성도(2차 UX 마찰 1·10, 2026-11-03): 운영 방식 '확인 필요'·등록번호 없음(사업장별)·담당 부서 없음 — 비어 있으면 대시보드 1차 행동이 '설정 마저 채우기' */
 export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; src: string; url?: string; verify?: boolean };
 export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
-const normOrgName = (x: string) => x.replace(/\s/g, '').replace(/^대구광역시/, '').replace(/^대구/, '').replace(/청$/, '');
+const normOrgName = (x: string) => { const y = x.replace(/\s/g, '').replace(/^대구광역시/, '').replace(/^대구/, '').replace(/청$/, ''); return y === '' || y === '시' ? '대구본청' : y; };   // '대구광역시'·'대구시청'은 본청(떼고 나면 빈 글자라 못 찾던 것)
 /** 기관 이름으로 공개 자료의 사업자등록번호 찾기 — 이름·별칭을 띄어쓰기·'대구광역시'·'청' 을 떼고 견준다 */
 export function findOrgNo(D: Data | null, name: string): OrgNo | undefined { if (!D?.orgs || !name.trim()) return undefined; const n = normOrgName(name); if (!n) return undefined; return D.orgs.find(o => [o.name, ...(o.aliases ?? [])].some(a => normOrgName(a) === n)); }
 export const orgNoNote = (o: OrgNo) => `${o.src}${o.verify ? ' — 2차 자료라 홈택스 「사업자등록 상태조회」로 확인' : ''}`;

@@ -50,7 +50,7 @@ export function vatPresets(): Preset[] {
 export function vatOrgNumbers(): OrgNo[] {
   const out: OrgNo[] = []; const csvp = 'data/vat/orgs/daegu_g2b.csv', ymlp = 'data/vat/orgs/daegu_orgs.yml';
   if (fs.existsSync(csvp)) { const lines = fs.readFileSync(csvp, 'utf-8').replace(/\r/g, '').split('\n').filter(Boolean); const head = lines[0].split(','); const ix = (k: string) => head.indexOf(k);
-    for (const l of lines.slice(1)) { const c = l.split(','); const bz = (c[ix('bizno')] ?? '').replace(/\D/g, ''); if (bz.length !== 10) continue; out.push({ name: c[ix('name')] ?? '', code: c[ix('code')] || undefined, bizno: `${bz.slice(0, 3)}-${bz.slice(3, 5)}-${bz.slice(5)}`, src: '나라장터 수요기관정보(조달청, 공공데이터포털 15129466)' }); } }
+    for (const l of lines.slice(1)) { const c = l.split(','); const bz = (c[ix('bizno')] ?? '').replace(/\D/g, ''); if (bz.length !== 10) continue; if (ix('kind') >= 0 && !/지방자치단체|지방공기업|출자출연/.test(c[ix('kind')] ?? '')) continue; /* 국가기관·준정부기관·우체국 등은 점검기 대상이 아니라 화면에 싣지 않는다 */ out.push({ name: c[ix('name')] ?? '', code: c[ix('code')] || undefined, bizno: `${bz.slice(0, 3)}-${bz.slice(3, 5)}-${bz.slice(5)}`, src: '나라장터 수요기관정보(조달청, 공공데이터포털 15129466)' }); } }
   if (fs.existsSync(ymlp)) { const y = yaml.load(fs.readFileSync(ymlp, 'utf-8')) as { orgs?: OrgNo[] }; for (const o of y.orgs ?? []) if (!out.some(x => x.bizno === o.bizno)) out.push(o); }
   return out;
 }

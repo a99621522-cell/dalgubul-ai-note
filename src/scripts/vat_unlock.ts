@@ -58,6 +58,11 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
     marks.forEach((mm, j) => { const n = Number(mm[1]); if (n < 1 || n > 18 || cells[n]) return; const after = line.slice(mm.index! + mm[0].length, marks[j + 1]?.index ?? line.length); const v = nums(after); if (!v.length) return;
       if (v.length >= 2) cells[n] = { amt: v[0], tax: v[1] }; else if (n >= 10) cells[n] = { amt: null, tax: v[0] }; else cells[n] = { amt: v[0], tax: n <= 4 ? Math.floor(v[0] / 10) : 0 }; });
   }
+  /* 2025-07-04 전 서식(2021-03-16 판 ~ 2025-03-21 판): (15) 합계 · (16) 공제받지못할매입세액 · (17) 차감계 · (18) 그 밖의 경감·공제세액 — 현행 (16)(17)(18)로 옮겨 읽는다
+     (docs/design/vat-law-changes-2021.md 요약 B-1). 칸 이름 '공제받지 못할 매입세액'이 붙은 번호로 판을 가르고, 이름이 없으면 (15)−(16)=(17) 인지로 본다 */
+  { const ndLbl = /\((1[67])\)[^\n(]{0,6}공\s*제\s*받\s*지\s*못\s*할/.exec(main) ?? /공\s*제\s*받\s*지\s*못\s*할\s*매\s*입\s*세\s*액[^\n(]{0,6}\((1[67])\)/.exec(main);
+    const arith = cells[15]?.tax != null && cells[16]?.tax != null && cells[17]?.tax != null && cells[15].tax! - cells[16].tax! === cells[17].tax! && !(cells[18]?.tax != null && cells[16].tax! - cells[17].tax! === cells[18].tax!);
+    if ((ndLbl && ndLbl[1] === '16') || (!ndLbl && arith)) { const c15 = cells[15], c16 = cells[16], c17 = cells[17]; delete cells[18]; delete cells[15]; delete cells[16]; delete cells[17]; if (c15) cells[16] = c15; if (c16) cells[17] = c16; if (c17) cells[18] = c17; warn.push('2025-07-04 전 서식 — (15)합계·(16)불공제·(17)차감계를 현행 (16)(17)(18)로 옮겨 읽었습니다'); } }
   if (cells[16]?.tax != null && cells[17]?.tax != null && cells[18]?.tax == null) cells[18] = { amt: null, tax: cells[16].tax! - cells[17].tax! };
   if (cells[18]?.tax != null && cells[16]?.tax != null && cells[17]?.tax != null && cells[16].tax! - cells[17].tax! !== cells[18].tax) warn.push(`(16) − (17) 과 (18) 이 맞지 않습니다 — 칸을 확인하세요`);
   if (cells[18]?.tax == null) warn.push('(18) 차감계(공제받은 매입세액)를 못 읽었습니다 — ② 표에 직접 넣으세요');

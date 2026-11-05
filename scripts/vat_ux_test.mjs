@@ -394,6 +394,10 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('U3 신고에 없던 매출 1,000,000 → 매출세액 100,000 + 가산세 · 순액 = 500,000 − (매출세액+가산세) − 합계표 가산세 25,000(5,000,000 × 0.5%)', salesCell > 100000 && salesCell < 200000 && netNow === 500000 - salesCell - 25000, JSON.stringify(r24) + ' net ' + netNow);
   const r20 = rowU.find(r => /2020년 제1기/.test(r[0]));
   ok('U4 2020년 제1기(기한 지남)는 세 칸에서 빠지고 따로 — 300,000 − 신고 100,000 = 200,000', /기한 지남/.test(r20?.[1] ?? '') && /기한이 지난 과세기간 몫 200,000원/.test(T(await pg.locator('#rv-unlock').textContent())) && T(await pg.locator('#ul-now').textContent()).startsWith('500,000'), JSON.stringify(r20));
+  /* U5 2025-07-04 전 서식 신고서 — (16) 불공제·(17) 차감계를 현행 (17)(18)로(법령 연혁 대조 2026-11-05) */
+  await pg.setInputFiles('#rv-fd-file', [path.join(FXU, 'filed_2022_2_old.txt')]); await pg.waitForTimeout(800);
+  const old22 = await pg.$$eval('#rv-fd-tbl tbody tr', trs => trs.map(t => [...t.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim())).find(r => /2022년 제2기/.test(r[0])));
+  ok('U5 옛 서식(2022년 제2기) — 공제받은 매입세액 700,000 · 불공제 100,000 · 옮겨 읽었다는 안내', !!old22 && old22[4] === '700,000' && old22[5] === '100,000' && /2025-07-04 전 서식/.test(old22.join(' ')), JSON.stringify(old22));
   await pg.evaluate(() => { localStorage.removeItem('vat-review-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 /* ── S 지난 돈 돌려받기 세 걸음 판(2026-11-05 docs/prompts/vat_refund_3steps.md): 기관 → 신고서 → 매입 목록 여러 파일, 계약 업체 번호로 저절로 귀속, 할 일·엑셀·PDF ── */

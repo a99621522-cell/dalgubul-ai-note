@@ -32,7 +32,7 @@ export type Data = {
     /** 공개 지출 자료 세부사업 유형(2026-11-05) — 사업명 낱말 짐작, 위에서부터 처음 맞는 하나 */
     biz_types?: { key: string; name: string; re: string; hint: string; low?: boolean }[];
     works?: { note: string; options: { key: CwKey; name: string; short: string; why: string; basis: Basis[]; verify?: boolean }[] };
-    penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
+    penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_daily_old?: { until: string; rate: number }; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
     deemed_rent?: { rates: Record<string, number>; src: string } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
@@ -418,7 +418,8 @@ export function penaltyCalc(D: Data | null, p: { tax: number; due: string; payDa
   const d0 = new Date(p.due), d1 = new Date(p.payDate); const days = Math.max(0, Math.min(Math.round((d1.getTime() - d0.getTime()) / 86400000) - 1, maxY * 365));   // 법정납부기한 다음 날부터 납부일 전날까지(제47조의4 제1항 제1호)
   const months = (d1.getFullYear() - d0.getFullYear()) * 12 + (d1.getMonth() - d0.getMonth()) - (d1.getDate() <= d0.getDate() ? 1 : 0) + 1;   // 경과 개월(이하 기준)
   const relief = (p.kind === 'none' ? R?.late_file_relief : R?.amend_relief) ?? []; const rl = relief.find(r => months <= r.months)?.rate ?? 0;
-  const file = Math.floor(p.tax * rateFile); const fileAfter = file - Math.floor(file * rl); const late = Math.floor(p.tax * days * daily);   // 감면액을 먼저 자르고 뺀다(1 − 0.9 의 부동소수 오차로 1원이 어긋나던 것)
+  const file = Math.floor(p.tax * rateFile); const fileAfter = file - Math.floor(file * rl); const old = R?.late_pay_daily_old; let oldDays = 0; if (old && days > 0) { const first = new Date(d0.getTime() + 86400000), cut = new Date(old.until); if (first <= cut) oldDays = Math.min(days, Math.round((cut.getTime() - first.getTime()) / 86400000) + 1); }   /* 2022-02-14 까지의 날은 10만분의 25(대통령령 제32424호 부칙 제6조) */
+  const late = oldDays ? Math.floor(p.tax * (days - oldDays) * daily + p.tax * oldDays * (old?.rate ?? daily)) : Math.floor(p.tax * days * daily);   // 감면액을 먼저 자르고 뺀다(1 − 0.9 의 부동소수 오차로 1원이 어긋나던 것)
   return { days, months, rateFile, file, relief: rl, fileAfter, late, total: fileAfter + late };
 }
 

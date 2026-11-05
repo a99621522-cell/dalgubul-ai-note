@@ -22,12 +22,16 @@ def call(op, params, key):
     q = dict(params); q["serviceKey"] = key; q["type"] = "json"
     url = f"{BASE}/{op}?" + urllib.parse.urlencode(q, safe="%")   # 인코딩 키(%2B…)를 다시 인코딩하지 않는다
     req = urllib.request.Request(url, headers={"User-Agent": "daitda-vat (https://vat-daitda.pages.dev)"})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            return r.read().decode("utf-8", "replace")
-    except urllib.error.HTTPError as e:   # 400/500 도 본문(오류 사유)을 돌려준다
-        body = e.read().decode("utf-8", "replace")
-        raise RuntimeError(f"HTTP {e.code}: {body[:300]}")
+    for i in range(3):   # 접속 시간 초과는 두 번 더
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return r.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError as e:   # 400/500 도 본문(오류 사유)을 돌려준다
+            body = e.read().decode("utf-8", "replace")
+            raise RuntimeError(f"HTTP {e.code}: {body[:300]}")
+        except Exception:
+            if i == 2: raise
+            time.sleep(5 * (i + 1))
 
 
 def items_of(text):

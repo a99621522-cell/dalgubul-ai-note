@@ -43,4 +43,6 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           [ -d data/vat/orgs ] || { echo "받은 파일 없음"; exit 0; }
           git add data/vat/orgs
-          git diff --cached --quiet && echo "변경 없음" || (git commit -m "data: 나라장터 수요기관 사업자등록번호(대구) 갱신" && git push)
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -m "data: 나라장터 수요기관 사업자등록번호(대구) 갱신"
+          for i in 1 2 3; do git pull --rebase -q origin "${{ github.ref_name }}" && git push && break; sleep 5; done

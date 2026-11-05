@@ -328,6 +328,15 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300); await pg.selectOption('[data-pb-fid="회계과|달성군 여성문화복지센터 증축"]', 'f2'); await pg.waitForTimeout(400);
   const learned = await pg.evaluate(() => (JSON.parse(localStorage.getItem('vat-org-v1')).map || []).map(r => r.pat + '>' + r.fid).join(','));
   ok('R10 시설을 고르면 매핑표에 남음(달성군 여성문화복지센터 증축 → f2) · 면세 시설이라 추정 그대로', /여성문화복지센터 증축>f2/.test(learned) && (await claimN()) === c1, learned + ' ' + (await claimN()) + ' vs ' + c1);
+  /* C3 유형 칸(2026-11-05): 유형 있는 사업 먼저, 유형으로 거르기 */
+  { const hd = await pg.$$eval('#pub-biz thead th', ths => ths.map(t => t.textContent.trim()));
+    const first = await pg.$$eval('#pub-biz tbody tr', trs => trs.slice(0, 5).map(t => t.querySelectorAll('td')[2]?.textContent.trim()));
+    await pg.selectOption('#pub-type', 'road'); await pg.waitForTimeout(300);
+    const rd = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => [t.dataset.bk, t.querySelectorAll('td')[2]?.textContent.trim()]));
+    await pg.selectOption('#pub-type', 'parking'); await pg.waitForTimeout(300);
+    const pk = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => t.querySelectorAll('td')[2]?.textContent.trim()));
+    await pg.selectOption('#pub-type', ''); await pg.waitForTimeout(300);
+    ok('C3 공개 지출 표에 유형 칸 · 공제 가능성 있는 유형이 먼저(도로·주차장·시장 보조는 뒤) · 도로 공사·공영주차장으로 거르기 · 유형 설명 펼침', hd.includes('유형') && first.every(x => x && x !== '—' && !/도로 공사|공영주차장|전통시장/.test(x)) && rd.length > 0 && rd.every(([, t]) => t === '시설 이름이 든 도로 공사') && rd.some(([k]) => /휴양림도로/.test(k)) && pk.length > 0 && pk.every(t => t === '공영주차장') && (await pg.locator('#pub-type-help').count()) === 1, JSON.stringify(first) + ' road ' + rd.length + ' park ' + pk.length); }
   /* R11 2024년 이후 — 지방재정365 세부사업별 연간 지출액(통계목 없음, 2021~2022 건별 비중을 빌림) */
   await pg.waitForSelector('#pub-lbiz', { timeout: 10000 });
   const lh = await pg.$$eval('#pub-lbiz thead th', ths => ths.map(t => t.textContent.trim()).join('|'));

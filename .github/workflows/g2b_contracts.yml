@@ -1,0 +1,91 @@
+name: 나라장터 계약정보(대구 본청·구·군)
+
+# 조달청 「나라장터 계약정보서비스」(공공데이터포털 15129427, 활용신청 필요)로 대구 본청·구·군이 계약기관·수요기관인 공사·용역·물품 계약을
+# data/vat/contracts/<gov>.json 으로 커밋한다(지자체 부가세 절감 점검기 '지난 돈 돌려받기' — 받아 올 세금계산서를 계약 단위로).
+# 수동 실행 + 매달 5일. probe=true 면 조회구분·기관구분 조합마다 건수와 첫 행 칸을 로그에만(저장 안 함).
+# 하루 호출 한도를 넘으면(종료 코드 3) 받은 만큼 커밋하고 끝 — 다음 실행이 state.json 의 끝난 구간을 건너뛴다.
+on:
+  workflow_dispatch:
+    inputs:
+      govs:
+        description: "지자체 키(쉼표, 비우면 10곳 모두: daegu,jung,dong,seo,nam,buk,suseong,dalseo,dalseong,gunwi)"
+        default: ""
+      from:
+        description: "시작 달 YYYY-MM"
+        default: "2021-01"
+      to:
+        description: "끝 달 YYYY-MM(비우면 이번 달)"
+        default: ""
+      kinds:
+        description: "공사,용역,물품"
+        default: "공사,용역,물품"
+      probe:
+        description: "조회구분·기관구분 맞추기(true) — 저장 안 함"
+        default: "false"
+      inqry_div:
+        description: "조회구분(probe 로 확인한 값, 기본 1)"
+        default: "1"
+      instt_div:
+        description: "기관구분코드(쉼표, 기본 1,2)"
+        default: "1,2"
+  schedule:
+    - cron: "17 21 4 * *"   # 매달 5일 06:17 KST — 지난 석 달만 다시
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: g2b-contracts
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 받기
+        id: run
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          GOVS: ${{ inputs.govs }}
+          FROM: ${{ inputs.from }}
+          TO: ${{ inputs.to }}
+          KINDS: ${{ inputs.kinds }}
+          PROBE: ${{ inputs.probe }}
+          INQ: ${{ inputs.inqry_div }}
+          INST: ${{ inputs.instt_div }}
+        run: |
+          set +e
+          ARGS=(--inqry-div "${INQ:-1}" --instt-div "${INST:-1,2}" --kinds "${KINDS:-공사,용역,물품}")
+          [ -n "$GOVS" ] && ARGS+=(--govs "$GOVS")
+          if [ "${{ github.event_name }}" = "schedule" ]; then ARGS+=(--from "$(date -d '-2 month' +%Y-%m)"); else ARGS+=(--from "${FROM:-2021-01}"); fi
+          [ -n "$TO" ] && ARGS+=(--to "$TO")
+          [ "$PROBE" = "true" ] && ARGS+=(--probe)
+          python3 scripts/fetch_g2b_contracts.py "${ARGS[@]}"
+          rc=$?
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          [ "$rc" = "2" ] && echo "::error::계약정보서비스(15129427) 활용신청이 필요합니다"
+          [ "$rc" = "3" ] && echo "::warning::호출 한도 — 받은 만큼 저장, 다음 실행이 이어 받음"
+          exit 0
+      - name: 커밋
+        id: commit
+        if: inputs.probe != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          [ -d data/vat/contracts ] || { echo "받은 파일 없음"; exit 0; }
+          git add data/vat/contracts
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -m "data: 나라장터 계약정보(대구) $(date +%Y-%m-%d)"
+          for i in 1 2 3; do git pull --rebase -q origin "${{ github.ref_name }}" && git push && break; sleep 5; done
+          echo "pushed=1" >> "$GITHUB_OUTPUT"
+      - name: 점검기 배포
+        if: steps.commit.outputs.pushed == '1' && github.ref_name == 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy_vat.yml -R "${{ github.repository }}" --ref main || echo "::warning::deploy_vat 호출 실패"

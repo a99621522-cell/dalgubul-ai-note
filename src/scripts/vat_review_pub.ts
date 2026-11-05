@@ -7,7 +7,10 @@ import { $, esc, fmt, matchMap, matchFacilityName, facilityStatus, learnMap, set
 
 type Agg = { p: string; acct: string; dept: string; biz: string; mok: string; n: number; amt: number; card: number; petty: number; max: number; memo: string[] };
 type Gov = { key: string; name: string; fetched: string; periods: string[]; days: string[]; failed_days: string[]; note: string; source: string; rows: Agg[] };
-type GovMeta = { key: string; name: string; fetched: string; periods: string[]; days: number; rows: number; note: string; lofin: { years: string[]; rows: number } | null };
+type GovMeta = { key: string; name: string; fetched: string; periods: string[]; days: number; rows: number; note: string; lofin: { years: string[]; rows: number } | null; contracts?: { from: string; to: string; rows: number; fetched: string } | null };
+/** 조달청 나라장터 계약(src/lib/vatContracts.ts) — 받아 올 세금계산서를 계약(업체·등록번호) 단위로. 금액은 지출액과 겹쳐 추정에 더하지 않는다 */
+type Ctr = { k: '공사' | '용역' | '물품'; no: string; nm: string; inst: string; dept: string; dmn: string[]; date: string; prd: string; tot: number; amt: number; mth: string; lng: string; cls: string; corps: { nm: string; no: string; sh?: string }[]; url: string; bgn: string; end: string };
+type CGov = { key: string; name: string; fetched: string; from: string; to: string; source: string; note: string; rows: Ctr[] };
 /** 지방재정365 세부사업별 연간 지출액(src/lib/vatLofinBiz.ts) — 통계목 없음 */
 type LBiz = { acct: string; biz: string; f: string; s: string; y: Record<string, number> };
 type LGov = { key: string; name: string; years: string[]; source: string; rows: LBiz[] };
@@ -35,14 +38,14 @@ export async function mountPublic(root: HTMLElement, D: Data, org: Org | null, h
   const guess = () => { if (st.gov) return st.gov; let g = ''; try { g = localStorage.getItem('vat-gov') || ''; } catch { /* */ } if (g && metas.some(m => m.key === g)) return g; const nm = (org?.org ?? '').replace(/\s/g, ''); return metas.find(m => nm && (nm.includes(m.name) || m.name.includes(nm.replace(/대구광역시|청$/g, ''))))?.key ?? ''; };
   root.innerHTML = `<p class="callout info"><strong>붙여넣기 없이 가는 길.</strong> 대구광역시 주민참여 재정 포털이 공개한 <strong>지출건별 자료</strong>(부서·세부사업·통계목·지출액·지급일자)를 지자체만 고르면 이 화면이 받아, 어느 사업 지출이 과세 시설 지출인지 정하고 <strong>돌려받을 수 있는 세액의 상한을 추정</strong>합니다. 거래처·세액 칸이 없는 자료라 세액은 지출액 × 10/110 추정이고, 실제 청구는 그 사업의 세금계산서로 합니다(마지막에 '어느 부서의 어느 사업 세금계산서만 받아오면 되나' 목록이 나옵니다).</p>
     <div class="vc-form"><label>지자체 <select id="pub-gov"><option value="">— 고르기 —</option>${metas.map(m => `<option value="${esc(m.key)}" ${guess() === m.key ? 'selected' : ''}>${esc(m.name)} (${[m.rows ? `건별 ${esc(m.periods[0] ?? '')}~${esc(m.periods[m.periods.length - 1] ?? '')}` : '', m.lofin ? `연간 ${esc(m.lofin.years[0])}~${esc(m.lofin.years[m.lofin.years.length - 1])}` : ''].filter(Boolean).join(' · ')})</option>`).join('')}</select></label><div class="actions"><button type="button" class="btn" id="pub-load">공개 지출 자료 불러오기</button><span class="note" id="pub-stat">${metas.length ? '' : '공개 지출 자료가 아직 없습니다(러너가 모으는 중)'}</span></div></div>
-    <div id="pub-body"></div><div id="pub-lofin"></div>`;
-  const sel = $<HTMLSelectElement>('pub-gov')!; let gov: Gov | null = null; let lg: LGov | null = null;
+    <div id="pub-body"></div><div id="pub-lofin"></div><div id="pub-contracts"></div>`;
+  const sel = $<HTMLSelectElement>('pub-gov')!; let gov: Gov | null = null; let lg: LGov | null = null; let cg: CGov | null = null; let cMeta: GovMeta | undefined;
   const load = async () => { const k = sel.value; if (!k) { toast('지자체를 고르세요'); return; } const m = metas.find(x => x.key === k); $('pub-stat')!.textContent = '받는 중…';
-    try { gov = m?.rows ? (await (await fetch(`/vat-expense/${k}.json`)).json()) as Gov : null; lg = m?.lofin ? (await (await fetch(`/vat-expense/lofin-${k}.json`)).json()) as LGov : null; st.gov = k; save();
+    try { gov = m?.rows ? (await (await fetch(`/vat-expense/${k}.json`)).json()) as Gov : null; lg = m?.lofin ? (await (await fetch(`/vat-expense/lofin-${k}.json`)).json()) as LGov : null; cMeta = m; try { cg = m?.contracts ? (await (await fetch(`/vat-expense/contracts-${k}.json`)).json()) as CGov : null; } catch { cg = null; } st.gov = k; save();
       $('pub-stat')!.textContent = [gov ? `건별 ${gov.periods.join('·')} · 지급일 ${gov.days.length}일치 · 받은 날 ${gov.fetched}` : '건별 자료 없음(모으는 중)', lg ? `연간 ${lg.years.join('·')}` : ''].filter(Boolean).join(' / ');
       if (!gov) $('pub-body')!.innerHTML = '<p class="note">이 지자체의 주민참여 재정 포털 건별 자료(2021~2023, 통계목 있음)는 아직 모으는 중입니다. 아래 지방재정365 연간 지출액으로 먼저 고를 수 있습니다.</p>';
       rebuild(); } catch { $('pub-stat')!.textContent = '받지 못했습니다'; } };
-  const rebuild = () => { if (gov) build(); buildL(); };
+  const rebuild = () => { if (gov) build(); buildL(); buildC(); };
   $('pub-load')!.addEventListener('click', load);
   if (sel.value && (st.gov === sel.value || !$('rv-result')?.textContent?.trim())) void load();
 
@@ -147,6 +150,44 @@ export async function mountPublic(root: HTMLElement, D: Data, org: Org | null, h
     $('pub-lbk-apply')?.addEventListener('click', () => { const fid = $<HTMLSelectElement>('pub-lbk-fid')!.value; const use = $<HTMLSelectElement>('pub-lbk-use')!.value as Asg['use']; const cw = $<HTMLSelectElement>('pub-lbk-cw')?.value || undefined; const keys = [...box.querySelectorAll<HTMLInputElement>('[data-lsel]:checked')].map(c => c.dataset.lsel!); if (!keys.length) { toast('사업을 먼저 선택하세요'); return; } if (!fid) { toast('적용할 시설을 고르세요'); return; } for (const k of keys) { st.asg[k] = { fid, use, cw }; const r = byKey.get(k); if (org && r && fid !== 'none') learnMap(org, r.b.biz, fid, use); } if (org) { setOrg(org); hooks.onLearn?.(); } save(); buildL(); toast(`${keys.length}개 사업에 적용했습니다`); });
     $('pub-lcsv')?.addEventListener('click', () => downloadText(`세금계산서-받아올-사업-${lg!.name}-${YRS.join('_')}-${today}.csv`, toCsv([['부서', '세부사업', '회계연도', '지출액', '시설', '비고'], ...want.sort((x, y) => x.dept.localeCompare(y.dept) || y.amt - x.amt).map(w => [w.dept, w.biz, w.y, w.amt, w.fac, w.note])]), 'text/csv;charset=utf-8'));
     $('pub-lcopy')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText($<HTMLTextAreaElement>('pub-lmemo')!.value); toast('복사했습니다'); } catch { toast('복사하지 못했습니다 — 글상자를 직접 선택해 복사하세요'); } });
+  }
+  /** 나라장터 계약(조달청 계약정보서비스) — 공개 지출 자료에 없는 '어느 업체와 맺은 어느 계약'을 이어, 받아 올 세금계산서를 업체(등록번호)·계약 단위로 적는다 */
+  let cq = ''; let ctf = ''; let ckind = '';
+  function buildC() {
+    const box = $('pub-contracts'); if (!box) return;
+    if (!cg) { box.innerHTML = cMeta ? `<p class="note" id="pub-c-none">나라장터 계약(조달청 계약정보서비스)은 아직 받지 않았습니다 — 공공데이터포털에서 계약정보서비스(15129427) 활용신청이 승인되면 이 아래에 ${esc(cMeta.name)}의 공사·용역·물품 계약이 업체·사업자등록번호와 함께 나옵니다.</p>` : ''; return; }
+    const keyOf = (c: Ctr) => 'C|' + (c.no || `${c.k}|${c.nm}|${c.date}`);
+    const asgC = (c: Ctr): { a: Asg | undefined; how: '지정' | '자동' | '' } => { const k = keyOf(c); if (st.asg[k]) return { a: st.asg[k], how: '지정' }; if (!org) return { a: undefined, how: '' }; const m = matchMap(org, c.nm, c.dept); if (m) return { a: { fid: m.fid, use: m.use === 'multi' || m.use === 'admin' ? m.use : 'this' }, how: '자동' }; const f = matchFacilityName(org, c.nm); return f ? { a: { fid: f.id, use: 'this' }, how: '자동' } : { a: undefined, how: '' }; };
+    const all = cg.rows.map(c => ({ c, key: keyOf(c), bt: bizType(D, c.nm) }));
+    const vis = all.filter(x => (!ckind || x.c.k === ckind) && tfOk(x.bt?.key, ctf) && (!cq || (x.c.nm + x.c.dept + x.c.corps.map(p => p.nm + p.no).join(' ')).includes(cq)))
+      .sort((x, y) => bizTypeRank(x.bt) - bizTypeRank(y.bt) || (y.c.tot || y.c.amt) - (x.c.tot || x.c.amt));
+    const facName = (id: string) => id === 'admin' ? '본청·행정 공통' : id === 'exempt' ? '면세·행정 전용' : id === 'none' ? '모름' : (org?.facilities.find(f => f.id === id)?.name ?? id);
+    const rateC = (x: { c: Ctr }, a: Asg): number | null => { if (a.fid === 'exempt') return 0; if (a.fid === 'none') return null; const f = org?.facilities.find(q => q.id === a.fid); const s0 = f ? facilityStatus(D, f) : undefined; const base = a.fid === 'admin' || a.use !== 'this' ? null : !f ? null : s0 === 'taxable' ? 1 : s0 === 'exempt' || s0 === 'own' || s0 === 'agency' ? 0 : null; return cwRate(x.c.k === '공사' ? cwPick(a, x.c.nm) : undefined, base, null, s0); };
+    const want = all.map(x => ({ x, a: asgC(x.c).a })).filter(w => w.a && rateC(w.x, w.a) !== 0);
+    const money = (c: Ctr) => c.tot || c.amt; const today = ymd(new Date());
+    const corpTxt = (c: Ctr) => c.corps.length ? c.corps.map(p => `${esc(p.nm || '(상호 확인)')}${p.no ? `<br><span class="note">${esc(p.no.replace(/^(\d{3})(\d{2})(\d{5})$/, '$1-$2-$3'))}</span>` : ''}${p.sh ? ` <span class="note">${esc(p.sh)}%</span>` : ''}`).join('<br>') : '<span class="note">—</span>';
+    box.innerHTML = `<div class="section-head"><h3>나라장터 계약(조달청) — 받아 올 세금계산서를 업체 단위로</h3><span class="meta">${esc(cg.name)} · ${esc(cg.from)}~${esc(cg.to)} · 계약 ${all.length}건 · 받은 날 ${esc(cg.fetched)}</span></div>
+      <p class="callout info" id="pub-c-help">위 공개 지출 자료에는 거래처가 없지만, 나라장터 계약에는 <strong>계약 업체와 사업자등록번호</strong>가 있습니다. 과세 시설 계약을 골라 두면 아래 목록이 '어느 업체가 발행한 세금계산서를 찾으면 되나'로 바뀝니다 — 홈택스 매입 목록에서 그 공급자 등록번호로 찾으면 됩니다. <strong>계약금액은 위 지출액과 같은 돈이라 공제 추정에 더하지 않습니다</strong>(세액 추정은 참고). ${esc(cg.note)}</p>
+      <div class="filters" role="group" aria-label="계약 거르기"><select id="pub-ckind" aria-label="계약 종류"><option value="">공사·용역·물품 전체</option>${(['공사', '용역', '물품'] as const).map(k => `<option value="${k}" ${ckind === k ? 'selected' : ''}>${k} ${all.filter(x => x.c.k === k).length}</option>`).join('')}</select> ${bizTypeSel(D, ctf, 'id="pub-ctype"')} <input type="search" id="pub-cq" placeholder="계약명·부서·업체·등록번호 찾기" value="${esc(cq)}" style="max-width:18em" /></div>
+      <div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off" id="pub-ctr"><caption>나라장터 계약 — 공제 가능성 있는 유형 먼저, 그 안은 계약금액 순</caption><thead><tr><th scope="col">계약일</th><th scope="col">종류</th><th scope="col">계약명</th><th scope="col">유형</th><th scope="col">부서</th><th scope="col">업체 · 사업자등록번호</th><th scope="col">총계약금액</th><th scope="col">세액 추정(참고)</th><th scope="col">시설</th><th scope="col">공사라면</th></tr></thead><tbody>${vis.slice(0, 300).map(x => { const { a, how } = asgC(x.c); return `<tr data-ck="${esc(x.key)}"><td>${esc(x.c.date)}</td><td>${esc(x.c.k)}${x.c.lng ? `<br><span class="note">${esc(x.c.lng)}</span>` : ''}</td><th scope="row">${x.c.url ? `<a href="${esc(x.c.url)}" rel="noopener" target="_blank">${esc(x.c.nm)}</a>` : esc(x.c.nm)}${how === '자동' ? '<br><span class="vbadge">이름 일치</span>' : ''}${x.c.cls ? `<br><span class="note">${esc(x.c.cls)}</span>` : ''}</th><td>${bizTypeBadge(x.bt)}</td><td class="note">${esc(x.c.dept || x.c.inst)}</td><td>${corpTxt(x.c)}</td><td>${fmt(money(x.c))}</td><td class="note">${fmt(Math.floor(money(x.c) * 10 / 110))}</td><td>${fidSel(a?.fid, `data-pc-fid="${esc(x.key)}"`)}</td><td>${x.c.k === '공사' ? cwSel(D, st.asg[x.key]?.cw, `data-pc-cw="${esc(x.key)}"`, guessCw(x.c.nm)) : '<span class="note">—</span>'}</td></tr>`; }).join('')}</tbody></table></div>${vis.length > 300 ? `<p class="note">${vis.length}건 가운데 300건만 보입니다. 거르기로 줄이세요.</p>` : ''}
+      ${want.length ? `<div class="section-head"><h3>세금계산서를 찾을 업체 목록</h3><span class="meta">${new Set(want.flatMap(w => w.x.c.corps.map(p => p.no || p.nm))).size}곳 · 계약 ${want.length}건</span></div>
+      <textarea id="pub-cmemo" rows="7" readonly style="width:100%;padding:8px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--bg);color:var(--ink);font:inherit">${esc(memoC(want.map(w => ({ c: w.x.c, fac: facName(w.a!.fid) })), cg.name, today))}</textarea>
+      <div class="actions no-print"><button type="button" class="btn" id="pub-ccsv">업체·계약 목록 CSV</button><button type="button" class="btn secondary" id="pub-ccopy">요청 메모 복사</button></div>` : ''}
+      <p class="note">출처: ${esc(cg.source)}. 판정은 참고이며 기관의 판단이 아닙니다.</p>`;
+    $<HTMLSelectElement>('pub-ckind')?.addEventListener('change', e => { ckind = (e.target as HTMLSelectElement).value; buildC(); });
+    $<HTMLSelectElement>('pub-ctype')?.addEventListener('change', e => { ctf = (e.target as HTMLSelectElement).value; buildC(); });
+    $<HTMLInputElement>('pub-cq')?.addEventListener('change', e => { cq = (e.target as HTMLInputElement).value.trim(); buildC(); });
+    const setC = (k: string) => { const x = all.find(y => y.key === k)!; const fid = box.querySelector<HTMLSelectElement>(`[data-pc-fid="${CSS.escape(k)}"]`)!.value; const cw = box.querySelector<HTMLSelectElement>(`[data-pc-cw="${CSS.escape(k)}"]`)?.value || undefined; if (!fid) delete st.asg[k]; else { st.asg[k] = { fid, use: 'this', cw }; if (org && fid !== 'none') { learnMap(org, x.c.nm, fid, 'this'); setOrg(org); hooks.onLearn?.(); } } save(); buildC(); };
+    box.querySelectorAll<HTMLSelectElement>('[data-pc-fid],[data-pc-cw]').forEach(s => s.addEventListener('change', () => setC(s.dataset.pcFid ?? s.dataset.pcCw!)));
+    $('pub-ccsv')?.addEventListener('click', () => downloadText(`세금계산서-찾을-업체-${cg!.name}-${today}.csv`, toCsv([['업체', '사업자등록번호', '계약명', '종류', '계약일', '총계약금액', '부서', '시설', '통합계약번호'], ...want.flatMap(w => (w.x.c.corps.length ? w.x.c.corps : [{ nm: '', no: '' }]).map(p => [p.nm, p.no, w.x.c.nm, w.x.c.k, w.x.c.date, money(w.x.c), w.x.c.dept, facName(w.a!.fid), w.x.c.no]))]), 'text/csv;charset=utf-8'));
+    $('pub-ccopy')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText($<HTMLTextAreaElement>('pub-cmemo')!.value); toast('복사했습니다'); } catch { toast('복사하지 못했습니다 — 글상자를 직접 선택해 복사하세요'); } });
+  }
+  function memoC(L: { c: Ctr; fac: string }[], govName: string, today: string) {
+    const by = new Map<string, { nm: string; no: string; cs: { c: Ctr; fac: string }[] }>();
+    for (const w of L) for (const p of (w.c.corps.length ? w.c.corps : [{ nm: '(업체 확인)', no: '' }])) { const k = p.no || p.nm; const g = by.get(k) ?? { nm: p.nm, no: p.no, cs: [] }; g.cs.push(w); by.set(k, g); }
+    return `[세금계산서 확인 요청 — ${govName} 부가가치세 경정청구 준비, ${today}]\n아래 업체가 발행한 매입 세금계산서(작성일자·공급가액·세액)를 홈택스 「전자세금계산서 목록조회(매입)」에서 공급자 사업자등록번호로 찾아 계약별로 모아 주세요. 기성금·선금으로 여러 장일 수 있습니다.\n\n` +
+      [...by.values()].sort((a, b) => b.cs.reduce((s, w) => s + (w.c.tot || w.c.amt), 0) - a.cs.reduce((s, w) => s + (w.c.tot || w.c.amt), 0)).map(g => `■ ${g.nm || '(상호 확인)'}${g.no ? ` (${g.no.replace(/^(\d{3})(\d{2})(\d{5})$/, '$1-$2-$3')})` : ''}\n` + g.cs.map(w => `  - ${w.c.nm} (${w.c.k}, 계약 ${w.c.date}, 총 ${fmt(w.c.tot || w.c.amt)}원, 시설: ${w.fac})`).join('\n')).join('\n') +
+      `\n\n※ 조달청 나라장터 계약정보로 고른 계약입니다. 담당자 이름·연락처는 보낼 때 적습니다.`;
   }
   function memoL(want: { dept: string; biz: string; y: string; amt: number; fac: string }[], govName: string, today: string) {
     const by = new Map<string, typeof want>(); for (const w of want) { const L = by.get(w.dept) ?? []; L.push(w); by.set(w.dept, L); }

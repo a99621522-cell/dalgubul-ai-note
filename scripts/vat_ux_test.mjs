@@ -348,6 +348,11 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     const note = T(await pg.locator('#pub-body').textContent());
     ok('C4 위탁·대행 통계목이 있는 사업을 과세 시설에 지정 → 위탁·대행(확인) 칸에 세액, 공제 대상 추정에는 그 몫이 안 더해짐 · 보조금·출연금 제외 안내', wk.length > 0 && chk.some(x => x && x !== '—') && /보조금\(민간경상·자본보조/.test(note) && /출연금/.test(note), `${wk[0]} c0=${c0} c1=${c1} chk=${chk.join(',')} rows=${bkTxt}`);
     if (wk.length) { await pg.click('[data-pf="all"]'); await pg.waitForTimeout(300); await pg.selectOption(`[data-pb-fid="${wk[0]}"]`, ''); await pg.waitForTimeout(300); await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300); } }
+  /* C5 나라장터 계약(조달청) — 자료가 없으면 안내 한 줄, 있으면 표·업체 목록(2026-11-05) */
+  { const none = await pg.locator('#pub-c-none').count(); const tbl = await pg.locator('#pub-ctr').count();
+    let detail = 'none=' + none + ' tbl=' + tbl, okC = none === 1 || tbl === 1;
+    if (tbl === 1) { const k = await pg.$eval('#pub-ctr tbody tr', t => t.dataset.ck); await pg.selectOption(`[data-pc-fid="${k}"]`, 'f3'); await pg.waitForTimeout(300); const memo = await pg.locator('#pub-cmemo').inputValue().catch(() => ''); okC = /세금계산서 확인 요청/.test(memo) && /■ /.test(memo) && !/○○○|대표/.test(memo); detail += ' memo=' + memo.slice(0, 120); await pg.selectOption(`[data-pc-fid="${k}"]`, ''); await pg.waitForTimeout(200); }
+    ok('C5 나라장터 계약: 자료 없으면 활용신청 안내, 있으면 계약 표 · 시설 고르면 업체별 세금계산서 찾기 메모', okC, detail); }
   /* R11 2024년 이후 — 지방재정365 세부사업별 연간 지출액(통계목 없음, 2021~2022 건별 비중을 빌림) */
   await pg.waitForSelector('#pub-lbiz', { timeout: 10000 });
   const lh = await pg.$$eval('#pub-lbiz thead th', ths => ths.map(t => t.textContent.trim()).join('|'));

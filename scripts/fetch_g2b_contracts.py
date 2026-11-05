@@ -111,6 +111,17 @@ def gov_of(name):
     return GU[m.group(1)] if m else "daegu"
 
 
+def claim_from(today=None):
+    """경정청구(국세기본법 제45조의2 — 법정신고기한 뒤 5년)가 아직 되는 가장 이른 과세기간의 첫 달.
+    제1기(1~6월) 확정신고기한 7월 25일, 제2기(7~12월) 다음 해 1월 25일."""
+    t = today or dt.date.today()
+    for y in range(t.year - 6, t.year + 1):
+        for half, deadline in ((1, dt.date(y, 7, 25)), (2, dt.date(y + 1, 1, 25))):
+            if deadline.replace(year=deadline.year + 5) >= t:
+                return f"{y}-{'01' if half == 1 else '07'}"
+    return t.strftime("%Y-%m")
+
+
 def months(a, b):
     y, m = map(int, a.split("-")); y2, m2 = map(int, b.split("-"))
     while (y, m) <= (y2, m2):
@@ -143,7 +154,7 @@ def mask(v):   # probe 로그에서 사람 이름처럼 보이는 3글자를 가
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--govs", default=",".join(GOVS))
-    ap.add_argument("--from", dest="frm", default="2021-01")
+    ap.add_argument("--from", dest="frm", default="", help="비우면 경정청구가 아직 되는 가장 이른 과세기간부터")
     ap.add_argument("--to", default=dt.date.today().strftime("%Y-%m"))
     ap.add_argument("--kinds", default="공사,용역,물품")
     ap.add_argument("--inqry-div", default=os.environ.get("G2B_INQRY_DIV", "1"))
@@ -152,6 +163,9 @@ def main():
     ap.add_argument("--max-calls", type=int, default=3000)
     ap.add_argument("--rows", type=int, default=999, help="한 쪽 행 수(주지 않으면 100 으로)")
     a = ap.parse_args()
+    # 계약일이 청구 기간보다 앞서도 기성·준공 세금계산서는 청구 기간 안에 나올 수 있어 계약일로 1년 앞까지 둔다
+    y, m = map(int, claim_from().split("-")); keep_from = f"{y - 1}-{m:02d}"
+    a.frm = a.frm or keep_from
     key = os.environ.get("DATA_GO_KR_KEY", "")
     if not key:
         print("DATA_GO_KR_KEY 가 없습니다"); return 2
@@ -225,11 +239,11 @@ def main():
             state.pop("done", None)
             for g in want:
                 path = f"{OUT}/{g}.json"
-                out = {"v": 1, "key": g, "name": GOVS[g], "fetched": dt.date.today().isoformat(), "from": a.frm, "to": a.to,
+                out = {"v": 1, "key": g, "name": GOVS[g], "fetched": dt.date.today().isoformat(), "from": keep_from, "to": a.to,
                        "source": "조달청 나라장터 계약정보서비스(공공데이터포털 15129427) — 나라장터 검색조건에 의한 계약현황 공사·용역·물품",
                        "note": "나라장터를 거친 계약만(카드 결제·공공요금·나라장터 밖 소액 계약은 없음). 계약금액은 지출액과 다르다(선금·기성·여러 해). 담당자·대표자 이름은 저장하지 않음."
                                + (" 2023-07 편입 전 경상북도 군위군 계약은 없음." if g == "gunwi" else ""),
-                       "rows": sorted(store[g].values(), key=lambda r: (r["date"], r["no"]))}
+                       "rows": sorted((r for r in store[g].values() if (r["date"] or "9")[:7] >= keep_from), key=lambda r: (r["date"], r["no"]))}
                 if out["rows"] or olds[g]:
                     json.dump(out, open(path, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
                 print(f"[contracts] {GOVS[g]}: {len(store[g])}건 → {path}", flush=True)

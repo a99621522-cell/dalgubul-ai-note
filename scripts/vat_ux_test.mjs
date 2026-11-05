@@ -297,8 +297,13 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   const [dz] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zr = path.join(os.tmpdir(), 'vat-rv2.zip'); await dz.saveAs(zr); const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); const det = execSync(`unzip -p "${zr}" 02_건별_명세.csv`).toString();
   const basisTxt = T(await pg.locator('#rv-basis').textContent()); const basisN = execSync(`unzip -p "${zr}" 06_근거_조문_유권해석_판례.txt`).toString();
   ok('R8 근거 절: 경정청구 조문(국세기본법 제45조의2·영 제74조) · 체육시설 기준·유권해석(부가가치세제과-186) · 본청·행정 공통(2017두55329)·질의서 초안 · 건별 조문', /제45조의2/.test(basisTxt) && /제74조/.test(basisTxt) && /체육시설/.test(basisTxt) && /186/.test(basisTxt) && /본청·행정 공통 안분/.test(basisTxt) && /2017두55329/.test(basisTxt) && (await pg.locator('#rv-basis details.inquiry[data-inq="admin_common"]').count()) === 1 && /건별 판정에 걸린 조문/.test(basisTxt), basisTxt.slice(0, 300));
-  ok('R8 건별 표 근거 칸 · 사유 초안에 근거 · zip 8파일(06 근거 + 07 질의서)', /법 제38조/.test(T(await pg.locator('#rv-sup .rv-rows').first().textContent())) && /\[근거 법령·유권해석\]/.test(await pg.locator('#rv-reason').inputValue()) && zl.length === 8 && /체육시설/.test(basisN) && zl.some(z => /07_국세청_질의서_초안_1_admin_common/.test(z)), zl.join('|'));
+  ok('R8 건별 표 근거 칸 · 사유 초안에 근거 · zip 10파일(06 근거 + 07 질의서 + 08·09 자료별·순액)', /법 제38조/.test(T(await pg.locator('#rv-sup .rv-rows').first().textContent())) && /\[근거 법령·유권해석\]/.test(await pg.locator('#rv-reason').inputValue()) && zl.length === 10 && /체육시설/.test(basisN) && zl.some(z => /07_국세청_질의서_초안_1_admin_common/.test(z)), zl.join('|'));
   ok('R5 zip 건별 명세에 본청·행정 공통 18,000', /본청·행정 공통/.test(det) && /18000/.test(det), zl.join('|'));
+  { const sk = await pg.$$eval('#rv-sup tbody tr[data-sk]', trs => trs.filter(t => Number((t.querySelectorAll('td')[8]?.textContent || '').replace(/[^0-9]/g, '').slice(0, -2) || (t.querySelectorAll('td')[8]?.textContent || '').replace(/[^0-9]/g, '')) > 0).map(t => t.dataset.sk));
+    const tot0 = T(await pg.locator('#rv-total').textContent()); let tot1 = '', lab = '', tot2 = '';
+    if (sk.length) { await pg.selectOption(`[data-sf-cw="${sk[0]}"]`, 'c_land'); await pg.waitForTimeout(400); tot1 = T(await pg.locator('#rv-total').textContent()); lab = T(await pg.locator(`tr[data-sk="${sk[0]}"]`).textContent());
+      await pg.selectOption(`[data-sf-cw="${sk[0]}"]`, ''); await pg.waitForTimeout(400); tot2 = T(await pg.locator('#rv-total').textContent()); }
+    ok('C2 ③ 공급자 표 공사라면 칸 · 부지 토목으로 고르면 청구 후보가 줄고 판정에 갈래 이름 · 되돌리면 원래 금액', (await pg.locator('#rv-cw-note').count()) === 1 && sk.length > 0 && tot1 !== tot0 && /부지 토목|토지 관련/.test(lab) && tot2 === tot0, [tot0, tot1, tot2].join(' / ')); }
   await pg.reload(); await pg.waitForTimeout(700); ok('R6 새로 고침 뒤 자료·귀속·신고 값 유지(5건, 298,000)', /5건/.test(T(await pg.locator('#rv-stat').textContent())) && T(await pg.locator('#rv-total').textContent()).startsWith('298,000'));
   await pg.evaluate(() => localStorage.removeItem('vat-review-v1'));
   /* R9 파일 놓기(xlsx) — 붙여넣기 없이 */
@@ -308,17 +313,46 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   await pg.click('#rv-build'); await pg.waitForTimeout(500); ok('R9 목록에 더하기 → 2건(엑셀 일련번호 날짜 45700 → 2025-02-12)', /2건/.test(T(await pg.locator('#rv-stat').textContent())) && (await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-review-v1')).rows.map(r => r.d).sort().join(','))) === '2025-02-10,2025-02-12');
   await pg.setInputFiles('#rv-drop-zone input[type=file]', path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax', 'invoice_list_euckr.csv')); await pg.waitForTimeout(500); ok('R9 EUC-KR CSV 파일 놓기: 1행·공급자상호 열', /1행/.test(T(await pg.locator('#rv-colA .q-title').textContent())) && /2행 읽음\(csv\)/.test(T(await pg.locator('#rv-drop-zone .vat-drop-msg').textContent())) && (await pg.evaluate(() => document.querySelector('#rv-colA select[data-col=supplier]').selectedOptions[0].textContent)) === '공급자상호');
   await pg.evaluate(() => localStorage.removeItem('vat-review-v1'));
-  /* R10 공개 지출 자료로 후보 찾기 — 달성군 표본(5일치) */
-  await pg.evaluate(o => localStorage.setItem('vat-org-v1', JSON.stringify(o)), { ...ORG_R, facilities: [...ORG_R.facilities, { id: 'f3', type: 'lodging', name: '비슬산 자연휴양림', run: 'direct', income: [], deposit: false }] }); await pg.reload(); await pg.waitForSelector('#rv-a', { state: 'attached' });
+  /* R10 공개 지출 자료로 후보 찾기 — 달성군(받은 만큼, 금액은 식으로 견줌) */
+  await pg.evaluate(o => localStorage.setItem('vat-org-v1', JSON.stringify(o)), { ...ORG_R, facilities: [...ORG_R.facilities, { id: 'f3', type: 'lodging', name: '비슬산 유스호스텔', run: 'direct', income: [], deposit: false }, { id: 'f4', type: 'lodging', name: '비슬산 자연휴양림', run: 'direct', income: [], deposit: false }] }); await pg.reload(); await pg.waitForSelector('#rv-a', { state: 'attached' });
   await pg.click('[data-rvsrc="pub"]'); await pg.waitForSelector('#pub-gov'); await pg.selectOption('#pub-gov', 'dalseong'); await pg.click('#pub-load'); await pg.waitForSelector('#pub-biz', { timeout: 15000 }); await pg.waitForTimeout(300);
   const pubRows = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => ({ k: t.dataset.bk, fid: t.querySelector('[data-pb-fid]').value, badge: !!t.querySelector('.vbadge') })));
-  ok('R10 공개 자료 불러오기: 세부사업 표 · 비슬산 휴양림도로 확포장 → 비슬산 자연휴양림 이름 일치(미지정 표에서 빠짐)', pubRows.length > 20 && !pubRows.some(r => /비슬산 휴양림도로/.test(r.k)), String(pubRows.length));
+  ok('R10 공개 자료 불러오기: 세부사업 표 · 비슬산 유스호스텔 관리 → 이름 일치(미지정 표에서 빠짐) · 휴양림도로 확포장은 지명만 같은 도로 공사라 미지정에 남음', pubRows.length > 20 && !pubRows.some(r => /비슬산 유스호스텔 관리/.test(r.k)) && pubRows.some(r => /비슬산 휴양림도로/.test(r.k) && !r.fid), String(pubRows.length));
   await pg.click('[data-pf="done"]'); await pg.waitForTimeout(300); const doneRows = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => ({ k: t.dataset.bk, fid: t.querySelector('[data-pb-fid]').value })));
-  ok('R10 지정됨 표에 비슬산(f3·이름 일치) · 공제 대상 추정 24,237,600(266,613,600 × 10/110, 숙박·캠핑장 과세)', doneRows.some(r => /비슬산 휴양림도로/.test(r.k) && r.fid === 'f3') && T(await pg.locator('#pub-claim').textContent()).startsWith('24,237,600'), T(await pg.locator('#pub-claim').textContent()) + JSON.stringify(doneRows));
-  ok('R10 받아올 사업 목록 메모에 건설과·비슬산 · CSV 단추', /건설과/.test(await pg.locator('#pub-memo').inputValue()) && /비슬산 휴양림도로/.test(await pg.locator('#pub-memo').inputValue()) && (await pg.locator('#pub-csv').count()) === 1);
+  /* 자료가 늘어도(표본 → 3년 전체) 맞는 식으로 견준다: 숙박(과세) 직영 시설은 공제 대상 = 세액 추정, 카드 합계 = 과세기간 표의 공제 대상 합 */
+  const perSum = async () => pg.$$eval('#pub-per tbody tr', trs => { const n = s => Number((s || '').replace(/[^0-9]/g, '')) || 0; let all = 0, f3e = 0, f3c = 0; for (const t of trs) { const td = t.querySelectorAll('td'); const c = n(td[4]?.textContent); all += c; if (/비슬산 유스호스텔/.test(td[0]?.textContent || '')) { f3e += n(td[3]?.textContent); f3c += c; } } return { all, f3e, f3c }; });
+  const claimN = async () => Number(T(await pg.locator('#pub-claim').textContent()).replace(/[^0-9]/g, ''));
+  const ps1 = await perSum(); const c1 = await claimN();
+  ok('R10 지정됨 표에 비슬산 유스호스텔(f3·이름 일치) · 숙박 과세라 공제 대상 추정 = 세액 추정(10/110) · 카드 = 표 합계', doneRows.some(r => /비슬산 유스호스텔 관리/.test(r.k) && r.fid === 'f3') && !doneRows.some(r => /휴양림도로|참꽃/.test(r.k)) && ps1.f3e > 0 && ps1.f3c === ps1.f3e && c1 === ps1.all, c1 + ' ' + JSON.stringify(ps1));
+  ok('R10 받아올 사업 목록 메모에 정책사업과·비슬산 유스호스텔 · CSV 단추', /정책사업과/.test(await pg.locator('#pub-memo').inputValue()) && /비슬산 유스호스텔 관리/.test(await pg.locator('#pub-memo').inputValue()) && (await pg.locator('#pub-csv').count()) === 1);
   await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300); await pg.selectOption('[data-pb-fid="회계과|달성군 여성문화복지센터 증축"]', 'f2'); await pg.waitForTimeout(400);
   const learned = await pg.evaluate(() => (JSON.parse(localStorage.getItem('vat-org-v1')).map || []).map(r => r.pat + '>' + r.fid).join(','));
-  ok('R10 시설을 고르면 매핑표에 남음(달성군 여성문화복지센터 증축 → f2) · 면세 시설이라 추정 그대로', /여성문화복지센터 증축>f2/.test(learned) && T(await pg.locator('#pub-claim').textContent()).startsWith('24,237,600'), learned);
+  ok('R10 시설을 고르면 매핑표에 남음(달성군 여성문화복지센터 증축 → f2) · 면세 시설이라 추정 그대로', /여성문화복지센터 증축>f2/.test(learned) && (await claimN()) === c1, learned + ' ' + (await claimN()) + ' vs ' + c1);
+  /* C3 유형 칸(2026-11-05): 유형 있는 사업 먼저, 유형으로 거르기 */
+  { const hd = await pg.$$eval('#pub-biz thead th', ths => ths.map(t => t.textContent.trim()));
+    const first = await pg.$$eval('#pub-biz tbody tr', trs => trs.slice(0, 5).map(t => t.querySelectorAll('td')[2]?.textContent.trim()));
+    await pg.selectOption('#pub-type', 'road'); await pg.waitForTimeout(300);
+    const rd = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => [t.dataset.bk, t.querySelectorAll('td')[2]?.textContent.trim()]));
+    await pg.selectOption('#pub-type', 'parking'); await pg.waitForTimeout(300);
+    const pk = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => t.querySelectorAll('td')[2]?.textContent.trim()));
+    await pg.selectOption('#pub-type', ''); await pg.waitForTimeout(300);
+    ok('C3 공개 지출 표에 유형 칸 · 공제 가능성 있는 유형이 먼저(도로·주차장·시장 보조는 뒤) · 도로 공사·공영주차장으로 거르기 · 유형 설명 펼침', hd.includes('유형') && first.every(x => x && x !== '—' && !/도로 공사|공영주차장|전통시장/.test(x)) && rd.length > 0 && rd.every(([, t]) => t === '시설 이름이 든 도로 공사') && rd.some(([k]) => /휴양림도로/.test(k)) && pk.length > 0 && pk.every(t => t === '공영주차장') && (await pg.locator('#pub-type-help').count()) === 1, JSON.stringify(first) + ' road ' + rd.length + ' park ' + pk.length); }
+  /* C4 위탁·대행 사업비는 공제 대상 추정에 넣지 않고 '확인'으로(2026-11-05 운영자 '민간경상보조나 출연금은 부가세 세입이 아닐 것 같아') */
+  { await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300);
+    const wk = await pg.$$eval('#pub-biz tbody tr', trs => trs.filter(t => (t.querySelectorAll('td')[5]?.textContent || '—').trim() !== '—').map(t => t.dataset.bk));
+    const c0 = Number(T(await pg.locator('#pub-claim').textContent()).replace(/[^0-9]/g, ''));
+    if (wk.length) { await pg.selectOption(`[data-pb-fid="${wk[0]}"]`, 'f3'); await pg.waitForTimeout(400); }
+    const c1 = Number(T(await pg.locator('#pub-claim').textContent()).replace(/[^0-9]/g, ''));
+    const chk = await pg.$$eval('#pub-per tbody tr', trs => trs.filter(t => /비슬산 유스호스텔/.test(t.querySelectorAll('td')[0]?.textContent || '')).map(t => (t.querySelectorAll('td')[5]?.textContent || '').trim()));
+    const bkTxt = wk.length ? await pg.locator(`tr[data-bk="${wk[0]}"]`).count() : 0;
+    const note = T(await pg.locator('#pub-body').textContent());
+    ok('C4 위탁·대행 통계목이 있는 사업을 과세 시설에 지정 → 위탁·대행(확인) 칸에 세액, 공제 대상 추정에는 그 몫이 안 더해짐 · 보조금·출연금 제외 안내', wk.length > 0 && chk.some(x => x && x !== '—') && /보조금\(민간경상·자본보조/.test(note) && /출연금/.test(note), `${wk[0]} c0=${c0} c1=${c1} chk=${chk.join(',')} rows=${bkTxt}`);
+    if (wk.length) { await pg.click('[data-pf="all"]'); await pg.waitForTimeout(300); await pg.selectOption(`[data-pb-fid="${wk[0]}"]`, ''); await pg.waitForTimeout(300); await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300); } }
+  /* C5 나라장터 계약(조달청) — 자료가 없으면 안내 한 줄, 있으면 표·업체 목록(2026-11-05) */
+  { const none = await pg.locator('#pub-c-none').count(); const tbl = await pg.locator('#pub-ctr').count();
+    let detail = 'none=' + none + ' tbl=' + tbl, okC = none === 1 || tbl === 1;
+    if (tbl === 1) { const k = await pg.$eval('#pub-ctr tbody tr', t => t.dataset.ck); await pg.selectOption(`[data-pc-fid="${k}"]`, 'f3'); await pg.waitForTimeout(300); const memo = await pg.locator('#pub-cmemo').inputValue().catch(() => ''); okC = /세금계산서 확인 요청/.test(memo) && /■ /.test(memo) && !/○○○|대표/.test(memo); detail += ' memo=' + memo.slice(0, 120); await pg.selectOption(`[data-pc-fid="${k}"]`, ''); await pg.waitForTimeout(200); }
+    ok('C5 나라장터 계약: 자료 없으면 활용신청 안내, 있으면 계약 표 · 시설 고르면 업체별 세금계산서 찾기 메모', okC, detail); }
   /* R11 2024년 이후 — 지방재정365 세부사업별 연간 지출액(통계목 없음, 2021~2022 건별 비중을 빌림) */
   await pg.waitForSelector('#pub-lbiz', { timeout: 10000 });
   const lh = await pg.$$eval('#pub-lbiz thead th', ths => ths.map(t => t.textContent.trim()).join('|'));
@@ -326,9 +360,41 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('R11 지방재정365 표: 2024·2025 지출액 열 · 세부사업 줄 · 앞 표에서 고른 여성문화복지센터 증축은 같은 사업으로 이어짐(미지정에서 빠짐)', /2024 지출액/.test(lh) && /2025 지출액/.test(lh) && ln > 20 && !(await pg.$$eval('#pub-lbiz tbody tr', trs => trs.some(t => /여성문화복지센터 증축/.test(t.dataset.lk)))), lh + ' ' + ln);
   await pg.fill('#pub-lq', '휴양림'); await pg.press('#pub-lq', 'Enter'); await pg.dispatchEvent('#pub-lq', 'change'); await pg.waitForTimeout(300);
   const lk = await pg.$$eval('#pub-lbiz tbody tr', trs => trs.map(t => t.dataset.lk));
-  if (lk.length) { await pg.selectOption(`[data-pl-fid="${lk[0]}"]`, 'f3'); await pg.waitForTimeout(400); }
-  ok('R11 휴양림 사업을 비슬산(과세)에 지정 → 연도별 추정 표·받아올 사업 메모에 그 사업', lk.length > 0 && (await pg.locator('#pub-lper').count()) === 1 && (await pg.locator('#pub-lmemo').inputValue()).includes(lk[0].split('|')[2]), JSON.stringify(lk.slice(0, 3)));
+  const memoL = async () => (await pg.locator('#pub-lmemo').count()) ? await pg.locator('#pub-lmemo').inputValue() : '';
+  const road = lk.find(k => /휴양림도로/.test(k)), plain = lk.find(k => /휴양림 정비/.test(k));
+  if (road) { await pg.selectOption(`[data-pl-fid="${road}"]`, 'f3'); await pg.waitForTimeout(400); }
+  if (plain) { await pg.selectOption(`[data-pl-fid="${plain}"]`, 'f3'); await pg.waitForTimeout(400); }
+  await pg.click('[data-lf="all"]'); await pg.waitForTimeout(300);
+  const m1 = await memoL(); const roadOpt = road ? await pg.locator(`[data-pl-cw="${road}"] option:checked`).textContent() : '';
+  ok('R11 휴양림 사업을 비슬산(과세)에 지정 → 연도별 추정 표·받아올 사업 메모에 휴양림 정비 · 휴양림도로 확포장은 공공 도로로 짐작해 빠짐', !!road && !!plain && (await pg.locator('#pub-lper').count()) === 1 && m1.includes('- 휴양림 정비 (') && !m1.includes('휴양림도로') && /짐작: 공공 도로/.test(roadOpt || ''), JSON.stringify(lk.slice(0, 3)) + ' ' + roadOpt);
+  /* C1 공사 다섯 갈래(2026-11-05): '공사 아님'으로 고치면 도로가 다시 들어오고, '면세 부분 전용'이면 빠짐 */
+  if (road) { await pg.selectOption(`[data-pl-cw="${road}"]`, 'no'); await pg.waitForTimeout(400); }
+  if (plain) { await pg.selectOption(`[data-pl-cw="${plain}"]`, 'c_exempt'); await pg.waitForTimeout(400); }
+  const m2 = await memoL(); const opts = plain ? await pg.$$eval(`[data-pl-cw="${plain}"] option`, os => os.map(o => o.value).join(',')) : '';
+  ok('C1 공사라면 칸 7가지(고르기·공사 아님·5갈래) · 도로를 공사 아님으로 → 메모에 다시 · 휴양림 정비를 면세 부분 전용으로 → 메모에서 빠짐', opts === ',no,c_tax,c_shared,c_exempt,c_land,c_road' && m2.includes('휴양림도로') && !m2.includes('- 휴양림 정비 (') && (await pg.locator('#pub-cw-note').count()) === 1, opts + ' note=' + (await pg.locator('#pub-cw-note').count()) + ' memo=' + m2.split('\n').filter(l => /휴양림/.test(l)).join(' | '));
   await pg.evaluate(() => { localStorage.removeItem('vat-pub-v1'); localStorage.removeItem('vat-rv-src'); });
+}
+
+/* ── U 지난 신고서 → 자료 → 돌려받을 금액(2026-11-04, docs/design/vat-refund-unlock.md) ── */
+{
+  const FXU = path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax');
+  const ORG_U = { v: 1, org: '시험군', dept: '재무과', unit: 'entity', reg_no: '555-83-00001', handover_day: 10, created: '2026-01-01', facilities: [{ id: 'f1', type: 'sports', name: '시험체육센터', run: 'direct', income: [], deposit: false }] };
+  await pg.goto(base + '/vat/review/'); await pg.evaluate(o => { localStorage.clear(); localStorage.setItem('vat-org-v1', JSON.stringify(o)); localStorage.setItem('vat-rv-src', 'paste'); }, ORG_U); await pg.reload(); await pg.waitForSelector('#rv-a', { state: 'attached' });
+  const rowsU = ['작성일자\t공급자등록번호\t공급자상호\t품목\t공급가액\t세액\t공급받는자등록번호', '2024-08-05\t777-77-77777\t시공사\t시험체육센터 수선 1\t5,000,000\t500,000\t555-83-00001', '2024-09-05\t777-77-77777\t시공사\t시험체육센터 수선 2\t5,000,000\t500,000\t555-83-00001', '2024-10-05\t777-77-77777\t시공사\t시험체육센터 수선 3\t5,000,000\t500,000\t555-83-00001', '2020-03-05\t888-88-88888\t옛 업체\t시험체육센터 전기\t3,000,000\t300,000\t555-83-00001'];
+  await pg.click('[data-rvsrc="paste"]'); await pg.fill('#rv-a', rowsU.join('\n')); await pg.evaluate(() => document.getElementById('rv-form').requestSubmit()); await pg.waitForTimeout(400); await pg.click('#rv-build'); await pg.waitForTimeout(600);
+  await pg.setInputFiles('#rv-fd-file', [path.join(FXU, 'filed_2024_2.txt'), path.join(FXU, 'filed_2020_1.txt')]); await pg.waitForSelector('#rv-fd-tbl', { timeout: 10000 }); await pg.waitForTimeout(500);
+  ok('U1 신고서 2건 읽기 → ② 표: 2024년 제2기 신고 함 · (18) 1,000,000 · (17) 200,000 · 면세비율 30(⑭ 90,000 ÷ ⑪ 300,000)', (await pg.locator('[data-filed="2024-2"]').inputValue()) === 'filed' && (await pg.locator('[data-fin="deduct:2024-2"]').inputValue()) === '1,000,000' && (await pg.locator('[data-fin="nondeduct:2024-2"]').inputValue()) === '200,000' && (await pg.locator('[data-fin="er:2024-2"]').inputValue()) === '30', await pg.locator('#rv-fd-tbl').textContent());
+  ok('U2 시설 자료가 없으면 지금 0 · 자료를 올리면 500,000(= 1,500,000 − 1,000,000) · 자료 표에 시험체육센터 자료 묶음', T(await pg.locator('#ul-now').textContent()).startsWith('0') && T(await pg.locator('#ul-docs').textContent()).startsWith('500,000') && /시험체육센터 자료 묶음/.test(T(await pg.locator('#ul-docs-tbl').textContent())), T(await pg.locator('#rv-unlock').textContent()).slice(0, 300));
+  await pg.click('[data-have="fac:f1"]'); await pg.waitForTimeout(500);
+  ok('U2 자료 있음 표시 → 지금 자료로 500,000 · 자료를 올리면 0', T(await pg.locator('#ul-now').textContent()).startsWith('500,000') && T(await pg.locator('#ul-docs').textContent()).startsWith('0'));
+  ok('U3 신고서 과세 매출 0 → 매출 신고 확인 안내', /매출 신고를 확인하세요/.test(T(await pg.locator('#rv-unlock').textContent())));
+  await pg.fill('[data-sales="2024-2"]', '1000000'); await pg.press('[data-sales="2024-2"]', 'Tab'); await pg.waitForTimeout(500);
+  const rowU = await pg.$$eval('#ul-per tbody tr', trs => trs.map(t => [...t.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim())));
+  const r24 = rowU.find(r => /2024년 제2기/.test(r[0])); const salesCell = Number((r24?.[7] ?? '').replace(/[^\d]/g, '')); const netNow = Number(T(await pg.locator('#ul-net-now').textContent()).replace(/[^\d-]/g, ''));
+  ok('U3 신고에 없던 매출 1,000,000 → 매출세액 100,000 + 가산세 · 순액 = 500,000 − (매출세액+가산세) − 합계표 가산세 25,000(5,000,000 × 0.5%)', salesCell > 100000 && salesCell < 200000 && netNow === 500000 - salesCell - 25000, JSON.stringify(r24) + ' net ' + netNow);
+  const r20 = rowU.find(r => /2020년 제1기/.test(r[0]));
+  ok('U4 2020년 제1기(기한 지남)는 세 칸에서 빠지고 따로 — 300,000 − 신고 100,000 = 200,000', /기한 지남/.test(r20?.[1] ?? '') && /기한이 지난 과세기간 몫 200,000원/.test(T(await pg.locator('#rv-unlock').textContent())) && T(await pg.locator('#ul-now').textContent()).startsWith('500,000'), JSON.stringify(r20));
+  await pg.evaluate(() => { localStorage.removeItem('vat-review-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);

@@ -28,6 +28,10 @@ export type Data = {
     entity_unit?: { summary: string; caution: string; basis: Basis[] };
     agency_contract?: { key: string; text: string }[];
     agency_exempt?: { summary: string; exclusions: string[]; caution: string; basis: Basis[]; rulings?: string[] };
+    /** 겸용 시설 공사의 다섯 갈래(2026-11-05) — 과세 부분 전용 / 같이 쓰는 시설 / 면세 부분 전용 / 부지 토목 / 공공 도로·인도 */
+    /** 공개 지출 자료 세부사업 유형(2026-11-05) — 사업명 낱말 짐작, 위에서부터 처음 맞는 하나 */
+    biz_types?: { key: string; name: string; re: string; hint: string; low?: boolean }[];
+    works?: { note: string; options: { key: CwKey; name: string; short: string; why: string; basis: Basis[]; verify?: boolean }[] };
     penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
     deemed_rent?: { rates: Record<string, number>; src: string } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
@@ -136,7 +140,21 @@ export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacil
   let best: OrgFacility | undefined, bl = 0;
   for (const f of org.facilities) {
     for (const nm of [f.name, ...(f.alias ?? [])]) { const n = norm(nm.replace(/\(.*$/, '')); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
-    for (const t of new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf))) { if ((freq.get(t) ?? 0) >= 3 || STOP.has(t)) continue; const n = norm(t); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
+    /* 낱말 일치는 시설 종류가 맞을 때만(2026-11-04 — 3년치 공개 지출에서 '비슬산 자연휴양림'이 '비슬산 참꽃 문화제'·'비슬산 유스호스텔 관리' 같은 다른 사업 7개에 붙음):
+       시설 이름의 마지막 낱말(종류: 자연휴양림·파크골프장·유스호스텔)이 있거나, 앞 낱말(지명) + 종류 글자(마지막 낱말 끝 3글자, 예: 휴양림)가 함께 있어야 한다.
+       지명만 둘('화원 동산')은 붙이지 않는다. 마지막 낱말이 흔한 낱말('센터')이면 가를 낱말 둘이 있어야. 낱말이 하나뿐인 이름은 그 하나로 */
+    for (const nm of [f.name, ...(f.alias ?? [])]) {
+      const all = tokOf(nm.replace(/\(.*$/, '')); if (!all.length) continue; const ok = (t: string) => (freq.get(t) ?? 0) < 3 && !STOP.has(t) && norm(t).length >= 2;
+      const last = all[all.length - 1], place = [...new Set(all.slice(0, -1))].filter(ok); const has = (t: string) => hay.includes(norm(t));
+      const stem = last.length >= 4 ? norm(last.slice(-3)) : ''; let n = 0;
+      const road = (w: string) => new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(도로|진입로|길|교량|교)').test(hay);   // '휴양림도로 확포장'·'휴양림길 인도' — 시설로 가는 도로 공사는 시설 지출이 아니다
+      if (all.length === 1) { if (ok(last) && has(last) && !road(norm(last))) n = norm(last).length; }
+      else if (ok(last) && has(last) && !road(norm(last))) n = norm(last).length + place.filter(has).reduce((a, t) => a + norm(t).length, 0);
+      else if (stem && hay.includes(stem) && !road(stem) && place.some(has)) n = stem.length + place.filter(has).reduce((a, t) => a + norm(t).length, 0);
+      else if (all.some(t => norm(t) === hay)) n = hay.length;   // 입력 전체가 시설 이름의 한 낱말과 같을 때(매출 붙여넣기에 '테크노폴리스'만 적음)
+      else if (!ok(last) && place.filter(has).length >= 2) n = place.filter(has).reduce((a, t) => a + norm(t).length, 0);
+      if (n > bl) { bl = n; best = f; }
+    }
   }
   return best;
 }
@@ -325,6 +343,27 @@ export const WHAT_GUESS: { re: RegExp; key: string }[] = [
   { re: /전기|한전|한국전력|가스|도시가스|통신|KT|SKT|LGU|인터넷|전화|수도|상하수도/i, key: 'utility' }, { re: /수도요금|상수도|도서|교육|진료/, key: 'water' }, { re: /청소|경비|용역|인쇄|홍보|방역|소독|위탁/, key: 'service' },
   { re: /수선|공사|보수|교체|도장|방수|설치/, key: 'repair' }, { re: /비품|장비|소모품|사무용품|물품|구입|구매/, key: 'equip' }, { re: /주유|유류|휘발유|경유|세차|정비|타이어|렌트|리스/, key: 'car_pass' },
   { re: /식대|회식|다과|간식|커피|음료|식사/, key: 'staff' }, { re: /선물|기념품|화환|경조|접대/, key: 'guest' }, { re: /보험/, key: 'insurance' }, { re: /토지|부지|조성/, key: 'land' }];
+/** 세부사업 유형 — rules.yml biz_types 를 위에서부터 맞춰 처음 맞는 하나(없으면 undefined). 판정이 아니라 '먼저 볼 사업' 묶음 */
+const BT_CACHE = new WeakMap<object, { key: string; name: string; hint: string; low: boolean; rx: RegExp }[]>();
+export function bizType(D: Data, name: string) { const L = D.rules.biz_types; if (!L?.length) return undefined; let c = BT_CACHE.get(L); if (!c) { c = L.map(t => ({ key: t.key, name: t.name, hint: t.hint, low: !!t.low, rx: new RegExp(t.re) })); BT_CACHE.set(L, c); } return c.find(t => t.rx.test(name)); }
+/** 표 정렬 순서 — 0 공제 가능성이 있는 유형 / 1 대부분 공제 없는 유형(도로·직영 주차장·상인회 보조) / 2 유형 없음 */
+export const bizTypeRank = (t: { low: boolean } | undefined) => !t ? 2 : t.low ? 1 : 0;
+export const bizTypeBadge = (t: { name: string; hint: string } | undefined) => t ? `<span class="vbadge" title="${esc(t.hint)}">${esc(t.name)}</span>` : '<span class="note">—</span>';
+export const bizTypeSel = (D: Data, cur: string, attr: string) => `<select ${attr} aria-label="유형으로 거르기"><option value="">유형: 전체(공제 가능성 있는 유형 먼저)</option><option value="typed" ${cur === 'typed' ? 'selected' : ''}>유형 있는 사업만</option>${(D.rules.biz_types ?? []).map(t => `<option value="${esc(t.key)}" ${cur === t.key ? 'selected' : ''}>${esc(t.name)}</option>`).join('')}<option value="none" ${cur === 'none' ? 'selected' : ''}>유형 없음</option></select>`;
+/** 공사 갈래(rules.yml works) — 휴양림처럼 과세(숙박)·면세(입장)가 한 시설에 섞인 곳의 공사를 다섯 가지로 가른다. 판정은 judge 그대로, 귀속(use)·종류(kind)만 바꾼다 */
+export type CwKey = 'c_tax' | 'c_shared' | 'c_exempt' | 'c_land' | 'c_road';
+export const CW_KEYS: CwKey[] = ['c_tax', 'c_shared', 'c_exempt', 'c_land', 'c_road'];
+export const isCw = (k: string | undefined): k is CwKey => !!k && (CW_KEYS as string[]).includes(k);
+/** 사업명·품목 글자로 짐작하는 것은 도로·토목 둘뿐 — 나머지 셋은 어느 동을 짓는지 사람이 안다 */
+export const guessCw = (s: string): CwKey | undefined => /도로|진입로|인도\s*(설치|정비|개설)|보도\s*(설치|정비)|교량|확\s*포장/.test(s) ? 'c_road' : /부지\s*조성|형질\s*변경|절토|성토|토목|정지\s*작업|매립/.test(s) ? 'c_land' : undefined;
+/** 공사 갈래가 정해졌을 때의 공제 비율 — 0(면세 전용·토목·공공 도로) / 1(과세 전용) / 1 − 면세비율(같이 쓰는 시설) / null(못 셈). base 는 갈래가 없을 때의 비율 */
+export function cwRate(cw: CwKey | undefined, base: number | null, er: number | null, facStatus?: string): number | null {
+  if (!cw) return base;
+  if (cw === 'c_exempt' || cw === 'c_land' || cw === 'c_road') return 0;
+  if (cw === 'c_shared') return er === null ? null : 1 - er / 100;
+  return facStatus === 'exempt' || facStatus === 'own' || facStatus === 'agency' ? 0 : facStatus ? 1 : base;
+}
+export const cwSel = (D: Data, cur: string | undefined, attr: string, guessed?: string) => `<select ${attr} aria-label="공사라면"><option value="">${guessed && isCw(guessed) ? `(짐작: ${esc(D.rules.works?.options.find(o => o.key === guessed)?.short ?? '')})` : '(공사라면 고르기)'}</option><option value="no" ${cur === 'no' ? 'selected' : ''}>공사 아님</option>${(D.rules.works?.options ?? []).map(o => `<option value="${o.key}" title="${esc(o.name)}" ${cur === o.key ? 'selected' : ''}>${esc(o.short)}</option>`).join('')}</select>`;
 export const guessWhat = (s: string) => { for (const g of WHAT_GUESS) if (g.re.test(s)) return g.key; return 'other'; };
 const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
 export const crc32 = (b: Uint8Array) => { let c = 0xffffffff; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };

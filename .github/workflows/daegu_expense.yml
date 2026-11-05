@@ -18,6 +18,10 @@ on:
         description: "true 면 연도 목록·한 날짜 행 수만 로그"
         required: false
         default: "false"
+      extra:
+        description: "(진단) 수집기에 더할 인자 — 예: --diag(10개 지자체 연도 목록만, 다음 실행 부르지 않음)"
+        required: false
+        default: ""
       attempt:
         description: "(자동) 몇 번째 시도인지 — 연결이 안 된 러너(종료 코드 3)는 같은 지자체를 새 러너로 다시 부른다(50번까지). 포털이 거절하면(종료 코드 4) 멈춘다"
         required: false
@@ -62,7 +66,7 @@ jobs:
         continue-on-error: true
         run: |
           set +e
-          python scripts/fetch_daegu_expense.py --gov ${{ matrix.gov }} --years "${{ github.event.inputs.years || '2021,2022,2023' }}" --budget 17400 ${{ github.event.inputs.probe == 'true' && '--probe' || '' }}
+          python scripts/fetch_daegu_expense.py --gov ${{ matrix.gov }} --years "${{ github.event.inputs.years || '2021,2022,2023' }}" --budget 17400 ${{ github.event.inputs.probe == 'true' && '--probe' || '' }} ${{ github.event.inputs.extra }}
           rc=$?
           echo "rc=$rc" >> "$GITHUB_OUTPUT"
           exit $rc
@@ -88,7 +92,7 @@ jobs:
         # 4 = 포털이 거절(JSON 대신 400 쪽, 2026-11-03 밤부터) → 멈춘다(다시 해도 같다).
         # probe 가 0 = 연도 목록·하루치 엑셀 모두 받음 → 그 지자체 수집을 시작(시도 1).
         # 수집이 0 = 끝 → ORDER 의 다음 지자체 수집을 부른다(입력 gov 가 하나일 때만, 지자체 하나씩).
-        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' }}
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && github.event.inputs.extra == '' }}
         env:
           GH_TOKEN: ${{ github.token }}
           ORDER: "nam dong seo buk suseong dalseo dalseong gunwi"
@@ -96,7 +100,8 @@ jobs:
           RC="${{ steps.f.outputs.rc }}"; A="${{ github.event.inputs.attempt || '1' }}"; G="${{ matrix.gov }}"
           P="${{ github.event.inputs.probe || 'false' }}"; IN="${{ github.event.inputs.gov }}"
           Y="${{ github.event.inputs.years || '2021,2022,2023' }}"
-          run() { gh workflow run daegu_expense.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f years="$Y" "$@"; }
+          # GitHub 이 가끔 502 를 돌려준다(2026-11-04 달성군 체인이 끊김) — 다섯 번까지 다시
+          run() { for i in 1 2 3 4 5; do gh workflow run daegu_expense.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f years="$Y" "$@" && return 0; echo "부르기 실패 $i — 다시"; sleep $((i*10)); done; return 1; }
           if [ "$RC" = "4" ]; then echo "::warning::$G — 포털이 요청을 거절(400 쪽). 체인을 멈춘다 — 나중에 probe 로 다시 확인"; exit 0; fi
           if [ "$RC" = "3" ]; then
             if [ "$A" -ge 50 ]; then echo "::warning::$G — $A번째 시도까지 연결이 안 돼 중단(국내 PC 또는 수동 재실행)"; exit 0; fi

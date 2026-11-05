@@ -3,7 +3,8 @@ name: 나라장터 계약정보(대구 본청·구·군)
 # 조달청 「나라장터 계약정보서비스」(공공데이터포털 15129427, 활용신청 필요)로 대구 본청·구·군이 계약기관·수요기관인 공사·용역·물품 계약을
 # data/vat/contracts/<gov>.json 으로 커밋한다(지자체 부가세 절감 점검기 '지난 돈 돌려받기' — 받아 올 세금계산서를 계약 단위로).
 # 수동 실행 + 매달 5일. probe=true 면 조회구분·기관구분 조합마다 건수와 첫 행 칸을 로그에만(저장 안 함).
-# 하루 호출 한도를 넘으면(종료 코드 3) 받은 만큼 커밋하고 끝 — 다음 실행이 state.json 의 끝난 구간을 건너뛴다.
+# 지자체마다(행렬, 셋씩 동시에) × 연도마다 받고 바로 커밋. 끝난 달은 data/vat/contracts/state_<지자체>.json — 다음 실행이 건너뛴다.
+# 하루 호출 한도(종료 코드 3)·API 무응답 4번(종료 코드 4)이면 받은 만큼 커밋하고 그 지자체를 멈춘다.
 on:
   workflow_dispatch:
     inputs:
@@ -36,23 +37,41 @@ permissions:
   actions: write
 
 concurrency:
-  group: g2b-contracts
+  group: g2b-contracts-${{ inputs.govs || 'all' }}
   cancel-in-progress: false
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      govs: ${{ steps.p.outputs.govs }}
+    steps:
+      - id: p
+        env:
+          GOVS: ${{ inputs.govs }}
+        run: |
+          # 달성군 먼저, 본청(대구광역시로 물어 구·군·교육청까지 딸려 와 가장 무거움) 맨 끝 — 운영자 2026-11-05 '한 지자체 다하고 다음 지자체'
+          L="${GOVS:-dalseong,jung,dong,seo,nam,buk,suseong,dalseo,gunwi,daegu}"
+          echo "govs=$(python3 -c "import json,sys; print(json.dumps([g for g in sys.argv[1].split(',') if g]))" "$L")" >> "$GITHUB_OUTPUT"
   fetch:
+    needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 3   # 지자체 셋씩 동시에(조달청 API 에 한꺼번에 몰지 않게)
+      matrix:
+        gov: ${{ fromJSON(needs.plan.outputs.govs) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: "받기·커밋 — 연도마다(한 번에 5년을 받다가 시간 상한에 걸리면 다 잃어서, 운영자 2026-11-05 '연도 별로 나눠서 받아')"
+      - name: 받기·커밋 — 연도마다(시간 상한에 걸려도 받은 해는 남게)
         id: commit
         env:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
-          GOVS: ${{ inputs.govs }}
+          G: ${{ matrix.gov }}
           FROM: ${{ inputs.from }}
           TO: ${{ inputs.to }}
           KINDS: ${{ inputs.kinds }}
@@ -65,38 +84,30 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           BASE=(--inqry-div "${INQ:-1}" --instt-div "${INST:-1,2}" --kinds "${KINDS:-공사,용역,물품}")
-          if [ "$PROBE" = "true" ]; then python3 scripts/fetch_g2b_contracts.py "${BASE[@]}" --probe ${FROM:+--from "$FROM"}; exit 0; fi
+          if [ "$PROBE" = "true" ]; then python3 scripts/fetch_g2b_contracts.py "${BASE[@]}" --govs "$G" --probe ${FROM:+--from "$FROM"}; exit 0; fi
           if [ "${{ github.event_name }}" = "schedule" ]; then F="$(date -d '-2 month' +%Y-%m)"; else F="${FROM:-$(python3 -c 'import sys; sys.path.insert(0,"scripts"); import fetch_g2b_contracts as m; y,mo=map(int,m.claim_from().split("-")); print(f"{y-1}-{mo:02d}")')}"; fi
           T="${TO:-$(date +%Y-%m)}"
-          # 지자체마다(달성군 먼저, 본청은 '대구광역시'로 물어 구·군·교육청까지 딸려 와 가장 무거워 맨 끝) × 연도마다 받고 바로 커밋(운영자 2026-11-05 '한 지자체 다하고 다음 지자체')
-          ORDER="${GOVS:-dalseong,jung,dong,seo,nam,buk,suseong,dalseo,gunwi,daegu}"
-          IFS=',' read -ra GL <<< "$ORDER"; stop=""
-          for gi in "${!GL[@]}"; do G="${GL[$gi]}"
-            for Y in $(seq "${F%%-*}" "${T%%-*}"); do
-              A="$Y-01"; [ "$Y" = "${F%%-*}" ] && A="$F"
-              B="$Y-12"; [ "$Y" = "${T%%-*}" ] && B="$T"
-              # 3시간 50분이 지났으면 받은 데까지 두고 남은 지자체를 새 실행으로(시간 상한 5시간). 끝난 달은 state.json 이 건너뛴다
-              if [ "$SECONDS" -gt 13800 ]; then REST=$(IFS=','; echo "${GL[*]:$gi}"); echo "::notice::시간이 다 되어 $REST 를 새 실행으로 이어 받습니다"; gh workflow run g2b_contracts.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f govs="$REST" -f from="$F" -f to="$T" -f kinds="${KINDS:-공사,용역,물품}" || echo "::warning::이어 받기 호출 실패"; stop=1; break; fi
-              echo "::group::$G $A ~ $B"
-              python3 scripts/fetch_g2b_contracts.py "${BASE[@]}" --one "$G" --govs "$G" --from "$A" --to "$B"
-              rc=$?
-              echo "::endgroup::"
-              [ "$rc" = "2" ] && { echo "::error::계약정보서비스(15129427) 활용신청이 필요합니다"; stop=1; break; }
-              git add data/vat/contracts 2>/dev/null
-              if ! git diff --cached --quiet; then
-                git commit -q -m "data: 나라장터 계약정보(대구) $G $A~$B"
-                for i in 1 2 3; do git pull --rebase -q origin "${{ github.ref_name }}" && git push -q && break; sleep 5; done
-                echo "pushed=1" >> "$GITHUB_OUTPUT"
-              fi
-              [ "$rc" = "3" ] && { echo "::warning::호출 한도 — $G $A~$B 까지 저장"; stop=1; break; }
-              [ "$rc" = "4" ] && { echo "::warning::조달청 API 무응답 — $G $A~$B 에서 멈춤(받은 데까지 저장). 나중에 다시 실행하면 이어 받음"; stop=1; break; }
-            done
-            [ -n "$stop" ] && break
-            # 한 지자체가 끝나면 바로 배포(달성군을 먼저 볼 수 있게)
-            if [ "${{ github.ref_name }}" = "main" ] && [ -f "$GITHUB_OUTPUT" ] && grep -q "pushed=1" "$GITHUB_OUTPUT"; then gh workflow run deploy_vat.yml -R "${{ github.repository }}" --ref main || true; fi
+          for Y in $(seq "${F%%-*}" "${T%%-*}"); do
+            A="$Y-01"; [ "$Y" = "${F%%-*}" ] && A="$F"
+            B="$Y-12"; [ "$Y" = "${T%%-*}" ] && B="$T"
+            # 3시간 50분이 지났으면 받은 해까지 두고 이 지자체를 새 실행으로(시간 상한 5시간). 끝난 달은 state_<지자체>.json 이 건너뛴다
+            if [ "$SECONDS" -gt 13800 ]; then echo "::notice::시간이 다 되어 $G $A 부터 새 실행으로"; gh workflow run g2b_contracts.yml -R "${{ github.repository }}" --ref "${{ github.ref_name }}" -f govs="$G" -f from="$A" -f to="$T" -f kinds="${KINDS:-공사,용역,물품}" || echo "::warning::이어 받기 호출 실패"; break; fi
+            echo "::group::$G $A ~ $B"
+            python3 scripts/fetch_g2b_contracts.py "${BASE[@]}" --one "$G" --govs "$G" --from "$A" --to "$B"
+            rc=$?
+            echo "::endgroup::"
+            [ "$rc" = "2" ] && { echo "::error::계약정보서비스(15129427) 활용신청이 필요합니다"; break; }
+            git add data/vat/contracts 2>/dev/null
+            if ! git diff --cached --quiet; then
+              git commit -q -m "data: 나라장터 계약정보(대구) $G $A~$B"
+              for i in 1 2 3 4 5; do git pull --rebase -q origin "${{ github.ref_name }}" && git push -q && break; sleep $((RANDOM % 10 + 5)); done
+              echo "pushed=1" >> "$GITHUB_OUTPUT"
+            fi
+            [ "$rc" = "3" ] && { echo "::warning::호출 한도 — $G $A~$B 까지 저장"; break; }
+            [ "$rc" = "4" ] && { echo "::warning::조달청 API 무응답 — $G $A~$B 에서 멈춤(받은 데까지 저장). 나중에 다시 실행하면 이어 받음"; break; }
           done
           exit 0
-      - name: 점검기 배포
+      - name: 점검기 배포(이 지자체가 끝나면 바로 — 달성군을 먼저 볼 수 있게)
         if: steps.commit.outputs.pushed == '1' && github.ref_name == 'main'
         env:
           GH_TOKEN: ${{ github.token }}

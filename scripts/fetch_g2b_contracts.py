@@ -193,9 +193,11 @@ def main():
             return 0
         # 한 번 훑기: 기관명 '대구광역시'(부분 일치 — 본청·사업소·구·군·교육청까지 잡힘)로 받아 계약기관·수요기관 이름으로 지자체를 가른다.
         # 지자체마다 따로 물으면 같은 행을 열 번 받게 된다(2026-11-05 probe: 2026-09 공사 1,292건 대부분 교육청·학교).
-        st_path = f"{OUT}/state.json"
+        one0 = a.one if a.one in GOVS else ""
+        st_path = f"{OUT}/state_{one0}.json" if one0 else f"{OUT}/state.json"   # 지자체마다 따로 — 여러 지자체를 동시에 받아도 서로 덮지 않게
         state = json.load(open(st_path, encoding="utf-8")) if os.path.exists(st_path) else {}
         done = set(state.get("sweep", []))
+        if one0 and os.path.exists(f"{OUT}/state.json"): done |= {t for t in json.load(open(f"{OUT}/state.json", encoding="utf-8")).get("sweep", []) if not t.startswith(tuple(f"{g}|" for g in GOVS))}   # 예전 한꺼번에 받은 달
         store, olds = {}, {}
         for g in GOVS:
             path = f"{OUT}/{g}.json"

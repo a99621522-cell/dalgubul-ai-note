@@ -89,6 +89,7 @@ jobs:
                 echo "pushed=1" >> "$GITHUB_OUTPUT"
               fi
               [ "$rc" = "3" ] && { echo "::warning::호출 한도 — $G $A~$B 까지 저장"; stop=1; break; }
+              [ "$rc" = "4" ] && { echo "::warning::조달청 API 무응답 — $G $A~$B 에서 멈춤(받은 데까지 저장). 나중에 다시 실행하면 이어 받음"; stop=1; break; }
             done
             [ -n "$stop" ] && break
             # 한 지자체가 끝나면 바로 배포(달성군을 먼저 볼 수 있게)

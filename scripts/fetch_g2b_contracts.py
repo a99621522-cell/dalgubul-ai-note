@@ -207,13 +207,14 @@ def main():
         qname = GOVS[one] if one else "대구광역시"   # 구·군 이름으로 물으면 그 구·군(과 소속 기관) 계약만 온다
         size = a.rows
         this_month = dt.date.today().strftime("%Y-%m")
+        fails_in_row = 0   # 연결 실패로 못 받은 달은 끝난 것으로 적지 않는다(2026-11-05 — 시간 초과가 이어진 달을 '0행·끝'으로 적어 다시 받지 않던 것)
         try:
             for kind in kinds:
                 for ym, b, e in months(a.frm, a.to):
                     tag = f"{kind}|{ym}|{a.inqry_div}|{a.instt_div}"; tag1 = f"{one}|{tag}" if one else tag
                     if (tag in done or tag1 in done) and ym < this_month:
                         continue
-                    got, seen = {g: 0 for g in GOVS}, 0
+                    got, seen = {g: 0 for g in GOVS}, 0; failed = False
                     for cdiv in [c for c in a.instt_div.split(",") if c] or [""]:
                         page, recv = 1, 0
                         while True:
@@ -222,7 +223,7 @@ def main():
                             p = {"pageNo": page, "numOfRows": size, "inqryDiv": a.inqry_div, "inqryBgnDate": b, "inqryEndDate": e, "insttNm": qname}
                             if cdiv: p["insttDivCd"] = cdiv
                             r = call(OPS[kind], p, key); calls += 1; time.sleep(0.3)
-                            if not r: break
+                            if not r: failed = True; break
                             if page == 1 and size > 100 and r["total"] > len(r["items"]) and len(r["items"]) < size:
                                 print(f"  한 쪽 {size}행을 주지 않음({len(r['items'])}행) — 100행으로 다시", flush=True)
                                 size = 100; continue
@@ -235,6 +236,12 @@ def main():
                                         store[g][k] = row; got[g] += 1
                             if not r["items"] or recv >= r["total"]: break
                             page += 1
+                    if failed:
+                        fails_in_row += 1
+                        print(f"  {one or '전체'} {kind} {ym}: 받지 못함 — 끝난 달로 적지 않음(다음 실행이 다시)", flush=True)
+                        if fails_in_row >= 4: raise Stop(4, '조달청 API 가 잇달아 응답하지 않습니다 — 받은 데까지 저장하고 멈춥니다')
+                        continue
+                    fails_in_row = 0
                     done.add(tag1)
                     print(f"  {one or '전체'} {kind} {ym}: 받은 {seen}행 → " + " ".join(f"{g} {n}" for g, n in got.items() if n) + f" (호출 {calls})", flush=True)
         finally:

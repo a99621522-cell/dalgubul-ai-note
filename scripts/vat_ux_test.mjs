@@ -337,6 +337,17 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     const pk = await pg.$$eval('#pub-biz tbody tr', trs => trs.map(t => t.querySelectorAll('td')[2]?.textContent.trim()));
     await pg.selectOption('#pub-type', ''); await pg.waitForTimeout(300);
     ok('C3 공개 지출 표에 유형 칸 · 공제 가능성 있는 유형이 먼저(도로·주차장·시장 보조는 뒤) · 도로 공사·공영주차장으로 거르기 · 유형 설명 펼침', hd.includes('유형') && first.every(x => x && x !== '—' && !/도로 공사|공영주차장|전통시장/.test(x)) && rd.length > 0 && rd.every(([, t]) => t === '시설 이름이 든 도로 공사') && rd.some(([k]) => /휴양림도로/.test(k)) && pk.length > 0 && pk.every(t => t === '공영주차장') && (await pg.locator('#pub-type-help').count()) === 1, JSON.stringify(first) + ' road ' + rd.length + ' park ' + pk.length); }
+  /* C4 위탁·대행 사업비는 공제 대상 추정에 넣지 않고 '확인'으로(2026-11-05 운영자 '민간경상보조나 출연금은 부가세 세입이 아닐 것 같아') */
+  { await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300);
+    const wk = await pg.$$eval('#pub-biz tbody tr', trs => trs.filter(t => (t.querySelectorAll('td')[5]?.textContent || '—').trim() !== '—').map(t => t.dataset.bk));
+    const c0 = Number(T(await pg.locator('#pub-claim').textContent()).replace(/[^0-9]/g, ''));
+    if (wk.length) { await pg.selectOption(`[data-pb-fid="${wk[0]}"]`, 'f3'); await pg.waitForTimeout(400); }
+    const c1 = Number(T(await pg.locator('#pub-claim').textContent()).replace(/[^0-9]/g, ''));
+    const chk = await pg.$$eval('#pub-per tbody tr', trs => trs.filter(t => /비슬산 유스호스텔/.test(t.querySelectorAll('td')[0]?.textContent || '')).map(t => (t.querySelectorAll('td')[5]?.textContent || '').trim()));
+    const bkTxt = wk.length ? await pg.locator(`tr[data-bk="${wk[0]}"]`).count() : 0;
+    const note = T(await pg.locator('#pub-body').textContent());
+    ok('C4 위탁·대행 통계목이 있는 사업을 과세 시설에 지정 → 위탁·대행(확인) 칸에 세액, 공제 대상 추정에는 그 몫이 안 더해짐 · 보조금·출연금 제외 안내', wk.length > 0 && chk.some(x => x && x !== '—') && /보조금\(민간경상·자본보조/.test(note) && /출연금/.test(note), `${wk[0]} c0=${c0} c1=${c1} chk=${chk.join(',')} rows=${bkTxt}`);
+    if (wk.length) { await pg.click('[data-pf="all"]'); await pg.waitForTimeout(300); await pg.selectOption(`[data-pb-fid="${wk[0]}"]`, ''); await pg.waitForTimeout(300); await pg.click('[data-pf="todo"]'); await pg.waitForTimeout(300); } }
   /* R11 2024년 이후 — 지방재정365 세부사업별 연간 지출액(통계목 없음, 2021~2022 건별 비중을 빌림) */
   await pg.waitForSelector('#pub-lbiz', { timeout: 10000 });
   const lh = await pg.$$eval('#pub-lbiz thead th', ths => ths.map(t => t.textContent.trim()).join('|'));

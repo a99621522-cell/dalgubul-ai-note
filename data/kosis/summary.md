@@ -1,6 +1,6 @@
 # KOSIS 수집 결과
 
-갱신 2026-11-04 · 표 55개 · 설정 config/kosis_tables.yml
+갱신 2026-11-05 · 표 55개 · 설정 config/kosis_tables.yml
 
 | key | 표 | 기간 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---:|---|
@@ -25,7 +25,7 @@
 | labor-force-sido-annual-all | [행정구역(시도)별 경제활동인구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S) | Y 2014~2026 | 2025 | 1953 | 천명 |
 | labor-force-sido | [행정구역(시도)별 경제활동인구](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7004S) | M 202301~202612 | 202609 | 7479 | 천명 |
 | large-retail-index-sido | [시도별 대형소매점 판매액지수(2020＝100.0)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K41015) | M 202301~202612 | 202609 | 270 | 2020＝100 |
-| market-bsi-sido | [전통시장 지역별 실적 및 전망](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_S0001N_006) | M 202301~202612 | 202610 | 91 | BSI |
+| market-bsi-sido | [전통시장 지역별 실적 및 전망](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_S0001N_006) | M 202301~202612 | 202611 | 93 | BSI |
 | medical-use-sgg-provider-outside | [의료기관 시군구(부산대구울산경북경남)별 관외 진료현황-전체](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=DT_35003_A36) | Y 2020~2026 | 2024 | 2000 | 명 |
 | medical-use-sido-outside | [시도별 진료현황-관외](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A006) | Y 2020~2026 | 2024 | 1275 | 명 |
 | medical-use-sido-provider | [의료기관 시도별 진료현황-전체](https://kosis.kr/statHtml/statHtml.do?orgId=350&tblId=TX_35003_A007) | Y 2020~2026 | 2024 | 1350 | 명 |
@@ -46,7 +46,7 @@
 | retail-sales-index-sido | [시도별 소매판매액지수(2020＝100)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1K41018) | Y 2014~2026 | 2025 | 1156 | 2020＝100 |
 | self-employed-sido | [행정구역(시도)/종사상지위별 취업자](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1DA7035S) | M 202301~202612 | 202609 | 8310 | 천명 |
 | service-index-sido | [시도별 서비스업생산지수(2020＝100.0)](https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1KC2023) | Q 202201~202604 | 202602 | 8568 | 2020＝100 |
-| smb-bsi-sido | [소상공인 지역별 실적 및 전망](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_S0001N_005) | M 202301~202612 | 202610 | 91 | BSI |
+| smb-bsi-sido | [소상공인 지역별 실적 및 전망](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_S0001N_005) | M 202301~202612 | 202611 | 93 | BSI |
 | sme-stats-sido | [시도별·산업중분류별·기업규모별 기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_A001) | Y 2020~2026 | 2023 | 45863 | 개 |
 | sme-workers-sido | [시도별·산업중분류별·기업규모별 종사자수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_BR_B001) | Y 2020~2026 | 2023 | 45864 | 명 |
 | startup-trend-sido-prev | [지역별 · 업종별 창업기업수](https://kosis.kr/statHtml/statHtml.do?orgId=142&tblId=DT_142N_F205) | M 202101~202612 | 202512 | 1140 | 개 |

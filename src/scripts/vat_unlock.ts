@@ -8,7 +8,8 @@ import { esc, fmt, num, penaltyCalc, toCsv, type Data } from './vat_rules';
 
 export type Cell = { amt: number | null; tax: number | null; n?: number | null };
 export type Kind = '예정' | '확정' | '기한후' | '조기환급' | '모름';
-export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null } | null; warn: string[] };
+export type BaseRow = { label: string; code: string; amt: number };
+export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: BaseRow[]; exBase?: BaseRow[]; warn: string[] };
 export type FiledSum = { k: string; deduct: number | null; nondeduct: number | null; er: number | null; salesSup: number | null; salesTax: number | null; kinds: Kind[]; files: string[]; regs: string[]; exemptNd: number | null; warn: string[]; total: number | null; hasNd: boolean; hasCommon: boolean; ndReasons: Record<number, number>; c10: number | null; c12: number | null; c13: number | null; c15: number | null; ndSum: number | null };
 
 /* ── 파일 → 글자 ── */
@@ -32,6 +33,21 @@ const NUM_RE = /△?-?\d{1,3}(?:,\d{3})+|△?-?\d+/g;
 const nums = (s: string) => (s.replace(/\d+\s*\/\s*\d+/g, ' ').match(NUM_RE) ?? []).map(t => (t.startsWith('△') ? -1 : 1) * Math.abs(num(t.replace('△', ''))));
 const PERIOD_RE = /(20\d{2})\s*년\s*제?\s*([12])\s*기\s*\(\s*(\d{1,2})\s*월\s*\d{1,2}\s*일\s*~\s*(\d{1,2})\s*월/;
 const MARK = '[VvＶ√✓✔■●☑◉xXOo○]';
+const DEC_RE = /△?-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|△?-?\d+(?:\.\d+)?/g;
+const decs = (s: string) => (s.match(DEC_RE) ?? []).map(t => (t.startsWith('△') || t.startsWith('-') ? -1 : 1) * Number(t.replace(/[△,\-]/g, '')));
+/** 22호 표(정산·재계산)의 합계 줄 — 없으면 번호 줄들을 더함 */
+function sumRow(sec: string, min: number): number[] | null {
+  const lines = sec.split('\n'); const sum = lines.find(l => /^\s*합\s*계/.test(l) && decs(l).length >= min); if (sum) return decs(sum);
+  const rows = lines.filter(l => /^\s*[1-9]\s/.test(l)).map(l => decs(l).slice(1)).filter(v => v.length >= min); if (!rows.length) return null;
+  return rows.reduce((a, v) => a.map((x, i) => x + (v[i] ?? 0)));
+}
+/** 과세표준 명세·면세사업 수입금액 — 업태·종목 글자와 금액(줄의 마지막 숫자), 6자리 업종 코드 */
+function baseRows(sec: string): BaseRow[] {
+  const out: BaseRow[] = [];
+  for (const line of sec.split('\n')) { const L = line.replace(/\(\d{1,2}\)/g, ' '); if (/합\s*계|작성|수입\s*금액\s*제외/.test(L)) continue; const code = /\b(\d{6})\b/.exec(L)?.[1] ?? ''; const v = nums(L.replace(/\b\d{6}\b/, ' ')); const label = L.replace(NUM_RE, ' ').replace(/[^가-힣a-zA-Z·\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!v.length || !label || label.length < 2) continue; const amt = v[v.length - 1]; if (amt > 0) out.push({ label, code, amt }); }
+  return out;
+}
 /** 한 파일 글자에서 신고서 여럿(예정·확정 등)을 읽는다. 22호 명세서는 바로 앞 신고서에 붙인다. */
 export function parseFiledText(text: string, file = ''): FiledDoc[] {
   const t = text.replace(/\r/g, '');
@@ -72,8 +88,15 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
     let common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null = null; const ca = part.search(/공통\s*매입\s*세액\s*안분/); const cb = part.search(/공통\s*매입\s*세액의\s*정산/);
     if (ca >= 0) { const sec = part.slice(ca, cb > ca ? cb : undefined); const sum = sec.split('\n').find(l => /^\s*합\s*계/.test(l) && nums(l).length >= 5); const rows = sum ? [nums(sum)] : sec.split('\n').filter(l => /^\s*[1-9]\s/.test(l)).map(l => nums(l).slice(1)).filter(v => v.length >= 5);
       if (rows.length) { const s = rows.reduce((a, v) => [a[0] + v[0], a[1] + v[1], a[2] + v[2], a[3] + v[3], a[4] + v[4]], [0, 0, 0, 0, 0]); common = { sup: s[0], tax: s[1], total: s[2], exempt: s[3], nd: s[4] }; } }
-    nd = { reasons, common }; }
-  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, warn };
+    let settle: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null = null, recalc: { tax: number; rate: number; delta: number; add: number } | null = null;
+    const rc = part.search(/재\s*계\s*산\s*내\s*역|납부세액\s*또는\s*환급세액\s*재계산/);
+    if (cb >= 0) { const v = sumRow(part.slice(cb, rc > cb ? rc : undefined), 5); if (v) { const r = v[1] > 1 ? v[1] / 100 : v[1]; settle = { tax: v[0], ratio: r, ndAll: v[2], prev: v[3], add: v[4] }; } }
+    if (rc >= 0) { const v = sumRow(part.slice(rc), 4); if (v) recalc = { tax: v[0], rate: v[1] > 1 ? v[1] / 100 : v[1], delta: Math.abs(v[2]) > 1 ? v[2] / 100 : v[2], add: v[3] }; }
+    nd = { reasons, common, settle, recalc }; }
+  const bAt = main0.search(/과\s*세\s*표\s*준\s*명\s*세/), eAt = main0.search(/면\s*세\s*사\s*업\s*수\s*입\s*금\s*액/);
+  const base = bAt >= 0 ? baseRows(main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500)) : undefined;
+  const exBase = eAt >= 0 ? baseRows(main0.slice(eAt, eAt + 1500).split(/계\s*산\s*서\s*발\s*급|과\s*세\s*표\s*준\s*명\s*세/)[0]) : undefined;
+  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(base?.length ? { base } : {}), ...(exBase?.length ? { exBase } : {}), warn };
 }
 /** 신고서들 → 과세기간(확정 기준)별 합: (18)·(17)은 예정+확정, 같은 기간·구분·번호가 두 번이면 뒤 것이 앞 것을 바꿈(수정신고) */
 export function filedSummary(docs: FiledDoc[]): Map<string, FiledSum> {

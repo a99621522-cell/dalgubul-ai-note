@@ -276,3 +276,4 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .rf-calc-sum { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; } .rf-calc-sum > div { flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius); } .rf-calc-sum b { font-size: 1.35em; font-variant-numeric: tabular-nums; }
 .rf-est, .rf-est b { color: var(--muted); } .rf-calc-t td { vertical-align: top; } .rf-calc-t td:nth-child(3), .rf-calc-t td:nth-child(4) { min-width: 16em; } .rf-calc-inlist, .rf-calc-none { color: var(--muted); }
 .rf-win { margin: 4px 0; }
+.rf-next { border-left: 3px solid var(--line-strong); padding: 4px 10px; margin: 8px 0; } .rf-next p, .rf-next ol { margin: 2px 0; } .rf-miss { margin: 6px 0; }

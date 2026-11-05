@@ -351,7 +351,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   /* C5 나라장터 계약(조달청) — 자료가 없으면 안내 한 줄, 있으면 표·업체 목록(2026-11-05) */
   { const none = await pg.locator('#pub-c-none').count(); const tbl = await pg.locator('#pub-ctr').count();
     let detail = 'none=' + none + ' tbl=' + tbl, okC = none === 1 || tbl === 1;
-    if (tbl === 1) { const k = await pg.$eval('#pub-ctr tbody tr', t => t.dataset.ck); await pg.selectOption(`[data-pc-fid="${k}"]`, 'f3'); await pg.waitForTimeout(300); const memo = await pg.locator('#pub-cmemo').inputValue().catch(() => ''); okC = /세금계산서 확인 요청/.test(memo) && /■ /.test(memo) && !/○○○|대표/.test(memo); detail += ' memo=' + memo.slice(0, 120); await pg.selectOption(`[data-pc-fid="${k}"]`, ''); await pg.waitForTimeout(200); }
+    if (tbl === 1) { const k = await pg.$eval('#pub-ctr tbody tr', t => t.dataset.ck); await pg.selectOption(`[data-pc-fid="${k}"]`, 'f3'); await pg.waitForTimeout(300); const memo = await pg.locator('#pub-cmemo').inputValue().catch(() => ''); const href = await pg.$eval('#pub-ctr tbody tr a', a => a.href).catch(() => ''); okC = /세금계산서 확인 요청/.test(memo) && /■ /.test(memo) && !/○○○|대표/.test(memo) && (!href || /^https:\/\/www\.g2b\.go\.kr\/link\/FIUA027_01\/single\/\?ctrtNo=/.test(href)); detail += ' href=' + href.slice(0, 80) + ' memo=' + memo.slice(0, 120); await pg.selectOption(`[data-pc-fid="${k}"]`, ''); await pg.waitForTimeout(200); }
     ok('C5 나라장터 계약: 자료 없으면 활용신청 안내, 있으면 계약 표 · 시설 고르면 업체별 세금계산서 찾기 메모', okC, detail); }
   /* R11 2024년 이후 — 지방재정365 세부사업별 연간 지출액(통계목 없음, 2021~2022 건별 비중을 빌림) */
   await pg.waitForSelector('#pub-lbiz', { timeout: 10000 });

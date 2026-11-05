@@ -20,10 +20,10 @@ OUT = ROOT / "data" / "vat" / "revenue"
 CODE = re.compile(r"^\s*(\d{3})(?:-(\d{2}))?\s+(\S.*?)\s{2,}([\d,△\-]+)\s+([\d,△\-]+)(?:\s+([\d,△\-]+))?\s*$")
 ACCT = re.compile(r"^\s*\[\s*(.+?)\s*\]")
 DEPT = re.compile(r"^\s*<\s*(.+?)\s*>")
-ITEM = re.compile(r"^\s*(?:○|◦|\d{1,2}\.)\s*(.*?)\s*$")
+ITEM = re.compile(r"^\s*(?:○|◦|\d{1,2}\.(?!\d+\s*(?:원|\*|,)))\s*(.*?)\s*$")   # 54.4원* 같은 산식 줄의 소수점을 번호로 읽지 않게(49.24시간 … 은 번호)
 SUB = re.compile(r"^\s*[―－\-]\s*")
 # 남구 서식(2026-10-27): ◎사업(합계가 같은 줄) 아래 ○세부 — ◎ 가 하나라도 있으면 ◎ 를 사업, ○ 를 세부로 읽는다
-ITEM_DIA = re.compile(r"^\s*(?:◎|\d{1,2}\.)\s*(.*?)\s*$")
+ITEM_DIA = re.compile(r"^\s*(?:◎|\d{1,2}\.(?!\d+\s*(?:원|\*|,)))\s*(.*?)\s*$")
 SUB_DIA = re.compile(r"^\s*[―－\-○◦]\s*")
 NUM = re.compile(r"^[\d,]+$")
 NAMEAMT = re.compile(r"^\s{0,2}(\S[^\d]*?)\s{2,}([\d,]+)\s+([\d,]+)\s+([\d,△\-]+)\s*$")   # 대구시 배치의 실국·부서 줄(코드 없음)
@@ -50,7 +50,7 @@ def tail_amount(line: str) -> int | None:
 # ── 부가세 판정 참고(목 코드 + 사업명 낱말 → rules.yml revenue_items key). 평가 아님. 시설 종류 낱말이 먼저, 그다음 목 코드 기본값 ──
 FAC_KW = [
     (r"골프장|파크골프|스키", "golf"),
-    (r"수영|헬스|체육|구장|빙상|운동장|풋살|테니스|야구장|축구장|골프연습|배드민턴|국민체육|생활체육|스포츠|체력|볼링|경기장", "sports"),
+    (r"수영|헬스|체육|구장|빙상|운동장|풋살|테니스|야구장|축구장|골프연습|배드민턴|국민체육|생활체육|스포츠|레포츠|체력|볼링|경기장", "sports"),
     (r"휴양림|숙박|야영|캠핑|수련원|유스호스텔|펜션|오토캠핑|치유의숲 ?숙박", "lodging"),
     (r"강습|강좌|수강|교육|체험|프로그램|회비|아카데미|교실|캠프|치유", "program"),
     (r"박물관|미술관|과학관|도서관|전시관|기념관|동물원|식물원|역사관|문학관|자료관|유적|생태원|수목원|테마파크", "culture"),
@@ -178,6 +178,15 @@ def parse(text: str, key: str, name: str, year: str, acct_default: str = "일반
                         if a2 is not None:
                             amt = a2
                             calc = nx.rsplit(None, 1)[0] if len(nx.split()) > 1 else ""
+                            i = j + 1
+                    elif not CODE.match(lines[j]) and not ITEM.match(lines[j]) and not SUB.match(lines[j]) and not DEPT.match(lines[j]) and re.match(r"^[가-힣(]", nx):
+                        # 사업명이 다음 줄로 이어지고 그 줄에 금액이 있음(수성구 '○공공체육시설(…)' / '위탁관리 수수료  9,500,000원  9,500')
+                        a2 = tail_amount(nx)
+                        if a2 is not None:
+                            p2 = re.split(r"\s{2,}", nx)
+                            item = f"{item} {p2[0].strip()}"
+                            amt = a2
+                            calc = " ".join(p2[1:-1]).strip()
                             i = j + 1
                 if amt is None:
                     # 세부(―) 줄 합

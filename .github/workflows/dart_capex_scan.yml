@@ -1,0 +1,45 @@
+name: DART 대구 본사 회사 시설투자·자금조달 공시 목록(조사용)
+
+# scripts/dart_capex_scan.py — 최근 3년 신규시설투자·유형자산 취득·유상증자·사채 발행 결정 공시를 data/dart/capex_scan.csv 로.
+# 국민성장펀드 요건 대조 조사용(운영자 지시 2026-11-05). 사이트는 이 파일을 읽지 않는다. 키 DART_KEY.
+on:
+  workflow_dispatch:
+    inputs:
+      months:
+        description: "최근 몇 개월"
+        default: "36"
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/dart_capex_scan.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-capex-scan
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+          MONTHS: ${{ inputs.months }}
+        run: python3 scripts/dart_capex_scan.py --months "${MONTHS:-36}"
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dart/capex_scan.csv
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 대구 본사 회사 시설투자·자금조달 공시 목록 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

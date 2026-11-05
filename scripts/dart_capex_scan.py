@@ -51,11 +51,14 @@ def main(argv: list[str]) -> int:
         return 0
     corps = {}
     for c, v in json.load(open(ROOT / "scripts/state/dart_corp.json", encoding="utf-8")).items():
-        if v.get("daegu"):
+        if v.get("daegu") or (v.get("region") or "").startswith("대구"):  # 캐시에 '대구 달서구'처럼 적히고 daegu=false 인 4곳(아바코·피에이치에이 등)도
             corps[c] = (v.get("name", ""), (v.get("region") or "").split(" ")[-1], v.get("corp_cls", ""))
     for c, v in json.load(open(ROOT / "scripts/state/dart_audit_corp.json", encoding="utf-8")).items():
         if (v.get("region") or "").startswith("대구") and c not in corps:
             corps[c] = (v.get("name", ""), v.get("district", ""), v.get("cls", ""))
+    only = argv[argv.index("--codes") + 1].split(",") if "--codes" in argv else None
+    if only:
+        corps = {c: v for c, v in corps.items() if c in only}
     bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
     end = date.today().strftime("%Y%m%d")
     print(f"대상 {len(corps)}곳, {bgn}~{end}")
@@ -85,6 +88,9 @@ def main(argv: list[str]) -> int:
             print(f"  {i + 1}곳, 공시 {len(rows)}건")
     rows.sort(key=lambda r: (r["name"], r["rcept_dt"]))
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    if only and OUT.exists():  # 일부 회사만 다시 받으면 기존 목록의 그 회사 행만 바꾼다
+        old = [r for r in csv.DictReader(open(OUT, encoding="utf-8")) if r["corp_code"] not in only]
+        rows = sorted(old + rows, key=lambda r: (r["name"], r["rcept_dt"]))
     with open(OUT, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=COLS)
         w.writeheader()

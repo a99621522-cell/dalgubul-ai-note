@@ -8,6 +8,9 @@ on:
       months:
         description: "최근 몇 개월"
         default: "36"
+      codes:
+        description: "고유번호 쉼표(비우면 전체)"
+        default: ""
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
     paths: ["scripts/dart_capex_scan.py"]
@@ -34,7 +37,8 @@ jobs:
           DART_KEY: ${{ secrets.DART_KEY }}
           PYTHONUNBUFFERED: "1"
           MONTHS: ${{ inputs.months }}
-        run: python3 scripts/dart_capex_scan.py --months "${MONTHS:-36}"
+          CODES: ${{ inputs.codes }}
+        run: python3 scripts/dart_capex_scan.py --months "${MONTHS:-36}" ${CODES:+--codes "$CODES"}
       - name: 커밋
         run: |
           git config user.name dalgubul-bot

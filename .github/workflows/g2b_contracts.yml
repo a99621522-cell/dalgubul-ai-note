@@ -11,7 +11,7 @@ on:
         description: "지자체 키(쉼표, 비우면 10곳 모두: daegu,jung,dong,seo,nam,buk,suseong,dalseo,dalseong,gunwi)"
         default: ""
       from:
-        description: "시작 달 YYYY-MM(비우면 경정청구가 되는 가장 이른 과세기간의 1년 앞 — 기성·준공 세금계산서 몫)"
+        description: "시작 달 YYYY-MM(비우면 경정청구가 되는 가장 이른 과세기간의 1년 앞 — 기성·준공 세금계산서 몫). 연도마다 받고 바로 커밋"
         default: ""
       to:
         description: "끝 달 YYYY-MM(비우면 이번 달)"
@@ -48,8 +48,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: 받기
-        id: run
+      - name: "받기·커밋 — 연도마다(한 번에 5년을 받다가 시간 상한에 걸리면 다 잃어서, 운영자 2026-11-05 '연도 별로 나눠서 받아')"
+        id: commit
         env:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
           GOVS: ${{ inputs.govs }}
@@ -61,29 +61,30 @@ jobs:
           INST: ${{ inputs.instt_div }}
         run: |
           set +e
-          ARGS=(--inqry-div "${INQ:-1}" --instt-div "${INST:-1,2}" --kinds "${KINDS:-공사,용역,물품}")
-          [ -n "$GOVS" ] && ARGS+=(--govs "$GOVS")
-          if [ "${{ github.event_name }}" = "schedule" ]; then ARGS+=(--from "$(date -d '-2 month' +%Y-%m)"); elif [ -n "$FROM" ]; then ARGS+=(--from "$FROM"); fi
-          [ -n "$TO" ] && ARGS+=(--to "$TO")
-          [ "$PROBE" = "true" ] && ARGS+=(--probe)
-          python3 scripts/fetch_g2b_contracts.py "${ARGS[@]}"
-          rc=$?
-          echo "rc=$rc" >> "$GITHUB_OUTPUT"
-          [ "$rc" = "2" ] && echo "::error::계약정보서비스(15129427) 활용신청이 필요합니다"
-          [ "$rc" = "3" ] && echo "::warning::호출 한도 — 받은 만큼 저장, 다음 실행이 이어 받음"
-          exit 0
-      - name: 커밋
-        id: commit
-        if: inputs.probe != 'true'
-        run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          [ -d data/vat/contracts ] || { echo "받은 파일 없음"; exit 0; }
-          git add data/vat/contracts
-          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
-          git commit -m "data: 나라장터 계약정보(대구) $(date +%Y-%m-%d)"
-          for i in 1 2 3; do git pull --rebase -q origin "${{ github.ref_name }}" && git push && break; sleep 5; done
-          echo "pushed=1" >> "$GITHUB_OUTPUT"
+          BASE=(--inqry-div "${INQ:-1}" --instt-div "${INST:-1,2}" --kinds "${KINDS:-공사,용역,물품}")
+          [ -n "$GOVS" ] && BASE+=(--govs "$GOVS")
+          if [ "$PROBE" = "true" ]; then python3 scripts/fetch_g2b_contracts.py "${BASE[@]}" --probe ${FROM:+--from "$FROM"}; exit 0; fi
+          if [ "${{ github.event_name }}" = "schedule" ]; then F="$(date -d '-2 month' +%Y-%m)"; else F="${FROM:-$(python3 -c 'import sys; sys.path.insert(0,"scripts"); import fetch_g2b_contracts as m; y,mo=map(int,m.claim_from().split("-")); print(f"{y-1}-{mo:02d}")')}"; fi
+          T="${TO:-$(date +%Y-%m)}"
+          for Y in $(seq "${F%%-*}" "${T%%-*}"); do
+            A="$Y-01"; [ "$Y" = "${F%%-*}" ] && A="$F"
+            B="$Y-12"; [ "$Y" = "${T%%-*}" ] && B="$T"
+            echo "::group::$A ~ $B"
+            python3 scripts/fetch_g2b_contracts.py "${BASE[@]}" --from "$A" --to "$B"
+            rc=$?
+            echo "::endgroup::"
+            [ "$rc" = "2" ] && { echo "::error::계약정보서비스(15129427) 활용신청이 필요합니다"; break; }
+            git add data/vat/contracts 2>/dev/null
+            if ! git diff --cached --quiet; then
+              git commit -q -m "data: 나라장터 계약정보(대구) $A~$B"
+              for i in 1 2 3; do git pull --rebase -q origin "${{ github.ref_name }}" && git push -q && break; sleep 5; done
+              echo "pushed=1" >> "$GITHUB_OUTPUT"
+            fi
+            [ "$rc" = "3" ] && { echo "::warning::호출 한도 — $A~$B 까지 저장, 다음 실행이 이어 받음"; break; }
+          done
+          exit 0
       - name: 점검기 배포
         if: steps.commit.outputs.pushed == '1' && github.ref_name == 'main'
         env:

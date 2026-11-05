@@ -5,7 +5,7 @@
 운영자가 올린 이 자료로 대구경북 BSI 를 잇는다. 표는 대구경북 합산 값이다(대구 단독 값 아님). 값은 표 그대로 옮긴다.
 열: 제조업 — 업황·매출·설비투자·채산성·인력사정·자금사정 각 실적/전망, 비제조업 — 업황·매출·채산성·인력사정·자금사정 각 실적/전망.
 전망은 그 달에 조사한 다음 달 전망. 마지막 달은 전망만 있는 행이 있다(실적은 빈칸).
-사용: python3 scripts/parse_bok_dg_bsi.py <PDF 또는 pdftotext -layout 결과 txt> [--issue 2026-10]
+사용: python3 scripts/parse_bok_dg_bsi.py <PDF 또는 pdftotext -layout 결과 txt 또는 scripts/bok_xlsx_text.py 결과 txt> [--issue 2026-10]
 """
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ def main(argv: list[str]) -> int:
     body = t[start[1]: t.index("소비자동향지수", start[1])]
     rows, sector, year = [], "", ""
     for ln in body.splitlines():
-        s = ln.strip()
+        s = re.sub(r"^연월중\s+", "", ln.strip())   # 엑셀판(2026-11)은 '연월중  제조업' 한 줄
         if s.startswith("비제조업"):
             sector, year = "비제조업", ""
             continue

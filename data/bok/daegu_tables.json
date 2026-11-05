@@ -20,9 +20,9 @@
     "매출어음",
     "RP"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "deposits_demand",
@@ -40,9 +40,9 @@
     "공금예금",
     "기타"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "deposits_savings",
@@ -60,9 +60,9 @@
     "주택부금",
     "기타"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "loans_fund",
@@ -79,9 +79,9 @@
     "기타",
     "재정자금"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "loans_borrower",
@@ -98,9 +98,9 @@
     "운전자금",
     "시설자금"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "loans_corp",
@@ -117,9 +117,9 @@
     "중소기업 시설자금",
     "중소기업 대출비중(%)"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "loans_industry",
@@ -163,9 +163,9 @@
     "새마을금고",
     "우체국예금"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "nonbank_loans",
@@ -183,9 +183,9 @@
     "새마을금고",
     "기타"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "nonbank_loans_borrower",
@@ -200,9 +200,9 @@
     "가계",
     "가계 중 주택담보대출"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   },
   {
    "key": "bills_newcorp",
@@ -219,9 +219,9 @@
     "부도 개인",
     "신설법인수"
    ],
-   "periods": 37,
+   "periods": 38,
    "first": "2020",
-   "last": "2026-07"
+   "last": "2026-08"
   }
  ]
 }

@@ -63,6 +63,48 @@ def bbox_lines(html: str) -> str:
         out.append(f"=={pi}==")
     return "\n".join(out)
 
+
+def mu_lines(data: bytes, first=1, last=10**9) -> str:
+    """PyMuPDF 글자 기준선(origin y)으로 줄을 묶고 글자 사이 간격으로 띄어쓰기를 되살림(ALLMU:N) — 한글 PDF 가 쉼표·괄호를 다른 글꼴로 그려 pdftotext 가 줄을 가르는 것 보정."""
+    try:
+        import pymupdf
+    except ImportError:
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "pymupdf"], check=False)
+        import pymupdf
+    doc = pymupdf.open(stream=data, filetype="pdf")
+    out = []
+    for pno in range(len(doc)):
+        if not (first <= pno + 1 <= last): continue
+        page = doc[pno]
+        chars = []
+        for b in page.get_text("rawdict")["blocks"]:
+            for l in b.get("lines", []):
+                for sp in l["spans"]:
+                    for c in sp["chars"]:
+                        x0, y0, x1, y1 = c["bbox"]
+                        chars.append((c["origin"][1], c["origin"][0], x1, sp["size"], c["c"]))
+        chars.sort(key=lambda c: (c[0], c[1]))
+        rows = []
+        for c in chars:
+            if rows and abs(c[0] - rows[-1][0]) <= max(1.2, 0.25 * c[3]):
+                rows[-1][1].append(c)
+            else:
+                rows.append([c[0], [c]])
+        for y, cs in rows:
+            cs.sort(key=lambda c: c[1])
+            t = ""; prev = None
+            for c in cs:
+                if c[4] == " ":
+                    if t and not t.endswith(" "): t += " "
+                    prev = c; continue
+                if prev is not None and prev[4] != " " and c[1] - prev[2] > 0.18 * c[3] and not t.endswith(" "):
+                    t += " "
+                t += c[4]; prev = c
+            t = t.strip()
+            if t: out.append(t)
+        out.append(f"=={pno + 1}==")
+    return "\n".join(out)
+
 def show_text(label, text, words):
     lines = [l.strip() for l in text.splitlines() if l.strip()]
     if words and words[0].startswith("ALL"):   # ALLRAW:N 은 -layout 없이. click 칸 'ALL' 또는 'ALL:3000' — 공개 문서 전체 글자(앞 N줄)를 찍는다(2026-11-04 국민성장펀드 가이드북)
@@ -129,6 +171,8 @@ def main():
         try:
             if d[:2] == b"PK" and (low.endswith((".xlsx", ".xlsm")) or b"xl/" in d[:2000]):
                 xlsx(d, words)
+            elif d[:4] == b"%PDF" and words and words[0].startswith("ALLMU"):
+                show_text("PDF 글자(PyMuPDF 기준선)", mu_lines(d), ["ALL:" + (words[0].split(":")[1] if ":" in words[0] else "6000")])
             elif d[:4] == b"%PDF" and words and words[0].startswith("ALLBBOX"):
                 with tempfile.NamedTemporaryFile(suffix=".pdf") as t:
                     t.write(d); t.flush()

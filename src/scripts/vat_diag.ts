@@ -225,6 +225,23 @@ export function mergeFiled(rowDiags: Diag[], fc: Map<string, FiledCheck>, meta: 
  *  진단(diags)의 항목을 한 표로: 과세기간·기한 | 무엇이 잘못됐나 | 왜(이유·근거 조문) | 어떻게 하면(홈택스 경정청구 칸·붙임) | 돌려받을 돈.
  *  돌려받을 돈은 세 칸으로만 — 확정(신고서·목록 숫자로 다시 계산), 확인하면 최대(불공제 사유의 세액 — 과세 시설 지출만큼만 돌아옴), 계약 어림(그 기간 과세 시설 나라장터 계약 세액 어림과 견준 값, 회색 참고).
  *  합계: 매입 목록을 올린 기간은 그 기간 진단의 gain(항목별 나눔은 어림), 신고서만 있는 기간은 신고서로 다시 계산한 금액. 기한이 지난 기간은 뺌. 새 계산 규칙 없음. */
+/* ── 쉬운 말(운영자 2026-11-05 '신고하는 공무원은 세무나 회계 전문가가 아니야') ──
+ *  화면 첫 줄은 이 말로, 조문·서식 용어는 '검토자용 자세히'에 접는다. 뜻은 각 Finding 의 what/how 그대로 — 새 판정 없음. */
+export const PLAIN: Record<string, { t: string; todo: string }> = {
+  'apportion-calc': { t: '함께 쓴 물건·공사의 부가세를 나누는 계산을 틀려, 돌려받을 수 있는 부가세를 덜 받았어요', todo: '아래 「고친 신고서」 값을 홈택스 경정청구 화면에 그대로 옮겨 적으면 됩니다. 다른 자료는 필요 없어요.' },
+  'settle': { t: '반년 끝(확정신고)에 다시 맞추는 계산을 틀려, 부가세를 덜 받았어요', todo: '「고친 신고서」 값을 홈택스 경정청구 화면에 옮겨 적으면 됩니다. 다른 자료는 필요 없어요.' },
+  'settle-check': { t: '분기 신고 때 나눈 부가세를 반년 끝에 다시 맞췄는지 보이지 않아요', todo: '그 기간 확정신고 때 함께 낸 「공제받지 못할 매입세액 명세서」 PDF 를 홈택스에서 받아 같은 칸에 놓아 주세요.' },
+  'taxable-as-exempt': { t: '돈을 받는 시설(체육관·주차장·임대 등)에 쓴 비용의 부가세를 돌려받지 않은 것으로 처리했을 수 있어요', todo: '그 기간 홈택스 매입 세금계산서 목록(엑셀)을 받아 놓으면 어느 것이 돌려받을 수 있는지 점검기가 골라 줍니다.' },
+  'missing': { t: '늦게 받았거나 빈칸이 있던 세금계산서라서 부가세를 돌려받지 않았어요 — 기준 안이면 돌려받을 수 있어요', todo: '그 세금계산서를 받은 날짜를 확인해 주세요(공급한 때부터 1년 안이면 대부분 됩니다).' },
+  'prereg': { t: '사업자등록 전에 쓴 비용이라 부가세를 돌려받지 않았어요 — 등록 신청 날짜에 따라 돌려받을 수 있어요', todo: '그 시설(사업장)의 사업자등록 신청일을 확인해 주세요.' },
+  'sales-exempt': { t: '세금을 안 내도 되는 수입(군이 직접 운영하는 주차장 등)에 세금을 냈을 수 있어요', todo: '그 수입이 군이 직접 운영하는 시설 수입인지 세입 담당에게 확인해 주세요. 맞으면 낸 세금을 돌려받습니다.' },
+  'recalc': { t: '함께 쓰는 건물·설비의 쓰임 비율이 크게 바뀌었는데 다시 계산하지 않았어요', todo: '그 건물·설비를 산 때와 값(자산대장)을 확인해 주세요. 비율이 줄었으면 돌려받을 돈이 생깁니다.' },
+  'nofile': { t: '아직 올리지 않은 기간의 신고서가 있어요', todo: '홈택스에서 그 기간 신고서 PDF 를 받아 같은 칸에 놓아 주세요.' },
+  'no-apportion': { t: '함께 쓴 비용의 부가세를 나누지 않고 모두 돌려받지 않은 것으로 처리했어요', todo: '「고친 신고서」 값을 홈택스 경정청구 화면에 옮겨 적으면 됩니다.' },
+  'nofiled': { t: '이 기간은 신고를 하지 않은 것으로 보여요 — 늦게라도 신고하면 돌려받을 수 있어요', todo: '실제로 신고하지 않았는지 확인해 주세요. 맞으면 기한후신고를 합니다.' },
+  'list-short': { t: '신고서에 넣은 세금계산서보다 올린 목록이 적어요 — 목록을 더 받아야 해요', todo: '그 기간 매입 세금계산서 목록을 다시 받아 놓아 주세요.' },
+};
+const plain = (f: Finding) => PLAIN[f.key] ?? { t: f.title, todo: f.how };
 export type CalcRow = { k: string; name: string; claim: string; days: number; f: Finding; kind: 'sure' | 'upto' | 'inlist' | 'none'; est: number | null };
 export function refundCalc(L: Diag[], estBy?: Map<string, number>) {
   const rows: CalcRow[] = []; let sure = 0, upto = 0, est = 0; const miss: string[] = [];
@@ -240,23 +257,33 @@ export function refundCalc(L: Diag[], estBy?: Map<string, number>) {
 }
 export function refundCalcHtml(D: Data, L: Diag[], estBy?: Map<string, number>, win?: string): string {
   const R = refundCalc(L, estBy); const ex = L.filter(d => d.state === 'expired' || d.days < 0); if (!R.rows.length && !ex.length) return '';
-  const money = (r: CalcRow) => r.kind === 'sure' ? `<b>${fmt(r.f.effect!)}원</b><br><span class="meta">확정 — ${esc(r.f.effectNote)}</span>`
-    : r.kind === 'upto' ? `최대 <b>${fmt(r.f.effect!)}원</b><br><span class="meta">${esc(r.f.effectNote)}</span>${r.est != null ? `<br><span class="meta rf-est">계약 어림으로 보면 약 ${fmt(r.est)}원(참고)</span>` : ''}`
+  const money = (r: CalcRow) => r.kind === 'sure' ? `<b>${fmt(r.f.effect!)}원</b><br><span class="meta">바로 돌려받을 돈</span>`
+    : r.kind === 'upto' ? `최대 <b>${fmt(r.f.effect!)}원</b><br><span class="meta">확인하면 더 받을 수 있어요</span>${r.est != null ? `<br><span class="meta rf-est">계약으로 짐작하면 약 ${fmt(r.est)}원(참고)</span>` : ''}`
     : r.kind === 'inlist' ? `<span class="meta">${esc(r.f.effectNote)}</span>` : `<span class="meta">${esc(r.f.effectNote)}</span>`;
   const dd = (r: CalcRow) => `${esc(r.name)}<br><span class="meta">경정청구 ${esc(r.claim)}까지 ${r.days <= 90 ? '⚠ ' : ''}D-${r.days}</span>`;
-  return `<section class="rf-calc" aria-labelledby="rf-calc-h"><div class="rf-h"><h2 id="rf-calc-h">돌려받을 돈 — 무엇을 · 왜 · 어떻게 · 얼마</h2></div>
+  return `<section class="rf-calc" aria-labelledby="rf-calc-h"><div class="rf-h"><h2 id="rf-calc-h">돌려받을 돈 — 무엇이 문제이고, 무엇을 하면, 얼마를 받나</h2></div>
     <p class="note">판정은 참고이며 기관의 판단이 아닙니다. 올린 신고서(와 매입 목록)의 숫자로 다시 계산했습니다.</p>
     ${win ? `<p class="rf-win"><b>대상 기간: ${esc(win)}</b> <span class="meta">— 경정청구가 되는 과세기간(법정신고기한 + 5년, 국세기본법 제45조의2). 이 밖의 자료는 계산에서 뺍니다.</span></p>` : ''}
     ${ex.length ? `<p class="note">경정청구 기한이 지난 과세기간 ${ex.length}개(${ex.map(d => esc(d.name)).join(' · ')})는 돌려받을 수 없어 계산에서 뺐습니다.</p>` : ''}
-    <div class="rf-calc-sum"><div><span class="meta">확정</span><b id="rf-calc-sure">${fmt(R.sure)}원</b><span class="meta">신고서·목록 숫자로 다시 계산 — 경정청구하면 돌려받는 돈</span></div>
-      <div><span class="meta">확인하면 최대</span><b id="rf-calc-upto">${fmt(R.upto)}원</b><span class="meta">불공제 사유 가운데 과세 시설 지출로 확인되는 만큼</span></div>
-      ${R.est ? `<div class="rf-est"><span class="meta">계약 어림(참고)</span><b>${fmt(R.est)}원</b><span class="meta">그 기간 과세 시설 나라장터 계약 세액 어림까지만</span></div>` : ''}</div>
+    <div class="rf-calc-sum"><div><span class="meta">바로 돌려받을 돈</span><b id="rf-calc-sure">${fmt(R.sure)}원</b><span class="meta">신고서 숫자로 다시 계산한 금액 — 다른 자료 없이 경정청구할 수 있어요</span></div>
+      <div><span class="meta">확인하면 더 받을 수 있는 돈(최대)</span><b id="rf-calc-upto">${fmt(R.upto)}원</b><span class="meta">담당 부서에 자료를 받아 확인되는 만큼만</span></div>
+      ${R.est ? `<div class="rf-est"><span class="meta">참고 어림</span><b>${fmt(R.est)}원</b><span class="meta">계약 금액으로 짐작한 값 — 신청 금액이 아님</span></div>` : ''}</div>
+    ${stepsHtml(R)}
     <div class="actions no-print"><button type="button" class="btn" id="rf-calc-zip">경정청구 자료 내려받기(고친 신고서·근거·결재용 보고 — zip)</button></div>
     ${nextDocsHtml(R.rows)}
-    <div class="scroll-x" tabindex="0" role="region" aria-label="돌려받을 돈 표"><table class="data-table rf-calc-t"><thead><tr><th>과세기간</th><th>무엇이 잘못됐나</th><th>왜 (이유·근거)</th><th>어떻게 하면</th><th>돌려받을 돈</th></tr></thead><tbody>
-    ${R.rows.map(r => `<tr class="rf-calc-${r.kind}"><td>${dd(r)}</td><td><b>${esc(r.f.title)}</b></td><td>${esc(r.f.what)}${r.f.basis.length ? `<br><span class="meta">근거: ${law(D, r.f.basis)}</span>` : ''}</td><td>${esc(r.f.how)}${r.kind === 'sure' && L.find(d => d.k === r.k)?.corrected?.length ? ` <a href="#rf-dg-${esc(r.k)}" data-open-dg="${esc(r.k)}">고친 신고서 보기 ↓</a>` : ''}</td><td class="num">${money(r)}</td></tr>`).join('')}
+    <div class="scroll-x" tabindex="0" role="region" aria-label="돌려받을 돈 표"><table class="data-table rf-calc-t"><thead><tr><th>기간</th><th>무엇이 문제인가</th><th>할 일</th><th>자세한 이유(검토자용)</th><th>돌려받을 돈</th></tr></thead><tbody>
+    ${R.rows.map(r => `<tr class="rf-calc-${r.kind}"><td>${dd(r)}</td><td><b>${esc(plain(r.f).t)}</b></td><td>${esc(plain(r.f).todo)}${r.kind === 'sure' && L.find(d => d.k === r.k)?.corrected?.length ? ` <a href="#rf-dg-${esc(r.k)}" data-open-dg="${esc(r.k)}">고친 신고서 보기 ↓</a>` : ''}</td><td><details class="rf-tech"><summary>${esc(r.f.title)}</summary><p>${esc(r.f.what)}</p><p>${esc(r.f.how)}</p>${r.f.basis.length ? `<p class="meta">근거: ${law(D, r.f.basis)}</p>` : ''}</details></td><td class="num">${money(r)}</td></tr>`).join('')}
     </tbody></table></div>
     <p class="note">경정청구로 돌려받는 세금에는 국세환급가산금이 붙습니다(국세기본법 제52조). 돌려받은 돈은 바로 세입으로 처리합니다(2025년 대구광역시 정부합동감사 지적 사항).</p></section>`;
+}
+/** 이렇게 하세요 — 비전문가 담당자용 순서(쉬운 말). 홈택스 메뉴 이름은 화면에 따라 조금 다를 수 있음 */
+function stepsHtml(R: ReturnType<typeof refundCalc>): string {
+  const ks = [...new Set(R.rows.filter(r => r.kind === 'sure').map(r => r.name))]; const up = R.rows.filter(r => r.kind === 'upto').length;
+  return `<div class="rf-steps-plain"><p><b>이렇게 하세요</b></p><ol>
+    ${ks.length ? `<li><b>바로 돌려받을 돈(${ks.length}개 기간)</b> — 아래 단추로 자료를 내려받습니다. 홈택스에 기관 인증서로 들어가 <b>신고/납부 → 세금신고 → 부가가치세 → 경정청구</b>에서 기간을 고르고, 「고친 신고서」의 고친 값을 칸마다 옮겨 적은 뒤, 사유 문장을 붙여넣고 묶음의 파일을 붙여 제출합니다.</li>` : '<li>신고서 숫자만으로 바로 돌려받을 돈은 없었어요.</li>'}
+    ${up ? `<li><b>더 받을 수 있는 돈(${up}건)</b> — 표의 '할 일'대로 담당 부서에 자료를 부탁하세요. 아래 「부탁 메모 복사」를 쓰면 됩니다. 받은 파일은 같은 칸에 놓으면 다시 계산합니다.</li>` : ''}
+    <li>돌려받은 돈은 바로 세입으로 처리하세요(감사에서 지적되는 일이 많아요).</li></ol>
+    <p class="note">모르는 말이 나오면 '자세한 이유(검토자용)'를 펼치거나, 묶음의 결재용 보고를 세무 담당·세무대리인에게 보여 주세요. 판정은 참고이며 기관의 판단이 아닙니다.</p></div>`;
 }
 /** 다음에 받으면 금액이 커지는 자료 — '확인하면 최대' 항목을 자료별로 묶어 금액 큰 순 3개(선택) */
 const NEXT_DOC: Record<string, (name: string) => string> = {
@@ -270,7 +297,8 @@ function nextDocsHtml(rows: CalcRow[]): string {
   const m = new Map<string, { txt: string; amt: number }>();
   for (const r of rows) { if (r.kind !== 'upto' && !(r.f.key === 'recalc' && /줄어/.test(r.f.what))) continue; const f = NEXT_DOC[r.f.key]; if (!f) continue; const key = `${r.k}|${r.f.key}`; const x = m.get(key) ?? { txt: f(r.name), amt: 0 }; x.amt += r.est ?? r.f.effect ?? 0; m.set(key, x); }
   const L = [...m.values()].sort((a, b) => b.amt - a.amt).slice(0, 3); if (!L.length) return '';
-  return `<div class="rf-next"><p><b>다음에 받으면 금액이 커지는 자료</b> <span class="meta">선택 — 여기서 끝내도 위 '확정' 금액은 경정청구할 수 있습니다</span></p><ol>${L.map(x => `<li>${esc(x.txt)}${x.amt ? ` <span class="meta">— 최대 ${fmt(x.amt)}원</span>` : ''}</li>`).join('')}</ol></div>`;
+  const memo = `[부가세 경정청구 자료 부탁]\n지난 부가가치세 신고를 다시 계산하는 데 아래 자료가 필요합니다. 파일로 보내 주세요.\n${L.map((x, i) => `${i + 1}. ${x.txt}`).join('\n')}\n(지자체 부가세 절감 점검기로 계산 — 판정은 참고이며 기관의 판단이 아닙니다)`;
+  return `<div class="rf-next"><p><b>더 받으려면 — 이 자료를 부탁하세요</b> <span class="meta">선택 — 여기서 끝내도 '바로 돌려받을 돈'은 경정청구할 수 있어요</span></p><ol>${L.map(x => `<li>${esc(x.txt)}${x.amt ? ` <span class="meta">— 최대 ${fmt(x.amt)}원</span>` : ''}</li>`).join('')}</ol><div class="actions no-print"><button type="button" class="btn secondary" data-copy-memo="${esc(memo)}">부탁 메모 복사</button></div></div>`;
 }
 export function refundCalcCsv(L: Diag[], estBy?: Map<string, number>): string[][] {
   const R = refundCalc(L, estBy); const K = { sure: '확정', upto: '확인하면 최대', inlist: '목록 대조에 포함', none: '자료 필요' };
@@ -324,6 +352,8 @@ export function correctedHtml(L: CorrDoc[]): string {
     ${c.cells.map(x => `<tr${x.before !== x.after ? ' class="rf-chg"' : ''}><td>(${x.n})</td><td>${esc(x.label)}</td><td class="num">${n0(x.before)}</td><td class="num">${x.before !== x.after ? `<b>${n0(x.after)}</b>` : n0(x.after)}</td><td class="num">${x.before != null && x.after != null && x.before !== x.after ? fmt(x.after - x.before) : ''}</td></tr>`).join('')}
     ${c.payBefore != null ? `<tr class="rf-chg"><td></td><td>납부(환급)세액 — 매출세액 − (18) (가산세·경감공제·예정고지는 원래대로)</td><td class="num">${fmt(c.payBefore)}</td><td class="num"><b>${fmt(c.payAfter!)}</b></td><td class="num">${fmt(c.payAfter! - c.payBefore)}</td></tr>` : ''}</tbody></table></div>
     ${c.parts.map(p => `<p class="note"><b>공제받지못할매입세액명세서 — ${esc(p.sec === '안분' ? '공통매입세액 안분 계산' : '공통매입세액의 정산')}${p.sec === '정산(새로 넣음)' ? '(새로 넣는 칸)' : ''}</b></p><div class="scroll-x" tabindex="0" role="region" aria-label="고친 명세서"><table class="data-table vat-table" data-stack="off"><thead><tr><th scope="col">칸</th><th scope="col" class="num">당초</th><th scope="col" class="num">고친 값</th></tr></thead><tbody>${p.rows.map(r => `<tr${r.before !== r.after ? ' class="rf-chg"' : ''}><td>${esc(r.label)}</td><td class="num">${n0(r.before)}</td><td class="num">${r.before !== r.after ? `<b>${n0(r.after)}</b>` : n0(r.after)}</td></tr>`).join('')}</tbody></table></div>`).join('')}
+    ${(() => { const why = c.parts.map(p => p.sec === '안분' ? '공통매입세액 안분 계산에서 총공급가액 등을 잘못 넣어' : p.sec === '정산' ? '공통매입세액 정산 계산을 잘못하여' : '예정신고분 공통매입세액을 확정신고 때 6개월 비율로 정산하지 않아').join(', '); const y = c.k.split('-'); const reason = `${y[0]}년 제${y[1]}기 ${c.kind}신고 때 ${why} 매입세액 ${fmt(c.delta)}원을 덜 공제받았으므로 국세기본법 제45조의2에 따라 경정을 청구합니다(부가가치세법 시행령 제81조·제82조).`;
+      return `<p class="rf-reason"><b>사유 문장</b> ${esc(reason)} <button type="button" class="link-btn no-print" data-copy-memo="${esc(reason)}">복사</button></p>`; })()}
     <p class="rf-claim">경정청구서: 당초 신고 ${c.payBefore != null ? `납부(환급)세액 ${fmt(c.payBefore)}원 → 고친 값 ${fmt(c.payAfter!)}원, ` : ''}<b>돌려받을 세액 ${fmt(c.delta)}원</b></p></div>`).join('');
 }
 export function correctedCsv(M: Map<string, CorrDoc[]>): string[][] {

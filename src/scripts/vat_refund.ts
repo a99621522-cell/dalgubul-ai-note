@@ -139,9 +139,10 @@ function init(D: Data) {
     for (const r of ctx?.rows ?? []) if (r.taxable && L.includes(r.p)) estBy.set(r.p, (estBy.get(r.p) ?? 0) + r.est);
     const nm = (k: string) => { const [y, h] = k.split('-'); return `${y}년 제${h}기`; }; const win = L.length ? `${nm(L[0])} ~ ${nm(L[L.length - 1])} (${L.length}개 과세기간)` : '';
     el.innerHTML = b?.diags?.length ? refundCalcHtml(D, b.diags, estBy, win) : '';
+    document.querySelectorAll<HTMLButtonElement>('[data-copy-memo]:not([data-wired])').forEach(b => { b.dataset.wired = '1'; b.addEventListener('click', async () => { try { await navigator.clipboard.writeText(b.dataset.copyMemo ?? ''); b.textContent = '복사했어요'; } catch { window.prompt('아래 글을 복사하세요', b.dataset.copyMemo ?? ''); } }); });
     $('rf-calc-zip')?.addEventListener('click', () => { const z = $('rv-zip'); if (z) z.click(); else document.dispatchEvent(new CustomEvent('vat-filed-bundle')); });
     el.querySelectorAll<HTMLAnchorElement>('[data-open-dg]').forEach(a => a.addEventListener('click', () => { const d = document.getElementById(`rf-dg-${a.dataset.openDg}`) as HTMLDetailsElement | null; if (d) d.open = true; })); }
-  function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; el.innerHTML = b?.diag ? b.diag : commonMistakesHtml(D); }
+  function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; el.innerHTML = b?.diag ? b.diag : commonMistakesHtml(D); el.querySelectorAll<HTMLButtonElement>('[data-copy-memo]:not([data-wired])').forEach(x => { x.dataset.wired = '1'; x.addEventListener('click', async () => { try { await navigator.clipboard.writeText(x.dataset.copyMemo ?? ''); x.textContent = '복사했어요'; } catch { window.prompt('아래 글을 복사하세요', x.dataset.copyMemo ?? ''); } }); }); }
   const forced = new Set<string>();
   function ask(b: Built | null) { const el = $('rf-ask'); if (!el) return; const o = getOrg(); const L = openPeriods();
     const stake = new Map<string, { tax: number; est: number }>(); for (const [k, v] of Object.entries(b?.facTax ?? {})) stake.set(k, { tax: v, est: 0 });

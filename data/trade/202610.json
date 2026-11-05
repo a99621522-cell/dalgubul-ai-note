@@ -1,0 +1,310 @@
+{
+ "month": "2026-10",
+ "note": "값은 보도자료 원문 그대로. 산업통상부 자료는 억 달러(통관기준 잠정치). 증감률은 전년 동월(누계는 전년 동기) 대비 %. 대구본부세관 10월 자료는 발표 전(매달 15일쯤)",
+ "sources": {
+  "motir": {
+   "name": "산업통상부 「2026년 10월 수출입 동향」 보도자료(2026-11-01)",
+   "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172360/view",
+   "raw": "data/trade/raw/motir_202610.txt"
+  }
+ },
+ "customs_summary": null,
+ "motir_summary": {
+  "unit": "억 달러",
+  "export": 1152.8,
+  "export_yoy": 93.7,
+  "import": 727.8,
+  "import_yoy": 36.0,
+  "balance": 425.0,
+  "daily_export": 52.4,
+  "daily_export_yoy": 76,
+  "ytd_export": 9300,
+  "ytd_export_yoy": 60.6,
+  "ytd_balance": 2949
+ },
+ "daegu_export_items": null,
+ "gb_export_items": null,
+ "national_items": {
+  "unit": "억 달러",
+  "note": "산업통상부 20대 품목(표의 반올림 값, 본문에 소수 값이 있으면 소수)",
+  "rows": [
+   [
+    "반도체",
+    564.4,
+    259.4
+   ],
+   [
+    "석유제품",
+    69.2,
+    80.0
+   ],
+   [
+    "자동차",
+    65.5,
+    18.1
+   ],
+   [
+    "컴퓨터",
+    58.5,
+    496.6
+   ],
+   [
+    "일반기계",
+    41,
+    24
+   ],
+   [
+    "석유화학",
+    40.0,
+    27.5
+   ],
+   [
+    "선박",
+    26.4,
+    -43.6
+   ],
+   [
+    "철강",
+    22.9,
+    22.3
+   ],
+   [
+    "전기기기",
+    19.9,
+    74.0
+   ],
+   [
+    "무선통신기기",
+    19.5,
+    6.7
+   ],
+   [
+    "디스플레이",
+    19,
+    29
+   ],
+   [
+    "자동차부품",
+    17,
+    15
+   ],
+   [
+    "비철금속",
+    17,
+    38
+   ],
+   [
+    "바이오헬스",
+    15.3,
+    30.2
+   ],
+   [
+    "화장품",
+    14.4,
+    57.5
+   ],
+   [
+    "농수산식품",
+    11.1,
+    11.6
+   ],
+   [
+    "섬유",
+    10,
+    25
+   ],
+   [
+    "이차전지",
+    7,
+    38
+   ],
+   [
+    "생활용품",
+    7,
+    -13
+   ],
+   [
+    "가전",
+    6,
+    6
+   ]
+  ]
+ },
+ "countries": {
+  "unit": "전국 억 달러",
+  "note": "세관 자료 발표 전이라 전국 값만",
+  "rows": [
+   {
+    "country": "중국",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     269.8,
+     133.6
+    ]
+   },
+   {
+    "country": "미국",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     249.0,
+     185.8
+    ]
+   },
+   {
+    "country": "동남아(세관) / 아세안(산업부)",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     213.3,
+     128.0
+    ]
+   },
+   {
+    "country": "EU",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     81.0,
+     56.4
+    ]
+   },
+   {
+    "country": "일본",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     32,
+     44
+    ]
+   },
+   {
+    "country": "인도",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     27,
+     84
+    ]
+   },
+   {
+    "country": "중남미",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     30,
+     -37
+    ]
+   },
+   {
+    "country": "중동",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     16.7,
+     11.0
+    ]
+   },
+   {
+    "country": "CIS",
+    "daegu": [
+     null,
+     null
+    ],
+    "daegu_ytd": [
+     null,
+     null
+    ],
+    "gb": [
+     null,
+     null
+    ],
+    "national": [
+     9,
+     -32
+    ]
+   }
+  ]
+ }
+}

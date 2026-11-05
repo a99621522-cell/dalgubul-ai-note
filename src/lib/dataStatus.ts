@@ -94,7 +94,8 @@ export function dataFeeds(): Feed[] {
     push({ group: '한국은행 ECOS', name: String(d.name ?? d.stat_name).split(' — ')[0], table: String(d.stat_name).replace(/^[\d.]+\s*/, ''), org: '한국은행', badge: '국가통계', cycle: c, latest: d.latest, fetched: d.fetched ?? '', url: d.source_url, lag: c === 'Q' ? 75 : d.key === 'ccsi-region' ? 20 : 70, ended: ENDED[d.key] });
   }
   // 기관 자료 — 보도자료·간행물·공시
-  const tr = latestFile('data/trade', /^\d{6}\.json$/);
+  // 세관 값이 든 달만 — 산업통상부 값만 먼저 넣은 달(customs_summary: null)은 세관 '받은 달'이 아니다
+  const tr = fs.existsSync('data/trade') ? fs.readdirSync('data/trade').filter(f => /^\d{6}\.json$/.test(f)).sort().reverse().find(f => readJson(path.join('data/trade', f))?.customs_summary) : undefined;
   if (tr) push({ group: '기관 자료·공시', name: '대구·경북지역 수출입 현황(월간)', org: '대구본부세관', badge: '기관 자료', cycle: 'M', latest: tr.slice(0, 6), fetched: '', href: '/stats/trade/', url: 'https://www.customs.go.kr/daegu/na/ntt/selectNttList.do?mi=3867&bbsId=1525', lag: 18 });
   const dpis = fs.existsSync('data/refs') ? fs.readdirSync('data/refs').filter(f => /^dpi-\d{4}-\d{2}-daegu-economic-trends\.json$/.test(f)).sort().map(f => readJson(path.join('data/refs', f))).filter(Boolean) : [];
   const dpiLatest = maxOf(dpis.flatMap((x: { indicators?: { name: string; ref_month: string }[] }) => (x.indicators ?? []).filter(i => i.name === '경기동행지수').map(i => i.ref_month)));

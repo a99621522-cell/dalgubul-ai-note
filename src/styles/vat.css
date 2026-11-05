@@ -247,3 +247,10 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 #rv-files { margin: 6px 0; }
 @media (max-width: 600px) { .rf-band { position: static; } }
 @media print { body.print-todo main > *:not(#rf-todo-wrap):not(.section-head) { display: none !important; } body.print-todo .rf-todo-wrap .actions { display: none !important; } .rf-band { position: static; } }
+
+/* 세 걸음 판 — 항목마다 왜·할 일·근거(2026-11-05) */
+.rf-why { margin: 4px 0 2px; padding: 6px 10px; border-left: 3px solid var(--line-strong); background: var(--color-surface-1); font-size: .95em; }
+.rf-why p { margin: 2px 0; }
+.rf-k { display: inline-block; min-width: 3.2em; font-weight: 700; margin-right: 4px; }
+.rf-why-list { padding-left: 1.4em; } .rf-why-list > li { margin: 10px 0; } .rf-ctr { margin: 0; }
+@media print { body.print-todo .rf-why { border-left: 1px solid #999; } }

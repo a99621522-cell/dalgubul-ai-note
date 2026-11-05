@@ -2,7 +2,7 @@
  *  ① 기관 고르기 ② 지난 신고서 올리기 ③ 홈택스 매입 목록 올리기 — 걸음마다 금액 띠(#rf-band) 하나가 갱신되고, 끝은 할 일 목록(#rf-todo).
  *  계산은 vat_review.ts 그대로(이 모듈은 'vat-rv-built' 이벤트를 듣고 그리기만). 나라장터 계약(vat_contracts.ts)으로 ① 요약과 ② 기간 비교를 만든다.
  *  추정(계약금액 × 10/110)은 회색 작은 글씨 — 돌려받을 금액이 아니다. 판정은 참고이며 기관의 판단이 아니다. */
-import { $, esc, fmt, loadData, getOrg, claimPeriod, ymd, type Data } from './vat_rules';
+import { $, esc, fmt, loadData, getOrg, claimPeriod, ymd, lawLink, uniq, facilityRule, facilityStatus, bizType, type Data, type Basis } from './vat_rules';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
 import type { UResult } from './vat_unlock';
 
@@ -17,6 +17,31 @@ function init(D: Data) {
   let ctx: CtrCtx | null = null; let last: Built | null = null;
   const pName = (k: string) => { const [y, h] = k.split('-'); return `${y}년 제${h}기`; };
   const pInfo = (k: string) => claimPeriod(`${k.split('-')[0]}-${k.split('-')[1] === '1' ? '03' : '09'}-01`)!;
+  /* 왜·근거 — 공무원이 납득하도록 항목마다 이유 한 줄과 조문(운영자 2026-11-05 '어떤 항목을 어떻게 해야 되는지 이유는 나와야') */
+  const law = (bs?: Basis[]) => { const L = uniq(bs ?? []); return L.length ? L.map(b => lawLink(D, b)).join(' · ') : ''; };
+  const B = (law: Basis['law'], art: string): Basis => ({ law, art } as Basis);
+  const whyBox = (why: string, how: string, bs?: Basis[]) => `<div class="rf-why"><p><span class="rf-k">왜</span> ${why}</p>${how ? `<p><span class="rf-k">할 일</span> ${how}</p>` : ''}${law(bs) ? `<p><span class="rf-k">근거</span> ${law(bs)}</p>` : ''}</div>`;
+  const noFmt = (n: string) => n.replace(/^(\d{3})(\d{2})(\d{5})$/, '$1-$2-$3');
+  const g2b = (u: string) => /^https?:/.test(u) ? u : `https://www.g2b.go.kr/link/FIUA027_01/single/?${u}&srchName=ctrtCrst&openUrl=Y`;
+  type CR = CtrCtx['rows'][number];
+  function ctrWhy(r: CR) {
+    const c = r.c; const f = r.a && org ? org.facilities.find(x => x.id === r.a!.fid) : undefined; const rule = f ? facilityRule(D, f) : undefined; const st = f ? facilityStatus(D, f) : undefined;
+    const via = r.via === '지정' ? '직접 지정한 시설' : r.via === '매핑표' ? '전에 고른 사업명(매핑표)' : '계약명에 시설 이름이 들어 있음';
+    const corps = c.corps.filter(p => /^\d{10}$/.test(p.no)); const corpTxt = corps.length ? corps.map(p => `${esc(p.nm || '(상호 확인)')} <b>${noFmt(p.no)}</b>`).join(', ') : '<span class="note">업체 번호 없음 — 계약명으로 찾기</span>';
+    const pn = pName(r.p); let why = '', bs: Basis[] = [], extra = '';
+    if (r.taxable && r.a) {
+      const fn = r.a.fid === 'admin' ? '본청·행정 공통' : `「${esc(f?.name ?? '')}」`;
+      if (r.a.fid === 'admin' || r.a.use === 'admin') { why = `${fn}에 붙은 지출(${via}) — 행정과 함께 쓰는 지출은 그 기간 면세비율만큼 빼고 공제합니다(안분). ${esc(D.rules.admin_common?.summary ?? '')}`; bs = [B('act', '제40조'), B('decree', '제81조'), ...(D.rules.admin_common?.basis ?? [])]; extra = ' · 그 기간 면세비율(② 신고서의 공제받지 못할 매입세액 명세서)이 있어야 금액이 정해집니다'; }
+      else if (r.a.use === 'multi') { why = `${fn}과 다른 시설이 같이 쓰는 지출(${via}) — 과세 시설 몫은 면세비율만큼 빼고 공제합니다(안분)`; bs = [B('act', '제40조'), B('decree', '제81조')]; extra = ' · 그 기간 면세비율이 있어야 금액이 정해집니다'; }
+      else if (st === 'check') { why = `${fn}(${via})는 기관 설정에서 「${esc(rule?.name ?? '')}」 유형 — 운영 방식에 따라 과세·면세가 갈립니다: ${esc(rule?.cond || rule?.note || '')}`; bs = rule?.basis ?? []; extra = ' · 먼저 이 시설의 운영 방식(사용료를 받는지, 계속·반복 대관인지)을 기관 설정에서 확인하세요'; }
+      else { why = `${fn}(${via})는 기관 설정에서 「${esc(rule?.name ?? '과세 시설')}」 유형으로 두어 과세 시설로 봅니다 — ${esc(rule?.cond || rule?.note || '')} 과세사업에 쓴 지출의 매입세액은 공제 대상입니다(유형이 다르면 <a href="/vat/setup/?step=3">기관 설정</a>에서 고치면 다시 셉니다)`; bs = [B('act', '제38조'), ...(rule?.basis ?? [])]; }
+    } else { const t = bizType(D, c.nm); why = `시설은 못 붙었지만 계약명이 「${esc(t?.name ?? '')}」 유형입니다 — ${esc(t?.hint ?? '')}`; bs = [B('act', '제38조'), B('act', '제39조')]; extra = ' · 먼저 이 시설이 사용료를 받는(과세) 시설인지 확인해 기관 설정에 시설로 넣으세요 — 넣으면 다음부터 저절로 붙습니다'; }
+    const wk = c.k === '공사' ? D.rules.works?.options.find(o => o.key === r.cw) : undefined;
+    if (c.k === '공사') extra += wk ? ` · 공사 갈래 짐작: ${esc(wk.short)} — ${esc(wk.why)}` : ' · 공사라면 과세 부분 전용인지·같이 쓰는 시설인지·부지 토목인지에 따라 공제가 갈립니다(③ 표 「공사라면」)';
+    const how = `① 홈택스 「전자세금계산서 목록조회(매입)」에서 공급자 ${corpTxt} 의 ${esc(c.date)} 이후 세금계산서(선금·기성·준공)를 찾습니다 ② 그 세액이 ${esc(pn)} 신고서의 매입세액 (10)~(18)에 들어갔는지 봅니다 — 면세·행정으로 보고 (17) 불공제에 넣었거나 빠졌으면 ③에 그 목록을 올려 경정청구 후보로${extra}`;
+    return `<li><p class="rf-ctr"><span class="vbadge">${esc(pn)}</span> ${c.url ? `<a href="${esc(g2b(c.url))}" target="_blank" rel="noopener">${esc(c.nm)}</a>` : esc(c.nm)} <span class="note">${esc(c.k)} · 계약 ${esc(c.date)} · 이번 차수 ${fmt(c.amt || c.tot)}원 → 세액 추정 ${fmt(r.est)}원(× 10/110, 참고)</span></p>${whyBox(why, how, bs)}</li>`;
+  }
+  let whyN = 8;
   /* 경정청구가 되는 과세기간(확정신고기한이 지났고 기한 + 5년 안) — 오늘 기준 */
   const openPeriods = () => { const L: string[] = []; const y0 = new Date().getFullYear() - 6; for (let y = y0; y <= new Date().getFullYear(); y++) for (const h of [1, 2]) { const k = `${y}-${h}`; const P = pInfo(k); if (P.due <= today && P.days >= 0) L.push(k); } return L; };
   const ctrByP = () => { const m = new Map<string, { tax: number; likely: number; nTax: number; nLikely: number; top: string[] }>(); for (const r of ctx?.rows ?? []) { if (!r.p) continue; const x = m.get(r.p) ?? { tax: 0, likely: 0, nTax: 0, nLikely: 0, top: [] }; if (r.taxable) { x.tax += r.est; x.nTax++; } else if (r.likely) { x.likely += r.est; x.nLikely++; } else continue; m.set(r.p, x); } for (const [k, x] of m) x.top = (ctx?.rows ?? []).filter(r => r.p === k && (r.taxable || r.likely)).sort((a, b) => b.est - a.est).slice(0, 2).map(r => r.c.nm); return m; };
@@ -45,6 +70,15 @@ function init(D: Data) {
     setStep('rf-s1', true, false, '완료');
   }
 
+  function whyList(first: string[]) {
+    const L = openPeriods(); const all = (ctx?.rows ?? []).filter(r => (r.taxable || r.likely) && L.includes(r.p));
+    if (!all.length) return '';
+    const fs = new Set(first); const sorted = all.sort((a, c) => (fs.has(c.p) ? 1 : 0) - (fs.has(a.p) ? 1 : 0) || (c.taxable ? 1 : 0) - (a.taxable ? 1 : 0) || c.est - a.est);
+    return `<details class="vat-more rf-whys" id="rf-why" open><summary>계약별로 — 무엇을 · 왜 · 어떻게 (${fmt(all.length)}건 가운데 ${Math.min(whyN, all.length)}건, 먼저 볼 기간·과세 시설·세액 큰 순)</summary>
+      <ol class="rf-why-list">${sorted.slice(0, whyN).map(ctrWhy).join('')}</ol>
+      ${all.length > whyN ? `<button type="button" class="btn secondary" id="rf-why-more">${Math.min(20, all.length - whyN)}건 더 보기</button>` : ''}
+      <p class="note">계약은 '어느 세금계산서를 찾을지' 알려 줄 뿐입니다. 돌려받을 금액은 ③에 올린 세금계산서로만 셉니다. 판정은 참고이며 기관의 판단이 아닙니다.</p></details>`;
+  }
   function step2(b: Built | null) {
     const box = $('rf-s2-cmp'); if (!box) return;
     const filed = new Map((b?.filed ?? []).map(f => [f.k, f])); const state = b?.filedState ?? {}; const m = ctrByP(); const L = openPeriods();
@@ -56,7 +90,8 @@ function init(D: Data) {
     const pick = [...first, ...look]; const pickTxt = pick.length ? pick.map(r => pName(r.k)).join(', ') : '';
     if (!filed.size && !ctx) { box.innerHTML = ''; } else box.innerHTML = `<div class="scroll-x" tabindex="0" role="region" aria-label="표 가로 스크롤"><table class="data-table vat-table" data-stack="off" id="rf-cmp"><caption>과세기간별 — 신고한 매입세액과 과세 시설일 법한 계약(참고)</caption><thead><tr><th scope="col">과세기간</th><th scope="col">신고한 매입세액 (18)</th><th scope="col">계약 세액 추정(참고)</th><th scope="col">큰 계약</th><th scope="col">경정청구 기한</th><th scope="col">표시</th></tr></thead><tbody>${rows.map(r => `<tr data-pk="${r.k}" class="${r.flag === '먼저 볼 기간' || r.flag === '기한후신고 후보' ? 'rf-hot' : ''}"><th scope="row">${esc(pName(r.k))}</th><td>${r.none ? '신고 안 함' : r.ded === null ? '<span class="note">—</span>' : fmt(r.ded)}</td><td class="note">${r.est ? fmt(r.est) : '—'}</td><td class="note">${r.x?.top.map(esc).join('<br>') ?? ''}</td><td>${esc(r.P.claim)} <span class="meta">D-${r.P.days}</span></td><td>${r.flag ? `<span class="vbadge">${esc(r.flag)}</span>` : ''}</td></tr>`).join('')}</tbody></table></div>
       <p class="note">계약 세액 추정은 과세 시설(또는 공통)에 붙은 계약과 공제 가능성 있는 사업 유형 계약의 계약금액 × 10/110 입니다. 신고 매입세액은 모든 지출의 합계라 견줌은 '먼저 볼 순서'일 뿐 증거가 아닙니다. 공사 기성·준공 세금계산서는 계약 다음 기에 나올 수 있습니다.</p>
-      <p class="rf-pick" id="rf-pick">${pickTxt ? `<strong>홈택스에서 받을 기간:</strong> ${esc(pickTxt)} <span class="note">— ③에서 이 기간의 매입 목록부터 올리세요(나머지 기간은 그다음).</span>` : filed.size ? '<strong>홈택스에서 받을 기간:</strong> 계약으로는 눈에 띄는 기간이 없습니다 — ③에 경정청구가 되는 기간 전부를 올리세요.' : '<span class="note">지난 신고서를 올리면 기간마다 신고한 매입세액이 채워지고, 먼저 볼 기간이 표시됩니다.</span>'}</p>`;
+      <p class="rf-pick" id="rf-pick">${pickTxt ? `<strong>홈택스에서 받을 기간:</strong> ${esc(pickTxt)} <span class="note">— ③에서 이 기간의 매입 목록부터 올리세요(나머지 기간은 그다음).</span>` : filed.size ? '<strong>홈택스에서 받을 기간:</strong> 계약으로는 눈에 띄는 기간이 없습니다 — ③에 경정청구가 되는 기간 전부를 올리세요.' : '<span class="note">지난 신고서를 올리면 기간마다 신고한 매입세액이 채워지고, 먼저 볼 기간이 표시됩니다.</span>'}</p>${whyList(pick.map(r => r.k))}`;
+    $('rf-why-more')?.addEventListener('click', () => { whyN += 20; step2(last); const d = $('rf-why') as HTMLDetailsElement | null; if (d) d.open = true; });
     const done = !!b && b.filed.length > 0; setStep('rf-s2', done, !!org && !done, done ? `신고서 ${b!.filed.length}개 과세기간` : '신고서 PDF 를 놓으세요');
   }
 
@@ -69,13 +104,20 @@ function init(D: Data) {
     const el = $('rf-todo'); if (!el) return; const U = b?.U;
     if (!U) { el.innerHTML = `<p class="note">${!org ? '① 기관을 고르면 시작합니다.' : '③에 매입 목록을 올리면 할 일 목록이 나옵니다.'}</p>`; return; }
     const perOf = (k: string) => U.per.find(p => p.k === k); const dOf = (ks: string[]) => ks.map(k => perOf(k)).filter(p => p && !p.expired && !p.future).sort((a, c) => a!.days - c!.days)[0];
+    const needWhy = (key: string, whats: string[]) => { const ks = key.split('+'); const ws: string[] = [], bs: Basis[] = [];
+      for (const k of ks) { if (k.startsWith('fac:')) { ws.push('세무서가 공제를 인정하려면 ① 그 지출이 이 시설 것이고 ② 이 시설이 과세사업(사용료를 받아 부가세를 신고)이라는 것을 보여야 합니다 — 면세사업에 쓴 매입세액은 공제하지 않습니다'); bs.push(B('act', '제38조'), B('act', '제39조')); }
+        else if (k.startsWith('ratio:')) { ws.push('여러 시설·행정이 같이 쓴 지출은 그 과세기간 면세비율만큼 빼고 공제합니다(안분) — 비율이 있어야 금액이 정해집니다'); bs.push(B('act', '제40조'), B('decree', '제81조')); }
+        else if (k.startsWith('fix:')) { ws.push('공급받는 자가 우리 등록번호가 아닌 세금계산서는 공제하지 않습니다 — 공급자가 공급받는 자를 고친 수정세금계산서를 발급하면 공제할 수 있습니다(확정신고기한 다음 날부터 1년 안)'); bs.push(B('act', '제39조'), B('decree', '제70조')); } }
+      return whyBox(ws.join(' / '), whats.map(esc).join(' / ') + ' — 자료가 있으면 \'자세히 보기\'의 자료별 표에서 「있음」에 표시하세요', bs); };
+    const judgeWhy = (key: string) => { if (key === 'admin') { const a = D.rules.admin_common; return whyBox(esc(a?.summary ?? '본청·행정 공통 지출은 고유사무에 공급가액이 없어 공급가액 비율로 나눌 수 없습니다'), `안분 기준(매입가액·예정공급가액·예정사용면적 중 하나)을 정하고, 기준이 굳지 않으면 국세청 질의서 초안(\'자세히 보기\'의 근거 절)으로 세무서에 묻습니다${a?.caution ? ` — ${esc(a.caution)}` : ''}`, [B('decree', '제81조'), ...(a?.basis ?? [])]); }
+      const t = key.startsWith('type:') ? D.facilities.find(x => x.key === key.slice(5)) : undefined; return whyBox(`${esc(t?.name ?? '이 시설 유형')}은 운영 방식에 따라 과세·면세가 갈립니다${t?.cond ? `: ${esc(t.cond)}` : ''}`, '시설의 실제 운영 방식(사용료를 받는지, 계속·반복인지)을 확인해 기관 설정 시설 카드에 적고, 기준이 애매하면 질의서 초안으로 세무서에 묻습니다', t?.basis); };
     type T = { amt: number; days: number; html: string };
     const L: T[] = [];
-    const nowPer = U.per.filter(p => p.now > 0 && !p.expired && !p.future); if (U.now > 0) { const d = nowPer.sort((a, c) => a.days - c.days)[0]; L.push({ amt: U.now, days: d?.days ?? 9999, html: `<b>지금 자료로 청구할 수 있는 금액 ${fmt(U.now)}원</b> — ${nowPer.map(p => esc(pName(p.k))).join(', ')} · 아래 「경정청구 묶음 내려받기」로 붙임 자료를 받아 홈택스 경정청구에 넣습니다` }); }
-    for (const n of U.needs) { const d = dOf([...n.byK.keys()]); L.push({ amt: n.amount, days: d?.days ?? 9999, html: `<b>${esc(n.labels.join(' · '))}</b> — ${esc(n.whats[0] ?? '')} → 약 <b>${fmt(n.amount)}원</b> <span class="note">(${n.n}건)</span>` }); }
-    for (const j of U.judgeList) L.push({ amt: j.amount, days: 9999, html: `<b>판단 필요: ${esc(j.label)}</b> — 약 ${fmt(j.amount)}원 <span class="note">(${j.n}건) · 기준·유권해석·질의서 초안은 '자세히 보기'의 근거 절</span>` });
-    if (b?.sup?.todo) L.push({ amt: U.assign, days: 9999, html: `<b>시설을 못 정한 공급자 ${b.sup.todo}곳</b> — ③ 표에서 세액 큰 곳부터(약 ${fmt(U.assign)}원이 아직 셈에 안 들어감)` });
-    if (b?.needDed) L.push({ amt: 0, days: 9999, html: `<b>신고 값이 없는 과세기간 ${b.needDed}개</b> — ②에 그 기간 신고서를 올리면 상한이 아니라 실제 차이가 나옵니다` });
+    const nowPer = U.per.filter(p => p.now > 0 && !p.expired && !p.future); if (U.now > 0) { const d = nowPer.sort((a, c) => a.days - c.days)[0]; L.push({ amt: U.now, days: d?.days ?? 9999, html: `<b>지금 자료로 청구할 수 있는 금액 ${fmt(U.now)}원</b> — ${nowPer.map(p => esc(pName(p.k))).join(', ')}` + whyBox('과세 시설에 쓴 지출(공통 지출은 면세비율만큼 뺀 몫)의 매입세액이 그 기간 신고한 매입세액 (18)보다 많습니다. 모자란 몫은 법정신고기한 뒤 5년 안에 경정청구로 돌려받습니다', '아래 「경정청구 묶음 내려받기」로 붙임 자료(과세기간별 결과·건별 명세·공급자별 합계·사유 초안·근거 조문)를 받아 홈택스 「신고서 수정(경정청구)」에 넣습니다', [B('act', '제38조'), B('basic', '제45조의2')]) }); }
+    for (const n of U.needs) { const d = dOf([...n.byK.keys()]); L.push({ amt: n.amount, days: d?.days ?? 9999, html: `<b>${esc(n.labels.join(' · '))}</b> → 약 <b>${fmt(n.amount)}원</b> <span class="note">(${n.n}건)</span>` + needWhy(n.key, n.whats) }); }
+    for (const j of U.judgeList) L.push({ amt: j.amount, days: 9999, html: `<b>판단 필요: ${esc(j.label)}</b> — 약 ${fmt(j.amount)}원 <span class="note">(${j.n}건)</span>` + judgeWhy(j.key) });
+    if (b?.sup?.todo) L.push({ amt: U.assign, days: 9999, html: `<b>시설을 못 정한 공급자 ${b.sup.todo}곳</b> — 약 ${fmt(U.assign)}원이 아직 셈에 안 들어감` + whyBox('시설이 정해져야 그 지출이 과세 시설 것(공제)인지 면세·행정 것(불공제)인지가 정해집니다', '③ 표에서 세액 큰 공급자부터 시설과 용도(이 시설만 / 여러 시설 / 행정과 함께)를 고릅니다 — 고른 것은 매핑표에 남아 다음 목록에 저절로 붙습니다', [B('act', '제38조'), B('act', '제39조'), B('act', '제40조')]) });
+    if (b?.needDed) L.push({ amt: 0, days: 9999, html: `<b>신고 값이 없는 과세기간 ${b.needDed}개</b>` + whyBox('경정청구 금액은 \'공제받았어야 할 매입세액 − 신고 때 공제받은 매입세액 (18)\' 입니다. 신고 값이 없으면 목록 전부가 빠졌다고 보는 상한만 셀 수 있습니다', '②에 그 기간 신고서(홈택스 「신고서 조회」 PDF)를 올리면 실제 차이가 나옵니다', [B('basic', '제45조의2')]) });
     L.sort((a, c) => c.amt - a.amt || a.days - c.days);
     const dd = (d: number) => d < 9999 ? `<span class="vbadge${d < 120 ? ' warn' : ''}">D-${d}</span> ` : '';
     el.innerHTML = L.length ? `<ol class="rf-todo">${L.map(t => `<li>${dd(t.days)}${t.html}</li>`).join('')}</ol>` : '<p class="note">지금 자료로는 돌려받을 금액이 보이지 않습니다. 시설의 과세·면세 표시와 ③ 귀속을 다시 확인하세요.</p>';

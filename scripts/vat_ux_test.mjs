@@ -431,6 +431,10 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('S6 금액 띠 = 지금 계산된 금액(있어야 할 공제 2,600,000 − 신고 1,000,000 = 1,600,000) · 첫 금액까지 행동 ≤ 5', amt === tot && amt === 1600000 && acts <= 5, `띠 ${amt} 결과 ${tot} 행동 ${acts}`);
   const todo = await p3.$$eval('#rf-todo li', ls => ls.map(l => l.textContent.replace(/\s+/g, ' ').trim()));
   ok('S7 할 일 목록 — 금액 큰 순, 기한 D-day, 못 정한 공급자 1곳', todo.length >= 2 && todo.some(t => /D-\d+/.test(t)) && todo.some(t => /시설을 못 정한 공급자 1곳/.test(t)), todo.join(' / ').slice(0, 300));
+  /* 2026-11-05 운영자 '어떤 항목을 어떻게 해야 되는지 이유는 나와야 공무원이 납득' — 할 일·계약 줄마다 왜·할 일·근거 조문 */
+  const whyTodo = await p3.$$eval('#rf-todo .rf-todo > li', ls => ls.map(l => [!!l.querySelector('.rf-why'), /왜/.test(l.textContent), l.querySelectorAll('.rf-why a[href*="law.go.kr"]').length]));
+  const whyCtr = await p3.$$eval('#rf-why .rf-why-list > li', ls => ls.map(l => [/왜/.test(l.textContent), /할 일/.test(l.textContent), /공급자/.test(l.textContent), l.querySelectorAll('.rf-why a[href*="law.go.kr"]').length]));
+  ok('S10 할 일 줄마다 왜·근거 조문, 계약 줄마다 왜·할 일(공급자 번호로 찾기)·근거', whyTodo.length >= 2 && whyTodo.every(([b, w, n]) => b && w && n >= 1) && whyCtr.length >= 1 && whyCtr.every(([w, h, c, n]) => w && h && c && n >= 1), JSON.stringify({ whyTodo, whyCtr }).slice(0, 300));
   const zr = path.join(os.tmpdir(), 'vat-s-bundle.zip'); const [dl] = await Promise.all([p3.waitForEvent('download', { timeout: 60000 }), p3.click('#rf-zip')]); await dl.saveAs(zr);
   const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); execSync(`cd "${os.tmpdir()}" && rm -rf vat-s-x && mkdir vat-s-x && cd vat-s-x && unzip -q "${zr}" && unzip -q -o 10_경정청구_자료.xlsx -d xl`);
   const wb = fs.readFileSync(path.join(os.tmpdir(), 'vat-s-x', 'xl', 'xl', 'workbook.xml'), 'utf8'); const pdfHead = fs.readFileSync(path.join(os.tmpdir(), 'vat-s-x', '11_경정청구_요약.pdf')).subarray(0, 5).toString();

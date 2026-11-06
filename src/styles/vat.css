@@ -337,3 +337,8 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .rf-sub { list-style: none; margin: 0 0 12px; } .rf-sub .rf-h h3 { margin: 0; font-size: 1.05rem; }
 .vat-util { display: flex; justify-content: flex-end; margin: -4px 0 6px; }
 @media print { .rf-sec:not([open]) { display: none; } }
+/* 매입 목록 없이 더 찾기 — 나라장터 계약 후보(추정, 2026-11-05) */
+.rf-sum-l2 { margin: -4px 0 10px; }
+.rf-cand-cell { background: var(--surface) !important; border-style: dashed !important; }
+.rf-cand { margin: 14px 0 6px; padding: 10px 14px; border: 1px dashed var(--line-strong); border-radius: var(--radius); }
+.rf-cand h3 { margin: 0 0 4px; font-size: 1rem; }

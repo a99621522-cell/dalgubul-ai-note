@@ -346,13 +346,23 @@ export function correctedFilings(fc: Map<string, FiledCheck>): Map<string, CorrD
   return out;
 }
 const n0 = (v: number | null) => v == null ? '' : fmt(v);
+/** 경정청구 사유 문장(고친 신고서 한 장) — 화면·경정청구서 밑자료 공용 */
+export function corrReason(c: CorrDoc): string { const why = c.parts.map(p => p.sec === '안분' ? '공통매입세액 안분 계산에서 총공급가액 등을 잘못 넣어' : p.sec === '정산' ? '공통매입세액 정산 계산을 잘못하여' : '예정신고분 공통매입세액을 확정신고 때 6개월 비율로 정산하지 않아').join(', '); const y = c.k.split('-'); return `${y[0]}년 제${y[1]}기 ${c.kind}신고 때 ${why} 매입세액 ${fmt(c.delta)}원을 덜 공제받았으므로 국세기본법 제45조의2에 따라 경정을 청구합니다(부가가치세법 시행령 제81조·제82조).`; }
+/** 경정청구서 기재 밑자료(세무 검토 반영 2026-11-05) — 과세기간·신고서 한 장마다 한 줄: 세목·과세기간·신고 구분·사업자등록번호·법정신고기한·경정청구 기한·당초/경정 후 납부(환급)세액·돌려받을 세액·사유·붙임.
+ *  서식 칸 번호는 쓰지 않는다(홈택스 경정청구 화면·국세기본법 시행규칙 서식 칸 이름으로 옮김). 법정신고기한은 공휴일이면 다음 날 */
+export function claimRows(M: Map<string, CorrDoc[]>): string[][] {
+  const rows: string[][] = [['세목', '과세기간', '신고 구분', '사업자등록번호', '법정신고기한', '경정청구 기한(법정신고기한 + 5년)', '당초 납부(환급)세액', '경정 후 납부(환급)세액', '돌려받을 세액', '경정청구 이유', '붙임', '확인할 것']];
+  for (const [k, L] of [...M].sort()) for (const c of L) { const [y, h] = k.split('-').map(Number); const due = h === 1 ? `${y}-07-25` : `${y + 1}-01-25`; const claim = h === 1 ? `${y + 5}-07-25` : `${y + 6}-01-25`;
+    rows.push(['부가가치세', `${y}년 제${h}기`, c.kind, c.reg, due, claim, c.payBefore != null ? String(c.payBefore) : '', c.payAfter != null ? String(c.payAfter) : '', String(c.delta), corrReason(c), '고친 신고서(이 자료의 \'고친 신고서\' 시트) · 공제받지 못할 매입세액 명세서 고친 값 · 당초 신고서 사본', c.parts.some(p => p.sec === '안분' || p.sec === '정산') ? '원래 신고가 공급가액 비율로 나눴을 때의 금액 — 매입가액·면적 기준이었다면 다시 셈(시행령 제81조 제4항)' : '']); }
+  return rows;
+}
 export function correctedHtml(L: CorrDoc[]): string {
   return L.map(c => `<div class="rf-corr"><p><b>고친 ${esc(c.kind)} 신고서</b>${c.reg ? ` · ${esc(c.reg)}` : ''} <span class="meta">(${esc(c.file)}) — 경정청구 화면에 이 '고친 값'을 넣습니다</span></p>
     <div class="scroll-x" tabindex="0" role="region" aria-label="고친 신고서"><table class="data-table vat-table" data-stack="off"><thead><tr><th scope="col">칸</th><th scope="col">항목</th><th scope="col" class="num">당초 세액</th><th scope="col" class="num">고친 세액</th><th scope="col" class="num">차이</th></tr></thead><tbody>
     ${c.cells.map(x => `<tr${x.before !== x.after ? ' class="rf-chg"' : ''}><td>(${x.n})</td><td>${esc(x.label)}</td><td class="num">${n0(x.before)}</td><td class="num">${x.before !== x.after ? `<b>${n0(x.after)}</b>` : n0(x.after)}</td><td class="num">${x.before != null && x.after != null && x.before !== x.after ? fmt(x.after - x.before) : ''}</td></tr>`).join('')}
     ${c.payBefore != null ? `<tr class="rf-chg"><td></td><td>납부(환급)세액 — 매출세액 − (18) (가산세·경감공제·예정고지는 원래대로)</td><td class="num">${fmt(c.payBefore)}</td><td class="num"><b>${fmt(c.payAfter!)}</b></td><td class="num">${fmt(c.payAfter! - c.payBefore)}</td></tr>` : ''}</tbody></table></div>
     ${c.parts.map(p => `<p class="note"><b>공제받지못할매입세액명세서 — ${esc(p.sec === '안분' ? '공통매입세액 안분 계산' : '공통매입세액의 정산')}${p.sec === '정산(새로 넣음)' ? '(새로 넣는 칸)' : ''}</b></p><div class="scroll-x" tabindex="0" role="region" aria-label="고친 명세서"><table class="data-table vat-table" data-stack="off"><thead><tr><th scope="col">칸</th><th scope="col" class="num">당초</th><th scope="col" class="num">고친 값</th></tr></thead><tbody>${p.rows.map(r => `<tr${r.before !== r.after ? ' class="rf-chg"' : ''}><td>${esc(r.label)}</td><td class="num">${n0(r.before)}</td><td class="num">${r.before !== r.after ? `<b>${n0(r.after)}</b>` : n0(r.after)}</td></tr>`).join('')}</tbody></table></div>`).join('')}
-    ${(() => { const why = c.parts.map(p => p.sec === '안분' ? '공통매입세액 안분 계산에서 총공급가액 등을 잘못 넣어' : p.sec === '정산' ? '공통매입세액 정산 계산을 잘못하여' : '예정신고분 공통매입세액을 확정신고 때 6개월 비율로 정산하지 않아').join(', '); const y = c.k.split('-'); const reason = `${y[0]}년 제${y[1]}기 ${c.kind}신고 때 ${why} 매입세액 ${fmt(c.delta)}원을 덜 공제받았으므로 국세기본법 제45조의2에 따라 경정을 청구합니다(부가가치세법 시행령 제81조·제82조).`;
+    ${(() => { const reason = corrReason(c);
       return `<p class="rf-reason"><b>사유 문장</b> ${esc(reason)} <button type="button" class="link-btn no-print" data-copy-memo="${esc(reason)}">복사</button></p>`; })()}
     <p class="rf-claim">경정청구서: 당초 신고 ${c.payBefore != null ? `납부(환급)세액 ${fmt(c.payBefore)}원 → 고친 값 ${fmt(c.payAfter!)}원, ` : ''}<b>돌려받을 세액 ${fmt(c.delta)}원</b></p></div>`).join('');
 }

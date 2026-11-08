@@ -25,6 +25,23 @@ const idx = await pg.evaluate(async () => (await (await fetch('/vat-expense/inde
 ok('G7 공개 지출 목록이 그 지자체만', idx.every(k => k === gov), idx.join(','));
 const rev = await pg.evaluate(async () => (await (await fetch('/vat-revenue.json')).json()).govs.map(g => g.key));
 ok('G8 세입예산서가 그 지자체만', rev.every(k => k === gov), rev.join(','));
+/* 지자체 맞춤 '먼저 볼 곳'(govs.yml focus) — 묶음이 있는 지자체만 */
+if ((D.govs?.[0]?.focus ?? []).length) {
+  const g = await pg.$$eval('#rf-focus .rf-focus-g', els => els.length);
+  ok('G11 먼저 볼 곳 묶음', g >= 2 && await pg.locator('#rf-focus').isVisible(), `${g}묶음`);
+  const own = await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1') || '{}').facilities.filter(f => f.run === 'entrusted_own').length);
+  const shown = await pg.$$eval('#rf-focus details li', els => els.length);
+  ok('G12 신고에 넣지 않는 곳 = 수탁기관 자기 사업 시설', own > 0 && shown === own, `${shown}/${own}`);
+  const box = pg.locator('#rf-focus .rf-area').first();
+  if (await box.count()) {
+    const fid = await box.getAttribute('data-fid');
+    await box.locator('[data-area-tot]').fill('1000'); await box.locator('[data-area-tax]').fill('250');
+    await Promise.all([pg.waitForLoadState('load'), box.locator('[data-area-go]').click()]); await pg.waitForTimeout(2500);
+    const sh = await pg.evaluate(id => JSON.parse(localStorage.getItem('vat-org-v1') || '{}').facilities.find(f => f.id === id)?.share, fid);
+    const lab = await pg.locator(`#rf-focus .rf-area[data-fid="${fid}"]`).evaluate(el => el.parentElement.textContent);
+    ok('G13 면적 두 칸 → 과세 몫 25% 저장·표시', sh === 0.25 && /25%/.test(lab), `share ${sh}`);
+  } else ok('G13 면적 칸', false, '없음');
+}
 await pg.setInputFiles('#rf-all-file', files); await pg.waitForTimeout(3500);
 const amt = await pg.textContent('#rf-sum-amt').catch(() => ''); const sum = await pg.textContent('#rf-sum').catch(() => ''); ok('G9 신고서를 놓으면 결과 문장', /\d원/.test(amt ?? '') && (sum ?? '').includes(name.replace(/^대구광역시 /, '')), `${amt} · ${(sum ?? '').replace(/\s+/g, ' ').slice(0, 60)}`);
 ok('G10 404·스크립트 오류 없음', bad.length === 0 && errs.length === 0, [...bad, ...errs].join(' ; '));

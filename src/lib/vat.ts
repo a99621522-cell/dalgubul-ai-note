@@ -56,7 +56,9 @@ export function vatOrgNumbers(): OrgNo[] {
   return out;
 }
 /** 지자체별 특성(data/vat/govs.yml) + 자료 범위(예시 설정 시설 수·세입예산서 줄 수·나라장터 계약 기간과 건수) */
-export type GovProfile = { key: string; name: string; level: string; status: string; corp: { name: string; bizno?: string; src?: string; note?: string }[]; traits: string[]; preset?: number; revenue?: number; contracts?: { from: string; to: string; n: number } };
+/** 지자체 맞춤 '먼저 볼 곳'(govs.yml focus — 2026-11-08 수성구 전용 사이트) */
+export type GovFocus = { key: string; title: string; match: string; why: string; todo?: string; area?: boolean };
+export type GovProfile = { key: string; name: string; level: string; status: string; corp: { name: string; bizno?: string; src?: string; note?: string }[]; traits: string[]; focus?: GovFocus[]; exclude_note?: string; preset?: number; revenue?: number; contracts?: { from: string; to: string; n: number } };
 export function vatGovs(): GovProfile[] {
   const p = 'data/vat/govs.yml'; if (!fs.existsSync(p)) return []; const L = ((yaml.load(fs.readFileSync(p, 'utf-8')) as { govs?: GovProfile[] }).govs ?? []);
   const presets = vatPresets();

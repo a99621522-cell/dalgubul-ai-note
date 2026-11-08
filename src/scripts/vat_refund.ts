@@ -6,6 +6,7 @@ import { $, esc, fmt, loadData, getOrg, claimPeriod, ymd, lawLink, uniq, facilit
 import { contractsCtx, type CtrCtx } from './vat_contracts';
 import { commonMistakesHtml, refundCalcHtml, refundCalc, PLAIN, type Diag, type CalcRow } from './vat_diag';
 import { buildQuestions, askHtml, answer, answerGroup, undo, revenueOf } from './vat_ask';
+import { focusHtml, wireFocus } from './vat_focus';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
@@ -71,9 +72,10 @@ function init(D: Data) {
     const bar = L.map(k => { const P = pInfo(k); const x = m.get(k); return `<li class="${P.days < 120 ? 'soon' : ''}"><b>${esc(pName(k))}</b> <span class="meta">${P.days < 120 ? '⚠ ' : ''}D-${P.days} · ${esc(P.claim)}까지</span>${x ? ` <span class="note">계약 ${x.nTax + x.nLikely}건</span>` : ''}</li>`; }).join('');
     const gp = (D.govs ?? []).find(g => org.org === g.name || org.org.endsWith(g.name.replace(/^대구광역시\s*/, '')) && g.level === '기초' || (g.level === '광역' && org.org === '대구광역시'));
     const prof = gp ? `<details class="vat-more rf-gov"><summary>${esc(gp.name)}의 특성 — ${esc(gp.status)}${gp.corp.length ? ` · ${esc(gp.corp.map(c => c.name.replace(/\(.*$/, '')).join('·'))}` : ''}</summary>${gp.traits.length ? `<ul class="meta-list">${gp.traits.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}${gp.corp.length ? `<ul class="meta-list">${gp.corp.map(c => `<li>${esc(c.name)}${c.bizno ? ` ${esc(c.bizno)}` : ''}${c.src ? ` <span class="meta">(${esc(c.src)})</span>` : ''}${c.note ? ` — ${esc(c.note)}` : ''}</li>`).join('')}</ul>` : ''}<p class="note">자료: ${[gp.preset ? `예시 설정 시설 ${gp.preset}곳` : '예시 설정 없음(세입예산서 시설 후보만)', gp.revenue ? `2026 세입예산서 ${gp.revenue}줄` : '', gp.contracts?.n ? `나라장터 계약 ${fmt(gp.contracts.n)}건(${esc(gp.contracts.from)}~${esc(gp.contracts.to)})` : '나라장터 계약 아직 없음'].filter(Boolean).join(' · ')}. 다른 지자체로 바꾸려면 위 「기관 바꾸기」.</p></details>` : '';
-    body.innerHTML = `<p><strong>${esc(org.org)}</strong> — 시설 ${org.facilities.length}곳</p>${prof}
+    body.innerHTML = `<p><strong>${esc(org.org)}</strong> — 시설 ${org.facilities.length}곳</p>${prof}${focusHtml(D, getOrg(), stakeOf(last), (last?.rows ?? 0) > 0)}
       <details class="vat-more rf-s1-more"><summary>이 기관의 공개 자료 · 경정청구 기한</summary>${ctx ? `<p class="note">이미 받아 둔 공개 자료를 붙였습니다 — 나라장터 계약 ${fmt(ctx.cg.rows.length)}건(${esc(ctx.gov.name)}, ${esc(ctx.cg.from)}~): 과세 시설에 붙은 계약 <b>${nTax}</b>건, 시설은 못 붙었지만 공제 가능성 있는 사업 유형 <b>${nLik}</b>건. 업체 사업자등록번호는 ③에서 매입 목록과 저절로 맞춥니다.</p>` : '<p class="note">이 기관의 나라장터 계약 자료는 아직 없습니다 — ②·③만으로도 됩니다.</p>'}
       <details class="vat-more"><summary>경정청구 기한 — 지금 되는 과세기간 ${L.length}개</summary><ul class="rf-dl">${bar}</ul><p class="note">법정신고기한(1~6월 → 7월 25일, 7~12월 → 다음 해 1월 25일) + 5년(국세기본법 제45조의2). ⚠ 는 120일 안.</p></details></details>`;
+    wireFocus(body, getOrg(), () => { location.hash = 'rf-focus'; location.reload(); });
     setStep('rf-s1', true, false, '완료');
   }
 
@@ -146,9 +148,13 @@ function init(D: Data) {
     el.querySelectorAll<HTMLAnchorElement>('[data-open-dg]').forEach(a => a.addEventListener('click', () => { const d = document.getElementById(`rf-dg-${a.dataset.openDg}`) as HTMLDetailsElement | null; if (d) d.open = true; })); }
   function diag(b: Built | null) { const el = $('rf-diag'); if (!el) return; el.innerHTML = b?.diag ? b.diag : commonMistakesHtml(D); el.querySelectorAll<HTMLButtonElement>('[data-copy-memo]:not([data-wired])').forEach(x => { x.dataset.wired = '1'; x.addEventListener('click', async () => { try { await navigator.clipboard.writeText(x.dataset.copyMemo ?? ''); x.textContent = '복사했어요'; } catch { window.prompt('아래 글을 복사하세요', x.dataset.copyMemo ?? ''); } }); }); }
   const forced = new Set<string>();
-  function ask(b: Built | null) { const el = $('rf-ask'); if (!el) return; const o = getOrg(); const L = openPeriods();
+  /* 시설별로 걸린 돈 — 매입 목록 세액(tax)과 경정청구가 되는 과세기간의 계약 세액 어림(est). 질문 엔진·'먼저 볼 곳'이 같이 쓴다 */
+  function stakeOf(b: Built | null) { const L = openPeriods();
     const stake = new Map<string, { tax: number; est: number }>(); for (const [k, v] of Object.entries(b?.facTax ?? {})) stake.set(k, { tax: v, est: 0 });
     for (const r of ctx?.rows ?? []) { if (!r.a || !L.includes(r.p)) continue; const x = stake.get(r.a.fid) ?? { tax: 0, est: 0 }; x.est += r.est; stake.set(r.a.fid, x); }
+    return stake; }
+  function ask(b: Built | null) { const el = $('rf-ask'); if (!el) return; const o = getOrg();
+    const stake = stakeOf(b);
     const hasList = (b?.rows ?? 0) > 0; const fl = b?.filed ?? []; const salesFiled = fl.length ? fl.reduce((s, f) => s + (f.salesSup ?? 0), 0) : null;
     const all = buildQuestions(D, o, stake, { hasList, salesFiled, forced }); const qs = hasList ? all : all.filter(q => forced.has(q.key) || q.members.some(m => forced.has(`${m.fid}|${m.def.id}`)));   /* 매입 목록을 올리기 전에는 묻지 않는다(계약 어림만으로는 금액이 갈리지 않음) — 「바꾸기」로 연 것만 */
     el.innerHTML = askHtml(D, o, qs, hasList);

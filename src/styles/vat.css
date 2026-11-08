@@ -342,3 +342,9 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .rf-cand-cell { background: var(--surface) !important; border-style: dashed !important; }
 .rf-cand { margin: 14px 0 6px; padding: 10px 14px; border: 1px dashed var(--line-strong); border-radius: var(--radius); }
 .rf-cand h3 { margin: 0 0 4px; font-size: 1rem; }
+/* 지자체 맞춤 '먼저 볼 곳'(2026-11-08 수성구 전용 사이트, vat_focus.ts) */
+.rf-focus { margin: 10px 0; } .rf-focus-l { padding-left: 1.4em; margin: 6px 0; display: grid; gap: 10px; } .rf-focus-t { margin: 2px 0; }
+.rf-focus-f { list-style: none; padding: 0; margin: 4px 0; display: grid; gap: 6px; } .rf-focus-f > li { border-left: 3px solid var(--line-strong); padding-left: 8px; }
+.rf-area { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-top: 4px; } .rf-area input { width: 7.5em; }
+.rf-guess { font-weight: 700; border: 1px dashed currentColor; border-radius: 4px; padding: 0 4px; }
+#rf-focus { scroll-margin-top: 150px; }

@@ -39,7 +39,7 @@ export type Data = {
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
   revenue_items?: RevenueItem[];
   presets?: Preset[];
-  govs?: { key: string; name: string; level: string; status: string; corp: { name: string; bizno?: string; src?: string; note?: string }[]; traits: string[]; preset?: number; revenue?: number; contracts?: { from: string; to: string; n: number } }[];   // 지자체별 특성(data/vat/govs.yml)
+  govs?: { key: string; name: string; level: string; status: string; corp: { name: string; bizno?: string; src?: string; note?: string }[]; traits: string[]; focus?: { key: string; title: string; match: string; why: string; todo?: string; area?: boolean }[]; exclude_note?: string; preset?: number; revenue?: number; contracts?: { from: string; to: string; n: number } }[];   // 지자체별 특성(data/vat/govs.yml)
   cases?: AuditCase[];   // 감사·권익위·경정청구 공표 사례(data/vat/cases.yml)
   orgs?: OrgNo[];   // 기관 사업자등록번호(data/vat/orgs — 나라장터 수요기관정보 또는 2차 자료, verify 면 홈택스 상태조회로 확인)
   rulings?: Ruling[];
@@ -257,6 +257,10 @@ export function nextFiling(today = new Date()) {
   return { name: '', due: t, days: 0 };
 }
 export function handoverDue(day: number, today = new Date()) { const t = new Date(today.getFullYear(), today.getMonth(), today.getDate()); let due = new Date(t.getFullYear(), t.getMonth(), day); if (due < t) due = new Date(t.getFullYear(), t.getMonth() + 1, day); return { due, days: Math.round((due.getTime() - t.getTime()) / 86400000) }; }
+/** 기관 이름의 끝 낱말(군·구·시) — 화면 문구의 '군'을 기관에 맞게(2026-11-08 수성구 전용 사이트). 모르면 '기관' */
+export const govUnit = (name?: string | null) => { const m = (name ?? '').trim().match(/(군|구|시)(청)?$/); return m ? m[1] : '기관'; };
+/** 받침 있으면 '이', 없으면 '가'(군이·구가·시가·기관이) */
+export const iGa = (w: string) => { const c = w.charCodeAt(w.length - 1) - 0xac00; return c >= 0 && c < 11172 && c % 28 ? '이' : '가'; };
 export const ymd = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 export const monthStr = (d = new Date()) => ymd(d).slice(0, 7);
 export const periodOf = (month: string) => { const m = Number(month.slice(5, 7)); return m <= 3 ? '제1기 예정' : m <= 6 ? '제1기 확정' : m <= 9 ? '제2기 예정' : '제2기 확정'; };

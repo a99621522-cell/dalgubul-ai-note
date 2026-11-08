@@ -12,6 +12,7 @@ export type Opt = { key: string; name: string };
 export type Glossary = { key: string; term: string; plain: string; text: string; basis?: Basis[] };
 export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; cond?: string; rulings?: string[]; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string; rulings?: string[] };
 export type Data = {
+  lock?: string;   // 지자체 한 곳 전용 사이트(VAT_GOV 빌드) — 그 지자체로 바로 시작, 다른 기관 고르기 없음
   version: string; verified?: { date: string; act: string; decree: string; rule: string; basic?: string }; law_url: string; form_version?: string; laws: Record<string, string>;
   taxable_principle: { summary: string; basis: Basis[]; notes: string[] };
   facilities: FacilityRule[];

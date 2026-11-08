@@ -1,3 +1,4 @@
+import { lockGov } from './vatLock';
 import fs from 'node:fs';
 /** 조달청 나라장터 계약정보(data/vat/contracts/<gov>.json, scripts/fetch_g2b_contracts.py) → /vat-expense/contracts-<gov>.json.
  *  '지난 돈 돌려받기' 공개 지출 자료 탭의 '나라장터 계약' 표 — 받아 올 세금계산서를 계약(업체·등록번호) 단위로 적는다(운영자 2026-11-05 '조달청 api 연결 → 그렇게해').
@@ -26,9 +27,9 @@ export function latestByContract<T extends { no: string; k: string; nm: string; 
 }
 let cache: ContractGov[] | null = null;
 export function vatContractGovs(): ContractGov[] {
-  if (cache) return cache;
+  if (cache) return lockGov(cache);
   if (!fs.existsSync(DIR)) return (cache = []);
-  return (cache = fs.readdirSync(DIR).filter(f => f.endsWith('.json') && f !== 'state.json').map(f => { try { return JSON.parse(fs.readFileSync(`${DIR}/${f}`, 'utf-8')) as ContractGov; } catch { return null; } })
+  return lockGov(cache = fs.readdirSync(DIR).filter(f => f.endsWith('.json') && f !== 'state.json').map(f => { try { return JSON.parse(fs.readFileSync(`${DIR}/${f}`, 'utf-8')) as ContractGov; } catch { return null; } })
     .filter((g): g is ContractGov => !!g && g.v === 1 && Array.isArray(g.rows))
     .map(g => ({ ...g, rows: latestByContract(g.rows).map(({ chg, prd, bgn, end, ...r }: Contract & { chg?: string; prd?: string; bgn?: string; end?: string }) => { const fin = contractEnd(r.date, prd ?? ''); return fin && fin > r.date ? { ...r, fin } : r; }) })));   // 변경일시(수집 때 병합용)·계약기간은 화면에 안 보냄 — 파일을 줄인다
 }

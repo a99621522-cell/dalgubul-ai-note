@@ -67,7 +67,7 @@ export async function makeOrg(D: Data, v: string): Promise<Org> {
 }
 /** 링크 한 번으로 시작(?gov=dalseong) — 이 브라우저에 기관 설정이 없을 때만 만든다. 만들었으면 true */
 export async function startFromLink(D: Data): Promise<boolean> {
-  let key = ''; try { key = new URLSearchParams(location.search).get('gov') ?? ''; } catch { /* */ }
+  let key = D.lock ?? ''; if (!key) try { key = new URLSearchParams(location.search).get('gov') ?? ''; } catch { /* */ }
   if (!/^[a-z]+$/.test(key)) return false; let has = false; try { has = !!localStorage.getItem('vat-org-v1'); } catch { /* */ }
   if (has) return false; const known = (D.presets ?? []).some(p => p.key === key) || (D.govs ?? []).some(g => g.key === key) || (await loadGovs()).some(g => g.key === key); if (!known) return false;
   setOrg(await makeOrg(D, key)); try { localStorage.setItem('vat-gov', key); } catch { /* */ } return true;
@@ -80,7 +80,7 @@ export function wireQuickStart(root: ParentNode, D: Data, onDone: (o: Org) => vo
       const opts: string[] = ['<option value="">— 고르세요 —</option>'];
       if (D.govs?.length) { for (const g of D.govs) { const v = presets.some(p => p.key === g.key) ? `preset:${g.key}` : `gov:${g.key}`; const bits = [g.status, g.preset ? `예시 시설 ${g.preset}곳` : '', g.revenue ? `세입예산서 ${g.revenue}줄` : '', g.contracts?.n ? `나라장터 계약 ${g.contracts.n.toLocaleString('ko-KR')}건` : ''].filter(Boolean);
           opts.push(`<option value="${esc(v)}">${esc(g.name)} — ${esc(bits.join(' · '))}</option>`); }
-        opts.push('<option value="blank">그 밖의 기관 — 이름만 적고 시설은 직접</option>'); sel.innerHTML = opts.join(''); go.disabled = false;
+        if (!D.lock) opts.push('<option value="blank">그 밖의 기관 — 이름만 적고 시설은 직접</option>'); sel.innerHTML = opts.join(''); go.disabled = false;
         let saved = ''; try { saved = localStorage.getItem('vat-gov') || ''; } catch { /* */ } const want = preferGov || saved; if (want) { const o = [...sel.options].find(x => x.value.endsWith(`:${want}`)); if (o) sel.value = o.value; }
         if (!sel.value) sel.value = presets.length ? `preset:${presets[0].key}` : ''; return; }
       for (const p of presets) opts.push(`<option value="preset:${esc(p.key)}">${esc(p.org)} — 예시(조례·의회 시설 ${p.facilities.length}곳${govs.some(g => g.key === p.key) ? ' + 세입예산서 후보' : ''})</option>`);

@@ -3,15 +3,18 @@ import Base from '../../../layouts/Base.astro';
 import VatData from '../../../components/VatData.astro';
 import VatNav from '../../../components/VatNav.astro';
 import '../../../styles/vat.css';
-import { vatCases, vatBai } from '../../../lib/vat';
+import { vatCases, vatBai, vatGovs } from '../../../lib/vat';
+import { VAT_GOV } from '../../../lib/vatLock';
+const GOV = VAT_GOV ? (vatGovs()[0]?.name ?? '').replace(/^대구광역시 /, '') : '';   // 지자체 전용 사이트(VAT_GOV 빌드)
+const H1 = GOV ? `${GOV} 지난 부가세 돌려받기` : '지난 부가세 돌려받기';
 const ALL = vatCases(); const BAI = vatBai(); const CLAIMS = ALL.filter(c => /경정청구|권익위/.test(c.kind)); const AUDITS = ALL.filter(c => /감사/.test(c.kind));
 const KEY_NAME: Record<string, string> = { claim: '경정청구', build: '신축·대수선', sports: '체육시설', lease: '임대', cashout: '납부잔액·환급금 세입 처리', lodging: '숙박·캠핑장', subsidy: '보조사업 환급금', venue: '대관', parking: '주차장', transit: '버스', agency: '대행', use_permit: '사용허가' };
 /** /vat/review/ — 지난 돈 돌려받기(경정청구 후보, 핵심 기능 — 운영자 2026-11-03 '경정청구 후보를 잘 구현하는 게 핵심' · '지난 돈 돌려받기 쉽게 만들어').
  *  홈택스 매입 목록 5년치를 붙여넣고 건마다 시설을 정하면 과세기간별로 '있어야 할 공제 세액 − 신고한 공제 세액' = 돌려받을 후보와 기한(국세기본법 제45조의2, 5년)·붙임 서류가 나온다.
  *  입력은 이 브라우저에 남고(localStorage vat-review-v1) JSON 으로 이어 한다. 서버 없음. 스크립트 src/scripts/vat_review.ts */
 ---
-<Base title="지난 부가세 돌려받기" description="지자체가 지난 5년 부가가치세 신고에서 덜 돌려받은 매입세액을 찾아, 얼마를 왜 어떻게 돌려받는지(경정청구)와 낼 자료를 만듭니다. 파일은 브라우저 안에서만 읽습니다." current="vat" crumb="지난 부가세 돌려받기">
-  <div class="section-head"><h1>지난 부가세 돌려받기</h1><span class="meta">경정청구 · 지난 5년</span></div>
+<Base title={H1} description="지자체가 지난 5년 부가가치세 신고에서 덜 돌려받은 매입세액을 찾아, 얼마를 왜 어떻게 돌려받는지(경정청구)와 낼 자료를 만듭니다. 파일은 브라우저 안에서만 읽습니다." current="vat" crumb={H1}>
+  <div class="section-head"><h1>{H1}</h1><span class="meta">경정청구 · 지난 5년</span></div>
   <VatNav current="review" />
   <p class="lede rf-lede">지난 5년 신고에서 덜 돌려받은 부가세를 찾아 <strong>얼마를, 왜, 어떻게</strong> 돌려받는지 보여 줍니다. 파일은 이 브라우저 안에서만 읽습니다.</p>
   <!-- 쉬운 화면(2026-11-05 docs/prompts/vat_review_ux_easiest.md · 설계 docs/design/vat-review-ux-spec.md): ① 기관 → ② 파일 → ③ 결과 순서, 나머지는 접힘 -->

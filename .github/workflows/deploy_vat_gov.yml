@@ -1,0 +1,97 @@
+name: 지자체 전용 부가세 돌려받기 사이트 배포
+
+# 운영자 지시 2026-11-08 '수성구만의 별도의 사이트 만들어': 같은 저장소를 VAT_SITE=1 VAT_GOV=<지자체> 로 빌드하면
+# 예시 설정·세입예산서·공개 지출·나라장터 계약이 그 지자체 것만 들어가고, 열면 그 지자체로 바로 시작한다(기관 고르기 없음).
+# 지난 부가세 돌려받기(/vat/review/) 한 화면만 올리는 것은 deploy_vat.yml 과 같다. 프로젝트 이름 vat-<지자체> → https://vat-<지자체>.pages.dev
+# 지자체를 늘리려면 matrix.gov 에 키를 더한다(data/vat/govs.yml 의 key). 공용 규칙 시험(vat_ux_test.mjs)은 deploy_vat.yml 이 돌린다 — 여기서는 전용 사이트 확인 시험만.
+
+on:
+  push:
+    branches: [main]
+    paths: ["scripts/vat_gov_site_test.mjs", "src/pages/vat/review/**", "src/scripts/vat_*.ts", "src/scripts/xlsx_write.ts", "src/scripts/pdf.ts", "src/components/VatNav.astro", "src/components/VatData.astro", "src/styles/vat.css", "src/layouts/Base.astro", "src/lib/vat*.ts", "data/vat/**", "astro.config.mjs", ".github/workflows/deploy_vat_gov.yml"]
+  workflow_dispatch:
+    inputs:
+      gov:
+        description: "지자체 키 하나만(비우면 matrix 전부)"
+        required: false
+        default: ""
+
+concurrency:
+  group: pages-deploy-vat-gov
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        gov: [suseong]
+    env:
+      GOV: ${{ matrix.gov }}
+      PROJECT: vat-${{ matrix.gov }}
+    steps:
+      - name: 고른 지자체만
+        id: pick
+        run: |
+          if [ -n "${{ inputs.gov }}" ] && [ "${{ inputs.gov }}" != "$GOV" ]; then echo "skip=1" >> "$GITHUB_OUTPUT"; echo "건너뜀: $GOV"; fi
+      - uses: actions/checkout@v4
+        if: steps.pick.outputs.skip != '1'
+      - uses: actions/setup-node@v4
+        if: steps.pick.outputs.skip != '1'
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+        if: steps.pick.outputs.skip != '1'
+      - name: 빌드(지자체 전용 모드)
+        if: steps.pick.outputs.skip != '1'
+        env:
+          VAT_SITE: "1"
+          VAT_GOV: ${{ matrix.gov }}
+          VAT_SITE_URL: https://vat-${{ matrix.gov }}.pages.dev
+        run: npm run build
+      - name: 돌려받기 한 화면만 추리기
+        if: steps.pick.outputs.skip != '1'
+        run: |
+          rm -rf out && mkdir -p out/vat
+          cp -r dist/vat/review out/vat/review
+          cp -r dist/_astro out/_astro
+          cp -r dist/fonts out/fonts
+          cp dist/favicon.svg out/ 2>/dev/null || true
+          [ -f dist/vat-revenue.json ] && cp dist/vat-revenue.json out/
+          [ -d dist/vat-expense ] && cp -r dist/vat-expense out/vat-expense
+          { printf '/ /vat/review/ 302\n/vat /vat/review/ 302\n/vat/ /vat/review/ 302\n'; for d in dist/vat/*/; do n=$(basename "$d"); [ "$n" = review ] || printf '/vat/%s /vat/review/ 302\n/vat/%s/ /vat/review/ 302\n/vat/%s/* /vat/review/ 302\n' "$n" "$n" "$n"; done; } > out/_redirects
+          printf '<!doctype html><html lang="ko"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/vat/review/"><title>부가세 돌려받기</title><p><a href="/vat/review/">지난 부가세 돌려받기로 가기</a></p></html>\n' > out/404.html
+          echo "파일 $(find out -type f | wc -l)개, $(du -sh out | cut -f1)"; ls out/vat-expense
+      - name: 전용 사이트 확인 시험
+        if: steps.pick.outputs.skip != '1'
+        run: |
+          npm i --no-save playwright
+          npx playwright install chromium --with-deps
+          (cd out && python3 -m http.server 4401 >/dev/null 2>&1 &) && sleep 2
+          export PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright
+          node scripts/vat_gov_site_test.mjs --base http://localhost:4401 --gov "$GOV"
+      - name: 프로젝트 확인·생성
+        if: steps.pick.outputs.skip != '1'
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          base="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects"
+          code=$(curl -s -o /tmp/p.json -w '%{http_code}' -H "Authorization: Bearer $CF_TOKEN" "$base/$PROJECT")
+          if [ "$code" = "200" ]; then echo "프로젝트 $PROJECT 있음"; else
+            echo "프로젝트 없음($code) — 만듭니다"
+            curl -s -X POST -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" "$base" --data "{\"name\":\"$PROJECT\",\"production_branch\":\"main\"}" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("생성", "ok" if d.get("success") else d.get("errors"))'
+          fi
+      - name: Cloudflare Pages 업로드
+        if: steps.pick.outputs.skip != '1'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy out --project-name "$PROJECT" --branch main --commit-dirty=true
+      - name: 응답 확인
+        if: steps.pick.outputs.skip != '1'
+        run: |
+          sleep 20
+          for h in "https://$PROJECT.pages.dev/" "https://$PROJECT.pages.dev/vat/review/"; do printf '%s ' "$h"; curl -s -o /dev/null -m 30 -w '%{http_code} %{redirect_url}\n' "$h" || true; done

@@ -1,3 +1,4 @@
+import { lockGov } from './vatLock';
 import fs from 'node:fs';
 import yaml from 'js-yaml';
 /** 지자체 부가가치세 매입세액 점검기 규칙(data/vat/rules.yml, 운영자 지시 2026-10-27). 조문 번호·뜻만, 평가 없음. 브라우저 판정은 src/scripts/vat_check.ts */
@@ -44,7 +45,7 @@ export const lawName = (r: VatRules, b: Basis) => ({ act: '법', decree: '시행
 /** 예시 설정(data/vat/presets/*.yml — 공개 자치법규로 만든 시설 목록, 운영 방식·등록번호 없음) */
 export function vatPresets(): Preset[] {
   const dir = 'data/vat/presets'; if (!fs.existsSync(dir)) return [];
-  return fs.readdirSync(dir).filter(f => f.endsWith('.yml')).sort().map(f => yaml.load(fs.readFileSync(`${dir}/${f}`, 'utf-8')) as Preset);
+  return fs.readdirSync(dir).filter(f => f.endsWith('.yml')).sort().map(f => yaml.load(fs.readFileSync(`${dir}/${f}`, 'utf-8')) as Preset).filter(p => lockGov([{ key: p.key }]).length > 0);
 }
 /** 기관 사업자등록번호(data/vat/orgs — 나라장터 수요기관 CSV 가 있으면 먼저, 그다음 2차 자료 yml) */
 export function vatOrgNumbers(): OrgNo[] {
@@ -59,7 +60,7 @@ export type GovProfile = { key: string; name: string; level: string; status: str
 export function vatGovs(): GovProfile[] {
   const p = 'data/vat/govs.yml'; if (!fs.existsSync(p)) return []; const L = ((yaml.load(fs.readFileSync(p, 'utf-8')) as { govs?: GovProfile[] }).govs ?? []);
   const presets = vatPresets();
-  return L.map(g => { const out: GovProfile = { ...g, corp: g.corp ?? [], traits: g.traits ?? [] }; const pr = presets.find(x => x.key === g.key); if (pr) out.preset = pr.facilities.length;
+  return lockGov(L).map(g => { const out: GovProfile = { ...g, corp: g.corp ?? [], traits: g.traits ?? [] }; const pr = presets.find(x => x.key === g.key); if (pr) out.preset = pr.facilities.length;
     const rv = `data/vat/revenue/${g.key}_2026.csv`; if (fs.existsSync(rv)) out.revenue = fs.readFileSync(rv, 'utf-8').split('\n').filter(Boolean).length - 1;
     const ct = `data/vat/contracts/${g.key}.json`; if (fs.existsSync(ct)) { try { const j = JSON.parse(fs.readFileSync(ct, 'utf-8')) as { from?: string; to?: string; rows?: unknown[] }; out.contracts = { from: j.from ?? '', to: j.to ?? '', n: j.rows?.length ?? 0 }; } catch { /* */ } }
     return out; });

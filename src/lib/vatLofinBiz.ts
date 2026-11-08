@@ -1,3 +1,4 @@
+import { lockGov } from './vatLock';
 import fs from 'node:fs';
 /** 지방재정365 세부사업별 세출 현황 대구 행(data/vat/lofin_biz/<연도>.csv, scripts/fetch_lofin_bizexp.py) → /vat-expense/lofin-<gov>.json.
  *  돌려받기 '공개 지출 자료로 후보 찾기'의 2024년 이후 몫(운영자 2026-11-04 '연결해봐') — 주민참여 재정 포털 건별 자료는 2023년까지라 그 뒤는 세부사업 한 해 지출액만 있다.
@@ -14,7 +15,7 @@ function parseCsv(t: string): string[][] {
 }
 let cache: LofinGov[] | null = null;
 export function vatLofinGovs(): LofinGov[] {
-  if (cache) return cache;
+  if (cache) return lockGov(cache);
   if (!fs.existsSync(DIR)) return (cache = []);
   const by = new Map<string, { years: Set<string>; m: Map<string, LofinBiz> }>();
   for (const f of fs.readdirSync(DIR).filter(f => /^\d{4}\.csv$/.test(f)).sort()) {
@@ -31,5 +32,5 @@ export function vatLofinGovs(): LofinGov[] {
   const order = Object.values(GOV).map(g => g[0]);
   cache = [...by.entries()].map(([key, e]) => ({ v: 1 as const, key, name: Object.values(GOV).find(g => g[0] === key)![1], years: [...e.years].sort(), source: '행정안전부 지방재정365 통합자료실 「N 회계연도 세부사업별 세출 현황」(공공데이터포털 15138684), 회계연도 말일 기준 세부사업별 지출액', rows: [...e.m.values()] }));
   cache.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
-  return cache;
+  return lockGov(cache);
 }

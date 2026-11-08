@@ -1,3 +1,4 @@
+import { lockGov } from './vatLock';
 import fs from 'node:fs';
 import { vatLofinGovs } from './vatLofinBiz';
 import { vatContractGovs } from './vatContracts';
@@ -8,12 +9,12 @@ export type ExpGov = { v: 1; key: string; code: string; name: string; source: st
 const DIR = 'data/vat/expense';
 let cache: ExpGov[] | null = null;
 export function vatExpenseGovs(): ExpGov[] {
-  if (cache) return cache;
+  if (cache) return lockGov(cache);
   if (!fs.existsSync(DIR)) return (cache = []);
   const order = ['daegu', 'jung', 'dong', 'seo', 'nam', 'buk', 'suseong', 'dalseo', 'dalseong', 'gunwi'];
   const out = fs.readdirSync(DIR).filter(f => f.endsWith('.json') && f !== 'index.json').map(f => JSON.parse(fs.readFileSync(`${DIR}/${f}`, 'utf-8')) as ExpGov).filter(g => g && g.v === 1 && Array.isArray(g.rows));
   out.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
-  return (cache = out);
+  cache = out; return lockGov(out);
 }
 /** 목록(행 없이): 지자체 선택 상자용 — 주민참여 포털 건별 집계(2021~2023)와 지방재정365 세부사업별 지출액(2021~, `lofin`)을 지자체마다 합친다 */
 export const vatExpenseIndex = () => {

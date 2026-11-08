@@ -3,86 +3,80 @@
  "name": "BCG Publications",
  "group": "해외 컨설팅",
  "home": "https://www.bcg.com",
- "fetched": "2026-11-01",
+ "fetched": "2026-11-08",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
   {
-   "title": "Technology Industry",
-   "url": "https://www.bcg.com/industries/technology-media-telecommunications/technology-industry",
-   "date": "2026-10-30",
+   "title": "Corporate Finance and Strategy",
+   "url": "https://www.bcg.com/capabilities/corporate-finance-strategy/overview",
+   "date": "2026-11-06",
    "summary": ""
   },
   {
-   "title": "As AI Reshapes SaaS, Companies Need Pivot-Ready Pricing",
-   "url": "https://www.bcg.com/publications/2026/saas-pricing-must-change-agentic-ai",
-   "date": "2026-10-30",
+   "title": "Corporate Giants Are Staying on Top Longer. Should They Feel Safe?",
+   "url": "https://www.bcg.com/publications/2026/market-leaders-staying-on-top-longer",
+   "date": "2026-11-06",
    "summary": ""
   },
   {
-   "title": "Consumer Products Industry",
-   "url": "https://www.bcg.com/industries/consumer-products-industry/overview",
-   "date": "2026-10-30",
-   "summary": ""
-  },
-  {
-   "title": "Are CPG Companies Ready for Agentic Commerce?",
-   "url": "https://www.bcg.com/publications/2026/how-cpg-companies-win-agentic-commerce",
-   "date": "2026-10-30",
-   "summary": ""
-  },
-  {
-   "title": "How Leading Companies Can Stay Resilient in an Era of Policy Uncertainty",
-   "url": "https://www.bcg.com/publications/2026/navigate-energy-policy-uncertainty",
-   "date": "2026-10-29",
+   "title": "Why Lower Bills for Households Are Good Business for Energy Retailers",
+   "url": "https://www.bcg.com/publications/2026/energy-retailers-cut-household-bills",
+   "date": "2026-11-05",
    "summary": ""
   },
   {
    "title": "Artificial Intelligence",
    "url": "https://www.bcg.com/capabilities/artificial-intelligence",
-   "date": "2026-10-29",
+   "date": "2026-11-05",
    "summary": ""
   },
   {
-   "title": "Who Will Pay the $2.6 Trillion AI Infrastructure Bill?",
-   "url": "https://www.bcg.com/publications/2026/who-pays-for-ai-infrastructure",
-   "date": "2026-10-29",
+   "title": "The Insurance CEO’s Blueprint for Scaling AI",
+   "url": "https://www.bcg.com/publications/2026/insurance-ceos-scale-ai-enterprise",
+   "date": "2026-11-05",
    "summary": ""
   },
   {
-   "title": "Fashion Industry",
-   "url": "https://www.bcg.com/industries/retail/fashion-industry",
-   "date": "2026-10-28",
+   "title": "Retail Industry",
+   "url": "https://www.bcg.com/industries/retail/overview",
+   "date": "2026-11-04",
    "summary": ""
   },
   {
-   "title": "Decoding Growth in Uncertain Times",
-   "url": "https://www.bcg.com/publications/2026/what-us-fashion-shoppers-value",
-   "date": "2026-10-28",
+   "title": "BCG Year-End Sales Events Consumer Study 2026: For Year-End Sales Events, Trust Is the New Currency",
+   "url": "https://www.bcg.com/publications/2026/trust-matters-year-end-sales-events",
+   "date": "2026-11-04",
    "summary": ""
   },
   {
-   "title": "M&A, Transactions, and PMI",
-   "url": "https://www.bcg.com/capabilities/mergers-acquisitions-transactions-pmi/overview",
-   "date": "2026-10-28",
+   "title": "Strategic Planning",
+   "url": "https://www.bcg.com/capabilities/corporate-finance-strategy/strategic-planning",
+   "date": "2026-11-03",
    "summary": ""
   },
   {
-   "title": "Better Apart: When a Carve-Out Transforms Both Companies",
-   "url": "https://www.bcg.com/publications/2026/carve-out-strategy-both-companies",
-   "date": "2026-10-28",
+   "title": "Strategy in Motion: How AI Is Supercharging War Gaming",
+   "url": "https://www.bcg.com/publications/2026/ai-war-gaming-stress-test-strategy",
+   "date": "2026-11-03",
    "summary": ""
   },
   {
-   "title": "Corporate Finance and Strategy",
-   "url": "https://www.bcg.com/capabilities/corporate-finance-strategy/overview",
-   "date": "2026-10-27",
+   "title": "The CEO’s Value Edge: Manage Every Scarce Resource Like Capital",
+   "url": "https://www.bcg.com/publications/2026/holistic-resource-management-ceos",
+   "date": "2026-11-03",
    "summary": ""
   },
   {
-   "title": "The CEO’s Guide to Productive Tension with Your CFO",
-   "url": "https://www.bcg.com/publications/2026/ceo-cfo-relationship-build-trust",
-   "date": "2026-10-27",
+   "title": "International Business",
+   "url": "https://www.bcg.com/capabilities/international-business/overview",
+   "date": "2026-11-03",
+   "summary": ""
+  },
+  {
+   "title": "The Geopolitics of Critical Minerals: Navigating Scarcity, Concentration, and Control",
+   "url": "https://www.bcg.com/publications/2026/critical-minerals-geopolitics",
+   "date": "2026-11-03",
    "summary": ""
   }
  ],

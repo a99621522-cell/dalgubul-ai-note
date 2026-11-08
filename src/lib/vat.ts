@@ -1,3 +1,4 @@
+import { VAT_GOV } from './vatLock';
 import { lockGov } from './vatLock';
 import fs from 'node:fs';
 import yaml from 'js-yaml';
@@ -69,7 +70,10 @@ export function vatGovs(): GovProfile[] {
 }
 /** 감사·권익위·경정청구 공표 사례(data/vat/cases.yml) */
 export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; mistakes?: string[]; src: string; url?: string; verify?: boolean };
-export function vatCases(): AuditCase[] { const p = 'data/vat/cases.yml'; if (!fs.existsSync(p)) return []; return ((yaml.load(fs.readFileSync(p, 'utf-8')) as { cases?: AuditCase[] }).cases ?? []); }
+/** 공단이 없는 지자체 전용 사이트(VAT_GOV 빌드)에서는 공단·대행 사례를 빼 헷갈리지 않게(운영자 2026-11-08 '공단대행 등은 수성구 공무원이 헷갈릴 수 있잖아') */
+const noCorpLock = () => { if (!VAT_GOV) return false; const g = ((fs.existsSync('data/vat/govs.yml') ? (yaml.load(fs.readFileSync('data/vat/govs.yml', 'utf-8')) as { govs?: { key: string; corp?: unknown[] }[] }).govs : []) ?? []).find(x => x.key === VAT_GOV); return !!g && !(g.corp ?? []).length; };
+const CORP_RX = /공단|대행|지방공사|도시공사|도시관리공사/;
+export function vatCases(): AuditCase[] { const p = 'data/vat/cases.yml'; if (!fs.existsSync(p)) return []; const L = ((yaml.load(fs.readFileSync(p, 'utf-8')) as { cases?: AuditCase[] }).cases ?? []); return noCorpLock() ? L.filter(c => !CORP_RX.test(`${c.org} ${c.title} ${c.facts}`) && !(c.keys ?? []).includes('agency')) : L; }
 export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
 export const STATUS_LABEL: Record<Facility['status'], string> = { taxable: '과세', exempt: '면세', check: '확인 필요' };
 
@@ -83,5 +87,5 @@ export function vatBai(): { reports: BaiReport[]; scanned: number; noPdf: number
   const reports: BaiReport[] = []; let fetched = '';
   for (const [srno, m] of Object.entries(idx)) { if (!m.hits) continue; const p = `${dir}/${srno}.json`; if (!fs.existsSync(p)) continue; const r = JSON.parse(fs.readFileSync(p, 'utf-8')) as BaiReport; r.hits = r.hits.map(h => ({ ...h, rel: h.rel ?? (BAI_CORE(h.text) ? 'core' : 'mention') })).sort((a, b) => (a.rel === 'core' ? 0 : 1) - (b.rel === 'core' ? 0 : 1) || a.page - b.page); r.core = r.hits.filter(h => h.rel === 'core').length; reports.push(r); if ((r.fetched ?? '') > fetched) fetched = r.fetched ?? ''; }
   reports.sort((a, b) => (b.core > 0 ? 1 : 0) - (a.core > 0 ? 1 : 0) || b.openDt.localeCompare(a.openDt));
-  return { reports, scanned: Object.values(idx).filter(m => m.status === 'done').length, noPdf: Object.values(idx).filter(m => m.status === 'hwp').length, fetched };
+  return { reports: noCorpLock() ? reports.filter(r => !CORP_RX.test(r.title)) : reports, scanned: Object.values(idx).filter(m => m.status === 'done').length, noPdf: Object.values(idx).filter(m => m.status === 'hwp').length, fetched };
 }

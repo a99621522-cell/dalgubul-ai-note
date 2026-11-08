@@ -10,7 +10,7 @@ await pg.goto(base + '/vat/review/');
 for (let i = 0; i < 40; i++) { await pg.waitForTimeout(500); try { if (await pg.evaluate(() => !!localStorage.getItem('vat-org-v1') && document.readyState === 'complete')) break; } catch { /* */ } }
 await pg.waitForTimeout(2000);
 const dump = async tag => { await pg.evaluate(() => document.querySelectorAll('details').forEach(d => { d.open = true; })); await pg.waitForTimeout(500);
-  const t = await pg.evaluate(() => document.querySelector('main').textContent); const seen = new Map();
+  const t = await pg.evaluate(() => { const m = document.querySelector('main').cloneNode(true); m.querySelectorAll('script,style,template').forEach(x => x.remove()); return m.textContent; }); const seen = new Map();
   for (const s of t.replace(/\s+/g, ' ').split(/(?<=[.다요])\s|(?=[①②③④⑤])/)) { if (W.test(s)) { const k = s.trim().slice(0, 220); seen.set(k, (seen.get(k) ?? 0) + 1); } W.lastIndex = 0; }
   console.log(`== ${tag}: ${seen.size}`); for (const [k, n] of seen) console.log(`${n}× ${k}`); };
 await dump('파일 전');

@@ -44,6 +44,11 @@ if ((D.govs?.[0]?.focus ?? []).length) {
 }
 await pg.setInputFiles('#rf-all-file', files); await pg.waitForTimeout(3500);
 const amt = await pg.textContent('#rf-sum-amt').catch(() => ''); const sum = await pg.textContent('#rf-sum').catch(() => ''); ok('G9 신고서를 놓으면 결과 문장', /\d원/.test(amt ?? '') && (sum ?? '').includes(name.replace(/^대구광역시 /, '')), `${amt} · ${(sum ?? '').replace(/\s+/g, ' ').slice(0, 60)}`);
+if (!(D.govs?.[0]?.corp ?? []).length) {   /* 공단이 없는 지자체: 다른 지자체 구조(공단 대행·군 명의)가 화면에 남지 않는지 — 접힌 펼침까지 */
+  const txt = await pg.evaluate(() => { document.querySelectorAll('details').forEach(d => { d.open = true; }); const m = document.querySelector('main').cloneNode(true); m.querySelectorAll('script,style,template').forEach(x => x.remove()); return m.textContent.replace(/\s+/g, ' '); });
+  const bad = [...txt.matchAll(/.{0,30}(시설관리공단|공단 대행|공단·공사 대행|대행 면제|대행사업비|군 명의|군 세입|군이 직접|군 대행).{0,30}/g)].map(m => m[0]);
+  ok('G14 공단·대행·군 문구 없음(접힌 곳 포함)', bad.length === 0, bad.slice(0, 3).join(' | '));
+}
 ok('G10 404·스크립트 오류 없음', bad.length === 0 && errs.length === 0, [...bad, ...errs].join(' ; '));
 await browser.close();
 console.log(fail ? `실패 ${fail}` : '모두 통과'); process.exit(fail ? 1 : 0);

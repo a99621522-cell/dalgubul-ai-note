@@ -505,7 +505,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('G1 지자체 선택 — 대구광역시·9개 구·군 행정 순서', JSON.stringify(opts.slice(1, 11)) === JSON.stringify(['대구광역시', '대구광역시 중구', '대구광역시 동구', '대구광역시 서구', '대구광역시 남구', '대구광역시 북구', '대구광역시 수성구', '대구광역시 달서구', '대구광역시 달성군', '대구광역시 군위군']), JSON.stringify(opts));
   await p7.goto(base + '/vat/review/'); await p7.evaluate(() => localStorage.clear()); await p7.goto(base + '/vat/review/?gov=suseong'); await p7.waitForSelector('#rf-all-file', { state: 'attached', timeout: 20000 }); await p7.waitForTimeout(1500);
   const sg = await p7.evaluate(() => { const o = JSON.parse(localStorage.getItem('vat-org-v1') || 'null'); return { org: o?.org ?? '', n: o?.facilities?.length ?? 0, direct: (o?.facilities ?? []).filter(f => /반다비|국민체육센터/.test(f.name) && f.run === 'direct').length, prof: document.querySelector('#rf-s1-body .rf-gov')?.textContent ?? '' }; });
-  ok('G2 수성구 — 링크로 시작, 예시 설정(직영 체육시설·재단 위탁), 특성(시설관리공단 없음)', sg.org === '대구광역시 수성구' && sg.n >= 32 && sg.direct >= 2 && /시설관리공단이 없습니다/.test(sg.prof), JSON.stringify(sg).slice(0, 300));
+  ok('G2 수성구 — 링크로 시작, 예시 설정(직영 체육시설·재단 위탁), 특성(구 직영·공단 문구 없음 — 2026-11-08 운영자 \'공단대행 등은 수성구 공무원이 헷갈릴 수 있잖아\')', sg.org === '대구광역시 수성구' && sg.n >= 32 && sg.direct >= 2 && /구가 직접 운영/.test(sg.prof) && !/공단/.test(sg.prof), JSON.stringify(sg).slice(0, 300));
   await c7.close(); }
 /* ── E 쉬운 화면(2026-11-05 docs/prompts/vat_review_ux_easiest.md · 설계 docs/design/vat-review-ux-spec.md): 과업 A~D·순서·잠금·한국어 파일 단추·결과 요약·내려받기 둘·빈/실패 상태·390px ── */
 { const FX5 = path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax', 'dalseong5y'); const { execSync } = await import('node:child_process');

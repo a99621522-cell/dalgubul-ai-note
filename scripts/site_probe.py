@@ -79,8 +79,14 @@ def main():
         best = max(cands, key=lambda e: len(re.sub(r"\s", "", e.get_text(" ", strip=True))) if len(e.find_all(["div", "section", "article"])) < 40 else 0, default=soup)
         # 본문 칸 이름이 알려진 누리집은 그 칸 먼저(2026-11-04 정책브리핑: 가장 긴 덩어리가 저작권 안내였다)
         known = soup.select_one("div.view_cont, div.article_body, #articleBody, div.view-con, div.board_view_cont")
+        # 신문 기사: 바로 아래 <p> 글자가 가장 많은 칸(2026-11-09 매일신문: 본문 칸 안 문단이 많아 '글 덩어리' 규칙이 옆 '많이 본 뉴스'를 골랐다)
+        ptxt = lambda e: sum(len(re.sub(r"\s", "", p.get_text(" ", strip=True))) for p in e.find_all("p", recursive=False))
+        pbest = max(cands, key=ptxt, default=None)
         if known and len(re.sub(r"\s", "", known.get_text(" ", strip=True))) >= 200:
             best = known
+        elif pbest is not None and ptxt(pbest) >= 300:
+            best = pbest
+            print(f"== 본문 칸(문단 기준): {pbest.name}.{' '.join(pbest.get('class') or [])}#{pbest.get('id') or ''}")
         else:   # 어느 칸이 본문인지 다음에 고를 수 있게 글이 많은 칸 이름을 찍는다
             top = sorted(((len(re.sub(r"\s", "", e.get_text(" ", strip=True))), e.name, " ".join(e.get("class") or []), e.get("id") or "") for e in cands), reverse=True)[:8]
             print("== 글이 많은 칸: " + " | ".join(f"{n}:{t}.{c}#{i}" for n, t, c, i in top))

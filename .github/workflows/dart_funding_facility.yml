@@ -11,6 +11,9 @@ on:
       ind:
         description: "업종 코드 접두어 쉼표"
         default: "22,24,25,27,28,29,30"
+      detail:
+        description: "회사 이름 쉼표 — 넣으면 그 회사 원문 시설자금 부분만 로그(저장 안 함)"
+        default: ""
   push:
     branches: ["claude/factorion-file-repair-tyqnlb"]
     paths: ["scripts/dart_funding_facility.py"]
@@ -38,7 +41,10 @@ jobs:
           PYTHONUNBUFFERED: "1"
           MONTHS: ${{ inputs.months }}
           IND: ${{ inputs.ind }}
-        run: python3 scripts/dart_funding_facility.py --months "${MONTHS:-18}" --ind "${IND:-22,24,25,27,28,29,30}"
+          DETAIL: ${{ inputs.detail }}
+        run: |
+          if [ -n "$DETAIL" ]; then python3 scripts/dart_funding_facility.py --detail "$DETAIL"; exit 0; fi
+          python3 scripts/dart_funding_facility.py --months "${MONTHS:-18}" --ind "${IND:-22,24,25,27,28,29,30}"
       - name: 커밋
         run: |
           git config user.name dalgubul-bot

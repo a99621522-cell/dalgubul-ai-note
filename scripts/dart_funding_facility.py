@@ -66,7 +66,38 @@ def use_region(t: str) -> str:
     return " ".join(out) if out else t[:6000]
 
 
+def detail(names: list[str]) -> int:
+    """--detail 이름,…: funding_facility.csv 에서 그 회사의 최근 공시 원문 중 시설자금 세부·공장·부지 부분을 로그로(저장 안 함)."""
+    rows = list(csv.DictReader(open(OUT, encoding="utf-8")))
+    pat = re.compile(r"시설자금의 경우|자금의 세부\s?사용|시설투자 계획|세부 사용계획|공장\s?(?:신설|신축|부지|증설)|부지\s?(?:확보|매입|선정)|생산\s?거점|생산능력\s?(?:확대|증설)")
+    for n in names:
+        rs = sorted([r for r in rows if r["name"] == n], key=lambda r: r["rcept_dt"])
+        if not rs:
+            print(f"### {n}: 목록에 없음")
+            continue
+        r = rs[-1]
+        t = F.doc_text(r["rcept_no"])
+        time.sleep(0.3)
+        print(f"### {n} {r['rcept_dt']} {r['report_nm']} {r['url']} (원문 {len(t)}자)")
+        used, out, last = 0, [], -10**9
+        for m in pat.finditer(t):
+            if m.start() < last + 900:
+                continue
+            last = m.start()
+            out.append(t[max(0, m.start() - 200): m.start() + 900])
+            used += 1100
+            if used > 6600:
+                break
+        for o in out:
+            print("  …" + re.sub(r"\s+", " ", o) + "…")
+        pl = Counter(re.sub(r"\s", "", p) for p in PLACE.findall(t))
+        print("  [지역 언급 수] " + ", ".join(f"{k} {v}" for k, v in pl.most_common(15)))
+    return 0
+
+
 def main(argv: list[str]) -> int:
+    if "--detail" in argv:
+        return detail([x for x in argv[argv.index("--detail") + 1].split(",") if x])
     months = int(argv[argv.index("--months") + 1]) if "--months" in argv else 18
     ind = tuple((argv[argv.index("--ind") + 1] if "--ind" in argv else "22,24,25,27,28,29,30").split(","))
     if not F.KEY:

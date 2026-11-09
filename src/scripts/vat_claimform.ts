@@ -79,3 +79,90 @@ export function claimFormHtml(M: Map<string, CorrDoc[]>, orgName: string, orgReg
 <div class="bar no-print"><button type="button" onclick="window.print()">인쇄 · PDF로 저장</button><span>A4 세로로 인쇄됩니다. PDF는 인쇄 창에서 'PDF로 저장'을 고르세요.</span></div>
 ${guide}${L.map(c => one(c, orgName, orgReg)).join('\n')}</body></html>`;
 }
+
+/** 같은 서식을 PDF 로(운영자 지시 2026-11-09 'pdf로 다운 받을 수 있게 해야되') — 칸 배치·값은 claimFormHtml 과 같다. A4 세로, 고친 신고서 한 장마다 한 쪽, 작성 안내는 맨 뒤 쪽(제출하지 않음).
+ *  글꼴·그리기는 pdf.ts pdfKit(Pretendard 통째로). 회색 글씨는 기관이 적을 칸의 안내. */
+export async function claimFormPdf(M: Map<string, CorrDoc[]>, orgName: string, orgReg = ''): Promise<Blob | null> {
+  const L = [...M].sort().flatMap(([, v]) => v).filter(c => c.delta > 0);
+  if (!L.length) return null;
+  const K = await import('./pdf').then(m => m.pdfKit());
+  const { doc, text, width, lines, MM, INK, MUTED } = K; const BG = K.rgb(0.95, 0.95, 0.95);
+  doc.setTitle(`경정청구서(별지 제16호의2서식) — ${orgName}`);
+  const PW = 210 * MM, PH = 297 * MM, X0 = 12 * MM, W = 186 * MM, PAD = 1.8 * MM;
+  type Seg = { t: string; size?: number; bold?: boolean; hint?: boolean };
+  type C = { w: number; segs: Seg[]; align?: 'l' | 'c' | 'r'; th?: boolean; vert?: boolean };
+  let pg = doc.addPage([PW, PH]); let y = PH - 12 * MM;
+  const segLines = (s: Seg, w: number) => lines(s.t, s.size ?? 9.5, w);
+  const lh = (s: Seg) => (s.size ?? 9.5) * 1.4;
+  /** 칸 한 줄 그리기 — 칸마다 글을 줄로 나눠 가장 높은 칸에 맞추고, 위아래 가운데. 반환: 높이 */
+  const row = (cells: C[], minH = 8 * MM, top = 0.6) => {
+    const ws = cells.map(c => c.w * MM);
+    const laid = cells.map((c, i) => c.vert ? { L: [] as { s: Seg; t: string }[], h: [...c.segs.map(s => s.t).join('')].length * 11 } : (() => { const out: { s: Seg; t: string }[] = []; c.segs.forEach(s => segLines(s, ws[i] - 2 * PAD).forEach(t => out.push({ s, t }))); return { L: out, h: out.reduce((a, o) => a + lh(o.s), 0) }; })());
+    const h = Math.max(minH, ...laid.map(l => l.h + 2 * PAD));
+    let x = X0;
+    cells.forEach((c, i) => {
+      const w = ws[i];
+      pg.drawRectangle({ x, y: y - h, width: w, height: h, color: c.th ? BG : undefined, borderColor: INK, borderWidth: 0.6 });
+      if (c.vert) { const ch = [...c.segs.map(s => s.t).join('')]; let yy = y - (h - ch.length * 11) / 2 - 9; ch.forEach(t => { text(pg, t, { x: x + (w - width(t, 9.5)) / 2, y: yy, size: 9.5 }); yy -= 11; }); }
+      else { let yy = y - (h - laid[i].h) / 2; laid[i].L.forEach(({ s, t }) => { const sz = s.size ?? 9.5; const tw = width(t, sz); const a = c.align ?? (c.th ? 'l' : 'l');
+        const tx = a === 'c' ? x + (w - tw) / 2 : a === 'r' ? x + w - PAD - tw : x + PAD; text(pg, t, { x: tx, y: yy - sz * 1.05, size: sz, color: s.hint ? MUTED : INK }, !!s.bold); yy -= lh(s); }); }
+      x += w;
+    });
+    if (top > 0.6) pg.drawLine({ start: { x: X0, y }, end: { x: X0 + W, y }, thickness: top, color: INK });
+    y -= h; return h;
+  };
+  const v = (t: string, bold = true): Seg[] => [{ t, bold }];
+  const hint = (t: string): Seg[] => [{ t, size: 8, hint: true }];
+  const th = (t: string, w: number, align: 'l' | 'c' = 'l'): C => ({ w, segs: [{ t }], th: true, align });
+  for (const c of L) {
+    if (y < PH - 13 * MM) { pg = doc.addPage([PW, PH]); y = PH - 12 * MM; }
+    const [yr, hf] = c.k.split('-').map(Number); const P = `${yr}년 제${hf}기 ${c.kind}`; const reg = c.reg || orgReg;
+    const credit = c.payBefore != null && c.pen != null && c.due != null ? c.payBefore + c.pen - c.due : null;
+    text(pg, '[별지 제16호의2서식(1)] <개정 2025. 3. 21.>', { x: X0, y: y - 8, size: 8 }); text(pg, '(앞쪽)', { x: X0 + W - width('(앞쪽)', 8), y: y - 8, size: 8 }); y -= 8 * MM;
+    const T = '과세표준 및 세액의 결정(경정)청구서'; text(pg, T, { x: (PW - width(T, 16)) / 2, y: y - 16, size: 16 }, true); y -= 9 * MM;
+    { const s = '[「국세기본법」 제45조의2 또는 「소득세법」 제118조의15에 따른 결정(경정) 청구]'; const yt = y;
+      text(pg, s, { x: X0 + (164 * MM - width(s, 8.5)) / 2, y: y - 6 * MM, size: 8.5 }); y = yt; const x2 = X0 + 164 * MM;
+      pg.drawRectangle({ x: x2, y: y - 10 * MM, width: 22 * MM, height: 10 * MM, borderColor: INK, borderWidth: 0.6 });
+      ['처리기간', '2개월'].forEach((t, i) => text(pg, t, { x: x2 + (22 * MM - width(t, 8.5)) / 2, y: y - 4 * MM - i * 4 * MM, size: 8.5 })); y -= 12 * MM; }
+    const R = 57.5;
+    const y1 = y; row([{ w: 9, segs: [{ t: '' }] }, th('① 성 명', 30), { w: R, segs: hint('기관장 성명') }, th('② 주민등록번호', 32), { w: R, segs: hint('(기관은 적지 않음)') }], 9 * MM, 1.4);
+    row([{ w: 9, segs: [{ t: '' }] }, th('④ 주소(거소) 또는 영업소', 30), { w: R, segs: hint('기관 소재지') }, th('③ 사업자등록번호', 32), { w: R, segs: reg ? v(reg) : hint('신고서의 사업자등록번호') }], 9 * MM);
+    row([{ w: 9, segs: [{ t: '' }] }, th('⑥ 상 호', 30), { w: R, segs: v(orgName) }, th('⑤ 전화번호', 32), { w: R, segs: hint('담당 부서 전화') }], 9 * MM);
+    { const hh = y1 - y; pg.drawRectangle({ x: X0, y, width: 9 * MM, height: hh, color: K.rgb(1, 1, 1), borderColor: INK, borderWidth: 0.6 });
+      const ch = [...'청구인']; let yy = y + hh / 2 + ch.length * 6 - 9; ch.forEach(t => { text(pg, t, { x: X0 + (9 * MM - width(t, 9.5)) / 2, y: yy, size: 9.5 }); yy -= 12; }); }
+    y -= 2 * MM;
+    row([{ ...th('신 고 내 용', 186, 'c') }], 7 * MM, 1.4);
+    row([th('⑦ 법정신고일', 32), { w: 61, segs: v(dueDate(yr, hf, c.kind)) }, th('⑧ 최초신고일', 32), { w: 61, segs: hint('홈택스 신고내역의 접수일') }]);
+    row([th('⑨ 결정(경정) 청구이유', 32), { w: 154, segs: [{ t: corrReason(c), size: 8.5 }, { t: `과세기간: ${P} · 신고서 파일 ${c.file}`, size: 7.5, hint: true }] }], 14 * MM);
+    y -= 2 * MM;
+    row([th('구 분', 46, 'c'), th('최 초 신 고', 70, 'c'), th('결 정(경 정) 청 구', 70, 'c')], 7 * MM, 1.4);
+    const num = (n: string, label: string, a: string, b: string, hn = '') => row([th(`${n} ${label}`, 46), { w: 70, segs: a ? v(a) : [{ t: '' }], align: 'r' }, { w: 70, segs: [...(b ? v(b) : []), ...(hn ? hint(hn) : [])].length ? [...(b ? v(b) : []), ...(hn ? hint(hn) : [])] : [{ t: '' }], align: 'r' }], 9 * MM);
+    num('⑩', '세 목', '부가가치세', '부가가치세');
+    num('⑪', '과세표준금액', won(c.tb), won(c.tb), c.tb == null ? '신고서 (9) 합계 금액' : '');
+    num('⑫', '산출세액', won(c.payBefore), won(c.payAfter), '납부(환급)세액 = 매출세액 − 공제 매입세액');
+    num('⑬', '가산세액', won(c.pen), won(c.pen), c.pen == null ? '신고서 가산세액 계(당초와 같음)' : '당초와 같음');
+    num('⑭', '공제 및 감면세액', won(credit), won(credit), credit == null ? '신고서 경감·공제세액 등(당초와 같음)' : '⑫ + ⑬ − ⑮ (당초와 같음)');
+    num('⑮', '납부할 세액', won(c.due), c.due == null ? '' : won(c.due - c.delta), c.due == null ? `신고서 차감·가감하여 납부할 세액 − ${fmt(c.delta)}` : '');
+    row([th('⑯ 국세환급금 계좌신고', 46), { w: 140, segs: [{ t: '거래은행             은행           지점    계좌번호 ' }, { t: '(기관 세입 계좌)', size: 8, hint: true }] }], 9 * MM);
+    row([th('⑰ 환급받을 세액', 46), { w: 140, segs: [{ t: `${fmt(c.delta)} 원`, size: 12, bold: true }], align: 'r' }], 10 * MM, 1.4);
+    y -= 2 * MM;
+    row([{ w: 186, segs: [{ t: '「국세기본법」 제45조의2, 같은 법 시행령 제25조의3, 「소득세법」 제118조의15 및 같은 법 시행령 제178조의11에 따라 위와 같이 청구합니다.' }] }], 12 * MM);
+    { const top = y; row([{ w: 186, segs: [{ t: '년        월        일' }, { t: ' ' }, { t: `청구인  ${orgName}            (서명 또는 인)` }], align: 'r' }], 20 * MM); void top; }
+    row([{ w: 186, segs: [{ t: '관할', size: 8, hint: true }, { t: '세무서장 귀하', size: 12 }] }], 12 * MM);
+    y -= 2 * MM;
+    row([th('첨부서류', 30), { w: 130, segs: [{ t: `결정(경정)청구 사유 증명자료 — 최초 신고서 사본, 고친 신고서(이 묶음의 '고친 신고서'), 공제받지 못할 매입세액 명세서(고친 값)${c.parts.length ? ', 공통매입세액 안분·정산 계산 근거' : ''}`, size: 8.5 }] }, { w: 26, segs: [{ t: '수수료' }, { t: '없음' }], align: 'c' }], 14 * MM);
+    text(pg, `${location.host} · 판정은 참고이며 기관의 판단이 아닙니다`, { x: X0, y: 7 * MM, size: 7, color: MUTED });
+  }
+  /* 작성 안내 쪽(맨 뒤 — 제출하지 않음) */
+  pg = doc.addPage([PW, PH]); y = PH - 14 * MM;
+  const total = L.reduce((s, c) => s + c.delta, 0);
+  text(pg, '경정청구서 작성 안내 (이 쪽은 제출하지 않음)', { x: X0, y: y - 13, size: 13 }, true); y -= 10 * MM;
+  const G = [`국세기본법 시행규칙 별지 제16호의2서식(1) 「과세표준 및 세액의 결정(경정)청구서」 칸 배치대로, 신고서에서 읽은 숫자와 고친 값을 채웠습니다. 고친 신고서 한 장마다 한 쪽, 모두 ${L.length}쪽 · 환급받을 세액 합계 ${fmt(total)}원입니다.`,
+    '채운 칸: ③ 사업자등록번호(신고서), ⑥ 상호(기관 이름), ⑦ 법정신고일(토·일이면 다음 월요일 — 공휴일은 확인하세요), ⑨ 청구이유, ⑩~⑮ 최초 신고·경정 청구 값, ⑰ 환급받을 세액.',
+    '기관이 적을 칸: ① 성명(기관장), ④ 주소, ⑤ 전화번호, ⑧ 최초신고일(홈택스 신고내역 접수일), ⑯ 환급 계좌(기관 세입 계좌), 날짜·서명, 관할 세무서. 회색 글씨는 안내입니다.',
+    "부가가치세는 서식의 '산출세액'을 신고서의 납부(환급)세액(매출세액 − 공제받는 매입세액)으로 적었습니다. 가산세·경감공제세액은 이번 청구로 바뀌지 않아 당초와 같은 값입니다. 신고서에서 그 칸을 못 읽은 경우는 비워 두었으니 홈택스 신고서 값을 적으세요.",
+    '홈택스로 청구할 때는 신고/납부 → 세금신고 → 부가가치세 → 경정청구 화면에 같은 값을 넣고, 이 서식은 결재·보관용으로 씁니다. 서면으로 낼 때는 이 서식에 최초 신고서 사본과 고친 신고서·증명자료를 붙여 관할 세무서에 냅니다(국세기본법 시행규칙 제12조의2).',
+    '숫자는 올린 신고서로 다시 계산한 참고값입니다. 판정은 참고이며 기관의 판단이 아닙니다 — 제출 전 담당자가 신고서와 대조하세요.'];
+  for (const g of G) { lines(g, 10, W - 6 * MM).forEach((t, i) => { if (i === 0) text(pg, '•', { x: X0, y: y - 10, size: 10 }); text(pg, t, { x: X0 + 5 * MM, y: y - 10, size: 10 }); y -= 15; }); y -= 5; }
+  return K.save();
+}

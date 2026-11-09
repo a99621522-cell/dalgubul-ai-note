@@ -508,6 +508,12 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
       f.title === '과세표준 및 세액의 결정(경정)청구서' && f.n >= 3 && /⑰ 환급받을 세액\s*300,000 원/.test(p22) && /⑦ 법정신고일\s*2022\. 7\. 25\./.test(p22) && /⑩ 세 목\s*부가가치세\s*부가가치세/.test(p22) && /⑫ 산출세액/.test(p22) && /합계 460,000원/.test(f.guide) && /18_경정청구서/.test(zl),
       JSON.stringify({ title: f.title, n: f.n, p22: p22.slice(0, 400), guide: f.guide.slice(0, 160) }));
     await pop.close(); }
+  /* F8 경정청구서 PDF 받기(운영자 2026-11-09 'pdf로 다운 받을 수 있게 해야되') — 같은 값, 고친 신고서마다 한 쪽 + 안내 쪽, 묶음에도 .pdf */
+  { const pf = path.join(os.tmpdir(), 'vat-claimform.pdf'); const [dp] = await Promise.all([p7.waitForEvent('download', { timeout: 60000 }), p7.click('#rf-dl-form-pdf')]); await dp.saveAs(pf);
+    const txt = execSync(`pdftotext -layout "${pf}" -`).toString().replace(/[ \t]+/g, ' '); const pages = (txt.match(/\f/g) ?? []).length;
+    ok('F8 경정청구서 PDF — PDF 파일, 서식 제목·2022. 7. 25.·300,000 원·부가가치세·안내 쪽 합계 460,000원, 묶음에 18_….pdf',
+      fs.readFileSync(pf).subarray(0, 4).toString() === '%PDF' && /과세표준 및 세액의/.test(txt) && /2022\. 7\. 25\./.test(txt) && /300,000 원/.test(txt) && /부가가치세/.test(txt) && /합계 460,000원/.test(txt) && pages >= 3 && /18_경정청구서\(별지_제16호의2서식\)\.pdf/.test(zl),
+      `${dp.suggestedFilename()} 쪽 ${pages} · ${txt.slice(0, 200).replace(/\s+/g, ' ')}`); }
   await p7.goto(base + '/vat/review/'); await p7.evaluate(() => localStorage.clear()); await p7.reload(); await p7.waitForFunction(() => document.querySelector('[data-qs-sel]')?.options.length > 3, null, { timeout: 15000 });
   const opts = await p7.$$eval('[data-qs-sel] option', os => os.map(o => o.textContent.split(' — ')[0]).filter(Boolean));
   ok('G1 지자체 선택 — 대구광역시·9개 구·군 행정 순서', JSON.stringify(opts.slice(1, 11)) === JSON.stringify(['대구광역시', '대구광역시 중구', '대구광역시 동구', '대구광역시 서구', '대구광역시 남구', '대구광역시 북구', '대구광역시 수성구', '대구광역시 달서구', '대구광역시 달성군', '대구광역시 군위군']), JSON.stringify(opts));

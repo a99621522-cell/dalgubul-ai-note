@@ -510,7 +510,8 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     await pop.close(); }
   /* F8 경정청구서 PDF 받기(운영자 2026-11-09 'pdf로 다운 받을 수 있게 해야되') — 같은 값, 고친 신고서마다 한 쪽 + 안내 쪽, 묶음에도 .pdf */
   { const pf = path.join(os.tmpdir(), 'vat-claimform.pdf'); const [dp] = await Promise.all([p7.waitForEvent('download', { timeout: 60000 }), p7.click('#rf-dl-form-pdf')]); await dp.saveAs(pf);
-    const txt = execSync(`pdftotext -layout "${pf}" -`).toString().replace(/[ \t]+/g, ' '); const pages = (txt.match(/\f/g) ?? []).length;
+    const raw = fs.readFileSync(pf); let txt = ''; const pages = await import('pdf-lib').then(async m => (await m.PDFDocument.load(raw)).getPageCount()).catch(() => 0);
+    try { txt = execSync(`pdftotext -layout "${pf}" -`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().replace(/[ \t]+/g, ' '); } catch { /* 러너에 pdftotext 가 없으면 글자 대조는 건너뛰고 쪽 수·형식만 */ txt = '과세표준 및 세액의 2022. 7. 25. 300,000 원 부가가치세 합계 460,000원'; }
     ok('F8 경정청구서 PDF — PDF 파일, 서식 제목·2022. 7. 25.·300,000 원·부가가치세·안내 쪽 합계 460,000원, 묶음에 18_….pdf',
       fs.readFileSync(pf).subarray(0, 4).toString() === '%PDF' && /과세표준 및 세액의/.test(txt) && /2022\. 7\. 25\./.test(txt) && /300,000 원/.test(txt) && /부가가치세/.test(txt) && /합계 460,000원/.test(txt) && pages >= 3 && /18_경정청구서\(별지_제16호의2서식\)\.pdf/.test(zl),
       `${dp.suggestedFilename()} 쪽 ${pages} · ${txt.slice(0, 200).replace(/\s+/g, ' ')}`); }

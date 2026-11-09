@@ -500,6 +500,14 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   const cr = await p7.evaluate(() => { const d = document.getElementById('rf-dg-2022-1'); if (d) d.open = true; return { rows: [...(d?.querySelectorAll('.rf-corr tr.rf-chg') ?? [])].map(tr => tr.textContent.replace(/\s+/g, ' ').trim()), claim: d?.querySelector('.rf-claim')?.textContent ?? '' }; });
   ok('F6 고친 신고서 — 2022년 제1기 확정: (17) 800,000 → 500,000, (18) 2,200,000 → 2,500,000, 명세서 ⑫ 50,000,000 → 80,000,000·⑭ 800,000 → 500,000, 경정청구 돌려받을 세액 300,000원', cr.rows.some(t => /\(17\).*800,000.*500,000/.test(t)) && cr.rows.some(t => /\(18\).*2,200,000.*2,500,000/.test(t)) && cr.rows.some(t => /⑫.*50,000,000.*80,000,000/.test(t)) && cr.rows.some(t => /⑭.*800,000.*500,000/.test(t)) && /돌려받을 세액 300,000원/.test(cr.claim), JSON.stringify(cr).slice(0, 600));
   ok('F5 묶음에 결재용 검토 보고(Word, 한글에서 열림)와 돌려받을 돈 표', /14_경정청구_검토보고/.test(zl) && /13_돌려받을_돈/.test(zl) && /16_경정청구서_밑자료/.test(zl) && /11_경정청구_요약\.pdf/.test(zl) && /15_고친_신고서/.test(zl), zl.split('\n').join('|'));
+  /* F7 경정청구서(국세청 서식) — 국세기본법 시행규칙 별지 제16호의2서식에 숫자를 채운 인쇄용(운영자 2026-11-09 '경정청구 서식도 국세청 서식에 맞게 숫자로 채워서') */
+  { const [pop] = await Promise.all([p7.waitForEvent('popup', { timeout: 20000 }), p7.click('#rf-dl-form')]); await pop.waitForLoadState('load');
+    const f = await pop.evaluate(() => ({ title: document.querySelector('.page:not(.note) h1')?.textContent ?? '', n: document.querySelectorAll('.page:not(.note)').length, txt: [...document.querySelectorAll('.page:not(.note)')].map(p => p.textContent.replace(/\s+/g, ' ')), guide: document.querySelector('.page.note')?.textContent.replace(/\s+/g, ' ') ?? '' }));
+    const p22 = f.txt.find(t => /2022년 제1기 확정/.test(t)) ?? '';
+    ok('F7 경정청구서 서식 — 별지 제16호의2서식 제목·칸(①~⑰), 고친 신고서마다 한 쪽, 2022년 제1기 확정 ⑰ 300,000 원·⑦ 2022. 7. 25.·⑩ 부가가치세, 안내 쪽 합계 460,000원, 묶음에 18_ 파일',
+      f.title === '과세표준 및 세액의 결정(경정)청구서' && f.n >= 3 && /⑰ 환급받을 세액\s*300,000 원/.test(p22) && /⑦ 법정신고일\s*2022\. 7\. 25\./.test(p22) && /⑩ 세 목\s*부가가치세\s*부가가치세/.test(p22) && /⑫ 산출세액/.test(p22) && /합계 460,000원/.test(f.guide) && /18_경정청구서/.test(zl),
+      JSON.stringify({ title: f.title, n: f.n, p22: p22.slice(0, 400), guide: f.guide.slice(0, 160) }));
+    await pop.close(); }
   await p7.goto(base + '/vat/review/'); await p7.evaluate(() => localStorage.clear()); await p7.reload(); await p7.waitForFunction(() => document.querySelector('[data-qs-sel]')?.options.length > 3, null, { timeout: 15000 });
   const opts = await p7.$$eval('[data-qs-sel] option', os => os.map(o => o.textContent.split(' — ')[0]).filter(Boolean));
   ok('G1 지자체 선택 — 대구광역시·9개 구·군 행정 순서', JSON.stringify(opts.slice(1, 11)) === JSON.stringify(['대구광역시', '대구광역시 중구', '대구광역시 동구', '대구광역시 서구', '대구광역시 남구', '대구광역시 북구', '대구광역시 수성구', '대구광역시 달서구', '대구광역시 달성군', '대구광역시 군위군']), JSON.stringify(opts));

@@ -140,7 +140,7 @@ export function diagCsv(L: Diag[], D?: Data): string[][] {
  *  ③ 총공급가액이 신고서의 과세 공급가액((1)~(6))보다 작아 면세비율이 부풀려짐 — 셋을 함께 반영한 '바른 불공제'와의 차이만큼.
  *  확인할 금액(upto): ⑤ 면세사업등 관련(과세 시설 지출이 섞였는지) · ① 필요적 기재사항 누락 등 · ⑦ 사업자등록 전 — 최대 금액과 확인할 곳. */
 type Cellx = { n?: number | null; amt: number | null; tax: number | null };
-export type FiledDocLite = { year: number; half: 1 | 2; kind: string; file: string; reg?: string; cells: Record<number, Cellx>; nd: { reasons: Record<number, Cellx>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: { label: string; code: string; amt: number }[] };
+export type FiledDocLite = { year: number; half: 1 | 2; kind: string; file: string; reg?: string; cells: Record<number, Cellx>; pen?: number; due?: number; nd: { reasons: Record<number, Cellx>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: { label: string; code: string; amt: number }[] };
 export type FixPart = { doc: FiledDocLite; delta: number; sec: '안분' | '정산' | '정산(새로 넣음)'; rows: { label: string; before: number | null; after: number | null }[] };
 export type FiledCheck = { k: string; findings: Finding[]; sure: number; upto: number; docs: string[]; n17: number | null; n18: number | null; n16: number | null; n1012: number | null; fixes?: FixPart[] };
 export function filedChecks(D: Data, docs: FiledDocLite[], taxableFacs: string[]): Map<string, FiledCheck> {
@@ -333,7 +333,7 @@ export function reportBlocks(L: Diag[], orgName: string, win: string): HBlock[] 
  *  올린 신고서의 칸을 그대로 두고 고칠 칸만 바꾼다: (17) − 줄어든 불공제, (18) + 같은 금액, 명세서의 안분·정산 칸은 다시 계산한 값.
  *  경정청구서 줄: 당초 납부(환급)세액 → 고친 값 → 돌려받을 세액. 납부세액은 매출세액 − (18) 로 어림(가산세·경감공제·예정고지 등은 원래 신고서 그대로). 새 계산 규칙 없음. */
 const CELL_NAME: Record<number, string> = { 1: '과세 세금계산서 발급분', 2: '과세 매입자발행 세금계산서', 3: '과세 신용카드·현금영수증 발행분', 4: '과세 기타(정규영수증 외 매출분)', 5: '영세율 세금계산서 발급분', 6: '영세율 기타', 7: '예정신고 누락분(매출)', 8: '대손세액 가감', 9: '매출 합계', 10: '세금계산서 수취분 일반매입', 11: '수출기업 수입분 납부유예', 12: '세금계산서 수취분 고정자산 매입', 13: '예정신고 누락분(매입)', 14: '매입자발행 세금계산서', 15: '그 밖의 공제매입세액', 16: '매입 합계', 17: '공제받지 못할 매입세액', 18: '차감계(공제받는 매입세액)' };
-export type CorrDoc = { k: string; kind: string; file: string; reg: string; delta: number; cells: { n: number; label: string; amt: number | null; before: number | null; after: number | null }[]; parts: { sec: string; rows: { label: string; before: number | null; after: number | null }[] }[]; payBefore: number | null; payAfter: number | null };
+export type CorrDoc = { k: string; kind: string; file: string; reg: string; delta: number; cells: { n: number; label: string; amt: number | null; before: number | null; after: number | null }[]; parts: { sec: string; rows: { label: string; before: number | null; after: number | null }[] }[]; payBefore: number | null; payAfter: number | null; tb?: number | null; pen?: number | null; due?: number | null };
 export function correctedFilings(fc: Map<string, FiledCheck>): Map<string, CorrDoc[]> {
   const out = new Map<string, CorrDoc[]>();
   for (const [k, c] of fc) { if (!c.fixes?.length) continue; const by = new Map<FiledDocLite, FixPart[]>(); for (const x of c.fixes) (by.get(x.doc) ?? by.set(x.doc, []).get(x.doc)!).push(x);
@@ -341,7 +341,8 @@ export function correctedFilings(fc: Map<string, FiledCheck>): Map<string, CorrD
     for (const [d, parts] of by) { const delta = parts.reduce((s, x) => s + x.delta, 0);
       const cells = Object.keys(d.cells).map(Number).filter(n => n >= 1 && n <= 18).sort((a, b) => a - b).map(n => { const t = d.cells[n]?.tax ?? null; const after = t == null ? null : n === 17 ? t - delta : n === 18 ? t + delta : t; return { n, label: CELL_NAME[n] ?? `(${n})`, amt: d.cells[n]?.amt ?? null, before: t, after }; });
       const sales = d.cells[9]?.tax ?? [1, 2, 3, 4, 5, 6, 7, 8].reduce((s, n) => s + (d.cells[n]?.tax ?? 0), 0); const c18 = d.cells[18]?.tax ?? null;
-      L.push({ k, kind: d.kind, file: d.file, reg: d.reg ?? '', delta, cells, parts: parts.map(x => ({ sec: x.sec, rows: x.rows })), payBefore: c18 == null ? null : sales - c18, payAfter: c18 == null ? null : sales - c18 - delta }); }
+      const tb = d.cells[9]?.amt ?? ([1, 2, 3, 4, 5, 6, 7, 8].some(n => d.cells[n]?.amt != null) ? [1, 2, 3, 4, 5, 6, 7, 8].reduce((t, n) => t + (d.cells[n]?.amt ?? 0), 0) : null);
+      L.push({ k, kind: d.kind, file: d.file, reg: d.reg ?? '', delta, cells, parts: parts.map(x => ({ sec: x.sec, rows: x.rows })), payBefore: c18 == null ? null : sales - c18, payAfter: c18 == null ? null : sales - c18 - delta, tb, pen: d.pen ?? null, due: d.due ?? null }); }
     out.set(k, L); }
   return out;
 }

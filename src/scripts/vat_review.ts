@@ -4,6 +4,7 @@
  *  판정(judge)해 '있어야 할 공제 세액'을 과세기간별로 셈한 뒤 신고서의 공제 매입세액(18)과 견준다. 차이가 경정청구 후보(국세기본법 제45조의2, 법정신고기한 뒤 5년).
  *  입력은 이 브라우저(localStorage `vat-review-v1`)에 남고 JSON 으로 내려받아 이어 할 수 있다. 서버 없음, 새 규칙 없음(판정은 judge 그대로). 판정은 참고이며 기관의 판단이 아니다. */
 import { mountQuickStart } from './vat_org';
+import { claimFormHtml } from './vat_claimform';
 import { mountDrop, readTableFile } from './vat_files';
 import { mountPublic } from './vat_review_pub';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
@@ -281,6 +282,7 @@ function init(D: Data) {
       if (pdf) files.push({ name: '11_경정청구_요약.pdf', data: await bin(pdf) }); else toast('PDF 를 만들지 못해 엑셀·CSV 만 넣었습니다');
       try { const { buildDocx } = await import('./company_docx'); const ks = allDiags.filter(d => d.days >= 0).map(d => d.k).sort(); const nm = (k: string) => pName(k); const win = ks.length ? `${nm(ks[0])} ~ ${nm(ks[ks.length - 1])}` : '';
         files.push({ name: '14_경정청구_검토보고(한글에서_열림).docx', data: await bin(await buildDocx(reportBlocks(allDiags, org?.org ?? '', win), '부가가치세 경정청구 검토')) }); } catch { /* Word 를 못 만들어도 나머지는 받음 */ }
+      { const cf = claimFormHtml(allCorr, org?.org ?? '', org?.reg_no ?? ''); if (cf) files.push({ name: '18_경정청구서(별지_제16호의2서식)_인쇄용.html', data: cf }); }
       downloadBlob(`${base}.zip`, zipStore(files)); };
     $('rv-zip')?.addEventListener('click', () => void bundle('zip')); $('rv-xlsx')?.addEventListener('click', () => void bundle('xlsx')); $('rv-pdf')?.addEventListener('click', () => void bundle('pdf'));
   }
@@ -349,13 +351,19 @@ function init(D: Data) {
     diagAll(); const base = `경정청구_신고서로_다시계산_${org?.org ?? ''}_${today}`.replace(/\s+/g, '_'); const bin = async (b: Blob) => new Uint8Array(await b.arrayBuffer());
     const dg = diagCsv(allDiags, D); const cut = dg.findIndex(r => !r.length);
     const xl = xlsxBlob([{ name: '돌려받을 돈', rows: refundCalcCsv(allDiags) }, { name: '고친 신고서', rows: allCorr.size ? correctedCsv(allCorr) : [['신고서 숫자로 고칠 칸이 없습니다']] }, { name: '경정청구서 밑자료', rows: allCorr.size ? claimRows(allCorr) : [['신고서 숫자로 고칠 칸이 없습니다']] }, { name: '홈택스 입력값', rows: cut >= 0 ? dg.slice(cut + 1) : [['진단 없음']] }, { name: '지난 신고 진단', rows: cut >= 0 ? dg.slice(0, cut) : dg }, ...candSheet]);
-    const guide = `경정청구 자료 — 지난 신고서로 다시 계산 (${today}, 지자체 부가세 절감 점검기 — 참고용, 신고 책임은 신고인. 판정은 참고이며 기관의 판단이 아닙니다)\n\n- 13_돌려받을_돈 — 무엇이 잘못됐나·왜·어떻게·얼마(확정 / 확인하면 최대)\n- 15_고친_신고서 — 과세기간마다 신고서 칸과 명세서 칸의 당초 → 고친 값, 경정청구서의 돌려받을 세액. 홈택스 신고/납부 → 세금신고 → 부가가치세 → 경정청구 화면에 이 값을 넣습니다\n- 12_지난신고_진단 — 항목별 근거와 같은 잘못의 실제 사례\n- 14_경정청구_검토보고 — 결재용(Word, 한글에서 열림)\n- 16_경정청구서_밑자료 — 과세기간마다 세목·법정신고기한·경정청구 기한·당초/경정 후 납부(환급)세액·돌려받을 세액·사유·붙임(경정청구서에 옮겨 적는 값)\n- 17_확인할_업체_목록 — 매입 목록 없이 나라장터 계약으로 찾은 후보의 업체(있을 때만). 홈택스에서 이 업체의 세금계산서를 찾아 확인되면 추가분 매입처별 세금계산서합계표에 넣습니다. 사업자등록 전 매입·고유번호로 받은 세금계산서는 공제되지 않을 수 있습니다(부가가치세법 제39조 제1항 제8호·시행령 제70조)\n- 10_경정청구_자료.xlsx — 위 표를 한 파일로\n\n'확인하면 최대' 항목은 그 과세기간 홈택스 매입 목록 등 자료로 확인한 만큼만 청구합니다. 경정청구로 돌려받는 세금에는 국세환급가산금이 붙고(국세기본법 제52조), 돌려받은 돈은 바로 세입으로 처리합니다.\n`;
+    const guide = `경정청구 자료 — 지난 신고서로 다시 계산 (${today}, 지자체 부가세 절감 점검기 — 참고용, 신고 책임은 신고인. 판정은 참고이며 기관의 판단이 아닙니다)\n\n- 13_돌려받을_돈 — 무엇이 잘못됐나·왜·어떻게·얼마(확정 / 확인하면 최대)\n- 18_경정청구서(별지_제16호의2서식)_인쇄용.html — 국세기본법 시행규칙 서식에 숫자를 채운 경정청구서(브라우저로 열어 인쇄·PDF 저장, 기관장 성명·주소·계좌·서명은 기관이 적음)\n- 15_고친_신고서 — 과세기간마다 신고서 칸과 명세서 칸의 당초 → 고친 값, 경정청구서의 돌려받을 세액. 홈택스 신고/납부 → 세금신고 → 부가가치세 → 경정청구 화면에 이 값을 넣습니다\n- 12_지난신고_진단 — 항목별 근거와 같은 잘못의 실제 사례\n- 14_경정청구_검토보고 — 결재용(Word, 한글에서 열림)\n- 16_경정청구서_밑자료 — 과세기간마다 세목·법정신고기한·경정청구 기한·당초/경정 후 납부(환급)세액·돌려받을 세액·사유·붙임(경정청구서에 옮겨 적는 값)\n- 17_확인할_업체_목록 — 매입 목록 없이 나라장터 계약으로 찾은 후보의 업체(있을 때만). 홈택스에서 이 업체의 세금계산서를 찾아 확인되면 추가분 매입처별 세금계산서합계표에 넣습니다. 사업자등록 전 매입·고유번호로 받은 세금계산서는 공제되지 않을 수 있습니다(부가가치세법 제39조 제1항 제8호·시행령 제70조)\n- 10_경정청구_자료.xlsx — 위 표를 한 파일로\n\n'확인하면 최대' 항목은 그 과세기간 홈택스 매입 목록 등 자료로 확인한 만큼만 청구합니다. 경정청구로 돌려받는 세금에는 국세환급가산금이 붙고(국세기본법 제52조), 돌려받은 돈은 바로 세입으로 처리합니다.\n`;
     if (want === 'xlsx') { downloadBlob(`${base}.xlsx`, xl); return; }
     const pdf = await filedPdf(); if (want === 'pdf') { if (pdf) downloadBlob(`${base}.pdf`, pdf); else toast('PDF 를 만들지 못했습니다 — 엑셀로 받으세요'); return; }
     const files: { name: string; data: string | Uint8Array }[] = [{ name: '00_안내.txt', data: guide }, { name: '12_지난신고_진단.csv', data: toCsv(dg) }, { name: '13_돌려받을_돈_무엇_왜_어떻게_얼마.csv', data: toCsv(refundCalcCsv(allDiags)) }, ...(allCorr.size ? [{ name: '15_고친_신고서_과세기간별(경정청구_입력값).csv', data: toCsv(correctedCsv(allCorr)) }, { name: '16_경정청구서_밑자료.csv', data: toCsv(claimRows(allCorr)) }] : []), { name: '10_경정청구_자료.xlsx', data: await bin(xl) }, ...(pdf ? [{ name: '11_경정청구_요약.pdf', data: await bin(pdf) }] : []), ...(cr.length > 1 ? [{ name: '17_확인할_업체_목록(추가분_합계표_밑자료).csv', data: toCsv(cr) }] : [])];
     try { const { buildDocx } = await import('./company_docx'); const ks = allDiags.filter(d => d.days >= 0).map(d => d.k).sort(); const win = ks.length ? `${pName(ks[0])} ~ ${pName(ks[ks.length - 1])}` : '';
       files.push({ name: '14_경정청구_검토보고(한글에서_열림).docx', data: await bin(await buildDocx(reportBlocks(allDiags, org?.org ?? '', win), '부가가치세 경정청구 검토')) }); } catch { /* Word 를 못 만들어도 나머지는 받음 */ }
+    { const cf = claimFormHtml(allCorr, org?.org ?? '', org?.reg_no ?? ''); if (cf) files.push({ name: '18_경정청구서(별지_제16호의2서식)_인쇄용.html', data: cf }); }
     downloadBlob(`${base}.zip`, zipStore(files)); toast('경정청구 자료 묶음을 내려받았습니다'); })());
+  /* 경정청구서(국세청 서식) — 국세기본법 시행규칙 별지 제16호의2서식에 숫자를 채운 인쇄용 화면을 새 창으로(막히면 파일로) */
+  document.addEventListener('click', e => { if (!(e.target as HTMLElement).closest('#rf-dl-form')) return;
+    const html = claimFormHtml(allCorr, org?.org ?? '', org?.reg_no ?? ''); if (!html) { toast('신고서 숫자로 고칠 값이 있을 때 경정청구서를 채웁니다'); return; }
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' })); const w = window.open(url, '_blank');
+    if (!w) downloadBlob(`경정청구서_별지제16호의2_${org?.org ?? ''}_${today}.html`.replace(/\s+/g, '_'), new Blob([html], { type: 'text/html;charset=utf-8' })); setTimeout(() => URL.revokeObjectURL(url), 60_000); });
   /* 올린 신고서 — 과세기간 × 구분 표(대상 기간 = 경정청구가 되는 과세기간) */
   function cover() { const el = $('rf-cover'); if (!el) return; const docs = (st.fdocs ?? []) as unknown as FiledDoc[]; if (!docs.length) { el.innerHTML = ''; return; }
     const win: string[] = []; for (let y = new Date().getFullYear() - 6; y <= new Date().getFullYear(); y++) for (const h of [1, 2]) { const k = `${y}-${h}`; const P = pInfo(k); if (P.due <= today && P.days >= 0) win.push(k); }

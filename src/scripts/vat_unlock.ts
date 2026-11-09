@@ -9,7 +9,7 @@ import { esc, fmt, num, penaltyCalc, toCsv, type Data } from './vat_rules';
 export type Cell = { amt: number | null; tax: number | null; n?: number | null };
 export type Kind = '예정' | '확정' | '기한후' | '조기환급' | '모름';
 export type BaseRow = { label: string; code: string; amt: number };
-export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: BaseRow[]; exBase?: BaseRow[]; warn: string[] };
+export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: BaseRow[]; exBase?: BaseRow[]; pen?: number; due?: number; warn: string[] };   // pen = 가산세액 계, due = 차감·가감하여 납부할 세액(환급받을 세액) — 칸 이름으로 읽음(서식 판마다 번호가 달라서), 경정청구서 서식용
 export type FiledSum = { k: string; deduct: number | null; nondeduct: number | null; er: number | null; salesSup: number | null; salesTax: number | null; kinds: Kind[]; files: string[]; regs: string[]; exemptNd: number | null; warn: string[]; total: number | null; hasNd: boolean; hasCommon: boolean; ndReasons: Record<number, number>; c10: number | null; c12: number | null; c13: number | null; c15: number | null; ndSum: number | null };
 
 /* ── 파일 → 글자 ── */
@@ -99,7 +99,10 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
   const bAt = main0.search(/과\s*세\s*표\s*준\s*명\s*세/), eAt = main0.search(/면\s*세\s*사\s*업\s*수\s*입\s*금\s*액/);
   const base = bAt >= 0 ? baseRows(main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500)) : undefined;
   const exBase = eAt >= 0 ? baseRows(main0.slice(eAt, eAt + 1500).split(/계\s*산\s*서\s*발\s*급|과\s*세\s*표\s*준\s*명\s*세/)[0]) : undefined;
-  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(base?.length ? { base } : {}), ...(exBase?.length ? { exBase } : {}), warn };
+  /* 경정청구서 서식(국세기본법 시행규칙 별지 제16호의2) ⑬ 가산세액·⑮ 납부할 세액 — 번호가 판마다 달라(현행 (29)(30), 2025-07 전 판은 다름) 칸 이름이 든 줄의 마지막 숫자를 읽는다 */
+  const byLabel = (rx: RegExp) => { for (const line of main.split('\n')) { if (!rx.test(line)) continue; const mm = [...line.matchAll(/\((\d{1,2})\)/g)]; const last = mm[mm.length - 1]; const v = nums(last ? line.slice(last.index! + last[0].length) : line.replace(rx, ' ')); if (v.length) return v[v.length - 1]; } return undefined; };
+  const pen = byLabel(/가\s*산\s*세\s*액\s*계/), due = byLabel(/차\s*(?:감|가\s*감)[^\n]{0,24}납\s*부\s*할\s*세\s*액/);
+  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(base?.length ? { base } : {}), ...(exBase?.length ? { exBase } : {}), ...(pen != null ? { pen } : {}), ...(due != null ? { due } : {}), warn };
 }
 /** 같은 과세기간·구분·등록번호가 두 장이면 뒤 파일만(수정신고) — 진단·합계 모두 이것으로 */
 export function latestDocs<T extends { year: number; half: number; kind: string; reg?: string }>(docs: T[]): T[] { const last = new Map<string, T>(); for (const d of docs) last.set(`${d.year}-${d.half}|${d.kind}|${d.reg ?? ''}`, d); return [...last.values()]; }

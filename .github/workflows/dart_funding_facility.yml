@@ -1,0 +1,49 @@
+name: DART 전국 시설자금 조달 공시 목록(공장 위치 미공시 증설 조사용)
+
+# scripts/dart_funding_facility.py — 최근 N개월 유상증자·전환사채·BW(시설자금 > 0)·증권신고서(지분, 시설자금 문장) 공시를 data/dart/funding_facility.csv 로.
+# 공장 증설·신설 위치 조사용(운영자 지시 2026-11-09). 사이트는 이 파일을 읽지 않는다. 키 DART_KEY.
+on:
+  workflow_dispatch:
+    inputs:
+      months:
+        description: "최근 몇 개월"
+        default: "18"
+      ind:
+        description: "업종 코드 접두어 쉼표"
+        default: "22,24,25,27,28,29,30"
+  push:
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["scripts/dart_funding_facility.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-funding-facility
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+          MONTHS: ${{ inputs.months }}
+          IND: ${{ inputs.ind }}
+        run: python3 scripts/dart_funding_facility.py --months "${MONTHS:-18}" --ind "${IND:-22,24,25,27,28,29,30}"
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dart/funding_facility.csv data/dart_sdv/company_cache.json
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 전국 시설자금 조달 공시 목록 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

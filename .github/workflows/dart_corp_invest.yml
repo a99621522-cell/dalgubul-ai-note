@@ -16,7 +16,7 @@ on:
         default: ""
   push:   # 새 워크플로는 기본 브랜치에 있어야 수동 실행이 되므로, 이 브랜치에서는 data/dart/corp_invest_query.txt(1줄 tag, 2줄 이름 쉼표, 3줄 개월)를 고쳐 푸시
     branches: ["claude/factorion-file-repair-tyqnlb"]
-    paths: ["data/dart/corp_invest_query.txt"]
+    paths: ["data/dart/corp_invest_query.txt", "scripts/dart_corp_invest.py"]
 
 permissions:
   contents: write

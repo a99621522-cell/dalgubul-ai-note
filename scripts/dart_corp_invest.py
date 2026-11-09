@@ -63,8 +63,15 @@ def periodic(t: str) -> int:
 
 
 def corp_list() -> list[tuple[str, str, str]]:
-    r = requests.get(f"{F.API}/corpCode.xml", params={"crtfc_key": F.KEY}, headers=F.UA, timeout=120)
-    xml = zipfile.ZipFile(io.BytesIO(r.content)).read("CORPCODE.xml").decode("utf-8", "ignore")
+    xml = ""
+    for i in range(4):   # 러너에서 DART 연결이 가끔 시간 초과 — 몇 번 다시
+        try:
+            r = requests.get(f"{F.API}/corpCode.xml", params={"crtfc_key": F.KEY}, headers=F.UA, timeout=90)
+            xml = zipfile.ZipFile(io.BytesIO(r.content)).read("CORPCODE.xml").decode("utf-8", "ignore")
+            break
+        except Exception as e:  # noqa: BLE001
+            print(f"corpCode 실패 {i + 1}회: {type(e).__name__}")
+            time.sleep(20 * (i + 1))
     return [(m.group(1).strip(), m.group(2).strip(), m.group(3).strip())
             for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)]
 
@@ -95,6 +102,9 @@ def main(argv: list[str]) -> int:
         print("DART_KEY 또는 --names 없음")
         return 0
     allc = corp_list()
+    if not allc:
+        print("고유번호 목록을 받지 못함 — 멈춤")
+        return 0
     print(f"고유번호 목록 {len(allc)}곳, 대상 이름 {len(names)}개, 최근 {months}달")
     bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
     end = date.today().strftime("%Y%m%d")

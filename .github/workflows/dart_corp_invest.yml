@@ -1,0 +1,52 @@
+name: DART 회사 목록 투자 공시·설비 계획(분야 조사용)
+
+# scripts/dart_corp_invest.py — 회사 이름 목록의 신규시설투자·유형자산·사채·증자 공시와 정기보고서 설비 계획 문구 → data/dart/corp_invest.csv
+# 분야별 기업 투자 조사용(운영자 지시 2026-11-09 전력반도체). 사이트는 이 파일을 읽지 않는다. 키 DART_KEY.
+on:
+  workflow_dispatch:
+    inputs:
+      names:
+        description: "회사 이름 쉼표"
+        required: true
+      months:
+        description: "최근 몇 개월"
+        default: "24"
+      tag:
+        description: "분야 이름(CSV tag 칸)"
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-corp-invest
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+          NAMES: ${{ inputs.names }}
+          MONTHS: ${{ inputs.months }}
+          TAG: ${{ inputs.tag }}
+        run: python3 scripts/dart_corp_invest.py --names "$NAMES" --months "${MONTHS:-24}" --tag "$TAG"
+      - name: 커밋
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dart/corp_invest.csv
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 회사 투자 공시 ${TAG} $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

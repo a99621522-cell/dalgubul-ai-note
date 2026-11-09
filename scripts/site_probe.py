@@ -66,7 +66,20 @@ def main():
             body3 = re.sub(r"\s+", " ", m.group(3))[:300]
             print(f"== function {m.group(1)}({m.group(2)}): {body3}")
     if "--text" in sys.argv:   # 기사·공지 한 쪽 읽기: 메타 → 본문(가장 글이 많은 덩어리)
-        blocked = any(re.match(r"(?i)disallow:\s*(\S+)", l.strip()) and path.startswith(re.match(r"(?i)disallow:\s*(\S+)", l.strip()).group(1).rstrip("*")) for l in r.text.splitlines() if r.ok and re.match(r"(?i)disallow:\s*\S", l.strip()))
+        # User-agent: * 묶음의 규칙만, Allow 가 더 길게 맞으면 허용(2026-11-09 kia.com: ia_archiver 전용 'Disallow: /' 를 모두에게 적용하던 것 고침)
+        rules, ua = [], None
+        for l in (r.text.splitlines() if r.ok else []):
+            l = l.split("#")[0].strip()
+            m = re.match(r"(?i)(user-agent|allow|disallow):\s*(\S*)", l)
+            if not m:
+                continue
+            k, v = m.group(1).lower(), m.group(2)
+            if k == "user-agent":
+                ua = v
+            elif ua == "*" and v:
+                rules.append((k, v.rstrip("*").split("*")[0]))
+        hits = sorted((len(v), k) for k, v in rules if path.startswith(v))
+        blocked = bool(hits) and hits[-1][1] == "disallow"
         for k in ("og:title", "og:description", "article:published_time", "article:modified_time", "og:site_name", "author"):
             m = soup.find("meta", attrs={"property": k}) or soup.find("meta", attrs={"name": k})
             if m and m.get("content"):

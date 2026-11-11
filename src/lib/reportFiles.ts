@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'hd-hyundai-robotics-ai-factory', summary: '대구 달성군 유가읍(대구테크노폴리스)에 본점·공장을 둔 비상장 산업용 로봇 회사 HD현대로보틱스(2020년 HD현대에서 물적분할)의 2022~2025년 연결 실적(2025년 매출 2,630억 원·영업손실 218억 원)과 부문·지역별 매출, 상환전환우선주 1,800억 원 발행을 DART 감사보고서로 정리하고, 대구시 협약(생산 능력 연 8,000대 → 20,000대, 자동화율 50% → 80%)·휴머노이드 로봇 특화단지·지능형 양팔로봇·팔란티어 협력(로봇 프로그래밍 업무 기간 21.5일 → 7.9일, 회사 발표)을 보도로 적은 자료. 붙임은 로봇과 AIP 연결의 쉬운 설명. 기업가치·전망은 싣지 않음.', topics: ['비상장기업', '로봇', 'AI'],
+    title: 'HD현대로보틱스, 대구 공장의 생산 능력 2.5배 계획과 양팔로봇·팔란티어 협력', name: 'HD현대로보틱스, 대구 공장의 생산 능력 2.5배 계획과 양팔로봇·팔란티어 협력',
+    hwpx: '/hwpx/hd-hyundai-robotics-ai-factory.hwpx', hwpxSize: '167KB', date: '2026-11-11' },
   { slug: 'ngf-guidebook-2026', summary: '국민성장펀드 가이드북 2026(산업은행 첨단전략산업기금) 원문 PDF. 국민성장펀드 개요, 지원구조(대출·보증, 직접투자, 간접투자, 인프라금융의 운용규모·지원방안·지원신청서 작성 포인트), 심사 절차, 자주 묻는 질문(60문 60답)을 담은 91쪽 자료. 원문 그대로 옮겨 실음.', topics: ['정책금융', '투자'], pages: 91,
     title: '국민성장펀드 가이드북 2026(원문)', name: '국민성장펀드 가이드북 2026(원문)',
     pdf: '/files/ngf-guidebook-2026.pdf', pdfSize: '2.0MB', date: '2026-11-05' },

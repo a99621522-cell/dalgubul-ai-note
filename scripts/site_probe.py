@@ -66,7 +66,20 @@ def main():
             body3 = re.sub(r"\s+", " ", m.group(3))[:300]
             print(f"== function {m.group(1)}({m.group(2)}): {body3}")
     if "--text" in sys.argv:   # 기사·공지 한 쪽 읽기: 메타 → 본문(가장 글이 많은 덩어리)
-        blocked = any(re.match(r"(?i)disallow:\s*(\S+)", l.strip()) and path.startswith(re.match(r"(?i)disallow:\s*(\S+)", l.strip()).group(1).rstrip("*")) for l in r.text.splitlines() if r.ok and re.match(r"(?i)disallow:\s*\S", l.strip()))
+        # User-agent: * 묶음의 규칙만, Allow 가 더 길게 맞으면 허용(2026-11-09 kia.com: ia_archiver 전용 'Disallow: /' 를 모두에게 적용하던 것 고침)
+        rules, ua = [], None
+        for l in (r.text.splitlines() if r.ok else []):
+            l = l.split("#")[0].strip()
+            m = re.match(r"(?i)(user-agent|allow|disallow):\s*(\S*)", l)
+            if not m:
+                continue
+            k, v = m.group(1).lower(), m.group(2)
+            if k == "user-agent":
+                ua = v
+            elif ua == "*" and v:
+                rules.append((k, v.rstrip("*").split("*")[0]))
+        hits = sorted((len(v), k) for k, v in rules if path.startswith(v))
+        blocked = bool(hits) and hits[-1][1] == "disallow"
         for k in ("og:title", "og:description", "article:published_time", "article:modified_time", "og:site_name", "author"):
             m = soup.find("meta", attrs={"property": k}) or soup.find("meta", attrs={"name": k})
             if m and m.get("content"):
@@ -79,8 +92,14 @@ def main():
         best = max(cands, key=lambda e: len(re.sub(r"\s", "", e.get_text(" ", strip=True))) if len(e.find_all(["div", "section", "article"])) < 40 else 0, default=soup)
         # 본문 칸 이름이 알려진 누리집은 그 칸 먼저(2026-11-04 정책브리핑: 가장 긴 덩어리가 저작권 안내였다)
         known = soup.select_one("div.view_cont, div.article_body, #articleBody, div.view-con, div.board_view_cont")
+        # 신문 기사: 바로 아래 <p> 글자가 가장 많은 칸(2026-11-09 매일신문: 본문 칸 안 문단이 많아 '글 덩어리' 규칙이 옆 '많이 본 뉴스'를 골랐다)
+        ptxt = lambda e: sum(len(re.sub(r"\s", "", p.get_text(" ", strip=True))) for p in e.find_all("p", recursive=False))
+        pbest = max(cands, key=ptxt, default=None)
         if known and len(re.sub(r"\s", "", known.get_text(" ", strip=True))) >= 200:
             best = known
+        elif pbest is not None and ptxt(pbest) >= 300:
+            best = pbest
+            print(f"== 본문 칸(문단 기준): {pbest.name}.{' '.join(pbest.get('class') or [])}#{pbest.get('id') or ''}")
         else:   # 어느 칸이 본문인지 다음에 고를 수 있게 글이 많은 칸 이름을 찍는다
             top = sorted(((len(re.sub(r"\s", "", e.get_text(" ", strip=True))), e.name, " ".join(e.get("class") or []), e.get("id") or "") for e in cands), reverse=True)[:8]
             print("== 글이 많은 칸: " + " | ".join(f"{n}:{t}.{c}#{i}" for n, t, c, i in top))

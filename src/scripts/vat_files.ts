@@ -144,11 +144,13 @@ function oleStream(b: Uint8Array, names: string[]): Uint8Array | null {
 }
 
 /** 파일 놓기 상자 — <div data-drop> 안에 안내와 <input type=file>; 파일을 읽으면 onTable(표, 파일 정보) */
-export function mountDrop(el: HTMLElement, onTable: (t: FileTable) => void, label = '엑셀 파일을 여기에 놓거나 고르기') {
-  el.classList.add('vat-drop'); el.innerHTML = `<label class="vat-drop-in"><strong>${label}</strong><span class="note">.xlsx · .xls(홈택스·e호조·재정 포털 내려받기) · .csv — 파일은 이 브라우저 안에서만 읽고 밖으로 나가지 않습니다</span><input type="file" accept=".xlsx,.xls,.csv,.txt,.tsv,.htm,.html,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" hidden /></label><p class="note vat-drop-msg" aria-live="polite"></p>`;
+/** 파일 놓기. onMany 를 주면 여러 파일을 한꺼번에(홈택스 목록조회는 법인 3개월씩이라 5년이면 20개 — 운영자 2026-11-05 '분기별로 하면 여러 번 해야 하잖아') */
+export function mountDrop(el: HTMLElement, onTable: (t: FileTable) => void, label = '엑셀 파일을 여기에 놓거나 고르기', onMany?: (ts: FileTable[], fails: string[]) => void) {
+  el.classList.add('vat-drop'); el.innerHTML = `<label class="vat-drop-in"><strong>${label}</strong><span class="note">.xlsx · .xls(홈택스·e호조·재정 포털 내려받기) · .csv — 파일은 이 브라우저 안에서만 읽고 밖으로 나가지 않습니다</span><input type="file" accept=".xlsx,.xls,.csv,.txt,.tsv,.htm,.html,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"${onMany ? ' multiple' : ''} hidden /></label><p class="note vat-drop-msg" aria-live="polite"></p>`;
   const input = el.querySelector<HTMLInputElement>('input[type=file]')!; const msg = el.querySelector<HTMLElement>('.vat-drop-msg')!;
   const handle = async (f: File | undefined) => { if (!f) return; msg.textContent = `${f.name} 읽는 중…`; try { const t = await readTableFile(f); msg.textContent = `${f.name}: ${t.rows.length}행 읽음(${t.kind}${t.sheet ? ' · 시트 ' + t.sheet : ''})`; onTable(t); } catch (e) { msg.textContent = `${f.name}: 읽지 못했습니다 — ${(e as Error).message}. 엑셀에서 '다른 이름으로 저장 → CSV UTF-8' 로 바꿔 다시 놓거나 시트를 복사해 붙여넣으세요.`; } };
-  input.addEventListener('change', () => handle(input.files?.[0]));
+  const handleMany = async (fs: File[]) => { if (!onMany || fs.length < 2) return handle(fs[0]); const ts: FileTable[] = [], fails: string[] = []; for (const [i, f] of fs.entries()) { msg.textContent = `${i + 1}/${fs.length} ${f.name} 읽는 중…`; try { ts.push(await readTableFile(f)); } catch (e) { fails.push(`${f.name}(${(e as Error).message})`); } } msg.textContent = `파일 ${fs.length}개 — 읽음 ${ts.length}개 · ${ts.reduce((n, t) => n + t.rows.length, 0)}행${fails.length ? ` · 못 읽음 ${fails.length}개` : ''}`; onMany(ts, fails); };
+  input.addEventListener('change', () => handleMany([...(input.files ?? [])]));
   el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('over'); }); el.addEventListener('dragleave', () => el.classList.remove('over'));
-  el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('over'); handle(e.dataTransfer?.files?.[0]); });
+  el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('over'); void handleMany([...(e.dataTransfer?.files ?? [])]); });
 }

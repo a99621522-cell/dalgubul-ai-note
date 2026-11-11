@@ -1,3 +1,4 @@
+import { lockGov } from './vatLock';
 import fs from 'node:fs';
 import yaml from 'js-yaml';
 /** 지자체 세입예산사업명세서(data/vat/revenue/<key>_<year>.csv, scripts/parse_revenue_docs.py) → /vat-revenue.json (운영자 지시 2026-10-27 '세입 자료부터 받아서 해').
@@ -13,7 +14,7 @@ function csvRows(p: string): Record<string, string>[] {
 }
 function parseLine(l: string): string[] { const out: string[] = []; let cur = '', q = false; for (let i = 0; i < l.length; i++) { const ch = l[i]; if (q) { if (ch === '"' && l[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; } else if (ch === '"') q = true; else if (ch === ',') { out.push(cur); cur = ''; } else cur += ch; } out.push(cur); return out; }
 export function vatRevenue(): RevGov[] {
-  if (cache) return cache;
+  if (cache) return lockGov(cache);
   const idxP = 'data/vat/revenue/index.json'; if (!fs.existsSync(idxP)) return (cache = []);
   const idx = JSON.parse(fs.readFileSync(idxP, 'utf-8')) as Record<string, { gov: string; year: string; source: string; fetched: string; note?: string; sum_k: number; grant_k: number; check?: { mok: string; diff_k: number }[] }>;
   const cfg = fs.existsSync('config/revenue_docs.yml') ? (yaml.load(fs.readFileSync('config/revenue_docs.yml', 'utf-8')) as { govs: { key: string; code: string; name: string; acct?: string }[] }) : { govs: [] };
@@ -27,5 +28,5 @@ export function vatRevenue(): RevGov[] {
     out.push({ key, code: g?.code ?? '', name: m.gov, year, source: m.source, fetched: m.fetched, acct: g?.acct ?? '일반회계', ...(m.note ? { note: m.note } : {}), sum_k: m.sum_k, grant_k: m.grant_k, check: (m.check ?? []).map(c => ({ mok: c.mok, diff_k: c.diff_k })), rows, expense });
   }
   const order = (cfg.govs ?? []).map(g => g.key); out.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
-  return (cache = out);
+  cache = out; return lockGov(out);
 }

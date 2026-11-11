@@ -12,6 +12,7 @@ export type Opt = { key: string; name: string };
 export type Glossary = { key: string; term: string; plain: string; text: string; basis?: Basis[] };
 export type FacilityRule = { key: string; name: string; status: 'taxable' | 'exempt' | 'check'; group: string; note: string; verify?: boolean; interp?: boolean; cond?: string; rulings?: string[]; basis: Basis[]; contractor_status?: 'taxable' | 'exempt' | 'check' | 'none'; contractor_note?: string; rulings?: string[] };
 export type Data = {
+  lock?: string;   // 지자체 한 곳 전용 사이트(VAT_GOV 빌드) — 그 지자체로 바로 시작, 다른 기관 고르기 없음
   version: string; verified?: { date: string; act: string; decree: string; rule: string; basic?: string }; law_url: string; form_version?: string; laws: Record<string, string>;
   taxable_principle: { summary: string; basis: Basis[]; notes: string[] };
   facilities: FacilityRule[];
@@ -32,12 +33,13 @@ export type Data = {
     /** 공개 지출 자료 세부사업 유형(2026-11-05) — 사업명 낱말 짐작, 위에서부터 처음 맞는 하나 */
     biz_types?: { key: string; name: string; re: string; hint: string; low?: boolean }[];
     works?: { note: string; options: { key: CwKey; name: string; short: string; why: string; basis: Basis[]; verify?: boolean }[] };
-    penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
+    penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_daily_old?: { until: string; rate: number }; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
     deemed_rent?: { rates: Record<string, number>; src: string } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];
   revenue_items?: RevenueItem[];
   presets?: Preset[];
+  govs?: { key: string; name: string; level: string; status: string; corp: { name: string; bizno?: string; src?: string; note?: string }[]; traits: string[]; focus?: { key: string; title: string; match: string; why: string; todo?: string; area?: boolean }[]; exclude_note?: string; preset?: number; revenue?: number; contracts?: { from: string; to: string; n: number } }[];   // 지자체별 특성(data/vat/govs.yml)
   cases?: AuditCase[];   // 감사·권익위·경정청구 공표 사례(data/vat/cases.yml)
   orgs?: OrgNo[];   // 기관 사업자등록번호(data/vat/orgs — 나라장터 수요기관정보 또는 2차 자료, verify 면 홈택스 상태조회로 확인)
   rulings?: Ruling[];
@@ -117,8 +119,11 @@ export type Fee = 'taxable' | 'paid_check' | 'free' | 'unknown';
 /** 수탁기관 자기 사업 시설에서 우리 기관이 수탁기관에게 받는 것 — 군 부담 지출(수선·장비)의 매입세액 공제 여부를 가른다. 초록은 사용료를 과세로 신고하고 있을 때만(세무사 평가 2차) */
 export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고, 그 사용료를 과세(부동산임대)로 신고하고 있다', paid_check: '사용료·임대료를 받지만 과세로 신고하는지 모름(면세로 보고 있음)', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
 /** track=false: '지출 기록 대상 아님'(마찰 3) — 면세 시설·수탁기관 자기 사업처럼 우리 공제와 무관한 시설. 판정이 아니라 기록 범위 표시 */
-export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[]; track?: boolean };
-export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; contractor?: string; term?: string; note?: string; alias?: string[] }[] };
+export type OrgFacility = { id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[]; track?: boolean; answers?: Record<string, { label: string; at: string; auto?: boolean; prev?: { type: string; run: Run; share?: number } }>; salesTaxed?: boolean; share?: number };
+/** 확인 질문(예시 설정 시설의 ask — docs/design/vat-minimize.md 3절): 고르면 시설 유형·운영 방식이 바뀌고 메모가 덧붙는다 */
+export type AskOpt = { label: string; patch?: { type?: string; run?: Run; note?: string; salesTaxed?: boolean; share?: number | null } };
+export type AskDef = { id: string; q: string; why?: string; opts: AskOpt[]; default?: number; group?: string; gq?: string; gyes?: number };
+export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; run?: string; share?: number; contractor?: string; term?: string; note?: string; alias?: string[]; ask?: AskDef[] }[] };
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };
 /** filing: 신고를 누가 하나 — self 기관이 직접(기본) / agent 세무대리인(회계사·세무사)에게 의뢰(agent_org 는 대리인 기관 이름만, 사람 이름·전화 없음). 어느 쪽이든 근거 자료는 기관이 만든다(운영자 2026-11-03) */
@@ -131,14 +136,19 @@ export function matchMap(org: Org | null, biz: string, dept: string): MapRule | 
   return (b && rules.find(r => normPat(r.pat) === b)) || (d && rules.find(r => normPat(r.pat) === d)) || (b && rules.find(r => normPat(r.pat).length >= 4 && b.includes(normPat(r.pat)))) || undefined;
 }
 /** 시설 이름 일치(2차 UX 마찰 6): 매핑표가 없을 때 사업명·부서·내용 글자에 시설 이름(별칭 포함, 공백·괄호 제거 2글자 이상)이 들어가면 가장 긴 일치 시설을 제안 — 기관 설정의 이름만 쓰고 규칙 판정과 무관 */
+/** 이름 일치에 쓰지 않는 시설 이름 — 세입예산서에서 불러온 수입 항목('도로'·'하천'·'공유재산' 사용료·점용료, '…수수료'·'…수입')과 임차인 이름('사회적협동조합 ○○').
+ *  '도로'가 도로 공사 계약 수백 건에 붙어 과세 시설 계약으로 세던 것(2026-11-05 동구 나라장터 계약) */
+const GENERIC_FAC = /^(도로|하천|공유수면|공유재산|국유재산|기타|구유재산|군유재산|시유재산|사용료수입|주차요금수입|시설녹지)$/;
+export const noNameMatch = (name: string) => { const n = String(name ?? '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim(); return !n || GENERIC_FAC.test(n.replace(/\s/g, '')) || /(점용료|수수료|수입|대부료|임대료|사용료|요금|판매|수탁료)(\s*등)?$/.test(n) || /점용료|사용료|임대료|대부료|수수료/.test(n) || /협동조합|조합\s|^\(?(주|사|재)\)/.test(n); };
 export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacility | undefined {
   if (!org) return undefined; const norm = (x: string) => String(x ?? '').replace(/[\s()（）·,.\-_/]/g, '').toLowerCase(); const hay = norm(texts.filter(Boolean).join(' ')); if (hay.length < 2) return undefined;
   /* 낱말 사전: 시설 이름·별칭을 괄호·공백·가운뎃점으로 나눈 낱말(2글자 이상)이 몇 시설에 나오는지 — 3곳 이상에 나오는 낱말('달성'·'체육' 등)은 가름에 쓰지 않는다 */
   const tokOf = (nm: string) => String(nm ?? '').split(/[\s()（）·,.\-_/]+/).map(t => t.toLowerCase()).filter(t => t.length >= 2);
-  const STOP = new Set(['운영', '관리', '사업', '시설', '센터', '공단', '본부', '지원', '위탁', '직영', '조리', '이용', '주민', '복지', '체육', '문화', '공원', '회관', '종합', '생활', '지역', '청사', '사무소', '사무실', '행정', '군청', '시청', '구청', '기타', '일반']);   // 가름에 못 쓰는 흔한 낱말
+  const STOP = new Set(['운영', '관리', '사업', '시설', '센터', '공단', '본부', '지원', '위탁', '직영', '조리', '이용', '주민', '복지', '체육', '문화', '공원', '회관', '종합', '생활', '지역', '청사', '사무소', '사무실', '행정', '군청', '시청', '구청', '기타', '일반', '임대', '임차', '대여', '구입', '체육시설', '하천', '하천수', '시설물']);   /* '체육시설' — '하빈지구 체육시설'이 원오교·강창교 체육시설 계약에 붙던 것(2026-11-05) */   // '임대' — '군유재산 임대'가 '임대주택단지간 도시계획도로'·'정수기 임대'에 붙던 것(2026-11-05 나라장터 계약)   // 가름에 못 쓰는 흔한 낱말
   const freq = new Map<string, number>(); for (const f of org.facilities) { const ts = new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf)); for (const t of ts) freq.set(t, (freq.get(t) ?? 0) + 1); }
   let best: OrgFacility | undefined, bl = 0;
   for (const f of org.facilities) {
+    if (noNameMatch(f.name)) continue;
     for (const nm of [f.name, ...(f.alias ?? [])]) { const n = norm(nm.replace(/\(.*$/, '')); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
     /* 낱말 일치는 시설 종류가 맞을 때만(2026-11-04 — 3년치 공개 지출에서 '비슬산 자연휴양림'이 '비슬산 참꽃 문화제'·'비슬산 유스호스텔 관리' 같은 다른 사업 7개에 붙음):
        시설 이름의 마지막 낱말(종류: 자연휴양림·파크골프장·유스호스텔)이 있거나, 앞 낱말(지명) + 종류 글자(마지막 낱말 끝 3글자, 예: 휴양림)가 함께 있어야 한다.
@@ -247,6 +257,10 @@ export function nextFiling(today = new Date()) {
   return { name: '', due: t, days: 0 };
 }
 export function handoverDue(day: number, today = new Date()) { const t = new Date(today.getFullYear(), today.getMonth(), today.getDate()); let due = new Date(t.getFullYear(), t.getMonth(), day); if (due < t) due = new Date(t.getFullYear(), t.getMonth() + 1, day); return { due, days: Math.round((due.getTime() - t.getTime()) / 86400000) }; }
+/** 기관 이름의 끝 낱말(군·구·시) — 화면 문구의 '군'을 기관에 맞게(2026-11-08 수성구 전용 사이트). 모르면 '기관' */
+export const govUnit = (name?: string | null) => { const m = (name ?? '').trim().match(/(군|구|시)(청)?$/); return m ? m[1] : '기관'; };
+/** 받침 있으면 '이', 없으면 '가'(군이·구가·시가·기관이) */
+export const iGa = (w: string) => { const c = w.charCodeAt(w.length - 1) - 0xac00; return c >= 0 && c < 11172 && c % 28 ? '이' : '가'; };
 export const ymd = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 export const monthStr = (d = new Date()) => ymd(d).slice(0, 7);
 export const periodOf = (month: string) => { const m = Number(month.slice(5, 7)); return m <= 3 ? '제1기 예정' : m <= 6 ? '제1기 확정' : m <= 9 ? '제2기 예정' : '제2기 확정'; };
@@ -355,7 +369,9 @@ export type CwKey = 'c_tax' | 'c_shared' | 'c_exempt' | 'c_land' | 'c_road';
 export const CW_KEYS: CwKey[] = ['c_tax', 'c_shared', 'c_exempt', 'c_land', 'c_road'];
 export const isCw = (k: string | undefined): k is CwKey => !!k && (CW_KEYS as string[]).includes(k);
 /** 사업명·품목 글자로 짐작하는 것은 도로·토목 둘뿐 — 나머지 셋은 어느 동을 짓는지 사람이 안다 */
-export const guessCw = (s: string): CwKey | undefined => /도로|진입로|인도\s*(설치|정비|개설)|보도\s*(설치|정비)|교량|확\s*포장/.test(s) ? 'c_road' : /부지\s*조성|형질\s*변경|절토|성토|토목|정지\s*작업|매립/.test(s) ? 'c_land' : undefined;
+/* 건물 본공사(건축·건립·신축·증축·리모델링·기계 설비)는 계약명에 '토목'이 함께 적혀도(예: '○○센터 건립공사(건축, 토목, 조경, 기계)') 부지 토목으로 보지 않는다 — 2026-11-05 달성군 테크노스포츠센터·교육문화복지센터 건립 본공사가 빠지던 것 */
+const BUILD_RX = /건축|건립|신축|증축|개축|리모델링|기계|설비|전기|소방|통신/;
+export const guessCw = (s: string): CwKey | undefined => /도로|진입로|인도\s*(설치|정비|개설)|보도\s*(설치|정비)|교량|확\s*포장/.test(s) && !/건립|신축|증축/.test(s) ? 'c_road' : /부지\s*조성|택지\s*조성|형질\s*변경|절토|성토|정지\s*작업|매립/.test(s) && !BUILD_RX.test(s) ? 'c_land' : undefined;   /* 맨 '토목'은 빼다 — '체육공원 축구장 개보수 토목공사'는 시설 공사이지 토지 조성(시행령 제80조)이 아니다 */
 /** 공사 갈래가 정해졌을 때의 공제 비율 — 0(면세 전용·토목·공공 도로) / 1(과세 전용) / 1 − 면세비율(같이 쓰는 시설) / null(못 셈). base 는 갈래가 없을 때의 비율 */
 export function cwRate(cw: CwKey | undefined, base: number | null, er: number | null, facStatus?: string): number | null {
   if (!cw) return base;
@@ -418,7 +434,8 @@ export function penaltyCalc(D: Data | null, p: { tax: number; due: string; payDa
   const d0 = new Date(p.due), d1 = new Date(p.payDate); const days = Math.max(0, Math.min(Math.round((d1.getTime() - d0.getTime()) / 86400000) - 1, maxY * 365));   // 법정납부기한 다음 날부터 납부일 전날까지(제47조의4 제1항 제1호)
   const months = (d1.getFullYear() - d0.getFullYear()) * 12 + (d1.getMonth() - d0.getMonth()) - (d1.getDate() <= d0.getDate() ? 1 : 0) + 1;   // 경과 개월(이하 기준)
   const relief = (p.kind === 'none' ? R?.late_file_relief : R?.amend_relief) ?? []; const rl = relief.find(r => months <= r.months)?.rate ?? 0;
-  const file = Math.floor(p.tax * rateFile); const fileAfter = file - Math.floor(file * rl); const late = Math.floor(p.tax * days * daily);   // 감면액을 먼저 자르고 뺀다(1 − 0.9 의 부동소수 오차로 1원이 어긋나던 것)
+  const file = Math.floor(p.tax * rateFile); const fileAfter = file - Math.floor(file * rl); const old = R?.late_pay_daily_old; let oldDays = 0; if (old && days > 0) { const first = new Date(d0.getTime() + 86400000), cut = new Date(old.until); if (first <= cut) oldDays = Math.min(days, Math.round((cut.getTime() - first.getTime()) / 86400000) + 1); }   /* 2022-02-14 까지의 날은 10만분의 25(대통령령 제32424호 부칙 제6조) */
+  const late = oldDays ? Math.floor(p.tax * (days - oldDays) * daily + p.tax * oldDays * (old?.rate ?? daily)) : Math.floor(p.tax * days * daily);   // 감면액을 먼저 자르고 뺀다(1 − 0.9 의 부동소수 오차로 1원이 어긋나던 것)
   return { days, months, rateFile, file, relief: rl, fileAfter, late, total: fileAfter + late };
 }
 
@@ -463,9 +480,9 @@ export function wireInquiry(root: ParentNode) {
 /* ── 공무원 UX 재설계(2026-10-28, docs/design/vat-ux-spec.md) 공용 UI 도우미 — 규칙·계산과 무관 ── */
 /** 처리할 것 집계(대시보드·문맥 바·신고 준비 요약이 같은 식으로): 빨강·노랑 미처리 + 근거 없는 전용 지출 */
 /** 설정 완성도(2차 UX 마찰 1·10, 2026-11-03): 운영 방식 '확인 필요'·등록번호 없음(사업장별)·담당 부서 없음 — 비어 있으면 대시보드 1차 행동이 '설정 마저 채우기' */
-export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; src: string; url?: string; verify?: boolean };
+export type AuditCase = { id: string; kind: string; org: string; date: string; title: string; facts: string; amount?: string; keys: string[]; mistakes?: string[]; src: string; url?: string; verify?: boolean };
 export type OrgNo = { key?: string; name: string; aliases?: string[]; bizno: string; src: string; verify?: boolean; code?: string };
-const normOrgName = (x: string) => x.replace(/\s/g, '').replace(/^대구광역시/, '').replace(/^대구/, '').replace(/청$/, '');
+const normOrgName = (x: string) => { const y = x.replace(/\s/g, '').replace(/^대구광역시/, '').replace(/^대구/, '').replace(/청$/, ''); return y === '' || y === '시' ? '대구본청' : y; };   // '대구광역시'·'대구시청'은 본청(떼고 나면 빈 글자라 못 찾던 것)
 /** 기관 이름으로 공개 자료의 사업자등록번호 찾기 — 이름·별칭을 띄어쓰기·'대구광역시'·'청' 을 떼고 견준다 */
 export function findOrgNo(D: Data | null, name: string): OrgNo | undefined { if (!D?.orgs || !name.trim()) return undefined; const n = normOrgName(name); if (!n) return undefined; return D.orgs.find(o => [o.name, ...(o.aliases ?? [])].some(a => normOrgName(a) === n)); }
 export const orgNoNote = (o: OrgNo) => `${o.src}${o.verify ? ' — 2차 자료라 홈택스 「사업자등록 상태조회」로 확인' : ''}`;

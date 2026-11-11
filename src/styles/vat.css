@@ -219,3 +219,132 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 #pub-biz th:nth-child(6) { white-space: nowrap; }
 .rv-src-tabs button[aria-selected="true"] .note { color: inherit; }
 #bai-table tr.bai-mention td { color: var(--ink-2, #595959); }
+
+/* 지난 돈 돌려받기 — 세 걸음(2026-11-05, docs/design/vat-refund-3steps.md) */
+.rf-band { position: sticky; top: 0; z-index: 5; margin: 12px 0 16px; padding: 12px 16px; border: 1px solid var(--line-strong); border-radius: var(--radius-2, 8px); background: var(--band, var(--surface)); }
+.rf-band p { margin: 0; }
+.rf-band-l { font-size: var(--small, .9rem); }
+.rf-band-n { font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.rf-band-n small { font-size: 1rem; font-weight: 400; margin-left: 4px; }
+.rf-band-s { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--small, .9rem); }
+.rf-band .rf-est { margin-top: 4px; color: var(--muted); font-size: var(--tiny, .8rem); }
+.rf-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.rf-step { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-2, 8px); padding: 12px 16px; background: var(--bg, #fff); }
+.rf-step.cur { border-color: var(--primary, var(--color-accent)); border-width: 2px; }
+.rf-step.done .rf-n { background: var(--status-ok-bg); color: var(--status-ok-ink); }
+.rf-step.done .rf-n::after { content: ' ✓'; }
+.rf-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.rf-h h2 { margin: 0; font-size: var(--fs-h3, 1.15rem); }
+.rf-n { display: inline-block; min-width: 1.8em; padding: 2px 6px; border-radius: 999px; text-align: center; font-weight: 700; background: var(--surface); border: 1px solid var(--line-strong); }
+.rf-st { font-size: var(--small, .9rem); color: var(--muted); }
+.rf-dl { display: flex; flex-wrap: wrap; gap: 4px 12px; list-style: none; padding: 0; }
+.rf-dl li.soon b { color: var(--status-warn-ink); }
+#rf-cmp tr.rf-hot th, #rf-cmp tr.rf-hot td { background: var(--status-warn-bg); }
+.rf-pick { margin-top: 6px; }
+.rf-todo { padding-left: 1.4em; }
+.rf-todo li { margin: 6px 0; }
+.vbadge.warn { border-style: solid; color: var(--status-warn-ink); }
+#rv-files { margin: 6px 0; }
+@media (max-width: 600px) { .rf-band { position: static; } }
+@media print { body.print-todo main > *:not(#rf-todo-wrap):not(#rf-diag-wrap):not(.section-head) { display: none !important; } body.print-todo .rf-todo-wrap .actions { display: none !important; } .rf-band { position: static; } }
+
+/* 세 걸음 판 — 항목마다 왜·할 일·근거(2026-11-05) */
+.rf-why { margin: 4px 0 2px; padding: 6px 10px; border-left: 3px solid var(--line-strong); background: var(--color-surface-1); font-size: .95em; }
+.rf-why p { margin: 2px 0; }
+.rf-k { display: inline-block; min-width: 3.2em; font-weight: 700; margin-right: 4px; }
+.rf-why-list { padding-left: 1.4em; } .rf-why-list > li { margin: 10px 0; } .rf-ctr { margin: 0; }
+@media print { body.print-todo .rf-why { border-left: 1px solid #999; } }
+
+/* 지난 신고 진단(2026-11-05) */
+.rf-dg { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 12px; margin: 8px 0; }
+.rf-dg > summary { cursor: pointer; padding: 4px 0; }
+.rf-dg-amt { font-size: 1.1em; }
+.rf-dg-list { padding-left: 1.4em; } .rf-dg-list > li { margin: 8px 0; } .rf-dg-t { margin: 0; }
+.rf-dg-eff th, .rf-dg-eff td { font-weight: 600; }
+@media print { body.print-todo #rf-diag-wrap { display: block !important; } body.print-todo .rf-dg { break-inside: avoid; } }
+
+.rf-cases ul { margin: 2px 0 0; padding-left: 1.2em; } .rf-cases li { margin: 3px 0; } .rf-cases summary { cursor: pointer; }
+
+.rf-all { margin: 10px 0 14px; } .rf-all-drop { border-width: 2px; } .rf-all-drop strong { font-size: 1.08em; }
+
+.rf-gate .g-ok td:last-child { color: var(--ok, inherit); } .rf-gate .g-less td:last-child, .rf-gate .g-more td:last-child { font-weight: 600; }
+
+.rf-ask { border: 2px solid var(--line-strong); border-radius: var(--radius); padding: 8px 14px; margin: 10px 0; } .rf-ask h2 { font-size: 1.1em; margin: 2px 0; } .rf-q-t { font-size: 1.05em; margin: 4px 0; }
+.rf-ask .rf-q + .rf-q { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 6px; } .rf-q-list { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; } .rf-q-list label { display: flex; gap: 6px; align-items: baseline; }
+
+.rf-calc { border: 2px solid var(--line-strong); border-radius: var(--radius); padding: 8px 14px; margin: 10px 0; } .rf-calc h2 { font-size: 1.15em; margin: 2px 0; }
+.rf-calc-sum { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; } .rf-calc-sum > div { flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius); } .rf-calc-sum b { font-size: 1.35em; font-variant-numeric: tabular-nums; }
+.rf-est, .rf-est b { color: var(--muted); } .rf-calc-t td { vertical-align: top; } .rf-calc-t td:nth-child(3), .rf-calc-t td:nth-child(4) { min-width: 16em; } .rf-calc-inlist, .rf-calc-none { color: var(--muted); }
+.rf-win { margin: 4px 0; }
+.rf-next { border-left: 3px solid var(--line-strong); padding: 4px 10px; margin: 8px 0; } .rf-next p, .rf-next ol { margin: 2px 0; } .rf-miss { margin: 6px 0; }
+.rf-corr { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; margin: 8px 0; } .rf-chg td { background: var(--band, #eef4fb); } .rf-claim { margin: 6px 0 2px; }
+.rf-steps-plain { background: var(--band, #eef4fb); border-radius: var(--radius); padding: 8px 14px; margin: 8px 0; } .rf-steps-plain ol { margin: 4px 0 4px 1.2em; } .rf-steps-plain li { margin: 3px 0; } .rf-tech summary { cursor: pointer; color: var(--muted); } .rf-reason { margin: 6px 0; }
+/* 결과 먼저(2026-11-06 운영자 'UI UX 고쳐봐'): 금액 띠가 화면 위에 붙어 있으므로 바로가기 자리는 띠 아래로, 모바일은 돌려받을 돈 표를 카드로 */
+#rf-calc, #rf-ask, .rf-dg, #rf-diag-wrap, #rf-cover { scroll-margin-top: 150px; }
+@media (max-width: 600px) { #rf-calc, #rf-ask, .rf-dg, #rf-diag-wrap, #rf-cover { scroll-margin-top: 8px; } }
+@media (max-width: 760px) {
+  .rf-calc-t, .rf-calc-t tbody, .rf-calc-t tr, .rf-calc-t td { display: block; width: auto; min-width: 0 !important; }
+  .rf-calc-t thead { display: none; }
+  .rf-calc-t tr { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 10px; margin: 0 0 10px; }
+  .rf-calc-t td { border: 0; padding: 3px 0; text-align: left; }
+  .rf-calc-t td::before { content: attr(data-label); display: block; font-size: var(--tiny, .8rem); color: var(--muted); }
+  .rf-calc-t td.num { font-size: 1.05em; }
+  .rf-calc-sum > div { flex-basis: 100%; }
+  .rf-corr table, .rf-gate { font-size: .9em; }
+}
+.rf-s2-more > summary { cursor: pointer; font-weight: 600; }
+@media (max-width: 760px) {
+  #rf-cmp, #rf-cmp tbody, #rf-cmp tr, #rf-cmp th, #rf-cmp td { display: block; width: auto; min-width: 0 !important; }
+  #rf-cmp thead { display: none; }
+  #rf-cmp tr { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; margin: 0 0 8px; }
+  #rf-cmp th, #rf-cmp td { border: 0; padding: 2px 0; text-align: left; }
+  #rf-cmp td::before { content: attr(data-label) ' '; font-size: var(--tiny, .8rem); color: var(--muted); }
+  #rf-cmp td.rf-cmp-top { font-size: .85em; }
+  #rf-cmp td:empty { display: none; }
+}
+
+/* ── 쉬운 화면(2026-11-05 docs/prompts/vat_review_ux_easiest.md · 설계 docs/design/vat-review-ux-spec.md) ── */
+.rf-lede { margin: 4px 0 12px; }
+.rf-go { margin: 0 0 14px; }
+.rf-go .rf-h { margin-bottom: 6px; }
+.rf-lock { margin: 4px 0 8px; padding: 8px 12px; border-radius: var(--radius); background: var(--surface); color: var(--muted); }
+.rf-locked .rf-all-drop { background: var(--surface); border-style: dotted; pointer-events: none; }   /* 흐리게(opacity)는 글자 대비를 떨어뜨려 쓰지 않는다 */
+.rf-drop-t { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 4px; }
+.rf-all-list { list-style: none; margin: 6px 0 0; padding: 0; font-size: var(--small, .9rem); }
+.rf-all-list li { margin: 3px 0; overflow-wrap: anywhere; } .rf-all-list .rf-bad { color: var(--status-warn-ink, inherit); }
+.rf-where { margin: 6px 0 0; }
+.rf-empty { margin: 4px 0; padding: 12px 14px; border: 1px dashed var(--line-strong); border-radius: var(--radius); color: var(--muted); }
+.rf-sum-l { font-size: 1.12em; line-height: 1.6; margin: 4px 0 10px; }
+.rf-sum-n { font-size: 1.5em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rf-sum-cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin: 0 0 6px; }
+.rf-sum-cells > div { display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--band, var(--surface)); }
+.rf-sum-cells b { font-size: 1.25em; font-variant-numeric: tabular-nums; }
+.rf-sum-cells > div + div b { font-weight: 600; }
+.rf-src { margin: 4px 0 8px; }
+.rf-sum-h { font-size: 1rem; margin: 12px 0 4px; }
+.rf-rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.rf-row { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.rf-row-h { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: baseline; }
+.rf-row ul { list-style: none; margin: 4px 0 0; padding: 0; }
+.rf-row ul > li { margin: 4px 0; } .rf-row .num { white-space: nowrap; margin-left: 6px; font-variant-numeric: tabular-nums; }
+.rf-row-why { margin: 2px 0 0; } .rf-row-why summary { cursor: pointer; color: var(--color-link, var(--primary)); font-size: var(--small, .9rem); }
+.rf-row-why p { margin: 4px 0; }
+.rf-zero { margin: 8px 0; padding: 10px 14px; border-radius: var(--radius); background: var(--surface); } .rf-zero ol { margin: 4px 0 0 1.2em; }
+.rf-miss-l { margin: 8px 0; }
+.rf-dl { margin-top: 14px; } .rf-dl .btn small { font-weight: 400; }
+.rf-sec { margin: 10px 0; } .rf-sec > summary { padding: 8px 0; }
+#rf-detail .rf-band { position: static; }
+.rf-sub { list-style: none; margin: 0 0 12px; } .rf-sub .rf-h h3 { margin: 0; font-size: 1.05rem; }
+.vat-util { display: flex; justify-content: flex-end; margin: -4px 0 6px; }
+@media print { .rf-sec:not([open]) { display: none; } }
+/* 매입 목록 없이 더 찾기 — 나라장터 계약 후보(추정, 2026-11-05) */
+.rf-sum-l2 { margin: -4px 0 10px; }
+.rf-cand-cell { background: var(--surface) !important; border-style: dashed !important; }
+.rf-cand { margin: 14px 0 6px; padding: 10px 14px; border: 1px dashed var(--line-strong); border-radius: var(--radius); }
+.rf-cand h3 { margin: 0 0 4px; font-size: 1rem; }
+/* 지자체 맞춤 '먼저 볼 곳'(2026-11-08 수성구 전용 사이트, vat_focus.ts) */
+.rf-focus { margin: 10px 0; } .rf-focus-l { padding-left: 1.4em; margin: 6px 0; display: grid; gap: 10px; } .rf-focus-t { margin: 2px 0; }
+.rf-focus-f { list-style: none; padding: 0; margin: 4px 0; display: grid; gap: 6px; } .rf-focus-f > li { border-left: 3px solid var(--line-strong); padding-left: 8px; }
+.rf-area { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-top: 4px; } .rf-area input { width: 7.5em; }
+.rf-guess { font-weight: 700; border: 1px dashed currentColor; border-radius: 4px; padding: 0 4px; }
+#rf-focus { scroll-margin-top: 150px; }

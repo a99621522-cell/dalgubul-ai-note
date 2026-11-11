@@ -147,6 +147,25 @@ def short_url(u):
     return u[len(URL_HEAD):-len(URL_TAIL)] if u.startswith(URL_HEAD) and u.endswith(URL_TAIL) else u
 
 
+def ctrt_id(r):
+    """나라장터 원계약번호·변경 차수 — 상세 주소의 ctrtNo·ctrtChgOrd(변경계약마다 통합계약번호가 새로 붙어 같은 계약이 여러 줄이 된다)"""
+    u = r.get("url") or ""
+    m, o = re.search(r"ctrtNo=([^&]+)", u), re.search(r"ctrtChgOrd=([^&]+)", u)
+    return (m.group(1) if m else ""), (o.group(1) if o else "")
+
+
+def latest_by_contract(rows):
+    """같은 원계약번호는 마지막 변경 한 줄만(금액·업체는 마지막 변경, 계약일은 처음 계약일) — 2026-11-05 달성군 25,319줄 → 12,176건.
+    장기계속·계속비의 차수 계약은 원계약번호가 따로라 그대로 남고, 총계약금액이 차수마다 되풀이되므로 화면은 금차 계약금액(amt)을 쓴다."""
+    best, first = {}, {}
+    for r in rows:
+        cid, ord_ = ctrt_id(r); k = cid or r["no"] or f"{r['k']}|{r['nm']}|{r['date']}"
+        cur = best.get(k)
+        if cur is None or (ord_, r.get("chg") or "") > (ctrt_id(cur)[1], cur.get("chg") or ""): best[k] = r
+        if r["date"] and (k not in first or r["date"] < first[k]): first[k] = r["date"]
+    return [{**r, "date": first.get(k, r["date"])} for k, r in best.items()]
+
+
 def mask(v):   # probe 로그에서 사람 이름처럼 보이는 3글자를 가린다
     return re.sub(r"(?<![가-힣])[가-힣]{3}(?![가-힣])", "○○○", str(v))
 
@@ -159,6 +178,7 @@ def main():
     ap.add_argument("--kinds", default="공사,용역,물품")
     ap.add_argument("--inqry-div", default=os.environ.get("G2B_INQRY_DIV", "1"))
     ap.add_argument("--instt-div", default=os.environ.get("G2B_INSTT_DIV", "1,2"), help="기관구분코드 — 쉼표로 여럿(계약기관·수요기관)")
+    ap.add_argument("--one", default="", help="지자체 하나만(그 이름으로 묻고 그 지자체 행만) — 운영자 2026-11-05 '한 지자체 다하고 다음 지자체'. daegu 는 '대구광역시'로 묻는다")
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--max-calls", type=int, default=3000)
     ap.add_argument("--rows", type=int, default=999, help="한 쪽 행 수(주지 않으면 100 으로)")
@@ -192,34 +212,39 @@ def main():
             return 0
         # 한 번 훑기: 기관명 '대구광역시'(부분 일치 — 본청·사업소·구·군·교육청까지 잡힘)로 받아 계약기관·수요기관 이름으로 지자체를 가른다.
         # 지자체마다 따로 물으면 같은 행을 열 번 받게 된다(2026-11-05 probe: 2026-09 공사 1,292건 대부분 교육청·학교).
-        st_path = f"{OUT}/state.json"
+        one0 = a.one if a.one in GOVS else ""
+        st_path = f"{OUT}/state_{one0}.json" if one0 else f"{OUT}/state.json"   # 지자체마다 따로 — 여러 지자체를 동시에 받아도 서로 덮지 않게
         state = json.load(open(st_path, encoding="utf-8")) if os.path.exists(st_path) else {}
         done = set(state.get("sweep", []))
+        if one0 and os.path.exists(f"{OUT}/state.json"): done |= {t for t in json.load(open(f"{OUT}/state.json", encoding="utf-8")).get("sweep", []) if not t.startswith(tuple(f"{g}|" for g in GOVS))}   # 예전 한꺼번에 받은 달
         store, olds = {}, {}
         for g in GOVS:
             path = f"{OUT}/{g}.json"
             olds[g] = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else None
             store[g] = {r["no"] or f"{r['k']}|{r['nm']}|{r['date']}": {**{k: v for k, v in r.items() if k not in ("bgn", "end")}, "url": short_url(r.get("url", ""))}
                         for r in (olds[g] or {}).get("rows", []) if g in {gov_of(x) for x in [r["inst"], *r["dmn"]]}}   # 가르기 규칙이 바뀌면 옛 행도 다시 가른다
-        want = set(govs)
+        one = a.one if a.one in GOVS else ""
+        want = {one} if one else set(govs)
+        qname = GOVS[one] if one else "대구광역시"   # 구·군 이름으로 물으면 그 구·군(과 소속 기관) 계약만 온다
         size = a.rows
         this_month = dt.date.today().strftime("%Y-%m")
+        fails_in_row = 0   # 연결 실패로 못 받은 달은 끝난 것으로 적지 않는다(2026-11-05 — 시간 초과가 이어진 달을 '0행·끝'으로 적어 다시 받지 않던 것)
         try:
             for kind in kinds:
                 for ym, b, e in months(a.frm, a.to):
-                    tag = f"{kind}|{ym}|{a.inqry_div}|{a.instt_div}"
-                    if tag in done and ym < this_month:
+                    tag = f"{kind}|{ym}|{a.inqry_div}|{a.instt_div}"; tag1 = f"{one}|{tag}" if one else tag
+                    if (tag in done or tag1 in done) and ym < this_month:
                         continue
-                    got, seen = {g: 0 for g in GOVS}, 0
+                    got, seen = {g: 0 for g in GOVS}, 0; failed = False
                     for cdiv in [c for c in a.instt_div.split(",") if c] or [""]:
                         page, recv = 1, 0
                         while True:
                             if calls >= a.max_calls:
                                 raise Stop(3, f"이번 실행 호출 상한 {a.max_calls} — 다음 실행이 이어 받습니다")
-                            p = {"pageNo": page, "numOfRows": size, "inqryDiv": a.inqry_div, "inqryBgnDate": b, "inqryEndDate": e, "insttNm": "대구광역시"}
+                            p = {"pageNo": page, "numOfRows": size, "inqryDiv": a.inqry_div, "inqryBgnDate": b, "inqryEndDate": e, "insttNm": qname}
                             if cdiv: p["insttDivCd"] = cdiv
                             r = call(OPS[kind], p, key); calls += 1; time.sleep(0.3)
-                            if not r: break
+                            if not r: failed = True; break
                             if page == 1 and size > 100 and r["total"] > len(r["items"]) and len(r["items"]) < size:
                                 print(f"  한 쪽 {size}행을 주지 않음({len(r['items'])}행) — 100행으로 다시", flush=True)
                                 size = 100; continue
@@ -227,13 +252,19 @@ def main():
                             for it in r["items"]:
                                 row = row_of(kind, it)
                                 k = row["no"] or f"{row['k']}|{row['nm']}|{row['date']}"
-                                for g in {gov_of(x) for x in [row["inst"], *row["dmn"]]} - {None}:
+                                for g in ({gov_of(x) for x in [row["inst"], *row["dmn"]]} - {None}) & (want if one else set(GOVS)):
                                     if k not in store[g] or (row["chg"] or "") >= (store[g][k].get("chg") or ""):
                                         store[g][k] = row; got[g] += 1
                             if not r["items"] or recv >= r["total"]: break
                             page += 1
-                    done.add(tag)
-                    print(f"  {kind} {ym}: 받은 {seen}행 → " + " ".join(f"{g} {n}" for g, n in got.items() if n) + f" (호출 {calls})", flush=True)
+                    if failed:
+                        fails_in_row += 1
+                        print(f"  {one or '전체'} {kind} {ym}: 받지 못함 — 끝난 달로 적지 않음(다음 실행이 다시)", flush=True)
+                        if fails_in_row >= 4: raise Stop(4, '조달청 API 가 잇달아 응답하지 않습니다 — 받은 데까지 저장하고 멈춥니다')
+                        continue
+                    fails_in_row = 0
+                    done.add(tag1)
+                    print(f"  {one or '전체'} {kind} {ym}: 받은 {seen}행 → " + " ".join(f"{g} {n}" for g, n in got.items() if n) + f" (호출 {calls})", flush=True)
         finally:
             state["sweep"] = sorted(done)
             state.pop("done", None)
@@ -243,7 +274,7 @@ def main():
                        "source": "조달청 나라장터 계약정보서비스(공공데이터포털 15129427) — 나라장터 검색조건에 의한 계약현황 공사·용역·물품",
                        "note": "나라장터를 거친 계약만(카드 결제·공공요금·나라장터 밖 소액 계약은 없음). 계약금액은 지출액과 다르다(선금·기성·여러 해). 담당자·대표자 이름은 저장하지 않음."
                                + (" 2023-07 편입 전 경상북도 군위군 계약은 없음." if g == "gunwi" else ""),
-                       "rows": sorted((r for r in store[g].values() if (r["date"] or "9")[:7] >= keep_from), key=lambda r: (r["date"], r["no"]))}
+                       "rows": sorted((r for r in latest_by_contract(store[g].values()) if (r["date"] or "9")[:7] >= keep_from), key=lambda r: (r["date"], r["no"]))}
                 if out["rows"] or olds[g]:
                     json.dump(out, open(path, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
                 print(f"[contracts] {GOVS[g]}: {len(store[g])}건 → {path}", flush=True)

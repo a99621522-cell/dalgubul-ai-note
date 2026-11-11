@@ -8,8 +8,9 @@ import { esc, fmt, num, penaltyCalc, toCsv, type Data } from './vat_rules';
 
 export type Cell = { amt: number | null; tax: number | null; n?: number | null };
 export type Kind = '예정' | '확정' | '기한후' | '조기환급' | '모름';
-export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null } | null; warn: string[] };
-export type FiledSum = { k: string; deduct: number | null; nondeduct: number | null; er: number | null; salesSup: number | null; salesTax: number | null; kinds: Kind[]; files: string[]; regs: string[]; exemptNd: number | null; warn: string[] };
+export type BaseRow = { label: string; code: string; amt: number };
+export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: BaseRow[]; exBase?: BaseRow[]; pen?: number; due?: number; warn: string[] };   // pen = 가산세액 계, due = 차감·가감하여 납부할 세액(환급받을 세액) — 칸 이름으로 읽음(서식 판마다 번호가 달라서), 경정청구서 서식용
+export type FiledSum = { k: string; deduct: number | null; nondeduct: number | null; er: number | null; salesSup: number | null; salesTax: number | null; kinds: Kind[]; files: string[]; regs: string[]; exemptNd: number | null; warn: string[]; total: number | null; hasNd: boolean; hasCommon: boolean; ndReasons: Record<number, number>; c10: number | null; c12: number | null; c13: number | null; c15: number | null; ndSum: number | null };
 
 /* ── 파일 → 글자 ── */
 export async function readFiledText(file: File): Promise<string> {
@@ -32,13 +33,31 @@ const NUM_RE = /△?-?\d{1,3}(?:,\d{3})+|△?-?\d+/g;
 const nums = (s: string) => (s.replace(/\d+\s*\/\s*\d+/g, ' ').match(NUM_RE) ?? []).map(t => (t.startsWith('△') ? -1 : 1) * Math.abs(num(t.replace('△', ''))));
 const PERIOD_RE = /(20\d{2})\s*년\s*제?\s*([12])\s*기\s*\(\s*(\d{1,2})\s*월\s*\d{1,2}\s*일\s*~\s*(\d{1,2})\s*월/;
 const MARK = '[VvＶ√✓✔■●☑◉xXOo○]';
+const DEC_RE = /△?-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|△?-?\d+(?:\.\d+)?/g;
+const decs = (s: string) => (s.match(DEC_RE) ?? []).map(t => (t.startsWith('△') || t.startsWith('-') ? -1 : 1) * Number(t.replace(/[△,\-]/g, '')));
+/** 22호 표(정산·재계산)의 합계 줄 — 없으면 번호 줄들을 더함 */
+function sumRow(sec: string, min: number): number[] | null {
+  const lines = sec.split('\n'); const sum = lines.find(l => /^\s*합\s*계/.test(l) && decs(l).length >= min); if (sum) return decs(sum);
+  const rows = lines.filter(l => /^\s*[1-9]\s/.test(l)).map(l => decs(l).slice(1)).filter(v => v.length >= min); if (!rows.length) return null;
+  return rows.reduce((a, v) => a.map((x, i) => x + (v[i] ?? 0)));
+}
+/** 과세표준 명세·면세사업 수입금액 — 업태·종목 글자와 금액(줄의 마지막 숫자), 6자리 업종 코드 */
+function baseRows(sec: string): BaseRow[] {
+  const out: BaseRow[] = [];
+  for (const line of sec.split('\n')) { const L = line.replace(/\(\d{1,2}\)/g, ' '); if (/합\s*계|작성|수입\s*금액\s*제외/.test(L)) continue; const code = /\b(\d{6})\b/.exec(L)?.[1] ?? ''; const v = nums(L.replace(/\b\d{6}\b/, ' ')); const label = L.replace(NUM_RE, ' ').replace(/[^가-힣a-zA-Z·\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!v.length || !label || label.length < 2) continue; const amt = v[v.length - 1]; if (amt > 0) out.push({ label, code, amt }); }
+  return out;
+}
 /** 한 파일 글자에서 신고서 여럿(예정·확정 등)을 읽는다. 22호 명세서는 바로 앞 신고서에 붙인다. */
 export function parseFiledText(text: string, file = ''): FiledDoc[] {
   const t = text.replace(/\r/g, '');
   const starts: number[] = []; const re = /신\s*고\s*기\s*간/g; let m: RegExpExecArray | null; while ((m = re.exec(t))) starts.push(m.index);
   if (!starts.length) { const p = PERIOD_RE.exec(t); if (p) starts.push(Math.max(0, p.index - 20)); }
   const out: FiledDoc[] = [];
-  starts.forEach((s, i) => { const seg = t.slice(i ? Math.max(starts[i - 1] + 1, s - 400) : 0, starts[i + 1] ?? t.length); const head = t.slice(Math.max(0, s - 600), s + 400); const d = parseOne(seg, head, file); if (d) out.push(d); });
+  /* 신고서 하나의 시작 = 신고기간 앞의 제목 줄('… 부가가치세 … 신고서') — 한 파일에 예정·확정이 이어 붙어 있으면 앞 신고서의 칸·[V] 표시를 읽지 않게 */
+  const TITLE = /[^\n]*부\s*가\s*가\s*치\s*세[^\n]*신\s*고\s*서[^\n]*/g; const titles: number[] = []; while ((m = TITLE.exec(t))) titles.push(m.index);
+  const begin = starts.map((s, i) => { const lo = i ? starts[i - 1] + 1 : 0; const tt = titles.filter(x => x >= lo && x < s && s - x < 600).pop(); return tt ?? (i ? Math.max(lo, s - 400) : 0); });
+  starts.forEach((s, i) => { const seg = t.slice(begin[i], i + 1 < starts.length ? begin[i + 1] : t.length); const head = t.slice(begin[i], s + 400); const d = parseOne(seg, head, file); if (d) out.push(d); });
   return out;
 }
 function parseOne(seg: string, head: string, file: string): FiledDoc | null {
@@ -58,6 +77,11 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
     marks.forEach((mm, j) => { const n = Number(mm[1]); if (n < 1 || n > 18 || cells[n]) return; const after = line.slice(mm.index! + mm[0].length, marks[j + 1]?.index ?? line.length); const v = nums(after); if (!v.length) return;
       if (v.length >= 2) cells[n] = { amt: v[0], tax: v[1] }; else if (n >= 10) cells[n] = { amt: null, tax: v[0] }; else cells[n] = { amt: v[0], tax: n <= 4 ? Math.floor(v[0] / 10) : 0 }; });
   }
+  /* 2025-07-04 전 서식(2021-03-16 판 ~ 2025-03-21 판): (15) 합계 · (16) 공제받지못할매입세액 · (17) 차감계 · (18) 그 밖의 경감·공제세액 — 현행 (16)(17)(18)로 옮겨 읽는다
+     (docs/design/vat-law-changes-2021.md 요약 B-1). 칸 이름 '공제받지 못할 매입세액'이 붙은 번호로 판을 가르고, 이름이 없으면 (15)−(16)=(17) 인지로 본다 */
+  { const ndLbl = /\((1[67])\)[^\n(]{0,6}공\s*제\s*받\s*지\s*못\s*할/.exec(main) ?? /공\s*제\s*받\s*지\s*못\s*할\s*매\s*입\s*세\s*액[^\n(]{0,6}\((1[67])\)/.exec(main);
+    const arith = cells[15]?.tax != null && cells[16]?.tax != null && cells[17]?.tax != null && cells[15].tax! - cells[16].tax! === cells[17].tax! && !(cells[18]?.tax != null && cells[16].tax! - cells[17].tax! === cells[18].tax!);
+    if ((ndLbl && ndLbl[1] === '16') || (!ndLbl && arith)) { const c15 = cells[15], c16 = cells[16], c17 = cells[17]; delete cells[18]; delete cells[15]; delete cells[16]; delete cells[17]; if (c15) cells[16] = c15; if (c16) cells[17] = c16; if (c17) cells[18] = c17; warn.push('2025-07-04 전 서식 — (15)합계·(16)불공제·(17)차감계를 현행 (16)(17)(18)로 옮겨 읽었습니다'); } }
   if (cells[16]?.tax != null && cells[17]?.tax != null && cells[18]?.tax == null) cells[18] = { amt: null, tax: cells[16].tax! - cells[17].tax! };
   if (cells[18]?.tax != null && cells[16]?.tax != null && cells[17]?.tax != null && cells[16].tax! - cells[17].tax! !== cells[18].tax) warn.push(`(16) − (17) 과 (18) 이 맞지 않습니다 — 칸을 확인하세요`);
   if (cells[18]?.tax == null) warn.push('(18) 차감계(공제받은 매입세액)를 못 읽었습니다 — ② 표에 직접 넣으세요');
@@ -67,17 +91,30 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
     let common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null = null; const ca = part.search(/공통\s*매입\s*세액\s*안분/); const cb = part.search(/공통\s*매입\s*세액의\s*정산/);
     if (ca >= 0) { const sec = part.slice(ca, cb > ca ? cb : undefined); const sum = sec.split('\n').find(l => /^\s*합\s*계/.test(l) && nums(l).length >= 5); const rows = sum ? [nums(sum)] : sec.split('\n').filter(l => /^\s*[1-9]\s/.test(l)).map(l => nums(l).slice(1)).filter(v => v.length >= 5);
       if (rows.length) { const s = rows.reduce((a, v) => [a[0] + v[0], a[1] + v[1], a[2] + v[2], a[3] + v[3], a[4] + v[4]], [0, 0, 0, 0, 0]); common = { sup: s[0], tax: s[1], total: s[2], exempt: s[3], nd: s[4] }; } }
-    nd = { reasons, common }; }
-  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, warn };
+    let settle: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null = null, recalc: { tax: number; rate: number; delta: number; add: number } | null = null;
+    const rc = part.search(/재\s*계\s*산\s*내\s*역|납부세액\s*또는\s*환급세액\s*재계산/);
+    if (cb >= 0) { const v = sumRow(part.slice(cb, rc > cb ? rc : undefined), 5); if (v) { const r = v[1] > 1 ? v[1] / 100 : v[1]; settle = { tax: v[0], ratio: r, ndAll: v[2], prev: v[3], add: v[4] }; } }
+    if (rc >= 0) { const v = sumRow(part.slice(rc), 4); if (v) recalc = { tax: v[0], rate: v[1] > 1 ? v[1] / 100 : v[1], delta: Math.abs(v[2]) > 1 ? v[2] / 100 : v[2], add: v[3] }; }
+    nd = { reasons, common, settle, recalc }; }
+  const bAt = main0.search(/과\s*세\s*표\s*준\s*명\s*세/), eAt = main0.search(/면\s*세\s*사\s*업\s*수\s*입\s*금\s*액/);
+  const base = bAt >= 0 ? baseRows(main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500)) : undefined;
+  const exBase = eAt >= 0 ? baseRows(main0.slice(eAt, eAt + 1500).split(/계\s*산\s*서\s*발\s*급|과\s*세\s*표\s*준\s*명\s*세/)[0]) : undefined;
+  /* 경정청구서 서식(국세기본법 시행규칙 별지 제16호의2) ⑬ 가산세액·⑮ 납부할 세액 — 번호가 판마다 달라(현행 (29)(30), 2025-07 전 판은 다름) 칸 이름이 든 줄의 마지막 숫자를 읽는다 */
+  const byLabel = (rx: RegExp) => { for (const line of main.split('\n')) { if (!rx.test(line)) continue; const mm = [...line.matchAll(/\((\d{1,2})\)/g)]; const last = mm[mm.length - 1]; const v = nums(last ? line.slice(last.index! + last[0].length) : line.replace(rx, ' ')); if (v.length) return v[v.length - 1]; } return undefined; };
+  const pen = byLabel(/가\s*산\s*세\s*액\s*계/), due = byLabel(/차\s*(?:감|가\s*감)[^\n]{0,24}납\s*부\s*할\s*세\s*액/);
+  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(base?.length ? { base } : {}), ...(exBase?.length ? { exBase } : {}), ...(pen != null ? { pen } : {}), ...(due != null ? { due } : {}), warn };
 }
+/** 같은 과세기간·구분·등록번호가 두 장이면 뒤 파일만(수정신고) — 진단·합계 모두 이것으로 */
+export function latestDocs<T extends { year: number; half: number; kind: string; reg?: string }>(docs: T[]): T[] { const last = new Map<string, T>(); for (const d of docs) last.set(`${d.year}-${d.half}|${d.kind}|${d.reg ?? ''}`, d); return [...last.values()]; }
 /** 신고서들 → 과세기간(확정 기준)별 합: (18)·(17)은 예정+확정, 같은 기간·구분·번호가 두 번이면 뒤 것이 앞 것을 바꿈(수정신고) */
 export function filedSummary(docs: FiledDoc[]): Map<string, FiledSum> {
   const last = new Map<string, FiledDoc>(); const warns: Record<string, string[]> = {};
   for (const d of docs) { const k = `${d.year}-${d.half}`; const id = `${k}|${d.kind}|${d.reg}`; if (last.has(id)) (warns[k] ??= []).push(`${d.kind} 신고서가 두 번 들어와 뒤 파일(${d.file})로 바꿨습니다(수정신고면 맞음)`); last.set(id, d); }
   const out = new Map<string, FiledSum>();
-  for (const d of last.values()) { const k = `${d.year}-${d.half}`; const s = out.get(k) ?? { k, deduct: null, nondeduct: null, er: null, salesSup: null, salesTax: null, kinds: [], files: [], regs: [], exemptNd: null, warn: [...(warns[k] ?? [])] };
+  for (const d of last.values()) { const k = `${d.year}-${d.half}`; const s = out.get(k) ?? { k, deduct: null, nondeduct: null, er: null, salesSup: null, salesTax: null, kinds: [], files: [], regs: [], exemptNd: null, warn: [...(warns[k] ?? [])], total: null, hasNd: false, hasCommon: false, ndReasons: {}, c10: null, c12: null, c13: null, c15: null, ndSum: null };
     const add = (a: number | null, b: number | null | undefined) => b == null ? a : (a ?? 0) + b;
-    s.deduct = add(s.deduct, d.cells[18]?.tax); s.nondeduct = add(s.nondeduct, d.cells[17]?.tax);
+    s.deduct = add(s.deduct, d.cells[18]?.tax); s.nondeduct = add(s.nondeduct, d.cells[17]?.tax); s.total = add(s.total, d.cells[16]?.tax); s.c10 = add(s.c10, d.cells[10]?.tax); s.c12 = add(s.c12, d.cells[12]?.tax); s.c13 = add(s.c13, d.cells[13]?.tax); s.c15 = add(s.c15, d.cells[15]?.tax);
+    if (d.nd) { const nds = Object.entries(d.nd.reasons).filter(([n]) => Number(n) <= 8).reduce((a, [, c]) => a + (c.tax ?? 0), 0) + (d.nd.common?.nd ?? 0); s.ndSum = (s.ndSum ?? 0) + nds; s.hasNd = true; if (d.nd.common) s.hasCommon = true; for (const [n, c] of Object.entries(d.nd.reasons)) if (Number(n) <= 8 && c.tax != null) s.ndReasons[Number(n)] = (s.ndReasons[Number(n)] ?? 0) + c.tax; }
     for (const n of [1, 2, 3, 4]) { s.salesSup = add(s.salesSup, d.cells[n]?.amt); s.salesTax = add(s.salesTax, d.cells[n]?.tax); }
     if ([1, 2, 3, 4].every(n => !d.cells[n])) { s.salesSup = add(s.salesSup, 0); s.salesTax = add(s.salesTax, 0); }
     const c = d.nd?.common; if (c && (d.kind === '확정' || s.er === null)) s.er = c.tax > 0 ? Math.round(c.nd / c.tax * 10000) / 100 : c.total > 0 ? Math.round(c.exempt / c.total * 10000) / 100 : s.er;

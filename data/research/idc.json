@@ -3,10 +3,46 @@
  "name": "IDC Press Releases",
  "group": "해외 컨설팅",
  "home": "https://www.idc.com",
- "fetched": "2026-11-01",
+ "fetched": "2026-11-08",
  "status": "OK",
  "method": "rss(/feed)",
  "items": [
+  {
+   "title": "Did IDC’s 20% Generative AI and IDP Prediction Hold?",
+   "url": "https://www.idc.com/resource-center/blog/did-idcs-20-generative-ai-and-idp-prediction-hold/",
+   "date": "2026-11-06",
+   "summary": "In October 2023, IDC FutureScape: Worldwide Future of Work 2024 Predictions forecast that by 2026, enterprises that directly tie generative AI to intelligent document processing (IDP) would see a 20% increase in new use cases, along with gains in productivity, scale, and customer experience. Three y"
+  },
+  {
+   "title": "How Does Ricoh’s Circular New Aim to Scale Remanufacturing?",
+   "url": "https://www.idc.com/resource-center/blog/how-does-ricohs-circular-new-aim-to-scale-remanufacturing/",
+   "date": "2026-11-06",
+   "summary": "Ricoh and ETRIA (a manufacturer built on Ricoh, Toshiba Tec and OKI technologies) announced Circular New on October 6, 2026, to build new A3 multifunction printers (MFPs) partly from components recovered from devices in the market. Ricoh and ETRIA aim to scale it by combining local collection, a com"
+  },
+  {
+   "title": "AI Infrastructure Spending Jumps to $121 Billion in Q2 2026 as Pricing and CPU-Based AI Demand Broaden Growth; 2026 Forecast Raised to $521 Billion",
+   "url": "https://www.idc.com/resource-center/blog/ai-infrastructure-spending-jumps-to-121-billion-in-q2-2026/",
+   "date": "2026-11-06",
+   "summary": "Executive Answer According to IDC&#8217;s Worldwide Quarterly AI Infrastructure Tracker, spending reached $121.4 billion in Q2 2026, up 53% year-over-year and 34% sequentially as deployments paused in the first quarter resumed. The defining shift was a broadening of demand: non-accelerated, CPU-base"
+  },
+  {
+   "title": "Energy and resources can’t build their way out of today’s constraints: IDC FutureScape 2027 predictions",
+   "url": "https://www.idc.com/resource-center/blog/futurescape-2027-energy-and-resources-cant-build-their-way-out-of-todays-constraints/",
+   "date": "2026-11-04",
+   "summary": "Datacenters are outrunning the power grid. Water supplies are stretched. Insurers and lenders want climate risk on the table before they fund your next project. And your engineers won&#8217;t act on an AI recommendation they can&#8217;t verify. If you lead technology strategies in energy and resourc"
+  },
+  {
+   "title": "FutureScape 2027: Three Leadership Decisions That Are Still Open. Here’s How to Use the Time.",
+   "url": "https://www.idc.com/resource-center/blog/futurescape-2027-three-leadership-decisions-still-open/",
+   "date": "2026-11-04",
+   "summary": "If your AI budget grew tomorrow, where would you invest first? Most leaders answer with a platform or a vendor. The IDC FutureScape 2027 webinar argued that the better answer is in people and governance, and that the decision stays open only for a limited time. IDC&#8217;s Rick Villars described the"
+  },
+  {
+   "title": "53% of Asia/Pacific* Organizations Now Ask Security Providers to Secure Their AI",
+   "url": "https://www.idc.com/resource-center/blog/professional-security-services-apac-ai-trust/",
+   "date": "2026-11-04",
+   "summary": "53% of Asia/Pacific organizations want providers to secure their AI. IDC explains how professional security services are shifting and what to ask. The post 53% of Asia/Pacific* Organizations Now Ask Security Providers to Secure Their AI appeared first on IDC ."
+  },
   {
    "title": "FutureScape 2027: Three Decisions Are Closing on You. Here’s What to Do Before They Shut.",
    "url": "https://www.idc.com/resource-center/blog/futurescape-2027-webinar-the-closing-window/",
@@ -30,42 +66,6 @@
    "url": "https://www.idc.com/resource-center/blog/61-3-are-still-early-in-ai-maturity-where-are-you/",
    "date": "2026-10-27",
    "summary": "When your board asks how you compare with peers, expect questions on AI transformation, IT spend, and governance maturity. IDC’s MaturityScape Benchmark covers the AI side of that comparison. 61.3% of organizations sit in the two earliest stages of AI maturity, and only 3.1% have reached the most ma"
-  },
-  {
-   "title": "PHP2Shell: When the Patch Is Ready, but the Organization Isn’t",
-   "url": "https://www.idc.com/resource-center/blog/php2shell-when-the-patch-is-ready-but-the-organization-isnt/",
-   "date": "2026-10-27",
-   "summary": "On October 21, two critical flaws in PHP left organizations with a choice that cybersecurity authorities stated plainly: update affected systems immediately or take them offline. Known together as PHP2Shell, the flaws (CVE-2026-109618 and CVE-2026-109619) can allow attackers to run code on affected "
-  },
-  {
-   "title": "IDC FutureScape 2027: The Great Rewrite Comes With Deadlines",
-   "url": "https://www.idc.com/resource-center/blog/idc-futurescape-2027-the-great-rewrite/",
-   "date": "2026-10-27",
-   "summary": "AI agents now act on behalf of organizations, and the work, the money, and the technology around them are being rebuilt to match. FutureScape 2027 calls this the Great Rewrite and sorts what is changing into three windows: closing, open, and emerging. IDC FutureScape 2027 begins rolling out today, w"
-  },
-  {
-   "title": "Growth Is the Top Priority. So Why Do So Many Plans Stall?",
-   "url": "https://www.idc.com/resource-center/blog/growth-is-the-top-priority-so-why-do-so-many-plans-stall/",
-   "date": "2026-10-26",
-   "summary": "Your growth plan has a reader you may never meet: the buyer&#8217;s CFO. CFOs or their delegates approve 78% of technology purchases, and they want evidence that is independent of the vendor. That scrutiny arrives alongside pressure from the top. 64% of CEOs rank growth as their number one priority,"
-  },
-  {
-   "title": "Spatial Intelligence: What It Is, How It Works, Where It Delivers Value",
-   "url": "https://www.idc.com/resource-center/blog/spatial-intelligence-what-it-is-how-it-works-where-it-delivers-value/",
-   "date": "2026-10-23",
-   "summary": "Spatial intelligence is the ability to understand a physical or virtual space, and how it changes over time, well enough to reason about the likelihood of outcomes based on specific actions. As AI moves from making decisions and taking actions in business processes to doing so in the physical world,"
-  },
-  {
-   "title": "Did IDC’s 50-50 Marketplace Prediction Hold?",
-   "url": "https://www.idc.com/resource-center/blog/did-idcs-50-50-marketplace-prediction-hold/",
-   "date": "2026-10-23",
-   "summary": "In October 2024, IDC&#8217;s FutureScape: Worldwide Future of Industry Ecosystems 2025 Predictions forecast that by 2026, 50% of marketplaces would expand community capabilities, using fair-value monitoring to incent collaboration, and grow their data and application inventory. The other 50% would s"
-  },
-  {
-   "title": "AI Is Short of Capacity, Not Demand",
-   "url": "https://www.idc.com/resource-center/blog/ai-is-short-of-capacity-not-demand/",
-   "date": "2026-10-22",
-   "summary": "Talk of an AI correction usually starts with a change in investor sentiment. Coupled with rocky macroeconomic headwinds, this impacts company valuations, thereby straining financing for AI-specific buildouts. In short, it affects supply. IDC tracks markets, not balance sheets, so we start with the d"
   }
  ],
  "note": "",

@@ -161,6 +161,26 @@ export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: b
   return new Blob([bytes as BlobPart], { type: 'application/pdf' });
 }
 
+/** 서식처럼 칸을 직접 그리는 PDF(경정청구서 등)용 — 같은 글꼴·같은 그리기 단위(tokens)·줄 나누기를 쓴다. 쪽·칸 배치는 부르는 쪽이 정한다. */
+export async function pdfKit() {
+  const [reg, { PDFDocument }, { default: fontkit }] = await Promise.all([loadFont(), import('pdf-lib'), import('@pdf-lib/fontkit')]);
+  const doc = await PDFDocument.create(); doc.registerFontkit(fontkit);
+  const F = await doc.embedFont(reg, { subset: false });
+  doc.setCreator(location.host); doc.setProducer(location.host); doc.setLanguage('ko-KR');
+  const text = (pg: PDFPage, t: string, o: { x: number; y: number; size: number; color?: RGB }, bold = false) => {
+    let x = o.x;
+    for (const piece of tokens(t)) {
+      if (piece.trim()) {
+        pg.drawText(piece, { ...o, x, font: F, color: o.color ?? INK });
+        if (bold) pg.drawText(piece, { ...o, x: x + Math.max(0.25, o.size * 0.03), font: F, color: o.color ?? INK });
+      }
+      x += measure(F, piece, o.size);
+    }
+  };
+  return { doc, text, width: (t: string, size: number) => measure(F, t, size), lines: (t: string, size: number, w: number) => wrap(t, F, size, w), rgb, MM, INK, MUTED,
+    save: async () => new Blob([(await doc.save()) as BlobPart], { type: 'application/pdf' }) };
+}
+
 /** 내려받기. 컴퓨터는 바로 저장하고, 휴대폰(터치 화면)·앱 안 브라우저는 자동 저장이 막히는 경우가 많아
  *  화면 아래에 「PDF 열기」 단추를 띄워 사용자가 한 번 더 누르게 한다(누를 때 새 창으로 열리거나 저장됨, 2026-10-01). */
 export function downloadPdf(name: string, blob: Blob): void {

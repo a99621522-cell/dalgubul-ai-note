@@ -39,22 +39,26 @@ jobs:
       - name: 점검기 부분만 추리기
         run: |
           rm -rf out && mkdir -p out
-          cp -r dist/vat out/vat
+          # 2026-11-05 운영자 '지난돈 돌려 받기 기능만 구현해 다른 기능은 복잡해서 사용하기 힘들어' — 지난 돈 돌려받기(/vat/review/) 한 화면만 올린다. 옛 주소는 모두 이리로 넘긴다
+          mkdir -p out/vat && cp -r dist/vat/review out/vat/review
           cp -r dist/_astro out/_astro
           cp -r dist/fonts out/fonts
           cp dist/favicon.svg out/ 2>/dev/null || true
           for f in vat-revenue.json typeahead.json; do [ -f "dist/$f" ] && cp "dist/$f" out/; done
           [ -d dist/vat-expense ] && cp -r dist/vat-expense out/vat-expense
-          printf '/ /vat/ 302\n' > out/_redirects
-          printf '<!doctype html><html lang="ko"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/vat/"><title>지자체 부가세 절감 점검기</title><p><a href="/vat/">지자체 부가세 절감 점검기로 가기</a></p></html>\n' > out/404.html
+          { printf '/ /vat/review/ 302\n/vat /vat/review/ 302\n/vat/ /vat/review/ 302\n'; for d in dist/vat/*/; do n=$(basename "$d"); [ "$n" = review ] || printf '/vat/%s /vat/review/ 302\n/vat/%s/ /vat/review/ 302\n/vat/%s/* /vat/review/ 302\n' "$n" "$n" "$n"; done; } > out/_redirects
+          cat out/_redirects
+          printf '<!doctype html><html lang="ko"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/vat/review/"><title>지자체 부가세 돌려받기</title><p><a href="/vat/review/">지난 돈 돌려받기로 가기</a></p></html>\n' > out/404.html
           echo "파일 $(find out -type f | wc -l)개, $(du -sh out | cut -f1)"
       - name: 과업 8개 수용 시험(scripts/vat_ux_test.mjs — 키보드 변형·axe 5쪽·인쇄, 계산 값은 식으로 견줌)
         run: |
           npm i --no-save @axe-core/playwright playwright
           npx playwright install chromium --with-deps
-          (cd out && python3 -m http.server 4399 >/dev/null 2>&1 &) && sleep 2
+          # 올리는 것은 review 한 화면이지만 공용 코드(규칙·판정)는 다른 화면 시험도 함께 돌려 지킨다 — 시험은 전체 빌드(dist)에서
+          (cd dist && python3 -m http.server 4399 >/dev/null 2>&1 &) && sleep 2
           export PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright
           node scripts/vat_ux_test.mjs --base http://localhost:4399
+          test "$(ls out/vat)" = review && test -f out/vat/review/index.html && ! grep -qE 'href="/vat/(setup|monthly|prepare|handover|tools|schedule|trend|discover|build|develop)/' out/vat/review/index.html
       - name: 프로젝트 확인·생성
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -2,18 +2,22 @@
 import '../styles/global.css';
 import { NAV, NAV_GROUPS, UTIL_LINKS, navItem } from '../nav';
 import { latestMonth, monthLabel } from '../lib/stats';
-import hwpxCompat from '../../data/hwpx/compat.json';   // 한글(HWPX) 승인 관문: approved 일 때만 HWP 단추(2026-10-06)
+import hwpxCompat from '../../data/hwpx/compat.json';
+import { VAT_GOV } from '../lib/vatLock';
+import { vatGovs } from '../lib/vat';   // 한글(HWPX) 승인 관문: approved 일 때만 HWP 단추(2026-10-06)
 interface Props { title?: string; seoTitle?: string; description?: string; current?: string; tags?: string[]; jsonld?: object[]; ogType?: string; crumb?: string; nocrumb?: boolean; wide?: boolean }
 const { title, seoTitle, description = '대구 산업단지·기업 현황과 산업별 고용 통계, 기업 사전, 지원사업 공고', current = '', tags = [], jsonld = [], ogType = 'website', crumb, nocrumb = false, wide = false } = Astro.props;
 /** 브레드크럼(디자인·UI 개선 2차 2026-10-06): 홈 › 묶음 › 메뉴 › (crumb). 첫 화면과 nocrumb 페이지는 없음 */
 /** 독립 사이트 모드(운영자 지시 2026-10-28 '새로운 사이트에 올려'): 빌드 때 VAT_SITE=1 이면 지자체 부가세 절감 점검기만 있는 사이트(.github/workflows/deploy_vat.yml — dist/vat 만 추려 별도 Cloudflare Pages 프로젝트에 올림)로, 헤더·유틸리티 바·드로어·바닥글을 점검기용으로 바꾼다. 다른 메뉴로 가는 링크가 없어야 한다 */
 const VAT = !!process.env.VAT_SITE;
+/** 지자체 한 곳 전용 사이트(운영자 지시 2026-11-08 '수성구만의 별도의 사이트 만들어'): VAT_GOV=suseong 이면 이름·바닥글이 그 지자체용(deploy_vat_gov.yml) */
+const GOV = VAT && VAT_GOV ? (vatGovs()[0]?.name ?? '').replace(/^대구광역시 /, '') : '';
 /** 다잇다 빌드에서는 점검기를 내린다(운영자 지시 2026-10-28 '다잇다 사이트에서는 내려. 성격이 다르잖아'): current='vat' 페이지는 본문 대신 옮김 안내(새 사이트 링크 + 5초 뒤 넘김)만 낸다 */
-const SITE_NAME = VAT ? '지자체 부가세 절감 점검기' : '다잇다';
+const SITE_NAME = GOV ? `${GOV} 지난 부가세 돌려받기` : VAT ? '지자체 부가세 돌려받기' : '다잇다';
 const crumbMenu = NAV.find(n => n.key === current);
 const crumbGroup = VAT || !crumbMenu ? undefined : NAV_GROUPS.find(g => (g.items as readonly string[]).includes(current));
-const isHome = Astro.url.pathname === (VAT ? '/vat/' : '/');
-const fullTitle = (seoTitle || title) && (seoTitle || title) !== SITE_NAME ? `${seoTitle || title} — ${SITE_NAME}` : (VAT ? '지자체 부가세 절감 점검기 — 시·군·구 매입세액 점검' : '다잇다 — 대구 산업·기업 현황');
+const isHome = Astro.url.pathname === (VAT ? '/vat/review/' : '/');
+const fullTitle = (seoTitle || title) && (seoTitle || title) !== SITE_NAME ? `${seoTitle || title} — ${SITE_NAME}` : (GOV ? `${GOV} 지난 부가세 돌려받기 — 지난 신고 경정청구` : VAT ? '지자체 부가세 돌려받기 — 지난 신고 경정청구' : '다잇다 — 대구 산업·기업 현황');
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
 const lm = latestMonth();
 const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -47,7 +51,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
   </div>}
   <header class="site-head">
     <div class="wrap row">
-      {VAT ? <a class="brand" href="/vat/">지자체 부가세 절감 점검기<span class="tagline">신고하는 공무원용 · 브라우저 안 계산</span></a> : <a class="brand" href="/">다잇다<span class="tagline">대구 산업·기업 자료</span></a>}
+      {VAT ? <a class="brand" href="/vat/review/">{SITE_NAME}<span class="tagline">지난 신고서로 경정청구 금액 계산 · 브라우저 안 계산</span></a> : <a class="brand" href="/">다잇다<span class="tagline">대구 산업·기업 자료</span></a>}
       {!VAT && <nav class="nav" aria-label="주요 메뉴">
         {NAV_GROUPS.map(g => g.href ? <a class="ng-link" href={g.href} aria-current={g.items.includes(current as any) ? 'page' : undefined}>{g.name}</a> : (
           <div class="ng" data-open={g.items.includes(current as any) ? 'cur' : undefined}>
@@ -124,7 +128,7 @@ const built = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '
     <slot />
   </main>
   {VAT ? <footer class="site-foot"><div class="wrap">
-      <p>지자체(시·군·구)와 시설관리공단이 내는 부가가치세의 매입세액을 조문대로 빠짐없이 공제하도록 돕는 도구입니다. 판정은 부가가치세법·시행령·시행규칙 조문의 참고용 계산이며 기관의 판단이 아니고, 신고 책임은 신고인에게 있습니다. 서버가 없어 입력은 이 브라우저와 내려받는 파일에만 남습니다. 담당자 이름·전화·개별 기관의 신고 금액은 싣지 않습니다.</p>
+      <p>{GOV ? `${GOV} 부가가치세 담당자용 화면입니다. 공개 자료(조례·세입예산서·의회 회의록·나라장터 계약)로 만든 ${GOV} 시설 설정은 담당자 확인 전 초안입니다. ` : ''}지자체(시·군·구)가 지난 5년 부가가치세 신고에서 덜 공제받은 매입세액을 찾아 경정청구로 돌려받도록 돕는 도구입니다. 판정은 부가가치세법·시행령·시행규칙 조문의 참고용 계산이며 기관의 판단이 아니고, 신고 책임은 신고인에게 있습니다. 서버가 없어 입력은 이 브라우저와 내려받는 파일에만 남습니다. 담당자 이름·전화·개별 기관의 신고 금액은 싣지 않습니다.</p>
       <p>사이트 갱신일 {built}.</p>
     </div></footer> : <footer class="site-foot">
     <div class="wrap">

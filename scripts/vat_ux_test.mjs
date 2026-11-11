@@ -444,6 +444,14 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     const gate = await p3.evaluate(() => [...document.querySelectorAll('#rf-dg-2024-2 .rf-gate tbody tr')].map(tr => tr.textContent.replace(/\s+/g, ' ')));
     const inp = await p3.evaluate(() => document.querySelector('#rf-dg-2024-2 .rf-dg-how')?.textContent ?? '');
     ok('S15b 대조 관문(목록 ↔ 신고서 (10)+(12)·(16)−(17)=(18)·불공제 명세 합) · 홈택스 경정청구 입력값(당초→경정 후·출처·사유·붙임)', gate.length >= 3 && gate.some(t => /세금계산서/.test(t) && /목록이 많음/.test(t)) && gate.some(t => /칸 계산/.test(t) && /맞음/.test(t)) && /경정청구/.test(inp) && /사유/.test(inp) && /붙임/.test(inp), JSON.stringify({ gate, inp: inp.slice(0, 120) }));
+  /* S15c 매입 목록으로 찾은 기간도 경정청구서 ⑨ 청구이유를 자동으로(운영자 2026-11-11 '그것도 자동으로 들어가게 해') — 화면 사유와 같은 문장 */
+  { const inp = await p3.evaluate(() => document.querySelector('#rf-dg-2024-2 .rf-dg-how')?.textContent.replace(/\s+/g, ' ') ?? '');
+    const has = await p3.locator('#rf-dl-form').count(); let pg9 = '';
+    if (has) { const [pop] = await Promise.all([p3.waitForEvent('popup', { timeout: 20000 }), p3.click('#rf-dl-form')]); await pop.waitForLoadState('load');
+      pg9 = await pop.evaluate(() => [...document.querySelectorAll('.page:not(.note)')].map(p => p.textContent.replace(/\s+/g, ' ')).find(t => /2024년 제2기/.test(t)) ?? ''); await pop.close(); }
+    ok('S15c 매입 목록으로 찾은 2024년 제2기 — 화면 사유와 경정청구서 ⑨ 청구이유 자동(시설 공제 누락·빠진 세금계산서, 덜 공제 1,600,000원), ⑰ 1,600,000 원',
+      /2024년 제2기 부가가치세 신고 때 .*매입세액 1,600,000원을 덜 공제받았으므로 국세기본법 제45조의2에 따라 경정을 청구합니다/.test(inp) && /⑨ 결정\(경정\)\s*청구이유\s*2024년 제2기 부가가치세 신고 때 .*(공제하지 않|빠뜨려)/.test(pg9) && /⑰ 환급받을 세액\s*1,600,000 원/.test(pg9),
+      JSON.stringify({ has, inp: inp.slice(inp.indexOf('사유'), inp.indexOf('사유') + 220), pg9: pg9.slice(pg9.indexOf('⑨'), pg9.indexOf('⑨') + 220) })); }
   if (process.env.VAT_SHOT) { await p3.$eval('#rf-diag-wrap', e => e.scrollIntoView()); await p3.screenshot({ path: process.env.VAT_SHOT }); }
   /* 2026-11-05 운영자 '과거 국세청에 신고한 자료를 올리면 바로 계산되고 이유가 나와야' — 매입 목록 없이 신고서만 */
   { const c4 = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const p4 = await c4.newPage();

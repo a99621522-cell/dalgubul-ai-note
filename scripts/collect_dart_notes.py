@@ -1056,7 +1056,9 @@ def main(argv: list[str]) -> int:
             if "--dump" in argv and rows:   # 가장 최근 공시(비상장 외감 회사는 감사보고서) 원문을 표까지 로그로, --dump-all 이면 목록 전부(최대 5건)
                 for x in (rows[:5] if "--dump-all" in argv else rows[:1]):
                     xml = doc_xml(x["rcept_no"])
-                    if xml:
+                    if xml and "--grep" in argv:   # 긴 원문(사업·반기보고서)은 --grep 정규식에 맞는 줄 앞뒤만(2026-11-12 HD현대 주주 절)
+                        grep_block(f"{name} {x.get('report_nm')} {x.get('rcept_dt')}", xml, argv[argv.index("--grep") + 1])
+                    elif xml:
                         dump_block(f"{name} {x.get('report_nm')} {x.get('rcept_dt')}", xml)
         return 0
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}

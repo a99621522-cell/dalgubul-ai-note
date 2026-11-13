@@ -1610,6 +1610,44 @@
    "url": "",
    "chars": 0,
    "candidates": []
+  },
+  "doc-kiapi-01": {
+   "key": "doc-kiapi-01",
+   "name": "ë æºÏ í ëº¹Áö ø â¾  Âü ½ÅÃ Å º¾ó",
+   "kind": "기관 첨부(관리지침)",
+   "issuer": "지능형자동차부품진흥원",
+   "source": {
+    "type": "url",
+    "name": "https://www.kiapi.or.kr/pages/board/view.php?board_sid=1&data_sid=9590&page_num=2&skey=&sval="
+   },
+   "applies": {
+    "layer": "기관",
+    "ministry": "지능형자동차부품진흥원",
+    "program_type": [
+     "전체"
+    ]
+   },
+   "review": [
+    "예산요구서",
+    "집행",
+    "결산서"
+   ],
+   "fetched": "2026-11-12",
+   "status": "OK",
+   "found": "ë æºÏ í ëº¹Áö ø â¾  Âü ½ÅÃ Å º¾ó",
+   "found_kind": "기관 첨부(pdf)",
+   "found_issuer": "지능형자동차부품진흥원",
+   "id": "59634e2c882466da",
+   "sha": "59634e2c882466da",
+   "date": "",
+   "eff": "",
+   "url": "https://www.kiapi.or.kr/pages/board/view.php?board_sid=1&data_sid=9590&page_num=2&skey=&sval=",
+   "chars": 14798,
+   "file": "docs/kiapi/ë_æºÏ_í_ëº¹Áö_ø_â¾__Âü_½ÅÃ_Å_º¾ó.pdf.txt.gz",
+   "post": "[대구경북고용복지연구원] 청년일자리도약장려금 사업신청 안내",
+   "attachment": "[대구경북고용복지연구원] 기업_참여신청 매뉴얼.pdf (3168 kb)",
+   "articles": 0,
+   "annexes": []
   }
  },
  "skipped": [

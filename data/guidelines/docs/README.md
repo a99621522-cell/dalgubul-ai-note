@@ -1,9 +1,10 @@
 # 기관 관리지침(홈페이지 첨부) — data/guidelines/docs
 
-받은 날짜: 2026-10-13. config/guideline_docs.yml 의 게시판에서 받은 관리지침·운영지침·사업비 지침 본문. 평가 없음.
+받은 날짜: 2026-11-12. config/guideline_docs.yml 의 게시판에서 받은 관리지침·운영지침·사업비 지침 본문. 평가 없음.
 
 | key | 기관 | 문서 | 글 | 시행일(추정) | 글자 | 출처 |
 |---|---|---|---|---|---|---|
+| doc-kiapi-01 | 지능형자동차부품진흥원 | ë æºÏ í ëº¹Áö ø â¾  Âü ½ÅÃ Å º¾ó | [대구경북고용복지연구원] 청년일자리도약장려금 사업신청 안내 |  | 14,798 | https://www.kiapi.or.kr/pages/board/view.php?board_sid=1&data_sid=9590&page_num=2&skey=&sval= |
 | doc-riia-01 | 대구지역산업진흥원 | 지역산업육성 기업지원사업 관리지침(중소벤처기업부 승인, 2023-09-01 시행) | (중기부) 지역산업육성사업 운영요령(중소벤처기업부 제2023-69호) | 2023-09-01 | 68,675 | https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1 |
 | doc-riia-02 | 대구지역산업진흥원 | 지역산업육성 기술개발사업 관리지침(중소벤처기업부 승인, 2023-09-01 시행) | (중기부) 지역산업육성사업 운영요령(중소벤처기업부 제2023-69호) | 2023-09-01 | 83,086 | https://daegu.riia.or.kr/board/regulationsAndForms/view/538b851f-b101-11ee-89d7-51e12c5ef2f1 |
 | doc-riia-03 | 대구지역산업진흥원 | 산업기술개발장비 통합관리요령 | 2026년도 지역혁신클러스터육성(R&D) 사업 시행계획 공고(2차) | 2024-06-13 | 73,479 | https://daegu.riia.or.kr/board/businessAnnouncement/view/2acddc7f-531c-11f1-ad2e-69cc3ab459f1 |

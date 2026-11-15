@@ -1065,8 +1065,9 @@ def main(argv: list[str]) -> int:
     corps = {c: v for c, v in cache.items() if v.get("daegu") and v.get("corp_cls") in LISTED}
     if probe and "--any" in argv:   # --any: 캐시 전체(대구 밖 본사·비상장 사업보고서 제출 회사 포함)에서 찾는다, --exact 면 이름 완전 일치(2026-10-29)
         corps = dict(cache)
-    if probe:
-        corps = {c: v for c, v in corps.items() if (probe == (v.get("name") or "") if "--exact" in argv else probe in (v.get("name") or ""))}
+    if probe:   # 쉼표로 여러 회사(2026-11-16 3분기 실적 이유 확인)
+        names = [x.strip() for x in probe.split(",") if x.strip()]
+        corps = {c: v for c, v in corps.items() if any((n == (v.get("name") or "") if "--exact" in argv else n in (v.get("name") or "")) for n in names)}
     if not corps:
         print("대상 회사 없음")
         return 0
@@ -1082,7 +1083,8 @@ def main(argv: list[str]) -> int:
                 print(f"--- {x.get('rcept_dt')} {x.get('report_nm')} rcept_no={x.get('rcept_no')} https://dart.fss.or.kr/dsaf001/main.do?rcpNo={x.get('rcept_no')}")
                 xml = doc_xml(x["rcept_no"])
                 if xml and grep:
-                    grep_block(f"{meta.get('name')} {x.get('report_nm')}", xml, grep)
+                    aft = int(argv[argv.index("--after") + 1]) if "--after" in argv else 30
+                    grep_block(f"{meta.get('name')} {x.get('report_nm')}", xml, grep, 1 if "--after" in argv else 3, aft)
                 elif xml:
                     dump_block(f"{meta.get('name')} {x.get('report_nm')}", xml)
             if "전환사채" in kw:   # 주요사항보고서 구조화 API — 자금조달 목적별 금액

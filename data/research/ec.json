@@ -3,69 +3,69 @@
  "name": "EU 집행위 Press corner",
  "group": "해외 정부",
  "home": "https://ec.europa.eu",
- "fetched": "2026-11-08",
+ "fetched": "2026-11-15",
  "status": "OK",
  "method": "rss(/commission/presscorner/api/rss?language)",
  "items": [
   {
-   "title": "Speech by Commissioner Hoekstra at the 22nd Athens Tax Forum",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_2370",
-   "date": "2026-11-06",
-   "summary": "European Commission Speech Athens, 06 Nov 2026 Ladies and Gentlemen, A very good morning to all of you. It's a great pleasure to be back in beautiful Greece and to be here today at the 22nd Athens Tax Forum ..."
+   "title": "Statement by President von der Leyen at the joint press conference with President Costa following the informal meeting of the European Council of November 2026",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2441",
+   "date": "2026-11-13",
+   "summary": "European Commission Statement Dublin, 13 Nov 2026 First of all, I also want to thank you dear Taoiseach, dear Micheál for the fantastic hospitality and the fantastic atmosphere in which we spent the last two da..."
   },
   {
-   "title": "Speech by Commissioner Lahbib at the InvestFrontier Conference",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_2369",
-   "date": "2026-11-06",
-   "summary": "European Commission Speech Brussels, 06 Nov 2026 I love the word “frontier”. On a map, it is just a line. But for explorers, it was always the place where the known world ended, and new possibilities began. I ..."
+   "title": "Speech by Commissioner Kos at the opening of 30 Years of Transparency International Switzerland",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/de/speech_26_2439",
+   "date": "2026-11-13",
+   "summary": "European Commission Rede Brussels, 13 Nov 2026 „Helping the good guys win“ – Wie der EU-Beitrittsprozess Gesellschaften stärkt Im Juni war ich mit meinem Team auf dem Weg nach Moldau und in die Ukraine. Bei..."
   },
   {
-   "title": "Remarks by Commissioner Brunner on the second Annual Migration Management Cycle",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_2368",
-   "date": "2026-11-06",
-   "summary": "European Commission Speech Brussels, 06 Nov 2026 Ladies and gentlemen, Today, we are delivering on a core component of the Pact on Migration and Asylum. We are launching the second Annual Migration Management ..."
+   "title": "Commissioner Roswall's address at the Circular Valley Forum",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_2437",
+   "date": "2026-11-13",
+   "summary": "European Commission Speech Düsseldorf, 13 Nov 2026 Ministers, Mayor, Ladies and gentlemen, dear guests, Guten morgen to you all. I am delighted to be here in Wuppertal. This city – and this region – have long be..."
   },
   {
-   "title": "Keynote speech by Commissioner Síkela at the International Partnership Conference",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_2367",
-   "date": "2026-11-06",
-   "summary": "European Commission Speech Vilnius, 06 Nov 2026 KEYNOTE SPEECH Distinguished Guests, Ladies and gentlemen, Lithuania brings a clear understanding of what is at stake when we discuss resilience. The freedom to..."
+   "title": "Daily News 13 / 11 / 2026",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/mex_26_2434",
+   "date": "2026-11-13",
+   "summary": "European Commission Daily news Brussels, 13 Nov 2026 COP31 enters second week with the EU driving global climate action The EU continues pushing for accelerated global climate action at the COP31 UN Climate Change..."
   },
   {
-   "title": "Questions and answers on the second Annual Migration Management Cycle",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/qanda_26_2366",
-   "date": "2026-11-06",
-   "summary": "European Commission Questions and answers Brussels, 06 Nov 2026 What is the Annual Migration Management Report? Under the Pact on Migration and Asylum, the EU has a permanent mandatory solidarity mechanism in place to ensure..."
+   "title": "Doorstep by President von der Leyen ahead of the informal meeting of the European Council of 13 November",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2431",
+   "date": "2026-11-13",
+   "summary": "European Commission Statement Dublin, 13 Nov 2026 Today, we are going to discuss AI. It is going to be very interesting. Of course, we are going to discuss the risks, like, for example, runaway AI, but also the..."
   },
   {
-   "title": "Commission launches second Annual Migration Management Cycle under the Pact on Migration and Asylum",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2365",
-   "date": "2026-11-06",
-   "summary": "European Commission Press release Brussels, 06 Nov 2026 Today, the European Commission is launching the second Annual Migration Management Cycle, delivering on a core component of the Pact on Migration and Asylum."
+   "title": "Commission sends Supplementary Statement of Objections to PPC over predatory pricing in the Greek wholesale electricity market",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2422",
+   "date": "2026-11-12",
+   "summary": "European Commission Press release Brussels, 13 Nov 2026 The European Commission has sent a Supplementary Statement of Objections to the Greek electricity provider Public Power Corporation S.A. ('PPC')."
   },
   {
-   "title": "Daily News 06 / 11 / 2026",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/mex_26_2364",
-   "date": "2026-11-06",
-   "summary": "European Commission Daily news Brussels, 06 Nov 2026 Commission preliminarily finds TikTok's ‘For You' feed in breach of Digital Services Act for harmful ‘rabbit holes' effect Today, the European Commission has pr..."
+   "title": "Commission approves €286 million German State aid to port of Hamburg",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2360",
+   "date": "2026-11-12",
+   "summary": "European Commission Press release Brussels, 13 Nov 2026 The European Commission has approved, under EU State aid rules, two €143 million German measures to support infrastructure works in the port of Hamburg. The measures concern two distinct infrastructure projects, one at the Salzgitter quay and o"
   },
   {
-   "title": "EU releases €16 million in humanitarian aid for Myanmar and Rohingya refugees in Bangladesh",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2363",
-   "date": "2026-11-06",
-   "summary": "European Commission Press release Brussels, 06 Nov 2026 The European Union has allocated an additional €16 million in humanitarian aid to help communities impacted by the ongoing conflict in Myanmar, as well as Rohingya refugees and their host communities in Bangladesh. These new funds come as escal"
+   "title": "Opening and closing remarks of Executive Vice-President Virkkunen at the MSS Stakeholder Forum",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_2428",
+   "date": "2026-11-12",
+   "summary": "European Commission Speech Brussels, 12 Nov 2026 Opening remarks Ladies and Gentlemen, It is an honour to host you all here today to exchange on a key file for Europe's sovereignty and competitiveness. As you ..."
   },
   {
-   "title": "Commission greenlights Finland's final payment request for €331 million under NextGenerationEU",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2362",
-   "date": "2026-11-06",
-   "summary": "European Commission Press release Brussels, 06 Nov 2026 Today, the European Commission greenlighted Finland's sixth and final payment request for €331 million under the Recovery and Resilience Facility (RRF), the centrepiece of NextGenerationEU."
+   "title": "Keynote speech by Commissioner Serafin at the European Court of Auditors conference: Shaping the next Multiannual Financial Framework – Performance and accountability",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/speech_26_2426",
+   "date": "2026-11-12",
+   "summary": "European Commission Speech Luxembourg, 13 Nov 2026 Dear Chair, President Murphy, Honourable Members of the European Court of Auditors, Ladies and Gentlemen, It is a great pleasure to be with you today to reflect..."
   },
   {
-   "title": "EU and India conclude negotiations on association to Horizon Europe",
-   "url": "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2334",
-   "date": "2026-11-05",
-   "summary": "European Commission Press release Brussels, 06 Nov 2026 The European Commission and India have successfully concluded negotiations on India's association to Horizon Europe, the EU's €93.5 billion flagship research and innovation programme."
+   "title": "Joint statement by President von der Leyen and President Costa following their meeting with President Zelenskyy in Dublin",
+   "url": "https://ec.europa.eu/commission/presscorner/detail/en/statement_26_2425",
+   "date": "2026-11-12",
+   "summary": "European Commission Statement Dublin, 12 Nov 2026 The EPC Summit in Dublin was another opportunity to reaffirm our unwavering support for President Zelenskyy and Ukraine. We welcome the talks this week in Abu D..."
   }
  ],
  "note": "",

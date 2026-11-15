@@ -3,47 +3,10 @@
  "name": "대구광역시 주요뉴스(시청 첫 화면)",
  "group": "대구 기관",
  "home": "https://www.daegu.go.kr",
- "fetched": "2026-11-08",
- "status": "OK",
- "method": "목록 페이지",
- "items": [
-  {
-   "title": "대구시, 두류공원 황토 체험장 이용 환경개선 2026.11.06",
-   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=279690",
-   "date": "2026-11-06",
-   "summary": ""
-  },
-  {
-   "title": "대구공공시설관리공단 나드리콜, 교통약자 수험생을 위한 무료 운행 지원 2026.11.04",
-   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=279655",
-   "date": "2026-11-04",
-   "summary": ""
-  },
-  {
-   "title": "대구 골목상권 25곳, 가을 축제로 활력 더한다 2026.11.02",
-   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=1&aid=279612",
-   "date": "2026-11-02",
-   "summary": ""
-  },
-  {
-   "title": "함께 펼친 첫 장, 함께 만든 첫해… 대구도서관, 개관 1주년 행사 개최 2026.11.02",
-   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=1&aid=279625",
-   "date": "2026-11-02",
-   "summary": ""
-  },
-  {
-   "title": "대구소식당(뉴스레터) 구독신청하고 이벤트 참여하기 2026.10.28",
-   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=1&aid=279504",
-   "date": "2026-10-28",
-   "summary": ""
-  },
-  {
-   "title": "대구시, 2026년 저소득주민 장학금 지원대상자 모집 2026.10.14",
-   "url": "https://info.daegu.go.kr/newshome/mtnmain.php?mtnkey=articleview&mkey=scatelist&mkey2=2&aid=279300",
-   "date": "2026-10-14",
-   "summary": ""
-  }
- ],
+ "fetched": "2026-11-15",
+ "status": "접속 실패",
+ "method": "",
+ "items": [],
  "note": "",
  "areas": []
 }

@@ -3,10 +3,71 @@
  "name": "ACEA (유럽자동차공업협회)",
  "group": "해외 협회",
  "home": "https://www.acea.auto",
- "fetched": "2026-11-08",
- "status": "접속 실패",
- "method": "",
- "items": [],
+ "fetched": "2026-11-15",
+ "status": "OK",
+ "method": "첫 화면",
+ "items": [
+  {
+   "title": "ENVI vote marks another step towards a more pragmatic CO2 framework for cars and vans The European Automobile Manufacturers’ Association (ACEA) takes note of to",
+   "url": "https://www.acea.auto/press-release/envi-vote-marks-another-step-towards-a-more-pragmatic-co2-framework-for-cars-and-vans/",
+   "date": "2026-11-12",
+   "summary": ""
+  },
+  {
+   "title": "Commercial vehicle makers call for Weights & Dimensions deal that supports zero-emission truck uptake Europe’s commercial vehicle manufacturers are calling for ",
+   "url": "https://www.acea.auto/news/commercial-vehicle-makers-call-for-weights-dimensions-deal-that-supports-zero-emission-truck-uptake/",
+   "date": "2026-11-12",
+   "summary": ""
+  },
+  {
+   "title": "New commercial vehicle registrations: vans 0%, trucks +7.5%, buses +15.2% in Q1-Q3 2026 EU’s commercial vehicle market delivered a mixed performance in the firs",
+   "url": "https://www.acea.auto/cv-registrations/new-commercial-vehicle-registrations-vans-0-trucks-7-5-buses-15-2-in-q1-q3-2026/",
+   "date": "2026-11-12",
+   "summary": ""
+  },
+  {
+   "title": "New car registrations: +5.7% in September 2026 year-to-date; battery-electric 22.7% market share The new EU passenger car market showed notable resilience, risi",
+   "url": "https://www.acea.auto/pc-registrations/new-car-registrations-5-7-in-september-2026-year-to-date-battery-electric-22-7-market-share/",
+   "date": "2026-11-12",
+   "summary": ""
+  },
+  {
+   "title": "Bus manufacturing in Europe: urgent action needed Europe’s bus market is decarbonising fast, but an increasing share of public spending on fleet renewal is flow",
+   "url": "https://www.acea.auto/publication/bus-manufacturing-in-europe-urgent-action-needed/",
+   "date": "2026-11-12",
+   "summary": ""
+  },
+  {
+   "title": "New report reveals uneven progress across Europe's electric vehicle ecosystem",
+   "url": "https://www.acea.auto/news/new-report-reveals-uneven-progress-across-europes-electric-vehicle-ecosystem/",
+   "date": "2026-11-12",
+   "summary": ""
+  },
+  {
+   "title": "back to top",
+   "url": "https://www.acea.auto#back-to-top",
+   "date": "2026-11-12",
+   "summary": ""
+  },
+  {
+   "title": "New study explores EU–UK automotive competitiveness in a changing global landscape",
+   "url": "https://www.acea.auto/news/new-study-explores-eu-uk-automotive-competitiveness-in-a-changing-global-landscape/",
+   "date": "2026-11-05",
+   "summary": ""
+  },
+  {
+   "title": "Position paper – Chips Act 2.0",
+   "url": "https://www.acea.auto/publication/position-paper-chips-act-2-0/",
+   "date": "2026-10-30",
+   "summary": ""
+  },
+  {
+   "title": "Position Paper – Due Diligence compliance challenges in face of conflicting third-country legislations",
+   "url": "https://www.acea.auto/publication/position-paper-due-diligence-compliance-challenges-in-face-of-conflicting-third-country-legislations/",
+   "date": "2026-10-23",
+   "summary": ""
+  }
+ ],
  "note": "",
  "areas": []
 }

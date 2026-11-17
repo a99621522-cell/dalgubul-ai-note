@@ -127,6 +127,54 @@ corp_code,name,fs,sj_div,ord,account_id,account_nm,thstrm_amount,frmtrm_q_amount
 01090471,SFA넥셀,연결,CIS,32,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),-884039757,16117541122,24305059433,23793661821,20261112000511
 01090471,SFA넥셀,연결,CIS,33,ifrs-full_Revenue,매출액,58357452457,87653287405,180786770479,325088113528,20261112000511
 01090471,SFA넥셀,연결,CIS,34,ifrs-full_ShareOfProfitLossOfAssociatesAccountedForUsingEquityMethod,지분법손익,-5177056,1026018,-40690109,16790967,20261112000511
+00878915,iM금융지주,연결,CIS,6,dart_GainLossFromFinancialInstrumentsAtFairValueThroughOtherComprehensiveIncome,기타포괄손익-공정가치측정 금융자산 순이익(손실),796000000,7879000000,-5950000000,51323000000,20261116001599
+00878915,iM금융지주,연결,CIS,7,dart_GainLossFromFinancialInstrumentsAtFairValueThroughProfitOrLoss,당기손익-공정가치측정 금융상품 관련 순이익(손실),-32802000000,144953000000,214357000000,304071000000,20261116001599
+00878915,iM금융지주,연결,CIS,8,dart_NonOperatingProfitLoss,영업외순이익(손실),7348000000,5904000000,16857000000,1917000000,20261116001599
+00878915,iM금융지주,연결,CIS,9,ifrs-full_ComprehensiveIncome,연결분기총포괄이익,22411000000,126432000000,351042000000,363996000000,20261116001599
+00878915,iM금융지주,연결,CIS,11,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,비지배지분포괄이익,5434000000,2584000000,12273000000,10848000000,20261116001599
+00878915,iM금융지주,연결,CIS,12,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,지배주주지분포괄이익,16977000000,123848000000,338769000000,353148000000,20261116001599
+00878915,iM금융지주,연결,CIS,14,ifrs-full_BasicEarningsLossPerShare,기본주당이익,704,703,2439,2484,20261116001599
+00878915,iM금융지주,연결,CIS,15,ifrs-full_DilutedEarningsLossPerShare,희석주당이익,704,703,2439,2484,20261116001599
+00878915,iM금융지주,연결,CIS,16,ifrs-full_FeeAndCommissionIncomeExpense,순수수료이익,69606000000,51011000000,237254000000,159003000000,20261116001599
+00878915,iM금융지주,연결,CIS,17,ifrs-full_FeeAndCommissionExpense,수수료비용,28711000000,30273000000,90430000000,79336000000,20261116001599
+00878915,iM금융지주,연결,CIS,18,ifrs-full_FeeAndCommissionIncome,수수료수익,98317000000,81284000000,327684000000,238339000000,20261116001599
+00878915,iM금융지주,연결,CIS,19,ifrs-full_GainsLossesOnFinancialAssetsAtFairValueThroughProfitOrLossDesignatedAsUponInitialRecognition,당기손익-공정가치지정 금융상품 관련 순이익(손실),5515000000,2429000000,9147000000,4437000000,20261116001599
+00878915,iM금융지주,연결,CIS,20,ifrs-full_GeneralAndAdministrativeExpense,일반관리비,280304000000,244107000000,846161000000,744687000000,20261116001599
+00878915,iM금융지주,연결,CIS,21,ifrs-full_ImpairmentLossImpairmentGainAndReversalOfImpairmentLossDeterminedInAccordanceWithIFRS9,신용손실충당금 전입액,85293000000,104931000000,251569000000,258519000000,20261116001599
+00878915,iM금융지주,연결,CIS,22,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용,44134000000,36447000000,127280000000,122160000000,20261116001599
+00878915,iM금융지주,연결,CIS,23,ifrs-full_InsuranceFinanceIncomeExpenses,보험및재보험 금융이익(손실),113829000000,-91595000000,-52391000000,-89091000000,20261116001599
+00878915,iM금융지주,연결,CIS,24,dart_InsuranceFinanceExpensesFromInsuranceContractsIssuedRecognisedInProfitOrLoss,보험및재보험 금융비용,-175000000,91595000000,170487000000,99801000000,20261116001599
+00878915,iM금융지주,연결,CIS,25,dart_InsuranceFinanceIncomeFromInsuranceContractsIssuedRecognisedInProfitOrLoss,보험및재보험 금융수익,113654000000,0,118096000000,10710000000,20261116001599
+00878915,iM금융지주,연결,CIS,26,ifrs-full_InsuranceServiceResult,순보험이익(손실),20292000000,16445000000,60955000000,56357000000,20261116001599
+00878915,iM금융지주,연결,CIS,27,dart_OperatingExpenseInsurance,보험비용,57071000000,53630000000,162729000000,152631000000,20261116001599
+00878915,iM금융지주,연결,CIS,28,dart_OperatingIncomeInsurance,보험수익,77363000000,70075000000,223684000000,208988000000,20261116001599
+00878915,iM금융지주,연결,CIS,29,ifrs-full_InterestRevenueExpense,순이자이익,452668000000,416542000000,1296236000000,1226950000000,20261116001599
+00878915,iM금융지주,연결,CIS,30,ifrs-full_InterestExpense,이자비용,563426000000,517467000000,1628505000000,1632490000000,20261116001599
+00878915,iM금융지주,연결,CIS,31,-표준계정코드 미사용-,보험및재보험 관련 이자비용,41470000000,44752000000,148224000000,130696000000,20261116001599
+00878915,iM금융지주,연결,CIS,32,-표준계정코드 미사용-,금융상품 관련 이자비용,521956000000,472715000000,1480281000000,1501794000000,20261116001599
+00878915,iM금융지주,연결,CIS,33,ifrs-full_RevenueFromInterest,이자수익,1016094000000,934009000000,2924741000000,2859440000000,20261116001599
+00878915,iM금융지주,연결,CIS,34,-표준계정코드 미사용-,보험및재보험 관련 이자수익,9152000000,1564000000,13161000000,4479000000,20261116001599
+00878915,iM금융지주,연결,CIS,35,ifrs-full_InterestIncomeForFinancialAssetsMeasuredAtAmortisedCost,상각후원가측정 금융상품 관련 이자수익,892282000000,822464000000,2569268000000,2529543000000,20261116001599
+00878915,iM금융지주,연결,CIS,36,ifrs-full_InterestIncomeOnFinancialAssetsDesignatedAtFairValueThroughProfitOrLoss,당기손익-공정가치측정 금융상품 관련 이자수익,41062000000,46732000000,126135000000,142217000000,20261116001599
+00878915,iM금융지주,연결,CIS,37,ifrs-full_InterestRevenueForFinancialAssetsMeasuredAtFairValueThroughOtherComprehensiveIncome,기타포괄손익-공정가치측정 금융상품 관련 이자수익,73598000000,63249000000,216177000000,183201000000,20261116001599
+00878915,iM금융지주,연결,CIS,38,ifrs-full_NetForeignExchangeGain,외환거래순이익,-193670000000,38374000000,-21885000000,4976000000,20261116001599
+00878915,iM금융지주,연결,CIS,39,ifrs-full_OtherComprehensiveIncome,연결분기기타포괄손익,-104389000000,1264000000,-78782000000,-79116000000,20261116001599
+00878915,iM금융지주,연결,CIS,41,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되는 포괄손익,-102625000000,-945000000,-85235000000,-86924000000,20261116001599
+00878915,iM금융지주,연결,CIS,42,dart_OtherComprehensiveIncomeNetOfTaxChangeInFairValueOfFinancialAssetsMeasuredAtFairValueThroughOtherComprehensiveIncome,기타포괄손익-공정가치측정 채무상품관련손익,-106438000000,-45712000000,-476772000000,-34474000000,20261116001599
+00878915,iM금융지주,연결,CIS,43,ifrs-full_OtherComprehensiveIncomeNetOfTaxCashFlowHedges,현금흐름위험회피평가손익,256000000,-2633000000,-39380000000,-3330000000,20261116001599
+00878915,iM금융지주,연결,CIS,44,ifrs-full_OtherComprehensiveIncomeNetOfTaxExchangeDifferencesOnTranslation,해외사업장 외화환산손익,-107254000000,27505000000,-58502000000,-1646000000,20261116001599
+00878915,iM금융지주,연결,CIS,45,ifrs-full_OtherComprehensiveIncomeNetOfTaxFinanceIncomeExpensesFromReinsuranceContractsHeldExcludedFromProfitOrLoss,재보험계약 관련 금융손익,-1834000000,72000000,-8174000000,-358000000,20261116001599
+00878915,iM금융지주,연결,CIS,46,ifrs-full_OtherComprehensiveIncomeNetOfTaxHedgesOfNetInvestmentsInForeignOperations,해외사업장순투자위험회피평가손익,67942000000,-18575000000,41863000000,1629000000,20261116001599
+00878915,iM금융지주,연결,CIS,47,ifrs-full_OtherComprehensiveIncomeNetOfTaxInsuranceFinanceIncomeExpensesFromInsuranceContractsIssuedExcludedFromProfitOrLossThatWillBeReclassifiedToProfitOrLoss,보험계약 관련 금융손익,44703000000,38398000000,455730000000,-48745000000,20261116001599
+00878915,iM금융지주,연결,CIS,49,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되지 않는 포괄손익,-1764000000,2209000000,6453000000,7808000000,20261116001599
+00878915,iM금융지주,연결,CIS,50,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesFromInvestmentsInEquityInstruments,기타포괄손익-공정가치 측정 지분상품관련손익,-721000000,2255000000,6602000000,8076000000,20261116001599
+00878915,iM금융지주,연결,CIS,51,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,순확정급여채무 재측정요소,-1043000000,-46000000,-149000000,-268000000,20261116001599
+00878915,iM금융지주,연결,CIS,52,ifrs-full_OtherOperatingIncomeExpense,기타영업순이익(손실),92949000000,-81289000000,-99746000000,-151465000000,20261116001599
+00878915,iM금융지주,연결,CIS,53,ifrs-full_ProfitLoss,연결분기순이익,126800000000,125168000000,429824000000,443112000000,20261116001599
+00878915,iM금융지주,연결,CIS,55,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분순이익,6118000000,2716000000,13561000000,11405000000,20261116001599
+00878915,iM금융지주,연결,CIS,56,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배주주지분순이익,120682000000,122452000000,416263000000,431707000000,20261116001599
+00878915,iM금융지주,연결,CIS,57,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익,170934000000,161615000000,557104000000,565272000000,20261116001599
+00878915,iM금융지주,연결,CIS,58,ifrs-full_ProfitLossFromOperatingActivities,영업이익,163586000000,155711000000,540247000000,563355000000,20261116001599
 00102353,경창산업,연결,CIS,6,dart_NonOperatingProfitLoss,영업외손익,-4760279157,-796850271,-6338003647,-5075522323,20261113000591
 00102353,경창산업,연결,CIS,7,dart_OtherGains,기타수익,677218911,902289196,2206764074,2491884064,20261113000591
 00102353,경창산업,연결,CIS,8,dart_OtherLosses,기타비용,196396142,220991988,616189744,1124795111,20261113000591
@@ -178,6 +226,35 @@ corp_code,name,fs,sj_div,ord,account_id,account_nm,thstrm_amount,frmtrm_q_amount
 00202060,구영테크,연결,CIS,30,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업소유주지분,1962249122,7757029352,15684530540,15231966046,20261116000355
 00202060,구영테크,연결,CIS,31,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익,3032739652,3735136057,21162089884,13527094636,20261116000355
 00202060,구영테크,연결,CIS,32,ifrs-full_Revenue,매출액,139057028918,96859481619,427991960928,303467812636,20261116000355
+00107224,남선알미늄,연결,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),-1003908763,-4306381456,-3654004476,-2581602412,20261116001059
+00107224,남선알미늄,연결,CIS,7,dart_OtherGains,기타영업외수익,1210092248,165232975,2309186357,3625247528,20261116001059
+00107224,남선알미늄,연결,CIS,8,dart_OtherLosses,기타영업외비용,19279327,739093721,3287337843,2936849348,20261116001059
+00107224,남선알미늄,연결,CIS,9,dart_TotalSellingGeneralAdministrativeExpenses,판매비와관리비,6275122400,5541562106,21475151266,14937292206,20261116001059
+00107224,남선알미늄,연결,CIS,10,ifrs-full_ComprehensiveIncome,분기총포괄이익,3401791716,1863127377,6172300518,12719116795,20261116001059
+00107224,남선알미늄,연결,CIS,12,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,비지배지분,0,0,0,0,20261116001059
+00107224,남선알미늄,연결,CIS,13,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,지배기업소유주지분,3401791716,1863127377,6172300518,12719116795,20261116001059
+00107224,남선알미늄,연결,CIS,14,ifrs-full_CostOfSales,매출원가,57993095410,52049429257,190797528733,177733431014,20261116001059
+00107224,남선알미늄,연결,CIS,16,dart_BasicEarningsLossPerSharePreferredStock,구형우선주기본주당손익,99,-10,85,89,20261116001059
+00107224,남선알미늄,연결,CIS,17,dart_DilutedEarningsLossPerSharePreferredStock,구형우선주희석주당손익,99,-10,85,89,20261116001059
+00107224,남선알미늄,연결,CIS,18,ifrs-full_BasicEarningsLossPerShare,보통주기본주당손익,79,-30,65,69,20261116001059
+00107224,남선알미늄,연결,CIS,19,ifrs-full_DilutedEarningsLossPerShare,보통주희석주당손익,79,-30,65,69,20261116001059
+00107224,남선알미늄,연결,CIS,20,ifrs-full_FinanceCosts,금융비용,489630968,428751823,1552324713,2104188283,20261116001059
+00107224,남선알미늄,연결,CIS,21,ifrs-full_FinanceIncome,금융수익,834154955,618804113,2275777734,2139392952,20261116001059
+00107224,남선알미늄,연결,CIS,22,ifrs-full_GrossProfit,매출총이익,5621394002,1505893335,18756002192,13204944642,20261116001059
+00107224,남선알미늄,연결,CIS,23,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용(수익),580469892,-564355747,-97246241,450928197,20261116001059
+00107224,남선알미늄,연결,CIS,24,ifrs-full_OtherComprehensiveIncome,법인세비용차감후기타포괄손익,-6836762299,5725402914,-2203392197,3838655938,20261116001059
+00107224,남선알미늄,연결,CIS,25,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류될 수 있는 항목,0,745985457,-140369954,-2425649733,20261116001059
+00107224,남선알미늄,연결,CIS,26,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillBeReclassifiedToProfitOrLossNetOfTax,관계기업 기타포괄손익에 대한 지분,0,745985457,-140369954,-2425649733,20261116001059
+00107224,남선알미늄,연결,CIS,27,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류될 수 없는 항목,-6836762299,4979417457,-2063022243,6264305671,20261116001059
+00107224,남선알미늄,연결,CIS,28,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,확정급여제도의 재측정요소,0,0,588191325,1358579247,20261116001059
+00107224,남선알미늄,연결,CIS,29,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillNotBeReclassifiedToProfitOrLossNetOfTax,관계기업 기타포괄손익에 대한 지분,-6836762299,4979417457,-2651213568,4905726424,20261116001059
+00107224,남선알미늄,연결,CIS,30,ifrs-full_ProfitLoss,분기순이익(손실),10238554015,-3862275537,8375692715,8880460857,20261116001059
+00107224,남선알미늄,연결,CIS,32,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분,0,0,0,0,20261116001059
+00107224,남선알미늄,연결,CIS,33,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업소유주지분,10238554015,-3862275537,8375692715,8880460857,20261116001059
+00107224,남선알미늄,연결,CIS,34,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),10819023907,-4426631284,8278446474,9331389054,20261116001059
+00107224,남선알미늄,연결,CIS,35,ifrs-full_ResearchAndDevelopmentExpense,연구개발비,350180365,270712685,934855402,849254848,20261116001059
+00107224,남선알미늄,연결,CIS,36,ifrs-full_Revenue,매출액,63614489412,53555322592,209553530925,190938375656,20261116001059
+00107224,남선알미늄,연결,CIS,37,ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod,관계기업투자손익,10287595762,263558628,12187149415,11189388617,20261116001059
 00108977,대구백화점,연결,IS,6,dart_OperatingIncomeLoss,영업이익(손실),-4667975757,-4028882469,-12327328510,-10345316639,20261116001458
 00108977,대구백화점,연결,IS,7,dart_OtherGains,기타수익,15380226,13517543,1041541704,39124996,20261116001458
 00108977,대구백화점,연결,IS,8,dart_OtherLosses,기타비용,97544200,72997181,337616853,263538107,20261116001458
@@ -459,6 +536,32 @@ corp_code,name,fs,sj_div,ord,account_id,account_nm,thstrm_amount,frmtrm_q_amount
 00351092,삼보모터스,연결,CIS,45,ifrs-full_ProfitLossFromContinuingOperations,계속영업이익(손실),-20420549428,9930795678,-7393016421,33667975238,20261116000220
 00351092,삼보모터스,연결,CIS,46,ifrs-full_ProfitLossFromDiscontinuedOperations,중단영업이익(손실),19836,-23560860,-21496796,340393067,20261116000220
 00351092,삼보모터스,연결,CIS,47,ifrs-full_Revenue,수익,458829450637,419398682791,1348379924225,1261646708803,20261116000220
+00127802,삼익THK,연결,CIS,6,dart_NonOperatingProfitLoss,영업외손익,-1339832675,619045270,-4302025619,-25745858952,20261116001162
+00127802,삼익THK,연결,CIS,7,dart_NonOperatingExpense,기타비용,1675678610,-1404571135,4825356060,24102091693,20261116001162
+00127802,삼익THK,연결,CIS,8,dart_NonOperatingIncome,기타수익,2681686370,832001550,5668262966,3686054008,20261116001162
+00127802,삼익THK,연결,CIS,9,ifrs-full_FinanceCosts,금융비용,2316829914,1663263256,5379194358,5704153820,20261116001162
+00127802,삼익THK,연결,CIS,10,ifrs-full_FinanceIncome,금융수익,-29010521,45735841,234261833,374332553,20261116001162
+00127802,삼익THK,연결,CIS,11,dart_OperatingIncomeLoss,영업이익,4051238828,-10988658420,1930743005,-24056705198,20261116001162
+00127802,삼익THK,연결,CIS,12,ifrs-full_ComprehensiveIncome,총포괄이익,2031129209,-7262341256,-2061004300,-41040869985,20261116001162
+00127802,삼익THK,연결,CIS,14,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,비지배지분,-78755,1638086,-290569,1426712,20261116001162
+00127802,삼익THK,연결,CIS,15,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,지배기업 소유주 지분,2031207964,-7263979342,-2060713731,-41042296697,20261116001162
+00127802,삼익THK,연결,CIS,16,ifrs-full_CostOfSales,매출원가,76778894434,55778509061,205361586304,159874251343,20261116001162
+00127802,삼익THK,연결,CIS,18,ifrs-full_BasicEarningsLossPerShare,기본주당이익,113,-355,-90,-1992,20261116001162
+00127802,삼익THK,연결,CIS,19,ifrs-full_GrossProfit,매출총이익,13648258473,-2202663273,28174329039,5940116747,20261116001162
+00127802,삼익THK,연결,CIS,20,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용(수익),376528216,-3026982300,-500891259,-8577290241,20261116001162
+00127802,삼익THK,연결,CIS,21,ifrs-full_OtherComprehensiveIncome,기타포괄손익,-303748728,80289594,-190612945,184403924,20261116001162
+00127802,삼익THK,연결,CIS,22,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되는 항목,-223111613,79657777,-220047925,56212879,20261116001162
+00127802,삼익THK,연결,CIS,23,ifrs-full_GainsLossesOnExchangeDifferencesOnTranslationNetOfTax,해외사업장환산외환차이(세후기타포괄손익),-223111613,79657777,-220047925,56212879,20261116001162
+00127802,삼익THK,연결,CIS,24,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되지 않는 항목,-80637115,631817,29434980,128191045,20261116001162
+00127802,삼익THK,연결,CIS,25,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesFromInvestmentsInEquityInstruments,기타포괄손익-공정가치측정지분상품평가손익,-26258271,74378139,293004543,308633814,20261116001162
+00127802,삼익THK,연결,CIS,26,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,"세후기타포괄손익, 확정급여제도의 재측정손익",-51110484,-63621546,-251171203,-173323378,20261116001162
+00127802,삼익THK,연결,CIS,27,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillNotBeReclassifiedToProfitOrLossNetOfTax,지분법이익잉여금변동,-3268360,-10124776,-12398360,-7119391,20261116001162
+00127802,삼익THK,연결,CIS,28,ifrs-full_ProfitLoss,분기순이익(손실),2334877937,-7342630850,-1870391355,-41225273909,20261116001162
+00127802,삼익THK,연결,CIS,30,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분,-78755,1638086,-290569,1426712,20261116001162
+00127802,삼익THK,연결,CIS,31,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업 소유주 지분,2334956692,-7344268936,-1870100786,-41226700621,20261116001162
+00127802,삼익THK,연결,CIS,32,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),2711406153,-10369613150,-2371282614,-49802564150,20261116001162
+00127802,삼익THK,연결,CIS,33,ifrs-full_Revenue,매출액,90427152907,53575845788,233535915343,165814368090,20261116001162
+00127802,삼익THK,연결,CIS,34,ifrs-full_SellingGeneralAndAdministrativeExpense,판매비와관리비,9597019645,8785995147,26243586034,29996821945,20261116001162
 00129642,상신브레이크,연결,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),9740281965,-2985510952,12880387483,-4236623631,20261116000290
 00129642,상신브레이크,연결,CIS,7,dart_OtherGains,기타이익,-1634414320,1598068374,9636038697,8503617442,20261116000290
 00129642,상신브레이크,연결,CIS,8,dart_OtherLosses,기타손실,11586188444,-971517319,15579657284,12343798042,20261116000290
@@ -637,6 +740,43 @@ corp_code,name,fs,sj_div,ord,account_id,account_nm,thstrm_amount,frmtrm_q_amount
 00411048,에스앤에스텍,연결,CIS,42,ifrs-full_ProfitLossFromContinuingOperations,계속영업이익,7932540229,12675874090,34468560660,34674240294,20261112000291
 00411048,에스앤에스텍,연결,CIS,43,ifrs-full_Revenue,매출액,61996784214,61548431394,190103155572,180124594772,20261112000291
 00411048,에스앤에스텍,연결,CIS,44,ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod,지분법이익(손실),-38421591,-33531594,-81038205,-51242877,20261112000291
+00125521,에스엘,연결,IS,6,dart_NonOperatingProfitLoss,영업외손익,-40344367799,25268106626,32239310486,28541574044,20261116001175
+00125521,에스엘,연결,IS,7,dart_OtherGains,기타수익,-648127855,15353819101,65619092104,50412741103,20261116001175
+00125521,에스엘,연결,IS,8,dart_OtherLosses,기타비용,52926832113,-2294595572,74982479726,48377451981,20261116001175
+00125521,에스엘,연결,IS,9,ifrs-full_FinanceCosts,금융원가,2802984572,2867984840,9827706221,10203994732,20261116001175
+00125521,에스엘,연결,IS,10,ifrs-full_FinanceIncome,금융수익,16294780157,7858897387,36947334405,25323637220,20261116001175
+00125521,에스엘,연결,IS,11,ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod,관계기업 및 공동기업투자 지분법이익,-261203416,2628779406,14483069924,11386642434,20261116001175
+00125521,에스엘,연결,IS,12,dart_OperatingIncomeLoss,영업이익,46118635785,68355360325,315691306939,293558861684,20261116001175
+00125521,에스엘,연결,IS,13,dart_TotalSellingGeneralAdministrativeExpenses,판매비와관리비,103697730066,81355736953,271678084279,228197477045,20261116001175
+00125521,에스엘,연결,IS,14,ifrs-full_CostOfSales,매출원가,1214083157561,1152896886614,3531877062095,3309281398648,20261116001175
+00125521,에스엘,연결,IS,16,ifrs-full_BasicEarningsLossPerShare,기본주당이익,-131,1484,5071,5157,20261116001175
+00125521,에스엘,연결,IS,17,ifrs-full_DilutedEarningsLossPerShare,희석주당이익,-131,1484,5071,5157,20261116001175
+00125521,에스엘,연결,IS,18,ifrs-full_GrossProfit,매출총이익,149816365851,149711097278,587369391218,521756338729,20261116001175
+00125521,에스엘,연결,IS,19,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용,14010863872,23609417075,108168599145,77883925031,20261116001175
+00125521,에스엘,연결,IS,20,ifrs-full_ProfitLoss,당기순이익(손실),-8236595886,70014049876,239762018280,244216510697,20261116001175
+00125521,에스엘,연결,IS,22,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분에 귀속되는 당기순이익(손실),-2193348770,1678134915,6235302823,6724118765,20261116001175
+00125521,에스엘,연결,IS,23,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 당기순이익(손실),-6043247116,68335914961,233526715457,237492391932,20261116001175
+00125521,에스엘,연결,IS,24,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익,5774267986,93623466951,347930617425,322100435728,20261116001175
+00125521,에스엘,연결,IS,25,ifrs-full_Revenue,매출액,1363899523412,1302607983892,4119246453313,3831037737377,20261116001175
+00125521,에스엘,연결,CIS,6,ifrs-full_ComprehensiveIncome,총포괄손익,-107409735925,102592884279,182486614347,230120558297,20261116001175
+00125521,에스엘,연결,CIS,8,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,"포괄손익, 비지배지분",-7784156649,1967467500,1123854159,3521115095,20261116001175
+00125521,에스엘,연결,CIS,9,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,"포괄손익, 지배기업의 소유주에게 귀속되는 지분",-99625579276,100625416779,181362760188,226599443202,20261116001175
+00125521,에스엘,연결,CIS,10,ifrs-full_OtherComprehensiveIncome,기타포괄손익,-99173140039,32578834403,-57275403933,-14095952400,20261116001175
+00125521,에스엘,연결,CIS,11,ifrs-full_IncomeTaxRelatingToComponentsOfOtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLoss,당기손익으로 재분류될수 있는 항목과 관련된 법인세,-13277595232,1433932090,-8458489786,-4596558785,20261116001175
+00125521,에스엘,연결,CIS,12,ifrs-full_IncomeTaxRelatingToComponentsOfOtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLoss,당기손익으로 재분류되지 않는 항목과 관련된 법인세,4805677397,4176363327,454616688,4741334980,20261116001175
+00125521,에스엘,연결,CIS,13,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossBeforeTax,당기손익으로 재분류될 수 있는 항목(세전기타포괄손익),-121373110120,19801450103,-62342666702,-31592217115,20261116001175
+00125521,에스엘,연결,CIS,14,ifrs-full_GainsLossesOnExchangeDifferencesOnTranslationBeforeTax,해외사업장환산손익,-106418549945,15340450124,-58516670634,-28878733974,20261116001175
+00125521,에스엘,연결,CIS,15,ifrs-full_GainsLossesOnFinancialAssetsMeasuredAtFairValueThroughOtherComprehensiveIncomeBeforeTax,기타포괄손익-공정가치측정 금융상품평가손익,-534427329,-46312711,-2499572689,25885760,20261116001175
+00125521,에스엘,연결,CIS,16,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillBeReclassifiedToProfitOrLossBeforeTax,관계기업자본변동,-14420132846,4507312690,-1326423379,-2739368901,20261116001175
+00125521,에스엘,연결,CIS,17,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossNetOfTax,당기손익으로 재분류될 수 있는 항목(세후기타포괄손익),-108095514888,18367518013,-53884176916,-26995658330,20261116001175
+00125521,에스엘,연결,CIS,18,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossBeforeTax,당기손익으로 재분류되지 않는 항목(세전기타포괄손익),13728052246,18387679717,-2936610329,17641040910,20261116001175
+00125521,에스엘,연결,CIS,19,-표준계정코드 미사용-,관계기업이익잉여금변동,-111936016,330374105,226205688,425680148,20261116001175
+00125521,에스엘,연결,CIS,20,-표준계정코드 미사용-,해외사업장환산손익,-5852373373,-108313738,-5000265056,-3302590676,20261116001175
+00125521,에스엘,연결,CIS,21,ifrs-full_OtherComprehensiveIncomeBeforeTaxGainsLossesFromInvestmentsInEquityInstruments,기타포괄손익-공정가치측정 금융상품평가손익,710491920,532685830,1278748640,2819794692,20261116001175
+00125521,에스엘,연결,CIS,22,ifrs-full_OtherComprehensiveIncomeBeforeTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,확정급여제도의 재측정요소,19077390019,17589853304,493887254,17730823531,20261116001175
+00125521,에스엘,연결,CIS,23,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillNotBeReclassifiedToProfitOrLossBeforeTax,관계기업자본변동,-95520304,43080216,64813145,-32666785,20261116001175
+00125521,에스엘,연결,CIS,24,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,당기손익으로 재분류되지 않는항목(세후기타포괄손익),8922374849,14211316390,-3391227017,12899705930,20261116001175
+00125521,에스엘,연결,CIS,25,ifrs-full_ProfitLoss,당기순이익(손실),-8236595886,70014049876,239762018280,244216510697,20261116001175
 01223219,에이에프더블류,별도,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),-2758545405,-2477642665,-7414484059,-6982298255,20261116000106
 01223219,에이에프더블류,별도,CIS,7,dart_OtherGains,기타이익,80111642,118411033,271014009,353430305,20261116000106
 01223219,에이에프더블류,별도,CIS,8,dart_OtherLosses,기타손실,138574104,-7598043,140997534,90145167,20261116000106
@@ -766,6 +906,33 @@ corp_code,name,fs,sj_div,ord,account_id,account_nm,thstrm_amount,frmtrm_q_amount
 00533924,이브이첨단소재,연결,CIS,34,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업소유주지분,-2580176389,-2470957162,-924464551,-11450336566,20261116000163
 00533924,이브이첨단소재,연결,CIS,35,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익,-2573326157,-3292827075,-3605829575,-11350814381,20261116000163
 00533924,이브이첨단소재,연결,CIS,36,ifrs-full_Revenue,매출액,22058431699,13848007374,58274795623,47686649346,20261116000163
+00107613,이수페타시스,연결,CIS,6,dart_LossesOfAssociatesAndJointVenturesAccountedForUsingEquityMethod,지분법손실,944422718,193062540,3352646988,470604141,20261116001194
+00107613,이수페타시스,연결,CIS,7,dart_OperatingIncomeLoss,영업이익(손실),94903161058,58429667779,239188373042,148184102936,20261116001194
+00107613,이수페타시스,연결,CIS,8,dart_OtherGains,기타이익,1699089848,1040555785,2776131321,4167967354,20261116001194
+00107613,이수페타시스,연결,CIS,9,dart_OtherLosses,기타손실,204197433,73564207,577107571,1472269343,20261116001194
+00107613,이수페타시스,연결,CIS,10,dart_TotalSellingGeneralAdministrativeExpenses,판매비와관리비,19401675088,18315293274,54892185421,50870945370,20261116001194
+00107613,이수페타시스,연결,CIS,11,ifrs-full_ComprehensiveIncome,총포괄손익,48365519730,49626844522,168842403705,115979602993,20261116001194
+00107613,이수페타시스,연결,CIS,12,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,"포괄손익, 비지배지분",-89679281,-29303,-77972011,3211952,20261116001194
+00107613,이수페타시스,연결,CIS,13,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,"포괄손익, 지배기업의 소유주에게 귀속되는 지분",48455199011,49626873825,168920375716,115976391041,20261116001194
+00107613,이수페타시스,연결,CIS,14,ifrs-full_CostOfSales,매출원가,274906940447,219387807381,815301505472,590987052504,20261116001194
+00107613,이수페타시스,연결,CIS,16,ifrs-full_BasicEarningsLossPerShare,기본주당이익(손실),886,643,2386,1683,20261116001194
+00107613,이수페타시스,연결,CIS,17,ifrs-full_DilutedEarningsLossPerShare,희석주당이익(손실),886,643,2386,1683,20261116001194
+00107613,이수페타시스,연결,CIS,18,ifrs-full_FinanceCosts,금융원가,27847279325,65353130,56957244860,32575125318,20261116001194
+00107613,이수페타시스,연결,CIS,19,ifrs-full_FinanceIncome,금융수익,16449048754,1009348017,44198095493,29520788198,20261116001194
+00107613,이수페타시스,연결,CIS,20,ifrs-full_GrossProfit,매출총이익,114304836146,76744961053,294080558463,199055048306,20261116001194
+00107613,이수페타시스,연결,CIS,21,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용(수익),19041101609,12932460293,50109055870,30469827885,20261116001194
+00107613,이수페타시스,연결,CIS,22,ifrs-full_OtherComprehensiveIncome,기타포괄손익,-16648778845,2411713111,-6324140862,-905428808,20261116001194
+00107613,이수페타시스,연결,CIS,23,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossNetOfTax,당기손익으로 재분류될 수 있는 항목(세후기타포괄손익),-16790446846,2406610489,-6422218709,-2280883615,20261116001194
+00107613,이수페타시스,연결,CIS,24,ifrs-full_GainsLossesOnExchangeDifferencesOnTranslationNetOfTax,해외사업장환산외환차이(세후기타포괄손익),-16790446846,2406610489,-6422218709,-2280883615,20261116001194
+00107613,이수페타시스,연결,CIS,25,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,당기손익으로 재분류되지 않는항목(세후기타포괄손익),141668001,5102622,98077847,1375454807,20261116001194
+00107613,이수페타시스,연결,CIS,26,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesFromInvestmentsInEquityInstruments,"세후기타포괄손익, 지분상품에 대한 투자자산",141668001,5102622,98077847,517474342,20261116001194
+00107613,이수페타시스,연결,CIS,27,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,확정급여제도의 재측정손익(세후기타포괄손익),,,,1091582826,20261116001194
+00107613,이수페타시스,연결,CIS,28,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRevaluation,자산재평가손익,,,,-233602361,20261116001194
+00107613,이수페타시스,연결,CIS,29,ifrs-full_ProfitLoss,당기순이익(손실),65014298575,47215131411,175166544567,116885031801,20261116001194
+00107613,이수페타시스,연결,CIS,30,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분에 귀속되는 당기순이익(손실),495235,-29303,1174217,448933,20261116001194
+00107613,이수페타시스,연결,CIS,31,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 당기순이익(손실),65013803340,47215160714,175165370350,116884582868,20261116001194
+00107613,이수페타시스,연결,CIS,32,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),84055400184,60147591704,225275600437,147354859686,20261116001194
+00107613,이수페타시스,연결,CIS,33,ifrs-full_Revenue,수익,389211776593,296132768434,1109382063935,790042100810,20261116001194
 00540605,이월드,별도,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),-475425073,-1384662144,2252090550,-3433407307,20261116001375
 00540605,이월드,별도,CIS,7,dart_OtherGains,기타이익,177019779,50894349,245986442,186521288,20261116001375
 00540605,이월드,별도,CIS,8,dart_OtherLosses,기타손실,29140464,65153015,128281197,804482366,20261116001375
@@ -844,6 +1011,28 @@ corp_code,name,fs,sj_div,ord,account_id,account_nm,thstrm_amount,frmtrm_q_amount
 00361381,제이브이엠,연결,CIS,13,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되지 않는 기타포괄손익,-46280379,17877567,-88502798,54606858,20261116000448
 00361381,제이브이엠,연결,CIS,14,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,보험수리적손익,-46280379,17877567,-88502798,54606858,20261116000448
 00361381,제이브이엠,연결,CIS,15,ifrs-full_ProfitLoss,분기순이익,9589506608,6399220264,28761745261,23076095777,20261116000448
+00671376,트리니티항공,연결,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),-41792066455,-95503823455,-204584305971,-209298054698,20261116000851
+00671376,트리니티항공,연결,CIS,7,dart_OtherGains,기타수익,139926180,63906792,255276493,164416822,20261116000851
+00671376,트리니티항공,연결,CIS,8,dart_OtherLosses,기타비용,861116133,197577901,2049703645,3582940872,20261116000851
+00671376,트리니티항공,연결,CIS,9,dart_TotalSellingGeneralAdministrativeExpenses,판매비와관리비,51320008991,49492501530,164255674883,136869207793,20261116000851
+00671376,트리니티항공,연결,CIS,10,ifrs-full_ComprehensiveIncome,총포괄손익,1224913100,-123924960240,-220395039233,-248465017672,20261116000851
+00671376,트리니티항공,연결,CIS,12,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,"포괄손익, 비지배지분",0,0,0,0,20261116000851
+00671376,트리니티항공,연결,CIS,13,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,"포괄손익, 지배기업의 소유주에게 귀속되는 지분",1224913100,-123924960240,-220395039233,-248465017672,20261116000851
+00671376,트리니티항공,연결,CIS,14,ifrs-full_CostOfSales,매출원가,523914781604,495780063110,1655556469352,1346672830935,20261116000851
+00671376,트리니티항공,연결,CIS,16,ifrs-full_BasicEarningsLossPerShare,기본주당이익(손실),269,-544,-2771,-1115,20261116000851
+00671376,트리니티항공,연결,CIS,17,ifrs-full_DilutedEarningsLossPerShare,희석주당이익(손실),269,-544,-2771,-1115,20261116000851
+00671376,트리니티항공,연결,CIS,18,ifrs-full_FinanceCosts,금융비용,28712725082,21234614679,139621117030,83537773900,20261116000851
+00671376,트리니티항공,연결,CIS,19,ifrs-full_FinanceIncome,금융수익,69306008099,-8094597129,114127836269,62694769412,20261116000851
+00671376,트리니티항공,연결,CIS,20,ifrs-full_GrossProfit,매출총이익,9527942536,-46011321925,-40328631088,-72428846905,20261116000851
+00671376,트리니티항공,연결,CIS,21,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용(수익),-733493914,-245128366,-2626206346,13993688476,20261116000851
+00671376,트리니티항공,연결,CIS,22,ifrs-full_OtherComprehensiveIncome,기타포괄손익,2411392577,796617766,8850768305,-911745960,20261116000851
+00671376,트리니티항공,연결,CIS,23,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,당기손익으로 재분류되지 않는항목(세후기타포괄손익),2411392577,796617766,8850768305,-911745960,20261116000851
+00671376,트리니티항공,연결,CIS,24,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,확정급여제도의재측정요소,2411392577,796617766,8850768305,-911745960,20261116000851
+00671376,트리니티항공,연결,CIS,25,ifrs-full_ProfitLoss,당기순이익(손실),-1186479477,-124721578006,-229245807538,-247553271712,20261116000851
+00671376,트리니티항공,연결,CIS,27,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분에 귀속되는 당기순이익(손실),0,0,0,0,20261116000851
+00671376,트리니티항공,연결,CIS,28,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 당기순이익(손실),-1186479477,-124721578006,-229245807538,-247553271712,20261116000851
+00671376,트리니티항공,연결,CIS,29,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),-1919973391,-124966706372,-231872013884,-233559583236,20261116000851
+00671376,트리니티항공,연결,CIS,30,ifrs-full_Revenue,매출액,533442724140,449768741185,1615227838264,1274243984030,20261116000851
 00204642,티비씨,연결,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),-370022729,151103438,-1092194860,342389629,20261116000732
 00204642,티비씨,연결,CIS,7,dart_OtherGains,기타수익,49100774,160459401,293337477,392128501,20261116000732
 00204642,티비씨,연결,CIS,8,dart_OtherLosses,기타비용,-101893022,6790279,13706495,24802914,20261116000732
@@ -867,6 +1056,33 @@ corp_code,name,fs,sj_div,ord,account_id,account_nm,thstrm_amount,frmtrm_q_amount
 00204642,티비씨,연결,CIS,29,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 당기순이익(손실),394769948,729291597,1074290317,2226065382,20261116000732
 00204642,티비씨,연결,CIS,30,ifrs-full_ProfitLossBeforeTax,법인세차감전순이익,498593312,922144097,1338199891,2780542386,20261116000732
 00204642,티비씨,연결,CIS,31,ifrs-full_Revenue,매출액,7051971044,9626049630,23354624294,29185786553,20261116000732
+00118965,티에이치엔,연결,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),7204257643,21626407802,40207090079,45794368277,20261116001115
+00118965,티에이치엔,연결,CIS,7,dart_OtherGains,기타수익,5882930713,6501768493,23257514941,17390778258,20261116001115
+00118965,티에이치엔,연결,CIS,8,dart_OtherLosses,기타손실,5437000216,2658425528,14892284248,7886374608,20261116001115
+00118965,티에이치엔,연결,CIS,9,dart_ProfitsOfAssociatesAndJointVenturesAccountedForUsingEquityMethod,관계기업투자손익,0,246692405,0,373410454,20261116001115
+00118965,티에이치엔,연결,CIS,10,dart_TotalSellingGeneralAdministrativeExpenses,판매비와관리비,21534759401,19672839938,63872381207,50358097411,20261116001115
+00118965,티에이치엔,연결,CIS,11,ifrs-full_ComprehensiveIncome,총포괄손익,-15243311562,27301247721,31892707182,41200843166,20261116001115
+00118965,티에이치엔,연결,CIS,13,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,비지배기업지분,-571766949,0,-1300672502,0,20261116001115
+00118965,티에이치엔,연결,CIS,14,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,지배기업지분,-14671544613,27301247721,33193379684,41200843166,20261116001115
+00118965,티에이치엔,연결,CIS,15,ifrs-full_CostOfSales,매출원가,224432493157,235622598625,713063255264,603698149676,20261116001115
+00118965,티에이치엔,연결,CIS,17,ifrs-full_BasicEarningsLossPerShare,기본주당이익(손실),266,1234,1923,2494,20261116001115
+00118965,티에이치엔,연결,CIS,18,ifrs-full_DilutedEarningsLossPerShare,희석주당이익(손실),266,1234,1923,2494,20261116001115
+00118965,티에이치엔,연결,CIS,19,ifrs-full_FinanceCosts,금융비용,1671313357,494845616,5469361254,6027056168,20261116001115
+00118965,티에이치엔,연결,CIS,20,ifrs-full_FinanceIncome,금융수익,407357824,132261301,2680706900,2065739414,20261116001115
+00118965,티에이치엔,연결,CIS,21,ifrs-full_GrossProfit,매출총이익,28739017044,41299247740,104079471286,96152465688,20261116001115
+00118965,티에이치엔,연결,CIS,22,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용(수익),2036816701,3150717479,12472014329,6814461802,20261116001115
+00118965,티에이치엔,연결,CIS,23,ifrs-full_OtherComprehensiveIncome,법인세비용차감후 기타포괄손익,-19592727468,5098106343,-1418944907,-3695560659,20261116001115
+00118965,티에이치엔,연결,CIS,24,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossNetOfTax,당기손익으로 재분류될 수 있는 항목(세후기타포괄손익),-11441581668,4617238114,-3012019493,-3871190673,20261116001115
+00118965,티에이치엔,연결,CIS,25,ifrs-full_GainsLossesOnExchangeDifferencesOnTranslationNetOfTax,해외사업장환산외환차이(세후기타포괄손익),-10493517764,4305601798,-1269954350,-3696863278,20261116001115
+00118965,티에이치엔,연결,CIS,26,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillBeReclassifiedToProfitOrLossNetOfTax,지분법자본변동,-948063904,311636316,-1742065143,-174327395,20261116001115
+00118965,티에이치엔,연결,CIS,27,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,당기손익으로 재분류되지 않는항목(세후기타포괄손익),-8151145800,480868229,1593074586,175630014,20261116001115
+00118965,티에이치엔,연결,CIS,28,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesFromInvestmentsInEquityInstruments,기타포괄손익-공정가치금융자산평가손익,-8045296632,531543774,1955995805,312122747,20261116001115
+00118965,티에이치엔,연결,CIS,29,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,순확정급여부채의재측정요소,-105849168,-50675545,-362921219,-136492733,20261116001115
+00118965,티에이치엔,연결,CIS,30,ifrs-full_ProfitLoss,당기순이익(손실),4349415906,22203141378,33311652089,44896403825,20261116001115
+00118965,티에이치엔,연결,CIS,32,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분에 귀속되는 당기순이익(손실),-429630687,0,-1307200795,0,20261116001115
+00118965,티에이치엔,연결,CIS,33,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 당기순이익(손실),4779046593,22203141378,34618852884,44896403825,20261116001115
+00118965,티에이치엔,연결,CIS,34,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),6386232607,25353858857,45783666418,51710865627,20261116001115
+00118965,티에이치엔,연결,CIS,35,ifrs-full_Revenue,매출액,253171510201,276921846365,817142726550,699850615364,20261116001115
 00693554,티케이케미칼,별도,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),3796780779,2333990421,30885242878,1205245843,20261113001182
 00693554,티케이케미칼,별도,CIS,7,dart_OtherGains,기타영업외수익,3437647227,204302893,3726075084,14587422311,20261113001182
 00693554,티케이케미칼,별도,CIS,8,dart_OtherLosses,기타영업외비용,233022359,360202681,712636438,955683469,20261113001182
@@ -1018,52 +1234,52 @@ corp_code,name,fs,sj_div,ord,account_id,account_nm,thstrm_amount,frmtrm_q_amount
 01144569,피엔티엠에스,별도,CIS,22,ifrs-full_ProfitLoss,당기순이익(손실),-2150371903,-2915684670,-2687126624,-3744890810,20261111000351
 01144569,피엔티엠에스,별도,CIS,23,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),-2150371903,-2915684670,-2810482090,-3744890810,20261111000351
 01144569,피엔티엠에스,별도,CIS,24,ifrs-full_Revenue,매출액,1105262830,360660000,9064240252,8173330000,20261111000351
-00261285,한국가스공사,연결,CIS,6,dart_OperatingIncomeLoss,영업이익,587799000000,388997000000,2173096000000,1627560000000,20261116002070
-00261285,한국가스공사,연결,CIS,7,dart_OtherGains,기타수익,4326000000,5977000000,46517000000,48180000000,20261116002070
-00261285,한국가스공사,연결,CIS,8,dart_OtherLosses,기타비용,12162000000,25728000000,50329000000,113498000000,20261116002070
-00261285,한국가스공사,연결,CIS,9,dart_TotalSellingGeneralAdministrativeExpenses,판매비와관리비,92963000000,95132000000,321256000000,307988000000,20261116002070
-00261285,한국가스공사,연결,CIS,10,-표준계정코드 미사용-,기타이익 및 손실,6522000000,5156000000,35076000000,15437000000,20261116002070
-00261285,한국가스공사,연결,CIS,11,ifrs-full_ComprehensiveIncome,총포괄손익,-61108000000,160570000000,999585000000,455993000000,20261116002070
-00261285,한국가스공사,연결,CIS,13,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,비지배지분에게 귀속되는 포괄손익,5698000000,-245000000,5102000000,-834000000,20261116002070
-00261285,한국가스공사,연결,CIS,14,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 포괄손익,-66806000000,160815000000,994484000000,456827000000,20261116002070
-00261285,한국가스공사,연결,CIS,15,ifrs-full_CostOfSales,매출원가,6825171000000,5888038000000,24321748000000,24799430000000,20261116002070
-00261285,한국가스공사,연결,CIS,16,dart_CostOfSalesFromConstructionContracts,건설계약으로 인한 수익에 대한 매출원가,5605000000,15239000000,22336000000,39784000000,20261116002070
-00261285,한국가스공사,연결,CIS,17,dart_CostOfSalesFromRenderingOfServices,용역의 제공으로 인한 수익에 대한 매출원가,66798000000,149586000000,317653000000,467917000000,20261116002070
-00261285,한국가스공사,연결,CIS,18,dart_CostOfSalesFromSaleOfGoods,재화의 판매로 인한 수익에 대한 매출원가,6709657000000,5680749000000,23863745000000,24197658000000,20261116002070
-00261285,한국가스공사,연결,CIS,19,dart_OtherCostOfSales,기타수익에 대한 매출원가,42550000000,41281000000,116417000000,91963000000,20261116002070
-00261285,한국가스공사,연결,CIS,20,-표준계정코드 미사용-,정부보조금 수익(매출액)에 대한 매출원가,561000000,1183000000,1597000000,2108000000,20261116002070
-00261285,한국가스공사,연결,CIS,22,ifrs-full_BasicEarningsLossPerShare,기본주당손익,3041,986,13182,6153,20261116002070
-00261285,한국가스공사,연결,CIS,23,ifrs-full_BasicEarningsLossPerShareFromContinuingOperations,계속영업기본주당손익,3041,986,13182,6153,20261116002070
-00261285,한국가스공사,연결,CIS,24,ifrs-full_DilutedEarningsLossPerShare,희석주당손익,2889,943,12506,5849,20261116002070
-00261285,한국가스공사,연결,CIS,25,ifrs-full_DilutedEarningsLossPerShareFromContinuingOperations,계속영업희석주당손익,2889,943,12506,5849,20261116002070
-00261285,한국가스공사,연결,CIS,26,ifrs-full_FinanceCosts,금융원가,399134000000,150353000000,2110429000000,1816069000000,20261116002070
-00261285,한국가스공사,연결,CIS,27,ifrs-full_FinanceIncome,금융수익,219777000000,-108352000000,1369005000000,950634000000,20261116002070
-00261285,한국가스공사,연결,CIS,28,ifrs-full_GrossProfit,매출총이익,680762000000,484129000000,2494352000000,1935548000000,20261116002070
-00261285,한국가스공사,연결,CIS,29,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용(수익),221534000000,23021000000,543502000000,191364000000,20261116002070
-00261285,한국가스공사,연결,CIS,30,ifrs-full_OtherComprehensiveIncome,기타포괄손익(세후),-333508000000,73767000000,-159958000000,-83092000000,20261116002070
-00261285,한국가스공사,연결,CIS,31,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되는 기타포괄손익,-336426000000,73286000000,-158487000000,-60830000000,20261116002070
-00261285,한국가스공사,연결,CIS,32,-표준계정코드 미사용-,매각예정으로 분류된 비유동자산이나 처분자산 집단과 관련한 기타포괄손익으로 인식된 비용,0,121000000,0,-246000000,20261116002070
-00261285,한국가스공사,연결,CIS,33,ifrs-full_GainsLossesOnExchangeDifferencesOnTranslationNetOfTax,해외사업환산손익,-521042000000,137743000000,-235753000000,-193464000000,20261116002070
-00261285,한국가스공사,연결,CIS,34,ifrs-full_GainsLossesOnHedgesOfNetInvestmentsInForeignOperationsNetOfTax,해외사업장순투자의 위험회피손익,295812000000,-85526000000,119943000000,133114000000,20261116002070
-00261285,한국가스공사,연결,CIS,35,ifrs-full_OtherComprehensiveIncomeNetOfTaxCashFlowHedges,현금흐름위험회피,84000000000,-20276000000,52520000000,55797000000,20261116002070
-00261285,한국가스공사,연결,CIS,36,ifrs-full_GainsLossesOnCashFlowHedgesNetOfTax,현금흐름위험회피의 세후차손익,79015000000,-25895000000,37342000000,39467000000,20261116002070
-00261285,한국가스공사,연결,CIS,37,ifrs-full_ReclassificationAdjustmentsOnCashFlowHedgesNetOfTax,현금흐름위험회피의 세후재분류조정,-4985000000,-5619000000,-15178000000,-16330000000,20261116002070
-00261285,한국가스공사,연결,CIS,38,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillBeReclassifiedToProfitOrLossNetOfTax,관계기업과 공동기업의 기타포괄손익에 대한 지분,-195196000000,41224000000,-95197000000,-56031000000,20261116002070
-00261285,한국가스공사,연결,CIS,39,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되지않는 기타포괄손익,2918000000,481000000,-1471000000,-22262000000,20261116002070
-00261285,한국가스공사,연결,CIS,40,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,확정급여제도의 재측정요소,2912000000,976000000,7750000000,291000000,20261116002070
-00261285,한국가스공사,연결,CIS,41,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillNotBeReclassifiedToProfitOrLossNetOfTax,관계기업과 공동기업의 기타포괄손익에 대한 지분,6000000,-495000000,-9221000000,-22553000000,20261116002070
-00261285,한국가스공사,연결,CIS,42,ifrs-full_ProfitLoss,당기순이익(손실),272400000000,86803000000,1159543000000,539085000000,20261116002070
-00261285,한국가스공사,연결,CIS,44,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분에 귀속되는 당기순이익(손실),5698000000,-245000000,5102000000,-834000000,20261116002070
-00261285,한국가스공사,연결,CIS,45,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 당기순이익(손실),266702000000,87048000000,1154441000000,539919000000,20261116002070
-00261285,한국가스공사,연결,CIS,46,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),493934000000,109824000000,1703045000000,730449000000,20261116002070
-00261285,한국가스공사,연결,CIS,47,ifrs-full_Revenue,수익,7505933000000,6372167000000,26816100000000,26734978000000,20261116002070
-00261285,한국가스공사,연결,CIS,48,dart_RevenueContributionToConstruction,공사부담금수익(매출액),39000000,40000000,119000000,124000000,20261116002070
-00261285,한국가스공사,연결,CIS,49,dart_RevenueGovernmentGrant,정부보조금수익(매출액),3356000000,3878000000,9621000000,9712000000,20261116002070
-00261285,한국가스공사,연결,CIS,50,ifrs-full_OtherRevenue,기타수익,107539000000,114424000000,316656000000,338882000000,20261116002070
-00261285,한국가스공사,연결,CIS,51,ifrs-full_RevenueFromConstructionContracts,건설계약으로 인한 수익,5696000000,14735000000,20339000000,36588000000,20261116002070
-00261285,한국가스공사,연결,CIS,52,ifrs-full_RevenueFromRenderingOfServices,용역의 제공으로 인한 수익,73989000000,165349000000,331687000000,518787000000,20261116002070
-00261285,한국가스공사,연결,CIS,53,ifrs-full_RevenueFromSaleOfGoods,재화의 판매로 인한 수익,7315314000000,6073741000000,26137678000000,25830885000000,20261116002070
-00261285,한국가스공사,연결,CIS,54,ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod,관계기업과 공동기업 관련 이익(손실),86806000000,-5873000000,240109000000,18205000000,20261116002070
+00261285,한국가스공사,연결,CIS,6,dart_OperatingIncomeLoss,영업이익,587799000000,388997000000,2173096000000,1627560000000,20261116001193
+00261285,한국가스공사,연결,CIS,7,dart_OtherGains,기타수익,4326000000,5977000000,46517000000,48180000000,20261116001193
+00261285,한국가스공사,연결,CIS,8,dart_OtherLosses,기타비용,12162000000,25728000000,50329000000,113498000000,20261116001193
+00261285,한국가스공사,연결,CIS,9,dart_TotalSellingGeneralAdministrativeExpenses,판매비와관리비,92963000000,95132000000,321256000000,307988000000,20261116001193
+00261285,한국가스공사,연결,CIS,10,-표준계정코드 미사용-,기타이익 및 손실,6522000000,5156000000,35076000000,15437000000,20261116001193
+00261285,한국가스공사,연결,CIS,11,ifrs-full_ComprehensiveIncome,총포괄손익,-61108000000,160570000000,999585000000,455993000000,20261116001193
+00261285,한국가스공사,연결,CIS,13,ifrs-full_ComprehensiveIncomeAttributableToNoncontrollingInterests,비지배지분에게 귀속되는 포괄손익,5698000000,-245000000,5102000000,-834000000,20261116001193
+00261285,한국가스공사,연결,CIS,14,ifrs-full_ComprehensiveIncomeAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 포괄손익,-66806000000,160815000000,994484000000,456827000000,20261116001193
+00261285,한국가스공사,연결,CIS,15,ifrs-full_CostOfSales,매출원가,6825171000000,5888038000000,24321748000000,24799430000000,20261116001193
+00261285,한국가스공사,연결,CIS,16,dart_CostOfSalesFromConstructionContracts,건설계약으로 인한 수익에 대한 매출원가,5605000000,15239000000,22336000000,39784000000,20261116001193
+00261285,한국가스공사,연결,CIS,17,dart_CostOfSalesFromRenderingOfServices,용역의 제공으로 인한 수익에 대한 매출원가,66798000000,149586000000,317653000000,467917000000,20261116001193
+00261285,한국가스공사,연결,CIS,18,dart_CostOfSalesFromSaleOfGoods,재화의 판매로 인한 수익에 대한 매출원가,6709657000000,5680749000000,23863745000000,24197658000000,20261116001193
+00261285,한국가스공사,연결,CIS,19,dart_OtherCostOfSales,기타수익에 대한 매출원가,42550000000,41281000000,116417000000,91963000000,20261116001193
+00261285,한국가스공사,연결,CIS,20,-표준계정코드 미사용-,정부보조금 수익(매출액)에 대한 매출원가,561000000,1183000000,1597000000,2108000000,20261116001193
+00261285,한국가스공사,연결,CIS,22,ifrs-full_BasicEarningsLossPerShare,기본주당손익,3041,986,13182,6153,20261116001193
+00261285,한국가스공사,연결,CIS,23,ifrs-full_BasicEarningsLossPerShareFromContinuingOperations,계속영업기본주당손익,3041,986,13182,6153,20261116001193
+00261285,한국가스공사,연결,CIS,24,ifrs-full_DilutedEarningsLossPerShare,희석주당손익,2889,943,12506,5849,20261116001193
+00261285,한국가스공사,연결,CIS,25,ifrs-full_DilutedEarningsLossPerShareFromContinuingOperations,계속영업희석주당손익,2889,943,12506,5849,20261116001193
+00261285,한국가스공사,연결,CIS,26,ifrs-full_FinanceCosts,금융원가,399134000000,150353000000,2110429000000,1816069000000,20261116001193
+00261285,한국가스공사,연결,CIS,27,ifrs-full_FinanceIncome,금융수익,219777000000,-108352000000,1369005000000,950634000000,20261116001193
+00261285,한국가스공사,연결,CIS,28,ifrs-full_GrossProfit,매출총이익,680762000000,484129000000,2494352000000,1935548000000,20261116001193
+00261285,한국가스공사,연결,CIS,29,ifrs-full_IncomeTaxExpenseContinuingOperations,법인세비용(수익),221534000000,23021000000,543502000000,191364000000,20261116001193
+00261285,한국가스공사,연결,CIS,30,ifrs-full_OtherComprehensiveIncome,기타포괄손익(세후),-333508000000,73767000000,-159958000000,-83092000000,20261116001193
+00261285,한국가스공사,연결,CIS,31,ifrs-full_OtherComprehensiveIncomeThatWillBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되는 기타포괄손익,-336426000000,73286000000,-158487000000,-60830000000,20261116001193
+00261285,한국가스공사,연결,CIS,32,-표준계정코드 미사용-,매각예정으로 분류된 비유동자산이나 처분자산 집단과 관련한 기타포괄손익으로 인식된 비용,0,121000000,0,-246000000,20261116001193
+00261285,한국가스공사,연결,CIS,33,ifrs-full_GainsLossesOnExchangeDifferencesOnTranslationNetOfTax,해외사업환산손익,-521042000000,137743000000,-235753000000,-193464000000,20261116001193
+00261285,한국가스공사,연결,CIS,34,ifrs-full_GainsLossesOnHedgesOfNetInvestmentsInForeignOperationsNetOfTax,해외사업장순투자의 위험회피손익,295812000000,-85526000000,119943000000,133114000000,20261116001193
+00261285,한국가스공사,연결,CIS,35,ifrs-full_OtherComprehensiveIncomeNetOfTaxCashFlowHedges,현금흐름위험회피,84000000000,-20276000000,52520000000,55797000000,20261116001193
+00261285,한국가스공사,연결,CIS,36,ifrs-full_GainsLossesOnCashFlowHedgesNetOfTax,현금흐름위험회피의 세후차손익,79015000000,-25895000000,37342000000,39467000000,20261116001193
+00261285,한국가스공사,연결,CIS,37,ifrs-full_ReclassificationAdjustmentsOnCashFlowHedgesNetOfTax,현금흐름위험회피의 세후재분류조정,-4985000000,-5619000000,-15178000000,-16330000000,20261116001193
+00261285,한국가스공사,연결,CIS,38,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillBeReclassifiedToProfitOrLossNetOfTax,관계기업과 공동기업의 기타포괄손익에 대한 지분,-195196000000,41224000000,-95197000000,-56031000000,20261116001193
+00261285,한국가스공사,연결,CIS,39,ifrs-full_OtherComprehensiveIncomeThatWillNotBeReclassifiedToProfitOrLossNetOfTax,후속적으로 당기손익으로 재분류되지않는 기타포괄손익,2918000000,481000000,-1471000000,-22262000000,20261116001193
+00261285,한국가스공사,연결,CIS,40,ifrs-full_OtherComprehensiveIncomeNetOfTaxGainsLossesOnRemeasurementsOfDefinedBenefitPlans,확정급여제도의 재측정요소,2912000000,976000000,7750000000,291000000,20261116001193
+00261285,한국가스공사,연결,CIS,41,ifrs-full_ShareOfOtherComprehensiveIncomeOfAssociatesAndJointVenturesAccountedForUsingEquityMethodThatWillNotBeReclassifiedToProfitOrLossNetOfTax,관계기업과 공동기업의 기타포괄손익에 대한 지분,6000000,-495000000,-9221000000,-22553000000,20261116001193
+00261285,한국가스공사,연결,CIS,42,ifrs-full_ProfitLoss,당기순이익(손실),272400000000,86803000000,1159543000000,539085000000,20261116001193
+00261285,한국가스공사,연결,CIS,44,ifrs-full_ProfitLossAttributableToNoncontrollingInterests,비지배지분에 귀속되는 당기순이익(손실),5698000000,-245000000,5102000000,-834000000,20261116001193
+00261285,한국가스공사,연결,CIS,45,ifrs-full_ProfitLossAttributableToOwnersOfParent,지배기업의 소유주에게 귀속되는 당기순이익(손실),266702000000,87048000000,1154441000000,539919000000,20261116001193
+00261285,한국가스공사,연결,CIS,46,ifrs-full_ProfitLossBeforeTax,법인세비용차감전순이익(손실),493934000000,109824000000,1703045000000,730449000000,20261116001193
+00261285,한국가스공사,연결,CIS,47,ifrs-full_Revenue,수익,7505933000000,6372167000000,26816100000000,26734978000000,20261116001193
+00261285,한국가스공사,연결,CIS,48,dart_RevenueContributionToConstruction,공사부담금수익(매출액),39000000,40000000,119000000,124000000,20261116001193
+00261285,한국가스공사,연결,CIS,49,dart_RevenueGovernmentGrant,정부보조금수익(매출액),3356000000,3878000000,9621000000,9712000000,20261116001193
+00261285,한국가스공사,연결,CIS,50,ifrs-full_OtherRevenue,기타수익,107539000000,114424000000,316656000000,338882000000,20261116001193
+00261285,한국가스공사,연결,CIS,51,ifrs-full_RevenueFromConstructionContracts,건설계약으로 인한 수익,5696000000,14735000000,20339000000,36588000000,20261116001193
+00261285,한국가스공사,연결,CIS,52,ifrs-full_RevenueFromRenderingOfServices,용역의 제공으로 인한 수익,73989000000,165349000000,331687000000,518787000000,20261116001193
+00261285,한국가스공사,연결,CIS,53,ifrs-full_RevenueFromSaleOfGoods,재화의 판매로 인한 수익,7315314000000,6073741000000,26137678000000,25830885000000,20261116001193
+00261285,한국가스공사,연결,CIS,54,ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod,관계기업과 공동기업 관련 이익(손실),86806000000,-5873000000,240109000000,18205000000,20261116001193
 01179617,한국비엔씨,연결,CIS,6,dart_OperatingIncomeLoss,영업이익(손실),3236753080,-1402818809,1390648849,3986002444,20261116000333
 01179617,한국비엔씨,연결,CIS,7,dart_OtherGains,기타수익,68595297,85714599,344450432,142269285,20261116000333
 01179617,한국비엔씨,연결,CIS,8,dart_OtherLosses,기타비용,51488030,43317816,482704098,144170056,20261116000333

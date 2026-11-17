@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'daegu-listed-2026q3', summary: 'DART 분기보고서로 집계한 대구 본사 코스피·코스닥 상장법인 53개사(6월 결산 세원정공 제외)의 2026년 3분기 누적(1~9월) 실적: 매출액 58조 6,423억 원(+13.4%), 영업이익 3조 5,998억 원(+39.8%), 당기순이익 2조 250억 원(+97.0%). 매출액 상위 10개사, 업종별 매출 증감, 증가·감소 기업 수, 흑자·적자 기업 수와 53개사 전체 실적 표를 실은 보도자료. iM금융지주 매출(영업수익) 증가는 iM증권 거래이익 총액 증가로, 금융지주를 빼면 매출 +5.0%.', topics: ['상장기업', '실적'],
+    title: '대구 상장기업 영업익·순익 ‘동반 증가’ — 2026년 3분기 누적 실적', name: '대구 상장기업 영업익·순익 ‘동반 증가’ — 2026년 3분기 누적 실적',
+    hwpx: '/hwpx/daegu-listed-2026q3.hwpx', hwpxSize: '55KB', date: '2026-11-17' },
   { slug: 'hd-hyundai-robotics-ai-factory', summary: '대구 달성군 유가읍(대구테크노폴리스)에 본점·공장을 둔 비상장 산업용 로봇 회사 HD현대로보틱스(2020년 HD현대에서 물적분할)의 2022~2025년 연결 실적(2025년 매출 2,630억 원·영업손실 218억 원)과 부문·지역별 매출, 상환전환우선주 1,800억 원 발행을 DART 감사보고서로 정리하고, 대구시 협약(생산 능력 연 8,000대 → 20,000대, 자동화율 50% → 80%)·휴머노이드 로봇 특화단지·지능형 양팔로봇·팔란티어 협력(로봇 프로그래밍 업무 기간 21.5일 → 7.9일, 회사 발표)을 보도로 적은 자료. 붙임은 로봇과 AIP 연결의 쉬운 설명. 기업가치·전망은 싣지 않음.', topics: ['비상장기업', '로봇', 'AI'],
     title: 'HD현대로보틱스, 대구 공장의 생산 능력 2.5배 계획과 양팔로봇·팔란티어 협력', name: 'HD현대로보틱스, 대구 공장의 생산 능력 2.5배 계획과 양팔로봇·팔란티어 협력',
     hwpx: '/hwpx/hd-hyundai-robotics-ai-factory.hwpx', hwpxSize: '167KB', date: '2026-11-11' },

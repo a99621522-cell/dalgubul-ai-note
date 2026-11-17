@@ -1,0 +1,50 @@
+name: DART 대구 상장사 분기 손익계산서 항목(실적 증감 내역용)
+
+# scripts/dart_is_items.py — 대구 본사 상장사 분기 손익계산서 전체 항목 → data/dart/is_items_<연도>q<n>.csv
+# 운영자 지시 2026-11-16 '이유도 붙여'. 사이트는 읽지 않는다. 키 DART_KEY.
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        default: "2026"
+      reprt:
+        description: "11013 1분기·11012 반기·11014 3분기·11011 사업"
+        default: "11014"
+  push:   # 새 워크플로는 기본 브랜치에 있어야 수동 실행이 되므로, 이 브랜치에서는 data/dart/is_items_query.txt(1줄 연도, 2줄 보고서 코드)를 고쳐 푸시
+    branches: ["claude/factorion-file-repair-tyqnlb"]
+    paths: ["data/dart/is_items_query.txt", "scripts/dart_is_items.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dart-is-items
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r scripts/requirements.txt
+      - name: 받기
+        env:
+          DART_KEY: ${{ secrets.DART_KEY }}
+          PYTHONUNBUFFERED: "1"
+          YEAR: ${{ inputs.year }}
+          REPRT: ${{ inputs.reprt }}
+        run: |
+          if [ -z "$YEAR" ] && [ -f data/dart/is_items_query.txt ]; then YEAR=$(sed -n 1p data/dart/is_items_query.txt); REPRT=$(sed -n 2p data/dart/is_items_query.txt); fi
+          python3 scripts/dart_is_items.py --year "${YEAR:-2026}" --reprt "${REPRT:-11014}"
+      - name: 커밋
+        run: |
+          git config user.name dalgubul-bot
+          git config user.email bot@users.noreply.github.com
+          git add data/dart/is_items_*.csv
+          git diff --cached --quiet && { echo "변경 없음"; exit 0; }
+          git commit -m "data: DART 대구 상장사 분기 손익계산서 항목 $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}" && break; sleep $((i * 5)); done

@@ -487,6 +487,13 @@ def names_mode(argv: list[str]) -> int:
             nm, _, prog = x.partition("=")
             if nm.strip():
                 names[N.norm_name(nm)] = prog.strip()
+    forced = {}
+    if "--codes" in argv:
+        for x in argv[argv.index("--codes") + 1].split(","):
+            nmx, _, cd = x.partition("=")
+            if cd.strip():
+                forced[N.norm_name(nmx)] = cd.strip()
+                names.setdefault(N.norm_name(nmx), "")
     print(f"[names] 대상 이름 {len(names)}개", flush=True)
     try:
         r = N.requests.get(f"{N.API}/corpCode.xml", params={"crtfc_key": N.KEY}, headers=N.UA, timeout=180)
@@ -512,7 +519,10 @@ def names_mode(argv: list[str]) -> int:
                 break
             cands = hits.get(nn, [])
             dg = []
-            for code, stock in cands:
+            if nn in forced:   # --codes 이름=고유번호: 기업개황 주소가 옛 주소(본점 이전 전)라 대구로 안 잡히는 회사를 고유번호로 바로(감사보고서 본점 소재지로 확인한 것만)
+                info = company(forced[nn], cache)
+                dg.append((forced[nn], next((st for c, st in cands if c == forced[nn]), ""), info))
+            for code, stock in ([] if nn in forced else cands):
                 info = company(code, cache)
                 if info.get("region", "").startswith("대구"):
                     dg.append((code, stock, info))

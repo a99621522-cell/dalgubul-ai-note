@@ -419,6 +419,38 @@ def sample(argv: list[str]) -> int:
 
 
 # ── ⑤ 명단 회사(스타기업 등) ──
+def acnt_rows(code: str, info: dict, prog: str, rows: dict) -> int:
+    """사업보고서 주요계정(연결 우선) 최근 2개 사업연도 + 직원 수(empSttus) → rows. 받은 연도 수."""
+    import collect_dart_emp as EMP
+    got = 0
+    for year in (str(date.today().year - 1), str(date.today().year - 2)):
+        if not budget():
+            break
+        j = N.get("fnlttSinglAcnt.json", corp_code=code, bsns_year=year, reprt_code="11011") or {}
+        items = j.get("list", [])
+        if not items:
+            continue
+        fs = "CFS" if any(x.get("fs_div") == "CFS" for x in items) else "OFS"
+        its = [x for x in items if x.get("fs_div") == fs]
+        pick = lambda pat: next((amt(x.get("thstrm_amount")) for x in its if re.fullmatch(pat, (x.get("account_nm") or "").replace(" ", ""))), None)
+        pickp = lambda pat: next((amt(x.get("frmtrm_amount")) for x in its if re.fullmatch(pat, (x.get("account_nm") or "").replace(" ", ""))), None)
+        rno = its[0].get("rcept_no", "") if its else ""
+        cur = {"corp_code": code, "name": info.get("name", ""), "region": info.get("region", ""), "district": info.get("district", ""),
+               "ksic": info.get("ksic", ""), "group": group_of(info.get("ksic", "")), "fs": "연결" if fs == "CFS" else "별도",
+               "report": f"사업보고서 ({year}.12)", "rcept_no": rno, "read_at": date.today().isoformat(), "fy": year, "basis": "당기", "program": prog,
+               "sales": pick(r"매출액|영업수익|수익\(매출액\)"), "sales_prev": pickp(r"매출액|영업수익|수익\(매출액\)"),
+               "op": pick(r"영업이익(\(손실\))?|영업손실|영업손익"), "op_prev": pickp(r"영업이익(\(손실\))?|영업손실|영업손익"),
+               "net": pick(r"당기순이익(\(손실\))?|당기순손실|당기순손익"), "assets": pick(r"자산총계"), "liab": pick(r"부채총계"), "equity": pick(r"자본총계")}
+        e = N.get("empSttus.json", corp_code=code, bsns_year=year, reprt_code="11011") or {}
+        rec = EMP.summarize(code, info.get("name", ""), int(year), e.get("list", [])) if e.get("list") else None
+        if rec and rec.get("employees"):
+            cur["employees"] = int(rec["employees"])
+        rows[(code, year)] = cur
+        got += 1
+    return got
+
+
+
 def names_mode(argv: list[str]) -> int:
     """명단 회사의 최근 감사보고서 재무(운영자 지시 2026-11-18 '2025년도로 스타기업 보고서 작성해').
     공시검색 목록(--filings)이 늦은 해를 못 받았어도 회사별 list.json 으로 바로 찾는다."""
@@ -474,7 +506,8 @@ def names_mode(argv: list[str]) -> int:
                 continue
             for code, stock, info in dg:
                 if stock:
-                    status.append({"name": nn, "program": prog, "state": "상장(사업보고서)", "corp_code": code})
+                    got = acnt_rows(code, info, prog, rows)
+                    status.append({"name": nn, "program": prog, "state": f"상장(사업보고서 {got}개 연도)", "corp_code": code})
                     continue
                 aud, page = [], 1
                 while True:
@@ -489,6 +522,11 @@ def names_mode(argv: list[str]) -> int:
                         break
                     page += 1
                 reps = pick_reports(aud, k)
+                if not reps:   # 사업보고서를 내는 비상장(기타법인)은 감사보고서가 사업보고서에 붙어 따로 안 나온다
+                    got = acnt_rows(code, info, prog, rows)
+                    if got:
+                        status.append({"name": nn, "program": prog, "state": f"비상장 사업보고서 {got}개 연도", "corp_code": code})
+                        continue
                 status.append({"name": nn, "program": prog, "state": f"감사보고서 {len(reps)}건" if reps else "감사보고서 없음", "corp_code": code})
                 for rep in reps:
                     if rep[2] in done or not budget():
@@ -502,7 +540,7 @@ def names_mode(argv: list[str]) -> int:
         save_json(CORP, cache)
         out.parent.mkdir(parents=True, exist_ok=True)
         with out.open("w", newline="", encoding="utf-8") as f:
-            w = csv.DictWriter(f, fieldnames=COLS + ["program"], extrasaction="ignore")
+            w = csv.DictWriter(f, fieldnames=COLS + ["program", "employees"], extrasaction="ignore")
             w.writeheader()
             for key in sorted(rows):
                 w.writerow(rows[key])

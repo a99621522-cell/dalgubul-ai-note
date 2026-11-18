@@ -687,6 +687,8 @@ def fin_from_audit(xml: str) -> tuple[dict, dict]:
                     cur, prev = n
                 else:
                     cur, prev = n[0], None
+                if key in ("op", "net") and "손실" in head and "이익" not in head:   # 과목이 '영업손실'·'당기순손실'인데 금액에 괄호가 없으면 손실로(2026-11-18 씨티셀즈)
+                    cur, prev = -abs(cur), (-abs(prev) if prev is not None else None)
                 got[key] = (cur * unit, prev * unit if prev is not None else None)
                 raw[key] = f"[{ctx}] " + " | ".join(cells)[:170]
     for key, (v, r) in weak.items():
@@ -728,6 +730,9 @@ def fin_from_text(xml: str, got: dict, raw: dict) -> None:
             v = int(re.sub(r"[^\d]", "", x))
             return -v if x.startswith("(") or x.startswith("-") else v
         a, b = val(m.group(1)), val(m.group(2))
+        lab_txt = re.sub(r"\s+", "", m.group(0)[:30])
+        if key in ("op", "net") and "손실" in lab_txt and "이익" not in lab_txt:   # '영업손실 2,267,617,477' 꼴
+            a, b = -abs(a), (-abs(b) if b is not None else None)
         got[key] = (a * unit, b * unit if b is not None else None)
         raw[key] = f"[{st}·글] " + m.group(0)[:160]
 

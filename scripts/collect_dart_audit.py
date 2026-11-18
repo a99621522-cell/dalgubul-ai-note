@@ -522,12 +522,26 @@ def names_mode(argv: list[str]) -> int:
             if nn in forced:   # --codes 이름=고유번호: 기업개황 주소가 옛 주소(본점 이전 전)라 대구로 안 잡히는 회사를 고유번호로 바로(감사보고서 본점 소재지로 확인한 것만)
                 info = company(forced[nn], cache)
                 dg.append((forced[nn], next((st for c, st in cands if c == forced[nn]), ""), info))
+            outside = []
             for code, stock in ([] if nn in forced else cands):
                 info = company(code, cache)
                 if info.get("region", "").startswith("대구"):
                     dg.append((code, stock, info))
+                else:
+                    outside.append((code, stock, info))
+            if not dg and outside and "--hq-check" in argv and len(outside) <= 3:
+                # 기업개황 주소가 대구 밖이어도 최근 감사보고서 첫머리 '본점 소재지'가 대구면 넣는다(기업개황이 옛 주소인 회사 — 2026-11-18 대광소결금속·유솔·에스티엠)
+                for code, stock, info in outside:
+                    lj = N.get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), pblntf_ty="F", page_count=20) or {}
+                    rno = next((x.get("rcept_no") for x in lj.get("list", []) if "감사보고서" in (x.get("report_nm") or "")), None)
+                    xml = N.doc_xml(rno) if rno else ""
+                    m = re.search(r"본\s*점\s*소\s*재\s*지.{0,80}?(대구|경북\s*군위|경상북도\s*군위)", N.clean(xml)[:20000]) if xml else None
+                    if m:
+                        info = {**info, "region": "대구광역시", "hq_note": "감사보고서 본점 소재지"}
+                        dg.append((code, stock, info))
+                        print(f"[names] {info.get('name')} — 기업개황 주소는 대구 밖, 감사보고서 본점 소재지는 대구", flush=True)
             if not dg:
-                status.append({"name": nn, "program": prog, "state": "DART 이름 없음" if not cands else "본사 대구 아님", "corp_code": ""})
+                status.append({"name": nn, "program": prog, "state": "DART 이름 없음" if not cands else "본사 대구 아님(" + "; ".join(f"{i.get('region', '')} {i.get('district', '')}" for _, _, i in outside) + ")", "corp_code": ";".join(c for c, _, _ in outside)})
                 continue
             for code, stock, info in dg:
                 if stock:

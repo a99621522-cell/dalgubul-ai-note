@@ -33,7 +33,7 @@ if ((D.govs?.[0]?.focus ?? []).length) {
   const shown = await pg.$$eval('#rf-focus details li', els => els.length);
   ok('G12 신고에 넣지 않는 곳 = 수탁기관 자기 사업 시설', shown === own && (own > 0 || !D.govs[0].exclude_note), `${shown}/${own}`);   // exclude_note 를 둔 지자체는 그런 시설이 있어야 한다
   const box = pg.locator('#rf-focus .rf-area').first();
-  if (await box.count()) {
+  if (!(D.govs[0].focus ?? []).some(g => g.area)) { /* 면적 나누기 묶음이 없는 지자체 */ } else if (await box.count()) {
     const fid = await box.getAttribute('data-fid');
     await box.locator('[data-area-tot]').fill('1000'); await box.locator('[data-area-tax]').fill('250');
     await Promise.all([pg.waitForLoadState('load'), box.locator('[data-area-go]').click()]); await pg.waitForTimeout(2500);

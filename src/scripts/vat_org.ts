@@ -62,7 +62,7 @@ export async function makeOrg(D: Data, v: string): Promise<Org> {
   const [kind, key] = v.includes(':') ? v.split(':') : [presets.some(p => p.key === v) ? 'preset' : 'gov', v];
   const p = presets.find(x => x.key === key); const g = govs.find(x => x.key === key);
   if (kind === 'preset' && p) { org.org = p.org; org.facilities = presetFacilities(p); }
-  if (g) { if (!org.org) org.org = g.name; addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ } }
+  if (g) { if (!org.org) org.org = D.govs?.find(x => x.key === key)?.name ?? g.name; /* 세입예산서 이름('군위군')보다 지자체 프로필 이름('대구광역시 군위군') — 기관 번호·제목과 같게 */ addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ } }
   if (!org.org) { const gp = D.govs?.find(x => x.key === key); if (gp) { org.org = gp.name; try { localStorage.setItem('vat-gov', key); } catch { /* */ } } }
   org.facilities.forEach(f => { f.kind = 'gov'; }); const on = findOrgNo(D, org.org); if (on) { org.reg_no = on.bizno; org.reg_src = orgNoNote(on); fillFacilityNos(D, org, on); }
   return org;

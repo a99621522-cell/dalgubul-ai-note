@@ -1037,12 +1037,16 @@ def main(argv: list[str]) -> int:
         except Exception as e:  # noqa: BLE001
             print(f"[dart_notes] corpCode 실패: {redact(e)[:120]}")
             return 0
-        hits = [(clean(m.group(1)), clean(m.group(2)), clean(m.group(3)))
-                for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)
-                if (kw.replace(" ", "") == clean(m.group(2)).replace(" ", "") if "--exact" in argv else kw.replace(" ", "") in clean(m.group(2)).replace(" ", ""))]
-        print(f"[dart_notes] 고유번호 목록에서 '{kw}' {len(hits)}곳")
+        hits = []   # 낱말을 쉼표로 여럿 주면 낱말마다 최대 6곳(2026-11-18 스타기업 빈칸 찾기)
+        all_ = [(clean(m.group(1)), clean(m.group(2)), clean(m.group(3)))
+                for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)]
+        kws_ = [k.replace(" ", "") for k in kw.split(",") if k.strip()]
+        for k in kws_:
+            hk = [h for h in all_ if (k == h[1].replace(" ", "") if "--exact" in argv else k in h[1].replace(" ", ""))]
+            print(f"[dart_notes] 고유번호 목록에서 '{k}' {len(hk)}곳: {', '.join(h[1] for h in hk[:20])}")
+            hits += hk[:6] if len(kws_) > 1 else hk[:10]
         bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
-        for code, name, stock in hits[:10]:
+        for code, name, stock in hits:
             info = get("company.json", corp_code=code) or {}
             print(f"=== {name} corp_code={code} 종목코드={stock or '-'} 법인구분={info.get('corp_cls')} 주소={info.get('adres')} 업종={info.get('induty_code')} 설립일={info.get('est_dt')} 홈페이지={info.get('hm_url')}")
             j = get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), page_count=100) or {}

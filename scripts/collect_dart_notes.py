@@ -1042,7 +1042,7 @@ def main(argv: list[str]) -> int:
                 for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)]
         kws_ = [k.replace(" ", "") for k in kw.split(",") if k.strip()]
         for k in kws_:
-            hk = [h for h in all_ if (k == h[1].replace(" ", "") if "--exact" in argv else k in h[1].replace(" ", ""))]
+            hk = [h for h in all_ if (h[2] == k if re.fullmatch(r"\d{6}|\d{4}[0-9A-Z]{2}", k) else k == h[1].replace(" ", "") if "--exact" in argv else k in h[1].replace(" ", ""))]   # 종목코드(6자리)로도
             print(f"[dart_notes] 고유번호 목록에서 '{k}' {len(hk)}곳: {', '.join(h[1] for h in hk[:20])}")
             hits += hk[:6] if len(kws_) > 1 else hk[:10]
         bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")

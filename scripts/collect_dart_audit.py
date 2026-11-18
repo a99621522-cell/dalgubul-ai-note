@@ -201,6 +201,12 @@ def read_rows(code: str, info: dict, rep: tuple) -> list[dict]:
         print(f"CHECK\t{info.get('name')}\t{rn}\thttps://dart.fss.or.kr/dsaf001/main.do?rcpNo={rno}")
         for k, v in raw.items():
             print(f"CHECK\t{info.get('name')}\t{k}\t{v}")
+        if "sales" not in got:   # 매출액을 못 읽은 보고서 — 손익계산서 머리 글자를 찍어 과목 이름을 본다
+            t = re.sub(r"\s+", " ", N.unescape(re.sub(r"<[^>]+>", " | ", xml)))
+            m = re.search(r"손\s*익\s*계\s*산\s*서", t[3000:])
+            if m:
+                i = 3000 + m.start()
+                print(f"CHECKIS\t{info.get('name')}\t{t[i:i + 900]}")
     fy = fy_of(rn)
     base = {"corp_code": code, "name": info.get("name", ""), "region": info.get("region", ""), "district": info.get("district", ""),
             "ksic": info.get("ksic", ""), "group": group_of(info.get("ksic", "")), "fs": "연결" if "연결" in rn else "별도",

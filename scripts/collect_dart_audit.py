@@ -434,7 +434,16 @@ def acnt_rows(code: str, info: dict, prog: str, rows: dict) -> int:
             break
         j = N.get("fnlttSinglAcnt.json", corp_code=code, bsns_year=year, reprt_code="11011") or {}
         items = j.get("list", [])
-        if not items:
+        if not items:   # 주요계정 API 가 비면 그해 사업보고서 원문 재무제표 표를 감사보고서와 같은 판독기로
+            lj = N.get("list.json", corp_code=code, bgn_de=f"{int(year) + 1}0101", end_de=f"{int(year) + 1}1231", pblntf_ty="A", page_count=100) or {}
+            rep = next(((x.get("rcept_dt"), re.sub(r"\s+", " ", x.get("report_nm") or ""), x.get("rcept_no")) for x in lj.get("list", [])
+                        if "사업보고서" in (x.get("report_nm") or "") and f"({year}.12)" in (x.get("report_nm") or "")), None)
+            if rep:
+                new = read_rows(code, info, (rep[0], rep[1].replace("사업보고서", "사업보고서(원문)"), rep[2]))
+                for x in new:
+                    x["program"], x["fy"] = prog, year if x["basis"] == "당기" else x["fy"]
+                merge(rows, new)
+                got += 1
             continue
         fs = "CFS" if any(x.get("fs_div") == "CFS" for x in items) else "OFS"
         its = [x for x in items if x.get("fs_div") == fs]
@@ -513,8 +522,9 @@ def names_mode(argv: list[str]) -> int:
             for code, stock, info in dg:
                 if stock:
                     got = acnt_rows(code, info, prog, rows)
-                    status.append({"name": nn, "program": prog, "state": f"상장(사업보고서 {got}개 연도)", "corp_code": code})
-                    continue
+                    if got:
+                        status.append({"name": nn, "program": prog, "state": f"상장(사업보고서 {got}개 연도)", "corp_code": code})
+                        continue
                 aud, page = [], 1
                 while True:
                     j = N.get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), pblntf_ty="F", page_no=page, page_count=100)

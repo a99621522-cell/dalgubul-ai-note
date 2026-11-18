@@ -12,6 +12,9 @@
   --sample N     감사보고서 제출 비상장 회사에서 무작위(시드 고정) N곳 기업개황 → 제조업만 업종 묶음당 --cap 곳까지
                  최근 별도 감사보고서 → data/dart/national_audit_sample.csv + .json(표본 설계)
   --max-calls N  이번 실행 API 호출 상한(기본 9000). 넘으면 쓴 데까지 저장하고 멈춘다(다음 실행이 이어 받음)
+  --names CSV[:열[:거르기열=값|값]]  명단 파일의 회사 이름(예: 스타기업 명단) → 고유번호 정확 일치 → 본사 대구만, 업종 제한 없이
+                 최근 --years(기본 2) 사업연도 감사보고서(별도 우선, 상장사는 사업보고서가 따로 있어 뺌)
+                 → --out 파일(기본 data/dart/names_fin.csv, 명단의 거르기 열 값을 program 칸에). 덧붙일 이름은 --add 이름,이름
   --reparse      이미 읽은 감사보고서도 다시 읽는다(판독 규칙을 고친 뒤)   --show N  처음 N 곳의 원문 줄을 로그로(대조용)
 
 원칙: 공시 값 그대로(단위만 원으로), 못 읽은 계정은 비움, 추정 없음. 대표자·주주 이름은 읽지 않는다.
@@ -415,6 +418,104 @@ def sample(argv: list[str]) -> int:
     return 0
 
 
+# ── ⑤ 명단 회사(스타기업 등) ──
+def names_mode(argv: list[str]) -> int:
+    """명단 회사의 최근 감사보고서 재무(운영자 지시 2026-11-18 '2025년도로 스타기업 보고서 작성해').
+    공시검색 목록(--filings)이 늦은 해를 못 받았어도 회사별 list.json 으로 바로 찾는다."""
+    import io, zipfile
+    spec = argv[argv.index("--names") + 1].split(":")
+    path, col = ROOT / spec[0], (spec[1] if len(spec) > 1 else "기업명")
+    fcol, fvals = (spec[2].split("=", 1) + [""])[:2] if len(spec) > 2 else ("", "")
+    keep = set(fvals.split("|")) if fvals else None
+    out = ROOT / (argv[argv.index("--out") + 1] if "--out" in argv else "data/dart/names_fin.csv")
+    k = int(argv[argv.index("--years") + 1]) if "--years" in argv else 2
+    names: dict[str, str] = {}
+    for r in read_csv(path):
+        if keep is None or r.get(fcol, "") in keep:
+            nn = N.norm_name(r.get(col, ""))
+            if len(nn) >= 2:
+                names.setdefault(nn, r.get(fcol, "") if fcol else "")
+    if "--add" in argv:
+        for x in argv[argv.index("--add") + 1].split(","):
+            nm, _, prog = x.partition("=")
+            if nm.strip():
+                names[N.norm_name(nm)] = prog.strip()
+    print(f"[names] 대상 이름 {len(names)}개", flush=True)
+    try:
+        r = N.requests.get(f"{N.API}/corpCode.xml", params={"crtfc_key": N.KEY}, headers=N.UA, timeout=180)
+        xml = zipfile.ZipFile(io.BytesIO(r.content)).read("CORPCODE.xml").decode("utf-8", "ignore")
+    except Exception as e:  # noqa: BLE001
+        print(f"[names] corpCode 실패: {N.redact(e)[:120]}")
+        return 0
+    hits: dict[str, list] = {}
+    for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S):
+        kk = N.norm_name(N.clean(m.group(2)))
+        if kk in names:
+            hits.setdefault(kk, []).append((N.clean(m.group(1)), N.clean(m.group(3))))
+    cache = load_json(CORP, {})
+    prev_rows = [] if "--reparse" in argv else read_csv(out)
+    done = {r["rcept_no"] for r in prev_rows if r.get("basis") == "당기"}
+    rows = {(r["corp_code"], r["fy"]): r for r in prev_rows}
+    status = []
+    bgn = (date.today() - timedelta(days=(k + 1) * 366)).strftime("%Y%m%d")
+    try:
+        for nn, prog in names.items():
+            if not budget():
+                print("[names] 호출 상한 — 여기까지 저장")
+                break
+            cands = hits.get(nn, [])
+            dg = []
+            for code, stock in cands:
+                info = company(code, cache)
+                if info.get("region", "").startswith("대구"):
+                    dg.append((code, stock, info))
+            if not dg:
+                status.append({"name": nn, "program": prog, "state": "DART 이름 없음" if not cands else "본사 대구 아님", "corp_code": ""})
+                continue
+            for code, stock, info in dg:
+                if stock:
+                    status.append({"name": nn, "program": prog, "state": "상장(사업보고서)", "corp_code": code})
+                    continue
+                aud, page = [], 1
+                while True:
+                    j = N.get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), pblntf_ty="F", page_no=page, page_count=100)
+                    if not j:
+                        break
+                    for x in j.get("list", []):
+                        rn = re.sub(r"\s+", " ", x.get("report_nm") or "").strip()
+                        if "감사보고서" in rn:
+                            aud.append((x.get("rcept_dt"), rn, x.get("rcept_no")))
+                    if page >= int(j.get("total_page") or 1):
+                        break
+                    page += 1
+                reps = pick_reports(aud, k)
+                status.append({"name": nn, "program": prog, "state": f"감사보고서 {len(reps)}건" if reps else "감사보고서 없음", "corp_code": code})
+                for rep in reps:
+                    if rep[2] in done or not budget():
+                        continue
+                    new = read_rows(code, info, rep)
+                    for x in new:
+                        x["program"] = prog
+                    merge(rows, new)
+                print(f"[names] {info.get('name')} {prog} — {[a[1] for a in reps]}", flush=True)
+    finally:
+        save_json(CORP, cache)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        with out.open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=COLS + ["program"], extrasaction="ignore")
+            w.writeheader()
+            for key in sorted(rows):
+                w.writerow(rows[key])
+        st = out.with_name(out.stem + "_status.csv")
+        with st.open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=["name", "program", "state", "corp_code"])
+            w.writeheader()
+            w.writerows(status)
+    from collections import Counter
+    print(f"[names] 상태 {dict(Counter(x['state'] for x in status))} → {out.relative_to(ROOT)}, {st.relative_to(ROOT)}")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if not N.KEY:
         print("DART_KEY 없음")
@@ -433,6 +534,8 @@ def main(argv: list[str]) -> int:
             listed(argv)
         if "--sample" in argv:
             sample(argv)
+        if "--names" in argv:
+            names_mode(argv)
     except SystemExit:
         print("[audit] 사용 한도 — 멈춤")
     print(f"[audit] 끝 — API 호출 {N.CALLS[0]}회, {int(time.time() - t0)}초")

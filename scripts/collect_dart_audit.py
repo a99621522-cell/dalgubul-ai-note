@@ -12,6 +12,9 @@
   --sample N     감사보고서 제출 비상장 회사에서 무작위(시드 고정) N곳 기업개황 → 제조업만 업종 묶음당 --cap 곳까지
                  최근 별도 감사보고서 → data/dart/national_audit_sample.csv + .json(표본 설계)
   --max-calls N  이번 실행 API 호출 상한(기본 9000). 넘으면 쓴 데까지 저장하고 멈춘다(다음 실행이 이어 받음)
+  --names CSV[:열[:거르기열=값|값]]  명단 파일의 회사 이름(예: 스타기업 명단) → 고유번호 정확 일치 → 본사 대구만, 업종 제한 없이
+                 최근 --years(기본 2) 사업연도 감사보고서(별도 우선, 상장사는 사업보고서가 따로 있어 뺌)
+                 → --out 파일(기본 data/dart/names_fin.csv, 명단의 거르기 열 값을 program 칸에). 덧붙일 이름은 --add 이름,이름
   --reparse      이미 읽은 감사보고서도 다시 읽는다(판독 규칙을 고친 뒤)   --show N  처음 N 곳의 원문 줄을 로그로(대조용)
 
 원칙: 공시 값 그대로(단위만 원으로), 못 읽은 계정은 비움, 추정 없음. 대표자·주주 이름은 읽지 않는다.
@@ -198,6 +201,12 @@ def read_rows(code: str, info: dict, rep: tuple) -> list[dict]:
         print(f"CHECK\t{info.get('name')}\t{rn}\thttps://dart.fss.or.kr/dsaf001/main.do?rcpNo={rno}")
         for k, v in raw.items():
             print(f"CHECK\t{info.get('name')}\t{k}\t{v}")
+        if "sales" not in got:   # 매출액을 못 읽은 보고서 — 손익계산서 머리 글자를 찍어 과목 이름을 본다
+            t = re.sub(r"\s+", " ", N.unescape(re.sub(r"<[^>]+>", " | ", xml)))
+            m = re.search(r"손\s*익\s*계\s*산\s*서", t[3000:])
+            if m:
+                i = 3000 + m.start()
+                print(f"CHECKIS\t{info.get('name')}\t{t[i:i + 900]}")
     fy = fy_of(rn)
     base = {"corp_code": code, "name": info.get("name", ""), "region": info.get("region", ""), "district": info.get("district", ""),
             "ksic": info.get("ksic", ""), "group": group_of(info.get("ksic", "")), "fs": "연결" if "연결" in rn else "별도",
@@ -415,6 +424,176 @@ def sample(argv: list[str]) -> int:
     return 0
 
 
+# ── ⑤ 명단 회사(스타기업 등) ──
+def acnt_rows(code: str, info: dict, prog: str, rows: dict) -> int:
+    """사업보고서 주요계정(연결 우선) 최근 2개 사업연도 + 직원 수(empSttus) → rows. 받은 연도 수."""
+    import collect_dart_emp as EMP
+    got = 0
+    for year in (str(date.today().year - 1), str(date.today().year - 2)):
+        if not budget():
+            break
+        j = N.get("fnlttSinglAcnt.json", corp_code=code, bsns_year=year, reprt_code="11011") or {}
+        items = j.get("list", [])
+        if not items:   # 주요계정 API 가 비면 그해 사업보고서 원문 재무제표 표를 감사보고서와 같은 판독기로
+            lj = N.get("list.json", corp_code=code, bgn_de=f"{int(year) + 1}0101", end_de=f"{int(year) + 1}1231", pblntf_ty="A", page_count=100) or {}
+            rep = next(((x.get("rcept_dt"), re.sub(r"\s+", " ", x.get("report_nm") or ""), x.get("rcept_no")) for x in lj.get("list", [])
+                        if "사업보고서" in (x.get("report_nm") or "") and f"({year}.12)" in (x.get("report_nm") or "")), None)
+            if rep:
+                new = read_rows(code, info, (rep[0], rep[1].replace("사업보고서", "사업보고서(원문)"), rep[2]))
+                for x in new:
+                    x["program"], x["fy"] = prog, year if x["basis"] == "당기" else x["fy"]
+                merge(rows, new)
+                got += 1
+            continue
+        fs = "CFS" if any(x.get("fs_div") == "CFS" for x in items) else "OFS"
+        its = [x for x in items if x.get("fs_div") == fs]
+        pick = lambda pat: next((amt(x.get("thstrm_amount")) for x in its if re.fullmatch(pat, (x.get("account_nm") or "").replace(" ", ""))), None)
+        pickp = lambda pat: next((amt(x.get("frmtrm_amount")) for x in its if re.fullmatch(pat, (x.get("account_nm") or "").replace(" ", ""))), None)
+        rno = its[0].get("rcept_no", "") if its else ""
+        cur = {"corp_code": code, "name": info.get("name", ""), "region": info.get("region", ""), "district": info.get("district", ""),
+               "ksic": info.get("ksic", ""), "group": group_of(info.get("ksic", "")), "fs": "연결" if fs == "CFS" else "별도",
+               "report": f"사업보고서 ({year}.12)", "rcept_no": rno, "read_at": date.today().isoformat(), "fy": year, "basis": "당기", "program": prog,
+               "sales": pick(r"매출액|영업수익|수익\(매출액\)"), "sales_prev": pickp(r"매출액|영업수익|수익\(매출액\)"),
+               "op": pick(r"영업이익(\(손실\))?|영업손실|영업손익"), "op_prev": pickp(r"영업이익(\(손실\))?|영업손실|영업손익"),
+               "net": pick(r"당기순이익(\(손실\))?|당기순손실|당기순손익"), "assets": pick(r"자산총계"), "liab": pick(r"부채총계"), "equity": pick(r"자본총계")}
+        e = N.get("empSttus.json", corp_code=code, bsns_year=year, reprt_code="11011") or {}
+        rec = EMP.summarize(code, info.get("name", ""), int(year), e.get("list", [])) if e.get("list") else None
+        if rec and rec.get("employees"):
+            cur["employees"] = int(rec["employees"])
+        rows[(code, year)] = cur
+        got += 1
+    return got
+
+
+
+def names_mode(argv: list[str]) -> int:
+    """명단 회사의 최근 감사보고서 재무(운영자 지시 2026-11-18 '2025년도로 스타기업 보고서 작성해').
+    공시검색 목록(--filings)이 늦은 해를 못 받았어도 회사별 list.json 으로 바로 찾는다."""
+    import io, zipfile
+    spec = argv[argv.index("--names") + 1].split(":")
+    path, col = ROOT / spec[0], (spec[1] if len(spec) > 1 else "기업명")
+    fcol, fvals = (spec[2].split("=", 1) + [""])[:2] if len(spec) > 2 else ("", "")
+    keep = set(fvals.split("|")) if fvals else None
+    out = ROOT / (argv[argv.index("--out") + 1] if "--out" in argv else "data/dart/names_fin.csv")
+    k = int(argv[argv.index("--years") + 1]) if "--years" in argv else 2
+    names: dict[str, str] = {}
+    for r in read_csv(path):
+        if keep is None or r.get(fcol, "") in keep:
+            nn = N.norm_name(r.get(col, ""))
+            if len(nn) >= 2:
+                names.setdefault(nn, r.get(fcol, "") if fcol else "")
+    if "--add" in argv:
+        for x in argv[argv.index("--add") + 1].split(","):
+            nm, _, prog = x.partition("=")
+            if nm.strip():
+                names[N.norm_name(nm)] = prog.strip()
+    forced = {}
+    if "--codes" in argv:
+        for x in argv[argv.index("--codes") + 1].split(","):
+            nmx, _, cd = x.partition("=")
+            if cd.strip():
+                forced[N.norm_name(nmx)] = cd.strip()
+                names.setdefault(N.norm_name(nmx), "")
+    print(f"[names] 대상 이름 {len(names)}개", flush=True)
+    try:
+        r = N.requests.get(f"{N.API}/corpCode.xml", params={"crtfc_key": N.KEY}, headers=N.UA, timeout=180)
+        xml = zipfile.ZipFile(io.BytesIO(r.content)).read("CORPCODE.xml").decode("utf-8", "ignore")
+    except Exception as e:  # noqa: BLE001
+        print(f"[names] corpCode 실패: {N.redact(e)[:120]}")
+        return 0
+    hits: dict[str, list] = {}
+    for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S):
+        kk = N.norm_name(N.clean(m.group(2)))
+        if kk in names:
+            hits.setdefault(kk, []).append((N.clean(m.group(1)), N.clean(m.group(3))))
+    cache = load_json(CORP, {})
+    prev_rows = [] if "--reparse" in argv else read_csv(out)
+    done = {r["rcept_no"] for r in prev_rows if r.get("basis") == "당기"}
+    rows = {(r["corp_code"], r["fy"]): r for r in prev_rows}
+    status = []
+    bgn = (date.today() - timedelta(days=(k + 1) * 366)).strftime("%Y%m%d")
+    try:
+        for nn, prog in names.items():
+            if not budget():
+                print("[names] 호출 상한 — 여기까지 저장")
+                break
+            cands = hits.get(nn, [])
+            dg = []
+            if nn in forced:   # --codes 이름=고유번호: 기업개황 주소가 옛 주소(본점 이전 전)라 대구로 안 잡히는 회사를 고유번호로 바로(감사보고서 본점 소재지로 확인한 것만)
+                info = company(forced[nn], cache)
+                dg.append((forced[nn], next((st for c, st in cands if c == forced[nn]), ""), info))
+            outside = []
+            for code, stock in ([] if nn in forced else cands):
+                info = company(code, cache)
+                if info.get("region", "").startswith("대구"):
+                    dg.append((code, stock, info))
+                else:
+                    outside.append((code, stock, info))
+            if not dg and outside and "--hq-check" in argv and len(outside) <= 3:
+                # 기업개황 주소가 대구 밖이어도 최근 감사보고서 첫머리 '본점 소재지'가 대구면 넣는다(기업개황이 옛 주소인 회사 — 2026-11-18 대광소결금속·유솔·에스티엠)
+                for code, stock, info in outside:
+                    lj = N.get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), pblntf_ty="F", page_count=20) or {}
+                    rno = next((x.get("rcept_no") for x in lj.get("list", []) if "감사보고서" in (x.get("report_nm") or "")), None)
+                    xml = N.doc_xml(rno) if rno else ""
+                    m = re.search(r"본\s*점\s*소\s*재\s*지.{0,80}?(대구|경북\s*군위|경상북도\s*군위)", N.clean(xml)[:20000]) if xml else None
+                    if m:
+                        info = {**info, "region": "대구광역시", "hq_note": "감사보고서 본점 소재지"}
+                        dg.append((code, stock, info))
+                        print(f"[names] {info.get('name')} — 기업개황 주소는 대구 밖, 감사보고서 본점 소재지는 대구", flush=True)
+            if not dg:
+                status.append({"name": nn, "program": prog, "state": "DART 이름 없음" if not cands else "본사 대구 아님(" + "; ".join(f"{i.get('region', '')} {i.get('district', '')}" for _, _, i in outside) + ")", "corp_code": ";".join(c for c, _, _ in outside)})
+                continue
+            for code, stock, info in dg:
+                if stock:
+                    got = acnt_rows(code, info, prog, rows)
+                    if got:
+                        status.append({"name": nn, "program": prog, "state": f"상장(사업보고서 {got}개 연도)", "corp_code": code})
+                        continue
+                aud, page = [], 1
+                while True:
+                    j = N.get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), pblntf_ty="F", page_no=page, page_count=100)
+                    if not j:
+                        break
+                    for x in j.get("list", []):
+                        rn = re.sub(r"\s+", " ", x.get("report_nm") or "").strip()
+                        if "감사보고서" in rn:
+                            aud.append((x.get("rcept_dt"), rn, x.get("rcept_no")))
+                    if page >= int(j.get("total_page") or 1):
+                        break
+                    page += 1
+                reps = pick_reports(aud, k)
+                if not reps:   # 사업보고서를 내는 비상장(기타법인)은 감사보고서가 사업보고서에 붙어 따로 안 나온다
+                    got = acnt_rows(code, info, prog, rows)
+                    if got:
+                        status.append({"name": nn, "program": prog, "state": f"비상장 사업보고서 {got}개 연도", "corp_code": code})
+                        continue
+                status.append({"name": nn, "program": prog, "state": f"감사보고서 {len(reps)}건" if reps else "감사보고서 없음", "corp_code": code})
+                for rep in reps:
+                    if rep[2] in done or not budget():
+                        continue
+                    new = read_rows(code, info, rep)
+                    for x in new:
+                        x["program"] = prog
+                    merge(rows, new)
+                print(f"[names] {info.get('name')} {prog} — {[a[1] for a in reps]}", flush=True)
+    finally:
+        save_json(CORP, cache)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        with out.open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=COLS + ["program", "employees"], extrasaction="ignore")
+            w.writeheader()
+            for key in sorted(rows):
+                w.writerow(rows[key])
+        st = out.with_name(out.stem + "_status.csv")
+        with st.open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=["name", "program", "state", "corp_code"])
+            w.writeheader()
+            w.writerows(status)
+    from collections import Counter
+    print(f"[names] 상태 {dict(Counter(x['state'] for x in status))} → {out.relative_to(ROOT)}, {st.relative_to(ROOT)}")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if not N.KEY:
         print("DART_KEY 없음")
@@ -433,6 +612,8 @@ def main(argv: list[str]) -> int:
             listed(argv)
         if "--sample" in argv:
             sample(argv)
+        if "--names" in argv:
+            names_mode(argv)
     except SystemExit:
         print("[audit] 사용 한도 — 멈춤")
     print(f"[audit] 끝 — API 호출 {N.CALLS[0]}회, {int(time.time() - t0)}초")

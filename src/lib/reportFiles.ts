@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'bigwave-ai-agent', summary: '대구 수성알파시티에 본사를 둔 비상장 AI 소프트웨어 기업 빅웨이브에이아이(2020년 설립, 대구시 Pre-스타기업, 벤처기업 연구개발유형)가 자연어처리 언어모델·빅데이터 분석 도구 BADA 에서 제조·금융 기업 업무를 자동화하는 AI 에이전트와 자동차부품 FMEA AI 에이전트(구독형 제품화 계획)로 사업을 넓힌 과정을 국민연금·벤처기업명단·공장등록·회사 누리집·보도로 정리한 자료. DART 공시가 없어 매출은 싣지 않음. 평가·전망은 싣지 않음.', topics: ['비상장기업', 'AI', '소프트웨어'],
+    title: '빅웨이브에이아이, 데이터 분석 → 자동차부품 특화 AI 에이전트', name: '빅웨이브에이아이, 데이터 분석 → 자동차부품 특화 AI 에이전트',
+    hwpx: '/hwpx/bigwave-ai-agent.hwpx', hwpxSize: '64KB', date: '2026-11-20' },
   { slug: 'daegu-listed-2026q3', summary: 'DART 분기보고서로 집계한 대구 본사 코스피·코스닥 상장법인 53개사(6월 결산 세원정공 제외)의 2026년 3분기 누적(1~9월) 실적 보도자료: 매출액 58조 6,423억 원(+13.4%), 영업이익 3조 5,998억 원(+39.8%), 당기순이익 2조 250억 원(+97.0%). 매출 규모가 큰 iM금융지주·한국가스공사를 뺀 51개사(매출 +11.6%, 영업이익 +130.6%), 매출액 상위 10개사, 업종별 매출 증감, 증가·감소 기업 수, 흑자·적자 기업 수와 붙임 표 4개(집계 범위별·상위 10개사·업종별·53개사 전체). iM금융지주 매출(영업수익) 증가는 iM증권 거래이익 총액 증가.', topics: ['상장기업', '실적'],
     title: '대구 상장기업 영업익·순익 ‘동반 증가’ — 2026년 3분기 누적 실적', name: '대구 상장기업 영업익·순익 ‘동반 증가’ — 2026년 3분기 누적 실적',
     hwpx: '/hwpx/daegu-listed-2026q3.hwpx', hwpxSize: '82KB', date: '2026-11-18' },

@@ -598,14 +598,14 @@ def invest_scan(argv: list[str]) -> int:
 
 ROMAN = r"(?:(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ]+|[IVX]+|\d+)[.)]?|[가-하][.)]|\(\d+\))"
 FIN_KEYS = [   # (항목, 재무제표, 띄어쓰기를 지운 과목 칸 정규식) — 감사보고서 재무제표 표의 첫 칸(2026-11-03 표본 60곳 점검으로 고침)
-    ("sales", "IS", rf"^(?:{ROMAN})?(매출액|매출|영업수익|수익\(매출액\)|매출액\(주석[\d,]*\)|매출\(주석[\d,]*\))(\(주석[\d,\s]*\))?$"),
-    ("op", "IS", rf"^(?:{ROMAN})?영업(이익|손실|손익|이익\(손실\)|손실\(이익\))(\(주석[\d,\s]*\))?$"),
-    ("net", "IS", rf"^(?:{ROMAN})?당기순(이익|손실|손익|이익\(손실\)|손실\(이익\))(\(주석[\d,\s]*\))?$"),
-    ("interest", "IS", rf"^(?:{ROMAN})?이자비용(\(주석[\d,\s]*\))?$"),
+    ("sales", "IS", rf"^(?:{ROMAN})?(매출액|매출|영업수익|수익\(매출액\)|매출액\(주석?[\d,]*\)|매출\(주석?[\d,]*\))(\(주석?[\d,\s]*\))?$"),
+    ("op", "IS", rf"^(?:{ROMAN})?영업(이익|손실|손익|이익\(손실\)|손실\(이익\))(\(주석?[\d,\s]*\))?$"),
+    ("net", "IS", rf"^(?:{ROMAN})?당기순(이익|손실|손익|이익\(손실\)|손실\(이익\))(\(주석?[\d,\s]*\))?$"),
+    ("interest", "IS", rf"^(?:{ROMAN})?이자비용(\(주석?[\d,\s]*\))?$"),
     ("assets", "BS", r"^자산총계$"),
     ("liab", "BS", r"^부채총계$"),
     ("equity", "BS", r"^자본총계$"),
-    ("ocf", "CF", rf"^(?:{ROMAN})?영업활동(으로인한|으로부터의|에서의|으로부터)?(순)?현금(흐름|유입|유출|유입\(유출\))(\(주석[\d,\s]*\))?$"),
+    ("ocf", "CF", rf"^(?:{ROMAN})?영업활동(으로인한|으로부터의|에서의|으로부터)?(순)?현금(흐름|유입|유출|유입\(유출\))(\(주석?[\d,\s]*\))?$"),
 ]
 AMOUNT = re.compile(r"\(?-?\d{1,3}(?:,\d{3})+\)?|\(?-?\d{4,}\)?")
 
@@ -687,6 +687,8 @@ def fin_from_audit(xml: str) -> tuple[dict, dict]:
                     cur, prev = n
                 else:
                     cur, prev = n[0], None
+                if key in ("op", "net") and "손실" in head and "이익" not in head:   # 과목이 '영업손실'·'당기순손실'인데 금액에 괄호가 없으면 손실로(2026-11-18 씨티셀즈)
+                    cur, prev = -abs(cur), (-abs(prev) if prev is not None else None)
                 got[key] = (cur * unit, prev * unit if prev is not None else None)
                 raw[key] = f"[{ctx}] " + " | ".join(cells)[:170]
     for key, (v, r) in weak.items():
@@ -699,7 +701,7 @@ def fin_from_audit(xml: str) -> tuple[dict, dict]:
 
 TEXT_KEYS = [   # 재무제표가 표가 아니라 글로 실린 감사보고서(2026-11-03 한국에스케이에프씰) — '과목 금액 금액' 꼴
     ("assets", "BS", r"자\s*산\s*총\s*계"), ("liab", "BS", r"부\s*채\s*총\s*계"), ("equity", "BS", r"자\s*본\s*총\s*계"),
-    ("sales", "IS", r"(?:Ⅰ\.?\s*)?매\s*출\s*액"), ("op", "IS", r"(?:Ⅴ\.?|Ⅳ\.?)?\s*영\s*업\s*(?:이\s*익|손\s*실|손\s*익)(?:\s*\(\s*손\s*실\s*\))?"),
+    ("sales", "IS", r"(?:[ⅠI]\.?\s*)?(?:매\s*출\s*액|영\s*업\s*수\s*익)"), ("op", "IS", r"(?:Ⅴ\.?|Ⅳ\.?)?\s*영\s*업\s*(?:이\s*익|손\s*실|손\s*익)(?:\s*\(\s*손\s*실\s*\))?"),
     ("net", "IS", r"(?:Ⅹ\.?|Ⅸ\.?|Ⅷ\.?)?\s*당\s*기\s*순\s*(?:이\s*익|손\s*실|손\s*익)(?:\s*\(\s*손\s*실\s*\))?"),
     ("interest", "IS", r"이\s*자\s*비\s*용"), ("ocf", "CF", r"(?:Ⅰ\.?\s*)?영업활동\s*(?:으로\s*인한|으로부터의)?\s*현금\s*흐름"),
 ]
@@ -719,7 +721,7 @@ def fin_from_text(xml: str, got: dict, raw: dict) -> None:
         sec = secs[st]
         mu = re.search(r"단위\s*[:：]?\s*(백만원|천원|원)", sec[:400].replace(" ", ""))
         unit = {"원": 1, "천원": 1000, "백만원": 1000000}[mu.group(1)] if mu else 1
-        m = re.search(lab + r"(?:\s*\(주석[^)]*\))?\s+" + _AMT + r"\s+" + _AMT, sec)
+        m = re.search(lab + r"(?:\s*\(주석?[^)]*\))?(?:\s+\d{1,2}(?:\s*,\s*\d{1,2})*)?\s+" + _AMT + r"\s+" + _AMT, sec)   # 주석 번호 칸(예: '21,32')을 건너뜀(2026-11-18 비젼사이언스)
         if not m:
             continue
         def val(x: str) -> int | None:
@@ -728,6 +730,9 @@ def fin_from_text(xml: str, got: dict, raw: dict) -> None:
             v = int(re.sub(r"[^\d]", "", x))
             return -v if x.startswith("(") or x.startswith("-") else v
         a, b = val(m.group(1)), val(m.group(2))
+        lab_txt = re.sub(r"\s+", "", m.group(0)[:30])
+        if key in ("op", "net") and "손실" in lab_txt and "이익" not in lab_txt:   # '영업손실 2,267,617,477' 꼴
+            a, b = -abs(a), (-abs(b) if b is not None else None)
         got[key] = (a * unit, b * unit if b is not None else None)
         raw[key] = f"[{st}·글] " + m.group(0)[:160]
 
@@ -1037,12 +1042,16 @@ def main(argv: list[str]) -> int:
         except Exception as e:  # noqa: BLE001
             print(f"[dart_notes] corpCode 실패: {redact(e)[:120]}")
             return 0
-        hits = [(clean(m.group(1)), clean(m.group(2)), clean(m.group(3)))
-                for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)
-                if (kw.replace(" ", "") == clean(m.group(2)).replace(" ", "") if "--exact" in argv else kw.replace(" ", "") in clean(m.group(2)).replace(" ", ""))]
-        print(f"[dart_notes] 고유번호 목록에서 '{kw}' {len(hits)}곳")
+        hits = []   # 낱말을 쉼표로 여럿 주면 낱말마다 최대 6곳(2026-11-18 스타기업 빈칸 찾기)
+        all_ = [(clean(m.group(1)), clean(m.group(2)), clean(m.group(3)))
+                for m in re.finditer(r"<corp_code>(.*?)</corp_code>\s*<corp_name>(.*?)</corp_name>.*?<stock_code>(.*?)</stock_code>", xml, re.S)]
+        kws_ = [k.replace(" ", "") for k in kw.split(",") if k.strip()]
+        for k in kws_:
+            hk = [h for h in all_ if (h[2] == k if re.fullmatch(r"\d{6}|\d{4}[0-9A-Z]{2}", k) else k == h[1].replace(" ", "") if "--exact" in argv else k in h[1].replace(" ", ""))]   # 종목코드(6자리)로도
+            print(f"[dart_notes] 고유번호 목록에서 '{k}' {len(hk)}곳: {', '.join(h[1] for h in hk[:20])}")
+            hits += hk[:6] if len(kws_) > 1 else hk[:10]
         bgn = (date.today() - timedelta(days=months * 31)).strftime("%Y%m%d")
-        for code, name, stock in hits[:10]:
+        for code, name, stock in hits:
             info = get("company.json", corp_code=code) or {}
             print(f"=== {name} corp_code={code} 종목코드={stock or '-'} 법인구분={info.get('corp_cls')} 주소={info.get('adres')} 업종={info.get('induty_code')} 설립일={info.get('est_dt')} 홈페이지={info.get('hm_url')}")
             j = get("list.json", corp_code=code, bgn_de=bgn, end_de=date.today().strftime("%Y%m%d"), page_count=100) or {}

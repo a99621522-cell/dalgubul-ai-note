@@ -3,69 +3,69 @@
  "name": "IDC Press Releases",
  "group": "해외 컨설팅",
  "home": "https://www.idc.com",
- "fetched": "2026-11-15",
+ "fetched": "2026-11-22",
  "status": "OK",
  "method": "rss(/feed)",
  "items": [
   {
+   "title": "Marketing Is Becoming a Commercial System",
+   "url": "https://www.idc.com/resource-center/blog/marketing-is-becoming-a-commercial-system/",
+   "date": "2026-11-19",
+   "summary": "For two decades, marketing technology promised more leads, more personalization, more channels and more speed. IDC&#8217;s 2027 FutureScape predictions for marketing describe something structurally different. By 2031, research, planning, targeting, creative, execution, measurement and optimization w"
+  },
+  {
+   "title": "Front Door Wars: Anthropic Expands Its Floor Plan",
+   "url": "https://www.idc.com/resource-center/blog/front-door-wars-anthropic-expands-its-floor-plan/",
+   "date": "2026-11-18",
+   "summary": "Users have long dreaded having to navigate between multiple systems to get their work done. They log into one system to do their primary work, another to request a day off, another to get technical support, and still more applications to submit a travel request, check email, collaborate with colleag"
+  },
+  {
+   "title": "FutureScape 2027: AI Business Model Reinvention Demands You Govern It, Fund It, Prove It",
+   "url": "https://www.idc.com/resource-center/blog/ai-business-model-reinvention-govern-it-fund-it-prove-it/",
+   "date": "2026-11-17",
+   "summary": "99% of CEOs expect AI to reinvent their organization&#8217;s business model within the next three years, according to IDC&#8217;s Worldwide CEO Survey for 2026. That is close to unanimous, and it changes the question for technology leaders. Nobody is asking whether AI will matter to the business mod"
+  },
+  {
+   "title": "Beyond Layoffs: The Most AI-Savvy Companies Are Adding People",
+   "url": "https://www.idc.com/resource-center/blog/beyond-layoffs-the-most-ai-savvy-companies-are-adding-people/",
+   "date": "2026-11-17",
+   "summary": "The last year of conventional wisdom on AI and enterprise software fits in one sentence: AI does the work, companies need fewer people, and software seats shrink along with the workforce. That assumption is now colliding with the data. In IDC’s Worldwide Future of Work Survey (May 2026), 68% of Lead"
+  },
+  {
+   "title": "Which Layers of the Stack Should Governments Own to Win Their AI Race?",
+   "url": "https://www.idc.com/resource-center/blog/which-layers-of-the-stack-should-governments-own-to-win-their-ai-race/",
+   "date": "2026-11-16",
+   "summary": "Kimi Antonelli recently became the youngest world champion in Formula 1 history, and the first Italian to win the title after Alberto Ascari&#8217;s success in 1953. He won nine races, took seven pole positions and seven fastest laps, and finished on the podium sixteen times in nineteen races, which"
+  },
+  {
+   "title": "Beyond the SaaSpocalypse: The Pricing Question Most Vendors Aren’t Answering",
+   "url": "https://www.idc.com/resource-center/blog/beyond-the-saaspocalypse-the-pricing-question-most-vendors-arent-answering/",
+   "date": "2026-11-16",
+   "summary": "The “SaaSpocalypse” debate has been framed as a question of survival: will AI agents replace application software? Despite all the attention and headlines it grabbed, it’s actually the wrong question. The one keeping buyers up at night is simpler: how much will it cost? On one hand, buyers are willi"
+  },
+  {
+   "title": "One Month with the iPhone Duo: The Experience Still Backs IDC’s Forecast, With Conditions",
+   "url": "https://www.idc.com/resource-center/blog/one-month-with-the-iphone-duo-the-experience-still-backs-idcs-forecast-with-conditions/",
+   "date": "2026-11-16",
+   "summary": "Apple’s first foldable hit stores on October 23 after preorders opened on October 16 and sold out within hours. After using the device for a month, does the experience support the hype and, more importantly, IDC’s forecast for the device? My verdict is a qualified yes. The details that won me over w"
+  },
+  {
    "title": "Did IDC’s 20% Command-and-Control Prediction Hold?",
    "url": "https://www.idc.com/resource-center/blog/did-idcs-20-command-and-control-prediction-hold/",
    "date": "2026-11-13",
-   "summary": "In October 2024, IDC FutureScape: Worldwide Future of Work 2025 Predictions forecast that by 2026, organizations relying exclusively on command-and-control leadership would see a 20% drop in profitability because of a lack of AI innovation and adaptability. Two years later, Amy Loomis, Group Vice Pr"
+   "summary": "In October 2024, IDC FutureScape: Worldwide Future of Work 2025 Predictions forecast that by 2026, organizations relying exclusively on command-and-control leadership would see a 20% drop in profitability because of a lack of AI innovation and adaptability. Two years later, Amy Loomis, Ph.D., Group "
   },
   {
    "title": "Jensen Huang Resigns From NVIDIA: What AI Infrastructure Buyers Should Watch",
    "url": "https://www.idc.com/resource-center/blog/nvidia-ceo-resignation-ai-infrastructure-buyers/",
    "date": "2026-11-13",
-   "summary": "On November 12, 2026, Jensen Huang, the cofounder of NVIDIA, resigned as President, CEO, and board member, effective immediately. NVIDIA’s board moved quickly to allay perceived market uncertainty by appointing the company’s CFO, Collette Kress, as interim CEO while it seeks a long-term successor. I"
+   "summary": "On November 12, 2026, Jensen Huang, the cofounder of NVIDIA, resigned as President, CEO, and board member, effective immediately. NVIDIA’s board moved quickly to allay perceived market uncertainty by appointing the company’s CFO, Colette Kress, as interim CEO while it seeks a long-term successor. ID"
   },
   {
    "title": "Power, Not Space: The New Price of AI Infrastructure",
    "url": "https://www.idc.com/resource-center/blog/power-not-space-the-new-price-of-ai-infrastructure/",
    "date": "2026-11-12",
    "summary": "A client contacted me recently, a few weeks before they renewed a datacenter colocation contract they had held for six years. They planned the usual way: last year’s rate, plus a small uplift for inflation. Their provider’s opening offer came back almost 20% higher. The client had not leased more ra"
-  },
-  {
-   "title": "Beyond the Headlines: What 2027 Holds for Europe’s Industries",
-   "url": "https://www.idc.com/resource-center/blog/beyond-the-headlines-what-2027-holds-for-europes-industries/",
-   "date": "2026-11-11",
-   "summary": "Headlines about Europe&#8217;s economy rarely mention technology budgets, yet that is where buyers make some of their clearest choices. IDC&#8217;s Future Enterprise Resiliency and Spending (FERS) surveys show that 64% of Western European IT leaders expect a recession within the next 12 months, and "
-  },
-  {
-   "title": "IDC Quanta Now Works Inside Microsoft Copilot",
-   "url": "https://www.idc.com/resource-center/blog/idc-quanta-inside-microsoft-copilot/",
-   "date": "2026-11-11",
-   "summary": "Your AI assistant is probably open right now, next to the deck or memo you&#8217;re writing. IDC&#8217;s Future of Work Survey, 2026 (n = 1,146) found that 88.8% of organizations report a productivity gain from AI. It also found that the share of employees losing more than an hour a day to searching"
-  },
-  {
-   "title": "FutureScape 2027: Three Trust Decisions Are Coming. Here’s How to Get Ahead of Them.",
-   "url": "https://www.idc.com/resource-center/blog/futurescape-2027-three-trust-decisions-are-coming/",
-   "date": "2026-11-11",
-   "summary": "When an AI agent makes a decision your CEO never sees, who answers for it? IDC&#8217;s Rick Villars framed the emerging window with an aviation story. When aeronautics moved from traditional flight systems to fly by wire, he said, one of the biggest challenges was getting pilots &#8220;to trust the "
-  },
-  {
-   "title": "Bridging Data Islands in an Increasingly Connected World",
-   "url": "https://www.idc.com/resource-center/blog/bridging-data-islands-in-an-increasingly-connected-world/",
-   "date": "2026-11-10",
-   "summary": "Karen Dai uses the term “data islands” to describe a challenge facing many of the markets Belden serves: systems, applications and assets that were not designed to communicate with one another but now need to exchange data securely, reliably and at scale. Dai is Senior Director, Market Insights &#38"
-  },
-  {
-   "title": "Beyond the Prompt: The Hidden Data and Storage Implications of Generative AI",
-   "url": "https://www.idc.com/resource-center/blog/beyond-the-prompt-the-hidden-data-and-storage-implications-of-generative-ai/",
-   "date": "2026-11-09",
-   "summary": "Generative AI (GenAI) is accelerating how much data organizations generate, straining storage and governance frameworks built for a slower-growth era. Most GenAI-using organizations now expect increases in data volume over the next two years, and infrastructure and governance strategies often strugg"
-  },
-  {
-   "title": "Stop Trusting the Model:The CISO Playbook for an AI Enforcement Layer",
-   "url": "https://www.idc.com/resource-center/blog/stop-trusting-the-modelthe-ciso-playbook-for-an-ai-enforcement-layer/",
-   "date": "2026-11-09",
-   "summary": "More than 12 frontier AI developers have published voluntary safety frameworks with widely varying thresholds, inconsistent evaluation cadences, and no independent verification requirement. The EU AI Act&#8217;s maximum fine for general-purpose AI providers, 3% of global annual turnover or €15 milli"
-  },
-  {
-   "title": "Did IDC’s 20% Generative AI and IDP Prediction Hold?",
-   "url": "https://www.idc.com/resource-center/blog/did-idcs-20-generative-ai-and-idp-prediction-hold/",
-   "date": "2026-11-06",
-   "summary": "In October 2023, IDC FutureScape: Worldwide Future of Work 2024 Predictions forecast that by 2026, enterprises that directly tie generative AI to intelligent document processing (IDP) would see a 20% increase in new use cases, along with gains in productivity, scale, and customer experience. Three y"
   }
  ],
  "note": "",

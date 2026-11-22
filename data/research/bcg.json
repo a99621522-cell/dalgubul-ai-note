@@ -3,86 +3,68 @@
  "name": "BCG Publications",
  "group": "해외 컨설팅",
  "home": "https://www.bcg.com",
- "fetched": "2026-11-15",
+ "fetched": "2026-11-22",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
   {
-   "title": "Artificial Intelligence",
-   "url": "https://www.bcg.com/capabilities/artificial-intelligence",
-   "date": "2026-11-13",
+   "title": "Technology Industry",
+   "url": "https://www.bcg.com/industries/technology-media-telecommunications/technology-industry",
+   "date": "2026-11-20",
    "summary": ""
   },
   {
-   "title": "Why Operationalizing Governance Gives Banks an Advantage in Scaling AI: AI Safety and Governance in Banking 2026",
-   "url": "https://www.bcg.com/publications/2026/ai-governance-banking-benchmark",
-   "date": "2026-11-13",
+   "title": "How the AI Compute Shortage Will Create Winners and Losers",
+   "url": "https://www.bcg.com/publications/2026/ai-data-center-supply-demand-outlook",
+   "date": "2026-11-20",
    "summary": ""
   },
   {
-   "title": "Culture and Change Management",
-   "url": "https://www.bcg.com/capabilities/organization-strategy/culture-change-management",
-   "date": "2026-11-13",
+   "title": "Marketing and Sales",
+   "url": "https://www.bcg.com/capabilities/marketing-sales/overview",
+   "date": "2026-11-20",
    "summary": ""
   },
   {
-   "title": "Personalizing Change Management at Scale",
-   "url": "https://www.bcg.com/publications/2026/ai-personalizes-change-management-scale",
-   "date": "2026-11-13",
+   "title": "CMOs Are Thinking Big with Agentic AI. They Should Be Thinking Even Bigger.",
+   "url": "https://www.bcg.com/publications/2026/agentic-ai-reshaping-marketing-team",
+   "date": "2026-11-20",
    "summary": ""
   },
   {
-   "title": "Health Care Industry",
-   "url": "https://www.bcg.com/industries/health-care/overview",
-   "date": "2026-11-12",
+   "title": "Agribusiness Industry",
+   "url": "https://www.bcg.com/industries/industrial-goods/agribusiness-industry",
+   "date": "2026-11-19",
    "summary": ""
   },
   {
-   "title": "The Consumerization of Health Care: How Patients Are Reshaping the Industry",
-   "url": "https://www.bcg.com/publications/2026/health-care-consumerization-patients",
-   "date": "2026-11-12",
+   "title": "Digitalizing Salmonids Farming: The Why, What and How",
+   "url": "https://www.bcg.com/publications/2026/digitalizing-salmonids-farming-the-why-what-and-how",
+   "date": "2026-11-19",
    "summary": ""
   },
   {
-   "title": "Client Zero: Inside BCG’s AI Transformation",
-   "url": "https://www.bcg.com/publications/2026/bcg-ai-transformation-client-zero",
-   "date": "2026-11-11",
+   "title": "Cybersecurity and Digital Risk",
+   "url": "https://www.bcg.com/capabilities/digital-technology-data/cybersecurity-digital-risk-management",
+   "date": "2026-11-19",
    "summary": ""
   },
   {
-   "title": "Climate Change and Sustainability",
-   "url": "https://www.bcg.com/capabilities/climate-change-sustainability/overview",
-   "date": "2026-11-11",
+   "title": "AI Hacks Make Headlines, but Tech Debt Is the Real Emergency",
+   "url": "https://www.bcg.com/publications/2026/ai-cyber-attacks-technical-debt",
+   "date": "2026-11-19",
    "summary": ""
   },
   {
-   "title": "How Companies Can Find New Value in Existing Materials",
-   "url": "https://www.bcg.com/publications/2026/circularity-value-existing-materials",
-   "date": "2026-11-11",
+   "title": "Growth Tech",
+   "url": "https://www.bcg.com/industries/technology-media-telecommunications/growth-tech",
+   "date": "2026-11-19",
    "summary": ""
   },
   {
-   "title": "Customer Experience",
-   "url": "https://www.bcg.com/capabilities/customer-insights/customer-experience",
-   "date": "2026-11-11",
-   "summary": ""
-  },
-  {
-   "title": "The Luxury of Being Known",
-   "url": "https://www.bcg.com/publications/2026/luxury-brands-customers-feel-known",
-   "date": "2026-11-11",
-   "summary": ""
-  },
-  {
-   "title": "Industrial Goods",
-   "url": "https://www.bcg.com/industries/industrial-goods/overview",
-   "date": "2026-11-10",
-   "summary": ""
-  },
-  {
-   "title": "For Industrial Companies, Winning with AI Takes More Than Tech",
-   "url": "https://www.bcg.com/publications/2026/how-industrial-companies-win-with-ai",
-   "date": "2026-11-10",
+   "title": "How Startup Ecosystems Can Create a Cycle of Entrepreneurial Prosperity",
+   "url": "https://www.bcg.com/publications/2026/cities-build-startup-ecosystems-faster",
+   "date": "2026-11-19",
    "summary": ""
   }
  ],

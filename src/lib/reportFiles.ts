@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'daegu-star-firms-2025', summary: '대구시 스타기업 98곳(2025년 3월 명단 91곳 + 2025년 9월 지정 파워풀 2·스타 6, 겹침 1)·Pre-스타기업 131곳·3030기업 169곳의 기업별 업종(팩토리온 공장등록 대표 업종)·구·군·종업원(사업보고서 직원 수 또는 국민연금 가입자)·2025년 매출액·영업이익(DART 감사보고서·사업보고서)을 정리한 현황 자료. 2025년 매출을 공시에서 확인한 곳은 스타기업 89곳(5조 1,093억 원)·Pre-스타기업 34곳·3030기업 83곳이며, 공시가 없는 곳은 사유를 붙임에 적음. 평가·순위는 싣지 않음.', topics: ['스타기업', '비상장기업', '실적'],
+    title: '2025년 대구 스타기업·Pre-스타기업·3030기업 현황 — 업종·종업원·매출액', name: '2025년 대구 스타기업·Pre-스타기업·3030기업 현황 — 업종·종업원·매출액',
+    hwpx: '/hwpx/daegu-star-firms-2025.hwpx', hwpxSize: '119KB', date: '2026-11-23' },
   { slug: 'bigwave-ai-agent', summary: '대구 수성알파시티에 본사를 둔 비상장 AI 소프트웨어 기업 빅웨이브에이아이(2020년 설립, 대구시 Pre-스타기업, 벤처기업 연구개발유형)가 자연어처리 언어모델·빅데이터 분석 도구 BADA 에서 제조·금융 기업 업무를 자동화하는 AI 에이전트와 자동차부품 FMEA AI 에이전트(구독형 제품화 계획)로 사업을 넓힌 과정을 국민연금·벤처기업명단·공장등록·회사 누리집·보도로 정리한 자료. DART 공시가 없어 매출은 싣지 않음. 평가·전망은 싣지 않음.', topics: ['비상장기업', 'AI', '소프트웨어'],
     title: '빅웨이브에이아이, 데이터 분석 → 자동차부품 특화 AI 에이전트', name: '빅웨이브에이아이, 데이터 분석 → 자동차부품 특화 AI 에이전트',
     hwpx: '/hwpx/bigwave-ai-agent.hwpx', hwpxSize: '64KB', date: '2026-11-20' },

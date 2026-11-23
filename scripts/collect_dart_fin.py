@@ -116,6 +116,22 @@ def annual_filers(years: int) -> dict[str, dict]:
             page += 1
             time.sleep(0.15)
         print(f"[dart_fin] 사업보고서 {s}~{e}: 누적 회사 {len(out)}곳")
+    # 새로 상장해 아직 사업보고서가 없는 유가·코스닥 회사(2026-11-24: 채비가 대구상의 분석에는 있고 여기엔 없던 것) — 최근 13개월 분·반기보고서 제출 회사도
+    for ty in ("A002", "A003"):
+        for s, e in windows(date.today() - timedelta(days=400), date.today()):
+            page = 1
+            while True:
+                j = get("list.json", bgn_de=s.strftime("%Y%m%d"), end_de=e.strftime("%Y%m%d"), pblntf_detail_ty=ty, page_no=page, page_count=100)
+                if not j:
+                    break
+                for r in j.get("list", []):
+                    if r.get("corp_cls") in ("Y", "K") and r["corp_code"] not in out:
+                        out[r["corp_code"]] = {"name": r.get("corp_name", ""), "corp_cls": r.get("corp_cls", ""), "stock_code": (r.get("stock_code") or "").strip()}
+                        print(f"[dart_fin] 분·반기보고서만 있는 상장회사: {r.get('corp_name')}")
+                if page >= int(j.get("total_page") or 1):
+                    break
+                page += 1
+                time.sleep(0.15)
     return out
 
 

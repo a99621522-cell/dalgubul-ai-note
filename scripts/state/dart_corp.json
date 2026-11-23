@@ -3839,7 +3839,7 @@
 "00135999": {
 "checked": "2026-10-05",
 "corp_cls": "K",
-"daegu": false,
+"daegu": true,
 "induty_code": "681",
 "name": "신라섬유",
 "region": "대구 동구",
@@ -4271,7 +4271,7 @@
 "00138747": {
 "checked": "2026-10-05",
 "corp_cls": "K",
-"daegu": false,
+"daegu": true,
 "induty_code": "29210",
 "name": "아세아텍",
 "region": "대구 달성군",
@@ -5855,7 +5855,7 @@
 "00155151": {
 "checked": "2026-10-05",
 "corp_cls": "K",
-"daegu": false,
+"daegu": true,
 "induty_code": "303",
 "name": "피에이치에이",
 "region": "대구 달서구",
@@ -14495,7 +14495,7 @@
 "00442145": {
 "checked": "2026-10-05",
 "corp_cls": "K",
-"daegu": false,
+"daegu": true,
 "induty_code": "29272",
 "name": "아바코",
 "region": "대구 달서구",

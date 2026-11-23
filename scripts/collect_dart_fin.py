@@ -30,6 +30,13 @@ OUT = ROOT / "scripts" / "data" / "company_financials.csv"
 API = "https://opendart.fss.or.kr/api"
 UA = {"User-Agent": "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"}
 REGION_WORDS = ("대구광역시", "대구시")
+
+
+def is_daegu_addr(adres: str) -> bool:
+    """본사 주소 첫 낱말이 대구(대구광역시·대구시·'대구 달서구'처럼 줄여 적은 것도) — 2026-11-23: 기업개황 주소를
+    '대구 달서구 …'로 적은 상장사 4곳(아바코·피에이치에이·아세아텍·신라섬유)이 '대구광역시' 낱말 판정에서 빠졌던 것을 고침"""
+    first = (adres or "").split()[:1]
+    return bool(first) and (first[0].startswith("대구") or any(w in first[0] for w in REGION_WORDS))
 CORP_CLS = {"Y": "유가증권", "K": "코스닥", "N": "코넥스", "E": "기타"}
 # 계정 이름(공시마다 조금씩 다르다) → 열
 ACCOUNTS = [
@@ -128,7 +135,7 @@ def classify(cache: dict, filers: dict[str, dict], max_lookups: int) -> None:
             continue
         adres = " ".join((j.get("adres") or "").split())
         cache[code] = {"name": j.get("corp_name") or f["name"], "region": " ".join(adres.split()[:2]),
-                       "daegu": any(w in adres for w in REGION_WORDS), "checked": date.today().isoformat(),
+                       "daegu": is_daegu_addr(adres), "checked": date.today().isoformat(),
                        "corp_cls": j.get("corp_cls") or f["corp_cls"], "stock_code": (j.get("stock_code") or f["stock_code"] or "").strip(),
                        "induty_code": (j.get("induty_code") or "").strip()}
         if n % 200 == 0:

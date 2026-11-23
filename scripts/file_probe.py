@@ -154,7 +154,15 @@ def xlsx(data, words):
 def main():
     url = sys.argv[1]
     words = (sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] else "대구,지역,시도").split(",")
-    r = requests.get(url, headers={"User-Agent": UA}, timeout=120)
+    ref = ""
+    if "#ref=" in url:   # 게시판 첨부가 Referer·세션 쿠키를 보는 곳(대구상의 filedown.html) — 주소 뒤 '#ref=<게시글 주소>' (2026-11-24)
+        url, ref = url.split("#ref=", 1)
+    s = requests.Session()
+    h = {"User-Agent": UA}
+    if ref:
+        s.get(ref, headers=h, timeout=60)
+        h["Referer"] = ref
+    r = s.get(url, headers=h, timeout=120)
     data = r.content
     name = name_of(r, url)
     print(f"== {r.status_code} {r.headers.get('content-type')} {len(data):,} bytes 파일명 {name!r} 첫 바이트 {data[:8]!r}")

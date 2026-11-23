@@ -8981,6 +8981,15 @@
   "region": "서울특별시 영등포구",
   "stock_code": ""
  },
+ "00229085": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "14199",
+  "name": "(주)기도산업",
+  "region": "서울특별시 강서구",
+  "stock_code": "282620"
+ },
  "00230036": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -16079,6 +16088,15 @@
   "region": "경상북도 구미시",
   "stock_code": "396300"
  },
+ "00534729": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "292",
+  "name": "(주)디티에스",
+  "region": "전북특별자치도 군산시",
+  "stock_code": "0015M0"
+ },
  "00535375": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -16913,6 +16931,15 @@
   "region": "전라북도 장수군",
   "stock_code": "138070"
  },
+ "00577593": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "28111",
+  "name": "(주)져스텍",
+  "region": "경기 평택시",
+  "stock_code": "153890"
+ },
  "00577982": {
   "checked": "2026-10-05",
   "corp_cls": "E",
@@ -16957,6 +16984,15 @@
   "name": "한국맥널티",
   "region": "충청남도 천안시",
   "stock_code": "222980"
+ },
+ "00579342": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "25114",
+  "name": "(주)영광",
+  "region": "울산광역시 울주군",
+  "stock_code": "359410"
  },
  "00579971": {
   "checked": "2026-10-05",
@@ -17796,10 +17832,13 @@
   "stock_code": "104830"
  },
  "00624244": {
-  "checked": "2026-10-30",
+  "checked": "2026-11-23",
+  "corp_cls": "K",
   "daegu": false,
-  "name": "에이치엘지노믹스",
-  "region": "경기도 용인시"
+  "induty_code": "211",
+  "name": "에이치엘지노믹스(주)",
+  "region": "경기도 용인시",
+  "stock_code": "0156T0"
  },
  "00624378": {
   "checked": "2026-10-05",
@@ -19306,6 +19345,15 @@
   "name": "글로벌에스엠",
   "region": "GEORGE TOWN,GRAND",
   "stock_code": "900070"
+ },
+ "00784184": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "29271",
+  "name": "(주)동원파츠",
+  "region": "경기도 시흥시",
+  "stock_code": "0162D0"
  },
  "00784643": {
   "checked": "2026-10-05",
@@ -21006,10 +21054,13 @@
   "stock_code": "356860"
  },
  "00920731": {
-  "checked": "2026-09-23",
+  "checked": "2026-11-23",
+  "corp_cls": "K",
   "daegu": false,
-  "name": "케이앤에스아이앤씨",
-  "region": "대전광역시 유성구"
+  "induty_code": "26429",
+  "name": "(주)케이앤에스아이앤씨",
+  "region": "대전광역시 유성구",
+  "stock_code": "487400"
  },
  "00921916": {
   "checked": "2026-10-05",
@@ -21454,6 +21505,15 @@
   "name": "세종메디칼",
   "region": "경기도 파주시",
   "stock_code": "258830"
+ },
+ "00960234": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "25929",
+  "name": "(주)영광와이케이엠씨",
+  "region": "충청남도 아산시",
+  "stock_code": "345290"
  },
  "00960623": {
   "checked": "2026-10-05",
@@ -22502,6 +22562,15 @@
   "region": "서울특별시 송파구",
   "stock_code": "236340"
  },
+ "01025617": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "31322",
+  "name": "(주)하나에어로다이내믹스",
+  "region": "경상남도 사천시",
+  "stock_code": "271160"
+ },
  "01025644": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -22564,6 +22633,15 @@
   "name": "아리바이오",
   "region": "경기도 성남시",
   "stock_code": ""
+ },
+ "01028933": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "292",
+  "name": "멜콘 주식회사",
+  "region": "경기도 화성시",
+  "stock_code": "179880"
  },
  "01029394": {
   "checked": "2026-10-05",
@@ -26381,6 +26459,15 @@
   "name": "이랜드글로벌스포츠",
   "region": "서울특별시 금천구"
  },
+ "01279698": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": true,
+  "induty_code": "28119",
+  "name": "채비(주)",
+  "region": "대구광역시 수성구",
+  "stock_code": "0011T0"
+ },
  "01281541": {
   "checked": "2026-10-05",
   "corp_cls": "N",
@@ -27701,6 +27788,15 @@
   "region": "경기도 성남시",
   "stock_code": ""
  },
+ "01379129": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "713",
+  "name": "주식회사 매드업",
+  "region": "서울특별시 서초구",
+  "stock_code": "0039P0"
+ },
  "01379563": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -28262,6 +28358,15 @@
   "region": "서울특별시 송파구",
   "stock_code": "382150"
  },
+ "01424261": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "58222",
+  "name": "주식회사 레몬헬스케어",
+  "region": "서울특별시 금천구",
+  "stock_code": "365660"
+ },
  "01424340": {
   "checked": "2026-10-05",
   "corp_cls": "E",
@@ -28667,6 +28772,15 @@
   "region": "서울특별시 금천구",
   "stock_code": ""
  },
+ "01461730": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "47911",
+  "name": "(주)딜리셔스",
+  "region": "서울특별시 종로구",
+  "stock_code": "483350"
+ },
  "01462605": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -29029,6 +29143,15 @@
   "name": "프리굿",
   "region": "서울특별시 서초구",
   "stock_code": ""
+ },
+ "01501764": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "27111",
+  "name": "주식회사 레메디",
+  "region": "강원특별자치도 춘천시",
+  "stock_code": "387690"
  },
  "01502587": {
   "checked": "2026-10-05",
@@ -29591,6 +29714,24 @@
   "region": "서울특별시 마포구",
   "stock_code": "415380"
  },
+ "01540903": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "33999",
+  "name": "(주)크리에이츠",
+  "region": "경기도 수원시",
+  "stock_code": "439270"
+ },
+ "01543043": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "29174",
+  "name": "(주)티앤이코리아",
+  "region": "충청북도 청주시",
+  "stock_code": "0053F0"
+ },
  "01544468": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -29737,6 +29878,15 @@
   "name": "아이지이",
   "region": "인천광역시 서구",
   "stock_code": ""
+ },
+ "01564514": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "26112",
+  "name": "(주)글로벌테크놀로지",
+  "region": "경기도 화성시",
+  "stock_code": "486510"
  },
  "01565054": {
   "checked": "2026-10-05",
@@ -30072,10 +30222,13 @@
   "stock_code": "407400"
  },
  "01586923": {
-  "checked": "2026-10-02",
+  "checked": "2026-11-23",
+  "corp_cls": "K",
   "daegu": false,
-  "name": "스카이랩스",
-  "region": "경기도 성남시"
+  "induty_code": "27199",
+  "name": "주식회사 스카이랩스",
+  "region": "경기도 성남시",
+  "stock_code": "386380"
  },
  "01587056": {
   "checked": "2026-10-05",
@@ -30103,6 +30256,15 @@
   "name": "레드엔비아",
   "region": "서울특별시 송파구",
   "stock_code": ""
+ },
+ "01588897": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "58221",
+  "name": "주식회사 니어스랩",
+  "region": "서울특별시 송파구",
+  "stock_code": "417030"
  },
  "01590120": {
   "checked": "2026-10-05",
@@ -30220,6 +30382,15 @@
   "name": "이브이알스튜디오",
   "region": "서울특별시 강남구",
   "stock_code": ""
+ },
+ "01596221": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "29299",
+  "name": "주식회사 세미티에스",
+  "region": "경기도 용인시",
+  "stock_code": "0017J0"
  },
  "01596425": {
   "checked": "2026-10-05",
@@ -30614,6 +30785,15 @@
   "region": "서울특별시 마포구",
   "stock_code": "483650"
  },
+ "01649408": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "5822",
+  "name": "주식회사 인텔리빅스",
+  "region": "서울특별시 서초구",
+  "stock_code": "420610"
+ },
  "01649620": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -30667,6 +30847,15 @@
   "name": "바이오비쥬",
   "region": "경기도 하남시",
   "stock_code": "489460"
+ },
+ "01658035": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "272",
+  "name": "(주)옵토닉스",
+  "region": "광주광역시 북구",
+  "stock_code": "493260"
  },
  "01658266": {
   "checked": "2026-10-05",
@@ -31263,10 +31452,13 @@
   "stock_code": "475230"
  },
  "01709065": {
-  "checked": "2026-10-13",
+  "checked": "2026-11-23",
+  "corp_cls": "K",
   "daegu": false,
-  "name": "마키나락스",
-  "region": "서울특별시 서초구"
+  "induty_code": "582",
+  "name": "(주)마키나락스",
+  "region": "서울특별시 서초구",
+  "stock_code": "477850"
  },
  "01712485": {
   "checked": "2026-10-05",
@@ -31375,6 +31567,15 @@
   "name": "현대그린푸드",
   "region": "경기도 용인시",
   "stock_code": "453340"
+ },
+ "01722066": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "58222",
+  "name": "빅웨이브로보틱스(주)",
+  "region": "서울특별시 강남구",
+  "stock_code": "0035S0"
  },
  "01722437": {
   "checked": "2026-10-05",
@@ -31532,6 +31733,15 @@
   "region": "경기도 구리시",
   "stock_code": ""
  },
+ "01749559": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "27199",
+  "name": "(주)엠에스바이오",
+  "region": "경기도 성남시",
+  "stock_code": "0013Y0"
+ },
  "01751448": {
   "checked": "2026-10-05",
   "corp_cls": "E",
@@ -31542,10 +31752,13 @@
   "stock_code": "457390"
  },
  "01754737": {
-  "checked": "2026-10-22",
+  "checked": "2026-11-23",
+  "corp_cls": "K",
   "daegu": false,
-  "name": "엘리스",
-  "region": "서울특별시 강남구"
+  "induty_code": "58222",
+  "name": "(주)엘리스그룹",
+  "region": "서울특별시 강남구",
+  "stock_code": "0158S0"
  },
  "01755259": {
   "checked": "2026-10-05",
@@ -31916,6 +32129,15 @@
   "region": "서울특별시 영등포구",
   "stock_code": "472230"
  },
+ "01797635": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "292",
+  "name": "(주)에이엘로봇",
+  "region": "경기도 부천시",
+  "stock_code": "471800"
+ },
  "01798722": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -31943,6 +32165,15 @@
   "region": "서울특별시 영등포구",
   "stock_code": "473370"
  },
+ "01801026": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "29299",
+  "name": "주식회사 브릴스",
+  "region": "인천광역시 연수구",
+  "stock_code": "468670"
+ },
  "01801822": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -31951,6 +32182,15 @@
   "name": "SK증권제13호스팩",
   "region": "서울특별시 영등포구",
   "stock_code": "473950"
+ },
+ "01802928": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "27199",
+  "name": "코스모로보틱스 주식회사",
+  "region": "서울특별시 구로구",
+  "stock_code": "439960"
  },
  "01803352": {
   "checked": "2026-10-05",
@@ -32246,12 +32486,21 @@
   "region": "서울특별시 영등포구",
   "stock_code": "481890"
  },
+ "01835829": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "639",
+  "name": "주식회사 바로팜",
+  "region": "서울특별시 동작구",
+  "stock_code": "0153R0"
+ },
  "01835944": {
   "checked": "2026-11-23",
   "corp_cls": "N",
   "daegu": false,
   "induty_code": "474",
-  "name": "주식회사 이스트엔드",
+  "name": "이스트엔드",
   "region": "서울특별시 성동구",
   "stock_code": "0230E0"
  },
@@ -32381,6 +32630,15 @@
   "region": "경상남도 창원시",
   "stock_code": "332190"
  },
+ "01863318": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "70113",
+  "name": "주식회사 넥스아이",
+  "region": "서울특별시 송파구",
+  "stock_code": "493410"
+ },
  "01866528": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -32398,6 +32656,15 @@
   "name": "KB제31호스팩",
   "region": "서울특별시 영등포구",
   "stock_code": "492220"
+ },
+ "01867688": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "475",
+  "name": "주식회사 와이즈플래닛컴퍼니",
+  "region": "서울특별시 금천구",
+  "stock_code": "0010S0"
  },
  "01867749": {
   "checked": "2026-10-05",
@@ -32498,6 +32765,15 @@
   "region": "서울특별시 영등포구",
   "stock_code": "496070"
  },
+ "01876251": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "58222",
+  "name": "네오사피엔스 주식회사",
+  "region": "서울특별시 강남구",
+  "stock_code": "0161M0"
+ },
  "01877126": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -32512,7 +32788,7 @@
   "corp_cls": "N",
   "daegu": false,
   "induty_code": "46461",
-  "name": "(주)모비콘텐츠테크",
+  "name": "모비콘텐츠테크",
   "region": "서울특별시 강남구",
   "stock_code": "0077H0"
  },
@@ -32789,6 +33065,15 @@
   "region": "서울특별시 영등포구",
   "stock_code": "0105P0"
  },
+ "01956751": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "58221",
+  "name": "래블업 주식회사",
+  "region": "서울특별시 강남구",
+  "stock_code": "0147B0"
+ },
  "01957282": {
   "checked": "2026-10-05",
   "corp_cls": "K",
@@ -32822,6 +33107,42 @@
   "name": "유진마포130위탁관리부동산투자회사",
   "region": "서울특별시 영등포구"
  },
+ "01963140": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "661",
+  "name": "신한제18호기업인수목적주식회사",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0129K0"
+ },
+ "01963520": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "661",
+  "name": "신한제17호기업인수목적 주식회사",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0130D0"
+ },
+ "01964246": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "66199",
+  "name": "키움히어로제2호기업인수목적 주식회사",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0131D0"
+ },
+ "01965157": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "66199",
+  "name": "한화플러스제6호기업인수목적(주)",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0127E0"
+ },
  "01965324": {
   "checked": "2026-10-05",
   "corp_cls": "Y",
@@ -32849,11 +33170,29 @@
   "region": "서울특별시 강남구",
   "stock_code": ""
  },
+ "01965698": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "661",
+  "name": "엔에이치기업인수목적33호(주)",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0130H0"
+ },
  "01966660": {
   "checked": "2026-11-06",
   "daegu": false,
   "name": "아이브이쥐",
   "region": "경기도 성남시"
+ },
+ "01976418": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "66199",
+  "name": "대신밸런스제20호기업인수목적(주)",
+  "region": "서울특별시 중구",
+  "stock_code": "0134X0"
  },
  "01979257": {
   "checked": "2026-10-05",
@@ -32879,11 +33218,29 @@
   "name": "갤럭시아에셋매니지먼트",
   "region": "서울특별시 성북구"
  },
+ "01987779": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "66199",
+  "name": "한국제16호기업인수목적 주식회사",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0164H0"
+ },
  "01988370": {
   "checked": "2026-10-02",
   "daegu": false,
   "name": "강남역1307피에프브이",
   "region": "경기도 용인시"
+ },
+ "01989041": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "66199",
+  "name": "메리츠제2호기업인수목적(주)",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0165X0"
  },
  "02000891": {
   "checked": "2026-11-06",
@@ -32897,11 +33254,68 @@
   "name": "플래닛147",
   "region": "서울특별시 서초구"
  },
- "02031369": {
-  "checked": "2026-09-29",
+ "02029258": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
   "daegu": false,
+  "induty_code": "661",
+  "name": "한국제17호기업인수목적 주식회사",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0200G0"
+ },
+ "02030166": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "661",
+  "name": "엔에이치기업인수목적34호 주식회사",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0197V0"
+ },
+ "02031369": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "70113",
   "name": "인제니아테라퓨틱스",
-  "region": "490 Arsenal"
+  "region": "490 Arsenal",
+  "stock_code": "950260"
+ },
+ "02032155": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "661",
+  "name": "케이비제34호기업인수목적(주)",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0209J0"
+ },
+ "02032951": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "661",
+  "name": "에스케이증권제14호기업인수목적 주식회사",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0205H0"
+ },
+ "02036869": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "66199",
+  "name": "아이엠기업인수목적1호 주식회사",
+  "region": "서울특별시 영등포구",
+  "stock_code": "0222E0"
+ },
+ "02038566": {
+  "checked": "2026-11-23",
+  "corp_cls": "K",
+  "daegu": false,
+  "induty_code": "265",
+  "name": "(주)네오뷰",
+  "region": "경기도 안양시",
+  "stock_code": "0218L0"
  },
  "02040446": {
   "checked": "2026-10-05",
@@ -32913,9 +33327,12 @@
   "stock_code": ""
  },
  "02042949": {
-  "checked": "2026-10-09",
+  "checked": "2026-11-23",
+  "corp_cls": "Y",
   "daegu": false,
-  "name": "한화머시너리앤서비스홀딩스",
-  "region": "서울특별시 중구"
+  "induty_code": "64992",
+  "name": "한화머시너리앤서비스홀딩스 주식회사",
+  "region": "서울특별시 중구",
+  "stock_code": "0220W0"
  }
 }

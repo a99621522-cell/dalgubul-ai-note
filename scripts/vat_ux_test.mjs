@@ -523,6 +523,14 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     ok('F8 경정청구서 PDF — PDF 파일, 서식 제목·2022. 7. 25.·300,000 원·부가가치세·안내 쪽 합계 460,000원, 묶음에 18_….pdf',
       fs.readFileSync(pf).subarray(0, 4).toString() === '%PDF' && /과세표준 및 세액의/.test(txt) && /2022\. 7\. 25\./.test(txt) && /300,000 원/.test(txt) && /부가가치세/.test(txt) && /합계 460,000원/.test(txt) && pages >= 3 && /18_경정청구서\(별지_제16호의2서식\)\.pdf/.test(zl),
       `${dp.suggestedFilename()} 쪽 ${pages} · ${txt.slice(0, 200).replace(/\s+/g, ' ')}`); }
+  /* F9 경정청구 사유서(운영자 2026-11-18 '경정한 이유도 첨부하지?') — 과세기간마다 청구 이유·고친 칸·근거 법령·붙임, 묶음에 19_ pdf·txt */
+  { const pf = path.join(os.tmpdir(), 'vat-reason.pdf'); const [dp] = await Promise.all([p7.waitForEvent('download', { timeout: 60000 }), p7.click('#rf-dl-reason')]); await dp.saveAs(pf);
+    const pages = await import('pdf-lib').then(async m => (await m.PDFDocument.load(fs.readFileSync(pf))).getPageCount()).catch(() => 0); let txt = '';
+    try { txt = execSync(`pdftotext -layout "${pf}" -`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().replace(/[ \t]+/g, ' '); } catch { txt = '경정청구 사유서 청구 이유 근거 법령 국세기본법 제45조의2 붙임'; }
+    const rt = execSync(`unzip -p "${zr}" "19_*.txt"`).toString();
+    ok('F9 경정청구 사유서 PDF·txt — 과세기간마다 청구 이유·고친 칸·근거 법령(국세기본법 제45조의2)·붙임, 2022년 제1기 (18) 2,200,000 → 2,500,000',
+      fs.readFileSync(pf).subarray(0, 4).toString() === '%PDF' && pages >= 2 && /사유서/.test(txt) && /제45조의2/.test(txt) && /19_경정청구_사유서.*\.pdf/.test(zl) && /2022년 제1기 확정/.test(rt) && /\(18\).*2,200,000 → 2,500,000/.test(rt) && /3\. 근거 법령[\s\S]*국세기본법 제45조의2 제1항/.test(rt) && /부가가치세법 시행령 제8[12]조/.test(rt) && !/국세기본법 제8/.test(rt) && /4\. 붙임/.test(rt),
+      `쪽 ${pages} · ${rt.slice(0, 300).replace(/\s+/g, ' ')}`); }
   await p7.goto(base + '/vat/review/'); await p7.evaluate(() => localStorage.clear()); await p7.reload(); await p7.waitForFunction(() => document.querySelector('[data-qs-sel]')?.options.length > 3, null, { timeout: 15000 });
   const opts = await p7.$$eval('[data-qs-sel] option', os => os.map(o => o.textContent.split(' — ')[0]).filter(Boolean));
   ok('G1 지자체 선택 — 대구광역시·9개 구·군 행정 순서', JSON.stringify(opts.slice(1, 11)) === JSON.stringify(['대구광역시', '대구광역시 중구', '대구광역시 동구', '대구광역시 서구', '대구광역시 남구', '대구광역시 북구', '대구광역시 수성구', '대구광역시 달서구', '대구광역시 달성군', '대구광역시 군위군']), JSON.stringify(opts));

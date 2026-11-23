@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gov: [suseong]
+        gov: [daegu, dong, seo, nam, buk, suseong, dalseo, dalseong, gunwi]
     env:
       GOV: ${{ matrix.gov }}
       PROJECT: vat-${{ matrix.gov }}

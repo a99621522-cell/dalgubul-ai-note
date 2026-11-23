@@ -33,7 +33,9 @@ export function addRevenueFacilities(D: Data, org: Org, g: RevGov) {
   let n = 0, k = 0; const merged = new Set<string>(); const seen = new Set(org.facilities.map(f => f.name));
   for (const r of facRows(g).sort((a, b) => b.amount_k - a.amount_k)) {
     const line = `[세입예산서 ${g.year}] ${r.dept} · ${r.mok_code} ${r.mok} · ${r.item} ${r.amount_k.toLocaleString('ko-KR')}천원`;
-    const hit = pick(r.item);
+    /* 부서가 시설(사업소)이면 그 시설로 — 세입 줄 이름이 '공연장, 전시장, 생활문화센터 사용료'·'공연입장료'처럼 시설 이름이 없을 때(2026-11-18 남구 대덕문화전당) */
+    const dn = normN(r.dept ?? ''); const byDept = dn.length >= 4 ? org.facilities.find(f => [f.name, ...(f.alias ?? [])].some(x => normN(x).startsWith(dn))) : undefined;
+    const hit = pick(r.item) ?? byDept;
     if (hit) { hit.rev = hit.rev ?? []; if (hit.rev.includes(r.item)) continue; hit.rev.push(r.item); hit.note = (hit.note ? hit.note.replace(/\s*$/, ' ') : '') + line + '.'; merged.add(hit.id); k++; continue; }
     const it = (D.revenue_items ?? []).find(i => i.key === r.vat_key); const type = it?.type && D.facilities.some(f => f.key === it.type) ? it.type : (D.facilities.some(f => f.key === r.vat_key) ? r.vat_key : 'use_permit');
     const name = clean(r.item); if (seen.has(name)) continue; seen.add(name);
@@ -60,7 +62,7 @@ export async function makeOrg(D: Data, v: string): Promise<Org> {
   const [kind, key] = v.includes(':') ? v.split(':') : [presets.some(p => p.key === v) ? 'preset' : 'gov', v];
   const p = presets.find(x => x.key === key); const g = govs.find(x => x.key === key);
   if (kind === 'preset' && p) { org.org = p.org; org.facilities = presetFacilities(p); }
-  if (g) { if (!org.org) org.org = g.name; addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ } }
+  if (g) { if (!org.org) org.org = D.govs?.find(x => x.key === key)?.name ?? g.name; /* 세입예산서 이름('군위군')보다 지자체 프로필 이름('대구광역시 군위군') — 기관 번호·제목과 같게 */ addRevenueFacilities(D, org, g); try { localStorage.setItem('vat-gov', g.key); } catch { /* */ } }
   if (!org.org) { const gp = D.govs?.find(x => x.key === key); if (gp) { org.org = gp.name; try { localStorage.setItem('vat-gov', key); } catch { /* */ } } }
   org.facilities.forEach(f => { f.kind = 'gov'; }); const on = findOrgNo(D, org.org); if (on) { org.reg_no = on.bizno; org.reg_src = orgNoNote(on); fillFacilityNos(D, org, on); }
   return org;

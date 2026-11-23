@@ -166,3 +166,60 @@ export async function claimFormPdf(M: Map<string, CorrDoc[]>, orgName: string, o
   for (const g of G) { lines(g, 10, W - 6 * MM).forEach((t, i) => { if (i === 0) text(pg, '•', { x: X0, y: y - 10, size: 10 }); text(pg, t, { x: X0 + 5 * MM, y: y - 10, size: 10 }); y -= 15; }); y -= 5; }
   return K.save();
 }
+
+/** 경정청구 사유서(붙임) — 운영자 2026-11-18 '경정한 이유도 첨부하지?'. 경정청구서 ⑨ 칸은 짧게 들어가므로, 과세기간마다 한 쪽에
+ *  청구 이유 문장(⑨ 와 같은 corrReason)·고친 칸(당초 → 경정 후)·근거 법령·붙임 목록을 적어 홈택스 경정청구의 '증빙서류 첨부'로 올린다.
+ *  새 계산 없음 — 숫자는 CorrDoc(고친 신고서) 그대로. 사람 이름·전화 없음. */
+const LAW_RX = /((?:부가가치세법|국세기본법|조세특례제한법)(?:\s*시행령)?|같은 법 시행령|같은 법|시행령)?\s*(제\d+조(?:의\d+)?(?:\s*제\d+항)?(?:\s*제\d+호)?)/g;
+export function reasonLaws(c: CorrDoc): string[] {
+  const out = ['국세기본법 제45조의2 제1항(결정 또는 경정의 청구)']; let pre = '부가가치세법';
+  for (const m of corrReason(c).matchAll(LAW_RX)) {
+    const g = (m[1] ?? '').replace(/\s+/g, ' '); if (g) pre = g === '같은 법 시행령' || g === '시행령' ? '부가가치세법 시행령' : g === '같은 법' ? '부가가치세법' : g;
+    const full = `${pre} ${m[2].replace(/\s+/g, ' ')}`; if (!/^국세기본법 제45조의2/.test(full) && !out.includes(full)) out.push(full); }
+  if (c.parts.some(p => p.sec === '안분') && !out.some(x => /시행령 제81조/.test(x))) out.push('부가가치세법 시행령 제81조(공통매입세액의 안분 계산)');
+  if (c.parts.some(p => /정산/.test(p.sec)) && !out.some(x => /시행령 제82조/.test(x))) out.push('부가가치세법 시행령 제82조(공통매입세액의 정산)');
+  return out;
+}
+const claimDue = (y: number, h: number) => h === 1 ? `${y + 5}-07-25` : `${y + 6}-01-25`;
+function attachList(c: CorrDoc): string[] {
+  const list = /세금계산서/.test(corrReason(c));
+  return ['당초 신고서 사본(홈택스 신고내역 출력)', '고친 신고서(당초 → 경정 후 값, 이 사유서 2항)', ...(c.parts.length || /공통매입세액|면세사업/.test(corrReason(c)) ? ['공제받지 못할 매입세액 명세서(고친 값)'] : []), ...(list ? ['매입처별 세금계산서합계표(추가분) — 빠진 세금계산서 목록'] : []), ...(/시설/.test(corrReason(c)) ? ['그 시설의 과세 근거(조례 요금표·사용료 세입 내역·과세 매출 신고 내역)'] : [])];
+}
+export function reasonDocText(M: Map<string, CorrDoc[]>, orgName: string, orgReg = ''): string {
+  const L = [...M].sort().flatMap(([, v]) => v).filter(c => c.delta > 0); if (!L.length) return '';
+  return L.map(c => { const [y, h] = c.k.split('-').map(Number);
+    const chg = c.cells.filter(x => x.before !== x.after).map(x => `  (${x.n}) ${x.label}: ${won(x.before)} → ${won(x.after)}`);
+    if (c.payBefore != null && c.payAfter != null) chg.push(`  납부(환급)세액(매출세액 − 공제 매입세액): ${won(c.payBefore)} → ${won(c.payAfter)}`);
+    return [`경정청구 사유서 — ${y}년 제${h}기 ${c.kind} (판정은 참고이며 기관의 판단이 아닙니다 — 제출 전 기관이 확인)`, `청구인: ${orgName} · 사업자등록번호 ${c.reg || orgReg || '(신고서 번호)'} · 세목 부가가치세`, `법정신고기한 ${dueDate(y, h, c.kind)} · 경정청구 기한 ${claimDue(y, h)} · 돌려받을 세액 ${fmt(c.delta)}원`, '', '1. 청구 이유', `  ${corrReason(c)}`, '', '2. 고친 내용(당초 → 경정 후)', ...(chg.length ? chg : ['  (고친 칸 없음)']), '', '3. 근거 법령', ...reasonLaws(c).map(x => `  - ${x}`), '', '4. 붙임', ...attachList(c).map((x, i) => `  ${i + 1}. ${x}`)].join('\n'); }).join('\n\n' + '─'.repeat(40) + '\n\n') + '\n';
+}
+export async function reasonDocPdf(M: Map<string, CorrDoc[]>, orgName: string, orgReg = ''): Promise<Blob | null> {
+  const L = [...M].sort().flatMap(([, v]) => v).filter(c => c.delta > 0); if (!L.length) return null;
+  const K = await import('./pdf').then(m => m.pdfKit()); const { doc, text, width, lines, MM, INK, MUTED } = K;
+  doc.setTitle(`경정청구 사유서 — ${orgName}`);
+  const PW = 210 * MM, PH = 297 * MM, X0 = 18 * MM, W = 174 * MM;
+  for (const c of L) {
+    const [yr, hf] = c.k.split('-').map(Number); let pg = doc.addPage([PW, PH]); let y = PH - 18 * MM;
+    const need = (h: number) => { if (y - h < 18 * MM) { pg = doc.addPage([PW, PH]); y = PH - 18 * MM; } };
+    const para = (t: string, size = 10, bold = false, indent = 0, color = INK) => { for (const ln of lines(t, size, W - indent)) { need(size * 1.5); text(pg, ln, { x: X0 + indent, y: y - size, size, color }, bold); y -= size * 1.5; } };
+    text(pg, '붙임', { x: X0, y: y - 9, size: 9, color: MUTED }); y -= 6 * MM;
+    const T = '경정청구 사유서'; text(pg, T, { x: (PW - width(T, 17)) / 2, y: y - 17, size: 17 }, true); y -= 12 * MM;
+    const meta: [string, string][] = [['청구인', orgName], ['사업자등록번호', c.reg || orgReg || '(신고서의 사업자등록번호)'], ['세목·과세기간', `부가가치세 ${yr}년 제${hf}기 ${c.kind}`], ['법정신고기한 · 경정청구 기한', `${dueDate(yr, hf, c.kind)} · ${claimDue(yr, hf)}`], ['돌려받을 세액', `${fmt(c.delta)}원`]];
+    for (const [a, b] of meta) { const h = 7 * MM; pg.drawRectangle({ x: X0, y: y - h, width: 50 * MM, height: h, color: K.rgb(0.95, 0.95, 0.95), borderColor: INK, borderWidth: 0.5 }); pg.drawRectangle({ x: X0 + 50 * MM, y: y - h, width: W - 50 * MM, height: h, borderColor: INK, borderWidth: 0.5 });
+      text(pg, a, { x: X0 + 2 * MM, y: y - h / 2 - 3.3, size: 9.5 }); text(pg, b, { x: X0 + 52 * MM, y: y - h / 2 - 3.3, size: 9.5 }, a === '돌려받을 세액'); y -= h; }
+    y -= 6 * MM;
+    para('1. 청구 이유', 11.5, true); y -= 1 * MM; para(corrReason(c), 10, false, 4 * MM); y -= 4 * MM;
+    para('2. 고친 내용(당초 → 경정 후)', 11.5, true); y -= 1 * MM;
+    const rows = c.cells.filter(x => x.before !== x.after).map(x => [`(${x.n}) ${x.label}`, won(x.before), won(x.after)]);
+    if (c.payBefore != null && c.payAfter != null) rows.push(['납부(환급)세액(매출세액 − 공제 매입세액)', won(c.payBefore), won(c.payAfter)]);
+    const cw = [94 * MM, 40 * MM, 40 * MM];
+    const trow = (r: string[], head = false) => { const ls = lines(r[0], 9.5, cw[0] - 4 * MM); const h = Math.max(7 * MM, ls.length * 9.5 * 1.4 + 3 * MM); need(h); let x = X0;
+      r.forEach((t, i) => { pg.drawRectangle({ x, y: y - h, width: cw[i], height: h, color: head ? K.rgb(0.95, 0.95, 0.95) : undefined, borderColor: INK, borderWidth: 0.5 });
+        if (i === 0) ls.forEach((ln, j) => text(pg, ln, { x: x + 2 * MM, y: y - 1.5 * MM - 9.5 - j * 9.5 * 1.4, size: 9.5 }, head)); else text(pg, t, { x: head ? x + (cw[i] - width(t, 9.5)) / 2 : x + cw[i] - 2 * MM - width(t, 9.5), y: y - h / 2 - 3.3, size: 9.5 }, head);
+        x += cw[i]; }); y -= h; };
+    trow(['칸·항목', '당초', '경정 후'], true); (rows.length ? rows : [['(고친 칸 없음)', '', '']]).forEach(r => trow(r)); y -= 5 * MM;
+    para('3. 근거 법령', 11.5, true); y -= 1 * MM; reasonLaws(c).forEach(x => para(`- ${x}`, 10, false, 4 * MM)); y -= 4 * MM;
+    para('4. 붙임', 11.5, true); y -= 1 * MM; attachList(c).forEach((x, i) => para(`${i + 1}. ${x}`, 10, false, 4 * MM)); y -= 6 * MM;
+    para('이 사유서는 지난 신고서(와 매입 목록)를 다시 계산한 결과입니다. 판정은 참고이며 기관의 판단이 아닙니다 — 제출 전 금액·사실을 기관이 확인합니다.', 8.5, false, 0, MUTED);
+  }
+  return await K.save();
+}

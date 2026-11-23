@@ -3,30 +3,60 @@
  "name": "국회예산정책처(NABO)",
  "group": "국내 연구",
  "home": "https://www.nabo.go.kr",
- "fetched": "2026-11-15",
+ "fetched": "2026-11-22",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
   {
-   "title": "종자산업 육성사업 평가 N",
+   "title": "NABO 지역인구전망 2026~2045 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9557&key=2509250001",
+   "date": "2026-11-18",
+   "summary": ""
+  },
+  {
+   "title": "공적개발원조(ODA) 사업 평가 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9551&key=2509250001",
+   "date": "2026-11-16",
+   "summary": ""
+  },
+  {
+   "title": "영화산업 육성정책‧사업 평가 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9550&key=2509250001",
+   "date": "2026-11-16",
+   "summary": ""
+  },
+  {
+   "title": "친환경자동차 보급지원 사업 평가 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9549&key=2509250001",
+   "date": "2026-11-16",
+   "summary": ""
+  },
+  {
+   "title": "치매 지원 정책‧사업 평가 N",
+   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9548&key=2509250001",
+   "date": "2026-11-16",
+   "summary": ""
+  },
+  {
+   "title": "종자산업 육성사업 평가",
    "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9541&key=2509250001",
    "date": "2026-11-13",
    "summary": ""
   },
   {
-   "title": "소재‧부품‧장비 지원사업 평가 N",
+   "title": "소재‧부품‧장비 지원사업 평가",
    "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9540&key=2509250001",
    "date": "2026-11-13",
    "summary": ""
   },
   {
-   "title": "국가전략기술 육성 재정사업 평가 N",
+   "title": "국가전략기술 육성 재정사업 평가",
    "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9539&key=2509250001",
    "date": "2026-11-13",
    "summary": ""
   },
   {
-   "title": "재난안전사업 관리체계 평가 N",
+   "title": "재난안전사업 관리체계 평가",
    "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9538&key=2509250001",
    "date": "2026-11-13",
    "summary": ""
@@ -34,36 +64,6 @@
   {
    "title": "[예산안분석시리즈 VII] 결산 연계 2027년도 예산안 분석",
    "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9517&key=2509250001",
-   "date": "2026-10-30",
-   "summary": ""
-  },
-  {
-   "title": "[예산안분석시리즈 VI] 2027년도 온실가스감축인지 예산서 분석",
-   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9515&key=2509250001",
-   "date": "2026-10-30",
-   "summary": ""
-  },
-  {
-   "title": "[예산안분석시리즈 V] 2027년도 성인지 예산서 분석",
-   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9514&key=2509250001",
-   "date": "2026-10-30",
-   "summary": ""
-  },
-  {
-   "title": "[예산안분석시리즈 IV] 2027년도 예산안 위원회별 분석[국토교통위원회]",
-   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9513&key=2509250001",
-   "date": "2026-10-30",
-   "summary": ""
-  },
-  {
-   "title": "[예산안분석시리즈 IV] 2027년도 예산안 위원회별 분석[기후에너지환경노동위원회]",
-   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9512&key=2509250001",
-   "date": "2026-10-30",
-   "summary": ""
-  },
-  {
-   "title": "[예산안분석시리즈 IV] 2027년도 예산안 위원회별 분석[보건복지위원회·성평등가족위원회]",
-   "url": "https://www.nabo.go.kr/Sub/01Report/analysisView.do?idx=9511&key=2509250001",
    "date": "2026-10-30",
    "summary": ""
   }

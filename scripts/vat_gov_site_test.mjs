@@ -31,9 +31,9 @@ if ((D.govs?.[0]?.focus ?? []).length) {
   ok('G11 먼저 볼 곳 묶음', g >= 2 && await pg.locator('#rf-focus').isVisible(), `${g}묶음`);
   const own = await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1') || '{}').facilities.filter(f => f.run === 'entrusted_own').length);
   const shown = await pg.$$eval('#rf-focus details li', els => els.length);
-  ok('G12 신고에 넣지 않는 곳 = 수탁기관 자기 사업 시설', own > 0 && shown === own, `${shown}/${own}`);
+  ok('G12 신고에 넣지 않는 곳 = 수탁기관 자기 사업 시설', shown === own && (own > 0 || !D.govs[0].exclude_note), `${shown}/${own}`);   // exclude_note 를 둔 지자체는 그런 시설이 있어야 한다
   const box = pg.locator('#rf-focus .rf-area').first();
-  if (await box.count()) {
+  if (!(D.govs[0].focus ?? []).some(g => g.area)) { /* 면적 나누기 묶음이 없는 지자체 */ } else if (await box.count()) {
     const fid = await box.getAttribute('data-fid');
     await box.locator('[data-area-tot]').fill('1000'); await box.locator('[data-area-tax]').fill('250');
     await Promise.all([pg.waitForLoadState('load'), box.locator('[data-area-go]').click()]); await pg.waitForTimeout(2500);
@@ -46,7 +46,8 @@ await pg.setInputFiles('#rf-all-file', files); await pg.waitForTimeout(3500);
 const amt = await pg.textContent('#rf-sum-amt').catch(() => ''); const sum = await pg.textContent('#rf-sum').catch(() => ''); ok('G9 신고서를 놓으면 결과 문장', /\d원/.test(amt ?? '') && (sum ?? '').includes(name.replace(/^대구광역시 /, '')), `${amt} · ${(sum ?? '').replace(/\s+/g, ' ').slice(0, 60)}`);
 if (!(D.govs?.[0]?.corp ?? []).length) {   /* 공단이 없는 지자체: 다른 지자체 구조(공단 대행·군 명의)가 화면에 남지 않는지 — 접힌 펼침까지 */
   const txt = await pg.evaluate(() => { document.querySelectorAll('details').forEach(d => { d.open = true; }); const m = document.querySelector('main').cloneNode(true); m.querySelectorAll('script,style,template').forEach(x => x.remove()); return m.textContent.replace(/\s+/g, ' '); });
-  const bad = [...txt.matchAll(/.{0,30}(시설관리공단|공단 대행|공단·공사 대행|대행 면제|대행사업비|군 명의|군 세입|군이 직접|군 대행).{0,30}/g)].map(m => m[0]);
+  const rx = /군$/.test(name) ? /.{0,30}(시설관리공단|공단 대행|공단·공사 대행|대행 면제|대행사업비).{0,30}/g : /.{0,30}(시설관리공단|공단 대행|공단·공사 대행|대행 면제|대행사업비|군 명의|군 세입|군이 직접|군 대행).{0,30}/g;   // 군 지자체는 '군 명의' 가 맞는 말
+  const bad = [...txt.matchAll(rx)].map(m => m[0]);
   ok('G14 공단·대행·군 문구 없음(접힌 곳 포함)', bad.length === 0, bad.slice(0, 3).join(' | '));
 }
 ok('G10 404·스크립트 오류 없음', bad.length === 0 && errs.length === 0, [...bad, ...errs].join(' ; '));

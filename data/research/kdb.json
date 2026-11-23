@@ -3,10 +3,16 @@
  "name": "KDB 미래전략연구소",
  "group": "국내 연구",
  "home": "https://rd.kdb.co.kr",
- "fetched": "2026-11-15",
+ "fetched": "2026-11-22",
  "status": "OK",
  "method": "목록 페이지",
  "items": [
+  {
+   "title": "KDB리포트(2026.11.16)",
+   "url": "https://rd.kdb.co.kr/fileView?groupId=DC4D307F-2882-CC13-D3A3-7B598F59D65C&fileId=DB81BA94-A2CA-448E-98F0-5C615340900F",
+   "date": "2026-11-16",
+   "summary": ""
+  },
   {
    "title": "KDB리포트(2026.11.2)",
    "url": "https://rd.kdb.co.kr/fileView?groupId=942E6633-C252-EC14-92FC-1AD71D26EC21&fileId=90FF3BC6-6223-57D0-7978-2C92B0F37204",
@@ -29,12 +35,6 @@
    "title": "KDB리포트(2026.9.21)",
    "url": "https://rd.kdb.co.kr/fileView?groupId=AB4D7578-657A-E2E5-9650-1F0666DE9358&fileId=24DB0356-3E76-E4E2-0F82-9C4AE94BCC5E",
    "date": "2026-09-21",
-   "summary": ""
-  },
-  {
-   "title": "KDB리포트(2026.9.7)",
-   "url": "https://rd.kdb.co.kr/fileView?groupId=0B7F64E4-A15B-28C9-10B2-002FC6D210AB&fileId=B0C1DE8E-5205-DC01-72E3-A57C2F98A2AC",
-   "date": "2026-09-07",
    "summary": ""
   }
  ],

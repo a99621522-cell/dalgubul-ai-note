@@ -149,7 +149,9 @@ def is_daegu(corp_code: str, corp_name: str, cache: dict, c: dict, budget: list[
     if j is None:
         return None
     adres = (j.get("adres") or "").strip()
-    daegu = any(w in adres for w in c["region_words"])
+    first = adres.split()[:1]
+    # 첫 낱말로 판정 — '대구 달서구 …'처럼 줄여 적은 주소도(2026-11-23 고침)
+    daegu = bool(first) and (first[0].startswith("대구") or any(w in first[0] for w in c["region_words"]))
     # 주소는 시·구 단위까지만 저장한다(회사 주소는 공개 정보지만 필요한 건 지역 판정뿐)
     cache[corp_code] = {"name": corp_name, "region": " ".join(adres.split()[:2]), "daegu": daegu, "checked": date.today().isoformat()}
     return daegu

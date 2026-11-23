@@ -5,6 +5,9 @@
 export const hwpExt = (p: string) => (/\.hwp$/i.test(p) ? 'hwp' : 'hwpx');
 export type ReportFile = { slug: string; summary: string; topics: string[]; pages?: number; title: string; name: string; href?: string; size?: string; pdf?: string; pdfSize?: string; hwpx?: string; hwpxSize?: string; date: string };
 export const REPORT_FILES: ReportFile[] = [
+  { slug: 'daegu-industry-finance-2025', summary: 'DART 감사보고서·사업보고서로 대구 본사 제조업 540곳(상장·외부감사 비상장)과 서비스업 399곳(소프트웨어 20곳 포함)의 2023→2025년 매출 증가와 2025년 수익성·재무를 대구일보 「CSAI」 기사와 같은 틀(연평균 매출 증가율 중앙값, 증가율 구간별 회사 수, 업종 비교)로 정리한 자료. 연평균 매출 증가율 중앙값 제조업 −0.54%·서비스업 1.59%·소프트웨어 12.38%, 2025년 영업이익률 중앙값 제조업 3.16%·서비스업 2.45%. 제조업 13개 업종·서비스업 13개 묶음 표와 한국은행 기업경영분석 중위수, 구간별·영업손실 회사 이름, 붙임 회사별 재무(업종별 가나다순). 순위·판정은 싣지 않음.', topics: ['비상장기업', '실적', '소프트웨어'],
+    title: '대구 산업별 재무 2023~2025 — 제조업 13개 업종·서비스업·소프트웨어', name: '대구 산업별 재무 2023~2025 — 제조업 13개 업종·서비스업·소프트웨어',
+    hwpx: '/hwpx/daegu-industry-finance-2025.hwpx', hwpxSize: '228KB', date: '2026-11-24' },
   { slug: 'damex-2026-daegu-ax', summary: '제조 AX(인공지능 전환·자율제조)를 주제로 2026-11-17~20 엑스코에서 열린 「2026 대구국제기계산업대전」에 이름이 오른 대구 기업 6곳(컴퓨터메이트·디엠테크놀러지·대성하이텍·덕산코트랜·한국OSG·대구텍)을 AX 소프트웨어 공급·자동화 설비 공급·적용 현장의 자리에서 정리한 자료. 전시 개요(13개국 274개 기업·기관, 상담 382건·1,468억 원), 회사별 DART 실적·국민연금·공장등록·정부 과제·보도, 공개 자료에 나온 공급↔적용 연결(컴퓨터메이트–진양오일씰 자율제조 등). 대표 이름·기업가치·전망은 싣지 않음.', topics: ['제조 AX', '로봇', '기계'],
     title: '2026 대구국제기계산업대전 대구 참가 기업 6곳 — 제조 AX 관점 정리', name: '2026 대구국제기계산업대전 대구 참가 기업 6곳 — 제조 AX 관점 정리',
     hwpx: '/hwpx/damex-2026-daegu-ax.hwpx', hwpxSize: '63KB', date: '2026-11-23' },

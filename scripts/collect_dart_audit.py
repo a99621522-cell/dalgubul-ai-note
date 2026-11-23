@@ -252,9 +252,18 @@ def daegu(argv: list[str]) -> int:
             for k in (N.norm_name(r["name"]), base_name(r["name"])):
                 if len(k) >= 2:
                     names.add(k)
+    service = "--service" in argv   # 서비스업·소프트웨어(제조업 밖) — 기업 사전에 없는 업종이라 국민연금 대구 사업장 이름도 대조(운영자 지시 2026-11-23 '서비스업과 소프트웨어도 작성해')
+    out_p = ROOT / argv[argv.index("--out") + 1] if "--out" in argv else (ROOT / "data" / "dart" / "daegu_service_fin.csv" if service else OUT_DG)
+    if service:
+        npsf = sorted((ROOT / "data" / "nps").glob("2*.csv"))
+        if npsf:
+            for r in read_csv(npsf[-1]):
+                k = N.norm_name(r.get("사업장명", ""))
+                if len(k) >= 2:
+                    names.add(k)
     matched = [c for c, v in fl.items() if N.norm_name(v["n"]) in names]
     print(f"[daegu] 감사보고서 제출 비상장 {len(fl)}곳 중 기업 사전 이름 일치 {len(matched)}곳", flush=True)
-    prev_rows = [] if "--reparse" in argv else [r for r in read_csv(OUT_DG) if r.get("basis")]   # basis 없는 옛 형식(한 해 한 줄)은 버리고 다시 읽는다
+    prev_rows = [] if "--reparse" in argv else [r for r in read_csv(out_p) if r.get("basis")]   # basis 없는 옛 형식(한 해 한 줄)은 버리고 다시 읽는다
     done = {r["rcept_no"] for r in prev_rows if r.get("basis") == "당기"}
     rows = {(r["corp_code"], r["fy"]): r for r in prev_rows}
     k = int(argv[argv.index("--years") + 1]) if "--years" in argv else 2
@@ -268,7 +277,7 @@ def daegu(argv: list[str]) -> int:
           if not info.get("region", "").startswith("대구"):
               continue
           n_dg += 1
-          if not is_mfg(info.get("ksic", "")):
+          if is_mfg(info.get("ksic", "")) == service or (service and not (info.get("ksic") or "")[:2].isdigit()):
               continue
           n_mfg += 1
           for rep in pick_reports([tuple(a) for a in fl[c]["a"]], k):
@@ -280,7 +289,10 @@ def daegu(argv: list[str]) -> int:
               save_json(CORP, cache)
     finally:
       save_json(CORP, cache)
-      write_csv(OUT_DG, rows)
+      write_csv(out_p, rows)
+    if service:
+        print(f"[daegu] 서비스업 본사 대구 {n_dg}곳 중 제조업 밖 {n_mfg}곳·{len(rows)}행 → {out_p.relative_to(ROOT)} (호출 {N.CALLS[0]})")
+        return 0
     summ = load_json(SUMMARY, {})
     summ.update({"daegu": {"filers": len(fl), "name_matched": len(matched), "daegu": n_dg, "daegu_mfg": n_mfg, "rows": len({c for c, _ in rows}),
                            "filings_since": load_json(FILINGS, {}).get("since"), "updated": date.today().isoformat()}})

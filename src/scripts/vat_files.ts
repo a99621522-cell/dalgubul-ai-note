@@ -6,10 +6,32 @@
  *  값은 글자 그대로(숫자는 소수점 없이) — 열 짐작·머리글 찾기는 vat_rules 의 guessColumns/findHeader 가 그대로 한다 */
 import { unzip, parseTable } from './vat_rules';
 
-export type FileTable = { name: string; kind: 'xlsx' | 'xls' | 'csv' | 'html' | 'text'; sheet?: string; rows: string[][] };
+export type FileTable = { name: string; kind: 'xlsx' | 'xls' | 'csv' | 'html' | 'text' | 'hwpx'; sheet?: string; rows: string[][] };
+
+/* ── 한글(HWPX) ── 운영자 2026-11-24 '홈택스 파일 올리기에 엑셀·hwpx 도'
+ *  zip 의 Contents/section*.xml 을 읽어 ① 글자(문단은 한 줄, 표는 행마다 칸을 띄어 한 줄 — 신고서 칸 '(9) … 금액' 이 한 줄에 오게) ② 표(행·칸 글자, 가장 큰 표가 매입 목록 후보) */
+export async function readHwpx(file: File): Promise<{ text: string; tables: string[][][] }> {
+  const files = await unzip(await file.arrayBuffer()); const dec = new TextDecoder('utf-8');
+  const secs = files.filter(f => /^Contents\/section\d+\.xml$/i.test(f.name)).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+  if (!secs.length) throw new Error('한글(HWPX) 본문을 찾지 못했습니다');
+  const tx = (x: string) => xmlUnesc([...x.matchAll(/<hp:t\b[^>]*>([\s\S]*?)<\/hp:t>/g)].map(m => m[1].replace(/<[^>]+>/g, '')).join('')).replace(/\s+/g, ' ').trim();
+  const lines: string[] = []; const tables: string[][][] = [];
+  /* 표 안의 표까지 짝을 맞춰 자른다 */
+  const cut = (xml: string, open: string, close: string): [number, number][] => { const out: [number, number][] = []; let i = 0; while ((i = xml.indexOf(open, i)) >= 0) { let d = 0, j = i; for (;;) { const o = xml.indexOf(open, j + 1), c = xml.indexOf(close, j + 1); if (c < 0) { j = xml.length; break; } if (o >= 0 && o < c) { d++; j = o; } else { if (d === 0) { j = c + close.length; break; } d--; j = c; } } out.push([i, j]); i = j; } return out; };
+  const table = (t: string) => cut(t, '<hp:tr', '</hp:tr>').map(([a, b]) => cut(t.slice(a, b), '<hp:tc', '</hp:tc>').map(([c, d]) => tx(t.slice(a, b).slice(c, d))));
+  for (const s of secs) { const xml = dec.decode(s.data); let at = 0;
+    for (const [a, b] of cut(xml, '<hp:tbl', '</hp:tbl>')) { for (const p of xml.slice(at, a).split(/<\/hp:p>/)) { const t = tx(p); if (t) lines.push(t); } const rows = table(xml.slice(a, b)).filter(r => r.some(Boolean)); if (rows.length) { tables.push(rows); for (const r of rows) lines.push(r.filter(Boolean).join(' ')); } at = b; }
+    for (const p of xml.slice(at).split(/<\/hp:p>/)) { const t = tx(p); if (t) lines.push(t); } }
+  return { text: lines.join('\n'), tables };
+}
+/** 표 → 줄 글자(엑셀·한글로 저장한 신고서를 신고서 판독기에 넣을 때 — 행마다 칸을 띄어 한 줄) */
+export const tableText = (rows: string[][]) => rows.map(r => r.filter(c => c !== '').join(' ')).filter(Boolean).join('\n');
+/** 신고서로 보이는 글자인가(부가가치세 신고서 제목·과세표준 칸) — 엑셀·한글 파일이 신고서인지 매입 목록인지 가를 때 */
+export const looksFiled = (text: string) => /부\s*가\s*가\s*치\s*세/.test(text) && /신\s*고\s*서/.test(text) && /\(\s*9\s*\)|과\s*세\s*표\s*준/.test(text);
 
 export async function readTableFile(file: File): Promise<FileTable> {
   const buf = await file.arrayBuffer(); const b = new Uint8Array(buf); const name = file.name;
+  if (/\.hwpx$/i.test(name)) { const h = await readHwpx(file); const big = [...h.tables].sort((x, y) => y.length - x.length)[0]; if (!big?.length) throw new Error('한글 파일에 표가 없습니다'); return { name, kind: 'hwpx', rows: big }; }   /* 한글로 정리한 매입 목록 — 가장 큰 표 */
   if (b[0] === 0x50 && b[1] === 0x4b) { const t = await readXlsx(buf); return { name, kind: 'xlsx', ...t }; }
   if (b[0] === 0xd0 && b[1] === 0xcf && b[2] === 0x11 && b[3] === 0xe0) { const t = readXls(b); return { name, kind: 'xls', ...t }; }
   const text = decodeText(b);
@@ -146,7 +168,7 @@ function oleStream(b: Uint8Array, names: string[]): Uint8Array | null {
 /** 파일 놓기 상자 — <div data-drop> 안에 안내와 <input type=file>; 파일을 읽으면 onTable(표, 파일 정보) */
 /** 파일 놓기. onMany 를 주면 여러 파일을 한꺼번에(홈택스 목록조회는 법인 3개월씩이라 5년이면 20개 — 운영자 2026-11-05 '분기별로 하면 여러 번 해야 하잖아') */
 export function mountDrop(el: HTMLElement, onTable: (t: FileTable) => void, label = '엑셀 파일을 여기에 놓거나 고르기', onMany?: (ts: FileTable[], fails: string[]) => void) {
-  el.classList.add('vat-drop'); el.innerHTML = `<label class="vat-drop-in"><strong>${label}</strong><span class="note">.xlsx · .xls(홈택스·e호조·재정 포털 내려받기) · .csv — 파일은 이 브라우저 안에서만 읽고 밖으로 나가지 않습니다</span><input type="file" accept=".xlsx,.xls,.csv,.txt,.tsv,.htm,.html,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"${onMany ? ' multiple' : ''} hidden /></label><p class="note vat-drop-msg" aria-live="polite"></p>`;
+  el.classList.add('vat-drop'); el.innerHTML = `<label class="vat-drop-in"><strong>${label}</strong><span class="note">.xlsx · .xls(홈택스·e호조·재정 포털 내려받기) · .csv · 한글 .hwpx(표) — 파일은 이 브라우저 안에서만 읽고 밖으로 나가지 않습니다</span><input type="file" accept=".xlsx,.xls,.hwpx,.csv,.txt,.tsv,.htm,.html,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"${onMany ? ' multiple' : ''} hidden /></label><p class="note vat-drop-msg" aria-live="polite"></p>`;
   const input = el.querySelector<HTMLInputElement>('input[type=file]')!; const msg = el.querySelector<HTMLElement>('.vat-drop-msg')!;
   const handle = async (f: File | undefined) => { if (!f) return; msg.textContent = `${f.name} 읽는 중…`; try { const t = await readTableFile(f); msg.textContent = `${f.name}: ${t.rows.length}행 읽음(${t.kind}${t.sheet ? ' · 시트 ' + t.sheet : ''})`; onTable(t); } catch (e) { msg.textContent = `${f.name}: 읽지 못했습니다 — ${(e as Error).message}. 엑셀에서 '다른 이름으로 저장 → CSV UTF-8' 로 바꿔 다시 놓거나 시트를 복사해 붙여넣으세요.`; } };
   const handleMany = async (fs: File[]) => { if (!onMany || fs.length < 2) return handle(fs[0]); const ts: FileTable[] = [], fails: string[] = []; for (const [i, f] of fs.entries()) { msg.textContent = `${i + 1}/${fs.length} ${f.name} 읽는 중…`; try { ts.push(await readTableFile(f)); } catch (e) { fails.push(`${f.name}(${(e as Error).message})`); } } msg.textContent = `파일 ${fs.length}개 — 읽음 ${ts.length}개 · ${ts.reduce((n, t) => n + t.rows.length, 0)}행${fails.length ? ` · 못 읽음 ${fails.length}개` : ''}`; onMany(ts, fails); };

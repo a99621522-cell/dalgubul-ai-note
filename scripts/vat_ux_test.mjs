@@ -481,6 +481,17 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     await p4.setInputFiles('#rv-drop-zone input[type=file]', [fC]); await p4.waitForTimeout(1200);
     const r = await p4.evaluate(() => JSON.parse(localStorage.getItem('vat-review-v1')).rows.find(x => x.apno)); await c4.close();
     ok('S3b 승인번호가 있으면 작성일자(앞 8자리)로 과세기간 · 지출일은 따로 남김', !!r && r.d === '2024-09-28' && r.dpay === '2024-10-04' && r.pkey === '2024-2', JSON.stringify(r)); }
+  /* U8 운영자 2026-11-24 '홈택스 파일 올리기에 엑셀·hwpx 도' — 신고서를 한글·엑셀로 저장한 파일, 한글 표로 정리한 매입 목록 */
+  { const c5 = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const p5 = await c5.newPage(); p5.on('pageerror', e => errs.push('U8: ' + e));
+    await p5.goto(base + '/vat/review/'); await p5.evaluate(o => { localStorage.clear(); localStorage.setItem('vat-org-v1', JSON.stringify(o)); localStorage.setItem('vat-gov', 'dalseong'); }, ORG_S); await p5.reload(); await p5.waitForSelector('#rf-all-file', { state: 'attached' });
+    const fx = n => path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax', n);
+    await p5.setInputFiles('#rf-all-file', [fx('filed_2024_2.hwpx'), fx('invoice_list.hwpx')]); await p5.waitForTimeout(1500);
+    const li1 = await p5.$$eval('#rf-all-list li', ls => ls.map(l => l.textContent.replace(/\s+/g, ' ')));
+    const st1 = await p5.evaluate(() => { const x = JSON.parse(localStorage.getItem('vat-review-v1') || '{}'); return { rows: (x.rows || []).length, f18: (x.fdocs || []).map(d => d.cells?.[18]?.tax) }; });
+    await p5.setInputFiles('#rf-all-file', [fx('filed_2024_2.xlsx')]); await p5.waitForTimeout(1200);
+    const li2 = await p5.$$eval('#rf-all-list li', ls => ls.map(l => l.textContent.replace(/\s+/g, ' ')));
+    ok('U8 한글(HWPX) 신고서·한글 표 매입 목록·엑셀 신고서를 읽음', li1.some(t => /신고서\(한글\)/.test(t) && /2024년 제2기 확정/.test(t)) && li1.some(t => /매입 목록\(한글 표\)/.test(t)) && st1.rows === 2 && st1.f18.includes(1000000) && li2.some(t => /신고서\(엑셀\)/.test(t) && /2024년 제2기 확정/.test(t)), JSON.stringify({ li1, st1, li2 }).slice(0, 500));
+    await c5.close(); }
   const st3 = T(await p3.locator('#rf-s3-st').textContent()); const vis = await p3.$$eval('#rv-sup-box #rv-sup tbody tr[data-sk]', trs => trs.map(t => t.dataset.sk));
   ok('S4 계약 업체 번호로 저절로 귀속 3곳(+시설 이름 1곳) · 사람이 고를 공급자 1곳(20%)만 표에', /계약 업체 번호 일치 3곳/.test(st3) && /남은 1곳/.test(st3) && vis.length === 1 && vis[0] === '9998877777', st3 + ' ' + vis.join(','));
   await p3.click('[data-sf="all"]'); await p3.waitForTimeout(400);

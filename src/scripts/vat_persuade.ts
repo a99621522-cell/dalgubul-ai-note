@@ -3,7 +3,7 @@
  *  3등급(매출 신고가 전제)·4등급(해석 다툼)은 먼저 밝히고 처리 방법(수정신고 비교·사전답변 질의 초안)을 붙인다.
  *  새 판정 규칙 없음 — 숫자는 신고서별 작업서(caseCorrDocs·caseBook)와 같은 계산. 사람 이름·전화·계좌 없음(빈칸). 판정은 참고이며 기관의 판단이 아니다. */
 import { fmt, penaltyCalc, inquiryText, lawText, type Data, type PersuadeQ } from './vat_rules';
-import { caseIssues, caseCorrDocs, caseBook, type CbIn, type Issue, type Grade, type Conf } from './vat_casebook';
+import { caseIssues, caseCorrDocs, caseBook, gapTypes, type CbIn, type Issue, type Grade, type Conf } from './vat_casebook';
 import { claimFormPdf, reasonDocPdf } from './vat_claimform';
 import { xlsxBlob, type Sheet } from './xlsx_write';
 import type { CorrDoc } from './vat_diag';
@@ -129,7 +129,7 @@ function todoText(D: Data, o: CbIn, pl: Plan): string {
   T.push(['경정청구를 냅니다 — 홈택스면 04 각 신고서 시트 「1. 홈택스 경정청구 화면에 넣을 값」을 칸 번호대로 옮기고 환급 계좌를 화면에서 한 번 넣은 뒤, 01~07 과 당초 신고서 사본을 증빙으로 올립니다. 서면이면 01~07 을 출력해 냅니다. 08~13 은 내지 않습니다', '홈택스(부가세 신고 때 쓰던 기관 사업자 인증서 — 없으면 지난 신고 담당자에게 물음) → 신고/납부 → 세금신고 → 부가가치세 → 경정청구. 서면이면 관할 세무서 민원봉사실', '신고서마다 15분', '접수증을 출력해 둠']);
   T.push(['그 뒤: 세무서가 자료 보완을 요청하면 10 에서 비슷한 질문 번호를 찾아 답을 고쳐 보냅니다. 환급 통지를 받으면 바로 세외수입으로 처리합니다(세입세출외현금에 두지 않음 — 정부합동감사 지적 사례)', '10 답변 틀 · 세입 담당 부서', '건마다 20분', '회신·세입 처리 완료']);
   T.forEach(([a, b, c, d], i) => L.push(`☐ ${i + 1}. ${a}`, `     어디서: ${b} · 걸리는 시간: ${c} · 끝났는지: ${d}`, ''));
-  L.push(...periodTable(pl, o), '');
+  L.push(...periodTable(pl, o), '', ...riskLines(D, o, pl));
   if (pl.later) L.push('나중 묶음(이번에 내지 않음)', ...(pl.sum[3] ? [`- 매출 신고 확인이 필요한 몫 ${fmt(pl.sum[3])}원 → 12. 그 기간 사용료를 이미 과세 매출로 신고했으면(다른 업종코드 줄 포함) 화면 확인에서 '넣었음'을 누르면 이번 청구에 들어감. 신고하지 않았으면 청구하지 않음 — 청구하면 세무서가 매출을 함께 경정해 더 낼 수 있음(이 앱은 환급만)`] : []), ...(pl.sum[4] ? [`- 해석이 필요한 몫 ${fmt(pl.sum[4])}원 → 11 질의서 초안을 고쳐 국세청 서면질의 또는 세법해석 사전답변으로`] : []), '');
   L.push('세무서에 내는 파일(01 요약서 + 붙임 02~07)', ...FILES.filter(f => SUBMIT.includes(f.n)).map(f => `- ${f.f} — ${f.t}`), '', '기관 안에서만 쓰는 파일(세무서에 내지 않음)', ...FILES.filter(f => !SUBMIT.includes(f.n)).map(f => `- ${f.f} — ${f.t}`), '',
     '낱말 풀이', '- 경정청구: 이미 낸 부가세 신고를 고쳐, 더 낸 세금을 돌려 달라고 세무서에 청구하는 것', '- 제1기·제2기, 예정·확정: 1~6월이 제1기, 7~12월이 제2기. 석 달마다 예정신고, 여섯 달마다 확정신고', '- 매입세액: 공사·물품 대금과 함께 낸 부가세. 과세 시설에 쓴 것은 돌려받을 수 있음', '- 불공제 / 공제받지 못할 매입세액: 돌려받지 않은 것으로 처리한 매입세액', '- (16)(17)(18): 신고서 칸 번호 — (16) 받은 매입세액 합계, (17) 그 가운데 공제받지 않은 것, (18) 공제받은 것',
@@ -218,12 +218,31 @@ export function periodTable(pl: Plan, o: CbIn): string[] {
       for (const y of g.values()) L.push(`   ${t === 'now' ? '이번 청구' : t === 'chk' ? '확인하면 청구' : '청구하지 않음'} ${fmt(y.amt)}원 — ${y.facs.join(', ')}`, `      이유·근거: ${y.why}`); }
     L.push(''); }
   return L; }
-function compareSheet(pl: Plan): Sheet[] {
+/** 세무서가 경정청구를 검토하다 볼 수 있는 위험 — 이번 청구에 넣지 않았어도, 신고서 과세표준 명세에 그 업종 매출이 없는 과세 시설(3등급)은 사업장 전체 매출을 보는 조사관이 매출 누락으로 경정할 수 있다.
+ *  시설마다 세입예산 연 수입(부가세 포함으로 보고 ÷ 11)의 반을 그 업종이 빠진 과세기간마다 매출세액으로, 과소신고·납부지연 가산세(오늘 납부)를 더한 어림. 내부 파일(00·12)에만 — 세무서에 내는 01~07 에는 넣지 않는다(세무서 담당 관점 검토 2026-11-24) */
+export type Risk = { fac: string; rev: number; n: number; first: string; last: string; sales: number; pen: number };
+export function riskList(D: Data, o: CbIn, pl: Plan): Risk[] {
+  const facs = new Map<string, string>(); for (const i of pl.issues) if (i.grade === 3 && i.type) facs.set(i.fac, i.type);
+  const docs = o.docs ?? []; const ks = [...new Set(docs.map(d => `${d.year}-${d.half}`))].filter(k => docs.some(d => `${d.year}-${d.half}` === k && d.kind === '확정')).sort(); const out: Risk[] = [];
+  for (const [fac, type] of facs) { const rev = o.revByFac?.[fac] ?? 0; if (!rev) continue; let sales = 0, pen = 0; const hit: string[] = [];
+    for (const k of ks) { if (!gapTypes(docs, k).has(type)) continue; const s = Math.round(rev / 2 / 11); sales += s; pen += penaltyCalc(D, { tax: s, due: finDue(k), payDate: o.today, kind: 'under' }).total; hit.push(k); }
+    if (hit.length) out.push({ fac, rev, n: hit.length, first: hit[0], last: hit[hit.length - 1], sales, pen }); }
+  return out.sort((a, b) => (b.sales + b.pen) - (a.sales + a.pen)); }
+function riskLines(D: Data, o: CbIn, pl: Plan): string[] {
+  const R = riskList(D, o, pl); if (!R.length) return [];
+  return ['세무서가 볼 수 있는 위험(이번 청구에 넣지 않음 · 내부용 — 세무서에 내지 않음)',
+    '경정청구를 검토하는 조사관은 사업장 전체 매출을 봅니다. 아래 시설은 사용료를 받는 과세 시설인데 신고서 과세표준 명세에 그 업종 매출이 없어, 청구에 넣지 않았어도 매출 누락으로 따로 경정될 수 있습니다(세입예산으로 어림 — 실제는 세입 결산으로). 내기 전에 그 기간 사용료가 과세 매출에 들어갔는지 확인하고, 기관이 판단하세요.',
+    ...R.map(r => `- ${r.fac}: ${pName(r.first)} ~ ${pName(r.last)} ${r.n}개 과세기간 · 연 수입 ${fmt(r.rev)}원 기준 매출세액 약 ${fmt(r.sales)}원 + 과소신고·납부지연 가산세 약 ${fmt(r.pen)}원 = 약 ${fmt(r.sales + r.pen)}원`),
+    `- 이번 청구 ${fmt(pl.sum[1] + pl.sum[2])}원과 견주면 ${fmt(pl.sum[1] + pl.sum[2] - R.reduce((n, r) => n + r.sales + r.pen, 0))}원 — 위험이 실제로 생겨도 전체로는 돌려받는 쪽인지 볼 때 씁니다`, ''];
+}
+function compareSheet(pl: Plan, risk: Risk[] = []): Sheet[] {
   /* 환급만 — 그 기간 과세 매출에 사용료가 없는 시설은 청구하지 않는다(청구하면 세무서가 매출을 함께 경정해 더 낼 수 있음). 이미 다른 업종코드로 신고했으면 화면에서 '넣었음' → 청구 */
   if (!pl.g3.length) return [];
   const R: Cell[][] = [['과세기간', '시설', '신고서에 없는 업종', '청구하지 않은 매입세액', '청구하지 않은 이유', '청구하려면']];
   for (const x of pl.g3.sort((a, b) => a.k.localeCompare(b.k))) R.push([pName(x.k), x.fac, x.gap, x.amt, `그 기간 신고서 과세표준 명세에 ${x.gap} 매출이 없음 — 사용료를 과세 매출로 신고하지 않았다면 매입세액만 청구할 수 없고(부가가치세법 제38조는 과세사업 매입세액), 청구하면 세무서가 매출을 함께 경정해 더 낼 수 있음`, '그 기간 세입 실적과 신고서 과세 매출(다른 업종코드 줄 포함)을 맞춰 사용료가 들어 있으면 화면 「세무서에 내기 전 확인」에서 \'넣었음\' → 이번 청구에 들어감']);
-  return [{ name: '청구하지 않는 몫', rows: R, widths: [14, 30, 18, 16, 60, 60] }];
+  const S: Sheet[] = [{ name: '청구하지 않는 몫', rows: R, widths: [14, 30, 18, 16, 60, 60] }];
+  if (risk.length) S.push({ name: '세무서가 볼 수 있는 위험', rows: [['시설', '과세기간', '과세기간 수', '세입예산 연 수입(원)', '매출세액 어림(원)', '가산세 어림(원)', '합계(원)', '할 일'], ...risk.map(r => [r.fac, `${pName(r.first)} ~ ${pName(r.last)}`, r.n, r.rev, r.sales, r.pen, r.sales + r.pen, '그 기간 사용료 세입 결산과 신고서 과세 매출을 맞춰 봄 — 들어 있으면 위험 없음(이번 청구에도 넣을 수 있음), 없으면 기관이 판단(이 앱은 더 내는 길을 권하지 않음)'])], widths: [30, 34, 10, 16, 16, 16, 16, 70] });
+  return S;
 }
 
 async function legalPdf(D: Data, o: CbIn, pl: Plan): Promise<Blob | null> {
@@ -266,16 +285,16 @@ export async function persuadeFiles(D: Data, o: CbIn, candRows: (string | number
     const listBy = new Map<string, number>(); for (const r of o.rows) listBy.set(half(r.d), (listBy.get(half(r.d)) ?? 0) + r.tax);
     const f16 = (k: string) => (o.docs ?? []).filter(d => `${d.year}-${d.half}` === k).reduce((n, d) => n + (d.cells[16]?.tax ?? 0), 0);
     const inFiled = (k: string) => (listBy.get(k) ?? 0) <= f16(k) + 1000 ? '들어 있음 — 합계표 추가 제출 대상 아님' : '신고에 없던 세금계산서가 섞여 있음 — 그 건만 매입처별 세금계산서합계표 추가분으로(시행령 제74조 제2호)';
-    const m = new Map<string, { sup: string; sreg: string; n: number; amt: number; tax: number; claim: number }>();
-    for (const r of o.rows) { if (!r.claim) continue; const k = half(r.d); if (!keep.has(`${k}|${r.fac}`)) continue; const key = `${k}|${r.sreg}`; const x = m.get(key) ?? { sup: r.sup, sreg: r.sreg, n: 0, amt: 0, tax: 0, claim: 0 }; x.n++; x.amt += r.amt; x.tax += r.tax; x.claim += r.claim; m.set(key, x); }
-    if (m.size) out.push({ name: F('05'), data: csv([['과세기간', '공급자 상호', '공급자 사업자등록번호', '매수', '공급가액', '세액', '공제로 옮기는 세액', '당초 신고(16)에', '공급받는자 등록번호'], ...[...m.entries()].sort().map(([k, x]) => [pName(k.split('|')[0]), x.sup, bizno(x.sreg), x.n, x.amt, x.tax, x.claim, inFiled(k.split('|')[0]), o.reg])]) });
+    const m = new Map<string, { sup: string; sreg: string; n: number; amt: number; tax: number; claim: number; ap: string[] }>();
+    for (const r of o.rows) { if (!r.claim) continue; const k = half(r.d); if (!keep.has(`${k}|${r.fac}`)) continue; const key = `${k}|${r.sreg}`; const x = m.get(key) ?? { sup: r.sup, sreg: r.sreg, n: 0, amt: 0, tax: 0, claim: 0, ap: [] }; if (r.apno) x.ap.push(r.apno); x.n++; x.amt += r.amt; x.tax += r.tax; x.claim += r.claim; m.set(key, x); }
+    if (m.size) out.push({ name: F('05'), data: csv([['과세기간', '공급자 상호', '공급자 사업자등록번호', '매수', '공급가액', '세액', '공제로 옮기는 세액', '당초 신고(16)에', '공급받는자 등록번호', '승인번호(건별은 06)'], ...[...m.entries()].sort().map(([k, x]) => [pName(k.split('|')[0]), x.sup, bizno(x.sreg), x.n, x.amt, x.tax, x.claim, inFiled(k.split('|')[0]), o.reg, x.ap.length ? `${x.ap.length}/${x.n}건 ${x.ap.slice(0, 3).join(' ')}${x.ap.length > 3 ? ' …' : ''}` : '없음 — 홈택스 매입 목록으로 확인'])]) });
     else if (candRows.length > 1) out.push({ name: F('05').replace('.csv', '(계약_업체_추정).csv'), data: csv(candRows) });
-    if (m.size) { const R: Cell[][] = [['과세기간', '날짜', '공급자', '공급자 등록번호', '공급받는자 등록번호', '품목·사업명', '공급가액', '세액', '시설', '그 시설로 본 이유', '공제로 옮기는 세액', '근거 조문']];
-      for (const r of o.rows) { if (!r.claim) continue; const k = half(r.d); if (!keep.has(`${k}|${r.fac}`)) continue; R.push([pName(k), r.d, r.sup, bizno(r.sreg), o.reg, r.desc, r.amt, r.tax, r.fac, `${r.fac} 이름이 품목·계약명에 있음 — 사용료를 과세 매출로 신고하는 시설`, r.claim, r.basis.filter(b => !(b.law === 'rule' && b.art === '제35조') && (typeof r.share === 'number' && r.share < 1 || !((b.law === 'act' && b.art === '제40조') || (b.law === 'decree' && b.art === '제81조')))).map(lawText).join(' · ')]);   /* 전액 실지귀속 행에 안분 조문을 달지 않음(조사관 역할 시험 3회차) */ }
-      out.push({ name: F('06'), data: await bin(xlsxBlob([{ name: '세금계산서별 시설 귀속', rows: R, widths: [12, 11, 24, 14, 14, 40, 14, 12, 26, 44, 14, 30] }])) }); } }
+    if (m.size) { const R: Cell[][] = [['과세기간', '작성일자', '승인번호', '공급자', '공급자 등록번호', '공급받는자 등록번호', '품목·사업명', '공급가액', '세액', '시설', '그 시설로 본 이유', '공제로 옮기는 세액', '근거 조문']];
+      for (const r of o.rows) { if (!r.claim) continue; const k = half(r.d); if (!keep.has(`${k}|${r.fac}`)) continue; R.push([pName(k), r.d, r.apno ?? '(없음)', r.sup, bizno(r.sreg), o.reg, r.desc, r.amt, r.tax, r.fac, `${r.fac} 이름이 품목·계약명에 있음 — 사용료를 과세 매출로 신고하는 시설`, r.claim, r.basis.filter(b => !(b.law === 'rule' && b.art === '제35조') && (typeof r.share === 'number' && r.share < 1 || !((b.law === 'act' && b.art === '제40조') || (b.law === 'decree' && b.art === '제81조')))).map(lawText).join(' · ')]);   /* 전액 실지귀속 행에 안분 조문을 달지 않음(조사관 역할 시험 3회차) */ }
+      out.push({ name: F('06'), data: await bin(xlsxBlob([{ name: '세금계산서별 시설 귀속', rows: R, widths: [12, 11, 26, 24, 14, 14, 40, 14, 12, 26, 44, 14, 30] }])) }); } }
   { const b = await legalPdf(D, o, pl); if (b) out.push({ name: F('07'), data: await bin(b) }); }
   out.push({ name: F('08'), data: requestText(D, o, pl) }, { name: F('09'), data: scriptText(D, o, pl) }, { name: F('10'), data: answerText(D, pl, o) });
   { const t = inquiryFile(D, o, pl); if (t) out.push({ name: F('11'), data: t }); }
-  { const s = compareSheet(pl); if (s.length) out.push({ name: F('12'), data: await bin(xlsxBlob(s)) }); }
+  { const s = compareSheet(pl, riskList(D, o, pl)); if (s.length) out.push({ name: F('12'), data: await bin(xlsxBlob(s)) }); }
   return [...out, ...inner];
 }

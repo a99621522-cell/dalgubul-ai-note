@@ -7,7 +7,7 @@ import { latestDocs, type BaseRow, type FiledDoc } from './vat_unlock';
 import { xlsxBlob, type Sheet } from './xlsx_write';
 import { corrReason, type CorrDoc } from './vat_diag';
 
-export type CbRow = { d: string; sup: string; sreg: string; desc: string; tax: number; amt: number; claim: number; fac: string; facType?: string; share?: number; label: string; basis: Basis[]; why: string[] };
+export type CbRow = { d: string; apno?: string; dpay?: string; sup: string; sreg: string; desc: string; tax: number; amt: number; claim: number; fac: string; facType?: string; share?: number; label: string; basis: Basis[]; why: string[] };
 export type CbCand = { k: string; amt: number; byFac: { fac: string; est: number; type?: string; share?: number }[]; sups: number };
 type Cell = (string | number | null | undefined);
 
@@ -225,6 +225,9 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
     if (c.mode === 'corr') return ['원래 신고서의 「공제받지 못할 매입세액 명세서」가 공급가액 비율로 나눴는지 확인 — 매입가액·면적 기준이면 이 금액은 맞지 않습니다(시행령 제81조 제4항, 대법원 2017두55329)', '안분에 쓴 총공급가액·면세공급가액을 그 기간 장부와 대조'];
     out.push(`이 시설들이 그 기간에 사용료를 과세 매출로 신고해 왔는지 — 신고서 과세표준 명세(업종)와 조례 사용료 표('부가가치세 포함' 문구)로 확인: ${F.slice(0, 6).map(f => f.fac).join(', ')}`);
     for (const f of F) if (typeof f.share === 'number' && f.share < 1) out.push(`「${f.fac}」은 과세 몫 ${Math.round(f.share * 100)}%로 계산했습니다(추정 기본값) — 건축물대장·사용허가서의 면적으로 과세로 쓰는 비율을 확인(시행령 제81조 제4항)`);
+    if (c.mode === 'list') { const cl = c.rows.filter(r => r.claim); const noAp = cl.filter(r => !r.apno), mv = cl.filter(r => r.dpay);
+      if (mv.length) out.push(`작성일자(승인번호 앞 8자리)와 지출일이 다른 세금계산서 ${mv.length}건 — 과세기간은 작성일자(공급시기)로 넣었습니다: ${mv.slice(0, 3).map(r => `${r.d} 작성 · ${r.dpay} 지출 · ${r.desc.slice(0, 24)}`).join(' / ')}`);
+      if (noAp.length) out.push(`승인번호가 없는 세금계산서 ${noAp.length}건(공제로 옮기는 세액 ${fmt(noAp.reduce((n, r) => n + r.claim, 0))}원) — 지출 내역의 날짜로 과세기간을 정했습니다. 세무서는 작성일자로 보므로 홈택스 → 조회/발급 → 전자세금계산서 → 목록조회(매입)에서 받은 목록(작성일자·승인번호)을 돌려받기 화면에 올려 다시 받으면 이 줄이 없어집니다(달 끝에 발급·다음 달 지급한 선금·준공금이 엇갈리기 쉬움)`); }
     if (c.mode === 'list' && c.listTax > (tax(c.d, 16) ?? 0) + 1000) out.push(`매입 목록 세액 ${fmt(c.listTax)}원이 신고서 받은 매입세액 (16) ${fmt(tax(c.d, 16) ?? 0)}원보다 ${fmt(c.listTax - (tax(c.d, 16) ?? 0))}원 많습니다 — 신고에 아예 안 들어간 세금계산서가 있다는 뜻입니다. 그 세금계산서의 받는 쪽 번호가 우리 사업자등록번호인지 홈택스 매입 목록으로 확인하고, 맞으면 (10)(16)도 늘립니다(고유번호로 받았으면 공제 어려움, 수정세금계산서 기한 시행령 제70조)`);
     if (c.mode === 'cand') out.push('매입 목록 대신 나라장터 계약 금액으로 짐작한 값입니다 — 홈택스 → 조회/발급 → 전자세금계산서 → 목록조회(매입)에서 이 기간 세금계산서를 받아 돌려받기 화면에 올리면 확정 금액으로 바뀝니다');
     if (c.pre) out.push('예정신고분 — 경정청구 기한은 확정신고기한부터 5년입니다(국세청 서면법규과-385). 예정신고서를 따로 고칠지, 같은 과세기간 확정신고 경정청구에 합칠지는 관할 세무서와 맞춥니다');
@@ -316,9 +319,9 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
 
   /* 4. 건별 근거 */
   if (o.rows.length) {
-    const rows: Cell[][] = [['신고서(시트)', '날짜', '공급자', '공급자 등록번호', '품목·사업명', '공급가액', '세액', '시설', '판정', '공제 대상 세액', '근거 조문', '이유']];
-    for (const c of cases) for (const r of c.rows) if (r.claim) rows.push([c.sheet, r.d, r.sup, r.sreg, r.desc, r.amt, r.tax, r.fac, r.label, r.claim, r.basis.filter(b => !(b.law === 'rule' && b.art === '제35조')).map(b => `${LAW[b.law] ?? b.law} ${b.art}`).join(' · '), r.why.join(' ')]);
-    sheets.push({ name: '건별 근거', rows, widths: [14, 11, 24, 14, 40, 14, 12, 28, 30, 14, 26, 60] });
+    const rows: Cell[][] = [['신고서(시트)', '작성일자', '승인번호', '지출일(다르면)', '공급자', '공급자 등록번호', '품목·사업명', '공급가액', '세액', '시설', '판정', '공제 대상 세액', '근거 조문', '이유']];
+    for (const c of cases) for (const r of c.rows) if (r.claim) rows.push([c.sheet, r.d, r.apno ?? '', r.dpay ?? '', r.sup, r.sreg, r.desc, r.amt, r.tax, r.fac, r.label, r.claim, r.basis.filter(b => !(b.law === 'rule' && b.art === '제35조')).map(b => `${LAW[b.law] ?? b.law} ${b.art}`).join(' · '), r.why.join(' ')]);
+    sheets.push({ name: '건별 근거', rows, widths: [14, 11, 26, 11, 24, 14, 40, 14, 12, 28, 30, 14, 26, 60] });
   }
   return xlsxBlob([...lead, ...sheets]);
 }

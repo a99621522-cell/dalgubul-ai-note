@@ -474,6 +474,13 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   acts++; await p3.setInputFiles('#rv-drop-zone input[type=file]', [fA, fB]); await p3.waitForTimeout(1500);
   const files = T(await p3.locator('#rv-files').textContent().catch(() => ''));
   ok('S3 매입 목록 파일 2개를 한꺼번에 → 바로 5건(목록에 더하기 없음)', /매입목록_2024_3분기\.tsv — 3건 더함/.test(files) && /매입목록_2024_7월\.csv — 2건 더함/.test(files) && (await p3.evaluate(() => JSON.parse(localStorage.getItem('vat-review-v1')).rows.length)) === 5, files);
+  /* S3b 세무서 담당 관점 검토(2026-11-24) — 승인번호 앞 8자리(작성일자)로 과세기간: 지출 내역 날짜가 10월이어도 9월 작성이면 2024년 제2기 예정 쪽 */
+  { const fC = { name: '지출내역_승인번호.csv', mimeType: 'text/csv', buffer: Buffer.from(['지출결의일자,상호,사업자번호,적요,공급가액,부가세,전자세금계산서일련번호', '2024-10-04,가나건설,111-22-33333,시험체육센터 방수 준공금,"3,000,000","300,000",202409281000000012345678'].join('\n')) };
+    const c4 = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const p4 = await c4.newPage(); p4.on('pageerror', e => errs.push('S3b: ' + e));
+    await p4.goto(base + '/vat/review/'); await p4.evaluate(o => { localStorage.clear(); localStorage.setItem('vat-org-v1', JSON.stringify(o)); localStorage.setItem('vat-gov', 'dalseong'); }, ORG_S); await p4.reload(); await p4.waitForSelector('#rf-sum', { state: 'attached' });
+    await p4.setInputFiles('#rv-drop-zone input[type=file]', [fC]); await p4.waitForTimeout(1200);
+    const r = await p4.evaluate(() => JSON.parse(localStorage.getItem('vat-review-v1')).rows.find(x => x.apno)); await c4.close();
+    ok('S3b 승인번호가 있으면 작성일자(앞 8자리)로 과세기간 · 지출일은 따로 남김', !!r && r.d === '2024-09-28' && r.dpay === '2024-10-04' && r.pkey === '2024-2', JSON.stringify(r)); }
   const st3 = T(await p3.locator('#rf-s3-st').textContent()); const vis = await p3.$$eval('#rv-sup-box #rv-sup tbody tr[data-sk]', trs => trs.map(t => t.dataset.sk));
   ok('S4 계약 업체 번호로 저절로 귀속 3곳(+시설 이름 1곳) · 사람이 고를 공급자 1곳(20%)만 표에', /계약 업체 번호 일치 3곳/.test(st3) && /남은 1곳/.test(st3) && vis.length === 1 && vis[0] === '9998877777', st3 + ' ' + vis.join(','));
   await p3.click('[data-sf="all"]'); await p3.waitForTimeout(400);

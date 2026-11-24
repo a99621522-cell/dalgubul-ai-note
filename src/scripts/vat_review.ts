@@ -22,7 +22,7 @@ import { $, esc, num, fmt, pct, loadData, getOrg, parseTable, parseDateCell, gue
 type Src = 'inv' | 'card';
 type UseK = 'this' | 'multi' | 'admin';
 /** 붙여넣은 매입 한 건. fid: 시설 id | 'admin'(본청·행정 공통 — 과세 시설과 함께) | 'exempt'(면세·행정 전용) | 'none'(모름). manual 이면 공급자 기본값보다 우선 */
-type RvRow = { id: string; src: Src; d: string; pkey: string; sup: string; sreg: string; desc: string; amt: number; tax: number; preg: string; biz: string; dept: string; fid?: string; use?: UseK; what?: string; cw?: string; manual?: boolean; vat_sep?: boolean };
+type RvRow = { id: string; src: Src; d: string; pkey: string; apno?: string; dpay?: string; sup: string; sreg: string; desc: string; amt: number; tax: number; preg: string; biz: string; dept: string; fid?: string; use?: UseK; what?: string; cw?: string; manual?: boolean; vat_sep?: boolean };
 /** filed: unknown 모름(상한만) | filed 신고했고 이 목록도 들어 있음((18) 입력) | excluded 신고는 했지만 이 목록은 안 넣음(전액 후보) | none 신고 자체 없음(기한후신고) */
 type Filed = { filed: 'filed' | 'excluded' | 'none' | 'unknown'; deduct: number | null; nondeduct: number | null; er: number | null };
 type SupSet = { fid: string; use: UseK; what?: string; cw?: string; via?: 'ctr' };
@@ -45,7 +45,7 @@ function init(D: Data) {
   { const la = $('rv-a')?.closest('label'); if (la) la.insertAdjacentHTML('afterbegin', srcBtn(D, 'purchase_list') + ' ' + srcBtn(D, 'card_list') + ' '); const fb = $('rv-src-row'); if (fb) fb.insertAdjacentHTML('beforeend', ` <span class="note">· ②의 신고 값은 홈택스 신고내역 조회에서 ${srcBtn(D, 'filed_list')}</span>`); helpWire($('rv-form')!, D); }
   if (!org) { const box = $('rv-noorg'); if (box) { box.removeAttribute('hidden'); box.insertAdjacentHTML('beforeend', '<div id="rv-qs-wrap"></div>'); mountQuickStart($('rv-qs-wrap'), D, () => location.reload(), 'rv-qs'); } }
 
-  const A_KEYS = ['date', 'supplier', 'supplier_reg', 'desc', 'amt', 'tax', 'total', 'payee_reg', 'biz', 'dept', 'kind', 'deduct'];
+  const A_KEYS = ['date', 'apno', 'supplier', 'supplier_reg', 'desc', 'amt', 'tax', 'total', 'payee_reg', 'biz', 'dept', 'kind', 'deduct'];
   let gridA: string[][] = [];
   const colBox = (grid: string[][], map: Record<string, number>) => { const names = grid[0] ?? []; return `<div class="vc-form" id="rv-colA"><p class="q-title full">열 맞추기 <span class="note">${grid.length - 1}행 — 머리글에서 짐작했습니다. 틀리면 고르세요.</span></p>${COL_GUESS.filter(g => A_KEYS.includes(g.key)).map(g => `<label>${g.name} <select data-col="${g.key}"><option value="">(없음)</option>${names.map((n, i) => `<option value="${i}" ${map[g.key] === i ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></label>`).join('')}</div>`; };
   const readMap = (root: ParentNode) => { const m: Record<string, number> = {}; root.querySelectorAll<HTMLSelectElement>('select[data-col]').forEach(s => { if (s.value !== '') m[s.dataset.col!] = Number(s.value); }); return m; };
@@ -53,8 +53,10 @@ function init(D: Data) {
   const srcOf = () => ($<HTMLInputElement>('rv-src-card')?.checked ? 'card' : 'inv') as Src;
   const rowKey = (r: RvRow) => `${r.d}|${r.sreg || r.sup}|${r.amt}|${r.tax}|${r.desc}`;
   const toRows = (grid: string[][], map: Record<string, number>, src: Src): RvRow[] => grid.slice(1).map((r, i) => { const g = (k: string) => map[k] === undefined ? '' : (r[map[k]] ?? ''); let amt = num(g('amt')), tax = num(g('tax')); const total = num(g('total')); if (!amt && total) { amt = Math.round(total / 1.1); tax = total - amt; } if (amt && !tax && map.tax === undefined) tax = Math.floor(amt * 0.1);
-    const d = parseDateCell(g('date')); const p = claimPeriod(d)?.key ?? ''; const kind = g('kind'); const ded = g('deduct');
-    return { id: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}${i}`, src, d, pkey: p, sup: g('supplier'), sreg: g('supplier_reg').replace(/\D/g, ''), desc: g('desc') || (kind ? `(${kind})` : ''), amt, tax: /계산서/.test(kind) && !/세금/.test(kind) ? 0 : tax, preg: g('payee_reg').replace(/\D/g, ''), biz: g('biz'), dept: g('dept'), vat_sep: src === 'card' ? !(/불공제|간이|면세/.test(ded) || !tax) : undefined }; }).filter(r => r.pkey && (r.amt || r.tax || r.sup));
+    const d0 = parseDateCell(g('date')); const apno = g('apno').replace(/[^0-9A-Za-z]/g, ''); const iss = /^20\d{6}/.test(apno) ? parseDateCell(apno.slice(0, 8)) : '';
+    /* 승인번호 앞 8자리(작성일자)가 날짜로 읽히면 과세기간은 그 날로(공급시기 — 지출 내역의 지출결의일·등록일과 다를 수 있음), 다른 날은 dpay 로 남김 */
+    const d = iss || d0; const dpay = iss && d0 && d0 !== iss ? d0 : undefined; const p = claimPeriod(d)?.key ?? ''; const kind = g('kind'); const ded = g('deduct');
+    return { id: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}${i}`, src, d, pkey: p, ...(apno ? { apno } : {}), ...(dpay ? { dpay } : {}), sup: g('supplier'), sreg: g('supplier_reg').replace(/\D/g, ''), desc: g('desc') || (kind ? `(${kind})` : ''), amt, tax: /계산서/.test(kind) && !/세금/.test(kind) ? 0 : tax, preg: g('payee_reg').replace(/\D/g, ''), biz: g('biz'), dept: g('dept'), vat_sep: src === 'card' ? !(/불공제|간이|면세/.test(ded) || !tax) : undefined }; }).filter(r => r.pkey && (r.amt || r.tax || r.sup));
   const supKey = (r: RvRow) => r.sreg || ('n:' + r.sup.replace(/\s|\(주\)|주식회사|㈜/g, ''));
   const pName = (k: string) => { const [y, h] = k.split('-'); return `${y}년 제${h}기(${h === '1' ? '1~6' : '7~12'}월)`; };
   const pInfo = (k: string) => claimPeriod(`${k.split('-')[0]}-${k.split('-')[1] === '1' ? '03' : '09'}-01`)!;
@@ -180,7 +182,7 @@ function init(D: Data) {
     const ps = periods(); const res = $('rv-result')!;
     if (!st.rows.length) { rowDiags = []; cbRows = []; res.innerHTML = `<p class="callout info">아직 넣은 매입 목록이 없습니다. 홈택스 전자세금계산서 목록(매입) 엑셀 파일을 ③에 놓으세요(5년치 여러 파일을 한꺼번에).</p>`; const sb = $('rv-sup-box'); if (sb) sb.innerHTML = ''; $('rv-stat')!.textContent = ''; emit(null); return; }
     const outs = new Map<string, RowOut>(); for (const r of st.rows) outs.set(r.id, judgeRow(r));
-    cbRows = st.rows.map(r => { const o = outs.get(r.id)!; const fid = assignOf(r).a?.fid; return { d: r.d, sup: r.sup, sreg: r.sreg, desc: r.desc || r.biz, tax: r.tax, amt: r.amt, claim: o.claim, fac: fid === 'admin' ? '본청·행정 공통' : fid === 'exempt' ? '면세·행정 전용' : (o.f?.name ?? '미지정'), facType: o.f?.type, share: o.f?.share, label: o.label, basis: o.basis, why: o.why }; });
+    cbRows = st.rows.map(r => { const o = outs.get(r.id)!; const fid = assignOf(r).a?.fid; return { d: r.d, apno: r.apno, dpay: r.dpay, sup: r.sup, sreg: r.sreg, desc: r.desc || r.biz, tax: r.tax, amt: r.amt, claim: o.claim, fac: fid === 'admin' ? '본청·행정 공통' : fid === 'exempt' ? '면세·행정 전용' : (o.f?.name ?? '미지정'), facType: o.f?.type, share: o.f?.share, label: o.label, basis: o.basis, why: o.why }; });
     /* ② 과세기간별 신고 값 */
     const per = ps.map(k => { const rows = st.rows.filter(r => r.pkey === k); const P = pInfo(k); const F = filedOf(k);
       const recv = rows.filter(r => outs.get(r.id)!.cat !== 'other').reduce((s, r) => s + r.tax, 0); const should = rows.reduce((s, r) => s + outs.get(r.id)!.claim, 0); const undecided = rows.filter(r => ['check', 'noratio'].includes(outs.get(r.id)!.cat)).reduce((s, r) => s + r.tax, 0);

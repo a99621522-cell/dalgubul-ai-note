@@ -31,7 +31,14 @@ API = "https://opendart.fss.or.kr/api"
 UA = {"User-Agent": "Mozilla/5.0 daitda-note-bot/1.0 (+https://daitda.co.kr)"}
 KEY = os.environ.get("DART_KEY", "").strip()
 COLS = ["corp_code", "name", "year", "employees", "regular", "contract", "male", "female", "avg_tenure", "salary_total", "avg_salary",
-        "avg_salary_reported", "avg_method", "unit_note", "rows", "rcept_no", "source_url", "as_of"]
+        "avg_salary_reported", "avg_method", "unit_note", "male_avg_salary", "female_avg_salary", "male_tenure", "female_tenure",
+        "rows", "rcept_no", "source_url", "as_of"]
+# 공시 행 그대로(사업부문 × 성별) — 회사 페이지 '부서·성별 공시 내역' 표(2026-11-24 운영자 '해' — 기업정보 사이트처럼 남녀·부서별)
+OUT_ROWS = ROOT / "scripts" / "data" / "company_employees_rows.csv"
+ROW_COLS = ["corp_code", "year", "fo_bbm", "sexdstn", "sm", "rgllbr_co", "cnttk_co", "avrg_cnwk_sdytrn", "fyer_salary_totamt", "jan_salary_am", "rcept_no"]
+# 임원 보수(사업보고서 '이사·감사 전체의 보수현황(보수지급금액)'·'미등기임원 보수현황') — 회사 합계·1인 평균만, 개인별 보수·이름은 받지 않는다
+OUT_EXEC = ROOT / "scripts" / "data" / "company_exec_pay.csv"
+EXEC_COLS = ["corp_code", "name", "year", "dir_n", "dir_total", "dir_avg", "unreg_n", "unreg_total", "unreg_avg", "rcept_no", "source_url", "as_of"]
 
 
 def num(s) -> float | None:
@@ -99,6 +106,14 @@ def summarize(code: str, name: str, y: int, lst: list[dict]) -> dict | None:
     sx = lambda w: sum(v for v in (num(x.get("sm")) for x in src if w in str(x.get("sexdstn", ""))) if v is not None)
     rec["male"], rec["female"] = sx("남"), sx("여")
     rec["salary_total"] = num(t.get("fyer_salary_totamt")) if t and num(t.get("fyer_salary_totamt")) else S(src, "fyer_salary_totamt")
+    for w, k in (("남", "male"), ("여", "female")):   # 성별 1인 평균 급여 = 그 성별 급여 총액 ÷ 직원 수, 근속은 직원 수 가중
+        g = [x for x in src if w in str(x.get("sexdstn", ""))]
+        n_ = sum(num(x.get("sm")) or 0 for x in g)
+        tt = sum(num(x.get("fyer_salary_totamt")) or 0 for x in g)
+        rec[f"_{k}_tot"] = tt if n_ and tt else None
+        wt = [(num(x.get("sm")) or 0, tenure(x.get("avrg_cnwk_sdytrn"))) for x in g]
+        ws = sum(a_ for a_, c in wt if c is not None)
+        rec[f"{k}_tenure"] = round(sum(a_ * c for a_, c in wt if c is not None) / ws, 2) if ws else None
     if t and num(t.get("jan_salary_am")):
         rec["avg_salary"], rec["avg_tenure"], rec["avg_method"] = num(t.get("jan_salary_am")), tenure(t.get("avrg_cnwk_sdytrn")), "합계 행"
     else:
@@ -118,6 +133,10 @@ def summarize(code: str, name: str, y: int, lst: list[dict]) -> dict | None:
             per *= 1000
             rec["unit_note"] = "총액 천원 단위로 공시 → 원으로 바꿈"
         rec["avg_salary"], rec["avg_method"] = per, "총액÷직원 수"
+    k1000 = 1000 if rec["unit_note"] else 1
+    for k in ("male", "female"):
+        tt, n_ = rec.pop(f"_{k}_tot", None), rec.get(k)
+        rec[f"{k}_avg_salary"] = round(tt * k1000 / n_, 2) if tt and n_ else None
     for k in ("avg_salary", "avg_salary_reported", "avg_tenure"):
         if isinstance(rec.get(k), float):
             rec[k] = round(rec[k], 2)
@@ -137,7 +156,7 @@ def main(argv: list[str]) -> int:
         return half(corps)
     print(f"[dart_emp] 대구 본사 공시 기업 {len(corps)}곳")
     this = date.today().year
-    rows, sample = [], 0
+    rows, sample, raw, execs = [], 0, [], []
     for i, (code, meta) in enumerate(sorted(corps.items()), 1):
         for y in range(this - years, this):
             j = get("empSttus.json", corp_code=code, bsns_year=y, reprt_code="11011")
@@ -149,6 +168,10 @@ def main(argv: list[str]) -> int:
             rec = summarize(code, meta.get("name", ""), y, lst)
             if rec:
                 rows.append(rec)
+                raw += [{"corp_code": code, "year": y, **{k: x.get(k, "") for k in ROW_COLS if k not in ("corp_code", "year")}} for x in lst]
+            ex = exec_pay(code, meta.get("name", ""), y)
+            if ex:
+                execs.append(ex)
         if i % 20 == 0:
             print(f"[dart_emp] {i}/{len(corps)}곳, 행 {len(rows)}")
     new_keys = {(r["corp_code"], str(r["year"])) for r in rows}
@@ -161,7 +184,47 @@ def main(argv: list[str]) -> int:
         w.writeheader()
         w.writerows(out)
     print(f"저장: {OUT.relative_to(ROOT)} ({len(out)}행 — 새로 {len(rows)} · 기존 유지 {len(kept)})")
+    merge_write(OUT_ROWS, ROW_COLS, raw, this - years, corps)
+    merge_write(OUT_EXEC, EXEC_COLS, execs, this - years, corps)
     return 0
+
+
+def merge_write(path: Path, cols: list[str], new: list[dict], y0: int, corps: dict) -> None:
+    """새로 받은 회사·연도는 바꾸고, 받지 못한 회사·연도의 기존 행은 남긴다"""
+    keys = {(r["corp_code"], str(r["year"])) for r in new}
+    old = list(csv.DictReader(open(path, encoding="utf-8"))) if path.exists() else []
+    kept = [r for r in old if (r.get("corp_code"), str(r.get("year"))) not in keys and int(r.get("year") or 0) >= y0 and r.get("corp_code") in corps]
+    out = sorted(kept + new, key=lambda r: (r["corp_code"], str(r["year"])))
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(out)
+    print(f"저장: {path.relative_to(ROOT)} ({len(out)}행 — 새로 {len(new)} · 기존 유지 {len(kept)})")
+
+
+def exec_pay(code: str, name: str, y: int) -> dict | None:
+    """이사·감사 전체 보수지급금액(hmvAuditAllSttus) + 미등기임원 보수현황(unrstExctvMendngSttus) — 회사 합계·인원·1인 평균만"""
+    a = (get("hmvAuditAllSttus.json", corp_code=code, bsns_year=y, reprt_code="11011") or {}).get("list", [])
+    time.sleep(0.15)
+    b = (get("unrstExctvMendngSttus.json", corp_code=code, bsns_year=y, reprt_code="11011") or {}).get("list", [])
+    time.sleep(0.15)
+    if not a and not b:
+        return None
+    rec = {"corp_code": code, "name": name, "year": y, "as_of": date.today().isoformat()}
+    if a:
+        x = a[0]
+        rec.update(dir_n=num(x.get("nmpr")), dir_total=num(x.get("mendng_totamt")), dir_avg=num(x.get("jan_avrg_mendng_am")))
+        rec["rcept_no"] = x.get("rcept_no", "")
+    if b:
+        n_ = sum(num(x.get("nmpr")) or 0 for x in b)
+        tt = sum(num(x.get("fyer_salary_totamt")) or 0 for x in b)
+        rec.update(unreg_n=n_ or None, unreg_total=tt or None, unreg_avg=round(tt / n_) if n_ and tt else (num(b[0].get("jan_salary_am")) if len(b) == 1 else None))
+        rec["rcept_no"] = rec.get("rcept_no") or b[0].get("rcept_no", "")
+    rec["source_url"] = f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rec['rcept_no']}" if rec.get("rcept_no") else ""
+    for k in ("dir_n", "dir_total", "dir_avg", "unreg_n", "unreg_total", "unreg_avg"):
+        v = rec.get(k)
+        rec[k] = int(v) if isinstance(v, float) and v.is_integer() else v
+    return rec
 
 
 def half(corps: dict) -> int:

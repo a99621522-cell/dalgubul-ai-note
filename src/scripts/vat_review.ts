@@ -9,7 +9,7 @@ import { mountDrop, readTableFile } from './vat_files';
 import { mountPublic } from './vat_review_pub';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
 import type { FileTable } from './vat_files';
-import { caseBook, type CbRow, type CbCand } from './vat_casebook';
+import { caseBook, caseCorrDocs, type CbRow, type CbCand } from './vat_casebook';
 import { xlsxBlob, csvRows } from './xlsx_write';
 import { applyDefaults } from './vat_ask';
 import { startFromLink } from './vat_org';
@@ -287,7 +287,7 @@ function init(D: Data) {
         files.push({ name: '14_경정청구_검토보고(한글에서_열림).docx', data: await bin(await buildDocx(reportBlocks(allDiags, org?.org ?? '', win), '부가가치세 경정청구 검토')) }); } catch { /* Word 를 못 만들어도 나머지는 받음 */ }
       { const cf = claimFormHtml(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (cf) files.push({ name: '18_경정청구서(별지_제16호의2서식)_인쇄용.html', data: cf }); try { const cp = await claimFormPdf(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (cp) files.push({ name: '18_경정청구서(별지_제16호의2서식).pdf', data: await bin(cp) }); } catch { /* PDF 를 못 만들어도 HTML 은 들어감 */ }
       { const rt = reasonDocText(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (rt) files.push({ name: '19_경정청구_사유서(근거_법령·붙임).txt', data: rt }); try { const rp = await reasonDocPdf(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (rp) files.push({ name: '19_경정청구_사유서(근거_법령·붙임).pdf', data: await bin(rp) }); } catch { /* 사유서 PDF 를 못 만들어도 txt 는 들어감 */ } } }
-      { const cb = caseXlsx(); if (cb) files.push({ name: '20_신고서별_경정청구서(신고서마다_시트).xlsx', data: await bin(cb) }); }
+      files.push(...(await caseFiles('2')).filter(f => !/0_이렇게/.test(f.name)));
       downloadBlob(`${base}.zip`, zipStore(files)); };
     $('rv-zip')?.addEventListener('click', () => void bundle('zip')); $('rv-xlsx')?.addEventListener('click', () => void bundle('xlsx')); $('rv-pdf')?.addEventListener('click', () => void bundle('pdf'));
   }
@@ -349,8 +349,18 @@ function init(D: Data) {
   let candRows: (string | number)[][] = []; document.addEventListener('vat-cand', e => { candRows = (e as CustomEvent<(string | number)[][]>).detail ?? []; });
   /* 신고서별 경정청구 작업서(엑셀) — 신고서 한 장마다 시트(운영자 2026-11-24) */
   const cbCand = (): CbCand[] => { const m = new Map<string, CbCand>(); for (const r of candRows.slice(1)) { const mm = /(\d{4})년 제([12])기/.exec(String(r[0])); if (!mm) continue; const k = `${mm[1]}-${mm[2]}`; const x = m.get(k) ?? { k, amt: Number(r[9]) || 0, byFac: [], sups: 0 }; x.sups++; const fac = String(r[6] || '시설 확인'); const f = x.byFac.find(y => y.fac === fac); const of = org?.facilities.find(q => q.name === fac); if (f) f.est += Number(r[7]) || 0; else x.byFac.push({ fac, est: Number(r[7]) || 0, type: of?.type, share: of?.share }); m.set(k, x); } return [...m.values()].filter(x => x.amt > 0); };
-  const caseXlsx = () => caseBook(D, { org: org?.org ?? '', reg: st.reg || org?.reg_no || '', today, docs: st.fdocs ?? [], rows: cbRows, cand: cbRows.length ? [] : cbCand() });
-  document.addEventListener('click', e => { if (!(e.target as HTMLElement).closest('#rf-dl-cases')) return; const b = caseXlsx(); if (!b) { toast('지난 신고서를 올리면 신고서마다 경정청구서를 만듭니다'); return; } downloadBlob(`신고서별_경정청구서_${org?.org ?? ''}_${today}.xlsx`.replace(/\s+/g, '_'), b); toast('신고서별 경정청구서(엑셀)를 내려받았습니다'); });
+  const cbIn = () => { diagAll(); return { org: org?.org ?? '', reg: st.reg || org?.reg_no || '', today, docs: st.fdocs ?? [], rows: cbRows, cand: cbRows.length ? [] : cbCand(), corr: allCorr }; };
+  const caseXlsx = () => caseBook(D, cbIn());
+  /* 신고서별 제출 묶음 — ① 경정청구서(국세청 서식, 숫자 채움) PDF ② 근거·이유 엑셀 ③ 사유서 PDF(같은 쪽 번호) ④ 안내 한 장(운영자 2026-11-24 '국세청 경정청구서 양식으로 별도 작업없이 … 근거와 이유는 엑셀로') */
+  const caseFiles = async (pre = ''): Promise<{ name: string; data: string | Uint8Array }[]> => {
+    const bin = async (b: Blob) => new Uint8Array(await b.arrayBuffer()); const M = caseCorrDocs(D, cbIn()); const n = [...M.values()].flat().length; const total = [...M.values()].flat().reduce((a, c) => a + c.delta, 0);
+    const out: { name: string; data: string | Uint8Array }[] = []; const nm = org?.org ?? '', rg = st.reg || org?.reg_no || '';
+    try { const cp = n ? await claimFormPdf(M, nm, rg) : null; if (cp) out.push({ name: `${pre}1_경정청구서(국세청_서식_별지제16호의2)_신고서별_${n}쪽.pdf`, data: await bin(cp) }); } catch { /* */ }
+    const x = caseXlsx(); if (x) out.push({ name: `${pre}2_근거와_이유(신고서별_시트).xlsx`, data: await bin(x) });
+    try { const rp = n ? await reasonDocPdf(M, nm, rg) : null; if (rp) out.push({ name: `${pre}3_경정청구_사유서(붙임)_신고서별.pdf`, data: await bin(rp) }); } catch { /* */ }
+    out.unshift({ name: `${pre}0_이렇게_하세요.txt`, data: `${nm} 부가가치세 경정청구 — 신고서별 (${today} 작성, 참고 계산 — 신고 책임은 신고인, 판정은 기관의 판단이 아닙니다)\n\n경정청구할 신고서 ${n}장 · 돌려받을 세액 합계 ${fmt(total)}원\n\n1. 「2_근거와_이유」 엑셀의 「신고별 요약」에서 기한이 가까운 신고서부터 봅니다. 시트마다 「확인할 것」을 확인합니다.\n2. 「1_경정청구서」 PDF 에서 그 신고서 쪽(요약의 쪽 번호)을 엽니다. 숫자·이유·주소·최초신고일·세무서는 채워 두었습니다.\n   기관이 적을 것: 기관장 성명·서명, 담당 전화, 환급 받을 세입 계좌, 청구 날짜.\n3. 낼 때: 서면이면 그 쪽 경정청구서 + 「3_사유서」 같은 쪽 + 붙임 서류(엑셀 시트 6.)를 관할 세무서에. 홈택스면 신고/납부 → 세금신고 → 부가가치세 → 경정청구에서 시트 1.의 '경정 후' 값을 넣고 1·3 PDF 를 첨부.\n4. 결과는 2개월 안에 옵니다(국세기본법 제45조의2 제3항). 돌려받은 돈은 세입으로 처리합니다.\n` });
+    return out; };
+  document.addEventListener('click', e => { if (!(e.target as HTMLElement).closest('#rf-dl-cases')) return; void (async () => { if (!(st.fdocs ?? []).length) { toast('지난 신고서를 올리면 신고서마다 경정청구서를 만듭니다'); return; } const files = await caseFiles(); downloadBlob(`신고서별_경정청구_${org?.org ?? ''}_${today}.zip`.replace(/\s+/g, '_'), zipStore(files)); toast('신고서별 경정청구서(국세청 서식 PDF)와 근거·이유 엑셀을 내려받았습니다'); })(); });
   /* 신고서만 올렸을 때의 요약 PDF — 돌려받을 돈·고친 신고서(세무서·홈택스에 낼 자료를 엑셀과 PDF 둘 다로) */
   const filedPdf = async () => { try { const { buildPdf, p, table } = await import('./pdf'); const S = (rows: (string | number | null | undefined)[][]) => rows.map(r => r.map(v => typeof v === 'number' ? fmt(v) : String(v ?? '')));
     const blocks = [p('kicker', [`부가가치세 경정청구 자료 · ${org?.org ?? ''}`, 'kicker']), p('title', ['경정청구 요약 — 지난 신고서로 다시 계산', 'title']), p('note', [`${today} 작성 · 지자체 부가세 돌려받기(참고 계산 — 신고 책임은 신고인, 판정은 기관의 판단이 아닙니다)`, 'note']),
@@ -370,7 +380,7 @@ function init(D: Data) {
       files.push({ name: '14_경정청구_검토보고(한글에서_열림).docx', data: await bin(await buildDocx(reportBlocks(allDiags, org?.org ?? '', win), '부가가치세 경정청구 검토')) }); } catch { /* Word 를 못 만들어도 나머지는 받음 */ }
     { const cf = claimFormHtml(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (cf) files.push({ name: '18_경정청구서(별지_제16호의2서식)_인쇄용.html', data: cf }); try { const cp = await claimFormPdf(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (cp) files.push({ name: '18_경정청구서(별지_제16호의2서식).pdf', data: await bin(cp) }); } catch { /* PDF 를 못 만들어도 HTML 은 들어감 */ }
       { const rt = reasonDocText(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (rt) files.push({ name: '19_경정청구_사유서(근거_법령·붙임).txt', data: rt }); try { const rp = await reasonDocPdf(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (rp) files.push({ name: '19_경정청구_사유서(근거_법령·붙임).pdf', data: await bin(rp) }); } catch { /* 사유서 PDF 를 못 만들어도 txt 는 들어감 */ } } }
-    { const cb = caseXlsx(); if (cb) files.push({ name: '20_신고서별_경정청구서(신고서마다_시트).xlsx', data: await bin(cb) }); }
+    files.push(...(await caseFiles('2')).filter(f => !/0_이렇게/.test(f.name)));
     downloadBlob(`${base}.zip`, zipStore(files)); toast('경정청구 자료 묶음을 내려받았습니다'); })());
   /* 경정청구서(국세청 서식) — 국세기본법 시행규칙 별지 제16호의2서식에 숫자를 채운 인쇄용 화면을 새 창으로(막히면 파일로) */
   document.addEventListener('click', e => { if (!(e.target as HTMLElement).closest('#rf-dl-form-pdf')) return;

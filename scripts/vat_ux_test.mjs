@@ -404,8 +404,8 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   const allu = T(await pg.locator('#rf-sum').textContent().catch(() => ''));
   ok('U6 ② 전액 불공제 + 과세 매출 → 「② 사업과 직접 관련 없는 지출」 안내 · 합계표의 ①⑤ 줄을 불공제 사유로 읽지 않음', /사업과 직접 관련 없는 지출'로 돌려받지 않았습니다/.test(allu) && !/늦게 받았거나/.test(allu) && !/찾은 것이 없습니다/.test(allu), allu.slice(0, 300));
   { const btn = await pg.$('#rf-dl-cases'); let cbOk = false, cbX = 'no button';
-    if (btn) { try { const [dl] = await Promise.all([pg.waitForEvent('download', { timeout: 15000 }), btn.click()]); const f = path.join(os.tmpdir(), 'vat-cb-' + Date.now() + '.xlsx'); await dl.saveAs(f); const t = fs.readFileSync(f).toString('utf8'); cbOk = t.startsWith('PK') && t.includes('먼저 읽기') && t.includes('신고별 요약') && t.includes('25-1기 확정') && t.includes('국세기본법 제45조의2'); cbX = `${fs.statSync(f).size}B`; } catch (e) { cbX = String(e).slice(0, 120); } }
-    ok('U7 신고서별 경정청구서(엑셀) — 먼저 읽기·신고별 요약·신고서 한 장(25-1기 확정)·근거 조문', cbOk, cbX); }
+    if (btn) { try { const [dl] = await Promise.all([pg.waitForEvent('download', { timeout: 15000 }), btn.click()]); const f = path.join(os.tmpdir(), 'vat-cb-' + Date.now() + '.zip'); await dl.saveAs(f); const t = fs.readFileSync(f).toString('utf8'); const zl = (await import('node:child_process')).execSync(`unzip -Z1 "${f}"`).toString(); cbOk = /0_이렇게_하세요/.test(zl) && /2_근거와_이유/.test(zl) && t.includes('먼저 읽기') && t.includes('신고별 요약') && t.includes('25-1기 확정') && t.includes('국세기본법 제45조의2'); cbX = zl.replace(/\n/g, ' '); } catch (e) { cbX = String(e).slice(0, 120); } }
+    ok('U7 신고서별로 받기(zip) — 안내·근거와 이유 엑셀(먼저 읽기·신고별 요약·25-1기 확정·근거 조문)', cbOk, cbX); }
   await pg.evaluate(() => { localStorage.removeItem('vat-review-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 /* ── S 지난 돈 돌려받기 세 걸음 판(2026-11-05 docs/prompts/vat_refund_3steps.md): 기관 → 신고서 → 매입 목록 여러 파일, 계약 업체 번호로 저절로 귀속, 할 일·엑셀·PDF ── */
@@ -567,6 +567,8 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
       ok('E9 세무 검토 — 확정 460,000원 가운데 안분·정산 다시 한 몫 460,000원은 원신고가 공급가액 비율일 때만(제81조 제4항·2017두55329), 순으로 보면 줄(확정은 매출 영향 없음), 기간 행 「확인」', /460,000원은 함께 쓴 비용/.test(e9.cond) && /제81조 제4항/.test(e9.cond) && /2017두55329/.test(e9.cond) && /확정 460,000원은 계산을 바로잡는 것/.test(e9.net) && /공급가액 비율로 나눴을 때의 금액/.test(e9.why), JSON.stringify(e9).slice(0, 400));
       const zr = path.join(os.tmpdir(), 'vat-e-submit.zip'); const [dl] = await Promise.all([pe.waitForEvent('download', { timeout: 60000 }), pe.click('#rf-dl-submit')]); await dl.saveAs(zr); const zl = execSync(`unzip -Z1 "${zr}"`).toString();
       ok('E5 과업 C — 강조 단추 「세무서·홈택스에 낼 자료 받기」 한 번 → 엑셀·PDF·경정청구서 밑자료·확인할 업체 목록이 든 묶음', /10_경정청구_자료\.xlsx/.test(zl) && /11_경정청구_요약\.pdf/.test(zl) && /16_경정청구서_밑자료/.test(zl) && /17_확인할_업체_목록/.test(zl), zl.replace(/\n/g, ' '));
+      { const zc = path.join(os.tmpdir(), 'vat-e-cases.zip'); const [dc] = await Promise.all([pe.waitForEvent('download', { timeout: 60000 }), pe.click('#rf-dl-cases')]); await dc.saveAs(zc); const zl2 = (await import('node:child_process')).execSync(`unzip -Z1 "${zc}"`).toString();
+        ok('E10 신고서별로 받기 — 국세청 서식 경정청구서 PDF(숫자 채움)·근거와 이유 엑셀·사유서 PDF·안내', /1_경정청구서\(국세청_서식_별지제16호의2\)_신고서별_\d+쪽\.pdf/.test(zl2) && /2_근거와_이유/.test(zl2) && /3_경정청구_사유서/.test(zl2) && /0_이렇게_하세요/.test(zl2), zl2.replace(/\n/g, ' ')); }
       const big = await pe.evaluate(() => ({ n: document.querySelectorAll('#rf-sum .rf-dl > .btn').length, rep: !!document.getElementById('rf-dl-report') }));
       ok('E6 강조 내려받기 단추는 하나(결재용 보고 단추 없음 — 운영자 2026-11-05 \'지워\')', big.n === 1 && !big.rep, JSON.stringify(big));
     }

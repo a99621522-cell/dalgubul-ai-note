@@ -109,6 +109,7 @@ def main():
         text = re.sub(r"\n{2,}", "\n", text)
         off = int(sys.argv[sys.argv.index("--text-from") + 1]) if "--text-from" in sys.argv else 0   # 긴 본문은 text 칸에 숫자(시작 글자)를 넣어 이어 읽는다(2026-11-02)
         if "--text-find" in sys.argv:   # 긴 법령 본문에서 조문 자리부터(2026-11-24 국세기본법 시행령 제25조의3)
+            text = re.sub(r"\n{2,}", "\n", re.sub(r"[ \t]+", " ", (soup.body or soup).get_text("\n", strip=True)))   # 조문마다 칸이 따로라 페이지 전체 글자에서 찾는다
             m = re.search(sys.argv[sys.argv.index("--text-find") + 1], text)
             off = m.start() if m else 0
             print(f"== '{sys.argv[sys.argv.index('--text-find') + 1]}' {'찾음' if m else '못 찾음'}")

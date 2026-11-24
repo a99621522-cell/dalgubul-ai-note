@@ -295,7 +295,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('R3 문구사 → 본청·행정 공통(면세비율 40%): 2025-1 118,000 − 20,000 = 98,000 · 못 센 0', perB[0][2] === '118,000' && perB[0][4].startsWith('98,000') && perB[0][6] === '0', JSON.stringify(perB[0]));
   ok('R3 2025-2 신고 없음 → 기한후신고 · 차이 200,000(건설사 수선, 다른 명의 제외)', perB[1][2] === '200,000' && perB[1][4].startsWith('200,000') && /기한후신고/.test(perB[1][7] + perB[1][8]), JSON.stringify(perB[1]));
   ok('R4 합계 카드 298,000 · 사유 초안에 금액', T(await pg.locator('#rv-total').textContent()).startsWith('298,000') && /298,000/.test(await pg.locator('#rv-reason').inputValue()));
-  ok('R7 가산세 빼면 281,500(= 298,000 − 공급가액 3,300,000 × 0.5%)', T(await pg.locator('#rv-net').textContent()).startsWith('281,500'), T(await pg.locator('#rv-net').textContent()));
+  ok('R7 가산세 빼면 298,000 — 경정청구서와 함께 합계표를 내면 합계표 가산세 없음(시행령 제74조 제2호·제108조 제6항)', T(await pg.locator('#rv-net').textContent()).startsWith('298,000') && /제108조 제6항/.test(T(await pg.locator('#rv-money').textContent())), T(await pg.locator('#rv-net').textContent()));
   await pg.selectOption('[data-filed="2025-1"]', 'excluded'); await pg.waitForTimeout(400); ok('R7 \'함 — 이 목록은 안 넣었음\' → 2025-1 전액 118,000, 합계 318,000', T(await pg.locator('#rv-total').textContent()).startsWith('318,000')); await pg.selectOption('[data-filed="2025-1"]', 'filed'); await pg.waitForTimeout(400); await pg.fill('[data-fin="deduct:2025-1"]', '20000'); await pg.press('[data-fin="deduct:2025-1"]', 'Tab'); await pg.waitForTimeout(400);
   const [dz] = await Promise.all([pg.waitForEvent('download'), pg.click('#rv-zip')]); const zr = path.join(os.tmpdir(), 'vat-rv2.zip'); await dz.saveAs(zr); const zl = execSync(`unzip -Z1 "${zr}"`).toString().trim().split('\n'); const det = execSync(`unzip -p "${zr}" "${REF}02_건별_명세.csv"`).toString();
   const basisTxt = T(await pg.locator('#rv-basis').textContent()); const basisN = execSync(`unzip -p "${zr}" "${REF}06_근거_조문_유권해석_판례.txt"`).toString();
@@ -392,7 +392,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   await pg.fill('[data-sales="2024-2"]', '1000000'); await pg.press('[data-sales="2024-2"]', 'Tab'); await pg.waitForTimeout(500);
   const rowU = await pg.$$eval('#ul-per tbody tr', trs => trs.map(t => [...t.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim())));
   const r24 = rowU.find(r => /2024년 제2기/.test(r[0])); const salesCell = Number((r24?.[7] ?? '').replace(/[^\d]/g, '')); const netNow = Number(T(await pg.locator('#ul-net-now').textContent()).replace(/[^\d-]/g, ''));
-  ok('U3 신고에 없던 매출 1,000,000 → 매출세액 100,000 + 가산세 · 순액 = 500,000 − (매출세액+가산세) − 합계표 가산세 25,000(5,000,000 × 0.5%)', salesCell > 100000 && salesCell < 200000 && netNow === 500000 - salesCell - 25000, JSON.stringify(r24) + ' net ' + netNow);
+  ok('U3 신고에 없던 매출 1,000,000 → 매출세액 100,000 + 가산세 · 순액 = 500,000 − (매출세액+가산세) (합계표 가산세 없음 — 시행령 제108조 제6항)', salesCell > 100000 && salesCell < 200000 && netNow === 500000 - salesCell, JSON.stringify(r24) + ' net ' + netNow);
   const r20 = rowU.find(r => /2020년 제1기/.test(r[0]));
   ok('U4 2020년 제1기(기한 지남)는 세 칸에서 빠지고 따로 — 300,000 − 신고 100,000 = 200,000', /기한 지남/.test(r20?.[1] ?? '') && /기한이 지난 과세기간 몫 200,000원/.test(T(await pg.locator('#rv-unlock').textContent())) && T(await pg.locator('#ul-now').textContent()).startsWith('500,000'), JSON.stringify(r20));
   /* U5 2025-07-04 전 서식 신고서 — (16) 불공제·(17) 차감계를 현행 (17)(18)로(법령 연혁 대조 2026-11-05) */

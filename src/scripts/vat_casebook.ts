@@ -94,6 +94,13 @@ function issuesOf(D: Data, o: CbIn, c: Case, facsOf: (c: Case) => FacSum[], docs
 }
 /** 경정청구할 신고서(기한 안·확정신고 전 예정 제외·돌려받을 몫 > 0)의 쟁점 목록 — 금액 큰 순이 아니라 신고서 순 */
 export function caseIssues(D: Data, o: CbIn): Issue[] { const { cases, docs, facsOf } = buildCases(D, o); return cases.filter(c => c.left >= 0 && !c.nextFin && c.gain > 0).flatMap(c => issuesOf(D, o, c, facsOf, docs)); }
+/** 돌려받을 몫 나누기(2026-11-24 수성구 2021년 제2기 — (18)이 (16)보다 커지던 것): 당초 (17)에서 뺄 수 있는 몫 cut(당초 (17)을 넘지 않음)과
+ *  당초 신고에 아예 없던 세금계산서라 (10)·(16)에 더할 몫 add(매입처별 세금계산서합계표를 경정청구서와 함께 냄 — 부가가치세법 시행령 제74조 제2호, 가산세 없음 제108조 제6항) */
+export function splitGain(d: FiledDoc, g: number, ga: number | null | undefined): { cut: number; add: number; addAmt: number | null; cutAmt: number | null } {
+  const c17 = Math.max(0, d.cells[17]?.tax ?? 0), a17 = d.cells[17]?.amt ?? null; const cut = Math.min(g, c17); const add = g - cut;
+  if (add > 0 && ga != null && a17 != null) return { cut, add, addAmt: Math.max(0, ga - a17), cutAmt: Math.min(ga, a17) };   /* (17)을 다 빼면 뺀 공급가액 = 당초 (17) 금액 */
+  const addAmt = ga != null && g ? Math.round(ga * add / g) : null;
+  return { cut, add, addAmt, cutAmt: ga != null ? ga - (addAmt ?? 0) : null }; }
 export function caseCorrDocs(D: Data, o: CbIn, pick?: (g: Grade) => boolean): Map<string, CorrDoc[]> {
   const M = new Map<string, CorrDoc[]>(); const { cases, facsOf } = buildCases(D, o, pick);
   const most = (xs: (string | undefined)[]) => { const c = new Map<string, number>(); for (const x of xs) if (x) c.set(x, (c.get(x) ?? 0) + 1); return [...c].sort((a, b) => b[1] - a[1])[0]?.[0] ?? ''; };
@@ -102,10 +109,11 @@ export function caseCorrDocs(D: Data, o: CbIn, pick?: (g: Grade) => boolean): Ma
     const ded = t(18) ?? 0, c9 = t(9); const F = facsOf(c); const nd2 = d.nd?.reasons[2]?.tax ?? 0, nd5 = d.nd?.reasons[5]?.tax ?? 0; const why = nd2 >= nd5 && nd2 > 0 ? "'사업과 직접 관련 없는 지출'" : nd5 > 0 ? "'면세사업 관련'" : '불공제';
     if (c.mode === 'corr' && c.corr) { M.set(`${c.k}|${c.pre ? 0 : 1}`, [{ ...c.corr, reg: c.corr.reg || d.reg || o.reg, addr: d.addr || addr0 || undefined, rep: rep0 || d.rep || undefined, tel: tel0 || d.tel || undefined, filedOn: d.filedOn, office: d.office || office0 || undefined, pen: c.corr.pen ?? d.pen ?? null, due: c.corr.due ?? d.due ?? null, tb: c.corr.tb ?? d.cells[9]?.amt ?? null }]); continue; }
     const names = F.slice(0, 3).map(f => short(f.fac)).join('·') + (F.length > 3 ? ` 등 ${F.length}곳` : '');
-    const reason = `사용료를 과세 매출로 신고하는 시설(${names})의 공사·관리·운영비 매입세액 ${fmt(c.gain)}원을 ${why}로 불공제함. 과세사업에 쓴 매입세액은 공제 대상(부가가치세법 제38조, 같은 법 시행령 제46조)이므로 공제받지 못할 매입세액을 ${fmt(c.gain)}원 줄여 경정을 청구함${F.some(f => typeof f.share === 'number' && f.share < 1) ? '(같이 쓰는 건물은 과세 면적 비율만, 같은 법 시행령 제81조)' : ''}${c.mode === 'cand' ? ' — 금액은 계약으로 짐작한 값, 세금계산서로 확인 뒤 확정' : ''}. 세부 근거는 붙임 엑셀·사유서.`;
+    const sp = splitGain(d, c.gain, c.gainAmt);
+    const reason = sp.add > 0 ? `사용료를 과세 매출로 신고하는 시설(${names})의 공사·관리·운영비 매입세액 ${fmt(c.gain)}원 가운데 ${sp.cut ? `${fmt(sp.cut)}원은 ${why}로 불공제하고 ` : ''}${fmt(sp.add)}원은 받은 세금계산서를 신고에 넣지 않았음. 과세사업에 쓴 매입세액은 공제 대상(부가가치세법 제38조, 같은 법 시행령 제46조)이므로 빠진 세금계산서를 매입처별 세금계산서합계표로 함께 제출하고(같은 법 시행령 제74조 제2호) 공제받는 매입세액을 ${fmt(c.gain)}원 늘려 경정을 청구함. 세부 근거는 붙임 엑셀·사유서.` : `사용료를 과세 매출로 신고하는 시설(${names})의 공사·관리·운영비 매입세액 ${fmt(c.gain)}원을 ${why}로 불공제함. 과세사업에 쓴 매입세액은 공제 대상(부가가치세법 제38조, 같은 법 시행령 제46조)이므로 공제받지 못할 매입세액을 ${fmt(c.gain)}원 줄여 경정을 청구함${F.some(f => typeof f.share === 'number' && f.share < 1) ? '(같이 쓰는 건물은 과세 면적 비율만, 같은 법 시행령 제81조)' : ''}${c.mode === 'cand' ? ' — 금액은 계약으로 짐작한 값, 세금계산서로 확인 뒤 확정' : ''}. 세부 근거는 붙임 엑셀·사유서.`;
     const doc: CorrDoc = { k: c.k, kind: d.kind, file: d.file, reg: d.reg || o.reg, delta: c.gain, reason, addr: d.addr || addr0 || undefined, rep: rep0 || d.rep || undefined, tel: tel0 || d.tel || undefined, filedOn: d.filedOn, office: d.office || office0 || undefined,
-      cells: [{ n: 16, label: '매입세액 합계', amt: d.cells[16]?.amt ?? null, before: t(16), after: t(16) }, { n: 17, label: '공제받지 못할 매입세액', amt: d.cells[17]?.amt ?? null, before: t(17), after: t(17) != null ? t(17)! - c.gain : null }, { n: 18, label: '차감계(공제받는 매입세액)', amt: d.cells[18]?.amt ?? null, before: ded, after: ded + c.gain }],
-      parts: d.nd ? [{ sec: '명세서', rows: [{ label: nd2 >= nd5 ? '② 사업과 직접 관련 없는 지출' : '⑤ 면세사업등 관련', before: nd2 >= nd5 ? nd2 : nd5, after: (nd2 >= nd5 ? nd2 : nd5) - c.gain }] }] : [],
+      cells: [...(sp.add > 0 ? [{ n: 10, label: '세금계산서 수취분 일반매입', amt: d.cells[10]?.amt ?? null, before: t(10), after: (t(10) ?? 0) + sp.add }] : []), { n: 16, label: '매입세액 합계', amt: d.cells[16]?.amt ?? null, before: t(16), after: (t(16) ?? 0) + sp.add }, { n: 17, label: '공제받지 못할 매입세액', amt: d.cells[17]?.amt ?? null, before: t(17), after: t(17) != null ? t(17)! - sp.cut : null }, { n: 18, label: '차감계(공제받는 매입세액)', amt: d.cells[18]?.amt ?? null, before: ded, after: ded + c.gain }],
+      parts: d.nd ? [{ sec: '명세서', rows: [{ label: nd2 >= nd5 ? '② 사업과 직접 관련 없는 지출' : '⑤ 면세사업등 관련', before: nd2 >= nd5 ? nd2 : nd5, after: (nd2 >= nd5 ? nd2 : nd5) - Math.min(sp.cut, nd2 >= nd5 ? nd2 : nd5) }] }] : [],
       payBefore: c9 != null ? c9 - ded : null, payAfter: c9 != null ? c9 - ded - c.gain : null, tb: d.cells[9]?.amt ?? null, pen: d.pen ?? null, due: d.due ?? null };
     M.set(`${c.k}|${c.pre ? 0 : 1}`, [doc]); }
   let pg = 0; for (const k of [...M.keys()].sort()) for (const x of M.get(k)!) x.page = ++pg;
@@ -222,7 +230,10 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
     const a = `청구인 ${o.org}(${o.reg || '사업자등록번호'})은 ${pName(c.k)} ${c.d.kind}신고(신고기간 ${c.d.year}. ${c.d.from}. ~ ${c.d.to}.)에서 받은 세금계산서 매입세액 ${fmt(c16)}원 가운데 ${fmt(ded)}원만 공제받았습니다${nd2 > 0 ? `(${fmt(nd2)}원은 '사업과 직접 관련 없는 지출'로 불공제)` : ''}.`;
     const b = F.length ? ` 그러나 이 가운데 ${F.slice(0, 5).map(f => `${f.fac} ${fmt(f.claim)}원`).join(', ')}${F.length > 5 ? ` 외 ${F.length - 5}곳` : ''}은 청구인이 사용료를 받아 과세 매출로 신고하는 시설(지방자치단체가 공급하더라도 과세되는 사업, 부가가치세법 제26조 제1항 제19호·같은 법 시행령 제46조)의 공사·관리·운영에 쓴 것으로 공제 대상 매입세액(같은 법 제38조)입니다.` : '';
     const sh = F.filter(f => typeof f.share === 'number' && f.share < 1); const cc = sh.length ? ` 과세·면세 공간이 섞인 건물(${sh.map(f => f.fac).join(', ')})의 매입세액은 과세로 쓰는 면적 비율만큼만 넣었습니다(같은 법 제40조, 시행령 제81조 제4항).` : '';
-    const d = ` 따라서 공제받지 못할 매입세액 (17)을 ${fmt(tax(c.d, 17) ?? 0)}원에서 ${fmt(Math.max(0, (tax(c.d, 17) ?? 0) - c.gain))}원으로, 공제받는 매입세액 (18)을 ${fmt(ded)}원에서 ${fmt(ded + c.gain)}원으로 고쳐 납부세액 ${fmt(c.gain)}원을 돌려주시기 바랍니다(국세기본법 제45조의2 제1항).`;
+    const sp = splitGain(c.d, c.gain, c.gainAmt);
+    const d = sp.add > 0
+      ? ` 이 가운데 ${fmt(sp.add)}원은 받은 세금계산서를 당초 신고에 넣지 않은 것이라 매입처별 세금계산서합계표를 이 청구서와 함께 제출합니다(같은 법 시행령 제74조 제2호). 따라서 매입세액 (16)을 ${fmt(c16)}원에서 ${fmt(c16 + sp.add)}원으로${sp.cut ? `, 공제받지 못할 매입세액 (17)을 ${fmt(tax(c.d, 17) ?? 0)}원에서 ${fmt(Math.max(0, (tax(c.d, 17) ?? 0) - sp.cut))}원으로` : ''}, 공제받는 매입세액 (18)을 ${fmt(ded)}원에서 ${fmt(ded + c.gain)}원으로 고쳐 납부세액 ${fmt(c.gain)}원을 돌려주시기 바랍니다(국세기본법 제45조의2 제1항).`
+      : ` 따라서 공제받지 못할 매입세액 (17)을 ${fmt(tax(c.d, 17) ?? 0)}원에서 ${fmt(Math.max(0, (tax(c.d, 17) ?? 0) - c.gain))}원으로, 공제받는 매입세액 (18)을 ${fmt(ded)}원에서 ${fmt(ded + c.gain)}원으로 고쳐 납부세액 ${fmt(c.gain)}원을 돌려주시기 바랍니다(국세기본법 제45조의2 제1항).`;
     return a + b + cc + d; }
   function plain(c: Case): string {
     if (c.mode === 'corr') return `신고서 숫자를 다시 계산해 보니 같이 쓴 비용의 부가세를 나누는 계산이 맞지 않아 ${fmt(c.gain)}원을 더 냈습니다. 그 몫을 돌려 달라고 신청하는 것입니다.`;
@@ -242,11 +253,13 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
     add(['1. 홈택스 경정청구 화면에 넣을 값 (일반과세자 신고서 칸)'], 3); add(['칸', '이름', '당초 금액', '당초 세액', '경정 후 금액', '경정 후 세액', '바뀌는 세액', '설명'], 1);
     const sales: [number, string][] = [[1, '세금계산서 발급분(과세 매출)'], [3, '신용카드·현금영수증 발행분'], [4, '기타(정규영수증 외 매출분)'], [9, '과세표준 및 매출세액 합계']];
     for (const [n, nm] of sales) if (d.cells[n]) add([`(${n})`, nm, amt(d, n), tax(d, n), amt(d, n), tax(d, n), 0, '매출은 바꾸지 않음']);
-    add(['(10)', '세금계산서 수취분 일반매입', amt(d, 10), tax(d, 10), amt(d, 10), tax(d, 10), 0, '이미 신고에 들어 있는 세금계산서 — 그대로']);
-    add(['(16)', '매입세액 합계', amt(d, 16), c16, amt(d, 16), c16, 0, '그대로']);
-    const ga = c.left < 0 ? 0 : c.gainAmt; const a17 = amt(d, 17) != null && ga != null ? Math.max(0, (amt(d, 17) ?? 0) - ga) : null;
-    add(['(17)', '공제받지 못할 매입세액', amt(d, 17), c17, a17, c17 != null ? Math.max(0, c17 - g) : null, -g, c.mode === 'corr' ? '공통매입세액 면세분을 다시 계산해 줄임(아래 2.)' : ga != null ? '과세 시설 몫(공급가액·세액)을 빼서 줄임' : '과세 시설 몫을 빼서 줄임 — 금액 칸은 세금계산서 공급가액 합으로 맞추기'], 1);
-    add(['(18)', '차감계(공제받는 매입세액)', amt(d, 18), c18, amt(d, 18) != null && ga != null ? (amt(d, 18) ?? 0) + ga : null, ded + g, g, '(16) − (17)'], 1);
+    const ga = c.left < 0 ? 0 : c.gainAmt; const sp = c.mode === 'corr' ? { cut: g, add: 0, addAmt: 0, cutAmt: ga } : splitGain(d, g, ga);
+    const plus = (a: number | null, b: number | null) => a != null && b != null ? a + b : null;
+    add(['(10)', '세금계산서 수취분 일반매입', amt(d, 10), tax(d, 10), sp.add ? plus(amt(d, 10), sp.addAmt) : amt(d, 10), sp.add ? (tax(d, 10) ?? 0) + sp.add : tax(d, 10), sp.add, sp.add ? `당초 신고에 넣지 않은 세금계산서 ${fmt(sp.add)}원을 더함 — 매입처별 세금계산서합계표를 경정청구서와 함께 냄(시행령 제74조 제2호, 가산세 없음 — 제108조 제6항). 건별은 붙임 「건별 근거」` : '이미 신고에 들어 있는 세금계산서 — 그대로'], sp.add ? 1 : 0);
+    add(['(16)', '매입세액 합계', amt(d, 16), c16, sp.add ? plus(amt(d, 16), sp.addAmt) : amt(d, 16), sp.add ? (c16 ?? 0) + sp.add : c16, sp.add, sp.add ? '(10)이 늘어난 만큼' : '그대로']);
+    const a17 = c17 != null && c17 - sp.cut <= 0 ? 0 : amt(d, 17) != null && sp.cutAmt != null ? Math.max(0, (amt(d, 17) ?? 0) - sp.cutAmt) : null;
+    add(['(17)', '공제받지 못할 매입세액', amt(d, 17), c17, a17, c17 != null ? Math.max(0, c17 - sp.cut) : null, -sp.cut, c.mode === 'corr' ? '공통매입세액 면세분을 다시 계산해 줄임(아래 2.)' : ga != null ? '과세 시설 몫(공급가액·세액)을 빼서 줄임' : '과세 시설 몫을 빼서 줄임 — 금액 칸은 세금계산서 공급가액 합으로 맞추기'], 1);
+    add(['(18)', '차감계(공제받는 매입세액)', amt(d, 18), c18, amt(d, 18) != null && ga != null ? (amt(d, 18) ?? 0) + ga : null, ded + g, g, sp.add ? `(16) − (17) — 당초 (17)에서 뺀 ${fmt(sp.cut)}원 + 신고에 없던 세금계산서 ${fmt(sp.add)}원` : '(16) − (17)'], 1);
     if (c9 != null) add(['', '납부(환급)세액 = 매출세액 − (18)', null, c9 - ded, null, c9 - ded - g, -g, '이만큼 덜 내야 했음 → 돌려받음']);
     if (d.due != null) add(['(30)', '차가감 납부할 세액(환급받을 세액)', null, d.due, null, d.due - g, -g, '경정 후 값이 음수(−)면 그만큼 돌려받는다는 뜻']);
     if (c.mode === 'corr' && c.corr?.parts.length) { add([]); add(['2. 공제받지 못할 매입세액 명세서 — 공통매입세액 안분·정산 계산(당초 → 경정 후)'], 3); add(['항목', '', '', '', '당초', '경정 후', '차이', '설명'], 1);
@@ -255,7 +268,7 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
     else { add([]); add(['2. 공제받지 못할 매입세액 명세서 — 고칠 값'], 3); add(['사유', '', '당초 매수', '당초 공급가액', '당초 세액', '경정 후 세액', '바뀌는 세액', '설명'], 1);
     const RN = ['① 필요적 기재사항 누락 등', '② 사업과 직접 관련 없는 지출', '③ 비영업용 소형승용차', '④ 기업업무추진비 등', '⑤ 면세사업등 관련', '⑥ 토지의 자본적 지출', '⑦ 사업자등록 전 매입세액', '⑧ 금·구리 스크랩'];
     const rs = d.nd?.reasons ?? {}; const target = (rs[2]?.tax ?? 0) >= (rs[5]?.tax ?? 0) ? 2 : 5; let left = g;
-    const cutN = c.rows.filter(r => r.claim).length; RN.forEach((nm, i) => { const n = i + 1, x = rs[n]; if (!x?.tax && n !== target) return; const cut = n === target ? Math.min(left, x?.tax ?? 0) : 0; if (n === target) left -= cut; add([nm, '', x?.n ?? null, x?.amt ?? null, x?.tax ?? 0, (x?.tax ?? 0) - cut, -cut, n === target && cut ? `과세 시설 몫을 이 사유에서 뺌 — 경정 후 ${x?.n != null && cutN ? `${x.n - cutN}매 · ` : ''}${x?.amt != null && ga != null ? `공급가액 ${fmt(x.amt - ga)}원` : '공급가액은 세금계산서 합으로'}(뺀 세금계산서는 붙임 「건별 근거」)` : '']); });
+    const cutN = c.rows.filter(r => r.claim).length; RN.forEach((nm, i) => { const n = i + 1, x = rs[n]; if (!x?.tax && n !== target) return; const cut = n === target ? Math.min(left, x?.tax ?? 0) : 0; if (n === target) left -= cut; add([nm, '', x?.n ?? null, x?.amt ?? null, x?.tax ?? 0, (x?.tax ?? 0) - cut, -cut, n === target && cut ? `과세 시설 몫을 이 사유에서 뺌 — 경정 후 ${x?.n != null && cutN && !sp.add ? `${x.n - cutN}매 · ` : ''}${x?.amt != null && sp.cutAmt != null ? `공급가액 ${fmt((x?.tax ?? 0) - cut <= 0 ? 0 : Math.max(0, x.amt - sp.cutAmt))}원` : '공급가액은 세금계산서 합으로'}${sp.add ? ` · 나머지 ${fmt(sp.add)}원은 당초 신고에 없던 세금계산서라 이 명세서가 아니라 (10)에 더함` : ''}(뺀 세금계산서는 붙임 「건별 근거」)` : '']); });
     if (!d.nd) add(['(이 신고서에 명세서가 없음)', '', null, null, null, null, null, '당초 신고 때 낸 명세서를 홈택스 신고내역에서 확인']); }
     add([]); add(['3. 이유'], 3);
     add(['청구 사유(그대로 붙여넣기)', reasonText(c)], 4);

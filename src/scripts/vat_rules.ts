@@ -35,7 +35,7 @@ export type Data = {
     /** 공개 지출 자료 세부사업 유형(2026-11-05) — 사업명 낱말 짐작, 위에서부터 처음 맞는 하나 */
     biz_types?: { key: string; name: string; re: string; hint: string; low?: boolean }[];
     works?: { note: string; options: { key: CwKey; name: string; short: string; why: string; basis: Basis[]; verify?: boolean }[] };
-    penalty?: { under_report: number; no_report: number; late_pay_daily: number; late_pay_daily_old?: { until: string; rate: number }; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
+    penalty?: { list_missing_claim?: number; under_report: number; no_report: number; late_pay_daily: number; late_pay_daily_old?: { until: string; rate: number }; late_pay_max_years: number; amend_relief: { months: number; rate: number }[]; late_file_relief: { months: number; rate: number }[]; invoice_late: number; list_missing: number; card_claim_after_assess?: number; card_list_missing?: number; sales_list?: { missing: number; late: number }; lease_list_missing?: number; issue?: { key: string; name: string; rate: number; note?: string }[]; issue_note?: string; manual_src?: string; note: string; basis: Basis[] };
     deemed_rent?: { rates: Record<string, number>; src: string } };
   inputs: Record<'use' | 'kind' | 'proof' | 'supplier' | 'timing', Opt[]>;
   checklist: { stage: string; id: string; text: string; basis: Basis[] }[];

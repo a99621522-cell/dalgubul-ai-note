@@ -9,7 +9,7 @@ import { esc, fmt, num, penaltyCalc, toCsv, type Data } from './vat_rules';
 export type Cell = { amt: number | null; tax: number | null; n?: number | null };
 export type Kind = '예정' | '확정' | '기한후' | '조기환급' | '모름';
 export type BaseRow = { label: string; code: string; amt: number };
-export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; addr?: string; filedOn?: string; office?: string; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: BaseRow[]; exBase?: BaseRow[]; pen?: number; due?: number; warn: string[] };   // pen = 가산세액 계, due = 차감·가감하여 납부할 세액(환급받을 세액) — 칸 이름으로 읽음(서식 판마다 번호가 달라서), 경정청구서 서식용
+export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; addr?: string; filedOn?: string; office?: string; codes?: { code: string; zero: boolean }[]; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: BaseRow[]; exBase?: BaseRow[]; pen?: number; due?: number; warn: string[] };   // pen = 가산세액 계, due = 차감·가감하여 납부할 세액(환급받을 세액) — 칸 이름으로 읽음(서식 판마다 번호가 달라서), 경정청구서 서식용
 export type FiledSum = { k: string; deduct: number | null; nondeduct: number | null; er: number | null; salesSup: number | null; salesTax: number | null; kinds: Kind[]; files: string[]; regs: string[]; exemptNd: number | null; warn: string[]; total: number | null; hasNd: boolean; hasCommon: boolean; ndReasons: Record<number, number>; c10: number | null; c12: number | null; c13: number | null; c15: number | null; ndSum: number | null };
 
 /* ── 파일 → 글자 ── */
@@ -46,7 +46,7 @@ function sumRow(sec: string, min: number): number[] | null {
 /** 과세표준 명세·면세사업 수입금액 — 업태·종목 글자와 금액(줄의 마지막 숫자), 6자리 업종 코드 */
 function baseRows(sec: string): BaseRow[] {
   const out: BaseRow[] = [];
-  for (const line of sec.split('\n')) { const L = line.replace(/\(\d{1,2}\)/g, ' '); if (/합\s*계|작성|수입\s*금액\s*제외/.test(L)) continue; const code = /\b(\d{6})\b/.exec(L)?.[1] ?? ''; const v = nums(L.replace(/\b\d{6}\b/, ' ')); const label = L.replace(NUM_RE, ' ').replace(/[^가-힣a-zA-Z·\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  for (const line of sec.split('\n')) { const L = line.replace(/\(\d{1,2}\)/g, ' '); if (/합\s*계|작성|수입\s*금액\s*제외|신\s*고\s*인|서\s*명|대\s*리\s*인|세\s*무\s*서\s*장|첨\s*부|과\s*세\s*표\s*준\s*명\s*세|\d{4}\s*년\s*\d{1,2}\s*월/.test(L)) continue;   /* 실물 홈택스 배치에서 신고인 성명·서명 날짜가 같은 줄에 섞임(2026-11-24) — 그 줄은 읽지 않음 */ const code = /\b(\d{6})\b/.exec(L)?.[1] ?? ''; const v = nums(L.replace(/\b\d{6}\b/, ' ')); const label = L.replace(NUM_RE, ' ').replace(/[^가-힣a-zA-Z·\s]/g, ' ').replace(/\s+/g, ' ').trim();
     if (!v.length || !label || label.length < 2) continue; const amt = v[v.length - 1]; if (amt > 0) out.push({ label, code, amt }); }
   return out;
 }
@@ -113,11 +113,13 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
     nd = { reasons, common, settle, recalc }; }
   const bAt = main0.search(/과\s*세\s*표\s*준\s*명\s*세/), eAt = main0.search(/면\s*세\s*사\s*업\s*수\s*입\s*금\s*액/);
   const base = bAt >= 0 ? baseRows(main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500)) : undefined;
+  /* 과세표준 명세의 업종코드(6자리)와 금액 0 여부 — 공제한 시설의 업종(숙박·부동산임대·스포츠시설)을 과세 매출로 신고했는지 대조용(2026-11-24 수성구: 701201 부동산임대 0, 숙박 코드 없음) */
+  const codes = bAt >= 0 ? (() => { const sec = main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500); const out = new Map<string, boolean>(); for (const line of sec.split('\n')) for (const m of line.matchAll(/(?<![\d,])(\d{6})(?![\d,])/g)) { const c = m[1]; if (/^20\d{4}$/.test(c)) continue; const zero = new RegExp(`${c}\\s+0(?:\\s|$)`).test(line); out.set(c, (out.get(c) ?? true) && zero); } return [...out].map(([code, zero]) => ({ code, zero })); })() : undefined;
   const exBase = eAt >= 0 ? baseRows(main0.slice(eAt, eAt + 1500).split(/계\s*산\s*서\s*발\s*급|과\s*세\s*표\s*준\s*명\s*세/)[0]) : undefined;
   /* 경정청구서 서식(국세기본법 시행규칙 별지 제16호의2) ⑬ 가산세액·⑮ 납부할 세액 — 번호가 판마다 달라(현행 (29)(30), 2025-07 전 판은 다름) 칸 이름이 든 줄의 마지막 숫자를 읽는다 */
   const byLabel = (rx: RegExp) => { for (const line of main.split('\n')) { if (!rx.test(line)) continue; const mm = [...line.matchAll(/\((\d{1,2})\)/g)]; const last = mm[mm.length - 1]; const v = nums(last ? line.slice(last.index! + last[0].length) : line.replace(rx, ' ')); if (v.length) return v[v.length - 1]; } return undefined; };
   const pen = byLabel(/가\s*산\s*세\s*액\s*계/), due = byLabel(/차\s*(?:감|가\s*감)[^\n]{0,24}납\s*부\s*할\s*세\s*액/);
-  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(addr ? { addr } : {}), ...(filedOn ? { filedOn } : {}), ...(office ? { office } : {}), ...(base?.length ? { base } : {}), ...(exBase?.length ? { exBase } : {}), ...(pen != null ? { pen } : {}), ...(due != null ? { due } : {}), warn };
+  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(addr ? { addr } : {}), ...(filedOn ? { filedOn } : {}), ...(office ? { office } : {}), ...(base?.length ? { base } : {}), ...(codes?.length ? { codes } : {}), ...(exBase?.length ? { exBase } : {}), ...(pen != null ? { pen } : {}), ...(due != null ? { due } : {}), warn };
 }
 /** 같은 과세기간·구분·등록번호가 두 장이면 뒤 파일만(수정신고) — 진단·합계 모두 이것으로 */
 export function latestDocs<T extends { year: number; half: number; kind: string; reg?: string }>(docs: T[]): T[] { const last = new Map<string, T>(); for (const d of docs) last.set(`${d.year}-${d.half}|${d.kind}|${d.reg ?? ''}`, d); return [...last.values()]; }

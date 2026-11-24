@@ -58,7 +58,7 @@ export const LABEL: Record<Verdict, string> = { ok: '공제', split: '안분 뒤
 export const SIGNAL: Record<Verdict, string> = { ok: '초록 · 공제됩니다', split: '파랑 · 공통 — 신고 때 나눕니다', no: '빨강 · 공제 안 됩니다', none: '회색 · 부가세가 없는 지출', check: '노랑 · 확인이 필요합니다' };
 export type Input = { use: string; kind: string; proof: string; supplier: string; timing: string };
 export type Out = { v: Verdict; title: string; why: string[]; todo: string[]; basis: Basis[]; verify?: boolean; recalc?: boolean; split?: boolean };
-export const LAW: Record<string, string> = { act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법', special: '조특법', special_decree: '조특법 시행령' };
+export const LAW: Record<string, string> = { act: '법', decree: '시행령', rule: '시행규칙', basic: '국세기본법', special: '조특법', special_decree: '조특법 시행령', waste: '폐기물관리법' };
 
 export const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
 export const num = (s: string | undefined | null) => { const v = Number(String(s ?? '').replace(/[^0-9.\-]/g, '')); return Number.isFinite(v) ? v : 0; };

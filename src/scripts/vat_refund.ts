@@ -10,7 +10,7 @@ import { focusHtml, wireFocus } from './vat_focus';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
-type Built = { salesGap?: { fac: string; nm: string; claim: number }[]; diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null; total?: number | null; ex5?: number | null; nd2?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
+type Built = { salesGap?: { fac: string; nm: string; claim: number }[]; baseTypes?: { seen: string[]; known: string[] } | null; diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null; total?: number | null; ex5?: number | null; nd2?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
 
 const D = loadData();
 if (D && $('rf-band')) init(D);
@@ -156,7 +156,7 @@ function init(D: Data) {
   function ask(b: Built | null) { const el = $('rf-ask'); if (!el) return; const o = getOrg();
     const stake = stakeOf(b);
     const hasList = (b?.rows ?? 0) > 0; const fl = b?.filed ?? []; const salesFiled = fl.length ? fl.reduce((s, f) => s + (f.salesSup ?? 0), 0) : null;
-    const all = buildQuestions(D, o, stake, { hasList, salesFiled, forced }); const qs = hasList ? all : all.filter(q => forced.has(q.key) || q.members.some(m => forced.has(`${m.fid}|${m.def.id}`)));   /* 매입 목록을 올리기 전에는 묻지 않는다(계약 어림만으로는 금액이 갈리지 않음) — 「바꾸기」로 연 것만 */
+    const all = buildQuestions(D, o, stake, { hasList, salesFiled, forced, baseTypes: b?.baseTypes ?? null }); const qs = hasList ? all : all.filter(q => forced.has(q.key) || q.members.some(m => forced.has(`${m.fid}|${m.def.id}`)));   /* 매입 목록을 올리기 전에는 묻지 않는다(계약 어림만으로는 금액이 갈리지 않음) — 「바꾸기」로 연 것만 */
     el.innerHTML = askHtml(D, o, qs, hasList);
     const done = () => { location.hash = 'rf-ask'; location.reload(); };
     el.querySelectorAll<HTMLButtonElement>('.rf-q [data-ans]').forEach(btn => btn.addEventListener('click', () => { const box = btn.closest<HTMLElement>('.rf-q')!; const q = qs.find(x => x.key === box.dataset.qkey); const oo = getOrg(); if (!q || !oo) return; answer(oo, q.members[0].fid, q.members[0].def, btn.dataset.ans === 'x' ? null : Number(btn.dataset.ans)); done(); }));

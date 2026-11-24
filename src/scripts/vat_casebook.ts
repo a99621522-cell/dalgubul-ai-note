@@ -11,7 +11,7 @@ export type CbRow = { d: string; sup: string; sreg: string; desc: string; tax: n
 export type CbCand = { k: string; amt: number; byFac: { fac: string; est: number; type?: string; share?: number }[]; sups: number };
 type Cell = (string | number | null | undefined);
 
-const LAWFULL: Record<string, string> = { act: '부가가치세법', decree: '부가가치세법 시행령', rule: '부가가치세법 시행규칙', basic: '국세기본법', special: '조세특례제한법', special_decree: '조세특례제한법 시행령' };
+const LAWFULL: Record<string, string> = { act: '부가가치세법', decree: '부가가치세법 시행령', rule: '부가가치세법 시행규칙', basic: '국세기본법', special: '조세특례제한법', special_decree: '조세특례제한법 시행령', waste: '폐기물관리법' };
 /** 자주 나오는 조문 — 무엇을 정한 조문인지 한 줄(조문 제목) */
 const ART: Record<string, string> = {
   'act 제38조': '공제하는 매입세액 — 사업에 쓰려고 산 재화·용역의 부가세는 매출세액에서 뺀다', 'act 제39조': '공제하지 아니하는 매입세액 — 사업과 관련 없는 지출(제1항 제4호)·면세사업 관련(제1항 제7호) 등',

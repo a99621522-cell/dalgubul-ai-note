@@ -34,7 +34,7 @@ export function applyAskDefaults(f: OrgFacility, defs: AskDef[] | undefined): bo
 export function applyDefaults(D: Data, org: Org | null): boolean { if (!org) return false; const PA = presetAsk(D, org); let ch = false; for (const f of org.facilities) if (applyAskDefaults(f, PA.get(f.name))) ch = true; if (ch) setOrg(org); return ch; }
 
 /** 질문 목록 — stake: 시설별 { tax: 매입 목록 세액, est: 경정청구 기간 계약 세액 어림 }. hasList 면 tax 기준(문턱 100만 원), 아니면 est 기준(1,000만 원). forced: '바꾸기'를 누른 질문 key */
-export function buildQuestions(D: Data, org: Org | null, stake: Map<string, { tax: number; est: number }>, o: { hasList: boolean; salesFiled: number | null; years?: number; forced?: Set<string> } = { hasList: false, salesFiled: null }): Question[] {
+export function buildQuestions(D: Data, org: Org | null, stake: Map<string, { tax: number; est: number }>, o: { hasList: boolean; salesFiled: number | null; years?: number; forced?: Set<string>; baseTypes?: { seen: string[]; known: string[] } | null } = { hasList: false, salesFiled: null }): Question[] {
   if (!org) return []; const U = govUnit(org.org); const PA = presetAsk(D, org); const years = o.years ?? 5; const T = o.hasList ? T_LIST : T_EST; const forced = o.forced ?? new Set<string>();
   const single: Question[] = []; const groups = new Map<string, Question>();
   const money = (f: OrgFacility) => { const s = stake.get(f.id) ?? { tax: 0, est: 0 }; return o.hasList ? s.tax : s.est; };
@@ -49,7 +49,9 @@ export function buildQuestions(D: Data, org: Org | null, stake: Map<string, { ta
     if (f.run === 'unknown' && !f.answers?.run && ['taxable', 'check'].includes(st)) { const def: AskDef = { id: 'run', q: `「${f.name}」은 누가 운영하나요?`, why: `${U} 이름으로 운영하면(직영·대행) 그 시설 지출의 매입세액을 ${U}${iGa(U)} 공제하고, 수탁기관 자기 사업이면 수탁기관이 공제합니다 — 위·수탁 협약서와 세입예산서(사용료가 ${U} 세입인지)로 확인.`, opts: RUN_OPTS(U) };
       const v = Math.round(m * Math.max(rateOf(D, patched(f, { run: 'direct' })), st === 'check' ? 1 : 0)); const key = `${f.id}|run`; single.push({ key, kind: 'run', group: false, q: def.q, why: def.why, members: [{ fid: f.id, fname: f.name, def, value: v, yes: 0 }], value: v, forced: forced.has(key) }); }
     const rev = revenueOf(f);
-    if (o.salesFiled && rev > 0 && st === 'exempt' && f.run !== 'entrusted_own' && !f.answers?.sales) sales.push({ fid: f.id, fname: f.name, def: SALES_DEF, value: Math.floor(rev * 10 / 110) * years, yes: 0 });
+    /* 신고서 과세표준 명세를 읽었고 그 시설 업종(종량제·주차·농기계 등 명세 글자로 알아보는 것)이 명세에 없으면 과세 매출에 넣었을 수 없어 묻지 않는다(2026-11-24) */
+    const bt = o.baseTypes; const notInBase = !!bt && bt.known.includes(f.type) && !bt.seen.includes(f.type);
+    if (o.salesFiled && rev > 0 && st === 'exempt' && f.run !== 'entrusted_own' && !f.answers?.sales && !notInBase) sales.push({ fid: f.id, fname: f.name, def: SALES_DEF, value: Math.floor(rev * 10 / 110) * years, yes: 0 });
   }
   /* 매출: 신고서에 과세 매출이 있을 때만(없으면 면세 수입을 과세로 신고했을 수 없음) 한 질문으로 */
   const out: Question[] = [...single, ...groups.values()].filter(q => q.members.length && (q.forced || forced.has(q.key) || q.value >= T));

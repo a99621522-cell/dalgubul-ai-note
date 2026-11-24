@@ -116,27 +116,21 @@ export const FILES = [
 function todoText(D: Data, o: CbIn, pl: Plan): string {
   const L: string[] = []; const first = pl.issues.filter(i => FIRST(i.grade)); const minDue = first.length ? first.reduce((a, i) => i.cdue < a ? i.cdue : a, first[0].cdue) : '';
   const offices = (o.docs ?? []).map(d => d.office).filter(Boolean) as string[]; const office = offices.sort((a, b) => offices.filter(x => x === b).length - offices.filter(x => x === a).length)[0];
-  const sales3 = pl.g3.reduce((n, x) => n + (x.rev ? x.sales + x.pen : 0), 0); const noRev3 = pl.g3.filter(x => !x.rev).map(x => x.fac);
   const sports = [...new Set(first.filter(i => i.type === 'sports').map(i => i.fac))]; const hasSport = sports.length > 0; const has1 = first.some(i => i.grade === 1); const fac2 = [...new Set(first.filter(i => i.grade === 2).map(i => i.fac))];
-  const g3f = [...new Set(pl.g3.map(x => x.fac))]; const g3amt = pl.sum[3]; const site = typeof location !== 'undefined' ? `${location.origin}/vat/review/` : '돌려받기 화면';
+  const g3amt = pl.sum[3]; const site = typeof location !== 'undefined' ? `${location.origin}/vat/review/` : '돌려받기 화면';
   L.push(`${o.org} 부가가치세 경정청구 — 할 일 (${o.today} 작성)`, '', `이번에 청구할 세액 ${fmt(pl.first)}원 · 신고서 ${pl.nDocs}장${minDue ? ` · 가장 이른 청구 기한 ${minDue}` : ''}${office ? ` · 관할 ${office} 세무서` : ''}`,
     '경정청구는 지난 신고에서 더 낸 세금을 바로잡는 정상 절차입니다(국세기본법 제45조의2). 숫자와 근거는 01~07 에 다 있고, 확인이 끝나지 않은 몫은 이번 청구에서 뺐습니다. 이 자료의 판정은 참고 계산이며 기관의 판단이 아닙니다 — 아래 2번 확인을 마친 뒤 냅니다.', '');
   const T: [string, string, string, string][] = [];
   if (pl.reqs.length) T.push([`08 메모를 부서별로 보내 서류를 받습니다(${pl.reqs.length}가지 서류)`, '내부 메신저 또는 업무 연락에 메모를 그대로 붙여넣기(받는 부서 이름은 08 에서 고침)', '보내기 10분, 회신 1~2주', '08 의 ☐ 가 모두 ☑']);
   const ci = confItems(D, o); const left = ci.filter(x => !x.v);
   if (left.length) T.push([`제출 전 확인 ${left.length}가지가 남았습니다 — 돌려받기 화면 「세무서에 내기 전 확인」에서 08 로 받은 서류를 보고 버튼을 누른 뒤 이 묶음을 다시 받습니다(적을 것 없음, 누르면 청구액·답변이 저절로 바뀜). 화면: ${site}${left.map(x => `\n       ☐ ${x.q}`).join('')}`, '08 로 받은 서류와 당초 신고서(홈택스 신고내역 출력)', '15분', '화면의 확인이 모두 끝남']);
-  T.push([`01${g3amt && o.conf?.g3 !== 'together' ? '·12' : ''} 를 붙여 결재를 받습니다 — 결재 문서 본문은 아래 「과장님께 드릴 3줄」을 그대로 붙여넣기. 결재선은 기관의 세무 신고 결재선과 같게`, '전자결재', '하루', '결재 완료']);
+  T.push([`01${g3amt && o.conf?.g3 !== 'together' ? '·12' : ''} 를 붙여 내부 결재를 받습니다`, '전자결재', '하루', '결재 완료']);
   T.push([`관할 세무서 부가가치세과에 사전 상담 전화를 합니다 — 09 대본을 읽고 답을 적습니다(제출 방식: 홈택스/서면)`, `${office ? `${office} 세무서` : '신고서에 적힌 관할 세무서'} 대표 전화 → 부가가치세과`, '5분', '09 의 빈칸을 채움']);
   { const docs = o.docs ?? []; const hasRep = docs.some(d => d.rep), hasTel = docs.some(d => d.tel);
     T.push([`02 에는 적을 것이 없습니다 — 성명(${hasRep ? '신고서의 대표자' : '신고서에서 못 읽음: 서면이면 기관장 성명을 적음'})·전화(${hasTel ? '신고서의 사업장 전화' : '못 읽음: 서면이면 부서 전화'})·주소·최초신고일·관할 세무서·청구 날짜(받은 날)를 채워 두었습니다. 서면으로 낼 때만 서명(또는 직인)을 하고, 환급 계좌는 홈택스 경정청구 화면에서 고릅니다(비워 두면 국세환급금 통지서)`, '직인은 직인 관리 부서(총무 담당)', '서면만 5분', '서면이면 서명·직인 끝']); }
   T.push(['경정청구를 냅니다 — 홈택스면 04 각 신고서 시트 「1. 홈택스 경정청구 화면에 넣을 값」을 칸 번호대로 옮기고 환급 계좌를 화면에서 한 번 넣은 뒤, 01~07 과 당초 신고서 사본을 증빙으로 올립니다. 서면이면 01~07 을 출력해 냅니다. 08~13 은 내지 않습니다', '홈택스(부가세 신고 때 쓰던 기관 사업자 인증서 — 없으면 지난 신고 담당자에게 물음) → 신고/납부 → 세금신고 → 부가가치세 → 경정청구. 서면이면 관할 세무서 민원봉사실', '신고서마다 15분', '접수증을 출력해 둠']);
   T.push(['그 뒤: 세무서가 자료 보완을 요청하면 10 에서 비슷한 질문 번호를 찾아 답을 고쳐 보냅니다. 환급 통지를 받으면 바로 세외수입으로 처리합니다(세입세출외현금에 두지 않음 — 정부합동감사 지적 사례)', '10 답변 틀 · 세입 담당 부서', '건마다 20분', '회신·세입 처리 완료']);
   T.forEach(([a, b, c, d], i) => L.push(`☐ ${i + 1}. ${a}`, `     어디서: ${b} · 걸리는 시간: ${c} · 끝났는지: ${d}`, ''));
-  { const kn = [...new Set(pl.issues.map(i => i.k))].sort().map(pName).join(', ');
-    L.push('과장님께 드릴 3줄', `- 지난 부가세 신고서 ${pl.nDocs}장(${kn})을 다시 계산해, ${fmt(pl.first)}원을 돌려받는 경정청구를 냅니다(과세 시설 지출 공제 ${fmt(pl.sum[2])}원${pl.sum[1] ? ` · 계산 정정 ${fmt(pl.sum[1])}원` : ''}${o.conf?.g3 === 'together' && pl.sum[3] ? ` · 매출을 함께 고치는 시설 ${fmt(pl.sum[3])}원` : ''}).`,
-      `- 확인이 더 필요한 ${fmt(pl.later)}원은 이번에 넣지 않습니다${pl.sum[3] && o.conf?.g3 !== 'together' ? ` — 매출 신고 확인 ${fmt(pl.sum[3])}원(${g3f.slice(0, 3).join(', ')})` : ''}${pl.sum[4] ? `, 해석 필요 ${fmt(pl.sum[4])}원` : ''}.`,
-      pl.sum[3] && o.conf?.g3 === 'together' ? `- ${g3f.slice(0, 3).join(', ')}의 빠진 사용료 매출은 같은 날 수정신고로 함께 고칩니다(매출세액·가산세 약 ${fmt(sales3)}원 — 12 비교표, 스스로 고치면 가산세 감면).` : pl.sum[3] ? `- ${g3f.slice(0, 3).join(', ')}의 사용료 매출 신고가 빠졌다면 매출세액·가산세 약 ${fmt(sales3)}원을 더 낼 수 있어(12 비교표), 수정신고를 같이 낼지 이번 결재에서 정해 주십시오.` : `- 가장 이른 청구 기한은 ${minDue}이고, 돌려받은 돈은 세외수입으로 처리합니다.`, '');
-    void noRev3; }
   if (pl.later) L.push('나중 묶음(이번에 내지 않음)', ...(pl.sum[3] && o.conf?.g3 !== 'together' ? [`- 매출 신고 확인이 필요한 몫 ${fmt(pl.sum[3])}원 → 12 비교표. 화면에서 '같이 냄'을 누르면 이번 청구에 들어감(같은 날 내야 감면이 큼)`] : []), ...(pl.sum[4] ? [`- 해석이 필요한 몫 ${fmt(pl.sum[4])}원 → 11 질의서 초안을 고쳐 국세청 서면질의 또는 세법해석 사전답변으로`] : []), '');
   L.push('세무서에 내는 파일(01 요약서 + 붙임 02~07)', ...FILES.filter(f => SUBMIT.includes(f.n)).map(f => `- ${f.f} — ${f.t}`), '', '기관 안에서만 쓰는 파일(세무서에 내지 않음)', ...FILES.filter(f => !SUBMIT.includes(f.n)).map(f => `- ${f.f} — ${f.t}`), '',
     '낱말 풀이', '- 경정청구: 이미 낸 부가세 신고를 고쳐, 더 낸 세금을 돌려 달라고 세무서에 청구하는 것', '- 제1기·제2기, 예정·확정: 1~6월이 제1기, 7~12월이 제2기. 석 달마다 예정신고, 여섯 달마다 확정신고', '- 매입세액: 공사·물품 대금과 함께 낸 부가세. 과세 시설에 쓴 것은 돌려받을 수 있음', '- 불공제 / 공제받지 못할 매입세액: 돌려받지 않은 것으로 처리한 매입세액', '- (16)(17)(18): 신고서 칸 번호 — (16) 받은 매입세액 합계, (17) 그 가운데 공제받지 않은 것, (18) 공제받은 것',

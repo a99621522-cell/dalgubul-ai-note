@@ -205,6 +205,12 @@ export function filedChecks(D: Data, docs: FiledDocLite[], taxableFacs: string[]
 const SALES_KW: { re: RegExp; type: string; what: string }[] = [
   { re: /주차/, type: 'parking', what: '공영주차장' }, { re: /농기계|농업용\s*기계|농업기계/, type: 'equip_rent', what: '농기계 임대' },
   { re: /체육공원|공원\s*운영/, type: 'park_sports', what: '체육공원 운동시설' }, { re: /종량제|폐기물/, type: 'waste_bag', what: '종량제 봉투·폐기물 처리' }, { re: /상수도|하수도|수도/, type: 'water', what: '상·하수도' }];
+/** 올린 신고서 과세표준 명세에 나온 면세 시설 유형(SALES_KW 가 아는 것만). 명세 줄을 하나도 못 읽었으면 null(모름).
+ *  2026-11-24 운영자 '종량제 봉투는 법적으로 검토해서 반영' — 명세에 그 업종이 없으면 '과세 매출에 넣어 신고했나'를 묻지 않는다 */
+export function baseTypes(docs: { base?: { label: string }[] }[]): { seen: Set<string>; known: Set<string> } | null {
+  const rows = docs.flatMap(d => d.base ?? []); if (!rows.length) return null;
+  const seen = new Set<string>(); for (const b of rows) for (const x of SALES_KW) if (x.re.test(b.label)) seen.add(x.type);
+  return { seen, known: new Set(SALES_KW.map(x => x.type)) }; }
 /** 대상 기간 가운데 신고서가 없는 과세기간 — docs 가 하나라도 있을 때만 */
 export function missingPeriods(docs: FiledDocLite[], win: string[]): Map<string, FiledCheck> {
   const out = new Map<string, FiledCheck>(); if (!docs.length) return out; const has = new Set(docs.map(d => `${d.year}-${d.half}`));

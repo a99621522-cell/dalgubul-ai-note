@@ -108,6 +108,10 @@ def main():
             text = re.sub(r"[ \t]+", " ", (soup.body or soup).get_text("\n", strip=True))
         text = re.sub(r"\n{2,}", "\n", text)
         off = int(sys.argv[sys.argv.index("--text-from") + 1]) if "--text-from" in sys.argv else 0   # 긴 본문은 text 칸에 숫자(시작 글자)를 넣어 이어 읽는다(2026-11-02)
+        if "--text-find" in sys.argv:   # 긴 법령 본문에서 조문 자리부터(2026-11-24 국세기본법 시행령 제25조의3)
+            m = re.search(sys.argv[sys.argv.index("--text-find") + 1], text)
+            off = m.start() if m else 0
+            print(f"== '{sys.argv[sys.argv.index('--text-find') + 1]}' {'찾음' if m else '못 찾음'}")
         print(f"== 본문({len(text):,}자, {off:,}자부터 8,000자) ==\n" + text[off:off + 8000])
         return
     if "--dump" in sys.argv:   # 표·선택 상자·스크립트 속 주소까지: 통계표 화면이 어떻게 그려지는지 볼 때

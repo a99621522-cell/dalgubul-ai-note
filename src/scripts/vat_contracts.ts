@@ -33,7 +33,7 @@ export function ctrAssign(org: Org | null, c: Ctr, asg = pubAsg()): CtrAsg {
 export const ctrPeriod = (c: Ctr) => claimPeriod(c.date)?.key ?? '';
 /** 금차 계약금액 먼저 — 장기계속·계속비는 총계약금액이 차수 계약마다 되풀이되어 더하면 몇 배가 된다(2026-11-05 달성군) */
 export const ctrMoney = (c: Ctr) => c.amt || c.tot;
-export type CtrCtx = { gov: GovMeta; cg: CGov; rows: { ck: string; span: string; c: Ctr; p: string; a: Asg | undefined; how: CtrAsg['how']; via?: CtrAsg['via']; cw?: string; taxable: boolean; likely: boolean; est: number }[]; biz: Map<string, { a: Asg; nm: string; n: number }> };
+export type CtrCtx = { gov: GovMeta; cg: CGov; rows: { ck: string; span: string; c: Ctr; p: string; a: Asg | undefined; how: CtrAsg['how']; via?: CtrAsg['via']; cw?: string; taxable: boolean; likely: boolean; est: number }[]; biz: Map<string, { a: Asg; nm: string; nms: string[]; n: number }> };
 /** 공사·용역의 세액 어림을 계약일 ~ 끝나는 날(fin) 사이 과세기간(1~6월·7~12월)에 날수대로 나눈다 — 기성·준공 세금계산서가 기간 내내 나오므로(2026-11-05 달성군 교육문화복지센터 건립공사 641일이 계약일 기간 하나로 몰려 경정청구 기한 밖으로 빠지던 것) */
 function spread(date: string, fin: string | undefined, est: number): { p: string; est: number }[] {
   const p0 = claimPeriod(date)?.key ?? ''; if (!fin || fin <= date) return [{ p: p0, est }];
@@ -53,8 +53,21 @@ export async function contractsCtx(D: Data, org: Org | null): Promise<CtrCtx | n
     const sh = f && typeof f.share === 'number' && a?.use === 'this' ? f.share : 1; const est = Math.floor(ctrMoney(c) * 10 / 110 * (taxable ? sh : 1)); const parts = spread(c.date, c.fin, est); const span = parts.length > 1 ? `${parts[0].p}~${parts[parts.length - 1].p}` : '';
     return parts.map(x => ({ ck: ctrKey(c), span, c, p: x.p, a, how, via, cw, taxable, likely, est: x.est })); }).flat();
   /* 업체 등록번호 → 시설: 그 업체의 시설이 붙은 계약이 모두 같은 시설일 때만(여러 시설과 계약한 업체는 사람이 고른다) */
-  const by = new Map<string, { a: Asg; nm: string; n: number; bad: boolean }>();
-  const seenCk = new Set<string>(); for (const r of rows) { if (!r.a || r.a.fid === 'none' || seenCk.has(r.ck)) continue; seenCk.add(r.ck); for (const p of r.c.corps) { if (!/^\d{10}$/.test(p.no)) continue; const cur = by.get(p.no); if (!cur) by.set(p.no, { a: r.a, nm: r.c.nm, n: 1, bad: false }); else { cur.n++; if (cur.a.fid !== r.a.fid || cur.a.use !== r.a.use) cur.bad = true; } } }
-  const biz = new Map<string, { a: Asg; nm: string; n: number }>(); for (const [k, v] of by) if (!v.bad) biz.set(k, { a: v.a, nm: v.nm, n: v.n });
+  const by = new Map<string, { a: Asg; nm: string; nms: string[]; n: number; bad: boolean }>();
+  const seenCk = new Set<string>(); for (const r of rows) { if (!r.a || r.a.fid === 'none' || seenCk.has(r.ck)) continue; seenCk.add(r.ck); for (const p of r.c.corps) { if (!/^\d{10}$/.test(p.no)) continue; const cur = by.get(p.no); if (!cur) by.set(p.no, { a: r.a, nm: r.c.nm, nms: [r.c.nm], n: 1, bad: false }); else { cur.n++; cur.nms.push(r.c.nm); if (cur.a.fid !== r.a.fid || cur.a.use !== r.a.use) cur.bad = true; } } }
+  const biz = new Map<string, { a: Asg; nm: string; nms: string[]; n: number }>(); for (const [k, v] of by) if (!v.bad) biz.set(k, { a: v.a, nm: v.nm, nms: v.nms, n: v.n });
   return { gov, cg, rows, biz };
+}
+/** 업체 번호로 그 업체의 계약 시설에 붙여도 되는 품목인가 — 같은 업체가 여러 사업을 하므로(2026-11-24 수성구청 실물: 한 시설과만 계약이 이어진 업체의
+ *  다른 사업 세금계산서 — 공원 야외운동기구·열대온실 조경·LED 교체 — 가 그 시설로 붙던 것) ① 품목에 낱말이 없으면('공사대금'·'기성금') 붙이고
+ *  ② 낱말이 있으면 그 업체 계약 이름과 낱말이 하나 이상 겹치고, 계약 이름에 없는 장소 낱말(○○경로당·○○공원·○○아파트·등산로 등)이 없을 때만 붙인다 */
+const GENERIC = /^(공사|용역|물품|구입|구매|설치|지출|준공금|선금|선급금|기성금|기성|완납금|완수금|잔금|대금|시행|노무비|및|외|조달|부품|교체|수리|보수|유지보수|유지관리|관리|운영|위탁|사업|계약|비용|공사비|용역비|물품대금|공사대금|용역대금|기타|일반|매입|품목|월분|년도|상반기|하반기)$/;
+const PLACE = /(경로당|공원|아파트|단지|등산로|마을|학교|청사|센터|도서관|주차장|운동장|체육관|복지관|회관|시장|하천|저수지|통학로|산|봉|지|동|로|길)$/;
+const toksOf = (x: string) => String(x ?? '').split(/[^가-힣A-Za-z]+/).map(t => t.replace(/(공사|용역|지출|구입|설치|대금)$/, '')).filter(t => t.length >= 2 && !GENERIC.test(t));
+export function genericItem(desc: string): boolean { return toksOf(desc).length === 0; }
+export function supplierFits(desc: string, nms: string[]): boolean {
+  const toks = toksOf(desc); if (!toks.length) return true;
+  const names = nms.join(' '); const hit = toks.some(t => names.includes(t) || toksOf(names).some(n => t.includes(n)));
+  const foreign = toks.some(t => t.length >= 3 && PLACE.test(t) && !names.includes(t));
+  return hit && !foreign;
 }

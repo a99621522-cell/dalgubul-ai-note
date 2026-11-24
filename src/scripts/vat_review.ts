@@ -7,7 +7,7 @@ import { mountQuickStart } from './vat_org';
 import { claimFormHtml, claimFormPdf, reasonDocPdf, reasonDocText } from './vat_claimform';
 import { mountDrop, readTableFile } from './vat_files';
 import { mountPublic } from './vat_review_pub';
-import { contractsCtx, type CtrCtx } from './vat_contracts';
+import { contractsCtx, supplierFits, type CtrCtx } from './vat_contracts';
 import type { FileTable } from './vat_files';
 import { caseBook, caseCorrDocs, type CbRow, type CbCand } from './vat_casebook';
 import { persuadeFiles, confItems, confSet, CONF_KEY } from './vat_persuade';
@@ -140,7 +140,8 @@ function init(D: Data) {
   /* 나라장터 계약 업체 등록번호 → 시설(세 걸음 ③, vat_contracts.ts) — 받아지면 다시 그린다 */
   let ctx: CtrCtx | null = null; void contractsCtx(D, org).then(c => { ctx = c; if (c) build(); });
   const KIND: Record<string, string> = { utility: 'general', service: 'general', repair: 'building', equip: 'equip', car_pass: 'car', car_other: 'general', guest: 'entertain', staff: 'welfare', payroll_tax: 'payroll', insurance: 'insurance', land: 'land', water: 'exempt_goods', other: 'general' };
-  const auto = (r: RvRow): SupSet | undefined => { if (!org) return undefined; const c = r.sreg ? ctx?.biz.get(r.sreg) : undefined; if (c) return { ...c.a, via: 'ctr' }; const m = matchMap(org, r.biz || r.desc, r.dept); if (m) return { fid: m.fid, use: m.use === 'multi' || m.use === 'admin' ? m.use : 'this' }; const f = matchFacilityName(org, r.sup, r.desc, r.biz); return f ? { fid: f.id, use: 'this' } : undefined; };
+  /* 매핑표 → 시설 이름 → 계약 업체 번호(품목이 그 업체 계약 이름과 맞을 때만 — supplierFits) 순 */
+  const auto = (r: RvRow): SupSet | undefined => { if (!org) return undefined; const m = matchMap(org, r.biz || r.desc, r.dept); if (m) return { fid: m.fid, use: m.use === 'multi' || m.use === 'admin' ? m.use : 'this' }; const f = matchFacilityName(org, r.sup, r.desc, r.biz); if (f) return { fid: f.id, use: 'this' }; const c = r.sreg ? ctx?.biz.get(r.sreg) : undefined; if (c && supplierFits(`${r.desc} ${r.biz}`, c.nms)) return { ...c.a, via: 'ctr' }; return undefined; };
   const assignOf = (r: RvRow): { a: SupSet | undefined; how: '직접' | '공급자' | '자동' | '' } => r.manual && r.fid ? { a: { fid: r.fid, use: r.use ?? 'this', what: r.what, cw: r.cw }, how: '직접' } : st.sup[supKey(r)] ? { a: st.sup[supKey(r)], how: '공급자' } : (() => { const a = auto(r); return { a, how: a ? '자동' : '' as const }; })();
   const cwOf = (r: RvRow, a: SupSet | undefined) => { const pick = a?.cw; return pick === 'no' ? undefined : isCw(pick) ? pick : guessCw(`${r.desc} ${r.biz}`); };
   const judgeRow = (r: RvRow): RowOut => {

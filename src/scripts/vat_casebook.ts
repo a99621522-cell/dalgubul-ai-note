@@ -72,7 +72,7 @@ export function gapTypes(docs: FiledDoc[], k?: string): Set<string> {
   const pd = k ? docs.filter(d => `${d.year}-${d.half}` === k) : []; const s = new Set<string>();
   const has = (ds: FiledDoc[], re: RegExp) => ds.some(d => (d.codes ?? []).some(x => re.test(x.code) && !x.zero));
   if (!pd.length || !pd.some(d => d.codes?.length)) { const all = docs.flatMap(d => d.codes ?? []); if (!all.length) return s; for (const [t, [re]] of Object.entries(GAP)) if (!all.some(x => re.test(x.code) && !x.zero)) s.add(t); return s; }
-  /* 그 기간 명세에 업종코드를 못 읽은 줄이 있으면(코드 읽은 금액 합 < 과세표준 (9)) 그 줄이 무슨 업종인지 모른다 — 다른 과세기간 절반 이상에 나오는 업종만 그 줄로 본다(환급만: 넓게 보면 매출 없는 시설을 청구해 더 낼 수 있음). 2026-11-24 수성구 2021년 제2기 — 두 번째 줄의 코드가 PDF 글자에 없음 */
+  /* 그 기간 명세에 업종코드가 없는 과세 매출이 있으면(코드 있는 줄 합 < 과세표준 (9) — (34) 수입금액 제외 줄은 서식상 코드를 적지 않음) 그 줄이 무슨 업종인지 모른다 — 다른 과세기간 절반 이상에 나오는 업종만 그 줄로 본다(환급만: 넓게 보면 매출 없는 시설을 청구해 더 낼 수 있음). */
   const unread = pd.some(d => { const tb = d.cells[9]?.amt; const sum = (d.base ?? []).reduce((n, b) => n + (b.code ? b.amt : 0), 0); return tb != null && tb > 0 && sum < tb - 1000; });
   const others = [...new Set(docs.map(d => `${d.year}-${d.half}`))].filter(x => x !== k);
   for (const [t, [re]] of Object.entries(GAP)) { if (has(pd, re)) continue;
@@ -228,7 +228,11 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
     if (SPORT.length) out.push(`관람석 확인 — ${SPORT.slice(0, 6).map(f => short(f.fac)).join(', ')}: 일반 관중이 경기를 볼 수 있는 관람석을 갖춘 경기장(운동장·공인 수영장·체육관)이면 경기장 운영업이라 면세입니다(서면3팀-1330 구청 구민운동장 관람석 400석, 법규과-209 관람석 688석 공인 수영장). 그러면 그 시설 몫은 공제되지 않고(시설별 내역 금액만큼 줄어듦), 대신 그동안 과세로 낸 사용료의 매출세액을 돌려받는 경정청구가 됩니다. 이용자 대기·후보선수용 좌석만 있으면 관람석이 아닙니다(통계청 회신). 세입에 입장료·관람료가 없고 사용료에 부가세를 붙여 과세로 신고해 온 운동장은 운동시설 대여로 보아 이번 청구에 넣었습니다 — 세무서가 경기장(면세)으로 보더라도 매출세액을 돌려받는 쪽이라 더 낼 일은 없습니다.`);
     if (F.some(f => /수영|체육센터|국민체육|반다비/.test(f.fac))) out.push('강습료 비중 확인 — 지자체가 직영하는 교육·문화 강좌는 면세 여지가 있습니다(재경부 부가가치세제과-186 질의 7·8·14). 수영 등 강습료를 면세로 보면 그 체육센터는 과세(자유 이용)·면세(강습) 공통이라 공급가액 비율로 나눠야 합니다(시행령 제81조) — 관할 세무서에 강습료 과세 여부를 먼저 확인');
     { const codes = c.d.codes ?? []; if (codes.length) { const has = (re: RegExp) => codes.some(x => re.test(x.code) && !x.zero); const need: [string, RegExp, string][] = [['lodging', /^55/, '숙박업(55…)'], ['lease', /^70/, '부동산임대업(70…)'], ['sports', /^(809|9113)/, '스포츠시설 운영업(809…)']];
+      /* (34) 수입금액 제외 줄은 서식상 업종코드를 적지 않는다 — 과세표준 (9)에는 들어가 매출세액은 낸 몫 */
+      const tb = c.d.cells[9]?.amt ?? 0; const un = tb - (c.d.base ?? []).reduce((n, b) => n + (b.code ? b.amt : 0), 0);
+      if (un > 1000) out.push(`업종코드 없는 과세 매출 ${fmt(un)}원 — 과세표준 명세의 (34) 수입금액 제외 줄처럼 업종코드를 적지 않는 줄에 들어간 매출입니다(서식상 이 줄에는 코드가 없음). 과세표준에는 들어가 매출세액은 낸 것이니, 아래 시설 사용료가 여기에 들어 있는지 그 기간 세입 실적으로 맞춰 봅니다.`);
       for (const [t, re, nm] of need) { const fs = F.filter(f => f.type === t); if (!fs.length || has(re)) continue;
+        if (un > 1000) { out.push(`매출 대조 — 이 신고서 명세에 ${nm} 줄은 없고 업종코드 없는 과세 매출 ${fmt(un)}원이 있습니다. ${fs.map(f => short(f.fac)).join(', ')}의 사용료가 그 줄에 들어 있으면 과세 매출로 신고한 것이라 이 시설 매입세액 청구로 더 낼 일은 없습니다 — 세입 실적과 금액을 맞춰 확인.`); continue; }
         const rev = fs.reduce((n, f) => n + (o.revByFac?.[f.fac] ?? 0), 0); const vat = Math.round(rev / 11); const claim = fs.reduce((n, f) => n + f.claim, 0);
         out.push(`매출 대조(세무서가 먼저 볼 것) — 이 신고서 과세표준 명세에 ${nm} 매출이 없습니다(읽은 업종코드: ${codes.map(x => x.code + (x.zero ? '(0원)' : '')).join(', ')}). ${fs.map(f => short(f.fac)).join(', ')}의 사용료·임대료를 과세 매출로 신고하지 않았다면 매입세액(이 신고서 ${fmt(claim)}원)만 공제받을 수 없고, 세무서가 경정청구를 검토하며 매출 누락을 함께 경정할 수 있습니다${rev ? ` — 세입예산 연 ${fmt(rev)}원이면 부가세 연 약 ${fmt(vat)}원(부가세 포함 금액 ÷ 11), 5년이면 약 ${fmt(vat * 5)}원과 과소신고·납부지연 가산세${t === 'lease' ? '·세금계산서 미발급 가산세(사업자에게 빌려준 경우 공급가액의 2%)' : ''}로 이 시설 공제보다 클 수 있습니다` : ''}. 먼저 다른 업종에 묶어 신고했는지 확인하고, 빠졌으면 이 시설 몫은 청구에서 빼거나 매출 수정신고와 함께 냅니다`); } } }
     if (c.mode === 'list' && c.rows.some(r => r.claim && /건립|조성|증축|신축|리모델링|건설/.test(r.desc))) out.push('재원 확인 — 국비·기금으로 지은 시설이어도 매입세액은 공제됩니다. 돌려받은 부가세는 국고보조금 통합관리지침 제26조 제2항(지방보조금은 지방보조금 관리기준 제19조 제2항)에 따라 세외수입으로 계상하는 것이 원칙(같은 사업 재투자 가능) — 국민체육진흥기금 보조면 기금 사용·정산 지침도 확인');

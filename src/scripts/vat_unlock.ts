@@ -24,9 +24,32 @@ export async function readFiledText(file: File): Promise<string> {
     for (const it of c.items as { str: string; transform: number[]; width?: number; height?: number }[]) { if (!it.str?.trim()) continue; const x = it.transform[4], y = it.transform[5]; let L = lines.find(l => Math.abs(l.y - y) < 2.5); if (!L) { L = { y, items: [] }; lines.push(L); } L.items.push({ x, w: it.width ?? 0, h: Math.abs(it.height || it.transform[3] || 8), s: it.str }); }
     /* 홈택스 신고서 PDF 는 글자를 한 자씩 따로 그린다(2026-11-24 수성구청 실물) — 앞 글자 끝과 다음 글자 사이가 글자 높이의 1/4 보다 좁으면 띄어 쓰지 않고 붙인다 */
     const join = (its: { x: number; w: number; h: number; s: string }[]) => its.reduce((a, it, i) => { if (!i) return it.s; const pv = its[i - 1]; const gap = it.x - (pv.x + pv.w); return a + (pv.w > 0 && gap < Math.max(0.8, 0.25 * Math.min(pv.h, it.h)) ? '' : ' ') + it.s; }, '');
-    lines.sort((a, b) => b.y - a.y); pages.push(lines.map(l => join(l.items.sort((a, b) => a.x - b.x))).join('\n'));
+    lines.sort((a, b) => b.y - a.y); const txt = lines.map(l => join(l.items.sort((a, b) => a.x - b.x))).join('\n');
+    pages.push(txt + meiseiMarks(lines.map(l => ({ y: -l.y, items: l.items.map(it => ({ ...it, y: -l.y })) }))));
   }
   return pages.join('\n\f\n');
+}
+/* 과세표준 명세 표를 칸 좌표로 읽는다 — 홈택스 신고서 PDF 는 좁은 금액 칸에서 숫자를 두 줄로 접어('1,234,567' 이 '1,234' / ',567' 처럼) 줄 단위로 읽으면 금액이 빠진다(2026-11-24 수성구청 실물).
+   머리 줄('업종코드 … 금액')의 '코드'·'금액' 글자 위치로 칸을 정하고, (31)~(35) 이름표 사이 띠에서 숫자 조각을 위→아래로 이어 붙인다(과세표준수정신고서는 한 칸에 숫자가 두 줄 — 아래 줄이 수정 값이라 마지막 숫자).
+   결과는 '⟦명세 31|701201|0|업태 종목⟧' 줄로 남기고 parseOne 이 먼저 읽는다. */
+type G = { x: number; y: number; w: number; h: number; s: string };
+function meiseiMarks(lines: { y: number; items: G[] }[]): string {
+  const ls = lines.slice().sort((a, b) => a.y - b.y); const all = ls.flatMap(l => l.items); const out: string[] = [];
+  for (const h of ls) { const at: G[] = []; for (const g of h.items) for (const _ of g.s) at.push(g); const s = h.items.map(g => g.s).join('');
+    const ui = s.indexOf('업종코드'), ai = s.lastIndexOf('금액'); if (ui < 0 || ai < ui) continue;
+    const cX = at[ui + 2].x, aX = at[ai].x, aEnd = at[ai + 1].x + (at[ai + 1].w || 5); const codeL = cX - 30, amtL = aX - 6, amtR = aEnd + 12;
+    const labs: { n: number; y: number; x: number }[] = [];
+    for (const l of ls) { if (l.y <= h.y + 2 || l.y > h.y + 100) continue; const t = l.items.map(g => g.s).join(''); const m = /\((3[1-5])\)/.exec(t); const p = l.items.find(g => g.s.startsWith('(')); if (m && p && p.x < codeL - 40) labs.push({ n: +m[1], y: l.y, x: p.x }); }
+    if (labs.length < 3) continue;
+    for (let i = 0; i < labs.length; i++) { const y0 = i ? (labs[i - 1].y + labs[i].y) / 2 : labs[i].y - 8, y1 = i + 1 < labs.length ? (labs[i].y + labs[i + 1].y) / 2 : labs[i].y + 10;
+      const band = all.filter(g => g.y >= y0 && g.y < y1);
+      const pick = (L: number, R: number, re: RegExp) => { const rows: { y: number; s: string }[] = []; for (const g of band.filter(g => g.x >= L && g.x < R && re.test(g.s)).sort((a, b) => a.y - b.y || a.x - b.x)) { let r = rows.find(r => Math.abs(r.y - g.y) < 2.5); if (!r) { r = { y: g.y, s: '' }; rows.push(r); } r.s += g.s; } return rows.map(r => r.s); };
+      const code = (pick(codeL, amtL - 2, /^\d+$/).join('').match(/\d{6}/g) ?? []).pop() ?? '';
+      const amt = (pick(amtL, amtR, /^[\d,]+$/).join('').match(/\d{1,3}(?:,\d{3})+|\d+/g) ?? []).pop() ?? '';
+      const label = pick(labs[i].x + 14, codeL, /[가-힣]/).join(' ').replace(/\s+/g, ' ').trim();
+      out.push(`⟦명세 ${labs[i].n}|${code}|${amt}|${label}⟧`); }
+    break; }
+  return out.length ? '\n' + out.join('\n') : '';
 }
 
 /* ── 글자 → 신고서 ── */
@@ -116,9 +139,12 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
     if (rc >= 0) { const v = sumRow(part.slice(rc), 4); if (v) recalc = { tax: v[0], rate: v[1] > 1 ? v[1] / 100 : v[1], delta: Math.abs(v[2]) > 1 ? v[2] / 100 : v[2], add: v[3] }; }
     nd = { reasons, common, settle, recalc }; }
   const bAt = main0.search(/과\s*세\s*표\s*준\s*명\s*세/), eAt = main0.search(/면\s*세\s*사\s*업\s*수\s*입\s*금\s*액/);
-  const base = bAt >= 0 ? baseRows(main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500)) : undefined;
+  const mkRows = [...seg.matchAll(/⟦명세 (\d{2})\|(\d*)\|([\d,]*)\|([^⟧]*)⟧/g)].map(m => ({ n: +m[1], code: m[2], amt: m[3] ? num(m[3]) : null, label: m[4].trim() }));
+  const mkUse = mkRows.length >= 3 && mkRows.some(r => r.n === 35 && r.amt != null);   // PDF 칸 좌표로 읽은 명세(readFiledText) — 있으면 이것을 먼저 쓴다
+  const base = mkUse ? mkRows.filter(r => r.n < 34 && r.amt != null && r.amt > 0 && (r.code || r.label)).map(r => ({ label: r.label || r.code, code: r.code, amt: r.amt! }))
+    : bAt >= 0 ? baseRows(main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500)) : undefined;
   /* 과세표준 명세의 업종코드(6자리)와 금액 0 여부 — 공제한 시설의 업종(숙박·부동산임대·스포츠시설)을 과세 매출로 신고했는지 대조용(2026-11-24 수성구: 701201 부동산임대 0, 숙박 코드 없음) */
-  const codes = bAt >= 0 ? (() => { const sec = main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500); const out = new Map<string, boolean>(); for (const line of sec.split('\n')) for (const m of line.matchAll(/(?<![\d,])(\d{6})(?![\d,])/g)) { const c = m[1]; if (/^20\d{4}$/.test(c)) continue; const zero = new RegExp(`${c}\\s+0(?:\\s|$)`).test(line); out.set(c, (out.get(c) ?? true) && zero); } return [...out].map(([code, zero]) => ({ code, zero })); })() : undefined;
+  const codes = mkUse ? mkRows.filter(r => r.code).map(r => ({ code: r.code, zero: !r.amt })) : bAt >= 0 ? (() => { const sec = main0.slice(bAt, eAt > bAt ? eAt : bAt + 1500); const out = new Map<string, boolean>(); for (const line of sec.split('\n')) for (const m of line.matchAll(/(?<![\d,])(\d{6})(?![\d,])/g)) { const c = m[1]; if (/^20\d{4}$/.test(c)) continue; const zero = new RegExp(`${c}\\s+0(?:\\s|$)`).test(line); out.set(c, (out.get(c) ?? true) && zero); } return [...out].map(([code, zero]) => ({ code, zero })); })() : undefined;
   const exBase = eAt >= 0 ? baseRows(main0.slice(eAt, eAt + 1500).split(/계\s*산\s*서\s*발\s*급|과\s*세\s*표\s*준\s*명\s*세/)[0]) : undefined;
   /* 경정청구서 서식(국세기본법 시행규칙 별지 제16호의2) ⑬ 가산세액·⑮ 납부할 세액 — 번호가 판마다 달라(현행 (29)(30), 2025-07 전 판은 다름) 칸 이름이 든 줄의 마지막 숫자를 읽는다 */
   const byLabel = (rx: RegExp) => { for (const line of main.split('\n')) { if (!rx.test(line)) continue; const mm = [...line.matchAll(/\((\d{1,2})\)/g)]; const last = mm[mm.length - 1]; const v = nums(last ? line.slice(last.index! + last[0].length) : line.replace(rx, ' ')); if (v.length) return v[v.length - 1]; } return undefined; };

@@ -28,6 +28,8 @@ export type Data = {
     develop?: { land_sale: string; land_cost: string; timing: string; refund: string; housing: string; basis: Basis[] };
     entity_unit?: { summary: string; caution: string; basis: Basis[] };
     agency_contract?: { key: string; text: string }[];
+    /** 세무서 담당 조사관 설득 꾸러미(2026-11-24, docs/prompts/vat_persuade_taxoffice.md) — 질문 은행·등급·증빙 요청·사전 상담 대본 */
+    persuade?: Persuade;
     agency_exempt?: { summary: string; exclusions: string[]; caution: string; basis: Basis[]; rulings?: string[] };
     /** 겸용 시설 공사의 다섯 갈래(2026-11-05) — 과세 부분 전용 / 같이 쓰는 시설 / 면세 부분 전용 / 부지 토목 / 공공 도로·인도 */
     /** 공개 지출 자료 세부사업 유형(2026-11-05) — 사업명 낱말 짐작, 위에서부터 처음 맞는 하나 */
@@ -428,6 +430,8 @@ export function earlyRefundSchedule(startMonth: string, endMonth: string, every:
     out.push({ from: toM(i), to: toM(j), fileDue: ymd(fileDue), refundBy: ymd(refundBy), quarterDue: ymd(qd) }); i = j + 1; }
   return out;
 }
+export type PersuadeQ = { id: string; step: number; files: string; q: string; why: string; basis: string; evid: string; app: string; need: string; req: string; fallback: string; answer: string };
+export type Persuade = { verified: string; law_note: string; steps: string[]; grades: { g: 1 | 2 | 3 | 4; name: string; plain: string; how: string }[]; questions: PersuadeQ[]; requests: { key: string; dept: string; docs: string; why: string }[]; script: string[]; disclose_none: string };
 /** 가산세 어림(국세기본법 제47조의2·제47조의3·제47조의4·제48조, 부정행위 아님): 과소(또는 무)신고 세액, 법정신고기한, 수정신고·납부일 → 신고 가산세(감면 뒤)·납부지연 가산세 */
 export function penaltyCalc(D: Data | null, p: { tax: number; due: string; payDate: string; kind: 'under' | 'none' }) {
   const R = D?.rules.penalty; const rateFile = p.kind === 'none' ? (R?.no_report ?? 0.2) : (R?.under_report ?? 0.1); const daily = R?.late_pay_daily ?? 0.00022; const maxY = R?.late_pay_max_years ?? 5;

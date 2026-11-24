@@ -30,12 +30,12 @@ const days = (to: string, today: string) => Math.round((new Date(to).getTime() -
 const tax = (d: FiledDoc, n: number) => d.cells[n]?.tax ?? null;
 const amt = (d: FiledDoc, n: number) => d.cells[n]?.amt ?? null;
 
-export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number> };   /* revByFac: 시설 이름 → 세입예산 연 수입(원, 기관 설정 메모의 세입예산서 줄) */   /* corr: 신고서 숫자만으로 고친 값(진단의 안분 재계산 등) */
+export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number>; areaFac?: string[] };   /* revByFac: 시설 이름 → 세입예산 연 수입(원, 기관 설정 메모의 세입예산서 줄) */   /* corr: 신고서 숫자만으로 고친 값(진단의 안분 재계산 등) */
 const short = (n: string) => n.replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim();
 /** 신고서별 고친 신고서 → 국세청 경정청구서 서식(vat_claimform claimFormPdf)·사유서에 그대로 넣는 값. 열쇠 'YYYY-H|0(예정)·1(확정)' 순서가 PDF 쪽 순서 */
 export type Case = { d: FiledDoc; k: string; pre: boolean; nextFin: boolean; name: string; rows: CbRow[]; listTax: number; should: number; gainAmt: number | null; gain: number; est?: CbCand; due: string; cdue: string; left: number; mode: 'list' | 'cand' | 'corr' | 'none'; sheet: string; corr?: CorrDoc };
 type FacSum = { fac: string; type?: string; share?: number; n: number; tax: number; claim: number; label: string };
-function buildCases(D: Data, o: CbIn): { cases: Case[]; docs: FiledDoc[]; facsOf: (c: Case) => FacSum[] } {
+function buildCases(D: Data, o: CbIn, pick?: (g: Grade) => boolean): { cases: Case[]; docs: FiledDoc[]; facsOf: (c: Case) => FacSum[] } {
   void D; const docs = latestDocs(o.docs).sort((a, b) => a.year - b.year || a.half - b.half || a.from - b.from);
   const cand = new Map((o.cand ?? []).map(c => [c.k, c]));
   /* 신고서 → 그 신고기간 달의 매입 건 */
@@ -53,10 +53,43 @@ function buildCases(D: Data, o: CbIn): { cases: Case[]; docs: FiledDoc[]; facsOf
     if (c.mode === 'list') for (const r of c.rows) { if (!r.claim) continue; const x = m.get(r.fac) ?? { fac: r.fac, type: r.facType, share: r.share, n: 0, tax: 0, claim: 0, label: r.label }; x.n++; x.tax += r.tax; x.claim += r.claim; m.set(r.fac, x); }
     else if (c.est) { const tot = c.est.byFac.reduce((n, x) => n + x.est, 0) || 1; for (const x of c.est.byFac) m.set(x.fac, { fac: x.fac, type: x.type, share: x.share, n: 0, tax: x.est, claim: Math.round(c.est.amt * x.est / tot), label: '나라장터 계약 어림' + (typeof x.share === 'number' && x.share < 1 ? `(과세 몫 ${Math.round(x.share * 100)}% 반영)` : '') }); }
     return [...m.values()].sort((a, b) => b.claim - a.claim); }
+  /* 등급 고르기(세무서 설득 꾸러미 '먼저 낼 묶음' = 1·2등급) — 고른 쟁점의 시설만 남기고 돌려받을 몫을 그 합으로 */
+  if (pick) for (const c of cases) { if (c.left < 0 || c.nextFin || c.gain <= 0) continue; const sel = issuesOf(D, o, c, facsOf, docs).filter(i => pick(i.grade)); const g = sel.reduce((n, i) => n + i.amt, 0);
+    if (c.mode === 'corr') { if (!g) { c.gain = 0; c.corr = undefined; c.mode = 'none'; } continue; }
+    const keep = new Set(sel.map(i => i.fac)); c.gainAmt = c.gainAmt != null && c.gain ? Math.round(c.gainAmt * g / c.gain) : c.gainAmt; c.gain = g;
+    c.rows = c.rows.filter(r => !r.claim || keep.has(r.fac)); if (c.est) c.est = { ...c.est, amt: g, byFac: c.est.byFac.filter(x => keep.has(x.fac)) }; }
   return { cases, docs, facsOf };
 }
-export function caseCorrDocs(D: Data, o: CbIn): Map<string, CorrDoc[]> {
-  const M = new Map<string, CorrDoc[]>(); const { cases, facsOf } = buildCases(D, o);
+/** 쟁점 등급(세무서 설득 꾸러미, 2026-11-24 docs/prompts/vat_persuade_taxoffice.md) — 판정이 아니라 제출 방법을 정하는 꼬리표.
+ *  1 계산 정정(신고서 숫자만) · 2 증빙으로 끝남(과세 시설 지출) · 3 매출과 함께(신고서 과세표준 명세에 그 업종 매출이 없는 시설) · 4 해석 다툼(기준 '확인' 시설·관람석 가능 경기장·추정 과세 몫·본청 공통) */
+export type Grade = 1 | 2 | 3 | 4;
+export type Issue = { key: string; k: string; name: string; pre: boolean; grade: Grade; fac: string; type?: string; amt: number; why: string; est: boolean; q: string[]; left: number; cdue: string; due: string; gap?: string };
+export const GAP: Record<string, [RegExp, string]> = { lodging: [/^55/, '숙박업'], lease: [/^70/, '부동산임대업'], sports: [/^(809|9113)/, '스포츠시설 운영업'] };
+/** 그 과세기간 신고서(예정·확정)의 과세표준 명세에 매출이 없는 업종(시설 유형 열쇠). 그 기간 명세를 못 읽었으면 전체 신고서로, 아무 명세도 없으면 빈 집합(모름 — 3등급으로 보내지 않음) */
+export function gapTypes(docs: FiledDoc[], k?: string): Set<string> {
+  const per = k ? docs.filter(d => `${d.year}-${d.half}` === k).flatMap(d => d.codes ?? []) : []; const codes = per.length ? per : docs.flatMap(d => d.codes ?? []); const s = new Set<string>(); if (!codes.length) return s;
+  for (const [t, [re]] of Object.entries(GAP)) if (!codes.some(x => re.test(x.code) && !x.zero)) s.add(t); return s; }
+const STADIUM = /운동장|경기장|야구장|축구장|구장/;
+function gradeFac(D: Data, o: CbIn, f: { fac: string; type?: string; share?: number }, gap: Set<string>): { grade: Grade; why: string; q: string[]; gap?: string } {
+  const fr = f.type ? D.facilities.find(x => x.key === f.type) : undefined;
+  if (f.fac === '본청·행정 공통') return { grade: 4, why: '본청·행정과 같이 쓴 지출 — 나누는 기준(매입가액·예정사용면적)을 먼저 정함', q: ['Q22'] };
+  if (fr?.status === 'check') return { grade: 4, why: `시설 유형 '${fr.name}'의 과세 여부가 운영 방식(사실)에 달림`, q: ['Q09'] };
+  if (f.type === 'sports' && STADIUM.test(f.fac)) return { grade: 4, why: '관람석을 갖춘 경기장인지 확인 필요 — 관람석이 있으면 경기장 운영업으로 면세', q: ['Q12'] };
+  if (typeof f.share === 'number' && f.share < 1 && !(o.areaFac ?? []).includes(f.fac)) return { grade: 4, why: `같이 쓰는 건물 — 과세 몫 ${Math.round(f.share * 100)}%는 추정, 용도별 면적표로 정해야 함`, q: ['Q19'] };
+  if (f.type && gap.has(f.type)) return { grade: 3, why: `신고서 과세표준 명세에 ${GAP[f.type][1]} 매출이 없음 — 사용료를 과세 매출로 신고했는지 먼저 확인`, q: ['Q10', 'Q28'], gap: GAP[f.type][1] };
+  return { grade: 2, why: '과세 매출을 신고하는 시설의 지출 — 세금계산서·계약서로 그 시설 것임을 보임', q: ['Q09', 'Q16'] };
+}
+function issuesOf(D: Data, o: CbIn, c: Case, facsOf: (c: Case) => FacSum[], docs: FiledDoc[]): Issue[] {
+  const base = { key: `${c.k}|${c.pre ? 0 : 1}`, k: c.k, name: c.name, pre: c.pre, left: c.left, cdue: c.cdue, due: c.due };
+  if (c.mode === 'corr' && c.corr) return [{ ...base, grade: 1, fac: '(신고서 숫자로 다시 계산)', amt: c.corr.delta, why: `당초 명세서의 공통매입세액 ${[...new Set(c.corr.parts.map(x => x.sec.replace(/\(.*\)/, '')))].join('·') || '안분'} 계산을 신고서 숫자로 다시 하면 불공제가 줄어듦`, est: false, q: ['Q20', 'Q21'] }];
+  const F = facsOf(c).filter(f => f.claim > 0); const tot = F.reduce((n, f) => n + f.claim, 0); if (!tot || c.gain <= 0) return [];
+  const gap = gapTypes(docs, c.k); const out = F.map(f => ({ ...base, ...gradeFac(D, o, f, gap), fac: f.fac, type: f.type, amt: Math.floor(c.gain * f.claim / tot), est: c.mode === 'cand' }));
+  const rest = c.gain - out.reduce((n, x) => n + x.amt, 0); if (out.length) out[0].amt += rest; return out;
+}
+/** 경정청구할 신고서(기한 안·확정신고 전 예정 제외·돌려받을 몫 > 0)의 쟁점 목록 — 금액 큰 순이 아니라 신고서 순 */
+export function caseIssues(D: Data, o: CbIn): Issue[] { const { cases, docs, facsOf } = buildCases(D, o); return cases.filter(c => c.left >= 0 && !c.nextFin && c.gain > 0).flatMap(c => issuesOf(D, o, c, facsOf, docs)); }
+export function caseCorrDocs(D: Data, o: CbIn, pick?: (g: Grade) => boolean): Map<string, CorrDoc[]> {
+  const M = new Map<string, CorrDoc[]>(); const { cases, facsOf } = buildCases(D, o, pick);
   const most = (xs: (string | undefined)[]) => { const c = new Map<string, number>(); for (const x of xs) if (x) c.set(x, (c.get(x) ?? 0) + 1); return [...c].sort((a, b) => b[1] - a[1])[0]?.[0] ?? ''; };
   const addr0 = most(cases.map(c => c.d.addr)), office0 = most(cases.map(c => c.d.office));
   for (const c of cases) { if (c.left < 0 || c.nextFin || c.gain <= 0) continue; const d = c.d; const t = (n: number) => d.cells[n]?.tax ?? null;
@@ -74,7 +107,7 @@ export function caseCorrDocs(D: Data, o: CbIn): Map<string, CorrDoc[]> {
 }
 
 /** 법령 검토 표 — 원문을 대조한 결론만(평가·절세 문구 없음). 판정은 참고이며 기관의 판단이 아니다 */
-const LEGAL: string[][] = [
+export const LEGAL: string[][] = [
   ['지자체 체육시설 사용료의 과세 여부', '지자체가 공급하는 재화·용역은 면세가 원칙이지만, 시행령 제46조 제3호에 적힌 사업(부동산임대업·도매 및 소매업·음식점업·숙박업·골프장 및 스키장 운영업·기타 스포츠시설 운영업)은 과세. 관람석이 없는 수영장·헬스장·테니스장·풋살장·구장 이용료는 기타 스포츠시설 운영업으로 과세이고, 그 시설 매입세액은 공제 대상.', '부가가치세법 제26조 제1항 제19호, 같은 법 시행령 제46조 제3호(2025. 12. 30. 개정 현행 원문 대조), 재경부 부가가치세제과-186(2007. 3. 22.) 질의 8·31, 서면3팀-1502', '사용료에 부가세를 포함해 과세 신고해 온 직영 체육시설의 공사·관리비 매입세액은 공제 대상 — 이번 경정청구의 중심', '시설마다 조례 사용료 표(부가가치세 포함 문구)와 과세표준 명세 업종(809…)을 확인'],
   ['관람석을 갖춘 경기장', '일반 관중이 경기를 관람할 수 있는 시설(다중의 관중을 위한 관람석)을 갖춘 운동장·야구장·축구장·공인 수영장·체육관은 경기장 운영업이라 면세. 경기 없는 시간에 운동 공간으로 빌려주고 받는 사용료도 면세. 이용자 대기·후보선수용 좌석은 관람석이 아님.', '서면인터넷방문상담3팀-1330(2007. 5. 3., 구청 구민운동장 관람석 400석), 법규과-209(2013. 2. 26., 관람석 688석 공인 실내수영장 — 건설 매입세액 불공제), 재경부 부가가치세제과-306(2007. 4. 25.), 통계청 회신(2012. 4. 9.)', '관람석이 있는 운동장으로 판정되면 그 시설 몫은 공제되지 않고(감액), 그동안 과세로 낸 사용료 매출세액을 돌려받는 경정청구로 바뀜', '구민운동장·체육관·수영장의 관람석 유무·규모를 건축물대장·시설 현황으로 확인'],
   ['체육공원 안 운동시설', '지자체가 설치·운영하는 체육공원(시민공원) 안 운동시설 이용료는 체육공원 및 유사공원 운영업으로 면세. 사업자가 빌려 자기 계산으로 운영하면 과세.', '재경부 부가가치세제과-306(2007. 4. 25.)', '도시계획시설 공원 안 시설이면 그 시설 매입세액은 공제 대상이 아님', '도시관리계획 결정(공원) 여부 확인'],
@@ -107,16 +140,17 @@ const TAXOFFICE: string[][] = [
   ['환급 규모에 따른 검증', '환급액이 크면 서면 검토에 그치지 않고 현장 확인·환급 검증이 나올 수 있다. 결과에 동의하지 않으면 통지일(통지가 없으면 2개월이 지난 날)부터 90일 안에 이의신청·심사청구·심판청구.', '담당 부서 연락 창구 하나로 정하고, 위 서류를 시설별 묶음으로', '국세기본법 제45조의2 제3항, 제61조·제66조·제68조'],
   ['매출 누락이 드러났을 때의 가산세', '과소신고 가산세 10%, 납부지연 가산세(하루 10만분의 22), 사업자에게 빌려주고 세금계산서를 발급하지 않았으면 공급가액의 2%. 법정신고기한 뒤 2년 안에 스스로 수정신고하면 과소신고 가산세가 감면된다(1개월 90% ~ 2년 10%).', '빠진 매출이 있으면 경정청구와 같은 때에 수정신고(감면 기간 안의 과세기간부터)', '국세기본법 제47조의3·제47조의4·제48조 제2항, 부가가치세법 제60조 제2항'],
 ];
-export function caseBook(D: Data, o: CbIn): Blob | null {
-  const { cases, docs, facsOf } = buildCases(D, o); if (!docs.length) return null; const facs = facsOf;
-  const pages = new Map<string, number>(); for (const [k, v] of caseCorrDocs(D, o)) pages.set(k, v[0].page ?? 0);
+/** office: 세무서에 내는 판 — 공무원용 안내(먼저 읽기·신고별 요약·세무서가 볼 것·법령 검토·쉬운 말·확인할 것·붙임 체크·검토란)를 빼고, 청구하는 신고서 시트와 건별 근거만 */
+export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: Sheet[] = [], office = false, note = ''): Blob | null {
+  const { cases, docs, facsOf } = buildCases(D, o, pick); if (!docs.length) return null; const facs = facsOf;
+  const pages = new Map<string, number>(); for (const [k, v] of caseCorrDocs(D, o, pick)) pages.set(k, v[0].page ?? 0);
   const pageOf = (c: Case) => pages.get(`${c.k}|${c.pre ? 0 : 1}`) ?? 0;
   const open = cases.filter(c => c.left >= 0 && !c.nextFin);
   const total = open.reduce((n, c) => n + c.gain, 0);
   const sheets: Sheet[] = [];
 
   /* 1. 먼저 읽기 */
-  { const R: Cell[][] = []; const st: Record<number, number> = {}; const add = (r: Cell[], s = 0) => { if (s) st[R.length] = s; R.push(r); };
+  if (!office) { const R: Cell[][] = []; const st: Record<number, number> = {}; const add = (r: Cell[], s = 0) => { if (s) st[R.length] = s; R.push(r); };
     add([`${o.org} 부가가치세 경정청구 작업서 — 신고서별`], 2); add([`${o.today} 작성 · 지자체 부가세 돌려받기(참고 계산 — 신고 책임은 신고인, 판정은 기관의 판단이 아닙니다)`]);
     add([`사업자등록번호 ${o.reg || '(확인)'} · 올린 신고서 ${docs.length}장 · 경정청구 기한 안 ${open.length}장 · 돌려받을 세액 합계(어림) ${fmt(total)}원${o.rows.length ? '' : ' — 매입 목록이 없어 조달청 나라장터 계약으로 짐작한 값'}`], 1); add([]);
     add(['이 파일로 하는 일 — 순서대로'], 3);
@@ -137,15 +171,15 @@ export function caseBook(D: Data, o: CbIn): Blob | null {
     sheets.push({ name: '먼저 읽기', rows: R, style: st, freeze: false, widths: [16, 110] }); }
 
   /* 2. 신고별 요약 — 기한 가까운 순 */
-  { const head = ['순서', '신고서', '시트', '경정청구서 PDF 쪽', '신고기간', '법정신고기한', '경정청구 기한', '남은 날', '당초 공제받은 매입세액 (18)', '경정 후 (18)', '돌려받을 세액', '근거', '주된 이유', '확인할 것'];
+  if (!office) { const head = ['순서', '신고서', '시트', '경정청구서 PDF 쪽', '신고기간', '법정신고기한', '경정청구 기한', '남은 날', '당초 공제받은 매입세액 (18)', '경정 후 (18)', '돌려받을 세액', '근거', '주된 이유', '확인할 것'];
     const L = [...cases].sort((a, b) => (a.left < 0 ? 1e9 : a.left) - (b.left < 0 ? 1e9 : b.left) || b.gain - a.gain);
     const rows: Cell[][] = [head, ...L.map((c, i) => { const ded = tax(c.d, 18) ?? 0; const why = topReason(c); return [i + 1, c.name, c.sheet, pageOf(c) || '—', `${c.d.year}-${String(c.d.from).padStart(2, '0')} ~ ${String(c.d.to).padStart(2, '0')}월`, c.due, c.cdue, c.left < 0 ? '기한 지남' : c.nextFin ? `확정신고(${legalDue(c.d.year, c.d.half, false)})에 넣기` : c.left, ded, c.gain ? ded + c.gain : ded, c.left < 0 || c.nextFin ? 0 : c.gain, c.mode === 'list' ? '매입 목록(세금계산서)' : c.mode === 'cand' ? '조달청 계약(추정)' : c.mode === 'corr' ? '신고서 숫자 재계산' : '—', why, checks(c).length]; }),
       [], ['', '합계(기한 안)', '', '', '', '', '', '', '', '', total]];
     sheets.push({ name: '신고별 요약', rows, widths: [6, 18, 14, 10, 16, 12, 12, 9, 16, 16, 16, 18, 70, 10] }); }
   /* 2-1. 법령 검토 — 쟁점별 결론·근거·이 기관에 미치는 영향·할 일(2026-11-24 운영자 '부가가치세 전문가 입장에서 관련 법령·지침·국세청 질의 답변 등 가능한 모든 수단으로 검토') */
   /* 2-2. 세무서 검토 — 이 경정청구를 받은 관할 세무서 담당자가 확인할 것과 준비할 것(2026-11-24 운영자 '수성구 부가세 담당 세무서 공무원 입장에서도 검토') */
-  sheets.push({ name: '세무서가 볼 것', rows: [['순서', '세무서가 확인하는 것', '왜', '미리 준비할 것', '근거'], ...TAXOFFICE.map((r, i) => [i + 1, ...r])], widths: [6, 44, 52, 52, 40], style: Object.fromEntries(TAXOFFICE.map((_, i) => [i + 1, 4])) });
-  sheets.push({ name: '법령 검토', rows: [['쟁점', '결론', '근거(법령·유권해석·판례·지침)', '이 경정청구에 미치는 영향', '할 일'], ...LEGAL], widths: [26, 60, 50, 50, 46], style: Object.fromEntries(LEGAL.map((_, i) => [i + 1, 4])) });
+  if (!office) sheets.push({ name: '세무서가 볼 것', rows: [['순서', '세무서가 확인하는 것', '왜', '미리 준비할 것', '근거'], ...TAXOFFICE.map((r, i) => [i + 1, ...r])], widths: [6, 44, 52, 52, 40], style: Object.fromEntries(TAXOFFICE.map((_, i) => [i + 1, 4])) });
+  if (!office) sheets.push({ name: '법령 검토', rows: [['쟁점', '결론', '근거(법령·유권해석·판례·지침)', '이 경정청구에 미치는 영향', '할 일'], ...LEGAL], widths: [26, 60, 50, 50, 46], style: Object.fromEntries(LEGAL.map((_, i) => [i + 1, 4])) });
 
   /* 3. 신고서마다 한 장 */
   function topReason(c: Case): string {
@@ -189,14 +223,14 @@ export function caseBook(D: Data, o: CbIn): Blob | null {
     const F = facs(c); if (!c.gain) return '이 신고서에서 고칠 것을 찾지 못했습니다.';
     return `돈을 받는 시설(${F.slice(0, 4).map(f => f.fac).join(', ')})에 쓴 공사·관리비의 부가세는 원래 돌려받을 수 있는 돈인데, 신고 때 '행정에 쓴 돈'과 같이 묶어 돌려받지 않은 것으로 처리했습니다. 그 몫 ${fmt(c.gain)}원을 돌려 달라고 신청하는 것입니다.${c.mode === 'cand' ? ' (계약 금액으로 짐작한 값 — 세금계산서로 확인 필요)' : ''}`; }
 
-  for (const c of cases) {
+  for (const c of cases) { if (office && (c.left < 0 || c.nextFin || c.gain <= 0)) continue;
     const d = c.d; const R: Cell[][] = []; const st: Record<number, number> = {}; const add = (r: Cell[], s = 0) => { if (s) st[R.length] = s; R.push(r); };
     const c16 = tax(d, 16), c17 = tax(d, 17), c18 = tax(d, 18), c9 = tax(d, 9); const ded = c18 ?? 0; const g = c.left < 0 ? 0 : c.gain;
-    add([`${c.name} 경정청구 — ${o.org}`], 2);
+    add([`${c.name} 경정청구 — ${o.org}${note}`], 2);
     add(['신고기간', `${d.year}. ${d.from}. ~ ${d.to}. (${d.kind})`, '법정신고기한', c.due, '경정청구 기한', `${c.cdue}${c.left < 0 ? ' — 지남(청구 불가)' : ` (D-${c.left})`}`]);
-    add(['사업자등록번호', d.reg || o.reg || '', '당초 신고 파일', d.file, '근거 자료', c.mode === 'list' ? `매입 목록 ${c.rows.length}건` : c.mode === 'cand' ? '조달청 나라장터 계약(추정)' : c.mode === 'corr' ? '신고서 숫자 재계산' : '없음']);
-    add(['돌려받을 세액', g, '쉬운 말', plain(c)], 5);
-    if (pageOf(c)) add(['경정청구서', `함께 받은 「경정청구서(국세청 서식)」 PDF ${pageOf(c)}쪽 — 숫자를 다 채워 두었습니다. 기관장 성명·서명, 전화, 환급 계좌, 날짜만 적으면 됩니다. 같은 쪽 번호의 「경정청구 사유서」 PDF 를 붙임으로 냅니다.`], 5);
+    add(['사업자등록번호', d.reg || o.reg || '', office ? '' : '당초 신고 파일', office ? '' : d.file, '근거 자료', c.mode === 'list' ? `매입 목록 ${c.rows.length}건` : c.mode === 'cand' ? '조달청 나라장터 계약(추정)' : c.mode === 'corr' ? '신고서 숫자 재계산' : '없음']);
+    add(office ? ['돌려받을 세액', g] : ['돌려받을 세액', g, '쉬운 말', plain(c)], 5);
+    if (pageOf(c) && !office) add(['경정청구서', `함께 받은 「경정청구서(국세청 서식)」 PDF ${pageOf(c)}쪽 — 숫자를 다 채워 두었습니다. 기관장 성명·서명, 전화, 환급 계좌, 날짜만 적으면 됩니다. 같은 쪽 번호의 「경정청구 사유서」 PDF 를 붙임으로 냅니다.`], 5);
     if (c.nextFin) add(['', `이 과세기간 확정신고(기한 ${legalDue(d.year, d.half, false)})가 아직이라 경정청구를 하지 않고, 확정신고서의 (13) 예정신고 누락분 칸(매입)에 이 ${fmt(g)}원을 넣어 공제받습니다. 아래 값은 그 계산 근거입니다(요약 합계에서는 뺐습니다).`], 5);
     add([]);
     add(['1. 홈택스 경정청구 화면에 넣을 값 (일반과세자 신고서 칸)'], 3); add(['칸', '이름', '당초 금액', '당초 세액', '경정 후 금액', '경정 후 세액', '바뀌는 세액', '설명'], 1);
@@ -205,21 +239,24 @@ export function caseBook(D: Data, o: CbIn): Blob | null {
     add(['(10)', '세금계산서 수취분 일반매입', amt(d, 10), tax(d, 10), amt(d, 10), tax(d, 10), 0, '이미 신고에 들어 있는 세금계산서 — 그대로']);
     add(['(16)', '매입세액 합계', amt(d, 16), c16, amt(d, 16), c16, 0, '그대로']);
     const ga = c.left < 0 ? 0 : c.gainAmt; const a17 = amt(d, 17) != null && ga != null ? Math.max(0, (amt(d, 17) ?? 0) - ga) : null;
-    add(['(17)', '공제받지 못할 매입세액', amt(d, 17), c17, a17, c17 != null ? Math.max(0, c17 - g) : null, -g, ga != null ? '과세 시설 몫(공급가액·세액)을 빼서 줄임' : '과세 시설 몫을 빼서 줄임 — 금액 칸은 세금계산서 공급가액 합으로 맞추기'], 1);
+    add(['(17)', '공제받지 못할 매입세액', amt(d, 17), c17, a17, c17 != null ? Math.max(0, c17 - g) : null, -g, c.mode === 'corr' ? '공통매입세액 면세분을 다시 계산해 줄임(아래 2.)' : ga != null ? '과세 시설 몫(공급가액·세액)을 빼서 줄임' : '과세 시설 몫을 빼서 줄임 — 금액 칸은 세금계산서 공급가액 합으로 맞추기'], 1);
     add(['(18)', '차감계(공제받는 매입세액)', amt(d, 18), c18, amt(d, 18) != null && ga != null ? (amt(d, 18) ?? 0) + ga : null, ded + g, g, '(16) − (17)'], 1);
     if (c9 != null) add(['', '납부(환급)세액 = 매출세액 − (18)', null, c9 - ded, null, c9 - ded - g, -g, '이만큼 덜 내야 했음 → 돌려받음']);
     if (d.due != null) add(['(30)', '차가감 납부할 세액(환급받을 세액)', null, d.due, null, d.due - g, -g, '경정 후 값이 음수(−)면 그만큼 돌려받는다는 뜻']);
-    add([]); add(['2. 공제받지 못할 매입세액 명세서 — 고칠 값'], 3); add(['사유', '', '당초 매수', '당초 공급가액', '당초 세액', '경정 후 세액', '바뀌는 세액', '설명'], 1);
+    if (c.mode === 'corr' && c.corr?.parts.length) { add([]); add(['2. 공제받지 못할 매입세액 명세서 — 공통매입세액 안분·정산 계산(당초 → 경정 후)'], 3); add(['항목', '', '', '', '당초', '경정 후', '차이', '설명'], 1);
+      for (const p of c.corr.parts) for (const r of p.rows) add([`${p.sec}: ${r.label}`, '', null, null, r.before, r.after, r.before != null && r.after != null ? r.after - r.before : null, '부가가치세법 시행령 제81조 제1항 식(공통매입세액 × 면세공급가액 ÷ 총공급가액)으로 다시 계산']);
+      add(['※ 당초 명세서가 공급가액 비율로 나눈 경우의 재계산입니다. 총공급가액에는 과세 공급가액((1)~(4))과 면세 공급가액을 모두 넣습니다.'], 4); }
+    else { add([]); add(['2. 공제받지 못할 매입세액 명세서 — 고칠 값'], 3); add(['사유', '', '당초 매수', '당초 공급가액', '당초 세액', '경정 후 세액', '바뀌는 세액', '설명'], 1);
     const RN = ['① 필요적 기재사항 누락 등', '② 사업과 직접 관련 없는 지출', '③ 비영업용 소형승용차', '④ 기업업무추진비 등', '⑤ 면세사업등 관련', '⑥ 토지의 자본적 지출', '⑦ 사업자등록 전 매입세액', '⑧ 금·구리 스크랩'];
     const rs = d.nd?.reasons ?? {}; const target = (rs[2]?.tax ?? 0) >= (rs[5]?.tax ?? 0) ? 2 : 5; let left = g;
     RN.forEach((nm, i) => { const n = i + 1, x = rs[n]; if (!x?.tax && n !== target) return; const cut = n === target ? Math.min(left, x?.tax ?? 0) : 0; if (n === target) left -= cut; add([nm, '', x?.n ?? null, x?.amt ?? null, x?.tax ?? 0, (x?.tax ?? 0) - cut, -cut, n === target && cut ? '과세 시설 몫을 이 사유에서 뺌 — 그 세금계산서가 이 사유로 묶여 있던 것' : '']); });
-    if (!d.nd) add(['(이 신고서에 명세서가 없음)', '', null, null, null, null, null, '당초 신고 때 낸 명세서를 홈택스 신고내역에서 확인']);
+    if (!d.nd) add(['(이 신고서에 명세서가 없음)', '', null, null, null, null, null, '당초 신고 때 낸 명세서를 홈택스 신고내역에서 확인']); }
     add([]); add(['3. 이유'], 3);
     add(['청구 사유(그대로 붙여넣기)', reasonText(c)], 4);
-    add(['쉬운 말', plain(c)], 4);
+    if (!office) add(['쉬운 말', plain(c)], 4);
     add([]); add(['4. 근거 — 법령'], 3); add(['조문', '무엇을 정했나', '원문 링크'], 1);
     const bs: Basis[] = [{ law: 'basic', art: '제45조의2' }, { law: 'act', art: '제38조' }, { law: 'act', art: '제39조' }, { law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }];
-    for (const r of c.rows) if (r.claim) for (const b of r.basis) if (!bs.some(x => x.law === b.law && x.art === b.art)) bs.push(b);
+    for (const r of c.rows) if (r.claim) for (const b of r.basis) if (!(b.law === 'rule' && b.art === '제35조') && !bs.some(x => x.law === b.law && x.art === b.art)) bs.push(b);   /* 시행규칙 제35조(과세 공급 범위 세부 — 국군 관계자 등)는 이 청구와 무관해 싣지 않음(세무법인 역할 시험 2026-11-24) */
     if (facs(c).some(f => typeof f.share === 'number' && f.share < 1)) for (const b of [{ law: 'act', art: '제40조' }, { law: 'decree', art: '제81조' }]) if (!bs.some(x => x.law === b.law && x.art === b.art)) bs.push(b);
     for (const b of bs) add(lawLine(D, b), 4);
     const types = [...new Set(facs(c).map(f => f.type).filter(Boolean) as string[])]; const rids = [...new Set(types.flatMap(t => D.facilities.find(x => x.key === t)?.rulings ?? []))];
@@ -228,18 +265,18 @@ export function caseBook(D: Data, o: CbIn): Blob | null {
     for (const t of types) { const fr = D.facilities.find(x => x.key === t); if (fr?.cond) { if (!RL.length) { add([]); add(['5. 근거 — 시설 종류 기준'], 3); } add([fr.name, fr.cond], 4); } }
     add([]); add(['시설별 내역'], 3); add(['시설', '판정', '건수', '이 기간 매입세액', '공제 대상 세액', '과세 몫'], 1);
     for (const f of facs(c)) add([f.fac, f.label, f.n || null, f.tax, f.claim, typeof f.share === 'number' && f.share < 1 ? `${Math.round(f.share * 100)}%(추정)` : '100%']);
-    add([]); add(['확인할 것 — 확인하면 ☑'], 3); for (const x of checks(c)) add(['☐', x], 4);
-    add([]); add(['6. 붙임 서류'], 3);
-    ['당초 신고서 사본(홈택스 → 신고/납부 → 세금신고 → 신고내역 조회 출력)', '고친 공제받지 못할 매입세액 명세서(위 2.)', '시설이 과세 사업이라는 근거 — 사용료 조례 별표(부가가치세 포함 문구)·과세표준 명세의 업종', '그 시설에 쓴 지출이라는 근거 — 계약서·검수조서·세금계산서 목록(이 파일 「건별 근거」)', ...(facs(c).some(f => typeof f.share === 'number' && f.share < 1) ? ['면적 근거 — 건축물대장·사용허가서(과세로 쓰는 면적)'] : [])].forEach(x => add(['☐', x], 4));
-    add([]); add(['7. 검토'], 3); add(['작성', '', '검토', '', '결재', '']); add(['작성일', '', '세무서 접수일', '', '결과 통지일', '']);
+    if (!office) { add([]); add(['확인할 것 — 확인하면 ☑'], 3); for (const x of checks(c)) add(['☐', x], 4); }
+    if (!office) { add([]); add(['6. 붙임 서류'], 3);
+    ['당초 신고서 사본(홈택스 → 신고/납부 → 세금신고 → 신고내역 조회 출력)', '고친 공제받지 못할 매입세액 명세서(위 2.)', '시설이 과세 사업이라는 근거 — 사용료 조례 별표(부가가치세 포함 문구)·과세표준 명세의 업종', '그 시설에 쓴 지출이라는 근거 — 계약서·검수조서·세금계산서 목록(이 파일 「건별 근거」)', ...(facs(c).some(f => typeof f.share === 'number' && f.share < 1) ? ['면적 근거 — 건축물대장·사용허가서(과세로 쓰는 면적)'] : [])].forEach(x => add(['☐', x], 4)); }
+    if (!office) { add([]); add(['7. 검토'], 3); add(['작성', '', '검토', '', '결재', '']); add(['작성일', '', '세무서 접수일', '', '결과 통지일', '']); }
     sheets.push({ name: c.sheet, rows: R, style: st, freeze: false, widths: [22, 40, 16, 16, 16, 16, 14, 60] });
   }
 
   /* 4. 건별 근거 */
   if (o.rows.length) {
     const rows: Cell[][] = [['신고서(시트)', '날짜', '공급자', '공급자 등록번호', '품목·사업명', '공급가액', '세액', '시설', '판정', '공제 대상 세액', '근거 조문', '이유']];
-    for (const c of cases) for (const r of c.rows) if (r.claim) rows.push([c.sheet, r.d, r.sup, r.sreg, r.desc, r.amt, r.tax, r.fac, r.label, r.claim, r.basis.map(b => `${LAW[b.law] ?? b.law} ${b.art}`).join(' · '), r.why.join(' ')]);
+    for (const c of cases) for (const r of c.rows) if (r.claim) rows.push([c.sheet, r.d, r.sup, r.sreg, r.desc, r.amt, r.tax, r.fac, r.label, r.claim, r.basis.filter(b => !(b.law === 'rule' && b.art === '제35조')).map(b => `${LAW[b.law] ?? b.law} ${b.art}`).join(' · '), r.why.join(' ')]);
     sheets.push({ name: '건별 근거', rows, widths: [14, 11, 24, 14, 40, 14, 12, 28, 30, 14, 26, 60] });
   }
-  return xlsxBlob(sheets);
+  return xlsxBlob([...lead, ...sheets]);
 }

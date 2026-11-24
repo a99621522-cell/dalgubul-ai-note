@@ -69,7 +69,7 @@ function wrap(text: string, font: PDFFont, size: number, width: number): string[
   return out.length ? out : [''];
 }
 
-export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: boolean } = {}): Promise<Blob> {
+export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: boolean; foot?: string } = {}): Promise<Blob> {
   const [reg, { PDFDocument }, { default: fontkit }] = await Promise.all([loadFont(), import('pdf-lib'), import('@pdf-lib/fontkit')]);
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
@@ -154,7 +154,7 @@ export async function buildPdf(blocks: Block[], title = '', opt: { landscape?: b
   // 쪽 번호
   const pages = doc.getPages();
   pages.forEach((pg, i) => {
-    const t = `${location.host}  ·  ${i + 1} / ${pages.length}`;
+    const t = `${opt.foot ?? location.host}${opt.foot === '' ? '' : '  ·  '}${i + 1} / ${pages.length}`;
     text(pg, t, { x: PW - M - measure(F, t, 7.5), y: M / 2, size: 7.5, color: MUTED });
   });
   const bytes = await doc.save();

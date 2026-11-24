@@ -249,13 +249,13 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
     else { add([]); add(['2. 공제받지 못할 매입세액 명세서 — 고칠 값'], 3); add(['사유', '', '당초 매수', '당초 공급가액', '당초 세액', '경정 후 세액', '바뀌는 세액', '설명'], 1);
     const RN = ['① 필요적 기재사항 누락 등', '② 사업과 직접 관련 없는 지출', '③ 비영업용 소형승용차', '④ 기업업무추진비 등', '⑤ 면세사업등 관련', '⑥ 토지의 자본적 지출', '⑦ 사업자등록 전 매입세액', '⑧ 금·구리 스크랩'];
     const rs = d.nd?.reasons ?? {}; const target = (rs[2]?.tax ?? 0) >= (rs[5]?.tax ?? 0) ? 2 : 5; let left = g;
-    RN.forEach((nm, i) => { const n = i + 1, x = rs[n]; if (!x?.tax && n !== target) return; const cut = n === target ? Math.min(left, x?.tax ?? 0) : 0; if (n === target) left -= cut; add([nm, '', x?.n ?? null, x?.amt ?? null, x?.tax ?? 0, (x?.tax ?? 0) - cut, -cut, n === target && cut ? '과세 시설 몫을 이 사유에서 뺌 — 그 세금계산서가 이 사유로 묶여 있던 것' : '']); });
+    const cutN = c.rows.filter(r => r.claim).length; RN.forEach((nm, i) => { const n = i + 1, x = rs[n]; if (!x?.tax && n !== target) return; const cut = n === target ? Math.min(left, x?.tax ?? 0) : 0; if (n === target) left -= cut; add([nm, '', x?.n ?? null, x?.amt ?? null, x?.tax ?? 0, (x?.tax ?? 0) - cut, -cut, n === target && cut ? `과세 시설 몫을 이 사유에서 뺌 — 경정 후 ${x?.n != null && cutN ? `${x.n - cutN}매 · ` : ''}${x?.amt != null && ga != null ? `공급가액 ${fmt(x.amt - ga)}원` : '공급가액은 세금계산서 합으로'}(뺀 세금계산서는 붙임 「건별 근거」)` : '']); });
     if (!d.nd) add(['(이 신고서에 명세서가 없음)', '', null, null, null, null, null, '당초 신고 때 낸 명세서를 홈택스 신고내역에서 확인']); }
     add([]); add(['3. 이유'], 3);
     add(['청구 사유(그대로 붙여넣기)', reasonText(c)], 4);
     if (!office) add(['쉬운 말', plain(c)], 4);
     add([]); add(['4. 근거 — 법령'], 3); add(['조문', '무엇을 정했나', '원문 링크'], 1);
-    const bs: Basis[] = [{ law: 'basic', art: '제45조의2' }, { law: 'act', art: '제38조' }, { law: 'act', art: '제39조' }, { law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }];
+    const bs: Basis[] = c.mode === 'corr' ? [{ law: 'basic', art: '제45조의2' }, { law: 'act', art: '제40조' }, { law: 'decree', art: '제81조' }, { law: 'decree', art: '제82조' }] : [{ law: 'basic', art: '제45조의2' }, { law: 'act', art: '제38조' }, { law: 'act', art: '제39조' }, { law: 'act', art: '제26조' }, { law: 'decree', art: '제46조' }];
     for (const r of c.rows) if (r.claim) for (const b of r.basis) if (!(b.law === 'rule' && b.art === '제35조') && !bs.some(x => x.law === b.law && x.art === b.art)) bs.push(b);   /* 시행규칙 제35조(과세 공급 범위 세부 — 국군 관계자 등)는 이 청구와 무관해 싣지 않음(세무법인 역할 시험 2026-11-24) */
     if (facs(c).some(f => typeof f.share === 'number' && f.share < 1)) for (const b of [{ law: 'act', art: '제40조' }, { law: 'decree', art: '제81조' }]) if (!bs.some(x => x.law === b.law && x.art === b.art)) bs.push(b);
     for (const b of bs) add(lawLine(D, b), 4);

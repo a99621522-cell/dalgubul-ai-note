@@ -221,10 +221,25 @@ def exec_pay(code: str, name: str, y: int) -> dict | None:
         rec.update(unreg_n=n_ or None, unreg_total=tt or None, unreg_avg=round(tt / n_) if n_ and tt else (num(b[0].get("jan_salary_am")) if len(b) == 1 else None))
         rec["rcept_no"] = rec.get("rcept_no") or b[0].get("rcept_no", "")
     rec["source_url"] = f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rec['rcept_no']}" if rec.get("rcept_no") else ""
+    unit_fix(rec)
     for k in ("dir_n", "dir_total", "dir_avg", "unreg_n", "unreg_total", "unreg_avg"):
         v = rec.get(k)
         rec[k] = int(v) if isinstance(v, float) and v.is_integer() else v
     return rec
+
+
+def unit_fix(rec: dict) -> None:
+    """총액 ÷ 인원이 1천 원 아래면 백만 원 단위, 100만 원 아래면 천 원 단위로 공시된 것으로 보고 원으로 바꾼다(2026-11-24: 루트K·다원메닥스 미등기임원)"""
+    for p in ("dir", "unreg"):
+        t, n_ = rec.get(f"{p}_total"), rec.get(f"{p}_n")
+        if not t or not n_:
+            continue
+        per = float(t) / float(n_)
+        k = 1_000_000 if per < 1_000 else 1_000 if per < 1_000_000 else 1
+        if k > 1:
+            rec[f"{p}_total"] = float(t) * k
+            if rec.get(f"{p}_avg"):
+                rec[f"{p}_avg"] = float(rec[f"{p}_avg"]) * k
 
 
 def half(corps: dict) -> int:

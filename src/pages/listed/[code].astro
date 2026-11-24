@@ -195,7 +195,7 @@ const hCell = (k: string): string => { if (!h) return '—';
       <tbody>{exe.map(e => <tr><th scope="row">{e.year}</th><td class="n">{n0(e.dir_n)}</td><td class="n">{mil(e.dir_total)}</td><td class="n">{mil(e.dir_avg)}</td>
         <td class="n">{n0(e.unreg_n)}</td><td class="n">{mil(e.unreg_total)}</td><td class="n">{mil(e.unreg_avg)}</td><td>{e.source_url ? <a href={e.source_url} rel="noopener">DART</a> : '—'}</td></tr>)}</tbody>
     </table></div>
-    <p class="meta">회사가 공시한 인원·총액·1인 평균만 옮겼습니다. 이사·감사는 사외이사·감사위원을 포함한 등기임원 전체입니다. 개인별 보수와 이름은 싣지 않습니다.</p>
+    <p class="meta">회사가 공시한 인원·총액·1인 평균만 옮겼습니다. 이사·감사는 사외이사·감사위원을 포함한 등기임원 전체이고, 1인 평균은 회사 공시 값이라 사외이사를 빼고 계산한 회사도 있어 총액 ÷ 인원과 다를 수 있습니다. 천 원·백만 원 단위로 공시된 값은 원으로 바꿨습니다. 개인별 보수와 이름은 싣지 않습니다.</p>
   </section>)}
 
   <section>

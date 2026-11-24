@@ -86,7 +86,7 @@ export function diagnose(x: DiagIn): Diag {
 }
 
 /* 실제 사례(data/vat/cases.yml mistakes) — 같은 잘못을 겪은 지자체의 경정청구·권익위·감사 지적. 이 기간 시설 유형과 겹치는 사례 먼저, 그다음 최근 순 */
-const MKEY: Record<string, string> = { excluded: 'missing', nofile: 'nofile', missing: 'missing', 'taxable-as-exempt': 'taxable-as-exempt', 'no-apportion': 'no-apportion', cashout: 'cashout' };
+const MKEY: Record<string, string> = { 'late-invoice': 'missing', excluded: 'missing', nofile: 'nofile', missing: 'missing', 'taxable-as-exempt': 'taxable-as-exempt', 'no-apportion': 'no-apportion', cashout: 'cashout' };
 export function casesFor(D: Data, key: string, types: string[] = [], n = 3): AuditCase[] {
   const mk = MKEY[key]; if (!mk) return [];
   return (D.cases ?? []).filter(c => c.mistakes?.includes(mk)).map(c => ({ c, o: c.keys.filter(k => types.includes(k)).length })).sort((a, b) => b.o - a.o || String(b.c.date).localeCompare(String(a.c.date))).slice(0, n).map(x => x.c);
@@ -167,7 +167,7 @@ export function filedChecks(D: Data, docs: FiledDocLite[], taxableFacs: string[]
     }
     const R = d.nd?.reasons ?? {}; const t = (n: number) => R[n]?.tax ?? 0;
     if (t(5) > 0) { o.upto += t(5); o.findings.push({ key: 'taxable-as-exempt', title: `${tag} — '⑤ 면세사업등 관련' 불공제 ${fmt(t(5))}원 확인`, what: `면세사업 관련으로 ${R[5]?.n ? `세금계산서 ${R[5].n}장, ` : ''}세액 ${fmt(t(5))}원을 불공제했습니다. 이 가운데 사용료를 받는 과세 시설(${taxableFacs.length ? taxableFacs.slice(0, 5).join('·') + (taxableFacs.length > 5 ? ' 등' : '') : '체육센터·임대 건물·휴양림 등'})의 신축·수선·운영 지출이 있으면 그만큼 공제 대상입니다 — 다른 지자체 환급의 대부분이 이 경우입니다.`, how: `홈택스에서 이 과세기간 매입 세금계산서 목록(엑셀)을 받아 ③에 올리면 어느 공급자·시설의 세액인지 가려 확정 금액이 나옵니다. 과세 시설 지출이면 (17)에서 (18)로 옮겨 경정청구합니다.`, effect: t(5), effectNote: '최대 — 과세 시설 지출만큼', basis: [B('act', '제38조'), B('act', '제39조'), B('basic', '제45조의2')] }); }
-    if (t(1) > 0) { o.upto += t(1); o.findings.push({ key: 'missing', title: `${tag} — '① 필요적 기재사항 누락 등' 불공제 ${fmt(t(1))}원 확인`, what: `세금계산서를 늦게 받았거나 기재사항이 빠져 ${fmt(t(1))}원을 불공제했습니다. 확정신고기한 다음 날부터 1년 안에 받은 것(시행령 제75조 제7호)이나 수정세금계산서로 고친 것은 공제됩니다.`, how: '그 세금계산서의 작성일자·발급일자를 보고, 기한 안이거나 수정세금계산서를 받으면 경정청구에 넣습니다.', effect: t(1), effectNote: '최대 — 요건을 갖춘 것만', basis: [B('act', '제39조'), B('decree', '제75조'), B('decree', '제70조')] }); }
+    if (t(1) > 0) { o.upto += t(1); o.findings.push({ key: 'late-invoice', title: `${tag} — '① 필요적 기재사항 누락 등' 불공제 ${fmt(t(1))}원 확인`, what: `세금계산서를 늦게 받았거나 기재사항이 빠져 ${fmt(t(1))}원을 불공제했습니다. 확정신고기한 다음 날부터 1년 안에 받은 것(시행령 제75조 제7호)이나 수정세금계산서로 고친 것은 공제됩니다.`, how: '그 세금계산서의 작성일자·발급일자를 보고, 기한 안이거나 수정세금계산서를 받으면 경정청구에 넣습니다.', effect: t(1), effectNote: '최대 — 요건을 갖춘 것만', basis: [B('act', '제39조'), B('decree', '제75조'), B('decree', '제70조')] }); }
     if (t(7) > 0) { o.upto += t(7); o.findings.push({ key: 'prereg', title: `${tag} — '⑦ 사업자등록 전 매입세액' 불공제 ${fmt(t(7))}원 확인`, what: `사업자등록 전 매입세액 ${fmt(t(7))}원을 불공제했습니다. 공급시기가 속한 과세기간이 끝난 뒤 20일 안에 등록을 신청했으면 그 기간 매입세액은 공제됩니다.`, how: '시설(사업장)의 사업자등록 신청일과 세금계산서 작성일을 견줘, 요건 안이면 경정청구에 넣습니다.', effect: t(7), effectNote: '최대 — 등록 신청일 요건 안의 것만', basis: [B('act', '제39조')] }); }
     /* 매입세액 전부(거의 전부)를 '② 사업과 직접 관련 없는 지출'로 불공제했는데 과세 매출이 있는 신고(2026-11-24 수성구청 실물: 20개 신고 모두 (16) = (17) = ②) —
        고유사무 지출은 공제 대상이 아니지만, 과세 시설 전용 지출은 공제(법 제38조)·같이 쓴 지출은 안분(영 제81조) 대상이라 ② 하나로 묶을 수 없다. 금액은 매입 목록을 시설별로 나눠야 나온다 */
@@ -238,7 +238,8 @@ export const PLAIN: Record<string, { t: string; todo: string }> = {
   'settle': { t: '반년 끝(확정신고)에 다시 맞추는 계산을 틀려, 부가세를 덜 받았어요', todo: '「고친 신고서」 값을 홈택스 경정청구 화면에 옮겨 적으면 됩니다. 다른 자료는 필요 없어요.' },
   'settle-check': { t: '분기 신고 때 나눈 부가세를 반년 끝에 다시 맞췄는지 보이지 않아요', todo: '그 기간 확정신고 때 함께 낸 「공제받지 못할 매입세액 명세서」 PDF 를 홈택스에서 받아 같은 칸에 놓아 주세요.' },
   'taxable-as-exempt': { t: '돈을 받는 시설(체육관·주차장·임대 등)에 쓴 비용의 부가세를 돌려받지 않은 것으로 처리했을 수 있어요', todo: '그 기간 홈택스 매입 세금계산서 목록(엑셀)을 받아 놓으면 어느 것이 돌려받을 수 있는지 점검기가 골라 줍니다.' },
-  'missing': { t: '늦게 받았거나 빈칸이 있던 세금계산서라서 부가세를 돌려받지 않았어요 — 기준 안이면 돌려받을 수 있어요', todo: '그 세금계산서를 받은 날짜를 확인해 주세요(공급한 때부터 1년 안이면 대부분 됩니다).' },
+  'late-invoice': { t: '늦게 받았거나 빈칸이 있던 세금계산서라서 부가세를 돌려받지 않았어요 — 기준 안이면 돌려받을 수 있어요', todo: '그 세금계산서를 받은 날짜를 확인해 주세요(공급한 때부터 1년 안이면 대부분 됩니다).' },
+  'missing': { t: '받은 세금계산서가 신고에 들어가지 않았어요 — 받는 쪽 번호가 우리 사업자등록번호면 돌려받을 수 있어요', todo: '홈택스 매입 목록에서 그 세금계산서의 받는 쪽(공급받는자) 번호부터 확인하세요. 우리 사업자등록번호면 경정청구서와 함께 매입처별 세금계산서합계표를 내면 공제되고(시행령 제74조 제2호), 고유번호 등 다른 번호로 받았으면 공제가 어렵습니다(수정세금계산서는 기한 안에만).' },
   'prereg': { t: '사업자등록 전에 쓴 비용이라 부가세를 돌려받지 않았어요 — 등록 신청 날짜에 따라 돌려받을 수 있어요', todo: '그 시설(사업장)의 사업자등록 신청일을 확인해 주세요.' },
   'sales-exempt': { t: '세금을 안 내도 되는 수입(우리 기관이 직접 운영하는 주차장 등)에 세금을 냈을 수 있어요', todo: '그 수입이 우리 기관이 직접 운영하는 시설 수입인지 세입 담당에게 확인해 주세요. 맞으면 낸 세금을 돌려받습니다.' },
   'recalc': { t: '함께 쓰는 건물·설비의 쓰임 비율이 크게 바뀌었는데 다시 계산하지 않았어요', todo: '그 건물·설비를 산 때와 값(자산대장)을 확인해 주세요. 비율이 줄었으면 돌려받을 돈이 생깁니다.' },
@@ -294,7 +295,8 @@ function stepsHtml(R: ReturnType<typeof refundCalc>): string {
 /** 다음에 받으면 금액이 커지는 자료 — '확인하면 최대' 항목을 자료별로 묶어 금액 큰 순 3개(선택) */
 const NEXT_DOC: Record<string, (name: string) => string> = {
   'taxable-as-exempt': n => `${n} 홈택스 매입 목록(조회/발급 → 전자세금계산서 → 목록조회 → 매입) 엑셀 — 면세사업 관련으로 불공제한 것 가운데 과세 시설 지출을 가려 확정 금액으로`,
-  'missing': n => `${n} 늦게 받거나 기재사항이 빠진 세금계산서의 수취일·수정세금계산서 — 1년 요건 안의 것은 공제`,
+  'late-invoice': n => `${n} 늦게 받거나 기재사항이 빠진 세금계산서의 수취일·수정세금계산서 — 1년 요건 안의 것은 공제`,
+  'missing': n => `${n} 신고에 빠진 세금계산서의 받는 쪽 번호(홈택스 매입 목록) — 우리 번호면 합계표와 함께 공제`,
   'prereg': n => `${n} 사업장 등록 신청일 — 과세기간 끝 20일 안이면 공제`,
   'sales-exempt': n => `${n} 그 수입의 세입 결의(e호조) — 직영 면세 시설 수입이면 낸 매출세액을 돌려받음`,
   'recalc': n => `${n} 공통 건물·설비 자산대장(취득가·매입세액·취득 시기) — 재계산으로 공제 늘어남`,

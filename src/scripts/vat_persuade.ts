@@ -12,8 +12,8 @@ export type PFile = { name: string; data: string | Uint8Array };
 type Cell = string | number | null | undefined;
 const pName = (k: string) => { const [y, h] = k.split('-'); return `${y}년 제${h}기`; };
 let FIRST = (g: Grade) => g <= 2;
-/** 3등급을 '매출 수정신고와 같이 냄'으로 확인하면 이번 청구에 넣는다 */
-const setFirst = (o: CbIn) => { FIRST = (g: Grade) => g <= 2 || (g === 3 && o.conf?.g3 === 'together'); };
+/** 환급만(운영자 2026-11-24 '이 앱의 목적은 환급이야 더 내는 것은 안되') — 매출을 함께 고쳐 더 내는 길(3등급 '같이 냄')은 두지 않는다. 3등급은 사용료를 이미 신고했다고 확인하면 2등급으로 올라와 청구된다 */
+const setFirst = (_o: CbIn) => { FIRST = (g: Grade) => g <= 2; };
 export const CONF_KEY = 'vat-confirm-v1';
 /** 제출 전 확인 질문(화면 버튼) — 지금 등급에서 청구에 영향이 있는 사실만. 누르면 등급·청구액·10 답·00 할 일이 바뀐다(2026-11-24 운영자 '공무원이 기재 할 일을 최대한 줄여') */
 export type ConfItem = { id: string; q: string; opts: [string, string][]; v?: string };
@@ -28,7 +28,6 @@ export function confItems(D: Data, o: CbIn): ConfItem[] {
       out.push({ id: `lessons|${f}`, q: `${f} — 구가 직접 여는 강좌의 수강료 수입이 있나요?`, opts: [['no', '없음'], ['yes', '있음']], v: c.lessons }); }
     if (!seen.has(f)) { seen.add(f); out.push({ id: `sales|${f}`, q: `${f} — 이 시설 사용료를 지난 부가세 신고 때 매출로 넣었나요?`, opts: [['yes', '넣었음'], ['no', '안 넣었음']], v: c.sales }); } }
   if (iss.some(i => i.fac === '(신고서 숫자로 다시 계산)')) out.push({ id: 'apport', q: '같이 쓴 지출의 부가세를 나눌 때 매출 금액 비율로 나눴나요?(지난 신고서 뒤쪽 명세서의 3번 표)', opts: [['supply', '매출 금액 비율'], ['other', '다른 기준']], v: cf.apport });
-  if (iss.some(i => i.grade === 3)) out.push({ id: 'g3', q: '사용료를 매출로 넣지 않은 시설 — 빠진 매출을 이번에 같이 고쳐 낼까요?(같이 내면 그 시설 부가세도 이번에 돌려받고, 가산세 감면이 큼)', opts: [['together', '같이 냄'], ['later', '나중에']], v: cf.g3 });
   return out;
 }
 /** 확인 답을 Conf 에 넣기 */
@@ -61,8 +60,8 @@ export function persuadePlan(D: Data, o: CbIn): Plan {
   return { issues, sum, first: pl1(sum, o), later: pl1later(sum, o), urgent: issues.filter(i => i.grade >= 3 && i.left <= 90), M, nDocs: docs.length, span: ks.length ? `${pName(ks[0])} ~ ${pName(ks[ks.length - 1])}` : '', g3: [...m3.values()], reqs, qs };
 }
 
-const pl1 = (s: Record<Grade, number>, o: CbIn) => s[1] + s[2] + (o.conf?.g3 === 'together' ? s[3] : 0);
-const pl1later = (s: Record<Grade, number>, o: CbIn) => s[4] + (o.conf?.g3 === 'together' ? 0 : s[3]);
+const pl1 = (s: Record<Grade, number>, _o: CbIn) => s[1] + s[2];
+const pl1later = (s: Record<Grade, number>, _o: CbIn) => s[4] + s[3];
 /** 쟁점을 '무엇 — 시설들' 묶음으로(요약서 3·4번) */
 function groups(L: Issue[]) { const m = new Map<string, { why: string; grade: Grade; facs: Set<string>; amt: number; q: string[]; ks: Set<string> }>();
   for (const i of L) { const key = `${i.grade}|${i.why}`; const x = m.get(key) ?? { why: i.why, grade: i.grade, facs: new Set<string>(), amt: 0, q: i.q, ks: new Set<string>() }; x.facs.add(i.fac); x.amt += i.amt; x.ks.add(i.k); m.set(key, x); }
@@ -74,8 +73,8 @@ export function summaryRows(D: Data, o: CbIn, pl: Plan): { head: string[]; parts
   const P = D.rules.persuade; const firstIss = pl.issues.filter(i => FIRST(i.grade)); const laterIss = pl.issues.filter(i => !FIRST(i.grade));
   const head = [`부가가치세 경정청구 검토 요약서 — ${o.org}${o.reg ? ` (${o.reg})` : ''}`, `${o.today} 작성 · 관할 세무서 제출·내부 결재 공용 · 숫자는 당초 신고서와 세금계산서로 다시 계산한 값`];
   const parts: { h: string; lines?: string[]; table?: Cell[][] }[] = [];
-  parts.push({ h: '1. 청구 요지', lines: [`${eun(o.org)} ${pl.span} 부가가치세 신고서 ${pl.nDocs}장에 대하여 경정을 청구합니다. 청구 세액은 ${fmt(pl.first)}원입니다(계산 정정 ${fmt(pl.sum[1])}원, 증빙으로 확인되는 과세사업 매입세액 ${fmt(pl.sum[2])}원${o.conf?.g3 === 'together' && pl.sum[3] ? `, 같은 날 매출 수정신고를 함께 내는 시설의 매입세액 ${fmt(pl.sum[3])}원` : ''}).`,
-    ...(pl.later ? [o.conf?.g3 === 'together' ? `해석이 필요한 몫 ${fmt(pl.sum[4])}원은 이번 청구에 넣지 않았으며, 그 처리는 4번에 먼저 밝힙니다.` : `매출 신고 확인이 전제인 몫 ${fmt(pl.sum[3])}원과 해석이 필요한 몫 ${fmt(pl.sum[4])}원은 이번 청구에 넣지 않았으며, 그 처리는 4번에 먼저 밝힙니다.`] : [])] });
+  parts.push({ h: '1. 청구 요지', lines: [`${eun(o.org)} ${pl.span} 부가가치세 신고서 ${pl.nDocs}장에 대하여 경정을 청구합니다. 청구 세액은 ${fmt(pl.first)}원입니다(계산 정정 ${fmt(pl.sum[1])}원, 증빙으로 확인되는 과세사업 매입세액 ${fmt(pl.sum[2])}원).`,
+    ...(pl.later ? [`매출 신고 확인이 전제인 몫 ${fmt(pl.sum[3])}원과 해석이 필요한 몫 ${fmt(pl.sum[4])}원은 이번 청구에 넣지 않았으며, 그 처리는 4번에 먼저 밝힙니다.`] : [])] });
   const T: Cell[][] = [['과세기간·구분', '당초 (16)', '당초 (17)', '당초 (18)', '경정 후 (17)', '경정 후 (18)', '청구 세액', '등급', '청구 기한', '붙임']];
   for (const k of [...pl.M.keys()].sort()) for (const c of pl.M.get(k)!) { const cell = (n: number) => c.cells.find(x => x.n === n); const gs = [...new Set(pl.issues.filter(i => i.key === k && FIRST(i.grade)).map(i => i.grade))].sort().join('·');
     const iss = pl.issues.find(i => i.key === k); T.push([`${pName(c.k)} ${c.kind}`, cell(16)?.before ?? null, cell(17)?.before ?? null, cell(18)?.before ?? null, cell(17)?.after ?? null, cell(18)?.after ?? null, c.delta, gs || '1', iss ? `${iss.cdue} (D-${iss.left})` : '', `02 ${c.page ?? ''}쪽·03·04`]); }
@@ -91,7 +90,6 @@ export function summaryRows(D: Data, o: CbIn, pl: Plan): { head: string[]; parts
     if (L.length) parts.push({ h: '3-1. 당초 신고서 과세표준 명세(업종코드 · 금액)', lines: [...L, '청구한 시설의 사용료는 위 업종 코드의 과세 매출로 신고하였습니다(시설별 세입 실적과의 대사는 청구인 붙임).'] }); }
   const dis = groups(laterIss).map(g => g.grade === 3 ? `${facList(g.facs)}: 그 시설 사용료의 과세 매출 신고를 확인하고 있어 이번 청구에 넣지 않았습니다(${fmt(g.amt)}원, ${[...g.ks].sort().map(pName).join(', ')}).` : `${facList(g.facs)}: ${g.why} — 이번 청구에 넣지 않았고, 서면질의(또는 세법해석 사전답변)로 기준을 정한 뒤 따로 청구합니다(${fmt(g.amt)}원, ${[...g.ks].sort().map(pName).join(', ')}).`);
   if (pl.urgent.length) dis.push(`경정청구 기한이 90일 안에 끝나는 몫이 있습니다(${[...new Set(pl.urgent.map(i => `${pName(i.k)} ${i.cdue}`))].join(', ')}) — 기한을 지키려면 그 몫만 따로 청구하는 안을 관할 세무서와 상의합니다(국세기본법 제45조의2 제1항).`);
-  if (o.conf?.g3 === 'together' && pl.sum[3]) { const f3 = [...new Set(pl.issues.filter(i => i.grade === 3).map(i => i.fac))]; dis.unshift(`${facList(new Set(f3))}: 그 기간 사용료를 매출로 신고하지 않은 것을 확인해, 같은 날 매출 수정신고(국세기본법 제45조)를 함께 내고 그 시설 매입세액 ${fmt(pl.sum[3])}원을 이번에 청구합니다.`); }
   if (dis.length) dis.push('이번 청구에서 뺀 세금계산서는 당초 신고대로 공제받지 못할 매입세액에 남아 있으며, 따로 청구할 때 같은 세금계산서를 이번 청구와 겹치지 않게 적습니다(붙임 04 2항·06).');
   parts.push({ h: '4. 청구인이 먼저 밝히는 것', lines: dis.length ? dis : [P?.disclose_none ?? ''] });
   parts.push({ h: '5. 붙임', lines: [...FILES.filter(f => SUBMIT.includes(f.n) && f.n !== '01').map(f => `붙임 ${f.n} ${f.t}`), '청구인이 더 붙이는 것: 당초 신고서·공제받지 못할 매입세액 명세서 사본(같은 과세기간 예정신고서 포함, 홈택스 신고내역 출력), 사업자등록증 사본, 시설별 사용료 조례 별표와 그 기간 사용료 세입 실적(과세표준 대사), 세액이 큰 계약의 계약서·준공검사조서'] });
@@ -108,7 +106,7 @@ export const FILES = [
   { n: '06', f: '06_건별_귀속명세.xlsx', t: '세금계산서별 시설 귀속 명세' }, { n: '07', f: '07_근거_조문·유권해석_발췌.pdf', t: '근거 조문·유권해석 발췌' },
   { n: '08', f: '08_부서별_증빙요청_메모.txt', t: '부서별 증빙 요청 메모(청구인 내부용)' }, { n: '09', f: '09_세무서_사전상담_대본.txt', t: '사전 상담 대본(청구인 내부용)' },
   { n: '10', f: '10_보완요청_답변틀.txt', t: '자료 보완 요청 답변 틀(청구인 내부용)' }, { n: '11', f: '11_사전답변·질의서_초안(4등급).txt', t: '해석이 필요한 몫의 질의서 초안' },
-  { n: '12', f: '12_수정신고_함께내기_비교.xlsx', t: '매출 신고 확인이 필요한 몫 — 수정신고와 함께 낼 때의 순액 비교' },
+  { n: '12', f: '12_청구하지_않는_몫(매출_신고_확인).xlsx', t: '그 기간 과세 매출에 사용료가 없는 시설 — 청구하면 더 낼 수 있어 뺀 몫과 청구하는 방법' },
   { n: '13', f: '13_내부_작업서(확인할_것·쟁점_등급·전체_금액).xlsx', t: '기관 내부 작업서 — 모든 등급의 신고서별 계산, 확인할 것, 법령 검토, 세무서가 볼 것' },
 ];
 
@@ -124,14 +122,15 @@ function todoText(D: Data, o: CbIn, pl: Plan): string {
   if (pl.reqs.length) T.push([`08 메모를 부서별로 보내 서류를 받습니다(${pl.reqs.length}가지 서류)`, '내부 메신저 또는 업무 연락에 메모를 그대로 붙여넣기(받는 부서 이름은 08 에서 고침)', '보내기 10분, 회신 1~2주', '08 의 ☐ 가 모두 ☑']);
   const ci = confItems(D, o); const left = ci.filter(x => !x.v);
   if (left.length) T.push([`제출 전 확인 ${left.length}가지가 남았습니다 — 돌려받기 화면 「세무서에 내기 전 확인」에서 08 로 받은 서류를 보고 버튼을 누른 뒤 이 묶음을 다시 받습니다(적을 것 없음, 누르면 청구액·답변이 저절로 바뀜). 화면: ${site}${left.map(x => `\n       ☐ ${x.q}`).join('')}`, '08 로 받은 서류와 당초 신고서(홈택스 신고내역 출력)', '15분', '화면의 확인이 모두 끝남']);
-  T.push([`01${g3amt && o.conf?.g3 !== 'together' ? '·12' : ''} 를 붙여 내부 결재를 받습니다`, '전자결재', '하루', '결재 완료']);
+  T.push([`01${g3amt ? '·12' : ''} 를 붙여 내부 결재를 받습니다`, '전자결재', '하루', '결재 완료']);
   T.push([`관할 세무서 부가가치세과에 사전 상담 전화를 합니다 — 09 대본을 읽고 답을 적습니다(제출 방식: 홈택스/서면)`, `${office ? `${office} 세무서` : '신고서에 적힌 관할 세무서'} 대표 전화 → 부가가치세과`, '5분', '09 의 빈칸을 채움']);
   { const docs = o.docs ?? []; const hasRep = docs.some(d => d.rep), hasTel = docs.some(d => d.tel);
     T.push([`02 에는 적을 것이 없습니다 — 성명(${hasRep ? '신고서의 대표자' : '신고서에서 못 읽음: 서면이면 기관장 성명을 적음'})·전화(${hasTel ? '신고서의 사업장 전화' : '못 읽음: 서면이면 부서 전화'})·주소·최초신고일·관할 세무서·청구 날짜(받은 날)를 채워 두었습니다. 서면으로 낼 때만 서명(또는 직인)을 하고, 환급 계좌는 홈택스 경정청구 화면에서 고릅니다(비워 두면 국세환급금 통지서)`, '직인은 직인 관리 부서(총무 담당)', '서면만 5분', '서면이면 서명·직인 끝']); }
   T.push(['경정청구를 냅니다 — 홈택스면 04 각 신고서 시트 「1. 홈택스 경정청구 화면에 넣을 값」을 칸 번호대로 옮기고 환급 계좌를 화면에서 한 번 넣은 뒤, 01~07 과 당초 신고서 사본을 증빙으로 올립니다. 서면이면 01~07 을 출력해 냅니다. 08~13 은 내지 않습니다', '홈택스(부가세 신고 때 쓰던 기관 사업자 인증서 — 없으면 지난 신고 담당자에게 물음) → 신고/납부 → 세금신고 → 부가가치세 → 경정청구. 서면이면 관할 세무서 민원봉사실', '신고서마다 15분', '접수증을 출력해 둠']);
   T.push(['그 뒤: 세무서가 자료 보완을 요청하면 10 에서 비슷한 질문 번호를 찾아 답을 고쳐 보냅니다. 환급 통지를 받으면 바로 세외수입으로 처리합니다(세입세출외현금에 두지 않음 — 정부합동감사 지적 사례)', '10 답변 틀 · 세입 담당 부서', '건마다 20분', '회신·세입 처리 완료']);
   T.forEach(([a, b, c, d], i) => L.push(`☐ ${i + 1}. ${a}`, `     어디서: ${b} · 걸리는 시간: ${c} · 끝났는지: ${d}`, ''));
-  if (pl.later) L.push('나중 묶음(이번에 내지 않음)', ...(pl.sum[3] && o.conf?.g3 !== 'together' ? [`- 매출 신고 확인이 필요한 몫 ${fmt(pl.sum[3])}원 → 12 비교표. 화면에서 '같이 냄'을 누르면 이번 청구에 들어감(같은 날 내야 감면이 큼)`] : []), ...(pl.sum[4] ? [`- 해석이 필요한 몫 ${fmt(pl.sum[4])}원 → 11 질의서 초안을 고쳐 국세청 서면질의 또는 세법해석 사전답변으로`] : []), '');
+  L.push(...periodTable(pl, o), '');
+  if (pl.later) L.push('나중 묶음(이번에 내지 않음)', ...(pl.sum[3] ? [`- 매출 신고 확인이 필요한 몫 ${fmt(pl.sum[3])}원 → 12. 그 기간 사용료를 이미 과세 매출로 신고했으면(다른 업종코드 줄 포함) 화면 확인에서 '넣었음'을 누르면 이번 청구에 들어감. 신고하지 않았으면 청구하지 않음 — 청구하면 세무서가 매출을 함께 경정해 더 낼 수 있음(이 앱은 환급만)`] : []), ...(pl.sum[4] ? [`- 해석이 필요한 몫 ${fmt(pl.sum[4])}원 → 11 질의서 초안을 고쳐 국세청 서면질의 또는 세법해석 사전답변으로`] : []), '');
   L.push('세무서에 내는 파일(01 요약서 + 붙임 02~07)', ...FILES.filter(f => SUBMIT.includes(f.n)).map(f => `- ${f.f} — ${f.t}`), '', '기관 안에서만 쓰는 파일(세무서에 내지 않음)', ...FILES.filter(f => !SUBMIT.includes(f.n)).map(f => `- ${f.f} — ${f.t}`), '',
     '낱말 풀이', '- 경정청구: 이미 낸 부가세 신고를 고쳐, 더 낸 세금을 돌려 달라고 세무서에 청구하는 것', '- 제1기·제2기, 예정·확정: 1~6월이 제1기, 7~12월이 제2기. 석 달마다 예정신고, 여섯 달마다 확정신고', '- 매입세액: 공사·물품 대금과 함께 낸 부가세. 과세 시설에 쓴 것은 돌려받을 수 있음', '- 불공제 / 공제받지 못할 매입세액: 돌려받지 않은 것으로 처리한 매입세액', '- (16)(17)(18): 신고서 칸 번호 — (16) 받은 매입세액 합계, (17) 그 가운데 공제받지 않은 것, (18) 공제받은 것',
     '- 과세사업·면세: 사용료에 부가세가 붙는 시설(체육시설·숙박·임대 등)이 과세사업. 지자체의 다른 일은 대부분 면세라 그 지출의 부가세는 돌려받지 못함', '- 공통매입세액 안분: 과세·면세에 같이 쓴 지출의 부가세를 비율로 나누는 것', '- 과세표준 명세·업종코드: 신고서의 업종별 매출 칸과 6자리 업종 번호(예: 9113·809 로 시작하면 스포츠시설 운영, 55 숙박, 70 부동산 임대) — 세무서는 공제받는 시설의 매출이 여기에 있는지 봄', '- 공급가액: 부가세를 뺀 거래 금액. 총공급가액 = 과세 매출 + 면세 수입, 면세공급가액 = 면세 수입', "- 시행령 제81조 제1항 식: 같이 쓴 지출의 부가세 × (면세공급가액 ÷ 총공급가액) = 돌려받지 못하는 몫", '- 자유 이용료·강습료: 시설을 그냥 쓰는 요금(과세)과 강좌 수강료(지자체 직영 강좌는 면세)', "- ② 사업과 직접 관련 없는 지출: 불공제 사유 칸 가운데 하나 — 과세 시설 지출을 여기에 넣으면 돌려받지 못함",
@@ -198,12 +197,33 @@ function inquiryFile(D: Data, o: CbIn, pl: Plan): string {
   return L.join('\n');
 }
 
+/** 신고별 환급 표(기한 순) — 운영자 2026-11-24 '각 경정시기 별로 얼마씩 환급 받을 수 있는지 금액과 근거 이유'. 환급만: 더 낼 수 있는 몫은 '청구하지 않음' */
+export function periodTable(pl: Plan, o: CbIn): string[] {
+  const by = new Map<string, Issue[]>(); for (const i of pl.issues) { const key = `${i.k}|${i.pre ? 0 : 1}`; by.set(key, [...(by.get(key) ?? []), i]); }
+  const no = (f: string) => o.conf?.fac?.[f]?.sales === 'no';
+  const kind = (i: Issue) => FIRST(i.grade) ? 'now' : i.grade === 3 && no(i.fac) ? 'skip' : 'chk';
+  const why = (i: Issue) => i.grade === 1 ? '신고서 숫자로 공통매입세액 안분을 다시 계산(부가가치세법 시행령 제81조·제82조)'
+    : i.grade === 2 ? '사용료를 과세 매출로 신고하는 시설의 공사·관리·운영비 매입세액 — 공제 대상(부가가치세법 제38조)인데 불공제로 처리했거나 신고에 넣지 않음(신고에 없던 세금계산서는 합계표를 함께 냄, 시행령 제74조 제2호 — 가산세 없음)'
+    : /관람석/.test(i.why) ? '관람석이 없으면 기타 스포츠시설 운영업이라 매입세액 공제(제38조, 시행령 제46조 제3호), 있으면 경기장 운영업 면세(서면3팀-1330·법규과-209)라 그동안 과세로 낸 사용료 매출세액을 돌려받음 — 어느 쪽이든 환급(금액은 다름)'
+    : /추정/.test(i.why) ? '과세로 쓰는 면적 비율만큼 공제(시행령 제81조 제4항) — 건축물대장·사용허가서 면적으로 비율을 정하면 청구(추정 비율 그대로는 내지 않음)'
+    : i.grade === 3 && no(i.fac) ? '그 기간 사용료를 과세 매출로 신고하지 않았다고 확인 — 청구하면 세무서가 매출을 함께 경정해 더 낼 수 있어 청구하지 않음'
+    : i.grade === 3 ? '그 기간 과세 매출에 이 시설 사용료가 들어 있으면 공제(제38조) — 세입 실적과 신고서 과세 매출을 맞춰 확인. 들어 있지 않으면 청구하지 않음(청구하면 더 낼 수 있음)'
+    : i.why;
+  const L = ['신고별 환급 표(청구 기한 순) — 이 앱은 환급만 다룹니다. 더 낼 수 있는 몫은 청구하지 않습니다', ''];
+  const keys = [...by.keys()].sort((a, b) => (by.get(a)![0].cdue).localeCompare(by.get(b)![0].cdue) || a.localeCompare(b));
+  for (const key of keys) { const xs = by.get(key)!; const x0 = xs[0]; const sum = (t: string) => xs.filter(i => kind(i) === t).reduce((n, i) => n + i.amt, 0);
+    L.push(`■ ${x0.name} — 청구 기한 ${x0.cdue}${x0.left >= 0 ? ` (D-${x0.left})` : ' (지남)'}: 이번 청구 ${fmt(sum('now'))}원 · 확인하면 청구 ${fmt(sum('chk'))}원${sum('skip') ? ` · 청구하지 않음 ${fmt(sum('skip'))}원` : ''}`);
+    for (const t of ['now', 'chk', 'skip'] as const) { const g = new Map<string, { amt: number; why: string; facs: string[] }>();
+      for (const i of xs.filter(i => kind(i) === t)) { const w = why(i); const y = g.get(w) ?? { amt: 0, why: w, facs: [] }; y.amt += i.amt; y.facs.push(`${i.fac.replace(/\(.*$/, '')} ${fmt(i.amt)}원`); g.set(w, y); }
+      for (const y of g.values()) L.push(`   ${t === 'now' ? '이번 청구' : t === 'chk' ? '확인하면 청구' : '청구하지 않음'} ${fmt(y.amt)}원 — ${y.facs.join(', ')}`, `      이유·근거: ${y.why}`); }
+    L.push(''); }
+  return L; }
 function compareSheet(pl: Plan): Sheet[] {
+  /* 환급만 — 그 기간 과세 매출에 사용료가 없는 시설은 청구하지 않는다(청구하면 세무서가 매출을 함께 경정해 더 낼 수 있음). 이미 다른 업종코드로 신고했으면 화면에서 '넣었음' → 청구 */
   if (!pl.g3.length) return [];
-  const R: Cell[][] = [['과세기간', '시설', '신고서에 없는 업종', '돌려받을 매입세액(A)', '그 기간 시설 수입 어림(세입예산 ÷ 2)', '매출세액 어림(B = 수입 ÷ 11)', '과소신고·납부지연 가산세 어림(C, 오늘 수정신고·납부)', '함께 낼 때 순액(A − B − C)', '떼어 둘 때']];
-  for (const x of pl.g3.sort((a, b) => a.k.localeCompare(b.k))) R.push([pName(x.k), x.fac, x.gap, x.amt, x.rev || null, x.rev ? x.sales : null, x.rev ? x.pen : null, x.net, '이번 청구에서 뺌 — 매출 신고 여부는 그대로 남음']);
-  R.push([], ['감면과 예외'], ['- 수정신고 감면율(과소신고 가산세): 법정신고기한 뒤 1개월 안 90% … 1년 6개월~2년 10%(국세기본법 제48조 제2항 제1호). 날이 갈수록 줄어듭니다.'], ['- 세무서가 경정할 것을 미리 알고 낸 수정신고는 감면에서 빠질 수 있습니다(같은 호 단서 — 원문 확인 필요). 경정청구로 세무서가 매출을 보기 전에, 같은 날 또는 먼저 냅니다.'], ['- 수입 어림은 과세기간(6개월) 기준 — 세입예산 연 수입 ÷ 2.'], [], ['읽는 법'], ['- 공제받으려는 시설의 사용료를 과세 매출로 신고하지 않았다면, 세무서는 매입세액 공제만 인정하지 않고 매출 누락도 함께 볼 수 있습니다(부가가치세법 제38조, 국세기본법 제45조의2).'], ['- 함께 내는 안: 매출 수정신고(국세기본법 제45조, 과소신고 가산세 감면 같은 법 제48조 제2항)와 경정청구를 같은 날 냅니다. 사업자에게 빌려주고 세금계산서를 발급하지 않았다면 공급가액의 2% 가산세가 더해집니다(부가가치세법 제60조 제2항 제2호 — 이 표에 넣지 않음).'], ['- 수입 어림은 기관 설정의 세입예산서 연 수입(부가세 포함으로 봄)의 절반입니다. 세입 결산 실적으로 바꾸면 정확해집니다. 수입 자료가 없는 시설은 비어 있습니다.'], ['- 순액이 음수여도 매출 신고 의무는 그대로입니다. 이 표는 어느 쪽이 유리한지를 정하지 않습니다 — 판정은 참고이며 기관의 판단이 아닙니다.']);
-  return [{ name: '수정신고 함께내기 비교', rows: R, widths: [14, 30, 18, 16, 18, 16, 22, 18, 40] }];
+  const R: Cell[][] = [['과세기간', '시설', '신고서에 없는 업종', '청구하지 않은 매입세액', '청구하지 않은 이유', '청구하려면']];
+  for (const x of pl.g3.sort((a, b) => a.k.localeCompare(b.k))) R.push([pName(x.k), x.fac, x.gap, x.amt, `그 기간 신고서 과세표준 명세에 ${x.gap} 매출이 없음 — 사용료를 과세 매출로 신고하지 않았다면 매입세액만 청구할 수 없고(부가가치세법 제38조는 과세사업 매입세액), 청구하면 세무서가 매출을 함께 경정해 더 낼 수 있음`, '그 기간 세입 실적과 신고서 과세 매출(다른 업종코드 줄 포함)을 맞춰 사용료가 들어 있으면 화면 「세무서에 내기 전 확인」에서 \'넣었음\' → 이번 청구에 들어감']);
+  return [{ name: '청구하지 않는 몫', rows: R, widths: [14, 30, 18, 16, 60, 60] }];
 }
 
 async function legalPdf(D: Data, o: CbIn, pl: Plan): Promise<Blob | null> {

@@ -69,8 +69,16 @@ export type Issue = { key: string; k: string; name: string; pre: boolean; grade:
 export const GAP: Record<string, [RegExp, string]> = { lodging: [/^55/, '숙박업'], lease: [/^70/, '부동산임대업'], sports: [/^(809|9113)/, '스포츠시설 운영업'] };
 /** 그 과세기간 신고서(예정·확정)의 과세표준 명세에 매출이 없는 업종(시설 유형 열쇠). 그 기간 명세를 못 읽었으면 전체 신고서로, 아무 명세도 없으면 빈 집합(모름 — 3등급으로 보내지 않음) */
 export function gapTypes(docs: FiledDoc[], k?: string): Set<string> {
-  const per = k ? docs.filter(d => `${d.year}-${d.half}` === k).flatMap(d => d.codes ?? []) : []; const codes = per.length ? per : docs.flatMap(d => d.codes ?? []); const s = new Set<string>(); if (!codes.length) return s;
-  for (const [t, [re]] of Object.entries(GAP)) if (!codes.some(x => re.test(x.code) && !x.zero)) s.add(t); return s; }
+  const pd = k ? docs.filter(d => `${d.year}-${d.half}` === k) : []; const s = new Set<string>();
+  const has = (ds: FiledDoc[], re: RegExp) => ds.some(d => (d.codes ?? []).some(x => re.test(x.code) && !x.zero));
+  if (!pd.length || !pd.some(d => d.codes?.length)) { const all = docs.flatMap(d => d.codes ?? []); if (!all.length) return s; for (const [t, [re]] of Object.entries(GAP)) if (!all.some(x => re.test(x.code) && !x.zero)) s.add(t); return s; }
+  /* 그 기간 명세에 업종코드를 못 읽은 줄이 있으면(코드 읽은 금액 합 < 과세표준 (9)) 그 줄이 무슨 업종인지 모른다 — 다른 과세기간 절반 이상에 나오는 업종만 그 줄로 본다(환급만: 넓게 보면 매출 없는 시설을 청구해 더 낼 수 있음). 2026-11-24 수성구 2021년 제2기 — 두 번째 줄의 코드가 PDF 글자에 없음 */
+  const unread = pd.some(d => { const tb = d.cells[9]?.amt; const sum = (d.base ?? []).reduce((n, b) => n + (b.code ? b.amt : 0), 0); return tb != null && tb > 0 && sum < tb - 1000; });
+  const others = [...new Set(docs.map(d => `${d.year}-${d.half}`))].filter(x => x !== k);
+  for (const [t, [re]] of Object.entries(GAP)) { if (has(pd, re)) continue;
+    const n = others.filter(x => has(docs.filter(d => `${d.year}-${d.half}` === x), re)).length;
+    if (unread && others.length && n * 2 >= others.length) continue; s.add(t); }
+  return s; }
 const STADIUM = /운동장|경기장|야구장|축구장|구장/;
 function gradeFac(D: Data, o: CbIn, f: { fac: string; type?: string; share?: number }, gap: Set<string>): { grade: Grade; why: string; q: string[]; gap?: string } {
   const fr = f.type ? D.facilities.find(x => x.key === f.type) : undefined;

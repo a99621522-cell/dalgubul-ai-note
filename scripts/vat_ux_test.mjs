@@ -403,6 +403,9 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   await pg.setInputFiles('#rv-fd-file', [path.join(FXU, 'filed_allu_2025_1.txt')]); await pg.waitForTimeout(1500);
   const allu = T(await pg.locator('#rf-sum').textContent().catch(() => ''));
   ok('U6 ② 전액 불공제 + 과세 매출 → 「② 사업과 직접 관련 없는 지출」 안내 · 합계표의 ①⑤ 줄을 불공제 사유로 읽지 않음', /사업과 직접 관련 없는 지출'로 돌려받지 않았습니다/.test(allu) && !/늦게 받았거나/.test(allu) && !/찾은 것이 없습니다/.test(allu), allu.slice(0, 300));
+  { const btn = await pg.$('#rf-dl-cases'); let cbOk = false, cbX = 'no button';
+    if (btn) { try { const [dl] = await Promise.all([pg.waitForEvent('download', { timeout: 15000 }), btn.click()]); const f = path.join(os.tmpdir(), 'vat-cb-' + Date.now() + '.xlsx'); await dl.saveAs(f); const t = fs.readFileSync(f).toString('utf8'); cbOk = t.startsWith('PK') && t.includes('먼저 읽기') && t.includes('신고별 요약') && t.includes('25-1기 확정') && t.includes('국세기본법 제45조의2'); cbX = `${fs.statSync(f).size}B`; } catch (e) { cbX = String(e).slice(0, 120); } }
+    ok('U7 신고서별 경정청구서(엑셀) — 먼저 읽기·신고별 요약·신고서 한 장(25-1기 확정)·근거 조문', cbOk, cbX); }
   await pg.evaluate(() => { localStorage.removeItem('vat-review-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 /* ── S 지난 돈 돌려받기 세 걸음 판(2026-11-05 docs/prompts/vat_refund_3steps.md): 기관 → 신고서 → 매입 목록 여러 파일, 계약 업체 번호로 저절로 귀속, 할 일·엑셀·PDF ── */

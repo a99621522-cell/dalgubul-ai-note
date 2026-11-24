@@ -398,6 +398,11 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   await pg.setInputFiles('#rv-fd-file', [path.join(FXU, 'filed_2022_2_old.txt')]); await pg.waitForTimeout(800);
   const old22 = await pg.$$eval('#rv-fd-tbl tbody tr', trs => trs.map(t => [...t.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim())).find(r => /2022년 제2기/.test(r[0])));
   ok('U5 옛 서식(2022년 제2기) — 공제받은 매입세액 700,000 · 불공제 100,000 · 옮겨 읽었다는 안내', !!old22 && old22[4] === '700,000' && old22[5] === '100,000' && /2025-07-04 전 서식/.test(old22.join(' ')), JSON.stringify(old22));
+  /* U6 매입세액을 모두 '② 사업과 직접 관련 없는 지출'로 불공제 + 명세서 뒤에 매출처별 합계표('① 사업자등록번호 …')가 이어 붙은 신고서(2026-11-24 수성구청 실물 배치) */
+  await pg.evaluate(() => { localStorage.removeItem('vat-review-v1'); localStorage.removeItem('vat-rv-src'); }); await pg.reload(); await pg.waitForTimeout(1500);
+  await pg.setInputFiles('#rv-fd-file', [path.join(FXU, 'filed_allu_2025_1.txt')]); await pg.waitForTimeout(1500);
+  const allu = T(await pg.locator('#rf-sum').textContent().catch(() => ''));
+  ok('U6 ② 전액 불공제 + 과세 매출 → 「② 사업과 직접 관련 없는 지출」 안내 · 합계표의 ①⑤ 줄을 불공제 사유로 읽지 않음', /사업과 직접 관련 없는 지출'로 돌려받지 않았습니다/.test(allu) && !/늦게 받았거나/.test(allu) && !/찾은 것이 없습니다/.test(allu), allu.slice(0, 300));
   await pg.evaluate(() => { localStorage.removeItem('vat-review-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 /* ── S 지난 돈 돌려받기 세 걸음 판(2026-11-05 docs/prompts/vat_refund_3steps.md): 기관 → 신고서 → 매입 목록 여러 파일, 계약 업체 번호로 저절로 귀속, 할 일·엑셀·PDF ── */

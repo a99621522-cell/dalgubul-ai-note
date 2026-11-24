@@ -26,7 +26,7 @@ export function presetFacilities(p: Preset): OrgFacility[] {
 
 /** 세입예산서의 시설 성격 사업을 시설 후보로. 이미 있는 시설(예시·직접 입력)과 이름이 서로 품거나 앞 6글자 이상 같으면 그 시설에 붙이고(rev·메모), 없는 것만 새로 넣는다(운영 방식 '확인 필요'). 반환: 새 시설 수·합친 시설 수·붙인 사업 수 */
 export function addRevenueFacilities(D: Data, org: Org, g: RevGov) {
-  const clean = (s: string) => s.replace(/\s*(수입|입장료|사용료|임대료|이용료|관람료|주차요금|주차료|대관료|수강료|회비|요금)\s*(수입)?$/g, '').replace(/\(.*?\)/g, '').trim() || s;
+  const clean = (s: string) => s.replace(/\s*(수입|입장료|사용료|임대료|이용료|관람료|주차요금|주차료|대관료|수강료|회비|요금)\s*(수입)?$/g, '').replace(/\(.*?\)/g, '').replace(/[\s·ㆍ,]*점\s*[·ㆍ]?$/, '').trim() || s;   /* '국·공유재산(구거) 점·사용료' → '국·공유재산'(2026-11-24 수성구) */
   const pref = (a: string, b: string) => { let n = 0; while (n < a.length && n < b.length && a[n] === b[n]) n++; return n; };
   const score = (fn: string, b: string) => { const a = normN(fn); if (a.length < 3 || b.length < 3) return 0; if (b.includes(a) || (a.length >= 4 && b.length >= 4 && a.includes(b))) return 100 + Math.min(a.length, b.length); const p = pref(a, b); return p >= 6 && a.length > p && b.includes(a.slice(p)) ? p + 20 : 0; };
   const pick = (item: string) => { const b = normN(clean(item)); let best: OrgFacility | undefined, bs = 0; for (const f of org.facilities) { const sc = Math.max(score(f.name, b), ...(f.alias ?? []).map(x => score(x, b))); if (sc > bs) { bs = sc; best = f; } } return best; };

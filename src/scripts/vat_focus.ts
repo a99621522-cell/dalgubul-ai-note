@@ -19,7 +19,7 @@ function shareLabel(f: OrgFacility): string {
 
 export function focusHtml(D: Data, org: Org | null, stake: Stake, hasList: boolean): string {
   if (!org) return '';
-  const gp = (D.govs ?? []).find(g => org.org === g.name || org.org.endsWith(g.name.replace(/^대구광역시\s*/, '')));
+  const tail = (n: string) => n.replace(/^대구광역시\s*/, ''); const gp = (D.govs ?? []).find(g => org.org === g.name) ?? (D.govs ?? []).find(g => tail(g.name) && org.org.endsWith(tail(g.name)));   /* '대구광역시'는 꼬리가 빈 글자라 모든 기관에 맞던 것(2026-11-24 수성구 화면에 대구시 묶음) */
   if (!gp?.focus?.length) return '';
   const U = govUnit(org.org); const used = new Set<string>();
   const money = (f: OrgFacility) => { const s = stake.get(f.id); return s ? (hasList ? s.tax : s.est) : 0; };

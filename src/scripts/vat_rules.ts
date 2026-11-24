@@ -139,7 +139,7 @@ export function matchMap(org: Org | null, biz: string, dept: string): MapRule | 
 /** 이름 일치에 쓰지 않는 시설 이름 — 세입예산서에서 불러온 수입 항목('도로'·'하천'·'공유재산' 사용료·점용료, '…수수료'·'…수입')과 임차인 이름('사회적협동조합 ○○').
  *  '도로'가 도로 공사 계약 수백 건에 붙어 과세 시설 계약으로 세던 것(2026-11-05 동구 나라장터 계약) */
 const GENERIC_FAC = /^(도로|하천|공유수면|공유재산|국유재산|기타|구유재산|군유재산|시유재산|사용료수입|주차요금수입|주차요금|시설녹지|공연|공연입장료|입장료)$/;   // '공연'(세입 '공연입장료'에서 만든 시설 이름)이 '찾아가는 문화공연' 행사 용역에 붙던 것(2026-11-18 남구)
-export const noNameMatch = (name: string) => { const n = String(name ?? '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim(); return !n || GENERIC_FAC.test(n.replace(/\s/g, '')) || /(점용료|수수료|수입|대부료|임대료|사용료|요금|판매|수탁료|입장료|관람료)(\s*등)?$/.test(n) || /점용료|사용료|임대료|대부료|수수료/.test(n) || /협동조합|조합\s|^\(?(주|사|재)\)/.test(n); };
+export const noNameMatch = (name: string) => { const n = String(name ?? '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim(); return !n || GENERIC_FAC.test(n.replace(/\s/g, '')) || /(점용료|수수료|수입|대부료|임대료|사용료|요금|판매|수탁료|입장료|관람료)(\s*등)?$/.test(n) || /점용료|사용료|임대료|대부료|수수료/.test(n) || /협동조합|조합\s|^\(?(주|사|재)\)/.test(n) || /^(국\s*[·ㆍ]?\s*공유|공유|국유)\s*재산/.test(n); };   /* '국·공유재산' 같은 재산 일반 이름은 지출 이름 일치에 쓰지 않음(2026-11-24 수성구) */
 export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacility | undefined {
   if (!org) return undefined; const norm = (x: string) => String(x ?? '').replace(/[\s()（）·,.\-_/]/g, '').toLowerCase(); const hay = norm(texts.filter(Boolean).join(' ')); if (hay.length < 2) return undefined;
   /* 낱말 사전: 시설 이름·별칭을 괄호·공백·가운뎃점으로 나눈 낱말(2글자 이상)이 몇 시설에 나오는지 — 3곳 이상에 나오는 낱말('달성'·'체육' 등)은 가름에 쓰지 않는다 */

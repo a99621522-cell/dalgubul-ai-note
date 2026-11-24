@@ -20,9 +20,11 @@ export async function readFiledText(file: File): Promise<string> {
   const lib: any = await import('pdfjs-dist'); lib.GlobalWorkerOptions.workerSrc = pdfWorker;
   const doc = await lib.getDocument({ data: buf }).promise; const pages: string[] = [];
   for (let p = 1; p <= doc.numPages; p++) {
-    const c = await (await doc.getPage(p)).getTextContent(); const lines: { y: number; items: { x: number; s: string }[] }[] = [];
-    for (const it of c.items as { str: string; transform: number[] }[]) { if (!it.str?.trim()) continue; const x = it.transform[4], y = it.transform[5]; let L = lines.find(l => Math.abs(l.y - y) < 2.5); if (!L) { L = { y, items: [] }; lines.push(L); } L.items.push({ x, s: it.str }); }
-    lines.sort((a, b) => b.y - a.y); pages.push(lines.map(l => l.items.sort((a, b) => a.x - b.x).map(i => i.s).join(' ')).join('\n'));
+    const c = await (await doc.getPage(p)).getTextContent(); const lines: { y: number; items: { x: number; w: number; h: number; s: string }[] }[] = [];
+    for (const it of c.items as { str: string; transform: number[]; width?: number; height?: number }[]) { if (!it.str?.trim()) continue; const x = it.transform[4], y = it.transform[5]; let L = lines.find(l => Math.abs(l.y - y) < 2.5); if (!L) { L = { y, items: [] }; lines.push(L); } L.items.push({ x, w: it.width ?? 0, h: Math.abs(it.height || it.transform[3] || 8), s: it.str }); }
+    /* 홈택스 신고서 PDF 는 글자를 한 자씩 따로 그린다(2026-11-24 수성구청 실물) — 앞 글자 끝과 다음 글자 사이가 글자 높이의 1/4 보다 좁으면 띄어 쓰지 않고 붙인다 */
+    const join = (its: { x: number; w: number; h: number; s: string }[]) => its.reduce((a, it, i) => { if (!i) return it.s; const pv = its[i - 1]; const gap = it.x - (pv.x + pv.w); return a + (pv.w > 0 && gap < Math.max(0.8, 0.25 * Math.min(pv.h, it.h)) ? '' : ' ') + it.s; }, '');
+    lines.sort((a, b) => b.y - a.y); pages.push(lines.map(l => join(l.items.sort((a, b) => a.x - b.x))).join('\n'));
   }
   return pages.join('\n\f\n');
 }
@@ -72,11 +74,18 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
   if (!reg) warn.push('사업자등록번호를 못 찾았습니다');
   const ndAt = seg.search(/공제\s*받지\s*못할\s*매입\s*세액\s*명세서/); const main0 = ndAt > 0 ? seg.slice(0, ndAt) : seg; const main = main0.split(/작\s*성\s*방\s*법/)[0];   // 서식 뒤쪽 작성방법의 '(10)란' 같은 글자는 읽지 않는다
   const cells: Record<number, Cell> = {};
-  for (const line of main.split('\n')) {
+  /* 과세표준수정신고서(국세기본법 시행규칙 별지 제16호서식이 붙은 신고서)는 칸마다 숫자가 두 줄 — 칸 이름 줄 위가 최초 신고, 아래가 수정 신고(2026-11-24 수성구청 2021년 제2기:
+     아래 줄이 함께 낸 불공제 명세서 값과 같음). 칸 이름 줄에 숫자가 없으면 아래 줄(없으면 위 줄)의 숫자를 읽는다 — 줄의 마지막 칸 번호만 */
+  const mlines = main.split('\n'); const bare = (l?: string) => l != null && !/\(\d{1,2}\)/.test(l) && nums(l).length > 0;
+  const amended = /과\s*세\s*표\s*준\s*수\s*정\s*신\s*고/.test(seg); let usedNext = false;
+  for (const [li, line] of mlines.entries()) {
     const marks = [...line.matchAll(/\((\d{1,2})\)/g)]; if (!marks.length) continue;
-    marks.forEach((mm, j) => { const n = Number(mm[1]); if (n < 1 || n > 18 || cells[n]) return; const after = line.slice(mm.index! + mm[0].length, marks[j + 1]?.index ?? line.length); const v = nums(after); if (!v.length) return;
+    marks.forEach((mm, j) => { const n = Number(mm[1]); if (n < 1 || n > 18 || cells[n]) return; const after = line.slice(mm.index! + mm[0].length, marks[j + 1]?.index ?? line.length); let v = nums(after);
+      if (!v.length && j === marks.length - 1) { const nx = mlines[li + 1], pv = mlines[li - 1]; if (bare(nx)) { v = nums(nx!); usedNext = true; } else if (bare(pv)) v = nums(pv!); }
+      if (!v.length) return;
       if (v.length >= 2) cells[n] = { amt: v[0], tax: v[1] }; else if (n >= 10) cells[n] = { amt: null, tax: v[0] }; else cells[n] = { amt: v[0], tax: n <= 4 ? Math.floor(v[0] / 10) : 0 }; });
   }
+  if (amended && usedNext) warn.push('과세표준수정신고서 — 칸마다 두 줄 가운데 아래 줄(수정 신고)을 읽었습니다');
   /* 2025-07-04 전 서식(2021-03-16 판 ~ 2025-03-21 판): (15) 합계 · (16) 공제받지못할매입세액 · (17) 차감계 · (18) 그 밖의 경감·공제세액 — 현행 (16)(17)(18)로 옮겨 읽는다
      (docs/design/vat-law-changes-2021.md 요약 B-1). 칸 이름 '공제받지 못할 매입세액'이 붙은 번호로 판을 가르고, 이름이 없으면 (15)−(16)=(17) 인지로 본다 */
   { const ndLbl = /\((1[67])\)[^\n(]{0,6}공\s*제\s*받\s*지\s*못\s*할/.exec(main) ?? /공\s*제\s*받\s*지\s*못\s*할\s*매\s*입\s*세\s*액[^\n(]{0,6}\((1[67])\)/.exec(main);
@@ -86,8 +95,8 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
   if (cells[18]?.tax != null && cells[16]?.tax != null && cells[17]?.tax != null && cells[16].tax! - cells[17].tax! !== cells[18].tax) warn.push(`(16) − (17) 과 (18) 이 맞지 않습니다 — 칸을 확인하세요`);
   if (cells[18]?.tax == null) warn.push('(18) 차감계(공제받은 매입세액)를 못 읽었습니다 — ② 표에 직접 넣으세요');
   let nd: FiledDoc['nd'] = null;
-  if (ndAt > 0) { const part = seg.slice(ndAt); const reasons: Record<number, Cell> = {};
-    for (const line of part.split('\n')) { const c = CIRC.indexOf(line.trim()[0]); if (c < 0 || c > 8) continue; const v = nums(line.slice(1).replace(/「[^」]*」|제\d+조(의\d+)?(제\d+항)?(제\d+호)?/g, ' ')); if (!v.length) continue; reasons[c + 1] = v.length >= 3 ? { n: v[0], amt: v[1], tax: v[2] } : v.length === 2 ? { amt: v[0], tax: v[1] } : { amt: null, tax: v[0] }; }
+  if (ndAt > 0) { const part0 = seg.slice(ndAt); const nx = part0.slice(40).search(/■[^\n]{0,40}\[\s*별\s*지/); const part = nx >= 0 ? part0.slice(0, 40 + nx) : part0; const reasons: Record<number, Cell> = {};   /* 명세서 뒤에 이어 붙은 다른 서식(매출처별 합계표 '① 사업자등록번호 …')의 ①~⑨ 줄을 사유로 읽지 않게 — 2026-11-24 수성구청 실물 */
+    for (const line of part.split('\n')) { const c = CIRC.indexOf(line.trim()[0]); if (c < 0 || c > 8 || reasons[c + 1]) continue; const v = nums(line.slice(1).replace(/「[^」]*」|제\d+조(의\d+)?(제\d+항)?(제\d+호)?/g, ' ')); if (!v.length) continue; reasons[c + 1] = v.length >= 3 ? { n: v[0], amt: v[1], tax: v[2] } : v.length === 2 ? { amt: v[0], tax: v[1] } : { amt: null, tax: v[0] }; }
     let common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null = null; const ca = part.search(/공통\s*매입\s*세액\s*안분/); const cb = part.search(/공통\s*매입\s*세액의\s*정산/);
     if (ca >= 0) { const sec = part.slice(ca, cb > ca ? cb : undefined); const sum = sec.split('\n').find(l => /^\s*합\s*계/.test(l) && nums(l).length >= 5); const rows = sum ? [nums(sum)] : sec.split('\n').filter(l => /^\s*[1-9]\s/.test(l)).map(l => nums(l).slice(1)).filter(v => v.length >= 5);
       if (rows.length) { const s = rows.reduce((a, v) => [a[0] + v[0], a[1] + v[1], a[2] + v[2], a[3] + v[3], a[4] + v[4]], [0, 0, 0, 0, 0]); common = { sup: s[0], tax: s[1], total: s[2], exempt: s[3], nd: s[4] }; } }

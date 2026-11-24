@@ -10,7 +10,7 @@ import { focusHtml, wireFocus } from './vat_focus';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
-type Built = { diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null; total?: number | null; ex5?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
+type Built = { diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null; total?: number | null; ex5?: number | null; nd2?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
 
 const D = loadData();
 if (D && $('rf-band')) init(D);
@@ -183,15 +183,15 @@ function init(D: Data) {
        '그 기간 신고서의 받은 부가세 합계 (16)' < '과세 시설 전용으로 붙은 나라장터 계약의 부가세 어림(계약금액 × 10/110, 공사 기간에 나눔, 과세 몫 share)' 이면
        차이만큼은 세금계산서가 신고에 아예 들어가지 않았을 수 있다(하한 — (16)에는 다른 지출도 들어 있으므로). 여기에 신고서가 '면세사업 관련'으로
        공제하지 않은 세액(⑤) 가운데 계약 어림까지를 더한 값(계약 어림을 넘지 않게)을 '후보(추정)'로 — 확정·최대와 섞지 않고, 확인할 업체 목록을 준다. 새 판정 규칙 없음 */
-    type CC = { k: string; name: string; recv: number; ex5: number; est: number; miss: number; part5: number; cand: number; reg: number; fids: string[]; sups: { no: string; nm: string; est: number; ctrs: { nm: string; date: string; k: string; fac: string; est: number }[] }[] };
+    type CC = { k: string; name: string; recv: number; ex5: number; nd2: number; est: number; miss: number; part5: number; cand: number; reg: number; fids: string[]; sups: { no: string; nm: string; est: number; ctrs: { nm: string; date: string; k: string; fac: string; est: number }[] }[] };
     const cands: CC[] = [];
     if (!nR && ctx) { const fk = new Map(b.filed.map(f => [f.k, f]));
       for (const k of L) { const f = fk.get(k); if (!f || f.total == null) continue;
         const rs = (ctx.rows ?? []).filter(r => r.p === k && r.taxable && r.a && r.a.fid !== 'admin' && r.a.fid !== 'exempt' && r.a.use !== 'admin' && r.a.use !== 'multi');
         const est = rs.reduce((n, r) => n + r.est, 0); if (!est) continue;
-        const miss = Math.max(0, est - f.total); const part5 = Math.min(f.ex5 ?? 0, est); const cand = Math.min(est, miss + part5); if (cand <= 0) continue;
+        const miss = Math.max(0, est - f.total); const nd25 = (f.ex5 ?? 0) + (f.nd2 ?? 0); const part5 = Math.min(nd25, est);   /* ⑤ 면세사업 관련 + ② 사업과 직접 관련 없는 지출(2026-11-24 수성구청: 매입세액 전부를 ②로 불공제) — 과세 시설 계약 몫이 들어 있을 수 있는 불공제 */ const cand = Math.min(est, miss + part5); if (cand <= 0) continue;
         const bySup = new Map<string, CC['sups'][number]>(); for (const r of rs) { const cs = r.c.corps.filter(p => /^\d{10}$/.test(p.no)); const key = cs[0]?.no ?? `?${r.c.nm}`; const x = bySup.get(key) ?? { no: cs[0]?.no ?? '', nm: cs.map(p => p.nm).join('·') || '(상호 확인)', est: 0, ctrs: [] }; x.est += r.est; const fac = org.facilities.find(q => q.id === r.a!.fid)?.name ?? ''; x.ctrs.push({ nm: r.c.nm, date: r.c.date, k: r.c.k, fac, est: r.est }); bySup.set(key, x); }
-        cands.push({ k, name: pName(k), recv: f.total, ex5: f.ex5 ?? 0, est, miss, part5, cand, reg: cand - part5, fids: [...new Set(rs.map(r => r.a!.fid))], sups: [...bySup.values()].sort((a, c) => c.est - a.est) }); } }
+        cands.push({ k, name: pName(k), recv: f.total, ex5: nd25, nd2: f.nd2 ?? 0, est, miss, part5, cand, reg: cand - part5, fids: [...new Set(rs.map(r => r.a!.fid))], sups: [...bySup.values()].sort((a, c) => c.est - a.est) }); } }
     const candSum = cands.reduce((n, c) => n + c.cand, 0); const candIn = cands.reduce((n, c) => n + c.part5, 0); const candReg = candSum - candIn;
     /* 세무 검토 반영(2026-11-05 운영자 '순서대로 수정해' — 세무법인 관점 평가 1~4):
        ① 신고서에 없던 몫(candReg)은 그 시설이 사업자등록돼 있었고 세금계산서가 그 번호로 발급됐을 때만 — 등록 전 매입세액 불공제(법 제39조 제1항 제8호), 고유번호 기재분은 공급받는자가 달라 수정세금계산서(시행령 제70조) 기한 안에만
@@ -222,7 +222,10 @@ function init(D: Data) {
     const otherHtml = other.length ? `<details class="vat-more"><summary>그 밖에 확인할 것 ${other.length}건(금액 없음)</summary><ul class="meta-list">${other.map(r => `<li><b>${esc(r.name)}</b> — ${esc(plainT(r))}<br><span class="note">${esc(plainTodo(r))}</span></li>`).join('')}</ul></details>` : '';
     const missHtml = miss ? `<p class="callout warn rf-miss-l">⚠ 신고서를 올리지 않은 과세기간이 있습니다 — ${esc(miss.f.what.replace(/ — 이 기간들도.*$/, ''))}. 올리면 더 찾을 수 있습니다.</p>` : '';
     const exHtml = ex.length ? `<p class="note">경정청구 기한(5년)이 지난 ${ex.length}개 과세기간(${ex.map(d => esc(d.name)).join(' · ')})은 돌려받을 수 없어 뺐습니다.</p>` : '';
-    const zero = sure === 0 && upto === 0 && candSum === 0 ? `<div class="rf-zero"><p><b>찾은 것이 없습니다.</b> 이런 경우일 수 있습니다:</p><ol><li>지난 신고가 맞게 되어 있습니다.</li><li>신고서 숫자만으로는 보이지 않는 것 — 돈을 받는 시설(체육관·주차장·임대 등)에 쓴 비용을 공제하지 않은 경우는 <b>매입 목록 엑셀</b>을 올려야 찾습니다.</li><li>${ex.length && !rows ? '올린 신고서가 모두 경정청구 기한(5년)이 지났습니다.' : '올린 신고서가 일부 기간뿐입니다 — 5년치를 모두 올려 보세요.'}</li></ol></div>` : '';
+    /* 매입세액을 모두 '② 사업과 직접 관련 없는 지출'로 불공제한 신고(2026-11-24 수성구청 실물) — '찾은 것이 없습니다'가 아니라 매입 목록을 올리라고 먼저 말한다 */
+    const allU = b.filed.filter(f => (f.total ?? 0) > 0 && (f.nd2 ?? 0) >= (f.total ?? 0) * 0.9 && (f.salesSup ?? 0) > 0);
+    const allUHtml = allU.length && !nR ? `<div class="callout warn rf-allu" id="rf-allu"><p><b>신고서 ${allU.length}개 과세기간 모두, 받은 세금계산서 부가세 ${fmt(allU.reduce((n, f) => n + (f.nd2 ?? 0), 0))}원을 '② 사업과 직접 관련 없는 지출'로 돌려받지 않았습니다.</b> 그런데 같은 신고서에 사용료 등 과세 매출을 신고했습니다 — 돈을 받는 시설(체육관·임대 등)에 쓴 공사·관리·운영비 부가세는 돌려받을 수 있고(부가가치세법 제38조), 행정과 같이 쓴 지출은 나눠 돌려받습니다(시행령 제81조).</p><p>얼마인지는 신고서 숫자로는 알 수 없습니다 — <b>같은 기간 매입 목록 엑셀</b>(e호조 지출 내역 또는 홈택스 전자세금계산서 매입 목록)을 2에 놓으면 시설별로 계산합니다.</p></div>` : '';
+    const zero = sure === 0 && upto === 0 && candSum === 0 && !allUHtml ? `<div class="rf-zero"><p><b>찾은 것이 없습니다.</b> 이런 경우일 수 있습니다:</p><ol><li>지난 신고가 맞게 되어 있습니다.</li><li>신고서 숫자만으로는 보이지 않는 것 — 돈을 받는 시설(체육관·주차장·임대 등)에 쓴 비용을 공제하지 않은 경우는 <b>매입 목록 엑셀</b>을 올려야 찾습니다.</li><li>${ex.length && !rows ? '올린 신고서가 모두 경정청구 기한(5년)이 지났습니다.' : '올린 신고서가 일부 기간뿐입니다 — 5년치를 모두 올려 보세요.'}</li></ol></div>` : '';
     const sup = b.sup?.todo ? `<p class="note">매입 목록의 공급자 ${b.sup.todo}곳은 어느 시설 것인지 정하지 못해 아직 셈에 없습니다 — <a href="#rf-files" data-open-sec="rf-files">파일별로 보기·고치기</a>에서 정하세요.</p>` : '';
     const dl = sure > 0 || upto > 0 || candSum > 0 ? `<div class="rf-dl actions no-print"><button type="button" class="btn" id="rf-dl-submit">세무서·홈택스에 낼 자료 받기 <small>(엑셀+PDF)</small></button></div>
       <p class="note">돌려받는 신청은 홈택스 → 신고/납부 → 세금신고 → 부가가치세 → 경정청구 메뉴에서, 자료 안의 「고친 신고서」 값을 칸마다 옮겨 적으면 됩니다.${sure > 0 ? ` 결재·서면 제출용 <button type="button" class="link-btn no-print" id="rf-dl-form-pdf">경정청구서(국세청 서식) PDF 받기</button> · <button type="button" class="link-btn no-print" id="rf-dl-form">보기·인쇄</button> · <button type="button" class="link-btn no-print" id="rf-dl-reason">경정청구 사유서(근거 법령·붙임) PDF</button> — 국세기본법 시행규칙 별지 제16호의2서식에 숫자를 채운 것입니다.` : ''}</p>
@@ -234,16 +237,16 @@ function init(D: Data) {
         <li><b>그 시설(사업장)이 그 기간에 사업자등록이 되어 있었나</b> — 등록 신청 전에 산 것의 부가세는 공제하지 않습니다(과세기간이 끝난 뒤 20일 안에 등록을 신청했으면 예외).${org.unit === 'entity' ? ' 사업자 단위 과세라면 그 시설이 종된 사업장으로 신고돼 있으면 됩니다.' : ''}</li>
         <li><b>세금계산서의 받는 쪽 번호가 그 사업자등록번호인가</b> — 고유번호로 받은 세금계산서는 받는 쪽이 달라 공제되지 않을 수 있고, 공급자가 번호를 고쳐 다시 발급(수정세금계산서)할 수 있는 것은 확정신고기한 다음 날부터 1년 안뿐이라 대부분 지났습니다.</li>
         <li><b>그 시설 사용료를 과세 매출로 신고해 왔나</b> — 아니면 사용료의 부가세와 가산세를 먼저 셉니다(위 '순으로 보면').</li></ol>
-        <p class="note">그래서 「신고서에 들어 있던 몫」(번호가 맞게 받아 신고했지만 '면세사업 관련'으로 공제하지 않은 것)이 먼저이고, 「신고서에 없던 몫」은 위 두 가지가 확인된 뒤에만 셉니다. <span class="rf-k">근거</span> ${law([B('act', '제39조'), B('decree', '제70조'), B('decree', '제75조')])}</p></div>
+        <p class="note">그래서 「신고서에 들어 있던 몫」(번호가 맞게 받아 신고했지만 '면세사업 관련'·'사업과 직접 관련 없는 지출' 등으로 공제하지 않은 것)이 먼저이고, 「신고서에 없던 몫」은 위 두 가지가 확인된 뒤에만 셉니다. <span class="rf-k">근거</span> ${law([B('act', '제39조'), B('decree', '제70조'), B('decree', '제75조')])}</p></div>
       <ol class="rf-rows">${cands.map(c => `<li class="rf-row rf-cand-row" data-k="${esc(c.k)}"><div class="rf-row-h"><b>${esc(c.name)}</b> <span class="num">약 ${fmt(c.cand)}원</span></div>
         <p class="note">신고서의 받은 부가세 합계 ${fmt(c.recv)}원 · 과세 시설 계약의 부가세 약 ${fmt(c.est)}원</p>
-        <ul class="rf-cand-tiers">${c.part5 ? `<li><span class="vbadge">신고서에 들어 있던 몫</span> 약 <b>${fmt(c.part5)}원</b> — 신고서가 '면세사업 관련'으로 돌려받지 않은 ${fmt(c.ex5)}원 가운데 이 계약 몫일 수 있어요. 시설이 과세로 확인되면 돌려받습니다.</li>` : ''}${c.reg ? `<li><span class="vbadge warn">신고서에 없던 몫</span> 약 <b>${fmt(c.reg)}원</b> — 신고에 들어가지 않았을 수 있어요. 사업자등록 여부와 세금계산서의 받는 쪽 번호를 확인한 뒤에만 돌려받을 수 있습니다.</li>` : ''}</ul>
+        <ul class="rf-cand-tiers">${c.part5 ? `<li><span class="vbadge">신고서에 들어 있던 몫</span> 약 <b>${fmt(c.part5)}원</b> — 신고서가 ${c.nd2 && c.ex5 > c.nd2 ? `'면세사업 관련'·'사업과 직접 관련 없는 지출'로` : c.nd2 ? `'사업과 직접 관련 없는 지출'로` : `'면세사업 관련'으로`} 돌려받지 않은 ${fmt(c.ex5)}원 가운데 이 계약 몫일 수 있어요. 시설이 과세로 확인되면 돌려받습니다.</li>` : ''}${c.reg ? `<li><span class="vbadge warn">신고서에 없던 몫</span> 약 <b>${fmt(c.reg)}원</b> — 신고에 들어가지 않았을 수 있어요. 사업자등록 여부와 세금계산서의 받는 쪽 번호를 확인한 뒤에만 돌려받을 수 있습니다.</li>` : ''}</ul>
         ${c.sups.length > 3 ? `<p class="note">큰 업체 3곳만 확인해도 약 ${fmt(c.sups.slice(0, 3).reduce((n, x) => n + x.est, 0))}원(계약 몫의 ${Math.round(c.sups.slice(0, 3).reduce((n, x) => n + x.est, 0) / c.est * 100)}%)을 볼 수 있어요.</p>` : ''}<details class="rf-row-why"><summary>확인할 업체 ${c.sups.length}곳 · 왜 · 어떻게</summary><ul class="meta-list">${c.sups.slice(0, 12).map(x => `<li><b>${esc(x.nm)}</b>${x.no ? ` ${esc(x.no.replace(/^(\d{3})(\d{2})(\d{5})$/, '$1-$2-$3'))}` : ''} — 약 ${fmt(x.est)}원<br><span class="note">${x.ctrs.slice(0, 3).map(t => `${esc(t.nm)}(${esc(t.k)} · ${esc(t.date)}${t.fac ? ` · ${esc(t.fac)}` : ''})`).join(' / ')}${x.ctrs.length > 3 ? ` 외 ${x.ctrs.length - 3}건` : ''}</span></li>`).join('')}</ul>${c.sups.length > 12 ? `<p class="note">나머지 ${c.sups.length - 12}곳은 업체 목록 파일에 있습니다.</p>` : ''}
           <p><span class="rf-k">할 일</span> 홈택스 → 조회/발급 → 전자세금계산서 → 목록조회 → 매입에서 기간을 ${esc(c.name)}로 두고 '거래처 사업자등록번호'에 위 번호를 넣어 조회합니다. 나온 세금계산서 엑셀을 2에 놓으면 확정 금액으로 바뀝니다.</p>
           <p class="note"><span class="rf-k">이유</span> 돈을 받는 시설(과세사업)에 쓴 비용의 부가세는 돌려받습니다(공제). 세금계산서가 신고에 빠졌거나 '면세사업 관련'으로 처리됐다면 고쳐 신청할 수 있습니다.</p>
           <p class="note"><span class="rf-k">근거</span> ${law([B('act', '제38조'), B('act', '제39조'), B('basic', '제45조의2')])}</p></details></li>`).join('')}</ol>
       <div class="actions no-print"><button type="button" class="btn secondary" id="rf-cand-csv">확인할 업체 목록 받기(CSV)</button></div></section>` : '';
-    el.innerHTML = head + netHtml + headCand + cells + src + dl + missHtml + zero + sup + listUl + candHtml + otherHtml + exHtml;
+    el.innerHTML = head + netHtml + headCand + cells + src + dl + missHtml + allUHtml + zero + sup + listUl + candHtml + otherHtml + exHtml;
     document.dispatchEvent(new CustomEvent('vat-cand', { detail: cands.length ? candRows() : [] }));   /* 신고서만 올린 묶음(vat_review)에 '추가분 합계표 밑자료'로 */
     $('rf-cand-csv')?.addEventListener('click', () => downloadText(`확인할_업체_목록_${org.org}_${today}.csv`.replace(/\s+/g, '_'), toCsv(candRows()), 'text/csv;charset=utf-8'));
     done3(sure > 0 ? `${fmt(sure)}원` : upto > 0 ? `최대 ${fmt(upto)}원` : candSum > 0 ? `후보 약 ${fmt(candSum)}원` : '찾은 것 없음');

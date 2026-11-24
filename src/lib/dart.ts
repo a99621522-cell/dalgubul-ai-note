@@ -81,7 +81,8 @@ export const ymd = (s: string) => (s && s.length === 8 ? `${s.slice(0, 4)}-${s.s
 /** 직원 현황(scripts/collect_dart_emp.py → scripts/data/company_employees.csv): 사업보고서 '직원 등의 현황' 회사 단위 집계.
  *  직원 수·정규직·기간제·남녀·평균 근속연수 값 그대로, 1인 평균 급여는 연간 급여 총액 ÷ 직원 수(avg_method). 순위·평가 없음. */
 export type DartEmployee = { corp_code: string; name: string; year: string; employees: string; regular: string; contract: string; male: string; female: string;
-  avg_tenure: string; salary_total: string; avg_salary: string; avg_salary_reported: string; avg_method: string; unit_note: string; rcept_no: string; source_url: string; as_of: string };
+  avg_tenure: string; salary_total: string; avg_salary: string; avg_salary_reported: string; avg_method: string; unit_note: string;
+  male_avg_salary?: string; female_avg_salary?: string; male_tenure?: string; female_tenure?: string; rcept_no: string; source_url: string; as_of: string };
 export const dartEmployees = memo(() => readCsv('scripts/data/company_employees.csv') as DartEmployee[]);
 /** 반기보고서 직원 현황(collect_dart_emp.py --half → company_employees_half.csv, 운영자 지시 2026-10-19 '직원 현황도 반기보고서로 업데이트해'):
  *  6월 말 직원 수·정규직·기간제·남녀·평균 근속, 급여 총액·1인 평균 급여는 1~6월 누적이라 연간 값과 견주지 않는다 */
@@ -115,6 +116,15 @@ export const dartInvest = memo(() => readCsv('scripts/data/company_investments.c
 export const investOf = (name: string) => dartInvest().filter(r => normName(r.name) === normName(name)).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));
 
 /** 회사 코드(corp_code)로 고르기 — 상장기업 상세 페이지(/listed/<code>/) */
+/** 직원 공시 행 그대로(사업부문 × 성별, collect_dart_emp.py → company_employees_rows.csv, 운영자 지시 2026-11-24) — 회사 페이지 '부서·성별 공시 내역' */
+export type EmpRow = { corp_code: string; year: string; fo_bbm: string; sexdstn: string; sm: string; rgllbr_co: string; cnttk_co: string; avrg_cnwk_sdytrn: string; fyer_salary_totamt: string; jan_salary_am: string; rcept_no: string };
+const empRowsAll = memo(() => readCsv('scripts/data/company_employees_rows.csv') as EmpRow[]);
+export const empRowsByCode = (code: string, year: string) => empRowsAll().filter(r => r.corp_code === code && r.year === year);
+/** 임원 보수(collect_dart_emp.py → company_exec_pay.csv): 사업보고서 '이사·감사 전체의 보수현황(보수지급금액)'·'미등기임원 보수현황'의
+ *  인원·총액·1인 평균만 — 개인별 보수·이름은 받지 않는다(운영자 지시 2026-11-24) */
+export type ExecPay = { corp_code: string; name: string; year: string; dir_n: string; dir_total: string; dir_avg: string; unreg_n: string; unreg_total: string; unreg_avg: string; rcept_no: string; source_url: string; as_of: string };
+const execAll = memo(() => readCsv('scripts/data/company_exec_pay.csv') as ExecPay[]);
+export const execByCode = (code: string) => execAll().filter(e => e.corp_code === code).sort((a, b) => a.year.localeCompare(b.year));
 export const empByCode = (code: string) => dartEmployees().filter(e => e.corp_code === code).sort((a, b) => b.year.localeCompare(a.year));
 export const rndByCode = (code: string) => dartRnd().filter(r => r.corp_code === code).sort((a, b) => b.year.localeCompare(a.year));
 export const invByCode = (code: string) => dartInvest().filter(r => r.corp_code === code).sort((a, b) => (Number(b.end_share_pct) || 0) - (Number(a.end_share_pct) || 0));

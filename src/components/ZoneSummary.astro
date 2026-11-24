@@ -64,7 +64,7 @@ const cxHref = (name: string) => `/companies/?complex=${encodeURIComponent(name)
           {rows.map(({ p, w }) => (
             <li class="zcard">
               <p class="zname">{p.short}</p>
-              <p class="znum"><a href={progHref(p)} aria-label={`${p.name} ${nf(p.candidates_only ? p.n_linked : p.n_firm)}곳 보기`}>{nf(p.candidates_only ? p.n_linked : p.n_firm)}<span class="unit">곳{p.candidates_only ? ' 후보' : ''}</span></a></p>
+              <p class="znum"><a href={progHref(p)} title={`${p.name} 명단 보기`}>{nf(p.candidates_only ? p.n_linked : p.n_firm)}<span class="unit">곳{p.candidates_only ? ' 후보' : ''}</span><span class="visually-hidden"> — {p.name} 명단 보기</span></a></p>
               <p class="zsub">
                 {p.candidates_only
                   ? <>전국 특례 기업 중 대구 기업 사전과 이름이 같은 회사</>

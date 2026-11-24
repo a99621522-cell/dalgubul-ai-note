@@ -117,7 +117,7 @@ function init(D: Data) {
       const setSrc = (v: 'inv' | 'card') => { const r = document.querySelector<HTMLInputElement>(`input[name=rv-dsrc][value=${v}]`); if (r) r.checked = true; };
       const n0 = st.rows.length; if (inv.length) { setSrc('inv'); addFiles(inv, []); } if (card.length) { setSrc('card'); addFiles(card, []); setSrc('inv'); }
       const ks = [...new Set(filed.map(d => `${d.year}년 제${d.half}기`))];
-      msg.innerHTML = `파일 ${fs.length}개 — 신고서 <b>${filed.length}</b>건${ks.length ? `(${esc(ks.join(', '))})` : ''} · 매입 세금계산서 목록 <b>${inv.length}</b>개 · 사업용 카드 <b>${card.length}</b>개 → 매입 ${fmt(st.rows.length - n0)}건 더함${fails.length ? ` · 못 읽음: ${esc(fails.join(', '))}` : ''}. <a href="#rf-go3">결과 보기 ↓</a>`;
+      msg.innerHTML = `파일 ${fs.length}개 — 신고서 <b>${filed.length}</b>건${ks.length ? `(${esc(ks.join(', '))})` : ''} · 매입 세금계산서 목록 <b>${inv.length}</b>개 · 사업용 카드 <b>${card.length}</b>개 → 매입 ${fmt(st.rows.length - n0)}건 더함${!st.rows.length && filed.length ? ' — 매입 목록이 없어 조달청 나라장터 계약을 매입 자료로 썼습니다' : ''}${fails.length ? ` · 못 읽음: ${esc(fails.join(', '))}` : ''}. <a href="#rf-go3">결과 보기 ↓</a>`;
       if (filed.length || st.rows.length > n0) document.getElementById('rf-go3')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); };
     $<HTMLInputElement>('rf-all-file')!.addEventListener('change', e => void handle([...((e.target as HTMLInputElement).files ?? [])]));
     const dz = $('rf-all-drop')!; dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); }); dz.addEventListener('dragleave', () => dz.classList.remove('over')); dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); void handle([...(e.dataTransfer?.files ?? [])]); });

@@ -30,7 +30,7 @@ const days = (to: string, today: string) => Math.round((new Date(to).getTime() -
 const tax = (d: FiledDoc, n: number) => d.cells[n]?.tax ?? null;
 const amt = (d: FiledDoc, n: number) => d.cells[n]?.amt ?? null;
 
-export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number>; areaFac?: string[]; conf?: Conf; deptByFac?: Record<string, string> };
+export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; revText?: Record<string, string>; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number>; areaFac?: string[]; conf?: Conf; deptByFac?: Record<string, string> };
 /** 제출 전 확인(화면에서 누름, 2026-11-24 운영자 '공무원이 기재 할 일을 최대한 줄여') — 시설별 관람석·강습료·과세 매출 신고, 당초 안분 기준, 3등급 수정신고를 같이 낼지. 'yes'·'no' 만, 비면 모름 */
 export type Conf = { fac?: Record<string, { seats?: 'yes' | 'no'; lessons?: 'yes' | 'no'; sales?: 'yes' | 'no' }>; apport?: 'supply' | 'other'; g3?: 'together' | 'later'; at?: string };   /* revByFac: 시설 이름 → 세입예산 연 수입(원, 기관 설정 메모의 세입예산서 줄) */   /* corr: 신고서 숫자만으로 고친 값(진단의 안분 재계산 등) */
 const short = (n: string) => n.replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim();
@@ -87,7 +87,10 @@ function gradeFac(D: Data, o: CbIn, f: { fac: string; type?: string; share?: num
   const cf = o.conf?.fac?.[f.fac];
   if (f.type === 'sports' && cf?.seats === 'yes') return { grade: 4, why: '관중용 관람석이 있음(청구인 확인) — 경기장 운영업 면세 여부를 질의로 정한 뒤 청구', q: ['Q12'] };
   if (f.type === 'sports' && cf?.lessons === 'yes') return { grade: 4, why: '직영 강습료 수입이 있음(청구인 확인) — 강습 몫(면세)을 빼는 비율을 정한 뒤 청구', q: ['Q14'] };
-  if (f.type === 'sports' && STADIUM.test(f.fac) && cf?.seats !== 'no') return { grade: 4, why: '관람석을 갖춘 경기장인지 확인 필요 — 관람석이 있으면 경기장 운영업으로 면세', q: ['Q12'] };
+  /* 관람석 의심은 이름만으로 하지 않는다(2026-11-24 운영자 '관람객이 없을꺼야, 세입 보면 알 수 있잖아') — 시설 메모(세입예산서 줄)를 알면 입장료·관람료 수입이 있을 때만.
+     환급만 원칙에서도 안전: 과세로 청구했는데 세무서가 경기장(면세)으로 보면 매입세액 대신 그동안 과세로 낸 사용료 매출세액을 돌려받는 쪽이라 더 낼 일이 없다 */
+  const known = o.revText && f.fac in o.revText; const spect = /입장료|관람료|관람석|관중/.test(o.revText?.[f.fac] ?? '');
+  if (f.type === 'sports' && STADIUM.test(f.fac) && cf?.seats !== 'no' && (!known || spect)) return { grade: 4, why: '관람석을 갖춘 경기장인지 확인 필요 — 관람석이 있으면 경기장 운영업으로 면세', q: ['Q12'] };
   if (typeof f.share === 'number' && f.share < 1 && !(o.areaFac ?? []).includes(f.fac)) return { grade: 4, why: `같이 쓰는 건물 — 과세 몫 ${Math.round(f.share * 100)}%는 추정, 용도별 면적표로 정해야 함`, q: ['Q19'] };
   if (cf?.sales === 'no') return { grade: 3, why: '그 기간 사용료를 과세 매출로 신고하지 않음(청구인 확인) — 매출 수정신고와 함께', q: ['Q10', 'Q28'], gap: '사용료' };
   if (f.type && gap.has(f.type) && cf?.sales !== 'yes') return { grade: 3, why: `신고서 과세표준 명세에 ${GAP[f.type][1]} 매출이 없음 — 사용료를 과세 매출로 신고했는지 먼저 확인`, q: ['Q10', 'Q28'], gap: GAP[f.type][1] };
@@ -222,7 +225,7 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
     if (c.pre) out.push('예정신고분 — 경정청구 기한은 확정신고기한부터 5년입니다(국세청 서면법규과-385). 예정신고서를 따로 고칠지, 같은 과세기간 확정신고 경정청구에 합칠지는 관할 세무서와 맞춥니다');
     /* 법령 검토(2026-11-24) — 시설 종류별로 판정이 갈리는 사실 */
     const SPORT = F.filter(f => f.type === 'sports' || f.type === 'golf');
-    if (SPORT.length) out.push(`관람석 확인 — ${SPORT.slice(0, 6).map(f => short(f.fac)).join(', ')}: 일반 관중이 경기를 볼 수 있는 관람석을 갖춘 경기장(운동장·공인 수영장·체육관)이면 경기장 운영업이라 면세입니다(서면3팀-1330 구청 구민운동장 관람석 400석, 법규과-209 관람석 688석 공인 수영장). 그러면 그 시설 몫은 공제되지 않고(시설별 내역 금액만큼 줄어듦), 대신 그동안 과세로 낸 사용료의 매출세액을 돌려받는 경정청구가 됩니다. 이용자 대기·후보선수용 좌석만 있으면 관람석이 아닙니다(통계청 회신).`);
+    if (SPORT.length) out.push(`관람석 확인 — ${SPORT.slice(0, 6).map(f => short(f.fac)).join(', ')}: 일반 관중이 경기를 볼 수 있는 관람석을 갖춘 경기장(운동장·공인 수영장·체육관)이면 경기장 운영업이라 면세입니다(서면3팀-1330 구청 구민운동장 관람석 400석, 법규과-209 관람석 688석 공인 수영장). 그러면 그 시설 몫은 공제되지 않고(시설별 내역 금액만큼 줄어듦), 대신 그동안 과세로 낸 사용료의 매출세액을 돌려받는 경정청구가 됩니다. 이용자 대기·후보선수용 좌석만 있으면 관람석이 아닙니다(통계청 회신). 세입에 입장료·관람료가 없고 사용료에 부가세를 붙여 과세로 신고해 온 운동장은 운동시설 대여로 보아 이번 청구에 넣었습니다 — 세무서가 경기장(면세)으로 보더라도 매출세액을 돌려받는 쪽이라 더 낼 일은 없습니다.`);
     if (F.some(f => /수영|체육센터|국민체육|반다비/.test(f.fac))) out.push('강습료 비중 확인 — 지자체가 직영하는 교육·문화 강좌는 면세 여지가 있습니다(재경부 부가가치세제과-186 질의 7·8·14). 수영 등 강습료를 면세로 보면 그 체육센터는 과세(자유 이용)·면세(강습) 공통이라 공급가액 비율로 나눠야 합니다(시행령 제81조) — 관할 세무서에 강습료 과세 여부를 먼저 확인');
     { const codes = c.d.codes ?? []; if (codes.length) { const has = (re: RegExp) => codes.some(x => re.test(x.code) && !x.zero); const need: [string, RegExp, string][] = [['lodging', /^55/, '숙박업(55…)'], ['lease', /^70/, '부동산임대업(70…)'], ['sports', /^(809|9113)/, '스포츠시설 운영업(809…)']];
       for (const [t, re, nm] of need) { const fs = F.filter(f => f.type === t); if (!fs.length || has(re)) continue;

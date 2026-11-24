@@ -333,7 +333,11 @@ function init(D: Data) {
   /** 세 걸음 화면(vat_refund.ts)에 결과를 알린다 — 금액 띠·할 일 목록·기간 비교가 듣는다 */
   /* 신고서만으로 진단 + 목록 진단을 합친다(운영자 2026-11-05 '과거 국세청에 신고한 자료를 올리면 바로 계산되고 이유가 나와야') */
   /** 경정청구서·밑자료에 올릴 고친 신고서 — 신고서만으로 고친 것 + 매입 목록으로 찾은 기간(이유 문장 자동, 운영자 2026-11-11) */
-  const claimMap = () => claimDocs(allDiags, allCorr, latestDocs((st.fdocs ?? []) as FiledDoc[]) as unknown as Parameters<typeof claimDocs>[2], org?.reg_no ?? st.reg ?? '');
+  /* 신고서에서 읽은 대표자·사업장 전화·주소·관할 세무서를 서식에(공무원이 적지 않게 — 운영자 2026-11-24 '기관장 성명 등도 입력하지 않도록') */
+  const fill0 = (M: ReturnType<typeof claimDocs>) => { const ds = (st.fdocs ?? []) as FiledDoc[]; const most = (xs: (string | undefined)[]) => { const c = new Map<string, number>(); for (const x of xs) if (x) c.set(x, (c.get(x) ?? 0) + 1); return [...c].sort((a, b) => b[1] - a[1])[0]?.[0]; };
+    const rep = most(ds.map(d => d.rep)), tel = most(ds.map(d => d.tel)), addr = most(ds.map(d => d.addr)), office = most(ds.map(d => d.office));
+    for (const v of M.values()) for (const c of v) { c.rep ||= rep; c.tel ||= tel; c.addr ||= addr; c.office ||= office; } return M; };
+  const claimMap = () => fill0(claimDocs(allDiags, allCorr, latestDocs((st.fdocs ?? []) as FiledDoc[]) as unknown as Parameters<typeof claimDocs>[2], org?.reg_no ?? st.reg ?? ''));
   const diagAll = () => { const taxable = (org?.facilities ?? []).filter(f => ['taxable', 'check'].includes(facilityStatus(D, f))).map(f => f.name);
     const fdl = latestDocs((st.fdocs ?? []) as FiledDoc[]) as unknown as Parameters<typeof filedChecks>[1];
     const win: string[] = []; for (let y = new Date().getFullYear() - 6; y <= new Date().getFullYear(); y++) for (const h of [1, 2]) { const k = `${y}-${h}`; const P = pInfo(k); if (P.due <= today && P.days >= 0) win.push(k); }

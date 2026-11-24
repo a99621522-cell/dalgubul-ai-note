@@ -34,9 +34,9 @@ function one(c: CorrDoc, orgName: string, orgReg: string): string {
   <table><tr><td class="sub" style="border:0">[「국세기본법」 제45조의2 또는 「소득세법」 제118조의15에 따른 결정(경정) 청구]</td><td style="width:22mm" class="c">처리기간<br>2개월</td></tr></table>
   <table class="thick">
     <colgroup><col style="width:9mm"><col style="width:30mm"><col><col style="width:32mm"><col></colgroup>
-    <tr><td class="side" rowspan="3">청구인</td><th>① 성 명</th><td>${headTitle(orgName) ? `<span class="v">${esc(headTitle(orgName))}</span> ${blank('성명·직인')}` : blank('기관장 성명')}</td><th>② 주민등록번호</th><td>${blank('(기관은 적지 않음)')}</td></tr>
+    <tr><td class="side" rowspan="3">청구인</td><th>① 성 명</th><td>${c.rep ? `<span class="v">${esc(headTitle(orgName) ? `${headTitle(orgName)} ${c.rep}` : c.rep)}</span>` : headTitle(orgName) ? `<span class="v">${esc(headTitle(orgName))}</span> ${blank('성명')}` : blank('기관장 성명')}</td><th>② 주민등록번호</th><td>${blank('(기관은 적지 않음)')}</td></tr>
     <tr><th>④ 주소(거소) 또는 영업소</th><td${c.addr ? ' class="v"' : ''}>${c.addr ? esc(c.addr) : blank('기관 소재지')}</td><th>③ 사업자등록번호</th><td class="v">${esc(reg) || blank('신고서의 사업자등록번호')}</td></tr>
-    <tr><th>⑥ 상 호</th><td class="v">${esc(orgName)}</td><th>⑤ 전화번호</th><td>${blank('담당 부서 전화')}</td></tr>
+    <tr><th>⑥ 상 호</th><td class="v">${esc(orgName)}</td><th>⑤ 전화번호</th><td${c.tel ? ' class="v"' : ''}>${c.tel ? esc(c.tel) : blank('담당 부서 전화')}</td></tr>
   </table>
   <table class="thick"><tr><th class="c" colspan="4">신 고 내 용</th></tr>
     <tr><th style="width:32mm">⑦ 법정신고일</th><td class="v">${dueDate(y, h, c.kind)}</td><th style="width:32mm">⑧ 최초신고일</th><td${c.filedOn ? ' class="v"' : ''}>${c.filedOn ? esc(c.filedOn.replace(/-/g, '. ') + '.') : blank('홈택스 신고내역의 접수일')}</td></tr>
@@ -50,11 +50,11 @@ function one(c: CorrDoc, orgName: string, orgReg: string): string {
     ${row('⑬', '가산세액', won(c.pen), won(c.pen), c.pen == null ? '신고서 가산세액 계(당초와 같음)' : '당초와 같음')}
     ${row('⑭', '공제 및 감면세액', won(credit), won(credit), credit == null ? '신고서 경감·공제세액·예정신고 미환급·예정고지 등(당초와 같음)' : '⑫ + ⑬ − ⑮ (당초와 같음)')}
     ${row('⑮', '납부할 세액', won(c.due), c.due == null ? '' : won(c.due - c.delta), c.due == null ? `신고서 차감·가감하여 납부할 세액 − ${fmt(c.delta)}` : '')}
-    <tr><th>⑯ 국세환급금 계좌신고</th><td colspan="2">거래은행 ${blank('         ')} 은행 ${blank('      ')} 지점 &nbsp; 계좌번호 ${blank('기관 세입 계좌')}</td></tr>
+    <tr><th>⑯ 국세환급금 계좌신고</th><td colspan="2">거래은행 ${blank('         ')} 은행 ${blank('      ')} 지점 &nbsp; 계좌번호 ${blank(ACCT_HINT)}</td></tr>
     <tr class="thick"><th>⑰ 환급받을 세액</th><td colspan="2" class="r v" style="font-size:12pt">${fmt(c.delta)} 원</td></tr>
   </table>
   <table><tr><td class="stmt">「국세기본법」 제45조의2, 같은 법 시행령 제25조의3, 「소득세법」 제118조의15 및 같은 법 시행령 제178조의11에 따라 위와 같이 청구합니다.</td></tr>
-    <tr><td class="sig">년 &nbsp;&nbsp;&nbsp; 월 &nbsp;&nbsp;&nbsp; 일<br><br>청구인 &nbsp; ${esc(orgName)} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (서명 또는 인)</td></tr>
+    <tr><td class="sig">${todayKo()}<br><br>청구인 &nbsp; ${esc(orgName)}${c.rep ? ` ${esc(headTitle(orgName) ? `${headTitle(orgName)} ${c.rep}` : c.rep)}` : ''} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (서명 또는 인)</td></tr>
     <tr><td class="to">${c.office ? esc(c.office) : blank('관할')} 세무서장 귀하</td></tr></table>
   <table><colgroup><col style="width:30mm"><col><col style="width:26mm"></colgroup>
     <tr><th>첨부서류</th><td>결정(경정)청구 사유 증명자료 — 최초 신고서 사본, 고친 신고서·명세서(붙임 엑셀 또는 사유서 2항), 공제받지 못할 매입세액 명세서(고친 값)${c.parts.length ? ', 공통매입세액 안분·정산 계산 근거' : ''}</td><td class="c">수수료<br>없음</td></tr></table>
@@ -63,6 +63,9 @@ function one(c: CorrDoc, orgName: string, orgReg: string): string {
 
 /** 고친 신고서들 → 경정청구서 서식 HTML 문서(인쇄·PDF 저장용). 없으면 빈 문자열 */
 /** 기관장 직위(① 성명 칸에 미리 — 이름은 넣지 않음): …구 → 구청장, …군 → 군수, …시 → 시장 */
+/** 청구 날짜 = 받은 날(공무원이 적지 않게, 운영자 2026-11-24 '기관장 성명 등도 입력하지 않도록' — 다른 날 내면 고침) */
+const todayKo = () => { const d = new Date(); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`; };
+const ACCT_HINT = '(비워 두면 세무서가 국세환급금 통지서로 알림 — 계좌로 받으려면 홈택스 경정청구 화면에서 계좌를 고름)';
 export const headTitle = (org: string) => { const s = org.trim(); return !s ? '' : /구$/.test(s) ? `${s}청장` : /군$/.test(s) ? `${s}수` : /(시|도)$/.test(s) ? `${s}장` : `${s} 기관장`; };
 export function claimFormHtml(M: Map<string, CorrDoc[]>, orgName: string, orgReg = ''): string {
   const L = [...M].sort().flatMap(([, v]) => v).filter(c => c.delta > 0);
@@ -72,7 +75,7 @@ export function claimFormHtml(M: Map<string, CorrDoc[]>, orgName: string, orgReg
   <ul>
     <li>국세기본법 시행규칙 별지 제16호의2서식(1) 「과세표준 및 세액의 결정(경정)청구서」 칸 배치대로, 신고서에서 읽은 숫자와 고친 값을 채웠습니다. 고친 신고서 한 장마다 한 쪽, 모두 ${L.length}쪽 · 환급받을 세액 합계 ${fmt(total)}원입니다.</li>
     <li>채운 칸: ③ 사업자등록번호(신고서), ⑥ 상호(기관 이름), ⑦ 법정신고일(토·일이면 다음 월요일 — 공휴일은 확인하세요), ⑨ 청구이유, ⑩~⑮ 최초 신고·경정 청구 값, ⑰ 환급받을 세액.</li>
-    <li>기관이 적을 칸은 ① 성명(기관장)·서명, ⑤ 전화번호, ⑯ 환급 계좌(기관 세입 계좌), 청구 날짜뿐입니다. ④ 주소·⑧ 최초신고일·관할 세무서는 올린 신고서에서 읽어 채웠고, 못 읽은 쪽만 회색 안내로 남겼습니다.</li>
+    <li>① 성명(신고서의 대표자)·④ 주소·⑤ 전화(신고서의 사업장 전화)·⑧ 최초신고일·관할 세무서는 올린 신고서에서 읽어 채웠고, 청구 날짜는 받은 날입니다. 적을 칸은 없고, 서면으로 낼 때만 서명(또는 직인)을 합니다. ⑯ 환급 계좌는 신고서에 없어 비워 두었습니다 — 비워 두면 세무서가 국세환급금 통지서로 알리고, 계좌로 받으려면 홈택스 경정청구 화면에서 계좌를 고릅니다. 못 읽은 칸만 회색 안내로 남겼습니다.</li>
     <li>부가가치세는 서식의 '산출세액'을 신고서의 납부(환급)세액(매출세액 − 공제받는 매입세액)으로 적었습니다. 가산세·경감공제세액은 이번 청구로 바뀌지 않아 당초와 같은 값입니다. 신고서에서 그 칸을 못 읽은 경우는 비워 두었으니 홈택스 신고서 값을 적으세요.</li>
     <li>홈택스로 청구할 때는 신고/납부 → 세금신고 → 부가가치세 → 경정청구 화면에 같은 값을 넣고, 이 서식은 결재·보관용으로 씁니다. 서면으로 낼 때는 이 서식에 최초 신고서 사본과 고친 신고서·증명자료를 붙여 관할 세무서에 냅니다(국세기본법 시행규칙 제12조의2).</li>
     <li>숫자는 올린 신고서로 다시 계산한 참고값입니다. 판정은 참고이며 기관의 판단이 아닙니다 — 제출 전 담당자가 신고서와 대조하세요.</li>
@@ -128,9 +131,9 @@ export async function claimFormPdf(M: Map<string, CorrDoc[]>, orgName: string, o
       pg.drawRectangle({ x: x2, y: y - 10 * MM, width: 22 * MM, height: 10 * MM, borderColor: INK, borderWidth: 0.6 });
       ['처리기간', '2개월'].forEach((t, i) => text(pg, t, { x: x2 + (22 * MM - width(t, 8.5)) / 2, y: y - 4 * MM - i * 4 * MM, size: 8.5 })); y -= 12 * MM; }
     const R = 57.5;
-    const y1 = y; row([{ w: 9, segs: [{ t: '' }] }, th('① 성 명', 30), { w: R, segs: headTitle(orgName) ? [...v(headTitle(orgName)), { t: '  (성명·직인)', size: 7.5, hint: true }] : hint('기관장 성명') }, th('② 주민등록번호', 32), { w: R, segs: hint('(기관은 적지 않음)') }], 9 * MM, 1.4);
+    const y1 = y; row([{ w: 9, segs: [{ t: '' }] }, th('① 성 명', 30), { w: R, segs: c.rep ? v(headTitle(orgName) ? `${headTitle(orgName)} ${c.rep}` : c.rep) : headTitle(orgName) ? [...v(headTitle(orgName)), { t: '  (성명)', size: 7.5, hint: true }] : hint('기관장 성명') }, th('② 주민등록번호', 32), { w: R, segs: hint('(기관은 적지 않음)') }], 9 * MM, 1.4);
     row([{ w: 9, segs: [{ t: '' }] }, th('④ 주소(거소) 또는 영업소', 30), { w: R, segs: c.addr ? [{ t: c.addr, size: 8.5, bold: true }] : hint('기관 소재지') }, th('③ 사업자등록번호', 32), { w: R, segs: reg ? v(reg) : hint('신고서의 사업자등록번호') }], 9 * MM);
-    row([{ w: 9, segs: [{ t: '' }] }, th('⑥ 상 호', 30), { w: R, segs: v(orgName) }, th('⑤ 전화번호', 32), { w: R, segs: hint('담당 부서 전화') }], 9 * MM);
+    row([{ w: 9, segs: [{ t: '' }] }, th('⑥ 상 호', 30), { w: R, segs: v(orgName) }, th('⑤ 전화번호', 32), { w: R, segs: c.tel ? v(c.tel) : hint('담당 부서 전화') }], 9 * MM);
     { const hh = y1 - y; pg.drawRectangle({ x: X0, y, width: 9 * MM, height: hh, color: K.rgb(1, 1, 1), borderColor: INK, borderWidth: 0.6 });
       const ch = [...'청구인']; let yy = y + hh / 2 + ch.length * 6 - 9; ch.forEach(t => { text(pg, t, { x: X0 + (9 * MM - width(t, 9.5)) / 2, y: yy, size: 9.5 }); yy -= 12; }); }
     y -= 2 * MM;
@@ -146,11 +149,11 @@ export async function claimFormPdf(M: Map<string, CorrDoc[]>, orgName: string, o
     num('⑬', '가산세액', won(c.pen), won(c.pen), c.pen == null ? '신고서 가산세액 계(당초와 같음)' : '당초와 같음');
     num('⑭', '공제 및 감면세액', won(credit), won(credit), credit == null ? '신고서 경감·공제세액 등(당초와 같음)' : '⑫ + ⑬ − ⑮ (당초와 같음)');
     num('⑮', '납부할 세액', won(c.due), c.due == null ? '' : won(c.due - c.delta), c.due == null ? `신고서 차감·가감하여 납부할 세액 − ${fmt(c.delta)}` : '');
-    row([th('⑯ 국세환급금 계좌신고', 46), { w: 140, segs: [{ t: '거래은행             은행           지점    계좌번호 ' }, { t: '(기관 세입 계좌)', size: 8, hint: true }] }], 9 * MM);
+    row([th('⑯ 국세환급금 계좌신고', 46), { w: 140, segs: [{ t: '거래은행             은행           지점    계좌번호 ' }, { t: '(비워 두면 국세환급금 통지서로 — 계좌는 홈택스 화면에서)', size: 7, hint: true }] }], 9 * MM);
     row([th('⑰ 환급받을 세액', 46), { w: 140, segs: [{ t: `${fmt(c.delta)} 원`, size: 12, bold: true }], align: 'r' }], 10 * MM, 1.4);
     y -= 2 * MM;
     row([{ w: 186, segs: [{ t: '「국세기본법」 제45조의2, 같은 법 시행령 제25조의3, 「소득세법」 제118조의15 및 같은 법 시행령 제178조의11에 따라 위와 같이 청구합니다.' }] }], 12 * MM);
-    { const top = y; row([{ w: 186, segs: [{ t: '년        월        일' }, { t: ' ' }, { t: `청구인  ${orgName}            (서명 또는 인)` }], align: 'r' }], 20 * MM); void top; }
+    { const top = y; row([{ w: 186, segs: [{ t: todayKo() }, { t: ' ' }, { t: `청구인  ${orgName}${c.rep ? ` ${headTitle(orgName) ? `${headTitle(orgName)} ${c.rep}` : c.rep}` : ''}            (서명 또는 인)` }], align: 'r' }], 20 * MM); void top; }
     row([{ w: 186, segs: c.office ? [{ t: `${c.office} 세무서장 귀하`, size: 12 }] : [{ t: '관할', size: 8, hint: true }, { t: '세무서장 귀하', size: 12 }] }], 12 * MM);
     y -= 2 * MM;
     row([th('첨부서류', 30), { w: 130, segs: [{ t: `결정(경정)청구 사유 증명자료 — 최초 신고서 사본, 고친 신고서·명세서(붙임 엑셀 또는 사유서 2항), 공제받지 못할 매입세액 명세서(고친 값)${c.parts.length ? ', 공통매입세액 안분·정산 계산 근거' : ''}`, size: 8.5 }] }, { w: 26, segs: [{ t: '수수료' }, { t: '없음' }], align: 'c' }], 14 * MM);
@@ -163,7 +166,7 @@ export async function claimFormPdf(M: Map<string, CorrDoc[]>, orgName: string, o
   text(pg, '경정청구서 작성 안내 (이 쪽은 제출하지 않음)', { x: X0, y: y - 13, size: 13 }, true); y -= 10 * MM;
   const G = [`국세기본법 시행규칙 별지 제16호의2서식(1) 「과세표준 및 세액의 결정(경정)청구서」 칸 배치대로, 신고서에서 읽은 숫자와 고친 값을 채웠습니다. 고친 신고서 한 장마다 한 쪽, 모두 ${L.length}쪽 · 환급받을 세액 합계 ${fmt(total)}원입니다.`,
     '채운 칸: ③ 사업자등록번호·④ 주소·⑧ 최초신고일·관할 세무서(신고서), ⑥ 상호(기관 이름), ⑦ 법정신고일(토·일이면 다음 월요일 — 공휴일은 확인하세요), ⑨ 청구이유, ⑩~⑮ 최초 신고·경정 청구 값, ⑰ 환급받을 세액.',
-    '기관이 적을 칸은 ① 성명(기관장)·서명, ⑤ 전화번호, ⑯ 환급 계좌(기관 세입 계좌), 청구 날짜뿐입니다. ④ 주소·⑧ 최초신고일·관할 세무서는 올린 신고서에서 읽어 채웠고, 못 읽은 쪽만 회색 안내로 남겼습니다.',
+    '① 성명(신고서의 대표자)·④ 주소·⑤ 전화(신고서의 사업장 전화)·⑧ 최초신고일·관할 세무서는 올린 신고서에서 읽어 채웠고, 청구 날짜는 받은 날입니다. 적을 칸은 없고, 서면으로 낼 때만 서명(또는 직인)을 합니다. ⑯ 환급 계좌는 신고서에 없어 비워 두었습니다 — 비워 두면 세무서가 국세환급금 통지서로 알리고, 계좌로 받으려면 홈택스 경정청구 화면에서 계좌를 고릅니다. 못 읽은 칸만 회색 안내로 남겼습니다.',
     "부가가치세는 서식의 '산출세액'을 신고서의 납부(환급)세액(매출세액 − 공제받는 매입세액)으로 적었습니다. 가산세·경감공제세액은 이번 청구로 바뀌지 않아 당초와 같은 값입니다. 신고서에서 그 칸을 못 읽은 경우는 비워 두었으니 홈택스 신고서 값을 적으세요.",
     '홈택스로 청구할 때는 신고/납부 → 세금신고 → 부가가치세 → 경정청구 화면에 같은 값을 넣고, 이 서식은 결재·보관용으로 씁니다. 서면으로 낼 때는 이 서식에 최초 신고서 사본과 고친 신고서·증명자료를 붙여 관할 세무서에 냅니다(국세기본법 시행규칙 제12조의2).',
     '숫자는 올린 신고서로 다시 계산한 참고값입니다. 판정은 참고이며 기관의 판단이 아닙니다 — 제출 전 담당자가 신고서와 대조하세요.'];

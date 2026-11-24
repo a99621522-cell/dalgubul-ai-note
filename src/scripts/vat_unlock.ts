@@ -9,7 +9,7 @@ import { esc, fmt, num, penaltyCalc, toCsv, type Data } from './vat_rules';
 export type Cell = { amt: number | null; tax: number | null; n?: number | null };
 export type Kind = '예정' | '확정' | '기한후' | '조기환급' | '모름';
 export type BaseRow = { label: string; code: string; amt: number };
-export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; addr?: string; filedOn?: string; office?: string; codes?: { code: string; zero: boolean }[]; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: BaseRow[]; exBase?: BaseRow[]; pen?: number; due?: number; warn: string[] };   // pen = 가산세액 계, due = 차감·가감하여 납부할 세액(환급받을 세액) — 칸 이름으로 읽음(서식 판마다 번호가 달라서), 경정청구서 서식용
+export type FiledDoc = { file: string; reg: string; year: number; half: 1 | 2; kind: Kind; from: number; to: number; addr?: string; filedOn?: string; office?: string; rep?: string; tel?: string; codes?: { code: string; zero: boolean }[]; cells: Record<number, Cell>; nd: { reasons: Record<number, Cell>; common: { sup: number; tax: number; total: number; exempt: number; nd: number } | null; settle?: { tax: number; ratio: number; ndAll: number; prev: number; add: number } | null; recalc?: { tax: number; rate: number; delta: number; add: number } | null } | null; base?: BaseRow[]; exBase?: BaseRow[]; pen?: number; due?: number; warn: string[] };   // pen = 가산세액 계, due = 차감·가감하여 납부할 세액(환급받을 세액) — 칸 이름으로 읽음(서식 판마다 번호가 달라서), 경정청구서 서식용
 export type FiledSum = { k: string; deduct: number | null; nondeduct: number | null; er: number | null; salesSup: number | null; salesTax: number | null; kinds: Kind[]; files: string[]; regs: string[]; exemptNd: number | null; warn: string[]; total: number | null; hasNd: boolean; hasCommon: boolean; ndReasons: Record<number, number>; c10: number | null; c12: number | null; c13: number | null; c15: number | null; ndSum: number | null };
 
 /* ── 파일 → 글자 ── */
@@ -74,6 +74,10 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
   /* 경정청구서(국세청 서식)에 그대로 옮길 칸(2026-11-24 운영자 '별도 작업 없이'): ④ 사업장 주소(기관 소재지 — 전자우편·전화는 버림), ⑧ 최초신고일(수정신고서면 그 서식의 최초신고일, 아니면 신고인 서명 날짜), 관할 세무서 */
   const addrM = /사\s*업\s*장\s*주\s*소\s+((?:[가-힣]+(?:특별시|광역시|특별자치시|도|특별자치도))\s[^\n]*?)(?=\s*전\s*자\s*우\s*편|\s*휴\s*대|\s*전\s*화|\n|$)/.exec(seg);
   const addr = addrM && !/\*/.test(addrM[1]) ? addrM[1].replace(/\S*@\S*/g, '').replace(/\d{2,4}-\d{3,4}-\d{4}/g, '').replace(/\s+/g, ' ').trim() : '';
+  /* 경정청구서 ①·⑤ 를 공무원이 적지 않게(운영자 2026-11-24 '기관장 성명 등도 입력하지 않도록') — 신고서의 대표자 성명(신고인)과 사업장 전화만. 휴대전화(01…)·전자우편·생년월일은 읽지 않고, 가림 글자(*)가 든 값은 버림. 브라우저 안에서만 쓰고 저장소·서버로 보내지 않음 */
+  const repM = /③\s*성\s*명\s*\(\s*대\s*표\s*자\s*\)\s+([가-힣]{2,5})(?![가-힣])/.exec(seg) ?? /신\s*고\s*인\s*[:：]\s*([가-힣]{2,5})\s*\(\s*서\s*명/.exec(seg);
+  const rep = repM && !/\*/.test(repM[1]) ? repM[1] : '';
+  const telM = /(?<![\d-])(0(?:2|[3-6][1-5]|70))-(\d{3,4})-(\d{4})(?![\d-])/.exec(seg); const tel = telM ? `${telM[1]}-${telM[2]}-${telM[3]}` : '';
   const fo = /최\s*초\s*신\s*고\s*일\s*(20\d{2})\s*[\/.\-]\s*(\d{1,2})\s*[\/.\-]\s*(\d{1,2})/.exec(seg) ?? seg.split('\n').filter(l => !/~/.test(l)).map(l => /(20\d{2})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/.exec(l)).find(Boolean) ?? null;
   const filedOn = fo ? `${fo[1]}-${fo[2].padStart(2, '0')}-${fo[3].padStart(2, '0')}` : '';
   const office = [...seg.matchAll(/([가-힣]{2,6})\s*세\s*무\s*서\s*장\s*귀\s*하/g)].map(m => m[1]).find(x => !/^(관할|주소지|사업장)$/.test(x)) ?? '';
@@ -119,7 +123,7 @@ function parseOne(seg: string, head: string, file: string): FiledDoc | null {
   /* 경정청구서 서식(국세기본법 시행규칙 별지 제16호의2) ⑬ 가산세액·⑮ 납부할 세액 — 번호가 판마다 달라(현행 (29)(30), 2025-07 전 판은 다름) 칸 이름이 든 줄의 마지막 숫자를 읽는다 */
   const byLabel = (rx: RegExp) => { for (const line of main.split('\n')) { if (!rx.test(line)) continue; const mm = [...line.matchAll(/\((\d{1,2})\)/g)]; const last = mm[mm.length - 1]; const v = nums(last ? line.slice(last.index! + last[0].length) : line.replace(rx, ' ')); if (v.length) return v[v.length - 1]; } return undefined; };
   const pen = byLabel(/가\s*산\s*세\s*액\s*계/), due = byLabel(/차\s*(?:감|가\s*감)[^\n]{0,24}납\s*부\s*할\s*세\s*액/);
-  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(addr ? { addr } : {}), ...(filedOn ? { filedOn } : {}), ...(office ? { office } : {}), ...(base?.length ? { base } : {}), ...(codes?.length ? { codes } : {}), ...(exBase?.length ? { exBase } : {}), ...(pen != null ? { pen } : {}), ...(due != null ? { due } : {}), warn };
+  return { file, reg, year, half: half as 1 | 2, kind, from, to, cells, nd, ...(addr ? { addr } : {}), ...(rep ? { rep } : {}), ...(tel ? { tel } : {}), ...(filedOn ? { filedOn } : {}), ...(office ? { office } : {}), ...(base?.length ? { base } : {}), ...(codes?.length ? { codes } : {}), ...(exBase?.length ? { exBase } : {}), ...(pen != null ? { pen } : {}), ...(due != null ? { due } : {}), warn };
 }
 /** 같은 과세기간·구분·등록번호가 두 장이면 뒤 파일만(수정신고) — 진단·합계 모두 이것으로 */
 export function latestDocs<T extends { year: number; half: number; kind: string; reg?: string }>(docs: T[]): T[] { const last = new Map<string, T>(); for (const d of docs) last.set(`${d.year}-${d.half}|${d.kind}|${d.reg ?? ''}`, d); return [...last.values()]; }

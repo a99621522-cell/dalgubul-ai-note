@@ -30,7 +30,9 @@ const days = (to: string, today: string) => Math.round((new Date(to).getTime() -
 const tax = (d: FiledDoc, n: number) => d.cells[n]?.tax ?? null;
 const amt = (d: FiledDoc, n: number) => d.cells[n]?.amt ?? null;
 
-export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number>; areaFac?: string[] };   /* revByFac: 시설 이름 → 세입예산 연 수입(원, 기관 설정 메모의 세입예산서 줄) */   /* corr: 신고서 숫자만으로 고친 값(진단의 안분 재계산 등) */
+export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number>; areaFac?: string[]; conf?: Conf; deptByFac?: Record<string, string> };
+/** 제출 전 확인(화면에서 누름, 2026-11-24 운영자 '공무원이 기재 할 일을 최대한 줄여') — 시설별 관람석·강습료·과세 매출 신고, 당초 안분 기준, 3등급 수정신고를 같이 낼지. 'yes'·'no' 만, 비면 모름 */
+export type Conf = { fac?: Record<string, { seats?: 'yes' | 'no'; lessons?: 'yes' | 'no'; sales?: 'yes' | 'no' }>; apport?: 'supply' | 'other'; g3?: 'together' | 'later'; at?: string };   /* revByFac: 시설 이름 → 세입예산 연 수입(원, 기관 설정 메모의 세입예산서 줄) */   /* corr: 신고서 숫자만으로 고친 값(진단의 안분 재계산 등) */
 const short = (n: string) => n.replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim();
 /** 신고서별 고친 신고서 → 국세청 경정청구서 서식(vat_claimform claimFormPdf)·사유서에 그대로 넣는 값. 열쇠 'YYYY-H|0(예정)·1(확정)' 순서가 PDF 쪽 순서 */
 export type Case = { d: FiledDoc; k: string; pre: boolean; nextFin: boolean; name: string; rows: CbRow[]; listTax: number; should: number; gainAmt: number | null; gain: number; est?: CbCand; due: string; cdue: string; left: number; mode: 'list' | 'cand' | 'corr' | 'none'; sheet: string; corr?: CorrDoc };
@@ -74,14 +76,18 @@ function gradeFac(D: Data, o: CbIn, f: { fac: string; type?: string; share?: num
   const fr = f.type ? D.facilities.find(x => x.key === f.type) : undefined;
   if (f.fac === '본청·행정 공통') return { grade: 4, why: '본청·행정과 같이 쓴 지출 — 나누는 기준(매입가액·예정사용면적)을 먼저 정함', q: ['Q22'] };
   if (fr?.status === 'check') return { grade: 4, why: `시설 유형 '${fr.name}'의 과세 여부가 운영 방식(사실)에 달림`, q: ['Q09'] };
-  if (f.type === 'sports' && STADIUM.test(f.fac)) return { grade: 4, why: '관람석을 갖춘 경기장인지 확인 필요 — 관람석이 있으면 경기장 운영업으로 면세', q: ['Q12'] };
+  const cf = o.conf?.fac?.[f.fac];
+  if (f.type === 'sports' && cf?.seats === 'yes') return { grade: 4, why: '관중용 관람석이 있음(청구인 확인) — 경기장 운영업 면세 여부를 질의로 정한 뒤 청구', q: ['Q12'] };
+  if (f.type === 'sports' && cf?.lessons === 'yes') return { grade: 4, why: '직영 강습료 수입이 있음(청구인 확인) — 강습 몫(면세)을 빼는 비율을 정한 뒤 청구', q: ['Q14'] };
+  if (f.type === 'sports' && STADIUM.test(f.fac) && cf?.seats !== 'no') return { grade: 4, why: '관람석을 갖춘 경기장인지 확인 필요 — 관람석이 있으면 경기장 운영업으로 면세', q: ['Q12'] };
   if (typeof f.share === 'number' && f.share < 1 && !(o.areaFac ?? []).includes(f.fac)) return { grade: 4, why: `같이 쓰는 건물 — 과세 몫 ${Math.round(f.share * 100)}%는 추정, 용도별 면적표로 정해야 함`, q: ['Q19'] };
-  if (f.type && gap.has(f.type)) return { grade: 3, why: `신고서 과세표준 명세에 ${GAP[f.type][1]} 매출이 없음 — 사용료를 과세 매출로 신고했는지 먼저 확인`, q: ['Q10', 'Q28'], gap: GAP[f.type][1] };
+  if (cf?.sales === 'no') return { grade: 3, why: '그 기간 사용료를 과세 매출로 신고하지 않음(청구인 확인) — 매출 수정신고와 함께', q: ['Q10', 'Q28'], gap: '사용료' };
+  if (f.type && gap.has(f.type) && cf?.sales !== 'yes') return { grade: 3, why: `신고서 과세표준 명세에 ${GAP[f.type][1]} 매출이 없음 — 사용료를 과세 매출로 신고했는지 먼저 확인`, q: ['Q10', 'Q28'], gap: GAP[f.type][1] };
   return { grade: 2, why: '과세 매출을 신고하는 시설의 지출 — 세금계산서·계약서로 그 시설 것임을 보임', q: ['Q09', 'Q16'] };
 }
 function issuesOf(D: Data, o: CbIn, c: Case, facsOf: (c: Case) => FacSum[], docs: FiledDoc[]): Issue[] {
   const base = { key: `${c.k}|${c.pre ? 0 : 1}`, k: c.k, name: c.name, pre: c.pre, left: c.left, cdue: c.cdue, due: c.due };
-  if (c.mode === 'corr' && c.corr) return [{ ...base, grade: 1, fac: '(신고서 숫자로 다시 계산)', amt: c.corr.delta, why: `당초 명세서의 공통매입세액 ${[...new Set(c.corr.parts.map(x => x.sec.replace(/\(.*\)/, '')))].join('·') || '안분'} 계산을 신고서 숫자로 다시 하면 불공제가 줄어듦`, est: false, q: ['Q20', 'Q21'] }];
+  if (c.mode === 'corr' && c.corr) return [{ ...base, grade: o.conf?.apport === 'other' ? 4 : 1, fac: '(신고서 숫자로 다시 계산)', amt: c.corr.delta, why: o.conf?.apport === 'other' ? '당초 명세서가 공급가액 비율이 아닌 기준으로 나눔(청구인 확인) — 나눌 기준을 질의로 정한 뒤 청구' : `당초 명세서의 공통매입세액 ${[...new Set(c.corr.parts.map(x => x.sec.replace(/\(.*\)/, '')))].join('·') || '안분'} 계산을 신고서 숫자로 다시 하면 불공제가 줄어듦`, est: false, q: ['Q20', 'Q21'] }];
   const F = facsOf(c).filter(f => f.claim > 0); const tot = F.reduce((n, f) => n + f.claim, 0); if (!tot || c.gain <= 0) return [];
   const gap = gapTypes(docs, c.k); const out = F.map(f => ({ ...base, ...gradeFac(D, o, f, gap), fac: f.fac, type: f.type, amt: Math.floor(c.gain * f.claim / tot), est: c.mode === 'cand' }));
   const rest = c.gain - out.reduce((n, x) => n + x.amt, 0); if (out.length) out[0].amt += rest; return out;

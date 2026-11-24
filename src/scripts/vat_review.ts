@@ -10,7 +10,8 @@ import { mountPublic } from './vat_review_pub';
 import { contractsCtx, type CtrCtx } from './vat_contracts';
 import type { FileTable } from './vat_files';
 import { caseBook, caseCorrDocs, type CbRow, type CbCand } from './vat_casebook';
-import { persuadeFiles } from './vat_persuade';
+import { persuadeFiles, confItems, confSet, CONF_KEY } from './vat_persuade';
+import type { Conf } from './vat_casebook';
 import { xlsxBlob, csvRows } from './xlsx_write';
 import { applyDefaults } from './vat_ask';
 import { startFromLink } from './vat_org';
@@ -349,7 +350,18 @@ function init(D: Data) {
   let candRows: (string | number)[][] = []; document.addEventListener('vat-cand', e => { candRows = (e as CustomEvent<(string | number)[][]>).detail ?? []; });
   /* 신고서별 경정청구 작업서(엑셀) — 신고서 한 장마다 시트(운영자 2026-11-24) */
   const cbCand = (): CbCand[] => { const m = new Map<string, CbCand>(); for (const r of candRows.slice(1)) { const mm = /(\d{4})년 제([12])기/.exec(String(r[0])); if (!mm) continue; const k = `${mm[1]}-${mm[2]}`; const x = m.get(k) ?? { k, amt: Number(r[9]) || 0, byFac: [], sups: 0 }; x.sups++; const fac = String(r[6] || '시설 확인'); const f = x.byFac.find(y => y.fac === fac); const of = org?.facilities.find(q => q.name === fac); if (f) f.est += Number(r[7]) || 0; else x.byFac.push({ fac, est: Number(r[7]) || 0, type: of?.type, share: of?.share }); m.set(k, x); } return [...m.values()].filter(x => x.amt > 0); };
-  const cbIn = () => { diagAll(); return { org: org?.org ?? '', reg: st.reg || org?.reg_no || '', today, docs: st.fdocs ?? [], rows: cbRows, cand: cbRows.length ? [] : cbCand(), corr: allCorr, revByFac: Object.fromEntries((org?.facilities ?? []).map(f => [f.name, [...(f.note ?? '').matchAll(/\[세입예산서[^\]]*\][^.]*?([\d,]+)천원/g)].reduce((n, m) => n + Number(m[1].replace(/,/g, '')) * 1000, 0)]).filter(([, v]) => (v as number) > 0)), areaFac: (org?.facilities ?? []).filter(f => (f as { answers?: Record<string, unknown> }).answers?.area).map(f => f.name) }; };
+  const cbIn = () => { diagAll(); return { org: org?.org ?? '', reg: st.reg || org?.reg_no || '', today, docs: st.fdocs ?? [], rows: cbRows, cand: cbRows.length ? [] : cbCand(), corr: allCorr, revByFac: Object.fromEntries((org?.facilities ?? []).map(f => [f.name, [...(f.note ?? '').matchAll(/\[세입예산서[^\]]*\][^.]*?([\d,]+)천원/g)].reduce((n, m) => n + Number(m[1].replace(/,/g, '')) * 1000, 0)]).filter(([, v]) => (v as number) > 0)), areaFac: (org?.facilities ?? []).filter(f => (f as { answers?: Record<string, unknown> }).answers?.area).map(f => f.name), conf: confGet(), deptByFac: Object.fromEntries((org?.facilities ?? []).map(f => [f.name, /\[세입예산서[^\]]*\]\s*([^·\]\n]+?)\s*·/.exec(f.note ?? '')?.[1]?.trim() ?? ''   /* vat_org addRevenueFacilities 메모 '[세입예산서 2026] 부서 · 목 · 항목 금액천원' */]).filter(([, d]) => d)) }; };
+  /* 제출 전 확인(화면 버튼) — 기관 이름별로 이 브라우저에만(2026-11-24 운영자 '공무원이 기재 할 일을 최대한 줄여') */
+  const confAll = (): Record<string, Conf> => { try { return JSON.parse(localStorage.getItem(CONF_KEY) ?? '{}') ?? {}; } catch { return {}; } };
+  const confGet = (): Conf => confAll()[org?.org ?? ''] ?? {};
+  const confPut = (c: Conf) => { try { localStorage.setItem(CONF_KEY, JSON.stringify({ ...confAll(), [org?.org ?? '']: c })); } catch { /* 저장 못 해도 이번 묶음에는 반영 */ } };
+  let confOpen = false;
+  const renderConf = () => { const el = document.getElementById('rf-confirm'); if (!el) return; if (!(st.fdocs ?? []).length) { el.innerHTML = ''; return; }
+    let items: ReturnType<typeof confItems> = []; try { items = confItems(D, cbIn()); } catch { items = []; } if (!items.length) { el.innerHTML = ''; return; }
+    const done = items.filter(x => x.v).length;
+    el.innerHTML = `<details class="vat-more" id="rf-conf-d"${confOpen ? ' open' : ''}><summary><strong>세무서에 내기 전 확인</strong> ${done}/${items.length} — 받은 서류를 보고 누르면 묶음의 금액·답변·할 일이 저절로 맞춰집니다(적을 것 없음)</summary><ul class="meta-list rf-conf">${items.map((x, i) => `<li><span>${esc(x.q)}</span><br/>${x.opts.map(([v, l]) => `<label style="margin-right:1rem"><input type="radio" name="rf-cf-${i}" data-cf="${esc(x.id)}" value="${v}"${x.v === v ? ' checked' : ''}/> ${esc(l)}</label>`).join('')}</li>`).join('')}</ul><p class="note">누른 답은 이 브라우저에만 저장됩니다. 묶음을 다시 받으면 반영됩니다.</p></details>`;
+    el.querySelector('#rf-conf-d')?.addEventListener('toggle', e => { confOpen = (e.target as HTMLDetailsElement).open; });
+    el.querySelectorAll<HTMLInputElement>('input[data-cf]').forEach(r => r.addEventListener('change', () => { confPut(confSet(confGet(), r.dataset.cf!, r.value)); confOpen = true; renderConf(); toast('확인을 저장했습니다 — 묶음을 받으면 반영됩니다'); })); };
   const caseXlsx = () => caseBook(D, cbIn());
   /* 신고서별 제출 묶음 — ① 경정청구서(국세청 서식, 숫자 채움) PDF ② 근거·이유 엑셀 ③ 사유서 PDF(같은 쪽 번호) ④ 안내 한 장(운영자 2026-11-24 '국세청 경정청구서 양식으로 별도 작업없이 … 근거와 이유는 엑셀로') */
   /* 세무서 제출 묶음(00~12, 앞 번호 = 붙임 번호) — 1·2등급만 청구, 3·4등급은 먼저 밝히고 비교표·질의 초안(운영자 2026-11-24 docs/prompts/vat_persuade_taxoffice.md) */
@@ -402,7 +414,7 @@ function init(D: Data) {
     const need: Record<string, [RegExp, string]> = { lodging: [/^55/, '숙박업'], lease: [/^70/, '부동산임대업'], sports: [/^(809|9113)/, '스포츠시설 운영업'] }; const m = new Map<string, { fac: string; nm: string; claim: number }>();
     for (const r of cbRows) { const nd = r.facType ? need[r.facType] : undefined; if (!r.claim || !nd || has(nd[0])) continue; const x = m.get(r.fac) ?? { fac: r.fac, nm: nd[1], claim: 0 }; x.claim += r.claim; m.set(r.fac, x); }
     return [...m.values()].sort((a, b) => b.claim - a.claim); };
-  function emit(x: Record<string, unknown> | null) { cover(); const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), salesGap: salesGap(), diag: diagHtml(D, dm.diags), diags: dm.diags, fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er, salesSup: f.salesSup, total: f.total, ex5: f.exemptNd, nd2: f.ndReasons[2] ?? null })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); }
+  function emit(x: Record<string, unknown> | null) { cover(); const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), salesGap: salesGap(), diag: diagHtml(D, dm.diags), diags: dm.diags, fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er, salesSup: f.salesSup, total: f.total, ex5: f.exemptNd, nd2: f.ndReasons[2] ?? null })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); renderConf(); }
   function save() { try { localStorage.setItem(KEY, JSON.stringify({ ...st, saved: new Date().toISOString() })); } catch { /* 저장 못 해도 계속 */ } }
   function load(): State | null { try { const s = localStorage.getItem(KEY); if (!s) return null; const j = JSON.parse(s) as State; return j && j.v === 1 && Array.isArray(j.rows) ? j : null; } catch { return null; } }
   build();

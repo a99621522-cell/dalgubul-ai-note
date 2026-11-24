@@ -34,7 +34,7 @@ function one(c: CorrDoc, orgName: string, orgReg: string): string {
   <table><tr><td class="sub" style="border:0">[「국세기본법」 제45조의2 또는 「소득세법」 제118조의15에 따른 결정(경정) 청구]</td><td style="width:22mm" class="c">처리기간<br>2개월</td></tr></table>
   <table class="thick">
     <colgroup><col style="width:9mm"><col style="width:30mm"><col><col style="width:32mm"><col></colgroup>
-    <tr><td class="side" rowspan="3">청구인</td><th>① 성 명</th><td>${blank('기관장 성명')}</td><th>② 주민등록번호</th><td>${blank('(기관은 적지 않음)')}</td></tr>
+    <tr><td class="side" rowspan="3">청구인</td><th>① 성 명</th><td>${headTitle(orgName) ? `<span class="v">${esc(headTitle(orgName))}</span> ${blank('성명·직인')}` : blank('기관장 성명')}</td><th>② 주민등록번호</th><td>${blank('(기관은 적지 않음)')}</td></tr>
     <tr><th>④ 주소(거소) 또는 영업소</th><td${c.addr ? ' class="v"' : ''}>${c.addr ? esc(c.addr) : blank('기관 소재지')}</td><th>③ 사업자등록번호</th><td class="v">${esc(reg) || blank('신고서의 사업자등록번호')}</td></tr>
     <tr><th>⑥ 상 호</th><td class="v">${esc(orgName)}</td><th>⑤ 전화번호</th><td>${blank('담당 부서 전화')}</td></tr>
   </table>
@@ -62,6 +62,8 @@ function one(c: CorrDoc, orgName: string, orgReg: string): string {
 }
 
 /** 고친 신고서들 → 경정청구서 서식 HTML 문서(인쇄·PDF 저장용). 없으면 빈 문자열 */
+/** 기관장 직위(① 성명 칸에 미리 — 이름은 넣지 않음): …구 → 구청장, …군 → 군수, …시 → 시장 */
+export const headTitle = (org: string) => { const s = org.trim(); return !s ? '' : /구$/.test(s) ? `${s}청장` : /군$/.test(s) ? `${s}수` : /(시|도)$/.test(s) ? `${s}장` : `${s} 기관장`; };
 export function claimFormHtml(M: Map<string, CorrDoc[]>, orgName: string, orgReg = ''): string {
   const L = [...M].sort().flatMap(([, v]) => v).filter(c => c.delta > 0);
   if (!L.length) return '';
@@ -126,7 +128,7 @@ export async function claimFormPdf(M: Map<string, CorrDoc[]>, orgName: string, o
       pg.drawRectangle({ x: x2, y: y - 10 * MM, width: 22 * MM, height: 10 * MM, borderColor: INK, borderWidth: 0.6 });
       ['처리기간', '2개월'].forEach((t, i) => text(pg, t, { x: x2 + (22 * MM - width(t, 8.5)) / 2, y: y - 4 * MM - i * 4 * MM, size: 8.5 })); y -= 12 * MM; }
     const R = 57.5;
-    const y1 = y; row([{ w: 9, segs: [{ t: '' }] }, th('① 성 명', 30), { w: R, segs: hint('기관장 성명') }, th('② 주민등록번호', 32), { w: R, segs: hint('(기관은 적지 않음)') }], 9 * MM, 1.4);
+    const y1 = y; row([{ w: 9, segs: [{ t: '' }] }, th('① 성 명', 30), { w: R, segs: headTitle(orgName) ? [...v(headTitle(orgName)), { t: '  (성명·직인)', size: 7.5, hint: true }] : hint('기관장 성명') }, th('② 주민등록번호', 32), { w: R, segs: hint('(기관은 적지 않음)') }], 9 * MM, 1.4);
     row([{ w: 9, segs: [{ t: '' }] }, th('④ 주소(거소) 또는 영업소', 30), { w: R, segs: c.addr ? [{ t: c.addr, size: 8.5, bold: true }] : hint('기관 소재지') }, th('③ 사업자등록번호', 32), { w: R, segs: reg ? v(reg) : hint('신고서의 사업자등록번호') }], 9 * MM);
     row([{ w: 9, segs: [{ t: '' }] }, th('⑥ 상 호', 30), { w: R, segs: v(orgName) }, th('⑤ 전화번호', 32), { w: R, segs: hint('담당 부서 전화') }], 9 * MM);
     { const hh = y1 - y; pg.drawRectangle({ x: X0, y, width: 9 * MM, height: hh, color: K.rgb(1, 1, 1), borderColor: INK, borderWidth: 0.6 });

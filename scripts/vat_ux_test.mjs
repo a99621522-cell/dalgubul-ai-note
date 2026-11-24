@@ -413,7 +413,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
 {
   const { execSync } = await import('node:child_process'); const FXP = path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax');
   const ORG_P = { v: 1, org: '시험구', dept: '재무과', unit: 'entity', reg_no: '555-83-00001', handover_day: 10, created: '2026-01-01', facilities: [
-    { id: 'f1', type: 'sports', name: '시험체육센터', run: 'direct', income: [], deposit: false }, { id: 'f2', type: 'lodging', name: '시험오토캠핑장', run: 'direct', income: [], deposit: false, note: '[세입예산서 2026 · 사용료] 12,000천원.' },
+    { id: 'f1', type: 'sports', name: '시험체육센터', run: 'direct', income: [], deposit: false }, { id: 'f2', type: 'lodging', name: '시험오토캠핑장', run: 'direct', income: [], deposit: false, note: '[세입예산서 2026] 시험진흥과 · 213-01 사용료 · 오토캠핑장 사용료 12,000천원 — 운영 방식·등록번호 확인' },
     { id: 'f3', type: 'sports', name: '시험구민운동장', run: 'direct', income: [], deposit: false }, { id: 'f4', type: 'sports', name: '시험행복드림관', run: 'direct', income: [], deposit: false, share: 0.3 }] };
   await pg.goto(base + '/vat/review/'); await pg.evaluate(o => { localStorage.clear(); localStorage.setItem('vat-org-v1', JSON.stringify(o)); localStorage.setItem('vat-rv-src', 'paste'); }, ORG_P); await pg.reload(); await pg.waitForSelector('#rv-a', { state: 'attached' });
   await pg.setInputFiles('#rv-fd-file', [path.join(FXP, 'persuade', 'filed_p_2025_1.txt'), path.join(FXP, 'filed_2023_1_err.txt')]); await pg.waitForTimeout(1200);
@@ -433,6 +433,15 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   const m8 = U('08_부서별_증빙요청_메모.txt'); const t0 = U('00_이렇게_하세요(할일7).txt'); const s9 = U('09_세무서_사전상담_대본.txt'); const q11 = U('11_사전답변·질의서_초안(4등급).txt'); const c5 = U('05_공제로_옮기는_세금계산서_공급자별.csv');
   ok('P5 부서별 요청 메모(받는 곳 3곳 이상 · 면적표 · 관람석 · 세입 결산) · 사람 이름·전화 없음', (m8.match(/받는 곳:/g) ?? []).length >= 3 && /용도별 면적표/.test(m8) && /관람석/.test(m8) && /세입 결산/.test(m8) && !/\d{2,3}-\d{3,4}-\d{4}/.test(m8 + t0 + s9), m8.slice(0, 200));
   ok('P6 할 일 7개 이하 · 사전 상담 대본(먼저 밝힘) · 4등급 질의 초안 · 합계표 밑자료는 1·2등급 공급자만', (t0.match(/^☐ \d/gm) ?? []).length <= 7 && (t0.match(/^☐ \d/gm) ?? []).length >= 5 && /먼저 말씀드릴 것/.test(s9) && /시험오토캠핑장|시험구민운동장/.test(s9) && /시험구민운동장/.test(q11) && /101-01-00001/.test(c5) && !/101-01-00002|101-01-00003|101-01-00004/.test(c5) && /합계표 추가 제출 대상 아님/.test(c5) && /제출 전 확인/.test(t0) && /과장님께 드릴 3줄/.test(t0) && !/판정은 참고/.test(x4), JSON.stringify({ todo: (t0.match(/^☐ \d/gm) ?? []).length, c5: c5.slice(0, 160) }));
+  /* P7 화면 확인 버튼(적을 것 없음) → 등급·청구액·답변·할 일이 바뀜(2026-11-24 운영자 '공무원이 기재 할 일을 최대한 줄여') */
+  const nRadio = await pg.locator('#rf-confirm input[type=radio]').count();
+  await pg.evaluate(() => localStorage.setItem('vat-confirm-v1', JSON.stringify({ '시험구': { fac: { '시험체육센터': { seats: 'no', lessons: 'no', sales: 'yes' }, '시험구민운동장': { seats: 'no', lessons: 'no', sales: 'yes' }, '시험오토캠핑장': { sales: 'no' } }, apport: 'supply', g3: 'together' } })));
+  const zq = path.join(os.tmpdir(), 'vat-p7.zip'); let zq7 = '';
+  try { const [dl] = await Promise.all([pg.waitForEvent('download', { timeout: 60000 }), pg.click('#rf-dl-cases')]); await dl.saveAs(zq); } catch (e) { zq7 = String(e).slice(0, 120); }
+  const Q = n => { try { return execSync(`unzip -p "${zq}" "${n}"`, { maxBuffer: 64 << 20 }).toString(); } catch { return ''; } };
+  const q4 = Q('04_재계산표_신고서별.xlsx'), q0 = Q('00_이렇게_하세요(할일7).txt'), q10 = Q('10_보완요청_답변틀.txt'), q8 = Q('08_부서별_증빙요청_메모.txt');
+  ok('P7 화면 확인 버튼 → 운동장(관람석 없음)·캠핑장(매출 같이 고침)이 이번 청구로 1,862,500원 · 할 일 6개 이하(확인 단계 없음) · 답변이 확인된 문장 · 01 문의 칸 없음 · 받는 부서는 세입예산서 부서', nRadio >= 6 && /청구 세액은 1,862,500원/.test(q4) && !/6\. 문의/.test(q4) && (q0.match(/^☐ \d/gm) ?? []).length <= 6 && !/제출 전 확인 \d+가지가 남았/.test(q0) && /관중용 관람석이 없습니다/.test(q10) && /같은 날 매출 수정신고/.test(q4) && /받는 곳: 시험진흥과/.test(q8), zq7 || JSON.stringify({ nRadio, amt: q4.match(/청구 세액은[^(<]{0,30}/)?.[0], todo: (q0.match(/^☐ \d/gm) ?? []).length, dept: q8.match(/받는 곳: [^\n]*/g) }));
+  await pg.evaluate(() => localStorage.removeItem('vat-confirm-v1'));
   await pg.evaluate(() => { localStorage.removeItem('vat-review-v1'); localStorage.removeItem('vat-rv-src'); });
 }
 /* ── S 지난 돈 돌려받기 세 걸음 판(2026-11-05 docs/prompts/vat_refund_3steps.md): 기관 → 신고서 → 매입 목록 여러 파일, 계약 업체 번호로 저절로 귀속, 할 일·엑셀·PDF ── */

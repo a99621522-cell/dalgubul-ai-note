@@ -60,14 +60,15 @@ export async function contractsCtx(D: Data, org: Org | null): Promise<CtrCtx | n
 }
 /** 업체 번호로 그 업체의 계약 시설에 붙여도 되는 품목인가 — 같은 업체가 여러 사업을 하므로(2026-11-24 수성구청 실물: 한 시설과만 계약이 이어진 업체의
  *  다른 사업 세금계산서 — 공원 야외운동기구·열대온실 조경·LED 교체 — 가 그 시설로 붙던 것) ① 품목에 낱말이 없으면('공사대금'·'기성금') 붙이고
- *  ② 낱말이 있으면 그 업체 계약 이름과 낱말이 하나 이상 겹치고, 계약 이름에 없는 장소 낱말(○○경로당·○○공원·○○아파트·등산로 등)이 없을 때만 붙인다 */
+ *  ② 낱말이 있으면 그 낱말의 2/3 이상이 그 업체 계약 이름에 있고, 계약 이름에 없는 장소 낱말(○○경로당·○○공원·○○아파트·등산로 등)이 없을 때만 붙인다 */
 const GENERIC = /^(공사|용역|물품|구입|구매|설치|지출|준공금|선금|선급금|기성금|기성|완납금|완수금|잔금|대금|시행|노무비|및|외|조달|부품|교체|수리|보수|유지보수|유지관리|관리|운영|위탁|사업|계약|비용|공사비|용역비|물품대금|공사대금|용역대금|기타|일반|매입|품목|월분|년도|상반기|하반기)$/;
 const PLACE = /(경로당|공원|아파트|단지|등산로|마을|학교|청사|센터|도서관|주차장|운동장|체육관|복지관|회관|시장|하천|저수지|통학로|산|봉|지|동|로|길)$/;
 const toksOf = (x: string) => String(x ?? '').split(/[^가-힣A-Za-z]+/).map(t => t.replace(/(공사|용역|지출|구입|설치|대금)$/, '')).filter(t => t.length >= 2 && !GENERIC.test(t));
 export function genericItem(desc: string): boolean { return toksOf(desc).length === 0; }
 export function supplierFits(desc: string, nms: string[]): boolean {
   const toks = toksOf(desc); if (!toks.length) return true;
-  const names = nms.join(' '); const hit = toks.some(t => names.includes(t) || toksOf(names).some(n => t.includes(n)));
+  const names = nms.join(' '); const nt = toksOf(names); const covered = toks.filter(t => names.includes(t) || nt.some(n => t.includes(n))).length;
   const foreign = toks.some(t => t.length >= 3 && PLACE.test(t) && !names.includes(t));
-  return hit && !foreign;
+  /* 낱말 하나만 겹치면('CCTV'·'방제') 다른 사업일 수 있어 품목 낱말의 2/3 이상이 계약 이름에 있어야 — 수성구청 실물: '어린이보호구역 불법주정차 CCTV' 가 수성못 CCTV 계약 업체라 붙던 것 */
+  return covered * 3 >= toks.length * 2 && !foreign;
 }

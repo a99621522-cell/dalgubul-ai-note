@@ -19,6 +19,7 @@ const eLast = emp[0];   // 가장 최근 사업연도 직원 현황
 const eRows = eLast ? empRowsByCode(c.code, eLast.year) : [];
 const exe = execByCode(c.code).slice(-3);
 const pctOf = (a?: string, b?: string) => { const x = Number(a), y = Number(b); return x && y ? `${(x / y * 100).toFixed(1)}%` : '—'; };
+const man = (s?: string) => { const v = Number(s); return s && Number.isFinite(v) && v > 0 ? Math.round(v / 1e4).toLocaleString('ko-KR') : '—'; };
 const tn = (s?: string) => (s && Number.isFinite(Number(s)) ? Number(s).toFixed(1) : '—');
 const wonOrK = (s?: string) => { const v = Number(String(s || '').replace(/,/g, '')); return v ? Math.round(v / 1e6).toLocaleString('ko-KR') : '—'; };
 const rnd = rndByCode(c.code);
@@ -68,7 +69,7 @@ const hCell = (k: string): string => { if (!h) return '—';
       {fyRow && <div><dt>영업이익</dt><dd>{f(fyRow.operating_income)}<span class="u">억 원</span></dd></div>}
       {fyRow && <div><dt>영업이익률</dt><dd>{pct1n(opMargin(fyRow))}<span class="u">%</span></dd></div>}
       {eLast && <div><dt>직원 수</dt><dd>{n0(eLast.employees)}<span class="u">명</span></dd></div>}
-      {eLast && <div><dt>1인 평균 급여</dt><dd>{mil(eLast.avg_salary)}<span class="u">백만 원</span></dd></div>}
+      {eLast && <div><dt>1인 평균 급여</dt><dd>{man(eLast.avg_salary)}<span class="u">만 원</span></dd></div>}
       {eLast && <div><dt>평균 근속</dt><dd>{tn(eLast.avg_tenure)}<span class="u">년</span></dd></div>}
       {eLast && <div><dt>남녀 직원</dt><dd>{n0(eLast.male)} · {n0(eLast.female)}<span class="u">명</span></dd></div>}
     </dl>
@@ -169,9 +170,9 @@ const hCell = (k: string): string => { if (!h) return '—';
     {empYears.some(e => e.male_avg_salary || e.female_avg_salary) && (<>
     <h3>남녀별</h3>
     <div class="scroll-x"><table class="data-table" data-title={`${c.name} 남녀별 직원·급여·근속`}>
-      <thead><tr><th>사업연도</th><th class="n">남성(명)</th><th class="n">여성(명)</th><th class="n">여성 비율</th><th class="n">남성 1인 평균 급여(백만 원)</th><th class="n">여성 1인 평균 급여(백만 원)</th><th class="n">남성 평균 근속(년)</th><th class="n">여성 평균 근속(년)</th></tr></thead>
+      <thead><tr><th>사업연도</th><th class="n">남성(명)</th><th class="n">여성(명)</th><th class="n">여성 비율</th><th class="n">남성 1인 평균 급여(만 원)</th><th class="n">여성 1인 평균 급여(만 원)</th><th class="n">남성 평균 근속(년)</th><th class="n">여성 평균 근속(년)</th></tr></thead>
       <tbody>{empYears.map(e => <tr><th scope="row">{e.year}</th><td class="n">{n0(e.male)}</td><td class="n">{n0(e.female)}</td><td class="n">{pctOf(e.female, e.employees)}</td>
-        <td class="n">{mil(e.male_avg_salary)}</td><td class="n">{mil(e.female_avg_salary)}</td><td class="n">{tn(e.male_tenure)}</td><td class="n">{tn(e.female_tenure)}</td></tr>)}</tbody>
+        <td class="n">{man(e.male_avg_salary)}</td><td class="n">{man(e.female_avg_salary)}</td><td class="n">{tn(e.male_tenure)}</td><td class="n">{tn(e.female_tenure)}</td></tr>)}</tbody>
     </table></div>
     <p class="meta">성별 1인 평균 급여 = 그 성별 공시 행의 연간 급여 총액 합 ÷ 직원 수, 평균 근속은 직원 수로 가중한 값입니다.</p>
     </>)}

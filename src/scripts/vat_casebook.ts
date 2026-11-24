@@ -3,7 +3,7 @@
  *  숫자는 돌려받기 화면의 건별 판정(judge — 새 규칙 없음)을 그 신고서의 신고기간 달에 맞춰 나눈 것. 매입 목록이 없으면 나라장터 계약 어림(추정)을 그 과세기간 확정 신고서에 둔다.
  *  담당자 이름·전화는 넣지 않는다(검토란은 빈칸). 판정은 참고이며 기관의 판단이 아니다. */
 import { fmt, LAW, lawUrl, type Data, type Basis } from './vat_rules';
-import { latestDocs, type FiledDoc } from './vat_unlock';
+import { latestDocs, type BaseRow, type FiledDoc } from './vat_unlock';
 import { xlsxBlob, type Sheet } from './xlsx_write';
 import { corrReason, type CorrDoc } from './vat_diag';
 
@@ -75,10 +75,15 @@ export function gapTypes(docs: FiledDoc[], k?: string): Set<string> {
   /* 그 기간 명세에 업종코드가 없는 과세 매출이 있으면(코드 있는 줄 합 < 과세표준 (9) — (34) 수입금액 제외 줄은 서식상 코드를 적지 않음) 그 줄이 무슨 업종인지 모른다 — 다른 과세기간 절반 이상에 나오는 업종만 그 줄로 본다(환급만: 넓게 보면 매출 없는 시설을 청구해 더 낼 수 있음). */
   const unread = pd.some(d => { const tb = d.cells[9]?.amt; const sum = (d.base ?? []).reduce((n, b) => n + (b.code ? b.amt : 0), 0); return tb != null && tb > 0 && sum < tb - 1000; });
   const others = [...new Set(docs.map(d => `${d.year}-${d.half}`))].filter(x => x !== k);
-  for (const [t, [re]] of Object.entries(GAP)) { if (has(pd, re)) continue;
+  for (const [t, [re]] of Object.entries(GAP)) { if (has(pd, re) || (t === 'lease' && leaseAlt(pd))) continue;
     const n = others.filter(x => has(docs.filter(d => `${d.year}-${d.half}` === x), re)).length;
     if (unread && others.length && n * 2 >= others.length) continue; s.add(t); }
   return s; }
+/** 부동산임대업(70…) 줄이 없거나 0원이어도, 그 기간 명세에 '임대'가 든 다른 업종 줄(예: 무형재산권 임대업)에 매출이 있으면 임대·대부료를 그 줄로 신고했다고 본다 —
+ *  공유재산 대부는 세금계산서를 발급하므로 (1) 세금계산서 발급분과 함께 그 줄에 들어가 매출세액은 낸 것(업종코드만 다름). */
+export function leaseAlt(ds: FiledDoc[]): BaseRow | null {
+  for (const d of ds) for (const b of d.base ?? []) if (b.code && !/^70/.test(b.code) && b.amt > 0 && /임\s*대/.test(b.label)) return b;
+  return null; }
 const STADIUM = /운동장|경기장|야구장|축구장|구장/;
 function gradeFac(D: Data, o: CbIn, f: { fac: string; type?: string; share?: number }, gap: Set<string>): { grade: Grade; why: string; q: string[]; gap?: string } {
   const fr = f.type ? D.facilities.find(x => x.key === f.type) : undefined;
@@ -232,6 +237,9 @@ export function caseBook(D: Data, o: CbIn, pick?: (g: Grade) => boolean, lead: S
       const tb = c.d.cells[9]?.amt ?? 0; const un = tb - (c.d.base ?? []).reduce((n, b) => n + (b.code ? b.amt : 0), 0);
       if (un > 1000) out.push(`업종코드 없는 과세 매출 ${fmt(un)}원 — 과세표준 명세의 (34) 수입금액 제외 줄처럼 업종코드를 적지 않는 줄에 들어간 매출입니다(서식상 이 줄에는 코드가 없음). 과세표준에는 들어가 매출세액은 낸 것이니, 아래 시설 사용료가 여기에 들어 있는지 그 기간 세입 실적으로 맞춰 봅니다.`);
       for (const [t, re, nm] of need) { const fs = F.filter(f => f.type === t); if (!fs.length || has(re)) continue;
+        const alt = t === 'lease' ? leaseAlt([c.d]) : null;
+        if (alt) { const rev = fs.reduce((n, f) => n + (o.revByFac?.[f.fac] ?? 0), 0); const mo = Math.max(1, (c.d.to ?? 12) - (c.d.from ?? 1) + 1); const per = Math.round(rev * mo / 12 / 1.1);
+          out.push(`임대 매출 확인 — 이 신고서의 부동산임대업(70…) 줄은 ${codes.some(x => /^70/.test(x.code)) ? '0원이지만' : '없지만'} 업태·종목에 '임대'가 든 다른 업종 줄(업종코드 ${alt.code})에 ${fmt(alt.amt)}원이 있습니다. 공유재산 대부료는 세금계산서를 발급하는 매출이라 (1) 세금계산서 발급분과 함께 그 줄로 신고한 것으로 보아 ${fs.map(f => short(f.fac)).join(', ')} 몫을 청구에 넣었습니다(과세표준·매출세액은 이미 들어 있고 업종코드만 다름)${rev ? ` — 세입예산의 사용료·대부료 연 ${fmt(rev)}원이면 이 신고 기간(${mo}개월) 공급가액은 약 ${fmt(per)}원으로 그 줄 금액 안에 들어갑니다` : ''}. 홈택스 매출 전자세금계산서 목록에서 대부 받은 업체(은행·카페 등) 앞으로 발급한 세금계산서가 있는지 한 번 확인합니다.`); continue; }
         if (un > 1000) { out.push(`매출 대조 — 이 신고서 명세에 ${nm} 줄은 없고 업종코드 없는 과세 매출 ${fmt(un)}원이 있습니다. ${fs.map(f => short(f.fac)).join(', ')}의 사용료가 그 줄에 들어 있으면 과세 매출로 신고한 것이라 이 시설 매입세액 청구로 더 낼 일은 없습니다 — 세입 실적과 금액을 맞춰 확인.`); continue; }
         const rev = fs.reduce((n, f) => n + (o.revByFac?.[f.fac] ?? 0), 0); const vat = Math.round(rev / 11); const claim = fs.reduce((n, f) => n + f.claim, 0);
         out.push(`매출 대조(세무서가 먼저 볼 것) — 이 신고서 과세표준 명세에 ${nm} 매출이 없습니다(읽은 업종코드: ${codes.map(x => x.code + (x.zero ? '(0원)' : '')).join(', ')}). ${fs.map(f => short(f.fac)).join(', ')}의 사용료·임대료를 과세 매출로 신고하지 않았다면 매입세액(이 신고서 ${fmt(claim)}원)만 공제받을 수 없고, 세무서가 경정청구를 검토하며 매출 누락을 함께 경정할 수 있습니다${rev ? ` — 세입예산 연 ${fmt(rev)}원이면 부가세 연 약 ${fmt(vat)}원(부가세 포함 금액 ÷ 11), 5년이면 약 ${fmt(vat * 5)}원과 과소신고·납부지연 가산세${t === 'lease' ? '·세금계산서 미발급 가산세(사업자에게 빌려준 경우 공급가액의 2%)' : ''}로 이 시설 공제보다 클 수 있습니다` : ''}. 먼저 다른 업종에 묶어 신고했는지 확인하고, 빠졌으면 이 시설 몫은 청구에서 빼거나 매출 수정신고와 함께 냅니다`); } } }

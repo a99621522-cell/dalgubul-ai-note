@@ -21,6 +21,9 @@ export const emptyOrg = (name = ''): Org => ({ v: 1, org: name, dept: '', unit: 
 /** 예시(조례·의회 의안·회의록으로 만든 시설 목록) → 시설. 운영 방식은 '확인 필요', 수탁기관은 이름만 */
 export function presetFacilities(p: Preset): OrgFacility[] {
   const out = p.facilities.map(f => ({ id: uid(), type: f.type, name: f.name, ...(typeof f.share === 'number' ? { share: f.share } : {}), ...(f.alias?.length ? { alias: f.alias } : {}), ...(f.confirmed ? { confirmed: f.confirmed } : {}), run: (['direct', 'entrusted_org', 'entrusted_own'].includes(f.run ?? '') ? f.run : 'unknown') as Run, income: ['card'], deposit: false, contractor_dept: f.contractor ? `${f.contractor}(협약서 확인)` : f.op === '공단' ? `${p.org.replace(/^대구광역시\s*/, '')}시설관리공단(부서 확인)` : f.op === '재단' ? '재단(협약서 확인)' : '', note: (f.op ? `[${f.op}] ` : '') + (f.term ? `위탁 기간 ${f.term}(의회 동의안 제안설명 기준, 협약서로 확인). ` : '') + (f.note ?? ''), ...(f.alias?.length ? { alias: f.alias } : {}) }));
+  /* 강습(면세)·사용료(과세)가 섞인 체육시설 — 세입예산의 공급가액(예정공급가액)으로 과세 몫을 나눠 share 에 곱한다(시행령 제81조 제1항·제4항, 직영 강습은 시행령 제46조 제3호에 없어 면세 — 2026-11-25 수성구 법령 검토) */
+  out.forEach((f, i) => { const rs = p.facilities[i].rev_split; if (!rs || !(rs.taxable + rs.exempt > 0)) return; const r = rs.taxable / (rs.taxable + rs.exempt); const base = typeof f.share === 'number' ? f.share : 1; (f as OrgFacility).share = Math.round(base * r * 10000) / 10000; (f as OrgFacility).confirmed = { ...((f as OrgFacility).confirmed ?? {}), lessons: 'split' };
+    f.note = `${f.note} [강습 나눔] ${rs.basis} — 과세 ${rs.taxable.toLocaleString('ko-KR')}천원 ÷ (과세 ${rs.taxable.toLocaleString('ko-KR')} + 면세 강습 ${rs.exempt.toLocaleString('ko-KR')})천원 = ${(r * 100).toFixed(1)}%${base < 1 ? ` × 면적 몫 ${(base * 100).toFixed(1)}%` : ''} → 과세 몫 ${(((f as OrgFacility).share ?? 1) * 100).toFixed(1)}%(시행령 제81조).`; });
   out.forEach((f, i) => applyAskDefaults(f, p.facilities[i].ask));   // 확인 질문 기본값(vat_ask.ts)
   return out;
 }

@@ -25,7 +25,7 @@ export function confItems(D: Data, o: CbIn): ConfItem[] {
     if (!open) continue;
     if (type === 'sports' && (xs.some(i => i.grade === 2) || xs.some(i => /관람석|강습료/.test(i.why)))) {
       out.push({ id: `seats|${f}`, q: `${f} — 관중이 경기를 보는 관람석이 있나요?`, opts: [['no', '없음'], ['yes', '있음']], v: c.seats });
-      out.push({ id: `lessons|${f}`, q: `${f} — 구가 직접 여는 강좌의 수강료 수입이 있나요?`, opts: [['no', '없음'], ['yes', '있음']], v: c.lessons }); }
+      if (c.lessons !== 'split') out.push({ id: `lessons|${f}`, q: `${f} — 구가 직접 여는 강좌의 수강료 수입이 있나요?`, opts: [['no', '없음'], ['yes', '있음']], v: c.lessons }); }
     if (!seen.has(f)) { seen.add(f); out.push({ id: `sales|${f}`, q: `${f} — 이 시설 사용료를 지난 부가세 신고 때 매출로 넣었나요?`, opts: [['yes', '넣었음'], ['no', '안 넣었음']], v: c.sales }); } }
   if (iss.some(i => i.fac === '(신고서 숫자로 다시 계산)')) out.push({ id: 'apport', q: '같이 쓴 지출의 부가세를 나눌 때 매출 금액 비율로 나눴나요?(지난 신고서 뒤쪽 명세서의 3번 표)', opts: [['supply', '매출 금액 비율'], ['other', '다른 기준']], v: cf.apport });
   return out;

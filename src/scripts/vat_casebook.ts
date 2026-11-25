@@ -32,7 +32,7 @@ const amt = (d: FiledDoc, n: number) => d.cells[n]?.amt ?? null;
 
 export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; revText?: Record<string, string>; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number>; areaFac?: string[]; conf?: Conf; deptByFac?: Record<string, string> };
 /** 제출 전 확인(화면에서 누름, 2026-11-24 운영자 '공무원이 기재 할 일을 최대한 줄여') — 시설별 관람석·강습료·과세 매출 신고, 당초 안분 기준, 3등급 수정신고를 같이 낼지. 'yes'·'no' 만, 비면 모름 */
-export type Conf = { fac?: Record<string, { seats?: 'yes' | 'no'; lessons?: 'yes' | 'no'; sales?: 'yes' | 'no' }>; apport?: 'supply' | 'other'; g3?: 'together' | 'later'; at?: string };   /* revByFac: 시설 이름 → 세입예산 연 수입(원, 기관 설정 메모의 세입예산서 줄) */   /* corr: 신고서 숫자만으로 고친 값(진단의 안분 재계산 등) */
+export type Conf = { fac?: Record<string, { seats?: 'yes' | 'no'; lessons?: 'yes' | 'no' | 'split'; sales?: 'yes' | 'no' }>; apport?: 'supply' | 'other'; g3?: 'together' | 'later'; at?: string };   /* revByFac: 시설 이름 → 세입예산 연 수입(원, 기관 설정 메모의 세입예산서 줄) */   /* corr: 신고서 숫자만으로 고친 값(진단의 안분 재계산 등) */
 const short = (n: string) => n.replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim();
 /** 신고서별 고친 신고서 → 국세청 경정청구서 서식(vat_claimform claimFormPdf)·사유서에 그대로 넣는 값. 열쇠 'YYYY-H|0(예정)·1(확정)' 순서가 PDF 쪽 순서 */
 export type Case = { d: FiledDoc; k: string; pre: boolean; nextFin: boolean; name: string; rows: CbRow[]; listTax: number; should: number; gainAmt: number | null; gain: number; est?: CbCand; due: string; cdue: string; left: number; mode: 'list' | 'cand' | 'corr' | 'none'; sheet: string; corr?: CorrDoc };
@@ -92,7 +92,7 @@ function gradeFac(D: Data, o: CbIn, f: { fac: string; type?: string; share?: num
   const cf = o.conf?.fac?.[f.fac];
   if (f.type === 'sports' && cf?.seats === 'yes') return { grade: 4, why: '관중용 관람석이 있음(청구인 확인) — 경기장 운영업 면세 여부를 질의로 정한 뒤 청구', q: ['Q12'] };
   /* 직영 강습·강좌 수강료는 면세 — 시행령 제46조 제3호가 지자체에도 과세하는 업종(부동산임대·도소매·음식·숙박·골프장·스키장·기타 스포츠시설 운영업)에 교육서비스업이 없다(재경부 부가가치세제과-186 질의 7·8·14). 세입에 강습·수강료·레슨·수영 프로그램이 있으면 그 몫만큼 매입세액을 나눠야 하므로(시행령 제81조) 청구인이 '강습 수입 없음'을 확인하기 전에는 나중 묶음(2026-11-25 수성구 법령 검토) */
-  if (f.type === 'sports' && cf?.lessons !== 'no' && /강습|수강료|레슨|수영\s*프로그램/.test(o.revText?.[f.fac] ?? '')) return { grade: 4, why: '세입에 직영 강습·강좌 수강료가 있음 — 강습은 면세(교육, 시행령 제46조 제3호에 없음)라 그 몫을 빼는 비율(공급가액 비율, 시행령 제81조)을 정한 뒤 청구', q: ['Q14'] };
+  if (f.type === 'sports' && cf?.lessons !== 'no' && cf?.lessons !== 'split' && /수강료|강습료|수영\s*프로그램/.test(o.revText?.[f.fac] ?? '')) return { grade: 4, why: '세입에 직영 강습·강좌 수강료가 있음 — 강습은 면세(교육, 시행령 제46조 제3호에 없음)라 그 몫을 빼는 비율(공급가액 비율, 시행령 제81조)을 정한 뒤 청구', q: ['Q14'] };
   if (f.type === 'sports' && cf?.lessons === 'yes') return { grade: 4, why: '직영 강습료 수입이 있음(청구인 확인) — 강습 몫(면세)을 빼는 비율을 정한 뒤 청구', q: ['Q14'] };
   /* 관람석 의심은 이름만으로 하지 않는다(2026-11-24 운영자 '관람객이 없을꺼야, 세입 보면 알 수 있잖아') — 시설 메모(세입예산서 줄)를 알면 입장료·관람료 수입이 있을 때만.
      환급만 원칙에서도 안전: 과세로 청구했는데 세무서가 경기장(면세)으로 보면 매입세액 대신 그동안 과세로 낸 사용료 매출세액을 돌려받는 쪽이라 더 낼 일이 없다 */

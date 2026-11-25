@@ -122,12 +122,12 @@ export type Fee = 'taxable' | 'paid_check' | 'free' | 'unknown';
 export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고, 그 사용료를 과세(부동산임대)로 신고하고 있다', paid_check: '사용료·임대료를 받지만 과세로 신고하는지 모름(면세로 보고 있음)', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
 /** track=false: '지출 기록 대상 아님'(마찰 3) — 면세 시설·수탁기관 자기 사업처럼 우리 공제와 무관한 시설. 판정이 아니라 기록 범위 표시 */
 /** 기관이 확인해 준 사실(예시 설정 confirmed — 면적표로 정한 과세 몫·과세 매출 신고 여부 등). 있으면 '추정'·'매출 확인' 단계를 건너뛴다 */
-export type Confirmed = { area?: boolean; sales?: 'yes' | 'no'; seats?: 'yes' | 'no'; lessons?: 'yes' | 'no' };
+export type Confirmed = { area?: boolean; sales?: 'yes' | 'no'; seats?: 'yes' | 'no'; lessons?: 'yes' | 'no' | 'split' };   /* lessons 'split' = 강습(면세)·사용료(과세) 공급가액으로 과세 몫을 나눠 share 에 넣음(예시 설정 rev_split) */
 export type OrgFacility = { confirmed?: Confirmed; id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[]; track?: boolean; answers?: Record<string, { label: string; at: string; auto?: boolean; prev?: { type: string; run: Run; share?: number } }>; salesTaxed?: boolean; share?: number };
 /** 확인 질문(예시 설정 시설의 ask — docs/design/vat-minimize.md 3절): 고르면 시설 유형·운영 방식이 바뀌고 메모가 덧붙는다 */
 export type AskOpt = { label: string; patch?: { type?: string; run?: Run; note?: string; salesTaxed?: boolean; share?: number | null } };
 export type AskDef = { id: string; q: string; why?: string; opts: AskOpt[]; default?: number; group?: string; gq?: string; gyes?: number };
-export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; run?: string; share?: number; contractor?: string; term?: string; note?: string; alias?: string[]; ask?: AskDef[]; confirmed?: Confirmed }[] };
+export type Preset = { key: string; org: string; read: string; note: string; findings?: string[]; sources: { title: string; url: string; eff: string }[]; facilities: { name: string; type: string; op?: string; run?: string; share?: number; contractor?: string; term?: string; note?: string; alias?: string[]; ask?: AskDef[]; confirmed?: Confirmed; rev_split?: { taxable: number; exempt: number; basis: string } }[] };
 /** 세출 사업·부서 글자 → 시설 자동 귀속 규칙(붙여넣기 때 사업명·부서 열로 '어디에'를 자동으로, 담당자가 고른 결과를 배워 쌓는다 — 세무회계법인 관점 3번) */
 export type MapRule = { pat: string; fid: string; use?: UseQ };
 /** filing: 신고를 누가 하나 — self 기관이 직접(기본) / agent 세무대리인(회계사·세무사)에게 의뢰(agent_org 는 대리인 기관 이름만, 사람 이름·전화 없음). 어느 쪽이든 근거 자료는 기관이 만든다(운영자 2026-11-03) */

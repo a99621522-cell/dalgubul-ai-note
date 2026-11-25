@@ -492,6 +492,20 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     const li2 = await p5.$$eval('#rf-all-list li', ls => ls.map(l => l.textContent.replace(/\s+/g, ' ')));
     ok('U8 한글(HWPX) 신고서·한글 표 매입 목록·엑셀 신고서를 읽음', li1.some(t => /신고서\(한글\)/.test(t) && /2024년 제2기 확정/.test(t)) && li1.some(t => /매입 목록\(한글 표\)/.test(t)) && st1.rows === 2 && st1.f18.includes(1000000) && li2.some(t => /신고서\(엑셀\)/.test(t) && /2024년 제2기 확정/.test(t)), JSON.stringify({ li1, st1, li2 }).slice(0, 500));
     await c5.close(); }
+  /* U9 운영자 2026-11-24 보완 요청 — e호조 지출 내역(세부사업 칸)은 세부사업 단위로 정하고, 남은 사업은 한 번에 면세·행정으로. 문서보안(DRM) 파일은 잠김 안내 */
+  { const c6 = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const p6 = await c6.newPage(); p6.on('pageerror', e => errs.push('U9: ' + e));
+    await p6.goto(base + '/vat/review/'); await p6.evaluate(o => { localStorage.clear(); localStorage.setItem('vat-org-v1', JSON.stringify(o)); localStorage.setItem('vat-gov', 'dalseong'); }, ORG_S); await p6.reload(); await p6.waitForSelector('#rf-all-file', { state: 'attached' });
+    const fx = n => path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax', n);
+    const drm = path.join(os.tmpdir(), 'vat_drm_test.xlsx.pLDH'); fs.writeFileSync(drm, 'VER3.2P\0\0\0' + 'x'.repeat(200) + '<PCFILTER CRYPTO FILE END>');
+    await p6.setInputFiles('#rf-all-file', [fx('ehojo_expense.csv'), drm]); await p6.waitForTimeout(1800);
+    const li = await p6.$$eval('#rf-all-list li', ls => ls.map(l => l.textContent.replace(/\s+/g, ' ')));
+    const rows0 = await p6.$$eval('#rv-biz tbody tr[data-bk]', trs => trs.map(t => [t.dataset.bk, t.querySelector('[data-bz-fid]').value]));
+    const zero = await p6.locator('#rv-biz-box').textContent();
+    const go = await p6.locator('#rf-biz-go').count(); await p6.click('#rf-biz-go a'); await p6.waitForTimeout(300);
+    await p6.click('[data-bf="all"]'); await p6.waitForTimeout(300); await p6.click('#rv-bb-rest'); await p6.waitForTimeout(600);
+    const st9 = await p6.evaluate(() => JSON.parse(localStorage.getItem('vat-review-v1') || '{}').biz || {});
+    ok('U9 e호조 세부사업 표(시설 이름 일치 → 시험체육센터)·부가세 0 안내·남은 사업 면세·행정·DRM 안내', rows0.length === 1 && rows0[0][0] === '시험체육센터 운영관리' && rows0[0][1] === 'f1' && /부가세가 0원으로 적힌 전자세금계산서 지출 1건/.test(zero) && st9['동행정 지원']?.fid === 'exempt' && st9['구정 홍보']?.fid === 'exempt' && !st9['시험체육센터 운영관리'] && li.some(t => /문서보안\(DRM\)/.test(t)), JSON.stringify({ rows0, st9, li }).slice(0, 600));
+    await c6.close(); }
   const st3 = T(await p3.locator('#rf-s3-st').textContent()); const vis = await p3.$$eval('#rv-sup-box #rv-sup tbody tr[data-sk]', trs => trs.map(t => t.dataset.sk));
   ok('S4 계약 업체 번호로 저절로 귀속 3곳(+시설 이름 1곳) · 사람이 고를 공급자 1곳(20%)만 표에', /계약 업체 번호 일치 3곳/.test(st3) && /남은 1곳/.test(st3) && vis.length === 1 && vis[0] === '9998877777', st3 + ' ' + vis.join(','));
   await p3.click('[data-sf="all"]'); await p3.waitForTimeout(400);

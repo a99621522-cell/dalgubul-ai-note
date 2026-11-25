@@ -11,7 +11,9 @@ export type FileTable = { name: string; kind: 'xlsx' | 'xls' | 'csv' | 'html' | 
 /* ── 한글(HWPX) ── 운영자 2026-11-24 '홈택스 파일 올리기에 엑셀·hwpx 도'
  *  zip 의 Contents/section*.xml 을 읽어 ① 글자(문단은 한 줄, 표는 행마다 칸을 띄어 한 줄 — 신고서 칸 '(9) … 금액' 이 한 줄에 오게) ② 표(행·칸 글자, 가장 큰 표가 매입 목록 후보) */
 export async function readHwpx(file: File): Promise<{ text: string; tables: string[][][] }> {
-  const files = await unzip(await file.arrayBuffer()); const dec = new TextDecoder('utf-8');
+  const buf = await file.arrayBuffer(); const b0 = new Uint8Array(buf);
+  if (isOle(b0)) return readHwp5(b0);   /* 확장자가 .hwpx 여도 실제는 옛 한글(HWP 5.0)인 파일 — 운영자 2026-11-24 올린 파일 두 개가 그랬다 */
+  const files = await unzip(buf); const dec = new TextDecoder('utf-8');
   const secs = files.filter(f => /^Contents\/section\d+\.xml$/i.test(f.name)).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
   if (!secs.length) throw new Error('한글(HWPX) 본문을 찾지 못했습니다');
   const tx = (x: string) => xmlUnesc([...x.matchAll(/<hp:t\b[^>]*>([\s\S]*?)<\/hp:t>/g)].map(m => m[1].replace(/<[^>]+>/g, '')).join('')).replace(/\s+/g, ' ').trim();
@@ -24,6 +26,38 @@ export async function readHwpx(file: File): Promise<{ text: string; tables: stri
     for (const p of xml.slice(at).split(/<\/hp:p>/)) { const t = tx(p); if (t) lines.push(t); } }
   return { text: lines.join('\n'), tables };
 }
+const isOle = (b: Uint8Array) => b[0] === 0xd0 && b[1] === 0xcf && b[2] === 0x11 && b[3] === 0xe0;
+/** 문서보안(DRM)으로 잠긴 파일인가 — 기관 PC 의 문서 암호화 프로그램이 원본을 감싸 확장자 뒤에 글자를 붙인다(예: .xlsx.pLDH, 첫 줄 'VER3.2P', 끝 'CRYPTO FILE END') */
+export const isDrm = (b: Uint8Array) => { const head = latin(b.subarray(0, 16)), tail = latin(b.subarray(Math.max(0, b.length - 64))); return /^VER\d/.test(head) || /CRYPTO\s*FILE\s*END/.test(tail); };
+/* ── 옛 한글(HWP 5.0) ── OLE2 복합 문서: FileHeader(압축·암호·배포용 표시) + BodyText/SectionN(raw deflate 레코드).
+ *  레코드 머리 32비트 = 태그(10) · 단계(10) · 크기(12, 0xFFF 면 다음 4바이트). PARA_TEXT(67) = UTF-16LE 글자(제어 글자 0~31 은 1칸 또는 8칸),
+ *  CTRL_HEADER(71) 'tbl ' → TABLE(77) → 칸마다 LIST_HEADER(72)(+8 열 주소·+10 행 주소). 칸은 행마다 띄어 한 줄로(readHwpx 와 같은 꼴) */
+async function readHwp5(b: Uint8Array): Promise<{ text: string; tables: string[][][] }> {
+  const fh = oleStream(b, ['FileHeader']); if (!fh || latin(fh.subarray(0, 17)) !== 'HWP Document File') throw new Error('한글(HWP) 문서가 아닙니다');
+  const flags = new DataView(fh.buffer, fh.byteOffset, fh.byteLength).getUint32(36, true);
+  if (flags & 2) throw new Error('암호가 걸린 한글 파일입니다 — 한글에서 암호를 풀고 저장해 다시 올리세요');
+  if (flags & 4) throw new Error('배포용 한글 문서라 글자를 읽을 수 없습니다 — 한글에서 「다른 이름으로 저장 → HWPX」로 바꿔 올리세요');
+  const lines: string[] = []; const tables: string[][][] = [];
+  for (let n = 0; n < 64; n++) { const raw = oleStream(b, [`Section${n}`]); if (!raw) break;
+    const d = flags & 1 ? await inflateRaw(raw) : raw; const dv = new DataView(d.buffer, d.byteOffset, d.byteLength);
+    type T = { lvl: number; grid: Map<number, Map<number, string[]>>; cur: string[] | null };
+    const stack: T[] = []; let pendTbl = -1;
+    const endTo = (lvl: number) => { while (stack.length && lvl <= stack[stack.length - 1].lvl) { const t = stack.pop()!; const rows = [...t.grid.keys()].sort((x, y) => x - y).map(r => { const cs = t.grid.get(r)!; const mx = Math.max(...cs.keys()); return Array.from({ length: mx + 1 }, (_, c) => (cs.get(c) ?? []).join(' ').replace(/\s+/g, ' ').trim()); }).filter(r => r.some(Boolean)); if (rows.length) { tables.push(rows); const line = rows.map(r => r.filter(Boolean).join(' ')); if (stack.length && stack[stack.length - 1].cur) stack[stack.length - 1].cur!.push(...line); else lines.push(...line); } } };
+    let i = 0; while (i + 4 <= d.length) { const h = dv.getUint32(i, true); const tag = h & 0x3ff, lvl = (h >>> 10) & 0x3ff; let sz = h >>> 20; i += 4; if (sz === 0xfff) { sz = dv.getUint32(i, true); i += 4; } const at = i; i += sz; if (i > d.length) break;
+      if (stack.length && lvl <= stack[stack.length - 1].lvl) endTo(lvl);
+      if (tag === 71 && sz >= 4 && latin(d.subarray(at, at + 4)) === ' lbt') pendTbl = lvl;   /* 'tbl ' 이 거꾸로 저장됨 */
+      else if (tag === 77 && pendTbl >= 0) { stack.push({ lvl: pendTbl, grid: new Map(), cur: null }); pendTbl = -1; }
+      else if (tag === 72 && stack.length && sz >= 12) { const t = stack[stack.length - 1]; const col = dv.getUint16(at + 8, true), row = dv.getUint16(at + 10, true); const rm = t.grid.get(row) ?? new Map<number, string[]>(); t.grid.set(row, rm); const c: string[] = rm.get(col) ?? []; rm.set(col, c); t.cur = c; }
+      else if (tag === 67) { let s = ''; for (let j = at; j + 1 < at + sz;) { const c = dv.getUint16(j, true); if (c < 32) { if ([0, 10, 13, 24, 25, 26, 27, 28, 29, 30, 31].includes(c)) { if (c === 10 || c === 13) s += ' '; j += 2; } else { if (c === 9) s += ' '; j += 16; } continue; } s += String.fromCharCode(c); j += 2; }
+        s = s.replace(/\s+/g, ' ').trim(); if (!s) continue; const t = stack[stack.length - 1]; if (t?.cur) t.cur.push(s); else lines.push(s); } }
+    endTo(-1); }
+  if (!lines.length && !tables.length) throw new Error('한글(HWP) 본문 글자를 찾지 못했습니다');
+  return { text: lines.join('\n'), tables };
+}
+/* 한글 본문 스트림은 deflate 끝 뒤에 채움 바이트가 붙는 일이 있어 브라우저 DecompressionStream 이 끝에서 오류를 낸다 — 그때까지 푼 것을 쓴다 */
+async function inflateRaw(b: Uint8Array): Promise<Uint8Array> { const ds = new DecompressionStream('deflate-raw'); const w = ds.writable.getWriter(); void w.write(b).catch(() => { /* */ }); void w.close().catch(() => { /* */ }); const rd = ds.readable.getReader(); const parts: Uint8Array[] = []; let n = 0;
+  try { for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); n += value.length; } } catch (e) { if (!n) throw e; }
+  const out = new Uint8Array(n); let o = 0; for (const p of parts) { out.set(p, o); o += p.length; } return out; }
 /** 표 → 줄 글자(엑셀·한글로 저장한 신고서를 신고서 판독기에 넣을 때 — 행마다 칸을 띄어 한 줄) */
 export const tableText = (rows: string[][]) => rows.map(r => r.filter(c => c !== '').join(' ')).filter(Boolean).join('\n');
 /** 신고서로 보이는 글자인가(부가가치세 신고서 제목·과세표준 칸) — 엑셀·한글 파일이 신고서인지 매입 목록인지 가를 때 */
@@ -31,7 +65,8 @@ export const looksFiled = (text: string) => /부\s*가\s*가\s*치\s*세/.test(t
 
 export async function readTableFile(file: File): Promise<FileTable> {
   const buf = await file.arrayBuffer(); const b = new Uint8Array(buf); const name = file.name;
-  if (/\.hwpx$/i.test(name)) { const h = await readHwpx(file); const big = [...h.tables].sort((x, y) => y.length - x.length)[0]; if (!big?.length) throw new Error('한글 파일에 표가 없습니다'); return { name, kind: 'hwpx', rows: big }; }   /* 한글로 정리한 매입 목록 — 가장 큰 표 */
+  if (isDrm(b)) throw new Error('문서보안(DRM)으로 잠긴 파일입니다 — 기관 PC 의 문서보안 프로그램에서 「암호 해제(반출)」한 뒤 올리세요');
+  if (/\.hwpx?$/i.test(name) || (isOle(b) && oleStream(b, ['FileHeader']))) { const h = await readHwpx(file); const big = [...h.tables].sort((x, y) => y.length - x.length)[0]; if (!big?.length) throw new Error('한글 파일에 표가 없습니다'); return { name, kind: 'hwpx', rows: big }; }   /* 한글로 정리한 매입 목록 — 가장 큰 표 */
   if (b[0] === 0x50 && b[1] === 0x4b) { const t = await readXlsx(buf); return { name, kind: 'xlsx', ...t }; }
   if (b[0] === 0xd0 && b[1] === 0xcf && b[2] === 0x11 && b[3] === 0xe0) { const t = readXls(b); return { name, kind: 'xls', ...t }; }
   const text = decodeText(b);
@@ -168,7 +203,7 @@ function oleStream(b: Uint8Array, names: string[]): Uint8Array | null {
 /** 파일 놓기 상자 — <div data-drop> 안에 안내와 <input type=file>; 파일을 읽으면 onTable(표, 파일 정보) */
 /** 파일 놓기. onMany 를 주면 여러 파일을 한꺼번에(홈택스 목록조회는 법인 3개월씩이라 5년이면 20개 — 운영자 2026-11-05 '분기별로 하면 여러 번 해야 하잖아') */
 export function mountDrop(el: HTMLElement, onTable: (t: FileTable) => void, label = '엑셀 파일을 여기에 놓거나 고르기', onMany?: (ts: FileTable[], fails: string[]) => void) {
-  el.classList.add('vat-drop'); el.innerHTML = `<label class="vat-drop-in"><strong>${label}</strong><span class="note">.xlsx · .xls(홈택스·e호조·재정 포털 내려받기) · .csv · 한글 .hwpx(표) — 파일은 이 브라우저 안에서만 읽고 밖으로 나가지 않습니다</span><input type="file" accept=".xlsx,.xls,.hwpx,.csv,.txt,.tsv,.htm,.html,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"${onMany ? ' multiple' : ''} hidden /></label><p class="note vat-drop-msg" aria-live="polite"></p>`;
+  el.classList.add('vat-drop'); el.innerHTML = `<label class="vat-drop-in"><strong>${label}</strong><span class="note">.xlsx · .xls(홈택스·e호조·재정 포털 내려받기) · .csv · 한글 .hwpx·.hwp(표) — 파일은 이 브라우저 안에서만 읽고 밖으로 나가지 않습니다</span><input type="file" accept=".xlsx,.xls,.hwpx,.hwp,.csv,.txt,.tsv,.htm,.html,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"${onMany ? ' multiple' : ''} hidden /></label><p class="note vat-drop-msg" aria-live="polite"></p>`;
   const input = el.querySelector<HTMLInputElement>('input[type=file]')!; const msg = el.querySelector<HTMLElement>('.vat-drop-msg')!;
   const handle = async (f: File | undefined) => { if (!f) return; msg.textContent = `${f.name} 읽는 중…`; try { const t = await readTableFile(f); msg.textContent = `${f.name}: ${t.rows.length}행 읽음(${t.kind}${t.sheet ? ' · 시트 ' + t.sheet : ''})`; onTable(t); } catch (e) { msg.textContent = `${f.name}: 읽지 못했습니다 — ${(e as Error).message}. 엑셀에서 '다른 이름으로 저장 → CSV UTF-8' 로 바꿔 다시 놓거나 시트를 복사해 붙여넣으세요.`; } };
   const handleMany = async (fs: File[]) => { if (!onMany || fs.length < 2) return handle(fs[0]); const ts: FileTable[] = [], fails: string[] = []; for (const [i, f] of fs.entries()) { msg.textContent = `${i + 1}/${fs.length} ${f.name} 읽는 중…`; try { ts.push(await readTableFile(f)); } catch (e) { fails.push(`${f.name}(${(e as Error).message})`); } } msg.textContent = `파일 ${fs.length}개 — 읽음 ${ts.length}개 · ${ts.reduce((n, t) => n + t.rows.length, 0)}행${fails.length ? ` · 못 읽음 ${fails.length}개` : ''}`; onMany(ts, fails); };

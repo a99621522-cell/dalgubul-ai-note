@@ -10,7 +10,8 @@ export type Stake = Map<string, { tax: number; est: number }>;
 
 const rx = (s: string) => { try { return new RegExp(s); } catch { return null; } };
 /** 과세 몫 표시 — 면적으로 정함 / 답함 / 조사 기본값(추정) / 없음 */
-function shareLabel(f: OrgFacility): string {
+function shareLabel(f: OrgFacility, U = '기관'): string {
+  if (f.confirmed?.area && typeof f.share === 'number' && !f.answers?.area) return `과세 몫 ${Math.round(f.share * 1000) / 10}% <span class="vbadge ok">${esc(U)} 확인</span> — 기관이 준 면적표로 정함(시설 메모에 면적)`;
   const a = f.answers?.area; if (a) return `과세 몫 ${Math.round((f.share ?? 0) * 1000) / 10}% — ${esc(a.label)}`;
   if (typeof f.share !== 'number') return '과세 몫 지정 없음(시설 전체를 한 성격으로 봄)';
   const man = Object.values(f.answers ?? {}).some(x => !x.auto); const pct = Math.round(f.share * 1000) / 10;
@@ -31,7 +32,7 @@ export function focusHtml(D: Data, org: Org | null, stake: Stake, hasList: boole
     const rows = fs.map(f => {
       const st = facilityStatus(D, f); const m = money(f);
       const area = g.area ? `<div class="rf-area" data-fid="${esc(f.id)}"><label>전체 면적 <input type="number" min="0" step="0.01" inputmode="decimal" data-area-tot aria-label="${esc(f.name)} 전체 면적(㎡)">㎡</label> <label>과세로 쓰는 면적 <input type="number" min="0" step="0.01" inputmode="decimal" data-area-tax aria-label="${esc(f.name)} 과세로 쓰는 면적(㎡)">㎡</label> <button type="button" class="btn secondary" data-area-go>이 면적으로</button><span class="note" data-area-msg role="status"></span></div>` : '';
-      return `<li><b>${esc(f.name)}</b> <span class="vbadge">${esc(STATUS_LABEL_SHORT[st] ?? st)}</span>${m ? ` <span class="meta">${unit} ${fmt(m)}원</span>` : ''}${g.area || typeof f.share === 'number' ? `<br><span class="note">${shareLabel(f)}</span>` : ''}${area}</li>`;
+      return `<li><b>${esc(f.name)}</b> <span class="vbadge">${esc(STATUS_LABEL_SHORT[st] ?? st)}</span>${m ? ` <span class="meta">${unit} ${fmt(m)}원</span>` : ''}${g.area || typeof f.share === 'number' ? `<br><span class="note">${shareLabel(f, U)}</span>` : ''}${area}</li>`;
     }).join('');
     return `<li class="rf-focus-g"><p class="rf-focus-t"><b>${esc(g.title)}</b>${sum ? ` <span class="meta">${unit} 합 ${fmt(sum)}원</span>` : ''}</p>
       <p class="note">${esc(g.why)}</p>${g.todo ? `<p class="note"><b>할 일</b> ${esc(g.todo)}</p>` : ''}<ul class="rf-focus-f">${rows}</ul></li>`;

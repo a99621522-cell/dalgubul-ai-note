@@ -348,3 +348,4 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 .rf-area { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-top: 4px; } .rf-area input { width: 7.5em; }
 .rf-guess { font-weight: 700; border: 1px dashed currentColor; border-radius: 4px; padding: 0 4px; }
 #rf-focus { scroll-margin-top: 150px; }
+.rf-peek pre { white-space: pre-wrap; max-height: 16rem; overflow: auto; font-size: .8rem; background: var(--color-surface-2, #f4f6f8); padding: .5rem; }

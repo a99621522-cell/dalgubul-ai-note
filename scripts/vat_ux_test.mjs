@@ -512,6 +512,13 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     const li10 = await p6.$$eval('#rf-all-list li', ls => ls.map(l => l.textContent.replace(/\s+/g, ' ')));
     const n10 = await p6.evaluate(() => (JSON.parse(localStorage.getItem('vat-review-v1') || '{}').rows || []).length);
     ok('U10 엑셀에서 복사한 표를 Ctrl+V → 매입 목록으로 읽음(5건)', n10 === 5 && li10.some(t => /붙여넣은 표/.test(t)) && await p6.locator('#rv-biz tbody tr[data-bk]').count() >= 1, JSON.stringify({ n10, li10 }).slice(0, 300));
+    /* U11 5년치처럼 큰 자료(localStorage 한도 넘음)도 다시 열면 그대로 — IndexedDB(vat_store.ts) */
+    { const head = fs.readFileSync(fx('ehojo_expense.csv'), 'utf-8').split('\n')[0].split(',').join('\t'); const big = [head]; for (let k = 0; k < 30000; k++) big.push([k + 1, `업체${k % 900}`, String(1000000000 + (k % 900)), '1,100,000', '1,000,000', '100,000', `2024-0${1 + (k % 9)}-15`, '일반회계', `세부사업 ${k % 700} 시설 관리 운영`, '201-01 사무관리비', `부서${k % 40}`, `적요 내용 ${k} 물품 구입 및 유지 보수 비용 지출`, '전자세금계산서', `2024011541000000000${String(k).padStart(5, '0')}`].join('\t'));
+      await p6.evaluate(() => { localStorage.removeItem('vat-review-v1'); }); await p6.reload(); await p6.waitForSelector('#rf-all-file', { state: 'attached' });
+      await p6.evaluate(t => { const dt = new DataTransfer(); dt.setData('text/plain', t); document.body.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true })); }, big.join('\n')); await p6.waitForTimeout(25000);
+      const stub = await p6.evaluate(() => localStorage.getItem('vat-review-v1'));
+      await p6.reload(); await p6.waitForTimeout(20000); const stat = await p6.locator('#rv-stat').textContent().catch(() => '');
+      ok('U11 큰 자료(3만 건)도 다시 열면 그대로', /30,000건|30000건/.test(stat ?? '') && stub === '{"v":1,"idb":1}', `${(stub ?? '').slice(0, 40)} · ${stat}`); }
     await c6.close(); }
   const st3 = T(await p3.locator('#rf-s3-st').textContent()); const vis = await p3.$$eval('#rv-sup-box #rv-sup tbody tr[data-sk]', trs => trs.map(t => t.dataset.sk));
   ok('S4 계약 업체 번호로 저절로 귀속 3곳(+시설 이름 1곳) · 사람이 고를 공급자 1곳(20%)만 표에', /계약 업체 번호 일치 3곳/.test(st3) && /남은 1곳/.test(st3) && vis.length === 1 && vis[0] === '9998877777', st3 + ' ' + vis.join(','));
@@ -643,6 +650,9 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     ok(`E3 ${vp.width}px 과업 B — 기간 행 「왜 · 어떻게」 한 번 → 할 일·이유·근거 조문 링크`, e3.open && e3.todo && e3.law >= 1, JSON.stringify(e3));
     const jar = await pe.evaluate(() => { const J = /\(\d{1,2}\)|[⑤⑩⑪⑫⑭⑮⑯⑰⑱⑲⑳]|안분|면세비율|정산|재계산|과세표준|불공제|매입세액|경정청구|기한후신고/g; const P = /공제받은|공제받지|돌려받|빼고|나누어|다시 셈|미리 낸|낼 세금|산 물건/; const d = document.querySelector('#rf-sum .rf-row-why'); if (d) d.open = false; return document.getElementById('rf-sum').innerText.split('\n').filter(l => !P.test(l)).flatMap(l => l.match(J) ?? []); });
     ok(`E4 ${vp.width}px 결과 요약의 풀어 쓰지 않은 서식 칸·세법 용어 0`, jar.length === 0, jar.join(','));
+    if (vp.width > 800) { const got = {}; for (const id of ['rf-dl-x', 'rf-dl-p', 'rf-dl-w']) { const [dl] = await Promise.all([pe.waitForEvent('download', { timeout: 30000 }).catch(() => null), pe.click('#' + id)]); if (dl) { const fp = await dl.path(); const buf = fs.readFileSync(fp); got[id] = { name: dl.suggestedFilename(), size: buf.length, head: buf.subarray(0, 4).toString('latin1'), txt: id === 'rf-dl-w' ? (await import('node:child_process')).execSync(`unzip -p "${fp}" word/document.xml`).toString().replace(/<[^>]+>/g, '') : '' }; } }
+      const w = got['rf-dl-w']?.txt ?? '';
+      ok('E12 고친 신고서 받기 — 엑셀·PDF(국세청 서식)·Word(별지 제16호의2서식 칸·사유서·근거 법령)', got['rf-dl-x']?.head?.startsWith('PK') && got['rf-dl-p']?.head === '%PDF' && got['rf-dl-w']?.head?.startsWith('PK') && /과세표준 및 세액의 결정\(경정\)청구서/.test(w) && /⑰ 환급받을 세액/.test(w) && /국세기본법 제45조의2/.test(w) && /청구 사유서/.test(w), JSON.stringify(Object.fromEntries(Object.entries(got).map(([k, v]) => [k, v.name + ' ' + v.size]))) ); }
     if (vp.width === 1366) {
       const e9 = await pe.evaluate(() => ({ cond: document.getElementById('rf-sure-cond')?.textContent ?? '', net: document.getElementById('rf-net')?.textContent ?? '', why: [...document.querySelectorAll('#rf-sum .rf-row-why')].map(d => d.textContent).join('|') }));
       ok('E9 세무 검토 — 확정 460,000원 가운데 안분·정산 다시 한 몫 460,000원은 원신고가 공급가액 비율일 때만(제81조 제4항·2017두55329), 순으로 보면 줄(확정은 매출 영향 없음), 기간 행 「확인」', /460,000원은 함께 쓴 비용/.test(e9.cond) && /제81조 제4항/.test(e9.cond) && /2017두55329/.test(e9.cond) && /확정 460,000원은 계산을 바로잡는 것/.test(e9.net) && /공급가액 비율로 나눴을 때의 금액/.test(e9.why), JSON.stringify(e9).slice(0, 400));

@@ -15,6 +15,7 @@ import type { Conf } from './vat_casebook';
 import { xlsxBlob, csvRows } from './xlsx_write';
 import { applyDefaults } from './vat_ask';
 import { startFromLink } from './vat_org';
+import { loadBig, saveBig } from './vat_store';
 import { diagnose, diagHtml, diagCsv, filedChecks, missingPeriods, mergeFiled, type Diag, refundCalcCsv, reportBlocks, correctedFilings, correctedCsv, claimRows, claimDocs, type CorrDoc, baseTypes } from './vat_diag';
 import { readFiledText, parseFiledText, filedSummary, unlockCompute, unlockHtml, unlockFiles, latestDocs, type FiledDoc, type URow, type UPer } from './vat_unlock';
 import { unzip, $, esc, num, fmt, pct, loadData, getOrg, parseTable, parseDateCell, guessColumns, findHeader, COL_GUESS, claimPeriod, fixDue, downloadText, toCsv, ymd, getFilings, zipStore, downloadBlob, srcBtn, helpWire, judge, govUnit, matchMap, matchFacilityName, facilityStatus, facilityRule, lawLink, lawText, rulingsHtml, inquiryHtml, inquiryText, wireInquiry, guessWhat, WHAT_Q, LABEL, guessCw, isCw, cwSel, toast, vatConfirm, readJsonFile, type Data, type Org, type OrgFacility, type Verdict, type Basis, type Ruling } from './vat_rules';
@@ -29,8 +30,9 @@ type SupSet = { fid: string; use: UseK; what?: string; cw?: string; via?: 'ctr' 
 type State = { v: 1; reg: string; rows: RvRow[]; filed: Record<string, Filed>; sup: Record<string, SupSet>; biz?: Record<string, SupSet>; saved?: string; fdocs?: FiledDoc[]; have?: Record<string, { name?: string; at: string }>; sales?: Record<string, number | null> };
 type RowOut = { v: Verdict; rate: number | null; label: string; f?: OrgFacility; claim: number; cat: 'ok' | 'split' | 'no' | 'none' | 'check' | 'other' | 'noratio'; basis: Basis[]; why: string[] };
 const KEY = 'vat-review-v1';
+let stored: string | null = null;   /* IndexedDB·localStorage 가운데 나중 것(vat_store.loadBig) */
 const D = loadData();
-if (D) startFromLink(D).then(made => { if (made) location.reload(); else init(D); }, () => init(D));   // ?gov=dalseong — 링크 한 번으로 시작
+if (D) startFromLink(D).then(made => { if (made) location.reload(); else void loadBig(KEY).then(t => { stored = t; init(D); try { const n = sessionStorage.getItem('vat-org-renewed'); if (n) { sessionStorage.removeItem('vat-org-renewed'); toast(`기관 설정을 새 판으로 바꿨습니다(시설 ${n}곳 — 기관이 확인해 준 면적·신고 여부 포함). 올린 자료와 시설 지정은 그대로입니다`); } } catch { /* */ } }); }, () => void loadBig(KEY).then(t => { stored = t; init(D); }));   // ?gov=dalseong — 링크 한 번으로 시작
 
 function init(D: Data) {
   applyDefaults(D, getOrg());   // 확인 질문 기본값(묻지 않고 적용 — vat_ask.ts)
@@ -453,6 +455,16 @@ function init(D: Data) {
       { const rt = reasonDocText(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (rt) files.push({ name: '19_경정청구_사유서(근거_법령·붙임).txt', data: rt }); try { const rp = await reasonDocPdf(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (rp) files.push({ name: '19_경정청구_사유서(근거_법령·붙임).pdf', data: await bin(rp) }); } catch { /* 사유서 PDF 를 못 만들어도 txt 는 들어감 */ } } }
     downloadBlob(`${base}.zip`, zipStore([...(await caseFiles()), ...files.map(f => ({ ...f, name: REF + f.name }))])); toast('세무서 제출 묶음(00~12)과 참고 자료를 내려받았습니다'); })());
   /* 경정청구서(국세청 서식) — 국세기본법 시행규칙 별지 제16호의2서식에 숫자를 채운 인쇄용 화면을 새 창으로(막히면 파일로) */
+  /* 고친 신고서 받기(과세기간마다) — 엑셀(신고서별 시트: 고친 값·이유·근거 법령·근거 자료) · PDF(국세청 별지 제16호의2서식) · Word(같은 서식, 고칠 수 있음). 세무서 제출 묶음 02·03 과 같은 계산(운영자 2026-11-25) */
+  const corrM = () => caseCorrDocs(D, cbIn(), g => g <= 2); const fn = (t: string, ext: string) => `${t}_${org?.org ?? ''}_${today}.${ext}`.replace(/\s+/g, '_');
+  document.addEventListener('click', e => { const t = e.target as HTMLElement; const id = t.closest('#rf-dl-x, #rf-dl-p, #rf-dl-w')?.id; if (!id) return;
+    if (!(st.fdocs ?? []).length) { toast('지난 신고서를 올리면 신고서마다 고친 신고서를 만듭니다'); return; }
+    void (async () => { try {
+      if (id === 'rf-dl-x') { const b = caseXlsx(); if (b) downloadBlob(fn('고친신고서_이유_근거_과세기간별', 'xlsx'), b); else toast('고칠 신고서가 없습니다'); return; }
+      const M = corrM(); if (![...M.values()].flat().some(c => c.delta > 0)) { toast('이번에 청구할 고친 신고서가 없습니다 — 확인할 것을 먼저 보세요'); return; }
+      if (id === 'rf-dl-p') { const b = await claimFormPdf(M, org?.org ?? '', org?.reg_no ?? st.reg ?? '', true); if (b) { const { downloadPdf } = await import('./pdf'); downloadPdf(fn('고친신고서_경정청구서_국세청서식', 'pdf').replace(/\.pdf$/, ''), b); } return; }
+      const { claimFormDocx } = await import('./vat_claimform'); downloadBlob(fn('고친신고서_경정청구서_국세청서식', 'docx'), await claimFormDocx(M, org?.org ?? '', org?.reg_no ?? st.reg ?? ''));
+    } catch { toast('파일을 만들지 못했습니다 — 「세무서 제출 묶음 받기」로 받으세요'); } })(); });
   document.addEventListener('click', e => { if (!(e.target as HTMLElement).closest('#rf-dl-form-pdf')) return;
     void (async () => { try { const b = await claimFormPdf(claimMap(), org?.org ?? '', org?.reg_no ?? ''); if (!b) { toast('신고서 숫자로 고칠 값이 있을 때 경정청구서를 채웁니다'); return; }
       const { downloadPdf } = await import('./pdf'); downloadPdf(`경정청구서_별지제16호의2_${org?.org ?? ''}_${today}`.replace(/\s+/g, '_'), b); } catch { toast('PDF 를 만들지 못했습니다 — 「보기·인쇄」에서 PDF로 저장하세요'); } })(); });
@@ -479,7 +491,7 @@ function init(D: Data) {
     for (const r of cbRows) { const nd = r.facType ? need[r.facType] : undefined; if (!r.claim || !nd || has(nd[0])) continue; const x = m.get(r.fac) ?? { fac: r.fac, nm: nd[1], claim: 0 }; x.claim += r.claim; m.set(r.fac, x); }
     return [...m.values()].sort((a, b) => b.claim - a.claim); };
   function emit(x: Record<string, unknown> | null) { cover(); const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), salesGap: salesGap(), baseTypes: (() => { const b = baseTypes(st.fdocs ?? []); return b ? { seen: [...b.seen], known: [...b.known] } : null; })(), diag: diagHtml(D, dm.diags), diags: dm.diags, fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er, salesSup: f.salesSup, total: f.total, ex5: f.exemptNd, nd2: f.ndReasons[2] ?? null })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); renderConf(); }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify({ ...st, saved: new Date().toISOString() })); } catch { /* 저장 못 해도 계속 */ } }
-  function load(): State | null { try { const s = localStorage.getItem(KEY); if (!s) return null; const j = JSON.parse(s) as State; return j && j.v === 1 && Array.isArray(j.rows) ? j : null; } catch { return null; } }
+  function save() { saveBig(KEY, JSON.stringify({ ...st, saved: new Date().toISOString() })); }
+  function load(): State | null { try { const s = stored; if (!s) return null; const j = JSON.parse(s) as State; return j && j.v === 1 && Array.isArray(j.rows) ? j : null; } catch { return null; } }
   build();
 }

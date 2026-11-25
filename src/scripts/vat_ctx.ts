@@ -1,6 +1,7 @@
 /** 영속 문맥 바(#vat-ctx): 기관 · 등록 단위 · 시설 수 | 다음 신고·D-day | 마지막 저장 시각 — 모든 /vat/* 페이지(VatNav.astro). 용어 사전 ? 단추도 여기서 한 번 연결. 서버 없음 */
 import { $, esc, getOrg, getSaved, ymd, loadData, helpWire, vatConfirm, toast, ORG_KEY, LEDGER_KEY, FILINGS_KEY } from './vat_rules';
 import { mountQuickStart } from './vat_org';
+import { delBig } from './vat_store';
 const box = $('vat-ctx');
 const D0 = loadData();   // lock(지자체 전용 사이트)이면 '기관 바꾸기' 대신 '처음부터 다시'
 const hm = (iso?: string) => { if (!iso) return ''; const d = new Date(iso); const t = new Date(); const same = d.toDateString() === t.toDateString(); return (same ? '오늘 ' : ymd(d) + ' ') + `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
@@ -21,7 +22,7 @@ box?.addEventListener('click', async (e) => {   // 문맥 바는 render() 마다
     const snap: Record<string, string | null> = {}; for (const k of [ORG_KEY, LEDGER_KEY, FILINGS_KEY]) { try { snap[k] = localStorage.getItem(k); localStorage.removeItem(k); } catch { /* */ } }
     try { if (snap[ORG_KEY]) localStorage.setItem('vat-org-backup-v1', snap[ORG_KEY]!); } catch { /* */ }
     toast(`'${o.org}' 설정·기록을 비웠습니다`, { fn: () => { for (const [k, v] of Object.entries(snap)) { try { if (v) localStorage.setItem(k, v); } catch { /* */ } } location.reload(); } });
-    if (D0?.lock) { try { localStorage.removeItem('vat-review-v1'); } catch { /* */ } location.reload(); return; }   // 전용 사이트: 다시 열면 그 지자체로 새로 만든다(startFromLink)
+    if (D0?.lock) { await delBig('vat-review-v1'); location.reload(); return; }   // 전용 사이트: 다시 열면 그 지자체로 새로 만든다(startFromLink)
     render(); let qs = document.getElementById('ctx-qs'); if (!qs) { qs = document.createElement('div'); qs.id = 'ctx-qs'; box!.after(qs); }
     const D = loadData(); if (D) mountQuickStart(qs, D, () => location.reload(), 'ctx-qs-box'); 
     qs.scrollIntoView({ block: 'start' });

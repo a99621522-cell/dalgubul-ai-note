@@ -355,3 +355,9 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 #rv-biz-box .actions select { max-width: 20rem; }
 #rv-biz td:nth-child(3), #rv-biz td:nth-child(4), #rv-biz td:nth-child(8) { white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
 #rv-biz th[scope="row"] { min-width: 12rem; }
+/* 결과의 고친 신고서 표(과세기간마다) */
+.rf-fix { margin: .4rem 0 .2rem; } .rf-fix caption { text-align: left; font-weight: 600; font-size: var(--small); }
+.rf-fix td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* 고친 신고서 받기 단추 셋 */
+.rf-dl3 { margin: .6rem 0; } .rf-dl3 p { margin: 0 0 .3rem; }
+.rf-dl3 .actions { flex-wrap: wrap; } .rf-dl3 .btn { white-space: normal; text-align: left; max-width: 100%; }

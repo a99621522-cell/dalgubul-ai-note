@@ -2,6 +2,7 @@
  *  ① 예시(조례·의회 시설, data/vat/presets) → 시설 목록  ② 지자체 세입예산서(/vat-revenue.json) → 시설 후보(이미 있는 시설과 이름으로 합침)
  *  ③ 「기관 선택 → 바로 시작」 조각(quickStart): 기관 설정이 없는 화면(대시보드·지출 기록·신고 준비·과세사업 찾기)에서 기관을 고르면 그 자리에서 org 를 만들어 저장하고 화면을 잇는다.
  *  기관 설정 마법사(vat_setup.ts)도 같은 함수를 쓴다. 서버 없음, 개인정보 없음, 평가 없음. */
+import { loadBig, saveBigNow } from './vat_store';
 import { $, esc, uid, ymd, setOrg, toast, type Data, type Org, type OrgFacility, type Preset, type Run , findOrgNo, orgNoNote , type OrgNo } from './vat_rules';
 import { applyAskDefaults } from './vat_ask';
 
@@ -70,11 +71,22 @@ export async function makeOrg(D: Data, v: string): Promise<Org> {
   return org;
 }
 /** 링크 한 번으로 시작(?gov=dalseong) — 이 브라우저에 기관 설정이 없을 때만 만든다. 만들었으면 true */
+/** 예시 설정의 서명 — 운영자가 예시 설정(시설·면적 비율·확인 답)을 고치면 바뀐다 */
+export const presetSig = (D: Data, key: string) => { const p = (D.presets ?? []).find(x => x.key === key); if (!p) return ''; const t = JSON.stringify(p.facilities); let h = 2166136261; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
 export async function startFromLink(D: Data): Promise<boolean> {
   let key = D.lock ?? ''; if (!key) try { key = new URLSearchParams(location.search).get('gov') ?? ''; } catch { /* */ }
-  if (!/^[a-z]+$/.test(key)) return false; let has = false; try { has = !!localStorage.getItem('vat-org-v1'); } catch { /* */ }
-  if (has) return false; const known = (D.presets ?? []).some(p => p.key === key) || (D.govs ?? []).some(g => g.key === key) || (await loadGovs()).some(g => g.key === key); if (!known) return false;
-  setOrg(await makeOrg(D, key)); try { localStorage.setItem('vat-gov', key); } catch { /* */ } return true;
+  if (!/^[a-z]+$/.test(key)) return false; let old: Org | null = null; try { const t = localStorage.getItem('vat-org-v1'); old = t ? JSON.parse(t) as Org : null; } catch { /* */ }
+  const sig = presetSig(D, key);
+  /* 전용 사이트: 저장된 설정이 예전 예시 설정으로 만든 것이면 새 예시 설정으로 바꾼다 — 담당자가 「처음부터 다시」를 몰라도(운영자 2026-11-25, 구 확인 값이 예전 브라우저에 안 들어가던 것).
+     매핑표·신고 방식은 옮기고, 돌려받기 기록의 시설 지정은 시설 이름으로 새 id 에 다시 잇는다 */
+  if (old && !(D.lock && sig && old.preset_sig !== sig)) return false;
+  const known = (D.presets ?? []).some(p => p.key === key) || (D.govs ?? []).some(g => g.key === key) || (await loadGovs()).some(g => g.key === key); if (!known) return false;
+  const org = await makeOrg(D, key); if (sig) org.preset_sig = sig;
+  if (old) { const o = old as Org & Record<string, unknown>, n = org as Org & Record<string, unknown>; for (const k of ['map', 'filing', 'agent_org', 'agent_days', 'dept']) if (o[k] !== undefined) n[k] = o[k];
+    const byName = new Map(org.facilities.map(f => [f.name, f.id])); const idMap = new Map<string, string>(); for (const f of old.facilities ?? []) { const nid = byName.get(f.name); if (nid) idMap.set(f.id, nid); }
+    { const t = await loadBig('vat-review-v1'); if (t) await saveBigNow('vat-review-v1', t.replace(/"fid":"([^"]+)"/g, (m, id) => idMap.has(id) ? `"fid":"${idMap.get(id)}"` : m)); }
+    try { sessionStorage.setItem('vat-org-renewed', String(org.facilities.length)); } catch { /* */ } }
+  setOrg(org); try { localStorage.setItem('vat-gov', key); } catch { /* */ } return true;
 }
 export function wireQuickStart(root: ParentNode, D: Data, onDone: (o: Org) => void, preferGov?: string | null) {
   root.querySelectorAll<HTMLElement>('[data-qs]:not([data-wired])').forEach(box => { box.dataset.wired = '1';

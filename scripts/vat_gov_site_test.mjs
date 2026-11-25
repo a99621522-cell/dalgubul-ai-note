@@ -50,6 +50,13 @@ if (!(D.govs?.[0]?.corp ?? []).length) {   /* 공단이 없는 지자체: 다른
   const bad = [...txt.matchAll(rx)].map(m => m[0]);
   ok('G14 공단·대행·군 문구 없음(접힌 곳 포함)', bad.length === 0, bad.slice(0, 3).join(' | '));
 }
+/* G15 예전 예시 설정으로 만든 브라우저(preset_sig 없음·시설 수 다름)는 열 때 새 설정으로 바뀌고, 돌려받기 기록의 시설 지정은 이름으로 이어진다(2026-11-25) */
+{ const o0 = await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1'))); const f0 = o0.facilities[0];
+  await pg.evaluate(([o, f]) => { const old = { ...o, preset_sig: undefined, facilities: o.facilities.slice(0, 3).map((x, i) => ({ ...x, id: 'old' + i })) }; localStorage.setItem('vat-org-v1', JSON.stringify(old)); localStorage.setItem('vat-review-v1', JSON.stringify({ v: 1, reg: '', rows: [], filed: {}, sup: {}, biz: { '시험사업': { fid: 'old0', use: 'this' } } })); }, [o0, f0]);
+  await pg.reload(); await pg.waitForTimeout(2500);
+  const o1 = await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1'))); const r1 = await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-review-v1') || '{}'));
+  const nid = o1.facilities.find(x => x.name === f0.name)?.id;
+  ok('G15 예전 설정 → 새 예시 설정으로 바뀜·시설 지정 이어짐', o1.facilities.length === o0.facilities.length && !!o1.preset_sig && r1.biz?.['시험사업']?.fid === nid, `${o1.facilities.length}/${o0.facilities.length} ${o1.preset_sig} ${r1.biz?.['시험사업']?.fid}→${nid}`); }
 ok('G10 404·스크립트 오류 없음', bad.length === 0 && errs.length === 0, [...bad, ...errs].join(' ; '));
 await browser.close();
 console.log(fail ? `실패 ${fail}` : '모두 통과'); process.exit(fail ? 1 : 0);

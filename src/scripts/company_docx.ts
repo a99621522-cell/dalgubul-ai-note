@@ -29,6 +29,7 @@ export async function buildDocx(blocks: Block[], title: string): Promise<Blob> {
       continue;
     }
     if (!('segs' in b)) continue;   // 그림 블록은 Word 판에 넣지 않는다
+    if (b.p === 'pagebreak') { children.push(new Paragraph({ pageBreakBefore: true, children: [] })); continue; }   // 경정청구서 Word — 신고서마다 새 쪽
     const text = b.segs.map(x => x[0]).join(''), style = b.segs[0]?.[1] ?? 'body';
     if (!text && (b.p === 'rule' || b.p === 'spacer')) { children.push(new Paragraph({ spacing: { after: 80 }, children: [] })); continue; }
     if (style === 'title') { children.push(new Paragraph({ heading: HeadingLevel.TITLE, spacing: { after: 120 }, children: [run(text, { bold: true, size: 32 })] })); continue; }

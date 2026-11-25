@@ -189,7 +189,7 @@ export function reasonLaws(c: CorrDoc): string[] {
   return out;
 }
 const claimDue = (y: number, h: number) => h === 1 ? `${y + 5}-07-25` : `${y + 6}-01-25`;
-function attachList(c: CorrDoc): string[] {
+export function attachList(c: CorrDoc): string[] {
   const list = /세금계산서/.test(corrReason(c));
   return ['당초 신고서 사본(홈택스 신고내역 출력)', '고친 신고서(당초 → 경정 후 값, 이 사유서 2항)', ...(c.parts.length || /공통매입세액|면세사업/.test(corrReason(c)) ? ['공제받지 못할 매입세액 명세서(고친 값)'] : []), ...(list ? ['매입처별 세금계산서합계표(추가분) — 빠진 세금계산서 목록'] : []), ...(/시설/.test(corrReason(c)) ? ['그 시설의 과세 근거(조례 요금표·사용료 세입 내역·과세 매출 신고 내역)'] : [])];
 }
@@ -231,4 +231,36 @@ export async function reasonDocPdf(M: Map<string, CorrDoc[]>, orgName: string, o
     if (!office) para('이 사유서는 지난 신고서(와 매입 목록)를 다시 계산한 결과입니다. 판정은 참고이며 기관의 판단이 아닙니다 — 제출 전 금액·사실을 기관이 확인합니다.', 8.5, false, 0, MUTED);
   }
   return await K.save();
+}
+
+/** 같은 서식을 Word(.docx)로 — 고칠 수 있는 문서(한글에서 열어 고치고 HWP 로 저장 가능). 운영자 2026-11-25 '고친 신고서는 국세청 양식으로 pdf 파일과 수정할 수 있는 문서 파일로'.
+ *  신고서마다: 경정청구서(별지 제16호의2서식 칸 ①~⑰, 값은 claimFormHtml 과 같다) → 사유서(이유·고친 칸·근거 법령·붙임). 병합 칸은 표 행으로 풀어 적는다 */
+export async function claimFormDocx(M: Map<string, CorrDoc[]>, orgName: string, orgReg = ''): Promise<Blob> {
+  const { p, table } = await import('./pdf'); const { buildDocx } = await import('./company_docx');
+  const L = [...M].sort().flatMap(([, v]) => v).filter(c => c.delta > 0); const out: ReturnType<typeof p>[] = [];
+  L.forEach((c, i) => { const [y, h] = c.k.split('-').map(Number); const P = `${y}년 제${h}기 ${c.kind}`; const reg = c.reg || orgReg;
+    const credit = c.payBefore != null && c.pen != null && c.due != null ? c.payBefore + c.pen - c.due : null;
+    const name = c.rep ? (headTitle(orgName) ? `${headTitle(orgName)} ${c.rep}` : c.rep) : headTitle(orgName);
+    if (i) out.push(p('pagebreak', ['', 'pagebreak']));
+    out.push(p('kicker', ['[별지 제16호의2서식(1)] <개정 2025. 3. 21.>                                         (앞쪽)', 'kicker']), p('title', ['과세표준 및 세액의 결정(경정)청구서', 'title']),
+      p('note', ['[「국세기본법」 제45조의2 또는 「소득세법」 제118조의15에 따른 결정(경정) 청구]      처리기간 2개월', 'note']),
+      table([['청구인', '', '', ''], ['① 성 명', name || '', '② 주민등록번호', '(기관은 적지 않음)'], ['④ 주소(거소) 또는 영업소', c.addr ?? '', '③ 사업자등록번호', reg], ['⑥ 상 호', orgName, '⑤ 전화번호', c.tel ?? '']], { head: true, widths: [22, 32, 20, 26] }),
+      table([['신 고 내 용', '', '', ''], ['⑦ 법정신고일', dueDate(y, h, c.kind), '⑧ 최초신고일', c.filedOn ? c.filedOn.replace(/-/g, '. ') + '.' : ''], ['⑨ 결정(경정) 청구이유', corrReason(c), '', '']], { head: true, widths: [22, 40, 18, 20] }),
+      table([['구 분', '최 초 신 고', '결 정(경 정) 청 구'], ['⑩ 세 목', '부가가치세', '부가가치세'], ['⑪ 과세표준금액', won(c.tb), won(c.tb)], ['⑫ 산출세액', won(c.payBefore), won(c.payAfter)], ['⑬ 가산세액', won(c.pen), won(c.pen)], ['⑭ 공제 및 감면세액', won(credit), won(credit)], ['⑮ 납부할 세액', won(c.due), c.due == null ? '' : won(c.due - c.delta)], ['⑯ 국세환급금 계좌신고', '거래은행        은행        지점', '계좌번호'], ['⑰ 환급받을 세액', '', `${fmt(c.delta)} 원`]], { head: true, widths: [30, 35, 35] }),
+      p('body', ['「국세기본법」 제45조의2, 같은 법 시행령 제25조의3, 「소득세법」 제118조의15 및 같은 법 시행령 제178조의11에 따라 위와 같이 청구합니다.', 'body']),
+      p('body', [`${todayKo()}          청구인  ${orgName}${name ? ' ' + name : ''}          (서명 또는 인)`, 'body']),
+      p('body', [`${c.office ?? '        '} 세무서장 귀하`, 'body']),
+      table([['첨부서류', '결정(경정)청구 사유 증명자료 — 최초 신고서 사본, 고친 신고서·명세서, 공제받지 못할 매입세액 명세서(고친 값)' + (c.parts.length ? ', 공통매입세액 안분·정산 계산 근거' : ''), '수수료 없음']], { head: false, widths: [18, 66, 16] }),
+      p('note', [`과세기간: ${P} · ⑪~⑮는 신고서에서 읽은 값과 다시 계산한 값입니다(⑫ 산출세액 = 매출세액 − 공제받는 매입세액). 판정은 참고이며 기관의 판단이 아닙니다 — 제출 전 신고서와 대조하세요.`, 'note']),
+      p('pagebreak', ['', 'pagebreak']),
+      p('title', [`결정(경정) 청구 사유서 — ${P}`, 'title']),
+      table([['청구인', orgName], ['사업자등록번호', reg], ['과세기간', P], ['법정신고기한', dueDate(y, h, c.kind)], ['돌려받을 세액', `${fmt(c.delta)}원`]], { head: false, widths: [25, 75] }),
+      p('h3', ['1. 청구 이유', 'h3']), p('body', [corrReason(c), 'body']),
+      p('h3', ['2. 고친 칸(당초 → 경정 후)', 'h3']),
+      table([['칸', '당초 신고', '경정 후'], ...c.cells.filter(x => x.before !== x.after).map(x => [`(${x.n}) ${x.label}`, won(x.before), won(x.after)]), ...(c.payBefore != null && c.payAfter != null ? [['납부(환급)세액', won(c.payBefore), won(c.payAfter)]] : [])], { head: true, widths: [50, 25, 25] }),
+      ...c.parts.flatMap(pt => [p('body', [`· ${pt.sec}`, 'body']), table([['항목', '당초', '경정 후'], ...pt.rows.map(r => [r.label, won(r.before), won(r.after)])], { head: true, widths: [50, 25, 25] })]),
+      p('h3', ['3. 근거 법령·규정', 'h3']), ...reasonLaws(c).map(t => p('body', [`- ${t}`, 'body'])),
+      p('h3', ['4. 붙임(근거 자료)', 'h3']), ...attachList(c).map((t, j) => p('body', [`${j + 1}. ${t}`, 'body']))); });
+  if (!L.length) out.push(p('body', ['이번에 청구할 고친 신고서가 없습니다.', 'body']));
+  return buildDocx(out, '과세표준 및 세액의 결정(경정)청구서');
 }

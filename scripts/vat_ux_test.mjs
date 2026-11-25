@@ -512,6 +512,11 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     const li10 = await p6.$$eval('#rf-all-list li', ls => ls.map(l => l.textContent.replace(/\s+/g, ' ')));
     const n10 = await p6.evaluate(() => (JSON.parse(localStorage.getItem('vat-review-v1') || '{}').rows || []).length);
     ok('U10 엑셀에서 복사한 표를 Ctrl+V → 매입 목록으로 읽음(5건)', n10 === 5 && li10.some(t => /붙여넣은 표/.test(t)) && await p6.locator('#rv-biz tbody tr[data-bk]').count() >= 1, JSON.stringify({ n10, li10 }).slice(0, 300));
+    /* U12 텍스트 문서 — 엑셀 「텍스트(탭으로 분리)」(한글 완성형 CP949)·「유니코드 텍스트」(UTF-16) 둘 다 매입 목록으로 */
+    { for (const f of ['ehojo_expense_cp949.txt', 'ehojo_expense_utf16.txt']) { await p6.evaluate(() => { localStorage.removeItem('vat-review-v1'); }); await p6.reload(); await p6.waitForSelector('#rf-all-file', { state: 'attached' });
+        await p6.setInputFiles('#rf-all-file', [fx(f)]); await p6.waitForTimeout(1500);
+        const r = await p6.evaluate(() => { const x = JSON.parse(localStorage.getItem('vat-review-v1') || '{}'); return { n: (x.rows || []).length, biz: (x.rows || []).map(r => r.biz).filter(Boolean).length, tax: (x.rows || []).reduce((a, r) => a + (r.tax || 0), 0) }; });
+        ok(`U12 텍스트 문서 ${f} → 매입 목록 5건·세부사업·세액`, r.n === 5 && r.biz === 5 && r.tax === 1280000, JSON.stringify(r)); } }
     /* U11 5년치처럼 큰 자료(localStorage 한도 넘음)도 다시 열면 그대로 — IndexedDB(vat_store.ts) */
     { const head = fs.readFileSync(fx('ehojo_expense.csv'), 'utf-8').split('\n')[0].split(',').join('\t'); const big = [head]; for (let k = 0; k < 30000; k++) big.push([k + 1, `업체${k % 900}`, String(1000000000 + (k % 900)), '1,100,000', '1,000,000', '100,000', `2024-0${1 + (k % 9)}-15`, '일반회계', `세부사업 ${k % 700} 시설 관리 운영`, '201-01 사무관리비', `부서${k % 40}`, `적요 내용 ${k} 물품 구입 및 유지 보수 비용 지출`, '전자세금계산서', `2024011541000000000${String(k).padStart(5, '0')}`].join('\t'));
       await p6.evaluate(() => { localStorage.removeItem('vat-review-v1'); }); await p6.reload(); await p6.waitForSelector('#rf-all-file', { state: 'attached' });
@@ -705,9 +710,9 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   let names = []; if (dl3) { const fp = await dl3.path(); names = (await import('node:child_process')).execSync(`unzip -Z1 "${fp}"`).toString().split('\n').filter(Boolean); }
   const strongAfter = await p3x.evaluate(() => [...document.querySelectorAll('#rf-sum .btn:not(.secondary):not(.link-btn)')].filter(e => e.checkVisibility()).length);
   ok('R3-5 받기 — 강조 단추 「고친 신고서 받기」 하나 → zip(0 안내·1 PDF·2 Word·3 엑셀·참고/), 단추까지 글자 725 이하(before 2,177)', strongAfter === 1 && r5a >= 0 && r5a <= 725 && ['0_이렇게_하세요.txt', '1_고친신고서_국세청서식.pdf', '2_고친신고서_고칠수있는문서.docx', '3_과세기간별_이유_근거.xlsx'].every(n => names.includes(n)) && names.some(n => n.startsWith('참고(세무서_제출_묶음)/')), JSON.stringify({ strongAfter, r5a, names: names.slice(0, 6) }));
-  await p3x.reload(); await p3x.waitForTimeout(9000);
+  await p3x.reload(); const loading = await p3x.waitForSelector('#rf-reload', { timeout: 8000 }).then(() => true).catch(() => false); await p3x.waitForFunction(() => /30000건/.test(document.getElementById('rv-stat')?.textContent ?? ''), null, { timeout: 240000 }).catch(() => {}); await p3x.waitForTimeout(1500);
   const r3 = await p3x.evaluate(() => ({ amt: document.getElementById('rf-sum-amt')?.textContent ?? '', stat: document.getElementById('rv-stat')?.textContent ?? '' }));
-  ok('R3-3 다시 열기 — 신고서·지출 그대로(다시 올릴 파일 0)', /\d원/.test(r3.amt) && /30000건/.test(r3.stat), JSON.stringify(r3));
+  ok('R3-3 다시 열기 — 「불러오는 중」 표시 뒤 신고서·지출 그대로(다시 올릴 파일 0)', loading && /\d원/.test(r3.amt) && /30000건/.test(r3.stat), JSON.stringify({ loading, ...r3 }));
   await c3.close(); }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);

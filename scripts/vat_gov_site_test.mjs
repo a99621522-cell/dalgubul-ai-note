@@ -27,12 +27,16 @@ const rev = await pg.evaluate(async () => (await (await fetch('/vat-revenue.json
 ok('G8 세입예산서가 그 지자체만', rev.every(k => k === gov), rev.join(','));
 /* 지자체 맞춤 '먼저 볼 곳'(govs.yml focus) — 묶음이 있는 지자체만 */
 if ((D.govs?.[0]?.focus ?? []).length) {
+  ok('G11b 먼저 볼 곳은 처음에 접힘(3차 UX)', await pg.evaluate(() => !document.getElementById('rf-focus')?.open), ''); await pg.evaluate(() => { const d = document.getElementById('rf-focus'); if (d) d.open = true; });
   const g = await pg.$$eval('#rf-focus .rf-focus-g', els => els.length);
   ok('G11 먼저 볼 곳 묶음', g >= 2 && await pg.locator('#rf-focus').isVisible(), `${g}묶음`);
   const own = await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1') || '{}').facilities.filter(f => f.run === 'entrusted_own').length);
   const shown = await pg.$$eval('#rf-focus details li', els => els.length);
   ok('G12 신고에 넣지 않는 곳 = 수탁기관 자기 사업 시설', shown === own && (own > 0 || !D.govs[0].exclude_note), `${shown}/${own}`);   // exclude_note 를 둔 지자체는 그런 시설이 있어야 한다
-  const box = pg.locator('#rf-focus .rf-area').first();
+  { const hid = await pg.$$eval('#rf-focus .rf-area[hidden]', els => els.length); const conf = await pg.evaluate(() => JSON.parse(localStorage.getItem('vat-org-v1') || '{}').facilities.filter(f => f.confirmed?.area).length);
+    ok('G13b 기관이 면적을 확인한 시설은 면적 칸 숨김·확인값 표시', hid === Math.min(hid, conf) && (conf === 0 || (hid > 0 && await pg.locator('#rf-focus .vbadge.ok').count() > 0)), `${hid}/${conf}`);
+    const ob = pg.locator('#rf-focus [data-area-open]').first(); if (await ob.count()) await ob.click(); }
+  const box = pg.locator('#rf-focus .rf-area:not([hidden])').first();
   if (!(D.govs[0].focus ?? []).some(g => g.area)) { /* 면적 나누기 묶음이 없는 지자체 */ } else if (await box.count()) {
     const fid = await box.getAttribute('data-fid');
     await box.locator('[data-area-tot]').fill('1000'); await box.locator('[data-area-tax]').fill('250');

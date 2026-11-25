@@ -361,3 +361,5 @@ html[data-fs="1"] { --text-base: 20px; } html[data-fs="2"] { --text-base: 22px; 
 /* 고친 신고서 받기 단추 셋 */
 .rf-dl3 { margin: .6rem 0; } .rf-dl3 p { margin: 0 0 .3rem; }
 .rf-dl3 .actions { flex-wrap: wrap; } .rf-dl3 .btn { white-space: normal; text-align: left; max-width: 100%; }
+.rf-busy { font-weight: 600; color: var(--color-link, #1d4ed8); }
+.rf-dl-alt { margin-top: .3rem; }

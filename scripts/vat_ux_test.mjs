@@ -543,7 +543,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   /* S15c 매입 목록으로 찾은 기간도 경정청구서 ⑨ 청구이유를 자동으로(운영자 2026-11-11 '그것도 자동으로 들어가게 해') — 화면 사유와 같은 문장 */
   { const inp = await p3.evaluate(() => document.querySelector('#rf-dg-2024-2 .rf-dg-how')?.textContent.replace(/\s+/g, ' ') ?? '');
     const has = await p3.locator('#rf-dl-form').count(); let pg9 = '';
-    if (has) { const [pop] = await Promise.all([p3.waitForEvent('popup', { timeout: 20000 }), p3.click('#rf-dl-form')]); await pop.waitForLoadState('load');
+    if (has) { const [pop] = await Promise.all([p3.waitForEvent('popup', { timeout: 20000 }), (p3.evaluate(() => document.querySelectorAll('#rf-sum details.rf-dl-more, #rf-sum details.rf-sum-more').forEach(d => { d.open = true; }))).then(() => p3.click('#rf-dl-form'))]); await pop.waitForLoadState('load');
       pg9 = await pop.evaluate(() => [...document.querySelectorAll('.page:not(.note)')].map(p => p.textContent.replace(/\s+/g, ' ')).find(t => /2024년 제2기/.test(t)) ?? ''); await pop.close(); }
     ok('S15c 매입 목록으로 찾은 2024년 제2기 — 화면 사유와 경정청구서 ⑨ 청구이유 자동(시설 공제 누락·빠진 세금계산서, 덜 공제 1,600,000원), ⑰ 1,600,000 원',
       /2024년 제2기 부가가치세 신고 때 .*매입세액 1,600,000원을 덜 공제받았으므로 국세기본법 제45조의2에 따라 경정을 청구합니다/.test(inp) && /⑨ 결정\(경정\)\s*청구이유\s*2024년 제2기 부가가치세 신고 때 .*(공제하지 않|빠뜨려)/.test(pg9) && /⑰ 환급받을 세액\s*1,600,000 원/.test(pg9),
@@ -605,7 +605,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('F6 고친 신고서 — 2022년 제1기 확정: (17) 800,000 → 500,000, (18) 2,200,000 → 2,500,000, 명세서 ⑫ 50,000,000 → 80,000,000·⑭ 800,000 → 500,000, 경정청구 돌려받을 세액 300,000원', cr.rows.some(t => /\(17\).*800,000.*500,000/.test(t)) && cr.rows.some(t => /\(18\).*2,200,000.*2,500,000/.test(t)) && cr.rows.some(t => /⑫.*50,000,000.*80,000,000/.test(t)) && cr.rows.some(t => /⑭.*800,000.*500,000/.test(t)) && /돌려받을 세액 300,000원/.test(cr.claim), JSON.stringify(cr).slice(0, 600));
   ok('F5 묶음에 결재용 검토 보고(Word, 한글에서 열림)와 돌려받을 돈 표', /14_경정청구_검토보고/.test(zl) && /13_돌려받을_돈/.test(zl) && /16_경정청구서_밑자료/.test(zl) && /11_경정청구_요약\.pdf/.test(zl) && /15_고친_신고서/.test(zl), zl.split('\n').join('|'));
   /* F7 경정청구서(국세청 서식) — 국세기본법 시행규칙 별지 제16호의2서식에 숫자를 채운 인쇄용(운영자 2026-11-09 '경정청구 서식도 국세청 서식에 맞게 숫자로 채워서') */
-  { const [pop] = await Promise.all([p7.waitForEvent('popup', { timeout: 20000 }), p7.click('#rf-dl-form')]); await pop.waitForLoadState('load');
+  { const [pop] = await Promise.all([p7.waitForEvent('popup', { timeout: 20000 }), (p7.evaluate(() => document.querySelectorAll('#rf-sum details.rf-dl-more, #rf-sum details.rf-sum-more').forEach(d => { d.open = true; }))).then(() => p7.click('#rf-dl-form'))]); await pop.waitForLoadState('load');
     const f = await pop.evaluate(() => ({ title: document.querySelector('.page:not(.note) h1')?.textContent ?? '', n: document.querySelectorAll('.page:not(.note)').length, txt: [...document.querySelectorAll('.page:not(.note)')].map(p => p.textContent.replace(/\s+/g, ' ')), guide: document.querySelector('.page.note')?.textContent.replace(/\s+/g, ' ') ?? '' }));
     const p22 = f.txt.find(t => /2022년 제1기 확정/.test(t)) ?? '';
     ok('F7 경정청구서 서식 — 별지 제16호의2서식 제목·칸(①~⑰), 고친 신고서마다 한 쪽, 2022년 제1기 확정 ⑰ 300,000 원·⑦ 2022. 7. 25.·⑩ 부가가치세, 안내 쪽 합계 460,000원, 묶음에 18_ 파일',
@@ -613,14 +613,14 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
       JSON.stringify({ title: f.title, n: f.n, p22: p22.slice(0, 400), guide: f.guide.slice(0, 160) }));
     await pop.close(); }
   /* F8 경정청구서 PDF 받기(운영자 2026-11-09 'pdf로 다운 받을 수 있게 해야되') — 같은 값, 고친 신고서마다 한 쪽 + 안내 쪽, 묶음에도 .pdf */
-  { const pf = path.join(os.tmpdir(), 'vat-claimform.pdf'); const [dp] = await Promise.all([p7.waitForEvent('download', { timeout: 60000 }), p7.click('#rf-dl-form-pdf')]); await dp.saveAs(pf);
+  { const pf = path.join(os.tmpdir(), 'vat-claimform.pdf'); const [dp] = await Promise.all([p7.waitForEvent('download', { timeout: 60000 }), (p7.evaluate(() => document.querySelectorAll('#rf-sum details.rf-dl-more, #rf-sum details.rf-sum-more').forEach(d => { d.open = true; }))).then(() => p7.click('#rf-dl-form-pdf'))]); await dp.saveAs(pf);
     const raw = fs.readFileSync(pf); let txt = ''; const pages = await import('pdf-lib').then(async m => (await m.PDFDocument.load(raw)).getPageCount()).catch(() => 0);
     try { txt = execSync(`pdftotext -layout "${pf}" -`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().replace(/[ \t]+/g, ' '); } catch { /* 러너에 pdftotext 가 없으면 글자 대조는 건너뛰고 쪽 수·형식만 */ txt = '과세표준 및 세액의 2022. 7. 25. 300,000 원 부가가치세 합계 460,000원'; }
     ok('F8 경정청구서 PDF — PDF 파일, 서식 제목·2022. 7. 25.·300,000 원·부가가치세·안내 쪽 합계 460,000원, 묶음에 18_….pdf',
       fs.readFileSync(pf).subarray(0, 4).toString() === '%PDF' && /과세표준 및 세액의/.test(txt) && /2022\. 7\. 25\./.test(txt) && /300,000 원/.test(txt) && /부가가치세/.test(txt) && /합계 460,000원/.test(txt) && pages >= 3 && /18_경정청구서\(별지_제16호의2서식\)\.pdf/.test(zl),
       `${dp.suggestedFilename()} 쪽 ${pages} · ${txt.slice(0, 200).replace(/\s+/g, ' ')}`); }
   /* F9 경정청구 사유서(운영자 2026-11-18 '경정한 이유도 첨부하지?') — 과세기간마다 청구 이유·고친 칸·근거 법령·붙임, 묶음에 19_ pdf·txt */
-  { const pf = path.join(os.tmpdir(), 'vat-reason.pdf'); const [dp] = await Promise.all([p7.waitForEvent('download', { timeout: 60000 }), p7.click('#rf-dl-reason')]); await dp.saveAs(pf);
+  { const pf = path.join(os.tmpdir(), 'vat-reason.pdf'); const [dp] = await Promise.all([p7.waitForEvent('download', { timeout: 60000 }), (p7.evaluate(() => document.querySelectorAll('#rf-sum details.rf-dl-more, #rf-sum details.rf-sum-more').forEach(d => { d.open = true; }))).then(() => p7.click('#rf-dl-reason'))]); await dp.saveAs(pf);
     const pages = await import('pdf-lib').then(async m => (await m.PDFDocument.load(fs.readFileSync(pf))).getPageCount()).catch(() => 0); let txt = '';
     try { txt = execSync(`pdftotext -layout "${pf}" -`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().replace(/[ \t]+/g, ' '); } catch { txt = '경정청구 사유서 청구 이유 근거 법령 국세기본법 제45조의2 붙임'; }
     const rt = execSync(`unzip -p "${zr}" "${REF}19_*.txt"`).toString();
@@ -646,7 +646,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     await pe.setInputFiles('#rf-all-file', fs.readdirSync(FX5).sort().map(f => path.join(FX5, f))); A++; await pe.waitForTimeout(3500);
     const e2 = await pe.evaluate(() => { const a = document.getElementById('rf-sum-amt'); const r = a?.getBoundingClientRect(); return { amt: a?.textContent ?? '', inView: !!r && r.top >= 0 && r.bottom <= innerHeight, sent: document.querySelector('.rf-sum-l')?.textContent ?? '', cells: [...document.querySelectorAll('.rf-sum-cells b')].map(b => b.textContent), rows: document.querySelectorAll('#rf-sum .rf-row').length, miss: document.querySelector('#rf-sum .rf-miss-l')?.textContent ?? '', files: [...document.querySelectorAll('#rf-all-list li')].map(l => l.textContent).join('|') + (document.getElementById('rf-all-files-sum')?.textContent ?? ''), hs: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1 }; });
     ok(`E2 ${vp.width}px 과업 A — 행동 ${A}(4 이하)로 한 문장 '대구광역시 달성군은 … 460,000원 … 최대 5,200,000원', 금액이 화면 안, 기간 행·빠진 기간 안내, 파일마다 종류 배지, 가로 스크롤 없음`, A <= 4 && e2.amt === '460,000원' && e2.inView && /대구광역시 달성군은/.test(e2.sent) && /최대 5,200,000원/.test(e2.sent) && e2.cells[0] === '460,000원' && e2.cells[1] === '+5,200,000원' && e2.rows >= 3 && /2022년 제2기/.test(e2.miss) && /신고서/.test(e2.files) && !e2.hs, JSON.stringify(e2).slice(0, 500));
-    await pe.click('#rf-sum .rf-row-why summary'); const e3 = await pe.evaluate(() => { const d = document.querySelector('#rf-sum .rf-row-why'); return { open: d.open, todo: /할 일/.test(d.textContent), law: d.querySelectorAll('a[href*="law.go.kr"]').length }; });
+    await (pe.evaluate(() => document.querySelectorAll('#rf-sum details.rf-dl-more, #rf-sum details.rf-sum-more').forEach(d => { d.open = true; }))).then(() => pe.click('#rf-sum .rf-row-why summary')); const e3 = await pe.evaluate(() => { const d = document.querySelector('#rf-sum .rf-row-why'); return { open: d.open, todo: /할 일/.test(d.textContent), law: d.querySelectorAll('a[href*="law.go.kr"]').length }; });
     ok(`E3 ${vp.width}px 과업 B — 기간 행 「왜 · 어떻게」 한 번 → 할 일·이유·근거 조문 링크`, e3.open && e3.todo && e3.law >= 1, JSON.stringify(e3));
     const jar = await pe.evaluate(() => { const J = /\(\d{1,2}\)|[⑤⑩⑪⑫⑭⑮⑯⑰⑱⑲⑳]|안분|면세비율|정산|재계산|과세표준|불공제|매입세액|경정청구|기한후신고/g; const P = /공제받은|공제받지|돌려받|빼고|나누어|다시 셈|미리 낸|낼 세금|산 물건/; const d = document.querySelector('#rf-sum .rf-row-why'); if (d) d.open = false; return document.getElementById('rf-sum').innerText.split('\n').filter(l => !P.test(l)).flatMap(l => l.match(J) ?? []); });
     ok(`E4 ${vp.width}px 결과 요약의 풀어 쓰지 않은 서식 칸·세법 용어 0`, jar.length === 0, jar.join(','));
@@ -675,7 +675,7 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
     await p8.setInputFiles('#rf-all-file', [path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax', 'filed_2024_2.txt')]); await p8.waitForTimeout(1500);
     const e8 = await p8.evaluate(() => ({ amt: document.getElementById('rf-cand-amt')?.textContent ?? '', reg: document.getElementById('rf-cand-reg')?.textContent ?? '', cond: document.getElementById('rf-cand-cond')?.textContent ?? '', net: document.getElementById('rf-net')?.textContent ?? '', head: document.querySelector('.rf-sum-l2')?.textContent ?? '', row: document.querySelector('#rf-cand .rf-cand-row')?.textContent.replace(/\s+/g, ' ') ?? '', sups: [...document.querySelectorAll('#rf-cand .rf-row-why li')].map(l => l.textContent.replace(/\s+/g, ' ')), sure: document.getElementById('rf-sum-amt')?.textContent ?? '' }));
     ok('E8 매입 목록 없이 — 계약 후보를 신고서에 있던 몫 110,000(면세사업 관련) / 없던 몫 1,300,000(사업자등록·받는 쪽 번호 확인 뒤, 제39조 제1항 제8호)으로 나눔, 순으로 보면 줄, 확인할 업체 2곳', e8.amt === '+110,000원' && /\+1,300,000원 더/.test(e8.reg) && /약 110,000원/.test(e8.head) && /약 1,300,000원/.test(e8.head) && /업체 2곳/.test(e8.head) && /신고서에 들어 있던 몫 약 110,000원/.test(e8.row) && /신고서에 없던 몫 약 1,300,000원/.test(e8.row) && /사업자등록/.test(e8.cond) && /제39조/.test(e8.cond) && /고유번호/.test(e8.cond) && /순으로 보면/.test(e8.net) && e8.sups.length === 2 && e8.sups.some(t => /111-22-33333/.test(t)) && e8.sups.some(t => /333-44-55555/.test(t)) && !e8.sups.some(t => /다라청소/.test(t)), JSON.stringify(e8).slice(0, 600));
-    const [dc] = await Promise.all([p8.waitForEvent('download', { timeout: 20000 }), p8.click('#rf-cand-csv')]); const cp = path.join(os.tmpdir(), 'vat-e8.csv'); await dc.saveAs(cp); const csv = fs.readFileSync(cp, 'utf8');
+    const [dc] = await Promise.all([p8.waitForEvent('download', { timeout: 20000 }), (p8.evaluate(() => document.querySelectorAll('#rf-sum details.rf-dl-more, #rf-sum details.rf-sum-more').forEach(d => { d.open = true; }))).then(() => p8.click('#rf-cand-csv'))]); const cp = path.join(os.tmpdir(), 'vat-e8.csv'); await dc.saveAs(cp); const csv = fs.readFileSync(cp, 'utf8');
     ok('E8b 확인할 업체 목록 CSV — 과세기간·업체·사업자등록번호·계약명·부가세 어림', /사업자등록번호/.test(csv) && /1112233333/.test(csv) && /시험체육센터 지붕 방수 공사/.test(csv) && csv.trim().split('\n').length === 3 && /신고서에 없던 몫/.test(csv), csv.slice(0, 300));
     await c8.close(); }
   const cf = await browser.newContext({ viewport: { width: 1366, height: 768 } }); const pf = await cf.newPage();
@@ -686,6 +686,29 @@ ok('④ 대리인 꾸러미 넘기기 항목(D-day = 신고 D-day − 60)', /세
   ok('E7 빈 상태(기관만 → 「2에 … 신고서 PDF 를 놓으면」) · 못 읽은 파일은 이름·이유·어떻게', /신고서 PDF 를 놓으면/.test(e7a.empty) && e7a.lock && !e7a.dis && /스캔본\.pdf/.test(e7) && /못 읽음/.test(e7) && /(PDF 로 저장|만 읽습니다)/.test(e7), JSON.stringify({ e7a, e7 }));
   await cf.close();
 }
+/* R3 3차 UX(docs/design/vat-review-ux3-spec.md) — 지어낸 신고서 20장 + e호조 3만 건, 1920×1080 */
+{ const { ehojoTsv } = await import('./fixtures/hometax/ux3_ehojo.mjs'); const FX3 = path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'hometax', 'ux3');
+  const c3 = await browser.newContext({ viewport: { width: 1920, height: 1080 }, acceptDownloads: true }); const p3x = await c3.newPage(); p3x.on('pageerror', e => errs.push('R3: ' + e));
+  await p3x.goto(base + '/vat/review/?gov=suseong'); await p3x.waitForSelector('#rf-all-file', { state: 'attached', timeout: 20000 }); await p3x.waitForTimeout(2000);
+  const r1 = await p3x.evaluate(() => ({ focusOpen: !!document.getElementById('rf-focus')?.open, strong: [...document.querySelectorAll('main .btn:not(.secondary):not(.link-btn)')].filter(e => e.checkVisibility() && e.getBoundingClientRect().height > 0).length, chars: document.querySelector('main').innerText.replace(/\s+/g, ' ').length }));
+  ok('R3-1 첫 화면 — 먼저 볼 곳 접힘·강조 단추 1개·글자 1,300 이하(before 3,469)', !r1.focusOpen && r1.strong <= 1 && r1.chars <= 1300, JSON.stringify(r1));
+  await p3x.setInputFiles('#rf-all-file', fs.readdirSync(FX3).sort().map(f => path.join(FX3, f))); await p3x.waitForTimeout(4000);
+  const t3 = ehojoTsv(30000); await p3x.evaluate(t => { const dt = new DataTransfer(); dt.setData('text/plain', t); document.body.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true })); }, t3);
+  const r2 = await p3x.evaluate(() => new Promise(res => { const until = Date.now() + 3000; const tick = () => { if (/건 정리 중/.test(document.getElementById('rf-all-msg')?.textContent ?? '')) return res(true); if (Date.now() > until) return res(false); setTimeout(tick, 30); }; tick(); }));
+  await p3x.waitForFunction(() => /30000건/.test(document.getElementById('rv-stat')?.textContent ?? ''), null, { timeout: 240000 }).catch(() => {}); await p3x.waitForTimeout(1500);
+  const busyLeft = await p3x.evaluate(() => document.getElementById('rf-all-msg')?.classList.contains('rf-busy'));
+  ok('R3-2 붙여넣기 — 곧바로 「지출 N건 정리 중」, 끝나면 사라짐', r2 && !busyLeft, JSON.stringify({ r2, busyLeft }));
+  const r4 = await p3x.evaluate(() => { const ul = document.querySelector('#rf-confirm details > ul.rf-conf'); return ul ? ul.children.length : 0; });
+  ok('R3-4 확인할 것 — 처음 보이는 질문 5개 이하', r4 <= 5, `${r4}`);
+  const r5a = await p3x.evaluate(() => { const sum = document.getElementById('rf-sum'); const b = document.getElementById('rf-dl-get'); if (!sum || !b) return -1; const r = document.createRange(); r.setStartBefore(sum); r.setEndBefore(b); return r.toString().replace(/\s+/g, ' ').length; });
+  const [dl3] = await Promise.all([p3x.waitForEvent('download', { timeout: 120000 }).catch(() => null), p3x.click('#rf-dl-get')]);
+  let names = []; if (dl3) { const fp = await dl3.path(); names = (await import('node:child_process')).execSync(`unzip -Z1 "${fp}"`).toString().split('\n').filter(Boolean); }
+  const strongAfter = await p3x.evaluate(() => [...document.querySelectorAll('#rf-sum .btn:not(.secondary):not(.link-btn)')].filter(e => e.checkVisibility()).length);
+  ok('R3-5 받기 — 강조 단추 「고친 신고서 받기」 하나 → zip(0 안내·1 PDF·2 Word·3 엑셀·참고/), 단추까지 글자 725 이하(before 2,177)', strongAfter === 1 && r5a >= 0 && r5a <= 725 && ['0_이렇게_하세요.txt', '1_고친신고서_국세청서식.pdf', '2_고친신고서_고칠수있는문서.docx', '3_과세기간별_이유_근거.xlsx'].every(n => names.includes(n)) && names.some(n => n.startsWith('참고(세무서_제출_묶음)/')), JSON.stringify({ strongAfter, r5a, names: names.slice(0, 6) }));
+  await p3x.reload(); await p3x.waitForTimeout(9000);
+  const r3 = await p3x.evaluate(() => ({ amt: document.getElementById('rf-sum-amt')?.textContent ?? '', stat: document.getElementById('rv-stat')?.textContent ?? '' }));
+  ok('R3-3 다시 열기 — 신고서·지출 그대로(다시 올릴 파일 0)', /\d원/.test(r3.amt) && /30000건/.test(r3.stat), JSON.stringify(r3));
+  await c3.close(); }
 ok('no console errors', errs.length === 0, errs.join(' | ').slice(0, 400));
 console.log(`== ${pass} pass, ${fail} fail`);
 await browser.close(); if (srv) srv.close(); if (fail) process.exitCode = 1;

@@ -143,9 +143,11 @@ function init(D: Data) {
         } catch (e) { fails.push(`${f.name}(${(e as Error).message})`); fileLi(f.name, '못 읽음', `${esc((e as Error).message)} — 신고서 PDF·한글(HWPX·HWP)·엑셀(xlsx·xls)·CSV 만 읽습니다`, false); } }
       if (filed.length) addFiled(filed, `${fs.length}개 파일`);
       const setSrc = (v: 'inv' | 'card') => { const r = document.querySelector<HTMLInputElement>(`input[name=rv-dsrc][value=${v}]`); if (r) r.checked = true; };
+      /* 진행 표시 — 큰 자료(5년치 2~3만 건)는 정리에 1분쯤 걸려 화면이 멈춘 듯 보였다(3차 UX). 글을 바꾸고 한 번 그린 뒤 무거운 계산 */
+      const nRows = [...inv, ...card].reduce((x, t) => x + Math.max(0, t.rows.length - 1), 0); if (nRows > 0) { msg.classList.add('rf-busy'); msg.textContent = `지출 ${nRows.toLocaleString('ko-KR')}건 정리 중…${nRows > 5000 ? ' (5년치는 1분쯤 걸립니다 — 창을 닫지 마세요)' : ''}`; await new Promise(r => requestAnimationFrame(() => setTimeout(r, 30))); }
       const n0 = st.rows.length; if (inv.length) { setSrc('inv'); addFiles(inv, []); } if (card.length) { setSrc('card'); addFiles(card, []); setSrc('inv'); }
       const ks = [...new Set(filed.map(d => `${d.year}년 제${d.half}기`))];
-      msg.innerHTML = `파일 ${fs.length}개 — 신고서 <b>${filed.length}</b>건${ks.length ? `(${esc(ks.join(', '))})` : ''} · 매입 세금계산서 목록 <b>${inv.length}</b>개 · 사업용 카드 <b>${card.length}</b>개 → 매입 ${fmt(st.rows.length - n0)}건 더함${!st.rows.length && filed.length ? ' — 매입 목록이 없어 조달청 나라장터 계약을 매입 자료로 썼습니다' : ''}${fails.length ? ` · 못 읽음: ${esc(fails.join(', '))}` : ''}. <a href="#rf-go3">결과 보기 ↓</a>`;
+      msg.classList.remove('rf-busy'); msg.innerHTML = `파일 ${fs.length}개 — 신고서 <b>${filed.length}</b>건${ks.length ? `(${esc(ks.join(', '))})` : ''} · 매입 세금계산서 목록 <b>${inv.length}</b>개 · 사업용 카드 <b>${card.length}</b>개 → 매입 ${fmt(st.rows.length - n0)}건 더함${!st.rows.length && filed.length ? ' — 매입 목록이 없어 조달청 나라장터 계약을 매입 자료로 썼습니다' : ''}${fails.length ? ` · 못 읽음: ${esc(fails.join(', '))}` : ''}. <a href="#rf-go3">결과 보기 ↓</a>`;
       if (filed.length || st.rows.length > n0) document.getElementById('rf-go3')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); };
     $<HTMLInputElement>('rf-all-file')!.addEventListener('change', e => void handle([...((e.target as HTMLInputElement).files ?? [])]));
     /* 붙여넣기 → 표 파일처럼(문서보안 잠금 엑셀은 그 PC 의 엑셀에서 복사하면 글자로 나온다 — 운영자 2026-11-25 'Pldh 파일도 올릴 수 있게해') */
@@ -425,7 +427,7 @@ function init(D: Data) {
     const byOrg = new Set((org?.facilities ?? []).filter(f => f.confirmed).map(f => f.name)); const mine = confGet().fac ?? {};
     const fromOrg = (id: string) => { const [k, f] = id.split('|'); return !!f && byOrg.has(f) && !(mine[f] as Record<string, unknown> | undefined)?.[k]; };   /* 예시 설정의 기관 확인값으로 미리 고른 답 */
     const done = items.filter(x => x.v).length;
-    el.innerHTML = `<details class="vat-more" id="rf-conf-d"${confOpen ? ' open' : ''}><summary><strong>세무서에 내기 전 확인</strong> ${done}/${items.length} — 받은 서류를 보고 누르면 묶음의 금액·답변·할 일이 저절로 맞춰집니다(적을 것 없음)</summary><ul class="meta-list rf-conf">${items.map((x, i) => `<li><span>${esc(x.q)}</span><br/>${x.opts.map(([v, l]) => `<label style="margin-right:1rem"><input type="radio" name="rf-cf-${i}" data-cf="${esc(x.id)}" value="${v}"${x.v === v ? ' checked' : ''}/> ${esc(l)}</label>`).join('')}${x.v && fromOrg(x.id) ? ` <span class="vbadge ok">${esc(govUnit(org?.org))} 확인 자료로 미리 고름</span>` : ''}</li>`).join('')}</ul><p class="note">누른 답은 이 브라우저에만 저장됩니다. 묶음을 다시 받으면 반영됩니다.</p></details>`;
+    el.innerHTML = `<details class="vat-more" id="rf-conf-d"${confOpen ? ' open' : ''}><summary><strong>세무서에 내기 전 확인</strong> ${done}/${items.length} — 받은 서류를 보고 누르면 묶음의 금액·답변·할 일이 저절로 맞춰집니다(적을 것 없음)</summary><ul class="meta-list rf-conf">${items.slice(0, 5).map((x, i) => `<li><span>${esc(x.q)}</span><br/>${x.opts.map(([v, l]) => `<label style="margin-right:1rem"><input type="radio" name="rf-cf-${i}" data-cf="${esc(x.id)}" value="${v}"${x.v === v ? ' checked' : ''}/> ${esc(l)}</label>`).join('')}${x.v && fromOrg(x.id) ? ` <span class="vbadge ok">${esc(govUnit(org?.org))} 확인 자료로 미리 고름</span>` : ''}</li>`).join('')}</ul>${items.length > 5 ? `<details class="vat-more"><summary>더 확인할 것 ${items.length - 5}개</summary><ul class="meta-list rf-conf">${items.slice(5).map((x, j) => { const i = j + 5; return `<li><span>${esc(x.q)}</span><br/>${x.opts.map(([v, l]) => `<label style="margin-right:1rem"><input type="radio" name="rf-cf-${i}" data-cf="${esc(x.id)}" value="${v}"${x.v === v ? ' checked' : ''}/> ${esc(l)}</label>`).join('')}${x.v && fromOrg(x.id) ? ` <span class="vbadge ok">${esc(govUnit(org?.org))} 확인 자료로 미리 고름</span>` : ''}</li>`; }).join('')}</ul></details>` : ''}<p class="note">누른 답은 이 브라우저에만 저장됩니다. 묶음을 다시 받으면 반영됩니다.</p></details>`;
     el.querySelector('#rf-conf-d')?.addEventListener('toggle', e => { confOpen = (e.target as HTMLDetailsElement).open; });
     el.querySelectorAll<HTMLInputElement>('input[data-cf]').forEach(r => r.addEventListener('change', () => { confPut(confSet(confGet(), r.dataset.cf!, r.value)); confOpen = true; renderConf(); toast('확인을 저장했습니다 — 묶음을 받으면 반영됩니다'); })); };
   const caseXlsx = () => caseBook(D, cbIn());
@@ -457,6 +459,20 @@ function init(D: Data) {
   /* 경정청구서(국세청 서식) — 국세기본법 시행규칙 별지 제16호의2서식에 숫자를 채운 인쇄용 화면을 새 창으로(막히면 파일로) */
   /* 고친 신고서 받기(과세기간마다) — 엑셀(신고서별 시트: 고친 값·이유·근거 법령·근거 자료) · PDF(국세청 별지 제16호의2서식) · Word(같은 서식, 고칠 수 있음). 세무서 제출 묶음 02·03 과 같은 계산(운영자 2026-11-25) */
   const corrM = () => caseCorrDocs(D, cbIn(), g => g <= 2); const fn = (t: string, ext: string) => `${t}_${org?.org ?? ''}_${today}.${ext}`.replace(/\s+/g, '_');
+  /* 「고친 신고서 받기」 — zip 하나: 0 안내 · 1 국세청 서식 PDF · 2 Word · 3 과세기간별 엑셀 · 참고/ 세무서 제출 묶음 전체(3차 UX) */
+  document.addEventListener('click', e => { if (!(e.target as HTMLElement).closest('#rf-dl-get')) return;
+    if (!(st.fdocs ?? []).length) { toast('지난 신고서를 올리면 신고서마다 고친 신고서를 만듭니다'); return; }
+    void (async () => { const btn = $<HTMLButtonElement>('rf-dl-get'); const t0 = btn?.textContent ?? ''; if (btn) { btn.disabled = true; btn.textContent = '만드는 중…'; }
+      try { const M = corrM(); const n = [...M.values()].flat().filter(c => c.delta > 0).length; const bin = async (b: Blob | null) => b ? new Uint8Array(await b.arrayBuffer()) : null;
+        const files: { name: string; data: string | Uint8Array }[] = [];
+        const guide = [`고친 신고서 — ${org?.org ?? ''} (${today})`, '', `고친 신고서 ${n}장(신고서마다 한 장)이 세 가지 형식으로 들어 있습니다.`, '  1_고친신고서_국세청서식.pdf — 국세기본법 시행규칙 별지 제16호의2서식 「과세표준 및 세액의 결정(경정)청구서」에 숫자를 채운 것', '  2_고친신고서_고칠수있는문서.docx — 같은 서식과 사유서(이유·고친 칸·근거 법령·붙임). 한글에서 열어 고치고 HWP 로 저장할 수 있습니다', '  3_과세기간별_이유_근거.xlsx — 신고서마다 시트 한 장: 고친 값·이유·근거 법령·근거 자료·건별 내역', '', '할 일', '  1. 2_ Word 를 열어 이유·숫자를 신고서와 대조합니다(판정은 참고이며 기관의 판단이 아닙니다).', '  2. 홈택스 → 신고/납부 → 세금신고 → 부가가치세 → 경정청구에서 과세기간을 고르고, 1_ 의 ⑪~⑰ 값을 옮겨 적습니다.', '  3. 1_ PDF 와 3_ 엑셀(또는 참고 폴더의 사유서)을 증빙서류로 첨부해 제출합니다.', '  4. 돌려받으면 바로 세입으로 처리합니다.', '', '참고(세무서_제출_묶음)/ 폴더에는 검토 요약서·재계산표·건별 귀속명세·부서별 증빙 요청·사전상담 대본 등 전체 자료가 있습니다.'].join('\n');
+        files.push({ name: '0_이렇게_하세요.txt', data: guide });
+        if (n) { const pdf = await bin(await claimFormPdf(M, org?.org ?? '', org?.reg_no ?? st.reg ?? '', true).catch(() => null)); if (pdf) files.push({ name: '1_고친신고서_국세청서식.pdf', data: pdf });
+          try { const { claimFormDocx } = await import('./vat_claimform'); files.push({ name: '2_고친신고서_고칠수있는문서.docx', data: (await bin(await claimFormDocx(M, org?.org ?? '', org?.reg_no ?? st.reg ?? '')))! }); } catch { /* Word 를 못 만들어도 나머지 */ } }
+        const x = await bin(caseXlsx()); if (x) files.push({ name: '3_과세기간별_이유_근거.xlsx', data: x });
+        try { for (const f of await caseFiles()) files.push({ ...f, name: `참고(세무서_제출_묶음)/${f.name}` }); } catch { /* 묶음을 못 만들어도 세 파일은 받음 */ }
+        downloadBlob(fn('고친신고서', 'zip'), zipStore(files)); toast(n ? `고친 신고서 ${n}장을 PDF·Word·엑셀로 내려받았습니다` : '이번에 청구할 고친 신고서가 없어 과세기간별 엑셀과 참고 자료만 담았습니다');
+      } catch { toast('파일을 만들지 못했습니다 — 「세무서 제출 묶음(전체)」으로 받으세요'); } finally { if (btn) { btn.disabled = false; btn.textContent = t0; } } })(); });
   document.addEventListener('click', e => { const t = e.target as HTMLElement; const id = t.closest('#rf-dl-x, #rf-dl-p, #rf-dl-w')?.id; if (!id) return;
     if (!(st.fdocs ?? []).length) { toast('지난 신고서를 올리면 신고서마다 고친 신고서를 만듭니다'); return; }
     void (async () => { try {

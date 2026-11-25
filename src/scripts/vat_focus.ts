@@ -11,7 +11,7 @@ export type Stake = Map<string, { tax: number; est: number }>;
 const rx = (s: string) => { try { return new RegExp(s); } catch { return null; } };
 /** 과세 몫 표시 — 면적으로 정함 / 답함 / 조사 기본값(추정) / 없음 */
 function shareLabel(f: OrgFacility, U = '기관'): string {
-  if (f.confirmed?.area && typeof f.share === 'number' && !f.answers?.area) return `과세 몫 ${Math.round(f.share * 1000) / 10}% <span class="vbadge ok">${esc(U)} 확인</span> — 기관이 준 면적표로 정함(시설 메모에 면적)`;
+  if (f.confirmed?.area && typeof f.share === 'number' && !f.answers?.area) { const m = /\[[^\]]*확인\]\s*([^—]+?)(?:\s*—|$)/.exec(f.note ?? ''); return `과세 몫 ${Math.round(f.share * 1000) / 10}% <span class="vbadge ok">${esc(U)} 확인</span>${m ? ` — ${esc(m[1].trim().slice(0, 90))}` : ' — 기관이 준 면적표로 정함'}`; }
   const a = f.answers?.area; if (a) return `과세 몫 ${Math.round((f.share ?? 0) * 1000) / 10}% — ${esc(a.label)}`;
   if (typeof f.share !== 'number') return '과세 몫 지정 없음(시설 전체를 한 성격으로 봄)';
   const man = Object.values(f.answers ?? {}).some(x => !x.auto); const pct = Math.round(f.share * 1000) / 10;
@@ -31,7 +31,8 @@ export function focusHtml(D: Data, org: Org | null, stake: Stake, hasList: boole
     const sum = fs.reduce((s, f) => s + money(f), 0);
     const rows = fs.map(f => {
       const st = facilityStatus(D, f); const m = money(f);
-      const area = g.area ? `<div class="rf-area" data-fid="${esc(f.id)}"><label>전체 면적 <input type="number" min="0" step="0.01" inputmode="decimal" data-area-tot aria-label="${esc(f.name)} 전체 면적(㎡)">㎡</label> <label>과세로 쓰는 면적 <input type="number" min="0" step="0.01" inputmode="decimal" data-area-tax aria-label="${esc(f.name)} 과세로 쓰는 면적(㎡)">㎡</label> <button type="button" class="btn secondary" data-area-go>이 면적으로</button><span class="note" data-area-msg role="status"></span></div>` : '';
+      const conf = !!f.confirmed?.area && !f.answers?.area;   /* 기관이 면적을 확인해 준 시설은 칸을 숨기고 확인값만 — 고칠 때만 연다(운영자 2026-11-25 '반영했는데 이런 화면이 있어?') */
+      const area = g.area ? `${conf ? `<button type="button" class="link-btn" data-area-open="${esc(f.id)}">면적 다시 넣기</button>` : ''}<div class="rf-area" data-fid="${esc(f.id)}"${conf ? ' hidden' : ''}><label>전체 면적 <input type="number" min="0" step="0.01" inputmode="decimal" data-area-tot aria-label="${esc(f.name)} 전체 면적(㎡)">㎡</label> <label>과세로 쓰는 면적 <input type="number" min="0" step="0.01" inputmode="decimal" data-area-tax aria-label="${esc(f.name)} 과세로 쓰는 면적(㎡)">㎡</label> <button type="button" class="btn secondary" data-area-go>이 면적으로</button><span class="note" data-area-msg role="status"></span></div>` : '';
       return `<li><b>${esc(f.name)}</b> <span class="vbadge">${esc(STATUS_LABEL_SHORT[st] ?? st)}</span>${m ? ` <span class="meta">${unit} ${fmt(m)}원</span>` : ''}${g.area || typeof f.share === 'number' ? `<br><span class="note">${shareLabel(f, U)}</span>` : ''}${area}</li>`;
     }).join('');
     return `<li class="rf-focus-g"><p class="rf-focus-t"><b>${esc(g.title)}</b>${sum ? ` <span class="meta">${unit} 합 ${fmt(sum)}원</span>` : ''}</p>
@@ -40,13 +41,14 @@ export function focusHtml(D: Data, org: Org | null, stake: Stake, hasList: boole
   if (!groups.length) return '';
   const own = org.facilities.filter(f => f.run === 'entrusted_own');
   const ex = own.length ? `<details class="vat-more"><summary>${esc(U)} 신고에 넣지 않는 곳 ${own.length}곳 <span class="meta">재단·민간위탁 — 수탁자 명의</span></summary><p class="note">${esc(gp.exclude_note ?? '수탁기관이 자기 사업으로 운영하는 시설은 그 기관이 신고합니다.')}</p><ul class="meta-list">${own.map(f => `<li>${esc(f.name)}</li>`).join('')}</ul><p class="note">매입 목록에 이 시설 공급자가 있으면 ③ 공급자 표에서 그 시설로 붙이세요 — 공제 금액에 0원으로 들어갑니다.</p></details>` : '';
-  return `<details class="vat-more rf-focus" id="rf-focus" open><summary>${esc(org.org)}에서 먼저 볼 곳 ${groups.length}묶음 <span class="meta">${hasList ? '매입 목록 세액' : '나라장터 계약 어림(돌려받을 금액 아님)'} · 참고, 기관의 판단이 아닙니다</span></summary>
+  return `<details class="vat-more rf-focus" id="rf-focus"><summary>${esc(org.org)}에서 먼저 볼 곳 ${groups.length}묶음 <span class="meta">${hasList ? '매입 목록 세액' : '나라장터 계약 어림(돌려받을 금액 아님)'} · 참고, 기관의 판단이 아닙니다</span></summary>
     <ol class="rf-focus-l">${groups.join('')}</ol>${ex}</details>`;
 }
 
 /** 면적 두 칸 → 과세 몫. 적용하면 저장하고 다시 계산(새로 읽기) */
 export function wireFocus(root: HTMLElement, org: Org | null, onDone: () => void) {
   if (!org) return;
+  root.querySelectorAll<HTMLButtonElement>('[data-area-open]').forEach(b => b.addEventListener('click', () => { const box = root.querySelector<HTMLElement>(`.rf-area[data-fid="${CSS.escape(b.dataset.areaOpen!)}"]`); if (box) { box.hidden = false; b.hidden = true; box.querySelector<HTMLInputElement>('input')?.focus(); } }));
   root.querySelectorAll<HTMLElement>('.rf-area').forEach(box => {
     const f = org.facilities.find(x => x.id === box.dataset.fid); if (!f) return;
     const tot = box.querySelector<HTMLInputElement>('[data-area-tot]')!, tax = box.querySelector<HTMLInputElement>('[data-area-tax]')!, msg = box.querySelector<HTMLElement>('[data-area-msg]')!;

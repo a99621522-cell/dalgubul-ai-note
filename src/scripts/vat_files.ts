@@ -65,7 +65,7 @@ export const looksFiled = (text: string) => /부\s*가\s*가\s*치\s*세/.test(t
 
 export async function readTableFile(file: File): Promise<FileTable> {
   const buf = await file.arrayBuffer(); const b = new Uint8Array(buf); const name = file.name;
-  if (isDrm(b)) throw new Error('문서보안(DRM)으로 잠긴 파일입니다 — 기관 PC 의 문서보안 프로그램에서 「암호 해제(반출)」한 뒤 올리세요');
+  if (isDrm(b)) throw new Error('문서보안(DRM)으로 잠긴 파일입니다 — 엑셀로 열어 시트를 복사(Ctrl+A → Ctrl+C)해 붙여넣거나, 문서보안 프로그램에서 「암호 해제(반출)」한 뒤 올리세요');
   if (/\.hwpx?$/i.test(name) || (isOle(b) && oleStream(b, ['FileHeader']))) { const h = await readHwpx(file); const big = [...h.tables].sort((x, y) => y.length - x.length)[0]; if (!big?.length) throw new Error('한글 파일에 표가 없습니다'); return { name, kind: 'hwpx', rows: big }; }   /* 한글로 정리한 매입 목록 — 가장 큰 표 */
   if (b[0] === 0x50 && b[1] === 0x4b) { const t = await readXlsx(buf); return { name, kind: 'xlsx', ...t }; }
   if (b[0] === 0xd0 && b[1] === 0xcf && b[2] === 0x11 && b[3] === 0xe0) { const t = readXls(b); return { name, kind: 'xls', ...t }; }

@@ -10,7 +10,7 @@ import { focusHtml, wireFocus } from './vat_focus';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
-type Built = { biz?: { n: number; todo: number; hint: number; pct: number } | null; salesGap?: { fac: string; nm: string; claim: number }[]; baseTypes?: { seen: string[]; known: string[] } | null; diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null; total?: number | null; ex5?: number | null; nd2?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
+type Built = { uncov?: { k: string; kind: string; n: number; tax: number; claim: number }[]; biz?: { n: number; todo: number; hint: number; pct: number } | null; salesGap?: { fac: string; nm: string; claim: number }[]; baseTypes?: { seen: string[]; known: string[] } | null; diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null; total?: number | null; ex5?: number | null; nd2?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
 
 const D = loadData();
 if (D && $('rf-band')) init(D);
@@ -224,6 +224,8 @@ function init(D: Data) {
     const listUl = rows ? `<h3 class="rf-sum-h">과세기간별</h3><ol class="rf-rows">${rows}</ol>` : '';
     const otherHtml = other.length ? `<details class="vat-more"><summary>그 밖에 확인할 것 ${other.length}건(금액 없음)</summary><ul class="meta-list">${other.map(r => `<li><b>${esc(r.name)}</b> — ${esc(plainT(r))}<br><span class="note">${esc(plainTodo(r))}</span></li>`).join('')}</ul></details>` : '';
     const missHtml = miss ? `<p class="callout warn rf-miss-l">⚠ 신고서를 올리지 않은 과세기간이 있습니다 — ${esc(miss.f.what.replace(/ — 이 기간들도.*$/, ''))}. 올리면 더 찾을 수 있습니다.</p>` : '';
+    const uc = (b.uncov ?? []).filter(u => u.claim > 0 || u.tax > 0);
+    const uncovHtml = uc.length ? `<p class="callout warn rf-uncov" id="rf-uncov">⚠ ${uc.map(u => `${esc(pName(u.k))} ${esc(u.kind)}신고서`).join(' · ')}를 올리지 않아, 그 신고기간 매입 ${fmt(uc.reduce((n, u) => n + u.n, 0))}건(그 가운데 공제 대상 세액 ${fmt(uc.reduce((n, u) => n + u.claim, 0))}원)은 금액에 넣지 않았습니다 — 그 신고가 공제받은 세액을 알아야 돌려받을 몫을 셀 수 있습니다. 홈택스 신고내역에서 그 신고서 PDF 를 받아 2에 놓으면 더해집니다.</p>` : '';
     const exHtml = ex.length ? `<p class="note">경정청구 기한(5년)이 지난 ${ex.length}개 과세기간(${ex.map(d => esc(d.name)).join(' · ')})은 돌려받을 수 없어 뺐습니다.</p>` : '';
     /* 매입세액을 모두 '② 사업과 직접 관련 없는 지출'로 불공제한 신고(2026-11-24 수성구청 실물) — '찾은 것이 없습니다'가 아니라 매입 목록을 올리라고 먼저 말한다 */
     const allU = b.filed.filter(f => (f.total ?? 0) > 0 && (f.nd2 ?? 0) >= (f.total ?? 0) * 0.9 && (f.salesSup ?? 0) > 0);
@@ -252,7 +254,7 @@ function init(D: Data) {
           <p class="note"><span class="rf-k">이유</span> 돈을 받는 시설(과세사업)에 쓴 비용의 부가세는 돌려받습니다(공제). 세금계산서가 신고에 빠졌거나 '면세사업 관련'으로 처리됐다면 고쳐 신청할 수 있습니다.</p>
           <p class="note"><span class="rf-k">근거</span> ${law([B('act', '제38조'), B('act', '제39조'), B('basic', '제45조의2')])}</p></details></li>`).join('')}</ol>
       <div class="actions no-print"><button type="button" class="btn secondary" id="rf-cand-csv">확인할 업체 목록 받기(CSV)</button></div></section>` : '';
-    const moreIn = netHtml + headCand + cells + missHtml + listUl + candHtml + otherHtml + exHtml;   /* 자세히 — 과세기간별 내용·후보·확인 문단은 접어 두고 같은 내용은 받는 파일에(3차 UX) */
+    const moreIn = netHtml + headCand + cells + missHtml + uncovHtml + listUl + candHtml + otherHtml + exHtml;   /* 자세히 — 과세기간별 내용·후보·확인 문단은 접어 두고 같은 내용은 받는 파일에(3차 UX) */
     const more = moreIn.trim() ? `<details class="vat-more rf-sum-more" id="rf-sum-more"><summary>자세히 — 과세기간별 내용${rows ? `(${ks.length}개)` : ''} · 금액 나눠 보기 · 확인할 것</summary>${moreIn}</details>` : '';
     el.innerHTML = head + src + dl + allUHtml + zero + sup + more;
     document.dispatchEvent(new CustomEvent('vat-cand', { detail: cands.length ? candRows() : [] }));   /* 신고서만 올린 묶음(vat_review)에 '추가분 합계표 밑자료'로 */

@@ -55,13 +55,14 @@ function init(D: Data) {
   const stepState = (b: Built | null) => { const s1 = !!org; const s2 = !!b && b.filed.length > 0; const s3 = !!b && b.rows > 0; return { s1, s2, s3 }; };
   const setStep = (id: string, done: boolean, cur: boolean, text: string) => { const li = $(id); if (!li) return; li.classList.toggle('done', done); li.classList.toggle('cur', cur); const st = $(`${id}-st`); if (st) st.innerHTML = text; };
 
+  let candTotal = 0;   /* 매입 목록 없이 계약으로 짐작한 후보(summary 가 셈) — 자세히의 금액 띠·돌려받을 돈 표가 0원만 보이지 않게(운영자 2026-11-25 '이것은 왜 0원으로 나와?') */
   function band(b: Built | null) {
     const el = $('rf-band')!; const U = b?.U; const m = ctrByP(); let est = 0; for (const k of openPeriods()) { const x = m.get(k); if (x) est += x.tax + x.likely; }
     const fs = b?.fsure ?? 0;
     const sub = (U ? `<span>확정(근거 갖춤) <b>${fmt(U.now)}</b>원</span><span>자료를 더 내면 <b>+${fmt(U.docs)}</b>원</span><span>판단 필요 <b>${fmt(U.judge)}</b>원</span>${U.assign ? `<span>시설 정하기 전 <b>${fmt(U.assign)}</b>원(세지 않음)</span>` : ''}` : '') + (fs ? `<span>신고서만으로 다시 계산 <b>+${fmt(fs)}</b>원</span>` : '') + (!U ? `<span>${fs ? '' : '② 지난 신고서를 올리면 바로 계산하고, '}③ 매입 목록을 올리면 더 찾습니다</span>` : '');
     el.innerHTML = `<p class="rf-band-l">지금까지 찾은 돌려받을 수 있는 금액 <span class="meta">경정청구 · 참고 계산, 기관의 판단이 아닙니다</span></p>
       <p class="rf-band-n"><span id="rf-amt">${fmt((U ? U.now + U.docs : 0) + fs)}</span><small>원</small></p>
-      <p class="rf-band-s">${sub}</p>
+      <p class="rf-band-s">${sub}</p>${!U && !fs && candTotal > 0 ? `<p class="note rf-band-why">신고서 숫자만으로 다시 계산한 몫은 0원입니다 — 신고서가 받은 부가세를 모두 '사업과 관련 없는 지출'로 돌려받지 않아, 신고서 안에서는 다시 나눌 숫자가 없기 때문입니다. 대신 조달청 계약으로 짐작한 <b>약 ${fmt(candTotal)}원</b>이 맨 위 금액입니다 — 그 업체 세금계산서(홈택스)나 e호조 지출 엑셀로 확인하면 확정 금액이 됩니다.</p>` : ''}
       ${est && !(b?.filed?.length) ? `<p class="rf-est note">참고: 경정청구가 되는 기간에 과세 시설과 관련된 나라장터 계약의 부가세는 약 ${(est / 1e8).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억 원입니다. 이 가운데 공제받지 않은 몫이 있는지 지난 신고서로 확인합니다(돌려받을 금액이 아님).</p>` : ''}`;
   }
 
@@ -192,7 +193,7 @@ function init(D: Data) {
         const miss = Math.max(0, est - f.total); const nd25 = (f.ex5 ?? 0) + (f.nd2 ?? 0); const part5 = Math.min(nd25, est);   /* ⑤ 면세사업 관련 + ② 사업과 직접 관련 없는 지출(2026-11-24 수성구청: 매입세액 전부를 ②로 불공제) — 과세 시설 계약 몫이 들어 있을 수 있는 불공제 */ const cand = Math.min(est, miss + part5); if (cand <= 0) continue;
         const bySup = new Map<string, CC['sups'][number]>(); for (const r of rs) { const cs = r.c.corps.filter(p => /^\d{10}$/.test(p.no)); const key = cs[0]?.no ?? `?${r.c.nm}`; const x = bySup.get(key) ?? { no: cs[0]?.no ?? '', nm: cs.map(p => p.nm).join('·') || '(상호 확인)', est: 0, ctrs: [] }; x.est += r.est; const fac = org.facilities.find(q => q.id === r.a!.fid)?.name ?? ''; x.ctrs.push({ nm: r.c.nm, date: r.c.date, k: r.c.k, fac, est: r.est }); bySup.set(key, x); }
         cands.push({ k, name: pName(k), recv: f.total, ex5: nd25, nd2: f.nd2 ?? 0, est, miss, part5, cand, reg: cand - part5, fids: [...new Set(rs.map(r => r.a!.fid))], sups: [...bySup.values()].sort((a, c) => c.est - a.est) }); } }
-    const candSum = cands.reduce((n, c) => n + c.cand, 0); const candIn = cands.reduce((n, c) => n + c.part5, 0); const candReg = candSum - candIn;
+    const candSum = cands.reduce((n, c) => n + c.cand, 0); candTotal = nR ? 0 : candSum; const candIn = cands.reduce((n, c) => n + c.part5, 0); const candReg = candSum - candIn;
     /* 세무 검토 반영(2026-11-05 운영자 '순서대로 수정해' — 세무법인 관점 평가 1~4):
        ① 신고서에 없던 몫(candReg)은 그 시설이 사업자등록돼 있었고 세금계산서가 그 번호로 발급됐을 때만 — 등록 전 매입세액 불공제(법 제39조 제1항 제8호), 고유번호 기재분은 공급받는자가 달라 수정세금계산서(시행령 제70조) 기한 안에만
        ② 확정 가운데 안분·정산을 다시 한 몫은 원신고가 공급가액 비율로 나눴을 때만 맞음(시행령 제81조 제4항, 대법원 2017두55329)

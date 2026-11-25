@@ -281,6 +281,7 @@ export function refundCalcHtml(D: Data, L: Diag[], estBy?: Map<string, number>, 
     <div class="rf-calc-sum"><div><span class="meta">바로 돌려받을 돈</span><b id="rf-calc-sure">${fmt(R.sure)}원</b><span class="meta">신고서 숫자로 다시 계산한 금액 — 다른 자료 없이 경정청구할 수 있어요</span></div>
       <div><span class="meta">확인하면 더 받을 수 있는 돈(최대)</span><b id="rf-calc-upto">${fmt(R.upto)}원</b><span class="meta">담당 부서에 자료를 받아 확인되는 만큼만</span></div>
       ${R.est ? `<div class="rf-est"><span class="meta">참고 어림</span><b>${fmt(R.est)}원</b><span class="meta">계약 금액으로 짐작한 값 — 신청 금액이 아님</span></div>` : ''}</div>
+    ${!R.sure && !R.upto ? `<p class="note">이 표는 신고서 숫자만으로 다시 계산한 몫입니다 — 0원이면 신고서 안에서 고칠 숫자가 없다는 뜻이고, 돈을 받는 시설의 공사·관리비처럼 매입 자료가 있어야 보이는 몫은 맨 위 금액(조달청 계약 짐작 또는 매입 목록)에 있습니다.</p>` : ''}
     ${stepsHtml(R)}
     <div class="actions no-print"><button type="button" class="btn" id="rf-calc-zip">경정청구 자료 내려받기(고친 신고서·근거·결재용 보고 — zip)</button></div>
     ${nextDocsHtml(R.rows)}

@@ -9,7 +9,7 @@ import { mountDrop, readTableFile, readHwpx, tableText, looksFiled, isDrm } from
 import { mountPublic } from './vat_review_pub';
 import { contractsCtx, supplierFits, type CtrCtx } from './vat_contracts';
 import type { FileTable } from './vat_files';
-import { caseBook, caseCorrDocs, type CbRow, type CbCand } from './vat_casebook';
+import { caseBook, caseCorrDocs, caseIssues, type CbRow, type CbCand } from './vat_casebook';
 import { persuadeFiles, confItems, confSet, CONF_KEY } from './vat_persuade';
 import type { Conf } from './vat_casebook';
 import { xlsxBlob, csvRows } from './xlsx_write';
@@ -520,7 +520,9 @@ function init(D: Data) {
     const need: Record<string, [RegExp, string]> = { lodging: [/^55/, '숙박업'], lease: [/^70/, '부동산임대업'], sports: [/^(809|9113)/, '스포츠시설 운영업'] }; const m = new Map<string, { fac: string; nm: string; claim: number }>();
     for (const r of cbRows) { const nd = r.facType ? need[r.facType] : undefined; if (!r.claim || !nd || has(nd[0])) continue; const x = m.get(r.fac) ?? { fac: r.fac, nm: nd[1], claim: 0 }; x.claim += r.claim; m.set(r.fac, x); }
     return [...m.values()].sort((a, b) => b.claim - a.claim); };
-  function emit(x: Record<string, unknown> | null) { cover(); const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), salesGap: salesGap(), baseTypes: (() => { const b = baseTypes(st.fdocs ?? []); return b ? { seen: [...b.seen], known: [...b.known] } : null; })(), diag: diagHtml(D, dm.diags), diags: dm.diags, fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er, salesSup: f.salesSup, total: f.total, ex5: f.exemptNd, nd2: f.ndReasons[2] ?? null })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); renderConf(); }
+  /* 화면 첫 문장 = 고친 신고서 파일의 '이번 청구'(쟁점 1·2등급) — 확인이 끝나야 내는 몫(3·4등급: 강습·관람석·면적 추정·매출 확인)은 따로(2026-11-25 수성구 법령 검토) */
+  function claimSplit(): { now: number; later: number } | null { if (!st.rows.length) return null; try { const is = caseIssues(D, cbIn()); let now = 0, later = 0; for (const i of is) { if (i.grade <= 2) now += i.amt; else later += i.amt; } return { now, later }; } catch { return null; } }
+  function emit(x: Record<string, unknown> | null) { cover(); const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), salesGap: salesGap(), claim: claimSplit(), baseTypes: (() => { const b = baseTypes(st.fdocs ?? []); return b ? { seen: [...b.seen], known: [...b.known] } : null; })(), diag: diagHtml(D, dm.diags), diags: dm.diags, fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er, salesSup: f.salesSup, total: f.total, ex5: f.exemptNd, nd2: f.ndReasons[2] ?? null })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); renderConf(); }
   function save() { saveBig(KEY, JSON.stringify({ ...st, saved: new Date().toISOString() })); }
   /* 저장된 결과 화면이 지금 자료·결정·기관 설정과 같은지 — 무엇이든 바뀌면 다시 계산 */
   const snapSig = () => { let conf = ''; try { conf = localStorage.getItem('vat-confirm-v1') ?? ''; } catch { /* */ } const o = getOrg(); return [st.rows.length, (st.fdocs ?? []).length, JSON.stringify(st.sup).length, JSON.stringify(st.biz ?? {}).length, JSON.stringify(st.filed).length, JSON.stringify(st.sales ?? {}).length, JSON.stringify(st.have ?? {}).length, st.reg, o?.preset_sig ?? '', o?.facilities.length ?? 0, JSON.stringify(o?.facilities ?? []).length, JSON.stringify(o?.map ?? []).length, conf.length].join('|'); };

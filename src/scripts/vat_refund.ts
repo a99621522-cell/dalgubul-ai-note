@@ -10,7 +10,7 @@ import { focusHtml, wireFocus } from './vat_focus';
 import type { UResult } from './vat_unlock';
 
 type Per = { k: string; name: string; filed: string; deduct: number | null; open: boolean; days: number; claim: string; due: string; diff: number | null; should: number };
-type Built = { uncov?: { k: string; kind: string; n: number; tax: number; claim: number }[]; biz?: { n: number; todo: number; hint: number; pct: number } | null; salesGap?: { fac: string; nm: string; claim: number }[]; baseTypes?: { seen: string[]; known: string[] } | null; diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null; total?: number | null; ex5?: number | null; nd2?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
+type Built = { claim?: { now: number; later: number } | null; uncov?: { k: string; kind: string; n: number; tax: number; claim: number }[]; biz?: { n: number; todo: number; hint: number; pct: number } | null; salesGap?: { fac: string; nm: string; claim: number }[]; baseTypes?: { seen: string[]; known: string[] } | null; diags?: Diag[]; diag?: string; fsure?: number; facTax?: Record<string, number>; rows: number; U?: UResult; total?: number; capTotal?: number; undAll?: number; needDed?: number; per?: Per[]; sup?: { n: number; assigned: number; ctr: number; taxAll: number; taxAssigned: number; todo: number }; filed: { k: string; deduct: number | null; er: number | null; salesSup?: number | null; total?: number | null; ex5?: number | null; nd2?: number | null }[]; filedState: Record<string, { filed: string; deduct: number | null }>; ctx: { gov: string; name: string } | null };
 
 const D = loadData();
 if (D && $('rf-band')) init(D);
@@ -178,7 +178,9 @@ function init(D: Data) {
     if (!b || !(nF + nR)) { el.innerHTML = '<p class="rf-empty">2에 홈택스에서 받은 지난 신고서 PDF 를 놓으면 여기에 돌려받을 금액이 나옵니다.</p>'; done3(''); return; }
     const L = openPeriods(); const estBy = new Map<string, number>(); for (const r of ctx?.rows ?? []) if (r.taxable && L.includes(r.p)) estBy.set(r.p, (estBy.get(r.p) ?? 0) + r.est);
     const diags = b.diags ?? []; const R = refundCalc(diags, estBy); const U = b.U; const listOnly = !diags.length && !!U;
-    const sure = listOnly ? U!.now : R.sure; const upto = listOnly ? U!.docs + U!.judge : R.upto; const est = listOnly ? 0 : R.est;
+    /* 매입 목록이 있으면 첫 금액 = 고친 신고서의 '이번 청구'(쟁점 1·2등급), 확인 뒤 낼 몫(3·4등급)은 '더 확인하면' 쪽으로 — 화면과 받는 파일이 같은 숫자(2026-11-25) */
+    const cs = !listOnly && b.claim && (b.claim.now + b.claim.later) > 0 ? b.claim : null;
+    const sure = listOnly ? U!.now : cs ? cs.now : R.sure; const upto = listOnly ? U!.docs + U!.judge : R.upto + (cs ? cs.later : 0); const est = listOnly ? 0 : R.est;
     const ex = diags.filter(d => d.state === 'expired' || d.days < 0);
     /* 매입 목록 없이 더 찾기(운영자 2026-11-05 '매입 목록 없이도 더 찾을 수 있게 해'): 신고서를 올린 과세기간마다
        '그 기간 신고서의 받은 부가세 합계 (16)' < '과세 시설 전용으로 붙은 나라장터 계약의 부가세 어림(계약금액 × 10/110, 공사 기간에 나눔, 과세 몫 share)' 이면
@@ -204,7 +206,7 @@ function init(D: Data) {
     for (const c of cands) { const P = pInfo(c.k); let gross = 0; for (const fid of c.fids) { const f = org.facilities.find(q => q.id === fid); if (!f) continue; const rv = revenueOf(f); if (!rv) { noRev.add(f.name); continue; } revF.add(f.name); gross += rv / 2; }
       const filedSales = (b.filed.find(f => f.k === c.k)?.salesSup ?? 0) * 1.1; const tax = Math.round(Math.max(0, gross - filedSales) / 11); if (!tax) continue; salesTax += tax; salesPen += penaltyCalc(D, { tax, due: P.due, payDate: today, kind: 'under' }).total; } const supN = new Set(cands.flatMap(c => c.sups.map(x => x.no || x.nm))).size;
     const nm = org.org; const amt = `<b id="rf-sum-amt" class="rf-sum-n">${fmt(sure)}원</b>`;
-    const head = sure > 0 ? `<p class="rf-sum-l"><strong>${esc(nm)}</strong>${josa(nm)} 지난 신고를 고쳐 신청하면(경정청구) ${amt}을 돌려받을 수 있습니다.${upto > 0 ? ` 자료를 더 확인하면 <b>최대 ${fmt(upto)}원</b>까지 늘어날 수 있습니다.` : ''}</p>`
+    const head = sure > 0 ? `<p class="rf-sum-l"><strong>${esc(nm)}</strong>${josa(nm)} 지난 신고를 고쳐 신청하면(경정청구) ${amt}을 돌려받을 수 있습니다.${cs && cs.later > 0 ? ` 확인이 끝나면 <b id="rf-sum-later">${fmt(cs.later)}원</b>을 더 청구할 수 있습니다(강습·관람석·면적·매출 신고 등 — 아래 「세무서에 내기 전 확인」, 지금 금액에는 넣지 않음).` : upto > 0 ? ` 자료를 더 확인하면 <b>최대 ${fmt(upto)}원</b>까지 늘어날 수 있습니다.` : ''}</p>`
       : upto > 0 ? `<p class="rf-sum-l">지금 올린 숫자만으로 바로 돌려받을 돈은 ${amt}이지만, 자료를 더 확인하면 <b>최대 ${fmt(upto)}원</b>을 돌려받을 수 있습니다.</p>`
       : candSum > 0 && !nR ? `<p class="rf-sum-l">매입 목록이 없어 <b>조달청 나라장터 계약</b>(공사·용역·물품 ${fmt(new Set((ctx?.rows ?? []).filter(r => r.taxable && cands.some(c => c.k === r.p)).map(r => r.ck)).size)}건)을 매입 자료로 썼습니다 — <strong>${esc(nm)}</strong>${josa(nm)} 약 <b id="rf-sum-cand">${fmt(candSum)}원</b>을 돌려받을 수 있을 것으로 보입니다(계약 금액으로 짐작한 값 — 아래 업체 세금계산서로 확인하면 확정).</p>`
       : `<p class="rf-sum-l">찾은 돌려받을 돈: ${amt}</p>`;   /* 신고서만 올렸을 때 조달청 계약을 매입 자료로(운영자 2026-11-24 '매입이 없던데 매입은 조달청 api를 통해 가져와') */

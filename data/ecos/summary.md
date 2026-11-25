@@ -1,6 +1,6 @@
 # 한국은행 ECOS 수집 결과
 
-갱신 2026-11-24 · 표 12개 · 설정 config/ecos_tables.yml
+갱신 2026-11-25 · 표 12개 · 설정 config/ecos_tables.yml
 
 | key | 표 | 코드 | 주기 | 최근 | 대구 행 | 단위 |
 |---|---|---|---|---|---:|---|
@@ -15,4 +15,4 @@
 | corp-mgmt-region-income | 5.9.1.7. 손익계산서 | 503Y002 | A | 2024 | 22824 | 백만원 |
 | corp-mgmt-region-profit | 5.9.1.2. 손익 지표 | 503Y006 | A | 2024 | 21538 | % |
 | corp-mgmt-region-stability | 5.9.1.3. 자산/자본 지표 | 503Y007 | A | 2024 | 8242 | % |
-| default-rate-region | 7.1.2. 지역별 어음부도율 | 801Y003 | M | 202609 | 57 | % |
+| default-rate-region | 7.1.2. 지역별 어음부도율 | 801Y003 | M | 202610 | 58 | % |

@@ -122,7 +122,7 @@ export type Fee = 'taxable' | 'paid_check' | 'free' | 'unknown';
 export const FEE_NAME: Record<Fee, string> = { taxable: '사용료·임대료를 받고, 그 사용료를 과세(부동산임대)로 신고하고 있다', paid_check: '사용료·임대료를 받지만 과세로 신고하는지 모름(면세로 보고 있음)', free: '받지 않는다(무상 사용허가·무상 임대)', unknown: '모름 — 위·수탁 계약·사용허가서로 확인' };
 /** track=false: '지출 기록 대상 아님'(마찰 3) — 면세 시설·수탁기관 자기 사업처럼 우리 공제와 무관한 시설. 판정이 아니라 기록 범위 표시 */
 /** 기관이 확인해 준 사실(예시 설정 confirmed — 면적표로 정한 과세 몫·과세 매출 신고 여부 등). 있으면 '추정'·'매출 확인' 단계를 건너뛴다 */
-export type Confirmed = { area?: boolean; sales?: 'yes' | 'no'; seats?: 'yes' | 'no'; lessons?: 'yes' | 'no' | 'split' };   /* lessons 'split' = 강습(면세)·사용료(과세) 공급가액으로 과세 몫을 나눠 share 에 넣음(예시 설정 rev_split) */
+export type Confirmed = { area?: boolean /* false = 유료·무료 구역이 섞였을 수 있어 면적을 확인해야 함 */; sales?: 'yes' | 'no'; seats?: 'yes' | 'no'; lessons?: 'yes' | 'no' | 'split' };   /* lessons 'split' = 강습(면세)·사용료(과세) 공급가액으로 과세 몫을 나눠 share 에 넣음(예시 설정 rev_split) */
 export type OrgFacility = { confirmed?: Confirmed; id: string; type: string; name: string; run: Run; contractor_dept?: string; reg_no?: string; income: string[]; deposit: boolean; note?: string; fee?: Fee; decision?: string; kind?: OrgKind; alias?: string[]; rev?: string[]; track?: boolean; answers?: Record<string, { label: string; at: string; auto?: boolean; prev?: { type: string; run: Run; share?: number } }>; salesTaxed?: boolean; share?: number };
 /** 확인 질문(예시 설정 시설의 ask — docs/design/vat-minimize.md 3절): 고르면 시설 유형·운영 방식이 바뀌고 메모가 덧붙는다 */
 export type AskOpt = { label: string; patch?: { type?: string; run?: Run; note?: string; salesTaxed?: boolean; share?: number | null } };

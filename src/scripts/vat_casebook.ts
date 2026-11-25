@@ -30,7 +30,7 @@ const days = (to: string, today: string) => Math.round((new Date(to).getTime() -
 const tax = (d: FiledDoc, n: number) => d.cells[n]?.tax ?? null;
 const amt = (d: FiledDoc, n: number) => d.cells[n]?.amt ?? null;
 
-export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; revText?: Record<string, string>; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number>; areaFac?: string[]; conf?: Conf; deptByFac?: Record<string, string> };
+export type CbIn = { org: string; reg: string; today: string; docs: FiledDoc[]; rows: CbRow[]; revText?: Record<string, string>; cand?: CbCand[]; corr?: Map<string, CorrDoc[]>; revByFac?: Record<string, number>; areaFac?: string[]; needArea?: string[]; conf?: Conf; deptByFac?: Record<string, string> };
 /** 제출 전 확인(화면에서 누름, 2026-11-24 운영자 '공무원이 기재 할 일을 최대한 줄여') — 시설별 관람석·강습료·과세 매출 신고, 당초 안분 기준, 3등급 수정신고를 같이 낼지. 'yes'·'no' 만, 비면 모름 */
 export type Conf = { fac?: Record<string, { seats?: 'yes' | 'no'; lessons?: 'yes' | 'no' | 'split'; sales?: 'yes' | 'no' }>; apport?: 'supply' | 'other'; g3?: 'together' | 'later'; at?: string };   /* revByFac: 시설 이름 → 세입예산 연 수입(원, 기관 설정 메모의 세입예산서 줄) */   /* corr: 신고서 숫자만으로 고친 값(진단의 안분 재계산 등) */
 const short = (n: string) => n.replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim();
@@ -98,6 +98,7 @@ function gradeFac(D: Data, o: CbIn, f: { fac: string; type?: string; share?: num
      환급만 원칙에서도 안전: 과세로 청구했는데 세무서가 경기장(면세)으로 보면 매입세액 대신 그동안 과세로 낸 사용료 매출세액을 돌려받는 쪽이라 더 낼 일이 없다 */
   const known = o.revText && f.fac in o.revText; const spect = /입장료|관람료|관람석|관중/.test(o.revText?.[f.fac] ?? '');
   if (f.type === 'sports' && STADIUM.test(f.fac) && cf?.seats !== 'no' && (!known || spect)) return { grade: 4, why: '관람석을 갖춘 경기장인지 확인 필요 — 관람석이 있으면 경기장 운영업으로 면세', q: ['Q12'] };
+  if ((o.needArea ?? []).includes(f.fac) && !(o.areaFac ?? []).includes(f.fac)) return { grade: 4, why: '조성공사에 유료 대관 공간과 무료 개방 구역(주차장·조경·산책로·무료 구장)이 섞였을 수 있음 — 설계·준공도면 면적으로 나눈 뒤 과세 면적 비율로 청구(시행령 제81조 제4항, 무료 구역은 고유업무라 불공제)', q: ['Q19'] };   /* 2026-11-25 운영자 '무료 구역을 빼지 않고 전액 청구하면 가산세' */
   if (typeof f.share === 'number' && f.share < 1 && !(o.areaFac ?? []).includes(f.fac)) return { grade: 4, why: `같이 쓰는 건물 — 과세 몫 ${Math.round(f.share * 100)}%는 추정, 용도별 면적표로 정해야 함`, q: ['Q19'] };
   if (cf?.sales === 'no') return { grade: 3, why: '그 기간 사용료를 과세 매출로 신고하지 않음(청구인 확인) — 이번 청구에서 뺌(청구하면 세무서가 매출세액·가산세를 함께 경정해 더 낼 수 있음)', q: ['Q10', 'Q28'], gap: '사용료' };
   if (f.type && gap.has(f.type) && cf?.sales !== 'yes') return { grade: 3, why: `신고서 과세표준 명세에 ${GAP[f.type][1]} 매출이 없음 — 사용료를 과세 매출로 신고했는지 먼저 확인`, q: ['Q10', 'Q28'], gap: GAP[f.type][1] };

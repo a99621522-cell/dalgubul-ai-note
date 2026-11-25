@@ -170,7 +170,7 @@ function init(D: Data) {
      → 출처 사슬 → 과세기간별 한 줄(무엇이 · 얼마 · 기한, 펼치면 왜·할 일·근거) → 빠진 기간 · 0원 → 내려받기 둘. 숫자는 refundCalc(돌려받을 돈 표)와 같다 — 새 계산 없음 */
   const josa = (w: string) => { const c = w.charCodeAt(w.length - 1); return c >= 0xac00 && c <= 0xd7a3 && (c - 0xac00) % 28 ? '은' : '는'; };
   function summary(b: Built | null) {
-    const el = $('rf-sum'); if (!el) return;
+    const el = $('rf-sum'); if (!el) return; if (!b && document.body.dataset.rvSnap) return;   /* 저장된 결과 화면(vat_review)을 덮지 않음 */
     const nF = b?.filed.length ?? 0, nR = b?.rows ?? 0;
     setStep('rf-go2', nF + nR > 0, !!org && nF + nR === 0, nF + nR ? `신고서 ${nF}개 과세기간${nR ? ` · 매입 ${fmt(nR)}건` : ''}` : org ? '파일을 놓으세요' : '기관을 고르면 열립니다');
     const done3 = (t: string) => setStep('rf-go3', !!t, false, t);

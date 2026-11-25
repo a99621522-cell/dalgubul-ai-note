@@ -144,29 +144,43 @@ export function matchMap(org: Org | null, biz: string, dept: string): MapRule | 
  *  '도로'가 도로 공사 계약 수백 건에 붙어 과세 시설 계약으로 세던 것(2026-11-05 동구 나라장터 계약) */
 const GENERIC_FAC = /^(도로|하천|공유수면|공유재산|국유재산|기타|구유재산|군유재산|시유재산|사용료수입|주차요금수입|주차요금|시설녹지|공연|공연입장료|입장료)$/;   // '공연'(세입 '공연입장료'에서 만든 시설 이름)이 '찾아가는 문화공연' 행사 용역에 붙던 것(2026-11-18 남구)
 export const noNameMatch = (name: string) => { const n = String(name ?? '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim(); return !n || GENERIC_FAC.test(n.replace(/\s/g, '')) || /(점용료|수수료|수입|대부료|임대료|사용료|요금|판매|수탁료|입장료|관람료)(\s*등)?$/.test(n) || /점용료|사용료|임대료|대부료|수수료/.test(n) || /협동조합|조합\s|^\(?(주|사|재)\)/.test(n) || /^(국\s*[·ㆍ]?\s*공유|공유|국유)\s*재산/.test(n); };   /* '국·공유재산' 같은 재산 일반 이름은 지출 이름 일치에 쓰지 않음(2026-11-24 수성구) */
-export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacility | undefined {
-  if (!org) return undefined; const norm = (x: string) => String(x ?? '').replace(/[\s()（）·,.\-_/]/g, '').toLowerCase(); const hay = norm(texts.filter(Boolean).join(' ')); if (hay.length < 2) return undefined;
+/* 같은 기관 설정·같은 글자는 한 번만 계산한다(2026-11-25 수성구 — 매입 27,082건을 다시 열 때 이 함수가 건마다 여러 번 불려 1~2분 멈췄다).
+   시설 낱말 준비(낱말·빈도·종류 글자)는 기관 설정의 시설 목록마다 한 번, 같은 글자 묶음의 답은 한 번 */
+const mfnCache = new WeakMap<OrgFacility[], { sig: string; m: Map<string, OrgFacility | undefined>; prep: MfnPrep }>();
+const mfnNorm = (x: string) => String(x ?? '').replace(/[\s()（）·,.\-_/]/g, '').toLowerCase();
+const mfnTok = (nm: string) => String(nm ?? '').split(/[\s()（）·,.\-_/]+/).map(t => t.toLowerCase()).filter(t => t.length >= 2);
+/* 가름에 못 쓰는 흔한 낱말 — '생활체육시설'·'체육센터': 별칭 '진밭골 생활체육시설'이 '에덴어린이공원 외 2개소 생활체육시설(야외운동기구)' 같은 공원 사업에 붙던 것(2026-11-24), 이 낱말은 지명(진밭골)과 함께일 때만.
+   '체육시설' — '하빈지구 체육시설'이 원오교·강창교 체육시설 계약에 붙던 것(2026-11-05). '임대' — '군유재산 임대'가 '임대주택단지간 도시계획도로'·'정수기 임대'에 붙던 것(2026-11-05 나라장터 계약) */
+const MFN_STOP = new Set(['운영', '관리', '사업', '시설', '센터', '공단', '본부', '지원', '위탁', '직영', '조리', '이용', '주민', '복지', '체육', '문화', '공원', '회관', '종합', '생활', '지역', '청사', '사무소', '사무실', '행정', '군청', '시청', '구청', '기타', '일반', '임대', '임차', '대여', '구입', '체육시설', '생활체육시설', '체육센터', '운동기구', '야외운동기구', '하천', '하천수', '시설물']);
+type MfnName = { full: string; all: string[]; last: string; lastN: string; place: string[]; stem: string; okLast: boolean };
+type MfnPrep = { f: OrgFacility; names: MfnName[] }[];
+function mfnPrep(org: Org): MfnPrep {
   /* 낱말 사전: 시설 이름·별칭을 괄호·공백·가운뎃점으로 나눈 낱말(2글자 이상)이 몇 시설에 나오는지 — 3곳 이상에 나오는 낱말('달성'·'체육' 등)은 가름에 쓰지 않는다 */
-  const tokOf = (nm: string) => String(nm ?? '').split(/[\s()（）·,.\-_/]+/).map(t => t.toLowerCase()).filter(t => t.length >= 2);
-  const STOP = new Set(['운영', '관리', '사업', '시설', '센터', '공단', '본부', '지원', '위탁', '직영', '조리', '이용', '주민', '복지', '체육', '문화', '공원', '회관', '종합', '생활', '지역', '청사', '사무소', '사무실', '행정', '군청', '시청', '구청', '기타', '일반', '임대', '임차', '대여', '구입', '체육시설', '생활체육시설', '체육센터', '운동기구', '야외운동기구', '하천', '하천수', '시설물']);   /* '생활체육시설'·'체육센터' — 별칭 '진밭골 생활체육시설'이 '에덴어린이공원 외 2개소 생활체육시설(야외운동기구)' 같은 공원 사업에 붙던 것(2026-11-24): 이 낱말은 지명(진밭골)과 함께일 때만 */   /* '체육시설' — '하빈지구 체육시설'이 원오교·강창교 체육시설 계약에 붙던 것(2026-11-05) */   // '임대' — '군유재산 임대'가 '임대주택단지간 도시계획도로'·'정수기 임대'에 붙던 것(2026-11-05 나라장터 계약)   // 가름에 못 쓰는 흔한 낱말
-  const freq = new Map<string, number>(); for (const f of org.facilities) { const ts = new Set([f.name, ...(f.alias ?? [])].flatMap(tokOf)); for (const t of ts) freq.set(t, (freq.get(t) ?? 0) + 1); }
+  const freq = new Map<string, number>(); for (const f of org.facilities) { const ts = new Set([f.name, ...(f.alias ?? [])].flatMap(mfnTok)); for (const t of ts) freq.set(t, (freq.get(t) ?? 0) + 1); }
+  const ok = (t: string) => (freq.get(t) ?? 0) < 3 && !MFN_STOP.has(t) && mfnNorm(t).length >= 2;
+  return org.facilities.filter(f => !noNameMatch(f.name)).map(f => ({ f, names: [f.name, ...(f.alias ?? [])].map(nm => { const base = nm.replace(/\(.*$/, ''); const all = mfnTok(base); const last = all[all.length - 1] ?? ''; return { full: mfnNorm(base), all, last, lastN: mfnNorm(last), place: [...new Set(all.slice(0, -1))].filter(ok), stem: last.length >= 4 ? mfnNorm(last.slice(-3)) : '', okLast: !!last && ok(last) }; }) }));
+}
+export function matchFacilityName(org: Org | null, ...texts: string[]): OrgFacility | undefined {
+  if (!org) return undefined; let c = mfnCache.get(org.facilities); const sig = `${org.facilities.length}:${org.facilities.reduce((n, f) => n + f.name.length * 31 + (f.alias ?? []).reduce((m, x) => m + x.length, 0), 0)}`;   /* 시설 이름·별칭이 바뀌면 다시 준비 */
+  if (!c || c.sig !== sig) { c = { sig, m: new Map(), prep: mfnPrep(org) }; mfnCache.set(org.facilities, c); }
+  const key = texts.map(t => String(t ?? '')).join('\u0004'); if (c.m.has(key)) return c.m.get(key); const r = matchFacilityName0(c.prep, texts); c.m.set(key, r); return r; }
+/** 시설 이름 일치 — 이름·별칭 전체가 들어 있거나, 낱말 일치는 시설 종류가 맞을 때만(2026-11-04 — 3년치 공개 지출에서 '비슬산 자연휴양림'이 '비슬산 참꽃 문화제'·'비슬산 유스호스텔 관리' 같은 다른 사업 7개에 붙음):
+ *  시설 이름의 마지막 낱말(종류: 자연휴양림·파크골프장·유스호스텔)이 있거나, 앞 낱말(지명) + 종류 글자(마지막 낱말 끝 3글자, 예: 휴양림)가 함께 있어야 한다.
+ *  지명만 둘('화원 동산')은 붙이지 않는다. 마지막 낱말이 흔한 낱말('센터')이면 가를 낱말 둘이 있어야. 낱말이 하나뿐인 이름은 그 하나로 */
+function matchFacilityName0(prep: MfnPrep, texts: string[]): OrgFacility | undefined {
+  const hay = mfnNorm(texts.filter(Boolean).join(' ')); if (hay.length < 2) return undefined;
+  const has = (t: string) => hay.includes(mfnNorm(t));
+  const road = (w: string) => new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(도로|진입로|길|교량|교)').test(hay);   // '휴양림도로 확포장'·'휴양림길 인도' — 시설로 가는 도로 공사는 시설 지출이 아니다
   let best: OrgFacility | undefined, bl = 0;
-  for (const f of org.facilities) {
-    if (noNameMatch(f.name)) continue;
-    for (const nm of [f.name, ...(f.alias ?? [])]) { const n = norm(nm.replace(/\(.*$/, '')); if (n.length >= 2 && hay.includes(n) && n.length > bl) { bl = n.length; best = f; } }
-    /* 낱말 일치는 시설 종류가 맞을 때만(2026-11-04 — 3년치 공개 지출에서 '비슬산 자연휴양림'이 '비슬산 참꽃 문화제'·'비슬산 유스호스텔 관리' 같은 다른 사업 7개에 붙음):
-       시설 이름의 마지막 낱말(종류: 자연휴양림·파크골프장·유스호스텔)이 있거나, 앞 낱말(지명) + 종류 글자(마지막 낱말 끝 3글자, 예: 휴양림)가 함께 있어야 한다.
-       지명만 둘('화원 동산')은 붙이지 않는다. 마지막 낱말이 흔한 낱말('센터')이면 가를 낱말 둘이 있어야. 낱말이 하나뿐인 이름은 그 하나로 */
-    for (const nm of [f.name, ...(f.alias ?? [])]) {
-      const all = tokOf(nm.replace(/\(.*$/, '')); if (!all.length) continue; const ok = (t: string) => (freq.get(t) ?? 0) < 3 && !STOP.has(t) && norm(t).length >= 2;
-      const last = all[all.length - 1], place = [...new Set(all.slice(0, -1))].filter(ok); const has = (t: string) => hay.includes(norm(t));
-      const stem = last.length >= 4 ? norm(last.slice(-3)) : ''; let n = 0;
-      const road = (w: string) => new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(도로|진입로|길|교량|교)').test(hay);   // '휴양림도로 확포장'·'휴양림길 인도' — 시설로 가는 도로 공사는 시설 지출이 아니다
-      if (all.length === 1) { if (ok(last) && has(last) && !road(norm(last))) n = norm(last).length; }
-      else if (ok(last) && has(last) && !road(norm(last))) n = norm(last).length + place.filter(has).reduce((a, t) => a + norm(t).length, 0);
-      else if (stem && hay.includes(stem) && !road(stem) && place.some(has)) n = stem.length + place.filter(has).reduce((a, t) => a + norm(t).length, 0);
-      else if (all.some(t => norm(t) === hay)) n = hay.length;   // 입력 전체가 시설 이름의 한 낱말과 같을 때(매출 붙여넣기에 '테크노폴리스'만 적음)
-      else if (!ok(last) && place.filter(has).length >= 2) n = place.filter(has).reduce((a, t) => a + norm(t).length, 0);
+  for (const { f, names } of prep) {
+    for (const x of names) if (x.full.length >= 2 && x.full.length > bl && hay.includes(x.full)) { bl = x.full.length; best = f; }
+    for (const x of names) {
+      if (!x.all.length) continue; let n = 0; const placeLen = () => x.place.filter(has).reduce((a, t) => a + mfnNorm(t).length, 0);
+      if (x.all.length === 1) { if (x.okLast && hay.includes(x.lastN) && !road(x.lastN)) n = x.lastN.length; }
+      else if (x.okLast && hay.includes(x.lastN) && !road(x.lastN)) n = x.lastN.length + placeLen();
+      else if (x.stem && hay.includes(x.stem) && !road(x.stem) && x.place.some(has)) n = x.stem.length + placeLen();
+      else if (x.all.some(t => mfnNorm(t) === hay)) n = hay.length;   // 입력 전체가 시설 이름의 한 낱말과 같을 때(매출 붙여넣기에 '테크노폴리스'만 적음)
+      else if (!x.okLast && x.place.filter(has).length >= 2) n = placeLen();
       if (n > bl) { bl = n; best = f; }
     }
   }

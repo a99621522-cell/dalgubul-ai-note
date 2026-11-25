@@ -30,17 +30,18 @@ type SupSet = { fid: string; use: UseK; what?: string; cw?: string; via?: 'ctr' 
 type State = { v: 1; reg: string; rows: RvRow[]; filed: Record<string, Filed>; sup: Record<string, SupSet>; biz?: Record<string, SupSet>; saved?: string; fdocs?: FiledDoc[]; have?: Record<string, { name?: string; at: string }>; sales?: Record<string, number | null> };
 type RowOut = { v: Verdict; rate: number | null; label: string; f?: OrgFacility; claim: number; cat: 'ok' | 'split' | 'no' | 'none' | 'check' | 'other' | 'noratio'; basis: Basis[]; why: string[] };
 const KEY = 'vat-review-v1';
-let stored: string | null = null;   /* IndexedDB·localStorage 가운데 나중 것(vat_store.loadBig) */
+let stored: string | null = null;
+const BIG = 3000, SNAP = 'vat-review-snap-v1';   /* IndexedDB·localStorage 가운데 나중 것(vat_store.loadBig) */
 const D = loadData();
 if (D) startFromLink(D).then(made => { if (made) location.reload(); else void loadBig(KEY).then(async t => { stored = t;
     /* 큰 자료를 다시 열 때(5년치 2~3만 건은 1~2분) — 빈 화면으로 보이면 자료가 사라진 줄 안다(운영자 2026-11-25 '이전에 올린 것 다시 올릴 필요 없잖아') */
     const nRows = t && t.length > 500000 ? (t.match(/"pkey":/g) ?? []).length : 0; const sumEl = document.getElementById('rf-sum');
-    if (nRows && sumEl) { sumEl.innerHTML = `<p class="rf-empty rf-busy" id="rf-reload">지난번 올린 자료(매입 ${nRows.toLocaleString('ko-KR')}건)를 불러오는 중… 1~2분 걸립니다. 다시 올리지 않아도 됩니다.</p>`; sumEl.scrollIntoView({ block: 'center' }); await new Promise(r => requestAnimationFrame(() => setTimeout(r, 30))); }
+    if (nRows && sumEl) { sumEl.innerHTML = `<p class="rf-empty rf-busy" id="rf-reload">지난번 올린 자료(매입 ${nRows.toLocaleString('ko-KR')}건)를 불러오는 중… 다시 올리지 않아도 됩니다.</p>`; sumEl.scrollIntoView({ block: 'center' }); await new Promise(r => requestAnimationFrame(() => setTimeout(r, 30))); }
     init(D); try { const n = sessionStorage.getItem('vat-org-renewed'); if (n) { sessionStorage.removeItem('vat-org-renewed'); toast(`기관 설정을 새 판으로 바꿨습니다(시설 ${n}곳 — 기관이 확인해 준 면적·신고 여부 포함). 올린 자료와 시설 지정은 그대로입니다`); } } catch { /* */ } }); }, () => void loadBig(KEY).then(t => { stored = t; init(D); }));   // ?gov=dalseong — 링크 한 번으로 시작
 
 function init(D: Data) {
   applyDefaults(D, getOrg());   // 확인 질문 기본값(묻지 않고 적용 — vat_ask.ts)
-  const org = getOrg(); const today = ymd(new Date());
+  const org = getOrg(); const today = ymd(new Date()); let built = false;
   const st: State = load() ?? { v: 1, reg: '', rows: [], filed: {}, sup: {} };
   const regIn = $<HTMLInputElement>('rv-reg')!; const siteRegs = org && org.unit === 'site' ? [...new Set(org.facilities.map(f => f.reg_no).filter(Boolean))] as string[] : [];
   regIn.value = st.reg || (org && org.unit === 'entity' && org.reg_no ? org.reg_no : siteRegs.length === 1 ? siteRegs[0] : ''); if (!st.reg && regIn.value) st.reg = regIn.value;
@@ -172,7 +173,7 @@ function init(D: Data) {
 
   /* ── 건별 귀속·판정(규칙은 judge 그대로) ── */
   /* 나라장터 계약 업체 등록번호 → 시설(세 걸음 ③, vat_contracts.ts) — 받아지면 다시 그린다 */
-  let ctx: CtrCtx | null = null; void contractsCtx(D, org).then(c => { ctx = c; if (c) build(); });
+  let ctx: CtrCtx | null = null; void contractsCtx(D, org).then(c => { ctx = c; if (c && built) build(); });   /* 저장된 결과를 보여 주는 중이면 다시 계산하지 않는다 */
   const KIND: Record<string, string> = { utility: 'general', service: 'general', repair: 'building', equip: 'equip', car_pass: 'car', car_other: 'general', guest: 'entertain', staff: 'welfare', payroll_tax: 'payroll', insurance: 'insurance', land: 'land', water: 'exempt_goods', other: 'general' };
   /* 매핑표 → 시설 이름 → 계약 업체 번호(품목이 그 업체 계약 이름과 맞을 때만 — supplierFits) 순 */
   const auto = (r: RvRow): SupSet | undefined => { if (!org) return undefined; if (/민방위/.test(`${r.desc} ${r.biz}`)) return undefined;   /* 민방위 비상급수시설 등은 시설 안에 있어도 고유사무 — 시설 이름으로 붙이지 않는다(2026-11-24 수성구청 실물) */ const m = matchMap(org, r.biz || r.desc, r.dept); if (m) return { fid: m.fid, use: m.use === 'multi' || m.use === 'admin' ? m.use : 'this' }; const f = matchFacilityName(org, r.sup, r.desc, r.biz); if (f) return { fid: f.id, use: 'this' }; if (r.biz) return undefined;   /* 세부사업이 있는 지출(e호조)은 사업 이름·적요로만 — 업체 번호로 붙이면 같은 업체의 다른 사업(하천·교통시설물)이 시설로 들어갔다(2026-11-24 수성구 e호조 실물) */ const c = r.sreg ? ctx?.biz.get(r.sreg) : undefined; if (c && supplierFits(`${r.desc} ${r.biz}`, c.nms)) return { ...c.a, via: 'ctr' }; return undefined; };
@@ -211,7 +212,10 @@ function init(D: Data) {
   const sig = (v: Verdict) => `<span class="sig ${v}" aria-hidden="true"></span>`;
   const CAT_NAME: Record<RowOut['cat'], string> = { ok: '과세 전용 — 전액 공제 대상', split: '공통 — 안분 뒤 공제', no: '불공제', none: '매입세액 없음', check: '확인 필요(시설·용도 미정)', other: '우리 매입세액 아님(다른 명의·수탁기관)', noratio: '공통 — 면세비율을 넣어야 계산' };
   let supFilter: 'all' | 'todo' | 'check' = (() => { try { const v = localStorage.getItem('vat-rv-supf'); return v === 'all' || v === 'check' ? v : 'todo'; } catch { return 'todo'; } })(); let supLimit = 10; let bizFilter: 'hint' | 'todo' | 'all' = 'hint'; let bizLimit = 30;   // 세 걸음 ③: 자동으로 못 붙인 공급자만, 세액 큰 순 10곳씩
-  function build() { bizG.clear();
+  /* 저장된 결과 화면(2026-11-25 운영자 '파일 올릴 때 계산해야지 사이트 열리지도 않게 하면 어떻게 해'): 계산은 파일을 올리거나 고칠 때만 한다.
+     큰 자료(3,000건 이상)는 계산이 끝날 때마다 결과 화면을 저장해 두고, 다시 열면 그 화면을 바로 보여 준다 — 받기 단추를 누르거나 「자세히」를 펼 때만 다시 계산 */
+  function build() { const sg = snapSig(); built = true; delete document.body.dataset.rvSnap; build0(); snapSave(sg); }   /* 지문은 계산 전에 — 계산 중에 채워지는 기본값(과세기간 칸 등)이 섞이지 않게 */
+  function build0() { bizG.clear();
     const ps = periods(); const res = $('rv-result')!;
     if (!st.rows.length) { rowDiags = []; cbRows = []; res.innerHTML = `<p class="callout info">아직 넣은 매입 목록이 없습니다. 홈택스 전자세금계산서 목록(매입) 엑셀 파일을 ③에 놓으세요(5년치 여러 파일을 한꺼번에).</p>`; const sb = $('rv-sup-box'); if (sb) sb.innerHTML = ''; $('rv-stat')!.textContent = ''; emit(null); return; }
     const outs = new Map<string, RowOut>(); for (const r of st.rows) outs.set(r.id, judgeRow(r));
@@ -518,6 +522,22 @@ function init(D: Data) {
     return [...m.values()].sort((a, b) => b.claim - a.claim); };
   function emit(x: Record<string, unknown> | null) { cover(); const S = filedSummary(st.fdocs ?? []); const dm = diagAll(); document.dispatchEvent(new CustomEvent('vat-rv-built', { detail: { ...(x ?? { rows: st.rows.length }), salesGap: salesGap(), baseTypes: (() => { const b = baseTypes(st.fdocs ?? []); return b ? { seen: [...b.seen], known: [...b.known] } : null; })(), diag: diagHtml(D, dm.diags), diags: dm.diags, fsure: dm.fsure, filed: [...S.values()].map(f => ({ k: f.k, deduct: f.deduct, er: f.er, salesSup: f.salesSup, total: f.total, ex5: f.exemptNd, nd2: f.ndReasons[2] ?? null })), filedState: Object.fromEntries(Object.entries(st.filed).map(([k, f]) => [k, { filed: f.filed, deduct: f.deduct }])), ctx: ctx ? { gov: ctx.gov.key, name: ctx.gov.name } : null } })); renderConf(); }
   function save() { saveBig(KEY, JSON.stringify({ ...st, saved: new Date().toISOString() })); }
+  /* 저장된 결과 화면이 지금 자료·결정·기관 설정과 같은지 — 무엇이든 바뀌면 다시 계산 */
+  const snapSig = () => { let conf = ''; try { conf = localStorage.getItem('vat-confirm-v1') ?? ''; } catch { /* */ } const o = getOrg(); return [st.rows.length, (st.fdocs ?? []).length, JSON.stringify(st.sup).length, JSON.stringify(st.biz ?? {}).length, JSON.stringify(st.filed).length, JSON.stringify(st.sales ?? {}).length, JSON.stringify(st.have ?? {}).length, st.reg, o?.preset_sig ?? '', o?.facilities.length ?? 0, JSON.stringify(o?.facilities ?? []).length, JSON.stringify(o?.map ?? []).length, conf.length].join('|'); };
+  function snapSave(sg: string) { if (st.rows.length < BIG) { try { localStorage.removeItem(SNAP); } catch { /* */ } return; } const el = $('rf-sum'); if (!el) return;
+    const tx = (id: string) => $(id)?.innerHTML ?? '';
+    saveBig(SNAP, JSON.stringify({ sig: sg, html: el.innerHTML, go2: tx('rf-go2-st'), go3: tx('rf-go3-st'), stat: $('rv-stat')?.textContent ?? '', at: new Date().toISOString() })); }
+  async function ensureBuilt(): Promise<void> { if (built) return; const el = $('rf-sum'); const msg = document.createElement('p'); msg.className = 'rf-empty rf-busy'; msg.id = 'rf-calc-busy'; msg.textContent = `매입 ${fmt(st.rows.length)}건으로 고친 신고서를 계산하는 중… 잠시만 기다리세요.`; el?.prepend(msg); await new Promise(r => requestAnimationFrame(() => setTimeout(r, 30))); build(); }
   function load(): State | null { try { const s = stored; if (!s) return null; const j = JSON.parse(s) as State; return j && j.v === 1 && Array.isArray(j.rows) ? j : null; } catch { return null; } }
-  build();
+  /* 다시 열 때 — 저장된 결과 화면이 지금 자료와 같으면 계산하지 않고 그것을 보여 준다 */
+  void (async () => { let snap: { sig: string; html: string; go2: string; go3: string; stat: string } | null = null;
+    if (st.rows.length >= BIG) { try { snap = JSON.parse((await loadBig(SNAP)) ?? 'null'); } catch { snap = null; } }
+    if (!snap || snap.sig !== snapSig() || !snap.html) { build(); return; }
+    document.body.dataset.rvSnap = '1'; const el = $('rf-sum'); if (el) el.innerHTML = snap.html;
+    for (const [id, t] of [['rf-go2', snap.go2], ['rf-go3', snap.go3]] as const) { const li = $(id); if (li) { li.classList.add('done'); li.classList.remove('cur'); } const e = $(`${id}-st`); if (e && t) e.innerHTML = t; }
+    const sEl = $('rv-stat'); if (sEl) sEl.textContent = snap.stat;
+    /* 계산값이 필요한 단추 — 누르면 먼저 계산하고 같은 단추를 다시 누른다 */
+    document.addEventListener('click', e => { if (built) return; const b = (e.target as HTMLElement).closest<HTMLElement>('#rf-sum button, #rf-sum [id^="rf-dl"]'); if (!b) return; e.preventDefault(); e.stopImmediatePropagation(); const id = b.id; void ensureBuilt().then(() => { if (id) $(id)?.click(); else toast('계산을 마쳤습니다 — 다시 누르세요'); }); }, true);
+    document.addEventListener('toggle', e => { const d = e.target as HTMLDetailsElement; if (built || !d.open || !['rf-detail', 'rf-files', 'rf-ref'].includes(d.id)) return; void ensureBuilt().then(() => { const x = $(d.id) as HTMLDetailsElement | null; if (x) x.open = true; }); }, true);
+  })();
 }

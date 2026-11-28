@@ -1,6 +1,6 @@
 {
  "month": "2025-06",
- "generated": "2026-11-18 00:16",
+ "generated": "2026-11-28 03:00",
  "basis": "nps",
  "basis_label": "국민연금 가입자수",
  "sources": {
@@ -14,7 +14,7 @@
    "matched": 5943
   },
   "dart": {
-   "corps_daegu": 68,
+   "corps_daegu": 72,
    "note": "collect_dart.py 가 확인한 대구 본사 공시 기업만. 재무(매출)는 미연결"
   }
  },
@@ -35,7 +35,7 @@
   "nps_loss": 2719,
   "new_firms": 1,
   "closed_firms": 7,
-  "dart_firms": 65,
+  "dart_firms": 70,
   "dart_revenue": null,
   "projects_12m": null,
   "support_3y": {
@@ -121,7 +121,7 @@
    "nps_loss": 337,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 10,
+   "dart_firms": 13,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -248,7 +248,7 @@
    "nps_loss": 215,
    "new_firms": 0,
    "closed_firms": 3,
-   "dart_firms": 0,
+   "dart_firms": 1,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -416,7 +416,7 @@
    "nps_loss": 647,
    "new_firms": 0,
    "closed_firms": 3,
-   "dart_firms": 15,
+   "dart_firms": 16,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -585,7 +585,7 @@
    "nps_loss": 647,
    "new_firms": 0,
    "closed_firms": 2,
-   "dart_firms": 18,
+   "dart_firms": 19,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -669,7 +669,7 @@
    "nps_loss": 263,
    "new_firms": 0,
    "closed_firms": 1,
-   "dart_firms": 4,
+   "dart_firms": 6,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -711,7 +711,7 @@
    "nps_loss": 242,
    "new_firms": 0,
    "closed_firms": 4,
-   "dart_firms": 2,
+   "dart_firms": 3,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1089,7 +1089,7 @@
    "nps_loss": 50,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 5,
+   "dart_firms": 6,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1547,7 +1547,7 @@
    "nps_loss": 762,
    "new_firms": 0,
    "closed_firms": 3,
-   "dart_firms": 19,
+   "dart_firms": 20,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1631,7 +1631,7 @@
    "nps_loss": 738,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 27,
+   "dart_firms": 29,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1673,7 +1673,7 @@
    "nps_loss": 378,
    "new_firms": 0,
    "closed_firms": 4,
-   "dart_firms": 3,
+   "dart_firms": 4,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -1715,7 +1715,7 @@
    "nps_loss": 208,
    "new_firms": 1,
    "closed_firms": 0,
-   "dart_firms": 10,
+   "dart_firms": 11,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -2094,7 +2094,7 @@
    "nps_loss": 1507,
    "new_firms": 0,
    "closed_firms": 4,
-   "dart_firms": 47,
+   "dart_firms": 50,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -2136,7 +2136,7 @@
    "nps_loss": 1041,
    "new_firms": 1,
    "closed_firms": 1,
-   "dart_firms": 9,
+   "dart_firms": 11,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -2307,7 +2307,7 @@
    "nps_loss": 148,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 3,
+   "dart_firms": 4,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
@@ -2517,7 +2517,7 @@
    "nps_loss": 26,
    "new_firms": 0,
    "closed_firms": 0,
-   "dart_firms": 3,
+   "dart_firms": 4,
    "dart_revenue": null,
    "projects_12m": null,
    "support_3y": {
